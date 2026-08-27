@@ -8,6 +8,8 @@ public class ScKnifeBlock : Block {
     readonly BlockMesh[] m_meshes = [new(), new(), new()];
     readonly Texture2D[] m_textures = new Texture2D[3];
     readonly Texture2D[] m_slotTextures = new Texture2D[3];
+    readonly BlockMesh[] m_butterflyParts = [new(), new(), new()];
+    static readonly string[] s_butterflyPartNames = ["down", "up", "blade2"];
 
     public override void Initialize() {
         for (int i = 0; i < s_names.Length; i++) {
@@ -18,6 +20,14 @@ public class ScKnifeBlock : Block {
                 Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
                 foreach (ModelMeshPart part in mesh.MeshParts)
                     m_meshes[i].AppendModelMeshPart(part, transform, false, false, true, false, Color.White);
+            }
+        }
+        for (int i = 0; i < s_butterflyPartNames.Length; i++) {
+            ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/butterfly_{s_butterflyPartNames[i]}");
+            foreach (ModelMesh mesh in model.Meshes) {
+                Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                    m_butterflyParts[i].AppendModelMeshPart(part, transform, false, false, true, false, Color.White);
             }
         }
         base.Initialize();
@@ -45,6 +55,16 @@ public class ScKnifeBlock : Block {
                 false,
                 environmentData
             );
+            return;
+        }
+        if (variant == 2 && environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson) {
+            ComponentFirstPersonModel firstPerson = environmentData.Owner?.FindComponent<ComponentFirstPersonModel>();
+            KnifeFramePose pose = KnifeAnimationController.GetCurrentPose(firstPerson);
+            Matrix[] partPoses = [pose.ButterflyDown, pose.ButterflyUp, pose.ButterflyBlade];
+            for (int i = 0; i < m_butterflyParts.Length; i++) {
+                Matrix partMatrix = Matrix.CreateScale(1f / size) * partPoses[i] * Matrix.CreateScale(size) * matrix;
+                BlocksManager.DrawMeshBlock(primitivesRenderer, m_butterflyParts[i], m_textures[variant], color, size, ref partMatrix, environmentData);
+            }
             return;
         }
         BlocksManager.DrawMeshBlock(primitivesRenderer, m_meshes[variant], m_textures[variant], color, size, ref matrix, environmentData);

@@ -1,9 +1,9 @@
 {
   "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
   "Name": "ScCsgoKnives CS刀具",
-  "Version": "0.2.1",
+  "Version": "0.3.0",
   "ApiVersion": "1.9.2.1",
-  "Description": "CS-style knives, draw and inspect animations for Survivalcraft. 生存战争 CS 风格刀具、切刀与检视动画。",
+  "Description": "CS-style knives with player-skinned hands and skeletal draw/inspect animations. 带玩家皮肤手臂与骨骼切刀/检视动画的 CS 风格刀具。",
   "ScVersion": "2.4.0.0",
   "LoadOrder": 1010,
   "NonPersistentMod": false,

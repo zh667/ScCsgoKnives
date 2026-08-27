@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
+    <EmbeddedResource Include="AnimationData\*.animation.json" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <PropertyGroup><PathOfScmod>$(TargetDir)..\$(AssemblyName).scmod</PathOfScmod></PropertyGroup>
