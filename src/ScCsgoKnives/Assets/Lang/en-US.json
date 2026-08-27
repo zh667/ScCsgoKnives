@@ -2,21 +2,21 @@
   "Blocks": {
     "ScKnifeBlock:0": {
       "DisplayName": "Karambit",
-      "Description": "A curved blade with a finger ring. Switch to draw; use Edit Item to inspect."
+      "Description": "A curved blade with a finger ring. Switch to draw; press E on PC or tap the pencil button on mobile to inspect."
     },
     "ScKnifeBlock:1": {
       "DisplayName": "M9 Bayonet",
-      "Description": "A heavy tactical bayonet. Switch to draw; use Edit Item to inspect."
+      "Description": "A heavy tactical bayonet. Switch to draw; press E on PC or tap the pencil button on mobile to inspect."
     },
     "ScKnifeBlock:2": {
       "DisplayName": "Butterfly Knife",
-      "Description": "A folding knife with split handles. Switch to draw; use Edit Item to inspect."
+      "Description": "A folding knife with split handles. Switch to draw; press E on PC or tap the pencil button on mobile to inspect."
     }
   },
   "ScCsgoKnives": {
     "Message": {
-      "Inspect": "Inspecting {0}."
+      "Inspect": "Inspecting {0}.",
+      "ControlsHint": "Inspect: press E on PC; tap the pencil button on mobile."
     }
   }
 }
-

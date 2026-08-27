@@ -10,6 +10,7 @@ public static class KnifeAnimationController {
         public ActionKind Action;
         public double StartedAt;
         public float LastPokePhase;
+        public bool ControlsHintShown;
     }
 
     static readonly Dictionary<ComponentFirstPersonModel, State> s_states = [];
@@ -33,6 +34,15 @@ public static class KnifeAnimationController {
             state.Variant = variant;
             Start(state, ActionKind.Draw);
             PlayDrawSound(variant);
+            if (!state.ControlsHintShown) {
+                state.ControlsHintShown = true;
+                model.m_componentPlayer.ComponentGui.DisplaySmallMessage(
+                    LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"),
+                    Color.White,
+                    true,
+                    false
+                );
+            }
         }
 
         float pokePhase = model.m_pokeAnimationTime;

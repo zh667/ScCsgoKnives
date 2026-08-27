@@ -19,6 +19,26 @@ def rotate(point, rotation, pivot):
     return [x + pivot[0], y + pivot[1], z + pivot[2]]
 
 
+def transform_part(point, position, rotation):
+    """Apply the same local transform order as TaCZ BedrockPart."""
+    point = rotate(point, rotation, [0.0, 0.0, 0.0])
+    return [point[i] + position[i] for i in range(3)]
+
+
+def bone_position(bone, bones):
+    """Convert an absolute Bedrock pivot to TaCZ's parent-local ModelPart position."""
+    pivot = bone.get("pivot", [0.0, 0.0, 0.0])
+    parent = bones.get(bone.get("parent"))
+    if parent is None:
+        return [pivot[0], 24.0 - pivot[1], pivot[2]]
+    parent_pivot = parent.get("pivot", [0.0, 0.0, 0.0])
+    return [
+        pivot[0] - parent_pivot[0],
+        parent_pivot[1] - pivot[1],
+        pivot[2] - parent_pivot[2],
+    ]
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("source", type=Path)
@@ -62,19 +82,39 @@ def main():
         for cube in bone.get("cubes", []):
             origin = cube["origin"]
             size = cube["size"]
-            x0, y0, z0 = origin
-            x1, y1, z1 = [origin[i] + size[i] for i in range(3)]
+            bone_pivot = bone.get("pivot", [0.0, 0.0, 0.0])
+            cube_rotation = cube.get("rotation")
+            cube_pivot = cube.get("pivot")
+            if cube_rotation is not None and cube_pivot is not None:
+                # TaCZ creates a child ModelPart at the cube pivot. Cubes are
+                # expressed relative to that child, with Minecraft's inverted Y.
+                x0 = origin[0] - cube_pivot[0]
+                y0 = cube_pivot[1] - origin[1] - size[1]
+                z0 = origin[2] - cube_pivot[2]
+            else:
+                # Unrotated cubes live directly in their owning bone's local space.
+                x0 = origin[0] - bone_pivot[0]
+                y0 = bone_pivot[1] - origin[1] - size[1]
+                z0 = origin[2] - bone_pivot[2]
+            inflate = float(cube.get("inflate", 0.0))
+            x1, y1, z1 = x0 + size[0], y0 + size[1], z0 + size[2]
+            x0, y0, z0 = x0 - inflate, y0 - inflate, z0 - inflate
+            x1, y1, z1 = x1 + inflate, y1 + inflate, z1 + inflate
             corners = [
                 [x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0],
                 [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1],
             ]
-            cube_rotation = cube.get("rotation", [0, 0, 0])
-            cube_pivot = cube.get("pivot", [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2])
-            corners = [rotate(p, cube_rotation, cube_pivot) for p in corners]
+            if cube_rotation is not None and cube_pivot is not None:
+                cube_position = [
+                    cube_pivot[0] - bone_pivot[0],
+                    bone_pivot[1] - cube_pivot[1],
+                    cube_pivot[2] - bone_pivot[2],
+                ]
+                corners = [transform_part(p, cube_position, cube_rotation) for p in corners]
             for ancestor in chain:
                 rotation = ancestor.get("rotation", [0, 0, 0])
-                if any(rotation):
-                    corners = [rotate(p, rotation, ancestor.get("pivot", [0, 0, 0])) for p in corners]
+                position = bone_position(ancestor, bones)
+                corners = [transform_part(p, position, rotation) for p in corners]
 
             base = len(vertices) + 1
             vertices.extend(corners)
@@ -85,9 +125,14 @@ def main():
                     continue
                 u, v = face_uv["uv"]
                 du, dv = face_uv["uv_size"]
-                coords = [(u, v), (u + du, v), (u + du, v + dv), (u, v + dv)]
+                # Match TaCZ BedrockPolygon: first vertex gets (u2,v1), then
+                # (u1,v1), (u1,v2), (u2,v2). SC samples V=0 at PNG top.
+                coords = [(u + du, v), (u, v), (u, v + dv), (u + du, v + dv)]
                 uv_base = len(texcoords) + 1
-                texcoords.extend([(px / width, 1.0 - py / height) for px, py in coords])
+                # SCAPI uploads PNG rows to OpenGL without vertically flipping them,
+                # therefore V=0 addresses the top of the source image.  Its OBJ
+                # reader also forwards texture coordinates unchanged.
+                texcoords.extend([(px / width, py / height) for px, py in coords])
                 p0, p1, p2 = (corners[indices[i]] for i in range(3))
                 a = [p1[i] - p0[i] for i in range(3)]
                 b = [p2[i] - p0[i] for i in range(3)]

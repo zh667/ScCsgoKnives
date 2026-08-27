@@ -2,21 +2,21 @@
   "Blocks": {
     "ScKnifeBlock:0": {
       "DisplayName": "爪子刀",
-      "Description": "弯曲刀身与指环握柄。切换时播放切刀动作，使用编辑物品按钮进行检视。"
+      "Description": "弯曲刀身与指环握柄。切换时播放切刀动作；电脑按 E，手机点右侧铅笔按钮检视。"
     },
     "ScKnifeBlock:1": {
       "DisplayName": "M9 刺刀",
-      "Description": "宽厚的战术刺刀。切换时播放切刀动作，使用编辑物品按钮进行检视。"
+      "Description": "宽厚的战术刺刀。切换时播放切刀动作；电脑按 E，手机点右侧铅笔按钮检视。"
     },
     "ScKnifeBlock:2": {
       "DisplayName": "蝴蝶刀",
-      "Description": "双柄折叠刀。切换时播放翻刀动作，使用编辑物品按钮进行检视。"
+      "Description": "双柄折叠刀。切换时播放翻刀动作；电脑按 E，手机点右侧铅笔按钮检视。"
     }
   },
   "ScCsgoKnives": {
     "Message": {
-      "Inspect": "正在检视 {0}。"
+      "Inspect": "正在检视 {0}。",
+      "ControlsHint": "检视：电脑按 E；手机版点击右侧铅笔按钮。"
     }
   }
 }
-

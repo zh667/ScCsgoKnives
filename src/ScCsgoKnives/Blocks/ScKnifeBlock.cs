@@ -7,10 +7,12 @@ public class ScKnifeBlock : Block {
     static readonly string[] s_names = ["karambit", "m9", "butterfly"];
     readonly BlockMesh[] m_meshes = [new(), new(), new()];
     readonly Texture2D[] m_textures = new Texture2D[3];
+    readonly Texture2D[] m_slotTextures = new Texture2D[3];
 
     public override void Initialize() {
         for (int i = 0; i < s_names.Length; i++) {
             m_textures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}");
+            m_slotTextures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}_slot");
             ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{s_names[i]}");
             foreach (ModelMesh mesh in model.Meshes) {
                 Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
@@ -32,8 +34,33 @@ public class ScKnifeBlock : Block {
         DrawBlockEnvironmentData environmentData
     ) {
         int variant = GetVariant(value);
+        if (environmentData?.DrawBlockMode == DrawBlockMode.UI && !IsModelPreview(environmentData)) {
+            BlocksManager.DrawFlatBlock(
+                primitivesRenderer,
+                value,
+                1.45f * size,
+                ref matrix,
+                m_slotTextures[variant],
+                color,
+                false,
+                environmentData
+            );
+            return;
+        }
         BlocksManager.DrawMeshBlock(primitivesRenderer, m_meshes[variant], m_textures[variant], color, size, ref matrix, environmentData);
     }
+
+    public override int GetTextureSlotCount(int value) => 1;
+
+    public override int GetFaceTextureSlot(int face, int value) => 0;
+
+    // The knife has its own deploy animation. Let the first-person component
+    // switch to it immediately instead of also lowering it with SC's generic
+    // half-second item-swap animation.
+    public override bool IsSwapAnimationNeeded(int oldValue, int newValue) => false;
+
+    public override Vector3 GetIconViewOffset(int value, DrawBlockEnvironmentData environmentData) =>
+        IsModelPreview(environmentData) ? base.GetIconViewOffset(value, environmentData) : Vector3.UnitZ;
 
     public override IEnumerable<int> GetCreativeValues() {
         for (int variant = 0; variant < s_names.Length; variant++)
@@ -53,5 +80,7 @@ public class ScKnifeBlock : Block {
     public static int GetVariant(int value) => Terrain.ExtractData(value) & 0xF;
 
     public static string GetAssetName(int variant) => s_names[Math.Clamp(variant, 0, s_names.Length - 1)];
-}
 
+    static bool IsModelPreview(DrawBlockEnvironmentData environmentData) =>
+        environmentData?.GetType().FullName == "Game.ScCsgoBoxModelPreviewEnvironmentData";
+}
