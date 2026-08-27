@@ -11,6 +11,7 @@ public static class KnifeAnimationController {
         public double StartedAt;
         public float LastPokePhase;
         public bool ControlsHintShown;
+        public bool DrawWhenVisible;
     }
 
     static readonly Dictionary<ComponentFirstPersonModel, State> s_states = [];
@@ -20,7 +21,10 @@ public static class KnifeAnimationController {
     public static void Apply(ComponentFirstPersonModel model, int itemValue, ref Matrix matrix) {
         int knifeIndex = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         if (Terrain.ExtractContents(itemValue) != knifeIndex) {
-            if (s_states.TryGetValue(model, out State oldState)) oldState.Variant = -1;
+            if (s_states.TryGetValue(model, out State oldState)) {
+                oldState.Variant = -1;
+                oldState.DrawWhenVisible = false;
+            }
             return;
         }
 
@@ -30,14 +34,28 @@ public static class KnifeAnimationController {
             s_states.Add(model, state);
         }
 
-        if (state.Variant != variant) {
+        // SC continues drawing the world behind inventory/creative panels. Do
+        // not let deploy run unseen there; remember the selection and start it
+        // as soon as the player returns to the unobstructed first-person view.
+        bool viewObscured = model.m_componentPlayer.ComponentGui.ModalPanelWidget != null
+            || DialogsManager.HasDialogs(model.m_componentPlayer.GuiWidget);
+        if (viewObscured) {
+            if (state.Variant != variant) state.DrawWhenVisible = true;
+            return;
+        }
+
+        if (state.DrawWhenVisible || state.Variant != variant) {
+            state.DrawWhenVisible = false;
             state.Variant = variant;
             Start(state, ActionKind.Draw);
             PlayDrawSound(variant);
             if (!state.ControlsHintShown) {
                 state.ControlsHintShown = true;
                 model.m_componentPlayer.ComponentGui.DisplaySmallMessage(
-                    LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"),
+                    string.Format(
+                        LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"),
+                        GetEditKeyName()
+                    ),
                     Color.White,
                     true,
                     false
@@ -46,7 +64,7 @@ public static class KnifeAnimationController {
         }
 
         float pokePhase = model.m_pokeAnimationTime;
-        if (pokePhase > 0f && state.LastPokePhase <= 0f) {
+        if (pokePhase > 0f && state.LastPokePhase <= 0f && state.Action != ActionKind.Draw) {
             state.Action = ActionKind.Idle;
             AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", 0.85f, (float)s_random.NextDouble() * 0.16f - 0.08f, 0f);
         }
@@ -85,7 +103,7 @@ public static class KnifeAnimationController {
     }
 
     static Matrix DrawTransform(int variant, float elapsed, State state) {
-        const float duration = 0.96f;
+        const float duration = 1.15f;
         float t = MathUtils.Saturate(elapsed / duration);
         if (t >= 1f) {
             state.Action = ActionKind.Idle;
@@ -94,11 +112,11 @@ public static class KnifeAnimationController {
 
         float e = Smooth(t);
         float remaining = 1f - e;
-        float spin = variant switch { 0 => 340f, 1 => 115f, _ => 520f };
-        float tilt = variant switch { 0 => -75f, 1 => -35f, _ => 95f };
+        float spin = variant switch { 0 => 390f, 1 => 135f, _ => 570f };
+        float tilt = variant switch { 0 => -85f, 1 => -48f, _ => 110f };
         return Matrix.CreateRotationZ(MathUtils.DegToRad(spin * remaining))
              * Matrix.CreateRotationX(MathUtils.DegToRad(tilt * remaining))
-             * Matrix.CreateTranslation(0.22f * remaining, -0.72f * remaining, 0.28f * remaining);
+             * Matrix.CreateTranslation(0.35f * remaining, -1.05f * remaining, 0.38f * remaining);
     }
 
     static Matrix InspectTransform(int variant, float elapsed, State state) {
@@ -136,4 +154,6 @@ public static class KnifeAnimationController {
         string sound = variant == 2 ? "Audio/ScCsgoKnives/butterfly_draw" : "Audio/ScCsgoKnives/knife_deploy";
         AudioManager.PlaySound(sound, 1f, 0f, 0f);
     }
+
+    static string GetEditKeyName() => SettingsManager.GetKeyboardMapping("EditItem", false)?.ToString() ?? "G";
 }
