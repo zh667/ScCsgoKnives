@@ -1,0 +1,22 @@
+{
+  "Blocks": {
+    "ScKnifeBlock:0": {
+      "DisplayName": "Karambit",
+      "Description": "A curved blade with a finger ring. Switch to draw; use Edit Item to inspect."
+    },
+    "ScKnifeBlock:1": {
+      "DisplayName": "M9 Bayonet",
+      "Description": "A heavy tactical bayonet. Switch to draw; use Edit Item to inspect."
+    },
+    "ScKnifeBlock:2": {
+      "DisplayName": "Butterfly Knife",
+      "Description": "A folding knife with split handles. Switch to draw; use Edit Item to inspect."
+    }
+  },
+  "ScCsgoKnives": {
+    "Message": {
+      "Inspect": "Inspecting {0}."
+    }
+  }
+}
+

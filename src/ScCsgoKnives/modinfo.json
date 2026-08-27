@@ -1,0 +1,17 @@
+{
+  "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
+  "Name": "ScCsgoKnives CS刀具",
+  "Version": "0.1.0",
+  "ApiVersion": "1.9.2.1",
+  "Description": "CS-style knives, draw and inspect animations for Survivalcraft. 生存战争 CS 风格刀具、切刀与检视动画。",
+  "ScVersion": "2.4.0.0",
+  "LoadOrder": 1010,
+  "NonPersistentMod": false,
+  "GameplayImpactLevel": "Turbo",
+  "Link": "https://github.com/zh667/ScCsgoKnives",
+  "Author": "zh667; assets adapted with permission from White_Food",
+  "PackageName": "zh667.ScCsgoKnives",
+  "Dependencies": {},
+  "Settings": []
+}
+

@@ -1,0 +1,7 @@
+<Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/Assets/Database.xsd">
+  <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ScKnifeBlockBehavior" Guid="4d1579df-b2be-46dd-8929-8fb857b14344" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="dd9e3b7b-5c21-4205-a7d1-3bdba3ab3d36" Value="Game.SubsystemScKnifeBlockBehavior" Type="string" />
+    </MemberSubsystemTemplate>
+  </ProjectTemplate>
+</Mod>

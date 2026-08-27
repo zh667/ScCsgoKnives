@@ -1,0 +1,11 @@
+{
+  "id": "sccsgoknives:survivor_knives",
+  "targetCase": "survivor",
+  "requiresMods": ["zh667.ScCsgoKnives"],
+  "rewards": [
+    { "rarity": "legendary", "ownerMod": "zh667.ScCsgoKnives", "block": "ScKnifeBlock", "data": 0, "count": 1, "weight": 0.45 },
+    { "rarity": "legendary", "ownerMod": "zh667.ScCsgoKnives", "block": "ScKnifeBlock", "data": 1, "count": 1, "weight": 0.35 },
+    { "rarity": "legendary", "ownerMod": "zh667.ScCsgoKnives", "block": "ScKnifeBlock", "data": 2, "count": 1, "weight": 0.20 }
+  ]
+}
+
