@@ -109,12 +109,12 @@ public static class KnifeTuning {
     // left arm's bearing has a standard deviation of 0.3 degrees across twenty of
     // them while its hand swings across a quarter of the screen. ArmLeanFromBone can
     // turn it back on for experiments.
-    public static float RightArmLean = 7.3f;
-    public static float LeftArmLean = -46.3f;
+    public static float RightArmLean = 6.8f;
+    public static float LeftArmLean = -46.8f;
     // How much nearer the eye the elbow end is than the hand; sets the widening
     // toward the bottom of the frame. Same fit.
-    public static float RightArmNear = 1.5f;
-    public static float LeftArmNear = 1.57f;
+    public static float RightArmNear = 1.36f;
+    public static float LeftArmNear = 1.51f;
 
     /// <summary>
     /// How much of the arm's bearing to take from the rig's arm_lower bone instead of
@@ -144,24 +144,105 @@ public static class KnifeTuning {
     // 0.10.0 shipped 0.066 and 0.051 off a statistic that measured something else;
     // the left arm in particular was two thirds of the reference's width, which is
     // "the arms look thin and long".
-    public static float ArmScreenWidth = 0.080f;
-    public static float LeftArmScreenWidth = 0.0867f;
+    public static float ArmScreenWidth = 0.0792f;
+    public static float LeftArmScreenWidth = 0.086f;
 
     /// <summary>How far down the screen to run the arm, so it always leaves the frame.</summary>
     public static float ArmExitY = 1.30f;
 
     /// <summary>
+    /// How the arm rolls once a clip turns the wrist. Idle is the fitted, face-on
+    /// composition in every mode; only the change is followed.
+    ///   0  never rolls: the knife turns through a fist that does not.
+    ///   1  rolls with the hand bone the way CS:MC's b$4la does, rigidly: the handle
+    ///      keeps whatever angle it had to the fist's face at idle (about thirty
+    ///      degrees on the M9), so it still crosses the face on a turned wrist.
+    ///   2  rolls so the handle lies flat along the fist's face, and FistGripFace
+    ///      puts that face at the handle; the handle then rests on the fist instead
+    ///      of passing through it, which is how the reference looks at the end of an
+    ///      inspect. Blended in as the wrist leaves its idle pose, so idle is untouched.
+    /// </summary>
+    //
+    // 1 is what the CS:MC recordings show frame by frame, with FistGripFace 1: the
+    // box is offset to the back of the palm and rolls rigidly with the wrist. Being
+    // square it never looks like it rolls; what changes is which side of the knife
+    // it sits -- in front of the handle at idle (handle hidden), behind it at the
+    // hold of an inspect (handle lying on the front face, sinking into the box's
+    // top), the switch happening as the wrist turns through a right angle, with no
+    // special handling at the ends of a clip. Mode 2's blends put that switch at
+    // the end of the clip instead, which is the flash the arm showed there; mode 0
+    // centres the box and buries the handle at the hold.
+    public static float ArmRollMode = 1f;
+
+    /// <summary>
+    /// Where the grip sits across the fist, in half-widths along the line of sight:
+    /// 0 is the box's centre, 1 its far face (the box sits between the eye and the
+    /// handle, which hides the handle at idle and shows it lying on the fist once
+    /// the wrist has turned the far face round), -1 its near face.
+    /// </summary>
+    public static float FistGripFace = 1f;
+
+    /// <summary>
+    /// How far the wrist has to turn from idle, in degrees, before the roll of mode 2
+    /// is fully in; below a fifth of it the box stays face-on. Keeps idle and the
+    /// breathing clips exactly as fitted.
+    /// </summary>
+    public static float RollBlendDegrees = 30f;
+
+    /// <summary>
+    /// The knife is not rigid to the hand bone: an inspect re-grips it in the
+    /// fingers and twirls it in between. The fist follows the handle's new direction
+    /// with this time constant, in seconds, but only while the handle turns slower
+    /// than HandleFollowRate degrees a second; faster than that is a twirl, and the
+    /// fist keeps the last steady grip until it is over.
+    /// </summary>
+    public static float HandleFollowSeconds = 0.15f;
+    public static float HandleFollowRate = 120f;
+
+    /// <summary>
+    /// How far, in degrees, the fist may turn away from where the wrist-rigid rule
+    /// puts it to follow the re-gripped handle. The re-grips measure 18 to 32
+    /// degrees on the photographed knives; 0 is exactly 0.11.2's behaviour.
+    /// </summary>
+    public static float ReGripDegrees = 35f;
+    /// <summary>How fast that correction may change, degrees a second: a drift, never a flick.</summary>
+    public static float ReGripDegreesPerSecond = 90f;
+
+    /// <summary>
+    /// Once the wrist has carried the palm most of the way round -- past
+    /// SquareFromDegrees from its idle direction -- finish the turn so that by
+    /// SquareFullDegrees the box sits straight behind the knife, as the reference
+    /// does at the hold of an inspect. The rigid turn alone stops 20 to 36 degrees
+    /// short on the photographed knives, which left the box a third of its width
+    /// to one side of the handle. A function of the angle only, so it can neither
+    /// lag nor flick; 1 on, 0 off.
+    /// </summary>
+    public static float SquareAtHold = 1f;
+    public static float SquareFromDegrees = 90f;
+    public static float SquareFullDegrees = 130f;
+
+    /// <summary>
+    /// How fast the arm may roll about its own axis, in degrees a second. Simulated
+    /// through the clips at 60 fps: the straight knives' inspects peak at 420-790, a
+    /// slash at about 900-1030, and the balisong's flips at up to 3000. This lets
+    /// every inspect but the balisong's through untouched, barely touches a slash,
+    /// and stops the fist spinning with the butterfly's blade.
+    /// </summary>
+    public static float RollSlewDegreesPerSecond = 900f;
+
+    /// <summary>
     /// How far the fist reaches past the grip, as a fraction of the arm's width.
     /// This is what buries the handle in the fist so only the guard and the pommel
-    /// show, the way the reference does. Measured per photo: 0.95 on the M9, 0.91
-    /// on the karambit, 0.65 on the butterfly, 0.76 on the huntsman; this is the
-    /// value for knives without a photo and for the left hand.
+    /// show, the way the reference does. Measured per photo with the grip on the
+    /// far face: 0.89 on the M9, 0.82 on the karambit, 0.42 on the butterfly, 0.74
+    /// on the huntsman; this is the value for knives without a photo and for the
+    /// left hand.
     ///
     /// 0.10.0 took a sixth of the forearm bone instead, which came to a fifth of
     /// the arm's width: the fist stopped at the handle and the handle lay across
     /// the top of the arm.
     /// </summary>
-    public static float ArmPalmOvershoot = 0.79f;
+    public static float ArmPalmOvershoot = 0.69f;
 
     // Where the left grip -- the centre of the left fist -- sits at idle, in screen
     // fractions, for knives without their own photo. Each knife gets its own
@@ -172,6 +253,7 @@ public static class KnifeTuning {
     // different left arm altogether; that one is in the renderer's fist table.
     public static float LeftHandTargetScreenX = 0.3206f;
     public static float LeftHandTargetScreenY = 0.9101f;
+    // (far-face fit, tools/reference/fistfit_face.json)
     // The depth the left fist is built at -- the one its box was fitted at.
     public static float LeftHandDepth = 0.55f;
 
@@ -273,6 +355,17 @@ public static class KnifeTuning {
             case nameof(LeftHandTargetScreenY): LeftHandTargetScreenY = v; return true;
             case nameof(LeftHandDepth): LeftHandDepth = v; return true;
             case nameof(ArmExitY): ArmExitY = v; return true;
+            case nameof(ArmRollMode): ArmRollMode = v; return true;
+            case nameof(FistGripFace): FistGripFace = v; return true;
+            case nameof(RollBlendDegrees): RollBlendDegrees = v; return true;
+            case nameof(HandleFollowSeconds): HandleFollowSeconds = v; return true;
+            case nameof(HandleFollowRate): HandleFollowRate = v; return true;
+            case nameof(ReGripDegrees): ReGripDegrees = v; return true;
+            case nameof(ReGripDegreesPerSecond): ReGripDegreesPerSecond = v; return true;
+            case nameof(SquareAtHold): SquareAtHold = v; return true;
+            case nameof(SquareFromDegrees): SquareFromDegrees = v; return true;
+            case nameof(SquareFullDegrees): SquareFullDegrees = v; return true;
+            case nameof(RollSlewDegreesPerSecond): RollSlewDegreesPerSecond = v; return true;
             case nameof(SwapDipScale): SwapDipScale = v; return true;
             case nameof(InspectTravelScale): InspectTravelScale = v; return true;
             default: return false;
@@ -330,6 +423,26 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(ArmPalmOvershoot), ArmPalmOvershoot));
         text.AppendLine("# 手臂往画面下方伸到哪（>1 表示伸出画面外）。");
         text.AppendLine(Line(nameof(ArmExitY), ArmExitY));
+        text.AppendLine("# 检视/挥砍时手臂怎么滚转：0 = 拳头永远正对相机；1 = 刚性跟着手腕（CS:MC b$4la 的做法，刀柄保持待机时和拳面的夹角）；");
+        text.AppendLine("# 2 = 转到让刀柄平贴拳面（配合 FistGripFace 把那个面放在刀柄上，刀柄就躺在拳头上而不是穿过去）。三种待机都一样。");
+        text.AppendLine(Line(nameof(ArmRollMode), ArmRollMode));
+        text.AppendLine("# 握把在拳头截面上的位置（沿视线的半宽数）：0 = 盒子中心，1 = 远离眼睛的那个面（待机时握柄藏在拳头后面，手腕翻过来后躺在拳面上），-1 = 近面。");
+        text.AppendLine(Line(nameof(FistGripFace), FistGripFace));
+        text.AppendLine("# 模式 2 从手腕离开待机姿态多少度开始完全生效（低于它的 1/5 时保持正对相机），待机和呼吸动画因此不受影响。");
+        text.AppendLine(Line(nameof(RollBlendDegrees), RollBlendDegrees));
+        text.AppendLine("# 刀在检视里会被手指重新握持/转动。拳头以这个时间常数（秒）跟上握柄的新方向，但只在握柄转速低于下面这个度/秒时跟；更快就是在转刀，拳头保持上一个稳定握姿不动。");
+        text.AppendLine(Line(nameof(HandleFollowSeconds), HandleFollowSeconds));
+        text.AppendLine(Line(nameof(HandleFollowRate), HandleFollowRate));
+        text.AppendLine("# 为了贴合被手指重新握过的握柄，拳头最多偏离“刚性跟手腕”位置多少度。0 = 完全回到 0.11.2 的做法。");
+        text.AppendLine(Line(nameof(ReGripDegrees), ReGripDegrees));
+        text.AppendLine("# 这个修正角每秒最多变多少度（只会慢慢漂，不会甩）。");
+        text.AppendLine(Line(nameof(ReGripDegreesPerSecond), ReGripDegreesPerSecond));
+        text.AppendLine("# 手腕把手心转过 SquareFrom 度之后开始把余角补完，到 SquareFull 度时拳头正好在刀正后方（MCCS 定格就是这样）。只和角度有关，不会滞后也不会甩。1 开 0 关。");
+        text.AppendLine(Line(nameof(SquareAtHold), SquareAtHold));
+        text.AppendLine(Line(nameof(SquareFromDegrees), SquareFromDegrees));
+        text.AppendLine(Line(nameof(SquareFullDegrees), SquareFullDegrees));
+        text.AppendLine("# 手臂滚转的最大角速度（度/秒），只用来压掉穿过退化方向那一帧的跳变。");
+        text.AppendLine(Line(nameof(RollSlewDegreesPerSecond), RollSlewDegreesPerSecond));
         text.AppendLine("# 手臂方向取骨骼的比例（0=固定倾角，1=跟骨骼），实验用。");
         text.AppendLine(Line(nameof(ArmLeanFromBone), ArmLeanFromBone));
         text.AppendLine();

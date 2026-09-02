@@ -10,7 +10,21 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUILD = os.path.join(ROOT, 'src/ScCsgoKnives/bin/Release/net10.0')
 OUT = os.path.join(ROOT, 'output')
 
+def newest_source_mtime():
+    newest = 0.0
+    for dirpath, dirs, files in os.walk(os.path.join(ROOT, 'src/ScCsgoKnives')):
+        dirs[:] = [d for d in dirs if d not in ('bin', 'obj')]
+        for f in files:
+            if f.endswith(('.cs', '.csproj', '.json')):
+                newest = max(newest, os.path.getmtime(os.path.join(dirpath, f)))
+    return newest
+
 def main():
+    # Refuse to ship a stale build: a failed compile leaves the previous dll in
+    # place, and `dotnet build | grep` hides the failure from a && chain.
+    dll = os.path.join(BUILD, 'ScCsgoKnives.dll')
+    if not os.path.exists(dll) or os.path.getmtime(dll) < newest_source_mtime():
+        raise SystemExit('ScCsgoKnives.dll is older than the sources; build first (and check it succeeded).')
     version = json.load(open(os.path.join(BUILD, 'modinfo.json'), encoding='utf-8'))['Version']
     os.makedirs(OUT, exist_ok=True)
     target = os.path.join(OUT, f'ScCsgoKnives-{version}.scmod')

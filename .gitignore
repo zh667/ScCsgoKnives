@@ -15,3 +15,6 @@ output/
 PHOTO2/
 # CS:MC reference screenshots (tools/mccs_masks.py reads them); not published
 photo/
+# screen recordings used for frame-by-frame comparison; not source
+SC_VIDEO/
+MCCS_VIDEO/

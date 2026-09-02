@@ -30,15 +30,19 @@ def far_point(grip, lean_deg, near):
     run = min(4.0, max(0.05, (ARM_EXIT_Y - sy) / max(stepy, 0.05)))
     return to_view(sx + stepx * run, sy + stepy * run, depth / max(near, 0.1))
 
-def box_corners(grip, lean, near, width_frac, overshoot_ratio, depth_ratio):
+FACE = 1.0   # KnifeTuning.FistGripFace: where the grip sits across the box, in half-widths along the line of sight
+
+def box_corners(grip, lean, near, width_frac, overshoot_ratio, depth_ratio, face=None):
+    if face is None: face = FACE
     depth = -grip[2]
-    width = width_frac * 2 * depth / PX          # view units at the grip's depth
     far = far_point(grip, lean, near)
     axis = far - grip; L = np.linalg.norm(axis); axis /= L
     los = grip / np.linalg.norm(grip)             # line of sight to the grip
     side = los - axis * np.dot(los, axis); side /= np.linalg.norm(side)   # face-on
     up = np.cross(side, axis); up /= np.linalg.norm(up)
-    seat = grip - axis * (overshoot_ratio * width)
+    per_depth = width_frac * 2 / PX
+    width = per_depth * depth / max(1.0 - 0.5 * face * per_depth * side[2], 0.2)   # screen width at the box's centre
+    seat = grip - side * (face * 0.5 * width) - axis * (overshoot_ratio * width)
     thick = width * depth_ratio
     cs = []
     for a in (0.0, L + overshoot_ratio * width):
