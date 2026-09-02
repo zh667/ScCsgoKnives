@@ -1,11 +1,185 @@
 {
   "id": "sccsgoknives:survivor_knives",
   "targetCase": "survivor",
-  "requiresMods": ["zh667.ScCsgoKnives"],
+  "requiresMods": [
+    "zh667.ScCsgoKnives"
+  ],
   "rewards": [
-    { "rarity": "legendary", "ownerMod": "zh667.ScCsgoKnives", "block": "ScKnifeBlock", "data": 0, "count": 1, "weight": 0.45 },
-    { "rarity": "legendary", "ownerMod": "zh667.ScCsgoKnives", "block": "ScKnifeBlock", "data": 1, "count": 1, "weight": 0.35 },
-    { "rarity": "legendary", "ownerMod": "zh667.ScCsgoKnives", "block": "ScKnifeBlock", "data": 2, "count": 1, "weight": 0.20 }
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 0,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 1,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 2,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 3,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 4,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 5,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 6,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 7,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 8,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 9,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 10,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 11,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 12,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 13,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 14,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 15,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 16,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 17,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 18,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 19,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 20,
+      "count": 1,
+      "weight": 0.0455
+    },
+    {
+      "rarity": "legendary",
+      "ownerMod": "zh667.ScCsgoKnives",
+      "block": "ScKnifeBlock",
+      "data": 21,
+      "count": 1,
+      "weight": 0.0455
+    }
   ]
 }
-

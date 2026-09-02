@@ -2,21 +2,97 @@
   "Blocks": {
     "ScKnifeBlock:0": {
       "DisplayName": "Karambit",
-      "Description": "A curved blade with a finger ring. Switch to draw; use Edit Item (G by default) on PC or tap the pencil button on mobile to inspect."
+      "Description": "Curved blade with a ring pommel, the most recognisable CS melee weapon. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
     },
     "ScKnifeBlock:1": {
       "DisplayName": "M9 Bayonet",
-      "Description": "A heavy tactical bayonet. Switch to draw; use Edit Item (G by default) on PC or tap the pencil button on mobile to inspect."
+      "Description": "Broad military bayonet with a serrated spine. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
     },
     "ScKnifeBlock:2": {
       "DisplayName": "Butterfly Knife",
-      "Description": "A folding knife with split handles. Switch to draw; use Edit Item (G by default) on PC or tap the pencil button on mobile to inspect."
+      "Description": "Twin-handle balisong with the flashiest deploy. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:3": {
+      "DisplayName": "Bayonet",
+      "Description": "The original long-bladed military bayonet. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:4": {
+      "DisplayName": "Bowie Knife",
+      "Description": "Heavy hunting knife with a swept tip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:5": {
+      "DisplayName": "Survival Knife",
+      "Description": "Field survival blade with a finger-grooved grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:6": {
+      "DisplayName": "Paracord Knife",
+      "Description": "Light straight blade with a cord-wrapped handle. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:7": {
+      "DisplayName": "Classic Knife",
+      "Description": "Short blade carried over from the older CS games. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:8": {
+      "DisplayName": "CT Knife",
+      "Description": "Standard issue Counter-Terrorist knife. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:9": {
+      "DisplayName": "T Knife",
+      "Description": "Standard issue Terrorist knife. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:10": {
+      "DisplayName": "Falchion Knife",
+      "Description": "Single-edged folding falchion. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:11": {
+      "DisplayName": "Flip Knife",
+      "Description": "Classic folder that tucks into its own handle. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:12": {
+      "DisplayName": "Gut Knife",
+      "Description": "Skinning knife with a gut hook. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:13": {
+      "DisplayName": "Kukri Knife",
+      "Description": "Forward-curved Nepalese service blade. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:14": {
+      "DisplayName": "Navaja Knife",
+      "Description": "Slim Spanish-style folder. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:15": {
+      "DisplayName": "Nomad Knife",
+      "Description": "Outdoors folder with an oversized grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:16": {
+      "DisplayName": "Shadow Daggers",
+      "Description": "A push dagger in each hand. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:17": {
+      "DisplayName": "Skeleton Knife",
+      "Description": "Light straight blade with a skeletonised grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:18": {
+      "DisplayName": "Stiletto Knife",
+      "Description": "Slender switchblade built for thrusting. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:19": {
+      "DisplayName": "Huntsman Knife",
+      "Description": "Tactical straight blade with a sawback spine. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:20": {
+      "DisplayName": "Talon Knife",
+      "Description": "Longer, sawback variant of the karambit. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScKnifeBlock:21": {
+      "DisplayName": "Ursus Knife",
+      "Description": "Thick straight blade with a textured grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
     }
   },
   "ScCsgoKnives": {
     "Message": {
       "Inspect": "Inspecting {0}.",
-      "ControlsHint": "Inspect: press {0} on PC; tap the pencil button on mobile."
+      "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile."
     }
   }
 }

@@ -2,15 +2,91 @@
   "Blocks": {
     "ScKnifeBlock:0": {
       "DisplayName": "爪子刀",
-      "Description": "弯曲刀身与指环握柄。切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+      "Description": "弯曲刀身配指环握柄，CS 中最有辨识度的近战武器。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
     },
     "ScKnifeBlock:1": {
       "DisplayName": "M9 刺刀",
-      "Description": "宽厚的战术刺刀。切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+      "Description": "宽厚的军用刺刀，锯齿刀背。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
     },
     "ScKnifeBlock:2": {
       "DisplayName": "蝴蝶刀",
-      "Description": "双柄折叠刀。切换时播放翻刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+      "Description": "双柄折叠刀，翻刀动作最花哨。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:3": {
+      "DisplayName": "刺刀",
+      "Description": "最早的军刺造型，刀身修长。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:4": {
+      "DisplayName": "鲍伊猎刀",
+      "Description": "厚重的猎刀，刀尖上翘。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:5": {
+      "DisplayName": "求生匕首",
+      "Description": "野外求生用直刀，握柄带指槽。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:6": {
+      "DisplayName": "系绳匕首",
+      "Description": "握柄缠伞绳的轻量直刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:7": {
+      "DisplayName": "海豹短刀",
+      "Description": "沿用旧版 CS 造型的短刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:8": {
+      "DisplayName": "反恐精英默认匕首",
+      "Description": "反恐精英阵营的制式匕首。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:9": {
+      "DisplayName": "恐怖分子默认匕首",
+      "Description": "恐怖分子阵营的制式匕首。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:10": {
+      "DisplayName": "弯刀",
+      "Description": "单侧开刃的折叠弯刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:11": {
+      "DisplayName": "折叠刀",
+      "Description": "刀身可折入握柄的经典折刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:12": {
+      "DisplayName": "穿肠刀",
+      "Description": "带开膛钩的剥皮刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:13": {
+      "DisplayName": "廓尔喀刀",
+      "Description": "前弯厚背的尼泊尔军刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:14": {
+      "DisplayName": "折刀",
+      "Description": "西班牙风格的细长折刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:15": {
+      "DisplayName": "流浪者匕首",
+      "Description": "户外风格折刀，握柄粗大。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:16": {
+      "DisplayName": "暗影双匕",
+      "Description": "左右手各持一把的推刺短匕。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:17": {
+      "DisplayName": "骷髅匕首",
+      "Description": "镂空握柄的轻量直刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:18": {
+      "DisplayName": "短剑",
+      "Description": "细长刺击型弹簧折刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:19": {
+      "DisplayName": "猎杀者匕首",
+      "Description": "战术直刀，刀背带锯齿。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:20": {
+      "DisplayName": "锯齿爪刀",
+      "Description": "爪刀的加长变体，刀背开齿。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScKnifeBlock:21": {
+      "DisplayName": "熊刀",
+      "Description": "厚实的直刀，握柄有防滑纹。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
     }
   },
   "ScCsgoKnives": {
