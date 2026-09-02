@@ -695,8 +695,21 @@ public static class CsmcFirstPersonRenderer {
                 float size = MathF.Abs(angle);
                 float from = MathUtils.DegToRad(KnifeTuning.SquareFromDegrees), full = MathUtils.DegToRad(MathF.Max(KnifeTuning.SquareFullDegrees, KnifeTuning.SquareFromDegrees + 1f));
                 float t = MathUtils.Saturate((size - from) / (full - from));
-                float extra = (MathF.PI - size) * t * t * (3f - 2f * t) * MathUtils.Saturate(KnifeTuning.SquareAtHold);
+                float smooth = t * t * (3f - 2f * t) * MathUtils.Saturate(KnifeTuning.SquareAtHold);
+                float extra = (MathF.PI - size) * smooth;
                 resolved = Turn(faceOn, axis, angle + MathF.CopySign(extra, angle));
+                // With the box straight behind the knife, the handle still tilts into it:
+                // the face passes through the handle's centre line and the handle is not
+                // flat on the palm (28 degrees on the M9), so its lower half sank into the
+                // box. The reference shows the whole handle in front of the face. Sit the
+                // box back by the handle's depth under the face, by the same weight.
+                if (!left && smooth > 0.0001f) {
+                    float gripDepth = -grip.Z;
+                    if (gripDepth > 0.2f) {
+                        float limit = ScreenWidthFor(variant, left) * 2f * gripDepth / MathF.Max(s_projX, 0.0001f);
+                        clearance = smooth * MathF.Min(HandleDepth(variant, pose, placement, grip, resolved), limit);
+                    }
+                }
             }
         }
         // How still the wrist is: the carried palm's roll rate about the arm, smoothed.
@@ -850,6 +863,24 @@ public static class CsmcFirstPersonRenderer {
             s_handleFollow[slot] = follow;
         }
         return follow;
+    }
+
+    /// <summary>
+    /// How far the handle's surface reaches below the fist's face: the deepest
+    /// handle-hull point under the plane through the grip with normal
+    /// <paramref name="side"/>, each hull part placed by its own binding. Zero when
+    /// the handle is entirely on the outside.
+    /// </summary>
+    static float HandleDepth(int variant, KnifeRigPose pose, Matrix placement, Vector3 grip, Vector3 side) {
+        float depth = 0f;
+        foreach (KnifeHulls.Part part in KnifeHulls.Parts(variant)) {
+            if (part.Handle.Length == 0) continue;
+            Matrix world = pose.GetBinding(part.Binding) * placement;
+            foreach (Vector3 point in part.Handle) {
+                depth = MathF.Max(depth, -Vector3.Dot(Vector3.Transform(point, world) - grip, side));
+            }
+        }
+        return float.IsFinite(depth) ? depth : 0f;
     }
 
     /// <summary>0 at the idle wrist pose, 1 once the wrist has turned RollBlendDegrees from it.</summary>
