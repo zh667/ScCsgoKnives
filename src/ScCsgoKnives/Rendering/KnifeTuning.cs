@@ -209,17 +209,22 @@ public static class KnifeTuning {
     public static float ReGripDegreesPerSecond = 90f;
 
     /// <summary>
-    /// Once the wrist has carried the palm most of the way round -- past
-    /// SquareFromDegrees from its idle direction -- finish the turn so that by
-    /// SquareFullDegrees the box sits straight behind the knife, as the reference
-    /// does at the hold of an inspect. The rigid turn alone stops 20 to 36 degrees
-    /// short on the photographed knives, which left the box a third of its width
-    /// to one side of the handle. A function of the angle only, so it can neither
-    /// lag nor flick; 1 on, 0 off.
+    /// At the hold of an inspect the reference's box sits straight behind the
+    /// knife, but the wrist's rigid turn stops short of that (127 degrees of 180 on
+    /// the M9). The remainder is added as a straight line in the rigid angle, from
+    /// SquareFromDegrees up to the angle the clip actually rests at (measured when
+    /// the knife loads; SquareFullDegrees overrides it when above 0). Spread evenly
+    /// over the approach, the fist turns at a constant multiple of the wrist's rate
+    /// and stops in the same frame the knife does: added late it lagged the blade,
+    /// added as a curve that saturated early it surged and coasted. Lower
+    /// SquareFromDegrees spreads it thinner (0: 1.4x on the M9; 45: 1.6x; 90: 2.4x).
+    /// SquareAtHold 1 on, 0 rigid. SquareGateByStillness 1 restores waiting for the
+    /// wrist to settle before squaring (the fist then finishes after the knife).
     /// </summary>
     public static float SquareAtHold = 1f;
-    public static float SquareFromDegrees = 90f;
-    public static float SquareFullDegrees = 130f;
+    public static float SquareFromDegrees = 45f;
+    public static float SquareFullDegrees = 0f;
+    public static float SquareGateByStillness = 0f;
 
     /// <summary>
     /// How fast the arm may roll about its own axis, in degrees a second. Simulated
@@ -365,6 +370,7 @@ public static class KnifeTuning {
             case nameof(SquareAtHold): SquareAtHold = v; return true;
             case nameof(SquareFromDegrees): SquareFromDegrees = v; return true;
             case nameof(SquareFullDegrees): SquareFullDegrees = v; return true;
+            case nameof(SquareGateByStillness): SquareGateByStillness = v; return true;
             case nameof(RollSlewDegreesPerSecond): RollSlewDegreesPerSecond = v; return true;
             case nameof(SwapDipScale): SwapDipScale = v; return true;
             case nameof(InspectTravelScale): InspectTravelScale = v; return true;
@@ -441,6 +447,7 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(SquareAtHold), SquareAtHold));
         text.AppendLine(Line(nameof(SquareFromDegrees), SquareFromDegrees));
         text.AppendLine(Line(nameof(SquareFullDegrees), SquareFullDegrees));
+        text.AppendLine(Line(nameof(SquareGateByStillness), SquareGateByStillness));
         text.AppendLine("# 手臂滚转的最大角速度（度/秒），只用来压掉穿过退化方向那一帧的跳变。");
         text.AppendLine(Line(nameof(RollSlewDegreesPerSecond), RollSlewDegreesPerSecond));
         text.AppendLine("# 手臂方向取骨骼的比例（0=固定倾角，1=跟骨骼），实验用。");

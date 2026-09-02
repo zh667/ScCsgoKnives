@@ -132,6 +132,8 @@ public static class CsmcKnifeRig {
     }
 
     public static bool HasClip(int variant, string clipAlias) => GetAsset(variant).File.Clips.ContainsKey(clipAlias);
+    /// <summary>Every clip alias this knife's rig carries.</summary>
+    public static IEnumerable<string> GetClipAliases(int variant) => GetAsset(variant).File.Clips.Keys;
 
     public static KnifeRigPose Sample(int variant, string clipAlias, float time, bool loop = false) {
         Asset asset = GetAsset(variant);

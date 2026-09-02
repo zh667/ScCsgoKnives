@@ -118,6 +118,7 @@ public static class CsmcFirstPersonRenderer {
     // tools/knife_hulls.py as the principal axis of the gripped stretch. Roll mode 2
     // turns the fist so this lies flat along one of its faces.
     const string HeldPart = "weapon_hand_r";
+    const string LeftHeldPart = "weapon_hand_l";
     static readonly Vector3[] s_handleDirections = [
         new(-0.0744f, 0.0028f, 0.9972f),      // karambit  (28 deg off the whole knife)
         new(0.0000f, 0.0000f, 1.0000f),       // m9  (1 deg off the whole knife)
@@ -245,6 +246,37 @@ public static class CsmcFirstPersonRenderer {
     static readonly Texture2D[] s_baseColor = new Texture2D[s_count];
     static readonly Matrix[] s_placement = new Matrix[s_count];
     static readonly Vector3[] s_idleGrips = new Vector3[s_count];
+    // The right grip in the HELD MESH PART's frame (weapon_hand_r), converted from
+    // the hand-bone table at idle, and whether that part exists for the knife. The
+    // fist is attached to the part, not to hand_r: the CS:GO inspects move the knife
+    // relative to the hand bone (the M9's part turns 57 degrees and shifts 0.28
+    // units mid-inspect), and a fist left on hand_r fell behind the knife -- "the
+    // knife moves faster than the hand". CS:MC's fist follows its weapon bone, and
+    // in its recordings the fist's cap stays on the handle's base throughout.
+    static readonly Vector3[] s_gripOffsetsPart = new Vector3[s_count];
+    static readonly bool[] s_heldPartUsable = new bool[s_count];
+
+    /// <summary>The bone the right fist is attached to for this knife.</summary>
+    static string RightWristBone(int variant) => s_heldPartUsable[variant] ? HeldPart : "hand_r";
+
+    /// <summary>The right grip in that bone's frame.</summary>
+    static Vector3 RightGrip(int variant) => s_heldPartUsable[variant] ? s_gripOffsetsPart[variant] : s_gripOffsets[variant];
+
+    /// <summary>Converts the hand-frame grip into the held part's frame, using their idle relation.</summary>
+    static void SolveHeldPartGrip(int variant) {
+        KnifeRigPose idle = CsmcKnifeRig.Sample(variant, "idle", 0f);
+        s_heldPartUsable[variant] = false;
+        s_gripOffsetsPart[variant] = s_gripOffsets[variant];
+        if (!CsmcKnifeRig.GetMeshParts(variant).Contains(HeldPart)) return;
+        Matrix hand = idle.GetBinding("hand_r");
+        Matrix part = idle.GetBinding(HeldPart);
+        Matrix partInverse = Matrix.Invert(part);
+        if (!KnifeDiagnostics.IsFinite(partInverse)) return;
+        Vector3 inPart = Vector3.Transform(s_gripOffsets[variant], hand * partInverse);
+        if (!float.IsFinite(inPart.X) || !float.IsFinite(inPart.Y) || !float.IsFinite(inPart.Z)) return;
+        s_gripOffsetsPart[variant] = inPart;
+        s_heldPartUsable[variant] = true;
+    }
     static readonly bool[] s_logged = new bool[s_count];
     // Where each knife's idle left grip lands in view space once corrected; the
     // left elbow is projected down from here so the left arm pivots rather than
@@ -256,6 +288,12 @@ public static class CsmcFirstPersonRenderer {
     // [variant * 2 + 1] left. See ResolveRoll.
     static readonly Vector3[] s_rollRef = new Vector3[s_count * 2];
     static readonly Vector3[] s_lastSide = new Vector3[s_count * 2];
+    // Per slot, the roll the rigid carry rests at in each clip that holds (radians,
+    // by clip alias); the square-to-eye ramps to exactly this. See MeasureHolds.
+    static readonly Dictionary<string, float>[] s_holdAngles = new Dictionary<string, float>[s_count * 2];
+    // Set while MeasureHolds plays the clips through SolveArm: ResolveRoll then
+    // returns the rigid side untouched, with no squaring, slew or state.
+    static bool s_measuring;
     // Last frame's clearance off the grip, so the fist slides to follow a handle
     // the fingers are turning rather than jumping to it.
     static readonly float[] s_lastClearance = new float[s_count * 2];
@@ -470,7 +508,7 @@ public static class CsmcFirstPersonRenderer {
             * Matrix.CreateFromYawPitchRoll(firstPerson.m_lagAngles.X, firstPerson.m_lagAngles.Y, 0f);
         Matrix placement = s_placement[variant];
         if (pose.ClipAlias.StartsWith("inspect", StringComparison.Ordinal)) {
-            Vector3 grip = Vector3.Transform(s_gripOffsets[variant], pose.GetBinding("hand_r"));
+            Vector3 grip = Vector3.Transform(RightGrip(variant), pose.GetBinding(RightWristBone(variant)));
             placement = Matrix.CreateTranslation((s_idleGrips[variant] - grip) * (1f - KnifeTuning.InspectTravelScale)) * placement;
         }
         Matrix root = placement * post;
@@ -479,7 +517,14 @@ public static class CsmcFirstPersonRenderer {
         LogComposition(firstPerson, variant, pose, placement, post);
         DrawHands(firstPerson, camera, variant, pose, placement, post, light);
         foreach (Part part in s_parts[variant]) {
-            DrawModel(part.Model, s_baseColor[variant], pose.GetBinding(part.Binding) * root, camera, light,
+            // A part held in the left hand (the shadow daggers' second blade) goes
+            // where the left fist goes: the fist is pinned to its reference position
+            // by a view-space correction, and without the same shift the dagger was
+            // left floating where the rig's hand_l bone is.
+            Matrix world = part.Binding == LeftHeldPart
+                ? pose.GetBinding(part.Binding) * placement * Matrix.CreateTranslation(s_leftHandCorrection[variant]) * post
+                : pose.GetBinding(part.Binding) * root;
+            DrawModel(part.Model, s_baseColor[variant], world, camera, light,
                 SamplerState.LinearClamp, RasterizerState.CullNoneScissor, applyBoneTransform: true);
         }
 
@@ -604,9 +649,15 @@ public static class CsmcFirstPersonRenderer {
     static bool SolveArm(KnifeRigPose pose, Matrix placement, Matrix post, int variant, bool left, bool commit, out ArmFrame arm) {
         arm = default;
         string bone = left ? "l" : "r";
-        Matrix wrist = pose.GetBinding($"hand_{bone}") * placement;
-        Vector3 grip = Vector3.Transform(left ? s_leftGripOffsets[variant] : s_gripOffsets[variant], wrist);
+        Matrix wrist = pose.GetBinding(left ? "hand_l" : RightWristBone(variant)) * placement;
+        Vector3 grip = Vector3.Transform(left ? s_leftGripOffsets[variant] : RightGrip(variant), wrist);
         if (left) grip += s_leftHandCorrection[variant];
+        // The fist's POSITION follows the held part, so it stays on the handle's base
+        // when the fingers move the knife. Its ROLL follows the true wrist: the held
+        // part spins with the knife through an inspect (145 degrees mid-twirl on the
+        // butterfly), and carrying the roll reference in that frame made the arm turn
+        // with the blade -- and keep turning. The wrist rolls, it does not spin.
+        Matrix rollFrame = pose.GetBinding(left ? "hand_l" : "hand_r") * placement;
 
         // The elbow sits off the bottom of the frame on the arm's fitted bearing,
         // projected from the idle grip. A clip that lifts the hand then swings the
@@ -631,7 +682,7 @@ public static class CsmcFirstPersonRenderer {
         Vector3 faceOn = ProjectOntoPlane(Vector3.Normalize(grip), axis);
         // clearance: once the handle lies along the face, how far the box sits off
         // the grip so the handle's surface, not its centre line, rests on the face.
-        Vector3 side = ResolveRoll(faceOn, pose, placement, grip, wrist, axis, variant, left, commit, out float clearance, out Vector3 offsetDir);
+        Vector3 side = ResolveRoll(faceOn, pose, placement, grip, rollFrame, axis, variant, left, commit, out float clearance, out Vector3 offsetDir);
         Vector3 up = Vector3.Normalize(Vector3.Cross(side, axis));
 
         // CS:MC's arm box is a fixed size, not one scaled to the forearm, so the width
@@ -687,34 +738,16 @@ public static class CsmcFirstPersonRenderer {
                 float weight = MathUtils.Saturate((strength - RollFadeStart) / (RollFadeEnd - RollFadeStart));
                 resolved = ProjectOntoPlane(Vector3.Lerp(faceOn, carried / strength, weight), axis);
             }
-            if (mode == 1 && KnifeTuning.SquareAtHold > 0.0001f) {
-                // The rigid turn stops short of straight-behind at the hold (144 degrees on
-                // the M9); the reference's box is straight behind the knife there. Finish
-                // the turn as a function of the angle alone -- see KnifeTuning.SquareAtHold.
-                float angle = SignedAngle(faceOn, resolved, axis);
-                float size = MathF.Abs(angle);
-                float from = MathUtils.DegToRad(KnifeTuning.SquareFromDegrees), full = MathUtils.DegToRad(MathF.Max(KnifeTuning.SquareFullDegrees, KnifeTuning.SquareFromDegrees + 1f));
-                float t = MathUtils.Saturate((size - from) / (full - from));
-                float smooth = t * t * (3f - 2f * t) * MathUtils.Saturate(KnifeTuning.SquareAtHold);
-                float extra = (MathF.PI - size) * smooth;
-                resolved = Turn(faceOn, axis, angle + MathF.CopySign(extra, angle));
-                // With the box straight behind the knife, the handle still tilts into it:
-                // the face passes through the handle's centre line and the handle is not
-                // flat on the palm (28 degrees on the M9), so its lower half sank into the
-                // box. The reference shows the whole handle in front of the face. Sit the
-                // box back by the handle's depth under the face, by the same weight.
-                if (!left && smooth > 0.0001f) {
-                    float gripDepth = -grip.Z;
-                    if (gripDepth > 0.2f) {
-                        float limit = ScreenWidthFor(variant, left) * 2f * gripDepth / MathF.Max(s_projX, 0.0001f);
-                        clearance = smooth * MathF.Min(HandleDepth(variant, pose, placement, grip, resolved), limit);
-                    }
-                }
-            }
         }
-        // How still the wrist is: the carried palm's roll rate about the arm, smoothed.
-        // Squaring the fist to the eye is only for the hold of an inspect, never for a
-        // swing that happens to pass through the right orientation.
+        if (s_measuring) { offsetDir = resolved; return resolved; }
+        // How still the wrist is: the rigid palm's roll rate about the arm, smoothed.
+        // Measured on the rigid side, before any squaring, so the squaring's own turn
+        // never counts as wrist motion (measured after it, the squaring held itself
+        // off). Squaring the fist to the eye is only for the hold of an inspect, never
+        // for a swing that happens to pass through the right orientation -- and never
+        // for the approach to a hold. The rigid side IS the knife's turn; anything
+        // added to it mid-motion is the fist visibly turning at a different rate from
+        // the blade (the M9's approach turned the fist 84 degrees to the knife's 34).
         float dt = MathUtils.Clamp(Time.FrameDuration, 0.001f, 0.1f);
         Vector3 prevPalm = s_prevPalm[slot];
         float stillness = s_stillness[slot];
@@ -724,6 +757,45 @@ public static class CsmcFirstPersonRenderer {
             stillness += (still - stillness) * (1f - MathF.Exp(-dt / 0.2f));
         }
         if (commit) { s_prevPalm[slot] = resolved; s_stillness[slot] = stillness; }
+        if (mode == 1 && s_rollRef[slot].LengthSquared() > 0.5f && KnifeTuning.SquareAtHold > 0.0001f) {
+            // The rigid turn stops short of straight-behind at the hold (127 degrees on
+            // the M9); the reference's box is straight behind the knife there. The 52
+            // degrees still owed have to be added somewhere, and wherever they go the
+            // fist moves differently from the blade: as a curve in the angle that
+            // saturated early, the fist surged and then coasted; once the wrist had
+            // settled, it kept turning a third of a second after the knife had stopped.
+            // So spread them evenly: a straight line in the rigid angle from
+            // SquareFromDegrees to the angle this clip actually rests at. The fist
+            // then turns at a constant multiple of the wrist's rate and stops in the
+            // frame the knife does. Only clips that rest at their extreme are squared;
+            // a slash passes its extreme at speed and stays rigid. See MeasureHolds.
+            float hold = KnifeTuning.SquareFullDegrees > 0.5f
+                ? MathUtils.DegToRad(KnifeTuning.SquareFullDegrees)
+                : HoldAngleFor(slot, pose.ClipAlias);
+            float from = MathUtils.DegToRad(KnifeTuning.SquareFromDegrees);
+            float angle = SignedAngle(faceOn, resolved, axis);
+            float size = MathF.Abs(angle);
+            if (hold > from + 0.01f && size > from) {
+                float weight = MathUtils.Saturate(KnifeTuning.SquareAtHold);
+                if (KnifeTuning.SquareGateByStillness > 0.5f) weight *= stillness;
+                float target = size >= hold ? MathF.PI : from + (size - from) * (MathF.PI - from) / (hold - from);
+                float extra = (target - size) * weight;
+                resolved = Turn(faceOn, axis, angle + MathF.CopySign(extra, angle));
+                // With the box straight behind the knife, the handle still tilts into it:
+                // the face passes through the handle's centre line and the handle is not
+                // flat on the palm (28 degrees on the M9), so its lower half sank into the
+                // box. The reference shows the whole handle in front of the face. Sit the
+                // box back by the handle's depth under the face, by the same progress.
+                float smooth = MathUtils.Saturate((size - from) / (hold - from)) * weight;
+                if (!left && smooth > 0.0001f) {
+                    float gripDepth = -grip.Z;
+                    if (gripDepth > 0.2f) {
+                        float limit = ScreenWidthFor(variant, left) * 2f * gripDepth / MathF.Max(s_projX, 0.0001f);
+                        clearance = smooth * MathF.Min(HandleDepth(variant, pose, placement, grip, resolved), limit);
+                    }
+                }
+            }
+        }
 
         Vector3 handleLocal = left ? s_leftHandleDirections[variant] : s_handleDirections[variant];
         if (mode >= 2 && handleLocal.LengthSquared() > 0.5f) {
@@ -897,6 +969,51 @@ public static class CsmcFirstPersonRenderer {
         return MathUtils.Saturate((angle - 0.2f * full) / (0.8f * full));
     }
 
+    static float HoldAngleFor(int slot, string clip) =>
+        s_holdAngles[slot] is { } holds && holds.TryGetValue(clip, out float angle) ? angle : 0f;
+
+    /// <summary>
+    /// Plays each inspect clip through the rigid carry at 30 fps and records, per
+    /// arm, the largest roll it reaches -- but only if the wrist dwells there: at
+    /// least a quarter of a second within five degrees of that extreme. A hold does;
+    /// a swing merely passes through its extreme, however smoothly (its rate is zero
+    /// at the turning point too, which is why dwell is the test, not rate). The
+    /// square-to-eye in ResolveRoll ramps to exactly this angle.
+    /// </summary>
+    static void MeasureHolds(int variant) {
+        for (int side = 0; side < 2; side++) {
+            bool left = side == 1;
+            int slot = variant * 2 + side;
+            Dictionary<string, float> holds = new(StringComparer.Ordinal);
+            s_holdAngles[slot] = holds;
+            if (left && !s_leftArmUsable[variant]) continue;
+            if (s_rollRef[slot].LengthSquared() < 0.5f) continue;
+            s_measuring = true;
+            try {
+                foreach (string clip in CsmcKnifeRig.GetClipAliases(variant)) {
+                    if (!clip.StartsWith("inspect", StringComparison.Ordinal)) continue;
+                    float duration = CsmcKnifeRig.GetDuration(variant, clip);
+                    if (!(duration > 0.05f)) continue;
+                    const float step = 1f / 30f;
+                    List<float> sizes = new();
+                    for (float t = 0f; t <= duration + 0.0001f; t += step) {
+                        KnifeRigPose pose = CsmcKnifeRig.Sample(variant, clip, MathF.Min(t, duration));
+                        if (!SolveArm(pose, s_placement[variant], Matrix.Identity, variant, left, false, out ArmFrame arm)) { sizes.Add(0f); continue; }
+                        Vector3 faceOn = ProjectOntoPlane(Vector3.Normalize(arm.Grip), arm.Axis);
+                        sizes.Add(MathF.Abs(SignedAngle(faceOn, arm.Side, arm.Axis)));
+                    }
+                    if (sizes.Count == 0) continue;
+                    float best = sizes.Max();
+                    int dwell = sizes.Count(size => size >= best - MathUtils.DegToRad(5f));
+                    if (best > 0.01f && dwell * step >= 0.25f) holds[clip] = best;
+                }
+            }
+            finally { s_measuring = false; }
+            if (holds.Count > 0 && !left)
+                Log.Information($"[ScCsgoKnives] {s_assetNames[variant]} holds: " + string.Join(", ", holds.Select(h => $"{h.Key}={MathUtils.RadToDeg(h.Value):0}deg")));
+        }
+    }
+
     /// <summary>Records each arm's idle face-on side in its hand bone's frame, and that frame's inverse; see ResolveRoll.</summary>
     static void SolveRollReferences(int variant) {
         KnifeRigPose idle = CsmcKnifeRig.Sample(variant, "idle", 0f);
@@ -917,6 +1034,8 @@ public static class CsmcFirstPersonRenderer {
             s_prevPalm[slot] = Vector3.Zero;
             s_idleWristInverse[slot] = Matrix.Identity;
             if (left && !s_leftArmUsable[variant]) continue;
+            // The roll reference lives in the true wrist's frame (hand_r), never the
+            // held part's: see SolveArm. s_idleWristInverse pairs with it in WristDeparture.
             Matrix wrist = idle.GetBinding(left ? "hand_l" : "hand_r") * s_placement[variant];
             Matrix inverse = Matrix.Invert(wrist);
             if (!KnifeDiagnostics.IsFinite(inverse)) continue;
@@ -1069,6 +1188,7 @@ public static class CsmcFirstPersonRenderer {
         KnifeTuning.KnifeScale * s_fist[variant].Scale * CsmcKnifeRig.GetSourceReferenceScale(variant) / ReferenceSourceScale;
 
     static void BuildPlacement(int variant) {
+        SolveHeldPartGrip(variant);
         float scale = RigScale(variant);
         // The trailing view-space pitch stands in for the tilt Minecraft's own
         // first-person hand matrix gave CS:MC's composition; the grip is pinned
@@ -1085,10 +1205,12 @@ public static class CsmcFirstPersonRenderer {
         s_placement[variant] = orientation * Matrix.CreateTranslation(AnchorFor(variant) - idleGrip);
         SolveLeftHandCorrection(variant);
         SolveRollReferences(variant);
+        MeasureHolds(variant);
     }
 
     static void LoadVariant(int variant) {
         string asset = s_assetNames[variant];
+        SolveHeldPartGrip(variant);
         float scale = RigScale(variant);
 
         // Decompiled CSMC b$4lx, converted from JOML column-vector order to
@@ -1116,6 +1238,7 @@ public static class CsmcFirstPersonRenderer {
         s_placement[variant] = orientation * Matrix.CreateTranslation(AnchorFor(variant) - idleGrip);
         SolveLeftHandCorrection(variant);
         SolveRollReferences(variant);
+        MeasureHolds(variant);
         FistSpec fist = s_fist[variant];
         (float leftX, float leftY) = LeftTargetFor(variant);
         Log.Information(
