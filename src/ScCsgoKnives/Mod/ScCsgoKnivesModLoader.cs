@@ -34,6 +34,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 Log.Error($"[ScCsgoKnives] variant {variant} ({expected}) round-trips to {roundTrip} ({actual}); knives will share the wrong model.");
             }
         }
+
     }
 
     static int s_lastLoggedValue = int.MinValue;

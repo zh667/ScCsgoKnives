@@ -1,4 +1,9 @@
-"""Sweeps one knife's clip at 30fps with the shipped roll construction (hand_r
+"""DEPRECATED for the arm's dynamics: this is a Python replica of the renderer and
+it has drifted from the C# three times (bone changes, the inspect pullback). For
+anything about how the fist moves, use tools/preview.py, which runs the shipped
+C# itself headless. Kept for the idle photo-fit sheet only.
+
+Sweeps one knife's clip at 30fps with the shipped roll construction (hand_r
 carries the roll reference, the held part places the grip) and prints, per frame,
 the rigid side angle (= the knife's own turn) and the fist angle under three rules:
 old (stateless smoothstep 90..130), gated (0.11.14: square weighted by stillness),

@@ -1,4 +1,9 @@
-"""Renders every knife's composition offline -- idle and the hold of its inspect --
+"""DEPRECATED for the arm's dynamics: this is a Python replica of the renderer and
+it has drifted from the C# three times (bone changes, the inspect pullback). For
+anything about how the fist moves, use tools/preview.py, which runs the shipped
+C# itself headless. Kept for the idle photo-fit sheet only.
+
+Renders every knife's composition offline -- idle and the hold of its inspect --
 and prints per-knife checks, so the nineteen knives without CS:MC photos can be
 reviewed against the three that have them.
 

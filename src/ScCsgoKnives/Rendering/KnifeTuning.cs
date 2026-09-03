@@ -130,6 +130,15 @@ public static class KnifeTuning {
     /// (tools/fistsolve.py). 0.10.0's -25/+28 came from a tip-only solve against the
     /// wrong anchor; with the fist in the right place the residual tilt is small.
     /// </summary>
+    //
+    // 0.13.2 tried +10 (solved against the CS:MC inspect video by tools/holdcompare.py) and the
+    // player rejected it in play; 0.13.3 is back at -14. Kept for the record: +10 solved against the CS:MC inspect VIDEO rather than idle
+    // stills (tools/holdcompare.py). A still cannot separate this pitch from the other
+    // composition parameters, and the wrong pitch turned the clip's "raise the knife"
+    // into "push it away": at the hold our knife sat 75 px lower, 30% shorter and
+    // tilted inward, with the handle buried. At +10 the hold's grip lands within 10 px
+    // of the video's, the knife keeps its size (ratio 1.04 vs 1.0) and leans 10 deg
+    // right (video 13). Idle moves by 40 px at the tip and 2 deg of lean.
     public static float KnifePitchDegrees = -14f;
 
     /// <summary>Companion yaw, same solve as the pitch.</summary>
@@ -225,6 +234,15 @@ public static class KnifeTuning {
     public static float SquareFromDegrees = 45f;
     public static float SquareFullDegrees = 0f;
     public static float SquareGateByStillness = 0f;
+    /// <summary>How the squaring's extra turn is spread: 0 = evenly (fist at a constant 1.55x the wrist on the M9), 1 = eased in and out (same rate as the wrist at the start and the hold).</summary>
+    public static float SquareEase = 1f;
+
+    /// <summary>
+    /// 1: the inspect key runs the capture instead -- draw, idle, inspect, idle
+    /// on a 30 fps virtual clock, a screenshot and a line of the arm's numbers
+    /// per frame, to app:/ScreenCapture/ScCsgoKnivesQA/. See KnifeQa.
+    /// </summary>
+    public static float QaCapture = 0f;
 
     /// <summary>
     /// How fast the arm may roll about its own axis, in degrees a second. Simulated
@@ -269,7 +287,108 @@ public static class KnifeTuning {
     /// </summary>
     public static float SwapDipScale = 0f;
 
+    // 0.13.2 tried 1.6 with pitch +10, rejected in play; 0.13.3 is back at 0.55. With the pitch corrected the clip's own travel raises the
+    // knife the right way, and the video's grip rises 150 px through the inspect where
+    // 1.0 gives 85; 1.6 matches it. See KnifePitchDegrees.
     public static float InspectTravelScale = 0.55f;
+
+    // ---- Exact CS:MC composition (reverse-engineered chain; see CSMCReverse/work/firstperson-chain.md) ----
+    /// <summary>1 = place knife and arms by CS:MC's own transform chain (no fitted anchor/scale); 0 = the fitted composition of 0.13.x.</summary>
+    public static float ExactChain = 1f;
+    /// <summary>Minecraft/CS:MC hand pass field of view, vertical degrees (CS:MC setting default 70).</summary>
+    public static float ExactHandFovDegrees = 70f;
+    /// <summary>
+    /// CS:MC draws the Source2 weapon itself through its own projection: the per-weapon
+    /// FOV from the weapon table (48 for every knife, times viewFov/70) is turned into a
+    /// perspective matrix (b$2ni) and applied to the queued weapon draws only; the arms
+    /// stay in Minecraft's 70 degree hand pass. Measured against the CS:MC video this is
+    /// what fixes both the knife size and the flatter perspective of the blade.
+    /// </summary>
+    public static float ExactWeaponFovDegrees = 48f;
+    /// <summary>
+    /// 1 draws CS:MC's stretched Minecraft arm boxes (anchored at its view-space
+    /// constants, 70 degree hand pass) instead of the fist solver. Off: the player
+    /// preferred the 0.13.x fists, and the boxes looked far too big in Survivalcraft.
+    /// </summary>
+    public static float ExactArms = 0f;
+    /// <summary>Knife family "hip" offset applied to the pose stack first (CS:MC weapon registry, all Source2 knives).</summary>
+    public static float ExactHipX = -0.1126f;
+    public static float ExactHipY = -0.4037f;
+    public static float ExactHipZ = -0.0132f;
+    /// <summary>Knife family roll about X after the hip offset, degrees.</summary>
+    public static float ExactRollDegrees = -2.22f;
+    /// <summary>CS:MC's global viewmodel offset setting (default 0; the server may push a per-player value).</summary>
+    /// <summary>
+    /// CS:MC's global view-model offset slot (settings viewX/Y/Z, range +-0.8, replaced per
+    /// player by the values the server sends). The jar's defaults are 0, but with them the
+    /// chain puts the right hand left of centre. Fitting blade tip and pommel on the MCCS
+    /// video (idle, mid-inspect, hold, late hold; 5 px rms, rotation residual under 2
+    /// degrees) leaves exactly this eye-space translation, which is within 0.03 of minus
+    /// (hip + fixed translate): in the video those two translations are effectively not
+    /// there. Mechanism unresolved; the fitted value is what matches, for every knife tried.
+    /// </summary>
+    public static float ExactGlobalX = 0.36f;
+    public static float ExactGlobalY = -0.01f;
+    public static float ExactGlobalZ = 0.185f;
+    /// <summary>Fixed weapon transform: translate, then Rx90 Ry180 Rz270, then scale by the reference ratio.</summary>
+    public static float ExactWeaponTX = -0.22f;
+    public static float ExactWeaponTY = 0.42f;
+    public static float ExactWeaponTZ = -0.18f;
+    /// <summary>Per-weapon scale = this knife's meshbin reference scale / the AK-47's (legacy mesh 37.74615, hd 37.28675).</summary>
+    public static float ExactReferenceScale = 37.74615f;
+    /// <summary>Hypothesis switches for the reverse-engineered chain, settled against the CS:MC video (tools/holdcompare.py).</summary>
+    /// <summary>Minecraft's own hand translate (0.56, -0.52, -0.72) applied before the knife family offset; 0 = not applied.</summary>
+    public static float ExactHandX = 0f;
+    public static float ExactHandY = 0f;
+    public static float ExactHandZ = 0f;
+    /// <summary>0 = per-weapon scale from the reference ratio; otherwise this absolute placement scale (hypothesis sweeps).</summary>
+    public static float ExactScaleOverride = 0f;
+    /// <summary>1 mirrors the composition left-right (CS:MC's hand-side flag convention).</summary>
+    public static float ExactMirrorX = 0f;
+    /// <summary>
+    /// 1 cancels the mesh-centre term of the normalization (adds centre x scale back before
+    /// the weapon scale). Read literally, CS:MC's chain shifts the whole hand-plus-knife
+    /// composition by minus (mesh centre x scale x weapon scale), a different amount per
+    /// knife: 0.11 up for the M9, 0.015 for the karambit, 0.06 for the butterfly. The MCCS
+    /// videos show the hand at the same height for all three, and with this term cancelled
+    /// the same global offset lands all three knives on their videos (M9 5 px rms; karambit
+    /// and butterfly within about 20-50 px at idle). 0 restores the literal reading.
+    /// </summary>
+    public static float ExactMeshCenterOffset = 1f;
+    /// <summary>Arm anchors in view space (CS:MC b$4jq): where the forearm box starts.</summary>
+    public static float ExactArmAnchorRX = 0.58f;
+    public static float ExactArmAnchorRY = -0.78f;
+    public static float ExactArmAnchorRZ = -0.70f;
+    public static float ExactArmAnchorLX = -0.7f;
+    public static float ExactArmAnchorLY = -0.82f;
+    public static float ExactArmAnchorLZ = -0.72f;
+    /// <summary>Minecraft arm box: 4/16 wide times CS:MC's 0.82 (a slim skin is 3/16: 0.154).</summary>
+    public static float ExactArmWidth = 0.205f;
+    /// <summary>Arm length the Minecraft model has before stretching (10/16) and the stretch clamp.</summary>
+    public static float ExactArmBaseLength = 0.625f;
+    public static float ExactArmStretchMin = 0.65f;
+    public static float ExactArmStretchMax = 4.8f;
+    /// <summary>Twist added to the forearm box about its own axis after the wrist twist, degrees (CS:MC rotateY(45) then +-90).</summary>
+    public static float ExactArmTwistOffsetDegrees = 45f;
+
+    // ---- PBR material (Rendering/KnifePbrRenderer) ----
+    /// <summary>1 = PBR shader; 0 = the plain lit shader (also what a compile failure falls back to).</summary>
+    public static float PbrEnabled = 1f;
+    /// <summary>RGBM range of the environment atlas. Scales every reflection; 6 puts the diffuse level near 1.0.</summary>
+    public static float PbrEnvRange = 6f;
+    public static float PbrEnvIntensity = 1f;
+    /// <summary>Survivalcraft's two fixed directional lights, on top of the environment.</summary>
+    public static float PbrDirectIntensity = 0.5f;
+    public static float PbrExposure = 1f;
+    /// <summary>1 flips the normal map's green channel (DirectX-style maps).</summary>
+    public static float PbrNormalFlipY = 0f;
+    public static float PbrRoughnessBias = 0f;
+    /// <summary>Turns the reflected environment around the vertical axis.</summary>
+    public static float PbrEnvYawDegrees = 0f;
+    /// <summary>How much of the environment's colour reaches the metal: 1 = full (blue sky tints the blade), 0 = grey reflections only.</summary>
+    public static float PbrEnvSaturation = 0.25f;
+    /// <summary>0 final; 1 base colour, 2 normals, 3 roughness, 4 metalness, 5 reflection only, 6 occlusion, 7 direct light only.</summary>
+    public static float PbrDebug = 0f;
 
     static double s_nextPoll;
     static string s_lastContent;
@@ -293,7 +412,7 @@ public static class KnifeTuning {
             // common with this one, so applying it would silently leave every new
             // value at its default. Replace it instead.
             if (ReadVersion(content) != Version) {
-                Log.Information($"[ScCsgoKnives] tuning file was written by a build with different defaults; rewriting {Path}.");
+                KnifeLog.Information($"[ScCsgoKnives] tuning file was written by a build with different defaults; rewriting {Path}.");
                 Write();
                 s_lastContent = null;
                 return;
@@ -330,7 +449,7 @@ public static class KnifeTuning {
         CsmcFirstPersonRenderer.InvalidateProjection();
         CsmcFirstPersonRenderer.ResetCompositionLog();
         CsmcFirstPersonRenderer.RebuildPlacements();
-        Log.Information(
+        KnifeLog.Information(
             $"[ScCsgoKnives] tuning reloaded ({applied} values): knifeScale={KnifeScale:0.###}, "
             + $"anchor=({AnchorScreenX:0.###},{AnchorScreenY:0.###})@{AnchorDepth:0.##}, "
             + $"lean R={RightArmLean:0.#} L={LeftArmLean:0.#}, near R={RightArmNear:0.###} L={LeftArmNear:0.###}, "
@@ -338,6 +457,9 @@ public static class KnifeTuning {
             + $"pitch/yaw={KnifePitchDegrees:0.#}/{KnifeYawDegrees:0.#}, leftTarget=({LeftHandTargetScreenX:0.###},{LeftHandTargetScreenY:0.###})."
         );
     }
+
+    /// <summary>Headless tools (tools/ArmPreview) set tunables from the command line through this.</summary>
+    public static bool Override(string key, float value) => Set(key, value);
 
     static bool Set(string key, float v) {
         switch (key) {
@@ -371,9 +493,53 @@ public static class KnifeTuning {
             case nameof(SquareFromDegrees): SquareFromDegrees = v; return true;
             case nameof(SquareFullDegrees): SquareFullDegrees = v; return true;
             case nameof(SquareGateByStillness): SquareGateByStillness = v; return true;
+            case nameof(SquareEase): SquareEase = v; return true;
+            case nameof(QaCapture): QaCapture = v; return true;
             case nameof(RollSlewDegreesPerSecond): RollSlewDegreesPerSecond = v; return true;
             case nameof(SwapDipScale): SwapDipScale = v; return true;
             case nameof(InspectTravelScale): InspectTravelScale = v; return true;
+            case nameof(ExactChain): ExactChain = v; return true;
+            case nameof(ExactHandFovDegrees): ExactHandFovDegrees = v; return true;
+            case nameof(ExactWeaponFovDegrees): ExactWeaponFovDegrees = v; return true;
+            case nameof(ExactArms): ExactArms = v; return true;
+            case nameof(ExactHipX): ExactHipX = v; return true;
+            case nameof(ExactHipY): ExactHipY = v; return true;
+            case nameof(ExactHipZ): ExactHipZ = v; return true;
+            case nameof(ExactRollDegrees): ExactRollDegrees = v; return true;
+            case nameof(ExactGlobalX): ExactGlobalX = v; return true;
+            case nameof(ExactGlobalY): ExactGlobalY = v; return true;
+            case nameof(ExactGlobalZ): ExactGlobalZ = v; return true;
+            case nameof(ExactWeaponTX): ExactWeaponTX = v; return true;
+            case nameof(ExactWeaponTY): ExactWeaponTY = v; return true;
+            case nameof(ExactWeaponTZ): ExactWeaponTZ = v; return true;
+            case nameof(ExactReferenceScale): ExactReferenceScale = v; return true;
+            case nameof(ExactArmAnchorRX): ExactArmAnchorRX = v; return true;
+            case nameof(ExactArmAnchorRY): ExactArmAnchorRY = v; return true;
+            case nameof(ExactArmAnchorRZ): ExactArmAnchorRZ = v; return true;
+            case nameof(ExactArmAnchorLX): ExactArmAnchorLX = v; return true;
+            case nameof(ExactArmAnchorLY): ExactArmAnchorLY = v; return true;
+            case nameof(ExactArmAnchorLZ): ExactArmAnchorLZ = v; return true;
+            case nameof(ExactArmWidth): ExactArmWidth = v; return true;
+            case nameof(ExactArmBaseLength): ExactArmBaseLength = v; return true;
+            case nameof(ExactArmStretchMin): ExactArmStretchMin = v; return true;
+            case nameof(ExactArmStretchMax): ExactArmStretchMax = v; return true;
+            case nameof(ExactArmTwistOffsetDegrees): ExactArmTwistOffsetDegrees = v; return true;
+            case nameof(ExactHandX): ExactHandX = v; return true;
+            case nameof(ExactScaleOverride): ExactScaleOverride = v; return true;
+            case nameof(ExactHandY): ExactHandY = v; return true;
+            case nameof(ExactHandZ): ExactHandZ = v; return true;
+            case nameof(ExactMirrorX): ExactMirrorX = v; return true;
+            case nameof(ExactMeshCenterOffset): ExactMeshCenterOffset = v; return true;
+            case nameof(PbrEnabled): PbrEnabled = v; return true;
+            case nameof(PbrEnvRange): PbrEnvRange = v; return true;
+            case nameof(PbrEnvIntensity): PbrEnvIntensity = v; return true;
+            case nameof(PbrDirectIntensity): PbrDirectIntensity = v; return true;
+            case nameof(PbrExposure): PbrExposure = v; return true;
+            case nameof(PbrNormalFlipY): PbrNormalFlipY = v; return true;
+            case nameof(PbrRoughnessBias): PbrRoughnessBias = v; return true;
+            case nameof(PbrEnvYawDegrees): PbrEnvYawDegrees = v; return true;
+            case nameof(PbrEnvSaturation): PbrEnvSaturation = v; return true;
+            case nameof(PbrDebug): PbrDebug = v; return true;
             default: return false;
         }
     }
@@ -384,7 +550,7 @@ public static class KnifeTuning {
             using Stream stream = Storage.OpenFile(Path, OpenFileMode.Create);
             byte[] bytes = new UTF8Encoding(false).GetBytes(Serialize(Version));
             stream.Write(bytes, 0, bytes.Length);
-            Log.Information($"[ScCsgoKnives] wrote tuning file {Path}; edit it and it reloads within a second.");
+            KnifeLog.Information($"[ScCsgoKnives] wrote tuning file {Path}; edit it and it reloads within a second.");
         }
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce("tuning-write", $"Could not write {Path}: {e.Message}");
@@ -448,6 +614,9 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(SquareFromDegrees), SquareFromDegrees));
         text.AppendLine(Line(nameof(SquareFullDegrees), SquareFullDegrees));
         text.AppendLine(Line(nameof(SquareGateByStillness), SquareGateByStillness));
+        text.AppendLine("# 补角怎么摊：0 = 均匀摊（拳头全程比刀快 1.55 倍），1 = 两头缓动（起手和收尾与刀同速，多出的角藏在转最快的中段）。");
+        text.AppendLine(Line(nameof(SquareEase), SquareEase));
+        text.AppendLine(Line(nameof(QaCapture), QaCapture));
         text.AppendLine("# 手臂滚转的最大角速度（度/秒），只用来压掉穿过退化方向那一帧的跳变。");
         text.AppendLine(Line(nameof(RollSlewDegreesPerSecond), RollSlewDegreesPerSecond));
         text.AppendLine("# 手臂方向取骨骼的比例（0=固定倾角，1=跟骨骼），实验用。");
@@ -462,8 +631,60 @@ public static class KnifeTuning {
         text.AppendLine("# 两个叠加会把整套构图压出画面外，所以默认关掉。");
         text.AppendLine(Line(nameof(SwapDipScale), SwapDipScale));
         text.AppendLine();
-        text.AppendLine("# 检视时整体位移的阻尼：1 = CS:GO 原始幅度，越小抬得越低。");
+        text.AppendLine("# 检视时举刀位移的倍率：1 = CS:GO 动画原始幅度。0.55 = 0.13.1 的样子；1.6 配合俯仰 +10 是按 MCCS 视频定格帧拟合的版本（0.13.2，实际游玩不如 0.55/-14）。");
         text.AppendLine(Line(nameof(InspectTravelScale), InspectTravelScale));
+        text.AppendLine();
+        text.AppendLine();
+        text.AppendLine("# 0.14.0：按反编译出的 CS:MC 变换链原样摆放（ExactChain=1）。不再拟合锚点/缩放；下面全是 CS:MC 的常量，改它们等于改 CS:MC。");
+        text.AppendLine("# ExactChain=0 回到 0.13.x 的拟合构图。ExactHandFovDegrees 是手部通道的视野（MC/CS:MC 固定 70）。");
+        text.AppendLine(Line(nameof(ExactChain), ExactChain));
+        text.AppendLine(Line(nameof(ExactHandFovDegrees), ExactHandFovDegrees));
+        text.AppendLine("# ExactWeaponFovDegrees：刀本身的投影视野（CS:MC 每把刀单独用 48°×viewFov/70 的投影画刀，手臂仍是 70°）。");
+        text.AppendLine(Line(nameof(ExactWeaponFovDegrees), ExactWeaponFovDegrees));
+        text.AppendLine("# ExactArms：1 = 用 CS:MC 的拉伸手臂盒（0.14.0 那种），0 = 0.13.x 的拳头（默认）。");
+        text.AppendLine(Line(nameof(ExactArms), ExactArms));
+        text.AppendLine(Line(nameof(ExactHipX), ExactHipX));
+        text.AppendLine(Line(nameof(ExactHipY), ExactHipY));
+        text.AppendLine(Line(nameof(ExactHipZ), ExactHipZ));
+        text.AppendLine(Line(nameof(ExactRollDegrees), ExactRollDegrees));
+        text.AppendLine(Line(nameof(ExactGlobalX), ExactGlobalX));
+        text.AppendLine(Line(nameof(ExactGlobalY), ExactGlobalY));
+        text.AppendLine(Line(nameof(ExactGlobalZ), ExactGlobalZ));
+        text.AppendLine(Line(nameof(ExactWeaponTX), ExactWeaponTX));
+        text.AppendLine(Line(nameof(ExactWeaponTY), ExactWeaponTY));
+        text.AppendLine(Line(nameof(ExactWeaponTZ), ExactWeaponTZ));
+        text.AppendLine(Line(nameof(ExactReferenceScale), ExactReferenceScale));
+        text.AppendLine(Line(nameof(ExactArmAnchorRX), ExactArmAnchorRX));
+        text.AppendLine(Line(nameof(ExactArmAnchorRY), ExactArmAnchorRY));
+        text.AppendLine(Line(nameof(ExactArmAnchorRZ), ExactArmAnchorRZ));
+        text.AppendLine(Line(nameof(ExactArmAnchorLX), ExactArmAnchorLX));
+        text.AppendLine(Line(nameof(ExactArmAnchorLY), ExactArmAnchorLY));
+        text.AppendLine(Line(nameof(ExactArmAnchorLZ), ExactArmAnchorLZ));
+        text.AppendLine(Line(nameof(ExactArmWidth), ExactArmWidth));
+        text.AppendLine(Line(nameof(ExactArmBaseLength), ExactArmBaseLength));
+        text.AppendLine(Line(nameof(ExactArmStretchMin), ExactArmStretchMin));
+        text.AppendLine(Line(nameof(ExactArmStretchMax), ExactArmStretchMax));
+        text.AppendLine(Line(nameof(ExactArmTwistOffsetDegrees), ExactArmTwistOffsetDegrees));
+        text.AppendLine(Line(nameof(ExactHandX), ExactHandX));
+        text.AppendLine(Line(nameof(ExactScaleOverride), ExactScaleOverride));
+        text.AppendLine(Line(nameof(ExactHandY), ExactHandY));
+        text.AppendLine(Line(nameof(ExactHandZ), ExactHandZ));
+        text.AppendLine(Line(nameof(ExactMirrorX), ExactMirrorX));
+        text.AppendLine(Line(nameof(ExactMeshCenterOffset), ExactMeshCenterOffset));
+        text.AppendLine("# PBR 材质（金属度/粗糙度/法线/AO + CS:MC 的 studio 环境反射）。");
+        text.AppendLine("# PbrEnabled=0 退回旧的平面着色。PbrEnvRange 调反射整体亮度，PbrExposure 调总曝光。");
+        text.AppendLine("# PbrDebug：1 底色 2 法线 3 粗糙度 4 金属度 5 只看反射 6 AO 7 只看直射光，排查用。");
+        text.AppendLine(Line(nameof(PbrEnabled), PbrEnabled));
+        text.AppendLine(Line(nameof(PbrEnvRange), PbrEnvRange));
+        text.AppendLine(Line(nameof(PbrEnvIntensity), PbrEnvIntensity));
+        text.AppendLine(Line(nameof(PbrDirectIntensity), PbrDirectIntensity));
+        text.AppendLine(Line(nameof(PbrExposure), PbrExposure));
+        text.AppendLine(Line(nameof(PbrNormalFlipY), PbrNormalFlipY));
+        text.AppendLine(Line(nameof(PbrRoughnessBias), PbrRoughnessBias));
+        text.AppendLine(Line(nameof(PbrEnvYawDegrees), PbrEnvYawDegrees));
+        text.AppendLine("# 反射带多少环境的颜色：1 = 全带（天空会把刀染蓝），0 = 只反亮度不反颜色。");
+        text.AppendLine(Line(nameof(PbrEnvSaturation), PbrEnvSaturation));
+        text.AppendLine(Line(nameof(PbrDebug), PbrDebug));
         return text.ToString();
     }
 

@@ -53,7 +53,7 @@ public static class KnifeAnimationController {
             // of it being the butterfly.
             Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.AssetCount}).");
             state.Variant = variant;
-            string deploy = CsmcKnifeRig.HasClip(variant, "deploy2") && s_random.Next(2) == 0 ? "deploy2" : "deploy";
+            string deploy = !KnifeQa.Active && CsmcKnifeRig.HasClip(variant, "deploy2") && s_random.Next(2) == 0 ? "deploy2" : "deploy";
             Start(state, ActionKind.Draw, deploy);
             PlayDrawSound(variant);
             LogActionStart(state, variant);
@@ -69,7 +69,7 @@ public static class KnifeAnimationController {
         }
 
         float pokePhase = model.m_pokeAnimationTime;
-        if (pokePhase > 0f && state.LastPokePhase <= 0f && state.Action != ActionKind.Draw) {
+        if (pokePhase > 0f && state.LastPokePhase <= 0f && state.Action != ActionKind.Draw && !KnifeQa.Active) {
             string slash = CsmcKnifeRig.HasClip(variant, "slash2") && s_random.Next(2) == 1 ? "slash2" : "slash1";
             Start(state, ActionKind.Slash, slash);
             AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", 0.85f, (float)s_random.NextDouble() * 0.16f - 0.08f, 0f);
@@ -77,7 +77,7 @@ public static class KnifeAnimationController {
         }
         state.LastPokePhase = pokePhase;
 
-        float elapsed = (float)(Time.RealTime - state.StartedAt);
+        float elapsed = (float)(KnifeClock.Now - state.StartedAt);
         if (state.Action == ActionKind.Idle) {
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, elapsed, true);
             return state.Pose;
@@ -85,7 +85,7 @@ public static class KnifeAnimationController {
 
         float duration = CsmcKnifeRig.GetDuration(variant, state.ClipAlias);
         if (elapsed >= duration) {
-            Start(state, ActionKind.Idle, CsmcKnifeRig.HasClip(variant, "idle2") && s_random.Next(5) == 0 ? "idle2" : "idle");
+            Start(state, ActionKind.Idle, !KnifeQa.Active && CsmcKnifeRig.HasClip(variant, "idle2") && s_random.Next(5) == 0 ? "idle2" : "idle");
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
         }
         else state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, Math.Max(0f, elapsed));
@@ -107,6 +107,9 @@ public static class KnifeAnimationController {
             s_states.Add(model, state);
         }
         state.Variant = variant;
+        // With the capture armed, the inspect key runs the capture instead (KnifeQa).
+        if (KnifeQa.Active) return true;
+        if (KnifeQa.Armed) return KnifeQa.Begin(model, variant);
         // Some rigs ship two or three lookat clips; pick from whatever exists.
         string[] available = [.. new[] { "inspect", "inspect2", "inspect3" }
             .Where(alias => CsmcKnifeRig.HasClip(variant, alias))];
@@ -117,10 +120,42 @@ public static class KnifeAnimationController {
         return true;
     }
 
+    /// <summary>The capture run's hooks (KnifeQa): a deterministic draw and inspect, and where the action stands.</summary>
+    internal static void QaDraw(ComponentFirstPersonModel model, int variant) {
+        State state = StateFor(model);
+        state.Variant = variant;
+        state.DrawWhenVisible = false;
+        state.LastPokePhase = 0f;
+        Start(state, ActionKind.Draw, "deploy");
+    }
+
+    internal static void QaInspect(ComponentFirstPersonModel model, int variant) {
+        State state = StateFor(model);
+        state.Variant = variant;
+        Start(state, ActionKind.Inspect, "inspect");
+    }
+
+    internal static bool QaIsIdle(ComponentFirstPersonModel model) =>
+        s_states.TryGetValue(model, out State state) && state.Action == ActionKind.Idle;
+
+    internal static string QaClip(ComponentFirstPersonModel model) =>
+        s_states.TryGetValue(model, out State state) ? state.ClipAlias : "";
+
+    internal static float QaClipTime(ComponentFirstPersonModel model) =>
+        s_states.TryGetValue(model, out State state) ? (float)(KnifeClock.Now - state.StartedAt) : 0f;
+
+    static State StateFor(ComponentFirstPersonModel model) {
+        if (!s_states.TryGetValue(model, out State state)) {
+            state = new State();
+            s_states.Add(model, state);
+        }
+        return state;
+    }
+
     static void Start(State state, ActionKind action, string clipAlias) {
         state.Action = action;
         state.ClipAlias = clipAlias;
-        state.StartedAt = Time.RealTime;
+        state.StartedAt = KnifeClock.Now;
         state.Pose = null;
     }
 

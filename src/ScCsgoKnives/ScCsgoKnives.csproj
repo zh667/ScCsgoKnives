@@ -35,6 +35,7 @@
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
     <EmbeddedResource Include="AnimationData\*.animation.json" />
     <EmbeddedResource Include="AnimationData\knives.json" />
+    <EmbeddedResource Include="Shaders\*.vsh;Shaders\*.psh" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <PropertyGroup><PathOfScmod>$(TargetDir)..\$(AssemblyName).scmod</PathOfScmod></PropertyGroup>

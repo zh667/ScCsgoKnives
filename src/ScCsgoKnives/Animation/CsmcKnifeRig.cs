@@ -124,6 +124,13 @@ public static class CsmcKnifeRig {
     /// </summary>
     public static float GetSourceReferenceScale(int variant) => Entry(variant).SourceReferenceScale;
 
+    /// <summary>The mesh centre our OBJ export subtracted, in normalized mesh units (centre times the normalization scale).</summary>
+    public static Vector3 GetMeshCenterOffset(int variant) {
+        var file = GetAsset(variant).File;
+        float[] c = file.MeshCenter;
+        return c is { Length: >= 3 } ? new Vector3(c[0], c[1], c[2]) * file.MeshNormalizationScale : Vector3.Zero;
+    }
+
     static ManifestEntry Entry(int variant) => s_manifest[Math.Clamp(variant, 0, s_manifest.Length - 1)];
 
     public static float GetDuration(int variant, string clipAlias) {
@@ -186,6 +193,28 @@ public static class CsmcKnifeRig {
             else KnifeDiagnostics.WarnOnce($"rig-{asset.Name}-{binding.Name}-invalid", $"CSMC binding {asset.Name}/{binding.Name} produced a non-finite matrix.");
         }
         return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments);
+    }
+
+    /// <summary>
+    /// The raw CSMC attachment pose per binding BEFORE mesh normalization:
+    /// RightMatrix * boneAbsolute * LeftMatrix (Engine row-vector), the exact production
+    /// rule Sample() uses. This is what CSMC 5.10's own Ӝ.þ(name) returns and what the
+    /// round-5 controlled sampler exported, so it is the golden-baseline stage-A truth.
+    /// Non-looping clamp, matching the offline sampler (loop=false).
+    /// </summary>
+    public static IReadOnlyDictionary<string, Matrix> SampleRawBindings(int variant, string clipAlias, float time) {
+        Asset asset = GetAsset(variant);
+        if (!asset.File.Clips.TryGetValue(clipAlias, out Clip clip)) clip = asset.File.Clips["idle"];
+        time = MathUtils.Clamp(time, 0f, Math.Max(0f, clip.Duration));
+        Matrix[] absolute = CalculateAbsolute(asset, clip, time);
+        var raw = new Dictionary<string, Matrix>(StringComparer.Ordinal);
+        foreach (Binding binding in asset.File.Bindings) {
+            if (binding.BoneIndex < 0 || binding.BoneIndex >= absolute.Length) continue;
+            raw[binding.Name] = ReadSourceMatrix(binding.RightMatrix)
+                * absolute[binding.BoneIndex]
+                * ReadSourceMatrix(binding.LeftMatrix);
+        }
+        return raw;
     }
 
     static Matrix[] CalculateAbsolute(Asset asset, Clip clip, float time) {
@@ -263,7 +292,7 @@ public static class CsmcKnifeRig {
             Normalization = normalization,
             InverseNormalization = Matrix.Invert(normalization)
         };
-        Log.Information(
+        KnifeLog.Information(
             $"[ScCsgoKnives] exact CSMC rig {name}: format={file.Format}, parts=[{string.Join(',', file.MeshParts)}], "
             + $"bindings={file.Bindings.Count}, bones={file.Skeleton.Count}, clips=[{string.Join(',', file.Clips.Keys)}], "
             + $"normalizationCenter=({center.X:0.###},{center.Y:0.###},{center.Z:0.###}), normalizationScale={file.MeshNormalizationScale:0.######}."
@@ -282,7 +311,7 @@ public static class CsmcKnifeRig {
         using Stream stream = assembly.GetManifestResourceStream(resource);
         ManifestEntry[] entries = JsonSerializer.Deserialize<ManifestEntry[]>(stream)
             ?? throw new InvalidDataException("Empty ScCsgoKnives rig manifest.");
-        Log.Information($"[ScCsgoKnives] rig manifest: {entries.Length} knives = [{string.Join(",", entries.Select(e => e.Name))}].");
+        KnifeLog.Information($"[ScCsgoKnives] rig manifest: {entries.Length} knives = [{string.Join(",", entries.Select(e => e.Name))}].");
         return entries;
     }
 

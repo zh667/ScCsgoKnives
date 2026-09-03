@@ -54,3 +54,18 @@ for every knife: it shares vertices and trims float precision
 (`tools/optimize_obj.py`), drops animation clips the mod never plays, resizes
 the base colour to 512x512, and copies the official 128x128 inventory icon.
 `tools/grip_offsets.py` derives each knife's grip point from its own mesh.
+
+## PBR material maps (v0.13.0)
+
+Exported by `tools/export_pbr_textures.py` from the same CS:MC client package as the base colours
+(original-author authorisation covers all of it):
+
+| File | Source |
+|---|---|
+| `Textures/ScCsgoKnives/<knife>_orm.png` | `tex/source2_vmat/weapon_knife_<x>/*_ao_*.webp` (R) + `*_rough_*.webp` (R = roughness -> G, G = metalness -> B), factory finishes only |
+| `Textures/ScCsgoKnives/<knife>_normal.png` | `*_normal_*.webp` where the finish ships one; a 4x4 flat map for the knives that use CS's shared 1x1 default |
+| `Textures/ScCsgoKnives/env_specular_rgbm.png` | `CSMCMod-5.10-o.jar: assets/csmcmod/textures/source2_environment/studio_specular_rgbm.png`, unchanged (6 roughness rows x 6 cube faces, 128px, RGBM) |
+| `Textures/ScCsgoKnives/env_brdf.png` | computed here (split-sum GGX lookup, no external data) |
+
+The shader itself (`Shaders/KnifePbr.vsh/.psh`) is written from the standard metallic-roughness
+model; CS:MC's own shader files are a protected container and were not opened.
