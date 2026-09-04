@@ -73,24 +73,31 @@ def retarget(path: Path, gun: str, out: Path) -> Path:
 
 
 def render(asset: str, tex: str, sweep_path: Path, png: Path, size=(960, 540)):
+    """Render, and take the rasteriser's own coverage mask alongside the image."""
     result = subprocess.run(
         [sys.executable, str(ROOT / "tools/pbr_emulate.py"), asset, str(sweep_path),
-         str(png), str(size[0]), str(size[1]), "flipv=1", "tex=" + tex],
+         str(png), str(size[0]), str(size[1]), "flipv=1", "tex=" + tex,
+         "mask=" + str(png.with_name(png.stem + "_mask.png"))],
         capture_output=True, text=True, cwd=ROOT)
     if result.returncode:
         raise SystemExit(result.stderr.strip()[-800:])
     return result.stdout.strip().splitlines()[-1]
 
 
-def statistics(png: Path):
+def statistics(png: Path, mask_path: Path = None):
+    """Statistics inside the rasteriser's coverage mask.
+
+    The mask is read, never inferred. Guessing the background from the modal colour
+    - which this did until 2026-09-05 - is only valid over a flat backdrop, and would
+    quietly mis-measure any real screenshot.
+    """
     a = np.asarray(Image.open(png).convert("RGB"), float) / 255.0
-    # pbr_emulate paints an untouched background rather than black, so the mask is
-    # "not the single most common colour" - the weapon is the only thing drawn.
-    flat = (np.asarray(Image.open(png).convert("RGB")).reshape(-1, 3)
-            .astype(np.int32) @ np.array([65536, 256, 1]))
-    values, counts = np.unique(flat, return_counts=True)
-    background = values[counts.argmax()]
-    mask = (flat != background).reshape(a.shape[:2])
+    mask_path = mask_path or png.with_name(png.stem + "_mask.png")
+    if not mask_path.exists():
+        raise SystemExit("no coverage mask beside %s; pass mask= to pbr_emulate" % png.name)
+    mask = np.asarray(Image.open(mask_path).convert("L")) > 0
+    if mask.shape != a.shape[:2]:
+        raise SystemExit("mask %s is %s, image is %s" % (mask_path.name, mask.shape, a.shape[:2]))
     if not mask.any():
         return {"pixels": 0}
     lit = a[mask]
@@ -109,7 +116,8 @@ def main():
     ap.add_argument("--clip", default="idle")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--reference", type=Path,
-                    help="a CS2 capture frame, masked the same way, for the 5%% check")
+                    help="a CS2 capture frame; needs <stem>_mask.png beside it. Prefer "
+                         "tools/cs2_reference_check.py, which is the acceptance path")
     ap.add_argument("--json", type=Path)
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -126,7 +134,8 @@ def main():
                "shipped": {"line": old_line, **statistics(old_png)},
                "cs2": {"line": new_line, **statistics(new_png)}}
         if args.reference and args.reference.exists():
-            row["reference"] = statistics(args.reference)
+            row["reference"] = statistics(args.reference, args.reference.with_name(
+                args.reference.stem + "_mask.png"))
         rows.append(row)
         s, c = row["shipped"], row["cs2"]
         print("%-6s %s" % (gun, args.clip))

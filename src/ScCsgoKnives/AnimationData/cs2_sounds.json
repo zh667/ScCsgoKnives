@@ -18,7 +18,9 @@
      "Asset": "m4a1s_draw",
      "Match": "gun and cue name",
      "Relevance": "ClientOnly",
-     "Wav": []
+     "Wav": [
+      "m4a1_draw.mp3"
+     ]
     },
     {
      "At": 0.433321,
@@ -55,8 +57,8 @@
      "Frame": 2.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement1",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement1.wav"
@@ -67,8 +69,8 @@
      "Frame": 92.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -79,8 +81,8 @@
      "Frame": 116.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -100,7 +102,9 @@
      "Asset": "m4a1s_clipout",
      "Match": "gun and cue name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "m4a1_clipout.mp3"
+     ]
     },
     {
      "At": 1.166679,
@@ -110,17 +114,21 @@
      "Asset": "m4a1s_clipin",
      "Match": "gun and cue name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "m4a1_clipin.mp3"
+     ]
     },
     {
      "At": 1.366682,
      "Frame": 41.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.AddAmmo",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "m4a1s_addammo",
+     "Match": "gun and cue name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "m4a1_addammo_01.mp3"
+     ]
     },
     {
      "At": 2.000022,
@@ -145,8 +153,8 @@
      "Frame": 3.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.SilencerWeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement1",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement1.wav"
@@ -229,8 +237,8 @@
      "Frame": 120.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.SilencerWeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -247,8 +255,8 @@
      "Frame": 3.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.SilencerWeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement1",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement1.wav"
@@ -343,8 +351,8 @@
      "Frame": 105.0,
      "Duration": 0.0,
      "Event": "Weapon_M4A1.SilencerWeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -361,8 +369,8 @@
      "Frame": 0.0,
      "Duration": 0.8,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -397,8 +405,8 @@
      "Frame": 9.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.Inspect_F245",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "ak47_inspect_f245",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "ak47_inspect_f245.wav"
@@ -415,8 +423,8 @@
      "Frame": 2.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -427,8 +435,8 @@
      "Frame": 66.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -439,8 +447,8 @@
      "Frame": 105.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -457,8 +465,8 @@
      "Frame": 2.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -469,8 +477,8 @@
      "Frame": 66.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -481,8 +489,8 @@
      "Frame": 105.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -499,8 +507,8 @@
      "Frame": 2.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -511,8 +519,8 @@
      "Frame": 66.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -523,8 +531,8 @@
      "Frame": 105.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -541,8 +549,8 @@
      "Frame": 6.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -553,8 +561,8 @@
      "Frame": 25.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -565,8 +573,8 @@
      "Frame": 100.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -583,8 +591,8 @@
      "Frame": 6.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -595,8 +603,8 @@
      "Frame": 25.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -607,8 +615,8 @@
      "Frame": 100.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -625,8 +633,8 @@
      "Frame": 6.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -637,8 +645,8 @@
      "Frame": 25.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -649,8 +657,8 @@
      "Frame": 100.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -667,8 +675,8 @@
      "Frame": 4.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.Inspect_F245",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "ak47_inspect_f245",
+     "Match": "wav name",
      "Relevance": "ClientAndServer",
      "Wav": [
       "ak47_inspect_f245.wav"
@@ -706,15 +714,17 @@
      "Asset": "ak47_clipin",
      "Match": "gun and cue name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "magazine_slide_01.mp3"
+     ]
     },
     {
      "At": 1.099985,
      "Frame": 33.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.AddAmmo",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "ak47_addammo",
+     "Match": "wav name without variant index",
      "Relevance": "ClientAndServer",
      "Wav": [
       "ak47_addammo_02.wav"
@@ -737,8 +747,8 @@
      "Frame": 50.0,
      "Duration": 0.0,
      "Event": "Weapon_AK47.Inspect_F245",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "ak47_inspect_f245",
+     "Match": "wav name",
      "Relevance": "ClientAndServer",
      "Wav": [
       "ak47_inspect_f245.wav"
@@ -797,8 +807,8 @@
      "Frame": 5.0,
      "Duration": 0.0,
      "Event": "Weapon_AWP.WeaponMove1",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement1",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement1.wav"
@@ -809,8 +819,8 @@
      "Frame": 91.0,
      "Duration": 0.0,
      "Event": "Weapon_AWP.WeaponMove2",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement2",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement2.wav"
@@ -821,8 +831,8 @@
      "Frame": 116.0,
      "Duration": 0.0,
      "Event": "Weapon_AWP.WeaponMove3",
-     "Asset": null,
-     "Match": "not shipped",
+     "Asset": "movement3",
+     "Match": "wav name",
      "Relevance": "ClientOnly",
      "Wav": [
       "movement3.wav"
@@ -840,9 +850,11 @@
      "Duration": 0.0,
      "Event": "Weapon_AWP.Clipout",
      "Asset": "awp_clipout",
-     "Match": "gun and cue name",
+     "Match": "wav name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "awp_clipout.mp3"
+     ]
     },
     {
      "At": 1.533347,
@@ -850,9 +862,11 @@
      "Duration": 0.0,
      "Event": "Weapon_AWP.Clipin",
      "Asset": "awp_clipin",
-     "Match": "gun and cue name",
+     "Match": "wav name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "awp_clipin.mp3"
+     ]
     },
     {
      "At": 2.000018,
@@ -860,9 +874,11 @@
      "Duration": 0.0,
      "Event": "Weapon_AWP.Cliphit",
      "Asset": "awp_cliphit",
-     "Match": "gun and cue name",
+     "Match": "wav name",
      "Relevance": "ClientAndServer",
-     "Wav": []
+     "Wav": [
+      "awp_cliphit.mp3"
+     ]
     },
     {
      "At": 2.633357,

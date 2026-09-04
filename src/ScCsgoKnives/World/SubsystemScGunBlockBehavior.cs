@@ -221,7 +221,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (value != state.LastValue) {
             if (Terrain.ExtractContents(state.LastValue) != Terrain.ExtractContents(value) || ScGunBlock.GetVariant(state.LastValue) != ScGunBlock.GetVariant(value)) {
                 LeaveScope(player, state);
-                state.BusyUntil = now + CsmcKnifeRig.GetDuration(ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value)), "deploy");
+                state.BusyUntil = now + CsmcKnifeRig.GetProfileDuration(ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value)), "deploy");
                 state.PendingRounds = -1;
                 state.SilencerPending = false;
                 state.Scheduled.Clear();
@@ -344,7 +344,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     void StartReload(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value) {
         int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
-        float duration = CsmcKnifeRig.GetDuration(variant, "reload");
+        float duration = CsmcKnifeRig.GetProfileDuration(variant, "reload");
         if (duration <= 0f) return;
         LeaveScope(player, state);
         KnifeAnimationController.TriggerReload(player);
@@ -376,7 +376,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             bool off = GunSpec.GetSilencerOff(Terrain.ExtractData(value));
             int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
             string clip = off ? "attach" : "detach";
-            float duration = CsmcKnifeRig.GetDuration(variant, clip);
+            float duration = CsmcKnifeRig.GetProfileDuration(variant, clip);
             if (duration > 0f) {
                 KnifeAnimationController.TriggerSilencer(player, off);
                 gun.Scheduled.Clear();

@@ -52,11 +52,17 @@ def shipped_assets() -> set:
 
 
 def event_files() -> dict:
+    """Event -> its decoded audio files.
+
+    WAV first, then MP3: the whole m4a1 folder decoded to MP3 only, so a wav-only
+    filter reported Weapon_M4A1.AddAmmo as having no source when it has one.
+    """
     rows = json.loads(MAPPING.read_text("utf-8"))
     out = {}
     for row in rows:
-        wavs = [f for f in row.get("decoded_files") or [] if f.endswith(".wav")]
-        out[row["event"]] = wavs
+        decoded = row.get("decoded_files") or []
+        out[row["event"]] = ([f for f in decoded if f.endswith(".wav")]
+                             or [f for f in decoded if f.endswith(".mp3")])
     return out
 
 

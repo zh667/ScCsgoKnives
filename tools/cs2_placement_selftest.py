@@ -5,6 +5,10 @@ Same discipline as rigprobe.py against CsmcKnifeRig: tools/cs2_placement.py is
 the reference, ArmPreview's "cs2" mode runs Cs2Rig + Cs2Placement out of the mod
 assembly itself, and every landmark is compared in view space and on screen.
 
+It also checks the clip-length arbitration, because that is what decides *when* the
+chain is asked for a pose: the controller, the gun's BusyUntil and Cs2Rig must all read
+the same length, and knives and GunProfile = 0 must be untouched by it.
+
 This does not check that the placement matches CS2 - that is the overlay against
 a recording, tools/cs2_videocheck.py. It checks that what ships is what was
 derived.
@@ -51,6 +55,41 @@ def csharp(gun, clip, t):
     return json.loads(out.stdout.strip().splitlines()[-1])
 
 
+def durations():
+    out = subprocess.run(
+        ["dotnet", "run", "--project", str(ROOT / "tools/ArmPreview/ArmPreview.csproj"),
+         "-c", "Release", "--", "durations"],
+        capture_output=True, text=True, cwd=ROOT,
+        env={**os.environ, "DOTNET_ROLL_FORWARD": "Major"})
+    if out.returncode:
+        raise SystemExit(out.stderr.strip()[-800:])
+    return json.loads(out.stdout.strip().splitlines()[-1])
+
+
+def check_durations():
+    rows = durations()
+    problems = []
+    changed = []
+    for r in rows:
+        # Nothing may move when the cs2 profile is off, ever.
+        if abs(r["profileOff"] - r["csmc"]) > 1e-6:
+            problems.append("%s/%s: GunProfile=0 gives %.4f, CS:MC is %.4f"
+                            % (r["gun"], r["alias"], r["profileOff"], r["csmc"]))
+        if not r["isGun"]:
+            # Knives must be identical under both profiles.
+            if abs(r["profileOn"] - r["csmc"]) > 1e-6:
+                problems.append("%s/%s: knife moved under GunProfile=1 (%.4f vs %.4f)"
+                                % (r["gun"], r["alias"], r["profileOn"], r["csmc"]))
+            continue
+        want = r["cs2"] if r["cs2"] > 0 else r["csmc"]
+        if abs(r["profileOn"] - want) > 1e-6:
+            problems.append("%s/%s: GunProfile=1 gives %.4f, expected %.4f"
+                            % (r["gun"], r["alias"], r["profileOn"], want))
+        if r["cs2"] > 0 and abs(r["cs2"] - r["csmc"]) > 1e-4:
+            changed.append((r["gun"], r["alias"], r["csmc"], r["cs2"]))
+    return rows, problems, changed
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", type=Path)
@@ -84,18 +123,31 @@ def main():
             worst_view, worst_at = dv, "%s/%s@%.2f" % (gun, clip, t)
         worst_screen = max(worst_screen, dp)
 
+    print("\nClip length arbitration (CsmcKnifeRig.GetProfileDuration)")
+    duration_rows, problems, changed = check_durations()
+    print("   %d gun/knife clip pairs checked; %d problems" % (len(duration_rows), len(problems)))
+    for p in problems:
+        print("   FAIL %s" % p)
+    print("   clips where CS2 and CS:MC disagree, so GunProfile=1 now retimes:")
+    for gun, alias, csmc, cs2 in changed:
+        print("     %-6s %-14s CS:MC %.4f -> CS2 %.4f  (%+.4f s, %+.1f frames at 30 fps)"
+              % (gun, alias, csmc, cs2, cs2 - csmc, (cs2 - csmc) * 30))
+
     print("\nworst: %.3e m in view space, %.4f px on a 1920x1080 frame (%s)"
           % (worst_view, worst_screen, worst_at))
     # The bound is float32 round-off, not a tolerance for disagreement: the C#
     # chain runs in single precision and the reference in double, and a ~1 m
     # coordinate carries about 5e-06 m of that through the matrix product. Set
     # well below the stage 3 target of 10 px so a real divergence still fails.
-    ok = worst_view < 5e-5 and worst_screen < 0.1
+    ok = worst_view < 5e-5 and worst_screen < 0.1 and not problems
     print("C# vs offline reference: %s" % ("PASS" if ok else "FAIL"))
     if args.json:
         args.json.write_text(json.dumps(
             {"cases": rows, "worst_view_error_m": worst_view,
-             "worst_screen_error_px": worst_screen}, indent=2), "utf-8")
+             "worst_screen_error_px": worst_screen,
+             "durations": {"rows": duration_rows, "problems": problems,
+                           "retimed": [{"gun": g, "clip": a, "csmc": c, "cs2": d}
+                                       for g, a, c, d in changed]}}, indent=2), "utf-8")
     return 0 if ok else 1
 
 

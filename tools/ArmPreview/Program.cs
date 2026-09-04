@@ -45,6 +45,33 @@ KnifeLog.ToConsole = true;   // before any renderer or rig access, so no log eve
     }
 }
 
+// "durations": what every timing consumer sees, per gun and clip alias, under both
+// GunProfile values, plus a knife for the no-change check. This is the thing that
+// regressed - the controller ran on CS:MC lengths while the CS2 rig was drawn - so it
+// is asserted offline rather than looked at in game.
+if (args.Length > 0 && args[0] == "durations") {
+    var rows = new List<object>();
+    foreach (string gun in new[] { "ak47", "m4a1s", "awp", "m9", "karambit" }) {
+        int variant = Resolve(gun, "idle");
+        if (variant < 0) continue;
+        bool isGun = CsmcKnifeRig.IsGun(variant);
+        foreach (string alias in new[] { "idle", "deploy", "reload", "inspect", "shoot1",
+                                         "shootSilenced", "attach", "detach" }) {
+            if (!CsmcKnifeRig.HasClip(variant, alias)) continue;
+            KnifeTuning.Override("GunProfile", 0f);
+            float csmc = CsmcKnifeRig.GetDuration(variant, alias);
+            float off = CsmcKnifeRig.GetProfileDuration(variant, alias);
+            KnifeTuning.Override("GunProfile", 1f);
+            float on = CsmcKnifeRig.GetProfileDuration(variant, alias);
+            float cs2 = isGun ? Cs2Rig.Duration(gun, alias) : 0f;
+            KnifeTuning.Override("GunProfile", 0f);
+            rows.Add(new { gun, alias, isGun, csmc, cs2, profileOff = off, profileOn = on });
+        }
+    }
+    Console.WriteLine(JsonSerializer.Serialize(rows));
+    return 0;
+}
+
 // "cs2arms <gun> <clip> <t> [out.bin]": the CPU-skinned arm vertices for one pose,
 // in engine view space. Without an output path it prints a digest; with one it dumps
 // the raw float3 positions so tools/cs2_arms_selftest.py can diff every vertex.

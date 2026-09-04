@@ -423,6 +423,16 @@ public static class KnifeTuning {
     public static float Cs2ViewmodelOffsetZ = -1.5f;
 
     /// <summary>
+    /// Which gameplay numbers the three guns use: 0 = the values shipped since 0.15.10,
+    /// 1 = CS2's own damage, range falloff, spread and recoil ratios from its vdata.
+    ///
+    /// Deliberately separate from GunProfile. Turning the CS2 *look* on must not change
+    /// how the guns *play*: CS2's unscoped AWP spread is 4.63 degrees against the 0.10
+    /// this ships, which is faithful but is a gameplay decision, not a rendering one.
+    /// </summary>
+    public static float GunNumbers = 0f;
+
+    /// <summary>
     /// Draw CS2's arms and glove in the cs2 profile (1) or the weapon alone (0).
     /// </summary>
     public static float Cs2Arms = 1f;
@@ -590,6 +600,7 @@ public static class KnifeTuning {
             case nameof(PbrEnvYawDegrees): PbrEnvYawDegrees = v; return true;
             case nameof(PbrEnvSaturation): PbrEnvSaturation = v; return true;
             case nameof(GunProfile): GunProfile = v; return true;
+            case nameof(GunNumbers): GunNumbers = v; return true;
             case nameof(Cs2Arms): Cs2Arms = v; return true;
             case nameof(Cs2ViewmodelFov): Cs2ViewmodelFov = v; return true;
             case nameof(Cs2ViewmodelOffsetX): Cs2ViewmodelOffsetX = v; return true;
@@ -752,6 +763,9 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetX), Cs2ViewmodelOffsetX));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetY), Cs2ViewmodelOffsetY));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetZ), Cs2ViewmodelOffsetZ));
+        text.AppendLine("# 玩法数值单独一个开关：0 = 一直以来的值，1 = CS2 vdata 的伤害/衰减/散布/后坐。");
+        text.AppendLine("# 与 GunProfile 分开是有意的：把画面换成 CS2 不应该顺带改手感（CS2 的 AWP 不开镜散布是 4.63 度）。");
+        text.AppendLine(Line(nameof(GunNumbers), GunNumbers));
         text.AppendLine("# cs2 profile 画不画 CS2 的手臂和手套（1/0）。");
         text.AppendLine("# 这两个材质的粗糙度是估计值（CS2 没导出它们的 VMAT），已经烘进 cs2_arm_orm.png / cs2_glove_orm.png，");
         text.AppendLine("# 要改得重跑 tools/install_arm_textures_cs2.py --arm-roughness/--glove-roughness 再打包。");

@@ -900,7 +900,15 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static bool DrawCs2(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, Matrix post) {
         string gun = CsmcKnifeRig.GetAssetName(variant);
-        Cs2Rig.Pose cs2 = Cs2Rig.Sample(gun, pose.ClipAlias, pose.Time);
+        // The CS:MC pose clamped its time to the CS:MC clip; sampling the CS2 rig with
+        // that froze the tail of every clip CS2 makes longer (the M4A1-S inspect runs
+        // 5.2999 s against CS:MC's 5.0). Re-derive the instant from the controller's
+        // untruncated time against the CS2 clip's own length instead.
+        float cs2Duration = Cs2Rig.Duration(gun, pose.ClipAlias);
+        float cs2Time = pose.Looping && cs2Duration > 0f
+            ? pose.RequestedTime - cs2Duration * MathF.Floor(pose.RequestedTime / cs2Duration)
+            : MathUtils.Clamp(pose.RequestedTime, 0f, MathF.Max(cs2Duration, 0f));
+        Cs2Rig.Pose cs2 = Cs2Rig.Sample(gun, pose.ClipAlias, cs2Time);
         if (cs2 is null) {
             KnifeDiagnostics.WarnOnce($"cs2-pose-{gun}", $"No CS2 pose for {gun}/{pose.ClipAlias}; falling back to the CS:MC chain.");
             return false;

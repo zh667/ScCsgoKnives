@@ -5,7 +5,8 @@ first-person look can be examined without a GPU.
 
 `tex=<name>` shades <asset>'s geometry with a different material set, which is how
 the CS2 current materials (ak47_hd) are compared against the legacy ones on
-identical geometry.
+identical geometry. `mask=<path>` writes the rasteriser's coverage as an 8-bit PNG,
+so nothing downstream has to guess where the background is.
 """
 import sys, json, math, numpy as np
 from PIL import Image
@@ -123,5 +124,9 @@ col = (ibl + direct([0.12, 0.25, -0.34]) + direct([-0.12, 0.25, 0.34])) * EXPOSU
 tm = np.clip((col * (2.51 * col + 0.03)) / (col * (2.43 * col + 0.59) + 0.14), 0, 1) ** (1 / 2.2)
 img = np.full((H, W, 3), 0.45, np.float32); img[hit] = tm
 Image.fromarray((img * 255).astype(np.uint8)).save(out)
+# Coverage mask: which pixels the rasteriser actually wrote. Consumers must use this
+# rather than guessing the background from the image - a modal-colour guess is only
+# valid over a flat backdrop and silently mis-measures anything else.
+if 'mask' in kv: Image.fromarray((hit * 255).astype(np.uint8), 'L').save(kv['mask'])
 if 'dump' in kv: np.savez(kv['dump'], hit=hit, tm=tm, base=base ** (1 / 2.2), rough=rough, metal=metal, ao=ao)
 print(f"{asset}: pixels {hit.sum()}  mean srgb {tm.mean(0).round(3)}  metal mean {metal.mean():.2f} rough mean {rough.mean():.2f} ao mean {ao.mean():.2f} base(lin) mean {base.mean():.3f}")

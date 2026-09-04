@@ -91,7 +91,7 @@ public static class KnifeAnimationController {
             return state.Pose;
         }
 
-        float duration = CsmcKnifeRig.GetDuration(variant, state.ClipAlias);
+        float duration = CsmcKnifeRig.GetProfileDuration(variant, state.ClipAlias);
         if (elapsed >= duration) {
             Start(state, ActionKind.Idle, !KnifeQa.Active && CsmcKnifeRig.HasClip(variant, "idle2") && s_random.Next(5) == 0 ? "idle2" : "idle");
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
@@ -145,14 +145,14 @@ public static class KnifeAnimationController {
     /// <summary>The silencer attach clip is playing (the silencer must stay drawn while the hands bring it in).</summary>
     public static bool IsAttaching(ComponentFirstPersonModel model) {
         if (model is null || !s_states.TryGetValue(model, out State state) || state.Action != ActionKind.Attach) return false;
-        return KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetDuration(state.Variant, state.ClipAlias);
+        return KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetProfileDuration(state.Variant, state.ClipAlias);
     }
 
     /// <summary>A reload, silencer or draw clip is playing: the gun cannot fire, scope or inspect until it ends.</summary>
     public static bool IsBusy(ComponentFirstPersonModel model) {
         if (model is null || !s_states.TryGetValue(model, out State state)) return false;
         if (state.Action is not (ActionKind.Draw or ActionKind.Reload or ActionKind.Attach or ActionKind.Detach)) return false;
-        return KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetDuration(state.Variant, state.ClipAlias);
+        return KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetProfileDuration(state.Variant, state.ClipAlias);
     }
 
     /// <summary>Plays one of the gun's shot clips (the M4A1-S picks by silencer state); interrupts idle and inspect.</summary>

@@ -57,7 +57,8 @@ public static class Cs2Weapons {
 
     static readonly WeaponsFile s_file = Load();
 
-    public static bool Active => KnifeTuning.GunProfile >= 0.5f && s_file?.Guns is { Count: > 0 };
+    /// <summary>Gameplay numbers follow GunNumbers, not GunProfile: the look and the feel switch separately.</summary>
+    public static bool Active => KnifeTuning.GunNumbers >= 0.5f && s_file?.Guns is { Count: > 0 };
 
     public static Gun Get(string gun) =>
         gun is not null && s_file?.Guns is not null && s_file.Guns.TryGetValue(gun, out Gun g) ? g : null;

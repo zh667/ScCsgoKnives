@@ -183,11 +183,31 @@ public static class CsmcKnifeRig {
         return asset.File.Clips.TryGetValue(clipAlias, out Clip clip) ? clip.Duration : 0f;
     }
 
+    /// <summary>
+    /// The clip length whichever profile is drawing owns, and the single source every
+    /// consumer of timing must use: the animation controller's end-of-clip test, the
+    /// gun's BusyUntil, and Cs2Rig's own sampling.
+    ///
+    /// The two rigs do not agree on length - CS2's M4A1-S inspect runs 5.2999 s against
+    /// CS:MC's 5.0, its draw 1.1332 against 1.1000 - so driving the controller from one
+    /// and drawing from the other froze the tail of the longer clip. Knives and
+    /// GunProfile = 0 are unaffected: Cs2Placement.Active already requires a gun and the
+    /// cs2 profile, so they fall through to GetDuration unchanged.
+    /// </summary>
+    public static float GetProfileDuration(int variant, string clipAlias) {
+        if (Cs2Placement.Active(variant)) {
+            float cs2 = Cs2Rig.Duration(GetAssetName(variant), clipAlias);
+            if (cs2 > 0f) return cs2;
+        }
+        return GetDuration(variant, clipAlias);
+    }
+
     public static bool HasClip(int variant, string clipAlias) => GetAsset(variant).File.Clips.ContainsKey(clipAlias);
     /// <summary>Every clip alias this knife's rig carries.</summary>
     public static IEnumerable<string> GetClipAliases(int variant) => GetAsset(variant).File.Clips.Keys;
 
     public static KnifeRigPose Sample(int variant, string clipAlias, float time, bool loop = false) {
+        float requested = time;
         Asset asset = GetAsset(variant);
         if (!asset.File.Clips.TryGetValue(clipAlias, out Clip clip)) clip = asset.File.Clips["idle"];
         if (loop && clip.Duration > 0f) {
@@ -250,7 +270,7 @@ public static class CsmcKnifeRig {
             if (KnifeDiagnostics.IsFinite(normalizedPose)) parts[binding.Name] = normalizedPose;
             else KnifeDiagnostics.WarnOnce($"rig-{asset.Name}-{binding.Name}-invalid", $"CSMC binding {asset.Name}/{binding.Name} produced a non-finite matrix.");
         }
-        return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments, frames, time);
+        return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments, frames, time, requested, loop);
     }
 
     /// <summary>
@@ -428,8 +448,10 @@ public sealed class KnifeRigPose {
     readonly IReadOnlyDictionary<string, Vector3> m_attachments;
     readonly IReadOnlyDictionary<string, Matrix> m_frames;
 
-    public KnifeRigPose(string assetName, string clipAlias, string sourceClip, float duration, float sourceReferenceScale, IReadOnlyDictionary<string, Matrix> bindings, IReadOnlyDictionary<string, Matrix> bones, IReadOnlyDictionary<string, Vector3> attachments, IReadOnlyDictionary<string, Matrix> frames = null, float time = 0f) {
+    public KnifeRigPose(string assetName, string clipAlias, string sourceClip, float duration, float sourceReferenceScale, IReadOnlyDictionary<string, Matrix> bindings, IReadOnlyDictionary<string, Matrix> bones, IReadOnlyDictionary<string, Vector3> attachments, IReadOnlyDictionary<string, Matrix> frames = null, float time = 0f, float requestedTime = 0f, bool looping = false) {
         Time = time;
+        RequestedTime = requestedTime;
+        Looping = looping;
         m_frames = frames ?? new Dictionary<string, Matrix>();
         AssetName = assetName;
         ClipAlias = clipAlias;
@@ -444,8 +466,16 @@ public sealed class KnifeRigPose {
     public string AssetName { get; }
     public string ClipAlias { get; }
     public string SourceClip { get; }
-    /// <summary>Clip time this pose was sampled at, clamped to the clip. The cs2 profile resamples its own rig at the same instant.</summary>
+    /// <summary>Clip time this pose was sampled at, clamped or wrapped to the CS:MC clip.</summary>
     public float Time { get; }
+    /// <summary>
+    /// The time the caller asked for, before any clamping or wrapping. The cs2 profile
+    /// needs it because its own clips are a different length; using <see cref="Time"/>
+    /// would freeze a longer CS2 clip at the CS:MC clip's end.
+    /// </summary>
+    public float RequestedTime { get; }
+    /// <summary>Whether the caller asked for a looping sample, so the cs2 profile can wrap at its own length.</summary>
+    public bool Looping { get; }
     public float Duration { get; }
     public float SourceReferenceScale { get; }
     public IReadOnlyDictionary<string, Matrix> Bindings => m_bindings;
