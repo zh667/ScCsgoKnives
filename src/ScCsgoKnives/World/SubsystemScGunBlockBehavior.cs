@@ -274,7 +274,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Fire(player, state, model, spec, value, data, rounds, input);
         }
 
-        RecoverKick(player, state, dt, spec.KickRecoverPerSecond);
+        RecoverKick(player, state, dt,
+            Cs2Weapons.Kick(spec.Name, false, spec.KickPitchDegrees, spec.KickYawDegrees,
+                spec.KickRecoverPerSecond).Recover);
     }
 
     void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input) {
@@ -295,14 +297,24 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (!spec.Automatic) Schedule(state, spec.Name, "shoot1", now);
         ShowAmmo(player, spec, rounds);
 
-        // Camera kick, applied now and eased back in RecoverKick.
-        float pitch = MathUtils.DegToRad(spec.KickPitchDegrees) * (0.8f + 0.4f * m_random.Float(0f, 1f));
-        float yaw = MathUtils.DegToRad(spec.KickYawDegrees) * m_random.Float(-1f, 1f);
+        // Camera kick, applied now and eased back in RecoverKick. The cs2 profile takes
+        // the ratios between guns from m_flRecoilMagnitude and the yaw scatter from
+        // m_flRecoilAngleVariance; the absolute scale is still the fitted AK value.
+        bool alternate = silenced || state.Zoom > 0;
+        (float kickPitch, float kickYaw, float _) = Cs2Weapons.Kick(spec.Name, alternate,
+            spec.KickPitchDegrees, spec.KickYawDegrees, spec.KickRecoverPerSecond);
+        float pitch = MathUtils.DegToRad(kickPitch) * (0.8f + 0.4f * m_random.Float(0f, 1f));
+        float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
         Kick(player, state, pitch, yaw);
 
         // Hitscan along the view ray with a small random cone.
         Ray3 ray = input.Dig ?? input.Hit ?? new Ray3(player.ComponentCreatureModel.EyePosition, Vector3.Transform(Vector3.UnitZ, player.ComponentCreatureModel.EyeRotation));
-        Vector3 direction = Scatter(ray.Direction, spec.SpreadDegrees * (state.Zoom > 0 ? 0.35f : 1f));
+        // CS keeps a separate inaccuracy per stance; the cs2 profile blends the vdata's
+        // standing and moving values by speed instead of scaling one cone by a constant.
+        float spread = Cs2Weapons.SpreadDegrees(spec.Name, alternate,
+            player.ComponentBody.Velocity.Length(),
+            spec.SpreadDegrees * (state.Zoom > 0 ? 0.35f : 1f));
+        Vector3 direction = Scatter(ray.Direction, spread);
         Vector3 start = ray.Position;
         Vector3 end = start + direction * spec.RangeBlocks;
         BodyRaycastResult? body = m_bodies.Raycast(start, end, 0.35f, (b, d) => b != player.ComponentBody && b.Entity != player.Entity);
@@ -314,7 +326,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         QueueTracer(spec.Name, start, direction, travel);
         if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
             Vector3 hitPoint = body.Value.HitPoint();
-            ComponentMiner.AttackBody(body.Value.ComponentBody, player, hitPoint, direction, spec.AttackPower, false);
+            // CS damage falls off with distance: damage * RangeModifier^(units/500).
+            float power = Cs2Weapons.DamageAt(spec.Name, body.Value.Distance, spec.AttackPower);
+            ComponentMiner.AttackBody(body.Value.ComponentBody, player, hitPoint, direction, power, false);
         }
         else if (terrain.HasValue) {
             Vector3 hitPoint = start + direction * terrain.Value.Distance;

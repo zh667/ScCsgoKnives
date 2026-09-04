@@ -1,4 +1,4 @@
-# 第一人称里刀和手的关系（0.15.2）
+# 第一人称里刀和手的关系（0.15.2；三把枪的 CS2 profile 见文末 0.16.x）
 
 这份说明只讲"刀放在哪、手放在哪、两者怎么绑在一起"。渲染材质（PBR）不在这里。
 
@@ -191,3 +191,60 @@ Windows 侧用 Source2Viewer 把 CS2 全部 35 件枪械的资源离线导出到
 - AWP 腰射时镜片是"电路板"：AWP 第二条身体记录（48 面，UV 在 u 1..2 那一格）就是镜片，它在枪身贴图上循环采到的是底材像素。
   现在按部件指定材质：`awp_lens`，取 CS2 `scope_awp.vmat`（默认色、金属度 0、scope 粗糙度）配 `shared/scope` 的贴图，深色玻璃。
 - 刀的 OBJ 在 0.15.2/0.15.3 的翻转往返里只改了浮点格式，数值一致，已从 git 恢复原文件。
+
+
+## 0.16.x：CS2 profile（2026-09-04）
+
+三把枪（AK-47 / M4A1-S / AWP）多了一条完整的并行管线，用 CS2 本体的数据重做第一人称。
+`ScCsgoKnivesTuning.txt` 里 `GunProfile = 1` 打开，`0` 退回上面那条 CS:MC 链。**默认仍是 0**，
+因为叠合验收要的 CS2 录屏还没有。22 把刀完全不受影响，两条路都不碰它们。
+
+### 与 CS:MC 链最大的不同：没有摆放要解
+
+CS2 的 viewmodel 动画**就摆在相机的坐标系里**。从 clip 量出来的：`root_motion` 在原点，
+枪身尾端 `wpnEnd` 在 x≈0，枪口在 +x 三四十英寸，y≈−5（Source 的 y 是左，负号=偏右），z≈−3（眼睛下方），
+`trigger→muzzle` 指向 +x 到 0.05 以内——这就是标准 Source view space。
+
+所以上面那条 `S(f)·Rz270·Ry180·Rx90·T·Rx(roll)·T(hip/aim)` 全部不需要，整条链只剩四步：
+
+```
+CS2 rig（英寸，Source 轴） → 坐标轴换（x前y左z上 → x右y上z后）
+                          → ×0.0254
+                          → viewmodel_offset（你本机的 2.5 / 0 / −1.5 英寸）
+                          → 按 viewmodel_fov 68 建投影（Hor+ 换算成竖直 53.668°）
+```
+
+`Cs2Placement.cs`。cvar 是从 `D:\steam\userdata\1415980225` 的 `cs2_user_convars_0_slot0.vcfg` 读的，
+不是默认值。唯一的假设是 Source 把 `fov` 当 4:3 下的水平视野、竖直角固定（Hor+）这条换算。
+
+### 各阶段换掉了什么
+
+| 部分 | CS:MC 链 | CS2 profile | 来源 |
+|---|---|---|---|
+| 动画 | CS:MC animbin | CS2 的二进制 DMX clip | `08_first_person/.../*.dmx` |
+| 骨架 | 45 骨（无 meta/肩） | 64 骨（含 meta、肩、扭转） | 同上 |
+| 网格 | `body_legacy`（AK 13435 面） | `body_hd`（AK 26133 面） | `02_models/.../weapon_*.glb` |
+| 材质 | legacy v_models 贴图 + 平面法线 | 当前 VMAT 绑定的五张图 + 真法线 | `04_current_weapon_materials/` |
+| 手臂 | Minecraft 式方块臂 + 拳头求解器 | CS2 的蒙皮手臂与无指手套（CPU 蒙皮 6274 顶点/帧） | `08_first_person/glb/.../weapon_arms.glb` |
+| 火光/曳光 | 手调的时长与大小 | vpcf 的寿命/序列/颜色/透明度/淡出、vdata 的枪口位置与曳光频率 | `06_particles/`、`01_weapon_data/` |
+| 开镜遮罩 | 对着 CS:MC 录像拟合的圆（0.4825 h / 0.0185 h） | CS2 HUD 的 `scope_circle.png`（0.475 h / 0.05 h） | `07_scope/panorama/` |
+| 数值 | 手调的踢枪与散布 | vdata 的伤害/衰减/散布/后坐比例 | `01_weapon_data/` |
+
+### 两条链共用的一件事
+
+part 的摆放式子还是 `Right · boneAbsolute · Left`（`CsmcKnifeRig` 那条），只是 CS2 侧
+`Left = 单位阵`、`Right = N⁻¹P⁻¹D_rest⁻¹`，输出英寸交给 `Cs2Placement`。
+静息时 `Right·D_rest` 必须等于 `N⁻¹P⁻¹`，转换器里断言到 1e-8。
+
+### 每一阶段都有自检脚本
+
+`tools/cs2_rig_selftest.py`（动画）、`cs2_mesh_selftest.py`（网格材质）、
+`cs2_placement_selftest.py`（摆放，比出厂 C# 与离线参照）、`cs2_arms_selftest.py`（蒙皮）、
+`cs2_effects_selftest.py`（特效开镜）、`cs2_weapons_selftest.py`（数值）。
+逐阶段的数字在 `docs/cs2-stage1..6-report.md`。
+
+### 还欠的
+
+**CS2 录屏**。阶段 1 的声音峰值、阶段 2 的亮度 5%、阶段 3 的地标 10 px、阶段 4 的手指 10 px
+四条验收都等它；`tools/cs2_videocheck.py` 已经写好，量到的像素坐标填进 `LANDMARKS` 就能跑。
+默认 profile 也等它才翻。

@@ -1,0 +1,312 @@
+{
+ "Format": "ScCsgoKnives.Cs2Weapons/1",
+ "Notes": "Values from weapon_<gun>.vdata. Damage falls off as damage * RangeModifier^(units/500), the CS convention documented at counterstrike.fandom.com/wiki/Damage_dropoff and steamcommunity.com/sharedfiles/filedetails/?id=2599082552 - community documentation of the formula, not the SDK source. Spread is atan(m_flSpread + m_flInaccuracy*) in degrees, a reading of the units. Recoil ratios are CS2's; the absolute degrees-per-recoil-unit scale is anchored to the AK's previously hand-fitted 1.6 deg and is ESTIMATED.",
+ "UnitsPerMetre": 39.37007874015748,
+ "FalloffUnits": 500.0,
+ "KickDegreesPerRecoilUnit": 0.053333,
+ "Guns": {
+  "ak47": {
+   "Damage": 36.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.55,
+   "Penetration": 2.0,
+   "Magazine": 30,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.1,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    215.0,
+    215.0
+   ],
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "RecoveryTimeStand": 0.368,
+   "RecoilSeed": 223.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    30.0,
+    30.0
+   ],
+   "SpreadDegrees": 0.40164,
+   "SpreadDegreesAlternate": 0.40164,
+   "MoveSpreadDegrees": 9.96293,
+   "KickPitchDegrees": 1.6,
+   "KickPitchDegreesAlternate": 1.6,
+   "KickYawDegrees": 0.91772,
+   "KickRecoverPerSecond": 2.71739,
+   "Raw": {
+    "m_nDamage": 36.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.1,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 1.55,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.368,
+    "m_flRecoveryTimeCrouch": 0.305257,
+    "m_flRecoveryTimeStandFinal": 0.506,
+    "m_nRecoilSeed": 223.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.00641,
+     0.00641
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00481,
+     0.00481
+    ],
+    "m_flInaccuracyMove": [
+     0.17506,
+     0.17506
+    ],
+    "m_flInaccuracyFire": [
+     0.0078,
+     0.0078
+    ],
+    "m_flInaccuracyJump": [
+     0.14076,
+     0.14076
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     30.0,
+     30.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flMaxSpeed": [
+     215.0,
+     215.0
+    ],
+    "m_bIsFullAuto": true
+   }
+  },
+  "m4a1s": {
+   "Damage": 38.0,
+   "HeadshotMultiplier": 3.475,
+   "ArmorRatio": 1.4,
+   "Penetration": 2.0,
+   "Magazine": 20,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.1,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.94,
+   "MaxSpeed": [
+    225.0,
+    225.0
+   ],
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "RecoveryTimeStand": 0.338941,
+   "RecoilSeed": 38965.0,
+   "RecoilAngleVariance": [
+    65.0,
+    65.0
+   ],
+   "RecoilMagnitude": [
+    25.0,
+    21.0
+   ],
+   "SpreadDegrees": 0.31512,
+   "SpreadDegreesAlternate": 0.30939,
+   "MoveSpreadDegrees": 5.34049,
+   "KickPitchDegrees": 1.33333,
+   "KickPitchDegreesAlternate": 1.12,
+   "KickYawDegrees": 0.7164,
+   "KickRecoverPerSecond": 2.95037,
+   "Raw": {
+    "m_nDamage": 38.0,
+    "m_iMaxClip1": 20.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.1,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.94,
+    "m_flArmorRatio": 1.4,
+    "m_flHeadshotMultiplier": 3.475,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.338941,
+    "m_flRecoveryTimeCrouch": 0.2421,
+    "m_flRecoveryTimeStandFinal": 0.466044,
+    "m_nRecoilSeed": 38965.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.133333,
+    "m_flSpread": [
+     0.0006,
+     0.0005
+    ],
+    "m_flInaccuracyStand": [
+     0.0049,
+     0.0049
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0041,
+     0.0041
+    ],
+    "m_flInaccuracyMove": [
+     0.09288,
+     0.122
+    ],
+    "m_flInaccuracyFire": [
+     0.012,
+     0.007
+    ],
+    "m_flInaccuracyJump": [
+     0.0997,
+     0.0997
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     65.0,
+     65.0
+    ],
+    "m_flRecoilMagnitude": [
+     25.0,
+     21.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     3.0,
+     0.0
+    ],
+    "m_flMaxSpeed": [
+     225.0,
+     225.0
+    ],
+    "m_bIsFullAuto": true
+   }
+  },
+  "awp": {
+   "Damage": 115.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.95,
+   "Penetration": 2.5,
+   "Magazine": 5,
+   "ReserveClips": 2,
+   "CycleSeconds": 1.455,
+   "FullAuto": false,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.99,
+   "MaxSpeed": [
+    200.0,
+    100.0
+   ],
+   "ZoomFov": [
+    40.0,
+    10.0
+   ],
+   "RecoveryTimeStand": 0.34539,
+   "RecoilSeed": 4100.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    78.0,
+    25.0
+   ],
+   "SpreadDegrees": 4.63085,
+   "SpreadDegreesAlternate": 0.12605,
+   "MoveSpreadDegrees": 10.01962,
+   "KickPitchDegrees": 4.16,
+   "KickPitchDegreesAlternate": 1.33333,
+   "KickYawDegrees": 0.72238,
+   "KickRecoverPerSecond": 2.89528,
+   "Raw": {
+    "m_nDamage": 115.0,
+    "m_iMaxClip1": 5.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 1.455,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.99,
+    "m_flArmorRatio": 1.95,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.5,
+    "m_flRecoveryTimeStand": 0.34539,
+    "m_flRecoveryTimeCrouch": 0.24671,
+    "m_flRecoveryTimeStandFinal": 0.34539,
+    "m_nRecoilSeed": 4100.0,
+    "m_nZoomFOV1": 40.0,
+    "m_nZoomFOV2": 10.0,
+    "m_nZoomLevels": 2.0,
+    "m_flDeployDuration": 1.266667,
+    "m_flSpread": [
+     0.0002,
+     0.0002
+    ],
+    "m_flInaccuracyStand": [
+     0.0808,
+     0.002
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0606,
+     0.0015
+    ],
+    "m_flInaccuracyMove": [
+     0.17648,
+     0.17648
+    ],
+    "m_flInaccuracyFire": [
+     0.05385,
+     0.05385
+    ],
+    "m_flInaccuracyJump": [
+     0.13383,
+     0.13383
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     78.0,
+     25.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     15.0,
+     2.0
+    ],
+    "m_flMaxSpeed": [
+     200.0,
+     100.0
+    ],
+    "m_bIsFullAuto": false
+   }
+  }
+ }
+}

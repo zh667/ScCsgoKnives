@@ -1,0 +1,73 @@
+{
+  "mismatches": [],
+  "regenerates_identically": true,
+  "derived": [
+    {
+      "gun": "ak47",
+      "max_error": 1.0000000000065512e-05
+    },
+    {
+      "gun": "m4a1s",
+      "max_error": 5.000000000032756e-06
+    },
+    {
+      "gun": "awp",
+      "max_error": 2.6000000000081513e-05
+    }
+  ],
+  "falloff": [
+    {
+      "gun": "ak47",
+      "5m": 35.71,
+      "20m": 34.87,
+      "50m": 33.25,
+      "100m": 30.71
+    },
+    {
+      "gun": "m4a1s",
+      "5m": 37.09,
+      "20m": 34.47,
+      "50m": 29.78,
+      "100m": 23.34
+    },
+    {
+      "gun": "awp",
+      "5m": 114.55,
+      "20m": 113.19,
+      "50m": 110.54,
+      "100m": 106.25
+    }
+  ],
+  "changes": [
+    {
+      "gun": "ak47",
+      "field": "SpreadDegrees",
+      "was": 0.35,
+      "now": 0.40164
+    },
+    {
+      "gun": "m4a1s",
+      "field": "SpreadDegrees",
+      "was": 0.3,
+      "now": 0.31512
+    },
+    {
+      "gun": "m4a1s",
+      "field": "KickPitchDegrees",
+      "was": 1.15,
+      "now": 1.33333
+    },
+    {
+      "gun": "awp",
+      "field": "SpreadDegrees",
+      "was": 0.1,
+      "now": 4.63085
+    },
+    {
+      "gun": "awp",
+      "field": "KickPitchDegrees",
+      "was": 6.0,
+      "now": 4.16
+    }
+  ]
+}
