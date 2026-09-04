@@ -56,6 +56,23 @@ tactical, talon, ursus）。
 
 **A1+A2+A3 合计约 97 MB，这是最要紧的一组。**
 
+### 取件命令（Source2Viewer CLI 支持前缀过滤，不用列全部路径）
+
+`--vpk_filepath` 是**前缀匹配**（源码 `CLI/Decompiler.cs`:1541，
+`filePath.StartsWith(filter)`），所以给目录前缀就够了：
+
+```
+Source2Viewer-CLI --input "<CS2>/game/csgo/pak01_dir.vpk" --output 09_knives ^
+  --decompile --vpk_dir --threads 8 ^
+  --gltf_export_format glb --gltf_export_materials --gltf_export_animations ^
+  --vpk_filepath "weapons/models/knife/,animation/anims/viewmodel/knife/,animation/graphs/viewmodel/viewmodel_knife,animation/graphs/viewmodel/viewmodel_inspects.vnmgraph+knife,animation/skeletons/weapons/knife"
+```
+
+**先加 `--vpk_list` 干跑一遍**，核对条数是不是 145 + 317 + 66 = 528，
+对不上再回来看清单文件。
+
+清单文件（`A1`/`A2`/`A3`）留着做**逐条核对**用，不是非要喂给命令行。
+
 ### 处理方式：和上次导枪完全一样
 
 ```
@@ -118,11 +135,30 @@ CS2 的皮肤是运行时合成的（`csgo_weapon.vfx`：图案贴图 + `masks` 
 
 **做完第 1 批就可以先给 VPS 试通管线**，不用等全部。
 
-### 顺带一个可选项
+### 取件命令
 
-如果解包器能导出着色器，请把 `csgo_weapon.vfx` 的反编译结果也带一份
-（放 `shader_dump/` 下）。不是必需——合成规则可以从 vmat 参数反推——但有它能
-省掉一轮试错。现有的 `shader-resource-list.txt` 里没有它。
+```
+Source2Viewer-CLI --input "<CS2>/game/csgo/pak01_dir.vpk" --output 10_paints ^
+  --decompile --vpk_dir --threads 8 ^
+  --vpk_filepath "materials/models/weapons/customization/paints/vmats/,weapons/paints/,materials/default/stickers/"
+```
+
+上面这条就是 B2+B3+B4（9.5 MB）。B1 按批加前缀，例如第 1 批：
+
+```
+  --vpk_filepath "materials/models/weapons/customization/paints/anodized_air/"
+```
+
+### 着色器不用你导了
+
+`csgo_weapon.vfx` 已经在 `SteamTracking/GameTracking-CS2`（⭐943，持续更新）里，
+VPS 侧一条命令就能拉，不劳你动手：
+
+```
+game/csgo/shaders_vulkan_dir/shaders/vfx/csgo_weapon.slang   124 KB / 2289 行
+```
+
+详见 `docs/cs2-prior-art-2026-09-05.md`。
 
 ---
 
