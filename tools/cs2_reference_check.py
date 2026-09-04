@@ -54,6 +54,34 @@ from cs2_rig_selftest import GUNS
 ROOT = Path(__file__).resolve().parent.parent
 FORMAT = "ScCsgoKnives.Cs2Reference/1"
 
+# Settled by the Windows capture probe on 2026-09-05: Game Bar returns the render
+# natively, 1400x1050, 4:3, lossless RGBA PNG with alpha fully opaque, sRGB encoded
+# (gamma 0.45455). No pillarbox, no stretch, so the capture transform is the
+# identity and no resampling ever touches a reference image.
+COMPARISON_SIZE = [1400, 1050]
+IDENTITY = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+SRGB_GAMMA = 0.45455
+
+
+def comparison_size(manifest):
+    """Canonical `comparison_size: [w, h]`; `comparison_space` is the older spelling."""
+    size = manifest.get("comparison_size")
+    if size:
+        return list(size)
+    space = manifest.get("comparison_space") or {}
+    if space.get("width") and space.get("height"):
+        return [space["width"], space["height"]]
+    return None
+
+
+def transform_is_identity(m):
+    if m is None:
+        return False
+    a = np.asarray(m, float)
+    if a.shape == (2, 3):
+        a = np.vstack([a, [0.0, 0.0, 1.0]])
+    return a.shape == (3, 3) and bool(np.allclose(a, np.eye(3), atol=1e-9))
+
 
 class Item:
     """One acceptance line. Missing input is a FAIL with a reason, never a silent skip."""
@@ -107,9 +135,20 @@ def check_input(manifest, base: Path):
     item = Item("INPUT")
     if manifest.get("format") != FORMAT:
         return item.fail("manifest format is %r, expected %r" % (manifest.get("format"), FORMAT))
-    space = manifest.get("comparison_space") or {}
-    if not space.get("width") or not space.get("height"):
-        return item.fail("comparison_space.width/height missing")
+    size = comparison_size(manifest)
+    if not size:
+        return item.fail("comparison_size missing")
+    if size != COMPARISON_SIZE:
+        return item.fail("comparison_size is %s; the probe settled this machine at %s"
+                         % (size, COMPARISON_SIZE))
+    transform = manifest.get("capture_transform")
+    if not transform_is_identity(transform):
+        return item.fail("capture_transform must be the identity - the probe showed the "
+                         "capture is native 1400x1050 with no stretch, so any other "
+                         "transform means the image was resampled; got %r" % (transform,))
+    gamma = ((manifest.get("cs2") or {}).get("color") or {}).get("gamma")
+    if gamma is not None and abs(float(gamma) - SRGB_GAMMA) > 1e-3:
+        return item.fail("colour gamma %s, expected sRGB %s" % (gamma, SRGB_GAMMA))
     cvars = (manifest.get("cs2") or {}).get("cvars") or {}
     needed = ["viewmodel_fov", "viewmodel_offset_x", "viewmodel_offset_y", "viewmodel_offset_z"]
     missing = [c for c in needed if c not in cvars]
@@ -127,11 +166,17 @@ def check_input(manifest, base: Path):
             problems.append("%s missing" % shot["image"])
             continue
         im = Image.open(path)
-        if (im.width, im.height) != (space["width"], space["height"]):
-            problems.append("%s is %dx%d, comparison space is %dx%d"
-                            % (shot["image"], im.width, im.height, space["width"], space["height"]))
+        if [im.width, im.height] != size:
+            problems.append("%s is %dx%d, comparison size is %dx%d"
+                            % (shot["image"], im.width, im.height, size[0], size[1]))
         if im.mode not in ("RGB", "RGBA"):
-            problems.append("%s mode %s, expected RGB" % (shot["image"], im.mode))
+            problems.append("%s mode %s, expected RGB or RGBA" % (shot["image"], im.mode))
+        elif im.mode == "RGBA":
+            alpha = np.asarray(im)[..., 3]
+            if alpha.min() != 255:
+                problems.append("%s has non-opaque alpha (min %d); the probe found the "
+                                "capture fully opaque, so this image is not a raw capture"
+                                % (shot["image"], alpha.min()))
         if shot.get("sha256"):
             got = sha256(path)
             if got.lower() != shot["sha256"].lower():
@@ -151,8 +196,9 @@ def check_input(manifest, base: Path):
         checked.append(shot["image"])
     if problems:
         return item.fail("; ".join(problems[:8]), shots_checked=checked)
-    return item.ok("%d shots, sizes, colour mode, hashes and masks all agree" % len(checked),
-                   shots_checked=checked, comparison_space=space)
+    return item.ok("%d shots at %dx%d, identity capture transform, opaque alpha, hashes "
+                   "and masks all agree" % (len(checked), size[0], size[1]),
+                   shots_checked=checked, comparison_size=size)
 
 
 # --- PLACE -------------------------------------------------------------------
@@ -173,7 +219,7 @@ def predict(gun, clip, t, cvars, width, height):
 
 def check_place(manifest, base: Path, threshold=10.0):
     item = Item("PLACE")
-    space = manifest["comparison_space"]
+    width, height = comparison_size(manifest)
     cvars = manifest["cs2"]["cvars"]
     rows = []
     worst = 0.0
@@ -188,7 +234,7 @@ def check_place(manifest, base: Path, threshold=10.0):
             return item.fail("%s has no weapon landmarks" % shot["landmarks"])
         try:
             got = predict(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
-                          cvars, space["width"], space["height"])
+                          cvars, width, height)
         except RuntimeError as exc:
             return item.fail("prediction failed for %s: %s" % (shot["image"], exc))
         for name, (vx, vy) in want.items():
@@ -217,7 +263,7 @@ def check_place(manifest, base: Path, threshold=10.0):
 
 def diagnose_fov(manifest, base: Path):
     """Diagnostic only. Never touches a verdict - see the module docstring."""
-    space = manifest["comparison_space"]
+    width, height = comparison_size(manifest)
     cvars = dict(manifest["cs2"]["cvars"])
     out = []
     for fov in np.arange(58.0, 80.5, 1.0):
@@ -226,7 +272,7 @@ def diagnose_fov(manifest, base: Path):
         for shot in manifest.get("shots") or []:
             lm = (json.loads((base / shot["landmarks"]).read_text("utf-8")) or {}).get("weapon") or {}
             got = predict(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
-                          trial, space["width"], space["height"])
+                          trial, width, height)
             for name, (vx, vy) in lm.items():
                 hit = got["lm"].get(name)
                 if hit:
@@ -369,7 +415,7 @@ def check_hand(manifest, base: Path, iou_min=0.85, centroid_max=10.0, landmark_m
         return item.fail("agent_unverified: cs2.arms_verified is not set; run "
                          "cs2_capture_probe.py --arm-tone across candidate loadouts first")
 
-    space = manifest["comparison_space"]
+    width, height = comparison_size(manifest)
     cvars = manifest["cs2"]["cvars"]
     rows = []
     worst_iou = 1.0
@@ -382,10 +428,10 @@ def check_hand(manifest, base: Path, iou_min=0.85, centroid_max=10.0, landmark_m
         weapon_path = base / shot["weapon_mask"]
         if not hand_path.exists() or not weapon_path.exists():
             return item.fail("%s: hand or weapon mask missing" % shot["image"])
-        ref_hand = load_mask(hand_path, (space["width"], space["height"]))
-        ref_weapon = load_mask(weapon_path, (space["width"], space["height"]))
+        ref_hand = load_mask(hand_path, (width, height))
+        ref_weapon = load_mask(weapon_path, (width, height))
         ours = left_hand_mask(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
-                              cvars, space["width"], space["height"])
+                              cvars, width, height)
         # Grip / contact ROI: where the hand and the weapon meet, not the whole arm.
         roi = (dilate(ref_hand, 12) & dilate(ref_weapon, 12)) | (ref_hand & dilate(ref_weapon, 24))
         if roi.sum() < 200:
@@ -407,7 +453,7 @@ def check_hand(manifest, base: Path, iou_min=0.85, centroid_max=10.0, landmark_m
             want = (json.loads(lm_path.read_text("utf-8")) or {}).get("left_hand") or {}
             if want:
                 got = predict(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
-                              cvars, space["width"], space["height"])
+                              cvars, width, height)
                 marks = []
                 for name, (vx, vy) in want.items():
                     hit = got["lm"].get(name)
@@ -456,9 +502,58 @@ def check_sound():
                    total=total)
 
 
+TEMPLATE = {
+    "format": FORMAT,
+    "captured_at": "REPLACE with ISO 8601",
+    "comparison_size": COMPARISON_SIZE,
+    "capture_transform": IDENTITY,
+    "capture_tool": "xbox_game_bar",
+    "cs2": {
+        "build": "REPLACE with the console `version` line",
+        "map": "de_dust2",
+        "setpos_exact": [0, 0, 0],
+        "setang_exact": [0, 0, 0],
+        "team": "REPLACE",
+        "agent": "REPLACE",
+        "gloves": "none",
+        "arms_verified": False,
+        "weapon_finish": "default",
+        "color": {"encoding": "srgb", "gamma": SRGB_GAMMA},
+        "cvars": {
+            "viewmodel_fov": 68, "viewmodel_offset_x": 2.5,
+            "viewmodel_offset_y": 0, "viewmodel_offset_z": -1.5,
+            "cl_prefer_lefthanded": 0, "cl_silencer_mode": 0,
+            "zoom_sensitivity_ratio": 1.0, "weapon_recoil_scale": "REPLACE",
+        },
+        "video": {
+            "render_width": 1400, "render_height": 1050, "aspect_mode": "normal_4_3",
+            "fullscreen": True, "refresh_hz": 144, "shadow_quality": 0, "ao_detail": 0,
+            "particle_detail": 0, "shader_quality": 0, "msaa": 4, "hdr": -1,
+            "texture_detail": 2,
+        },
+    },
+    "shots": [
+        {"gun": g, "state": s, "clip": "idle", "t": 0.0,
+         "image": "%s_%s.png" % (g, s),
+         "weapon_mask": "masks/%s_%s_weapon.png" % (g, s),
+         "hand_mask": "masks/%s_%s_lefthand.png" % (g, s),
+         "landmarks": "landmarks/%s_%s.json" % (g, s),
+         "our_render": "render/%s_%s.png" % (g, s),
+         "our_render_mask": "render/%s_%s_mask.png" % (g, s),
+         "sha256": "REPLACE"}
+        for g, s in (("ak47", "idle"), ("m4a1s", "idle"), ("m4a1s", "idle_silenced"),
+                     ("awp", "idle"), ("awp", "idle_scoped"))
+    ],
+    "videos": [{"gun": g, "file": "%s.mp4" % g, "sha256": "REPLACE", "purpose": "qa_only"}
+               for g in ("ak47", "m4a1s", "awp")],
+}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", type=Path, required=True)
+    ap.add_argument("--template", action="store_true",
+                    help="write a starter manifest at --manifest and exit")
     ap.add_argument("--anchor", help="gun the photometric multiplier is fitted on")
     ap.add_argument("--fit-fov", action="store_true", help="diagnostic sweep; never affects a verdict")
     ap.add_argument("--out", type=Path, help="directory for the report (default: next to the manifest)")
@@ -466,6 +561,11 @@ def main():
 
     base = args.manifest.parent
     out_dir = args.out or base
+    if args.template:
+        base.mkdir(parents=True, exist_ok=True)
+        args.manifest.write_text(json.dumps(TEMPLATE, indent=1), "utf-8")
+        print("wrote %s\nFill every REPLACE, then capture the shots it lists." % args.manifest)
+        return 0
     try:
         manifest = json.loads(args.manifest.read_text("utf-8"))
     except Exception as exc:

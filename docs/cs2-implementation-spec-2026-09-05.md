@@ -162,6 +162,13 @@ viewmodel lag/bob，在 SC 侧由 `post`（机体运动）承担。
 
 ## 3. 截图探针与比较空间
 
+> **2026-09-05 已由 Windows 探针定案，本节的三分支判定不再需要现场执行：**
+> Game Bar 输出**原生 1400×1050、4:3、RGBA 无损 PNG、alpha 全不透明、sRGB gamma 0.45455**，
+> 无 pillarbox、无拉伸。因此 **`comparison_size = [1400, 1050]`、`capture_transform` = 单位矩阵、
+> 参考图永远不重采样**，这三项已写死进 `cs2_reference_check.py` 并作为 INPUT 项的硬校验
+> （尺寸不符、变换非单位、gamma 不符、alpha 非全不透明，任一即 FAIL）。
+> 下面保留原判定逻辑，工具仍能处理另外两种情况，以防设置变更。
+
 ### 3.1 不再假定 1920×1080
 
 Windows 先按现有设置（4:3 / 1400×1050 / 全屏）用 `Win+Alt+PrintScreen` 拍**一张** idle PNG，
