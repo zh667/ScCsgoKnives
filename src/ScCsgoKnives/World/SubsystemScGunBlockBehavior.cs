@@ -59,7 +59,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     };
 
     void Schedule(GunState state, string spec, string clip, double startedAt, bool silenced = false) {
-        if (!s_clipSounds.TryGetValue($"{spec}:{clip}", out var list)) return;
+        string key = $"{spec}:{clip}";
+        // CS2's own event frames when the profile asks for them, else the bone-timed
+        // table. Either way a clip CS2 has no cue for falls back to the old row.
+        if (KnifeTuning.GunSoundProfile < 0.5f || !Cs2Sounds.TryGet(key, out var list))
+            if (!s_clipSounds.TryGetValue(key, out list)) return;
         foreach ((float at, string name) in list) {
             // The M4A1-S bolt sounds differently with the silencer on (m4a1_silencer_bolt*).
             string n = silenced && name is "m4a1s_boltback" or "m4a1s_boltforward" ? name + "_silenced" : name;

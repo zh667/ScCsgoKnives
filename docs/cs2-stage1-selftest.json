@@ -1,0 +1,3043 @@
+{
+  "parse": {
+    "binary_ok": 310,
+    "binary_total": 310,
+    "keyvalues2_skipped": 36,
+    "failures": []
+  },
+  "rig": {
+    "max_inches": 0.008104303822259632,
+    "at": "ak47/reload_ak frame 41 hand_R",
+    "samples": 1842
+  },
+  "attach": [
+    {
+      "gun": "ak47",
+      "attach_bone": "wpn",
+      "cs2_hand_to_muzzle_in": 28.836735401695318,
+      "csmc_hand_to_muzzle_in": 28.519951476150865,
+      "delta_pct": 1.1107449667624987
+    },
+    {
+      "gun": "m4a1s",
+      "attach_bone": "wpn",
+      "cs2_hand_to_muzzle_in": 29.54524118066783,
+      "csmc_hand_to_muzzle_in": 29.242594073850896,
+      "delta_pct": 1.0349530074268112
+    },
+    {
+      "gun": "awp",
+      "attach_bone": "wpn",
+      "cs2_hand_to_muzzle_in": 47.14802661393639,
+      "csmc_hand_to_muzzle_in": 46.6960360355408,
+      "delta_pct": 0.9679420712532717
+    }
+  ],
+  "roundtrip": [
+    {
+      "gun": "ak47",
+      "max_abs_error": 6.783374609220516e-05,
+      "at": "ak47 lookat01_transfix_ak frame 66 finger_middle_2_L",
+      "clips": 11
+    },
+    {
+      "gun": "m4a1s",
+      "max_abs_error": 5.9361606830066194e-05,
+      "at": "m4a1s silencer_detach_rifle frame 128 attachHand_R",
+      "clips": 7
+    },
+    {
+      "gun": "awp",
+      "max_abs_error": 6.20940413842419e-05,
+      "at": "awp shoot1_awp frame 34 wpnTip",
+      "clips": 5
+    }
+  ],
+  "cross": [
+    {
+      "gun": "ak47",
+      "cs2_clip": "draw_ak",
+      "csmc_clip": "deploy",
+      "cs2_fps": 30.0,
+      "cs2_frames": 31,
+      "cs2_duration": 1.0,
+      "csmc_duration": 1,
+      "csmc_frames": 31,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 1.7851337384847836,
+          "max_deg": 9.40776963211157,
+          "corr": 0.9010859059535062
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.7550854047541277,
+          "max_deg": 3.6368640567949972,
+          "corr": 0.9201111361249117
+        },
+        "bolt": {
+          "csmc": "v_weapon_ak47_bolt",
+          "mean_deg": 1.3802897316796856,
+          "max_deg": 5.346038730244633,
+          "corr": 0.9336508385207543
+        },
+        "clip": {
+          "csmc": "v_weapon_ak47_clip",
+          "mean_deg": 1.3801954041255942,
+          "max_deg": 5.350627421900243,
+          "corr": 0.9336399992440242
+        },
+        "cliprelease": {
+          "csmc": "v_weapon_ak47_cliprelease",
+          "mean_deg": 1.3805656394853054,
+          "max_deg": 5.350627421900116,
+          "corr": 0.933607653533093
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 6.4417965048493695,
+          "max_deg": 27.466917716751098,
+          "corr": 0.8419294623873836
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 1.3629582478735938,
+          "max_deg": 5.25615970244171,
+          "corr": 0.942387801935835
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 10.181137221478616,
+          "max_deg": 42.81716555514285,
+          "corr": 0.7340015640754525
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 1.3207647684138875,
+          "max_deg": 5.296702767006445,
+          "corr": 0.9417642026298099
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 14.102735225535218,
+          "max_deg": 71.71542206349937,
+          "corr": 0.6588673555478203
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 1.1854589187282945,
+          "max_deg": 5.310551888169277,
+          "corr": 0.9619981638938906
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 5.883627886740393,
+          "max_deg": 30.128393078045985,
+          "corr": 0.8146749267173953
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 1.3798433894525426,
+          "max_deg": 5.302060689017374,
+          "corr": 0.9337917588775101
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 9.255746445230459,
+          "max_deg": 46.315889307984,
+          "corr": 0.6880273945105845
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 1.4012583610850768,
+          "max_deg": 5.2931952713886945,
+          "corr": 0.9327108923879871
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 12.040425682277123,
+          "max_deg": 73.20138152805939,
+          "corr": 0.6132432985282028
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 1.4000430170813223,
+          "max_deg": 5.2800082797209615,
+          "corr": 0.9328372192296076
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 6.072475204853075,
+          "max_deg": 29.955588801457942,
+          "corr": 0.7632950569324114
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 1.4544918152961677,
+          "max_deg": 5.310967183965456,
+          "corr": 0.9301863956274153
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 9.439449448278474,
+          "max_deg": 50.01856071229968,
+          "corr": 0.6916920521007057
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 1.4432702100022559,
+          "max_deg": 5.282043617396302,
+          "corr": 0.9303517334838337
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 14.742270779257863,
+          "max_deg": 68.71022849159888,
+          "corr": 0.6503786469445259
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 1.3933120890809951,
+          "max_deg": 5.267385862261733,
+          "corr": 0.9401122932410032
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 5.628025372003421,
+          "max_deg": 24.260036726159203,
+          "corr": 0.8288112713312267
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 1.3812057507177107,
+          "max_deg": 5.301732181218155,
+          "corr": 0.9336481855547603
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 9.10986601862847,
+          "max_deg": 40.107402661583144,
+          "corr": 0.7175273224330506
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 1.3848536521920913,
+          "max_deg": 5.269526951572123,
+          "corr": 0.9334013043070483
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 12.645004224116121,
+          "max_deg": 64.95704431654525,
+          "corr": 0.6417461725201491
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 1.354109118139705,
+          "max_deg": 5.2260851935029535,
+          "corr": 0.9374417713719116
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 5.214479485045822,
+          "max_deg": 21.098481295522294,
+          "corr": 0.8480338667768702
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 1.3641694556761272,
+          "max_deg": 5.348658916509128,
+          "corr": 0.9450391082281637
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 7.2660404339803195,
+          "max_deg": 42.55873005990944,
+          "corr": 0.6488998418102859
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 1.371956614620612,
+          "max_deg": 5.348070060456197,
+          "corr": 0.944428070045831
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 12.523597410346575,
+          "max_deg": 94.87869632367315,
+          "corr": 0.47353862215630727
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 1.357244717011501,
+          "max_deg": 5.355244000808649,
+          "corr": 0.9457065487401392
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 3.361577884176703,
+          "max_deg": 15.495486058842388,
+          "corr": 0.9213884701295509
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 1.3659033757382,
+          "max_deg": 5.314377500051006,
+          "corr": 0.9349519233417269
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 1.3748765401477279,
+          "max_deg": 5.316050324847347,
+          "corr": 0.9335914226038741
+        },
+        "trigger": {
+          "csmc": "v_weapon_ak47_trigger",
+          "mean_deg": 1.3801954041255942,
+          "max_deg": 5.350627421900243,
+          "corr": 0.9336399992440242
+        }
+      }
+    },
+    {
+      "gun": "ak47",
+      "cs2_clip": "idle_ak",
+      "csmc_clip": "idle",
+      "cs2_fps": 1.0,
+      "cs2_frames": 1,
+      "cs2_duration": 0.0,
+      "csmc_duration": 0,
+      "csmc_frames": 1,
+      "bones": {}
+    },
+    {
+      "gun": "ak47",
+      "cs2_clip": "shoot1_ak",
+      "csmc_clip": "shoot1",
+      "cs2_fps": 29.99869728088379,
+      "cs2_frames": 24,
+      "cs2_duration": 0.7666,
+      "csmc_duration": 0.766667,
+      "csmc_frames": 24,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.5407270380447045,
+          "max_deg": 3.3170226327133765,
+          "corr": 0.9743900359272442
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.01031931530729117,
+          "max_deg": 0.04214438654466779,
+          "corr": 0.9999566308520669
+        },
+        "bolt": {
+          "csmc": "v_weapon_ak47_bolt",
+          "mean_deg": 0.020622747121249566,
+          "max_deg": 0.055832417897755435,
+          "corr": 0.9979193958772371
+        },
+        "clip": {
+          "csmc": "v_weapon_ak47_clip",
+          "mean_deg": 0.020622747121249566,
+          "max_deg": 0.055832417897755435,
+          "corr": 0.9979193958772371
+        },
+        "cliprelease": {
+          "csmc": "v_weapon_ak47_cliprelease",
+          "mean_deg": 0.02062274712461776,
+          "max_deg": 0.055832417897755435,
+          "corr": 0.9979193958766993
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 0.0048126347189611455,
+          "max_deg": 0.01357905159287609,
+          "corr": 0.9998280546359646
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.004436594607978296,
+          "max_deg": 0.014563834289055166,
+          "corr": 0.999847794424178
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 0.0055024993091549665,
+          "max_deg": 0.016496031509178555,
+          "corr": 0.9997742201637437
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.05951041505119636,
+          "max_deg": 0.3121396237640168,
+          "corr": 0.998193788320289
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 0.006523501984269253,
+          "max_deg": 0.016495844945221827,
+          "corr": 0.999692322248656
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.110518511751849,
+          "max_deg": 0.36009268271136174,
+          "corr": 0.9972558388447774
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 0.0040675237206538985,
+          "max_deg": 0.012443374105694563,
+          "corr": 0.9998801912958096
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.0045976358864269285,
+          "max_deg": 0.01151356422446553,
+          "corr": 0.9998583705635915
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 0.0058420255250988765,
+          "max_deg": 0.015134726557344387,
+          "corr": 0.9997550201986724
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.005878381427299039,
+          "max_deg": 0.014354566178754746,
+          "corr": 0.9997908260992324
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 0.007118352743715164,
+          "max_deg": 0.015130930968706111,
+          "corr": 0.999682941954913
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.006155017955551715,
+          "max_deg": 0.014354566178695016,
+          "corr": 0.9997632936430159
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 0.0043236113973551624,
+          "max_deg": 0.013319073726020592,
+          "corr": 0.9998484208586086
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.0031044350099262725,
+          "max_deg": 0.007195648638820919,
+          "corr": 0.9999425906556307
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 0.004167791981783745,
+          "max_deg": 0.013198088738816338,
+          "corr": 0.9998576265535634
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.004793917886428671,
+          "max_deg": 0.009993985913415604,
+          "corr": 0.9998623610084626
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 0.004904139367881398,
+          "max_deg": 0.014965642208265338,
+          "corr": 0.9998226639657836
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.006006205290588445,
+          "max_deg": 0.015075894560951708,
+          "corr": 0.9998065356487881
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 0.00327820890643351,
+          "max_deg": 0.009271579589197443,
+          "corr": 0.9999196268971718
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.0034460436283866693,
+          "max_deg": 0.010951185511868402,
+          "corr": 0.9999139495512147
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 0.004101991676690591,
+          "max_deg": 0.011453365688409739,
+          "corr": 0.9998884531388906
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.0035857203422548435,
+          "max_deg": 0.010941545074616671,
+          "corr": 0.9999072432322633
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 0.004697302240959755,
+          "max_deg": 0.01145336549750844,
+          "corr": 0.9998713306988487
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.004330345591531645,
+          "max_deg": 0.011768152281490238,
+          "corr": 0.9998751510513704
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 0.24737473181150144,
+          "max_deg": 1.6284146718458028,
+          "corr": 0.7365537602546912
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.005303478419821972,
+          "max_deg": 0.010947766804654088,
+          "corr": 0.9998345333148605
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 0.6479223868519335,
+          "max_deg": 2.353608983936768,
+          "corr": 0.7685288199048412
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.005126578517832223,
+          "max_deg": 0.010778626002329898,
+          "corr": 0.99984391095299
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 0.010394182816668847,
+          "max_deg": 0.05680189716484407,
+          "corr": 0.998783133994373
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.005588252441025195,
+          "max_deg": 0.011550173003934407,
+          "corr": 0.9998147510411163
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 0.003568279456872182,
+          "max_deg": 0.01067121331619116,
+          "corr": 0.9999093944597766
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.003948704983194487,
+          "max_deg": 0.01095437997379625,
+          "corr": 0.9998969505286434
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.2944767059592895,
+          "max_deg": 1.2604749813736669,
+          "corr": 0.027297692335005175
+        },
+        "trigger": {
+          "csmc": "v_weapon_ak47_trigger",
+          "mean_deg": 0.014001500998370416,
+          "max_deg": 0.04714601746642183,
+          "corr": 0.9998311603273772
+        }
+      }
+    },
+    {
+      "gun": "ak47",
+      "cs2_clip": "reload_ak",
+      "csmc_clip": "reload",
+      "cs2_fps": 30.000410079956055,
+      "cs2_frames": 74,
+      "cs2_duration": 2.4333,
+      "csmc_duration": 2.466667,
+      "csmc_frames": 74,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 1.2776741810953214,
+          "max_deg": 5.605783749959137,
+          "corr": 0.9366406896885818
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 1.5404119760106576,
+          "max_deg": 19.958391829575554,
+          "corr": 0.6934607306796974
+        },
+        "bolt": {
+          "csmc": "v_weapon_ak47_bolt",
+          "mean_deg": 0.7135004846455397,
+          "max_deg": 3.6398302250091854,
+          "corr": 0.9611266838534736
+        },
+        "clip": {
+          "csmc": "v_weapon_ak47_clip",
+          "mean_deg": 0.7730454951674045,
+          "max_deg": 3.662106515478899,
+          "corr": 0.9943588167495198
+        },
+        "cliprelease": {
+          "csmc": "v_weapon_ak47_cliprelease",
+          "mean_deg": 1.1882483558910966,
+          "max_deg": 18.17753008976903,
+          "corr": 0.7845872865102417
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 2.823402619926393,
+          "max_deg": 23.7465704764002,
+          "corr": 0.9203503911911362
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.9337230249078159,
+          "max_deg": 5.524803110938906,
+          "corr": 0.9455138139729576
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 3.184476904475719,
+          "max_deg": 35.150003875871356,
+          "corr": 0.9063608649570722
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.8451321743286918,
+          "max_deg": 4.583798890131767,
+          "corr": 0.9578509078170618
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 4.185228704773908,
+          "max_deg": 61.51046482459578,
+          "corr": 0.8931134570140726
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 1.3594922376276821,
+          "max_deg": 5.521108241515671,
+          "corr": 0.9215748661230081
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 3.259376564552835,
+          "max_deg": 24.665326213217433,
+          "corr": 0.8993550474453452
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.7160137844682279,
+          "max_deg": 3.6541161449034023,
+          "corr": 0.9611131582921071
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 3.9968390399105744,
+          "max_deg": 34.84463417052084,
+          "corr": 0.8976689067910486
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.7301099801149449,
+          "max_deg": 3.6536876973340986,
+          "corr": 0.9607157100974875
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 4.783844453642305,
+          "max_deg": 61.91861170127959,
+          "corr": 0.893108599730999
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.7331956698473527,
+          "max_deg": 3.637379085489861,
+          "corr": 0.9606703324486814
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 2.920078672286304,
+          "max_deg": 20.94902785137463,
+          "corr": 0.9286147436928528
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.7752109382551897,
+          "max_deg": 3.6233989559563127,
+          "corr": 0.958177023017839
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 3.4907309463811096,
+          "max_deg": 27.444076073223478,
+          "corr": 0.930460591476409
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.7928502209977343,
+          "max_deg": 3.6497499364224364,
+          "corr": 0.9565681396772102
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 4.664103028081478,
+          "max_deg": 47.91823522744662,
+          "corr": 0.9100543566704979
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.8265937277185914,
+          "max_deg": 4.5105790376283466,
+          "corr": 0.9528766894741857
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 2.952125819104275,
+          "max_deg": 23.978114926867576,
+          "corr": 0.9080216473901743
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.7182071056947665,
+          "max_deg": 3.6371803361517556,
+          "corr": 0.9608621561262252
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 3.3371490965051738,
+          "max_deg": 32.24430556557551,
+          "corr": 0.9056367777287282
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.7193501555787413,
+          "max_deg": 3.6253674677929277,
+          "corr": 0.9607028612927189
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 4.478420275684212,
+          "max_deg": 57.13838726797588,
+          "corr": 0.9006700846143363
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.799993298399672,
+          "max_deg": 3.597334038335754,
+          "corr": 0.9587531527520616
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 3.133829751359875,
+          "max_deg": 29.794323788567404,
+          "corr": 0.9090761995359657
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.7558610106165913,
+          "max_deg": 3.8890993249635795,
+          "corr": 0.9643864898707194
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 2.9179150449177804,
+          "max_deg": 23.191376694324312,
+          "corr": 0.9152691599012627
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.7310070085714071,
+          "max_deg": 4.05290794486778,
+          "corr": 0.9646607210092115
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 3.7339879133182543,
+          "max_deg": 59.86240729064091,
+          "corr": 0.9094127221354691
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.7523508766533233,
+          "max_deg": 3.924312870966375,
+          "corr": 0.964454826074237
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 2.7429042892075968,
+          "max_deg": 23.99988847024969,
+          "corr": 0.9076404339694049
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.715582733400258,
+          "max_deg": 3.670832607534189,
+          "corr": 0.9611236476969982
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.7111737210388879,
+          "max_deg": 3.6802951730596987,
+          "corr": 0.9610303544766675
+        },
+        "trigger": {
+          "csmc": "v_weapon_ak47_trigger",
+          "mean_deg": 0.7135057809103452,
+          "max_deg": 3.638729631585125,
+          "corr": 0.9611247088958096
+        }
+      }
+    },
+    {
+      "gun": "ak47",
+      "cs2_clip": "lookat01_ak",
+      "csmc_clip": "inspect",
+      "cs2_fps": 29.999780654907227,
+      "cs2_frames": 138,
+      "cs2_duration": 4.5667,
+      "csmc_duration": 4.566667,
+      "csmc_frames": 138,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.05985908341585692,
+          "max_deg": 0.4271984251576725,
+          "corr": 0.9980472286162463
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.4300904072786599,
+          "max_deg": 2.699023322690373,
+          "corr": 0.7340048529401935
+        },
+        "bolt": {
+          "csmc": "v_weapon_ak47_bolt",
+          "mean_deg": 0.026814609942687775,
+          "max_deg": 0.10809814498250603,
+          "corr": 0.9999364973584137
+        },
+        "clip": {
+          "csmc": "v_weapon_ak47_clip",
+          "mean_deg": 0.026814609942687775,
+          "max_deg": 0.10809814498250603,
+          "corr": 0.9999364973584137
+        },
+        "cliprelease": {
+          "csmc": "v_weapon_ak47_cliprelease",
+          "mean_deg": 0.027503593828276305,
+          "max_deg": 0.10809814498250603,
+          "corr": 0.9999341848429675
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 0.07325370384765435,
+          "max_deg": 1.7436076016485416,
+          "corr": 0.9961089426508398
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.01913722745748908,
+          "max_deg": 0.23525014683731094,
+          "corr": 0.9999345917413001
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 0.1155931556173555,
+          "max_deg": 1.9138001513845344,
+          "corr": 0.9947048143561923
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.03519753343477655,
+          "max_deg": 0.4889543161767138,
+          "corr": 0.999389997699547
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 0.3256427362884672,
+          "max_deg": 8.048220880844706,
+          "corr": 0.9708222793470688
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.015207573871029592,
+          "max_deg": 0.1102257884185871,
+          "corr": 0.999961583561993
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 0.18873585687893704,
+          "max_deg": 4.443290985951235,
+          "corr": 0.982328307447496
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.01539441382867246,
+          "max_deg": 0.13646871399307337,
+          "corr": 0.9999596713305422
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 0.30230825552036933,
+          "max_deg": 3.8109693243721336,
+          "corr": 0.9758905600662705
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.014639066746872771,
+          "max_deg": 0.0962233661698999,
+          "corr": 0.9999693699487834
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 0.2996153284721836,
+          "max_deg": 8.19511975629002,
+          "corr": 0.9794950204911059
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.013308193893808362,
+          "max_deg": 0.07295606511977226,
+          "corr": 0.9999788365464476
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 0.12420818007559926,
+          "max_deg": 2.0173267313746654,
+          "corr": 0.992960148960804
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.01270957739867774,
+          "max_deg": 0.06656940668745737,
+          "corr": 0.9999774323863724
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 0.2890329619434594,
+          "max_deg": 6.801249803853564,
+          "corr": 0.9621558750815635
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.012324793721984497,
+          "max_deg": 0.07389642856464462,
+          "corr": 0.9999792326204857
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 0.48189727802591453,
+          "max_deg": 16.869002198677475,
+          "corr": 0.9156638303869937
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.01290071031811359,
+          "max_deg": 0.0739282512146957,
+          "corr": 0.9999778502841896
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 0.17854082035724306,
+          "max_deg": 3.543913647127102,
+          "corr": 0.9828594825769037
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.013419126388107215,
+          "max_deg": 0.10184051053099097,
+          "corr": 0.9999724916241807
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 0.1746798827957593,
+          "max_deg": 3.050229706373891,
+          "corr": 0.991924252837318
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.012997960380830512,
+          "max_deg": 0.08495099166856868,
+          "corr": 0.9999775110677381
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 0.27697518771736784,
+          "max_deg": 6.8053390208067945,
+          "corr": 0.9820888813077334
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.012699130874136351,
+          "max_deg": 0.06897314478264249,
+          "corr": 0.9999807040134003
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 0.09610446807562896,
+          "max_deg": 1.7133203162558823,
+          "corr": 0.9969531934932465
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.015306975031638968,
+          "max_deg": 0.09779127222198092,
+          "corr": 0.999961073602598
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 0.20528923695306073,
+          "max_deg": 3.895063308892351,
+          "corr": 0.9827745711771065
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.014285419183591603,
+          "max_deg": 0.11734787966285065,
+          "corr": 0.9999650549117713
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 0.35643659853005244,
+          "max_deg": 4.6486135219671585,
+          "corr": 0.9732483314806304
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.011939449902210355,
+          "max_deg": 0.055400681095337134,
+          "corr": 0.9999825603057059
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 0.15068154624234625,
+          "max_deg": 2.7064548613863355,
+          "corr": 0.9881760808626338
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.013977411810134194,
+          "max_deg": 0.11443258661267564,
+          "corr": 0.9999662582467013
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.011689280775272634,
+          "max_deg": 0.07447373970235915,
+          "corr": 0.9999819681456643
+        },
+        "trigger": {
+          "csmc": "v_weapon_ak47_trigger",
+          "mean_deg": 0.026814609942687775,
+          "max_deg": 0.10809814498250603,
+          "corr": 0.9999364973584137
+        }
+      }
+    },
+    {
+      "gun": "m4a1s",
+      "cs2_clip": "draw_rifle",
+      "csmc_clip": "deploy",
+      "cs2_fps": 30.000883102416992,
+      "cs2_frames": 35,
+      "cs2_duration": 1.1332,
+      "csmc_duration": 1.1,
+      "csmc_frames": 34,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.8460688845563437,
+          "max_deg": 5.361867941190788,
+          "corr": 0.9818024182631799
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.5839146462668718,
+          "max_deg": 3.3216462301500793,
+          "corr": 0.793718865613686
+        },
+        "bolt": {
+          "csmc": "v_weapon_m4a1_bolt",
+          "mean_deg": 0.4910322063117437,
+          "max_deg": 1.3334992052840136,
+          "corr": 0.9813177765108572
+        },
+        "clip": {
+          "csmc": "v_weapon_m4a1_clip",
+          "mean_deg": 0.4918872527279028,
+          "max_deg": 1.3326418838248992,
+          "corr": 0.9812511336138747
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 3.588186898454443,
+          "max_deg": 23.75334724808189,
+          "corr": 0.8662458905972439
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.4303792798994102,
+          "max_deg": 1.2875800051473938,
+          "corr": 0.9846791747679683
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 4.05569189101751,
+          "max_deg": 24.325699908181562,
+          "corr": 0.8259735539035092
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.3496480000825892,
+          "max_deg": 1.3462623251187154,
+          "corr": 0.9827720430442574
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 5.334514020806815,
+          "max_deg": 32.67109292872581,
+          "corr": 0.7861924066345932
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.6479257218773862,
+          "max_deg": 2.572473395350359,
+          "corr": 0.9779638247192914
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 2.8877429680993676,
+          "max_deg": 17.32885051417952,
+          "corr": 0.9170894222470184
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.454221578614631,
+          "max_deg": 1.3364070963170231,
+          "corr": 0.9842020919104425
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 5.235331221718451,
+          "max_deg": 54.116718040726994,
+          "corr": 0.7781610702875963
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.45389113726938374,
+          "max_deg": 1.3340573725879992,
+          "corr": 0.9842542655562975
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 7.333896871469042,
+          "max_deg": 68.8045449106411,
+          "corr": 0.797830291912212
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.4556055625362772,
+          "max_deg": 1.3357360795866553,
+          "corr": 0.9842107793931795
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 2.956885689907297,
+          "max_deg": 28.796213132538945,
+          "corr": 0.8921886553319217
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.4540630633018048,
+          "max_deg": 1.3398910432922593,
+          "corr": 0.9842811565710174
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 3.5304002299816006,
+          "max_deg": 22.21985494929249,
+          "corr": 0.922237866817445
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.4552931712275023,
+          "max_deg": 1.3430158396926775,
+          "corr": 0.9842660012906183
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 4.324346605242676,
+          "max_deg": 28.822764423607865,
+          "corr": 0.9198374303252832
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.4554651400207614,
+          "max_deg": 1.3477144275854673,
+          "corr": 0.984259876484846
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 3.677291620839778,
+          "max_deg": 30.09089904856585,
+          "corr": 0.8651776303456662
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.4531480617689727,
+          "max_deg": 1.3366836817589878,
+          "corr": 0.9842903965489224
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 3.745090015687596,
+          "max_deg": 26.773434316577788,
+          "corr": 0.8916868463978872
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.4544777489990975,
+          "max_deg": 1.3379877643478562,
+          "corr": 0.9842372100592681
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 4.362435260636494,
+          "max_deg": 31.70361990876074,
+          "corr": 0.9139858829207632
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.45555170105031517,
+          "max_deg": 1.338622127891398,
+          "corr": 0.9842303807674176
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 2.731906665159192,
+          "max_deg": 14.53872001177847,
+          "corr": 0.9251945754881333
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.445388448670004,
+          "max_deg": 1.3115141002594486,
+          "corr": 0.984807292554523
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 3.103109817158973,
+          "max_deg": 36.12923095705442,
+          "corr": 0.842560373098827
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.4592870794107884,
+          "max_deg": 1.350621952700374,
+          "corr": 0.9839912861235416
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 3.6338824043936544,
+          "max_deg": 40.168140026076195,
+          "corr": 0.815698256590139
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.4556365061782334,
+          "max_deg": 1.3398213457089074,
+          "corr": 0.9842003611416117
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 1.2207007431654613,
+          "max_deg": 11.239226266451155,
+          "corr": 0.9769692268713049
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.4624688786041756,
+          "max_deg": 1.3738887077167306,
+          "corr": 0.9835790514817127
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.4906442891785692,
+          "max_deg": 1.3334992052840136,
+          "corr": 0.9813208801404162
+        },
+        "silencer": {
+          "csmc": "v_weapon_silencer",
+          "mean_deg": 0.491887253021002,
+          "max_deg": 1.33264188382479,
+          "corr": 0.9812511335827931
+        },
+        "trigger": {
+          "csmc": "v_weapon_m4a1_trigger",
+          "mean_deg": 0.4918872527279028,
+          "max_deg": 1.3326418838248992,
+          "corr": 0.9812511336138747
+        }
+      }
+    },
+    {
+      "gun": "m4a1s",
+      "cs2_clip": "idle_rifle",
+      "csmc_clip": "idle",
+      "cs2_fps": 1.0,
+      "cs2_frames": 1,
+      "cs2_duration": 0.0,
+      "csmc_duration": 0,
+      "csmc_frames": 1,
+      "bones": {}
+    },
+    {
+      "gun": "m4a1s",
+      "cs2_clip": "shoot1_rifle",
+      "csmc_clip": "shootSilenced",
+      "cs2_fps": 30.000001907348633,
+      "cs2_frames": 13,
+      "cs2_duration": 0.3999,
+      "csmc_duration": 0.4,
+      "csmc_frames": 13,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.7567389490423696,
+          "max_deg": 2.2777883504248084,
+          "corr": 0.7848712199934382
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.7939439693757327,
+          "max_deg": 1.7736848006180028,
+          "corr": 0.20858074032453697
+        },
+        "bolt": {
+          "csmc": "v_weapon_m4a1_bolt",
+          "mean_deg": 0.005110192257149371,
+          "max_deg": 0.010389099721412998,
+          "corr": 0.9997000201191071
+        },
+        "clip": {
+          "csmc": "v_weapon_m4a1_clip",
+          "mean_deg": 0.005110192257149371,
+          "max_deg": 0.010389099721412998,
+          "corr": 0.9997000201191071
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 0.19130125806625098,
+          "max_deg": 0.7999811515752387,
+          "corr": 0.6204973867470693
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 1.1223886518169128,
+          "max_deg": 7.3147051974997925,
+          "corr": 0.17947678184891885
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 0.3710259344389914,
+          "max_deg": 1.2380655125670597,
+          "corr": 0.5915004986476614
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 1.4221977542392332,
+          "max_deg": 6.688781777563071,
+          "corr": -0.03527634089764323
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 0.5707530886273022,
+          "max_deg": 1.6784349135794359,
+          "corr": 0.5727058217087279
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 1.4975745519830514,
+          "max_deg": 6.802882474616224,
+          "corr": -0.053854492111668616
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 0.20757369604215412,
+          "max_deg": 0.859550952677654,
+          "corr": 0.6125581047743252
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.006932327052439703,
+          "max_deg": 0.013041606865076827,
+          "corr": 0.9994691404488543
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 0.3905351402213933,
+          "max_deg": 1.2939764257155,
+          "corr": 0.5786582873505393
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.00822260202328178,
+          "max_deg": 0.024899000645007108,
+          "corr": 0.9991759895723062
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 0.5855288902735941,
+          "max_deg": 1.74784132597303,
+          "corr": 0.5527475334685291
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.007156448443850304,
+          "max_deg": 0.013041606862486455,
+          "corr": 0.9994371271992645
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 0.2714250796300138,
+          "max_deg": 0.9222603218582143,
+          "corr": 0.6778509624230448
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.008153649357619683,
+          "max_deg": 0.025182186073979873,
+          "corr": 0.9991628679068976
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 0.450654027276053,
+          "max_deg": 1.3951915470207763,
+          "corr": 0.5896507352639052
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.006875697305804752,
+          "max_deg": 0.013041606859954702,
+          "corr": 0.9994770174118847
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 0.6519614238490611,
+          "max_deg": 1.8618676522468378,
+          "corr": 0.561309693276337
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.006875722594316486,
+          "max_deg": 0.013041606865076827,
+          "corr": 0.9994770146713666
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 0.2380502915445322,
+          "max_deg": 0.8847365244246491,
+          "corr": 0.6591303870414935
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.008131709921771998,
+          "max_deg": 0.023693723764426633,
+          "corr": 0.99920872048763
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 0.4235709687753136,
+          "max_deg": 1.3459260600255893,
+          "corr": 0.5936892404463922
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.0073962345363560765,
+          "max_deg": 0.01488560152360735,
+          "corr": 0.9993959250760949
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 0.6236516003744217,
+          "max_deg": 1.8147727151452142,
+          "corr": 0.56081430200315
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.006416578837630434,
+          "max_deg": 0.013041606862515764,
+          "corr": 0.9995145814804118
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 0.05386860381365407,
+          "max_deg": 0.1665090656999123,
+          "corr": 0.9713982690709215
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.02220215848285571,
+          "max_deg": 0.19130929355076076,
+          "corr": 0.9765434196652105
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 0.11409271488450222,
+          "max_deg": 0.4567800949642691,
+          "corr": 0.9403971902609346
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.012615354621529587,
+          "max_deg": 0.0796276289781549,
+          "corr": 0.9966850121167862
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 0.08093680173178802,
+          "max_deg": 0.2732073905929624,
+          "corr": 0.9647724980043298
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.006797778423607482,
+          "max_deg": 0.013041606861249888,
+          "corr": 0.9994953320273507
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 0.006314116443542905,
+          "max_deg": 0.017098294693801974,
+          "corr": 0.9994424812382825
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.020007362514126287,
+          "max_deg": 0.16897434135819872,
+          "corr": 0.9876652645312363
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.6351180837156073,
+          "max_deg": 1.022641059951746,
+          "corr": 0.7790303302206517
+        },
+        "silencer": {
+          "csmc": "v_weapon_silencer",
+          "mean_deg": 0.005110192257149371,
+          "max_deg": 0.010389099721412998,
+          "corr": 0.9997000201191071
+        },
+        "trigger": {
+          "csmc": "v_weapon_m4a1_trigger",
+          "mean_deg": 1.809127921840657,
+          "max_deg": 2.4047719019398994,
+          "corr": -0.1647012844745743
+        }
+      }
+    },
+    {
+      "gun": "m4a1s",
+      "cs2_clip": "reload_rifle",
+      "csmc_clip": "reload",
+      "cs2_fps": 29.99967384338379,
+      "cs2_frames": 93,
+      "cs2_duration": 3.0667,
+      "csmc_duration": 3.066667,
+      "csmc_frames": 93,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 1.5932087800599835,
+          "max_deg": 28.66507020080847,
+          "corr": 0.7323590552949699
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.3883795218924046,
+          "max_deg": 5.057163529480323,
+          "corr": 0.84472351832779
+        },
+        "bolt": {
+          "csmc": "v_weapon_m4a1_bolt",
+          "mean_deg": 0.8063320935857086,
+          "max_deg": 7.108083709112702,
+          "corr": 0.787339476218084
+        },
+        "clip": {
+          "csmc": "v_weapon_m4a1_clip",
+          "mean_deg": 2.8298555408049535,
+          "max_deg": 74.57514315724677,
+          "corr": 0.4324521652881568
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 3.486927662439443,
+          "max_deg": 40.3650318144543,
+          "corr": 0.714341229666889
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.7422767393648705,
+          "max_deg": 7.126227620866597,
+          "corr": 0.7862867405413126
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 4.274698953794518,
+          "max_deg": 40.3148984725752,
+          "corr": 0.7001320117336951
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.8306812327696242,
+          "max_deg": 7.1256345146168805,
+          "corr": 0.7993232191309042
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 5.627347368540547,
+          "max_deg": 44.26649349386108,
+          "corr": 0.6437565236493488
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.9923117127456994,
+          "max_deg": 7.127867195740082,
+          "corr": 0.9285389871208376
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 3.246103017000226,
+          "max_deg": 40.30187166916221,
+          "corr": 0.721642188129161
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.8075148758162064,
+          "max_deg": 7.128728346619143,
+          "corr": 0.7801120010495126
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 4.667602235025992,
+          "max_deg": 40.386880948128834,
+          "corr": 0.6808814907124406
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.8077769944550449,
+          "max_deg": 7.133191578900979,
+          "corr": 0.7799913312315523
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 6.278774275361618,
+          "max_deg": 48.029894167496884,
+          "corr": 0.6552847653206669
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.807197126646123,
+          "max_deg": 7.133191578901388,
+          "corr": 0.7800324760168496
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 4.415430379535701,
+          "max_deg": 40.58976172455948,
+          "corr": 0.6849555863123048
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.8072730318763779,
+          "max_deg": 7.125885358048169,
+          "corr": 0.7799065702204652
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 6.212465593267913,
+          "max_deg": 47.694651644291305,
+          "corr": 0.6247325572573388
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.8065563983385529,
+          "max_deg": 7.125882417229459,
+          "corr": 0.7800769010557708
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 8.06470007721263,
+          "max_deg": 70.45437180420895,
+          "corr": 0.5975445197135907
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.8067242205947295,
+          "max_deg": 7.125882417229459,
+          "corr": 0.7801201899430011
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 4.027374339023973,
+          "max_deg": 40.44446887846327,
+          "corr": 0.7108775070677649
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.8080006554084413,
+          "max_deg": 7.130189889263616,
+          "corr": 0.7797937420537098
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 5.010374292587422,
+          "max_deg": 40.65218835389837,
+          "corr": 0.7052364984939989
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.8076207353752723,
+          "max_deg": 7.130189889263545,
+          "corr": 0.7797971062861462
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 6.245335902554463,
+          "max_deg": 42.167815065305014,
+          "corr": 0.6869656485326248
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.8072781441707882,
+          "max_deg": 7.130187321672048,
+          "corr": 0.7798621984998357
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 3.3644844198883077,
+          "max_deg": 39.68827050380681,
+          "corr": 0.6811226168488579
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.8110601967722395,
+          "max_deg": 7.130798772520658,
+          "corr": 0.7787377243705327
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 4.090289081014655,
+          "max_deg": 40.07582084272415,
+          "corr": 0.6585890139257666
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.8045230900524305,
+          "max_deg": 7.129347889470289,
+          "corr": 0.7807116967293705
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 5.050439415369608,
+          "max_deg": 40.07501466547779,
+          "corr": 0.5800848620062226
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.8061806597491533,
+          "max_deg": 7.129347889469807,
+          "corr": 0.7801977356585744
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 2.9564712802897337,
+          "max_deg": 40.267166576740536,
+          "corr": 0.6771716707038108
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.8025737887136768,
+          "max_deg": 7.130802437965958,
+          "corr": 0.7811930761314606
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.8051140168673833,
+          "max_deg": 7.105651797977389,
+          "corr": 0.7877461680746948
+        },
+        "silencer": {
+          "csmc": "v_weapon_silencer",
+          "mean_deg": 0.8044378620102436,
+          "max_deg": 7.105651797977462,
+          "corr": 0.7880764750177154
+        },
+        "trigger": {
+          "csmc": "v_weapon_m4a1_trigger",
+          "mean_deg": 0.8044378618925319,
+          "max_deg": 7.105651797977508,
+          "corr": 0.7880764749646303
+        }
+      }
+    },
+    {
+      "gun": "m4a1s",
+      "cs2_clip": "lookat01_rifle",
+      "csmc_clip": "inspect",
+      "cs2_fps": 30.000001907348633,
+      "cs2_frames": 160,
+      "cs2_duration": 5.2999,
+      "csmc_duration": 5.3,
+      "csmc_frames": 151,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.6812116960034735,
+          "max_deg": 6.862408258725467,
+          "corr": 0.8518275533386738
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.5609414253851215,
+          "max_deg": 3.717869319983931,
+          "corr": 0.5774687803585881
+        },
+        "bolt": {
+          "csmc": "v_weapon_m4a1_bolt",
+          "mean_deg": 0.8560839034185649,
+          "max_deg": 6.203649713252629,
+          "corr": 0.8278496581554203
+        },
+        "clip": {
+          "csmc": "v_weapon_m4a1_clip",
+          "mean_deg": 0.8579455224216603,
+          "max_deg": 6.202002249114935,
+          "corr": 0.8277591451752896
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 1.335852718293084,
+          "max_deg": 11.869255618552854,
+          "corr": 0.7259248543262272
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.8560473173314703,
+          "max_deg": 6.2048909414633275,
+          "corr": 0.8277730194261028
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 1.55070731305436,
+          "max_deg": 21.32469495969825,
+          "corr": 0.6440382191811397
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.8582156015981602,
+          "max_deg": 6.235060901359475,
+          "corr": 0.826843997992574
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 1.827252732530716,
+          "max_deg": 29.666115423563966,
+          "corr": 0.557975973492695
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.8584777569398285,
+          "max_deg": 6.240600539233791,
+          "corr": 0.8265521461687115
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 1.305454306419784,
+          "max_deg": 13.953856275382803,
+          "corr": 0.7355618900099898
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 1.220679233700407,
+          "max_deg": 11.014992120159734,
+          "corr": 0.7566193867633325
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 1.818903886321312,
+          "max_deg": 19.571670525016035,
+          "corr": 0.6165075937984593
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 1.829223639536025,
+          "max_deg": 20.354457762152784,
+          "corr": 0.6193441366060335
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 2.339476713531153,
+          "max_deg": 27.403716696047344,
+          "corr": 0.55771685372624
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 2.364421285257336,
+          "max_deg": 28.190106741048453,
+          "corr": 0.5638026509390378
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 1.4485004131872552,
+          "max_deg": 22.877191439407067,
+          "corr": 0.6387047443403824
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 1.4681489412540785,
+          "max_deg": 14.695153752465295,
+          "corr": 0.6334737946419537
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 2.099383067847627,
+          "max_deg": 30.19711420897005,
+          "corr": 0.4959213859715145
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 1.9468209984738116,
+          "max_deg": 20.847668750736197,
+          "corr": 0.5304633900211645
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 2.806244913861154,
+          "max_deg": 45.3867806914442,
+          "corr": 0.4033366440108805
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 2.441645262211357,
+          "max_deg": 28.68565714838722,
+          "corr": 0.47980022543751677
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 1.5730554694267704,
+          "max_deg": 19.205652284548403,
+          "corr": 0.6571363436738482
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 1.489297665343403,
+          "max_deg": 15.463203528444875,
+          "corr": 0.6545172716669321
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 2.14468734931899,
+          "max_deg": 28.47382930163898,
+          "corr": 0.5197767212017084
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 2.0621408286300116,
+          "max_deg": 24.056261134968224,
+          "corr": 0.5445204809718648
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 2.7919726786182015,
+          "max_deg": 39.08480373843095,
+          "corr": 0.446461494387834
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 2.562711893966631,
+          "max_deg": 31.473690262229148,
+          "corr": 0.5054021787712422
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 1.424554937999876,
+          "max_deg": 14.602939129589924,
+          "corr": 0.7278030402475884
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.865862790466134,
+          "max_deg": 6.323291036229184,
+          "corr": 0.8244331079304233
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 1.442889692583501,
+          "max_deg": 16.483785137112104,
+          "corr": 0.7022711250117794
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.8597607153445268,
+          "max_deg": 6.253456171010237,
+          "corr": 0.8264274130446424
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 1.5902363118139464,
+          "max_deg": 22.158642882751764,
+          "corr": 0.6251446528153521
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.8570632797752238,
+          "max_deg": 6.217985441920344,
+          "corr": 0.827649125949213
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 1.0698794679444594,
+          "max_deg": 7.933872822746295,
+          "corr": 0.8118587469010539
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.8631072824889965,
+          "max_deg": 6.129743931045693,
+          "corr": 0.8242396960588461
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.8560155873146645,
+          "max_deg": 6.202884143000631,
+          "corr": 0.827818359223474
+        },
+        "silencer": {
+          "csmc": "v_weapon_silencer",
+          "mean_deg": 0.8579455224246516,
+          "max_deg": 6.20200224911485,
+          "corr": 0.827759145174878
+        },
+        "trigger": {
+          "csmc": "v_weapon_m4a1_trigger",
+          "mean_deg": 0.8579455224216603,
+          "max_deg": 6.202002249114935,
+          "corr": 0.8277591451752896
+        }
+      }
+    },
+    {
+      "gun": "awp",
+      "cs2_clip": "draw_awp",
+      "csmc_clip": "deploy",
+      "cs2_fps": 29.99921226501465,
+      "cs2_frames": 39,
+      "cs2_duration": 1.2666,
+      "csmc_duration": 1.266667,
+      "csmc_frames": 38,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.32631278645996487,
+          "max_deg": 1.8196325218381375,
+          "corr": 0.994163137350215
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.2666735056987962,
+          "max_deg": 1.2108615597098868,
+          "corr": 0.9930429829150778
+        },
+        "bolt_action": {
+          "csmc": "v_weapon_awp_bolt_action",
+          "mean_deg": 0.48638922671924906,
+          "max_deg": 5.825632702719182,
+          "corr": 0.9536577641692728
+        },
+        "clip": {
+          "csmc": "v_weapon_awp_clip",
+          "mean_deg": 0.022089718818856532,
+          "max_deg": 0.15109107475530448,
+          "corr": 0.999890691905822
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 0.01769199968362396,
+          "max_deg": 0.13134079911038715,
+          "corr": 0.9999163669489245
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.34231942360559975,
+          "max_deg": 2.562545821071488,
+          "corr": 0.9913664212183362
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 0.017691996766497197,
+          "max_deg": 0.13134079911423252,
+          "corr": 0.9999163666250775
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.39183403492484276,
+          "max_deg": 3.531874452284626,
+          "corr": 0.9989248399653912
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 0.017691997552723278,
+          "max_deg": 0.13134079911038715,
+          "corr": 0.9999163672752595
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.35693181699311627,
+          "max_deg": 3.1177381287764874,
+          "corr": 0.99949912843606
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 0.01769199073418315,
+          "max_deg": 0.13134079911129315,
+          "corr": 0.9999163661565051
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.8988449424317531,
+          "max_deg": 4.2517319002409195,
+          "corr": 0.9585751541864975
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 0.017691971657293835,
+          "max_deg": 0.13134079911038715,
+          "corr": 0.9999163655781299
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 1.2614334730210828,
+          "max_deg": 7.805070609619477,
+          "corr": 0.9973445429256796
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 0.017834836164934597,
+          "max_deg": 0.13134079910907454,
+          "corr": 0.9999168248627883
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.4499415469648511,
+          "max_deg": 2.0390445730398454,
+          "corr": 0.9994722853110368
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 0.017692049454986248,
+          "max_deg": 0.13134079910907454,
+          "corr": 0.9999163653657116
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.4025310657852244,
+          "max_deg": 3.205499865687381,
+          "corr": 0.9894430544356948
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 0.01750532751740997,
+          "max_deg": 0.1362351915385152,
+          "corr": 0.9999141638563259
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.6015540166184641,
+          "max_deg": 4.911625249258833,
+          "corr": 0.9972998956197702
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 0.01755334524734527,
+          "max_deg": 0.13623519153372382,
+          "corr": 0.9999146161739768
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.8750412212602727,
+          "max_deg": 5.780548524479563,
+          "corr": 0.9985379294314045
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 0.017692322277557924,
+          "max_deg": 0.1313407991138258,
+          "corr": 0.999916366774306
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.40903182885642736,
+          "max_deg": 2.0430159482107904,
+          "corr": 0.9922536591694076
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 0.017596677043464043,
+          "max_deg": 0.13134079911857716,
+          "corr": 0.9999168075544803
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.4406528886031244,
+          "max_deg": 3.456195139691978,
+          "corr": 0.9991029505771231
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 0.017421353162249898,
+          "max_deg": 0.13134079911169988,
+          "corr": 0.9999172128372753
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.14196134506917268,
+          "max_deg": 0.9296105472405429,
+          "corr": 0.9998811188200761
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 0.030276762983373073,
+          "max_deg": 0.5816045748868949,
+          "corr": 0.9992833099212374
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.9809339114037088,
+          "max_deg": 8.854624190640692,
+          "corr": 0.9926328576558163
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 0.030276707560362902,
+          "max_deg": 0.581600472534155,
+          "corr": 0.9992833192838255
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.28836673670898827,
+          "max_deg": 3.2054842643855963,
+          "corr": 0.9993324086983724
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 0.03027675633878127,
+          "max_deg": 0.5816024629209019,
+          "corr": 0.9992833147564623
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.311650311935716,
+          "max_deg": 2.0336668216341556,
+          "corr": 0.998109457961601
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 0.017692054156379252,
+          "max_deg": 0.13134079911169988,
+          "corr": 0.9999163661344325
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.6110823299022792,
+          "max_deg": 5.160979353609516,
+          "corr": 0.958955810812877
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.019034529340057317,
+          "max_deg": 0.1450808799416764,
+          "corr": 0.9999029182259713
+        },
+        "rail": {
+          "csmc": "v_weapon_awp_bolt_rail",
+          "mean_deg": 0.02281739389455607,
+          "max_deg": 0.16982627441907266,
+          "corr": 0.9998808669383374
+        },
+        "trigger": {
+          "csmc": "v_weapon_awp_trigger",
+          "mean_deg": 0.026948646709811667,
+          "max_deg": 0.17010446406617252,
+          "corr": 0.9998564676951497
+        }
+      }
+    },
+    {
+      "gun": "awp",
+      "cs2_clip": "idle_awp",
+      "csmc_clip": "idle",
+      "cs2_fps": 1.0,
+      "cs2_frames": 1,
+      "cs2_duration": 0.0,
+      "csmc_duration": 0,
+      "csmc_frames": 1,
+      "bones": {}
+    },
+    {
+      "gun": "awp",
+      "cs2_clip": "shoot1_awp",
+      "csmc_clip": "shoot1",
+      "cs2_fps": 30.000001907348633,
+      "cs2_frames": 49,
+      "cs2_duration": 1.5999,
+      "csmc_duration": 1.666667,
+      "csmc_frames": 50,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.6453322748224681,
+          "max_deg": 2.4277126701015086,
+          "corr": 0.07907296592956006
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 1.4831794612587303,
+          "max_deg": 6.071070425102251,
+          "corr": 0.27617398040096186
+        },
+        "bolt_action": {
+          "csmc": "v_weapon_awp_bolt_action",
+          "mean_deg": 2.822320665607583,
+          "max_deg": 21.870417013137633,
+          "corr": 0.1804112138839979
+        },
+        "clip": {
+          "csmc": "v_weapon_awp_clip",
+          "mean_deg": 0.6003779587752751,
+          "max_deg": 2.935162515613218,
+          "corr": 0.33979486065275316
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 0.603581582912649,
+          "max_deg": 2.9690376594405663,
+          "corr": 0.33228688540976553
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 6.014252385939019,
+          "max_deg": 25.746215000156255,
+          "corr": 0.29971348112641377
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 0.6035813248657315,
+          "max_deg": 2.969037659440516,
+          "corr": 0.33228671420328765
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 11.393582371922443,
+          "max_deg": 56.26837010267059,
+          "corr": 0.07083680988188701
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 0.6035812636181163,
+          "max_deg": 2.9690376594403367,
+          "corr": 0.33228665937949076
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 17.77397308263518,
+          "max_deg": 81.71725766633631,
+          "corr": -0.04995949955841337
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 0.6035813594875773,
+          "max_deg": 2.9690376594406955,
+          "corr": 0.3322869699658353
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 8.380932861091795,
+          "max_deg": 63.88562452262313,
+          "corr": 0.22156263287325298
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 0.6035808775442191,
+          "max_deg": 2.9690376594402075,
+          "corr": 0.3322869744202516
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 17.23648756838301,
+          "max_deg": 133.34386314632636,
+          "corr": 0.06887829605015741
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 0.6035396946149988,
+          "max_deg": 2.9690376594402075,
+          "corr": 0.3321210292007041
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 23.706697295301165,
+          "max_deg": 163.3202609900093,
+          "corr": 0.047692367783504705
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 0.6035815947917095,
+          "max_deg": 2.9690376594410552,
+          "corr": 0.33228703207016064
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 5.056844701040464,
+          "max_deg": 29.52094554476856,
+          "corr": 0.3625878058403222
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 0.6038167208097744,
+          "max_deg": 2.974376652349283,
+          "corr": 0.33192106143691297
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 7.59123234150217,
+          "max_deg": 56.783692119527466,
+          "corr": 0.20239941374308643
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 0.6035703788966785,
+          "max_deg": 2.974438309055591,
+          "corr": 0.332119198158417
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 10.684526569545897,
+          "max_deg": 77.72704534251307,
+          "corr": 0.12476655742862625
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 0.6035831909129797,
+          "max_deg": 2.969037659441544,
+          "corr": 0.3322844152393569
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 5.490348278577869,
+          "max_deg": 31.227558295753866,
+          "corr": 0.3026363612005925
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 0.6035831669782796,
+          "max_deg": 2.969037659440876,
+          "corr": 0.33228439377376007
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 9.298093185823898,
+          "max_deg": 54.91869009623017,
+          "corr": 0.19100910477434813
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 0.6035276547787115,
+          "max_deg": 2.9690376594406955,
+          "corr": 0.3321040607334026
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 14.133710283925089,
+          "max_deg": 84.6061939937709,
+          "corr": 0.1381794088889156
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 0.6035816558745334,
+          "max_deg": 2.9690376594410552,
+          "corr": 0.33228695803447594
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 5.025789073298225,
+          "max_deg": 27.562378178123083,
+          "corr": 0.36026598170337926
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 0.6035817328314078,
+          "max_deg": 2.9690376594406955,
+          "corr": 0.33228702524416154
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 5.998501431787339,
+          "max_deg": 29.918106035085817,
+          "corr": 0.3088188168928438
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 0.6035816805327762,
+          "max_deg": 2.969037659440516,
+          "corr": 0.33228697932856505
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 6.091213637092642,
+          "max_deg": 29.702776339014235,
+          "corr": 0.2625594964852488
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 0.6035815492494484,
+          "max_deg": 2.9690376594405663,
+          "corr": 0.3322868562713927
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 3.1328243505091393,
+          "max_deg": 15.513241269489773,
+          "corr": 0.4749130898796757
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.9151084814471867,
+          "max_deg": 3.109299033707483,
+          "corr": 0.10357591853319593
+        },
+        "rail": {
+          "csmc": "v_weapon_awp_bolt_rail",
+          "mean_deg": 0.6060982591808669,
+          "max_deg": 2.9721641232805913,
+          "corr": 0.3336295815814339
+        },
+        "trigger": {
+          "csmc": "v_weapon_awp_trigger",
+          "mean_deg": 1.369383928611353,
+          "max_deg": 9.567898274075079,
+          "corr": 0.06027643600945015
+        }
+      }
+    },
+    {
+      "gun": "awp",
+      "cs2_clip": "reload_awp",
+      "csmc_clip": "reload",
+      "cs2_fps": 29.99972915649414,
+      "cs2_frames": 111,
+      "cs2_duration": 3.6666,
+      "csmc_duration": 3.666667,
+      "csmc_frames": 111,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 1.2642070188546486,
+          "max_deg": 14.186913234446862,
+          "corr": 0.9280615357136127
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.098469895679788,
+          "max_deg": 1.0503731871728847,
+          "corr": 0.9911062696777061
+        },
+        "bolt_action": {
+          "csmc": "v_weapon_awp_bolt_action",
+          "mean_deg": 0.4920932514315876,
+          "max_deg": 2.51620825062746,
+          "corr": 0.9815471605250737
+        },
+        "clip": {
+          "csmc": "v_weapon_awp_clip",
+          "mean_deg": 0.4639967938031928,
+          "max_deg": 2.5213740390921977,
+          "corr": 0.9907766063474809
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 1.2149166714799298,
+          "max_deg": 15.596947744240694,
+          "corr": 0.9405640327871382
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.5550129204009892,
+          "max_deg": 3.7931042941745368,
+          "corr": 0.9882875676249258
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 1.0799371038998289,
+          "max_deg": 15.943679766278954,
+          "corr": 0.9638078042188807
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.5553212980082237,
+          "max_deg": 6.050679825393111,
+          "corr": 0.9951130246094677
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 1.2533019828302738,
+          "max_deg": 31.215618774815038,
+          "corr": 0.9612491032818609
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.7005233130989252,
+          "max_deg": 5.751952598750133,
+          "corr": 0.9945251036278573
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 1.1984131725641889,
+          "max_deg": 14.18010678712049,
+          "corr": 0.9407517539606782
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.6663014312463289,
+          "max_deg": 4.332081306709682,
+          "corr": 0.979819775672541
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 1.440794485926375,
+          "max_deg": 17.876552496182338,
+          "corr": 0.9500124963016753
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.7143284364667002,
+          "max_deg": 5.152333171429863,
+          "corr": 0.9931989457674081
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 1.181224591038061,
+          "max_deg": 13.842257288891489,
+          "corr": 0.9791028688674802
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.5401231291245437,
+          "max_deg": 3.1871272928424332,
+          "corr": 0.9976107779059729
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 1.196681719650701,
+          "max_deg": 15.167614564959731,
+          "corr": 0.9448510456976966
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.5302827163202762,
+          "max_deg": 2.3528276263463086,
+          "corr": 0.9923764996526013
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 1.185493748290424,
+          "max_deg": 22.839523571079944,
+          "corr": 0.9647299318117889
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.7520468510881104,
+          "max_deg": 4.374148965050782,
+          "corr": 0.9888333295522287
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 1.5160343524675943,
+          "max_deg": 42.503799004490176,
+          "corr": 0.9495406695014393
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.7147219240742971,
+          "max_deg": 4.602663575366641,
+          "corr": 0.9963741028930837
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 1.0295333773363444,
+          "max_deg": 12.159445829462726,
+          "corr": 0.9556777909992329
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.5216953614309562,
+          "max_deg": 2.289931499033543,
+          "corr": 0.9900450577190939
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 1.092580584295844,
+          "max_deg": 15.182128288911116,
+          "corr": 0.9720174553075467
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.5211635843829648,
+          "max_deg": 2.291278131345963,
+          "corr": 0.9953799685816352
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 1.1394446891405652,
+          "max_deg": 30.907207018968396,
+          "corr": 0.9593721443564668
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.48928838722570944,
+          "max_deg": 2.2919385101466903,
+          "corr": 0.9968963042260437
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 1.259862058995136,
+          "max_deg": 19.60874462191517,
+          "corr": 0.9183934514470473
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.8670357976401554,
+          "max_deg": 10.583320289602113,
+          "corr": 0.9881960305006487
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 1.3295182616952972,
+          "max_deg": 19.54078022720808,
+          "corr": 0.905498038535661
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.5066066352237674,
+          "max_deg": 3.5604264146957902,
+          "corr": 0.9967698708735001
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 1.722273420708953,
+          "max_deg": 19.47066039073439,
+          "corr": 0.8858736922629357
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.4611878218518651,
+          "max_deg": 2.554367087074174,
+          "corr": 0.9971032699955668
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 1.080222126526874,
+          "max_deg": 17.286682676728383,
+          "corr": 0.9270490670896592
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.5737941221886059,
+          "max_deg": 3.0649475199827982,
+          "corr": 0.9846938421024899
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.4763051414804868,
+          "max_deg": 2.5218062079173134,
+          "corr": 0.8376012929940763
+        },
+        "rail": {
+          "csmc": "v_weapon_awp_bolt_rail",
+          "mean_deg": 0.47874507223308793,
+          "max_deg": 2.5162082506276695,
+          "corr": 0.8369580470412598
+        },
+        "trigger": {
+          "csmc": "v_weapon_awp_trigger",
+          "mean_deg": 0.47434740762869243,
+          "max_deg": 2.5313370510418873,
+          "corr": 0.8378863787357878
+        }
+      }
+    },
+    {
+      "gun": "awp",
+      "cs2_clip": "lookat01_awp",
+      "csmc_clip": "inspect",
+      "cs2_fps": 30.0,
+      "cs2_frames": 151,
+      "cs2_duration": 5.0,
+      "csmc_duration": 5,
+      "csmc_frames": 151,
+      "bones": {
+        "arm_lower_L": {
+          "csmc": "arm_lower_l",
+          "mean_deg": 0.20773480056079033,
+          "max_deg": 1.7420348064717972,
+          "corr": 0.9353554110229535
+        },
+        "arm_lower_R": {
+          "csmc": "arm_lower_r",
+          "mean_deg": 0.1332951306346026,
+          "max_deg": 1.0942377922445823,
+          "corr": 0.8852283302357405
+        },
+        "bolt_action": {
+          "csmc": "v_weapon_awp_bolt_action",
+          "mean_deg": 0.6388977589426748,
+          "max_deg": 6.101072987029115,
+          "corr": 0.8099884670490272
+        },
+        "clip": {
+          "csmc": "v_weapon_awp_clip",
+          "mean_deg": 0.6360458742733844,
+          "max_deg": 6.134719990946074,
+          "corr": 0.8098610939375478
+        },
+        "finger_index_0_L": {
+          "csmc": "finger_index_0_l",
+          "mean_deg": 0.6022123604886422,
+          "max_deg": 5.5095780467851725,
+          "corr": 0.8119721452629344
+        },
+        "finger_index_0_R": {
+          "csmc": "finger_index_0_r",
+          "mean_deg": 0.632501236198602,
+          "max_deg": 6.09520364668256,
+          "corr": 0.8098770727871786
+        },
+        "finger_index_1_L": {
+          "csmc": "finger_index_1_l",
+          "mean_deg": 0.7916929589718666,
+          "max_deg": 7.018791191300364,
+          "corr": 0.7999813609414677
+        },
+        "finger_index_1_R": {
+          "csmc": "finger_index_1_r",
+          "mean_deg": 0.632519643776761,
+          "max_deg": 6.095203646682263,
+          "corr": 0.8098741199069686
+        },
+        "finger_index_2_L": {
+          "csmc": "finger_index_2_l",
+          "mean_deg": 0.9283345396728254,
+          "max_deg": 14.142621392415085,
+          "corr": 0.8542765103298355
+        },
+        "finger_index_2_R": {
+          "csmc": "finger_index_2_r",
+          "mean_deg": 0.6325645830756059,
+          "max_deg": 6.095203646682856,
+          "corr": 0.8098610379449289
+        },
+        "finger_middle_0_L": {
+          "csmc": "finger_middle_0_l",
+          "mean_deg": 0.5709355291432038,
+          "max_deg": 4.9300328356631375,
+          "corr": 0.8601087968555154
+        },
+        "finger_middle_0_R": {
+          "csmc": "finger_middle_0_r",
+          "mean_deg": 0.6320444974317002,
+          "max_deg": 6.09520364668273,
+          "corr": 0.8098775345347159
+        },
+        "finger_middle_1_L": {
+          "csmc": "finger_middle_1_l",
+          "mean_deg": 0.5095400029294788,
+          "max_deg": 4.930032835665199,
+          "corr": 0.9364049860052437
+        },
+        "finger_middle_1_R": {
+          "csmc": "finger_middle_1_r",
+          "mean_deg": 0.632166440008758,
+          "max_deg": 6.09520364668256,
+          "corr": 0.8098435718386726
+        },
+        "finger_middle_2_L": {
+          "csmc": "finger_middle_2_l",
+          "mean_deg": 1.045722012289071,
+          "max_deg": 16.108468986679558,
+          "corr": 0.859190215903728
+        },
+        "finger_middle_2_R": {
+          "csmc": "finger_middle_2_r",
+          "mean_deg": 0.6321417448506939,
+          "max_deg": 6.09520364668273,
+          "corr": 0.8098529731747339
+        },
+        "finger_pinky_0_L": {
+          "csmc": "finger_pinky_0_l",
+          "mean_deg": 0.6731860767921009,
+          "max_deg": 8.090012529796313,
+          "corr": 0.8338126757203826
+        },
+        "finger_pinky_0_R": {
+          "csmc": "finger_pinky_0_r",
+          "mean_deg": 0.6321072787331746,
+          "max_deg": 6.09520364668256,
+          "corr": 0.8098318011278769
+        },
+        "finger_pinky_1_L": {
+          "csmc": "finger_pinky_1_l",
+          "mean_deg": 0.7217697591415123,
+          "max_deg": 11.836391038370298,
+          "corr": 0.7933921247007123
+        },
+        "finger_pinky_1_R": {
+          "csmc": "finger_pinky_1_r",
+          "mean_deg": 0.6320331433147315,
+          "max_deg": 6.09520364668273,
+          "corr": 0.8098598437044449
+        },
+        "finger_pinky_2_L": {
+          "csmc": "finger_pinky_2_l",
+          "mean_deg": 1.1192715784178748,
+          "max_deg": 19.948124473567518,
+          "corr": 0.6587610592341125
+        },
+        "finger_pinky_2_R": {
+          "csmc": "finger_pinky_2_r",
+          "mean_deg": 0.6324822954335465,
+          "max_deg": 6.091874098185938,
+          "corr": 0.8098694534542766
+        },
+        "finger_ring_0_L": {
+          "csmc": "finger_ring_0_l",
+          "mean_deg": 0.5695628342473579,
+          "max_deg": 4.930032835665763,
+          "corr": 0.8767330777773538
+        },
+        "finger_ring_0_R": {
+          "csmc": "finger_ring_0_r",
+          "mean_deg": 0.6319835616676046,
+          "max_deg": 6.09520364668273,
+          "corr": 0.8098764306933579
+        },
+        "finger_ring_1_L": {
+          "csmc": "finger_ring_1_l",
+          "mean_deg": 0.6724362590745687,
+          "max_deg": 7.70943882837252,
+          "corr": 0.8922870196213879
+        },
+        "finger_ring_1_R": {
+          "csmc": "finger_ring_1_r",
+          "mean_deg": 0.6319836240008712,
+          "max_deg": 6.095203646682051,
+          "corr": 0.809876429824119
+        },
+        "finger_ring_2_L": {
+          "csmc": "finger_ring_2_l",
+          "mean_deg": 0.8559151535647248,
+          "max_deg": 13.923656284153786,
+          "corr": 0.8515167256343156
+        },
+        "finger_ring_2_R": {
+          "csmc": "finger_ring_2_r",
+          "mean_deg": 0.6319597059863844,
+          "max_deg": 6.095203646682645,
+          "corr": 0.8098933722023532
+        },
+        "finger_thumb_0_L": {
+          "csmc": "finger_thumb_0_l",
+          "mean_deg": 0.6161049497596103,
+          "max_deg": 6.007469804350454,
+          "corr": 0.8381604408222803
+        },
+        "finger_thumb_0_R": {
+          "csmc": "finger_thumb_0_r",
+          "mean_deg": 0.6166111949595711,
+          "max_deg": 6.087029645484117,
+          "corr": 0.8170364070389615
+        },
+        "finger_thumb_1_L": {
+          "csmc": "finger_thumb_1_l",
+          "mean_deg": 0.5796595293871305,
+          "max_deg": 6.072715220047238,
+          "corr": 0.8462943945751642
+        },
+        "finger_thumb_1_R": {
+          "csmc": "finger_thumb_1_r",
+          "mean_deg": 0.6225870674481919,
+          "max_deg": 6.090645583185578,
+          "corr": 0.8155553502282267
+        },
+        "finger_thumb_2_L": {
+          "csmc": "finger_thumb_2_l",
+          "mean_deg": 0.6353688835606064,
+          "max_deg": 6.1294192359974105,
+          "corr": 0.8552907832392256
+        },
+        "finger_thumb_2_R": {
+          "csmc": "finger_thumb_2_r",
+          "mean_deg": 0.6211418872261236,
+          "max_deg": 6.090645583184515,
+          "corr": 0.8160302575418815
+        },
+        "hand_L": {
+          "csmc": "hand_l",
+          "mean_deg": 0.630775667073776,
+          "max_deg": 6.2083495010570475,
+          "corr": 0.8441019232106556
+        },
+        "hand_R": {
+          "csmc": "hand_r",
+          "mean_deg": 0.6332986914113483,
+          "max_deg": 6.095203646683199,
+          "corr": 0.8094327257352658
+        },
+        "muzzle": {
+          "csmc": "muzzle",
+          "mean_deg": 0.6318714221446097,
+          "max_deg": 6.101072987029202,
+          "corr": 0.8098710636554006
+        },
+        "rail": {
+          "csmc": "v_weapon_awp_bolt_rail",
+          "mean_deg": 0.6388977589426748,
+          "max_deg": 6.101072987029115,
+          "corr": 0.8099884670490272
+        },
+        "trigger": {
+          "csmc": "v_weapon_awp_trigger",
+          "mean_deg": 0.633793586217301,
+          "max_deg": 6.101900313888981,
+          "corr": 0.8098438590890819
+        }
+      }
+    }
+  ]
+}

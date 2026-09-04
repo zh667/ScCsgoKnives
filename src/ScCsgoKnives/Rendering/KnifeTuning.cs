@@ -404,6 +404,14 @@ public static class KnifeTuning {
     /// <summary>How much of the environment's colour reaches the metal: 1 = full (blue sky tints the blade), 0 = grey reflections only.</summary>
     public static float PbrEnvSaturation = 0.25f;
     /// <summary>0 final; 1 base colour, 2 normals, 3 roughness, 4 metalness, 5 reflection only, 6 occlusion, 7 direct light only.</summary>
+    /// <summary>
+    /// Which sound timings the guns use: 0 = the table timed off the bones (shipped
+    /// through 0.15.10), 1 = CS2's own CNmClipDocEvent_Sound frames from
+    /// AnimationData/cs2_sounds.json. Defaults to 0 until the CS2 times are checked
+    /// against a recording; the two differ by up to 580 ms, so the switch is audible.
+    /// </summary>
+    public static float GunSoundProfile = 0f;
+
     public static float PbrDebug = 0f;
 
     static double s_nextPoll;
@@ -558,6 +566,7 @@ public static class KnifeTuning {
             case nameof(PbrRoughnessBias): PbrRoughnessBias = v; return true;
             case nameof(PbrEnvYawDegrees): PbrEnvYawDegrees = v; return true;
             case nameof(PbrEnvSaturation): PbrEnvSaturation = v; return true;
+            case nameof(GunSoundProfile): GunSoundProfile = v; return true;
             case nameof(PbrDebug): PbrDebug = v; return true;
             default: return false;
         }
@@ -707,6 +716,9 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(PbrEnvYawDegrees), PbrEnvYawDegrees));
         text.AppendLine("# 反射带多少环境的颜色：1 = 全带（天空会把刀染蓝），0 = 只反亮度不反颜色。");
         text.AppendLine(Line(nameof(PbrEnvSaturation), PbrEnvSaturation));
+        text.AppendLine("# 枪的换弹/拉栓/消音器音效用哪套时间：0 = 旧的按骨骼位移量出来的表，1 = CS2 自己的事件帧（cs2_sounds.json）。");
+        text.AppendLine("# 两套最多差 0.58 秒，听得出来。默认 0，等对着 CS2 录屏核过再改默认。");
+        text.AppendLine(Line(nameof(GunSoundProfile), GunSoundProfile));
         text.AppendLine(Line(nameof(PbrDebug), PbrDebug));
         return text.ToString();
     }
