@@ -695,13 +695,20 @@ def check_arms_evidence(evidence, base: Path):
     return None
 
 
-def check_sound(manifest, base: Path):
-    """Cue coverage against the package under acceptance, not against the repo.
+PACKAGECHECK = ROOT / "tools/PackageCheck/bin/Release/net10.0/PackageCheck.dll"
 
-    cs2_sounds.json saying a cue has an Asset only means the generator found a name;
-    it does not mean that OGG is inside the .scmod being tested. This opens the
-    package the manifest names, checks its SHA-256, and looks for every referenced
-    file inside it.
+
+def check_sound(manifest, base: Path):
+    """Cue coverage inside the package under acceptance, from that package's own DLL.
+
+    Both halves have to come from one package or the number means nothing. The table
+    is not shipped loose - it is an embedded resource - so this runs tools/PackageCheck,
+    which verifies the package hash, loads ScCsgoKnives.dll out of the zip and reads
+    the table from that assembly, then matches it against the OGGs in the same zip.
+
+    Reading the table from src/ instead, which is what 0.16.5 did when the loose file
+    was absent, would accept a package whose embedded table and audio disagree - and
+    the loose file is never present, so that fallback was the only path ever taken.
     """
     item = Item("SOUND: cue coverage in the package under test")
     package = manifest.get("package") or {}
@@ -720,35 +727,27 @@ def check_sound(manifest, base: Path):
     if digest.lower() != package["sha256"].lower():
         return item.fail("package sha256 mismatch: %s has %s, manifest says %s"
                          % (scmod.name, digest[:16], package["sha256"][:16]))
+    if not PACKAGECHECK.exists():
+        return item.fail("tools/PackageCheck is not built, so the sound table cannot be "
+                         "read from the package's own DLL: dotnet build tools/PackageCheck "
+                         "-c Release")
 
-    import zipfile
-    with zipfile.ZipFile(scmod) as z:
-        names = set(z.namelist())
-        try:
-            with z.open("Assets/AnimationData/cs2_sounds.json") as fh:
-                doc = json.loads(fh.read().decode("utf-8"))
-        except KeyError:
-            # The sound table is embedded in the DLL, not shipped loose; fall back to
-            # the source of truth in the tree but keep checking the OGGs in the package.
-            doc = json.loads((ROOT / "src/ScCsgoKnives/AnimationData/cs2_sounds.json")
-                             .read_text("utf-8"))
-        oggs = {n.rsplit("/", 1)[-1][:-4] for n in names
-                if n.startswith("Assets/Audio/") and n.endswith(".ogg")}
+    try:
+        result, _ = cs2_run.run_json(
+            ["dotnet", PACKAGECHECK, "--scmod", scmod, "--sha256", digest],
+            dotnet=True, allow_exit=(0, 1))
+    except SystemExit as exc:
+        return item.fail("PackageCheck could not read %s: %s" % (scmod.name, exc))
 
-    total = sum(len(c["Cues"]) for c in doc["Clips"].values())
-    unnamed = [(k, q["Event"]) for k, c in doc["Clips"].items() for q in c["Cues"] if not q["Asset"]]
-    absent = sorted({(k, q["Asset"]) for k, c in doc["Clips"].items() for q in c["Cues"]
-                     if q["Asset"] and q["Asset"] not in oggs})
-    if unnamed or absent:
-        return item.fail("%d cues have no asset name and %d name a file the package does "
-                         "not contain" % (len(unnamed), len(absent)),
-                         package=scmod.name, sha256=digest, total=total,
-                         unnamed=[{"clip": k, "event": e} for k, e in unnamed],
-                         absent=[{"clip": k, "asset": a} for k, a in absent])
-    return item.ok("%d of %d cues resolve to an OGG present in %s (%d OGGs in the package); "
-                   "trigger times are source-verified from the .vnmclip event tracks"
-                   % (total, total, scmod.name, len(oggs)),
-                   package=scmod.name, sha256=digest, total=total, oggs=len(oggs))
+    coverage = next((c for c in result["checks"] if c["name"] == "sound/coverage"), None)
+    if coverage is None:
+        return item.fail("PackageCheck reported no sound coverage for %s" % scmod.name)
+    data = {"package": scmod.name, "sha256": digest, "dll_sha256": result.get("dllSha256"),
+            "total": result.get("cues"), "oggs": result.get("oggsInPackage")}
+    if not coverage["ok"]:
+        return item.fail(coverage["detail"], **data)
+    return item.ok("%s; trigger times are source-verified from the .vnmclip event tracks"
+                   % coverage["detail"], **data)
 
 
 def main():

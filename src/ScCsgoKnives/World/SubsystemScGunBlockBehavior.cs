@@ -152,7 +152,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 KnifeDiagnostics.WarnOnce("cs2-tracer-textures", $"Could not load the CS2 tracer textures: {e.Message}");
             }
         }
-        return name == "cs2_tracer_blend" ? m_tracerBlend : m_tracerAdd;
+        // A pass with no baked texture must not quietly borrow the other one's: the
+        // two are different images with different blend modes.
+        return name switch {
+            "cs2_tracer_add" => m_tracerAdd,
+            "cs2_tracer_blend" => m_tracerBlend,
+            _ => null,
+        };
     }
 
     /// <summary>
@@ -219,29 +225,40 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                        float tail, float head, float pathAlpha,
                        Vector3 eye, Vector3 forward, float projY) {
         Texture2D texture = TracerTexture(pass.Texture);
-        if (texture is null) return;
+        if (texture is null) {
+            KnifeDiagnostics.WarnOnce($"cs2-tracer-texture-{pass.Texture ?? "none"}",
+                $"No tracer texture for {pass.SourceTexture ?? "an unnamed pass"}; that pass is not drawn.");
+            return;
+        }
         float halfWorld = spec.HalfWidthMetres(pass);
         if (halfWorld <= 0f) return;
 
         TexturedBatch3D batch = m_tracerRenderer.TexturedBatch(texture, useAlphaTest: false, layer: 0,
             DepthStencilState.DepthRead, RasterizerState.CullNoneScissor,
-            pass.Additive ? BlendState.Additive : BlendState.NonPremultiplied, SamplerState.LinearClamp);
+            BlendState.Additive, SamplerState.LinearClamp);
+        if (!pass.BlendUnderstood)
+            KnifeDiagnostics.WarnOnce($"cs2-tracer-blend-{pass.Blend}",
+                $"CS2 asks for {pass.Blend} on the tracer trail; drawn additively.");
 
         Color tint = spec.Tint;
         Vector3 previous = default, previousSide = default;
         float previousFade = 0f;
+        bool hasPrevious = false;
         for (int k = 0; k <= TracerSegments; k++) {
             float f = k / (float)TracerSegments;
             Vector3 p = t.Start + t.Direction * MathUtils.Lerp(tail, head, f);
             Vector3 toEye = p - eye;
             float depth = Vector3.Dot(toEye, forward);
             float half = Cs2Tracer.HalfWidth(spec, pass, depth, projY, out float fade);
+            // Degenerate only where the trail runs exactly through the eye axis. The
+            // joint is dropped, and so is the quad that would have used it: carrying
+            // `previous` across the gap would stretch a segment over the whole hole.
             Vector3 side = Vector3.Cross(t.Direction, toEye);
             float length = side.Length();
-            if (!float.IsFinite(length) || length < 1e-6f) { previousFade = 0f; continue; }
+            if (!float.IsFinite(length) || length < 1e-6f) { hasPrevious = false; continue; }
             side = side * (half / length);
 
-            if (k > 0 && previousFade + fade > 0f) {
+            if (hasPrevious && previousFade + fade > 0f) {
                 float a0 = spec.AlphaMid * pathAlpha * previousFade;
                 float a1 = spec.AlphaMid * pathAlpha * fade;
                 var c0 = new Color(tint.R, tint.G, tint.B, (byte)MathUtils.Clamp(255f * a0, 0f, 255f));
@@ -258,6 +275,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             previous = p;
             previousSide = side;
             previousFade = fade;
+            hasPrevious = true;
         }
     }
 

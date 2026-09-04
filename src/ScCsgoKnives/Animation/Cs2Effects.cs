@@ -114,7 +114,17 @@ public static class Cs2Effects {
         [JsonPropertyName("EndFadeSize")]
         public float EndFadeSize { get; set; }
 
+        /// <summary>
+        /// Both of CS2's tracer blend modes land on the engine's additive state.
+        /// PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD is dst + src.rgb * src.a, which is what
+        /// BlendState.Additive (SourceAlpha, One) does. PARTICLE_OUTPUT_BLEND_MODE_ADD
+        /// is dst + src.rgb, and the texture it is used with - materials/effects/spark -
+        /// is opaque everywhere, so its alpha is 1 and the two agree there as well.
+        /// Anything else would have to be looked at rather than assumed, so it says so.
+        /// </summary>
         public bool Additive => Blend is null || Blend.EndsWith("ADD", StringComparison.Ordinal);
+        public bool BlendUnderstood => Blend is null
+            || Blend is "PARTICLE_OUTPUT_BLEND_MODE_ADD" or "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD";
     }
 
     /// <summary>

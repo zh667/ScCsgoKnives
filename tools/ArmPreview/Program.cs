@@ -125,6 +125,24 @@ if (args.Length > 0 && args[0] == "tracer") {
         envelope.Add(new { u, alpha = spec.PathAlpha(u) * spec.AlphaMid });
     }
 
+    // What a 60 fps recording would actually catch: CS2 kills the particle at the
+    // impact point, so a near shot is over in a frame or two. Reported, not gated -
+    // it is the number to hold a real capture against.
+    var flights = new List<object>();
+    foreach (float metres in new[] { 5f, 10f, 20f, 40f, 80f }) {
+        float life = metres / spec.MetresPerSecond;
+        var frames = new List<object>();
+        for (int f = 0; f * (1f / 60f) < life; f++) {
+            float age = f / 60f;
+            float head = MathUtils.Min(age * spec.MetresPerSecond, metres);
+            Cs2Effects.TracerPass first = (spec.Passes ?? [])[0];
+            float trail = Cs2Tracer.TrailMetres(spec, first, age, MathUtils.Max(head, 0.01f));
+            frames.Add(new { frame = f, age, head, tail = MathUtils.Max(0f, head - trail),
+                             alpha = spec.PathAlpha(head / metres) * spec.AlphaMid });
+        }
+        flights.Add(new { metres, lifeSeconds = life, framesAt60 = frames.Count, frames });
+    }
+
     Console.WriteLine(JsonSerializer.Serialize(new {
         gun, worldFovY, viewmodelFov = KnifeTuning.Cs2ViewmodelFov,
         viewmodelFovY = Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov),
@@ -133,7 +151,7 @@ if (args.Length > 0 && args[0] == "tracer") {
         spec.ColorMin, spec.ColorMax, spec.ColorFromTexture, spec.Unmodelled,
         metresPerSecond = spec.MetresPerSecond, trailMetresCap = spec.TrailMetres,
         lengthScale = new { at1m = spec.LengthScale(1f), at10m = spec.LengthScale(10f), at100m = spec.LengthScale(100f) },
-        muzzles, passes, envelope,
+        muzzles, passes, envelope, flights,
     }));
     return 0;
 }

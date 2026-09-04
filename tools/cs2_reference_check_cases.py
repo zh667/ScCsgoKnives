@@ -235,7 +235,7 @@ EXPECTED = {
     "bad_landmark": ("PLACE", "landmark"),
     "two_m4": ("HAND", "pick one state per gun"),
     "unoccluded_hand": ("HAND", "IoU"),
-    "missing_ogg": ("SOUND", "does not contain"),
+    "missing_ogg": ("SOUND", "the package lacks"),
     "arms_missing": ("HAND", "arms_evidence is missing"),
     "arms_unknown_method": ("HAND", "is not a method"),
     "arms_no_loadouts": ("HAND", "exactly two"),

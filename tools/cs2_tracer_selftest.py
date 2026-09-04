@@ -245,6 +245,22 @@ def case_textures(dumps) -> Case:
     return c
 
 
+def report_flights(dumps):
+    """Report only: how many 60 fps frames a tracer is on screen, and where it is.
+
+    This is the number a real 10-second wall recording is held against, and it is not
+    gated because there is nothing yet to gate it with. CS2 kills the particle at the
+    impact point, so short shots really are over in a frame or two - that is the .vpcf,
+    not a shortcut, and it is worth seeing before anyone calls it "vanishes too fast".
+    """
+    print("  ----  flight timing (report only, 60 fps)")
+    for gun, d in dumps.items():
+        for f in d["flights"]:
+            heads = " ".join("%.0f" % fr["head"] for fr in f["frames"][:8])
+            print("        %-6s %3.0f m: life %5.1f ms, %2d frame(s), head at %s m"
+                  % (gun, f["metres"], 1000 * f["lifeSeconds"], f["framesAt60"], heads or "-"))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", type=Path, help="write the raw dumps here")
@@ -259,6 +275,7 @@ def main():
     cases = [case_source(dumps), case_origin(dumps), case_width(dumps),
              case_envelope(dumps), case_textures(dumps)]
     ok = all(c.report() for c in cases)
+    report_flights(dumps)
     print("%s: %s" % ("PASS" if ok else "FAIL",
                       " ".join(c.name.split()[0] + ("" if not c.failures else "!") for c in cases)))
     return 0 if ok else 1
