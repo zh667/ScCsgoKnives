@@ -30,6 +30,10 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import cs2_run
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "src/ScCsgoKnives/AnimationData"
 
@@ -49,11 +53,9 @@ PART_TO_LEGACY = {
 
 def sweep(gun: str, clip: str, out: Path) -> Path:
     path = out / ("%s_%s.sweep.json" % (gun, clip))
-    subprocess.run(
-        ["dotnet", "run", "--project", str(ROOT / "tools/ArmPreview/ArmPreview.csproj"),
-         "-c", "Release", "--", gun, clip, "30", str(path)],
-        check=True, capture_output=True,
-        env={**__import__("os").environ, "DOTNET_ROLL_FORWARD": "Major"})
+    cs2_run.run(
+        ["dotnet", "run", "--project", ROOT / "tools/ArmPreview/ArmPreview.csproj",
+         "-c", "Release", "--", gun, clip, "30", path], dotnet=True)
     return path
 
 
@@ -74,14 +76,14 @@ def retarget(path: Path, gun: str, out: Path) -> Path:
 
 def render(asset: str, tex: str, sweep_path: Path, png: Path, size=(960, 540)):
     """Render, and take the rasteriser's own coverage mask alongside the image."""
-    result = subprocess.run(
-        [sys.executable, str(ROOT / "tools/pbr_emulate.py"), asset, str(sweep_path),
-         str(png), str(size[0]), str(size[1]), "flipv=1", "tex=" + tex,
-         "mask=" + str(png.with_name(png.stem + "_mask.png"))],
-        capture_output=True, text=True, cwd=ROOT)
-    if result.returncode:
-        raise SystemExit(result.stderr.strip()[-800:])
-    return result.stdout.strip().splitlines()[-1]
+    result = cs2_run.run(
+        [sys.executable, ROOT / "tools/pbr_emulate.py", asset, sweep_path,
+         png, size[0], size[1], "flipv=1", "tex=" + tex,
+         "mask=" + str(png.with_name(png.stem + "_mask.png"))])
+    lines = (result.stdout or "").strip().splitlines()
+    if not lines:
+        raise SystemExit(cs2_run.fail(["pbr_emulate.py", asset], result, "printed nothing"))
+    return lines[-1]
 
 
 def statistics(png: Path, mask_path: Path = None):

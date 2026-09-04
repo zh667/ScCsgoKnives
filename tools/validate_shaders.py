@@ -45,7 +45,7 @@ def main():
         with tempfile.NamedTemporaryFile("w", suffix=".vert" if is_vertex else ".frag", delete=False) as f:
             f.write(code)
             path = f.name
-        r = subprocess.run([GLSLANG, "-S", "vert" if is_vertex else "frag", path], capture_output=True, text=True)
+        r = subprocess.run([GLSLANG, "-S", "vert" if is_vertex else "frag", path], capture_output=True, text=True, encoding="utf-8", errors="replace")
         os.unlink(path)
         status = "OK " if r.returncode == 0 else "ERR"
         print(f"{status} {name}")

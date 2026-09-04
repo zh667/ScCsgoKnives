@@ -80,6 +80,9 @@ public static class Cs2Weapons {
     const string Resource = "AnimationData.cs2_weapons.json";
     const string ExpectedFormat = "ScCsgoKnives.Cs2Weapons/1";
 
+    /// <summary>Null when the file loaded; the reason otherwise. See Cs2Effects.LoadError.</summary>
+    public static string LoadError { get; private set; } = "not loaded";
+
     static readonly WeaponsFile s_file = Load();
 
     /// <summary>Gameplay numbers follow GunNumbers, not GunProfile: the look and the feel switch separately.</summary>
@@ -129,6 +132,7 @@ public static class Cs2Weapons {
             Assembly assembly = typeof(Cs2Weapons).Assembly;
             string name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(Resource, StringComparison.OrdinalIgnoreCase));
             if (name is null) {
+                LoadError = $"no embedded {Resource}";
                 KnifeDiagnostics.WarnOnce("cs2-weapons-missing", $"No embedded {Resource}.");
                 return null;
             }
@@ -137,15 +141,18 @@ public static class Cs2Weapons {
             // caught a separator change, which is how Cs2Effects broke in 0.16.4.
             WeaponsFile file = JsonSerializer.Deserialize<WeaponsFile>(stream);
             if (file?.Format != ExpectedFormat || file.Guns is null) {
+                LoadError = $"{Resource} is not {ExpectedFormat}";
                 KnifeDiagnostics.WarnOnce("cs2-weapons-format", $"{Resource} is not {ExpectedFormat}.");
                 return null;
             }
             KnifeLog.Information("[ScCsgoKnives] CS2 weapon data: " + string.Join("; ", file.Guns.Select(kv =>
                 $"{kv.Key} dmg={kv.Value.Damage:0.#} falloff={kv.Value.RangeModifier:0.##}/500u "
                 + $"spread={kv.Value.SpreadDegrees:0.###}deg kick={kv.Value.KickPitchDegrees:0.###}deg")));
+            LoadError = null;
             return file;
         }
         catch (Exception e) {
+            LoadError = $"{e.GetType().Name}: {e.Message}";
             KnifeDiagnostics.WarnOnce("cs2-weapons-load", $"Could not read {Resource}: {e.Message}");
             return null;
         }

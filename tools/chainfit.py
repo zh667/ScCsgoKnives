@@ -30,7 +30,7 @@ def sweep(overrides):
     env = dict(os.environ, DOTNET_ROLL_FORWARD='Major')
     dll = os.path.join(HERE, 'ArmPreview', 'bin', 'Release', 'net10.0', 'ArmPreview.dll')
     path = os.path.join(ROOT, '.tmp-fist', 'chainfit_m9.json')
-    r = subprocess.run(['dotnet', dll, 'm9', 'inspect', '30', path, str(FX), str(FY)] + overrides, capture_output=True, text=True, env=env, cwd=ROOT)
+    r = subprocess.run(['dotnet', dll, 'm9', 'inspect', '30', path, str(FX), str(FY)] + overrides, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, cwd=ROOT)
     if r.returncode: print(r.stderr); raise SystemExit(1)
     return json.load(open(path))
 

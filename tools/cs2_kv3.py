@@ -5,6 +5,11 @@ Enough for .vpcf, .vmat, .vnmclip and .vnmskel: nested objects and arrays,
 quoted and multi-line strings, numbers, booleans, null, and the typed prefixes
 these files carry (resource:"...", resource_name:"...", subclass:"...").
 
+Multi-line strings are triple-quoted. Matching them on a doubled quote instead
+made every ordinary empty string - and .vpcf is full of `m_NamedValue = ""` - open
+a multi-line string that ran to the next empty string, swallowing whole blocks:
+weapon_tracers_assrifle.vpcf parsed with no m_Operators and no m_Renderers at all.
+
     doc = cs2_kv3.load(path)      # -> dict
 
 Trailing commas are allowed, comments are not stripped inside strings, and the
@@ -19,7 +24,7 @@ from pathlib import Path
 _TOKEN = re.compile(r"""
     (?P<ws>\s+)
   | (?P<comment>//[^\n]*)
-  | (?P<mstring>""(?:.|\n)*?"")
+  | (?P<mstring>\"\"\"(?:.|\n)*?\"\"\")
   | (?P<string>"(?:\\.|[^"\\])*")
   | (?P<prefix>[A-Za-z_][A-Za-z_0-9]*:(?="))
   | (?P<number>[+-]?(?:\d+\.\d*|\.\d+|\d+)(?:[eE][+-]?\d+)?)
@@ -75,7 +80,7 @@ class _Parser:
             # resource:"path" and friends: keep the payload, drop the tag.
             return self.value()
         if kind == "mstring":
-            return text[2:-2]
+            return text[3:-3]
         if kind == "string":
             return text[1:-1].encode().decode("unicode_escape", "replace")
         if kind == "number":

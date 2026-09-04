@@ -14,13 +14,28 @@ Reports the pixel size, whether there are pillarbox bars, the content rectangle,
 and whether the content's aspect matches the declared render aspect. The
 "comparison space" it prints is what belongs in capture.json.
 
+    python3 tools/cs2_capture_probe.py a1.png --repeat a2.png \
+            --other b1.png --other-repeat b2.png --arm-roi X0,Y0,X1,Y1
+
+The decisive loadout test. Two loadouts, and *two captures of each*, all of the same
+frame: same map, same position, same angles, same weapon, same clip, same tick, same
+cvars. The same-loadout pairs measure how much the scene moves on its own - CS2 is
+not deterministic to the bit, so a bare "max channel delta <= 2/255" threshold, which
+is what 0.16.5 used, has nothing behind it and can fail on noise or pass on a real
+difference that happens to be small. What is compared instead is the cross-loadout
+difference against that measured baseline, over the same ROI, with the whole
+distribution reported: mean, p95, p99, p99.9, max and the fraction of ROI pixels over
+threshold.
+
+The verdict is only "independent" when the cross-loadout distribution is inside the
+baseline's, and only "different" when it is clearly outside it. When the baseline
+itself is loose - a moving shadow, a smoke, an animated map prop in the ROI - the
+answer is "inconclusive", not a pass.
+
     python3 tools/cs2_capture_probe.py a.png --compare b.png --arm-roi X0,Y0,X1,Y1
 
-The decisive loadout test, and the one with a defensible threshold: two captures of
-the *same* frame - same position, same angles, same cvars, same map - differing only
-in the loadout. The scene is identical, so any pixel difference over the forearm is
-the loadout. Max channel delta <= 2/255 over the ROI means the arms do not depend on
-it; anything larger means they do and the matching one has to be identified.
+The same measurement for one pair only. It prints the distribution but refuses to
+issue a verdict: without repeats there is no baseline to judge it against.
 
     python3 tools/cs2_capture_probe.py shot.png --arm-tone X0,Y0,X1,Y1
 
@@ -122,24 +137,91 @@ def arm_tone(path: Path, box):
             "delta_g_over_b": round(gb - ARM_133["g_over_b"], 4)}
 
 
-def compare(a_path: Path, b_path: Path, box):
-    """Two captures of one scene, differing only in loadout. Difference is the loadout."""
-    a = np.asarray(Image.open(a_path).convert("RGB"), np.int16)
-    b = np.asarray(Image.open(b_path).convert("RGB"), np.int16)
+# How far outside the measured baseline a cross-loadout difference has to sit before
+# it counts as a real difference, and how loose the baseline may be before the
+# comparison is called off. One grey level of slack, and a floor of 2 so that a pair
+# of bit-identical baselines does not make every 1-level difference "significant".
+DELTA_SLACK = 1.0
+DELTA_FLOOR = 2.0
+BASELINE_LOOSE = 8.0
+OVER_THRESHOLD = 2          # a pixel "differs" when a channel moves by more than this
+
+
+def _pixels(path: Path) -> np.ndarray:
+    return np.asarray(Image.open(path).convert("RGB"), np.int16)
+
+
+def difference(a_path: Path, b_path: Path, box) -> dict:
+    """The whole per-pixel difference distribution over the ROI, not one number."""
+    a, b = _pixels(a_path), _pixels(b_path)
     if a.shape != b.shape:
         raise SystemExit("images differ in size: %s vs %s" % (a.shape[:2][::-1], b.shape[:2][::-1]))
     x0, y0, x1, y1 = box
-    da = np.abs(a[y0:y1, x0:x1] - b[y0:y1, x0:x1])
-    if not da.size:
+    if not (0 <= x0 < x1 <= a.shape[1] and 0 <= y0 < y1 <= a.shape[0]):
+        raise SystemExit("ROI %s does not fit inside %dx%d" % (list(box), a.shape[1], a.shape[0]))
+    per_pixel = np.abs(a[y0:y1, x0:x1] - b[y0:y1, x0:x1]).max(axis=2).astype(float)
+    if not per_pixel.size:
         raise SystemExit("empty ROI")
-    frame = np.abs(a - b)
     return {"a": a_path.name, "b": b_path.name, "roi": list(box),
-            "roi_pixels": int(da.shape[0] * da.shape[1]),
-            "max_channel_delta": int(da.max()),
-            "mean_channel_delta": round(float(da.mean()), 4),
-            "roi_pixels_differing": int((da.max(axis=2) > 2).sum()),
-            "whole_frame_max_delta": int(frame.max()),
-            "identical_within_2": bool(da.max() <= 2)}
+            "roi_pixels": int(per_pixel.size),
+            "mean": round(float(per_pixel.mean()), 4),
+            "p95": round(float(np.percentile(per_pixel, 95)), 4),
+            "p99": round(float(np.percentile(per_pixel, 99)), 4),
+            "p999": round(float(np.percentile(per_pixel, 99.9)), 4),
+            "max": float(per_pixel.max()),
+            "over_threshold_fraction": round(float((per_pixel > OVER_THRESHOLD).mean()), 6),
+            "whole_frame_max": float(np.abs(a - b).max())}
+
+
+def compare(a_path: Path, b_path: Path, box) -> dict:
+    """One pair. Measured, but deliberately without a verdict: there is no baseline."""
+    d = difference(a_path, b_path, box)
+    d["verdict"] = "no_baseline"
+    d["reason"] = ("a single pair cannot say whether this difference is the loadout or "
+                   "the scene; capture a repeat of each loadout and use --repeat/--other-repeat")
+    return d
+
+
+def compare_set(a_images, b_images, box) -> dict:
+    """Two loadouts, two captures each: baseline noise, then the cross-loadout test.
+
+    The same-loadout pairs are the null hypothesis. A cross-loadout difference only
+    means something if it sits outside them.
+    """
+    if len(a_images) < 2 or len(b_images) < 2:
+        raise SystemExit("each loadout needs two captures of the same frame")
+    baseline = [difference(a_images[0], a_images[1], box),
+                difference(b_images[0], b_images[1], box)]
+    cross = [difference(a_images[0], b_images[0], box),
+             difference(a_images[1], b_images[1], box)]
+
+    base_p999 = max(d["p999"] for d in baseline)
+    base_mean = max(d["mean"] for d in baseline)
+    cross_p999 = max(d["p999"] for d in cross)
+    cross_mean = max(d["mean"] for d in cross)
+    limit_p999 = max(base_p999 + DELTA_SLACK, DELTA_FLOOR)
+    limit_mean = base_mean + 0.5
+
+    if base_p999 > BASELINE_LOOSE:
+        verdict, reason = "inconclusive", (
+            "the same-loadout repeats already differ by %.2f at p99.9; the scene is not "
+            "reproducible enough in this ROI to attribute anything to the loadout" % base_p999)
+    elif cross_p999 <= limit_p999 and cross_mean <= limit_mean:
+        verdict, reason = "independent", (
+            "cross-loadout p99.9 %.2f and mean %.3f are inside the baseline's %.2f / %.3f "
+            "(limits %.2f / %.3f)" % (cross_p999, cross_mean, base_p999, base_mean,
+                                      limit_p999, limit_mean))
+    else:
+        verdict, reason = "different", (
+            "cross-loadout p99.9 %.2f and mean %.3f exceed the baseline's limits %.2f / %.3f, "
+            "so the arms depend on the loadout and the matching one has to be identified"
+            % (cross_p999, cross_mean, limit_p999, limit_mean))
+
+    return {"roi": list(box), "baseline": baseline, "cross": cross,
+            "baseline_p999": base_p999, "baseline_mean": base_mean,
+            "cross_p999": cross_p999, "cross_mean": cross_mean,
+            "limit_p999": round(limit_p999, 4), "limit_mean": round(limit_mean, 4),
+            "verdict": verdict, "reason": reason}
 
 
 def main():
@@ -148,7 +230,10 @@ def main():
     ap.add_argument("--render", help="declared render resolution, e.g. 1400x1050")
     ap.add_argument("--arm-tone", help="forearm sample rectangle X0,Y0,X1,Y1 (weak fallback)")
     ap.add_argument("--compare", type=Path, help="second capture of the same scene, other loadout")
-    ap.add_argument("--arm-roi", help="forearm rectangle X0,Y0,X1,Y1 for --compare")
+    ap.add_argument("--repeat", type=Path, help="a second capture of the SAME loadout as `image`")
+    ap.add_argument("--other", type=Path, help="first capture of the other loadout")
+    ap.add_argument("--other-repeat", type=Path, help="a second capture of the other loadout")
+    ap.add_argument("--arm-roi", help="forearm rectangle X0,Y0,X1,Y1")
     ap.add_argument("--json", type=Path)
     args = ap.parse_args()
 
@@ -175,6 +260,31 @@ def main():
                   "unavoidable and must be recorded in capture.json.")
     else:
         print("   (pass --render WxH to classify the geometry)")
+
+    if args.repeat or args.other or args.other_repeat:
+        missing = [n for n, v in (("--repeat", args.repeat), ("--other", args.other),
+                                  ("--other-repeat", args.other_repeat)) if v is None]
+        if missing:
+            raise SystemExit("the baseline comparison needs all of %s" % ", ".join(missing))
+        if not args.arm_roi:
+            raise SystemExit("the comparison needs --arm-roi X0,Y0,X1,Y1")
+        box = tuple(int(v) for v in args.arm_roi.split(","))
+        cs = compare_set([args.image, args.repeat], [args.other, args.other_repeat], box)
+        result["compare_set"] = cs
+        print("\n   loadout comparison over ROI %s (%d px each)"
+              % (list(box), cs["baseline"][0]["roi_pixels"]))
+        for label, rows in (("baseline (same loadout)", cs["baseline"]), ("cross-loadout", cs["cross"])):
+            for d in rows:
+                print("      %-24s %-18s mean %6.3f  p95 %5.1f  p99 %5.1f  p99.9 %5.1f  max %5.1f  "
+                      "over %d/255: %.4f%%"
+                      % (label, "%s/%s" % (d["a"], d["b"]), d["mean"], d["p95"], d["p99"],
+                         d["p999"], d["max"], OVER_THRESHOLD, 100 * d["over_threshold_fraction"]))
+        print("      verdict: %s - %s" % (cs["verdict"].upper(), cs["reason"]))
+        print("      put this whole block in the manifest as cs2.arms_evidence.statistics; "
+              "the checker recomputes it from the hashed images and refuses a mismatch.")
+        if args.json:
+            args.json.write_text(json.dumps(result, indent=1), "utf-8")
+        return 0
 
     if args.compare:
         if not args.arm_roi:

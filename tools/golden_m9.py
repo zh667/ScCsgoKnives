@@ -55,7 +55,7 @@ def run_golden(knife, clip, fps):
     out = os.path.join(ROOT, ".tmp-fist", f"golden_{knife}_{clip}.jsonl")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     r = subprocess.run(["dotnet", dll, "golden", knife, clip, str(fps), out],
-                       capture_output=True, text=True, env=env, cwd=ROOT)
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, cwd=ROOT)
     if r.returncode != 0:
         print(r.stderr); raise SystemExit(r.returncode)
     print(r.stderr.strip())

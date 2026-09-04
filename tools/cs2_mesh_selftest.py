@@ -32,6 +32,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import cs2_run
 import cs2_glb
 import cs2_glb_to_obj as conv
 import cs2_viewmodel as vm
@@ -160,9 +161,8 @@ def check_obj(parts: Path):
     files = sorted(parts.glob("*_cs2_*.obj"))
     if not files:
         return {"files": 0, "bad": 0, "note": "no CS2 parts built"}
-    out = subprocess.run([sys.executable, str(ROOT / "tools/validate_obj.py")]
-                         + [str(f) for f in files], capture_output=True, text=True)
-    tail = out.stdout.strip().splitlines()[-1] if out.stdout.strip() else ""
+    out = cs2_run.run([sys.executable, ROOT / "tools/validate_obj.py"] + files, check=False)
+    tail = cs2_run.tail(out.stdout).splitlines()[-1] if (out.stdout or "").strip() else ""
     return {"files": len(files), "output": tail, "returncode": out.returncode,
             "total_bytes": sum(f.stat().st_size for f in files)}
 

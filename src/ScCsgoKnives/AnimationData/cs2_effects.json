@@ -1,5 +1,5 @@
 {
- "Format": "ScCsgoKnives.Cs2Effects/2",
+ "Format": "ScCsgoKnives.Cs2Effects/3",
  "Notes": "Muzzle positions and tracer references are from each gun's .vdata; flash and tracer numbers from the .vpcf systems CS2 plays. The mod draws a sprite, not a particle system, so 'unmodelled' lists what a single sprite cannot reproduce rather than approximating it.",
  "Guns": {
   "ak47": {
@@ -54,9 +54,72 @@
    },
    "Tracer": {
     "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
     "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
     "MaxLength": 1200.0,
-    "LengthFadeIn": 0.095,
     "Speed": 20500.0
    }
   },
@@ -115,7 +178,12 @@
     },
     "silenced": {
      "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzsilenced_subm_smoke.vpcf",
-     "Unmodelled": [],
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_MaxVelocity",
+      "C_OP_SetFloat"
+     ],
      "Particles": 1.0,
      "RotationDegrees": [
       0.0,
@@ -140,14 +208,84 @@
       168
      ],
      "SequenceFrames": 4,
-     "Textures": []
+     "Drag": 0.15,
+     "FadeOut": 1.0,
+     "RadiusScale": 2.0,
+     "Textures": [
+      "materials/particle/simulated/steam/wispy_steam_set.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_flwmix.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_sc_hardedge.vtex"
+     ]
     }
    },
    "Tracer": {
     "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
     "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
     "MaxLength": 1200.0,
-    "LengthFadeIn": 0.095,
     "Speed": 20500.0
    }
   },
@@ -183,8 +321,16 @@
       0.470588,
       0.705882
      ],
-     "ColorMin": [],
-     "ColorMax": [],
+     "ColorMin": [
+      255,
+      255,
+      255
+     ],
+     "ColorMax": [
+      255,
+      255,
+      255
+     ],
      "SequenceFrames": 3,
      "FadeOut": 1.0,
      "Drag": 0.3,
@@ -200,7 +346,33 @@
    },
    "Tracer": {
     "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     }
+    ],
+    "Unmodelled": [],
     "SpeedMin": 30000.0,
+    "SpeedMax": 30000.0,
     "Alpha": [
      0.54902,
      0.705882
@@ -215,11 +387,31 @@
      245,
      219
     ],
-    "MaxLength": 900.0,
-    "LengthFadeIn": 0.1,
-    "Textures": [
-     "materials/particle/sparks/sparks.vtex"
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.1,
+     0.1
     ],
+    "Radius": [
+     2.0,
+     2.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     500.0,
+     6400.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
     "Speed": 30000.0
    }
   }

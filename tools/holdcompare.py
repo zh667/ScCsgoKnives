@@ -41,7 +41,7 @@ def run():
         subprocess.run(['dotnet', 'build', proj, '-c', 'Release', '-nologo', '-v', 'q'], check=True, env=env, cwd=ROOT)
     tag = '_'.join(o.replace('=', '') for o in OVERRIDES) or 'default'
     path = os.path.join(ROOT, '.tmp-fist', f'hold_{knife}_{clip}_{tag}.json')
-    out = subprocess.run(['dotnet', dll, knife, clip, str(FPS), path, str(FX), str(FY)] + OVERRIDES, capture_output=True, text=True, env=env, cwd=ROOT)
+    out = subprocess.run(['dotnet', dll, knife, clip, str(FPS), path, str(FX), str(FY)] + OVERRIDES, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, cwd=ROOT)
     if out.returncode != 0:
         print(out.stderr); raise SystemExit(out.returncode)
     return json.load(open(path)), tag

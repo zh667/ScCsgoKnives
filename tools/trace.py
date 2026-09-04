@@ -35,7 +35,7 @@ def run_trace(knife, clip, fps):
         subprocess.run(['dotnet', 'build', proj, '-c', 'Release', '-nologo', '-v', 'q'], check=True, env=env, cwd=ROOT)
     os.makedirs(os.path.join(ROOT, '.tmp-fist'), exist_ok=True)
     raw = os.path.join(ROOT, '.tmp-fist', f'{knife}_{clip}_bones.jsonl')
-    r = subprocess.run(['dotnet', dll, 'trace', knife, clip, str(fps), raw], capture_output=True, text=True, env=env, cwd=ROOT)
+    r = subprocess.run(['dotnet', dll, 'trace', knife, clip, str(fps), raw], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, cwd=ROOT)
     if r.returncode != 0:
         print(r.stderr); raise SystemExit(r.returncode)
     print(r.stderr.strip())

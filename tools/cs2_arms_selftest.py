@@ -30,6 +30,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import cs2_run
 import cs2_glb
 import cs2_glb_to_obj as meshconv
 import cs2_placement as place
@@ -132,13 +133,9 @@ def skin(joints, ibm, pos, w, j, absolute, placement):
 
 
 def csharp_skin(gun, clip, t, out_path: Path):
-    r = subprocess.run(
-        ["dotnet", "run", "--project", str(ROOT / "tools/ArmPreview/ArmPreview.csproj"),
-         "-c", "Release", "--", "cs2arms", gun, clip, "%r" % t, str(out_path)],
-        capture_output=True, text=True, cwd=ROOT,
-        env={**os.environ, "DOTNET_ROLL_FORWARD": "Major"})
-    if r.returncode:
-        raise SystemExit(r.stderr.strip()[-800:])
+    cs2_run.run(
+        ["dotnet", "run", "--project", ROOT / "tools/ArmPreview/ArmPreview.csproj",
+         "-c", "Release", "--", "cs2arms", gun, clip, "%r" % t, out_path], dotnet=True)
     raw = out_path.read_bytes()
     (count,) = struct.unpack_from("<i", raw, 0)
     return np.frombuffer(raw, np.float32, count * 3, 4).reshape(count, 3).astype(float)

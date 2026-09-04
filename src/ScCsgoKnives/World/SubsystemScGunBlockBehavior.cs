@@ -135,37 +135,130 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_tracers.Add(new TracerShot(start, direction, distance, m_time.GameTime, spec));
     }
 
+    /// <summary>How many quads the ribbon is cut into; the width is solved per joint.</summary>
+    const int TracerSegments = 24;
+
+    Texture2D m_tracerAdd, m_tracerBlend;
+    bool m_tracerTexturesTried;
+
+    Texture2D TracerTexture(string name) {
+        if (!m_tracerTexturesTried) {
+            m_tracerTexturesTried = true;
+            try {
+                m_tracerAdd = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_add");
+                m_tracerBlend = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_blend");
+            }
+            catch (Exception e) {
+                KnifeDiagnostics.WarnOnce("cs2-tracer-textures", $"Could not load the CS2 tracer textures: {e.Message}");
+            }
+        }
+        return name == "cs2_tracer_blend" ? m_tracerBlend : m_tracerAdd;
+    }
+
+    /// <summary>
+    /// The CS2 tracer trail, as the two C_OP_RenderTrails passes its .vpcf declares.
+    ///
+    /// The shape is not a fixed-width quad. Per pass, the half-width is the particle
+    /// radius times that pass's m_flRadiusScale - 0.5 x 1 inch and 0.75 x 1 inch for
+    /// the assault rifle, 0.5 x 2 and 0.65 x 2 for the AWP - and is then clamped in
+    /// screen space to m_flMinSize .. m_flMaxSize of the viewport height, which is what
+    /// keeps a trail passing the camera from becoming a plank and a distant one from
+    /// dropping below a pixel. The AWP's pass additionally fades out between
+    /// m_flStartFadeSize and m_flEndFadeSize, so its trail disappears rather than
+    /// filling the screen when it goes by close.
+    ///
+    /// The head-to-tail gradient and the soft edges are the CS2 textures themselves
+    /// (tools/cs2_tracer_texture.py bakes materials/effects/spark and frame 4 of
+    /// materials/particle/sparks, transposed so U runs along the trail). The AK and
+    /// M4A1-S have a white C_INIT_RandomColor, so the spark texture is the only thing
+    /// that colours them; the AWP tints it 247,188,94 .. 255,245,219.
+    ///
+    /// The one convention not stated in the file: m_flMinSize / m_flMaxSize are read as
+    /// fractions of the viewport height applied to the half-width. Marked as an
+    /// assumption - it is the reading under which the AK's 0.00075 .. 0.002 keeps a
+    /// 0.5-inch trail between about 0.8 and 2 pixels of half-width over its whole
+    /// useful range, which no other reading does.
+    /// </summary>
     void DrawTracers(Camera camera) {
         if (m_tracers.Count == 0) return;
         m_tracerRenderer ??= new PrimitivesRenderer3D();
         double now = m_time.GameTime;
         Vector3 eye = camera.ViewPosition;
-        FlatBatch3D batch = m_tracerRenderer.FlatBatch(0, DepthStencilState.DepthRead,
-            RasterizerState.CullNoneScissor, BlendState.Additive);
+        Vector3 forward = camera.ViewDirection;
+        float projY = camera.ProjectionMatrix.M22;
+        if (!float.IsFinite(projY) || projY <= 1e-4f) return;
+
         for (int i = m_tracers.Count - 1; i >= 0; i--) {
             TracerShot t = m_tracers[i];
+            Cs2Effects.Tracer spec = t.Spec;
+            float speed = spec.MetresPerSecond;
             float age = (float)(now - t.At);
-            float travelled = age * t.Spec.MetresPerSecond;
-            if (travelled - t.Spec.TrailMetres > t.Distance) { m_tracers.RemoveAt(i); continue; }
-            float head = MathUtils.Min(travelled, t.Distance);
-            float tail = MathUtils.Max(0f, travelled - t.Spec.TrailMetres);
-            if (head <= tail) continue;
-            Vector3 a = t.Start + t.Direction * tail;
-            Vector3 b = t.Start + t.Direction * head;
-            // A camera-facing ribbon: width across the view direction, thin enough to
-            // read as a streak rather than a plank.
-            Vector3 side = Vector3.Cross(t.Direction, Vector3.Normalize(b - eye));
-            float length = side.Length();
-            if (!float.IsFinite(length) || length < 1e-5f) continue;
-            side = side / length * 0.012f;
-            float fade = MathUtils.Saturate(age / MathUtils.Max(t.Spec.FadeInSeconds, 0.001f));
-            Color c = t.Spec.Tint;
-            byte alpha = (byte)MathUtils.Clamp(255f * t.Spec.AlphaMid * fade, 0f, 255f);
-            var tint = new Color(c.R, c.G, c.B, alpha);
-            batch.QueueTriangle(a - side, b - side, b + side, tint);
-            batch.QueueTriangle(a - side, b + side, a + side, tint);
+            float travelled = age * speed;
+            // C_INIT_MoveBetweenPoints runs the particle to the impact point and
+            // C_OP_FadeAndKillForTracers kills it there.
+            if (travelled >= t.Distance || t.Distance <= 1e-3f) { m_tracers.RemoveAt(i); continue; }
+            float u = travelled / t.Distance;
+            float pathAlpha = spec.PathAlpha(u);
+            if (pathAlpha <= 0.004f) continue;
+
+            float head = travelled;
+            Vector3 headPoint = t.Start + t.Direction * head;
+            float fromViewer = Vector3.Distance(headPoint, eye);
+            foreach (Cs2Effects.TracerPass pass in spec.Passes ?? []) {
+                // m_flLengthFadeInTime: the drawn length grows from nothing over this
+                // many seconds, so a fresh tracer is a short streak, not a full bar.
+                float tail = MathUtils.Max(0f, head - Cs2Tracer.TrailMetres(spec, pass, age, fromViewer));
+                if (head - tail < 1e-4f) continue;
+                DrawTrailPass(t, spec, pass, tail, head, pathAlpha, eye, forward, projY);
+            }
         }
         m_tracerRenderer.Flush(camera.ViewProjectionMatrix);
+    }
+
+    void DrawTrailPass(in TracerShot t, Cs2Effects.Tracer spec, Cs2Effects.TracerPass pass,
+                       float tail, float head, float pathAlpha,
+                       Vector3 eye, Vector3 forward, float projY) {
+        Texture2D texture = TracerTexture(pass.Texture);
+        if (texture is null) return;
+        float halfWorld = spec.HalfWidthMetres(pass);
+        if (halfWorld <= 0f) return;
+
+        TexturedBatch3D batch = m_tracerRenderer.TexturedBatch(texture, useAlphaTest: false, layer: 0,
+            DepthStencilState.DepthRead, RasterizerState.CullNoneScissor,
+            pass.Additive ? BlendState.Additive : BlendState.NonPremultiplied, SamplerState.LinearClamp);
+
+        Color tint = spec.Tint;
+        Vector3 previous = default, previousSide = default;
+        float previousFade = 0f;
+        for (int k = 0; k <= TracerSegments; k++) {
+            float f = k / (float)TracerSegments;
+            Vector3 p = t.Start + t.Direction * MathUtils.Lerp(tail, head, f);
+            Vector3 toEye = p - eye;
+            float depth = Vector3.Dot(toEye, forward);
+            float half = Cs2Tracer.HalfWidth(spec, pass, depth, projY, out float fade);
+            Vector3 side = Vector3.Cross(t.Direction, toEye);
+            float length = side.Length();
+            if (!float.IsFinite(length) || length < 1e-6f) { previousFade = 0f; continue; }
+            side = side * (half / length);
+
+            if (k > 0 && previousFade + fade > 0f) {
+                float a0 = spec.AlphaMid * pathAlpha * previousFade;
+                float a1 = spec.AlphaMid * pathAlpha * fade;
+                var c0 = new Color(tint.R, tint.G, tint.B, (byte)MathUtils.Clamp(255f * a0, 0f, 255f));
+                var c1 = new Color(tint.R, tint.G, tint.B, (byte)MathUtils.Clamp(255f * a1, 0f, 255f));
+                float u0 = (k - 1) / (float)TracerSegments, u1 = f;
+                // U runs tail (0) to head (1); V crosses the width. Both clamp, so the
+                // ramp the texture carries is drawn once over the trail rather than
+                // tiled - m_flFinalTextureScaleU = 5 is recorded as unmodelled.
+                batch.QueueTriangle(previous - previousSide, previous + previousSide, p + side,
+                                    new Vector2(u0, 1f), new Vector2(u0, 0f), new Vector2(u1, 0f), c0);
+                batch.QueueTriangle(previous - previousSide, p + side, p - side,
+                                    new Vector2(u0, 1f), new Vector2(u1, 0f), new Vector2(u1, 1f), c1);
+            }
+            previous = p;
+            previousSide = side;
+            previousFade = fade;
+        }
     }
 
     public void Draw(Camera camera, int drawOrder) {
@@ -323,7 +416,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         float travel = spec.RangeBlocks;
         if (body.HasValue) travel = MathUtils.Min(travel, body.Value.Distance);
         if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
-        QueueTracer(spec.Name, start, direction, travel);
+        // The tracer leaves the muzzle the player can see, not the hit-detection ray's
+        // origin at the eye. The weapon is drawn in CS2's viewmodel projection, so the
+        // renderer solves for a world point that lands on the drawn muzzle under the
+        // game camera; without one - no cs2 profile, or the gun not drawn this frame -
+        // the shot ray's origin is used, which is what every earlier version did.
+        Vector3 impact = start + direction * travel;
+        Vector3 tracerStart = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, silenced, out Vector3 muzzle)
+            ? muzzle : start;
+        Vector3 tracerDirection = impact - tracerStart;
+        float tracerTravel = tracerDirection.Length();
+        if (tracerTravel > 1e-3f) QueueTracer(spec.Name, tracerStart, tracerDirection / tracerTravel, tracerTravel);
         if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
             Vector3 hitPoint = body.Value.HitPoint();
             // CS damage falls off with distance: damage * RangeModifier^(units/500).

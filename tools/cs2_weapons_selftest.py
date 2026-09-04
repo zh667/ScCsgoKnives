@@ -24,6 +24,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import cs2_run
+
 ROOT = Path(__file__).resolve().parent.parent
 WEAPONS = ROOT / "src/ScCsgoKnives/AnimationData/cs2_weapons.json"
 VDATA = (Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"
@@ -69,8 +73,7 @@ def main():
             if want is None or abs(want - got) > 1e-6:
                 mismatches.append("%s.%s: json %s vs vdata %s" % (gun, key, got, want))
     before = WEAPONS.read_bytes()
-    subprocess.run([sys.executable, str(ROOT / "tools/cs2_weapons.py")],
-                   capture_output=True, check=True, cwd=ROOT)
+    cs2_run.run([sys.executable, ROOT / "tools/cs2_weapons.py"])
     stable = WEAPONS.read_bytes() == before
     print("   %d literal values checked, %d mismatched%s"
           % (total, len(mismatches), "" if not mismatches else ": " + "; ".join(mismatches)))

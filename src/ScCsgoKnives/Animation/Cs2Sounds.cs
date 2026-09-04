@@ -40,6 +40,9 @@ public static class Cs2Sounds {
     const string Resource = "AnimationData.cs2_sounds.json";
     const string ExpectedFormat = "ScCsgoKnives.Cs2Sounds/1";
 
+    /// <summary>Null when the file loaded; the reason otherwise. See Cs2Effects.LoadError.</summary>
+    public static string LoadError { get; private set; } = "not loaded";
+
     static readonly Dictionary<string, (float At, string Name)[]> s_clips = Load();
 
     /// <summary>Cues for a "<spec>:<clip>" key, in CS2's order. False when CS2 has none.</summary>
@@ -53,12 +56,14 @@ public static class Cs2Sounds {
             Assembly assembly = typeof(Cs2Sounds).Assembly;
             string name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(Resource, StringComparison.OrdinalIgnoreCase));
             if (name is null) {
+                LoadError = $"no embedded {Resource}";
                 KnifeDiagnostics.WarnOnce("cs2-sounds-missing", $"No embedded {Resource}; CS2 sound timings unavailable.");
                 return loaded;
             }
             using Stream stream = assembly.GetManifestResourceStream(name);
             SoundFile file = JsonSerializer.Deserialize<SoundFile>(stream);
             if (file?.Format != ExpectedFormat || file.Clips is null) {
+                LoadError = $"{Resource} is not {ExpectedFormat}";
                 KnifeDiagnostics.WarnOnce("cs2-sounds-format", $"{Resource} is not {ExpectedFormat}; CS2 sound timings unavailable.");
                 return loaded;
             }
@@ -71,12 +76,14 @@ public static class Cs2Sounds {
                 }
                 if (cues.Count != 0) loaded[key] = cues.ToArray();
             }
+            LoadError = null;
             KnifeLog.Information(
                 $"[ScCsgoKnives] CS2 sound timings: {loaded.Count} clips playable, "
                 + $"{loaded.Values.Sum(c => c.Length)} cues, {dropped} cues have no shipped audio."
             );
         }
         catch (Exception e) {
+            LoadError = $"{e.GetType().Name}: {e.Message}";
             KnifeDiagnostics.WarnOnce("cs2-sounds-load", $"Could not read {Resource}: {e.Message}");
         }
         return loaded;

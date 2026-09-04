@@ -51,82 +51,91 @@ KnifeLog.ToConsole = true;   // before any renderer or rig access, so no log eve
 // and snake_case keys made Cs2Effects throw on load, so every tracer and the whole CS2
 // flash envelope were silently inactive while the Python selftest passed.
 if (args.Length > 0 && args[0] == "loadcheck") {
-    var checks = new List<object>();
-    void Check(string name, bool ok, string detail) {
-        checks.Add(new { name, ok, detail });
+    // The assertions live in the mod (Cs2SelfTest), so tools/PackageCheck can run the
+    // identical code against the DLL inside a packaged .scmod.
+    string json = Cs2SelfTest.RunJson();
+    Console.WriteLine(json);
+    return JsonDocument.Parse(json).RootElement.GetProperty("failed").GetInt32() == 0 ? 0 : 1;
+}
+
+// "tracer <gun> [worldFovY] [width] [height]": everything the CS2 tracer ribbon is
+// made of, straight out of the shipped code. The renderer calls the same Cs2Tracer
+// helpers, so what this prints is what gets drawn: the muzzle's pixel under the
+// viewmodel projection and the reprojected world start's pixel under the game
+// camera's (the fix for the tracer leaving the eye instead of the barrel), the
+// per-pass half-width in pixels against depth, the trail length against age, and the
+// alpha envelope against the fraction of the shot line flown.
+if (args.Length > 0 && args[0] == "tracer") {
+    string gun = args.Length > 1 ? args[1] : "ak47";
+    float worldFovY = args.Length > 2 ? float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture) : 60f;
+    int width = args.Length > 3 ? int.Parse(args[3]) : 1400;
+    int height = args.Length > 4 ? int.Parse(args[4]) : 1050;
+    float aspect = width / (float)height;
+
+    Cs2Effects.Gun fx = Cs2Effects.Get(gun);
+    Cs2Effects.Tracer spec = fx?.Tracer;
+    if (spec is null) { Console.Error.WriteLine($"no CS2 tracer for {gun}"); return 2; }
+
+    Matrix world = Matrix.CreatePerspectiveFieldOfView(MathUtils.DegToRad(worldFovY), aspect, 0.1f, 1024f);
+    Matrix viewmodel = Matrix.CreatePerspectiveFieldOfView(
+        MathUtils.DegToRad(Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov)), aspect, 0.02f, 64f);
+    Matrix root = Cs2Placement.Placement();
+
+    var muzzles = new List<object>();
+    foreach (bool silenced in new[] { false, true }) {
+        if (silenced && fx.MuzzlePos1 is null) continue;
+        Vector3 view = CsmcFirstPersonRenderer.MuzzleViewPoint(gun, silenced, root);
+        Vector2 drawn = Cs2Tracer.ToPixels(view, viewmodel.M11, viewmodel.M22, width, height);
+        Vector3 reprojected = Cs2Tracer.ReprojectView(view, viewmodel.M11 / world.M11);
+        Vector2 tracerPixel = Cs2Tracer.ToPixels(reprojected, world.M11, world.M22, width, height);
+        Vector2 naive = Cs2Tracer.ToPixels(Vector3.Zero + new Vector3(0f, 0f, -0.001f), world.M11, world.M22, width, height);
+        muzzles.Add(new {
+            silenced,
+            viewSpace = new[] { view.X, view.Y, view.Z },
+            drawnPixel = new[] { drawn.X, drawn.Y },
+            tracerPixel = new[] { tracerPixel.X, tracerPixel.Y },
+            errorPixels = Vector2.Distance(drawn, tracerPixel),
+            eyeOriginPixel = new[] { naive.X, naive.Y },
+            eyeOriginErrorPixels = Vector2.Distance(drawn, naive),
+        });
     }
 
-    foreach (string gun in new[] { "ak47", "m4a1s", "awp" }) {
-        Cs2Effects.Gun fx = Cs2Effects.Get(gun);
-        Check($"effects/{gun}/loaded", fx is not null, fx is null ? "Cs2Effects.Get returned null" : "ok");
-        if (fx is not null) {
-            Check($"effects/{gun}/muzzle0", fx.MuzzlePos0 is { Length: >= 3 },
-                  fx.MuzzlePos0 is null ? "null" : $"[{string.Join(',', fx.MuzzlePos0)}]");
-            Cs2Effects.Flash flash = Cs2Effects.GetFlash(gun, false);
-            Check($"effects/{gun}/flash", flash is not null, flash is null ? "no default flash" : "ok");
-            if (flash is not null) {
-                Check($"effects/{gun}/flash.seconds", flash.Seconds > 0f && flash.Seconds < 2f, $"{flash.Seconds:0.####} s");
-                Check($"effects/{gun}/flash.frames", flash.SequenceFrames >= 1, $"{flash.SequenceFrames} frames");
-                Check($"effects/{gun}/flash.alpha", flash.AlphaMid > 0f && flash.AlphaMid <= 1f, $"{flash.AlphaMid:0.####}");
-            }
-            Check($"effects/{gun}/tracer.freq", Cs2Effects.TracerFrequency(gun) >= 1,
-                  $"{Cs2Effects.TracerFrequency(gun)}");
-            Cs2Effects.Tracer tr = fx.Tracer;
-            Check($"effects/{gun}/tracer.speed", tr is not null && tr.Speed is > 1000f,
-                  tr?.Speed?.ToString("0.#") ?? "null");
-            Check($"effects/{gun}/tracer.length", tr is not null && tr.MaxLength is > 100f,
-                  tr?.MaxLength?.ToString("0.#") ?? "null");
-            Check($"effects/{gun}/tracer.fadein", tr is not null && tr.LengthFadeIn is > 0f,
-                  tr?.LengthFadeIn?.ToString("0.####") ?? "null");
+    var passes = new List<object>();
+    foreach (Cs2Effects.TracerPass pass in spec.Passes ?? []) {
+        var widths = new List<object>();
+        foreach (float depth in new[] { 0.5f, 1f, 2f, 5f, 10f, 20f, 40f, 80f }) {
+            float half = Cs2Tracer.HalfWidth(spec, pass, depth, world.M22, out float fade);
+            float fraction = Cs2Tracer.HalfWidthScreenFraction(spec, pass, depth, world.M22, out _);
+            widths.Add(new { depth, halfMetres = half, halfPixels = fraction * height, sizeFade = fade,
+                             unclampedPixels = spec.HalfWidthMetres(pass) / Cs2Tracer.MetresPerScreenHeight(depth, world.M22) * height });
         }
-
-        KnifeTuning.Override("GunNumbers", 1f);
-        Cs2Weapons.Gun wp = Cs2Weapons.Get(gun);
-        Check($"weapons/{gun}/loaded", wp is not null, wp is null ? "null" : "ok");
-        if (wp is not null) {
-            Check($"weapons/{gun}/damage", wp.Damage > 0f, $"{wp.Damage:0.#}");
-            Check($"weapons/{gun}/spread", wp.SpreadDegrees > 0f, $"{wp.SpreadDegrees:0.####} deg");
-            Check($"weapons/{gun}/kick", wp.KickPitchDegrees > 0f, $"{wp.KickPitchDegrees:0.####} deg");
-            Check($"weapons/{gun}/falloff", wp.RangeModifier is > 0f and < 1f, $"{wp.RangeModifier:0.###}");
-            Check($"weapons/{gun}/maxspeed", wp.MaxSpeed is { Length: >= 1 }, wp.MaxSpeed is null ? "null" : $"{wp.MaxSpeed[0]:0.#}");
-        }
-        KnifeTuning.Override("GunNumbers", 0f);
-
-        Check($"rig/{gun}/parts", Cs2Rig.GetMeshParts(gun).Count > 0, $"{Cs2Rig.GetMeshParts(gun).Count} parts");
-        Check($"rig/{gun}/deploy", Cs2Rig.Duration(gun, "deploy") > 0f, $"{Cs2Rig.Duration(gun, "deploy"):0.####} s");
-        Cs2Rig.Pose pose = Cs2Rig.Sample(gun, "idle", 0f);
-        Check($"rig/{gun}/sample", pose is not null && pose.Bones.Count >= 60,
-              pose is null ? "null" : $"{pose.Bones.Count} bones, {pose.Parts.Count} parts");
-        // A binding whose matrices deserialised as null would come back as the identity
-        // and put every part at the origin, which no bone-count check would notice.
-        if (pose is not null) {
-            int parts = Cs2Rig.GetMeshParts(gun).Count;
-            Check($"rig/{gun}/bindings", pose.Parts.Count == parts,
-                  $"{pose.Parts.Count} part matrices for {parts} parts");
-            bool placed = Cs2Rig.GetMeshParts(gun).All(n => pose.GetPart(n) != Matrix.Identity);
-            Check($"rig/{gun}/bindings.nonidentity", placed,
-                  placed ? "all parts placed" : "a part matrix is the identity");
-            float reloadSeconds = Cs2Rig.Duration(gun, "reload");
-            Cs2Rig.Pose later = reloadSeconds > 0.2f ? Cs2Rig.Sample(gun, "reload", reloadSeconds * 0.5f) : null;
-            bool moves = later is not null
-                && Vector3.Distance(later.GetBoneOrigin("clip"), pose.GetBoneOrigin("clip")) > 0.05f;
-            Check($"rig/{gun}/animates", moves,
-                  later is null ? "no reload clip" :
-                  $"magazine moves {Vector3.Distance(later.GetBoneOrigin("clip"), pose.GetBoneOrigin("clip")):0.##} in mid-reload");
-        }
+        var lengths = new List<object>();
+        foreach (float age in new[] { 0.005f, 0.01f, 0.02f, 0.04f, 0.08f, 0.16f })
+            lengths.Add(new { age, trailMetres = Cs2Tracer.TrailMetres(spec, pass, age, 10f) });
+        passes.Add(new {
+            pass.Texture, pass.SourceTexture, pass.Blend, pass.RadiusScale, pass.LengthFadeIn,
+            pass.MinSize, pass.MaxSize, pass.StartFadeSize, pass.EndFadeSize, pass.Additive,
+            halfWidthMetres = spec.HalfWidthMetres(pass), widths, lengths,
+        });
     }
 
-    Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
-    Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,
-          Cs2Sounds.TryGet("ak47:reload", out var r2) ? $"{r2.Length} cues" : "missing");
-    Cs2SkinnedMesh arms = Cs2SkinnedMesh.Arms;
-    Check("arms/loaded", arms is not null, arms is null ? "null" : $"{arms.Skinned.Length} vertices");
-    Check("arms/primitives", arms is not null && arms.Primitives.Length == 2,
-          arms is null ? "null" : $"{arms.Primitives.Length}");
+    var envelope = new List<object>();
+    for (int k = 0; k <= 100; k++) {
+        float u = k / 100f;
+        envelope.Add(new { u, alpha = spec.PathAlpha(u) * spec.AlphaMid });
+    }
 
-    int bad = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
-    Console.WriteLine(JsonSerializer.Serialize(new { failed = bad, checks }));
-    return bad == 0 ? 0 : 1;
+    Console.WriteLine(JsonSerializer.Serialize(new {
+        gun, worldFovY, viewmodelFov = KnifeTuning.Cs2ViewmodelFov,
+        viewmodelFovY = Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov),
+        width, height, frequency = Cs2Effects.TracerFrequency(gun),
+        spec.Source, spec.Speed, spec.MaxLength, spec.Radius, spec.TrailSeconds, spec.Alpha,
+        spec.ColorMin, spec.ColorMax, spec.ColorFromTexture, spec.Unmodelled,
+        metresPerSecond = spec.MetresPerSecond, trailMetresCap = spec.TrailMetres,
+        lengthScale = new { at1m = spec.LengthScale(1f), at10m = spec.LengthScale(10f), at100m = spec.LengthScale(100f) },
+        muzzles, passes, envelope,
+    }));
+    return 0;
 }
 
 // "durations": what every timing consumer sees, per gun and clip alias, under both

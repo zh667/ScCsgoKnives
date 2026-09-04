@@ -28,6 +28,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import cs2_run
 import cs2_effects
 import cs2_viewmodel as vm
 from cs2_rig_selftest import GUNS
@@ -73,8 +74,7 @@ def main():
         if tracer.get("Source") and not (cs2_effects.PARTICLES / tracer["Source"]).exists():
             missing.append(tracer["Source"])
     before = EFFECTS.read_bytes()
-    subprocess.run([sys.executable, str(ROOT / "tools/cs2_effects.py")],
-                   capture_output=True, check=True, cwd=ROOT)
+    cs2_run.run([sys.executable, ROOT / "tools/cs2_effects.py"])
     stable = EFFECTS.read_bytes() == before
     print("   %d particle systems referenced, %d missing%s"
           % (sum(len(g.get("Flash") or {}) + (1 if (g.get("Tracer") or {}).get("Source") else 0)
@@ -126,8 +126,30 @@ def main():
     print("   Lifetime/Alpha not an array: %d%s" % (len(shapes), "" if not shapes else " -> " + shapes[0]))
     print("   format: %s" % doc.get("Format"))
 
+    # The tracer is the part the runtime draws geometry from, so its shape is pinned
+    # here too: two RenderTrails passes, each with a baked texture and a size clamp.
+    tracer_faults = []
+    for gun, g in doc["Guns"].items():
+        t = g.get("Tracer") or {}
+        passes = t.get("Passes") or []
+        if len(passes) != 2:
+            tracer_faults.append("%s has %d tracer passes, not 2" % (gun, len(passes)))
+        for ps in passes:
+            if not ps.get("Texture") or not ps.get("SourceTexture"):
+                tracer_faults.append("%s pass has no texture (%r <- %r)"
+                                     % (gun, ps.get("Texture"), ps.get("SourceTexture")))
+            if not (0.0 < ps.get("MinSize", 0.0) < ps.get("MaxSize", 0.0)):
+                tracer_faults.append("%s pass screen clamp is %r..%r"
+                                     % (gun, ps.get("MinSize"), ps.get("MaxSize")))
+        for key in ("Speed", "MaxLength", "Radius", "TrailSeconds", "Alpha", "ColorMin", "ColorMax"):
+            if t.get(key) in (None, [], ""):
+                tracer_faults.append("%s tracer has no %s" % (gun, key))
+    print("   tracer schema: %s" % ("2 passes with textures and size clamps for all three guns"
+                                    if not tracer_faults else "; ".join(tracer_faults)))
+
     ok = (worst < 1.5 and not missing and stable and inner < 0.02 and 0.9 < crossing < 1.0
-          and not snake and not shapes and doc.get("Format") == "ScCsgoKnives.Cs2Effects/2")
+          and not snake and not shapes and not tracer_faults
+          and doc.get("Format") == "ScCsgoKnives.Cs2Effects/3")
     print("\nA/B/C/D %s" % ("PASS" if ok else "FAIL"))
     if args.json:
         args.json.write_text(json.dumps({"muzzle": rows, "missing": missing,

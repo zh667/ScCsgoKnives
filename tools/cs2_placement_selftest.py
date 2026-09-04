@@ -29,6 +29,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import cs2_run
 import cs2_placement as ref
 from cs2_rig_selftest import GUNS
 
@@ -45,25 +46,17 @@ EXTRA = {("m4a1s", "attach"): "silencer_attach_rifle"}
 
 
 def csharp(gun, clip, t):
-    out = subprocess.run(
-        ["dotnet", "run", "--project", str(ROOT / "tools/ArmPreview/ArmPreview.csproj"),
-         "-c", "Release", "--", "cs2", gun, clip, "%r" % t],
-        capture_output=True, text=True, cwd=ROOT,
-        env={**os.environ, "DOTNET_ROLL_FORWARD": "Major"})
-    if out.returncode:
-        raise SystemExit(out.stderr.strip()[-800:])
-    return json.loads(out.stdout.strip().splitlines()[-1])
+    document, _ = cs2_run.run_json(
+        ["dotnet", "run", "--project", ROOT / "tools/ArmPreview/ArmPreview.csproj",
+         "-c", "Release", "--", "cs2", gun, clip, "%r" % t], dotnet=True)
+    return document
 
 
 def durations():
-    out = subprocess.run(
-        ["dotnet", "run", "--project", str(ROOT / "tools/ArmPreview/ArmPreview.csproj"),
-         "-c", "Release", "--", "durations"],
-        capture_output=True, text=True, cwd=ROOT,
-        env={**os.environ, "DOTNET_ROLL_FORWARD": "Major"})
-    if out.returncode:
-        raise SystemExit(out.stderr.strip()[-800:])
-    return json.loads(out.stdout.strip().splitlines()[-1])
+    document, _ = cs2_run.run_json(
+        ["dotnet", "run", "--project", ROOT / "tools/ArmPreview/ArmPreview.csproj",
+         "-c", "Release", "--", "durations"], dotnet=True)
+    return document
 
 
 def check_durations():

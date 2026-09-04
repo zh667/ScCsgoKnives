@@ -923,6 +923,7 @@ public static class CsmcFirstPersonRenderer {
 
         Matrix root = Cs2Placement.Placement() * post;
         Matrix projection = Cs2Placement.Projection(camera);
+        RecordMuzzleFrame(root, projection, camera);
         float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
         KnifePbrRenderer.Lighting lighting = KnifePbrRenderer.FirstPersonLighting(camera, light);
         bool hideSilencer = SilencerHidden(firstPerson, variant);
@@ -954,6 +955,52 @@ public static class CsmcFirstPersonRenderer {
         }
         return true;
     }
+
+    static Matrix s_cs2MuzzleRoot, s_cs2MuzzleInvView;
+    static float s_cs2MuzzleFovRatio = 1f;
+    static int s_cs2MuzzleFrame = -1;
+
+    /// <summary>
+    /// Keep what the tracer needs to leave the muzzle the player can see.
+    ///
+    /// The weapon is drawn in its own projection - CS2's viewmodel_fov, 53.668 degrees
+    /// vertical at the default 68 - while the world, and the tracer with it, uses the
+    /// game camera's. Both consume the same view space, so a rig point and a world
+    /// point land on the same pixel exactly when their view-space x and y are in the
+    /// ratio of the two projections' scale factors. Storing that ratio with the frame's
+    /// placement and inverse view matrix lets the gun subsystem ask for a world point
+    /// that projects onto the drawn muzzle, instead of starting the tracer at the eye.
+    /// </summary>
+    static void RecordMuzzleFrame(Matrix root, Matrix projection, Camera camera) {
+        float world = camera.ProjectionMatrix.M11;
+        if (!float.IsFinite(world) || MathF.Abs(world) < 1e-6f) return;
+        s_cs2MuzzleRoot = root;
+        s_cs2MuzzleInvView = camera.InvertedViewMatrix;
+        s_cs2MuzzleFovRatio = projection.M11 / world;
+        s_cs2MuzzleFrame = Time.FrameIndex;
+    }
+
+    /// <summary>
+    /// Where a tracer must start in the world so that it leaves the muzzle on screen.
+    /// False when the cs2 profile has not drawn this gun recently, when CS2 declares no
+    /// muzzle for it, or when the muzzle is behind the near plane - the caller then
+    /// keeps the shot ray's own origin.
+    /// </summary>
+    public static bool TryGetMuzzleWorld(string gun, bool silenced, out Vector3 world) {
+        world = default;
+        if (s_cs2MuzzleFrame < 0 || Time.FrameIndex - s_cs2MuzzleFrame > 4) return false;
+        Vector3? rig = Cs2Effects.MuzzlePosition(gun, silenced);
+        if (rig is null) return false;
+        Vector3 view = Vector3.Transform(rig.Value, s_cs2MuzzleRoot);
+        if (!(view.Z < -0.02f)) return false;
+        view = new Vector3(view.X * s_cs2MuzzleFovRatio, view.Y * s_cs2MuzzleFovRatio, view.Z);
+        world = Vector3.Transform(view, s_cs2MuzzleInvView);
+        return true;
+    }
+
+    /// <summary>The muzzle in engine view space, for the headless tools.</summary>
+    public static Vector3 MuzzleViewPoint(string gun, bool silenced, Matrix root) =>
+        Vector3.Transform(Cs2Effects.MuzzlePosition(gun, silenced) ?? Vector3.Zero, root);
 
     /// <summary>
     /// The cs2 profile's flash, placed at the muzzle position the gun's .vdata

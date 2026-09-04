@@ -59,6 +59,12 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import cs2_run
+
+try:
+    from cs2_capture_probe import compare_set
+except Exception:          # measured evidence is required, so this is fatal at use
+    compare_set = None
 import cs2_placement as place
 import cs2_raster as raster
 from cs2_rig_selftest import GUNS
@@ -270,14 +276,10 @@ def predict(gun, clip, t, cvars, width, height):
             "Cs2ViewmodelOffsetX=%g" % cvars["viewmodel_offset_x"],
             "Cs2ViewmodelOffsetY=%g" % cvars["viewmodel_offset_y"],
             "Cs2ViewmodelOffsetZ=%g" % cvars["viewmodel_offset_z"]]
-    out = subprocess.run(
-        ["dotnet", "run", "--project", str(ROOT / "tools/ArmPreview/ArmPreview.csproj"),
-         "-c", "Release", "--", "cs2", gun, clip, "%r" % t, str(width), str(height)] + over,
-        capture_output=True, text=True, cwd=ROOT,
-        env={**os.environ, "DOTNET_ROLL_FORWARD": "Major"})
-    if out.returncode:
-        raise RuntimeError(out.stderr.strip()[-600:])
-    return json.loads(out.stdout.strip().splitlines()[-1])
+    document, _ = cs2_run.run_json(
+        ["dotnet", "run", "--project", ROOT / "tools/ArmPreview/ArmPreview.csproj",
+         "-c", "Release", "--", "cs2", gun, clip, "%r" % t, width, height] + over, dotnet=True)
+    return document
 
 
 def check_place(manifest, base: Path, threshold=10.0, iou_min=0.90,
@@ -491,18 +493,9 @@ def check_hand(manifest, base: Path, iou_min=0.85, threshold=10.0):
         if cs2.get(field) in (None, ""):
             return item.fail("agent_unverified: cs2.%s not recorded, so the reference arms "
                              "cannot be shown to be bare_arm_133 + glove_fingerless" % field)
-    evidence = cs2.get("arms_evidence")
-    if not isinstance(evidence, dict) or not evidence.get("method"):
-        return item.fail("agent_unverified: cs2.arms_evidence is missing. A bare "
-                         "arms_verified flag is not evidence; record the method, the "
-                         "loadouts compared and the measured difference "
-                         "(tools/cs2_capture_probe.py --compare)")
-    if evidence.get("method") == "loadout_difference":
-        delta = evidence.get("max_channel_delta")
-        if delta is None or float(delta) > 2.0:
-            return item.fail("agent_unverified: loadout comparison reports max channel "
-                             "delta %r; needs <= 2/255 over the arm ROI to call the arms "
-                             "loadout-independent" % (delta,))
+    verdict = check_arms_evidence(cs2.get("arms_evidence"), base)
+    if verdict is not None:
+        return item.fail(verdict)
 
     width, height = comparison_size(manifest)
     cvars = manifest["cs2"]["cvars"]
@@ -590,6 +583,118 @@ def check_hand_right(manifest, base: Path):
 
 
 # --- SOUND -------------------------------------------------------------------
+# The only methods that can establish which arms a reference frame shows. Anything
+# else is not a method, it is a word: 0.16.5's gate accepted {"method": "anything"}
+# and only looked at the number when the method happened to be the expected one.
+ARMS_METHODS = {
+    "loadout_difference": "two loadouts, two captures each, judged against the baseline",
+}
+ARMS_LOADOUT_FIELDS = ("team", "agent", "gloves")
+
+
+def check_arms_evidence(evidence, base: Path):
+    """None when the evidence stands, otherwise the reason it does not.
+
+    Nothing here is taken on the manifest's word. The images are hashed, the ROI is
+    checked against them, and the statistics are recomputed from the pixels with the
+    same code the probe runs; a manifest whose numbers disagree with the recomputation
+    fails, which is the only way a hand-filled figure can be caught.
+    """
+    if not isinstance(evidence, dict) or not evidence.get("method"):
+        return ("agent_unverified: cs2.arms_evidence is missing. A bare arms_verified "
+                "flag is not evidence; record the method, both loadouts, the ROI, the "
+                "four captures with their SHA-256, and the statistics "
+                "(tools/cs2_capture_probe.py --repeat/--other/--other-repeat)")
+    method = evidence.get("method")
+    if method not in ARMS_METHODS:
+        return ("agent_unverified: cs2.arms_evidence.method %r is not a method. "
+                "Accepted: %s" % (method, ", ".join(sorted(ARMS_METHODS))))
+
+    loadouts = evidence.get("loadouts")
+    if not isinstance(loadouts, dict) or set(loadouts) != {"a", "b"}:
+        return ("agent_unverified: arms_evidence.loadouts must describe exactly two "
+                "loadouts, 'a' and 'b'; got %r" % (sorted(loadouts) if isinstance(loadouts, dict) else loadouts,))
+    paths = []
+    for key in ("a", "b"):
+        side = loadouts[key]
+        if not isinstance(side, dict):
+            return "agent_unverified: arms_evidence.loadouts.%s is not an object" % key
+        for field in ARMS_LOADOUT_FIELDS:
+            if not side.get(field):
+                return ("agent_unverified: arms_evidence.loadouts.%s has no %s; a "
+                        "comparison against an unnamed loadout proves nothing" % (key, field))
+        images = side.get("images")
+        if not isinstance(images, list) or len(images) != 2:
+            return ("agent_unverified: arms_evidence.loadouts.%s needs exactly two "
+                    "captures of the same frame; got %r" % (key, images))
+        for entry in images:
+            if not isinstance(entry, dict) or not entry.get("path") or not entry.get("sha256"):
+                return ("agent_unverified: every arms_evidence capture needs a path and a "
+                        "sha256; %s has %r" % (key, entry))
+            path = base / entry["path"]
+            if not path.exists():
+                return "agent_unverified: arms_evidence capture %s is missing" % entry["path"]
+            digest = sha256(path)
+            if digest.lower() != str(entry["sha256"]).lower():
+                return ("agent_unverified: %s hashes %s but the manifest says %s; the "
+                        "statistics below would be from a different image"
+                        % (entry["path"], digest[:16], str(entry["sha256"])[:16]))
+            paths.append(path)
+    if len({p.resolve() for p in paths}) != 4:
+        return ("agent_unverified: the four arms_evidence captures must be four different "
+                "files; comparing an image with itself measures nothing")
+
+    roi = evidence.get("arm_roi")
+    if not (isinstance(roi, list) and len(roi) == 4 and all(isinstance(v, int) for v in roi)):
+        return ("agent_unverified: arms_evidence.arm_roi must be [x0, y0, x1, y1] in "
+                "pixels of the capture; got %r" % (roi,))
+    x0, y0, x1, y1 = roi
+    if not (0 <= x0 < x1 and 0 <= y0 < y1):
+        return "agent_unverified: arms_evidence.arm_roi %r is empty or inverted" % (roi,)
+
+    if compare_set is None:
+        return ("agent_unverified: tools/cs2_capture_probe.py could not be imported, so "
+                "the statistics cannot be recomputed; the manifest's own numbers are "
+                "never accepted on their own")
+    try:
+        recomputed = compare_set([paths[0], paths[1]], [paths[2], paths[3]], tuple(roi))
+    except SystemExit as exc:
+        return "agent_unverified: recomputing the loadout comparison failed: %s" % exc
+    except Exception as exc:
+        return ("agent_unverified: recomputing the loadout comparison failed: %s: %s"
+                % (type(exc).__name__, exc))
+
+    for key in ("baseline_p999", "cross_p999", "baseline_mean", "cross_mean"):
+        value = recomputed[key]
+        if not (isinstance(value, float) and 0.0 <= value <= 255.0):
+            return ("agent_unverified: recomputed %s is %r, which is not a channel "
+                    "difference in 0..255" % (key, value))
+
+    stated = evidence.get("statistics")
+    if not isinstance(stated, dict):
+        return ("agent_unverified: arms_evidence.statistics is missing; paste the block "
+                "the probe printed so it can be checked against a recomputation")
+    for key in ("baseline_p999", "cross_p999", "baseline_mean", "cross_mean", "verdict"):
+        if key not in stated:
+            return "agent_unverified: arms_evidence.statistics has no %s" % key
+        if key == "verdict":
+            continue
+        if abs(float(stated[key]) - float(recomputed[key])) > 1e-3:
+            return ("agent_unverified: arms_evidence.statistics.%s says %s, recomputing "
+                    "from the hashed images gives %s" % (key, stated[key], recomputed[key]))
+    if stated["verdict"] != recomputed["verdict"]:
+        return ("agent_unverified: arms_evidence claims the loadout comparison is %r, "
+                "recomputing gives %r" % (stated["verdict"], recomputed["verdict"]))
+
+    if recomputed["verdict"] == "inconclusive":
+        return "agent_unverified: %s" % recomputed["reason"]
+    if recomputed["verdict"] != "independent":
+        return ("the reference arms depend on the loadout (%s), so this frame's arms are "
+                "whatever that agent wears; identify it before scoring the hand"
+                % recomputed["reason"])
+    return None
+
+
 def check_sound(manifest, base: Path):
     """Cue coverage against the package under acceptance, not against the repo.
 

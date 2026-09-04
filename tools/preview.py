@@ -25,7 +25,7 @@ def run_tool(knife, clip, fps):
         subprocess.run(['dotnet','build',proj,'-c','Release','-nologo','-v','q'],check=True,env=env,cwd=ROOT)
     os.makedirs(os.path.join(ROOT,'.tmp-fist'),exist_ok=True)
     path=os.path.join(ROOT,'.tmp-fist',f'armpreview_{knife}_{clip}.json')
-    out=subprocess.run(['dotnet',dll,knife,clip,str(fps),path]+OVERRIDES,capture_output=True,text=True,env=env,cwd=ROOT)
+    out=subprocess.run(['dotnet',dll,knife,clip,str(fps),path]+OVERRIDES,capture_output=True,text=True, encoding="utf-8", errors="replace",env=env,cwd=ROOT)
     if out.returncode!=0: print(out.stderr); raise SystemExit(out.returncode)
     return json.load(open(path))
 
