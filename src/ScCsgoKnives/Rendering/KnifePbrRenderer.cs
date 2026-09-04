@@ -146,7 +146,9 @@ public static class KnifePbrRenderer {
         Texture2D orm, normal;
         if (material is null) { if (!TryGetVariantTextures(variant, out orm, out normal)) return false; }
         else if (!TryGetNamedTextures(material, out orm, out normal)) return false;
-        if (FlatGunNormal && CsmcKnifeRig.IsGun(variant)) normal = FlatNormal();
+        // The CS:MC gun normals are flat anyway; the F7 diagnostic forces flat only on
+        // that path, since the CS2 set carries real tangent-space maps.
+        if (FlatGunNormal && CsmcKnifeRig.IsGun(variant) && KnifeTuning.GunProfile < 0.5f) normal = FlatNormal();
         if (!KnifeDiagnostics.IsFinite(world)) return false;
 
         Display.DepthStencilState = DepthStencilState.Default;

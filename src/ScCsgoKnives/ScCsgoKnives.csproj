@@ -27,14 +27,6 @@
   <ItemGroup>
     <None Update="modinfo.json"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
     <None Update="Assets\**\*"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
-    <!-- Stage 2 output: CS2's body_hd meshes (9.1 MB) and current materials (9.7 MB).
-         Nothing draws them until the cs2 profile has a placement chain (stage 3), and
-         packaging them now would take the mod from 29 MB to 48 MB for no visible gain.
-         They stay in the repo and are checked by tools/cs2_mesh_selftest.py. -->
-    <None Update="Assets\Models\ScCsgoKnives\*_cs2_*.obj"><CopyToOutputDirectory>Never</CopyToOutputDirectory></None>
-    <None Update="Assets\Textures\ScCsgoKnives\*_hd.png"><CopyToOutputDirectory>Never</CopyToOutputDirectory></None>
-    <None Update="Assets\Textures\ScCsgoKnives\*_hd_orm.png"><CopyToOutputDirectory>Never</CopyToOutputDirectory></None>
-    <None Update="Assets\Textures\ScCsgoKnives\*_hd_normal.png"><CopyToOutputDirectory>Never</CopyToOutputDirectory></None>
     <None Include="..\..\LICENSE" Link="LICENSE"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
     <None Include="..\..\THIRD_PARTY_NOTICES.md" Link="THIRD_PARTY_NOTICES.md"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
     <None Include="..\..\ASSET_SOURCES.md" Link="ASSET_SOURCES.md"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
@@ -42,10 +34,6 @@
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
     <EmbeddedResource Include="AnimationData\*.animation.json" />
-    <!-- The CS2 rigs are stage 1 output that nothing reads yet; embedding all
-         5.5 MB now would grow the package for no gain. Added back when the cs2
-         profile actually samples them. -->
-    <EmbeddedResource Remove="AnimationData\*.cs2.animation.json" />
     <EmbeddedResource Include="AnimationData\cs2_sounds.json" />
     <EmbeddedResource Include="AnimationData\knives.json" />
     <EmbeddedResource Include="AnimationData\guns.json" />

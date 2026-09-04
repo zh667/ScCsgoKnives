@@ -807,6 +807,10 @@ public static class CsmcFirstPersonRenderer {
         // that must not be multiplied on top.
         Matrix post = CreateBodyMotion(firstPerson)
             * Matrix.CreateFromYawPitchRoll(firstPerson.m_lagAngles.X, firstPerson.m_lagAngles.Y, 0f);
+        // The cs2 profile replaces the whole chain: CS2's own rig is already posed in
+        // the camera's frame, so there is no placement to solve (Cs2Placement).
+        if (Cs2Placement.Active(variant)) return DrawCs2(firstPerson, camera, variant, pose, post);
+
         Matrix placement = PlacementFor(pose, variant);
         Matrix root = placement * post;
 
@@ -865,6 +869,87 @@ public static class CsmcFirstPersonRenderer {
             );
         }
         return true;
+    }
+
+    static readonly Dictionary<string, Part[]> s_cs2Parts = new(StringComparer.Ordinal);
+    static readonly Dictionary<string, Texture2D> s_cs2Base = new(StringComparer.Ordinal);
+    static readonly HashSet<string> s_cs2Logged = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// The cs2 profile's weapon pass. CS2's viewmodel animation is authored in the
+    /// camera's own space, so the only transform between the rig and the screen is
+    /// Cs2Placement (axis change, inches, viewmodel_offset) followed by a projection
+    /// built from viewmodel_fov. SC's body motion still rides on top, so walking and
+    /// item swaps move the weapon the way the rest of the game moves.
+    ///
+    /// Arms are not drawn here. The CS:MC fist and arm-box solvers are measured
+    /// against the CS:MC rig and its placement, and neither applies; CS2's own arms
+    /// and gloves are stage 4. Until then the cs2 profile shows the weapon alone.
+    /// </summary>
+    static bool DrawCs2(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, Matrix post) {
+        string gun = CsmcKnifeRig.GetAssetName(variant);
+        Cs2Rig.Pose cs2 = Cs2Rig.Sample(gun, pose.ClipAlias, pose.Time);
+        if (cs2 is null) {
+            KnifeDiagnostics.WarnOnce($"cs2-pose-{gun}", $"No CS2 pose for {gun}/{pose.ClipAlias}; falling back to the CS:MC chain.");
+            return false;
+        }
+        if (!EnsureCs2Assets(gun)) return false;
+
+        if (s_scoped && AimProgress >= 0.999f) {
+            s_overlayFrame = Time.FrameIndex;
+            return true;
+        }
+
+        Matrix root = Cs2Placement.Placement() * post;
+        Matrix projection = Cs2Placement.Projection(camera);
+        float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
+        KnifePbrRenderer.Lighting lighting = KnifePbrRenderer.FirstPersonLighting(camera, light);
+        bool hideSilencer = SilencerHidden(firstPerson, variant);
+        Texture2D baseColor = s_cs2Base[gun];
+
+        foreach (Part part in s_cs2Parts[gun]) {
+            // CS2 names the silencer part after its own bone, not CS:MC's binding.
+            if (hideSilencer && part.Binding == "silencer") continue;
+            Matrix world = cs2.GetPart(part.Binding) * root;
+            if (!KnifePbrRenderer.TryDrawPart(part.Model, baseColor, variant, world, projection,
+                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, $"{gun}_hd")) {
+                DrawModel(part.Model, baseColor, world, camera, projection, light,
+                    SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
+            }
+        }
+
+        if (s_smokeUntil > KnifeClock.Now) DrawMuzzleFlash(pose, root, projection);
+
+        if (s_cs2Logged.Add(gun)) {
+            KnifeLog.Information(
+                $"[ScCsgoKnives] cs2 profile active: gun={gun}, clip={cs2.Clip}@{cs2.Time:0.###}s, "
+                + $"parts=[{string.Join(',', s_cs2Parts[gun].Select(p => p.Binding))}], "
+                + $"viewmodel_fov={KnifeTuning.Cs2ViewmodelFov:0.##} (fovY {Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov):0.###}), "
+                + $"offset=({KnifeTuning.Cs2ViewmodelOffsetX:0.##},{KnifeTuning.Cs2ViewmodelOffsetY:0.##},{KnifeTuning.Cs2ViewmodelOffsetZ:0.##}), "
+                + $"root={KnifeDiagnostics.MatrixSummary(root)}."
+            );
+        }
+        return true;
+    }
+
+    static bool EnsureCs2Assets(string gun) {
+        if (s_cs2Parts.ContainsKey(gun)) return s_cs2Parts[gun] is not null;
+        Part[] parts = null;
+        Texture2D baseColor = null;
+        try {
+            baseColor = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{gun}_hd");
+            parts = Cs2Rig.GetMeshParts(gun)
+                .Select(name => new Part { Binding = name, Model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{gun}_cs2_{name}") })
+                .ToArray();
+            if (parts.Length == 0) parts = null;
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce($"cs2-assets-{gun}", $"CS2 assets for {gun} are missing ({e.Message}); falling back to the CS:MC chain.");
+            parts = null;
+        }
+        s_cs2Parts[gun] = parts;
+        s_cs2Base[gun] = baseColor;
+        return parts is not null && baseColor is not null;
     }
 
     /// <summary>CS:MC's scope lens (gui/scope.png: transparent lens, black surround) over the zoomed world, letterboxed square.</summary>

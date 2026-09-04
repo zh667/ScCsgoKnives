@@ -1,0 +1,265 @@
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using Engine;
+
+namespace Game;
+
+/// <summary>
+/// CS2's own viewmodel rig, read from AnimationData/&lt;gun&gt;.cs2.animation.json
+/// (tools/cs2_dmx_to_rig.py, out of CS2's binary DMX clips).
+///
+/// Same maths as <see cref="CsmcKnifeRig"/> - row vectors, local = R*T, absolute =
+/// local * parent, mesh parts placed by Right * boneAbsolute * Left - but a
+/// different skeleton: 64 bones with CS2's own names (hand_R, finger_index_meta_R,
+/// wpn, weapon_offset), lengths in Source inches, and no root matrix baked in. The
+/// two rigs are not interchangeable; AnimationData/cs2_bone_map.json records which
+/// names correspond.
+///
+/// Positions are in the CS2 viewmodel's own space, which is the camera's: see
+/// Cs2Placement.
+/// </summary>
+public static class Cs2Rig {
+    sealed class Curve {
+        public string Interpolation { get; set; }
+        public float[] Times { get; set; }
+        public float[][] Values { get; set; }
+    }
+
+    sealed class BoneCurves {
+        public Curve Rotation { get; set; }
+        public Curve Translation { get; set; }
+    }
+
+    sealed class Clip {
+        public string SourceName { get; set; }
+        public float FrameRate { get; set; }
+        public int FrameCount { get; set; }
+        public float Duration { get; set; }
+        public Dictionary<string, BoneCurves> Bones { get; set; }
+    }
+
+    sealed class SkeletonBone {
+        public int Index { get; set; }
+        public string Name { get; set; }
+        public int Parent { get; set; }
+        public float[] Translation { get; set; }
+        public float[] Rotation { get; set; }
+        public float[] Scale { get; set; }
+    }
+
+    sealed class Binding {
+        public string Name { get; set; }
+        public string Bone { get; set; }
+        public int BoneIndex { get; set; }
+        public float[] RightMatrix { get; set; }
+        public float[] LeftMatrix { get; set; }
+    }
+
+    sealed class RigFile {
+        public string Format { get; set; }
+        public string Units { get; set; }
+        public float[] MeshCenter { get; set; }
+        public float MeshNormalizationScale { get; set; }
+        public string[] MeshParts { get; set; }
+        public List<Binding> Bindings { get; set; }
+        public List<SkeletonBone> Skeleton { get; set; }
+        public Dictionary<string, Clip> Clips { get; set; }
+    }
+
+    sealed class Asset {
+        public string Name;
+        public RigFile File;
+        public Dictionary<string, Binding> Bindings;
+        public Matrix Normalization;
+        public Matrix InverseNormalization;
+    }
+
+    /// <summary>One sampled frame: mesh part matrices and bone frames, both in rig space.</summary>
+    public sealed class Pose {
+        public string Gun;
+        public string Clip;
+        public float Time;
+        public Dictionary<string, Matrix> Parts;
+        public Dictionary<string, Matrix> Bones;
+
+        public Matrix GetPart(string name) => Parts.TryGetValue(name, out Matrix m) ? m : Matrix.Identity;
+        public Vector3 GetBoneOrigin(string name) => Bones.TryGetValue(name, out Matrix m) ? m.Translation : Vector3.Zero;
+        public bool HasBone(string name) => Bones.ContainsKey(name);
+    }
+
+    const string ExpectedFormat = "ScCsgoKnives.Cs2Animation/1";
+
+    /// <summary>The mod's clip aliases mapped onto the CS2 clip file each gun uses.</summary>
+    static readonly Dictionary<string, Dictionary<string, string>> s_clipAliases = new(StringComparer.Ordinal) {
+        ["ak47"] = new(StringComparer.Ordinal) {
+            ["idle"] = "idle_ak", ["deploy"] = "draw_ak", ["shoot1"] = "shoot1_ak",
+            ["shoot2"] = "shoot1_ak", ["shoot3"] = "shoot1_ak", ["reload"] = "reload_ak",
+            ["inspect"] = "lookat01_ak", ["inspectStart"] = "lookat01_ak",
+            ["inspectLoop"] = "lookat01_ak", ["inspectEnd"] = "lookat01_ak",
+        },
+        ["m4a1s"] = new(StringComparer.Ordinal) {
+            ["idle"] = "idle_rifle", ["deploy"] = "draw_rifle",
+            ["shootSilenced"] = "shoot1_rifle", ["shootUnsilenced"] = "shoot1_rifle",
+            ["reload"] = "reload_rifle", ["inspect"] = "lookat01_rifle",
+            ["inspectStart"] = "lookat01_rifle", ["inspectLoop"] = "lookat01_rifle",
+            ["inspectEnd"] = "lookat01_rifle",
+            ["attach"] = "silencer_attach_rifle", ["detach"] = "silencer_detach_rifle",
+        },
+        ["awp"] = new(StringComparer.Ordinal) {
+            ["idle"] = "idle_awp", ["deploy"] = "draw_awp", ["shoot1"] = "shoot1_awp",
+            ["reload"] = "reload_awp", ["inspect"] = "lookat01_awp",
+            ["inspectStart"] = "lookat01_awp", ["inspectLoop"] = "lookat01_awp",
+            ["inspectEnd"] = "lookat01_awp",
+        },
+    };
+
+    static readonly Dictionary<string, Asset> s_assets = new(StringComparer.Ordinal);
+
+    public static bool Has(string gun) => s_clipAliases.ContainsKey(gun);
+
+    public static IReadOnlyList<string> GetMeshParts(string gun) => Get(gun)?.File.MeshParts ?? [];
+
+    /// <summary>Length of a clip in seconds, or 0 when the gun or clip is unknown.</summary>
+    public static float Duration(string gun, string clipAlias) {
+        Asset asset = Get(gun);
+        Clip clip = Resolve(asset, clipAlias);
+        return clip?.Duration ?? 0f;
+    }
+
+    public static Pose Sample(string gun, string clipAlias, float time) {
+        Asset asset = Get(gun);
+        if (asset is null) return null;
+        Clip clip = Resolve(asset, clipAlias) ?? Resolve(asset, "idle");
+        if (clip is null) return null;
+        time = MathUtils.Clamp(time, 0f, Math.Max(0f, clip.Duration));
+
+        List<SkeletonBone> skeleton = asset.File.Skeleton;
+        Matrix[] absolute = new Matrix[skeleton.Count];
+        Matrix[] local = new Matrix[skeleton.Count];
+        bool[] done = new bool[skeleton.Count];
+        for (int i = 0; i < skeleton.Count; i++) local[i] = SampleLocal(skeleton[i], clip, time);
+        for (int i = 0; i < skeleton.Count; i++) Calculate(i);
+
+        var bones = new Dictionary<string, Matrix>(skeleton.Count, StringComparer.Ordinal);
+        for (int i = 0; i < skeleton.Count; i++) bones[skeleton[i].Name] = absolute[i];
+
+        var parts = new Dictionary<string, Matrix>(StringComparer.Ordinal);
+        foreach (Binding binding in asset.File.Bindings) {
+            if (binding.BoneIndex < 0 || binding.BoneIndex >= absolute.Length) continue;
+            parts[binding.Name] = ReadMatrix(binding.RightMatrix)
+                * absolute[binding.BoneIndex]
+                * ReadMatrix(binding.LeftMatrix);
+        }
+        return new Pose { Gun = gun, Clip = clip.SourceName, Time = time, Parts = parts, Bones = bones };
+
+        Matrix Calculate(int index) {
+            if (done[index]) return absolute[index];
+            done[index] = true;                       // the emitted skeleton is a tree; guard anyway
+            int parent = skeleton[index].Parent;
+            absolute[index] = parent >= 0 && parent < skeleton.Count && parent != index
+                ? local[index] * Calculate(parent)
+                : local[index];
+            return absolute[index];
+        }
+    }
+
+    static Clip Resolve(Asset asset, string clipAlias) {
+        if (asset is null || clipAlias is null) return null;
+        if (s_clipAliases.TryGetValue(asset.Name, out var aliases)
+            && aliases.TryGetValue(clipAlias, out string stem)
+            && asset.File.Clips.TryGetValue(stem, out Clip byAlias)) return byAlias;
+        return asset.File.Clips.TryGetValue(clipAlias, out Clip direct) ? direct : null;
+    }
+
+    static Matrix SampleLocal(SkeletonBone bone, Clip clip, float time) {
+        Vector3 restT = ReadVector(bone.Translation, Vector3.Zero);
+        Quaternion restR = ReadQuaternion(bone.Rotation, Quaternion.Identity);
+        Vector3 translation = restT;
+        Quaternion rotation = restR;
+        if (clip.Bones is not null && clip.Bones.TryGetValue(bone.Name, out BoneCurves curves)) {
+            translation = SampleVector(curves.Translation, time, restT);
+            rotation = SampleQuaternion(curves.Rotation, time, restR);
+        }
+        return Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(translation);
+    }
+
+    static Vector3 SampleVector(Curve curve, float time, Vector3 fallback) {
+        if (curve?.Times is not { Length: > 0 } || curve.Values is not { Length: > 0 }) return fallback;
+        (int lo, int hi, float f) = FindKeys(curve.Times, time);
+        Vector3 a = ReadVector(curve.Values[lo], fallback);
+        return lo == hi ? a : Vector3.Lerp(a, ReadVector(curve.Values[hi], fallback), f);
+    }
+
+    static Quaternion SampleQuaternion(Curve curve, float time, Quaternion fallback) {
+        if (curve?.Times is not { Length: > 0 } || curve.Values is not { Length: > 0 }) return fallback;
+        (int lo, int hi, float f) = FindKeys(curve.Times, time);
+        Quaternion a = ReadQuaternion(curve.Values[lo], fallback);
+        return lo == hi ? a : Quaternion.Normalize(Quaternion.Slerp(a, ReadQuaternion(curve.Values[hi], fallback), f));
+    }
+
+    static (int Lo, int Hi, float Factor) FindKeys(float[] times, float time) {
+        if (times.Length == 1 || time <= times[0]) return (0, 0, 0f);
+        int last = times.Length - 1;
+        if (time >= times[last]) return (last, last, 0f);
+        int hi = Array.BinarySearch(times, time);
+        if (hi >= 0) return (hi, hi, 0f);
+        hi = ~hi;
+        int lo = hi - 1;
+        return (lo, hi, (time - times[lo]) / Math.Max(0.000001f, times[hi] - times[lo]));
+    }
+
+    static Vector3 ReadVector(float[] v, Vector3 fallback) =>
+        v is { Length: >= 3 } ? new Vector3(v[0], v[1], v[2]) : fallback;
+
+    static Quaternion ReadQuaternion(float[] v, Quaternion fallback) =>
+        v is { Length: >= 4 } ? new Quaternion(v[0], v[1], v[2], v[3]) : fallback;
+
+    static Matrix ReadMatrix(float[] v) {
+        if (v is not { Length: >= 16 }) return Matrix.Identity;
+        return new Matrix {
+            M11 = v[0], M12 = v[1], M13 = v[2], M14 = v[3],
+            M21 = v[4], M22 = v[5], M23 = v[6], M24 = v[7],
+            M31 = v[8], M32 = v[9], M33 = v[10], M34 = v[11],
+            M41 = v[12], M42 = v[13], M43 = v[14], M44 = v[15]
+        };
+    }
+
+    static Asset Get(string gun) {
+        if (gun is null) return null;
+        if (s_assets.TryGetValue(gun, out Asset hit)) return hit;
+        Asset asset = null;
+        try {
+            asset = Load(gun);
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce($"cs2-rig-{gun}", $"Could not read the CS2 rig for {gun}: {e.Message}");
+        }
+        s_assets[gun] = asset;
+        return asset;
+    }
+
+    static Asset Load(string gun) {
+        Assembly assembly = typeof(Cs2Rig).Assembly;
+        string suffix = $"AnimationData.{gun}.cs2.animation.json";
+        string resource = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidOperationException($"Missing embedded {suffix}.");
+        using Stream stream = assembly.GetManifestResourceStream(resource);
+        RigFile file = JsonSerializer.Deserialize<RigFile>(stream);
+        if (file?.Format != ExpectedFormat || file.Skeleton is null || file.Clips is null || file.Bindings is null)
+            throw new InvalidDataException($"{suffix} is not {ExpectedFormat}.");
+        Vector3 centre = ReadVector(file.MeshCenter, Vector3.Zero);
+        Matrix normalization = Matrix.CreateTranslation(-centre) * Matrix.CreateScale(file.MeshNormalizationScale);
+        var asset = new Asset {
+            Name = gun, File = file,
+            Bindings = file.Bindings.ToDictionary(b => b.Name, StringComparer.Ordinal),
+            Normalization = normalization,
+            InverseNormalization = Matrix.Invert(normalization)
+        };
+        KnifeLog.Information(
+            $"[ScCsgoKnives] CS2 rig {gun}: bones={file.Skeleton.Count}, clips=[{string.Join(',', file.Clips.Keys)}], "
+            + $"parts=[{string.Join(',', file.MeshParts)}], units={file.Units}."
+        );
+        return asset;
+    }
+}

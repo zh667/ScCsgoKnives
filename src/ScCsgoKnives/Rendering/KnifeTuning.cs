@@ -405,6 +405,24 @@ public static class KnifeTuning {
     public static float PbrEnvSaturation = 0.25f;
     /// <summary>0 final; 1 base colour, 2 normals, 3 roughness, 4 metalness, 5 reflection only, 6 occlusion, 7 direct light only.</summary>
     /// <summary>
+    /// Which pipeline the three guns draw through: 0 = the CS:MC chain shipped since
+    /// 0.14.1, 1 = CS2's own viewmodel (CS2 mesh, CS2 materials, CS2 animation, CS2
+    /// placement). Defaults to 0 until the placement is checked against a CS2
+    /// recording. The knives are unaffected either way.
+    /// </summary>
+    public static float GunProfile = 0f;
+
+    /// <summary>
+    /// The player's CS2 viewmodel cvars, used by the cs2 profile. Defaults are this
+    /// machine's own (D:\steam\userdata\1415980225, "name" "zh667"), not CS2's
+    /// defaults of 60 / 1 / 1 / -1.
+    /// </summary>
+    public static float Cs2ViewmodelFov = 68f;
+    public static float Cs2ViewmodelOffsetX = 2.5f;
+    public static float Cs2ViewmodelOffsetY = 0f;
+    public static float Cs2ViewmodelOffsetZ = -1.5f;
+
+    /// <summary>
     /// Which sound timings the guns use: 0 = the table timed off the bones (shipped
     /// through 0.15.10), 1 = CS2's own CNmClipDocEvent_Sound frames from
     /// AnimationData/cs2_sounds.json. Defaults to 0 until the CS2 times are checked
@@ -566,6 +584,11 @@ public static class KnifeTuning {
             case nameof(PbrRoughnessBias): PbrRoughnessBias = v; return true;
             case nameof(PbrEnvYawDegrees): PbrEnvYawDegrees = v; return true;
             case nameof(PbrEnvSaturation): PbrEnvSaturation = v; return true;
+            case nameof(GunProfile): GunProfile = v; return true;
+            case nameof(Cs2ViewmodelFov): Cs2ViewmodelFov = v; return true;
+            case nameof(Cs2ViewmodelOffsetX): Cs2ViewmodelOffsetX = v; return true;
+            case nameof(Cs2ViewmodelOffsetY): Cs2ViewmodelOffsetY = v; return true;
+            case nameof(Cs2ViewmodelOffsetZ): Cs2ViewmodelOffsetZ = v; return true;
             case nameof(GunSoundProfile): GunSoundProfile = v; return true;
             case nameof(PbrDebug): PbrDebug = v; return true;
             default: return false;
@@ -716,6 +739,13 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(PbrEnvYawDegrees), PbrEnvYawDegrees));
         text.AppendLine("# 反射带多少环境的颜色：1 = 全带（天空会把刀染蓝），0 = 只反亮度不反颜色。");
         text.AppendLine(Line(nameof(PbrEnvSaturation), PbrEnvSaturation));
+        text.AppendLine("# 三把枪走哪条管线：0 = 一直以来的 CS:MC 链，1 = CS2 本体（CS2 网格/材质/动画/摆放）。刀不受影响。");
+        text.AppendLine("# 下面四个是你自己 CS2 里的 viewmodel 设置（已从 cs2_user_convars 读到），只有 GunProfile=1 时才用。");
+        text.AppendLine(Line(nameof(GunProfile), GunProfile));
+        text.AppendLine(Line(nameof(Cs2ViewmodelFov), Cs2ViewmodelFov));
+        text.AppendLine(Line(nameof(Cs2ViewmodelOffsetX), Cs2ViewmodelOffsetX));
+        text.AppendLine(Line(nameof(Cs2ViewmodelOffsetY), Cs2ViewmodelOffsetY));
+        text.AppendLine(Line(nameof(Cs2ViewmodelOffsetZ), Cs2ViewmodelOffsetZ));
         text.AppendLine("# 枪的换弹/拉栓/消音器音效用哪套时间：0 = 旧的按骨骼位移量出来的表，1 = CS2 自己的事件帧（cs2_sounds.json）。");
         text.AppendLine("# 两套最多差 0.58 秒，听得出来。默认 0，等对着 CS2 录屏核过再改默认。");
         text.AppendLine(Line(nameof(GunSoundProfile), GunSoundProfile));

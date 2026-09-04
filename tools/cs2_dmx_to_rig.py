@@ -119,14 +119,20 @@ def mesh_bindings(gun: str, skeleton: list, reference) -> tuple:
     """MeshParts and Bindings for the CS2 body_hd parts, in the mod's normalized space.
 
     Geometry from cs2_glb_to_obj sits in ``(glb[[2,0,1]] * 39.37009 - MeshCenter) * s``.
-    The animation rig measures the weapon bones in its own weapon-root space,
-    which differs from that by the constant translation the GLB-to-DMX fit
-    returns. With N the normalization and P that translation,
+    The animation rig measures its bones in the viewmodel's own space, which is the
+    camera's, and differs from the mesh's by the constant translation the GLB-to-DMX
+    fit returns. With N the normalization, P that translation, and D_rest the bone's
+    rest pose relative to the weapon root,
 
-        Right = N^-1 * P^-1 * D_rest^-1        Left = P * N
+        Right = N^-1 * P^-1 * D_rest^-1        Left = identity
 
-    so Right * D_rest * Left is the identity and Right * D(t) * Left is exactly
-    the bone's motion, expressed on the normalized geometry.
+    so ``vertex * Right * boneAbsolute`` lands in rig inches - which is what
+    Cs2Placement consumes - and at the rest pose Right * D_rest collapses to
+    N^-1 * P^-1, the plain normalized-to-rig-inches map, checked below.
+
+    Note boneAbsolute is the FULL rig absolute (relative to root_motion), not the
+    weapon-relative one: a part that does not move relative to the weapon then
+    simply rides the weapon bone, and bolt/clip/trigger add their own departure.
     """
     cfg = mesh.GUNS[gun]
     glb = cs2_glb.Glb(mesh.MODELS / cfg["dir"] / cfg["glb"])
@@ -169,11 +175,12 @@ def mesh_bindings(gun: str, skeleton: list, reference) -> tuple:
         bone = part["bone"]
         d_rest = rest(bone)
         right = inv_n @ inv_p @ np.linalg.inv(d_rest)
-        left = p_matrix @ n_matrix
-        identity = right @ d_rest @ left
-        error = float(np.abs(identity - np.eye(4)).max())
-        if error > 1e-9:
-            raise SystemExit("%s/%s: rest binding is not the identity (%.2e)"
+        left = np.eye(4)
+        # At rest the binding must be exactly the normalized -> rig-inches map, i.e.
+        # the mesh sits where the GLB puts it before any animation moves it.
+        error = float(np.abs(right @ d_rest - inv_n @ inv_p).max())
+        if error > 1e-8:
+            raise SystemExit("%s/%s: rest binding is off by %.2e"
                              % (gun, part["name"], error))
         parts.append(part["name"])
         bindings.append({
@@ -182,7 +189,7 @@ def mesh_bindings(gun: str, skeleton: list, reference) -> tuple:
             "RightMatrix": [r6(x) for x in right.reshape(-1)],
             "ReferenceMatrix": [r6(x) for x in d_rest.reshape(-1)],
             "LeftMatrix": [r6(x) for x in left.reshape(-1)],
-            "RestIdentityError": error,
+            "RestMapError": error,
         })
     return parts, bindings, centre, scale, residual
 

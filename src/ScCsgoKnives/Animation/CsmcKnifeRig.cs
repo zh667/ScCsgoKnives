@@ -250,7 +250,7 @@ public static class CsmcKnifeRig {
             if (KnifeDiagnostics.IsFinite(normalizedPose)) parts[binding.Name] = normalizedPose;
             else KnifeDiagnostics.WarnOnce($"rig-{asset.Name}-{binding.Name}-invalid", $"CSMC binding {asset.Name}/{binding.Name} produced a non-finite matrix.");
         }
-        return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments, frames);
+        return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments, frames, time);
     }
 
     /// <summary>
@@ -428,7 +428,8 @@ public sealed class KnifeRigPose {
     readonly IReadOnlyDictionary<string, Vector3> m_attachments;
     readonly IReadOnlyDictionary<string, Matrix> m_frames;
 
-    public KnifeRigPose(string assetName, string clipAlias, string sourceClip, float duration, float sourceReferenceScale, IReadOnlyDictionary<string, Matrix> bindings, IReadOnlyDictionary<string, Matrix> bones, IReadOnlyDictionary<string, Vector3> attachments, IReadOnlyDictionary<string, Matrix> frames = null) {
+    public KnifeRigPose(string assetName, string clipAlias, string sourceClip, float duration, float sourceReferenceScale, IReadOnlyDictionary<string, Matrix> bindings, IReadOnlyDictionary<string, Matrix> bones, IReadOnlyDictionary<string, Vector3> attachments, IReadOnlyDictionary<string, Matrix> frames = null, float time = 0f) {
+        Time = time;
         m_frames = frames ?? new Dictionary<string, Matrix>();
         AssetName = assetName;
         ClipAlias = clipAlias;
@@ -443,6 +444,8 @@ public sealed class KnifeRigPose {
     public string AssetName { get; }
     public string ClipAlias { get; }
     public string SourceClip { get; }
+    /// <summary>Clip time this pose was sampled at, clamped to the clip. The cs2 profile resamples its own rig at the same instant.</summary>
+    public float Time { get; }
     public float Duration { get; }
     public float SourceReferenceScale { get; }
     public IReadOnlyDictionary<string, Matrix> Bindings => m_bindings;

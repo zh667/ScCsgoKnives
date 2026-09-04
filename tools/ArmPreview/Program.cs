@@ -45,6 +45,72 @@ KnifeLog.ToConsole = true;   // before any renderer or rig access, so no log eve
     }
 }
 
+// "cs2sweep <gun> <clip> <fps> <out.json>": the cs2 profile's part matrices in the
+// same shape ArmPreview's knife sweep writes, so tools/pbr_emulate.py can render the
+// CS2 profile offline and tools/cs2_videocheck.py can overlay it on a CS2 capture.
+if (args.Length > 0 && args[0] == "cs2sweep") {
+    string gun = args.Length > 1 ? args[1] : "ak47";
+    string clip = args.Length > 2 ? args[2] : "idle";
+    int fps = args.Length > 3 ? int.Parse(args[3]) : 30;
+    string outPath = args.Length > 4 ? args[4] : null;
+    int W = args.Length > 6 ? int.Parse(args[5]) : 1920;
+    int H = args.Length > 6 ? int.Parse(args[6]) : 1080;
+    if (outPath is null) { Console.Error.WriteLine("usage: ArmPreview cs2sweep <gun> <clip> <fps> <out.json> [W H]"); return 2; }
+    float fovY = Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov);
+    float fy = 1f / MathF.Tan(MathUtils.DegToRad(fovY) * 0.5f);
+    float fx = fy / ((float)W / H);
+    Matrix place = Cs2Placement.Placement();
+    float duration = Cs2Rig.Duration(gun, clip);
+    int count = duration > 0f ? (int)MathF.Round(duration * fps) : 0;
+    var frames = new List<object>();
+    for (int i = 0; i <= count; i++) {
+        float t = duration > 0f ? MathF.Min(i / (float)fps, duration) : 0f;
+        Cs2Rig.Pose pose = Cs2Rig.Sample(gun, clip, t);
+        if (pose is null) { Console.Error.WriteLine($"no CS2 pose for {gun}/{clip}"); return 2; }
+        var parts = new Dictionary<string, float[]>();
+        foreach (string name in Cs2Rig.GetMeshParts(gun)) {
+            Matrix m = pose.GetPart(name) * place;
+            parts[name] = [m.M11, m.M12, m.M13, m.M14, m.M21, m.M22, m.M23, m.M24,
+                           m.M31, m.M32, m.M33, m.M34, m.M41, m.M42, m.M43, m.M44];
+        }
+        frames.Add(new { t, clip = pose.Clip, parts });
+    }
+    File.WriteAllText(outPath, JsonSerializer.Serialize(new {
+        gun, clip, fps, fovY, weaponProjX = fx, weaponProjY = fy, frames }));
+    Console.Error.WriteLine($"wrote {frames.Count} cs2 frames -> {outPath}");
+    return 0;
+}
+
+// "cs2 <gun> <clip> <t> [W H]": the cs2 profile's own landmarks, straight out of
+// Cs2Rig and Cs2Placement, so tools/cs2_placement.py can be diffed against the
+// shipped C# the same way rigprobe.py is diffed against CsmcKnifeRig.
+if (args.Length > 0 && args[0] == "cs2") {
+    string gun = args.Length > 1 ? args[1] : "ak47";
+    string clip = args.Length > 2 ? args[2] : "idle";
+    float t = args.Length > 3 ? float.Parse(args[3], System.Globalization.CultureInfo.InvariantCulture) : 0f;
+    int W = args.Length > 5 ? int.Parse(args[4]) : 1920;
+    int H = args.Length > 5 ? int.Parse(args[5]) : 1080;
+    Cs2Rig.Pose pose = Cs2Rig.Sample(gun, clip, t);
+    if (pose is null) { Console.Error.WriteLine($"no CS2 pose for {gun}/{clip}"); return 2; }
+    Matrix place = Cs2Placement.Placement();
+    float fovY = Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov);
+    float fy = 1f / MathF.Tan(MathUtils.DegToRad(fovY) * 0.5f);
+    float fx = fy / ((float)W / H);
+    var lm = new Dictionary<string, object>();
+    foreach (string bone in new[] { "muzzle", "wpnEnd", "wpnTip", "hand_R", "hand_L", "trigger", "clip", "finger_index_1_R" }) {
+        if (!pose.HasBone(bone)) continue;
+        Vector3 v = Vector3.Transform(pose.GetBoneOrigin(bone), place);
+        float z = -v.Z;
+        lm[bone] = new {
+            view = new[] { v.X, v.Y, v.Z },
+            screen = new[] { (0.5f + 0.5f * v.X * fx / z) * W, (0.5f - 0.5f * v.Y * fy / z) * H },
+            depth = z,
+        };
+    }
+    Console.WriteLine(JsonSerializer.Serialize(new { gun, clip = pose.Clip, t = pose.Time, fovY, lm }));
+    return 0;
+}
+
 if (args.Length > 0 && args[0] == "trace") {
     string knife = args.Length > 1 ? args[1] : "m9";
     string clip = args.Length > 2 ? args[2] : "inspect";
