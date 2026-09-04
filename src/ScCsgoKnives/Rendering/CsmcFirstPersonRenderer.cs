@@ -901,9 +901,10 @@ public static class CsmcFirstPersonRenderer {
     static bool DrawCs2(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, Matrix post) {
         string gun = CsmcKnifeRig.GetAssetName(variant);
         // The CS:MC pose clamped its time to the CS:MC clip; sampling the CS2 rig with
-        // that froze the tail of every clip CS2 makes longer (the M4A1-S inspect runs
-        // 5.2999 s against CS:MC's 5.0). Re-derive the instant from the controller's
-        // untruncated time against the CS2 clip's own length instead.
+        // that cut the tail of any clip CS2 makes longer - measured, the M4A1-S draw at
+        // 1.1332 s against CS:MC's 1.1000 lost its last frame - and held the pose where
+        // CS2's clip is shorter. Re-derive the instant from the controller's untruncated
+        // time against the CS2 clip's own length instead.
         float cs2Duration = Cs2Rig.Duration(gun, pose.ClipAlias);
         float cs2Time = pose.Looping && cs2Duration > 0f
             ? pose.RequestedTime - cs2Duration * MathF.Floor(pose.RequestedTime / cs2Duration)

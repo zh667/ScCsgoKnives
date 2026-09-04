@@ -1,6 +1,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Engine;
 
 namespace Game;
@@ -19,15 +20,53 @@ namespace Game;
 /// decimals. The vdata and the animation agree about where the barrel ends.
 /// </summary>
 public static class Cs2Effects {
+    /// <summary>
+    /// Accepts a JSON number or an array of numbers as float[].
+    ///
+    /// 0.16.4 shipped a cs2_effects.json whose AK lifetime was the scalar 0.05 while the
+    /// M4A1-S suppressed one was [0.3, 0.85]; float[] threw on the scalar, the whole file
+    /// failed to load, and every tracer and the CS2 flash envelope were silently inactive.
+    /// The generator now always writes an array, and this accepts either shape so the
+    /// contract cannot break that way again.
+    /// </summary>
+    sealed class ScalarOrArray : JsonConverter<float[]> {
+        public override float[] Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) {
+            if (reader.TokenType == JsonTokenType.Number) return [reader.GetSingle()];
+            if (reader.TokenType == JsonTokenType.Null) return null;
+            if (reader.TokenType != JsonTokenType.StartArray)
+                throw new JsonException($"expected a number or an array, got {reader.TokenType}");
+            var values = new List<float>();
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray) {
+                if (reader.TokenType == JsonTokenType.Null) continue;
+                values.Add(reader.GetSingle());
+            }
+            return [.. values];
+        }
+
+        public override void Write(Utf8JsonWriter writer, float[] value, JsonSerializerOptions options) =>
+            JsonSerializer.Serialize(writer, value, options);
+    }
+
     public sealed class Flash {
-        public float[] Lifetime { get; set; }        // literal or [min, max]
+        [JsonPropertyName("Lifetime")]
+        [JsonConverter(typeof(ScalarOrArray))]
+        public float[] Lifetime { get; set; }
+        [JsonPropertyName("Particles")]
         public float Particles { get; set; }
+        [JsonPropertyName("SequenceFrames")]
         public int SequenceFrames { get; set; }
+        [JsonPropertyName("ColorMin")]
         public int[] ColorMin { get; set; }
+        [JsonPropertyName("ColorMax")]
         public int[] ColorMax { get; set; }
+        [JsonPropertyName("Alpha")]
+        [JsonConverter(typeof(ScalarOrArray))]
         public float[] Alpha { get; set; }
+        [JsonPropertyName("FadeOut")]
         public float? FadeOut { get; set; }
+        [JsonPropertyName("Textures")]
         public string[] Textures { get; set; }
+        [JsonPropertyName("Unmodelled")]
         public string[] Unmodelled { get; set; }
 
         public float Seconds => Lifetime is { Length: >= 2 } ? (Lifetime[0] + Lifetime[1]) * 0.5f
@@ -44,12 +83,20 @@ public static class Cs2Effects {
     }
 
     public sealed class Tracer {
+        [JsonPropertyName("ColorMin")]
         public int[] ColorMin { get; set; }
+        [JsonPropertyName("ColorMax")]
         public int[] ColorMax { get; set; }
+        [JsonPropertyName("Speed")]
         public float? Speed { get; set; }          // inches per second
+        [JsonPropertyName("MaxLength")]
         public float? MaxLength { get; set; }      // inches
+        [JsonPropertyName("LengthFadeIn")]
         public float? LengthFadeIn { get; set; }   // seconds
+        [JsonPropertyName("Alpha")]
+        [JsonConverter(typeof(ScalarOrArray))]
         public float[] Alpha { get; set; }
+        [JsonPropertyName("Source")]
         public string Source { get; set; }
 
         /// <summary>Travel speed in engine units per second (inches -> metres).</summary>
@@ -73,21 +120,29 @@ public static class Cs2Effects {
     }
 
     public sealed class Gun {
+        [JsonPropertyName("MuzzlePos0")]
         public float[] MuzzlePos0 { get; set; }
+        [JsonPropertyName("MuzzlePos1")]
         public float[] MuzzlePos1 { get; set; }
+        [JsonPropertyName("TracerParticle")]
         public string TracerParticle { get; set; }
+        [JsonPropertyName("TracerFrequency")]
         public float? TracerFrequency { get; set; }
+        [JsonPropertyName("Flash")]
         public Dictionary<string, Flash> Flash { get; set; }
+        [JsonPropertyName("Tracer")]
         public Tracer Tracer { get; set; }
     }
 
     sealed class EffectsFile {
+        [JsonPropertyName("Format")]
         public string Format { get; set; }
+        [JsonPropertyName("Guns")]
         public Dictionary<string, Gun> Guns { get; set; }
     }
 
     const string Resource = "AnimationData.cs2_effects.json";
-    const string ExpectedFormat = "ScCsgoKnives.Cs2Effects/1";
+    const string ExpectedFormat = "ScCsgoKnives.Cs2Effects/2";
     static readonly Dictionary<string, Gun> s_guns = Load();
 
     public static Gun Get(string gun) => gun is not null && s_guns.TryGetValue(gun, out Gun g) ? g : null;
@@ -123,8 +178,10 @@ public static class Cs2Effects {
                 return loaded;
             }
             using Stream stream = assembly.GetManifestResourceStream(name);
-            EffectsFile file = JsonSerializer.Deserialize<EffectsFile>(stream,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            // Names are pinned by JsonPropertyName rather than inferred:
+            // PropertyNameCaseInsensitive ignores case, not separators, so a snake_case
+            // key silently left its property at the default in 0.16.4.
+            EffectsFile file = JsonSerializer.Deserialize<EffectsFile>(stream);
             if (file?.Format != ExpectedFormat || file.Guns is null) {
                 KnifeDiagnostics.WarnOnce("cs2-effects-format", $"{Resource} is not {ExpectedFormat}.");
                 return loaded;

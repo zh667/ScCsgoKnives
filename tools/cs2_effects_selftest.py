@@ -7,6 +7,10 @@
               regenerating the JSON reproduces the shipped one byte for byte.
   C  scope    the radial alpha profile of the shipped cs2_scope_circle.png, which
               is what replaces the procedural mask.
+  D  schema   no snake_case key survives anywhere in the file, and every Lifetime and
+              Alpha is an array. Those two shapes are what made the C# loader throw in
+              0.16.4; tools/cs2_runtime_selftest.py is what proves the loader is happy,
+              this only stops the file regressing.
 
 Usage:  python3 tools/cs2_effects_selftest.py [--json out.json]
 """
@@ -59,28 +63,28 @@ def main():
     missing = []
     for gun, g in doc["Guns"].items():
         for mode, flash in (g.get("Flash") or {}).items():
-            if "missing" in flash:
-                missing.append("%s/%s %s" % (gun, mode, flash["missing"]))
+            if "Missing" in flash:
+                missing.append("%s/%s %s" % (gun, mode, flash["Missing"]))
             else:
-                path = cs2_effects.ANALYSIS / flash["source"]
+                path = cs2_effects.ANALYSIS / flash["Source"]
                 if not path.exists():
                     missing.append(str(path))
         tracer = g.get("Tracer") or {}
-        if tracer.get("source") and not (cs2_effects.PARTICLES / tracer["source"]).exists():
-            missing.append(tracer["source"])
+        if tracer.get("Source") and not (cs2_effects.PARTICLES / tracer["Source"]).exists():
+            missing.append(tracer["Source"])
     before = EFFECTS.read_bytes()
     subprocess.run([sys.executable, str(ROOT / "tools/cs2_effects.py")],
                    capture_output=True, check=True, cwd=ROOT)
     stable = EFFECTS.read_bytes() == before
     print("   %d particle systems referenced, %d missing%s"
-          % (sum(len(g.get("Flash") or {}) + (1 if (g.get("Tracer") or {}).get("source") else 0)
+          % (sum(len(g.get("Flash") or {}) + (1 if (g.get("Tracer") or {}).get("Source") else 0)
                  for g in doc["Guns"].values()),
              len(missing), "" if not missing else ": " + ", ".join(missing)))
     print("   regenerating cs2_effects.json reproduces the shipped file: %s" % stable)
     for gun, g in doc["Guns"].items():
         for mode, flash in (g.get("Flash") or {}).items():
-            if flash.get("unmodelled"):
-                print("   %-6s flash[%s] not modelled: %s" % (gun, mode, ", ".join(flash["unmodelled"])))
+            if flash.get("Unmodelled"):
+                print("   %-6s flash[%s] not modelled: %s" % (gun, mode, ", ".join(flash["Unmodelled"])))
 
     print("\nC. Shipped scope circle")
     im = Image.open(SCOPE).convert("RGBA")
@@ -100,12 +104,37 @@ def main():
     print("   -> aperture %.4f h, feather about %.3f h (procedural mask: 0.4825 h / 0.0185 h)"
           % (crossing * 0.5, 0.10 * 0.5))
 
-    ok = worst < 1.5 and not missing and stable and inner < 0.02 and 0.9 < crossing < 1.0
-    print("\nA/B/C %s" % ("PASS" if ok else "FAIL"))
+    print("\nD. Schema shape")
+    import re as _re
+    snake = []
+    shapes = []
+
+    def walk(node, path=""):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                if _re.search(r"[a-z]_[a-z]", k):
+                    snake.append(path + k)
+                if k in ("Lifetime", "Alpha") and v is not None and not isinstance(v, list):
+                    shapes.append("%s%s is %r, expected an array" % (path, k, v))
+                walk(v, path + k + ".")
+        elif isinstance(node, list):
+            for v in node:
+                walk(v, path)
+
+    walk(doc)
+    print("   snake_case keys: %d%s" % (len(snake), "" if not snake else " -> " + ", ".join(snake[:5])))
+    print("   Lifetime/Alpha not an array: %d%s" % (len(shapes), "" if not shapes else " -> " + shapes[0]))
+    print("   format: %s" % doc.get("Format"))
+
+    ok = (worst < 1.5 and not missing and stable and inner < 0.02 and 0.9 < crossing < 1.0
+          and not snake and not shapes and doc.get("Format") == "ScCsgoKnives.Cs2Effects/2")
+    print("\nA/B/C/D %s" % ("PASS" if ok else "FAIL"))
     if args.json:
         args.json.write_text(json.dumps({"muzzle": rows, "missing": missing,
                                          "regenerates_identically": stable,
-                                         "scope": scope}, indent=2), "utf-8")
+                                         "scope": scope, "snake_case_keys": snake,
+                                         "bad_shapes": shapes,
+                                         "format": doc.get("Format")}, indent=2), "utf-8")
     return 0 if ok else 1
 
 

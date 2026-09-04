@@ -188,9 +188,12 @@ public static class CsmcKnifeRig {
     /// consumer of timing must use: the animation controller's end-of-clip test, the
     /// gun's BusyUntil, and Cs2Rig's own sampling.
     ///
-    /// The two rigs do not agree on length - CS2's M4A1-S inspect runs 5.2999 s against
-    /// CS:MC's 5.0, its draw 1.1332 against 1.1000 - so driving the controller from one
-    /// and drawing from the other froze the tail of the longer clip. Knives and
+    /// The two rigs do not agree on length. Measured (tools/cs2_placement_selftest.py):
+    /// the M4A1-S draw runs 1.1332 s in CS2 against 1.1000 in CS:MC, so its last frame
+    /// was being cut; the AK reload is 2.4333 against 2.4667 and the AWP's shot 1.5999
+    /// against 1.6667, so there the animation ended one or two frames before the state
+    /// machine did. (The M4A1-S inspect is *not* affected: GetDuration returns CS:MC's
+    /// Duration field, 5.3, not the 5.0 where its sampled curve stops.) Knives and
     /// GunProfile = 0 are unaffected: Cs2Placement.Active already requires a gun and the
     /// cs2 profile, so they fall through to GetDuration unchanged.
     /// </summary>

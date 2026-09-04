@@ -88,42 +88,51 @@ def literal(node):
 
 
 def read_flash(path: Path) -> dict:
+    """One flash system's envelope.
+
+    Keys are PascalCase and match Cs2Effects.cs field for field. 0.16.4 emitted
+    snake_case and a scalar `lifetime`, which made the C# loader throw - System.Text.Json's
+    PropertyNameCaseInsensitive ignores case, not separators - so every tracer and the
+    whole CS2 flash envelope were inactive at runtime while the Python check passed.
+    Lifetime is always written as an array for the same reason.
+    """
     if not path.exists():
-        return {"missing": str(path)}
+        return {"Missing": str(path)}
     doc = cs2_kv3.load(path)
-    out = {"source": str(path.relative_to(ANALYSIS)), "unmodelled": []}
+    out = {"Source": str(path.relative_to(ANALYSIS)), "Unmodelled": []}
 
     for op in doc.get("m_Emitters") or []:
         if op.get("_class") == "C_OP_InstantaneousEmitter":
-            out["particles"] = literal(op.get("m_nParticlesToEmit"))
+            out["Particles"] = literal(op.get("m_nParticlesToEmit"))
 
     for op in doc.get("m_Initializers") or []:
         cls = op.get("_class")
         if cls == "C_INIT_RandomSequence":
-            out["sequence_frames"] = int(op.get("m_nSequenceMax", 0)) + 1
+            out["SequenceFrames"] = int(op.get("m_nSequenceMax", 0)) + 1
         elif cls == "C_INIT_RandomColor":
-            out["color_min"] = [int(x) for x in (op.get("m_ColorMin") or [])[:3]]
-            out["color_max"] = [int(x) for x in (op.get("m_ColorMax") or [])[:3]]
+            out["ColorMin"] = [int(x) for x in (op.get("m_ColorMin") or [])[:3]]
+            out["ColorMax"] = [int(x) for x in (op.get("m_ColorMax") or [])[:3]]
         elif cls == "C_INIT_InitFloat":
             field = op.get("m_nOutputField")
             value = literal(op.get("m_InputValue"))
             if value is None:
                 continue
             if field == LIFE_DURATION:
-                out["lifetime"] = value
+                # Always an array, even for a literal: the C# side is float[].
+                out["Lifetime"] = value if isinstance(value, list) else [value]
             elif field == ALPHA:
-                out["alpha"] = value
+                out["Alpha"] = value
             elif field == ROTATION:
-                out["rotation_degrees"] = value
+                out["RotationDegrees"] = value
 
     for op in doc.get("m_Operators") or []:
         cls = op.get("_class")
         if cls == "C_OP_FadeOut":
-            out["fade_out"] = op.get("m_flFadeOutTimeMax")
+            out["FadeOut"] = op.get("m_flFadeOutTimeMax")
         elif cls == "C_OP_BasicMovement":
-            out["drag"] = op.get("m_fDrag")
+            out["Drag"] = op.get("m_fDrag")
         elif cls not in ("C_OP_Decay", "C_OP_PositionLock", "C_OP_RampScalarLinearSimple"):
-            out["unmodelled"].append(cls)
+            out["Unmodelled"].append(cls)
 
     textures = []
     for r in doc.get("m_Renderers") or []:
@@ -131,17 +140,17 @@ def read_flash(path: Path) -> dict:
             if t.get("m_hTexture"):
                 textures.append(t["m_hTexture"])
         if r.get("m_bOnlyRenderInEffectsBloomPass"):
-            out["unmodelled"].append("bloom-only second sprite pass")
+            out["Unmodelled"].append("bloom-only second sprite pass")
         scale = literal(r.get("m_flRadiusScale"))
         if scale is not None:
-            out["radius_scale"] = scale
-    out["textures"] = sorted(set(textures))
+            out["RadiusScale"] = scale
+    out["Textures"] = sorted(set(textures))
     # Per-particle radius comes from a curve, not a literal; record its range.
     for op in doc.get("m_Initializers") or []:
         curve = (op.get("m_InputValue") or {}).get("m_Curve") if isinstance(op.get("m_InputValue"), dict) else None
         if curve and curve.get("m_vDomainMaxs") and curve["m_vDomainMaxs"][1] > 1.5:
-            out["radius_curve_range"] = [curve["m_vDomainMins"][1], curve["m_vDomainMaxs"][1]]
-    out["unmodelled"] = sorted(set(out["unmodelled"]))
+            out["RadiusCurveRange"] = [curve["m_vDomainMins"][1], curve["m_vDomainMaxs"][1]]
+    out["Unmodelled"] = sorted(set(out["Unmodelled"]))
     return out
 
 
@@ -157,33 +166,33 @@ def read_tracer(path: str) -> dict:
         return {}
     full = PARTICLES / path
     if not full.exists():
-        return {"missing": path}
+        return {"Missing": path}
     doc = cs2_kv3.load(full)
-    out = {"source": path}
+    out = {"Source": path}
     for section in ("m_Initializers", "m_Operators", "m_Renderers", "m_Emitters"):
         for op in doc.get(section) or []:
             cls = op.get("_class")
             if cls == "C_INIT_MoveBetweenPoints":
-                for key, name in (("m_flSpeedMin", "speed_min"), ("m_flSpeedMax", "speed_max")):
+                for key, name in (("m_flSpeedMin", "SpeedMin"), ("m_flSpeedMax", "SpeedMax")):
                     v = literal(op.get(key))
                     if v is not None:
                         out[name] = v
             elif cls == "C_INIT_RandomColor":
-                out["color_min"] = [int(x) for x in (op.get("m_ColorMin") or [])[:3]]
-                out["color_max"] = [int(x) for x in (op.get("m_ColorMax") or [])[:3]]
+                out["ColorMin"] = [int(x) for x in (op.get("m_ColorMin") or [])[:3]]
+                out["ColorMax"] = [int(x) for x in (op.get("m_ColorMax") or [])[:3]]
             elif cls == "C_INIT_InitFloat" and op.get("m_nOutputField") == ALPHA:
                 v = literal(op.get("m_InputValue"))
                 if v is not None:
-                    out["alpha"] = v
+                    out["Alpha"] = v if isinstance(v, list) else [v]
             elif cls == "C_OP_RenderTrails":
-                out["max_length"] = op.get("m_flMaxLength")
-                out["length_fade_in"] = op.get("m_flLengthFadeInTime")
+                out["MaxLength"] = op.get("m_flMaxLength")
+                out["LengthFadeIn"] = op.get("m_flLengthFadeInTime")
                 for t in op.get("m_vecTexturesInput") or []:
                     if t.get("m_hTexture"):
-                        out.setdefault("textures", []).append(t["m_hTexture"])
-    speed = out.get("speed_min") or out.get("speed_max")
+                        out.setdefault("Textures", []).append(t["m_hTexture"])
+    speed = out.get("SpeedMin") or out.get("SpeedMax")
     if speed:
-        out["speed"] = speed
+        out["Speed"] = speed
     return out
 
 
@@ -208,19 +217,19 @@ def main():
                  "" if vdata["muzzle1"] is None else " / muzzle1 %s" % vdata["muzzle1"],
                  Path(vdata["tracer_particle"] or "-").stem, vdata["tracer_frequency"]))
         print("       tracer: %s units/s, trail %s units, fade-in %s s, colour %s..%s"
-              % (t.get("speed"), t.get("max_length"), t.get("length_fade_in"),
-                 t.get("color_min"), t.get("color_max")))
+              % (t.get("Speed"), t.get("MaxLength"), t.get("LengthFadeIn"),
+                 t.get("ColorMin"), t.get("ColorMax")))
         for mode, f in guns[gun]["Flash"].items():
-            if "missing" in f:
-                print("       flash[%s]: %s NOT IN THE EXPORT" % (mode, f["missing"]))
+            if "Missing" in f:
+                print("       flash[%s]: %s NOT IN THE EXPORT" % (mode, f["Missing"]))
                 continue
             print("       flash[%-9s] lifetime %s s, %s particles, %s frames, colour %s..%s, alpha %s, fade %s s"
-                  % (mode, f.get("lifetime"), f.get("particles"), f.get("sequence_frames"),
-                     f.get("color_min"), f.get("color_max"), f.get("alpha"), f.get("fade_out")))
-            if f["unmodelled"]:
-                print("                    not modelled: %s" % ", ".join(f["unmodelled"]))
+                  % (mode, f.get("Lifetime"), f.get("Particles"), f.get("SequenceFrames"),
+                     f.get("ColorMin"), f.get("ColorMax"), f.get("Alpha"), f.get("FadeOut")))
+            if f["Unmodelled"]:
+                print("                    not modelled: %s" % ", ".join(f["Unmodelled"]))
 
-    doc = {"Format": "ScCsgoKnives.Cs2Effects/1",
+    doc = {"Format": "ScCsgoKnives.Cs2Effects/2",
            "Notes": ("Muzzle positions and tracer references are from each gun's .vdata; "
                      "flash and tracer numbers from the .vpcf systems CS2 plays. The mod "
                      "draws a sprite, not a particle system, so 'unmodelled' lists what a "

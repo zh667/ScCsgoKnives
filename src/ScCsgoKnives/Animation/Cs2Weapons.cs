@@ -1,6 +1,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Engine;
 
 namespace Game;
@@ -23,32 +24,56 @@ namespace Game;
 /// </summary>
 public static class Cs2Weapons {
     public sealed class Gun {
+        [JsonPropertyName("Damage")]
         public float Damage { get; set; }
+        [JsonPropertyName("HeadshotMultiplier")]
         public float HeadshotMultiplier { get; set; }
+        [JsonPropertyName("ArmorRatio")]
         public float ArmorRatio { get; set; }
+        [JsonPropertyName("Penetration")]
         public float Penetration { get; set; }
+        [JsonPropertyName("Magazine")]
         public int Magazine { get; set; }
+        [JsonPropertyName("ReserveClips")]
         public int ReserveClips { get; set; }
+        [JsonPropertyName("CycleSeconds")]
         public float CycleSeconds { get; set; }
+        [JsonPropertyName("FullAuto")]
         public bool FullAuto { get; set; }
+        [JsonPropertyName("RangeUnits")]
         public float RangeUnits { get; set; }
+        [JsonPropertyName("RangeModifier")]
         public float RangeModifier { get; set; }
+        [JsonPropertyName("MaxSpeed")]
         public float[] MaxSpeed { get; set; }
+        [JsonPropertyName("ZoomFov")]
         public float?[] ZoomFov { get; set; }
+        [JsonPropertyName("RecoveryTimeStand")]
         public float RecoveryTimeStand { get; set; }
+        [JsonPropertyName("SpreadDegrees")]
         public float SpreadDegrees { get; set; }
+        [JsonPropertyName("SpreadDegreesAlternate")]
         public float SpreadDegreesAlternate { get; set; }
+        [JsonPropertyName("MoveSpreadDegrees")]
         public float MoveSpreadDegrees { get; set; }
+        [JsonPropertyName("KickPitchDegrees")]
         public float KickPitchDegrees { get; set; }
+        [JsonPropertyName("KickPitchDegreesAlternate")]
         public float KickPitchDegreesAlternate { get; set; }
+        [JsonPropertyName("KickYawDegrees")]
         public float KickYawDegrees { get; set; }
+        [JsonPropertyName("KickRecoverPerSecond")]
         public float KickRecoverPerSecond { get; set; }
     }
 
     sealed class WeaponsFile {
+        [JsonPropertyName("Format")]
         public string Format { get; set; }
+        [JsonPropertyName("UnitsPerMetre")]
         public float UnitsPerMetre { get; set; }
+        [JsonPropertyName("FalloffUnits")]
         public float FalloffUnits { get; set; }
+        [JsonPropertyName("Guns")]
         public Dictionary<string, Gun> Guns { get; set; }
     }
 
@@ -108,8 +133,9 @@ public static class Cs2Weapons {
                 return null;
             }
             using Stream stream = assembly.GetManifestResourceStream(name);
-            WeaponsFile file = JsonSerializer.Deserialize<WeaponsFile>(stream,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            // Pinned by JsonPropertyName; PropertyNameCaseInsensitive would not have
+            // caught a separator change, which is how Cs2Effects broke in 0.16.4.
+            WeaponsFile file = JsonSerializer.Deserialize<WeaponsFile>(stream);
             if (file?.Format != ExpectedFormat || file.Guns is null) {
                 KnifeDiagnostics.WarnOnce("cs2-weapons-format", $"{Resource} is not {ExpectedFormat}.");
                 return null;

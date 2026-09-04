@@ -14,11 +14,21 @@ Reports the pixel size, whether there are pillarbox bars, the content rectangle,
 and whether the content's aspect matches the declared render aspect. The
 "comparison space" it prints is what belongs in capture.json.
 
+    python3 tools/cs2_capture_probe.py a.png --compare b.png --arm-roi X0,Y0,X1,Y1
+
+The decisive loadout test, and the one with a defensible threshold: two captures of
+the *same* frame - same position, same angles, same cvars, same map - differing only
+in the loadout. The scene is identical, so any pixel difference over the forearm is
+the loadout. Max channel delta <= 2/255 over the ROI means the arms do not depend on
+it; anything larger means they do and the matching one has to be identified.
+
     python3 tools/cs2_capture_probe.py shot.png --arm-tone X0,Y0,X1,Y1
 
-Samples a rectangle of bare forearm and compares its colour ratios against CS2's
-bare_arm_133 texture, so the agent/loadout behind a capture can be identified
-instead of assumed. Ratios, not absolute levels: they survive the map's lighting.
+The weaker fallback, for use only when --compare shows the loadouts differ. It prints
+the forearm's colour ratios against CS2's bare_arm_133 texture. Treat it as a
+tie-breaker, not proof: a rendered frame has been through coloured light, shadow and
+tone mapping, so its ratios are not the texture's, and there is no threshold at which
+a single shot proves a match.
 """
 
 from __future__ import annotations
@@ -112,11 +122,33 @@ def arm_tone(path: Path, box):
             "delta_g_over_b": round(gb - ARM_133["g_over_b"], 4)}
 
 
+def compare(a_path: Path, b_path: Path, box):
+    """Two captures of one scene, differing only in loadout. Difference is the loadout."""
+    a = np.asarray(Image.open(a_path).convert("RGB"), np.int16)
+    b = np.asarray(Image.open(b_path).convert("RGB"), np.int16)
+    if a.shape != b.shape:
+        raise SystemExit("images differ in size: %s vs %s" % (a.shape[:2][::-1], b.shape[:2][::-1]))
+    x0, y0, x1, y1 = box
+    da = np.abs(a[y0:y1, x0:x1] - b[y0:y1, x0:x1])
+    if not da.size:
+        raise SystemExit("empty ROI")
+    frame = np.abs(a - b)
+    return {"a": a_path.name, "b": b_path.name, "roi": list(box),
+            "roi_pixels": int(da.shape[0] * da.shape[1]),
+            "max_channel_delta": int(da.max()),
+            "mean_channel_delta": round(float(da.mean()), 4),
+            "roi_pixels_differing": int((da.max(axis=2) > 2).sum()),
+            "whole_frame_max_delta": int(frame.max()),
+            "identical_within_2": bool(da.max() <= 2)}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("image", type=Path)
     ap.add_argument("--render", help="declared render resolution, e.g. 1400x1050")
-    ap.add_argument("--arm-tone", help="forearm sample rectangle X0,Y0,X1,Y1")
+    ap.add_argument("--arm-tone", help="forearm sample rectangle X0,Y0,X1,Y1 (weak fallback)")
+    ap.add_argument("--compare", type=Path, help="second capture of the same scene, other loadout")
+    ap.add_argument("--arm-roi", help="forearm rectangle X0,Y0,X1,Y1 for --compare")
     ap.add_argument("--json", type=Path)
     args = ap.parse_args()
 
@@ -144,6 +176,25 @@ def main():
     else:
         print("   (pass --render WxH to classify the geometry)")
 
+    if args.compare:
+        if not args.arm_roi:
+            raise SystemExit("--compare needs --arm-roi X0,Y0,X1,Y1")
+        box = tuple(int(v) for v in args.arm_roi.split(","))
+        cmp = compare(args.image, args.compare, box)
+        result["compare"] = cmp
+        print("\n   loadout comparison %s vs %s over ROI %s (%d px)"
+              % (cmp["a"], cmp["b"], cmp["roi"], cmp["roi_pixels"]))
+        print("   max channel delta %d, mean %.4f, pixels differing by more than 2: %d"
+              % (cmp["max_channel_delta"], cmp["mean_channel_delta"], cmp["roi_pixels_differing"]))
+        print("   whole-frame max delta %d" % cmp["whole_frame_max_delta"])
+        if cmp["identical_within_2"]:
+            print("   PASS: the arms do not depend on this loadout. Record method "
+                  "loadout_difference with max_channel_delta %d in cs2.arms_evidence."
+                  % cmp["max_channel_delta"])
+        else:
+            print("   DIFFER: the loadout changes the arms. Identify which one matches "
+                  "before any hand comparison; --arm-tone is only a tie-breaker.")
+
     if args.arm_tone:
         box = tuple(int(v) for v in args.arm_tone.split(","))
         tone = arm_tone(args.image, box)
@@ -153,7 +204,9 @@ def main():
         print("   bare_arm_133  R/G %.4f  G/B %.4f  ->  delta %+.4f / %+.4f"
               % (ARM_133["r_over_g"], ARM_133["g_over_b"],
                  tone["delta_r_over_g"], tone["delta_g_over_b"]))
-        print("   compare this across candidate loadouts; the matching one is the agent to record.")
+        print("   WEAK EVIDENCE: a rendered frame has been through coloured light, shadow "
+              "and tone mapping, so these ratios are not the texture's. Use --compare for "
+              "the decisive test; this is only a tie-breaker when loadouts differ.")
 
     if args.json:
         args.json.write_text(json.dumps(result, indent=2), "utf-8")

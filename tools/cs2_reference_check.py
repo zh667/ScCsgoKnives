@@ -24,6 +24,19 @@ false PASS:
       materials were installed in the right relation to each other, which is what
       the material port actually decides. The item is named accordingly.
 
+  masks are occluded.  Weapon and arms go through one z-buffer (cs2_raster), so the
+      left-hand mask is what a screenshot can contain. Projecting the arm triangles
+      without depth made it 54 % larger than the visible hand (36 339 px against
+      23 604 at idle), and the grip ROI is exactly where the occlusion is strongest,
+      so an un-occluded mask fails correct geometry.
+
+  silhouettes, not bone origins.  A muzzle or trigger bone origin is inside the
+      model and cannot be pointed at on a screenshot. Both PLACE and HAND are
+      scored on the visible silhouette - IoU, contour distance, centroid - and on
+      extremes derived from the mask by the same code on both sides. Named
+      landmarks stay supported as a diagnostic, and if a manifest lists any then
+      every one of them must resolve or the item fails.
+
   the left hand carries the hand test.  At this machine's viewmodel_offset_x of
       2.5 the right hand is 13.3 % on screen (327 of 2466 weighted vertices, in a
       275x100 px corner); it is reported, never gated.
@@ -46,9 +59,8 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import cs2_arms_selftest as arms
 import cs2_placement as place
-import cs2_viewmodel as vm
+import cs2_raster as raster
 from cs2_rig_selftest import GUNS
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -146,9 +158,11 @@ def check_input(manifest, base: Path):
         return item.fail("capture_transform must be the identity - the probe showed the "
                          "capture is native 1400x1050 with no stretch, so any other "
                          "transform means the image was resampled; got %r" % (transform,))
-    gamma = ((manifest.get("cs2") or {}).get("color") or {}).get("gamma")
-    if gamma is not None and abs(float(gamma) - SRGB_GAMMA) > 1e-3:
-        return item.fail("colour gamma %s, expected sRGB %s" % (gamma, SRGB_GAMMA))
+    colour = (manifest.get("cs2") or {}).get("color") or {}
+    if "gamma" not in colour:
+        return item.fail("cs2.color.gamma is required; the probe recorded sRGB %s" % SRGB_GAMMA)
+    if abs(float(colour["gamma"]) - SRGB_GAMMA) > 1e-3:
+        return item.fail("colour gamma %s, expected sRGB %s" % (colour["gamma"], SRGB_GAMMA))
     cvars = (manifest.get("cs2") or {}).get("cvars") or {}
     needed = ["viewmodel_fov", "viewmodel_offset_x", "viewmodel_offset_y", "viewmodel_offset_z"]
     missing = [c for c in needed if c not in cvars]
@@ -177,10 +191,20 @@ def check_input(manifest, base: Path):
                 problems.append("%s has non-opaque alpha (min %d); the probe found the "
                                 "capture fully opaque, so this image is not a raw capture"
                                 % (shot["image"], alpha.min()))
-        if shot.get("sha256"):
-            got = sha256(path)
-            if got.lower() != shot["sha256"].lower():
-                problems.append("%s sha256 mismatch" % shot["image"])
+        if not shot.get("sha256"):
+            problems.append("%s has no sha256; every reference file must be hashed" % shot["image"])
+        elif sha256(path).lower() != shot["sha256"].lower():
+            problems.append("%s sha256 mismatch" % shot["image"])
+        # The file's own colour metadata, not the manifest's claim about it. A PNG
+        # carrying an sRGB chunk, or a gAMA of 1/2.2, is consistent; anything else is
+        # a re-encode and the manifest is describing a file it no longer has.
+        info = im.info or {}
+        if "srgb" not in info:
+            file_gamma = info.get("gamma")
+            if file_gamma is None and "icc_profile" not in info:
+                problems.append("%s carries no sRGB chunk, gAMA or ICC profile" % shot["image"])
+            elif file_gamma is not None and abs(float(file_gamma) - 1.0 / 2.2) > 5e-3:
+                problems.append("%s gAMA is %.5f, not 1/2.2" % (shot["image"], file_gamma))
         for key in ("weapon_mask", "hand_mask"):
             if not shot.get(key):
                 problems.append("%s has no %s" % (shot["image"], key))
@@ -201,6 +225,45 @@ def check_input(manifest, base: Path):
                    shots_checked=checked, comparison_size=size)
 
 
+def silhouette_extremes(mask):
+    """Well-defined points derivable from a mask by identical code on both sides.
+
+    Deliberately not bone origins: those sit inside the model and cannot be pointed
+    at on a screenshot. These are the four axis extremes and the two ends of the
+    principal axis, which are on the visible outline.
+    """
+    ys, xs = np.nonzero(mask)
+    if not len(xs):
+        return {}
+    pts = np.c_[xs, ys].astype(float)
+    out = {"leftmost": pts[xs.argmin()], "rightmost": pts[xs.argmax()],
+           "topmost": pts[ys.argmin()], "bottommost": pts[ys.argmax()]}
+    centre = pts.mean(0)
+    axis = np.linalg.svd(pts - centre, full_matrices=False)[2][0]
+    proj = (pts - centre) @ axis
+    out["axis_min"] = pts[proj.argmin()]
+    out["axis_max"] = pts[proj.argmax()]
+    return {k: [round(float(v[0]), 1), round(float(v[1]), 1)] for k, v in out.items()}
+
+
+def compare_masks(reference, ours, label):
+    """IoU, contour distance and centroid between two masks, plus derived extremes."""
+    mean, p95, worst = raster.chamfer(reference, ours)
+    ca, cb = raster.centroid(reference), raster.centroid(ours)
+    dc = float(np.linalg.norm(ca - cb)) if ca is not None and cb is not None else float("nan")
+    ea, eb = silhouette_extremes(reference), silhouette_extremes(ours)
+    extremes = {k: round(float(np.hypot(ea[k][0] - eb[k][0], ea[k][1] - eb[k][1])), 2)
+                for k in ea if k in eb}
+    return {"label": label,
+            "reference_px": int(reference.sum()), "ours_px": int(ours.sum()),
+            "iou": round(raster.iou(reference, ours), 4),
+            "contour_mean_px": None if mean != mean else round(mean, 2),
+            "contour_p95_px": None if p95 != p95 else round(p95, 2),
+            "contour_max_px": None if worst != worst else round(worst, 2),
+            "centroid_px": None if dc != dc else round(dc, 2),
+            "extremes_px": extremes}
+
+
 # --- PLACE -------------------------------------------------------------------
 def predict(gun, clip, t, cvars, width, height):
     over = ["Cs2ViewmodelFov=%g" % cvars["viewmodel_fov"],
@@ -217,48 +280,91 @@ def predict(gun, clip, t, cvars, width, height):
     return json.loads(out.stdout.strip().splitlines()[-1])
 
 
-def check_place(manifest, base: Path, threshold=10.0):
-    item = Item("PLACE")
+def check_place(manifest, base: Path, threshold=10.0, iou_min=0.90,
+                contour_mean_max=3.0):
+    """Weapon placement, scored on the visible silhouette.
+
+    The gate is the silhouette because that is what a screenshot contains; named
+    bone landmarks are a diagnostic, and if a manifest supplies any then every one
+    must resolve or this fails - a landmark the rig cannot produce must never be
+    quietly skipped, which is how a hand test with three unresolved landmarks used
+    to pass with a worst error of zero.
+    """
+    item = Item("PLACE: weapon silhouette and placement")
     width, height = comparison_size(manifest)
     cvars = manifest["cs2"]["cvars"]
     rows = []
-    worst = 0.0
+    unresolved = []
+    worst_landmark = 0.0
+    worst_extreme = 0.0
+    worst_centroid = 0.0
+    worst_p95 = 0.0
+    lowest_iou = 1.0
     for shot in manifest.get("shots") or []:
-        if not shot.get("landmarks"):
-            return item.fail("%s has no landmarks file" % shot["image"])
-        lm_path = base / shot["landmarks"]
-        if not lm_path.exists():
-            return item.fail("%s missing" % shot["landmarks"])
-        want = (json.loads(lm_path.read_text("utf-8")) or {}).get("weapon") or {}
-        if not want:
-            return item.fail("%s has no weapon landmarks" % shot["landmarks"])
+        mask_path = base / shot["weapon_mask"]
+        if not mask_path.exists():
+            return item.fail("%s missing" % shot["weapon_mask"])
+        reference = load_mask(mask_path, (width, height))
         try:
-            got = predict(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
-                          cvars, width, height)
-        except RuntimeError as exc:
-            return item.fail("prediction failed for %s: %s" % (shot["image"], exc))
-        for name, (vx, vy) in want.items():
-            hit = got["lm"].get(name)
-            if hit is None:
-                rows.append({"shot": shot["image"], "landmark": name, "status": "not in the rig"})
-                continue
-            sx, sy = hit["screen"]
-            d = float(np.hypot(sx - vx, sy - vy))
-            worst = max(worst, d)
-            rows.append({"shot": shot["image"], "landmark": name,
-                         "reference": [vx, vy], "chain": [round(sx, 1), round(sy, 1)],
-                         "error_px": round(d, 2)})
-    unknown = [r for r in rows if r.get("status")]
-    if unknown:
-        return item.fail("landmarks not in the rig: %s"
-                         % ", ".join(r["landmark"] for r in unknown), landmarks=rows)
+            ours = raster.masks(shot["gun"], shot.get("clip", "idle"),
+                                float(shot.get("t", 0.0)), cvars, width, height)["weapon"]
+        except Exception as exc:
+            return item.fail("rasterising %s failed: %s: %s"
+                             % (shot["image"], type(exc).__name__, exc))
+        row = compare_masks(reference, ours, shot["image"])
+        row["gun"] = shot["gun"]
+        lowest_iou = min(lowest_iou, row["iou"])
+        for key, target in (("contour_p95_px", "p95"), ("centroid_px", "centroid")):
+            if row[key] is None:
+                return item.fail("%s: %s could not be measured (empty mask?)" % (shot["image"], target))
+        worst_p95 = max(worst_p95, row["contour_p95_px"])
+        worst_centroid = max(worst_centroid, row["centroid_px"])
+        if row["extremes_px"]:
+            worst_extreme = max(worst_extreme, max(row["extremes_px"].values()))
+
+        lm_file = shot.get("landmarks")
+        if lm_file and (base / lm_file).exists():
+            want = (json.loads((base / lm_file).read_text("utf-8")) or {}).get("weapon") or {}
+            if want:
+                try:
+                    got = predict(shot["gun"], shot.get("clip", "idle"),
+                                  float(shot.get("t", 0.0)), cvars, width, height)
+                except RuntimeError as exc:
+                    return item.fail("prediction failed for %s: %s" % (shot["image"], exc))
+                marks = []
+                for name, (vx, vy) in want.items():
+                    hit = got["lm"].get(name)
+                    if hit is None:
+                        unresolved.append("%s/%s" % (shot["image"], name))
+                        continue
+                    d = float(np.hypot(hit["screen"][0] - vx, hit["screen"][1] - vy))
+                    worst_landmark = max(worst_landmark, d)
+                    marks.append({"landmark": name, "error_px": round(d, 2)})
+                row["landmarks"] = marks
+        rows.append(row)
+
     if not rows:
-        return item.fail("no landmarks compared", landmarks=rows)
-    if worst >= threshold:
-        return item.fail("worst landmark %.1f px, threshold %.0f" % (worst, threshold),
-                         worst_px=round(worst, 2), landmarks=rows)
-    return item.ok("worst landmark %.1f px over %d points" % (worst, len(rows)),
-                   worst_px=round(worst, 2), landmarks=rows)
+        return item.fail("no shots to compare", shots=rows)
+    if unresolved:
+        return item.fail("the rig cannot produce these landmarks, so they were never "
+                         "compared: %s" % ", ".join(unresolved), shots=rows)
+    problems = []
+    if lowest_iou < iou_min:
+        problems.append("worst IoU %.3f (min %.2f)" % (lowest_iou, iou_min))
+    if worst_p95 >= threshold:
+        problems.append("worst contour p95 %.1f px (limit %.0f)" % (worst_p95, threshold))
+    if worst_centroid >= threshold:
+        problems.append("worst centroid %.1f px" % worst_centroid)
+    if worst_extreme >= threshold:
+        problems.append("worst silhouette extreme %.1f px" % worst_extreme)
+    if worst_landmark >= threshold:
+        problems.append("worst named landmark %.1f px" % worst_landmark)
+    if problems:
+        return item.fail("; ".join(problems), shots=rows)
+    return item.ok("worst IoU %.3f, contour p95 %.1f px, centroid %.1f px, extreme %.1f px, "
+                   "landmark %.1f px over %d shots"
+                   % (lowest_iou, worst_p95, worst_centroid, worst_extreme, worst_landmark, len(rows)),
+                   shots=rows)
 
 
 def diagnose_fov(manifest, base: Path):
@@ -290,6 +396,7 @@ def check_photo(manifest, base: Path, anchor=None, mean_tol=0.05, shape_tol=0.10
 
     ours = {}
     theirs = {}
+    labels = {}
     for shot in shots:
         image = base / shot["image"]
         mask_path = base / shot["weapon_mask"]
@@ -299,27 +406,34 @@ def check_photo(manifest, base: Path, anchor=None, mean_tol=0.05, shape_tol=0.10
         mask = load_mask(mask_path, (a.shape[1], a.shape[0]))
         if mask.sum() < 500:
             return item.fail("%s weapon mask covers only %d px" % (shot["image"], mask.sum()))
+        # Keyed by the shot's own image name, not by gun: two shots of the same gun in
+        # different states would otherwise overwrite each other and be measured once.
+        key = shot["image"]
+        labels[key] = shot["gun"]
         lum = luminance(srgb_to_linear(a[mask]))
-        theirs[shot["gun"]] = lum
+        theirs[key] = lum
         render = base / (shot.get("our_render") or "")
         render_mask = base / (shot.get("our_render_mask") or "")
         if not shot.get("our_render") or not render.exists() or not render_mask.exists():
             return item.fail("%s has no matching offline render + mask (our_render / our_render_mask)"
-                             % shot["gun"])
+                             % shot["image"])
         r = np.asarray(Image.open(render).convert("RGB"), float)
         rm = load_mask(render_mask, (r.shape[1], r.shape[0]))
-        ours[shot["gun"]] = luminance(srgb_to_linear(r[rm]))
+        ours[key] = luminance(srgb_to_linear(r[rm]))
 
-    guns = sorted(theirs)
-    anchor = anchor or guns[0]
-    if anchor not in ours:
-        return item.fail("anchor gun %s has no render" % anchor)
+    keys = sorted(theirs)
+    if len(set(labels.values())) != len(keys):
+        return item.fail("two shots of the same gun are both in the photometric set (%s); "
+                         "pick one state per gun" % ", ".join("%s=%s" % (k, labels[k]) for k in keys))
+    anchor = next((k for k in keys if labels[k] == anchor), None) if anchor else keys[0]
+    if anchor is None or anchor not in ours:
+        return item.fail("anchor has no render; candidates are %s" % ", ".join(keys))
     k = float(np.mean(theirs[anchor]) / max(np.mean(ours[anchor]), 1e-9))
 
     rows = []
     worst_mean = 0.0
     worst_shape = 0.0
-    for gun in guns:
+    for gun in keys:
         scaled = ours[gun] * k
         mean_err = abs(float(np.mean(scaled) / max(np.mean(theirs[gun]), 1e-9)) - 1.0)
         def shape(x):
@@ -328,7 +442,7 @@ def check_photo(manifest, base: Path, anchor=None, mean_tol=0.05, shape_tol=0.10
         p10_o, p90_o = shape(scaled)
         p10_t, p90_t = shape(theirs[gun])
         shape_err = max(abs(p10_o / max(p10_t, 1e-9) - 1.0), abs(p90_o / max(p90_t, 1e-9) - 1.0))
-        rows.append({"gun": gun, "anchor": gun == anchor,
+        rows.append({"shot": gun, "gun": labels[gun], "anchor": gun == anchor,
                      "mean_error": round(mean_err, 4), "shape_error": round(shape_err, 4),
                      "p10_over_median": [round(p10_o, 4), round(p10_t, 4)],
                      "p90_over_median": [round(p90_o, 4), round(p90_t, 4)]})
@@ -336,63 +450,20 @@ def check_photo(manifest, base: Path, anchor=None, mean_tol=0.05, shape_tol=0.10
             worst_mean = max(worst_mean, mean_err)
         worst_shape = max(worst_shape, shape_err)
 
-    if len(guns) < 3:
+    if len(keys) < 3:
         return item.fail("only %d guns present; the test needs three to be meaningful"
-                         % len(guns), multiplier=round(k, 5), guns=rows)
+                         % len(keys), multiplier=round(k, 5), guns=rows)
     if worst_mean >= mean_tol or worst_shape >= shape_tol:
         return item.fail("worst validated mean error %.1f%% (limit %.0f%%), worst shape error "
                          "%.1f%% (limit %.0f%%)" % (100 * worst_mean, 100 * mean_tol,
                                                     100 * worst_shape, 100 * shape_tol),
                          multiplier=round(k, 5), guns=rows)
     return item.ok("one multiplier %.4f fitted on %s; the other guns match to %.1f%% mean, "
-                   "%.1f%% shape" % (k, anchor, 100 * worst_mean, 100 * worst_shape),
+                   "%.1f%% shape" % (k, labels[anchor], 100 * worst_mean, 100 * worst_shape),
                    multiplier=round(k, 5), guns=rows)
 
 
 # --- HAND --------------------------------------------------------------------
-def left_hand_mask(gun, clip, t, cvars, width, height):
-    """Rasterise the left-hand triangles of the CS2 arms under the same placement.
-
-    The maths is the reference implementation in cs2_placement/cs2_arms_selftest;
-    cs2_placement_selftest.py is what establishes that the shipped C# agrees with
-    it (5.4e-06 m, 0.05 px), so a mask built here stands for what the mod draws.
-    """
-    joints, ibm, pos, nor, w, j, mesh = arms.load_arms()
-    cfg = GUNS[gun]
-    stem = {v: k for k, v in cfg["clips"].items()}.get(clip, clip)
-    c = vm.load_clip(vm.CLIPS / cfg["folder"] / (stem + ".dmx"))
-    skinned = arms.skin(joints, ibm, pos, w, j, c.absolute(t), place.placement(cvars))
-    fx, fy = place.projection_scales(cvars["viewmodel_fov"], width / height)
-    s = place.to_screen(skinned, fx, fy, width, height)
-
-    left = np.zeros(len(pos), bool)
-    for k in range(4):
-        left |= np.array([joints[x].endswith("_L") for x in j[:, k]]) & (w[:, k] > 0.5)
-
-    mask = np.zeros((height, width), bool)
-    yy, xx = np.mgrid[0:height, 0:width]
-    for prim in mesh.primitives:
-        tris = prim.indices.reshape(-1, 3)
-        keep = left[tris].all(axis=1) & (s[tris][:, :, 2] > 0.02).all(axis=1)
-        for tri in tris[keep]:
-            p = s[tri][:, :2]
-            x0, y0 = np.floor(p.min(0)).astype(int)
-            x1, y1 = np.ceil(p.max(0)).astype(int) + 1
-            x0, y0 = max(x0, 0), max(y0, 0)
-            x1, y1 = min(x1, width), min(y1, height)
-            if x1 <= x0 or y1 <= y0:
-                continue
-            gx, gy = xx[y0:y1, x0:x1], yy[y0:y1, x0:x1]
-            d = ((p[1, 1] - p[2, 1]) * (p[0, 0] - p[2, 0]) + (p[2, 0] - p[1, 0]) * (p[0, 1] - p[2, 1]))
-            if abs(d) < 1e-9:
-                continue
-            a = ((p[1, 1] - p[2, 1]) * (gx - p[2, 0]) + (p[2, 0] - p[1, 0]) * (gy - p[2, 1])) / d
-            b = ((p[2, 1] - p[0, 1]) * (gx - p[2, 0]) + (p[0, 0] - p[2, 0]) * (gy - p[2, 1])) / d
-            inside = (a >= 0) & (b >= 0) & (a + b <= 1)
-            mask[y0:y1, x0:x1] |= inside
-    return mask
-
-
 def dilate(mask, radius):
     out = mask.copy()
     for _ in range(radius):
@@ -405,52 +476,77 @@ def dilate(mask, radius):
     return out
 
 
-def check_hand(manifest, base: Path, iou_min=0.85, centroid_max=10.0, landmark_max=10.0):
-    item = Item("HAND: left hand in the grip ROI")
-    agent = (manifest.get("cs2") or {})
-    if not agent.get("agent") or not agent.get("team") or agent.get("gloves") is None:
-        return item.fail("agent_unverified: team/agent/gloves not recorded, so the reference "
-                         "arms cannot be shown to be bare_arm_133 + glove_fingerless")
-    if not agent.get("arms_verified"):
-        return item.fail("agent_unverified: cs2.arms_verified is not set; run "
-                         "cs2_capture_probe.py --arm-tone across candidate loadouts first")
+def check_hand(manifest, base: Path, iou_min=0.85, threshold=10.0):
+    """The left hand, scored on the *visible* mask inside the grip ROI.
+
+    Visible means occluded: cs2_raster puts the weapon and both arms through one
+    z-buffer, so the mask is what a screenshot can contain. Without that the arm
+    silhouette is 54 % larger than the visible hand at idle (36 339 px against
+    23 604), and since the ROI is chosen where hand and weapon meet, the extra area
+    lands exactly where it does the most damage.
+    """
+    item = Item("HAND: visible left hand in the grip ROI")
+    cs2 = manifest.get("cs2") or {}
+    for field in ("team", "agent", "gloves"):
+        if cs2.get(field) in (None, ""):
+            return item.fail("agent_unverified: cs2.%s not recorded, so the reference arms "
+                             "cannot be shown to be bare_arm_133 + glove_fingerless" % field)
+    evidence = cs2.get("arms_evidence")
+    if not isinstance(evidence, dict) or not evidence.get("method"):
+        return item.fail("agent_unverified: cs2.arms_evidence is missing. A bare "
+                         "arms_verified flag is not evidence; record the method, the "
+                         "loadouts compared and the measured difference "
+                         "(tools/cs2_capture_probe.py --compare)")
+    if evidence.get("method") == "loadout_difference":
+        delta = evidence.get("max_channel_delta")
+        if delta is None or float(delta) > 2.0:
+            return item.fail("agent_unverified: loadout comparison reports max channel "
+                             "delta %r; needs <= 2/255 over the arm ROI to call the arms "
+                             "loadout-independent" % (delta,))
 
     width, height = comparison_size(manifest)
     cvars = manifest["cs2"]["cvars"]
     rows = []
-    worst_iou = 1.0
+    unresolved = []
+    lowest_iou = 1.0
+    worst_p95 = 0.0
     worst_centroid = 0.0
     worst_landmark = 0.0
+    seen = set()
     for shot in manifest.get("shots") or []:
         if shot.get("state", "idle") != "idle":
             continue
+        if shot["gun"] in seen:
+            return item.fail("two idle shots of %s; pick one state per gun" % shot["gun"])
+        seen.add(shot["gun"])
         hand_path = base / shot["hand_mask"]
         weapon_path = base / shot["weapon_mask"]
         if not hand_path.exists() or not weapon_path.exists():
             return item.fail("%s: hand or weapon mask missing" % shot["image"])
         ref_hand = load_mask(hand_path, (width, height))
         ref_weapon = load_mask(weapon_path, (width, height))
-        ours = left_hand_mask(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
-                              cvars, width, height)
-        # Grip / contact ROI: where the hand and the weapon meet, not the whole arm.
+        try:
+            ours = raster.masks(shot["gun"], shot.get("clip", "idle"),
+                                float(shot.get("t", 0.0)), cvars, width, height)["left_hand"]
+        except Exception as exc:
+            return item.fail("rasterising %s failed: %s: %s"
+                             % (shot["image"], type(exc).__name__, exc))
         roi = (dilate(ref_hand, 12) & dilate(ref_weapon, 12)) | (ref_hand & dilate(ref_weapon, 24))
         if roi.sum() < 200:
             return item.fail("%s: grip ROI is only %d px; check the masks" % (shot["image"], roi.sum()))
-        a, b = ref_hand & roi, ours & roi
-        union = (a | b).sum()
-        iou = float((a & b).sum() / union) if union else 0.0
+        row = compare_masks(ref_hand & roi, ours & roi, shot["image"])
+        row["gun"] = shot["gun"]
+        row["roi_px"] = int(roi.sum())
+        if row["contour_p95_px"] is None or row["centroid_px"] is None:
+            return item.fail("%s: contour or centroid could not be measured inside the ROI"
+                             % shot["image"], shots=rows)
+        lowest_iou = min(lowest_iou, row["iou"])
+        worst_p95 = max(worst_p95, row["contour_p95_px"])
+        worst_centroid = max(worst_centroid, row["centroid_px"])
 
-        def centroid(m):
-            ys, xs = np.nonzero(m)
-            return np.array([xs.mean(), ys.mean()]) if len(xs) else np.array([np.nan, np.nan])
-
-        dc = float(np.linalg.norm(centroid(a) - centroid(b)))
-        row = {"shot": shot["image"], "gun": shot["gun"], "roi_px": int(roi.sum()),
-               "iou": round(iou, 4), "centroid_px": round(dc, 2)}
-
-        lm_path = base / shot.get("landmarks", "")
-        if lm_path.exists():
-            want = (json.loads(lm_path.read_text("utf-8")) or {}).get("left_hand") or {}
+        lm_file = shot.get("landmarks")
+        if lm_file and (base / lm_file).exists():
+            want = (json.loads((base / lm_file).read_text("utf-8")) or {}).get("left_hand") or {}
             if want:
                 got = predict(shot["gun"], shot.get("clip", "idle"), float(shot.get("t", 0.0)),
                               cvars, width, height)
@@ -458,23 +554,32 @@ def check_hand(manifest, base: Path, iou_min=0.85, centroid_max=10.0, landmark_m
                 for name, (vx, vy) in want.items():
                     hit = got["lm"].get(name)
                     if hit is None:
-                        marks.append({"landmark": name, "status": "not emitted by ArmPreview cs2"})
+                        unresolved.append("%s/%s" % (shot["image"], name))
                         continue
                     d = float(np.hypot(hit["screen"][0] - vx, hit["screen"][1] - vy))
                     worst_landmark = max(worst_landmark, d)
                     marks.append({"landmark": name, "error_px": round(d, 2)})
                 row["landmarks"] = marks
         rows.append(row)
-        worst_iou = min(worst_iou, iou)
-        worst_centroid = max(worst_centroid, dc)
 
     if not rows:
         return item.fail("no idle shots to compare")
-    if worst_iou < iou_min or worst_centroid >= centroid_max or worst_landmark >= landmark_max:
-        return item.fail("worst IoU %.3f (min %.2f), worst centroid %.1f px, worst landmark %.1f px"
-                         % (worst_iou, iou_min, worst_centroid, worst_landmark), shots=rows)
-    return item.ok("worst IoU %.3f, centroid %.1f px, landmark %.1f px"
-                   % (worst_iou, worst_centroid, worst_landmark), shots=rows)
+    if unresolved:
+        return item.fail("the rig cannot produce these left-hand landmarks, so they were "
+                         "never compared: %s" % ", ".join(unresolved), shots=rows)
+    problems = []
+    if lowest_iou < iou_min:
+        problems.append("worst IoU %.3f (min %.2f)" % (lowest_iou, iou_min))
+    if worst_p95 >= threshold:
+        problems.append("worst contour p95 %.1f px" % worst_p95)
+    if worst_centroid >= threshold:
+        problems.append("worst centroid %.1f px" % worst_centroid)
+    if worst_landmark >= threshold:
+        problems.append("worst landmark %.1f px" % worst_landmark)
+    if problems:
+        return item.fail("; ".join(problems), shots=rows)
+    return item.ok("worst IoU %.3f, contour p95 %.1f px, centroid %.1f px, landmark %.1f px"
+                   % (lowest_iou, worst_p95, worst_centroid, worst_landmark), shots=rows)
 
 
 def check_hand_right(manifest, base: Path):
@@ -485,68 +590,60 @@ def check_hand_right(manifest, base: Path):
 
 
 # --- SOUND -------------------------------------------------------------------
-def check_sound():
-    item = Item("SOUND: shipped cue coverage")
-    path = ROOT / "src/ScCsgoKnives/AnimationData/cs2_sounds.json"
-    if not path.exists():
-        return item.fail("cs2_sounds.json missing")
-    doc = json.loads(path.read_text("utf-8"))
+def check_sound(manifest, base: Path):
+    """Cue coverage against the package under acceptance, not against the repo.
+
+    cs2_sounds.json saying a cue has an Asset only means the generator found a name;
+    it does not mean that OGG is inside the .scmod being tested. This opens the
+    package the manifest names, checks its SHA-256, and looks for every referenced
+    file inside it.
+    """
+    item = Item("SOUND: cue coverage in the package under test")
+    package = manifest.get("package") or {}
+    path = package.get("path")
+    if not path:
+        return item.fail("manifest has no package.path; coverage must be checked against "
+                         "the .scmod under acceptance, not the working tree")
+    scmod = (base / path) if not Path(path).is_absolute() else Path(path)
+    if not scmod.exists():
+        scmod = ROOT / path
+    if not scmod.exists():
+        return item.fail("package %s not found" % path)
+    if not package.get("sha256"):
+        return item.fail("manifest has no package.sha256")
+    digest = sha256(scmod)
+    if digest.lower() != package["sha256"].lower():
+        return item.fail("package sha256 mismatch: %s has %s, manifest says %s"
+                         % (scmod.name, digest[:16], package["sha256"][:16]))
+
+    import zipfile
+    with zipfile.ZipFile(scmod) as z:
+        names = set(z.namelist())
+        try:
+            with z.open("Assets/AnimationData/cs2_sounds.json") as fh:
+                doc = json.loads(fh.read().decode("utf-8"))
+        except KeyError:
+            # The sound table is embedded in the DLL, not shipped loose; fall back to
+            # the source of truth in the tree but keep checking the OGGs in the package.
+            doc = json.loads((ROOT / "src/ScCsgoKnives/AnimationData/cs2_sounds.json")
+                             .read_text("utf-8"))
+        oggs = {n.rsplit("/", 1)[-1][:-4] for n in names
+                if n.startswith("Assets/Audio/") and n.endswith(".ogg")}
+
     total = sum(len(c["Cues"]) for c in doc["Clips"].values())
-    missing = [(k, q["Event"]) for k, c in doc["Clips"].items() for q in c["Cues"] if not q["Asset"]]
-    if missing:
-        return item.fail("%d of %d cues have no shipped OGG and are dropped at load"
-                         % (len(missing), total), total=total,
-                         missing=[{"clip": k, "event": e} for k, e in missing])
-    return item.ok("%d of %d cues resolve to a shipped OGG; trigger times are source-verified "
-                   "from the .vnmclip event tracks, not from recorded audio" % (total, total),
-                   total=total)
-
-
-TEMPLATE = {
-    "format": FORMAT,
-    "captured_at": "REPLACE with ISO 8601",
-    "comparison_size": COMPARISON_SIZE,
-    "capture_transform": IDENTITY,
-    "capture_tool": "xbox_game_bar",
-    "cs2": {
-        "build": "REPLACE with the console `version` line",
-        "map": "de_dust2",
-        "setpos_exact": [0, 0, 0],
-        "setang_exact": [0, 0, 0],
-        "team": "REPLACE",
-        "agent": "REPLACE",
-        "gloves": "none",
-        "arms_verified": False,
-        "weapon_finish": "default",
-        "color": {"encoding": "srgb", "gamma": SRGB_GAMMA},
-        "cvars": {
-            "viewmodel_fov": 68, "viewmodel_offset_x": 2.5,
-            "viewmodel_offset_y": 0, "viewmodel_offset_z": -1.5,
-            "cl_prefer_lefthanded": 0, "cl_silencer_mode": 0,
-            "zoom_sensitivity_ratio": 1.0, "weapon_recoil_scale": "REPLACE",
-        },
-        "video": {
-            "render_width": 1400, "render_height": 1050, "aspect_mode": "normal_4_3",
-            "fullscreen": True, "refresh_hz": 144, "shadow_quality": 0, "ao_detail": 0,
-            "particle_detail": 0, "shader_quality": 0, "msaa": 4, "hdr": -1,
-            "texture_detail": 2,
-        },
-    },
-    "shots": [
-        {"gun": g, "state": s, "clip": "idle", "t": 0.0,
-         "image": "%s_%s.png" % (g, s),
-         "weapon_mask": "masks/%s_%s_weapon.png" % (g, s),
-         "hand_mask": "masks/%s_%s_lefthand.png" % (g, s),
-         "landmarks": "landmarks/%s_%s.json" % (g, s),
-         "our_render": "render/%s_%s.png" % (g, s),
-         "our_render_mask": "render/%s_%s_mask.png" % (g, s),
-         "sha256": "REPLACE"}
-        for g, s in (("ak47", "idle"), ("m4a1s", "idle"), ("m4a1s", "idle_silenced"),
-                     ("awp", "idle"), ("awp", "idle_scoped"))
-    ],
-    "videos": [{"gun": g, "file": "%s.mp4" % g, "sha256": "REPLACE", "purpose": "qa_only"}
-               for g in ("ak47", "m4a1s", "awp")],
-}
+    unnamed = [(k, q["Event"]) for k, c in doc["Clips"].items() for q in c["Cues"] if not q["Asset"]]
+    absent = sorted({(k, q["Asset"]) for k, c in doc["Clips"].items() for q in c["Cues"]
+                     if q["Asset"] and q["Asset"] not in oggs})
+    if unnamed or absent:
+        return item.fail("%d cues have no asset name and %d name a file the package does "
+                         "not contain" % (len(unnamed), len(absent)),
+                         package=scmod.name, sha256=digest, total=total,
+                         unnamed=[{"clip": k, "event": e} for k, e in unnamed],
+                         absent=[{"clip": k, "asset": a} for k, a in absent])
+    return item.ok("%d of %d cues resolve to an OGG present in %s (%d OGGs in the package); "
+                   "trigger times are source-verified from the .vnmclip event tracks"
+                   % (total, total, scmod.name, len(oggs)),
+                   package=scmod.name, sha256=digest, total=total, oggs=len(oggs))
 
 
 def main():
@@ -581,11 +678,12 @@ def main():
             except Exception as exc:
                 items.append(Item(fn.__name__).fail("raised %s: %s" % (type(exc).__name__, exc)))
     else:
-        for name in ("PLACE", "PHOTO: fixed-scene three-gun relative photometric consistency",
-                     "HAND: left hand in the grip ROI"):
+        for name in ("PLACE: weapon silhouette and placement",
+                     "PHOTO: fixed-scene three-gun relative photometric consistency",
+                     "HAND: visible left hand in the grip ROI"):
             items.append(Item(name).fail("INPUT failed; nothing downstream can be trusted"))
     items.append(check_hand_right(manifest, base))
-    items.append(check_sound())
+    items.append(check_sound(manifest, base))
 
     diagnostics = {}
     if args.fit_fov and items[0].status == "PASS":

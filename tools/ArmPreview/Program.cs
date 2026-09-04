@@ -45,6 +45,90 @@ KnifeLog.ToConsole = true;   // before any renderer or rig access, so no log eve
     }
 }
 
+// "loadcheck": call the shipped C# loaders for every embedded CS2 asset and assert the
+// values that actually arrive. A Python check of the JSON on disk cannot catch a
+// serializer contract break - 0.16.4 shipped a cs2_effects.json whose scalar `lifetime`
+// and snake_case keys made Cs2Effects throw on load, so every tracer and the whole CS2
+// flash envelope were silently inactive while the Python selftest passed.
+if (args.Length > 0 && args[0] == "loadcheck") {
+    var checks = new List<object>();
+    void Check(string name, bool ok, string detail) {
+        checks.Add(new { name, ok, detail });
+    }
+
+    foreach (string gun in new[] { "ak47", "m4a1s", "awp" }) {
+        Cs2Effects.Gun fx = Cs2Effects.Get(gun);
+        Check($"effects/{gun}/loaded", fx is not null, fx is null ? "Cs2Effects.Get returned null" : "ok");
+        if (fx is not null) {
+            Check($"effects/{gun}/muzzle0", fx.MuzzlePos0 is { Length: >= 3 },
+                  fx.MuzzlePos0 is null ? "null" : $"[{string.Join(',', fx.MuzzlePos0)}]");
+            Cs2Effects.Flash flash = Cs2Effects.GetFlash(gun, false);
+            Check($"effects/{gun}/flash", flash is not null, flash is null ? "no default flash" : "ok");
+            if (flash is not null) {
+                Check($"effects/{gun}/flash.seconds", flash.Seconds > 0f && flash.Seconds < 2f, $"{flash.Seconds:0.####} s");
+                Check($"effects/{gun}/flash.frames", flash.SequenceFrames >= 1, $"{flash.SequenceFrames} frames");
+                Check($"effects/{gun}/flash.alpha", flash.AlphaMid > 0f && flash.AlphaMid <= 1f, $"{flash.AlphaMid:0.####}");
+            }
+            Check($"effects/{gun}/tracer.freq", Cs2Effects.TracerFrequency(gun) >= 1,
+                  $"{Cs2Effects.TracerFrequency(gun)}");
+            Cs2Effects.Tracer tr = fx.Tracer;
+            Check($"effects/{gun}/tracer.speed", tr is not null && tr.Speed is > 1000f,
+                  tr?.Speed?.ToString("0.#") ?? "null");
+            Check($"effects/{gun}/tracer.length", tr is not null && tr.MaxLength is > 100f,
+                  tr?.MaxLength?.ToString("0.#") ?? "null");
+            Check($"effects/{gun}/tracer.fadein", tr is not null && tr.LengthFadeIn is > 0f,
+                  tr?.LengthFadeIn?.ToString("0.####") ?? "null");
+        }
+
+        KnifeTuning.Override("GunNumbers", 1f);
+        Cs2Weapons.Gun wp = Cs2Weapons.Get(gun);
+        Check($"weapons/{gun}/loaded", wp is not null, wp is null ? "null" : "ok");
+        if (wp is not null) {
+            Check($"weapons/{gun}/damage", wp.Damage > 0f, $"{wp.Damage:0.#}");
+            Check($"weapons/{gun}/spread", wp.SpreadDegrees > 0f, $"{wp.SpreadDegrees:0.####} deg");
+            Check($"weapons/{gun}/kick", wp.KickPitchDegrees > 0f, $"{wp.KickPitchDegrees:0.####} deg");
+            Check($"weapons/{gun}/falloff", wp.RangeModifier is > 0f and < 1f, $"{wp.RangeModifier:0.###}");
+            Check($"weapons/{gun}/maxspeed", wp.MaxSpeed is { Length: >= 1 }, wp.MaxSpeed is null ? "null" : $"{wp.MaxSpeed[0]:0.#}");
+        }
+        KnifeTuning.Override("GunNumbers", 0f);
+
+        Check($"rig/{gun}/parts", Cs2Rig.GetMeshParts(gun).Count > 0, $"{Cs2Rig.GetMeshParts(gun).Count} parts");
+        Check($"rig/{gun}/deploy", Cs2Rig.Duration(gun, "deploy") > 0f, $"{Cs2Rig.Duration(gun, "deploy"):0.####} s");
+        Cs2Rig.Pose pose = Cs2Rig.Sample(gun, "idle", 0f);
+        Check($"rig/{gun}/sample", pose is not null && pose.Bones.Count >= 60,
+              pose is null ? "null" : $"{pose.Bones.Count} bones, {pose.Parts.Count} parts");
+        // A binding whose matrices deserialised as null would come back as the identity
+        // and put every part at the origin, which no bone-count check would notice.
+        if (pose is not null) {
+            int parts = Cs2Rig.GetMeshParts(gun).Count;
+            Check($"rig/{gun}/bindings", pose.Parts.Count == parts,
+                  $"{pose.Parts.Count} part matrices for {parts} parts");
+            bool placed = Cs2Rig.GetMeshParts(gun).All(n => pose.GetPart(n) != Matrix.Identity);
+            Check($"rig/{gun}/bindings.nonidentity", placed,
+                  placed ? "all parts placed" : "a part matrix is the identity");
+            float reloadSeconds = Cs2Rig.Duration(gun, "reload");
+            Cs2Rig.Pose later = reloadSeconds > 0.2f ? Cs2Rig.Sample(gun, "reload", reloadSeconds * 0.5f) : null;
+            bool moves = later is not null
+                && Vector3.Distance(later.GetBoneOrigin("clip"), pose.GetBoneOrigin("clip")) > 0.05f;
+            Check($"rig/{gun}/animates", moves,
+                  later is null ? "no reload clip" :
+                  $"magazine moves {Vector3.Distance(later.GetBoneOrigin("clip"), pose.GetBoneOrigin("clip")):0.##} in mid-reload");
+        }
+    }
+
+    Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
+    Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,
+          Cs2Sounds.TryGet("ak47:reload", out var r2) ? $"{r2.Length} cues" : "missing");
+    Cs2SkinnedMesh arms = Cs2SkinnedMesh.Arms;
+    Check("arms/loaded", arms is not null, arms is null ? "null" : $"{arms.Skinned.Length} vertices");
+    Check("arms/primitives", arms is not null && arms.Primitives.Length == 2,
+          arms is null ? "null" : $"{arms.Primitives.Length}");
+
+    int bad = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
+    Console.WriteLine(JsonSerializer.Serialize(new { failed = bad, checks }));
+    return bad == 0 ? 0 : 1;
+}
+
 // "durations": what every timing consumer sees, per gun and clip alias, under both
 // GunProfile values, plus a knife for the no-change check. This is the thing that
 // regressed - the controller ran on CS:MC lengths while the CS2 rig was drawn - so it
@@ -154,7 +238,19 @@ if (args.Length > 0 && args[0] == "cs2") {
     float fy = 1f / MathF.Tan(MathUtils.DegToRad(fovY) * 0.5f);
     float fx = fy / ((float)W / H);
     var lm = new Dictionary<string, object>();
-    foreach (string bone in new[] { "muzzle", "wpnEnd", "wpnTip", "hand_R", "hand_L", "trigger", "clip", "finger_index_1_R" }) {
+    // Every bone a manifest might name. These are diagnostics: a bone origin sits
+    // inside the model and cannot be pointed at on a screenshot, so the acceptance
+    // gate is the silhouette (cs2_reference_check PLACE/HAND). A landmark listed in a
+    // manifest that is absent here makes the item fail rather than being skipped.
+    foreach (string bone in new[] {
+                 "muzzle", "muzzle2", "wpnEnd", "wpnTip", "wpn", "weapon", "weapon_offset",
+                 "bolt", "bolt_action", "rail", "clip", "cliprelease", "trigger", "silencer",
+                 "hand_R", "hand_L", "arm_lower_R", "arm_lower_L",
+                 "finger_index_0_R", "finger_index_1_R", "finger_index_2_R",
+                 "finger_index_0_L", "finger_index_1_L", "finger_index_2_L",
+                 "finger_thumb_1_R", "finger_thumb_2_R", "finger_thumb_1_L", "finger_thumb_2_L",
+                 "finger_middle_1_L", "finger_middle_2_L", "finger_pinky_1_L",
+             }) {
         if (!pose.HasBone(bone)) continue;
         Vector3 v = Vector3.Transform(pose.GetBoneOrigin(bone), place);
         float z = -v.Z;
