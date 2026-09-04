@@ -11,8 +11,12 @@ file's own Notes field:
   * lengths are Source inches, straight from the DMX. The CS:MC files bake an
     inch->metre root matrix; here that conversion belongs to stage 3's
     placement chain, so nothing is scaled on the way out.
-  * MeshParts and Bindings are empty. They describe the mesh, which stage 2
-    replaces; writing CS:MC's values into a CS2 file would be a wrong source.
+  * MeshParts and Bindings describe the CS2 body_hd parts written by
+    cs2_glb_to_obj, bound to CS2's own weapon bones (stage 2). Each binding is
+    Right * boneAbsolute * Left, the production rule CsmcKnifeRig already uses,
+    built so that at the bone's rest pose the product is the identity - the
+    geometry ships already positioned, and the matrix only carries the bone's
+    departure from rest.
 
 Usage:  python3 tools/cs2_dmx_to_rig.py [--gun ak47] [--out DIR]
 """
@@ -29,6 +33,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import cs2_glb
+import cs2_glb_to_obj as mesh
 import cs2_viewmodel as vm
 from cs2_rig_selftest import ARM_MAP, GUNS
 
@@ -109,6 +115,78 @@ def read_events(vnmclip: Path, frame_rate: float):
     return sorted(out, key=lambda e: (e["At"], e["Name"]))
 
 
+def mesh_bindings(gun: str, skeleton: list, reference) -> tuple:
+    """MeshParts and Bindings for the CS2 body_hd parts, in the mod's normalized space.
+
+    Geometry from cs2_glb_to_obj sits in ``(glb[[2,0,1]] * 39.37009 - MeshCenter) * s``.
+    The animation rig measures the weapon bones in its own weapon-root space,
+    which differs from that by the constant translation the GLB-to-DMX fit
+    returns. With N the normalization and P that translation,
+
+        Right = N^-1 * P^-1 * D_rest^-1        Left = P * N
+
+    so Right * D_rest * Left is the identity and Right * D(t) * Left is exactly
+    the bone's motion, expressed on the normalized geometry.
+    """
+    cfg = mesh.GUNS[gun]
+    glb = cs2_glb.Glb(mesh.MODELS / cfg["dir"] / cfg["glb"])
+    meshes = glb.meshes()
+    index = [i for i, m in enumerate(meshes) if m.name.endswith("body_hd")][0]
+    skin = glb.mesh_skin(index)
+    centre, scale = mesh.normalization(gun)
+
+    names = [b["Name"] for b in skeleton]
+
+    def rest(name):
+        m = np.eye(4)
+        i = names.index(name)
+        while True:
+            b = skeleton[i]
+            m = m @ (vm.from_quat(b["Rotation"]) @ vm.translation(b["Translation"]))
+            if b["Name"] == "weapon":
+                return m
+            i = b["Parent"]
+
+    shared = [n for n in skin["joints"] if n in names]
+    bind = np.array([np.linalg.inv(m)[3, :3]
+                     for n, m in zip(skin["joints"], skin["inverse_bind"]) if n in shared])
+    target = np.array([rest(n)[3, :3] for n in shared])
+    fit_scale, fit_rot, offset = vm.umeyama(bind, target)
+    residual = float(np.linalg.norm(fit_scale * bind @ fit_rot + offset - target, axis=1).max())
+    if residual > 1e-3:
+        raise SystemExit("%s: GLB bind pose and DMX weapon skeleton differ by %.4f in"
+                         % (gun, residual))
+
+    n_matrix = vm.translation(-centre) @ np.diag([scale, scale, scale, 1.0])
+    p_matrix = vm.translation(-offset)
+    inv_n = np.linalg.inv(n_matrix)
+    inv_p = np.linalg.inv(p_matrix)
+
+    report = mesh.convert(gun, Path("/nonexistent"), "hd", write=False)
+    parts = []
+    bindings = []
+    for part in report["parts"]:
+        bone = part["bone"]
+        d_rest = rest(bone)
+        right = inv_n @ inv_p @ np.linalg.inv(d_rest)
+        left = p_matrix @ n_matrix
+        identity = right @ d_rest @ left
+        error = float(np.abs(identity - np.eye(4)).max())
+        if error > 1e-9:
+            raise SystemExit("%s/%s: rest binding is not the identity (%.2e)"
+                             % (gun, part["name"], error))
+        parts.append(part["name"])
+        bindings.append({
+            "Name": part["name"], "Bone": bone, "BoneIndex": names.index(bone),
+            "Faces": part["faces"], "Vertices": part["vertices"],
+            "RightMatrix": [r6(x) for x in right.reshape(-1)],
+            "ReferenceMatrix": [r6(x) for x in d_rest.reshape(-1)],
+            "LeftMatrix": [r6(x) for x in left.reshape(-1)],
+            "RestIdentityError": error,
+        })
+    return parts, bindings, centre, scale, residual
+
+
 def convert(gun: str) -> dict:
     cfg = GUNS[gun]
     folder = CLIPS / cfg["folder"]
@@ -152,6 +230,8 @@ def convert(gun: str) -> dict:
             "Bones": bones,
         }
 
+    parts, bindings, centre, scale, residual = mesh_bindings(gun, skeleton, reference)
+
     return {
         "Format": "ScCsgoKnives.Cs2Animation/1",
         "Units": "inch",
@@ -168,8 +248,12 @@ def convert(gun: str) -> dict:
         },
         "WeaponRoot": reference.weapon_root,
         "AttachBone": reference.attach_bone,
-        "MeshParts": [],
-        "Bindings": [],
+        "MeshCenter": [r6(x) for x in centre],
+        "MeshNormalizationScale": r6(scale),
+        "MeshSource": "02_models/glb_with_animations/.../%s body_hd" % mesh.GUNS[gun]["glb"],
+        "MeshBindResidualInches": r6(residual),
+        "MeshParts": parts,
+        "Bindings": bindings,
         "Skeleton": skeleton,
         "Clips": clips,
     }

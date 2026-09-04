@@ -2,6 +2,10 @@
 and shade them with the shipped base/ORM/normal maps, env atlas and BRDF LUT, so the
 first-person look can be examined without a GPU.
     python3 tools/pbr_emulate.py <asset> <sweep.json> <out.png> [W H] [normal=0/1] [light=1.0] [metal=x] [rough=x]
+
+`tex=<name>` shades <asset>'s geometry with a different material set, which is how
+the CS2 current materials (ak47_hd) are compared against the legacy ones on
+identical geometry.
 """
 import sys, json, math, numpy as np
 from PIL import Image
@@ -14,12 +18,13 @@ FORCE_METAL = kv.get('metal'); FORCE_ROUGH = kv.get('rough'); FRAME = int(kv.get
 FLIPV = kv.get('flipv', '0') == '1'; MIN_ROUGH = float(kv.get('minrough', '0')); PITCH = math.radians(float(kv.get('pitch', '0')))   # camera pitch up (deg): rotates the world-aligned env
 ENV_RANGE, ENV_INT, EXPOSURE, DIRECT, SAT, RBIAS = 6.0, float(kv.get('env', '1')) * LIGHT, 1.0, 0.5 * float(kv.get('direct', '1')) * LIGHT, 0.25, float(kv.get('rbias', '0'))
 TEX = 'src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/'
+TEXASSET = kv.get('tex', asset)      # material set, when it differs from the geometry's
 TEXSCALE = int(kv.get('texscale', '0'))   # downsample the material maps to this size first (mipmap stand-in); 0 = as shipped
 def load(name, mode='RGB', scale=True):
     im = Image.open(TEX + name).convert(mode)
     if scale and TEXSCALE > 0 and im.size[0] > TEXSCALE: im = im.resize((TEXSCALE, TEXSCALE), Image.BOX)
     return np.asarray(im, np.float32) / 255.0
-base_t = load(f'{asset}.png'); orm_t = load(f'{asset}_orm.png'); nrm_t = load(f'{asset}_normal.png')
+base_t = load(f'{TEXASSET}.png'); orm_t = load(f'{TEXASSET}_orm.png'); nrm_t = load(f'{TEXASSET}_normal.png')
 env_t = load('env_specular_rgbm.png', 'RGBA', scale=False); brdf_t = load('env_brdf.png', scale=False)
 def sample(tex, u, v, wrap=True):
     if FLIPV: v = 1.0 - v

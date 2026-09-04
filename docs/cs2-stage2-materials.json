@@ -1,0 +1,89 @@
+[
+ {
+  "gun": "ak47",
+  "size": 1024,
+  "vmat": "weapons/models/ak47/materials/weapon_rif_ak47.vmat",
+  "sources": {
+   "TextureColor1": "weapons/models/ak47/materials/ak47_default_color.png",
+   "TextureAmbientOcclusion": "weapons/models/ak47/materials/ak47_default_ao.png",
+   "TextureRoughness1": "weapons/models/ak47/materials/ak47_default_rough.png",
+   "TextureMetalness1": "weapons/models/ak47/materials/ak47_default_469dc584_metal.png",
+   "TextureNormal": "weapons/models/ak47/materials/ak47_default_normal.png"
+  },
+  "means": {
+   "colour": [
+    88.07,
+    83.06,
+    79.83
+   ],
+   "ao": 178.79,
+   "roughness": 105.91,
+   "metalness": 18.52
+  },
+  "normal_deviation_from_flat": 13.569,
+  "recorded_but_not_implemented": {
+   "g_flMetalnessTransitionBias": "2",
+   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+   "g_flModelTintAmount": "1"
+  }
+ },
+ {
+  "gun": "awp",
+  "size": 1024,
+  "vmat": "weapons/models/awp/materials/weapon_snip_awp.vmat",
+  "sources": {
+   "TextureColor1": "weapons/models/awp/materials/awp_default_color.png",
+   "TextureAmbientOcclusion": "weapons/models/awp/materials/awp_default_ao.png",
+   "TextureRoughness1": "weapons/models/awp/materials/awp_default_rough.png",
+   "TextureMetalness1": "weapons/models/awp/materials/awp_default_4e233c92_metal.png",
+   "TextureNormal": "weapons/models/awp/materials/awp_default_normal.png"
+  },
+  "means": {
+   "colour": [
+    71.6,
+    71.81,
+    66.68
+   ],
+   "ao": 179.99,
+   "roughness": 118.48,
+   "metalness": 15.72
+  },
+  "normal_deviation_from_flat": 11.379,
+  "recorded_but_not_implemented": {
+   "g_flMetalnessTransitionBias": "2",
+   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+   "g_flModelTintAmount": "1"
+  }
+ },
+ {
+  "gun": "m4a1s",
+  "size": 1024,
+  "vmat": "weapons/models/m4a1_silencer/materials/weapon_rif_m4a1_silencer.vmat",
+  "sources": {
+   "TextureColor1": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_color.png",
+   "TextureAmbientOcclusion": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_ao.png",
+   "TextureRoughness1": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_rough.png",
+   "TextureMetalness1": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_ba5e1173_metal.png",
+   "TextureNormal": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_normal.png"
+  },
+  "means": {
+   "colour": [
+    84.73,
+    84.6,
+    84.35
+   ],
+   "ao": 178.25,
+   "roughness": 161.89,
+   "metalness": 22.96
+  },
+  "normal_deviation_from_flat": 13.373,
+  "recorded_but_not_implemented": {
+   "g_flMetalnessTransitionBias": "2.407",
+   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+   "g_flModelTintAmount": "1"
+  }
+ }
+]
