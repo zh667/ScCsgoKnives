@@ -1,0 +1,223 @@
+{
+ "Format": "ScCsgoKnives.Cs2Effects/1",
+ "Notes": "Muzzle positions and tracer references are from each gun's .vdata; flash and tracer numbers from the .vpcf systems CS2 plays. The mod draws a sprite, not a particle system, so 'unmodelled' lists what a single sprite cannot reproduce rather than approximating it.",
+ "Guns": {
+  "ak47": {
+   "MuzzlePos0": [
+    37.422,
+    -4.938,
+    -3.394
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "particles": 8.0,
+     "sequence_frames": 4,
+     "rotation_degrees": [
+      -30.0,
+      120.0
+     ],
+     "lifetime": 0.05,
+     "alpha": [
+      0.235294,
+      0.588235
+     ],
+     "color_min": [
+      198,
+      131,
+      80
+     ],
+     "color_max": [
+      216,
+      216,
+      216
+     ],
+     "drag": 0.2,
+     "fade_out": 0.015,
+     "radius_scale": 0.5,
+     "textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "radius_curve_range": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "speed_max": 20500.0,
+    "max_length": 1200.0,
+    "length_fade_in": 0.095,
+    "speed": 20500.0
+   }
+  },
+  "m4a1s": {
+   "MuzzlePos0": [
+    39.583,
+    -4.846,
+    -3.367
+   ],
+   "MuzzlePos1": [
+    46.463,
+    -4.83,
+    -3.374
+   ],
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "particles": 8.0,
+     "sequence_frames": 4,
+     "rotation_degrees": [
+      -30.0,
+      120.0
+     ],
+     "lifetime": 0.05,
+     "alpha": [
+      0.235294,
+      0.588235
+     ],
+     "color_min": [
+      198,
+      131,
+      80
+     ],
+     "color_max": [
+      216,
+      216,
+      216
+     ],
+     "drag": 0.2,
+     "fade_out": 0.015,
+     "radius_scale": 0.5,
+     "textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "radius_curve_range": [
+      1.0,
+      10.0
+     ]
+    },
+    "silenced": {
+     "source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzsilenced_subm_smoke.vpcf",
+     "unmodelled": [],
+     "particles": 1.0,
+     "rotation_degrees": [
+      0.0,
+      360.0
+     ],
+     "lifetime": [
+      0.3,
+      0.85
+     ],
+     "alpha": [
+      0.470588,
+      0.941177
+     ],
+     "color_min": [
+      211,
+      222,
+      232
+     ],
+     "color_max": [
+      168,
+      168,
+      168
+     ],
+     "sequence_frames": 4,
+     "textures": []
+    }
+   },
+   "Tracer": {
+    "source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "speed_max": 20500.0,
+    "max_length": 1200.0,
+    "length_fade_in": 0.095,
+    "speed": 20500.0
+   }
+  },
+  "awp": {
+   "MuzzlePos0": [
+    54.128,
+    -5.022,
+    -3.124
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_awp_primaryflash.vpcf",
+     "unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_SetFloat",
+      "C_OP_SpinUpdate",
+      "bloom-only second sprite pass"
+     ],
+     "particles": 4.0,
+     "rotation_degrees": [
+      0.0,
+      360.0
+     ],
+     "lifetime": [
+      0.15,
+      0.2
+     ],
+     "alpha": [
+      0.470588,
+      0.705882
+     ],
+     "color_min": [],
+     "color_max": [],
+     "sequence_frames": 3,
+     "fade_out": 1.0,
+     "drag": 0.3,
+     "textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex",
+      "materials/particle/particle_ring_wave_8.vtex"
+     ],
+     "radius_curve_range": [
+      1.0,
+      2.0
+     ]
+    }
+   },
+   "Tracer": {
+    "source": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle.vpcf",
+    "speed_min": 30000.0,
+    "alpha": [
+     0.54902,
+     0.705882
+    ],
+    "color_min": [
+     247,
+     188,
+     94
+    ],
+    "color_max": [
+     255,
+     245,
+     219
+    ],
+    "max_length": 900.0,
+    "length_fade_in": 0.1,
+    "textures": [
+     "materials/particle/sparks/sparks.vtex"
+    ],
+    "speed": 30000.0
+   }
+  }
+ }
+}

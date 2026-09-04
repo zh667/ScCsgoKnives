@@ -595,12 +595,24 @@ public static class CsmcFirstPersonRenderer {
         s_scopeMagnification = magnification;
     }
 
-    /// <summary>Show the muzzle flash at the given bone for a few frames.</summary>
-    public static void MuzzleFlash(float seconds, string bone) {
+    static Cs2Effects.Flash s_flashSpec;
+
+    /// <summary>
+    /// Show the muzzle flash at the given bone for a few frames.
+    ///
+    /// In the cs2 profile the duration, tint, sprite range and opacity come from the
+    /// .vpcf CS2 plays for that gun rather than the caller's guess: the AK's primary
+    /// flash lives 0.05 s over 4 sprite frames, tinted between (198,131,80) and
+    /// (216,216,216) at alpha 0.24-0.59 with a 0.015 s fade; the M4A1-S suppressed
+    /// puff lives 0.3-0.85 s and is nearly white; the AWP's lives 0.15-0.2 s.
+    /// </summary>
+    public static void MuzzleFlash(float seconds, string bone, string gun = null, bool silenced = false) {
+        s_flashSpec = gun is not null && KnifeTuning.GunProfile >= 0.5f ? Cs2Effects.GetFlash(gun, silenced) : null;
+        if (s_flashSpec is not null) seconds = s_flashSpec.Seconds;
         s_flashStart = KnifeClock.Now;
         s_flashSeconds = MathF.Max(seconds, 0.001f);
         s_flashUntil = s_flashStart + seconds;
-        s_smokeUntil = s_flashUntil + SmokeSeconds;
+        s_smokeUntil = s_flashUntil + (s_flashSpec is null ? SmokeSeconds : 0.0);
         s_flashBone = bone;
         s_flashRoll = new Random().Float(0f, MathF.PI * 2f);
     }
@@ -920,7 +932,7 @@ public static class CsmcFirstPersonRenderer {
 
         DrawCs2Arms(cs2, post, projection, camera, in lighting, variant);
 
-        if (s_smokeUntil > KnifeClock.Now) DrawMuzzleFlash(pose, root, projection);
+        if (s_smokeUntil > KnifeClock.Now) DrawCs2MuzzleFlash(cs2, gun, post, projection);
 
         if (s_cs2Logged.Add(gun)) {
             KnifeLog.Information(
@@ -932,6 +944,20 @@ public static class CsmcFirstPersonRenderer {
             );
         }
         return true;
+    }
+
+    /// <summary>
+    /// The cs2 profile's flash, placed at the muzzle position the gun's .vdata
+    /// declares rather than at a bone chosen by hand. For the AK those agree exactly
+    /// - m_vecMuzzlePos0 is [37.422, -4.938, -3.394] and so is the idle `muzzle`
+    /// bone - so the vdata is used for all three, which is what CS2 spawns from.
+    /// </summary>
+    static void DrawCs2MuzzleFlash(Cs2Rig.Pose pose, string gun, Matrix post, Matrix projection) {
+        bool silenced = s_flashBone == "muzzle2";
+        Vector3? declared = Cs2Effects.MuzzlePosition(gun, silenced);
+        Vector3 rig = declared ?? pose.GetBoneOrigin(silenced && pose.HasBone("muzzle2") ? "muzzle2" : "muzzle");
+        Vector3 p = Vector3.Transform(rig, Cs2Placement.Placement() * post);
+        DrawFlashAt(p, projection, silenced);
     }
 
     static Texture2D s_cs2ArmBase, s_cs2GloveBase;
@@ -1016,8 +1042,48 @@ public static class CsmcFirstPersonRenderer {
     /// <summary>True while the scoped view (gun hidden, mask due) is active for the frame being drawn.</summary>
     public static bool ScopeOverlayActive => s_scoped && AimProgress >= 0.999f && Time.FrameIndex - s_overlayFrame <= 1;
 
+    static Texture2D s_cs2ScopeCircle;
+
+    /// <summary>
+    /// CS2's own scope vignette, panorama/images/hud/scope/scope_circle.png, drawn as a
+    /// screen-height square with black filling the rest of the frame.
+    ///
+    /// The plan pointed at materials/dev/scope_mask, but that export is a 1x1 white
+    /// pixel - a placeholder, not art. This is the image CS2's HUD actually draws:
+    /// black, fully transparent inside r = 0.90 of its half-width, opaque by r = 1.00,
+    /// 50 % at r = 0.95. The procedural mask below was fitted to a CS:MC video and
+    /// puts its edge at 0.4825 h with a 0.0185 h feather; CS2's is 0.475 h with a
+    /// 0.05 h feather, so the two are close but the falloff is three times softer.
+    /// </summary>
+    static bool DrawCs2ScopeOverlay() {
+        s_cs2ScopeCircle ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_circle");
+        if (s_cs2ScopeCircle is null) return false;
+        s_primitives2D ??= new PrimitivesRenderer2D();
+        float w = Display.Viewport.Width, h = Display.Viewport.Height;
+        float half = h * 0.5f;
+        Vector2 c = new(w * 0.5f, h * 0.5f);
+        FlatBatch2D fill = s_primitives2D.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
+        // Black everywhere the square does not cover, so a wide window stays masked.
+        if (w > h) {
+            foreach (float x0 in new[] { 0f, c.X + half }) {
+                float x1 = x0 == 0f ? c.X - half : w;
+                fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, 0f), new Vector2(x1, h), 0f, Color.Black);
+                fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, h), new Vector2(x0, h), 0f, Color.Black);
+            }
+        }
+        TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_cs2ScopeCircle, false, 1,
+            DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+        batch.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
+            0f, Vector2.Zero, Vector2.One, Color.White);
+        QueueScopeCrosshair(c, half, h, s_primitives2D.FlatBatch(2, DepthStencilState.None,
+            RasterizerState.CullNoneScissor, BlendState.NonPremultiplied));
+        s_primitives2D.Flush();
+        return true;
+    }
+
     public static void DrawScopeOverlay() {
         try {
+            if (KnifeTuning.GunProfile >= 0.5f && DrawCs2ScopeOverlay()) return;
             s_primitives2D ??= new PrimitivesRenderer2D();
             float w = Display.Viewport.Width, h = Display.Viewport.Height;
             Vector2 c = new(w * 0.5f, h * 0.5f);
@@ -1043,16 +1109,20 @@ public static class CsmcFirstPersonRenderer {
                     soft.QueueTriangle(c + d0 * rIn, c + d1 * rOut, c + d1 * rIn, 0f, col);
                 }
             }
-            // Reticle cross; thickness from the tuning file, scaled to the frame height.
-            float half = MathF.Max(0.5f, KnifeTuning.ScopeLinePx * h / 1080f * 0.5f);
-            Color line = new Color((byte)0, (byte)0, (byte)0, (byte)200);
-            soft.QueueQuad(new Vector2(c.X - half, c.Y - radius), new Vector2(c.X + half, c.Y + radius), 0f, line);
-            soft.QueueQuad(new Vector2(c.X - radius, c.Y - half), new Vector2(c.X + radius, c.Y + half), 0f, line);
+            QueueScopeCrosshair(c, radius, h, soft);
             s_primitives2D.Flush();
         }
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce("scope-overlay", $"Scope overlay failed: {e.Message}");
         }
+    }
+
+    /// <summary>Reticle cross; thickness from the tuning file, scaled to the frame height.</summary>
+    static void QueueScopeCrosshair(Vector2 c, float radius, float h, FlatBatch2D batch) {
+        float half = MathF.Max(0.5f, KnifeTuning.ScopeLinePx * h / 1080f * 0.5f);
+        Color line = new Color((byte)0, (byte)0, (byte)0, (byte)200);
+        batch.QueueQuad(new Vector2(c.X - half, c.Y - radius), new Vector2(c.X + half, c.Y + radius), 0f, line);
+        batch.QueueQuad(new Vector2(c.X - radius, c.Y - half), new Vector2(c.X + radius, c.Y + half), 0f, line);
     }
 
     /// <summary>An additive sprite at the muzzle bone, facing the eye, for the frames after a shot.</summary>
@@ -1069,18 +1139,46 @@ public static class CsmcFirstPersonRenderer {
             s_primitives3D ??= new PrimitivesRenderer3D();
             Matrix muzzle = pose.GetBoneFrame(s_flashBone) * root;
             Vector3 p = new(muzzle.M41, muzzle.M42, muzzle.M43);
+            DrawFlashAt(p, projection, s_flashBone == "muzzle2");
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce("muzzle-flash", $"Muzzle flash failed: {e.Message}");
+        }
+    }
+
+    static void DrawFlashAt(Vector3 p, Matrix projection, bool silenced) {
+        try {
+            s_fireAtlas ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/muzzle_fire");
+            s_smokeAtlas ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/muzzle_smoke");
+            s_primitives3D ??= new PrimitivesRenderer3D();
             if (!(p.Z < -0.05f)) return;
             double now = KnifeClock.Now;
             float t = (float)(now - s_flashStart);
-            bool silenced = s_flashBone == "muzzle2";
             float c = MathF.Cos(s_flashRoll), sn = MathF.Sin(s_flashRoll);
             Vector3 rightDir = new(c, sn, 0f), upDir = new(-sn, c, 0f);
             if (now < s_flashUntil) {
                 float u = MathUtils.Saturate(t / s_flashSeconds);
-                int frame = 8 + (int)(u * 12.99f);                      // the sequence's full-size frames
-                float half = (silenced ? 0.035f : 0.09f);
-                Color tint = silenced ? new Color(160, 160, 160, 255) : Color.White;
-                QueueSprite(s_fireAtlas, FireFrames, frame, p, rightDir * half, upDir * half, tint, BlendState.Additive);
+                if (s_flashSpec is not null) {
+                    // CS2's own envelope: its sequence has 3 or 4 frames, so walk that
+                    // many of the atlas's full-size frames, and fade over the tail the
+                    // vpcf's C_OP_FadeOut names.
+                    int frames = Math.Clamp(s_flashSpec.SequenceFrames, 1, FireFrames - 8);
+                    int frame = 8 + (int)(u * (frames - 0.01f));
+                    float fade = s_flashSpec.FadeOut is > 0f
+                        ? MathUtils.Saturate((float)((s_flashUntil - now) / s_flashSpec.FadeOut.Value))
+                        : 1f - u;
+                    Color c2 = s_flashSpec.Tint;
+                    byte a = (byte)MathUtils.Clamp(255f * s_flashSpec.AlphaMid * fade, 0f, 255f);
+                    float half2 = silenced ? 0.035f : 0.09f;
+                    QueueSprite(s_fireAtlas, FireFrames, frame, p, rightDir * half2, upDir * half2,
+                        new Color(c2.R, c2.G, c2.B, a), BlendState.Additive);
+                }
+                else {
+                    int frame = 8 + (int)(u * 12.99f);                  // the sequence's full-size frames
+                    float half = (silenced ? 0.035f : 0.09f);
+                    Color tint = silenced ? new Color(160, 160, 160, 255) : Color.White;
+                    QueueSprite(s_fireAtlas, FireFrames, frame, p, rightDir * half, upDir * half, tint, BlendState.Additive);
+                }
             }
             if (now < s_smokeUntil && !silenced) {
                 float su = MathUtils.Saturate((t - s_flashSeconds * 0.5f) / SmokeSeconds);

@@ -1,4 +1,5 @@
 using Engine;
+using Engine.Graphics;
 using Engine.Input;
 using TemplatesDatabase;
 
@@ -100,7 +101,75 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// </summary>
     public int[] DrawOrders => [350];
 
+    /// <summary>
+    /// A tracer in flight: CS2 fires hitscan and draws a trail running the shot line.
+    /// Speed and trail length come from the gun's tracer .vpcf (assault rifle
+    /// 20500 units/s over 1200 units, AWP 30000 over 900 - inches, so 521 m/s and
+    /// 762 m/s), and every m_nTracerFrequency-th shot gets one, as CS2 does.
+    /// </summary>
+    readonly struct TracerShot {
+        public readonly Vector3 Start, Direction;
+        public readonly float Distance;
+        public readonly double At;
+        public readonly Cs2Effects.Tracer Spec;
+
+        public TracerShot(Vector3 start, Vector3 direction, float distance, double at, Cs2Effects.Tracer spec) {
+            Start = start; Direction = direction; Distance = distance; At = at; Spec = spec;
+        }
+    }
+
+    readonly List<TracerShot> m_tracers = [];
+    readonly Dictionary<string, int> m_shotCounts = new(StringComparer.Ordinal);
+    PrimitivesRenderer3D m_tracerRenderer;
+
+    void QueueTracer(string gun, Vector3 start, Vector3 direction, float distance) {
+        if (KnifeTuning.GunProfile < 0.5f) return;
+        int frequency = Cs2Effects.TracerFrequency(gun);
+        if (frequency <= 0) return;
+        m_shotCounts.TryGetValue(gun, out int n);
+        m_shotCounts[gun] = n + 1;
+        if ((n + 1) % frequency != 0) return;
+        Cs2Effects.Tracer spec = Cs2Effects.Get(gun)?.Tracer;
+        if (spec is null) return;
+        if (m_tracers.Count > 32) m_tracers.RemoveAt(0);
+        m_tracers.Add(new TracerShot(start, direction, distance, m_time.GameTime, spec));
+    }
+
+    void DrawTracers(Camera camera) {
+        if (m_tracers.Count == 0) return;
+        m_tracerRenderer ??= new PrimitivesRenderer3D();
+        double now = m_time.GameTime;
+        Vector3 eye = camera.ViewPosition;
+        FlatBatch3D batch = m_tracerRenderer.FlatBatch(0, DepthStencilState.DepthRead,
+            RasterizerState.CullNoneScissor, BlendState.Additive);
+        for (int i = m_tracers.Count - 1; i >= 0; i--) {
+            TracerShot t = m_tracers[i];
+            float age = (float)(now - t.At);
+            float travelled = age * t.Spec.MetresPerSecond;
+            if (travelled - t.Spec.TrailMetres > t.Distance) { m_tracers.RemoveAt(i); continue; }
+            float head = MathUtils.Min(travelled, t.Distance);
+            float tail = MathUtils.Max(0f, travelled - t.Spec.TrailMetres);
+            if (head <= tail) continue;
+            Vector3 a = t.Start + t.Direction * tail;
+            Vector3 b = t.Start + t.Direction * head;
+            // A camera-facing ribbon: width across the view direction, thin enough to
+            // read as a streak rather than a plank.
+            Vector3 side = Vector3.Cross(t.Direction, Vector3.Normalize(b - eye));
+            float length = side.Length();
+            if (!float.IsFinite(length) || length < 1e-5f) continue;
+            side = side / length * 0.012f;
+            float fade = MathUtils.Saturate(age / MathUtils.Max(t.Spec.FadeInSeconds, 0.001f));
+            Color c = t.Spec.Tint;
+            byte alpha = (byte)MathUtils.Clamp(255f * t.Spec.AlphaMid * fade, 0f, 255f);
+            var tint = new Color(c.R, c.G, c.B, alpha);
+            batch.QueueTriangle(a - side, b - side, b + side, tint);
+            batch.QueueTriangle(a - side, b + side, a + side, tint);
+        }
+        m_tracerRenderer.Flush(camera.ViewProjectionMatrix);
+    }
+
     public void Draw(Camera camera, int drawOrder) {
+        DrawTracers(camera);
         if (CsmcFirstPersonRenderer.ScopeOverlayActive) CsmcFirstPersonRenderer.DrawScopeOverlay();
     }
 
@@ -221,7 +290,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             LeaveScope(player, state);
         }
         KnifeAnimationController.TriggerShoot(player, silenced);
-        CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, silenced ? spec.SilencedMuzzleBone : spec.MuzzleBone);
+        CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, silenced ? spec.SilencedMuzzleBone : spec.MuzzleBone, spec.Name, silenced);
         PlaySound(player, silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
         if (!spec.Automatic) Schedule(state, spec.Name, "shoot1", now);
         ShowAmmo(player, spec, rounds);
@@ -238,6 +307,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         Vector3 end = start + direction * spec.RangeBlocks;
         BodyRaycastResult? body = m_bodies.Raycast(start, end, 0.35f, (b, d) => b != player.ComponentBody && b.Entity != player.Entity);
         TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
+        // The tracer runs the shot line, stopping at whatever the bullet hit.
+        float travel = spec.RangeBlocks;
+        if (body.HasValue) travel = MathUtils.Min(travel, body.Value.Distance);
+        if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
+        QueueTracer(spec.Name, start, direction, travel);
         if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
             Vector3 hitPoint = body.Value.HitPoint();
             ComponentMiner.AttackBody(body.Value.ComponentBody, player, hitPoint, direction, spec.AttackPower, false);
