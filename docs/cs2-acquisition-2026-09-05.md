@@ -7,7 +7,25 @@
 每一批做完只要更新 `KEY_MANIFEST.sha256` 和 `FILE_INVENTORY.csv` 就行。
 
 按 `pak01_dir-vpk-list.txt`（135686 行，你上次导出时留下的完整清单）逐条核对过，
-下面每一组都附了**可直接喂给解包器的路径清单文件**，不需要你再去猜路径。
+下面每一组都给了**已在 VPS 上复算验证过的路径前缀**，直接粘进 `--vpk_filepath` 就行，
+不需要你再去猜路径。
+
+## 用什么工具
+
+[Source2Viewer CLI](https://github.com/ValveResourceFormat/ValveResourceFormat)（⭐2411，
+2026-09-03 推送）。你上次导枪应该就是用的它。这次的命令我从它的源码
+`CLI/Decompiler.cs` 里核过参数，有两个坑写在下面对应位置：
+`--vpk_dir` 不是"保留目录结构"，`--vpk_list` 不能和 `--output` 同用。
+
+配套两个文件：
+
+```
+docs/cs2-acquisition-2026-09-05/PREFIXES.txt   每批的前缀 + 应得的文件数和体积，可直接粘贴
+docs/cs2-acquisition-2026-09-05/A*.txt B*.txt  逐条路径清单，出问题时用来核对是哪几条漏了
+```
+
+另有一份调研 `docs/cs2-prior-art-2026-09-05.md`，结论影响到本文两处：
+着色器你不用导了（VPS 自己能拉），以及 B2 组的优先级要提前。
 
 ---
 
@@ -56,22 +74,39 @@ tactical, talon, ursus）。
 
 **A1+A2+A3 合计约 97 MB，这是最要紧的一组。**
 
-### 取件命令（Source2Viewer CLI 支持前缀过滤，不用列全部路径）
+### 取件命令
 
-`--vpk_filepath` 是**前缀匹配**（源码 `CLI/Decompiler.cs`:1541，
-`filePath.StartsWith(filter)`），所以给目录前缀就够了：
+用 [Source2Viewer CLI](https://github.com/ValveResourceFormat/ValveResourceFormat)（⭐2411，
+2026-09-03 推送）。`--vpk_filepath` 是**前缀匹配、大小写敏感**
+（源码 `CLI/Decompiler.cs`:1541，`filePath.StartsWith(filter, StringComparison.Ordinal)`），
+所以给目录前缀就够，不用把路径一条条列上去。
+
+**第一步，干跑核对条数。`--vpk_list` 不能和 `--output` 同用**（源码 251 行会直接拒绝），
+所以这是单独一条命令：
+
+```
+Source2Viewer-CLI --input "<CS2>/game/csgo/pak01_dir.vpk" --vpk_list ^
+  --vpk_filepath "weapons/models/knife/,animation/anims/viewmodel/knife/,animation/graphs/viewmodel/viewmodel_knife,animation/graphs/viewmodel/viewmodel_inspects.vnmgraph+knife,animation/skeletons/weapons/knife"
+```
+
+应当输出 **528** 条（145 模型材质 + 317 动画 + 66 图和骨架）。对不上再回来看清单文件。
+
+**第二步，真正导出**：
 
 ```
 Source2Viewer-CLI --input "<CS2>/game/csgo/pak01_dir.vpk" --output 09_knives ^
-  --decompile --vpk_dir --threads 8 ^
+  --decompile --threads 8 ^
   --gltf_export_format glb --gltf_export_materials --gltf_export_animations ^
   --vpk_filepath "weapons/models/knife/,animation/anims/viewmodel/knife/,animation/graphs/viewmodel/viewmodel_knife,animation/graphs/viewmodel/viewmodel_inspects.vnmgraph+knife,animation/skeletons/weapons/knife"
 ```
 
-**先加 `--vpk_list` 干跑一遍**，核对条数是不是 145 + 317 + 66 = 528，
-对不上再回来看清单文件。
+输出是目录时会自动按 VPK 内的路径展开，不需要额外开关
+（`--vpk_dir` 是**把目录清单打到控制台**，不是保留结构，别加）。
 
-清单文件（`A1`/`A2`/`A3`）留着做**逐条核对**用，不是非要喂给命令行。
+**前缀在 VPS 上按 VRF 的过滤逻辑逐条复算过：选中 528 条，与清单 0 漏 0 多。**
+全部批次的前缀在 `docs/cs2-acquisition-2026-09-05/PREFIXES.txt`，可直接粘贴。
+
+`A1`/`A2`/`A3` 三个清单文件留作**逐条核对**用，不必喂给命令行。
 
 ### 处理方式：和上次导枪完全一样
 
@@ -119,6 +154,10 @@ CS2 的皮肤是运行时合成的（`csgo_weapon.vfx`：图案贴图 + `masks` 
 **B2 + B3 + B4 只有 9.5 MB，请先做这三个**——有了它们，VPS 侧就能算出
 "哪款皮肤用哪张图案图"，之后 B1 可以只取需要的那部分，不必全量 2.27 GB。
 
+调研过了（`docs/cs2-prior-art-2026-09-05.md`）：**离线上皮这件事开源界没人做过**，
+合成器得我们自己写。所以 B2 里那些 `.vmat` 不只是索引，它们是**唯一的配方来源**——
+每款皮肤用哪张图案、哪几个颜色、怎么和 `masks` 分区对应，只写在里面。优先级最高。
+
 ### B1 建议的分批顺序
 
 按风格目录分，从小到大、从易到难：
@@ -137,16 +176,35 @@ CS2 的皮肤是运行时合成的（`csgo_weapon.vfx`：图案贴图 + `masks` 
 
 ### 取件命令
 
+先做配方（B2+B3+B4，共 **2500 个文件、9.5 MB**）：
+
 ```
 Source2Viewer-CLI --input "<CS2>/game/csgo/pak01_dir.vpk" --output 10_paints ^
-  --decompile --vpk_dir --threads 8 ^
+  --decompile --threads 8 ^
   --vpk_filepath "materials/models/weapons/customization/paints/vmats/,weapons/paints/,materials/default/stickers/"
 ```
 
-上面这条就是 B2+B3+B4（9.5 MB）。B1 按批加前缀，例如第 1 批：
+同样在 VPS 上复算过：**选中 2500 条，与清单 0 漏 0 多**。
+
+B1 按批加前缀，每批一条命令，例如第 1 批：
 
 ```
   --vpk_filepath "materials/models/weapons/customization/paints/anodized_air/"
+```
+
+七个批次的前缀和各自的文件数/体积都在 `PREFIXES.txt` 里，逐批核对：
+
+```
+B1-1 anodized_air     17 个   12.1 MB
+B1-2 spray            56 个   47.2 MB
+B1-3 anodized_multi   90 个   67.6 MB
+B1-4 hydrographic     95 个   73.1 MB
+B1-5 antiqued        102 个  165.6 MB
+B1-6 custom          437 个 1057.7 MB
+B1-7 gunsmith        348 个  850.7 MB
+B1-x shared            1 个    0.0 MB
+                    ----------------
+                    1146 个 2274.0 MB
 ```
 
 ### 着色器不用你导了
@@ -196,9 +254,11 @@ game/csgo/shaders_vulkan_dir/shaders/vfx/csgo_weapon.slang   124 KB / 2289 行
 ## 五、优先级一句话总结
 
 ```
-1. A1 + A2 + A3        约 97 MB    刀能换真实手臂和 CS2 动画，这是主线
-2. B2 + B3 + B4        约 9.5 MB   有了它们才能算出皮肤要哪些图，很小，顺手做
-3. B1 第 1 批           12 MB      跑通皮肤烘焙管线
-4. B1 其余             按批来      看后面到底要做哪几款
-5. A4                  10.4 MB    可选，现在的 CS:MC 音效够用
+1. A  (528 个文件)      96.7 MB    刀能换真实手臂和 CS2 动画，这是主线
+2. B234 (2500 个)        9.5 MB    上皮的配方表，没它写不了合成器；很小，顺手做
+3. B1-1 anodized_air     12.1 MB   17 个文件，跑通烘焙管线用
+4. B1-2 .. B1-7         按批来     看后面到底要做哪几款
+5. A4 (460 个)           10.4 MB   可选，现在的 CS:MC 音效够用
 ```
+
+每批的前缀直接从 `docs/cs2-acquisition-2026-09-05/PREFIXES.txt` 复制。
