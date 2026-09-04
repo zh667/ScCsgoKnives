@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
+using Engine.Input;
 
 namespace Game;
 
@@ -86,7 +87,7 @@ public static class CsmcFirstPersonRenderer {
     // 0.10.0 had the karambit at f = 0.05, the ring, from a tip-distance-only solve
     // that could not tell "small knife held by the ring" from "big knife held by
     // the handle". The silhouette can.
-    static readonly Vector3[] s_gripOffsets = [
+    static readonly Vector3[] s_knifeGripOffsets = [
         new(0.0471f, 0.0544f, -0.0904f),    // karambit  (solved f=0.323)
         new(0.2157f, 0.0669f, -0.3250f),    // m9  (solved f=0.190)
         new(0.1953f, 0.0845f, -0.2164f),    // butterfly  (solved f=0.270)
@@ -119,6 +120,48 @@ public static class CsmcFirstPersonRenderer {
     // turns the fist so this lies flat along one of its faces.
     const string HeldPart = "weapon_hand_r";
     const string LeftHeldPart = "weapon_hand_l";
+    /// <summary>The butterfly's T latch; hidden by default, see KnifeTuning.ShowButterflyLatch.</summary>
+    const string LatchPart = "v_weapon_lock";
+    /// <summary>The M4A1-S silencer mesh part (CS:MC binding name).</summary>
+    const string SilencerPart = "v_weapon_silencer";
+    /// <summary>
+    /// Parts drawn with their own material. The AWP's second body record (48 faces, UVs in the
+    /// u 1..2 tile) is the scope lens: on the gun's texture it showed the substrate's wrapped
+    /// pixels as a circuit-board pattern. It gets CS2's shared scope lens material instead
+    /// (scope_awp.vmat: default colour, metalness 0, scope roughness).
+    /// </summary>
+    static readonly Dictionary<(string Asset, string Part), string> s_partMaterials = new() {
+        [("awp", "weapon_hand_r__2")] = "awp_lens",
+    };
+    static readonly Dictionary<string, Texture2D> s_partBases = new(StringComparer.Ordinal);
+    static string PartMaterial(int variant, string part) => s_partMaterials.TryGetValue((s_assetNames[variant], part), out string m) ? m : null;
+    static Texture2D PartBaseTexture(string material) {
+        if (!s_partBases.TryGetValue(material, out Texture2D t)) {
+            try { t = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{material}"); }
+            catch (Exception e) { KnifeDiagnostics.WarnOnce($"part-material-{material}", $"material {material} missing ({e.Message})"); t = null; }
+            s_partBases[material] = t;
+        }
+        return t;
+    }
+
+    /// <summary>
+    /// The silencer part is skipped once the block data says it is off. The detach clip
+    /// carries it away and commits "off" at its end; the attach clip brings it back while
+    /// the data still says "off", so it is drawn during that clip. 0.15.x drew it always,
+    /// so it snapped back onto the barrel the moment the detach clip ended.
+    /// </summary>
+    static bool SilencerHidden(ComponentFirstPersonModel firstPerson, int variant) {
+        if (!CsmcKnifeRig.IsGun(variant)) return false;
+        GunSpec spec = GunSpec.ForAsset(CsmcKnifeRig.GetAssetName(variant));
+        if (spec is null || !spec.HasSilencer) return false;
+        ComponentMiner miner = firstPerson?.Entity.FindComponent<ComponentMiner>();
+        if (miner is null) return false;
+        int value = miner.ActiveBlockValue;
+        if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>()) return false;
+        return GunSpec.GetSilencerOff(Terrain.ExtractData(value)) && !KnifeAnimationController.IsAttaching(firstPerson);
+    }
+    /// <summary>Knife handle direction; guns have no fist-solver handle (their arms follow the bones).</summary>
+    static Vector3 HandleDirection(int variant) => variant < s_handleDirections.Length && !CsmcKnifeRig.IsGun(variant) ? s_handleDirections[variant] : Vector3.Zero;
     static readonly Vector3[] s_handleDirections = [
         new(-0.0744f, 0.0028f, 0.9972f),      // karambit  (28 deg off the whole knife)
         new(0.0000f, 0.0000f, 1.0000f),       // m9  (1 deg off the whole knife)
@@ -154,6 +197,11 @@ public static class CsmcFirstPersonRenderer {
     // offset. Having no left offset at all is what stopped the second dagger
     // from ever reaching its hand.
     static readonly Vector3 ShadowDaggerLeftGrip = new(0.5970f, 0.1456f, -0.2224f);
+    // Guns hold their grip at the hand bone itself: CS:MC's animation already puts hand_r on
+    // the pistol grip and hand_l on the handguard, so there is nothing to solve for.
+    static readonly Vector3[] s_gripOffsets = Enumerable.Range(0, CsmcKnifeRig.AssetCount)
+        .Select(v => v < s_knifeGripOffsets.Length && !CsmcKnifeRig.IsGun(v) ? s_knifeGripOffsets[v] : Vector3.Zero)
+        .ToArray();
     static readonly Vector3[] s_leftGripOffsets = Enumerable.Range(0, CsmcKnifeRig.AssetCount)
         .Select(v => CsmcKnifeRig.GetAssetName(v) == "push" ? ShadowDaggerLeftGrip : Vector3.Zero)
         .ToArray();
@@ -346,7 +394,7 @@ public static class CsmcFirstPersonRenderer {
         for (int variant = 0; variant < usable.Length; variant++) {
             KnifeRigPose idle = CsmcKnifeRig.Sample(variant, "idle", 0f);
             float forearm = (idle.GetBindingOrigin("hand_l") - idle.GetBindingOrigin("arm_lower_l")).Length();
-            usable[variant] = forearm >= MinUsableForearm;
+            usable[variant] = forearm >= MinUsableForearm || CsmcKnifeRig.IsGun(variant);
             if (!usable[variant]) {
                 KnifeLog.Warning($"[ScCsgoKnives] {CsmcKnifeRig.GetAssetName(variant)} has a degenerate left forearm ({forearm:0.###}); left arm disabled.");
             }
@@ -386,7 +434,7 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static (float fx, float fy) EffectiveProjection(float cameraFx, float cameraFy) {
         if (!Exact) return (cameraFx, cameraFy);
-        float fy = 1f / MathF.Tan(MathUtils.DegToRad(KnifeTuning.ExactWeaponFovDegrees) * 0.5f);
+        float fy = 1f / MathF.Tan(MathUtils.DegToRad(s_weaponFov) * 0.5f);
         return (fy * cameraFx / cameraFy, fy);
     }
 
@@ -514,6 +562,8 @@ public static class CsmcFirstPersonRenderer {
     static bool Exact => KnifeTuning.ExactChain > 0.5f;
     /// <summary>CS:MC's stretched arm boxes instead of the fist solver; off by default (the player preferred the fists).</summary>
     static bool ExactArms => Exact && KnifeTuning.ExactArms > 0.5f;
+    /// <summary>Guns: both hands ride their bones (grip and handguard), so they always use CS:MC's arm frame.</summary>
+    static bool BoneArms(int variant) => Exact && (KnifeTuning.ExactArms > 0.5f || CsmcKnifeRig.IsGun(variant));
 
     /// <summary>
     /// The knife's view-space placement exactly as CS:MC 5.10 builds it (reverse
@@ -522,13 +572,64 @@ public static class CsmcFirstPersonRenderer {
     /// Rx90 Ry180 Rz270, scaled by this knife's meshbin reference scale over the
     /// AK-47's. Engine row-vector order, so the chain reads right to left.
     /// </summary>
+    /// <summary>0 = hip, 1 = aimed down the sights; drives the table's hip/aim offset and FOV blend (b$4ap, b$4au).</summary>
+    public static float AimProgress;
+    static bool s_scoped;
+    static float s_scopeMagnification = 1f;
+    static double s_flashUntil = -1, s_flashStart = -1, s_smokeUntil = -1;
+    static float s_flashSeconds = 0.06f;
+    static string s_flashBone = "muzzle";
+    static float s_flashRoll;
+    static Texture2D s_scopeTexture, s_fireAtlas, s_smokeAtlas;
+    /// <summary>CS:MC's muzzle flash sprites (CSMCTextureResources: particle/muzzle_flash/fire_gas_seq0 and wispy_steam_seq3), 8 columns per atlas.</summary>
+    const int FireFrames = 32, SmokeFrames = 26, AtlasColumns = 8, AtlasRows = 4;
+    const float SmokeSeconds = 0.45f;
+    static PrimitivesRenderer2D s_primitives2D;
+    static PrimitivesRenderer3D s_primitives3D;
+    /// <summary>Seconds the aim blend takes from hip to sights (CS:GO's scope-in is a quarter second).</summary>
+    const float AimSeconds = 0.25f;
+
+    /// <summary>Scope on: the weapon eases into its aim pose and FOV, then the scope overlay replaces it.</summary>
+    public static void SetScope(bool on, float magnification) {
+        s_scoped = on;
+        s_scopeMagnification = magnification;
+    }
+
+    /// <summary>Show the muzzle flash at the given bone for a few frames.</summary>
+    public static void MuzzleFlash(float seconds, string bone) {
+        s_flashStart = KnifeClock.Now;
+        s_flashSeconds = MathF.Max(seconds, 0.001f);
+        s_flashUntil = s_flashStart + seconds;
+        s_smokeUntil = s_flashUntil + SmokeSeconds;
+        s_flashBone = bone;
+        s_flashRoll = new Random().Float(0f, MathF.PI * 2f);
+    }
+
+    static void AdvanceAim() {
+        float dt = MathUtils.Clamp(KnifeClock.Dt, 0f, 0.1f);
+        float target = s_scoped ? 1f : 0f;
+        AimProgress = MathUtils.Saturate(AimProgress + MathF.Sign(target - AimProgress) * dt / AimSeconds);
+        if (MathF.Abs(AimProgress - target) < 0.01f) AimProgress = target;
+    }
+
+    /// <summary>The per-weapon field of view CS:MC draws this weapon through: lerp(hip, aim) of its table row, times viewFov/70.</summary>
+    public static float WeaponFovDegrees(int variant) {
+        if (KnifeTuning.ExactWeaponFovDegrees > 0.5f) return KnifeTuning.ExactWeaponFovDegrees;
+        CsmcKnifeRig.WeaponTableEntry row = CsmcKnifeRig.GetTable(variant);
+        return MathUtils.Lerp(row.FovHip, row.FovAim, MathUtils.Saturate(AimProgress)) * KnifeTuning.ExactHandFovDegrees / 70f;
+    }
+    static float s_weaponFov = 48f;
+
     static Matrix ExactPlacement(int variant) {
         float scale = CsmcKnifeRig.GetSourceReferenceScale(variant) / MathF.Max(KnifeTuning.ExactReferenceScale, 0.0001f);
         if (KnifeTuning.ExactScaleOverride > 0.0001f) scale = KnifeTuning.ExactScaleOverride;
-        Vector3 hip = new(
+        // b$4an: translate(lerp(hip, aim, aimProgress)); translate(global); rotate roll.
+        CsmcKnifeRig.WeaponTableEntry row = CsmcKnifeRig.GetTable(variant);
+        Vector3 hip = Vector3.Lerp(row.HipOffset, row.AimOffset, MathUtils.Saturate(AimProgress)) + new Vector3(
             KnifeTuning.ExactHipX + KnifeTuning.ExactGlobalX,
             KnifeTuning.ExactHipY + KnifeTuning.ExactGlobalY,
             KnifeTuning.ExactHipZ + KnifeTuning.ExactGlobalZ);
+        float rollDegrees = row.RollDegrees + KnifeTuning.ExactRollDegrees;
         Matrix centre = KnifeTuning.ExactMeshCenterOffset > 0.5f
             ? Matrix.CreateTranslation(CsmcKnifeRig.GetMeshCenterOffset(variant))
             : Matrix.Identity;
@@ -539,7 +640,7 @@ public static class CsmcFirstPersonRenderer {
             * Matrix.CreateRotationY(MathUtils.DegToRad(180f))
             * Matrix.CreateRotationX(MathUtils.DegToRad(90f))
             * Matrix.CreateTranslation(KnifeTuning.ExactWeaponTX, KnifeTuning.ExactWeaponTY, KnifeTuning.ExactWeaponTZ)
-            * Matrix.CreateRotationX(MathUtils.DegToRad(KnifeTuning.ExactRollDegrees))
+            * Matrix.CreateRotationX(MathUtils.DegToRad(rollDegrees))
             * Matrix.CreateTranslation(hip)
             * mirror
             * Matrix.CreateTranslation(KnifeTuning.ExactHandX, KnifeTuning.ExactHandY, KnifeTuning.ExactHandZ);
@@ -572,10 +673,28 @@ public static class CsmcFirstPersonRenderer {
     /// about the line by the wrist's own roll (reference axis picked the way CS:MC
     /// picks it), plus CS:MC's constant 45 and +-90 degree offsets.
     /// </summary>
-    static bool ExactArmFrame(KnifeRigPose pose, Matrix placementWithPost, bool left, out ArmFrame arm, out float twistDegrees) {
+    /// <summary>
+    /// How far MC's arm box runs past the wrist along the arm line: to the knuckles (the
+    /// fist's far edge), taken from the rig as the middle finger's base joint plus half its
+    /// first phalanx. The fingertips overshoot (the hand is bent around the grip), the wrist
+    /// falls short (0.15.1: the sleeve stopped before the handguard).
+    /// </summary>
+    static float FingerReach(KnifeRigPose pose, Matrix placementWithPost, int variant, bool left, Vector3 hand, Vector3 dir) {
+        string side = left ? "_l" : "_r";
+        Vector3 j0 = Vector3.Transform(pose.GetBoneFrameOrigin("finger_middle_0" + side), placementWithPost);
+        Vector3 j1 = Vector3.Transform(pose.GetBoneFrameOrigin("finger_middle_1" + side), placementWithPost);
+        Vector3 seg = j1 - j0;
+        float len = seg.Length();
+        if (!float.IsFinite(len) || len < 0.00001f) return 0f;
+        Vector3 knuckles = j0 + seg * 0.5f;
+        float reach = Vector3.Dot(knuckles - hand, dir);
+        return float.IsFinite(reach) ? MathF.Max(reach, 0f) : 0f;
+    }
+
+    static bool ExactArmFrame(KnifeRigPose pose, Matrix placementWithPost, int variant, bool left, out ArmFrame arm, out float twistDegrees) {
         arm = default;
         twistDegrees = 0f;
-        Matrix wrist = pose.GetBinding(left ? "hand_l" : "hand_r") * placementWithPost;
+        Matrix wrist = pose.GetBoneFrame(left ? "hand_l" : "hand_r") * placementWithPost;
         Vector3 hand = new(wrist.M41, wrist.M42, wrist.M43);
         Vector3 anchor = left
             ? new Vector3(KnifeTuning.ExactArmAnchorLX, KnifeTuning.ExactArmAnchorLY, KnifeTuning.ExactArmAnchorLZ)
@@ -613,11 +732,19 @@ public static class CsmcFirstPersonRenderer {
         Vector3 side = Normalized(Turn(localX, dir, phi));
         Vector3 axis = -dir;                                   // the box is seated at the hand end and runs back to the anchor
         Vector3 up = Normalized(Vector3.Cross(side, axis));
-        float reach = KnifeTuning.ExactArmBaseLength * stretch;    // anchor to the hand end of the cube
+        // MC's arm box ends at the fist's far edge, not the wrist: extend past the hand bone
+        // by the knuckles' reach along the arm line (FingerReach, from the rig). 0.15.0 had
+        // something like it by accident (the mesh-centre bug pushed the AK hand 7 in along the
+        // bone); 0.15.1 lost it and the hand floated short of the handguard.
+        float reach = KnifeTuning.ExactArmBaseLength * stretch + FingerReach(pose, placementWithPost, variant, left, hand, dir);
         float overshoot = 0.125f * stretch;                       // the cube's 2/16 past the anchor
+        // Width: CS:MC's own box is 0.205 (ExactArmWidth); 0 uses the fist solver's width,
+        // the fraction of the frame the player is used to, resolved at the hand's depth.
+        float width = KnifeTuning.ExactArmWidth;
+        if (width <= 0.0001f) width = ScreenWidthFor(variant, left) * 2f / MathF.Max(s_projX, 0.0001f) * MathF.Max(-hand.Z, 0.05f);
         arm = new ArmFrame {
             Grip = hand, Elbow = anchor, Seat = anchor + dir * reach, Axis = axis, Side = side, Up = up, Lean = 0f,
-            ViewWidth = KnifeTuning.ExactArmWidth, Overshoot = overshoot, Reach = reach,
+            ViewWidth = width, Overshoot = overshoot, Reach = reach,
         };
         twistDegrees = MathUtils.RadToDeg(twist);
         return true;
@@ -639,14 +766,35 @@ public static class CsmcFirstPersonRenderer {
         return placement;
     }
 
+    /// <summary>
+    /// F7 cycles the diagnostic views for the on-device texture investigation: base colour,
+    /// normals, roughness, metalness (the shader's debug outputs), then the guns with a flat
+    /// normal map (the knives' exact path), then back to normal rendering.
+    /// </summary>
+    static int s_diagMode;
+    static readonly string[] s_diagNames = ["正常渲染", "诊断 1/5：底色", "诊断 2/5：法线", "诊断 3/5：粗糙度", "诊断 4/5：金属度", "诊断 5/5：枪用平法线（同刀）"];
+    static void PollDiagnosticKey(ComponentFirstPersonModel firstPerson) {
+        if (!Keyboard.IsKeyDownOnce(Key.F7)) return;
+        s_diagMode = (s_diagMode + 1) % s_diagNames.Length;
+        KnifeTuning.PbrDebug = s_diagMode is >= 1 and <= 4 ? s_diagMode : 0f;
+        KnifePbrRenderer.FlatGunNormal = s_diagMode == 5;
+        firstPerson?.Entity.FindComponent<ComponentPlayer>()?.ComponentGui.DisplaySmallMessage(s_diagNames[s_diagMode], Color.White, true, false);
+        KnifeLog.Information($"[ScCsgoKnives] diagnostic view {s_diagMode}: {s_diagNames[s_diagMode]}");
+    }
+
     public static bool Draw(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose) {
         if (pose is null) return false;
         EnsureLoaded();
         KnifeTuning.Poll();
-        // Field of view is a player setting and the aspect follows the window, so
-        // the screen-space anchor has to be re-resolved whenever either changes.
-        if (SyncProjection(camera)) RebuildPlacements();
+        PollDiagnosticKey(firstPerson);
         variant = Math.Clamp(variant, 0, s_count - 1);
+        AdvanceAim();
+        // Field of view is a player setting and the aspect follows the window, so
+        // the screen-space anchor has to be re-resolved whenever either changes;
+        // in exact mode the weapon's own FOV (per table row, blended by aim) too.
+        s_weaponFov = WeaponFovDegrees(variant);
+        if (SyncProjection(camera)) RebuildPlacements();
+        EnsurePlacement(variant);
         if (s_parts[variant] is null || s_baseColor[variant] is null) {
             KnifeDiagnostics.WarnOnce($"assets-missing-{s_assetNames[variant]}",
                 $"{s_assetNames[variant]} has no usable first-person assets; falling back to Survivalcraft item rendering.");
@@ -664,6 +812,14 @@ public static class CsmcFirstPersonRenderer {
 
         float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
         LogComposition(firstPerson, variant, pose, placement, post);
+        // Through the scope: CS hides the weapon and shows the lens overlay once the aim blend completes.
+        if (s_scoped && AimProgress >= 0.999f) {
+            // The mask itself is drawn by SubsystemScGunBlockBehavior at draw order 350, after the
+            // sky (105) and particles (300): drawn here, in the first-person pass, the sky dome
+            // painted over it whenever the player looked up (0.15.8 "对着天空变透明").
+            s_overlayFrame = Time.FrameIndex;
+            return true;
+        }
         // CS:MC draws the weapon through its own per-weapon projection (48 degrees for
         // every knife). The fists are solved in view space onto the knife's grip and
         // drawn through the same projection so they stay on the handle; only CS:MC's
@@ -672,27 +828,34 @@ public static class CsmcFirstPersonRenderer {
         // viewport depth range (MaxDepth x 0.1) so the composition draws in front of
         // the world, and a clear at this draw order let the sky dome paint over the
         // terrain (the "world turned white" of 0.14.0).
-        Matrix projection = Exact ? ExactProjection(camera, KnifeTuning.ExactWeaponFovDegrees) : camera.ProjectionMatrix;
+        Matrix projection = Exact ? ExactProjection(camera, s_weaponFov) : camera.ProjectionMatrix;
         Matrix weaponProjection = projection;
         Matrix handProjection = Exact && ExactArms ? ExactProjection(camera, KnifeTuning.ExactHandFovDegrees) : projection;
         DrawHands(firstPerson, camera, handProjection, variant, pose, placement, post, light);
         KnifePbrRenderer.Lighting lighting = KnifePbrRenderer.FirstPersonLighting(camera, light);
+        bool hideSilencer = SilencerHidden(firstPerson, variant);
         foreach (Part part in s_parts[variant]) {
+            if (part.Binding == LatchPart && KnifeTuning.ShowButterflyLatch <= 0.5f) continue;
+            if (hideSilencer && part.Binding == SilencerPart) continue;
+            string material = PartMaterial(variant, part.Binding);
+            Texture2D partBase = material is null ? s_baseColor[variant] : PartBaseTexture(material);
             // A part held in the left hand (the shadow daggers' second blade) goes
             // where the left fist goes: the fist is pinned to its reference position
             // by a view-space correction, and without the same shift the dagger was
             // left floating where the rig's hand_l bone is.
-            Matrix world = part.Binding == LeftHeldPart && !ExactArms
+            Matrix world = part.Binding == LeftHeldPart && !BoneArms(variant)
                 ? pose.GetBinding(part.Binding) * placement * Matrix.CreateTranslation(s_leftHandCorrection[variant]) * post
                 : pose.GetBinding(part.Binding) * root;
             // PBR when the shader and this knife's maps are available; the plain
             // lit draw otherwise, so a device that cannot compile it still sees a knife.
-            if (!KnifePbrRenderer.TryDrawPart(part.Model, s_baseColor[variant], variant, world, weaponProjection,
-                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true)) {
+            if (!KnifePbrRenderer.TryDrawPart(part.Model, partBase, variant, world, weaponProjection,
+                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, material)) {
                 DrawModel(part.Model, s_baseColor[variant], world, camera, weaponProjection, light,
-                    SamplerState.LinearClamp, RasterizerState.CullNoneScissor, applyBoneTransform: true);
+                    SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
             }
         }
+
+        if (s_smokeUntil > KnifeClock.Now) DrawMuzzleFlash(pose, root, weaponProjection);
 
         if (!s_logged[variant]) {
             s_logged[variant] = true;
@@ -702,6 +865,106 @@ public static class CsmcFirstPersonRenderer {
             );
         }
         return true;
+    }
+
+    /// <summary>CS:MC's scope lens (gui/scope.png: transparent lens, black surround) over the zoomed world, letterboxed square.</summary>
+    /// <summary>
+    /// CS:MC's scope view, measured on MCCS_VIDEO/AWP.mp4 (13.5 s, 1920x1084): the whole
+    /// frame black except a circular window centred on the screen, diameter 96.5 % of the
+    /// frame height, edge feathered over about 20 px, and a one-pixel crosshair. No scope
+    /// texture, no letterbox (0.15.x drew the jar's scope.png in a square instead).
+    /// </summary>
+    static int s_overlayFrame = -1;
+    /// <summary>True while the scoped view (gun hidden, mask due) is active for the frame being drawn.</summary>
+    public static bool ScopeOverlayActive => s_scoped && AimProgress >= 0.999f && Time.FrameIndex - s_overlayFrame <= 1;
+
+    public static void DrawScopeOverlay() {
+        try {
+            s_primitives2D ??= new PrimitivesRenderer2D();
+            float w = Display.Viewport.Width, h = Display.Viewport.Height;
+            Vector2 c = new(w * 0.5f, h * 0.5f);
+            float radius = 0.4825f * h;
+            float feather = 0.0185f * h;
+            const int segments = 128, rings = 6;
+            // Cull nothing: the fan and ring triangles below are wound both ways, and with the default
+            // back-face culling the mask simply did not appear (0.15.3-0.15.7: scoped view showed only the sky).
+            FlatBatch2D fill = s_primitives2D.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
+            FlatBatch2D soft = s_primitives2D.FlatBatch(1, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.NonPremultiplied);
+            float far = MathF.Max(w, h) * 1.5f;
+            for (int i = 0; i < segments; i++) {
+                float a0 = MathF.PI * 2f * i / segments, a1 = MathF.PI * 2f * (i + 1) / segments;
+                Vector2 d0 = new(MathF.Cos(a0), MathF.Sin(a0)), d1 = new(MathF.Cos(a1), MathF.Sin(a1));
+                // Opaque black from the feathered edge out past the screen.
+                fill.QueueTriangle(c + d0 * radius, c + d0 * far, c + d1 * far, 0f, Color.Black);
+                fill.QueueTriangle(c + d0 * radius, c + d1 * far, c + d1 * radius, 0f, Color.Black);
+                // Feather: rings from transparent (inside) to opaque at the radius.
+                for (int r = 0; r < rings; r++) {
+                    float rIn = radius - feather * (rings - r) / rings, rOut = radius - feather * (rings - r - 1) / rings;
+                    Color col = new Color((byte)0, (byte)0, (byte)0, (byte)(255f * (r + 0.5f) / rings));
+                    soft.QueueTriangle(c + d0 * rIn, c + d0 * rOut, c + d1 * rOut, 0f, col);
+                    soft.QueueTriangle(c + d0 * rIn, c + d1 * rOut, c + d1 * rIn, 0f, col);
+                }
+            }
+            // Reticle cross; thickness from the tuning file, scaled to the frame height.
+            float half = MathF.Max(0.5f, KnifeTuning.ScopeLinePx * h / 1080f * 0.5f);
+            Color line = new Color((byte)0, (byte)0, (byte)0, (byte)200);
+            soft.QueueQuad(new Vector2(c.X - half, c.Y - radius), new Vector2(c.X + half, c.Y + radius), 0f, line);
+            soft.QueueQuad(new Vector2(c.X - radius, c.Y - half), new Vector2(c.X + radius, c.Y + half), 0f, line);
+            s_primitives2D.Flush();
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce("scope-overlay", $"Scope overlay failed: {e.Message}");
+        }
+    }
+
+    /// <summary>An additive sprite at the muzzle bone, facing the eye, for the frames after a shot.</summary>
+    /// <summary>
+    /// The shot's flash and smoke, CS:MC's own sprite sequences as view-facing quads at the
+    /// muzzle bone. Sized from MCCS_VIDEO/AK47.mp4 (11.3 s): the fireball spans about 130 px
+    /// of a 1920 px frame at the AK's muzzle depth, i.e. 0.13 view units, and the sprite's
+    /// fireball fills about 70 % of its frame. Silenced (muzzle2) shots get a small, dim flash.
+    /// </summary>
+    static void DrawMuzzleFlash(KnifeRigPose pose, Matrix root, Matrix projection) {
+        try {
+            s_fireAtlas ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/muzzle_fire");
+            s_smokeAtlas ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/muzzle_smoke");
+            s_primitives3D ??= new PrimitivesRenderer3D();
+            Matrix muzzle = pose.GetBoneFrame(s_flashBone) * root;
+            Vector3 p = new(muzzle.M41, muzzle.M42, muzzle.M43);
+            if (!(p.Z < -0.05f)) return;
+            double now = KnifeClock.Now;
+            float t = (float)(now - s_flashStart);
+            bool silenced = s_flashBone == "muzzle2";
+            float c = MathF.Cos(s_flashRoll), sn = MathF.Sin(s_flashRoll);
+            Vector3 rightDir = new(c, sn, 0f), upDir = new(-sn, c, 0f);
+            if (now < s_flashUntil) {
+                float u = MathUtils.Saturate(t / s_flashSeconds);
+                int frame = 8 + (int)(u * 12.99f);                      // the sequence's full-size frames
+                float half = (silenced ? 0.035f : 0.09f);
+                Color tint = silenced ? new Color(160, 160, 160, 255) : Color.White;
+                QueueSprite(s_fireAtlas, FireFrames, frame, p, rightDir * half, upDir * half, tint, BlendState.Additive);
+            }
+            if (now < s_smokeUntil && !silenced) {
+                float su = MathUtils.Saturate((t - s_flashSeconds * 0.5f) / SmokeSeconds);
+                int frame = (int)(su * (SmokeFrames - 0.01f));
+                float half = 0.06f + 0.05f * su;
+                Vector3 centre = p + new Vector3(0f, 0.05f * su, 0f);
+                byte alpha = (byte)(150f * (1f - su));
+                QueueSprite(s_smokeAtlas, SmokeFrames, frame, centre, rightDir * half, upDir * half, new Color((byte)255, (byte)255, (byte)255, alpha), BlendState.NonPremultiplied);
+            }
+            s_primitives3D.Flush(projection);
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce("muzzle-flash", $"Muzzle flash failed: {e.Message}");
+        }
+    }
+
+    static void QueueSprite(Texture2D atlas, int frames, int frame, Vector3 p, Vector3 right, Vector3 up, Color color, BlendState blend) {
+        frame = Math.Clamp(frame, 0, frames - 1);
+        float u0 = (frame % AtlasColumns) / (float)AtlasColumns, v0 = (frame / AtlasColumns) / (float)AtlasRows;
+        float u1 = u0 + 1f / AtlasColumns, v1 = v0 + 1f / AtlasRows;
+        TexturedBatch3D batch = s_primitives3D.TexturedBatch(atlas, false, 0, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, blend, SamplerState.LinearClamp);
+        batch.QueueQuad(p - right - up, p + right - up, p + right + up, p - right + up, new Vector2(u0, v1), new Vector2(u1, v1), new Vector2(u1, v0), new Vector2(u0, v0), color);
     }
 
     /// <summary>
@@ -796,9 +1059,9 @@ public static class CsmcFirstPersonRenderer {
             KnifeDiagnostics.WarnOnce("hands-missing", "Hand attachment skipped because SC's first-person hand model or player skin is missing.");
             return;
         }
-        if (ExactArms) {
-            DrawArmExact(camera, projection, hand, skin, light, pose, placement * post, false);
-            if (s_leftArmUsable[variant]) DrawArmExact(camera, projection, hand, skin, light, pose, placement * post, true);
+        if (BoneArms(variant)) {
+            DrawArmExact(camera, projection, hand, skin, light, pose, placement * post, variant, false);
+            if (s_leftArmUsable[variant]) DrawArmExact(camera, projection, hand, skin, light, pose, placement * post, variant, true);
             return;
         }
         DrawArm(camera, projection, hand, skin, light, pose, placement * post, post, variant, false);
@@ -1002,7 +1265,7 @@ public static class CsmcFirstPersonRenderer {
             }
         }
 
-        Vector3 handleLocal = left ? s_leftHandleDirections[variant] : s_handleDirections[variant];
+        Vector3 handleLocal = left ? s_leftHandleDirections[variant] : HandleDirection(variant);
         if (mode >= 2 && handleLocal.LengthSquared() > 0.5f) {
             // The handle as the idle pose fixes it in the hand: rigid to the wrist. Which
             // way round its perpendicular is taken does not change the box (a box is
@@ -1255,9 +1518,9 @@ public static class CsmcFirstPersonRenderer {
             Vector3 local = Vector3.TransformNormal(arm.Side, inverse);
             float length = local.Length();
             if (float.IsFinite(length) && length > 0.0001f) s_rollRef[slot] = local / length;
-            if (!left) {
-                s_handleIdleHand[slot] = FollowHandle(slot, idle, s_handleDirections[variant], true, out _);
-                s_handleRadius[variant] = HandleRadius(variant, s_handleDirections[variant]);
+            if (!left && !CsmcKnifeRig.IsGun(variant)) {
+                s_handleIdleHand[slot] = FollowHandle(slot, idle, HandleDirection(variant), true, out _);
+                s_handleRadius[variant] = HandleRadius(variant, HandleDirection(variant));
             }
         }
     }
@@ -1317,13 +1580,13 @@ public static class CsmcFirstPersonRenderer {
         DrawArmFrame(camera, projection, model, skin, light, in arm, left);
     }
 
-    static void DrawArmExact(Camera camera, Matrix projection, Model model, Texture2D skin, float light, KnifeRigPose pose, Matrix placementWithPost, bool left) {
-        if (!ExactArmFrame(pose, placementWithPost, left, out ArmFrame arm, out float twist)) {
+    static void DrawArmExact(Camera camera, Matrix projection, Model model, Texture2D skin, float light, KnifeRigPose pose, Matrix placementWithPost, int variant, bool left) {
+        if (!ExactArmFrame(pose, placementWithPost, variant, left, out ArmFrame arm, out float twist)) {
             KnifeDiagnostics.WarnOnce($"arm-degenerate-{(left ? "l" : "r")}", "Arm collapsed to zero length; skipped.");
             return;
         }
         if (KnifeClock.Commit) {
-            Matrix wrist = pose.GetBinding(left ? "hand_l" : "hand_r") * placementWithPost;
+            Matrix wrist = pose.GetBoneFrame(left ? "hand_l" : "hand_r") * placementWithPost;
             if (left) LastLeft = ExactSample(in arm, twist, wrist); else LastRight = ExactSample(in arm, twist, wrist);
         }
         DrawArmFrame(camera, projection, model, skin, light, in arm, left);
@@ -1417,6 +1680,8 @@ public static class CsmcFirstPersonRenderer {
     public static List<HeadlessFrame> SweepHeadless(int variant, string clip, int fps) {
         variant = Math.Clamp(variant, 0, s_count - 1);
         KnifeClock.Reset(1f / fps);
+        s_weaponFov = WeaponFovDegrees(variant);
+        (s_projX, s_projY) = EffectiveProjection(s_projX * s_projY / MathF.Max(s_projY, 0.0001f), s_projY);
         BuildPlacement(variant);
         List<HeadlessFrame> frames = new();
         float duration = CsmcKnifeRig.GetDuration(variant, clip);
@@ -1426,16 +1691,16 @@ public static class CsmcFirstPersonRenderer {
             KnifeRigPose pose = CsmcKnifeRig.Sample(variant, clip, t);
             Matrix placement = PlacementFor(pose, variant);
             HeadlessFrame frame = new() { T = t, Clip = pose.ClipAlias };
-            if (ExactArms) {
-                if (ExactArmFrame(pose, placement, false, out ArmFrame right, out float rightTwist)) frame.Right = ExactSample(in right, rightTwist, pose.GetBinding("hand_r") * placement);
-                if (s_leftArmUsable[variant] && ExactArmFrame(pose, placement, true, out ArmFrame leftArm, out float leftTwist)) frame.Left = ExactSample(in leftArm, leftTwist, pose.GetBinding("hand_l") * placement);
+            if (BoneArms(variant)) {
+                if (ExactArmFrame(pose, placement, variant, false, out ArmFrame right, out float rightTwist)) frame.Right = ExactSample(in right, rightTwist, pose.GetBoneFrame("hand_r") * placement);
+                if (s_leftArmUsable[variant] && ExactArmFrame(pose, placement, variant, true, out ArmFrame leftArm, out float leftTwist)) frame.Left = ExactSample(in leftArm, leftTwist, pose.GetBoneFrame("hand_l") * placement);
             }
             else {
                 if (SolveArm(pose, placement, Matrix.Identity, variant, false, true, out _)) frame.Right = LastRight;
                 if (s_leftArmUsable[variant] && SolveArm(pose, placement, Matrix.Identity, variant, true, true, out _)) frame.Left = LastLeft;
             }
             foreach (string part in CsmcKnifeRig.GetMeshParts(variant)) {
-                frame.Parts[part] = part == LeftHeldPart && !ExactArms
+                frame.Parts[part] = part == LeftHeldPart && !BoneArms(variant)
                     ? pose.GetBinding(part) * placement * Matrix.CreateTranslation(s_leftHandCorrection[variant])
                     : pose.GetBinding(part) * placement;
             }
@@ -1446,15 +1711,27 @@ public static class CsmcFirstPersonRenderer {
         return frames;
     }
 
+    /// <summary>
+    /// A projection change only marks every placement stale; each variant is rebuilt the next
+    /// time it is drawn (EnsurePlacement). Rebuilding all 25 at once re-measured every knife's
+    /// inspect holds on each step of the AWP's quarter-second scope ease, which froze the game
+    /// for the whole zoom (0.15.x "开镜卡").
+    /// </summary>
+    static readonly bool[] s_placementStale = new bool[s_count];
+
     public static void RebuildPlacements() {
         if (!s_loaded) return;
-        for (int variant = 0; variant < s_count; variant++) {
-            try {
-                BuildPlacement(variant);
-            }
-            catch (Exception e) {
-                KnifeLog.Error($"[ScCsgoKnives] failed to place {s_assetNames[variant]}: {e.Message}");
-            }
+        for (int variant = 0; variant < s_count; variant++) s_placementStale[variant] = true;
+    }
+
+    static void EnsurePlacement(int variant) {
+        if (!s_placementStale[variant]) return;
+        s_placementStale[variant] = false;
+        try {
+            BuildPlacement(variant);
+        }
+        catch (Exception e) {
+            KnifeLog.Error($"[ScCsgoKnives] failed to place {s_assetNames[variant]}: {e.Message}");
         }
     }
 
@@ -1489,6 +1766,9 @@ public static class CsmcFirstPersonRenderer {
             s_placement[variant] = ExactPlacement(variant);
             s_exactIdleGrips[variant] = Vector3.Transform(RightGrip(variant), idlePose.GetBinding(RightWristBone(variant)) * s_placement[variant]);
         }
+        // Guns: both arms ride their bones, so none of the fist solver's per-knife
+        // measurements (left-hand pin, roll references, hold detection) apply.
+        if (CsmcKnifeRig.IsGun(variant)) return;
         SolveLeftHandCorrection(variant);
         SolveRollReferences(variant);
         MeasureHolds(variant);

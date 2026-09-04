@@ -18,3 +18,8 @@ photo/
 # screen recordings used for frame-by-frame comparison; not source
 SC_VIDEO/
 MCCS_VIDEO/
+
+# CS:MC gun source assets copied from the client stream cache (synced, never committed)
+csmc_guns/
+# capture folder synced from Windows (screenshots/dump hits); never source
+CAPTURE/

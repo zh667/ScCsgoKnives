@@ -101,7 +101,52 @@ public static class CsmcKnifeRig {
         public string Name { get; set; }
         public string[] MeshParts { get; set; }
         public float SourceReferenceScale { get; set; }
+        /// <summary>Key into weapon_table.json (CS:MC's registration row); knives default to knife_&lt;name&gt;.</summary>
+        public string Table { get; set; }
+        public bool IsGun { get; set; }
     }
+
+    /// <summary>
+    /// One row of CS:MC's weapon registration table (decoded from the client jar by
+    /// tools/apply_weapon_table.py): the first-person hip and aim offsets, the roll,
+    /// and the hip and aim fields of view. Every weapon has its own row; the knives'
+    /// rows carry hip only (aim = hip, no roll, one FOV).
+    /// </summary>
+    public sealed class WeaponTableEntry {
+        public string Id { get; set; }
+        public string Model { get; set; }
+        public float[] Hip { get; set; }
+        public float[] Aim { get; set; }
+        public float RollDegrees { get; set; }
+        public float FovHip { get; set; } = 48f;
+        public float FovAim { get; set; } = 27f;
+        public Vector3 HipOffset => Hip is { Length: >= 3 } ? new Vector3(Hip[0], Hip[1], Hip[2]) : Vector3.Zero;
+        public Vector3 AimOffset => Aim is { Length: >= 3 } ? new Vector3(Aim[0], Aim[1], Aim[2]) : HipOffset;
+    }
+
+    static readonly Dictionary<string, WeaponTableEntry> s_table = LoadWeaponTable();
+
+    static Dictionary<string, WeaponTableEntry> LoadWeaponTable() {
+        Assembly assembly = typeof(CsmcKnifeRig).Assembly;
+        string resource = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith("AnimationData.weapon_table.json", StringComparison.OrdinalIgnoreCase));
+        if (resource is null) return new Dictionary<string, WeaponTableEntry>(StringComparer.Ordinal);
+        using Stream stream = assembly.GetManifestResourceStream(resource);
+        return JsonSerializer.Deserialize<Dictionary<string, WeaponTableEntry>>(stream) ?? new Dictionary<string, WeaponTableEntry>(StringComparer.Ordinal);
+    }
+
+    /// <summary>CS:MC's registration row for this weapon; a row of zeros (and 48/27 degrees) when the table has none.</summary>
+    public static WeaponTableEntry GetTable(int variant) {
+        ManifestEntry entry = Entry(variant);
+        string key = entry.Table ?? ("knife_" + entry.Name);
+        if (s_table.TryGetValue(key, out WeaponTableEntry row)) return row;
+        KnifeDiagnostics.WarnOnce($"table-missing-{key}", $"No CS:MC weapon table row for {key}; using zeros.");
+        return new WeaponTableEntry { Hip = [0f, 0f, 0f], Aim = [0f, 0f, 0f] };
+    }
+
+    public static bool IsGun(int variant) => Entry(variant).IsGun;
+    /// <summary>Knife variants come first in the combined manifest; guns follow.</summary>
+    public static int KnifeCount => s_knifeCount;
+    static int s_knifeCount;
 
     static readonly ManifestEntry[] s_manifest = LoadManifest();
     static readonly string[] s_names = s_manifest.Select(entry => entry.Name).ToArray();
@@ -154,6 +199,7 @@ public static class CsmcKnifeRig {
         Matrix[] absolute = CalculateAbsolute(asset, clip, time);
         var parts = new Dictionary<string, Matrix>(StringComparer.Ordinal);
         var bones = new Dictionary<string, Matrix>(StringComparer.Ordinal);
+        var frames = new Dictionary<string, Matrix>(StringComparer.Ordinal);
         var attachments = new Dictionary<string, Vector3>(StringComparer.Ordinal);
         foreach (SkeletonBone bone in asset.File.Skeleton) {
             if (bone.Index < 0 || bone.Index >= absolute.Length) continue;
@@ -183,6 +229,18 @@ public static class CsmcKnifeRig {
         }
         foreach (Binding binding in asset.File.Bindings) {
             if (binding.BoneIndex < 0 || binding.BoneIndex >= absolute.Length) continue;
+            // The bone's animated frame in mesh units: the absolute pose with the unit/axis
+            // conversion but WITHOUT the binding's Right matrix. For the knife rigs Right is
+            // the identity on the arm bones, so this equals the binding; the gun rigs carry
+            // inverse-bind Right matrices there (skinning), and the binding of hand_r is
+            // then near identity at idle instead of the hand's position. The muzzle and
+            // both hands are read from this frame.
+            // Left factor: only the unit part of N⁻¹. With the full N⁻¹ (translate(c)) the
+            // frame's origin would be the mesh centre c carried through the bone, not the
+            // bone's origin: 7 in along the bore on the AK-47, 16.7 in forward and 7.7 in up
+            // on the AWP (hands and muzzle flash floating above the scope, 0.15.0).
+            Matrix frame = Matrix.CreateScale(1f / asset.File.MeshNormalizationScale) * absolute[binding.BoneIndex] * ReadSourceMatrix(binding.LeftMatrix) * asset.Normalization;
+            if (KnifeDiagnostics.IsFinite(frame)) frames[binding.Name] = frame;
             // CSMC/JOML: left * boneAbsolute * right.
             // Engine row-vector transpose: right^T * boneAbsolute^T * left^T.
             Matrix sourcePose = ReadSourceMatrix(binding.RightMatrix)
@@ -192,7 +250,7 @@ public static class CsmcKnifeRig {
             if (KnifeDiagnostics.IsFinite(normalizedPose)) parts[binding.Name] = normalizedPose;
             else KnifeDiagnostics.WarnOnce($"rig-{asset.Name}-{binding.Name}-invalid", $"CSMC binding {asset.Name}/{binding.Name} produced a non-finite matrix.");
         }
-        return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments);
+        return new KnifeRigPose(asset.Name, clipAlias, clip.SourceName, clip.Duration, asset.File.SourceReferenceScale, parts, bones, attachments, frames);
     }
 
     /// <summary>
@@ -240,13 +298,23 @@ public static class CsmcKnifeRig {
         }
     }
 
+    /// <summary>
+    /// Bones whose clip curves are ignored: they stay at their rest pose relative to
+    /// the parent. The butterfly's latch (v_weapon_lock) is keyed to swing 60-150
+    /// degrees per frame through the flips, but CS:MC never shows it moving: in every
+    /// frame of the MCCS video it lies along the handle, even with the handle pointing
+    /// up, so it is not gravity either. Animated, it reads as a nail sticking out of
+    /// the handle end.
+    /// </summary>
+    static readonly HashSet<string> s_staticBones = new(StringComparer.Ordinal) { "v_weapon_lock" };
+
     static Matrix SampleLocal(SkeletonBone bone, Clip clip, float time) {
         SourcePose rest = new(
             ReadVector(bone.Translation, Vector3.Zero),
             ReadQuaternion(bone.Rotation, Quaternion.Identity),
             ReadVector(bone.Scale, Vector3.One)
         );
-        if (clip.Bones is null || !clip.Bones.TryGetValue(bone.Name, out BoneCurves curves))
+        if (clip.Bones is null || s_staticBones.Contains(bone.Name) || !clip.Bones.TryGetValue(bone.Name, out BoneCurves curves))
             return bone.Matrix is { Length: >= 16 } ? ReadSourceMatrix(bone.Matrix) : CreateMatrix(rest);
         SourcePose pose = new(
             curves.Translation?.SampleVector(time, rest.Translation) ?? rest.Translation,
@@ -300,6 +368,15 @@ public static class CsmcKnifeRig {
         return asset;
     }
 
+    /// <summary>Length of a bone's rest translation (its parent-to-joint segment) in mesh units; 0 if unknown.</summary>
+    public static float GetBoneRestLength(int variant, string bone) {
+        Asset asset = GetAsset(variant);
+        SkeletonBone b = asset?.File.Skeleton?.FirstOrDefault(x => x.Name == bone);
+        if (b?.Translation is not { Length: >= 3 } t) return 0f;
+        float len = MathF.Sqrt(t[0] * t[0] + t[1] * t[1] + t[2] * t[2]) * asset.File.MeshNormalizationScale;
+        return float.IsFinite(len) ? len : 0f;
+    }
+
     static Asset GetAsset(int variant) {
         int index = Math.Clamp(variant, 0, s_assets.Length - 1);
         return s_assets[index] ??= Load(s_names[index]);
@@ -307,11 +384,18 @@ public static class CsmcKnifeRig {
 
     static ManifestEntry[] LoadManifest() {
         Assembly assembly = typeof(CsmcKnifeRig).Assembly;
-        string resource = assembly.GetManifestResourceNames().First(n => n.EndsWith("AnimationData.knives.json", StringComparison.OrdinalIgnoreCase));
-        using Stream stream = assembly.GetManifestResourceStream(resource);
-        ManifestEntry[] entries = JsonSerializer.Deserialize<ManifestEntry[]>(stream)
-            ?? throw new InvalidDataException("Empty ScCsgoKnives rig manifest.");
-        KnifeLog.Information($"[ScCsgoKnives] rig manifest: {entries.Length} knives = [{string.Join(",", entries.Select(e => e.Name))}].");
+        ManifestEntry[] Read(string suffix, bool required) {
+            string resource = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(suffix, StringComparison.OrdinalIgnoreCase));
+            if (resource is null) { if (required) throw new InvalidDataException($"Missing {suffix}."); return []; }
+            using Stream stream = assembly.GetManifestResourceStream(resource);
+            return JsonSerializer.Deserialize<ManifestEntry[]>(stream) ?? throw new InvalidDataException($"Empty {suffix}.");
+        }
+        ManifestEntry[] knives = Read("AnimationData.knives.json", true);
+        ManifestEntry[] guns = Read("AnimationData.guns.json", false);
+        foreach (ManifestEntry g in guns) g.IsGun = true;
+        s_knifeCount = knives.Length;
+        ManifestEntry[] entries = [.. knives, .. guns];
+        KnifeLog.Information($"[ScCsgoKnives] rig manifest: {knives.Length} knives + {guns.Length} guns = [{string.Join(",", entries.Select(e => e.Name))}].");
         return entries;
     }
 
@@ -342,8 +426,10 @@ public sealed class KnifeRigPose {
     readonly IReadOnlyDictionary<string, Matrix> m_bindings;
     readonly IReadOnlyDictionary<string, Matrix> m_bones;
     readonly IReadOnlyDictionary<string, Vector3> m_attachments;
+    readonly IReadOnlyDictionary<string, Matrix> m_frames;
 
-    public KnifeRigPose(string assetName, string clipAlias, string sourceClip, float duration, float sourceReferenceScale, IReadOnlyDictionary<string, Matrix> bindings, IReadOnlyDictionary<string, Matrix> bones, IReadOnlyDictionary<string, Vector3> attachments) {
+    public KnifeRigPose(string assetName, string clipAlias, string sourceClip, float duration, float sourceReferenceScale, IReadOnlyDictionary<string, Matrix> bindings, IReadOnlyDictionary<string, Matrix> bones, IReadOnlyDictionary<string, Vector3> attachments, IReadOnlyDictionary<string, Matrix> frames = null) {
+        m_frames = frames ?? new Dictionary<string, Matrix>();
         AssetName = assetName;
         ClipAlias = clipAlias;
         SourceClip = sourceClip;
@@ -363,8 +449,13 @@ public sealed class KnifeRigPose {
     public IReadOnlyDictionary<string, Matrix> Bones => m_bones;
     public IReadOnlyDictionary<string, Vector3> Attachments => m_attachments;
 
-    public Matrix GetBinding(string name) => m_bindings.TryGetValue(name, out Matrix value) ? value : Matrix.Identity;
+    /// <summary>A mesh part follows the bone named before its "__" suffix (chunked or duplicate records share one bone).</summary>
+    public static string BoneOf(string part) { int i = part.IndexOf("__", StringComparison.Ordinal); return i > 0 ? part[..i] : part; }
+    public Matrix GetBinding(string name) => m_bindings.TryGetValue(name, out Matrix value) || m_bindings.TryGetValue(BoneOf(name), out value) ? value : Matrix.Identity;
     public Matrix GetBone(string name) => m_bones.TryGetValue(name, out Matrix value) ? value : Matrix.Identity;
+    /// <summary>The bone's animated frame in mesh units (absolute pose x unit conversion, no inverse bind); where a hand or the muzzle is.</summary>
+    public Matrix GetBoneFrame(string name) => m_frames.TryGetValue(name, out Matrix value) ? value : GetBinding(name);
+    public Vector3 GetBoneFrameOrigin(string name) { Matrix m = GetBoneFrame(name); return new Vector3(m.M41, m.M42, m.M43); }
     public Vector3 GetAttachment(string name) => m_attachments.TryGetValue(name, out Vector3 value) ? value : Vector3.Zero;
     public Vector3 GetBindingOrigin(string name) {
         Matrix value = GetBinding(name);

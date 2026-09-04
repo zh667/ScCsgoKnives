@@ -35,6 +35,8 @@
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
     <EmbeddedResource Include="AnimationData\*.animation.json" />
     <EmbeddedResource Include="AnimationData\knives.json" />
+    <EmbeddedResource Include="AnimationData\guns.json" />
+    <EmbeddedResource Include="AnimationData\weapon_table.json" />
     <EmbeddedResource Include="Shaders\*.vsh;Shaders\*.psh" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

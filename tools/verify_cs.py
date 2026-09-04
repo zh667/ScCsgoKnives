@@ -44,7 +44,7 @@ def cs_constants():
 
 def cs_grips():
     r = open(os.path.join(SRC, 'CsmcFirstPersonRenderer.cs')).read()
-    tbl = r[r.index('static readonly Vector3[] s_gripOffsets = ['):]
+    tbl = r[r.index('static readonly Vector3[] s_knifeGripOffsets = ['):]
     tbl = tbl[:tbl.index('];')]
     grips = {n: (float(x), float(y), float(z)) for x, y, z, n in
              re.findall(r'new\(([-\d.]+)f, ([-\d.]+)f, ([-\d.]+)f\),\s*// (\w+)', tbl)}

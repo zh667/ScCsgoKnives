@@ -187,16 +187,44 @@ static class ObjWriter
         }
     }
 
+    /// <summary>Survivalcraft indexes each OBJ object with ushort indices: at most 65535 vertices, 21845 triangles.</summary>
+    public const int MaxFacesPerObject = 21845;
+
+    /// <summary>
+    /// One OBJ per part. Records sharing a name (the AK-47 and AWP bodies are two records
+    /// both called weapon_hand_r) get a "__2", "__3" suffix instead of overwriting each
+    /// other, and a record over the index limit is split into "__c1", "__c2", ... chunks.
+    /// The bone a part follows is the name before the first "__".
+    /// </summary>
+    public static IEnumerable<(string Name, MeshRecord Record, int FirstFace, int FaceCount)> PartPlan(MeshDocument mesh)
+    {
+        var seen = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (MeshRecord record in mesh.Records)
+        {
+            string name = Sanitize(record.Name);
+            seen[name] = seen.TryGetValue(name, out int n) ? n + 1 : 1;
+            string unique = seen[name] == 1 ? name : $"{name}__{seen[name]}";
+            int faces = record.VertexCount / 3;
+            if (faces <= MaxFacesPerObject) { yield return (unique, record, 0, faces); continue; }
+            int chunks = (faces + MaxFacesPerObject - 1) / MaxFacesPerObject;
+            for (int c = 0; c < chunks; c++)
+            {
+                int first = c * MaxFacesPerObject;
+                yield return ($"{unique}__c{c + 1}", record, first, Math.Min(MaxFacesPerObject, faces - first));
+            }
+        }
+    }
+
     public static IEnumerable<string> WriteParts(MeshDocument mesh, string directory)
     {
         directory = Path.GetFullPath(directory);
         Directory.CreateDirectory(directory);
-        foreach (MeshRecord record in mesh.Records)
+        foreach (var part in PartPlan(mesh))
         {
-            string path = Path.Combine(directory, Sanitize(record.Name) + ".obj");
+            string path = Path.Combine(directory, part.Name + ".obj");
             using var writer = new StreamWriter(path, false, new UTF8Encoding(false));
             WriteHeader(writer, mesh);
-            WriteRecord(writer, mesh, record, 1);
+            WriteRecord(writer, mesh, part.Record, 1, part.Name, part.FirstFace, part.FaceCount);
             yield return path;
         }
     }
@@ -212,26 +240,33 @@ static class ObjWriter
     }
 
     private static void WriteRecord(StreamWriter writer, MeshDocument mesh, MeshRecord record, int baseIndex)
+        => WriteRecord(writer, mesh, record, baseIndex, Sanitize(record.Name), 0, record.VertexCount / 3);
+
+    private static void WriteRecord(StreamWriter writer, MeshDocument mesh, MeshRecord record, int baseIndex, string objectName, int firstFace, int faceCount)
     {
         byte[] raw = Convert.FromBase64String(record.RawBase64);
-        writer.WriteLine($"o {Sanitize(record.Name)}");
-        for (int i = 0; i < record.VertexCount; i++)
+        if (record.VertexCount % 3 != 0) throw new InvalidDataException($"{mesh.Path}: vertex count {record.VertexCount} is not a triangle list");
+        int firstVertex = firstFace * 3, vertexCount = faceCount * 3;
+        writer.WriteLine($"o {objectName}");
+        for (int i = firstVertex; i < firstVertex + vertexCount; i++)
         {
             DecodedVertex vertex = Decode(raw, i);
             writer.WriteLine($"v {Format(vertex.X)} {Format(vertex.Y)} {Format(vertex.Z)}");
         }
-        for (int i = 0; i < record.VertexCount; i++)
+        for (int i = firstVertex; i < firstVertex + vertexCount; i++)
         {
             DecodedVertex vertex = Decode(raw, i);
+            // V is written as stored: Survivalcraft's OBJ reader samples it top-down like the
+            // meshbin. (0.15.2 flipped it on a misread of a washed-out screenshot and mirrored
+            // every knife; the knives' correct look in 0.15.1 was the evidence to trust.)
             writer.WriteLine($"vt {Format(vertex.U)} {Format(vertex.V)}");
         }
-        for (int i = 0; i < record.VertexCount; i++)
+        for (int i = firstVertex; i < firstVertex + vertexCount; i++)
         {
             DecodedVertex vertex = Decode(raw, i);
             writer.WriteLine($"vn {Format(vertex.Nx)} {Format(vertex.Ny)} {Format(vertex.Nz)}");
         }
-        if (record.VertexCount % 3 != 0) throw new InvalidDataException($"{mesh.Path}: vertex count {record.VertexCount} is not a triangle list");
-        for (int i = 0; i < record.VertexCount; i += 3)
+        for (int i = 0; i < vertexCount; i += 3)
         {
             int a = baseIndex + i;
             int b = a + 1;
@@ -366,6 +401,21 @@ static class RuntimeAnimationWriter
         Add("slash2", "firstperson_light_miss2");
         Add("slashBack", "firstperson_light_backstab");
         Add("heavySlash", "firstperson_heavy_miss1");
+        // Guns (AK-47, M4A1-S, AWP): every first-person clip CS:MC's action table can start.
+        Add("shoot1", "firstperson_shoot1");
+        Add("shoot2", "firstperson_shoot2");
+        Add("shoot3", "firstperson_shoot3");
+        Add("shootSilenced", "firstperson_shoot_silenced");
+        Add("shootUnsilenced", "firstperson_shoot_unsilenced");
+        Add("reload", "firstperson_reload");
+        Add("attach", "firstperson_attach");
+        Add("detach", "firstperson_detach");
+        Add("inspect2Start", "firstperson_lookat02_start");
+        Add("inspect2Loop", "firstperson_lookat02_loop");
+        Add("inspect2End", "firstperson_lookat02_end");
+        Add("inspect3Start", "firstperson_lookat03_start");
+        Add("inspect3Loop", "firstperson_lookat03_loop");
+        Add("inspect3End", "firstperson_lookat03_end");
         Add("inventoryIcon", "inventory_icon");
         var document = new RuntimeAnimationDocument
         {
@@ -373,7 +423,7 @@ static class RuntimeAnimationWriter
             MeshCenter = mesh.Header.Take(3).ToArray(),
             MeshNormalizationScale = mesh.Header[3],
             SourceReferenceScale = mesh.Header[4],
-            MeshParts = mesh.Records.Select(record => record.Name).ToArray(),
+            MeshParts = ObjWriter.PartPlan(mesh).Select(part => part.Name).ToArray(),
             Bindings = animation.ChannelGroups.SelectMany(group => group.Channels)
                 .GroupBy(channel => channel.Name, StringComparer.Ordinal)
                 .Select(group => group.First())

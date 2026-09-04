@@ -13,19 +13,21 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
+        ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
     }
 
     public override void OnLoadingFinished(List<Action> actions) {
         int index = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] values = BlocksManager.Blocks[index].GetCreativeValues().ToArray();
-        Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.AssetCount}, creativeValues={values.Length}.");
+        int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, guns={GunSpec.All.Length}.");
 
         // Every creative item must survive the round trip through the block
         // value and land on its own asset. A stale variant clamp left over from
         // the three-knife build silently mapped everything past the butterfly
         // onto the butterfly's model and animations, and only the inventory
         // icon gave it away.
-        for (int variant = 0; variant < CsmcKnifeRig.AssetCount; variant++) {
+        for (int variant = 0; variant < CsmcKnifeRig.KnifeCount; variant++) {
             int value = Terrain.MakeBlockValue(index, 0, variant);
             int roundTrip = ScKnifeBlock.GetVariant(value);
             string expected = CsmcKnifeRig.GetAssetName(variant);
@@ -39,16 +41,20 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     static int s_lastLoggedValue = int.MinValue;
 
+    /// <summary>The vanilla crosshair is a fixed-size quad 50 units ahead, so it grows with the scope's FOV; the scope draws its own.</summary>
+    public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
+        if (CsmcFirstPersonRenderer.ScopeOverlayActive) isVisible = false;
+    }
+
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {
         skip = false;
-        int contents = Terrain.ExtractContents(itemValue);
-        if (contents != BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) {
+        int variant = KnifeAnimationController.ResolveVariant(itemValue);
+        if (variant < 0) {
             KnifeAnimationController.Update(componentFirstPersonModel, itemValue);
             return;
         }
 
-        int raw = ScKnifeBlock.GetVariant(itemValue);
-        int variant = Math.Clamp(raw, 0, CsmcKnifeRig.AssetCount - 1);
+        int raw = Terrain.ExtractData(itemValue);
         KnifeRigPose pose = KnifeAnimationController.Update(componentFirstPersonModel, itemValue);
         // Logged whenever the held value changes, so the hook's view of the item
         // can be compared against what ScKnifeBlock.DrawBlock sees.
@@ -56,7 +62,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
             s_lastLoggedValue = itemValue;
             Log.Information(
                 $"[ScCsgoKnives] hook: value={itemValue} (0x{itemValue:X}), data={Terrain.ExtractData(itemValue)}, "
-                + $"rawVariant={raw}, assetCount={CsmcKnifeRig.AssetCount}, clamped={variant}, "
+                + $"rawVariant={raw}, assetCount={CsmcKnifeRig.KnifeCount}, clamped={variant}, "
                 + $"asset={CsmcKnifeRig.GetAssetName(variant)}, poseNull={pose is null}, "
                 + $"activeBlockValue={componentFirstPersonModel.m_componentMiner.ActiveBlockValue}, m_value={componentFirstPersonModel.m_value}."
             );

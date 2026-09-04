@@ -4,7 +4,7 @@ using Engine.Graphics;
 namespace Game;
 
 public class ScKnifeBlock : Block {
-    static readonly int s_count = CsmcKnifeRig.AssetCount;
+    static readonly int s_count = CsmcKnifeRig.KnifeCount;
     static readonly string[] s_names = Enumerable.Range(0, s_count).Select(CsmcKnifeRig.GetAssetName).ToArray();
     readonly BlockMesh[] m_meshes = Enumerable.Range(0, s_count).Select(_ => new BlockMesh()).ToArray();
     readonly Texture2D[] m_textures = new Texture2D[s_count];

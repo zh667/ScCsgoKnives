@@ -87,12 +87,26 @@
     "ScKnifeBlock:21": {
       "DisplayName": "熊刀",
       "Description": "厚实的直刀，握柄有防滑纹。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+    },
+    "ScGunBlock:0": {
+      "DisplayName": "AK-47",
+      "Description": "7.62 毫米突击步枪，30 发弹匣，全自动。左键开火，R 换弹，“编辑物品”键检视。"
+    },
+    "ScGunBlock:1": {
+      "DisplayName": "M4A1 消音型",
+      "Description": "5.56 毫米突击步枪，20 发弹匣，全自动。右键装卸消音器，R 换弹。"
+    },
+    "ScGunBlock:2": {
+      "DisplayName": "AWP",
+      "Description": "狙击步枪，5 发弹匣，栓动。右键开镜（再按一次放大，第三次退出），R 换弹。"
     }
   },
   "ScCsgoKnives": {
     "Message": {
       "Inspect": "正在检视 {0}。",
-      "ControlsHint": "检视：电脑按 {0}；手机版点击右侧铅笔按钮。"
+      "ControlsHint": "检视：电脑按 {0}；手机版点击右侧铅笔按钮。",
+      "Ammo": "{0} / ∞",
+      "GunHint": "左键开火，R 换弹；AWP 右键开镜，M4A1 右键装卸消音器；{0} 键检视。"
     }
   }
 }

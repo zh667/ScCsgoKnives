@@ -87,12 +87,26 @@
     "ScKnifeBlock:21": {
       "DisplayName": "Ursus Knife",
       "Description": "Thick straight blade with a textured grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+    },
+    "ScGunBlock:0": {
+      "DisplayName": "AK-47",
+      "Description": "7.62 mm assault rifle, 30-round magazine, automatic. Left click fires, R reloads, the Edit Item key inspects."
+    },
+    "ScGunBlock:1": {
+      "DisplayName": "M4A1-S",
+      "Description": "5.56 mm assault rifle, 20-round magazine, automatic. Right click attaches or detaches the silencer, R reloads."
+    },
+    "ScGunBlock:2": {
+      "DisplayName": "AWP",
+      "Description": "Bolt-action sniper rifle, 5-round magazine. Right click scopes (again to zoom further, a third time to leave), R reloads."
     }
   },
   "ScCsgoKnives": {
     "Message": {
       "Inspect": "Inspecting {0}.",
-      "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile."
+      "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile.",
+      "Ammo": "{0} / ∞",
+      "GunHint": "Left click fires, R reloads; right click scopes the AWP or toggles the M4A1-S silencer; {0} inspects."
     }
   }
 }

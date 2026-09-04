@@ -304,32 +304,39 @@ public static class KnifeTuning {
     /// stay in Minecraft's 70 degree hand pass. Measured against the CS:MC video this is
     /// what fixes both the knife size and the flatter perspective of the blade.
     /// </summary>
-    public static float ExactWeaponFovDegrees = 48f;
+    public static float ExactWeaponFovDegrees = 0f;
     /// <summary>
     /// 1 draws CS:MC's stretched Minecraft arm boxes (anchored at its view-space
     /// constants, 70 degree hand pass) instead of the fist solver. Off: the player
     /// preferred the 0.13.x fists, and the boxes looked far too big in Survivalcraft.
     /// </summary>
     public static float ExactArms = 0f;
-    /// <summary>Knife family "hip" offset applied to the pose stack first (CS:MC weapon registry, all Source2 knives).</summary>
-    public static float ExactHipX = -0.1126f;
-    public static float ExactHipY = -0.4037f;
-    public static float ExactHipZ = -0.0132f;
+    /// <summary>
+    /// The butterfly's T-shaped latch (mesh part v_weapon_lock). CS:MC draws it sticking
+    /// out of the handle end exactly like this (MCCS video, 6.3 s), but on our grey
+    /// knife it reads as a nail, so it is hidden unless set to 1.
+    /// </summary>
+    public static float ShowButterflyLatch = 0f;
+    /// <summary>
+    /// Offsets added to the weapon table's hip offset (x,y,z), roll and per-weapon FOV.
+    /// The table values themselves come from CS:MC's registration rows (weapon_table.json);
+    /// these stay 0 unless a knife needs a nudge. ExactWeaponFovDegrees 0 = the table's FOV.
+    /// </summary>
+    public static float ExactHipX = 0f;
+    public static float ExactHipY = 0f;
+    public static float ExactHipZ = 0f;
     /// <summary>Knife family roll about X after the hip offset, degrees.</summary>
-    public static float ExactRollDegrees = -2.22f;
+    public static float ExactRollDegrees = 0f;
     /// <summary>CS:MC's global viewmodel offset setting (default 0; the server may push a per-player value).</summary>
     /// <summary>
-    /// CS:MC's global view-model offset slot (settings viewX/Y/Z, range +-0.8, replaced per
-    /// player by the values the server sends). The jar's defaults are 0, but with them the
-    /// chain puts the right hand left of centre. Fitting blade tip and pommel on the MCCS
-    /// video (idle, mid-inspect, hold, late hold; 5 px rms, rotation residual under 2
-    /// degrees) leaves exactly this eye-space translation, which is within 0.03 of minus
-    /// (hip + fixed translate): in the video those two translations are effectively not
-    /// there. Mechanism unresolved; the fitted value is what matches, for every knife tried.
+    /// Extra eye-space translation on top of the weapon table's hip offset. CS:MC's own
+    /// slot for this (settings viewX/Y/Z) defaults to 0. Until 0.15.0 this carried a
+    /// fitted (0.36, -0.01, 0.185): that was exactly the difference between the dual
+    /// Berettas' family row (which the chain had been reading) and the knives' own rows.
     /// </summary>
-    public static float ExactGlobalX = 0.36f;
-    public static float ExactGlobalY = -0.01f;
-    public static float ExactGlobalZ = 0.185f;
+    public static float ExactGlobalX = 0f;
+    public static float ExactGlobalY = 0f;
+    public static float ExactGlobalZ = 0f;
     /// <summary>Fixed weapon transform: translate, then Rx90 Ry180 Rz270, then scale by the reference ratio.</summary>
     public static float ExactWeaponTX = -0.22f;
     public static float ExactWeaponTY = 0.42f;
@@ -354,7 +361,7 @@ public static class KnifeTuning {
     /// the same global offset lands all three knives on their videos (M9 5 px rms; karambit
     /// and butterfly within about 20-50 px at idle). 0 restores the literal reading.
     /// </summary>
-    public static float ExactMeshCenterOffset = 1f;
+    public static float ExactMeshCenterOffset = 0f;
     /// <summary>Arm anchors in view space (CS:MC b$4jq): where the forearm box starts.</summary>
     public static float ExactArmAnchorRX = 0.58f;
     public static float ExactArmAnchorRY = -0.78f;
@@ -363,7 +370,7 @@ public static class KnifeTuning {
     public static float ExactArmAnchorLY = -0.82f;
     public static float ExactArmAnchorLZ = -0.72f;
     /// <summary>Minecraft arm box: 4/16 wide times CS:MC's 0.82 (a slim skin is 3/16: 0.154).</summary>
-    public static float ExactArmWidth = 0.205f;
+    public static float ExactArmWidth = 0f;
     /// <summary>Arm length the Minecraft model has before stretching (10/16) and the stretch clamp.</summary>
     public static float ExactArmBaseLength = 0.625f;
     public static float ExactArmStretchMin = 0.65f;
@@ -377,6 +384,15 @@ public static class KnifeTuning {
     /// <summary>RGBM range of the environment atlas. Scales every reflection; 6 puts the diffuse level near 1.0.</summary>
     public static float PbrEnvRange = 6f;
     public static float PbrEnvIntensity = 1f;
+    /// <summary>
+    /// Environment light on the guns relative to the knives, times GunSpec.EnvScale per gun.
+    /// Fitted offline (tools/pbr_emulate.py, engine texture orientation, camera pitched at the
+    /// sky like the recordings) so each gun's masked first-person brightness matches its MCCS
+    /// recording within a few percent (source2_vmat sets): M4A1-S and AWP at 0.25, AK-47 at 0.2.
+    /// </summary>
+    public static float PbrGunEnvIntensity = 0.25f;
+    /// <summary>Scope reticle line thickness in pixels at 1080p (scaled with the frame height). MCCS draws 1 px; the user asked for heavier lines.</summary>
+    public static float ScopeLinePx = 3f;
     /// <summary>Survivalcraft's two fixed directional lights, on top of the environment.</summary>
     public static float PbrDirectIntensity = 0.5f;
     public static float PbrExposure = 1f;
@@ -502,6 +518,7 @@ public static class KnifeTuning {
             case nameof(ExactHandFovDegrees): ExactHandFovDegrees = v; return true;
             case nameof(ExactWeaponFovDegrees): ExactWeaponFovDegrees = v; return true;
             case nameof(ExactArms): ExactArms = v; return true;
+            case nameof(ShowButterflyLatch): ShowButterflyLatch = v; return true;
             case nameof(ExactHipX): ExactHipX = v; return true;
             case nameof(ExactHipY): ExactHipY = v; return true;
             case nameof(ExactHipZ): ExactHipZ = v; return true;
@@ -533,6 +550,8 @@ public static class KnifeTuning {
             case nameof(PbrEnabled): PbrEnabled = v; return true;
             case nameof(PbrEnvRange): PbrEnvRange = v; return true;
             case nameof(PbrEnvIntensity): PbrEnvIntensity = v; return true;
+            case nameof(PbrGunEnvIntensity): PbrGunEnvIntensity = v; return true;
+            case nameof(ScopeLinePx): ScopeLinePx = v; return true;
             case nameof(PbrDirectIntensity): PbrDirectIntensity = v; return true;
             case nameof(PbrExposure): PbrExposure = v; return true;
             case nameof(PbrNormalFlipY): PbrNormalFlipY = v; return true;
@@ -643,6 +662,8 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(ExactWeaponFovDegrees), ExactWeaponFovDegrees));
         text.AppendLine("# ExactArms：1 = 用 CS:MC 的拉伸手臂盒（0.14.0 那种），0 = 0.13.x 的拳头（默认）。");
         text.AppendLine(Line(nameof(ExactArms), ExactArms));
+        text.AppendLine("# ShowButterflyLatch：1 = 画蝴蝶刀刀柄末端的 T 形卡榫（CS:MC 也画，看着像钉子），默认 0 不画。");
+        text.AppendLine(Line(nameof(ShowButterflyLatch), ShowButterflyLatch));
         text.AppendLine(Line(nameof(ExactHipX), ExactHipX));
         text.AppendLine(Line(nameof(ExactHipY), ExactHipY));
         text.AppendLine(Line(nameof(ExactHipZ), ExactHipZ));
@@ -677,6 +698,8 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(PbrEnabled), PbrEnabled));
         text.AppendLine(Line(nameof(PbrEnvRange), PbrEnvRange));
         text.AppendLine(Line(nameof(PbrEnvIntensity), PbrEnvIntensity));
+        text.AppendLine(Line(nameof(PbrGunEnvIntensity), PbrGunEnvIntensity));
+        text.AppendLine(Line(nameof(ScopeLinePx), ScopeLinePx));
         text.AppendLine(Line(nameof(PbrDirectIntensity), PbrDirectIntensity));
         text.AppendLine(Line(nameof(PbrExposure), PbrExposure));
         text.AppendLine(Line(nameof(PbrNormalFlipY), PbrNormalFlipY));
