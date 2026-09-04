@@ -204,4 +204,55 @@ public static class KnifePbrRenderer {
         }
         return true;
     }
+
+    /// <summary>
+    /// The same PBR pass over CPU-skinned geometry: the vertices arrive already in
+    /// view space (Cs2SkinnedMesh folds the placement into its bone matrices), so
+    /// `world` carries only Survivalcraft's body motion.
+    /// </summary>
+    public static bool TryDrawSkinned(Cs2SkinnedMesh.Vertex[] vertices, int[] indices,
+        Texture2D baseColor, string material, Matrix world, Matrix projection,
+        Matrix viewToWorld, in Lighting lighting, int variant) {
+        if (!Enabled || baseColor is null || vertices is null || indices is null || indices.Length == 0) return false;
+        if (!EnsureShared()) return false;
+        if (!TryGetNamedTextures(material, out Texture2D orm, out Texture2D normal)) return false;
+        if (!KnifeDiagnostics.IsFinite(world)) return false;
+
+        Display.DepthStencilState = DepthStencilState.Default;
+        Display.RasterizerState = RasterizerState.CullNoneScissor;
+
+        KnifePbrShader shader = s_shader;
+        shader.BaseColor.SetValue(baseColor);
+        shader.Orm.SetValue(orm);
+        shader.NormalMap.SetValue(normal);
+        shader.Env.SetValue(s_env);
+        shader.Brdf.SetValue(s_brdf);
+        shader.BaseSampler.SetValue(SamplerState.LinearWrap);
+        shader.OrmSampler.SetValue(SamplerState.LinearWrap);
+        shader.NormalSampler.SetValue(SamplerState.LinearWrap);
+        shader.EnvSampler.SetValue(SamplerState.LinearClamp);
+        shader.BrdfSampler.SetValue(SamplerState.LinearClamp);
+        shader.ViewToWorld.SetValue(viewToWorld);
+        shader.LightDir1.SetValue(lighting.Dir1);
+        shader.LightDir2.SetValue(lighting.Dir2);
+        float direct = lighting.Intensity * KnifeTuning.PbrDirectIntensity;
+        shader.LightColor1.SetValue(new Vector3(direct));
+        shader.LightColor2.SetValue(new Vector3(direct));
+        shader.Params.SetValue(new Vector4(
+            KnifeTuning.PbrEnvRange,
+            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant),
+            KnifeTuning.PbrExposure,
+            KnifeTuning.PbrNormalFlipY));
+        shader.Params2.SetValue(new Vector4(
+            KnifeTuning.PbrRoughnessBias,
+            MathUtils.DegToRad(KnifeTuning.PbrEnvYawDegrees),
+            KnifeTuning.PbrEnvSaturation,
+            KnifeTuning.PbrDebug));
+        shader.WorldView.SetValue(world);
+        shader.WorldViewProjection.SetValue(world * projection);
+
+        Display.DrawUserIndexed(PrimitiveType.TriangleList, shader, Cs2SkinnedMesh.Declaration,
+            vertices, 0, vertices.Length, indices, 0, indices.Length);
+        return true;
+    }
 }

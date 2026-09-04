@@ -45,6 +45,36 @@ KnifeLog.ToConsole = true;   // before any renderer or rig access, so no log eve
     }
 }
 
+// "cs2arms <gun> <clip> <t> [out.bin]": the CPU-skinned arm vertices for one pose,
+// in engine view space. Without an output path it prints a digest; with one it dumps
+// the raw float3 positions so tools/cs2_arms_selftest.py can diff every vertex.
+if (args.Length > 0 && args[0] == "cs2arms") {
+    string gun = args.Length > 1 ? args[1] : "ak47";
+    string clip = args.Length > 2 ? args[2] : "idle";
+    float t = args.Length > 3 ? float.Parse(args[3], System.Globalization.CultureInfo.InvariantCulture) : 0f;
+    string outPath = args.Length > 4 ? args[4] : null;
+    Cs2Rig.Pose pose = Cs2Rig.Sample(gun, clip, t);
+    Cs2SkinnedMesh mesh = Cs2SkinnedMesh.Arms;
+    if (pose is null || mesh is null) { Console.Error.WriteLine("no CS2 pose or arm mesh"); return 2; }
+    if (!mesh.SetPose(pose, Cs2Placement.Placement())) { Console.Error.WriteLine("no joints resolved"); return 2; }
+    mesh.Skin();
+    var v = mesh.Skinned;
+    Vector3 lo = v[0].Position, hi = v[0].Position;
+    foreach (var x in v) { lo = Vector3.Min(lo, x.Position); hi = Vector3.Max(hi, x.Position); }
+    if (outPath is not null) {
+        using var bw = new BinaryWriter(File.Create(outPath));
+        bw.Write(v.Length);
+        foreach (var x in v) { bw.Write(x.Position.X); bw.Write(x.Position.Y); bw.Write(x.Position.Z); }
+        Console.Error.WriteLine($"wrote {v.Length} skinned vertices -> {outPath}");
+    }
+    Console.WriteLine(JsonSerializer.Serialize(new {
+        gun, clip = pose.Clip, t = pose.Time, vertices = v.Length,
+        min = new[] { lo.X, lo.Y, lo.Z }, max = new[] { hi.X, hi.Y, hi.Z },
+        primitives = mesh.Primitives.Select(p => new { p.Material, tris = p.Indices.Length / 3 }),
+    }));
+    return 0;
+}
+
 // "cs2sweep <gun> <clip> <fps> <out.json>": the cs2 profile's part matrices in the
 // same shape ArmPreview's knife sweep writes, so tools/pbr_emulate.py can render the
 // CS2 profile offline and tools/cs2_videocheck.py can overlay it on a CS2 capture.

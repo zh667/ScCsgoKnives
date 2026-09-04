@@ -423,6 +423,11 @@ public static class KnifeTuning {
     public static float Cs2ViewmodelOffsetZ = -1.5f;
 
     /// <summary>
+    /// Draw CS2's arms and glove in the cs2 profile (1) or the weapon alone (0).
+    /// </summary>
+    public static float Cs2Arms = 1f;
+
+    /// <summary>
     /// Which sound timings the guns use: 0 = the table timed off the bones (shipped
     /// through 0.15.10), 1 = CS2's own CNmClipDocEvent_Sound frames from
     /// AnimationData/cs2_sounds.json. Defaults to 0 until the CS2 times are checked
@@ -585,6 +590,7 @@ public static class KnifeTuning {
             case nameof(PbrEnvYawDegrees): PbrEnvYawDegrees = v; return true;
             case nameof(PbrEnvSaturation): PbrEnvSaturation = v; return true;
             case nameof(GunProfile): GunProfile = v; return true;
+            case nameof(Cs2Arms): Cs2Arms = v; return true;
             case nameof(Cs2ViewmodelFov): Cs2ViewmodelFov = v; return true;
             case nameof(Cs2ViewmodelOffsetX): Cs2ViewmodelOffsetX = v; return true;
             case nameof(Cs2ViewmodelOffsetY): Cs2ViewmodelOffsetY = v; return true;
@@ -746,6 +752,10 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetX), Cs2ViewmodelOffsetX));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetY), Cs2ViewmodelOffsetY));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetZ), Cs2ViewmodelOffsetZ));
+        text.AppendLine("# cs2 profile 画不画 CS2 的手臂和手套（1/0）。");
+        text.AppendLine("# 这两个材质的粗糙度是估计值（CS2 没导出它们的 VMAT），已经烘进 cs2_arm_orm.png / cs2_glove_orm.png，");
+        text.AppendLine("# 要改得重跑 tools/install_arm_textures_cs2.py --arm-roughness/--glove-roughness 再打包。");
+        text.AppendLine(Line(nameof(Cs2Arms), Cs2Arms));
         text.AppendLine("# 枪的换弹/拉栓/消音器音效用哪套时间：0 = 旧的按骨骼位移量出来的表，1 = CS2 自己的事件帧（cs2_sounds.json）。");
         text.AppendLine("# 两套最多差 0.58 秒，听得出来。默认 0，等对着 CS2 录屏核过再改默认。");
         text.AppendLine(Line(nameof(GunSoundProfile), GunSoundProfile));

@@ -918,6 +918,8 @@ public static class CsmcFirstPersonRenderer {
             }
         }
 
+        DrawCs2Arms(cs2, post, projection, camera, in lighting, variant);
+
         if (s_smokeUntil > KnifeClock.Now) DrawMuzzleFlash(pose, root, projection);
 
         if (s_cs2Logged.Add(gun)) {
@@ -930,6 +932,57 @@ public static class CsmcFirstPersonRenderer {
             );
         }
         return true;
+    }
+
+    static Texture2D s_cs2ArmBase, s_cs2GloveBase;
+    static bool s_cs2ArmsLogged;
+    static double s_cs2SkinMillis;
+    static int s_cs2SkinFrames;
+
+    /// <summary>
+    /// CS2's arms and the fingerless glove, skinned on the CPU against the same pose
+    /// the weapon uses. The bone matrices already carry Cs2Placement, so only
+    /// Survivalcraft's body motion is left for the world matrix.
+    ///
+    /// KnifeTuning.Cs2Arms turns them off (0) for looking at the weapon alone.
+    /// Timing is logged every 120 frames so the cost can be read off a real device
+    /// rather than guessed.
+    /// </summary>
+    static void DrawCs2Arms(Cs2Rig.Pose pose, Matrix post, Matrix projection, Camera camera,
+        in KnifePbrRenderer.Lighting lighting, int variant) {
+        if (KnifeTuning.Cs2Arms < 0.5f) return;
+        Cs2SkinnedMesh mesh = Cs2SkinnedMesh.Arms;
+        if (mesh is null) return;
+        s_cs2ArmBase ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_arm");
+        s_cs2GloveBase ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_glove");
+        if (s_cs2ArmBase is null || s_cs2GloveBase is null) return;
+
+        double started = Time.RealTime;
+        if (!mesh.SetPose(pose, Cs2Placement.Placement())) return;
+        mesh.Skin();
+        s_cs2SkinMillis += (Time.RealTime - started) * 1000.0;
+
+        foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
+            bool glove = part.Material.StartsWith("glove", StringComparison.OrdinalIgnoreCase);
+            KnifePbrRenderer.TryDrawSkinned(mesh.Skinned, part.Indices,
+                glove ? s_cs2GloveBase : s_cs2ArmBase,
+                glove ? "cs2_glove" : "cs2_arm",
+                post, projection, camera.InvertedViewMatrix, in lighting, variant);
+        }
+
+        if (++s_cs2SkinFrames >= 120) {
+            KnifeLog.Information(
+                $"[ScCsgoKnives] cs2 arms: CPU skinning {s_cs2SkinMillis / s_cs2SkinFrames:0.###} ms/frame "
+                + $"over {s_cs2SkinFrames} frames ({mesh.Skinned.Length} vertices, "
+                + $"{mesh.Primitives.Sum(p => p.Indices.Length) / 3} triangles)."
+            );
+            s_cs2SkinFrames = 0;
+            s_cs2SkinMillis = 0.0;
+        }
+        if (!s_cs2ArmsLogged) {
+            s_cs2ArmsLogged = true;
+            KnifeLog.Information($"[ScCsgoKnives] cs2 arms drawn: {string.Join(", ", mesh.Primitives.Select(p => p.Material))}.");
+        }
     }
 
     static bool EnsureCs2Assets(string gun) {

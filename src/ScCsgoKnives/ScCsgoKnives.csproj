@@ -35,6 +35,7 @@
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
     <EmbeddedResource Include="AnimationData\*.animation.json" />
     <EmbeddedResource Include="AnimationData\cs2_sounds.json" />
+    <EmbeddedResource Include="AnimationData\cs2_arms.skin" />
     <EmbeddedResource Include="AnimationData\knives.json" />
     <EmbeddedResource Include="AnimationData\guns.json" />
     <EmbeddedResource Include="AnimationData\weapon_table.json" />
