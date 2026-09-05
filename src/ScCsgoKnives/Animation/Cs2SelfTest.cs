@@ -410,6 +410,21 @@ public static class Cs2SelfTest {
                           : "no burst, matching the vdata");
         }
 
+        // Everything above reads a loader; nothing above touches the renderer, and
+        // 0.18.1 added eight manifest entries that made its static constructor throw
+        // looking for a CS:MC animation the CS2-only guns never had. The whole of
+        // first person is behind that constructor, so it is checked by name here.
+        string armInit = "ok";
+        try {
+            // The constructor itself, with none of InitHeadless's side effects: it
+            // is where the per-variant tables are built and where the throw was.
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(
+                typeof(CsmcFirstPersonRenderer).TypeHandle);
+        } catch (Exception e) {
+            armInit = (e.InnerException ?? e).Message;
+        }
+        Check("firstperson/init", armInit == "ok", armInit);
+
         Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
         Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,
               Cs2Sounds.TryGet("ak47:reload", out var r2) ? $"{r2.Length} cues" : "missing");

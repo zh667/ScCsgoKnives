@@ -403,9 +403,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.BurstNextAt = -1;
             }
             else {
+                // Decrementing before Fire left BurstRemaining at 0 on the last round,
+                // which Fire read as "no burst in progress" and used to start another -
+                // one click emptied the magazine. The count is lowered after the shot.
+                Fire(player, state, model, spec, value, data, rounds, input, inBurst: true);
                 state.BurstRemaining--;
                 state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
-                Fire(player, state, model, spec, value, data, rounds, input);
                 return;
             }
         }
@@ -419,18 +422,19 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 spec.KickRecoverPerSecond).Recover);
     }
 
-    void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input) {
+    void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input, bool inBurst = false) {
         double now = m_time.GameTime;
         // A burst costs its own cycle time once, not one per round: CS2's Glock-18
         // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55
         // against 0.09. The remaining rounds are scheduled at m_flTimeBetweenBurstShots.
-        bool startingBurst = state.BurstMode && spec.HasBurstMode && state.BurstRemaining == 0;
+        // inBurst says this shot is one of those, so it cannot start another.
+        bool startingBurst = !inBurst && state.BurstMode && spec.HasBurstMode && state.BurstRemaining == 0;
         if (startingBurst) {
             state.NextShot = now + spec.BurstCycleSeconds;
             state.BurstRemaining = Math.Max(0, spec.BurstShots - 1);
             state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
         }
-        else if (state.BurstRemaining == 0) {
+        else if (!inBurst) {
             state.NextShot = now + spec.CycleSeconds;
         }
         rounds--;

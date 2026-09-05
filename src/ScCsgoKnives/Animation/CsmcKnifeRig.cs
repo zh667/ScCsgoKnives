@@ -104,6 +104,13 @@ public static class CsmcKnifeRig {
         /// <summary>Key into weapon_table.json (CS:MC's registration row); knives default to knife_&lt;name&gt;.</summary>
         public string Table { get; set; }
         public bool IsGun { get; set; }
+        /// <summary>
+        /// Drawn entirely from CS2: no CS:MC animation, no OBJ mesh parts. The guns
+        /// added in 0.18.0 are all of these. They still need a manifest entry, because
+        /// a variant number indexes the manifest and without one they resolved to the
+        /// last gun in it - which is why the new guns came out as the AWP.
+        /// </summary>
+        public bool Cs2Only { get; set; }
     }
 
     /// <summary>
@@ -198,16 +205,20 @@ public static class CsmcKnifeRig {
     /// cs2 profile, so they fall through to GetDuration unchanged.
     /// </summary>
     public static float GetProfileDuration(int variant, string clipAlias) {
-        if (Cs2Placement.Active(variant)) {
+        if (Cs2Placement.Active(variant) || Entry(variant).Cs2Only) {
             float cs2 = Cs2Rig.Duration(GetAssetName(variant), clipAlias);
             if (cs2 > 0f) return cs2;
         }
-        return GetDuration(variant, clipAlias);
+        // A CS2-only variant has no CS:MC clip to fall back on; returning its CS:MC
+        // duration would read another weapon's rig.
+        return Entry(variant).Cs2Only ? 0f : GetDuration(variant, clipAlias);
     }
 
-    public static bool HasClip(int variant, string clipAlias) => GetAsset(variant).File.Clips.ContainsKey(clipAlias);
+    public static bool HasClip(int variant, string clipAlias) =>
+        TryGetAsset(variant)?.File.Clips.ContainsKey(clipAlias) ?? false;
     /// <summary>Every clip alias this knife's rig carries.</summary>
-    public static IEnumerable<string> GetClipAliases(int variant) => GetAsset(variant).File.Clips.Keys;
+    public static IEnumerable<string> GetClipAliases(int variant) =>
+        TryGetAsset(variant) is Asset asset ? asset.File.Clips.Keys : Enumerable.Empty<string>();
 
     public static KnifeRigPose Sample(int variant, string clipAlias, float time, bool loop = false) {
         float requested = time;
@@ -400,10 +411,16 @@ public static class CsmcKnifeRig {
         return float.IsFinite(len) ? len : 0f;
     }
 
+    /// <summary>True when this variant has no CS:MC rig at all and is drawn from CS2.</summary>
+    public static bool IsCs2Only(int variant) => Entry(variant).Cs2Only;
+
     static Asset GetAsset(int variant) {
         int index = Math.Clamp(variant, 0, s_assets.Length - 1);
         return s_assets[index] ??= Load(s_names[index]);
     }
+
+    /// <summary>The CS:MC asset, or null for a CS2-only variant that has none.</summary>
+    static Asset TryGetAsset(int variant) => Entry(variant).Cs2Only ? null : GetAsset(variant);
 
     static ManifestEntry[] LoadManifest() {
         Assembly assembly = typeof(CsmcKnifeRig).Assembly;

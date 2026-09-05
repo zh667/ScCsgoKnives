@@ -392,6 +392,10 @@ public static class CsmcFirstPersonRenderer {
     static bool[] BuildLeftArmUsable() {
         var usable = new bool[CsmcKnifeRig.AssetCount];
         for (int variant = 0; variant < usable.Length; variant++) {
+            // A CS2-only gun has no CS:MC animation to sample; it is posed from
+            // its own rig and its left arm is never the CS:MC one, so asking
+            // would only throw looking for a resource that was never shipped.
+            if (CsmcKnifeRig.IsCs2Only(variant)) { usable[variant] = true; continue; }
             KnifeRigPose idle = CsmcKnifeRig.Sample(variant, "idle", 0f);
             float forearm = (idle.GetBindingOrigin("hand_l") - idle.GetBindingOrigin("arm_lower_l")).Length();
             usable[variant] = forearm >= MinUsableForearm || CsmcKnifeRig.IsGun(variant);

@@ -218,18 +218,41 @@ def main():
               % (m["gun"], m["means"]["ao"], m["means"]["roughness"],
                  m["means"]["metalness"], m["normal_deviation_from_flat"]))
 
-    ok = (all(r["max_residual_in"] < 1e-3 for r in rig)
+    # F. Every gun the mod registers needs the assets ScGunBlock loads, or it draws
+    # Survivalcraft's missing-texture placeholder in the hotbar and, when its variant
+    # indexes past the CS:MC manifest, the last gun's mesh. 0.18.0 shipped eight guns
+    # with neither a slot icon nor a mesh and they all came out as AWPs.
+    print("\nF. Block assets for every registered gun")
+    textures = ROOT / "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives"
+    data = ROOT / "src/ScCsgoKnives/AnimationData"
+    manifest = json.loads((data / "guns.json").read_text("utf-8"))
+    assets = []
+    for entry in manifest:
+        gun = entry["Name"]
+        slot = (textures / ("%s_slot.png" % gun)).exists()
+        base = ((textures / ("%s.png" % gun)).exists()
+                or (textures / ("%s_hd.png" % gun)).exists())
+        parts = entry.get("MeshParts") or []
+        mesh = bool(parts) or (data / ("%s.cs2.parts" % gun)).exists()
+        assets.append({"gun": gun, "slot": slot, "base": base, "mesh": mesh})
+        print("   %-14s slot %-3s base %-3s mesh %s"
+              % (gun, "ok" if slot else "NO", "ok" if base else "NO",
+                 ("%d OBJ parts" % len(parts)) if parts else
+                 ("%s.cs2.parts" % gun if mesh else "NONE")))
+
+    ok = (all(a["slot"] and a["base"] and a["mesh"] for a in assets)
+          and all(r["max_residual_in"] < 1e-3 for r in rig)
           and all(r["blended_vertices"] == 0 and r["split_triangles"] == 0 for r in rigid)
           and all(p.get("status") or p["known_difference"] or p["max_mm"] < 0.05
                   for r in legacy if not r.get("status") for p in r["parts"])
           and objs.get("returncode", 1) == 0
           and all(p["faces"] <= conv.MAX_FACES and p["vertices"] <= conv.MAX_VERTS
                   for r in rigid for p in r["parts"]))
-    print("\nA/B/C/D/E %s" % ("PASS" if ok else "FAIL"))
+    print("\nA/B/C/D/E/F %s" % ("PASS" if ok else "FAIL"))
     if args.json:
         args.json.write_text(json.dumps(
             {"rig": rig, "rigid": rigid, "legacy": legacy, "obj": objs,
-             "materials": materials}, indent=2), "utf-8")
+             "materials": materials, "blockAssets": assets}, indent=2), "utf-8")
         print("wrote %s" % args.json)
     return 0 if ok else 1
 
