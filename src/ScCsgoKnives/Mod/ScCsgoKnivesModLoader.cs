@@ -1,4 +1,5 @@
 using Engine;
+using Engine.Graphics;
 
 namespace Game;
 
@@ -45,7 +46,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
         // Zoomed on the AUG / SG 553 the reticle is the scope's own dot, so the
         // vanilla crosshair goes too (it grew with the FOV in 0.20.0's video).
-        if (CsmcFirstPersonRenderer.ScopeOverlayActive || CsmcFirstPersonRenderer.ScopeDotActive) isVisible = false;
+        if (CsmcFirstPersonRenderer.ScopeOverlayActive || CsmcFirstPersonRenderer.IronsightScopeActive) isVisible = false;
     }
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {
@@ -74,6 +75,21 @@ public class ScCsgoKnivesModLoader : ModLoader {
         // The complete CSMC renderer owns weapon and arms. Returning skip=true
         // prevents SC from applying block offsets, generic poke/swap animation,
         // or drawing the old approximate model on top.
-        skip = CsmcFirstPersonRenderer.Draw(componentFirstPersonModel, camera, variant, pose);
+        //
+        // The render states are put back the way the engine had them: our draws set
+        // their own (0.20.1 made the PBR pass set Opaque, after the AUG lens batch
+        // left Additive behind and the arms came out translucent), and whatever the
+        // engine draws after this hook expects the state it set, not ours.
+        BlendState blend = Display.BlendState;
+        DepthStencilState depth = Display.DepthStencilState;
+        RasterizerState rasterizer = Display.RasterizerState;
+        try {
+            skip = CsmcFirstPersonRenderer.Draw(componentFirstPersonModel, camera, variant, pose);
+        }
+        finally {
+            Display.BlendState = blend;
+            Display.DepthStencilState = depth;
+            Display.RasterizerState = rasterizer;
+        }
     }
 }

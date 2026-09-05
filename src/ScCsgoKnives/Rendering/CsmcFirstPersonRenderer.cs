@@ -611,9 +611,9 @@ public static class CsmcFirstPersonRenderer {
         s_scopeMagnification = magnification;
     }
 
-    /// <summary>Zoomed on a gun that keeps its viewmodel (AUG, SG 553): the lens goes clear and the HUD dot is drawn.</summary>
+    /// <summary>Zoomed on a gun that keeps its viewmodel (AUG, SG 553): the lens goes clear and the HUD scope is drawn.</summary>
     static bool s_ironsight;
-    public static bool ScopeDotActive => s_ironsight;
+    public static bool IronsightScopeActive => s_ironsight;
 
     static Cs2Effects.Flash s_flashSpec;
 
@@ -1014,6 +1014,7 @@ public static class CsmcFirstPersonRenderer {
         if (lens is not null) DrawScopeLens(rigid, lens, lensWorld, projection, camera, in lighting, variant);
 
         if (s_smokeUntil > KnifeClock.Now) DrawCs2MuzzleFlash(cs2, gun, post, projection);
+        if (s_zeusAt >= 0 && Cs2TaserEffect.Applies(gun)) DrawZeusMuzzle(cs2, gun, post, projection);
 
         if (s_cs2Logged.Add(gun)) {
             KnifeLog.Information(
@@ -1165,7 +1166,7 @@ public static class CsmcFirstPersonRenderer {
     /// 1, roughness 0.078, and g_flOpacityScale = pow(1 - $ent_ironsight, 0.5) - a dark
     /// mirror-like glass seen from outside, fully clear once the player aims down it.
     /// The three textures are baked by tools/cs2_scope_lens_texture.py; the reticle is
-    /// not on the lens at all (scope.vmat is ui.vfx, a HUD element: DrawScopeDot).
+    /// not on the lens at all (scope.vmat is ui.vfx, a HUD element: DrawIronsightScope).
     ///
     /// 0.20.0 drew these triangles additively with the dot texture stretched over them,
     /// which read as a white disc, and the additive state it left behind made the arms
@@ -1193,27 +1194,89 @@ public static class CsmcFirstPersonRenderer {
     /// chosen so the bright core reads about 14 px tall at 1080p.
     /// </summary>
     public const float ScopeDotScreenFraction = 40f / 1080f;   // assumed
+    static Texture2D s_scopeFilter;
 
-    /// <summary>The AUG / SG 553 reticle while zoomed: CS2's white dot, additive, at the centre of the screen.</summary>
-    public static void DrawScopeDot() {
+    /// <summary>
+    /// The AUG / SG 553 zoomed HUD: CS2's scope_filter (the one ui.vfx material in
+    /// the shared scope folder - a window of radius 0.64 of its half-size, tinted
+    /// (0,9,8) at alpha 120 inside, feathered to opaque black by 0.76; measured by
+    /// tools/cs2_scope_filter_texture.py) drawn as a screen-height square with black
+    /// either side, and the white dot at the centre. The square's size is the one
+    /// thing the export does not say and is assumed, like the sniper overlay's.
+    /// 0.20.1 drew the dot alone, which the device test called "not CS2's scope".
+    /// </summary>
+    public static void DrawIronsightScope() {
         if (!s_ironsight) return;
         try {
+            s_scopeFilter ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_filter");
             s_scopeDot ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_dot");
         }
         catch (Exception e) {
-            KnifeDiagnostics.WarnOnce("cs2-scope-dot", $"No scope dot texture: {e.Message}");
+            KnifeDiagnostics.WarnOnce("cs2-ironsight-scope", $"No ironsight scope texture: {e.Message}");
             return;
         }
-        if (s_scopeDot is null) return;
+        if (s_scopeFilter is null || s_scopeDot is null) return;
         s_primitives2D ??= new PrimitivesRenderer2D();
         float w = Display.Viewport.Width, h = Display.Viewport.Height;
-        float half = h * ScopeDotScreenFraction * 0.5f;
+        float half = h * 0.5f;
         Vector2 c = new(w * 0.5f, h * 0.5f);
-        TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_scopeDot, false, 0,
+        FlatBatch2D fill = s_primitives2D.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
+        if (w > h) {
+            foreach (float x0 in new[] { 0f, c.X + half }) {
+                float x1 = x0 == 0f ? c.X - half : w;
+                fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, 0f), new Vector2(x1, h), 0f, Color.Black);
+                fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, h), new Vector2(x0, h), 0f, Color.Black);
+            }
+        }
+        TexturedBatch2D filter = s_primitives2D.TexturedBatch(s_scopeFilter, false, 1,
+            DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+        filter.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
+            0f, Vector2.Zero, Vector2.One, Color.White);
+        float dot = h * ScopeDotScreenFraction * 0.5f;
+        TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_scopeDot, false, 2,
             DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
-        batch.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
+        batch.QueueQuad(new Vector2(c.X - dot, c.Y - dot), new Vector2(c.X + dot, c.Y + dot),
             0f, Vector2.Zero, Vector2.One, Color.White);
         s_primitives2D.Flush();
+    }
+
+    // ---- the Zeus's muzzle, in the first-person pass ---------------------------------
+
+    static double s_zeusAt = -1;
+    static List<Cs2ZeusParticles.Sprite> s_zeusGlow, s_zeusFlare;
+    static List<Cs2ZeusParticles.Spark> s_zeusSparks;
+
+    /// <summary>
+    /// A Zeus shot: CS2's weapon_muzzle_flash_taser (glow, flare, sparks) is
+    /// position-locked to the muzzle, so it is drawn here, over the gun, in the
+    /// viewmodel's own projection - the world pass could only put it behind the
+    /// weapon (0.20.1, where the device test saw no "electricity" after the shot).
+    /// </summary>
+    public static void ZeusMuzzle(double now) {
+        Cs2TaserEffect.File fx = Cs2TaserEffect.Data;
+        if (fx is null) return;
+        s_zeusAt = now;
+        s_zeusGlow = Cs2ZeusParticles.Sprites(fx.MuzzleGlow);
+        s_zeusFlare = Cs2ZeusParticles.Sprites(fx.MuzzleFlash);
+        // View space: the shot goes down -Z, X is across, Y is up.
+        s_zeusSparks = null;   // built at the first draw, where the muzzle point is known
+    }
+
+    static void DrawZeusMuzzle(Cs2Rig.Pose pose, string gun, Matrix post, Matrix projection) {
+        Cs2TaserEffect.File fx = Cs2TaserEffect.Data;
+        if (fx is null || s_zeusAt < 0) return;
+        float age = (float)(KnifeClock.Now - s_zeusAt);
+        if (age > 1f) { s_zeusAt = -1; return; }
+        Vector3 rig = MuzzleRigPoint(gun, false, pose) ?? Vector3.Zero;
+        Vector3 p = Vector3.Transform(rig, Cs2Placement.Placement() * post);
+        if (!(p.Z < -0.02f)) return;
+        s_primitives3D ??= new PrimitivesRenderer3D();
+        s_zeusSparks ??= Cs2ZeusParticles.Sparks(fx.MuzzleSparks, p, -Vector3.UnitZ, Vector3.UnitX, Vector3.UnitY);
+        // Nothing of the gun may hide them: DepthStencilState.None, additive.
+        Cs2ZeusParticles.DrawSprites(s_primitives3D, s_zeusGlow, fx.MuzzleGlow, age, p, Vector3.UnitX, Vector3.UnitY, DepthStencilState.None);
+        Cs2ZeusParticles.DrawSprites(s_primitives3D, s_zeusFlare, fx.MuzzleFlash, age, p, Vector3.UnitX, Vector3.UnitY, DepthStencilState.None);
+        Cs2ZeusParticles.DrawSparks(s_primitives3D, s_zeusSparks, fx.MuzzleSparks, age, Vector3.Zero, Vector3.UnitY, DepthStencilState.None);
+        s_primitives3D.Flush(projection);
     }
 
     static Texture2D Cs2WeaponTexture(string asset) {
