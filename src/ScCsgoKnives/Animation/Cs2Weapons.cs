@@ -46,8 +46,40 @@ public static class Cs2Weapons {
         public float RangeModifier { get; set; }
         [JsonPropertyName("MaxSpeed")]
         public float[] MaxSpeed { get; set; }
+        /// <summary>Pellets per shot: 1 for everything but the shotguns (Nova 9, MAG-7 and Sawed-Off 8, XM1014 6).</summary>
+        [JsonPropertyName("Pellets")]
+        public int Pellets { get; set; } = 1;
+        /// <summary>Only the Glock-18 and the FAMAS have one.</summary>
+        [JsonPropertyName("HasBurstMode")]
+        public bool HasBurstMode { get; set; }
+        [JsonPropertyName("BurstCycleSeconds")]
+        public float? BurstCycleSeconds { get; set; }
+        [JsonPropertyName("BurstShotSeconds")]
+        public float? BurstShotSeconds { get; set; }
+        /// <summary>
+        /// CS2 carries the burst's cycle time and the gap between its shots but not how
+        /// many it fires. Three is Counter-Strike's burst and the generator writes it as
+        /// BurstShotsAssumed, named so the estimate is visible in the data.
+        /// </summary>
+        [JsonPropertyName("BurstShotsAssumed")]
+        public int BurstShotsAssumed { get; set; }
+        /// <summary>WEAPONSILENCER_NONE, _DETACHABLE (M4A1-S, USP-S) or _INTEGRATED (MP5-SD).</summary>
+        [JsonPropertyName("SilencerType")]
+        public string SilencerType { get; set; }
+        /// <summary>CS2's own sound events, by WEAPON_SOUND_* key.</summary>
+        [JsonPropertyName("ShootSounds")]
+        public Dictionary<string, string> ShootSounds { get; set; }
         [JsonPropertyName("ZoomFov")]
         public float?[] ZoomFov { get; set; }
+
+        public bool SilencerDetachable => SilencerType == "WEAPONSILENCER_DETACHABLE";
+        public bool SilencerIntegrated => SilencerType == "WEAPONSILENCER_INTEGRATED";
+        /// <summary>The event CS2 plays for a shot, silenced or not; null when unknown.</summary>
+        public string ShootSound(bool silenced) {
+            if (ShootSounds is null) return null;
+            if (silenced && ShootSounds.TryGetValue("WEAPON_SOUND_SPECIAL1", out string special)) return special;
+            return ShootSounds.TryGetValue("WEAPON_SOUND_SINGLE", out string single) ? single : null;
+        }
         [JsonPropertyName("ZoomLevels")]
         public int ZoomLevels { get; set; }
         /// <summary>

@@ -948,6 +948,14 @@ public static class CsmcFirstPersonRenderer {
             DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant);
         }
 
+        // A gun is rigid pieces, one bone each, so each is drawn with its own matrix
+        // and nothing is transformed per vertex. Only the few triangles that really
+        // blend - 145 across all 32 guns - go through the skinning loop.
+        Cs2RigidMesh rigid = Cs2RigidMesh.For(gun);
+        if (rigid is not null) {
+            DrawCs2RigidWeapon(rigid, cs2, gun, post, projection, camera, in lighting, variant, hideSilencer);
+        }
+
         foreach (Part part in s_cs2Parts[gun]) {
             // CS2 names the silencer part after its own bone, not CS:MC's binding.
             if (hideSilencer && part.Binding == "silencer") continue;
@@ -1036,6 +1044,54 @@ public static class CsmcFirstPersonRenderer {
     }
 
     static readonly Dictionary<string, Texture2D> s_cs2WeaponBase = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// A gun's rigid pieces. Each part is the single-influence case of the skinning
+    /// sum, so TryDrawSkinned draws the bind-pose vertices with
+    /// inverseBind * boneAbsolute * placement * post and no CPU work per vertex.
+    ///
+    /// A part whose bone the rig has not got is skipped rather than drawn at the
+    /// origin, and the M4A1-S's silencer is hidden the same way the OBJ path hides it.
+    /// </summary>
+    static void DrawCs2RigidWeapon(Cs2RigidMesh mesh, Cs2Rig.Pose pose, string asset,
+        Matrix post, Matrix projection, Camera camera,
+        in KnifePbrRenderer.Lighting lighting, int variant, bool hideSilencer) {
+        Texture2D baseColor = Cs2WeaponTexture(asset);
+        if (baseColor is null) return;
+        if (!mesh.SetPose(pose, Cs2Placement.Placement())) {
+            KnifeDiagnostics.WarnOnce($"cs2-rigid-pose-{asset}",
+                $"No joint of {asset}'s mesh resolved against the clip's skeleton.");
+            return;
+        }
+        string material = $"{asset}_hd";
+        foreach (Cs2RigidMesh.Part part in mesh.Parts) {
+            if (hideSilencer && mesh.Joints[part.Joint] == "silencer") continue;
+            if (!mesh.TryPartWorld(part, out Matrix bone)) continue;
+            KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, part.Indices, baseColor, material,
+                bone * post, projection, camera.InvertedViewMatrix, in lighting, variant);
+        }
+        if (mesh.BlendedTriangleCount > 0) {
+            mesh.SkinBlended();
+            foreach (Cs2SkinnedMesh.Primitive part in mesh.BlendedParts) {
+                KnifePbrRenderer.TryDrawSkinned(mesh.BlendedSkinned, part.Indices, baseColor,
+                    material, post, projection, camera.InvertedViewMatrix, in lighting, variant);
+            }
+        }
+    }
+
+    static Texture2D Cs2WeaponTexture(string asset) {
+        if (s_cs2WeaponBase.TryGetValue(asset, out Texture2D hit)) return hit;
+        Texture2D texture = null;
+        foreach (string name in new[] { $"{asset}_hd", $"{asset}_cs2" }) {
+            try { texture = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{name}"); }
+            catch { texture = null; }
+            if (texture is not null) break;
+        }
+        if (texture is null)
+            KnifeDiagnostics.WarnOnce($"cs2-weapon-texture-{asset}", $"No CS2 texture for {asset}.");
+        s_cs2WeaponBase[asset] = texture;
+        return texture;
+    }
 
     /// <summary>
     /// A weapon that is one skinned mesh, CPU-skinned against the same pose and
@@ -1142,7 +1198,7 @@ public static class CsmcFirstPersonRenderer {
         // A skinned weapon has no rigid parts and no <asset>_hd texture; its mesh and
         // texture are fetched where it is drawn. Returning false here would send the
         // knives back to the CS:MC chain for want of assets they never needed.
-        if (Cs2Rig.SkinnedResource(gun) is not null) {
+        if (Cs2Rig.SkinnedResource(gun) is not null || Cs2Rig.PartsResource(gun) is not null) {
             s_cs2Parts.TryAdd(gun, []);
             s_cs2Base.TryAdd(gun, null);
             return true;

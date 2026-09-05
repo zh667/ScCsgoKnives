@@ -162,10 +162,12 @@ def convert(gun: str, folder: str) -> dict:
     return {
         "Format": "ScCsgoKnives.Cs2Animation/1",
         "Units": "inch",
-        "Notes": ("CS2's own viewmodel animation. The mesh is not described here: the "
-                  "gun is one skinned mesh whose moving parts ride bones in this same "
-                  "skeleton, so it ships through cs2_glb_to_skinned.py and "
-                  "MeshParts/Bindings are deliberately empty."),
+        "Notes": ("CS2's own viewmodel animation. The mesh is not described here: a gun "
+                  "is rigid pieces with one bone each - 850,590 of 850,629 vertices "
+                  "across the 32 have a single influence at weight 1 - so it ships "
+                  "through cs2_glb_to_parts.py as .cs2.parts, drawn as groups with a "
+                  "matrix apiece and no per-vertex cost. MeshParts and Bindings, which "
+                  "the first three guns use for hand-split OBJ pieces, stay empty."),
         "Source": {
             "analysis": "local_cs2_analysis/all_weapons/08_first_person",
             "folder": cfg["folder"], "clipSuffix": cfg["suffix"],
@@ -173,7 +175,7 @@ def convert(gun: str, folder: str) -> dict:
         },
         "MeshParts": [],
         "Bindings": [],
-        "Skinned": "%s.cs2.skin" % gun,
+        "Parts": "%s.cs2.parts" % gun,
         "Skeleton": skeleton,
         "Clips": clips,
     }

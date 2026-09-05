@@ -67,6 +67,8 @@ public static class Cs2Rig {
         public string Format { get; set; }
         /// <summary>The .cs2.skin beside this rig, for a weapon that is one skinned mesh.</summary>
         public string Skinned { get; set; }
+        /// <summary>The .cs2.parts beside this rig, for a weapon that is rigid pieces.</summary>
+        public string Parts { get; set; }
         public string Units { get; set; }
         public float[] MeshCenter { get; set; }
         public float MeshNormalizationScale { get; set; }
@@ -136,6 +138,9 @@ public static class Cs2Rig {
 
     /// <summary>The .cs2.skin this asset's mesh lives in, or null when it has none.</summary>
     public static string SkinnedResource(string gun) => Get(gun)?.File.Skinned;
+
+    /// <summary>The .cs2.parts this asset's mesh lives in, or null when it has none.</summary>
+    public static string PartsResource(string gun) => Get(gun)?.File.Parts;
 
     public static IReadOnlyList<string> GetMeshParts(string gun) => Get(gun)?.File.MeshParts ?? [];
 

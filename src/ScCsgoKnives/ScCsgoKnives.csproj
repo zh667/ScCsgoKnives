@@ -36,8 +36,10 @@
     <EmbeddedResource Include="AnimationData\*.animation.json" />
     <EmbeddedResource Include="AnimationData\cs2_sounds.json" />
     <EmbeddedResource Include="AnimationData\*.skin" />
+    <EmbeddedResource Include="AnimationData\*.parts" />
     <EmbeddedResource Include="AnimationData\cs2_effects.json" />
     <EmbeddedResource Include="AnimationData\cs2_weapons.json" />
+    <EmbeddedResource Include="AnimationData\cs2_sound_variants.json" />
     <EmbeddedResource Include="AnimationData\knives.json" />
     <EmbeddedResource Include="AnimationData\guns.json" />
     <EmbeddedResource Include="AnimationData\weapon_table.json" />

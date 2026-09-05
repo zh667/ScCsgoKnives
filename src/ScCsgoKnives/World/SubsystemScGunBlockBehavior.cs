@@ -29,6 +29,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public float SavedLookSensitivity = float.NaN;
         public float KickPitch, KickYaw;
         public bool FireLatch;
+        /// <summary>Burst mode selected, on the two guns CS2 gives one (Glock-18, FAMAS).</summary>
+        public bool BurstMode;
+        /// <summary>Shots still owed by the burst in progress, and when the next is due.</summary>
+        public int BurstRemaining;
+        public double BurstNextAt = -1;
         public bool HintShown;
         public int LastValue = int.MinValue;
         /// <summary>Sounds due at a game time: the magazine, bolt and screw noises inside a clip.</summary>
@@ -51,13 +56,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         ["m4a1s:detach"] = [(1.0f, "m4a1s_silencer_screw_1"), (1.4f, "m4a1s_silencer_screw_2"), (1.8f, "m4a1s_silencer_screw_3"), (2.2f, "m4a1s_silencer_screw_4"), (2.6f, "m4a1s_silencer_screw_5"), (3.07f, "m4a1s_silencer_screw_off_end"), (4.13f, "m4a1s_silencer_off")],
     };
     /// <summary>Random variants shipped per event name (name_1 .. name_n).</summary>
-    static readonly Dictionary<string, int> s_variants = new(StringComparer.Ordinal) {
-        // CS2 soundevents (local export, 2026-09-04): Weapon_AK47.Single = ak47_01/02/04;
-        // Weapon_M4A1.Single (the M4A1-S without its silencer) = m4a1_01..04, the same files as the
-        // M4A4; Weapon_M4A1.Silenced = m4a1_silencer_01; Weapon_AWP.Single = awp_01/02; the AWP's
-        // zoom in and out both play zoom.wav. Files are CS2's own WAVs re-encoded mono.
-        ["ak47_fire"] = 3, ["awp_fire"] = 2, ["m4a1s_fire"] = 4, ["m4a1s_fire_silenced"] = 1,
-    };
+    /// <summary>
+    /// How many numbered files a cue ships, read from cs2_sound_variants.json, which
+    /// tools/install_gun_sounds_cs2.py writes by counting the OGGs it installed.
+    ///
+    /// It used to be a table here, so adding a gun's sounds meant editing this file as
+    /// well, and a count that disagreed with what shipped asked the engine for a file
+    /// that is not there.
+    /// </summary>
+    static readonly Dictionary<string, int> s_variants = Cs2SoundVariants.All;
 
     void Schedule(GunState state, string spec, string clip, double startedAt, bool silenced = false) {
         string key = $"{spec}:{clip}";
@@ -387,7 +394,23 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             return;
         }
 
-        if (!busy && wantsFire && rounds > 0 && now >= state.NextShot) {
+        // The rest of a burst fires on its own clock and does not ask the trigger
+        // again: CS2's burst is committed once started, and stops only when the
+        // magazine runs out.
+        if (state.BurstRemaining > 0 && state.BurstNextAt >= 0 && now >= state.BurstNextAt) {
+            if (busy || rounds <= 0) {
+                state.BurstRemaining = 0;
+                state.BurstNextAt = -1;
+            }
+            else {
+                state.BurstRemaining--;
+                state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
+                Fire(player, state, model, spec, value, data, rounds, input);
+                return;
+            }
+        }
+
+        if (!busy && wantsFire && rounds > 0 && now >= state.NextShot && state.BurstRemaining == 0) {
             Fire(player, state, model, spec, value, data, rounds, input);
         }
 
@@ -398,7 +421,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input) {
         double now = m_time.GameTime;
-        state.NextShot = now + spec.CycleSeconds;
+        // A burst costs its own cycle time once, not one per round: CS2's Glock-18
+        // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55
+        // against 0.09. The remaining rounds are scheduled at m_flTimeBetweenBurstShots.
+        bool startingBurst = state.BurstMode && spec.HasBurstMode && state.BurstRemaining == 0;
+        if (startingBurst) {
+            state.NextShot = now + spec.BurstCycleSeconds;
+            state.BurstRemaining = Math.Max(0, spec.BurstShots - 1);
+            state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
+        }
+        else if (state.BurstRemaining == 0) {
+            state.NextShot = now + spec.CycleSeconds;
+        }
         rounds--;
         value = WriteData(player, value, GunSpec.SetRounds(data, rounds));
         bool silenced = spec.HasSilencer && !GunSpec.GetSilencerOff(data);
@@ -431,41 +465,47 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         float spread = Cs2Weapons.SpreadDegrees(spec.Name, alternate,
             player.ComponentBody.Velocity.Length(),
             spec.SpreadDegrees * (state.Zoom > 0 ? 0.35f : 1f));
-        Vector3 direction = Scatter(ray.Direction, spread);
-        Vector3 start = ray.Position;
-        Vector3 end = start + direction * spec.RangeBlocks;
-        BodyRaycastResult? body = m_bodies.Raycast(start, end, 0.35f, (b, d) => b != player.ComponentBody && b.Entity != player.Entity);
-        TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
-        // The tracer runs the shot line, stopping at whatever the bullet hit.
-        float travel = spec.RangeBlocks;
-        if (body.HasValue) travel = MathUtils.Min(travel, body.Value.Distance);
-        if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
-        // The tracer leaves the muzzle the player can see, not the hit-detection ray's
-        // origin at the eye. The weapon is drawn in CS2's viewmodel projection, so the
-        // renderer solves for a world point that lands on the drawn muzzle under the
-        // game camera; without one - no cs2 profile, or the gun not drawn this frame -
-        // the shot ray's origin is used, which is what every earlier version did.
-        Vector3 impact = start + direction * travel;
-        Vector3 tracerStart = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, silenced, out Vector3 muzzle)
-            ? muzzle : start;
-        Vector3 tracerDirection = impact - tracerStart;
-        float tracerTravel = tracerDirection.Length();
-        if (tracerTravel > 1e-3f) QueueTracer(spec.Name, tracerStart, tracerDirection / tracerTravel, tracerTravel);
-        if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
-            Vector3 hitPoint = body.Value.HitPoint();
-            // CS damage falls off with distance: damage * RangeModifier^(units/500).
-            float power = Cs2Weapons.DamageAt(spec.Name, body.Value.Distance, spec.AttackPower);
-            ComponentMiner.AttackBody(body.Value.ComponentBody, player, hitPoint, direction, power, false);
-        }
-        else if (terrain.HasValue) {
-            Vector3 hitPoint = start + direction * terrain.Value.Distance;
-            int hitValue = terrain.Value.Value;
-            int contents = Terrain.ExtractContents(hitValue);
-            Block block = BlocksManager.Blocks[contents];
-            int slot = block.GetFaceTextureSlot(terrain.Value.CellFace.Face, hitValue);
-            m_particles.AddParticleSystem(new BlockDebrisParticleSystem(m_terrain, hitPoint, 0.45f, 1f, Color.White, slot));
-            string material = block.GetSoundMaterialName(m_terrain, hitValue);
-            if (!string.IsNullOrEmpty(material)) m_audio.PlayRandomSound("Audio/Impacts/" + material, 0.7f, m_random.Float(-0.2f, 0.2f), hitPoint, 6f, true);
+        // A shotgun fires m_nNumBullets pellets on one trigger pull, each with its own
+        // scatter: Nova 9, MAG-7 and Sawed-Off 8, XM1014 6. Every other gun is 1, and
+        // the body below is then exactly the single shot it always was.
+        int pellets = Math.Max(1, spec.Pellets);
+        for (int pellet = 0; pellet < pellets; pellet++) {
+            Vector3 direction = Scatter(ray.Direction, spread);
+            Vector3 start = ray.Position;
+            Vector3 end = start + direction * spec.RangeBlocks;
+            BodyRaycastResult? body = m_bodies.Raycast(start, end, 0.35f, (b, d) => b != player.ComponentBody && b.Entity != player.Entity);
+            TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
+            // The tracer runs the shot line, stopping at whatever the bullet hit.
+            float travel = spec.RangeBlocks;
+            if (body.HasValue) travel = MathUtils.Min(travel, body.Value.Distance);
+            if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
+            // The tracer leaves the muzzle the player can see, not the hit-detection ray's
+            // origin at the eye. The weapon is drawn in CS2's viewmodel projection, so the
+            // renderer solves for a world point that lands on the drawn muzzle under the
+            // game camera; without one - no cs2 profile, or the gun not drawn this frame -
+            // the shot ray's origin is used, which is what every earlier version did.
+            Vector3 impact = start + direction * travel;
+            Vector3 tracerStart = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, silenced, out Vector3 muzzle)
+                ? muzzle : start;
+            Vector3 tracerDirection = impact - tracerStart;
+            float tracerTravel = tracerDirection.Length();
+            if (tracerTravel > 1e-3f) QueueTracer(spec.Name, tracerStart, tracerDirection / tracerTravel, tracerTravel);
+            if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
+                Vector3 hitPoint = body.Value.HitPoint();
+                // CS damage falls off with distance: damage * RangeModifier^(units/500).
+                float power = Cs2Weapons.DamageAt(spec.Name, body.Value.Distance, spec.AttackPower);
+                ComponentMiner.AttackBody(body.Value.ComponentBody, player, hitPoint, direction, power, false);
+            }
+            else if (terrain.HasValue) {
+                Vector3 hitPoint = start + direction * terrain.Value.Distance;
+                int hitValue = terrain.Value.Value;
+                int contents = Terrain.ExtractContents(hitValue);
+                Block block = BlocksManager.Blocks[contents];
+                int slot = block.GetFaceTextureSlot(terrain.Value.CellFace.Face, hitValue);
+                m_particles.AddParticleSystem(new BlockDebrisParticleSystem(m_terrain, hitPoint, 0.45f, 1f, Color.White, slot));
+                string material = block.GetSoundMaterialName(m_terrain, hitValue);
+                if (!string.IsNullOrEmpty(material)) m_audio.PlayRandomSound("Audio/Impacts/" + material, 0.7f, m_random.Float(-0.2f, 0.2f), hitPoint, 6f, true);
+            }
         }
     }
 
@@ -498,6 +538,19 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             gun.RescopeAt = -1;
             SetZoom(player, gun, spec, gun.Zoom >= spec.ZoomLevels.Length ? 0 : gun.Zoom + 1);
             PlaySound(player, gun.Zoom > 0 ? $"{spec.Name}_zoom" : $"{spec.Name}_zoom_out");
+        }
+        else if (spec.HasBurstMode && !busy) {
+            // CS2 switches the Glock-18 and the FAMAS between semi-automatic and a
+            // three-round burst on the same key that scopes a rifle and unscrews a
+            // silencer. No weapon has two of the three, so they cannot collide.
+            gun.BurstMode = !gun.BurstMode;
+            gun.BurstRemaining = 0;
+            gun.BurstNextAt = -1;
+            PlaySound(player, "auto_semiauto_switch");
+            player.ComponentGui.DisplaySmallMessage(
+                LanguageControl.Get("ScCsgoKnives", "Message",
+                                    gun.BurstMode ? "BurstOn" : "BurstOff"),
+                Color.White, true, false);
         }
         else if (spec.HasSilencer && !busy) {
             bool off = GunSpec.GetSilencerOff(Terrain.ExtractData(value));

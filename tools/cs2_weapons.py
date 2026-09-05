@@ -34,14 +34,30 @@ DATA = ROOT / "src/ScCsgoKnives/AnimationData"
 VDATA = (Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"
          / "01_weapon_data/firearm_blocks")
 
-GUNS = {"ak47": "weapon_ak47", "m4a1s": "weapon_m4a1_silencer", "awp": "weapon_awp"}
+# mod name -> the vdata block. All 35 CS2 ships, so a gun's numbers are ready before
+# the port reaches it; the mod only draws the ones GunSpec lists.
+GUNS = {
+    "ak47": "weapon_ak47", "m4a1s": "weapon_m4a1_silencer", "awp": "weapon_awp",
+    "aug": "weapon_aug", "bizon": "weapon_bizon", "cz75a": "weapon_cz75a",
+    "deagle": "weapon_deagle", "elite": "weapon_elite", "famas": "weapon_famas",
+    "fiveseven": "weapon_fiveseven", "g3sg1": "weapon_g3sg1", "galilar": "weapon_galilar",
+    "glock18": "weapon_glock", "hkp2000": "weapon_hkp2000", "m249": "weapon_m249",
+    "m4a4": "weapon_m4a1", "mac10": "weapon_mac10", "mag7": "weapon_mag7",
+    "mp5sd": "weapon_mp5sd", "mp7": "weapon_mp7", "mp9": "weapon_mp9",
+    "negev": "weapon_negev", "nova": "weapon_nova", "p250": "weapon_p250",
+    "p90": "weapon_p90", "revolver": "weapon_revolver", "sawedoff": "weapon_sawedoff",
+    "scar20": "weapon_scar20", "sg556": "weapon_sg556", "ssg08": "weapon_ssg08",
+    "taser": "weapon_taser", "tec9": "weapon_tec9", "ump45": "weapon_ump45",
+    "usp_silencer": "weapon_usp_silencer", "xm1014": "weapon_xm1014",
+}
 
 SCALAR = ["m_nDamage", "m_iMaxClip1", "m_nPrimaryReserveAmmoMax", "m_flCycleTime",
           "m_flRange", "m_flRangeModifier", "m_flArmorRatio", "m_flHeadshotMultiplier",
           "m_flPenetration", "m_flRecoveryTimeStand", "m_flRecoveryTimeCrouch",
           "m_flRecoveryTimeStandFinal", "m_nRecoilSeed", "m_nZoomFOV1", "m_nZoomFOV2",
           "m_nZoomLevels", "m_flDeployDuration", "m_flKillAward",
-          "m_flZoomTime0", "m_flZoomTime1", "m_flZoomTime2"]
+          "m_flZoomTime0", "m_flZoomTime1", "m_flZoomTime2",
+          "m_nNumBullets", "m_flCycleTimeWhenInBurstMode", "m_flTimeBetweenBurstShots"]
 PAIRS = ["m_flSpread", "m_flInaccuracyStand", "m_flInaccuracyCrouch", "m_flInaccuracyMove",
          "m_flInaccuracyFire", "m_flInaccuracyJump", "m_flRecoilAngle",
          "m_flRecoilAngleVariance", "m_flRecoilMagnitude", "m_flRecoilMagnitudeVariance",
@@ -52,13 +68,50 @@ PAIRS = ["m_flSpread", "m_flInaccuracyStand", "m_flInaccuracyCrouch", "m_flInacc
 AK_KICK_PITCH_DEGREES = 1.6
 
 
+def prefab_text(name: str) -> str:
+    """One `<name> = { ... }` block out of the source weapons.vdata."""
+    source = VDATA.parent / "source/weapons.vdata"
+    if not source.exists():
+        return ""
+    whole = source.read_text("utf-8", "replace")
+    start = whole.find("\n%s = " % name)
+    if start < 0:
+        start = whole.find("%s = " % name)
+        if start < 0:
+            return ""
+    depth = 0
+    for i in range(start, len(whole)):
+        if whole[i] == "{":
+            depth += 1
+        elif whole[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return whole[start:i + 1]
+    return ""
+
+
 def read(stem: str) -> dict:
     text = (VDATA / (stem + ".vdata")).read_text("utf-8", "replace")
+    # Five guns - Five-SeveN, Glock-18, P250, Revolver, Taser - leave m_flCycleTime and
+    # sometimes more to their `_base` prefab, so the prefab is appended and the firearm
+    # block searched first. Every regex below takes the first match.
+    base = re.search(r'_base\s*=\s*"([^"]+)"', text)
+    if base:
+        text = text + "\n" + prefab_text(base.group(1))
     out = {}
     for name in SCALAR:
+        # Some of these are written as a pair - the Glock's cycle time is
+        # [ 0.15, 0.3 ], primary then burst-mode secondary - so a bare number is tried
+        # first and the first element of a list second. Five guns need it:
+        # Five-SeveN, Glock-18, P250, Revolver and the Taser.
         m = re.search(r"%s\s*=\s*([\d.\-]+)" % re.escape(name), text)
         if m:
             out[name] = float(m.group(1))
+            continue
+        m = re.search(r"%s\s*=\s*\[\s*([\d.\-]+)" % re.escape(name), text)
+        if m:
+            out[name] = float(m.group(1))
+            out[name + "_isPair"] = True
     for name in PAIRS:
         m = re.search(r"%s\s*=\s*\[([^\]]*)\]" % re.escape(name), text)
         if m:
@@ -67,6 +120,18 @@ def read(stem: str) -> dict:
     out["m_bIsFullAuto"] = m.group(1) == "true" if m else None
     m = re.search(r"m_bHideViewModelWhenZoomed\s*=\s*(true|false)", text)
     out["m_bHideViewModelWhenZoomed"] = m.group(1) == "true" if m else None
+    m = re.search(r"m_bHasBurstMode\s*=\s*(true|false)", text)
+    out["m_bHasBurstMode"] = m.group(1) == "true" if m else None
+    m = re.search(r'm_eSilencerType\s*=\s*"(\w+)"', text)
+    out["m_eSilencerType"] = m.group(1) if m else None
+    # The sound events CS2 plays. SPECIAL1 is the silenced shot on the two detachable
+    # silencers and on the integrated MP5-SD, where it repeats the unsilenced entry.
+    block = re.search(r"m_aShootSounds\s*=\s*\{(.*?)\n\t*\}", text, re.S)
+    sounds = {}
+    if block:
+        for key, value in re.findall(r'(WEAPON_SOUND_\w+)\s*=\s*soundevent:"([^"]+)"', block.group(1)):
+            sounds.setdefault(key, value)
+    out["m_aShootSounds"] = sounds
     return out
 
 
@@ -81,9 +146,13 @@ def main():
 
     guns = {}
     for gun, v in raw.items():
-        spread, alt_spread = v["m_flSpread"][0], v["m_flSpread"][-1]
-        stand, alt_stand = v["m_flInaccuracyStand"][0], v["m_flInaccuracyStand"][-1]
-        magnitude, alt_magnitude = v["m_flRecoilMagnitude"][0], v["m_flRecoilMagnitude"][-1]
+        # The Taser is not a firearm and CS2 gives it no spread, inaccuracy, recoil or
+        # move speed. Those read as zero rather than being invented, and the derived
+        # degrees below come out zero with them.
+        pair = lambda k: v.get(k) or [0.0, 0.0]
+        spread, alt_spread = pair("m_flSpread")[0], pair("m_flSpread")[-1]
+        stand, alt_stand = pair("m_flInaccuracyStand")[0], pair("m_flInaccuracyStand")[-1]
+        magnitude, alt_magnitude = pair("m_flRecoilMagnitude")[0], pair("m_flRecoilMagnitude")[-1]
         guns[gun] = {
             "Damage": v["m_nDamage"],
             "HeadshotMultiplier": v["m_flHeadshotMultiplier"],
@@ -95,7 +164,20 @@ def main():
             "FullAuto": v["m_bIsFullAuto"],
             "RangeUnits": v["m_flRange"],
             "RangeModifier": v["m_flRangeModifier"],
-            "MaxSpeed": v["m_flMaxSpeed"],
+            "MaxSpeed": v.get("m_flMaxSpeed") or [0.0],
+            # Pellets per shot: 1 for everything but the shotguns (Nova 9, MAG-7 and
+            # Sawed-Off 8, XM1014 6).
+            "Pellets": int(v.get("m_nNumBullets") or 1),
+            # Burst mode exists on exactly two guns. CS2 carries the burst's cycle time
+            # and the gap between its shots but not how many shots it fires; three is
+            # Counter-Strike's long-standing burst and is marked as the assumption.
+            "HasBurstMode": bool(v.get("m_bHasBurstMode")),
+            "BurstCycleSeconds": v.get("m_flCycleTimeWhenInBurstMode"),
+            "BurstShotSeconds": v.get("m_flTimeBetweenBurstShots"),
+            "BurstShotsAssumed": 3 if v.get("m_bHasBurstMode") else 0,
+            # WEAPONSILENCER_NONE / _DETACHABLE (M4A1-S, USP-S) / _INTEGRATED (MP5-SD).
+            "SilencerType": v.get("m_eSilencerType"),
+            "ShootSounds": v.get("m_aShootSounds") or {},
             "ZoomFov": [v.get("m_nZoomFOV1"), v.get("m_nZoomFOV2")],
             "ZoomLevels": int(v.get("m_nZoomLevels", 0)),
             # How long CS2 takes to interpolate to each zoomed FOV. The AWP's is 0.05
@@ -105,19 +187,19 @@ def main():
             # magnified with no scope drawn.
             "ZoomSeconds": [v.get("m_flZoomTime0"), v.get("m_flZoomTime1"), v.get("m_flZoomTime2")],
             "HideViewModelWhenZoomed": v.get("m_bHideViewModelWhenZoomed"),
-            "RecoveryTimeStand": v["m_flRecoveryTimeStand"],
+            "RecoveryTimeStand": v.get("m_flRecoveryTimeStand", 0.0),
             "RecoilSeed": v.get("m_nRecoilSeed"),
-            "RecoilAngleVariance": v["m_flRecoilAngleVariance"],
-            "RecoilMagnitude": v["m_flRecoilMagnitude"],
+            "RecoilAngleVariance": pair("m_flRecoilAngleVariance"),
+            "RecoilMagnitude": pair("m_flRecoilMagnitude"),
             # Converted, with the reasoning in this file's docstring.
             "SpreadDegrees": round(math.degrees(math.atan(spread + stand)), 5),
             "SpreadDegreesAlternate": round(math.degrees(math.atan(alt_spread + alt_stand)), 5),
-            "MoveSpreadDegrees": round(math.degrees(math.atan(spread + v["m_flInaccuracyMove"][0])), 5),
+            "MoveSpreadDegrees": round(math.degrees(math.atan(spread + pair("m_flInaccuracyMove")[0])), 5),
             "KickPitchDegrees": round(magnitude * kick_per_unit, 5),
             "KickPitchDegreesAlternate": round(alt_magnitude * kick_per_unit, 5),
             "KickYawDegrees": round(magnitude * kick_per_unit
-                                    * math.sin(math.radians(v["m_flRecoilAngleVariance"][0] / 2)), 5),
-            "KickRecoverPerSecond": round(1.0 / v["m_flRecoveryTimeStand"], 5),
+                                    * math.sin(math.radians(pair("m_flRecoilAngleVariance")[0] / 2)), 5),
+            "KickRecoverPerSecond": round(1.0 / v["m_flRecoveryTimeStand"], 5) if v.get("m_flRecoveryTimeStand") else 0.0,
             "Raw": v,
         }
         g = guns[gun]

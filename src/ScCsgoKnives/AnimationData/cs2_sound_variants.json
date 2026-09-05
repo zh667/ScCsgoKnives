@@ -1,0 +1,20 @@
+{
+ "Format": "ScCsgoKnives.SoundVariants/1",
+ "Notes": "How many numbered files each cue ships, counted from the installed OGGs rather than kept in a table: adding a gun's sounds used to need a code edit as well, and a wrong count plays a file that is not there.",
+ "Variants": {
+  "ak47_fire": 3,
+  "awp_fire": 2,
+  "deagle_fire": 2,
+  "famas_fire": 3,
+  "glock18_fire": 1,
+  "m4a1s_fire": 4,
+  "m4a1s_fire_silenced": 1,
+  "m4a1s_silencer_screw": 5,
+  "m4a4_fire": 2,
+  "mp9_fire": 4,
+  "p90_fire": 2,
+  "ssg08_fire": 1,
+  "usp_silencer_fire": 3,
+  "usp_silencer_fire_silenced": 3
+ }
+}

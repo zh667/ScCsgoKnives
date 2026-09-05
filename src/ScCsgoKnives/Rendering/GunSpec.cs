@@ -21,7 +21,24 @@ public sealed class GunSpec {
     public float KickPitchDegrees, KickYawDegrees, KickRecoverPerSecond;
     /// <summary>Random cone half-angle in degrees for the hit ray.</summary>
     public float SpreadDegrees;
+    /// <summary>A detachable silencer, the M4A1-S and USP-S; the MP5-SD's is integrated.</summary>
     public bool HasSilencer;
+    /// <summary>Fired permanently silenced - CS2's WEAPONSILENCER_INTEGRATED, only the MP5-SD.</summary>
+    public bool SilencedAlways;
+    /// <summary>
+    /// Pellets per shot. 1 for everything but the shotguns: Nova 9, MAG-7 and
+    /// Sawed-Off 8, XM1014 6, from m_nNumBullets.
+    /// </summary>
+    public int Pellets = 1;
+    /// <summary>
+    /// A three-round burst on the fire-mode key. Only the Glock-18 and the FAMAS have
+    /// one. CS2 gives the burst's cycle and the gap between its shots but not the count;
+    /// three is Counter-Strike's burst and the one estimate here.
+    /// </summary>
+    public bool HasBurstMode;
+    public float BurstCycleSeconds;
+    public float BurstShotSeconds;
+    public int BurstShots = 3;
     /// <summary>Scope magnifications; empty for iron sights only.</summary>
     public float[] ZoomLevels = [];
     public string MuzzleBone = "muzzle";
@@ -44,6 +61,9 @@ public sealed class GunSpec {
             Name = "m4a1s", Magazine = 20, CycleSeconds = 0.1f, Automatic = true, AttackPower = 38f,
             KickPitchDegrees = 1.15f, KickYawDegrees = 0.35f, KickRecoverPerSecond = 9f, SpreadDegrees = 0.3f, HasSilencer = true,
         },
+        // Everything below is CS2 weapons.vdata, read by tools/cs2_weapons.py and
+        // reproduced here so GunSpec stays the single gameplay table. Appended only -
+        // the index is the saved variant number, see FrozenOrder.
         new() {
             // CS2 weapons.vdata (local extract 2026-09-04): m_flCycleTime 1.455, m_nDamage 115,
             // m_iMaxClip1 5. Scope: m_nZoomFOV1 40, m_nZoomFOV2 10 against CS2's 90 base, i.e.
@@ -51,6 +71,52 @@ public sealed class GunSpec {
             Name = "awp", Magazine = 5, CycleSeconds = 1.455f, Automatic = false, AttackPower = 115f,
             KickPitchDegrees = 6f, KickYawDegrees = 1f, KickRecoverPerSecond = 6f, SpreadDegrees = 0.1f,
             ZoomLevels = [2.25f, 9f],
+        },
+        // ---- appended 2026-09-05, all values from CS2 weapons.vdata ----
+        new() {
+            Name = "deagle", Magazine = 7, CycleSeconds = 0.225f, Automatic = false, AttackPower = 53f,
+            KickPitchDegrees = 2.571f, KickYawDegrees = 1.285f, KickRecoverPerSecond = 1.23f,
+            SpreadDegrees = 0.3552f,
+        },
+        new() {
+            // Burst: m_flCycleTimeWhenInBurstMode 0.5, m_flTimeBetweenBurstShots 0.05.
+            Name = "glock18", Magazine = 20, CycleSeconds = 0.15f, Automatic = false, AttackPower = 30f,
+            KickPitchDegrees = 0.960f, KickYawDegrees = 0.167f, KickRecoverPerSecond = 5.00f,
+            SpreadDegrees = 0.4354f,
+            HasBurstMode = true, BurstCycleSeconds = 0.5f, BurstShotSeconds = 0.05f,
+        },
+        new() {
+            Name = "usp_silencer", Magazine = 12, CycleSeconds = 0.17f, Automatic = false, AttackPower = 35f,
+            KickPitchDegrees = 1.547f, KickYawDegrees = 0f, KickRecoverPerSecond = 2.86f,
+            SpreadDegrees = 0.4240f, HasSilencer = true,
+        },
+        new() {
+            Name = "m4a4", Magazine = 30, CycleSeconds = 0.09f, Automatic = true, AttackPower = 33f,
+            KickPitchDegrees = 1.227f, KickYawDegrees = 0.704f, KickRecoverPerSecond = 2.95f,
+            SpreadDegrees = 0.3151f,
+        },
+        new() {
+            // Burst: 0.55 cycle, 0.075 between shots.
+            Name = "famas", Magazine = 25, CycleSeconds = 0.09f, Automatic = true, AttackPower = 30f,
+            KickPitchDegrees = 1.067f, KickYawDegrees = 0.533f, KickRecoverPerSecond = 4.00f,
+            SpreadDegrees = 0.4692f,
+            HasBurstMode = true, BurstCycleSeconds = 0.55f, BurstShotSeconds = 0.075f,
+        },
+        new() {
+            Name = "mp9", Magazine = 30, CycleSeconds = 0.07f, Automatic = true, AttackPower = 26f,
+            KickPitchDegrees = 1.120f, KickYawDegrees = 0.642f, KickRecoverPerSecond = 3.88f,
+            SpreadDegrees = 0.5500f,
+        },
+        new() {
+            Name = "p90", Magazine = 50, CycleSeconds = 0.07f, Automatic = true, AttackPower = 26f,
+            KickPitchDegrees = 0.853f, KickYawDegrees = 0.489f, KickRecoverPerSecond = 2.69f,
+            SpreadDegrees = 0.8393f,
+        },
+        new() {
+            // m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6.
+            Name = "ssg08", Magazine = 10, CycleSeconds = 1.25f, Automatic = false, AttackPower = 88f,
+            KickPitchDegrees = 1.760f, KickYawDegrees = 0.306f, KickRecoverPerSecond = 7.04f,
+            SpreadDegrees = 1.8317f, ZoomLevels = [2.25f, 6f],
         },
     ];
 

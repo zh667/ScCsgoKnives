@@ -47,9 +47,37 @@ EXPORT = (Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"
           / "04_current_weapon_materials/weapons/models")
 OUT = ROOT / "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives"
 
-GUNS = {"ak47": ("ak47", "weapon_rif_ak47.vmat"),
-        "m4a1s": ("m4a1_silencer", "weapon_rif_m4a1_silencer.vmat"),
-        "awp": ("awp", "weapon_snip_awp.vmat")}
+# gun -> its export directory. The VMAT is discovered inside it rather than named:
+# CS2's file names do not follow the gun name (glock18's is weapon_pist_glock.vmat),
+# and every directory holds exactly one weapon_*.vmat.
+GUNS = {
+    "ak47": "ak47", "m4a1s": "m4a1_silencer", "awp": "awp",
+    "cz75a": "cz75a", "deagle": "deagle", "elite": "elite", "fiveseven": "fiveseven",
+    "glock18": "glock18", "hkp2000": "hkp2000", "p250": "p250", "revolver": "revolver",
+    "taser": "taser", "tec9": "tec9", "usp_silencer": "usp_silencer",
+    "aug": "aug", "famas": "famas", "galilar": "galilar", "m4a4": "m4a4", "sg556": "sg556",
+    "bizon": "bizon", "mac10": "mac10", "mp5sd": "mp5sd", "mp7": "mp7", "mp9": "mp9",
+    "p90": "p90", "ump45": "ump45",
+    "mag7": "mag7", "nova": "nova", "sawedoff": "sawedoff", "xm1014": "xm1014",
+    "m249": "m249", "negev": "negev",
+    "g3sg1": "g3sg1", "scar20": "scar20", "ssg08": "ssg08",
+}
+
+
+def find_vmat(vmat_dir: Path) -> Path:
+    """The gun's body material.
+
+    Three guns carry a second one for a part with its own shader - the AUG's and
+    SG 553's scope lens, the Taser's charge meter - and the body is always the one
+    whose name has no extra suffix, i.e. the shortest. Those extra materials are not
+    installed: the mod draws the whole gun with one texture set, so a lens ends up
+    with the body's, which is what the three shipped guns already do.
+    """
+    hits = sorted(vmat_dir.glob("weapon_*.vmat"), key=lambda p: (len(p.name), p.name))
+    if not hits:
+        raise SystemExit("%s: no weapon_*.vmat" % vmat_dir)
+    return hits[0]
+
 
 BINDINGS = ["TextureColor1", "TextureAmbientOcclusion", "TextureRoughness1",
             "TextureMetalness1", "TextureNormal"]
@@ -85,9 +113,10 @@ def resolve(vmat_dir: Path, value: str) -> Path:
 
 
 def install(gun: str, size: int, write=True) -> dict:
-    directory, vmat_name = GUNS[gun]
-    vmat_dir = EXPORT / directory / "materials"
-    vmat = read_vmat(vmat_dir / vmat_name)
+    vmat_dir = EXPORT / GUNS[gun] / "materials"
+    vmat_path = find_vmat(vmat_dir)
+    vmat_name = vmat_path.name
+    vmat = read_vmat(vmat_path)
     missing = [b for b in BINDINGS if b not in vmat]
     if missing:
         raise SystemExit("%s: %s binds no %s" % (gun, vmat_name, ", ".join(missing)))

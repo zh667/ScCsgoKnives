@@ -23,6 +23,7 @@ namespace Game;
 /// now publishes LoadError and this fails on any of them.
 /// </summary>
 public static class Cs2SelfTest {
+    /// <summary>The three that predate the rigid-parts pipeline; they use OBJ mesh parts.</summary>
     static readonly string[] Guns = ["ak47", "m4a1s", "awp"];
 
     /// <summary>Every alias KnifeAnimationController can pick for a knife.</summary>
@@ -330,6 +331,84 @@ public static class Cs2SelfTest {
               layout.Count == 0
                   ? "old saves read back unchanged, and 64 variants x 0..127 rounds x silencer round-trip in 15 bits"
                   : string.Join("; ", layout.Take(4)));
+
+        Check("load/variants", Cs2SoundVariants.LoadError is null, Cs2SoundVariants.LoadError ?? $"{Cs2SoundVariants.All.Count} cues");
+
+        // Every gun GunSpec lists must be drawable and audible. A gun added to the
+        // table without its rig, its mesh or its sounds would show up in the creative
+        // menu and then draw nothing, which no other check here would catch.
+        foreach (GunSpec spec in GunSpec.All) {
+            string gun = spec.Name;
+            bool legacy = Guns.Contains(gun);
+            Check($"gun/{gun}/rig", Cs2Rig.Has(gun), Cs2Rig.Has(gun) ? "ok" : "no CS2 rig");
+            if (!Cs2Rig.Has(gun)) continue;
+            foreach (string alias in new[] { "deploy", "idle", "shoot", "reload", "inspect" }) {
+                // The Taser has no reload in CS2 and no gun in the table needs one it
+                // has not got; anything else missing is a hole. "shoot" stands for
+                // whichever shot alias the gun uses: the M4A1-S has shootSilenced and
+                // shootUnsilenced where the rest have shoot1.
+                if (alias == "reload" && spec.Magazine <= 0) continue;
+                string[] tried = alias == "shoot"
+                    ? ["shoot1", "shootSilenced", "shootUnsilenced"] : [alias];
+                string found = tried.FirstOrDefault(a => Cs2Rig.HasAlias(gun, a));
+                Check($"gun/{gun}/{alias}", found is not null,
+                      found is not null
+                          ? $"{found} -> {Cs2Rig.ResolvedClip(gun, found)} ({Cs2Rig.Duration(gun, found):0.###} s)"
+                          : $"no clip for any of [{string.Join(',', tried)}]");
+            }
+            if (spec.HasSilencer) {
+                foreach (string alias in new[] { "attach", "detach" })
+                    Check($"gun/{gun}/{alias}", Cs2Rig.HasAlias(gun, alias),
+                          Cs2Rig.ResolvedClip(gun, alias) ?? "no clip");
+            }
+            // Mesh: the first three ship OBJ parts, the rest a .cs2.parts.
+            if (legacy) {
+                Check($"gun/{gun}/mesh", Cs2Rig.GetMeshParts(gun).Count > 0,
+                      $"{Cs2Rig.GetMeshParts(gun).Count} OBJ parts");
+            }
+            else {
+                Cs2RigidMesh mesh = Cs2RigidMesh.For(gun);
+                Check($"gun/{gun}/mesh", mesh is not null,
+                      mesh is null ? "no .cs2.parts"
+                      : $"{mesh.VertexCount} vertices, {mesh.Parts.Length} parts, "
+                        + $"{mesh.BlendedTriangleCount} blended triangles");
+                if (mesh is not null) {
+                    Cs2Rig.Pose pose = Cs2Rig.Sample(gun, "idle", 0f);
+                    bool posed = pose is not null && mesh.SetPose(pose, Cs2Placement.Placement());
+                    Check($"gun/{gun}/pose", posed, posed ? "joints resolved" : "no joint resolved");
+                    // Every part must get a matrix. A bone the clips do not animate -
+                    // the M4A4's sight - falls back to the weapon root, which is
+                    // correct for a rigid attachment and is reported so the
+                    // substitution stays visible; a part with no matrix at all would
+                    // simply not be drawn.
+                    var orphans = mesh.Parts.Where(p => !mesh.TryPartWorld(p, out _))
+                                            .Select(p => mesh.Joints[p.Joint]).ToArray();
+                    Check($"gun/{gun}/bones", posed && orphans.Length == 0,
+                          orphans.Length > 0 ? $"no matrix for [{string.Join(',', orphans)}]"
+                          : mesh.Substituted.Length == 0 ? "every part's bone is animated"
+                          : $"on the weapon root: [{string.Join(',', mesh.Substituted)}]");
+                }
+            }
+            // Sound: the fire cue has to exist in the shipped variant table.
+            string fire = $"{gun}_fire";
+            Check($"gun/{gun}/sound", Cs2SoundVariants.All.ContainsKey(fire),
+                  Cs2SoundVariants.All.TryGetValue(fire, out int n) ? $"{n} fire variants"
+                  : "no fire sound installed");
+            if (spec.HasSilencer)
+                Check($"gun/{gun}/sound.silenced",
+                      Cs2SoundVariants.All.ContainsKey($"{gun}_fire_silenced"),
+                      Cs2SoundVariants.All.TryGetValue($"{gun}_fire_silenced", out int m)
+                          ? $"{m} silenced variants" : "no silenced fire sound");
+            // Burst is CS2's, not ours: only two guns have one and both need its timing.
+            Cs2Weapons.Gun data = Cs2Weapons.Get(gun);
+            if (data is not null)
+                Check($"gun/{gun}/burst", spec.HasBurstMode == data.HasBurstMode
+                          && (!spec.HasBurstMode || (spec.BurstCycleSeconds > 0f && spec.BurstShotSeconds > 0f)),
+                      spec.HasBurstMode
+                          ? $"{spec.BurstShots} rounds, {spec.BurstCycleSeconds:0.###} s cycle, "
+                            + $"{spec.BurstShotSeconds:0.###} s apart"
+                          : "no burst, matching the vdata");
+        }
 
         Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
         Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,

@@ -20,6 +20,16 @@
     215.0,
     215.0
    ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_AK47.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
    "ZoomFov": [
     90.0,
     90.0
@@ -69,6 +79,9 @@
     "m_flZoomTime0": 0.0,
     "m_flZoomTime1": 0.0,
     "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
     "m_flSpread": [
      0.0006,
      0.0006
@@ -114,7 +127,13 @@
      215.0
     ],
     "m_bIsFullAuto": true,
-    "m_bHideViewModelWhenZoomed": false
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_AK47.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
    }
   },
   "m4a1s": {
@@ -132,6 +151,17 @@
     225.0,
     225.0
    ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_DETACHABLE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_M4A1.Single",
+    "WEAPON_SOUND_SPECIAL1": "Weapon_M4A1.Silenced",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
    "ZoomFov": [
     90.0,
     90.0
@@ -181,6 +211,9 @@
     "m_flZoomTime0": 0.0,
     "m_flZoomTime1": 0.0,
     "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
     "m_flSpread": [
      0.0006,
      0.0005
@@ -226,7 +259,14 @@
      225.0
     ],
     "m_bIsFullAuto": true,
-    "m_bHideViewModelWhenZoomed": false
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_DETACHABLE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_M4A1.Single",
+     "WEAPON_SOUND_SPECIAL1": "Weapon_M4A1.Silenced",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
    }
   },
   "awp": {
@@ -244,6 +284,18 @@
     200.0,
     100.0
    ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_AWP.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_ZOOM_IN": "Weapon_AWP.Zoom",
+    "WEAPON_SOUND_ZOOM_OUT": "Weapon_AWP.ZoomOut"
+   },
    "ZoomFov": [
     40.0,
     10.0
@@ -293,6 +345,9 @@
     "m_flZoomTime0": 0.05,
     "m_flZoomTime1": 0.05,
     "m_flZoomTime2": 0.05,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
     "m_flSpread": [
      0.0002,
      0.0002
@@ -338,7 +393,4191 @@
      100.0
     ],
     "m_bIsFullAuto": false,
-    "m_bHideViewModelWhenZoomed": true
+    "m_bHideViewModelWhenZoomed": true,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_AWP.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_ZOOM_IN": "Weapon_AWP.Zoom",
+     "WEAPON_SOUND_ZOOM_OUT": "Weapon_AWP.ZoomOut"
+    }
+   }
+  },
+  "aug": {
+   "Damage": 28.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.8,
+   "Penetration": 2.0,
+   "Magazine": 30,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.1,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    220.0,
+    150.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_AUG.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_ZOOM_IN": "Weapon_AUG.ZoomIn",
+    "WEAPON_SOUND_ZOOM_OUT": "Weapon_AUG.ZoomOut"
+   },
+   "ZoomFov": [
+    45.0,
+    90.0
+   ],
+   "ZoomLevels": 1,
+   "ZoomSeconds": [
+    0.06,
+    0.1,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.429727,
+   "RecoilSeed": 24204.0,
+   "RecoilAngleVariance": [
+    60.0,
+    60.0
+   ],
+   "RecoilMagnitude": [
+    24.0,
+    16.0
+   ],
+   "SpreadDegrees": 0.30939,
+   "SpreadDegreesAlternate": 0.22804,
+   "MoveSpreadDegrees": 7.7419,
+   "KickPitchDegrees": 1.28,
+   "KickPitchDegreesAlternate": 0.85333,
+   "KickYawDegrees": 0.64,
+   "KickRecoverPerSecond": 2.32706,
+   "Raw": {
+    "m_nDamage": 28.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.1,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 1.8,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.429727,
+    "m_flRecoveryTimeCrouch": 0.30552,
+    "m_flRecoveryTimeStandFinal": 0.429727,
+    "m_nRecoilSeed": 24204.0,
+    "m_nZoomFOV1": 45.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 1.0,
+    "m_flDeployDuration": 1.16667,
+    "m_flZoomTime0": 0.06,
+    "m_flZoomTime1": 0.1,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0005,
+     0.0003
+    ],
+    "m_flInaccuracyStand": [
+     0.0049,
+     0.00368
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00368,
+     0.00311
+    ],
+    "m_flInaccuracyMove": [
+     0.13545,
+     0.10545
+    ],
+    "m_flInaccuracyFire": [
+     0.00729,
+     0.00729
+    ],
+    "m_flInaccuracyJump": [
+     0.10599,
+     0.10599
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     60.0,
+     60.0
+    ],
+    "m_flRecoilMagnitude": [
+     24.0,
+     16.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flMaxSpeed": [
+     220.0,
+     150.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_AUG.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_ZOOM_IN": "Weapon_AUG.ZoomIn",
+     "WEAPON_SOUND_ZOOM_OUT": "Weapon_AUG.ZoomOut"
+    }
+   }
+  },
+  "bizon": {
+   "Damage": 27.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.26,
+   "Penetration": 1.0,
+   "Magazine": 64,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.08,
+   "FullAuto": true,
+   "RangeUnits": 3600.0,
+   "RangeModifier": 0.8,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_bizon.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.331572,
+   "RecoilSeed": 36387.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    18.0,
+    18.0
+   ],
+   "SpreadDegrees": 0.85937,
+   "SpreadDegreesAlternate": 0.85937,
+   "MoveSpreadDegrees": 1.6365,
+   "KickPitchDegrees": 0.96,
+   "KickPitchDegreesAlternate": 0.96,
+   "KickYawDegrees": 0.55063,
+   "KickRecoverPerSecond": 3.01594,
+   "Raw": {
+    "m_nDamage": 27.0,
+    "m_iMaxClip1": 64.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.08,
+    "m_flRange": 3600.0,
+    "m_flRangeModifier": 0.8,
+    "m_flArmorRatio": 1.26,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.331572,
+    "m_flRecoveryTimeCrouch": 0.236837,
+    "m_flRecoveryTimeStandFinal": 0.331572,
+    "m_nRecoilSeed": 36387.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.1,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.001,
+     0.001
+    ],
+    "m_flInaccuracyStand": [
+     0.014,
+     0.014
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0105,
+     0.0105
+    ],
+    "m_flInaccuracyMove": [
+     0.02757,
+     0.02757
+    ],
+    "m_flInaccuracyFire": [
+     0.00288,
+     0.00288
+    ],
+    "m_flInaccuracyJump": [
+     0.03347,
+     0.03347
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     18.0,
+     18.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_bizon.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "cz75a": {
+   "Damage": 31.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.553,
+   "Penetration": 1.0,
+   "Magazine": 12,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.1,
+   "FullAuto": true,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.85,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_CZ75A.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.2425,
+   "RecoilSeed": 9788.0,
+   "RecoilAngleVariance": [
+    120.0,
+    180.0
+   ],
+   "RecoilMagnitude": [
+    31.0,
+    27.0
+   ],
+   "SpreadDegrees": 0.76944,
+   "SpreadDegreesAlternate": 0.76944,
+   "MoveSpreadDegrees": 0.94014,
+   "KickPitchDegrees": 1.65333,
+   "KickPitchDegreesAlternate": 1.44,
+   "KickYawDegrees": 1.43183,
+   "KickRecoverPerSecond": 4.12371,
+   "Raw": {
+    "m_nDamage": 31.0,
+    "m_iMaxClip1": 12.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.1,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.85,
+    "m_flArmorRatio": 1.553,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.2425,
+    "m_flRecoveryTimeCrouch": 0.2275,
+    "m_flRecoveryTimeStandFinal": 0.345388,
+    "m_nRecoilSeed": 9788.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.83333,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.003,
+     0.003
+    ],
+    "m_flInaccuracyStand": [
+     0.01043,
+     0.01043
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0076,
+     0.0076
+    ],
+    "m_flInaccuracyMove": [
+     0.01341,
+     0.01341
+    ],
+    "m_flInaccuracyFire": [
+     0.035,
+     0.025
+    ],
+    "m_flInaccuracyJump": [
+     0.09296,
+     0.09296
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     120.0,
+     180.0
+    ],
+    "m_flRecoilMagnitude": [
+     31.0,
+     27.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     6.0,
+     12.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_CZ75A.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "deagle": {
+   "Damage": 53.0,
+   "HeadshotMultiplier": 3.9,
+   "ArmorRatio": 1.864,
+   "Penetration": 2.0,
+   "Magazine": 7,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.225,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.85,
+   "MaxSpeed": [
+    230.0,
+    230.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_DEagle.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.8112,
+   "RecoilSeed": 1454.0,
+   "RecoilAngleVariance": [
+    60.0,
+    60.0
+   ],
+   "RecoilMagnitude": [
+    48.200001,
+    48.200001
+   ],
+   "SpreadDegrees": 0.35523,
+   "SpreadDegreesAlternate": 0.35523,
+   "MoveSpreadDegrees": 2.86812,
+   "KickPitchDegrees": 2.57067,
+   "KickPitchDegreesAlternate": 2.57067,
+   "KickYawDegrees": 1.28533,
+   "KickRecoverPerSecond": 1.23274,
+   "Raw": {
+    "m_nDamage": 53.0,
+    "m_iMaxClip1": 7.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.225,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.85,
+    "m_flArmorRatio": 1.864,
+    "m_flHeadshotMultiplier": 3.9,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.8112,
+    "m_flRecoveryTimeCrouch": 0.449927,
+    "m_flRecoveryTimeStandFinal": 0.8112,
+    "m_nRecoilSeed": 1454.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.002
+    ],
+    "m_flInaccuracyStand": [
+     0.0042,
+     0.0042
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00218,
+     0.00218
+    ],
+    "m_flInaccuracyMove": [
+     0.0481,
+     0.0481
+    ],
+    "m_flInaccuracyFire": [
+     0.07223,
+     0.07223
+    ],
+    "m_flInaccuracyJump": [
+     0.04055,
+     0.37155
+    ],
+    "m_flRecoilAngleVariance": [
+     60.0,
+     60.0
+    ],
+    "m_flRecoilMagnitude": [
+     48.200001,
+     48.200001
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     18.0,
+     18.0
+    ],
+    "m_flMaxSpeed": [
+     230.0,
+     230.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_DEagle.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "elite": {
+   "Damage": 38.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.15,
+   "Penetration": 1.0,
+   "Magazine": 30,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.12,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.79,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Elite.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.524989,
+   "RecoilSeed": 24563.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    27.0,
+    27.0
+   ],
+   "SpreadDegrees": 0.51565,
+   "SpreadDegreesAlternate": 0.68752,
+   "MoveSpreadDegrees": 1.13717,
+   "KickPitchDegrees": 1.44,
+   "KickPitchDegreesAlternate": 1.44,
+   "KickYawDegrees": 0.25005,
+   "KickRecoverPerSecond": 1.9048,
+   "Raw": {
+    "m_nDamage": 38.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.12,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.79,
+    "m_flArmorRatio": 1.15,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.524989,
+    "m_flRecoveryTimeCrouch": 0.437491,
+    "m_flRecoveryTimeStandFinal": 0.524989,
+    "m_nRecoilSeed": 24563.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.002
+    ],
+    "m_flInaccuracyStand": [
+     0.007,
+     0.01
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00525,
+     0.0075
+    ],
+    "m_flInaccuracyMove": [
+     0.01785,
+     0.01785
+    ],
+    "m_flInaccuracyFire": [
+     0.01116,
+     0.01196
+    ],
+    "m_flInaccuracyJump": [
+     0.15842,
+     0.15842
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     27.0,
+     27.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     4.0,
+     4.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Elite.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "famas": {
+   "Damage": 30.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.4,
+   "Penetration": 2.0,
+   "Magazine": 25,
+   "ReserveClips": 4,
+   "CycleSeconds": 0.09,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.96,
+   "MaxSpeed": [
+    220.0,
+    220.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": true,
+   "BurstCycleSeconds": 0.55,
+   "BurstShotSeconds": 0.075,
+   "BurstShotsAssumed": 3,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_FAMAS.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.25,
+   "RecoilSeed": 39623.0,
+   "RecoilAngleVariance": [
+    60.0,
+    50.0
+   ],
+   "RecoilMagnitude": [
+    20.0,
+    20.0
+   ],
+   "SpreadDegrees": 0.46924,
+   "SpreadDegreesAlternate": 0.2458,
+   "MoveSpreadDegrees": 5.70719,
+   "KickPitchDegrees": 1.06667,
+   "KickPitchDegreesAlternate": 1.06667,
+   "KickYawDegrees": 0.53333,
+   "KickRecoverPerSecond": 4.0,
+   "Raw": {
+    "m_nDamage": 30.0,
+    "m_iMaxClip1": 25.0,
+    "m_nPrimaryReserveAmmoMax": 4.0,
+    "m_flCycleTime": 0.09,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.96,
+    "m_flArmorRatio": 1.4,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.25,
+    "m_flRecoveryTimeCrouch": 0.12,
+    "m_flRecoveryTimeStandFinal": 0.5,
+    "m_nRecoilSeed": 39623.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.55,
+    "m_flTimeBetweenBurstShots": 0.075,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.00759,
+     0.00369
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0055,
+     0.00325
+    ],
+    "m_flInaccuracyMove": [
+     0.09934,
+     0.09934
+    ],
+    "m_flInaccuracyFire": [
+     0.00605,
+     0.00335
+    ],
+    "m_flInaccuracyJump": [
+     0.11039,
+     0.11039
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     60.0,
+     50.0
+    ],
+    "m_flRecoilMagnitude": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     220.0,
+     220.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": true,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_FAMAS.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "fiveseven": {
+   "Damage": 32.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.823,
+   "Penetration": 1.0,
+   "Magazine": 20,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.15,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.81,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_FiveSeven.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.2,
+   "RecoilSeed": 33244.0,
+   "RecoilAngleVariance": [
+    5.0,
+    5.0
+   ],
+   "RecoilMagnitude": [
+    25.0,
+    25.0
+   ],
+   "SpreadDegrees": 0.63596,
+   "SpreadDegreesAlternate": 0.63596,
+   "MoveSpreadDegrees": 2.40501,
+   "KickPitchDegrees": 1.33333,
+   "KickPitchDegreesAlternate": 1.33333,
+   "KickYawDegrees": 0.05816,
+   "KickRecoverPerSecond": 5.0,
+   "Raw": {
+    "m_nDamage": 32.0,
+    "m_iMaxClip1": 20.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.15,
+    "m_flCycleTime_isPair": true,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.81,
+    "m_flArmorRatio": 1.823,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.2,
+    "m_flRecoveryTimeCrouch": 0.2,
+    "m_flRecoveryTimeStandFinal": 0.5,
+    "m_nRecoilSeed": 33244.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.002
+    ],
+    "m_flInaccuracyStand": [
+     0.0091,
+     0.0091
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00683,
+     0.00683
+    ],
+    "m_flInaccuracyMove": [
+     0.04,
+     0.01341
+    ],
+    "m_flInaccuracyFire": [
+     0.025,
+     0.03245
+    ],
+    "m_flInaccuracyJump": [
+     0.0897,
+     0.0897
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     5.0,
+     5.0
+    ],
+    "m_flRecoilMagnitude": [
+     25.0,
+     25.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     4.0,
+     4.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_FiveSeven.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "g3sg1": {
+   "Damage": 80.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.65,
+   "Penetration": 2.5,
+   "Magazine": 20,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.25,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    215.0,
+    120.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_G3SG1.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_ZOOM_IN": "Weapon_G3SG1.Zoom",
+    "WEAPON_SOUND_ZOOM_OUT": "Weapon_G3SG1.ZoomOut"
+   },
+   "ZoomFov": [
+    40.0,
+    15.0
+   ],
+   "ZoomLevels": 2,
+   "ZoomSeconds": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "HideViewModelWhenZoomed": true,
+   "RecoveryTimeStand": 0.544331,
+   "RecoilSeed": 29908.0,
+   "RecoilAngleVariance": [
+    30.0,
+    30.0
+   ],
+   "RecoilMagnitude": [
+    30.0,
+    30.0
+   ],
+   "SpreadDegrees": 1.49508,
+   "SpreadDegreesAlternate": 0.13178,
+   "MoveSpreadDegrees": 8.57447,
+   "KickPitchDegrees": 1.6,
+   "KickPitchDegreesAlternate": 1.6,
+   "KickYawDegrees": 0.41411,
+   "KickRecoverPerSecond": 1.83712,
+   "Raw": {
+    "m_nDamage": 80.0,
+    "m_iMaxClip1": 20.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.25,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 1.65,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.5,
+    "m_flRecoveryTimeStand": 0.544331,
+    "m_flRecoveryTimeCrouch": 0.388808,
+    "m_flRecoveryTimeStandFinal": 0.544331,
+    "m_nRecoilSeed": 29908.0,
+    "m_nZoomFOV1": 40.0,
+    "m_nZoomFOV2": 15.0,
+    "m_nZoomLevels": 2.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.05,
+    "m_flZoomTime1": 0.05,
+    "m_flZoomTime2": 0.05,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0003,
+     0.0003
+    ],
+    "m_flInaccuracyStand": [
+     0.0258,
+     0.002
+    ],
+    "m_flInaccuracyCrouch": [
+     0.01935,
+     0.0015
+    ],
+    "m_flInaccuracyMove": [
+     0.15048,
+     0.15048
+    ],
+    "m_flInaccuracyFire": [
+     0.01861,
+     0.01861
+    ],
+    "m_flInaccuracyJump": [
+     0.15377,
+     0.15377
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     30.0,
+     30.0
+    ],
+    "m_flRecoilMagnitude": [
+     30.0,
+     30.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     4.0,
+     4.0
+    ],
+    "m_flMaxSpeed": [
+     215.0,
+     120.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": true,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_G3SG1.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_ZOOM_IN": "Weapon_G3SG1.Zoom",
+     "WEAPON_SOUND_ZOOM_OUT": "Weapon_G3SG1.ZoomOut"
+    }
+   }
+  },
+  "galilar": {
+   "Damage": 30.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.55,
+   "Penetration": 2.0,
+   "Magazine": 35,
+   "ReserveClips": 4,
+   "CycleSeconds": 0.09,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    215.0,
+    215.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_GalilAR.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.3,
+   "RecoilSeed": 51191.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    21.0,
+    21.0
+   ],
+   "SpreadDegrees": 0.53685,
+   "SpreadDegreesAlternate": 0.48013,
+   "MoveSpreadDegrees": 7.07762,
+   "KickPitchDegrees": 1.12,
+   "KickPitchDegreesAlternate": 1.12,
+   "KickYawDegrees": 0.64241,
+   "KickRecoverPerSecond": 3.33333,
+   "Raw": {
+    "m_nDamage": 30.0,
+    "m_iMaxClip1": 35.0,
+    "m_nPrimaryReserveAmmoMax": 4.0,
+    "m_flCycleTime": 0.09,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 1.55,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.3,
+    "m_flRecoveryTimeCrouch": 0.15,
+    "m_flRecoveryTimeStandFinal": 0.5,
+    "m_nRecoilSeed": 51191.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.1,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.00877,
+     0.00778
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00658,
+     0.00484
+    ],
+    "m_flInaccuracyMove": [
+     0.12356,
+     0.10652
+    ],
+    "m_flInaccuracyFire": [
+     0.007,
+     0.00585
+    ],
+    "m_flInaccuracyJump": [
+     0.14978,
+     0.14978
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     21.0,
+     21.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     215.0,
+     215.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_GalilAR.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "glock18": {
+   "Damage": 30.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 0.94,
+   "Penetration": 1.0,
+   "Magazine": 20,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.15,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.85,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": true,
+   "BurstCycleSeconds": 0.5,
+   "BurstShotSeconds": 0.05,
+   "BurstShotsAssumed": 3,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Glock.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.2,
+   "RecoilSeed": 4484.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    18.0,
+    30.0
+   ],
+   "SpreadDegrees": 0.43544,
+   "SpreadDegreesAlternate": 1.18013,
+   "MoveSpreadDegrees": 0.68752,
+   "KickPitchDegrees": 0.96,
+   "KickPitchDegreesAlternate": 1.6,
+   "KickYawDegrees": 0.1667,
+   "KickRecoverPerSecond": 5.0,
+   "Raw": {
+    "m_nDamage": 30.0,
+    "m_iMaxClip1": 20.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.15,
+    "m_flCycleTime_isPair": true,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.85,
+    "m_flArmorRatio": 0.94,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.2,
+    "m_flRecoveryTimeCrouch": 0.2,
+    "m_flRecoveryTimeStandFinal": 0.33,
+    "m_nRecoilSeed": 4484.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.5,
+    "m_flTimeBetweenBurstShots": 0.05,
+    "m_flSpread": [
+     0.002,
+     0.015
+    ],
+    "m_flInaccuracyStand": [
+     0.0056,
+     0.0056
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0042,
+     0.003
+    ],
+    "m_flInaccuracyMove": [
+     0.01,
+     0.01295
+    ],
+    "m_flInaccuracyFire": [
+     0.056,
+     0.045
+    ],
+    "m_flInaccuracyJump": [
+     0.08787,
+     0.08787
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     18.0,
+     30.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     5.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": true,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Glock.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "hkp2000": {
+   "Damage": 35.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.01,
+   "Penetration": 1.0,
+   "Magazine": 13,
+   "ReserveClips": 4,
+   "CycleSeconds": 0.17,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.91,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_hkp2000.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.349532,
+   "RecoilSeed": 5426.0,
+   "RecoilAngleVariance": [
+    0.0,
+    0.0
+   ],
+   "RecoilMagnitude": [
+    26.0,
+    26.0
+   ],
+   "SpreadDegrees": 0.39533,
+   "SpreadDegreesAlternate": 0.36669,
+   "MoveSpreadDegrees": 0.85937,
+   "KickPitchDegrees": 1.38667,
+   "KickPitchDegreesAlternate": 1.38667,
+   "KickYawDegrees": 0.0,
+   "KickRecoverPerSecond": 2.86097,
+   "Raw": {
+    "m_nDamage": 35.0,
+    "m_iMaxClip1": 13.0,
+    "m_nPrimaryReserveAmmoMax": 4.0,
+    "m_flCycleTime": 0.17,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.91,
+    "m_flArmorRatio": 1.01,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.349532,
+    "m_flRecoveryTimeCrouch": 0.291277,
+    "m_flRecoveryTimeStandFinal": 0.349532,
+    "m_nRecoilSeed": 5426.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.0015
+    ],
+    "m_flInaccuracyStand": [
+     0.0049,
+     0.0049
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00368,
+     0.00368
+    ],
+    "m_flInaccuracyMove": [
+     0.013,
+     0.01387
+    ],
+    "m_flInaccuracyFire": [
+     0.05,
+     0.01315
+    ],
+    "m_flInaccuracyJump": [
+     0.09448,
+     0.09448
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilMagnitude": [
+     26.0,
+     26.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_hkp2000.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "m249": {
+   "Damage": 32.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.6,
+   "Penetration": 2.0,
+   "Magazine": 100,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.08,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.97,
+   "MaxSpeed": [
+    195.0,
+    195.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_M249.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.828931,
+   "RecoilSeed": 50310.0,
+   "RecoilAngleVariance": [
+    50.0,
+    50.0
+   ],
+   "RecoilMagnitude": [
+    25.0,
+    25.0
+   ],
+   "SpreadDegrees": 0.55575,
+   "SpreadDegreesAlternate": 0.55575,
+   "MoveSpreadDegrees": 8.99249,
+   "KickPitchDegrees": 1.33333,
+   "KickPitchDegreesAlternate": 1.33333,
+   "KickYawDegrees": 0.56349,
+   "KickRecoverPerSecond": 1.20637,
+   "Raw": {
+    "m_nDamage": 32.0,
+    "m_iMaxClip1": 100.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.08,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.97,
+    "m_flArmorRatio": 1.6,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.828931,
+    "m_flRecoveryTimeCrouch": 0.592093,
+    "m_flRecoveryTimeStandFinal": 0.828931,
+    "m_nRecoilSeed": 50310.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.1,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.002
+    ],
+    "m_flInaccuracyStand": [
+     0.0077,
+     0.0077
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00534,
+     0.00534
+    ],
+    "m_flInaccuracyMove": [
+     0.15625,
+     0.15625
+    ],
+    "m_flInaccuracyFire": [
+     0.00356,
+     0.00356
+    ],
+    "m_flInaccuracyJump": [
+     0.27947,
+     0.27947
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     50.0,
+     50.0
+    ],
+    "m_flRecoilMagnitude": [
+     25.0,
+     25.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     2.0,
+     2.0
+    ],
+    "m_flMaxSpeed": [
+     195.0,
+     195.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_M249.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "m4a4": {
+   "Damage": 33.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.4,
+   "Penetration": 2.0,
+   "Magazine": 30,
+   "ReserveClips": 4,
+   "CycleSeconds": 0.09,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.97,
+   "MaxSpeed": [
+    225.0,
+    225.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_M4A4.Single",
+    "WEAPON_SOUND_SPECIAL1": "Weapon_M4A1.Silenced",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.338941,
+   "RecoilSeed": 38965.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    23.0,
+    23.0
+   ],
+   "SpreadDegrees": 0.31512,
+   "SpreadDegreesAlternate": 0.30653,
+   "MoveSpreadDegrees": 7.88418,
+   "KickPitchDegrees": 1.22667,
+   "KickPitchDegreesAlternate": 1.22667,
+   "KickYawDegrees": 0.70359,
+   "KickRecoverPerSecond": 2.95037,
+   "Raw": {
+    "m_nDamage": 33.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 4.0,
+    "m_flCycleTime": 0.09,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.97,
+    "m_flArmorRatio": 1.4,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.338941,
+    "m_flRecoveryTimeCrouch": 0.2421,
+    "m_flRecoveryTimeStandFinal": 0.466044,
+    "m_nRecoilSeed": 38965.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.133333,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.00045
+    ],
+    "m_flInaccuracyStand": [
+     0.0049,
+     0.0049
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0041,
+     0.00368
+    ],
+    "m_flInaccuracyMove": [
+     0.13788,
+     0.122
+    ],
+    "m_flInaccuracyFire": [
+     0.007,
+     0.00634
+    ],
+    "m_flInaccuracyJump": [
+     0.09727,
+     0.09727
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     23.0,
+     23.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flMaxSpeed": [
+     225.0,
+     225.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_M4A4.Single",
+     "WEAPON_SOUND_SPECIAL1": "Weapon_M4A1.Silenced",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "mac10": {
+   "Damage": 29.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.15,
+   "Penetration": 1.0,
+   "Magazine": 30,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.075,
+   "FullAuto": true,
+   "RangeUnits": 3600.0,
+   "RangeModifier": 0.8,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_MAC10.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.399729,
+   "RecoilSeed": 34079.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    18.0,
+    18.0
+   ],
+   "SpreadDegrees": 0.79636,
+   "SpreadDegreesAlternate": 0.79636,
+   "MoveSpreadDegrees": 0.83589,
+   "KickPitchDegrees": 0.96,
+   "KickPitchDegreesAlternate": 0.96,
+   "KickYawDegrees": 0.55063,
+   "KickRecoverPerSecond": 2.50169,
+   "Raw": {
+    "m_nDamage": 29.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.075,
+    "m_flRange": 3600.0,
+    "m_flRangeModifier": 0.8,
+    "m_flArmorRatio": 1.15,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.399729,
+    "m_flRecoveryTimeCrouch": 0.285521,
+    "m_flRecoveryTimeStandFinal": 0.399729,
+    "m_nRecoilSeed": 34079.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.0133,
+     0.0133
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00998,
+     0.00998
+    ],
+    "m_flInaccuracyMove": [
+     0.01399,
+     0.01399
+    ],
+    "m_flInaccuracyFire": [
+     0.00476,
+     0.00476
+    ],
+    "m_flInaccuracyJump": [
+     0.0333,
+     0.0333
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     18.0,
+     18.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_MAC10.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "mag7": {
+   "Damage": 30.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.5,
+   "Penetration": 1.0,
+   "Magazine": 5,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.85,
+   "FullAuto": false,
+   "RangeUnits": 1400.0,
+   "RangeModifier": 0.45,
+   "MaxSpeed": [
+    225.0,
+    225.0
+   ],
+   "Pellets": 8,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Mag7.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.399729,
+   "RecoilSeed": 12518.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    165.0,
+    165.0
+   ],
+   "SpreadDegrees": 2.69092,
+   "SpreadDegreesAlternate": 2.69092,
+   "MoveSpreadDegrees": 3.20464,
+   "KickPitchDegrees": 8.8,
+   "KickPitchDegreesAlternate": 8.8,
+   "KickYawDegrees": 1.5281,
+   "KickRecoverPerSecond": 2.50169,
+   "Raw": {
+    "m_nDamage": 30.0,
+    "m_iMaxClip1": 5.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.85,
+    "m_flRange": 1400.0,
+    "m_flRangeModifier": 0.45,
+    "m_flArmorRatio": 1.5,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.399729,
+    "m_flRecoveryTimeCrouch": 0.285521,
+    "m_flRecoveryTimeStandFinal": 0.399729,
+    "m_nRecoilSeed": 12518.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 8.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.04,
+     0.04
+    ],
+    "m_flInaccuracyStand": [
+     0.007,
+     0.007
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00525,
+     0.00525
+    ],
+    "m_flInaccuracyMove": [
+     0.01599,
+     0.01599
+    ],
+    "m_flInaccuracyFire": [
+     0.01119,
+     0.01119
+    ],
+    "m_flInaccuracyJump": [
+     0.05009,
+     0.05009
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     165.0,
+     165.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     25.0,
+     25.0
+    ],
+    "m_flMaxSpeed": [
+     225.0,
+     225.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Mag7.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "mp5sd": {
+   "Damage": 28.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.25,
+   "Penetration": 1.0,
+   "Magazine": 30,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.08,
+   "FullAuto": true,
+   "RangeUnits": 3600.0,
+   "RangeModifier": 0.87,
+   "MaxSpeed": [
+    235.0,
+    220.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_INTEGRATED",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_MP5.Single",
+    "WEAPON_SOUND_SPECIAL1": "Weapon_MP5.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.437491,
+   "RecoilSeed": 61649.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    16.0,
+    16.0
+   ],
+   "SpreadDegrees": 0.60731,
+   "SpreadDegreesAlternate": 0.60731,
+   "MoveSpreadDegrees": 1.7527,
+   "KickPitchDegrees": 0.85333,
+   "KickPitchDegreesAlternate": 0.85333,
+   "KickYawDegrees": 0.48945,
+   "KickRecoverPerSecond": 2.28576,
+   "Raw": {
+    "m_nDamage": 28.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.08,
+    "m_flRange": 3600.0,
+    "m_flRangeModifier": 0.87,
+    "m_flArmorRatio": 1.25,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.437491,
+    "m_flRecoveryTimeCrouch": 0.312494,
+    "m_flRecoveryTimeStandFinal": 0.437491,
+    "m_nRecoilSeed": 61649.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.01,
+     0.01
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0085,
+     0.0085
+    ],
+    "m_flInaccuracyMove": [
+     0.03,
+     0.01986
+    ],
+    "m_flInaccuracyFire": [
+     0.00218,
+     0.00218
+    ],
+    "m_flInaccuracyJump": [
+     0.0596,
+     0.0596
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     16.0,
+     16.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     235.0,
+     220.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_INTEGRATED",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_MP5.Single",
+     "WEAPON_SOUND_SPECIAL1": "Weapon_MP5.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "mp7": {
+   "Damage": 30.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.25,
+   "Penetration": 1.0,
+   "Magazine": 30,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.08,
+   "FullAuto": true,
+   "RangeUnits": 3600.0,
+   "RangeModifier": 0.87,
+   "MaxSpeed": [
+    220.0,
+    220.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_MP7.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.437491,
+   "RecoilSeed": 61649.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    16.0,
+    16.0
+   ],
+   "SpreadDegrees": 0.60731,
+   "SpreadDegreesAlternate": 0.60731,
+   "MoveSpreadDegrees": 1.17211,
+   "KickPitchDegrees": 0.85333,
+   "KickPitchDegreesAlternate": 0.85333,
+   "KickYawDegrees": 0.48945,
+   "KickRecoverPerSecond": 2.28576,
+   "Raw": {
+    "m_nDamage": 30.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.08,
+    "m_flRange": 3600.0,
+    "m_flRangeModifier": 0.87,
+    "m_flArmorRatio": 1.25,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.437491,
+    "m_flRecoveryTimeCrouch": 0.312494,
+    "m_flRecoveryTimeStandFinal": 0.437491,
+    "m_nRecoilSeed": 61649.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.01,
+     0.01
+    ],
+    "m_flInaccuracyCrouch": [
+     0.0085,
+     0.0085
+    ],
+    "m_flInaccuracyMove": [
+     0.01986,
+     0.01986
+    ],
+    "m_flInaccuracyFire": [
+     0.00218,
+     0.00218
+    ],
+    "m_flInaccuracyJump": [
+     0.0596,
+     0.0596
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     16.0,
+     16.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     220.0,
+     220.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_MP7.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "mp9": {
+   "Damage": 26.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.2,
+   "Penetration": 1.0,
+   "Magazine": 30,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.07,
+   "FullAuto": true,
+   "RangeUnits": 3600.0,
+   "RangeModifier": 0.87,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_MP9.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.25789,
+   "RecoilSeed": 50729.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    21.0,
+    21.0
+   ],
+   "SpreadDegrees": 0.55002,
+   "SpreadDegreesAlternate": 0.55002,
+   "MoveSpreadDegrees": 1.69775,
+   "KickPitchDegrees": 1.12,
+   "KickPitchDegreesAlternate": 1.12,
+   "KickYawDegrees": 0.64241,
+   "KickRecoverPerSecond": 3.87762,
+   "Raw": {
+    "m_nDamage": 26.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.07,
+    "m_flRange": 3600.0,
+    "m_flRangeModifier": 0.87,
+    "m_flArmorRatio": 1.2,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.25789,
+    "m_flRecoveryTimeCrouch": 0.184207,
+    "m_flRecoveryTimeStandFinal": 0.25789,
+    "m_nRecoilSeed": 50729.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.2,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.0006
+    ],
+    "m_flInaccuracyStand": [
+     0.009,
+     0.009
+    ],
+    "m_flInaccuracyCrouch": [
+     0.008,
+     0.008
+    ],
+    "m_flInaccuracyMove": [
+     0.02904,
+     0.02904
+    ],
+    "m_flInaccuracyFire": [
+     0.0037,
+     0.0037
+    ],
+    "m_flInaccuracyJump": [
+     0.05,
+     0.05
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     21.0,
+     21.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_MP9.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "negev": {
+   "Damage": 35.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.42,
+   "Penetration": 2.0,
+   "Magazine": 150,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.075,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.97,
+   "MaxSpeed": [
+    150.0,
+    150.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Negev.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_SINGLE_ACCURATE": "Weapon_Negev.SingleFocused"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.3,
+   "RecoilSeed": 57966.0,
+   "RecoilAngleVariance": [
+    0.0,
+    0.0
+   ],
+   "RecoilMagnitude": [
+    20.0,
+    20.0
+   ],
+   "SpreadDegrees": 0.69726,
+   "SpreadDegreesAlternate": 0.69726,
+   "MoveSpreadDegrees": 9.15395,
+   "KickPitchDegrees": 1.06667,
+   "KickPitchDegreesAlternate": 1.06667,
+   "KickYawDegrees": 0.0,
+   "KickRecoverPerSecond": 3.33333,
+   "Raw": {
+    "m_nDamage": 35.0,
+    "m_iMaxClip1": 150.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.075,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.97,
+    "m_flArmorRatio": 1.42,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.3,
+    "m_flRecoveryTimeCrouch": 0.25,
+    "m_flRecoveryTimeStandFinal": 0.1,
+    "m_nRecoilSeed": 57966.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.1,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.002
+    ],
+    "m_flInaccuracyStand": [
+     0.01017,
+     0.01017
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00763,
+     0.00763
+    ],
+    "m_flInaccuracyMove": [
+     0.15914,
+     0.15914
+    ],
+    "m_flInaccuracyFire": [
+     0.03,
+     0.00337
+    ],
+    "m_flInaccuracyJump": [
+     0.29223,
+     0.29223
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilMagnitude": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     2.0,
+     2.0
+    ],
+    "m_flMaxSpeed": [
+     150.0,
+     150.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Negev.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_SINGLE_ACCURATE": "Weapon_Negev.SingleFocused"
+    }
+   }
+  },
+  "nova": {
+   "Damage": 26.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.0,
+   "Penetration": 1.0,
+   "Magazine": 8,
+   "ReserveClips": 32,
+   "CycleSeconds": 0.88,
+   "FullAuto": false,
+   "RangeUnits": 3000.0,
+   "RangeModifier": 0.7,
+   "MaxSpeed": [
+    220.0,
+    220.0
+   ],
+   "Pellets": 9,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Nova.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.460517,
+   "RecoilSeed": 7763.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    143.0,
+    143.0
+   ],
+   "SpreadDegrees": 2.69092,
+   "SpreadDegreesAlternate": 2.69092,
+   "MoveSpreadDegrees": 4.38885,
+   "KickPitchDegrees": 7.62667,
+   "KickPitchDegreesAlternate": 7.62667,
+   "KickYawDegrees": 1.32436,
+   "KickRecoverPerSecond": 2.17147,
+   "Raw": {
+    "m_nDamage": 26.0,
+    "m_iMaxClip1": 8.0,
+    "m_nPrimaryReserveAmmoMax": 32.0,
+    "m_flCycleTime": 0.88,
+    "m_flRange": 3000.0,
+    "m_flRangeModifier": 0.7,
+    "m_flArmorRatio": 1.0,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.460517,
+    "m_flRecoveryTimeCrouch": 0.328941,
+    "m_flRecoveryTimeStandFinal": 0.460517,
+    "m_nRecoilSeed": 7763.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 9.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.04,
+     0.04
+    ],
+    "m_flInaccuracyStand": [
+     0.007,
+     0.007
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00525,
+     0.00525
+    ],
+    "m_flInaccuracyMove": [
+     0.03675,
+     0.03675
+    ],
+    "m_flInaccuracyFire": [
+     0.00972,
+     0.00972
+    ],
+    "m_flInaccuracyJump": [
+     0.12631,
+     0.12631
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     143.0,
+     143.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     22.0,
+     22.0
+    ],
+    "m_flMaxSpeed": [
+     220.0,
+     220.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Nova.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "p250": {
+   "Damage": 38.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.28,
+   "Penetration": 1.0,
+   "Magazine": 13,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.15,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.9,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_P250.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.345388,
+   "RecoilSeed": 9788.0,
+   "RecoilAngleVariance": [
+    10.0,
+    10.0
+   ],
+   "RecoilMagnitude": [
+    26.0,
+    26.0
+   ],
+   "SpreadDegrees": 0.63596,
+   "SpreadDegreesAlternate": 0.63596,
+   "MoveSpreadDegrees": 1.2603,
+   "KickPitchDegrees": 1.38667,
+   "KickPitchDegreesAlternate": 1.38667,
+   "KickYawDegrees": 0.12086,
+   "KickRecoverPerSecond": 2.89529,
+   "Raw": {
+    "m_nDamage": 38.0,
+    "m_iMaxClip1": 13.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.15,
+    "m_flCycleTime_isPair": true,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.9,
+    "m_flArmorRatio": 1.28,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.345388,
+    "m_flRecoveryTimeCrouch": 0.287823,
+    "m_flRecoveryTimeStandFinal": 0.345388,
+    "m_nRecoilSeed": 9788.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.002
+    ],
+    "m_flInaccuracyStand": [
+     0.0091,
+     0.0091
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00683,
+     0.00683
+    ],
+    "m_flInaccuracyMove": [
+     0.02,
+     0.01341
+    ],
+    "m_flInaccuracyFire": [
+     0.05245,
+     0.05245
+    ],
+    "m_flInaccuracyJump": [
+     0.09296,
+     0.09296
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     10.0,
+     10.0
+    ],
+    "m_flRecoilMagnitude": [
+     26.0,
+     26.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     3.0,
+     3.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_P250.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "p90": {
+   "Damage": 26.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.38,
+   "Penetration": 1.0,
+   "Magazine": 50,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.07,
+   "FullAuto": true,
+   "RangeUnits": 3700.0,
+   "RangeModifier": 0.86,
+   "MaxSpeed": [
+    230.0,
+    230.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_P90.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.372098,
+   "RecoilSeed": 6213.0,
+   "RecoilAngleVariance": [
+    70.0,
+    70.0
+   ],
+   "RecoilMagnitude": [
+    16.0,
+    16.0
+   ],
+   "SpreadDegrees": 0.83932,
+   "SpreadDegreesAlternate": 0.83932,
+   "MoveSpreadDegrees": 1.83284,
+   "KickPitchDegrees": 0.85333,
+   "KickPitchDegreesAlternate": 0.85333,
+   "KickYawDegrees": 0.48945,
+   "KickRecoverPerSecond": 2.68746,
+   "Raw": {
+    "m_nDamage": 26.0,
+    "m_iMaxClip1": 50.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.07,
+    "m_flRange": 3700.0,
+    "m_flRangeModifier": 0.86,
+    "m_flArmorRatio": 1.38,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.372098,
+    "m_flRecoveryTimeCrouch": 0.265784,
+    "m_flRecoveryTimeStandFinal": 0.372098,
+    "m_nRecoilSeed": 6213.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.001,
+     0.001
+    ],
+    "m_flInaccuracyStand": [
+     0.01365,
+     0.01365
+    ],
+    "m_flInaccuracyCrouch": [
+     0.01024,
+     0.01024
+    ],
+    "m_flInaccuracyMove": [
+     0.031,
+     0.031
+    ],
+    "m_flInaccuracyFire": [
+     0.00285,
+     0.00285
+    ],
+    "m_flInaccuracyJump": [
+     0.09008,
+     0.09008
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     70.0,
+     70.0
+    ],
+    "m_flRecoilMagnitude": [
+     16.0,
+     16.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     230.0,
+     230.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_P90.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "revolver": {
+   "Damage": 86.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.864,
+   "Penetration": 2.0,
+   "Magazine": 8,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.5,
+   "FullAuto": true,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.94,
+   "MaxSpeed": [
+    180.0,
+    220.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Revolver.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.9,
+   "RecoilSeed": 12345.0,
+   "RecoilAngleVariance": [
+    40.0,
+    50.0
+   ],
+   "RecoilMagnitude": [
+    20.0,
+    45.0
+   ],
+   "SpreadDegrees": 0.14439,
+   "SpreadDegreesAlternate": 4.57392,
+   "MoveSpreadDegrees": 0.40221,
+   "KickPitchDegrees": 1.06667,
+   "KickPitchDegreesAlternate": 2.4,
+   "KickYawDegrees": 0.36482,
+   "KickRecoverPerSecond": 1.11111,
+   "Raw": {
+    "m_nDamage": 86.0,
+    "m_iMaxClip1": 8.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.5,
+    "m_flCycleTime_isPair": true,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.94,
+    "m_flArmorRatio": 1.864,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.9,
+    "m_flRecoveryTimeCrouch": 0.7,
+    "m_flRecoveryTimeStandFinal": 0.8112,
+    "m_nRecoilSeed": 12345.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.166667,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.00052,
+     0.068
+    ],
+    "m_flInaccuracyStand": [
+     0.002,
+     0.012
+    ],
+    "m_flInaccuracyCrouch": [
+     0.001,
+     0.005
+    ],
+    "m_flInaccuracyMove": [
+     0.0065,
+     0.036
+    ],
+    "m_flInaccuracyFire": [
+     0.05,
+     0.055
+    ],
+    "m_flInaccuracyJump": [
+     0.05323,
+     0.05323
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     3.0
+    ],
+    "m_flRecoilAngleVariance": [
+     40.0,
+     50.0
+    ],
+    "m_flRecoilMagnitude": [
+     20.0,
+     45.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     6.0
+    ],
+    "m_flMaxSpeed": [
+     180.0,
+     220.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Revolver.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "sawedoff": {
+   "Damage": 32.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.5,
+   "Penetration": 1.0,
+   "Magazine": 7,
+   "ReserveClips": 32,
+   "CycleSeconds": 0.85,
+   "FullAuto": false,
+   "RangeUnits": 1400.0,
+   "RangeModifier": 0.45,
+   "MaxSpeed": [
+    210.0,
+    210.0
+   ],
+   "Pellets": 8,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Sawedoff.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.460517,
+   "RecoilSeed": 1089.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    143.0,
+    143.0
+   ],
+   "SpreadDegrees": 3.94715,
+   "SpreadDegreesAlternate": 3.94715,
+   "MoveSpreadDegrees": 4.5056,
+   "KickPitchDegrees": 7.62667,
+   "KickPitchDegreesAlternate": 7.62667,
+   "KickYawDegrees": 1.32436,
+   "KickRecoverPerSecond": 2.17147,
+   "Raw": {
+    "m_nDamage": 32.0,
+    "m_iMaxClip1": 7.0,
+    "m_nPrimaryReserveAmmoMax": 32.0,
+    "m_flCycleTime": 0.85,
+    "m_flRange": 1400.0,
+    "m_flRangeModifier": 0.45,
+    "m_flArmorRatio": 1.5,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.460517,
+    "m_flRecoveryTimeCrouch": 0.328941,
+    "m_flRecoveryTimeStandFinal": 0.460517,
+    "m_nRecoilSeed": 1089.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 8.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.062,
+     0.062
+    ],
+    "m_flInaccuracyStand": [
+     0.007,
+     0.007
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00525,
+     0.00525
+    ],
+    "m_flInaccuracyMove": [
+     0.0168,
+     0.0168
+    ],
+    "m_flInaccuracyFire": [
+     0.00972,
+     0.00972
+    ],
+    "m_flInaccuracyJump": [
+     0.0577,
+     0.0577
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     143.0,
+     143.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     22.0,
+     22.0
+    ],
+    "m_flMaxSpeed": [
+     210.0,
+     210.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Sawedoff.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "scar20": {
+   "Damage": 80.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.65,
+   "Penetration": 2.5,
+   "Magazine": 20,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.25,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    215.0,
+    120.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_scar20.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_ZOOM_IN": "Weapon_SCAR20.Zoom",
+    "WEAPON_SOUND_ZOOM_OUT": "Weapon_SCAR20.Zoom"
+   },
+   "ZoomFov": [
+    40.0,
+    15.0
+   ],
+   "ZoomLevels": 2,
+   "ZoomSeconds": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "HideViewModelWhenZoomed": true,
+   "RecoveryTimeStand": 0.544331,
+   "RecoilSeed": 19364.0,
+   "RecoilAngleVariance": [
+    30.0,
+    30.0
+   ],
+   "RecoilMagnitude": [
+    31.0,
+    31.0
+   ],
+   "SpreadDegrees": 1.49508,
+   "SpreadDegreesAlternate": 0.13178,
+   "MoveSpreadDegrees": 8.57447,
+   "KickPitchDegrees": 1.65333,
+   "KickPitchDegreesAlternate": 1.65333,
+   "KickYawDegrees": 0.42791,
+   "KickRecoverPerSecond": 1.83712,
+   "Raw": {
+    "m_nDamage": 80.0,
+    "m_iMaxClip1": 20.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.25,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 1.65,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.5,
+    "m_flRecoveryTimeStand": 0.544331,
+    "m_flRecoveryTimeCrouch": 0.388808,
+    "m_flRecoveryTimeStandFinal": 0.544331,
+    "m_nRecoilSeed": 19364.0,
+    "m_nZoomFOV1": 40.0,
+    "m_nZoomFOV2": 15.0,
+    "m_nZoomLevels": 2.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.05,
+    "m_flZoomTime1": 0.05,
+    "m_flZoomTime2": 0.05,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0003,
+     0.0003
+    ],
+    "m_flInaccuracyStand": [
+     0.0258,
+     0.002
+    ],
+    "m_flInaccuracyCrouch": [
+     0.01935,
+     0.0015
+    ],
+    "m_flInaccuracyMove": [
+     0.15048,
+     0.15048
+    ],
+    "m_flInaccuracyFire": [
+     0.01861,
+     0.01861
+    ],
+    "m_flInaccuracyJump": [
+     0.15377,
+     0.15377
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     30.0,
+     30.0
+    ],
+    "m_flRecoilMagnitude": [
+     31.0,
+     31.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     4.0,
+     4.0
+    ],
+    "m_flMaxSpeed": [
+     215.0,
+     120.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": true,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_scar20.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_ZOOM_IN": "Weapon_SCAR20.Zoom",
+     "WEAPON_SOUND_ZOOM_OUT": "Weapon_SCAR20.Zoom"
+    }
+   }
+  },
+  "sg556": {
+   "Damage": 30.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 2.0,
+   "Penetration": 2.0,
+   "Magazine": 30,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.11,
+   "FullAuto": true,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    210.0,
+    150.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_SG556.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_ZOOM_IN": "Weapon_sg556.ZoomIn",
+    "WEAPON_SOUND_ZOOM_OUT": "Weapon_sg556.ZoomOut"
+   },
+   "ZoomFov": [
+    45.0,
+    90.0
+   ],
+   "ZoomLevels": 1,
+   "ZoomSeconds": [
+    0.06,
+    0.1,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.452886,
+   "RecoilSeed": 43500.0,
+   "RecoilAngleVariance": [
+    60.0,
+    60.0
+   ],
+   "RecoilMagnitude": [
+    28.0,
+    19.0
+   ],
+   "SpreadDegrees": 0.36726,
+   "SpreadDegreesAlternate": 0.23548,
+   "MoveSpreadDegrees": 7.77902,
+   "KickPitchDegrees": 1.49333,
+   "KickPitchDegreesAlternate": 1.01333,
+   "KickYawDegrees": 0.74667,
+   "KickRecoverPerSecond": 2.20806,
+   "Raw": {
+    "m_nDamage": 30.0,
+    "m_iMaxClip1": 30.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.11,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 2.0,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.0,
+    "m_flRecoveryTimeStand": 0.452886,
+    "m_flRecoveryTimeCrouch": 0.379204,
+    "m_flRecoveryTimeStandFinal": 0.452886,
+    "m_nRecoilSeed": 43500.0,
+    "m_nZoomFOV1": 45.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 1.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.06,
+    "m_flZoomTime1": 0.1,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0006,
+     0.0003
+    ],
+    "m_flInaccuracyStand": [
+     0.00581,
+     0.00381
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00381,
+     0.00305
+    ],
+    "m_flInaccuracyMove": [
+     0.13601,
+     0.13601
+    ],
+    "m_flInaccuracyFire": [
+     0.00795,
+     0.0092
+    ],
+    "m_flInaccuracyJump": [
+     0.109,
+     0.109
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     60.0,
+     60.0
+    ],
+    "m_flRecoilMagnitude": [
+     28.0,
+     19.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     2.0,
+     2.0
+    ],
+    "m_flMaxSpeed": [
+     210.0,
+     150.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_SG556.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_ZOOM_IN": "Weapon_sg556.ZoomIn",
+     "WEAPON_SOUND_ZOOM_OUT": "Weapon_sg556.ZoomOut"
+    }
+   }
+  },
+  "ssg08": {
+   "Damage": 88.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.7,
+   "Penetration": 2.5,
+   "Magazine": 10,
+   "ReserveClips": 2,
+   "CycleSeconds": 1.25,
+   "FullAuto": false,
+   "RangeUnits": 8192.0,
+   "RangeModifier": 0.98,
+   "MaxSpeed": [
+    230.0,
+    230.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_SSG08.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+    "WEAPON_SOUND_ZOOM_IN": "Weapon_SSG08.Zoom",
+    "WEAPON_SOUND_ZOOM_OUT": "Weapon_SSG08.Zoom"
+   },
+   "ZoomFov": [
+    40.0,
+    15.0
+   ],
+   "ZoomLevels": 2,
+   "ZoomSeconds": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "HideViewModelWhenZoomed": true,
+   "RecoveryTimeStand": 0.142096,
+   "RecoilSeed": 1278.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    33.0,
+    25.0
+   ],
+   "SpreadDegrees": 1.83169,
+   "SpreadDegreesAlternate": 0.18506,
+   "MoveSpreadDegrees": 7.05336,
+   "KickPitchDegrees": 1.76,
+   "KickPitchDegreesAlternate": 1.33333,
+   "KickYawDegrees": 0.30562,
+   "KickRecoverPerSecond": 7.0375,
+   "Raw": {
+    "m_nDamage": 88.0,
+    "m_iMaxClip1": 10.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 1.25,
+    "m_flRange": 8192.0,
+    "m_flRangeModifier": 0.98,
+    "m_flArmorRatio": 1.7,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 2.5,
+    "m_flRecoveryTimeStand": 0.142096,
+    "m_flRecoveryTimeCrouch": 0.055783,
+    "m_flRecoveryTimeStandFinal": 0.142096,
+    "m_nRecoilSeed": 1278.0,
+    "m_nZoomFOV1": 40.0,
+    "m_nZoomFOV2": 15.0,
+    "m_nZoomLevels": 2.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.05,
+    "m_flZoomTime1": 0.05,
+    "m_flZoomTime2": 0.05,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.00028,
+     0.00023
+    ],
+    "m_flInaccuracyStand": [
+     0.0317,
+     0.003
+    ],
+    "m_flInaccuracyCrouch": [
+     0.02378,
+     0.0028
+    ],
+    "m_flInaccuracyMove": [
+     0.12345,
+     0.12345
+    ],
+    "m_flInaccuracyFire": [
+     0.02292,
+     0.02292
+    ],
+    "m_flInaccuracyJump": [
+     0.00572,
+     0.00572
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     33.0,
+     25.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     15.0,
+     2.0
+    ],
+    "m_flMaxSpeed": [
+     230.0,
+     230.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": true,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_SSG08.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty",
+     "WEAPON_SOUND_ZOOM_IN": "Weapon_SSG08.Zoom",
+     "WEAPON_SOUND_ZOOM_OUT": "Weapon_SSG08.Zoom"
+    }
+   }
+  },
+  "taser": {
+   "Damage": 500.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 2.0,
+   "Penetration": 0.0,
+   "Magazine": 1,
+   "ReserveClips": 0,
+   "CycleSeconds": 0.15,
+   "FullAuto": false,
+   "RangeUnits": 120.0,
+   "RangeModifier": 0.99,
+   "MaxSpeed": [
+    0.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_Taser.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.0,
+   "RecoilSeed": 687.0,
+   "RecoilAngleVariance": [
+    0.0,
+    0.0
+   ],
+   "RecoilMagnitude": [
+    0.0,
+    0.0
+   ],
+   "SpreadDegrees": 0.0,
+   "SpreadDegreesAlternate": 0.0,
+   "MoveSpreadDegrees": 0.0,
+   "KickPitchDegrees": 0.0,
+   "KickPitchDegreesAlternate": 0.0,
+   "KickYawDegrees": 0.0,
+   "KickRecoverPerSecond": 0.0,
+   "Raw": {
+    "m_nDamage": 500.0,
+    "m_iMaxClip1": 1.0,
+    "m_nPrimaryReserveAmmoMax": 0.0,
+    "m_flCycleTime": 0.15,
+    "m_flCycleTime_isPair": true,
+    "m_flRange": 120.0,
+    "m_flRangeModifier": 0.99,
+    "m_flArmorRatio": 2.0,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 0.0,
+    "m_flRecoveryTimeStand": 0.0,
+    "m_flRecoveryTimeCrouch": 0.0,
+    "m_flRecoveryTimeStandFinal": 0.0,
+    "m_nRecoilSeed": 687.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_Taser.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "tec9": {
+   "Damage": 33.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.812,
+   "Penetration": 1.0,
+   "Magazine": 18,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.12,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.79,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_tec9.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.391,
+   "RecoilSeed": 789.0,
+   "RecoilAngleVariance": [
+    60.0,
+    60.0
+   ],
+   "RecoilMagnitude": [
+    23.0,
+    23.0
+   ],
+   "SpreadDegrees": 0.39533,
+   "SpreadDegreesAlternate": 0.62049,
+   "MoveSpreadDegrees": 0.33288,
+   "KickPitchDegrees": 1.22667,
+   "KickPitchDegreesAlternate": 1.22667,
+   "KickYawDegrees": 0.61333,
+   "KickRecoverPerSecond": 2.55754,
+   "Raw": {
+    "m_nDamage": 33.0,
+    "m_iMaxClip1": 18.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.12,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.79,
+    "m_flArmorRatio": 1.812,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.391,
+    "m_flRecoveryTimeCrouch": 0.315,
+    "m_flRecoveryTimeStandFinal": 0.391,
+    "m_nRecoilSeed": 789.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.002,
+     0.0018
+    ],
+    "m_flInaccuracyStand": [
+     0.0049,
+     0.00903
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00368,
+     0.00727
+    ],
+    "m_flInaccuracyMove": [
+     0.00381,
+     0.00381
+    ],
+    "m_flInaccuracyFire": [
+     0.045,
+     0.03688
+    ],
+    "m_flInaccuracyJump": [
+     0.07978,
+     0.07978
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     60.0,
+     60.0
+    ],
+    "m_flRecoilMagnitude": [
+     23.0,
+     23.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     3.0,
+     3.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_tec9.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "ump45": {
+   "Damage": 35.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.3,
+   "Penetration": 1.0,
+   "Magazine": 25,
+   "ReserveClips": 3,
+   "CycleSeconds": 0.09,
+   "FullAuto": true,
+   "RangeUnits": 3700.0,
+   "RangeModifier": 0.75,
+   "MaxSpeed": [
+    230.0,
+    230.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_UMP45.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.349993,
+   "RecoilSeed": 59299.0,
+   "RecoilAngleVariance": [
+    40.0,
+    40.0
+   ],
+   "RecoilMagnitude": [
+    23.0,
+    23.0
+   ],
+   "SpreadDegrees": 0.82672,
+   "SpreadDegreesAlternate": 0.82672,
+   "MoveSpreadDegrees": 1.70462,
+   "KickPitchDegrees": 1.22667,
+   "KickPitchDegreesAlternate": 1.22667,
+   "KickYawDegrees": 0.41954,
+   "KickRecoverPerSecond": 2.8572,
+   "Raw": {
+    "m_nDamage": 35.0,
+    "m_iMaxClip1": 25.0,
+    "m_nPrimaryReserveAmmoMax": 3.0,
+    "m_flCycleTime": 0.09,
+    "m_flRange": 3700.0,
+    "m_flRangeModifier": 0.75,
+    "m_flArmorRatio": 1.3,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.349993,
+    "m_flRecoveryTimeCrouch": 0.249995,
+    "m_flRecoveryTimeStandFinal": 0.349993,
+    "m_nRecoilSeed": 59299.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.001,
+     0.001
+    ],
+    "m_flInaccuracyStand": [
+     0.01343,
+     0.01343
+    ],
+    "m_flInaccuracyCrouch": [
+     0.01007,
+     0.01007
+    ],
+    "m_flInaccuracyMove": [
+     0.02876,
+     0.02876
+    ],
+    "m_flInaccuracyFire": [
+     0.00342,
+     0.00342
+    ],
+    "m_flInaccuracyJump": [
+     0.03725,
+     0.03725
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     40.0,
+     40.0
+    ],
+    "m_flRecoilMagnitude": [
+     23.0,
+     23.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     1.0,
+     1.0
+    ],
+    "m_flMaxSpeed": [
+     230.0,
+     230.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_UMP45.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "usp_silencer": {
+   "Damage": 35.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.01,
+   "Penetration": 1.0,
+   "Magazine": 12,
+   "ReserveClips": 2,
+   "CycleSeconds": 0.17,
+   "FullAuto": false,
+   "RangeUnits": 4096.0,
+   "RangeModifier": 0.91,
+   "MaxSpeed": [
+    240.0,
+    240.0
+   ],
+   "Pellets": 1,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_DETACHABLE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_USP.Single",
+    "WEAPON_SOUND_SPECIAL1": "Weapon_USP.SilencedShot",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.349532,
+   "RecoilSeed": 5426.0,
+   "RecoilAngleVariance": [
+    0.0,
+    0.0
+   ],
+   "RecoilMagnitude": [
+    29.0,
+    23.0
+   ],
+   "SpreadDegrees": 0.42398,
+   "SpreadDegreesAlternate": 0.36669,
+   "MoveSpreadDegrees": 0.93785,
+   "KickPitchDegrees": 1.54667,
+   "KickPitchDegreesAlternate": 1.22667,
+   "KickYawDegrees": 0.0,
+   "KickRecoverPerSecond": 2.86097,
+   "Raw": {
+    "m_nDamage": 35.0,
+    "m_iMaxClip1": 12.0,
+    "m_nPrimaryReserveAmmoMax": 2.0,
+    "m_flCycleTime": 0.17,
+    "m_flRange": 4096.0,
+    "m_flRangeModifier": 0.91,
+    "m_flArmorRatio": 1.01,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.349532,
+    "m_flRecoveryTimeCrouch": 0.291277,
+    "m_flRecoveryTimeStandFinal": 0.349532,
+    "m_nRecoilSeed": 5426.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 1.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.0025,
+     0.0015
+    ],
+    "m_flInaccuracyStand": [
+     0.0049,
+     0.0049
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00368,
+     0.00368
+    ],
+    "m_flInaccuracyMove": [
+     0.01387,
+     0.01387
+    ],
+    "m_flInaccuracyFire": [
+     0.071,
+     0.052
+    ],
+    "m_flInaccuracyJump": [
+     0.09448,
+     0.09448
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilMagnitude": [
+     29.0,
+     23.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     0.0,
+     0.0
+    ],
+    "m_flMaxSpeed": [
+     240.0,
+     240.0
+    ],
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_DETACHABLE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_USP.Single",
+     "WEAPON_SOUND_SPECIAL1": "Weapon_USP.SilencedShot",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
+   }
+  },
+  "xm1014": {
+   "Damage": 20.0,
+   "HeadshotMultiplier": 4.0,
+   "ArmorRatio": 1.6,
+   "Penetration": 1.0,
+   "Magazine": 7,
+   "ReserveClips": 32,
+   "CycleSeconds": 0.35,
+   "FullAuto": true,
+   "RangeUnits": 3000.0,
+   "RangeModifier": 0.7,
+   "MaxSpeed": [
+    215.0,
+    215.0
+   ],
+   "Pellets": 6,
+   "HasBurstMode": false,
+   "BurstCycleSeconds": 0.0,
+   "BurstShotSeconds": 0.0,
+   "BurstShotsAssumed": 0,
+   "SilencerType": "WEAPONSILENCER_NONE",
+   "ShootSounds": {
+    "WEAPON_SOUND_SINGLE": "Weapon_XM1014.Single",
+    "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+   },
+   "ZoomFov": [
+    90.0,
+    90.0
+   ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
+   "RecoveryTimeStand": 0.506569,
+   "RecoilSeed": 24862.0,
+   "RecoilAngleVariance": [
+    20.0,
+    20.0
+   ],
+   "RecoilMagnitude": [
+    80.0,
+    80.0
+   ],
+   "SpreadDegrees": 2.57657,
+   "SpreadDegreesAlternate": 2.57657,
+   "MoveSpreadDegrees": 4.23388,
+   "KickPitchDegrees": 4.26667,
+   "KickPitchDegreesAlternate": 4.26667,
+   "KickYawDegrees": 0.7409,
+   "KickRecoverPerSecond": 1.97406,
+   "Raw": {
+    "m_nDamage": 20.0,
+    "m_iMaxClip1": 7.0,
+    "m_nPrimaryReserveAmmoMax": 32.0,
+    "m_flCycleTime": 0.35,
+    "m_flRange": 3000.0,
+    "m_flRangeModifier": 0.7,
+    "m_flArmorRatio": 1.6,
+    "m_flHeadshotMultiplier": 4.0,
+    "m_flPenetration": 1.0,
+    "m_flRecoveryTimeStand": 0.506569,
+    "m_flRecoveryTimeCrouch": 0.361835,
+    "m_flRecoveryTimeStandFinal": 0.506569,
+    "m_nRecoilSeed": 24862.0,
+    "m_nZoomFOV1": 90.0,
+    "m_nZoomFOV2": 90.0,
+    "m_nZoomLevels": 0.0,
+    "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
+    "m_nNumBullets": 6.0,
+    "m_flCycleTimeWhenInBurstMode": 0.0,
+    "m_flTimeBetweenBurstShots": 0.0,
+    "m_flSpread": [
+     0.038,
+     0.038
+    ],
+    "m_flInaccuracyStand": [
+     0.007,
+     0.007
+    ],
+    "m_flInaccuracyCrouch": [
+     0.00525,
+     0.00525
+    ],
+    "m_flInaccuracyMove": [
+     0.03603,
+     0.03603
+    ],
+    "m_flInaccuracyFire": [
+     0.00883,
+     0.00883
+    ],
+    "m_flInaccuracyJump": [
+     0.13083,
+     0.13083
+    ],
+    "m_flRecoilAngle": [
+     0.0,
+     0.0
+    ],
+    "m_flRecoilAngleVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flRecoilMagnitude": [
+     80.0,
+     80.0
+    ],
+    "m_flRecoilMagnitudeVariance": [
+     20.0,
+     20.0
+    ],
+    "m_flMaxSpeed": [
+     215.0,
+     215.0
+    ],
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false,
+    "m_bHasBurstMode": false,
+    "m_eSilencerType": "WEAPONSILENCER_NONE",
+    "m_aShootSounds": {
+     "WEAPON_SOUND_SINGLE": "Weapon_XM1014.Single",
+     "WEAPON_SOUND_NEARLYEMPTY": "Default.nearlyempty"
+    }
    }
   }
  }
