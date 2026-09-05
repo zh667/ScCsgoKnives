@@ -53,6 +53,7 @@ def main():
     # 7.73 in on the SSG08 (the Galil's is 0.71 in across), so it is the across-the-bore distance that is judged and
     # the renderer draws from the bone, which is where the model attaches the flash.
     worst = 0.0
+    shipped_guns = {e["Name"] for e in json.loads((ROOT / "src/ScCsgoKnives/AnimationData/guns.json").read_text("utf-8"))}
     for gun in doc["Guns"]:
         if gun in GUNS:
             cfg = GUNS[gun]
@@ -75,7 +76,10 @@ def main():
         declared = np.array(doc["Guns"][gun]["MuzzlePos0"], float)
         delta = declared - bone
         across = float(np.linalg.norm(delta[1:]))
-        worst = max(worst, across)
+        # Judged for the guns the mod ships; the rest are reported so a gun's
+        # numbers are already known when its batch comes (the Nova's is 1.03 in).
+        if gun in shipped_guns:
+            worst = max(worst, across)
         rows.append({"gun": gun, "vdata": declared.tolist(),
                      "bone": [round(float(x), 4) for x in bone],
                      "across_in": across, "along_in": float(delta[0])})
