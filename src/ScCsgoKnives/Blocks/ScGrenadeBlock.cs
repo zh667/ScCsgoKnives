@@ -7,6 +7,7 @@ public sealed class ScGrenadeBlock : Block {
     public static readonly string[] Names = ["高爆手雷", "闪光弹", "烟雾弹", "燃烧瓶", "燃烧弹", "诱饵弹"];
     public static bool Enabled(int kind) => kind is >= 0 and < 6;
     readonly List<(BlockMesh Mesh, Texture2D Texture)>[] m_parts = new List<(BlockMesh, Texture2D)>[6];
+    readonly List<(BlockMesh Mesh, Texture2D Texture)>[] m_flightParts = new List<(BlockMesh, Texture2D)>[6];
     public ScGrenadeBlock() {
         DefaultDisplayName = "CS2 投掷物"; DefaultCategory = "Weapons"; CraftingId = "sccsgogrenade";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 4; DefaultTextureSlot = 0;
@@ -19,12 +20,14 @@ public sealed class ScGrenadeBlock : Block {
         for (int i = 0; i < 6; i++) {
             var mesh = Cs2SkinnedMesh.Weapon(Assets[i]) ?? throw new InvalidOperationException("Missing grenade mesh: " + Assets[i]);
             if (!mesh.SetPose(Cs2Rig.Sample(Assets[i], "idle", 0), Cs2Placement.Placement())) throw new InvalidOperationException("Missing grenade pose");
-            mesh.Skin(); m_parts[i] = [];
-            foreach (var part in mesh.Primitives) {
-                // Same full vertex bounds for each material, so all parts remain aligned.
-                if (part.Material.EndsWith("_flame")) continue; // world/inventory bottle is unlit
-                var block = new BlockMesh(); Cs2BlockMesh.Append(block, mesh.Skinned, part.Indices);
-                m_parts[i].Add((block, ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + MaterialKey(Assets[i], part.Material))));
+            mesh.Skin();
+            foreach (bool thrown in new[] {false,true}) {
+                var geometry=ScGrenadeWorldMesh.Build(mesh,i==3,thrown);
+                var target=thrown?m_flightParts:m_parts;target[i]=[];
+                foreach (var part in geometry.Parts) {
+                    var block=new BlockMesh();Cs2BlockMesh.Append(block,geometry.Vertices,part.Indices);
+                    target[i].Add((block,ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+MaterialKey(Assets[i],part.Material))));
+                }
             }
         }
         base.Initialize();
@@ -32,6 +35,9 @@ public sealed class ScGrenadeBlock : Block {
     public override void DrawBlock(PrimitivesRenderer3D renderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData env) {
         int kind = Kind(value); if (kind < 0 || kind >= 6) return;
         foreach (var part in m_parts[kind]) BlocksManager.DrawMeshBlock(renderer, part.Mesh, part.Texture, color, .65f * size, ref matrix, env);
+    }
+    public void DrawProjectile(PrimitivesRenderer3D renderer,int kind,ref Matrix matrix,DrawBlockEnvironmentData env) {
+        foreach (var part in m_flightParts[kind]) BlocksManager.DrawMeshBlock(renderer,part.Mesh,part.Texture,Color.White,.23f,ref matrix,env);
     }
     public override void GenerateTerrainVertices(BlockGeometryGenerator g, TerrainGeometry t, int value, int x, int y, int z) { }
     public override bool IsSwapAnimationNeeded(int oldValue, int newValue) => false;

@@ -203,6 +203,11 @@ public sealed class Cs2SkinnedMesh {
         return total;
     }
 
+    public bool VertexUsesJoint(int vertex,Func<string,bool> predicate) {
+        for (int k=0;k<4;k++) { int i=vertex*4+k;if (m_weights[i]>0 && predicate(Joints[m_bones[i]])) return true; }
+        return false;
+    }
+
     static bool TryBone(Cs2Rig.Pose pose, string name, out Matrix absolute) {
         if (pose.Bones.TryGetValue(name, out absolute)) return true;
         foreach ((string bone, string parent, string input, float weight) in Twist) {

@@ -110,6 +110,15 @@ public static class SurvivalSelfTest {
         Test("decoy-animal-policy",()=>ScDecoyResponse.Investigates(CreatureCategory.LandPredator) && !ScDecoyResponse.Investigates(CreatureCategory.LandOther) && !ScDecoyResponse.Investigates(CreatureCategory.Bird));
         Test("grenade-all-six-enabled-frozen",()=> Enumerable.Range(0,6).All(ScGrenadeBlock.Enabled) && string.Join(",",ScGrenadeBlock.Assets)=="grenade_hegrenade,grenade_flashbang,grenade_smokegrenade,grenade_molotov,grenade_incendiary,grenade_decoy");
         foreach (string grenade in ScGrenadeBlock.Assets) {
+            Test("grenade-world-accessories/"+grenade,()=> {
+                var mesh=Cs2SkinnedMesh.Weapon(grenade);mesh.SetPose(Cs2Rig.Sample(grenade,"idle",0),Cs2Placement.Placement());mesh.Skin();
+                var item=ScGrenadeWorldMesh.Build(mesh,grenade=="grenade_molotov",false);
+                var flight=ScGrenadeWorldMesh.Build(mesh,grenade=="grenade_molotov",true);
+                bool compact=item.Parts.All(p=>p.Indices.All(i=>i>=0 && i<item.Vertices.Length)) && flight.Parts.All(p=>p.Indices.All(i=>i>=0 && i<flight.Vertices.Length));
+                return compact && flight.Vertices.Length>1000 && (grenade=="grenade_molotov"
+                    ? item.Vertices.Length<mesh.Skinned.Length-2000 && flight.Vertices.Length==item.Vertices.Length
+                    : flight.Vertices.Length<item.Vertices.Length);
+            });
             foreach (string alias in new[] {"deploy","idle","inspect","inspect2","pullpin","holdHigh","holdLow","throwHigh","throwLow"}) {
                 Test("grenade/"+grenade+"/"+alias,()=> {
                     if (!Cs2Rig.HasAlias(grenade,alias)) return false;

@@ -319,7 +319,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 if (!s.Effect || s.Kind==5) {
                     Matrix matrix=Matrix.CreateRotationY(s.Age*6)*Matrix.CreateTranslation(s.Position);
                     m_environment.Light=15; m_environment.DrawBlockMode=DrawBlockMode.ThirdPerson;
-                    BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGrenadeBlock>()].DrawBlock(m_renderer,ScGrenadeBlock.Value(s.Kind),Color.White,.35f,ref matrix,m_environment);
+                    ((ScGrenadeBlock)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGrenadeBlock>()]).DrawProjectile(m_renderer,s.Kind,ref matrix,m_environment);
                 } else if (ScFireArea.IsFire(s)) {
                     DrawFire(camera,s);
                 } else if (s.Kind==2) {

@@ -59,10 +59,15 @@
 - 燃烧瓶瓶身/液体/火焰分别使用对应材质，布条辅助骨骼的绑定检查通过；游戏中准备投掷时绘制点火材质，未加入完整折射/布料模拟。[来源记录](survival-fire-decoy-sources.json)。
 - 总回归发现并修复了世界创造/生存模式改变时未完成换弹继续沿用旧收费方式的问题；装配台在确认组装时重新读取当前模式。闪光影响与免疫剩余时间随实体 ID 保存；出手后的切槽或库存变更不再重置另一件武器的动作。
 
+## 0.25.1 — 世界模型收尾
+
+- 自查修正：第一人称燃烧瓶主体还含左手打火机，库存/掉落/投射物世界网格按骨骼去掉打火机；已投出的手雷去掉拉环/保险片。先压缩剩余顶点再归一化范围，防止被隐藏部件撑大范围、缩小瓶身。
+- 第一人称模型保持完整，未删除任何资产；6 种投掷物新增世界/飞行几何检查。所有已投出的物品只参与效果，不生成可反复拾取的副本。
+
 ## 总回归与交付
 
-- 最新安装包：`output/ScCsgoKnives-0.25.0.scmod`。P0、P1、P2、P3、P4 的独立版本仍保留，阶段代码分别提交。
-- 最新包内 DLL 自检与真实 API 集成检查共 3091 项通过、0 失败，见 [P5 检查](survival-p5-packagecheck.json)。集成检查用游戏实际 `CombineDataBase` 和数据库继承加载，验证狼/熊/野猪/牛/犀牛获得诱饵行为、四个世界子系统唯一注册；用两组模拟模组顺序检查动态索引；全部 13 个九宫格配方调用原版配方匹配器，与 251 种原版布局及彼此比较，无平移/镜像冲突。
+- 最新安装包：`output/ScCsgoKnives-0.25.1.scmod`。P0、P1、P2、P3、P4 的独立版本仍保留，阶段代码分别提交。
+- 最新包内 DLL 自检与真实 API 集成检查P5 共 3091 项通过、0 失败，见 [P5 检查](survival-p5-packagecheck.json)；0.25.1 共 3097 项通过、0 失败，增补世界模型检查见 [最终检查](survival-final-packagecheck.json)。集成检查用游戏实际 `CombineDataBase` 和数据库继承加载，验证狼/熊/野猪/牛/犀牛获得诱饵行为、四个世界子系统唯一注册；用两组模拟模组顺序检查动态索引；全部 13 个九宫格配方调用原版配方匹配器，与 251 种原版布局及彼此比较，无平移/镜像冲突。
 - [六种投掷物离线图](survival-grenades-offline.png)使用**安装包 DLL 导出的真实蒙皮顶点**、模组 PBR 着色器与贴图绘制，抽查待机和拉环；真实手、拉环、瓶身及布条没有缺失骨骼造成的塌陷。这是简化照明下的离线渲染，未画火焰附加通道，**不是游戏截图**。
 - 未完成的实机验收：鼠标/触屏实际操作与界面布局、枪刀对各动物的命中数及体感、墙后烟闪/火区实际表现、4 烟团最低设备帧率、真实旧世界/箱子/掉落升级、多人权威与同步。当前实现为本地游戏逻辑，不宣称多人验收通过。
 - 未删除 Steam、本地提取或 VPS 的任何源资源；历史安装包保留在 output。每阶段报告的“程序通过”不等于实机完成。
@@ -72,5 +77,5 @@
 ```powershell
 dotnet build ScCsgoKnives.sln -c Release --no-restore
 python -X utf8 tools/pack_scmod.py
-dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod output/ScCsgoKnives-0.25.0.scmod --json docs/survival-p5-packagecheck.json --vanilla-content 'E:\EdgeDownload\[Windows]SurvivalcraftAPI_1.9.2.1\Content.zip'
+dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod output/ScCsgoKnives-0.25.1.scmod --json docs/survival-final-packagecheck.json --vanilla-content 'E:\EdgeDownload\[Windows]SurvivalcraftAPI_1.9.2.1\Content.zip'
 ```
