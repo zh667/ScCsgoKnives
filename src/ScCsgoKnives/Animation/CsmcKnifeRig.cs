@@ -178,6 +178,7 @@ public static class CsmcKnifeRig {
 
     /// <summary>The mesh centre our OBJ export subtracted, in normalized mesh units (centre times the normalization scale).</summary>
     public static Vector3 GetMeshCenterOffset(int variant) {
+        if (Entry(variant).Cs2Only) return Vector3.Zero;   // only the CS:MC exact chain reads it
         var file = GetAsset(variant).File;
         float[] c = file.MeshCenter;
         return c is { Length: >= 3 } ? new Vector3(c[0], c[1], c[2]) * file.MeshNormalizationScale : Vector3.Zero;
@@ -186,6 +187,9 @@ public static class CsmcKnifeRig {
     static ManifestEntry Entry(int variant) => s_manifest[Math.Clamp(variant, 0, s_manifest.Length - 1)];
 
     public static float GetDuration(int variant, string clipAlias) {
+        // A CS2-only variant has no CS:MC clip; asking its CS:MC asset for one threw
+        // "Missing embedded CSMC rig resource" out of the draw hook in 0.18.1.
+        if (Entry(variant).Cs2Only) return Cs2Rig.Duration(Entry(variant).Name, clipAlias);
         Asset asset = GetAsset(variant);
         return asset.File.Clips.TryGetValue(clipAlias, out Clip clip) ? clip.Duration : 0f;
     }
@@ -220,8 +224,35 @@ public static class CsmcKnifeRig {
     public static IEnumerable<string> GetClipAliases(int variant) =>
         TryGetAsset(variant) is Asset asset ? asset.File.Clips.Keys : Enumerable.Empty<string>();
 
+    /// <summary>
+    /// Empty binding tables shared by every CS2-only pose; they never carry a matrix.
+    /// </summary>
+    static readonly IReadOnlyDictionary<string, Matrix> s_noMatrices = new Dictionary<string, Matrix>();
+    static readonly IReadOnlyDictionary<string, Vector3> s_noPoints = new Dictionary<string, Vector3>();
+
+    /// <summary>
+    /// What a CS2-only variant answers instead of a CS:MC sample: the clip alias, the
+    /// controller's untruncated time and whether it loops, which is all DrawCs2 reads
+    /// from a pose before it samples the CS2 rig itself. Every binding lookup returns
+    /// the identity, as on any pose missing a name.
+    ///
+    /// It exists because the draw hook treated a null pose as "nothing to draw" and
+    /// handed the item back to Survivalcraft - the eight guns of 0.18.1 came out as a
+    /// bare block at the bottom of the screen, with no arms and no animation.
+    /// </summary>
+    static KnifeRigPose Cs2OnlyPose(int variant, string clipAlias, float time, bool loop) {
+        string name = Entry(variant).Name;
+        string clip = Cs2Rig.ResolvedClip(name, clipAlias) ?? Cs2Rig.ResolvedClip(name, "idle") ?? "idle";
+        float duration = Cs2Rig.Duration(name, clipAlias);
+        float clamped = loop && duration > 0f ? time - duration * MathF.Floor(time / duration)
+                                              : MathUtils.Clamp(time, 0f, Math.Max(0f, duration));
+        return new KnifeRigPose(name, clipAlias, clip, duration, Entry(variant).SourceReferenceScale,
+            s_noMatrices, s_noMatrices, s_noPoints, s_noMatrices, clamped, time, loop);
+    }
+
     public static KnifeRigPose Sample(int variant, string clipAlias, float time, bool loop = false) {
         float requested = time;
+        if (Entry(variant).Cs2Only) return Cs2OnlyPose(variant, clipAlias, time, loop);
         Asset asset = GetAsset(variant);
         if (!asset.File.Clips.TryGetValue(clipAlias, out Clip clip)) clip = asset.File.Clips["idle"];
         if (loop && clip.Duration > 0f) {
@@ -295,6 +326,7 @@ public static class CsmcKnifeRig {
     /// Non-looping clamp, matching the offline sampler (loop=false).
     /// </summary>
     public static IReadOnlyDictionary<string, Matrix> SampleRawBindings(int variant, string clipAlias, float time) {
+        if (Entry(variant).Cs2Only) return s_noMatrices;
         Asset asset = GetAsset(variant);
         if (!asset.File.Clips.TryGetValue(clipAlias, out Clip clip)) clip = asset.File.Clips["idle"];
         time = MathUtils.Clamp(time, 0f, Math.Max(0f, clip.Duration));
@@ -404,7 +436,7 @@ public static class CsmcKnifeRig {
 
     /// <summary>Length of a bone's rest translation (its parent-to-joint segment) in mesh units; 0 if unknown.</summary>
     public static float GetBoneRestLength(int variant, string bone) {
-        Asset asset = GetAsset(variant);
+        Asset asset = TryGetAsset(variant);
         SkeletonBone b = asset?.File.Skeleton?.FirstOrDefault(x => x.Name == bone);
         if (b?.Translation is not { Length: >= 3 } t) return 0f;
         float len = MathF.Sqrt(t[0] * t[0] + t[1] * t[1] + t[2] * t[2]) * asset.File.MeshNormalizationScale;

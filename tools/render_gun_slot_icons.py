@@ -8,9 +8,17 @@ terrain atlas, which is what the 0.18.0 hotbar showed.
 
 CS2 does have real icons, at panorama/images/econ/weapons/base_weapons/, 68 of them.
 They are not in the local export yet. Until they are, this rasterises the gun's own
-.cs2.parts against its own base colour: orthographic, z-buffered, lit by a single
-headlamp, cropped to the silhouette and padded, which is close enough to read in a
-hotbar and is the gun's own geometry rather than a drawing.
+.cs2.parts against its own base colour: orthographic, z-buffered, one directional
+light, cropped to the silhouette and padded.
+
+Orientation is the rig's, not the bounding box's. Every CS2 gun's weapon_offset bind
+frame maps Source forward (+X) to mesh +Z and Source up (+Z) to mesh +Y - checked
+across all eleven .cs2.parts - so the barrel is mesh +Z and up is mesh +Y. The icon
+shows the gun's left side with the muzzle to the left, which is how CS:MC's three
+are drawn, and the camera angles (yaw, pitch, roll) come from
+tools/fit_slot_icon_camera.py, which searches them against those three icons'
+silhouettes. 0.18.1 measured the barrel as "the longest extent" and drew a flat
+side view, and the hotbar showed two styles side by side.
 
 Usage:  python3 tools/render_gun_slot_icons.py deagle glock18 [--size 128]
         (on Windows: python tools\\render_gun_slot_icons.py ...)
@@ -19,6 +27,7 @@ Usage:  python3 tools/render_gun_slot_icons.py deagle glock18 [--size 128]
 from __future__ import annotations
 
 import argparse
+import json
 import struct
 from pathlib import Path
 
@@ -28,6 +37,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "src/ScCsgoKnives/AnimationData"
 TEXTURES = ROOT / "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives"
+CAMERA = ROOT / "tools/reference/slot_icon_camera.json"
 
 
 def read_parts(path: Path):
@@ -55,8 +65,43 @@ def read_parts(path: Path):
     return pos, nor, uv, np.concatenate(tris) if tris else np.zeros((0, 3), np.uint32)
 
 
-def render(gun: str, size: int, supersample: int = 4) -> Image.Image:
-    pos, nor, uv, tris = read_parts(DATA / ("%s.cs2.parts" % gun))
+# Mesh (x left, y up, z forward) -> screen (x right, y up, z towards the viewer):
+# the muzzle goes to screen -x and the gun's left side faces the viewer.
+BASE = np.array([[0.0, 0.0, -1.0],
+                 [0.0, 1.0, 0.0],
+                 [1.0, 0.0, 0.0]], np.float32)
+
+
+def view_matrix(yaw: float, pitch: float, roll: float) -> np.ndarray:
+    """Rows are the screen axes in mesh space; screen = mesh @ M.T.
+
+    yaw turns the gun about screen y (positive shows more of its front face),
+    pitch tips it about screen x (positive looks down on it), roll tilts it in the
+    image plane (positive lifts the muzzle). Degrees.
+    """
+    y, p, r = np.radians([yaw, pitch, roll])
+    ry = np.array([[np.cos(y), 0, np.sin(y)], [0, 1, 0], [-np.sin(y), 0, np.cos(y)]], np.float32)
+    rx = np.array([[1, 0, 0], [0, np.cos(p), -np.sin(p)], [0, np.sin(p), np.cos(p)]], np.float32)
+    # A positive rotation about +z lowers a point on -x; the muzzle is on -x, so
+    # the tilt that lifts it is the negative rotation.
+    rz = np.array([[np.cos(-r), -np.sin(-r), 0], [np.sin(-r), np.cos(-r), 0], [0, 0, 1]], np.float32)
+    return rz @ rx @ ry @ BASE
+
+
+def camera() -> dict:
+    if CAMERA.exists():
+        return json.loads(CAMERA.read_text("utf-8"))
+    return {"yaw": 0, "pitch": 0, "roll": 0}
+
+
+def rasterize(gun: str, size: int, supersample: int = 4, parts_dir: Path = DATA,
+              yaw: float = None, pitch: float = None, roll: float = None):
+    """The icon before tone: per-pixel base colour, |n.l| and coverage at n = size*supersample."""
+    cam = camera()
+    yaw = cam["yaw"] if yaw is None else yaw
+    pitch = cam["pitch"] if pitch is None else pitch
+    roll = cam["roll"] if roll is None else roll
+    pos, nor, uv, tris = read_parts(parts_dir / ("%s.cs2.parts" % gun))
     texture = None
     for name in ("%s_hd" % gun, gun):
         p = TEXTURES / ("%s.png" % name)
@@ -66,15 +111,9 @@ def render(gun: str, size: int, supersample: int = 4) -> Image.Image:
     if texture is None:
         raise SystemExit("%s: no base colour texture" % gun)
 
-    # Which axis the barrel lies along is not assumed - the GLB and the rig do not
-    # agree on a convention and the first attempt drew every gun end-on, 12 pixels
-    # wide. It is measured: the longest extent is the barrel and goes across the icon,
-    # the shortest is the depth, and what is left is up. That is how CS:MC's own icons
-    # are laid out, a gun lying flat, e.g. ak47_slot is 123 x 62.
-    extent = pos.max(0) - pos.min(0)
-    order = np.argsort(extent)                 # shortest, middle, longest
-    across, up, into = int(order[2]), int(order[1]), int(order[0])
-    view = np.stack([pos[:, across], pos[:, up], pos[:, into]], 1)
+    m = view_matrix(yaw, pitch, roll)
+    view = pos @ m.T
+    vnor = nor @ m.T
     n = size * supersample
     lo, hi = view[:, :2].min(0), view[:, :2].max(0)
     span = float(max(hi[0] - lo[0], hi[1] - lo[1]))
@@ -83,12 +122,14 @@ def render(gun: str, size: int, supersample: int = 4) -> Image.Image:
     centre = (lo + hi) * 0.5
     scale = (n * 0.92) / span
     screen = (view[:, :2] - centre) * np.float32([scale, -scale]) + n * 0.5
-    depth = view[:, 2]
+    depth = -view[:, 2]                              # smaller is nearer the viewer
 
-    colour = np.zeros((n, n, 3), np.float32)
+    albedo = np.zeros((n, n, 3), np.float32)
+    ndotl = np.zeros((n, n), np.float32)
     alpha = np.zeros((n, n), bool)
     zbuf = np.full((n, n), np.inf, np.float32)
-    light = np.float32([0.35, 0.6, -0.72])
+    # From the upper left and in front, in screen space, as the CS:MC icons read.
+    light = np.float32([-0.4, 0.6, 0.7])
     light /= np.linalg.norm(light)
 
     yy, xx = np.mgrid[0:n, 0:n]
@@ -117,21 +158,27 @@ def render(gun: str, size: int, supersample: int = 4) -> Image.Image:
         v = a * uv[tri[0], 1] + bl * uv[tri[1], 1] + c * uv[tri[2], 1]
         tx = np.clip((u % 1.0) * (tw - 1), 0, tw - 1).astype(int)
         ty = np.clip((v % 1.0) * (th - 1), 0, th - 1).astype(int)
-        normal = (a[..., None] * nor[tri[0]] + bl[..., None] * nor[tri[1]] + c[..., None] * nor[tri[2]])
-        normal = np.stack([normal[..., across], normal[..., up], normal[..., into]], -1)
+        normal = (a[..., None] * vnor[tri[0]] + bl[..., None] * vnor[tri[1]] + c[..., None] * vnor[tri[2]])
         length = np.linalg.norm(normal, axis=-1, keepdims=True)
         normal = normal / np.where(length < 1e-6, 1.0, length)
-        shade = np.clip(np.abs((normal * light).sum(-1)), 0.0, 1.0) * 0.75 + 0.35
-        rgb = texture[ty, tx] * shade[..., None]
-        target = colour[y0:y1, x0:x1]
-        target[win] = np.clip(rgb[win], 0, 1)
-        colour[y0:y1, x0:x1] = target
+        # One-sided: a face turned from the light goes to ambient. Two-sided |n.l|
+        # never darkened anything and the tone fit could not reach the CS:MC icons'
+        # tenth percentile (54 against 35-45) however hard it pushed diffuse.
+        nl = np.clip((normal * light).sum(-1), 0.0, 1.0)
+        rgb = texture[ty, tx]
+        target = albedo[y0:y1, x0:x1]; target[win] = rgb[win]; albedo[y0:y1, x0:x1] = target
+        lt = ndotl[y0:y1, x0:x1]; lt[win] = nl[win]; ndotl[y0:y1, x0:x1] = lt
         zt = zbuf[y0:y1, x0:x1]; zt[win] = z[win]; zbuf[y0:y1, x0:x1] = zt
         at = alpha[y0:y1, x0:x1]; at[win] = True; alpha[y0:y1, x0:x1] = at
+    return albedo, ndotl, alpha
 
-    rgba = np.concatenate([colour, alpha[..., None].astype(np.float32)], -1)
+
+def shade(albedo, ndotl, alpha, size: int, ambient: float, diffuse: float, gamma: float) -> Image.Image:
+    """Tone: albedo * (|n.l| * diffuse + ambient), then gamma; crop, pad, downsample."""
+    lit = np.clip(albedo * (ndotl * diffuse + ambient)[..., None], 0, 1)
+    rgb = np.power(lit, 1.0 / gamma)
+    rgba = np.concatenate([rgb, alpha[..., None].astype(np.float32)], -1)
     im = Image.fromarray((rgba * 255).astype(np.uint8), "RGBA")
-    # Crop to the silhouette, pad a little, then down to the icon size.
     box = im.getbbox()
     if box:
         im = im.crop(box)
@@ -142,15 +189,31 @@ def render(gun: str, size: int, supersample: int = 4) -> Image.Image:
     return im.resize((size, size), Image.LANCZOS)
 
 
+def render(gun: str, size: int, supersample: int = 4, parts_dir: Path = DATA,
+           yaw: float = None, pitch: float = None, roll: float = None,
+           ambient: float = None, diffuse: float = None, gamma: float = None) -> Image.Image:
+    cam = camera()
+    ambient = cam.get("ambient", 0.35) if ambient is None else ambient
+    diffuse = cam.get("diffuse", 0.75) if diffuse is None else diffuse
+    gamma = cam.get("gamma", 1.0) if gamma is None else gamma
+    albedo, ndotl, alpha = rasterize(gun, size, supersample, parts_dir, yaw, pitch, roll)
+    return shade(albedo, ndotl, alpha, size, ambient, diffuse, gamma)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("guns", nargs="+")
     ap.add_argument("--size", type=int, default=128)
+    ap.add_argument("--parts-dir", type=Path, default=DATA)
+    ap.add_argument("--out-dir", type=Path, default=TEXTURES)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
+    cam = camera()
+    print("camera yaw %s pitch %s roll %s (%s)" % (cam.get("yaw"), cam.get("pitch"), cam.get("roll"),
+                                                  CAMERA.name if CAMERA.exists() else "no fit yet, flat"))
     for gun in args.guns:
-        im = render(gun, args.size)
-        out = TEXTURES / ("%s_slot.png" % gun)
+        im = render(gun, args.size, parts_dir=args.parts_dir)
+        out = args.out_dir / ("%s_slot.png" % gun)
         if not args.dry_run:
             im.save(out, optimize=True)
         covered = np.asarray(im)[..., 3].mean() / 255

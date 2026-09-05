@@ -342,6 +342,53 @@ public static class Cs2SelfTest {
             bool legacy = Guns.Contains(gun);
             Check($"gun/{gun}/rig", Cs2Rig.Has(gun), Cs2Rig.Has(gun) ? "ok" : "no CS2 rig");
             if (!Cs2Rig.Has(gun)) continue;
+
+            // The path from the draw hook to DrawCs2, as the shipped code decides it.
+            // 0.18.1 passed every check above and drew the eight CS2-only guns as a bare
+            // block: the CS:MC sample was null, the hook dropped a null pose, and the
+            // renderer's asset gate ran before its profile dispatch. Each link is asked
+            // here by name, from the tables alone, so no camera is needed.
+            int variant = Enumerable.Range(0, CsmcKnifeRig.AssetCount)
+                .First(v => CsmcKnifeRig.GetAssetName(v) == gun);
+            KnifeRigPose sample = null;
+            string sampleError = null;
+            try { sample = CsmcKnifeRig.Sample(variant, "idle", 0f); }
+            catch (Exception e) { sampleError = e.Message; }
+            Check($"gun/{gun}/sample", sample is not null && sample.ClipAlias == "idle",
+                  sampleError ?? (sample is null ? "null pose"
+                      : $"{sample.SourceClip} ({(CsmcKnifeRig.IsCs2Only(variant) ? "CS2 stand-in" : "CS:MC")})"));
+            string route = CsmcFirstPersonRenderer.Route(variant, sample);
+            string expectedRoute = CsmcKnifeRig.IsCs2Only(variant) || Cs2Placement.Active(variant) ? "cs2" : "csmc";
+            Check($"gun/{gun}/route", route == expectedRoute,
+                  $"{route}, expected {expectedRoute} with GunProfile={KnifeTuning.GunProfile:0.#}");
+            // The controller's clip choices come from the rig that draws. Asking the
+            // CS:MC table gave "idle" for every shot of a CS2-only gun.
+            string shot = KnifeAnimationController.ShootClip(variant, false, _ => 0);
+            bool shotOk = shot != "idle" && (!Cs2Placement.Active(variant) || Cs2Rig.HasAlias(gun, shot));
+            Check($"gun/{gun}/shootClip", shotOk, shot);
+            if (spec.Magazine > 0)
+                Check($"gun/{gun}/reloadClip", KnifeAnimationController.ReloadClip(variant) is not null,
+                      KnifeAnimationController.ReloadClip(variant) ?? "none");
+            if (spec.HasSilencer)
+                Check($"gun/{gun}/silencerClip",
+                      KnifeAnimationController.SilencerClip(variant, true) is not null
+                          && KnifeAnimationController.SilencerClip(variant, false) is not null,
+                      $"{KnifeAnimationController.SilencerClip(variant, true) ?? "none"}/"
+                          + $"{KnifeAnimationController.SilencerClip(variant, false) ?? "none"}");
+            // CS2's own cue times for the clips the behaviour schedules: a reload with
+            // no cues is a silent reload, which the device showed for all eight.
+            foreach ((string clip, int atLeast) in new[] { ("deploy", 1), ("reload", 2), ("inspect", 1) }) {
+                if (clip == "reload" && spec.Magazine <= 0) continue;
+                bool has = Cs2Sounds.TryGet($"{gun}:{clip}", out var cues);
+                Check($"gun/{gun}/cues.{clip}", has && cues.Length >= atLeast,
+                      has ? $"{cues.Length} cues [{string.Join(',', cues.Select(c => c.Name).Distinct())}]" : "no CS2 cues");
+            }
+            if (spec.HasSilencer)
+                foreach (string clip in new[] { "attach", "detach" }) {
+                    bool has = Cs2Sounds.TryGet($"{gun}:{clip}", out var cues);
+                    Check($"gun/{gun}/cues.{clip}", has && cues.Length >= 1,
+                          has ? $"{cues.Length} cues" : "no CS2 cues");
+                }
             foreach (string alias in new[] { "deploy", "idle", "shoot", "reload", "inspect" }) {
                 // The Taser has no reload in CS2 and no gun in the table needs one it
                 // has not got; anything else missing is a hole. "shoot" stands for

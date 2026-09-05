@@ -64,6 +64,9 @@ public static class Cs2Placement {
     /// one must not force the other back to CS:MC.
     /// </summary>
     public static bool Active(int variant) {
+        // A CS2-only weapon has no CS:MC chain to fall back to; the profile switch
+        // is for weapons that have both.
+        if (CsmcKnifeRig.IsCs2Only(variant)) return Cs2Rig.Has(CsmcKnifeRig.GetAssetName(variant));
         bool isGun = CsmcKnifeRig.IsGun(variant);
         float profile = isGun ? KnifeTuning.GunProfile : KnifeTuning.KnifeProfile;
         return profile >= 0.5f && Cs2Rig.Has(CsmcKnifeRig.GetAssetName(variant));

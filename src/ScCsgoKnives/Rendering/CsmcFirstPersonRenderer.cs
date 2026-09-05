@@ -804,6 +804,22 @@ public static class CsmcFirstPersonRenderer {
         KnifeLog.Information($"[ScCsgoKnives] diagnostic view {s_diagMode}: {s_diagNames[s_diagMode]}");
     }
 
+    /// <summary>
+    /// Which chain draws this variant, decided from the pose and the tables alone so
+    /// the self-test can ask without a camera: "cs2", "csmc", or "none:" and why.
+    ///
+    /// The order matters and is the 0.18.1 bug: the CS:MC asset gate ran before the
+    /// profile dispatch, and a CS2-only gun, having no CS:MC assets, was handed back
+    /// to Survivalcraft's item draw without ever reaching DrawCs2.
+    /// </summary>
+    public static string Route(int variant, KnifeRigPose pose) {
+        if (pose is null) return "none:no pose";
+        variant = Math.Clamp(variant, 0, s_count - 1);
+        if (Cs2Placement.Active(variant)) return "cs2";
+        if (CsmcKnifeRig.IsCs2Only(variant)) return "none:CS2-only without a CS2 rig";
+        return "csmc";
+    }
+
     public static bool Draw(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose) {
         if (pose is null) return false;
         EnsureLoaded();
@@ -811,13 +827,21 @@ public static class CsmcFirstPersonRenderer {
         PollDiagnosticKey(firstPerson);
         variant = Math.Clamp(variant, 0, s_count - 1);
         AdvanceAim();
+        string route = Route(variant, pose);
+        if (route.StartsWith("none:", StringComparison.Ordinal)) {
+            KnifeDiagnostics.WarnOnce($"route-{s_assetNames[variant]}",
+                $"{s_assetNames[variant]} cannot be drawn ({route[5..]}); falling back to Survivalcraft item rendering.");
+            return false;
+        }
         // Field of view is a player setting and the aspect follows the window, so
         // the screen-space anchor has to be re-resolved whenever either changes;
         // in exact mode the weapon's own FOV (per table row, blended by aim) too.
-        s_weaponFov = WeaponFovDegrees(variant);
+        // A CS2-only variant has no CS:MC table row and draws through Cs2Placement's
+        // own projection, so it is not asked.
+        if (!CsmcKnifeRig.IsCs2Only(variant)) s_weaponFov = WeaponFovDegrees(variant);
         if (SyncProjection(camera)) RebuildPlacements();
         EnsurePlacement(variant);
-        if (s_parts[variant] is null || s_baseColor[variant] is null) {
+        if (route == "csmc" && (s_parts[variant] is null || s_baseColor[variant] is null)) {
             KnifeDiagnostics.WarnOnce($"assets-missing-{s_assetNames[variant]}",
                 $"{s_assetNames[variant]} has no usable first-person assets; falling back to Survivalcraft item rendering.");
             return false;
@@ -831,7 +855,7 @@ public static class CsmcFirstPersonRenderer {
             * Matrix.CreateFromYawPitchRoll(firstPerson.m_lagAngles.X, firstPerson.m_lagAngles.Y, 0f);
         // The cs2 profile replaces the whole chain: CS2's own rig is already posed in
         // the camera's frame, so there is no placement to solve (Cs2Placement).
-        if (Cs2Placement.Active(variant)) return DrawCs2(firstPerson, camera, variant, pose, post);
+        if (route == "cs2") return DrawCs2(firstPerson, camera, variant, pose, post);
 
         Matrix placement = PlacementFor(pose, variant);
         Matrix root = placement * post;
@@ -2076,6 +2100,9 @@ public static class CsmcFirstPersonRenderer {
     static void EnsureLoaded() {
         if (s_loaded) return;
         for (int variant = 0; variant < s_count; variant++) {
+            // A CS2-only variant has no CS:MC model, texture or placement; 0.18.1 logged
+            // eight "failed to load" errors here at start-up asking for them.
+            if (CsmcKnifeRig.IsCs2Only(variant)) continue;
             // One unreadable model must not take the other knives down with it.
             try {
                 LoadVariant(variant);
@@ -2158,6 +2185,7 @@ public static class CsmcFirstPersonRenderer {
     static void EnsurePlacement(int variant) {
         if (!s_placementStale[variant]) return;
         s_placementStale[variant] = false;
+        if (CsmcKnifeRig.IsCs2Only(variant)) return;       // placed by Cs2Placement, nothing to solve
         try {
             BuildPlacement(variant);
         }

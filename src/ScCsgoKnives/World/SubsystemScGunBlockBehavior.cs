@@ -66,18 +66,22 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// </summary>
     static readonly Dictionary<string, int> s_variants = Cs2SoundVariants.All;
 
-    void Schedule(GunState state, string spec, string clip, double startedAt, bool silenced = false) {
+    /// <summary>Queues the clip's cues; false when neither table has any.</summary>
+    bool Schedule(GunState state, string spec, string clip, double startedAt, bool silenced = false) {
         string key = $"{spec}:{clip}";
         // CS2's own event frames when the profile asks for them, else the bone-timed
-        // table. Either way a clip CS2 has no cue for falls back to the old row.
+        // table. Either way a clip CS2 has no cue for falls back to the old row, and
+        // a gun the old table never knew - the CS2-only eight - takes the CS2 cues
+        // whatever the profile says, since those are the only cues it has.
         bool cs2Sounds = KnifeTuning.GunProfile >= 0.5f || KnifeTuning.GunSoundProfile >= 0.5f;
         if (!cs2Sounds || !Cs2Sounds.TryGet(key, out var list))
-            if (!s_clipSounds.TryGetValue(key, out list)) return;
+            if (!s_clipSounds.TryGetValue(key, out list) && !Cs2Sounds.TryGet(key, out list)) return false;
         foreach ((float at, string name) in list) {
             // The M4A1-S bolt sounds differently with the silencer on (m4a1_silencer_bolt*).
             string n = silenced && name is "m4a1s_boltback" or "m4a1s_boltforward" ? name + "_silenced" : name;
             state.Scheduled.Add((startedAt + at, n));
         }
+        return list.Length > 0;
     }
 
     void PlayScheduled(ComponentPlayer player, GunState state, double now) {
@@ -349,7 +353,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.PendingRounds = -1;
                 state.SilencerPending = false;
                 state.Scheduled.Clear();
-                PlaySound(player, $"{spec.Name}_draw");
+                // The draw clip's own cues where CS2 has them - the FAMAS and M4A4 work
+                // the bolt quietly during theirs - else the single draw file.
+                if (!Schedule(state, spec.Name, "deploy", now)) PlaySound(player, $"{spec.Name}_draw");
                 ShowAmmo(player, spec, rounds);
                 if (!state.HintShown) {
                     state.HintShown = true;
@@ -578,7 +584,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true)) return false;
         if (m_states.TryGetValue(componentPlayer, out GunState state)) LeaveScope(componentPlayer, state);
         if (!KnifeAnimationController.TriggerInspect(componentPlayer)) return true;
-        if (state != null) { state.Scheduled.Clear(); Schedule(state, ScGunBlock.SpecOf(value).Name, "inspect", m_time.GameTime); }
+        if (state != null) {
+            state.Scheduled.Clear();
+            // The cues of the inspect the controller actually picked: the Desert Eagle's
+            // second one carries its own nine LookAt sounds, which "inspect" has not got.
+            string clip = KnifeAnimationController.CurrentClip(componentPlayer.Entity.FindComponent<ComponentFirstPersonModel>());
+            Schedule(state, ScGunBlock.SpecOf(value).Name, clip is not null && clip.StartsWith("inspect", StringComparison.Ordinal) ? clip : "inspect", m_time.GameTime);
+        }
         string name = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(m_terrain, value);
         componentPlayer.ComponentGui.DisplaySmallMessage(string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "Inspect"), name), Color.White, true, false);
         return true;

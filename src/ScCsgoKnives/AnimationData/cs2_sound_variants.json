@@ -1,6 +1,6 @@
 {
  "Format": "ScCsgoKnives.SoundVariants/1",
- "Notes": "How many numbered files each cue ships, counted from the installed OGGs rather than kept in a table: adding a gun's sounds used to need a code edit as well, and a wrong count plays a file that is not there.",
+ "Notes": "How many numbered files each cue ships, counted from the installed OGGs rather than kept in a table.",
  "Variants": {
   "ak47_fire": 3,
   "awp_fire": 2,

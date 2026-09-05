@@ -70,7 +70,7 @@ public static class KnifeAnimationController {
         bool viewObscured = model.m_componentPlayer.ComponentGui.ModalPanelWidget != null
             || DialogsManager.HasDialogs(model.m_componentPlayer.GuiWidget);
         if (viewObscured) {
-            if (state.Variant != variant) {
+            if (state.Variant != variant && !state.DrawWhenVisible) {
                 Log.Information($"[ScCsgoKnives] obscured: held variant {state.Variant} -> {variant}, deferring draw.");
                 state.DrawWhenVisible = true;
             }
@@ -199,29 +199,44 @@ public static class KnifeAnimationController {
     }
 
     /// <summary>Plays one of the gun's shot clips (the M4A1-S picks by silencer state); interrupts idle and inspect.</summary>
+    /// <summary>
+    /// The shot clip this variant plays, from whichever rig is drawing it. Asking
+    /// the CS:MC table (0.18.1) gave "idle" for every CS2-only gun - the device log
+    /// showed two idle requests per P90 round - because they have no CS:MC clips.
+    /// Exposed for the self-test: a gun whose shot resolves to idle is drawn wrong.
+    /// </summary>
+    internal static string ShootClip(int variant, bool silenced, Func<int, int> pick = null) {
+        if (HasAlias(variant, "shootSilenced")) return silenced ? "shootSilenced" : "shootUnsilenced";
+        string[] shots = [.. new[] { "shoot1", "shoot2", "shoot3" }.Where(alias => HasAlias(variant, alias))];
+        if (shots.Length == 0) return "idle";
+        return shots[(pick ?? s_random.Next)(shots.Length)];
+    }
+
+    /// <summary>The reload clip, or null when the drawing rig has none (the Taser).</summary>
+    internal static string ReloadClip(int variant) => HasAlias(variant, "reload") ? "reload" : null;
+
+    /// <summary>The silencer clip, or null when the drawing rig has none.</summary>
+    internal static string SilencerClip(int variant, bool attach) {
+        string clip = attach ? "attach" : "detach";
+        return HasAlias(variant, clip) ? clip : null;
+    }
+
     public static void TriggerShoot(ComponentPlayer player, bool silenced) {
         State state = GunState(player, out int variant);
         if (state is null) return;
-        string clip;
-        if (CsmcKnifeRig.HasClip(variant, "shootSilenced")) clip = silenced ? "shootSilenced" : "shootUnsilenced";
-        else {
-            string[] shots = [.. new[] { "shoot1", "shoot2", "shoot3" }.Where(alias => CsmcKnifeRig.HasClip(variant, alias))];
-            clip = shots.Length > 0 ? shots[s_random.Next(shots.Length)] : "idle";
-        }
-        Start(state, ActionKind.Shoot, clip);
+        Start(state, ActionKind.Shoot, ShootClip(variant, silenced));
     }
 
     public static void TriggerReload(ComponentPlayer player) {
         State state = GunState(player, out int variant);
-        if (state is null || !CsmcKnifeRig.HasClip(variant, "reload")) return;
-        Start(state, ActionKind.Reload, "reload");
+        if (state is null || ReloadClip(variant) is not string clip) return;
+        Start(state, ActionKind.Reload, clip);
         LogActionStart(state, variant);
     }
 
     public static void TriggerSilencer(ComponentPlayer player, bool attach) {
         State state = GunState(player, out int variant);
-        string clip = attach ? "attach" : "detach";
-        if (state is null || !CsmcKnifeRig.HasClip(variant, clip)) return;
+        if (state is null || SilencerClip(variant, attach) is not string clip) return;
         Start(state, attach ? ActionKind.Attach : ActionKind.Detach, clip);
         LogActionStart(state, variant);
     }
@@ -247,6 +262,10 @@ public static class KnifeAnimationController {
     internal static string QaClip(ComponentFirstPersonModel model) =>
         s_states.TryGetValue(model, out State state) ? state.ClipAlias : "";
 
+    /// <summary>The clip alias the controller is running for this model, or null.</summary>
+    public static string CurrentClip(ComponentFirstPersonModel model) =>
+        model is not null && s_states.TryGetValue(model, out State state) ? state.ClipAlias : null;
+
     internal static float QaClipTime(ComponentFirstPersonModel model) =>
         s_states.TryGetValue(model, out State state) ? (float)(KnifeClock.Now - state.StartedAt) : 0f;
 
@@ -270,7 +289,8 @@ public static class KnifeAnimationController {
             string asset = CsmcKnifeRig.GetAssetName(state.Variant);
             KnifeLog.Information(
                 $"[ScCsgoKnives] CS2 action: asset={asset} requested={clipAlias} "
-                + $"resolved={Cs2Rig.ResolvedClip(asset, clipAlias) ?? "(none, drawing idle)"}");
+                + $"resolved={Cs2Rig.ResolvedClip(asset, clipAlias) ?? "(none, drawing idle)"} "
+                + $"duration={Cs2Rig.Duration(asset, clipAlias):0.###}s");
         }
     }
 
@@ -286,6 +306,10 @@ public static class KnifeAnimationController {
     }
 
     static void LogActionStart(State state, int variant) {
+        // Start already logged the CS2 clip and its length; the CS:MC sample below is
+        // for the CS:MC chain, and asking a CS2-only variant for it threw out of the
+        // draw hook in 0.18.1 (the ssg08 stack in the device log).
+        if (CsmcKnifeRig.IsCs2Only(variant)) return;
         float duration = CsmcKnifeRig.GetDuration(variant, state.ClipAlias);
         KnifeRigPose initial = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
         KnifeRigPose middle = CsmcKnifeRig.Sample(variant, state.ClipAlias, duration * 0.5f);
