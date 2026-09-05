@@ -33,7 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
-    <EmbeddedResource Include="AnimationData\*.animation.json" />
+    <EmbeddedResource Include="AnimationData\*.cs2.animation.json" />
     <EmbeddedResource Include="AnimationData\cs2_sounds.json" />
     <EmbeddedResource Include="AnimationData\*.skin" />
     <EmbeddedResource Include="AnimationData\*.parts" />

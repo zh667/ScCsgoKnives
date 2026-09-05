@@ -32,6 +32,9 @@ uniform vec3 u_lightColor2;
 uniform vec4 u_params;           // x = env RGBM range, y = env intensity, z = exposure, w = flip normal Y (0/1)
 uniform vec4 u_params2;          // x = roughness bias, y = env yaw (radians), z = env saturation (0 = grey), w = debug view
 
+// x: optical aperture diameter / viewport height; y: projection vertical scale.
+uniform vec2 u_scopeCutout;
+
 in vec3 v_viewPos;
 in vec3 v_viewNormal;
 in vec2 v_texcoord;
@@ -136,6 +139,12 @@ vec3 directLight(vec3 L, vec3 color, vec3 N, vec3 V, vec3 diffuseColor, vec3 f0,
 
 void main()
 {
+    // Reveal the world through the optical aperture; the model supplies the
+    // actual tube and outer silhouette. Only aimed AUG / SG 553 parts enable it.
+    if (u_scopeCutout.x > 0.0 && v_viewPos.z < 0.0 &&
+        length(v_viewPos.xy / -v_viewPos.z) * u_scopeCutout.y < u_scopeCutout.x)
+        discard;
+
 	vec3 base = srgbToLinear(texture(u_baseColor, v_texcoord).rgb);
 	vec3 orm = texture(u_orm, v_texcoord).rgb;
 	float ao = orm.r;

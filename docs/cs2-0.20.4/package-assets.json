@@ -1,0 +1,11 @@
+{
+  "sha256": "9bd0c99e7be6bb5236066c9866197e355dcd1bf5795984e529b183c2909377ec",
+  "bytes": 203694385,
+  "entries": 626,
+  "asset_entries": 621,
+  "asset_manifest": "PASS: exact source list and byte contents",
+  "removed_assets_absent": true,
+  "weapon_assets": 57,
+  "zip_crc": "PASS",
+  "previous_bytes": 229500707
+}

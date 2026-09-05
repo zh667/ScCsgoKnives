@@ -54,6 +54,49 @@ public static class Cs2SelfTest {
         void Check(string name, bool ok, string detail) =>
             checks.Add(new Check { Name = name, Ok = ok, Detail = detail });
 
+        // Exercise the exact regression: even an old tuning file requesting CS:MC
+        // must never send any of the original knives / guns to box hands.
+        KnifeTuning.KnifeProfile = 0f;
+        KnifeTuning.GunProfile = 0f;
+        KnifeTuning.Cs2Arms = 0f;
+        Check("firstperson/legacy-switches", KnifeTuning.KnifeProfile == 1f && KnifeTuning.GunProfile == 1f
+            && KnifeTuning.Cs2Arms == 1f, "old profile / arms settings cannot disable CS2 hands");
+        Check("firstperson/no-legacy-rigs", !typeof(Cs2SelfTest).Assembly.GetManifestResourceNames()
+            .Any(n => n.EndsWith(".csmc.animation.json", StringComparison.Ordinal)), "no embedded CS:MC animation");
+        foreach (int variant in Enumerable.Range(0, CsmcKnifeRig.AssetCount)) {
+            string asset = CsmcKnifeRig.GetAssetName(variant);
+            var pose = CsmcKnifeRig.Sample(variant, "idle", 0f);
+            Check($"firstperson/{asset}/route", CsmcKnifeRig.IsCs2Only(variant)
+                && CsmcFirstPersonRenderer.Route(variant, pose) == "cs2", "CS2-only route");
+            var weaponArms = Cs2SkinnedMesh.Arms;
+            bool skinned = weaponArms is not null && weaponArms.SetPose(Cs2Rig.Sample(asset, "idle", 0f), Cs2Placement.Placement());
+            if (skinned) weaponArms.Skin();
+            Check($"firstperson/{asset}/hands", skinned && weaponArms.Skinned.Length > 6000
+                && weaponArms.Skinned.All(v => float.IsFinite(v.Position.X) && float.IsFinite(v.Position.Y) && float.IsFinite(v.Position.Z)),
+                "real finger / glove mesh binds to this weapon's CS2 skeleton");
+            if (!CsmcKnifeRig.IsGun(variant)) {
+                var knifeMesh = Cs2SkinnedMesh.Weapon(asset);
+                bool valid = knifeMesh is not null && knifeMesh.SetPose(Cs2Rig.Sample(asset, "idle", 0f), Cs2Placement.Placement());
+                var blockMesh = new BlockMesh();
+                if (valid) {
+                    knifeMesh.Skin();
+                    Cs2BlockMesh.Append(blockMesh, knifeMesh.Skinned, knifeMesh.Primitives.SelectMany(p => p.Indices));
+                }
+                Check($"firstperson/{asset}/world-mesh", valid && blockMesh.Vertices.Count > 0 && blockMesh.Indices.Count > 0,
+                    "inventory / dropped knife uses the CS2 mesh");
+            }
+        }
+        Check("gunspec/zeus-ten-seconds", GunSpec.ForAsset("taser").RechargeSeconds == 10f, "requested ten-second cooldown");
+        foreach (string asset in new[] { "aug", "sg556" }) {
+            Vector3 eyeView = Vector3.Transform(Cs2Ironsight.Eye(asset), Cs2Placement.Placement() * Cs2Ironsight.Correction(asset));
+            Check($"firstperson/{asset}/eye", eyeView.Length() < 0.00001f, "viewmodel offsets cancel at the optical eye");
+            foreach (float aspect in new[] { 4f / 3f, 16f / 9f, 21f / 9f }) {
+                Matrix projection = Cs2Ironsight.Projection(aspect);
+                Check($"firstperson/{asset}/scope-{aspect:0.##}", MathF.Abs(projection.M11 * aspect - projection.M22) < 0.0001f
+                    && Cs2Ironsight.Aperture(asset) is > 0f and < 1f, "circular aperture and viewport-height framing");
+            }
+        }
+
         // Loader status first: a loader can produce usable values and still have failed.
         Check("load/effects", Cs2Effects.LoadError is null, Cs2Effects.LoadError ?? "ok");
         Check("load/weapons", Cs2Weapons.LoadError is null, Cs2Weapons.LoadError ?? "ok");

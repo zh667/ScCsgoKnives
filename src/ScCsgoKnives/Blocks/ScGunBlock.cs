@@ -24,18 +24,12 @@ public class ScGunBlock : Block {
     public override void Initialize() {
         for (int i = 0; i < s_count; i++) {
             try {
-                // The first three guns ship a CS:MC-derived <gun>.png and OBJ pieces;
-                // the ones added from CS2 ship only <gun>_hd.png and a .cs2.parts, so
-                // both are tried. Without this a CS2-only gun found no texture, no mesh
-                // parts, and - because its variant indexed past the CS:MC manifest -
-                // was drawn as the last gun in it, which is why they all looked like AWPs.
-                m_textures[i] = LoadTexture($"{s_names[i]}") ?? LoadTexture($"{s_names[i]}_hd");
-                m_slotTextures[i] = LoadTexture($"{s_names[i]}_slot") ?? m_textures[i];
-
-                var parts = CsmcKnifeRig.GetMeshParts(AssetIndex(i));
+                m_textures[i] = LoadTexture(s_names[i] + "_hd");
+                m_slotTextures[i] = LoadTexture(s_names[i] + "_slot") ?? m_textures[i];
+                var parts = Cs2Rig.GetMeshParts(s_names[i]);
                 if (parts.Count > 0) {
                     foreach (string part in parts) {
-                        ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{s_names[i]}_{part}");
+                        ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{s_names[i]}_cs2_{part}");
                         foreach (ModelMesh mesh in model.Meshes) {
                             Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
                             foreach (ModelMeshPart meshPart in mesh.MeshParts)
@@ -43,9 +37,7 @@ public class ScGunBlock : Block {
                         }
                     }
                 }
-                else {
-                    AppendRigidMesh(m_meshes[i], s_names[i]);
-                }
+                else AppendRigidMesh(m_meshes[i], s_names[i]);
                 Log.Information($"[ScCsgoKnives] gun asset {s_names[i]}: vertices={m_meshes[i].Vertices.Count}, "
                                 + $"texture={(m_textures[i] is null ? "none" : $"{m_textures[i].Width}x{m_textures[i].Height}")}.");
             }

@@ -27,18 +27,14 @@ public class ScKnifeBlock : Block {
 
     void LoadVariant(int i) {
         {
-            m_textures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}");
+            m_textures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}_cs2");
             m_slotTextures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}_slot");
-            // Folding knives ship one record per moving piece; the inventory
-            // mesh is all of them baked together in the rest pose.
-            foreach (string binding in CsmcKnifeRig.GetMeshParts(i)) {
-                ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{s_names[i]}_{binding}");
-                foreach (ModelMesh mesh in model.Meshes) {
-                    Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
-                    foreach (ModelMeshPart part in mesh.MeshParts)
-                        m_meshes[i].AppendModelMeshPart(part, transform, false, false, true, false, Color.White);
-                }
-            }
+            Cs2SkinnedMesh mesh = Cs2SkinnedMesh.Weapon(s_names[i])
+                ?? throw new InvalidOperationException($"Missing CS2 knife mesh: {s_names[i]}");
+            if (!mesh.SetPose(Cs2Rig.Sample(s_names[i], "idle", 0f), Cs2Placement.Placement()))
+                throw new InvalidOperationException($"Invalid CS2 knife pose: {s_names[i]}");
+            mesh.Skin();
+            Cs2BlockMesh.Append(m_meshes[i], mesh.Skinned, mesh.Primitives.SelectMany(p => p.Indices));
             (m_boundsMin[i], m_boundsMax[i]) = CalculateBounds(m_meshes[i]);
             Log.Information(
                 $"[ScCsgoKnives] asset {s_names[i]}: vertices={m_meshes[i].Vertices.Count}, indices={m_meshes[i].Indices.Count}, "

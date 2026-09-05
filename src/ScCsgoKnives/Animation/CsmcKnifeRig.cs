@@ -219,7 +219,8 @@ public static class CsmcKnifeRig {
     }
 
     public static bool HasClip(int variant, string clipAlias) =>
-        TryGetAsset(variant)?.File.Clips.ContainsKey(clipAlias) ?? false;
+        Entry(variant).Cs2Only ? Cs2Rig.HasAlias(GetAssetName(variant), clipAlias)
+            : TryGetAsset(variant)?.File.Clips.ContainsKey(clipAlias) ?? false;
     /// <summary>Every clip alias this knife's rig carries.</summary>
     public static IEnumerable<string> GetClipAliases(int variant) =>
         TryGetAsset(variant) is Asset asset ? asset.File.Clips.Keys : Enumerable.Empty<string>();

@@ -1,5 +1,17 @@
 # Asset sources
 
+## Current package: 0.20.4
+
+All 22 knives and 35 guns now use the CS2 animation / mesh pipeline, including CS2 skinned arms and gloves. Source exports are available in the sibling `CSMCReverse/local_cs2_analysis/all_weapons` directory (guns in `08_first_person`, knives in `09_knives`, meshes/materials in their existing export folders). This extraction remains intact.
+
+The runtime uses `*.cs2.animation.json`, `*.cs2.skin`, `*.cs2.parts`, the first three guns' `*_cs2_*.obj`, CS2 `_hd` / `_cs2` texture sets, and the existing slot icons. AUG and SG553 retain their existing CS2 `body_hd` models; the 0.20.4 scope change adjusts projection and the optical aperture, not the source mesh.
+
+The retired CS:MC animation files, weapon OBJ records and their unused texture maps were removed after migrating the inventory/world meshes. `docs/cs2-0.20.4-removed-assets.json` lists all 158 removed files with hashes and the backup commit. Shared PBR environment/LUT textures, audio/effects and slot icons remain because the active renderer still uses them. Their existing attributions remain applicable.
+
+The sections below are the historical conversion record, not the current package layout.
+
+## Historical CS:MC conversion
+
 The first-person geometry, base-colour textures, skeletal animations, and
 inventory icons are converted from the CSMC client resources
 (`CSMCClient20260822.zip`, `overrides/gec_texture_stream/`). Only the default

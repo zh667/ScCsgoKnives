@@ -375,14 +375,8 @@ public static class KnifeTuning {
     public static float ExactArmBaseLength = 0.625f;
     public static float ExactArmStretchMin = 0.65f;
     public static float ExactArmStretchMax = 4.8f;
-    /// <summary>
-    /// 0 draws the 22 knives through the CS:MC chain, 1 through CS2's own rig,
-    /// mesh and arms. Separate from GunProfile because the two routes were built
-    /// at different times and each has to be switchable on its own; the default
-    /// stays 0 until the CS2 knives have been through the same acceptance the
-    /// CS:MC ones have.
-    /// </summary>
-    public static float KnifeProfile;
+    /// <summary>Compatibility key: all knives always use CS2 models, animation and real hands.</summary>
+    public static float KnifeProfile { get => 1f; set { } } // CS2-only; ignore legacy tuning overrides.
 
     /// <summary>Twist added to the forearm box about its own axis after the wrist twist, degrees (CS:MC rotateY(45) then +-90).</summary>
     public static float ExactArmTwistOffsetDegrees = 45f;
@@ -413,13 +407,8 @@ public static class KnifeTuning {
     /// <summary>How much of the environment's colour reaches the metal: 1 = full (blue sky tints the blade), 0 = grey reflections only.</summary>
     public static float PbrEnvSaturation = 0.25f;
     /// <summary>0 final; 1 base colour, 2 normals, 3 roughness, 4 metalness, 5 reflection only, 6 occlusion, 7 direct light only.</summary>
-    /// <summary>
-    /// Which pipeline the three guns draw through: 0 = the CS:MC chain shipped since
-    /// 0.14.1, 1 = CS2's own viewmodel (CS2 mesh, CS2 materials, CS2 animation, CS2
-    /// placement). Defaults to 0 until the placement is checked against a CS2
-    /// recording. The knives are unaffected either way.
-    /// </summary>
-    public static float GunProfile = 0f;
+    /// <summary>Compatibility key: all guns always use the CS2 rendering route.</summary>
+    public static float GunProfile { get => 1f; set { } } // CS2-only; ignore legacy tuning overrides.
 
     /// <summary>
     /// The player's CS2 viewmodel cvars, used by the cs2 profile. Defaults are this
@@ -431,14 +420,6 @@ public static class KnifeTuning {
     public static float Cs2ViewmodelOffsetY = 0f;
     public static float Cs2ViewmodelOffsetZ = -1.5f;
     /// <summary>
-    /// The AUG / SG 553 scoped HUD (CS2's scope_filter): how much of the screen
-    /// height its window spans, and a multiplier on the tint inside it. Neither is in
-    /// the export (no panorama layout), so both are estimates the player can move.
-    /// </summary>
-    public static float IronsightScopeWindow = 0.94f;   // assumed
-    public static float IronsightScopeTint = 1f;        // assumed
-
-    /// <summary>
     /// Which gameplay numbers the three guns use: 0 = the values shipped since 0.15.10,
     /// 1 = CS2's own damage, range falloff, spread and recoil ratios from its vdata.
     ///
@@ -449,9 +430,9 @@ public static class KnifeTuning {
     public static float GunNumbers = 0f;
 
     /// <summary>
-    /// Draw CS2's arms and glove in the cs2 profile (1) or the weapon alone (0).
+    /// Compatibility key: CS2 hands and gloves are always drawn.
     /// </summary>
-    public static float Cs2Arms = 1f;
+    public static float Cs2Arms { get => 1f; set { } } // CS2-only; ignore legacy tuning overrides.
 
     /// <summary>
     /// Which sound timings the guns use: 0 = the table timed off the bones (shipped
@@ -623,8 +604,6 @@ public static class KnifeTuning {
             case nameof(Cs2ViewmodelOffsetX): Cs2ViewmodelOffsetX = v; return true;
             case nameof(Cs2ViewmodelOffsetY): Cs2ViewmodelOffsetY = v; return true;
             case nameof(Cs2ViewmodelOffsetZ): Cs2ViewmodelOffsetZ = v; return true;
-            case nameof(IronsightScopeWindow): IronsightScopeWindow = v; return true;
-            case nameof(IronsightScopeTint): IronsightScopeTint = v; return true;
             case nameof(GunSoundProfile): GunSoundProfile = v; return true;
             case nameof(PbrDebug): PbrDebug = v; return true;
             default: return false;
@@ -648,121 +627,9 @@ public static class KnifeTuning {
         var text = new StringBuilder();
         text.AppendLine("# ScCsgoKnives 第一人称调参");
         text.AppendLine("# 保存后 1 秒内在游戏里生效，不用重启，不用重装。");
-        text.AppendLine("# 下面的默认值是拿 MCCS 的 4 张天空截图（M9/爪子/蝴蝶/猎杀者）逐像素拟合出来的：");
-        text.AppendLine("# 刀身整条轮廓对齐照片（tools/fistsolve.py），拳头盒子按手臂剪影重合度拟合（tools/fistfit.py）。");
-        text.AppendLine("# 这 4 把刀各自量到的拳头位置/倾角/越过量/缩放写死在代码的 fist 表里，这里是其它刀共用的默认值。");
-        text.AppendLine();
-        text.AppendLine("# 改这行会让整个文件被重写回默认值，别动。");
+        text.AppendLine("# 所有刀和枪固定使用 CS2 模型、动画和真实手。旧方块手开关已停用。");
         text.AppendLine($"TuningVersion = {version}");
-        text.AppendLine();
-        text.AppendLine("# 刀的大小（M9 的；其它刀在代码里有各自的倍率）。整套构图跟着一起缩放。");
-        text.AppendLine(Line(nameof(KnifeScale), KnifeScale));
-        text.AppendLine("# 所有刀共用的俯仰/偏航（度）。");
-        text.AppendLine(Line(nameof(KnifePitchDegrees), KnifePitchDegrees));
-        text.AppendLine(Line(nameof(KnifeYawDegrees), KnifeYawDegrees));
-        text.AppendLine();
-        text.AppendLine("# 待机时握把（=拳头中心，握柄中轴穿过手臂中轴的那一点）停在屏幕哪里（0~1 画面比例，x 向右，y 向下），以及离眼睛多远。");
-        text.AppendLine("# 用画面比例而不是三维坐标，是因为 SC 的视角是 80*视野设置，玩家改了视野也不会跑位。");
-        text.AppendLine(Line(nameof(AnchorScreenX), AnchorScreenX));
-        text.AppendLine(Line(nameof(AnchorScreenY), AnchorScreenY));
-        text.AppendLine(Line(nameof(AnchorDepth), AnchorDepth));
-        text.AppendLine();
-        text.AppendLine("# 手臂在画面上的固定倾角（度，0=竖直向下，正=向右倒）。手肘固定在画面外，动画抬手时手臂绕手肘转，不会自转。");
-        text.AppendLine(Line(nameof(RightArmLean), RightArmLean));
-        text.AppendLine(Line(nameof(LeftArmLean), LeftArmLean));
-        text.AppendLine();
-        text.AppendLine("# 手肘比手更靠近眼睛的倍数，决定手臂往画面下方变粗的程度。");
-        text.AppendLine(Line(nameof(RightArmNear), RightArmNear));
-        text.AppendLine(Line(nameof(LeftArmNear), LeftArmNear));
-        text.AppendLine();
-        text.AppendLine("# 手臂粗细：手的位置上手臂占画面宽度的比例。MCCS 的拳头 1920 宽下是 178 像素。");
-        text.AppendLine(Line(nameof(ArmScreenWidth), ArmScreenWidth));
-        text.AppendLine(Line(nameof(LeftArmScreenWidth), LeftArmScreenWidth));
-        text.AppendLine("# 拳头越过握把多少（手臂宽度的倍数）。握柄埋在拳头里、两头只露护手和刀尾，靠的就是这个。");
-        text.AppendLine(Line(nameof(ArmPalmOvershoot), ArmPalmOvershoot));
-        text.AppendLine("# 手臂往画面下方伸到哪（>1 表示伸出画面外）。");
-        text.AppendLine(Line(nameof(ArmExitY), ArmExitY));
-        text.AppendLine("# 检视/挥砍时手臂怎么滚转：0 = 拳头永远正对相机；1 = 刚性跟着手腕（CS:MC b$4la 的做法，刀柄保持待机时和拳面的夹角）；");
-        text.AppendLine("# 2 = 转到让刀柄平贴拳面（配合 FistGripFace 把那个面放在刀柄上，刀柄就躺在拳头上而不是穿过去）。三种待机都一样。");
-        text.AppendLine(Line(nameof(ArmRollMode), ArmRollMode));
-        text.AppendLine("# 握把在拳头截面上的位置（沿视线的半宽数）：0 = 盒子中心，1 = 远离眼睛的那个面（待机时握柄藏在拳头后面，手腕翻过来后躺在拳面上），-1 = 近面。");
-        text.AppendLine(Line(nameof(FistGripFace), FistGripFace));
-        text.AppendLine("# 模式 2 从手腕离开待机姿态多少度开始完全生效（低于它的 1/5 时保持正对相机），待机和呼吸动画因此不受影响。");
-        text.AppendLine(Line(nameof(RollBlendDegrees), RollBlendDegrees));
-        text.AppendLine("# 刀在检视里会被手指重新握持/转动。拳头以这个时间常数（秒）跟上握柄的新方向，但只在握柄转速低于下面这个度/秒时跟；更快就是在转刀，拳头保持上一个稳定握姿不动。");
-        text.AppendLine(Line(nameof(HandleFollowSeconds), HandleFollowSeconds));
-        text.AppendLine(Line(nameof(HandleFollowRate), HandleFollowRate));
-        text.AppendLine("# 为了贴合被手指重新握过的握柄，拳头最多偏离“刚性跟手腕”位置多少度。0 = 完全回到 0.11.2 的做法。");
-        text.AppendLine(Line(nameof(ReGripDegrees), ReGripDegrees));
-        text.AppendLine("# 这个修正角每秒最多变多少度（只会慢慢漂，不会甩）。");
-        text.AppendLine(Line(nameof(ReGripDegreesPerSecond), ReGripDegreesPerSecond));
-        text.AppendLine("# 手腕把手心转过 SquareFrom 度之后开始把余角补完，到 SquareFull 度时拳头正好在刀正后方（MCCS 定格就是这样）。只和角度有关，不会滞后也不会甩。1 开 0 关。");
-        text.AppendLine(Line(nameof(SquareAtHold), SquareAtHold));
-        text.AppendLine(Line(nameof(SquareFromDegrees), SquareFromDegrees));
-        text.AppendLine(Line(nameof(SquareFullDegrees), SquareFullDegrees));
-        text.AppendLine(Line(nameof(SquareGateByStillness), SquareGateByStillness));
-        text.AppendLine("# 补角怎么摊：0 = 均匀摊（拳头全程比刀快 1.55 倍），1 = 两头缓动（起手和收尾与刀同速，多出的角藏在转最快的中段）。");
-        text.AppendLine(Line(nameof(SquareEase), SquareEase));
-        text.AppendLine(Line(nameof(QaCapture), QaCapture));
-        text.AppendLine("# 手臂滚转的最大角速度（度/秒），只用来压掉穿过退化方向那一帧的跳变。");
-        text.AppendLine(Line(nameof(RollSlewDegreesPerSecond), RollSlewDegreesPerSecond));
-        text.AppendLine("# 手臂方向取骨骼的比例（0=固定倾角，1=跟骨骼），实验用。");
-        text.AppendLine(Line(nameof(ArmLeanFromBone), ArmLeanFromBone));
-        text.AppendLine();
-        text.AppendLine("# 待机时左拳中心停在屏幕哪里（爪子刀在代码里有自己的）。");
-        text.AppendLine(Line(nameof(LeftHandTargetScreenX), LeftHandTargetScreenX));
-        text.AppendLine(Line(nameof(LeftHandTargetScreenY), LeftHandTargetScreenY));
-        text.AppendLine(Line(nameof(LeftHandDepth), LeftHandDepth));
-        text.AppendLine();
-        text.AppendLine("# 保留多少 SC 原版的切换下沉（0~1）。CS:GO 的 deploy 动画已经在抬刀了，");
-        text.AppendLine("# 两个叠加会把整套构图压出画面外，所以默认关掉。");
         text.AppendLine(Line(nameof(SwapDipScale), SwapDipScale));
-        text.AppendLine();
-        text.AppendLine("# 检视时举刀位移的倍率：1 = CS:GO 动画原始幅度。0.55 = 0.13.1 的样子；1.6 配合俯仰 +10 是按 MCCS 视频定格帧拟合的版本（0.13.2，实际游玩不如 0.55/-14）。");
-        text.AppendLine(Line(nameof(InspectTravelScale), InspectTravelScale));
-        text.AppendLine();
-        text.AppendLine();
-        text.AppendLine("# 0.14.0：按反编译出的 CS:MC 变换链原样摆放（ExactChain=1）。不再拟合锚点/缩放；下面全是 CS:MC 的常量，改它们等于改 CS:MC。");
-        text.AppendLine("# ExactChain=0 回到 0.13.x 的拟合构图。ExactHandFovDegrees 是手部通道的视野（MC/CS:MC 固定 70）。");
-        text.AppendLine(Line(nameof(ExactChain), ExactChain));
-        text.AppendLine(Line(nameof(ExactHandFovDegrees), ExactHandFovDegrees));
-        text.AppendLine("# ExactWeaponFovDegrees：刀本身的投影视野（CS:MC 每把刀单独用 48°×viewFov/70 的投影画刀，手臂仍是 70°）。");
-        text.AppendLine(Line(nameof(ExactWeaponFovDegrees), ExactWeaponFovDegrees));
-        text.AppendLine("# ExactArms：1 = 用 CS:MC 的拉伸手臂盒（0.14.0 那种），0 = 0.13.x 的拳头（默认）。");
-        text.AppendLine(Line(nameof(ExactArms), ExactArms));
-        text.AppendLine("# ShowButterflyLatch：1 = 画蝴蝶刀刀柄末端的 T 形卡榫（CS:MC 也画，看着像钉子），默认 0 不画。");
-        text.AppendLine(Line(nameof(ShowButterflyLatch), ShowButterflyLatch));
-        text.AppendLine(Line(nameof(ExactHipX), ExactHipX));
-        text.AppendLine(Line(nameof(ExactHipY), ExactHipY));
-        text.AppendLine(Line(nameof(ExactHipZ), ExactHipZ));
-        text.AppendLine(Line(nameof(ExactRollDegrees), ExactRollDegrees));
-        text.AppendLine(Line(nameof(ExactGlobalX), ExactGlobalX));
-        text.AppendLine(Line(nameof(ExactGlobalY), ExactGlobalY));
-        text.AppendLine(Line(nameof(ExactGlobalZ), ExactGlobalZ));
-        text.AppendLine(Line(nameof(ExactWeaponTX), ExactWeaponTX));
-        text.AppendLine(Line(nameof(ExactWeaponTY), ExactWeaponTY));
-        text.AppendLine(Line(nameof(ExactWeaponTZ), ExactWeaponTZ));
-        text.AppendLine(Line(nameof(ExactReferenceScale), ExactReferenceScale));
-        text.AppendLine(Line(nameof(ExactArmAnchorRX), ExactArmAnchorRX));
-        text.AppendLine(Line(nameof(ExactArmAnchorRY), ExactArmAnchorRY));
-        text.AppendLine(Line(nameof(ExactArmAnchorRZ), ExactArmAnchorRZ));
-        text.AppendLine(Line(nameof(ExactArmAnchorLX), ExactArmAnchorLX));
-        text.AppendLine(Line(nameof(ExactArmAnchorLY), ExactArmAnchorLY));
-        text.AppendLine(Line(nameof(ExactArmAnchorLZ), ExactArmAnchorLZ));
-        text.AppendLine(Line(nameof(ExactArmWidth), ExactArmWidth));
-        text.AppendLine(Line(nameof(ExactArmBaseLength), ExactArmBaseLength));
-        text.AppendLine(Line(nameof(ExactArmStretchMin), ExactArmStretchMin));
-        text.AppendLine(Line(nameof(ExactArmStretchMax), ExactArmStretchMax));
-        text.AppendLine(Line(nameof(ExactArmTwistOffsetDegrees), ExactArmTwistOffsetDegrees));
-        text.AppendLine(Line(nameof(ExactHandX), ExactHandX));
-        text.AppendLine(Line(nameof(ExactScaleOverride), ExactScaleOverride));
-        text.AppendLine(Line(nameof(ExactHandY), ExactHandY));
-        text.AppendLine(Line(nameof(ExactHandZ), ExactHandZ));
-        text.AppendLine(Line(nameof(ExactMirrorX), ExactMirrorX));
-        text.AppendLine(Line(nameof(ExactMeshCenterOffset), ExactMeshCenterOffset));
-        text.AppendLine("# PBR 材质（金属度/粗糙度/法线/AO + CS:MC 的 studio 环境反射）。");
-        text.AppendLine("# PbrEnabled=0 退回旧的平面着色。PbrEnvRange 调反射整体亮度，PbrExposure 调总曝光。");
-        text.AppendLine("# PbrDebug：1 底色 2 法线 3 粗糙度 4 金属度 5 只看反射 6 AO 7 只看直射光，排查用。");
         text.AppendLine(Line(nameof(PbrEnabled), PbrEnabled));
         text.AppendLine(Line(nameof(PbrEnvRange), PbrEnvRange));
         text.AppendLine(Line(nameof(PbrEnvIntensity), PbrEnvIntensity));
@@ -775,25 +642,14 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(PbrEnvYawDegrees), PbrEnvYawDegrees));
         text.AppendLine("# 反射带多少环境的颜色：1 = 全带（天空会把刀染蓝），0 = 只反亮度不反颜色。");
         text.AppendLine(Line(nameof(PbrEnvSaturation), PbrEnvSaturation));
-        text.AppendLine("# 22 把刀走哪条管线：0 = 一直以来的 CS:MC 链，1 = CS2 本体（CS2 网格/骨架/动画 + 真实手臂）。枪不受影响。");
-        text.AppendLine(Line(nameof(KnifeProfile), KnifeProfile));
-        text.AppendLine("# 三把枪走哪条管线：0 = 一直以来的 CS:MC 链，1 = CS2 本体（CS2 网格/材质/动画/摆放）。刀不受影响。");
-        text.AppendLine("# 下面四个是你自己 CS2 里的 viewmodel 设置（已从 cs2_user_convars 读到），只有 GunProfile=1 时才用。");
-        text.AppendLine(Line(nameof(GunProfile), GunProfile));
+        text.AppendLine("# CS2 腰射 viewmodel 设置；AUG / SG 553 开镜使用单独校准的镜筒视角。");
         text.AppendLine(Line(nameof(Cs2ViewmodelFov), Cs2ViewmodelFov));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetX), Cs2ViewmodelOffsetX));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetY), Cs2ViewmodelOffsetY));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetZ), Cs2ViewmodelOffsetZ));
-        text.AppendLine("# AUG / SG 553 开镜 HUD：圆窗直径占屏高的比例，和窗内色调的强度（0 = 不染色）。CS2 导出里没有布局，这两个是估计值。");
-        text.AppendLine(Line(nameof(IronsightScopeWindow), IronsightScopeWindow));
-        text.AppendLine(Line(nameof(IronsightScopeTint), IronsightScopeTint));
         text.AppendLine("# 玩法数值单独一个开关：0 = 一直以来的值，1 = CS2 vdata 的伤害/衰减/散布/后坐。");
         text.AppendLine("# 与 GunProfile 分开是有意的：把画面换成 CS2 不应该顺带改手感（CS2 的 AWP 不开镜散布是 4.63 度）。");
         text.AppendLine(Line(nameof(GunNumbers), GunNumbers));
-        text.AppendLine("# cs2 profile 画不画 CS2 的手臂和手套（1/0）。");
-        text.AppendLine("# 这两个材质的粗糙度是估计值（CS2 没导出它们的 VMAT），已经烘进 cs2_arm_orm.png / cs2_glove_orm.png，");
-        text.AppendLine("# 要改得重跑 tools/install_arm_textures_cs2.py --arm-roughness/--glove-roughness 再打包。");
-        text.AppendLine(Line(nameof(Cs2Arms), Cs2Arms));
         text.AppendLine("# 枪的换弹/拉栓/消音器音效用哪套时间：0 = 旧的按骨骼位移量出来的表，1 = CS2 自己的事件帧（cs2_sounds.json）。");
         text.AppendLine("# 两套最多差 0.58 秒，听得出来。默认 0，等对着 CS2 录屏核过再改默认。");
         text.AppendLine(Line(nameof(GunSoundProfile), GunSoundProfile));

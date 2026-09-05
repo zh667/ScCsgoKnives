@@ -33,6 +33,7 @@ public sealed class KnifePbrShader : Shader {
     public readonly ShaderParameter LightColor2;
     public readonly ShaderParameter Params;
     public readonly ShaderParameter Params2;
+    public readonly ShaderParameter ScopeCutout;
 
     KnifePbrShader(string vertexSource, string pixelSource) : base(vertexSource, pixelSource) {
         WorldViewProjection = GetParameter("u_worldViewProjectionMatrix", true);
@@ -54,6 +55,7 @@ public sealed class KnifePbrShader : Shader {
         LightColor2 = GetParameter("u_lightColor2", true);
         Params = GetParameter("u_params", true);
         Params2 = GetParameter("u_params2", true);
+        ScopeCutout = GetParameter("u_scopeCutout", true);
     }
 
     public static KnifePbrShader Create() =>

@@ -8,6 +8,7 @@ import json, os, sys, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUILD = os.path.join(ROOT, 'src/ScCsgoKnives/bin/Release/net10.0')
+SOURCE = os.path.join(ROOT, 'src/ScCsgoKnives')
 OUT = os.path.join(ROOT, 'output')
 
 def newest_source_mtime():
@@ -35,10 +36,16 @@ def main():
             if not os.path.exists(path):
                 raise SystemExit(f'missing {top} in {BUILD}')
             z.write(path, top); count += 1
-        for dirpath, _, files in os.walk(os.path.join(BUILD, 'Assets')):
+        # Enumerate the source manifest, never stale copied files left by an
+        # incremental build after assets were removed (the CS2-only migration).
+        for dirpath, _, files in os.walk(os.path.join(SOURCE, 'Assets')):
             for f in sorted(files):
-                full = os.path.join(dirpath, f)
-                z.write(full, os.path.relpath(full, BUILD).replace(os.sep, '/')); count += 1
+                source = os.path.join(dirpath, f)
+                relative = os.path.relpath(source, SOURCE)
+                full = os.path.join(BUILD, relative)
+                if not os.path.isfile(full) or open(source, 'rb').read() != open(full, 'rb').read():
+                    raise SystemExit(f'missing or stale build asset: {relative}; rebuild first')
+                z.write(full, relative.replace(os.sep, '/')); count += 1
     print(f'{target}: {count} entries, {os.path.getsize(target)/1e6:.1f} MB')
 
 if __name__ == '__main__':

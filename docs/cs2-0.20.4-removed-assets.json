@@ -1,0 +1,798 @@
+{
+  "backup_commit": "b12891d",
+  "count": 158,
+  "bytes": 59992673,
+  "removed": [
+    {
+      "path": "src/ScCsgoKnives/AnimationData/ak47.csmc.animation.json",
+      "bytes": 1063800,
+      "sha256": "c794ee37e0a824f503fb940968062d81cd5471e4e1dc9c5e8d952bdaa12a233f"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/awp.csmc.animation.json",
+      "bytes": 732293,
+      "sha256": "c415bee35d843f20a9e3cba959b0bc1c8c84214e08dac886615b104457fdccac"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/bayonet.csmc.animation.json",
+      "bytes": 788544,
+      "sha256": "f3dca9a6f45d83cffc6f221ab25cc558b635fd00cd78afd1b2038ba069b86a18"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/bowie.csmc.animation.json",
+      "bytes": 873948,
+      "sha256": "791220e69fc0785862e1611ef0cd035278cdbe08c7732fab3a7df0a57c3108d1"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/butterfly.csmc.animation.json",
+      "bytes": 1429232,
+      "sha256": "5af07e7e82e9d65fb68b3d50a4e6587ea57e85a395e4a52cc6fcd752e30693c6"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/canis.csmc.animation.json",
+      "bytes": 1271371,
+      "sha256": "0e55f0bd444930db72a6d1e864cf35b185b52ce333886dad9b33800a10fcf509"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/cord.csmc.animation.json",
+      "bytes": 1115135,
+      "sha256": "9fedf6915bbb9989eeecde8a5c1d39842f000115993d000c2be08730e43acb4f"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/css.csmc.animation.json",
+      "bytes": 1171434,
+      "sha256": "a27aa5de901310653c42c1b8263548bdb1b9c9fbcd99b4b1e99773749d279369"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/default_ct.csmc.animation.json",
+      "bytes": 768663,
+      "sha256": "545a0516f1883735f9cad6553fdeeb9005ab72144ce194419e4f76759c6f5460"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/default_t.csmc.animation.json",
+      "bytes": 790177,
+      "sha256": "e3dd1015c80741b922268e320439989933ab8f00fd0ed8e2740e2f40524445a8"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/falchion.csmc.animation.json",
+      "bytes": 1351603,
+      "sha256": "79ece3048423ef26b7ff4b3b51b0acf2c5f1f9d4be837d97196ed2f69fdb01d2"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/flip.csmc.animation.json",
+      "bytes": 801191,
+      "sha256": "6d7542dcf296b11cc077d57f9f221ec14a0b7df6ee5899b97fba7d1a72b05739"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/gut.csmc.animation.json",
+      "bytes": 767952,
+      "sha256": "a60819e920d24a63145fef92111269990f2b8c00443d9ff0b0f3facba97eecc1"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/karambit.csmc.animation.json",
+      "bytes": 756903,
+      "sha256": "518c9cb53cbeeaae6424807af74237085e3a7b248e538cda3e214499ddecad8d"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/kukri.csmc.animation.json",
+      "bytes": 829626,
+      "sha256": "ee6319dc3558403d25658765bcce1af90aad42de31a1f40d474b8c3d40b2ded6"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/m4a1s.csmc.animation.json",
+      "bytes": 1393360,
+      "sha256": "f4edbef7f9339f95176c42fa230a3e396487a5b2c6639f3b2d2472bc55981b53"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/m9.csmc.animation.json",
+      "bytes": 761933,
+      "sha256": "5f60b309816f542113492f702dc2e3477a371b531b048ec669ac28965916aca5"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/navaja.csmc.animation.json",
+      "bytes": 786016,
+      "sha256": "6d4c437a43d0ecae2a935c930799b8fb9bb7326e96da64ddbebf5dcc8ecf19e8"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/outdoor.csmc.animation.json",
+      "bytes": 1266561,
+      "sha256": "0513f4370fd6ac7a957d21ed081ede264611f355450352fac15614c93020ba98"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/push.csmc.animation.json",
+      "bytes": 669916,
+      "sha256": "ce73f9aadba18e47275305a46ea2784ccf3c9f50a79057fe8f236f79c7d2a5a4"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/skeleton.csmc.animation.json",
+      "bytes": 946836,
+      "sha256": "fee153d30199a4b1e6cdf9e4eaa31359b6e0a56f98736b9d4c554610667cc4f7"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/stiletto.csmc.animation.json",
+      "bytes": 923006,
+      "sha256": "8a5228831cf79901eb399ebd292467e66d5f77df1e1a8e7bb1808fad39c1a5e2"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/tactical.csmc.animation.json",
+      "bytes": 759386,
+      "sha256": "023224a57febae7f59e4d304fc613783168af95362a488059cca541dced7afcc"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/talon.csmc.animation.json",
+      "bytes": 907079,
+      "sha256": "2579782db80e3a6e2db48d417a4987c40bcfb9cbae5461a396303b886ae16de1"
+    },
+    {
+      "path": "src/ScCsgoKnives/AnimationData/ursus.csmc.animation.json",
+      "bytes": 1107535,
+      "sha256": "808d24526a710f7c19874ddf654955cd027680303de69c3e4141ea474e0ad94e"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ak47_v_weapon_ak47_bolt.obj",
+      "bytes": 11225,
+      "sha256": "8146214520cf772fa7d9ae0dd71656903d8775e4347f4517ab3d850c71971188"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ak47_v_weapon_ak47_clip.obj",
+      "bytes": 54736,
+      "sha256": "06cfde638e612b1e2d2fe873bcaff87f0597e9819917dba842f27861ce1b377e"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ak47_v_weapon_ak47_cliprelease.obj",
+      "bytes": 7851,
+      "sha256": "fe04e25f7a44052596a63afaf6944d325b9a309c60373bde1d51aa3b01d8a671"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ak47_v_weapon_ak47_trigger.obj",
+      "bytes": 3426,
+      "sha256": "7b75a6725e4faf486a8a3e3d9c962703b27135f53cba5d8a29984654d51c6845"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ak47_weapon_hand_r.obj",
+      "bytes": 969462,
+      "sha256": "d1f562ef6c187285ca6c63ba527c1b82333c46d10bbafe8d52ea9c7750b3199b"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ak47_weapon_hand_r__2.obj",
+      "bytes": 3818,
+      "sha256": "6f59913c516a1d22ad2697b813ad29aa21a6a7eabe66e3ff4f4d6067152e0e3d"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/awp_v_weapon_awp_bolt_action.obj",
+      "bytes": 41701,
+      "sha256": "e1141fdde7454ba2b3deb382dedcded4dfb94f4262e5a00391b8b58131b971b9"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/awp_v_weapon_awp_bolt_rail.obj",
+      "bytes": 13359,
+      "sha256": "2053a609efc71afce024af1de4cf5e857b409f351533c356e3ad3946d0c46187"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/awp_v_weapon_awp_clip.obj",
+      "bytes": 52220,
+      "sha256": "d7eb1f2f1fb5ef87e1c6aeb5f3cdd9329b56458f73679dab0b15cd30b802f829"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/awp_v_weapon_awp_trigger.obj",
+      "bytes": 10567,
+      "sha256": "683e4523a0dc294f8e21dd3a03bb8731d3828d314b8d4134b5aa6c8635e1359d"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/awp_weapon_hand_r.obj",
+      "bytes": 1518102,
+      "sha256": "50109b9d315ae23e3e3d2823e11a3e9488d9f88a09a58fbccec0a91c43a154ea"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/awp_weapon_hand_r__2.obj",
+      "bytes": 5264,
+      "sha256": "78821e599dcb1742bf56243fd30eace02446b214b88fefe84b60860eff863333"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/bayonet_weapon_hand_r.obj",
+      "bytes": 163650,
+      "sha256": "8db0d93865a866519f60836abbccc82f43f08958fec77342d7a7fbded4d96ac6"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/bowie_weapon_hand_r.obj",
+      "bytes": 1446333,
+      "sha256": "3f8f29fda3150911f6fb4fd871df1e48ec624e110692ef54211ca682ba445153"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/butterfly_v_weapon_blade1.obj",
+      "bytes": 217625,
+      "sha256": "4e4ad376321fc4ff6694689cd305fb1770afc979e0183875ce01822647214a2a"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/butterfly_v_weapon_lock.obj",
+      "bytes": 2738,
+      "sha256": "b9d54eea97abc60c3c869f9228ce0d0a7063a62916a9633af96cc8954b16c653"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/butterfly_v_weapon_rear.obj",
+      "bytes": 347659,
+      "sha256": "93e11dacf6ce580ff92d5d9b7b5f15c5d9eda28f5063e7636edc00d5d92ef197"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/butterfly_weapon_hand_r.obj",
+      "bytes": 334453,
+      "sha256": "0aca6c3b4916b5509c81191980b857c9c82123372b35faaf5a602b08255d5e48"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/canis_weapon_hand_r.obj",
+      "bytes": 648402,
+      "sha256": "83eb473cbc211f2715ea924052b0d8380648a4b795d222c609a8e76def8590df"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/cord_weapon_hand_r.obj",
+      "bytes": 404182,
+      "sha256": "8408633381af96b30668515c8612bc169d3bb72dd980a0d604dd7413e9c2f848"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/css_weapon_hand_r.obj",
+      "bytes": 90129,
+      "sha256": "3e7f24a8a5284a750af2401f6d0fd371de3099af99f363aba737758d96ccb487"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/default_ct_weapon_hand_r.obj",
+      "bytes": 400842,
+      "sha256": "4854e68c27ac0252224bad76eacfff58aec7be2987da8bcafaac93109ffcf16f"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/default_t_weapon_hand_r.obj",
+      "bytes": 157248,
+      "sha256": "1be5164afaf7d6fa61056503d1bc3133c1bb76e081963d10f8fec090c09471c4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/falchion_v_weapon_blade.obj",
+      "bytes": 89018,
+      "sha256": "bdfc3e1530633da8436ae225352097db03edeea35730297ee8d06ed8b21ea1a3"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/falchion_weapon_hand_r.obj",
+      "bytes": 660531,
+      "sha256": "807cc0b55006fb0289e0fe72ca71366593245b1b33d9f3dbe68bbc763dd1d423"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/flip_v_weapon_blade.obj",
+      "bytes": 66945,
+      "sha256": "4642bf8f37d71d28e97d4e7ef97034f77d5f8b934f5cfd465dae4b15fae9ccc7"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/flip_weapon_hand_r.obj",
+      "bytes": 161205,
+      "sha256": "fd54d7967d29345de0563c142c226c0d3614f9f2c1659fd6cc381369acfd23ef"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/gut_weapon_hand_r.obj",
+      "bytes": 945915,
+      "sha256": "6c79cc13ad1804a5fc9460c1536deda781bb4638e68e8c5561cf729b6f4581e0"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/karambit_weapon_hand_r.obj",
+      "bytes": 1160547,
+      "sha256": "fe7465b13c984db0c20a6c18e82d355fa9eba0e571e259b0843d434decbffddd"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/kukri_weapon_hand_r.obj",
+      "bytes": 736776,
+      "sha256": "ca9f7c978f4439d1f84e61d4a2282333219cddc3b38fdf7875ef6c6d0e13d915"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m4a1s_v_weapon_m4a1_bolt.obj",
+      "bytes": 17213,
+      "sha256": "f13e9800831695a5833b205ed5da435946196d3a7e669ef843e63d00fce33e32"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m4a1s_v_weapon_m4a1_clip.obj",
+      "bytes": 58760,
+      "sha256": "86de5dd6c5285f6300936b38126801a736c894440ecbbfd6da294a7c4d57de4b"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m4a1s_v_weapon_m4a1_trigger.obj",
+      "bytes": 7467,
+      "sha256": "2705102a5a0d313cc36553a0086b19ce6b599caf843495fc812ea8d74850e4b5"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m4a1s_v_weapon_silencer.obj",
+      "bytes": 37297,
+      "sha256": "4ca5d545441f69cf03050bab2ca79e003cee8df899559826249bd2cad7e7ea32"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m4a1s_weapon_hand_r__c1.obj",
+      "bytes": 1769067,
+      "sha256": "df0be76c82f3eb1f24578fd6b9e907a0a99f0acae8a867e06fed19ae0f54ccc8"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m4a1s_weapon_hand_r__c2.obj",
+      "bytes": 22289,
+      "sha256": "92d190aaf36fdaf210d4e92e0bba42e2d3f170bb752deb095443150cfb665801"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/m9_weapon_hand_r.obj",
+      "bytes": 781851,
+      "sha256": "54b9ecf1ac540c778264de1a5a8a082bfb2c4d94e562778ba712c39a013ff75a"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/navaja_v_weapon_blade.obj",
+      "bytes": 136682,
+      "sha256": "02cab37b3503964da63ecf331b67e167f261f24b1a5e1f204c6070624b801a7f"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/navaja_weapon_hand_r.obj",
+      "bytes": 407137,
+      "sha256": "3848fe3184f870a8888bc2969ac1cfab6e712580fe266d58f2f540c6dbeb29d4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/outdoor_v_weapon_blade.obj",
+      "bytes": 139956,
+      "sha256": "15f7c3cdc19796565c1ac24bd6e31aa7462e2cc7da985bc5756e9fdec8aa575a"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/outdoor_weapon_hand_r.obj",
+      "bytes": 929495,
+      "sha256": "6cff0b1a0f682ad01ae538c986739a35b798c77db8e8b7dc5a1c024d7a446064"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/push_weapon_hand_l.obj",
+      "bytes": 429776,
+      "sha256": "f1784fc5795077ad6a733b29d29bf91564d31fbf9a677ca484d2bf47b870a678"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/push_weapon_hand_r.obj",
+      "bytes": 429135,
+      "sha256": "6904f6d0e78a1ab1fb1f69e9e9af6ce3905cdd789fbc849843353086af6b97a6"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/skeleton_weapon_hand_r.obj",
+      "bytes": 336633,
+      "sha256": "91926b7a78f50f4ecd16c9b433d8e531380ec92f2502bc167f1378900b4947b3"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/stiletto_v_weapon_blade.obj",
+      "bytes": 91224,
+      "sha256": "7df20d5eb60ffbd2a7ae2d66b4f97a274cb6d59a2dbaa4a34d0272329384a6ce"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/stiletto_weapon_hand_r.obj",
+      "bytes": 544485,
+      "sha256": "8037244584c53dbb189d68f4856699c46ce957a950395354f97e5b701d63c286"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/tactical_weapon_hand_r.obj",
+      "bytes": 1226928,
+      "sha256": "33e93bcec8c41ea9335e99118aafb5cd9768a580e011f8876839672eed33ebe6"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/talon_weapon_hand_r.obj",
+      "bytes": 549648,
+      "sha256": "56108933ea9cab45b4ab3f40a3da6f55c4268de86cb754dd0e3f284ccf2a8b79"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/ursus_weapon_hand_r.obj",
+      "bytes": 394910,
+      "sha256": "c6e6cad8b8117b9e064b944b18e7b0ee01db2ba3c0efb53ca387ef360f937ba9"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/ak47.png",
+      "bytes": 1126224,
+      "sha256": "b8021b556dbbef9c84724233315fa5094c92ac6429cfd769ad8afaea36abfe6b"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/ak47_normal.png",
+      "bytes": 4544,
+      "sha256": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/ak47_orm.png",
+      "bytes": 1064909,
+      "sha256": "816f0d9282ec1f3d45e49a56986e7202cbfed4db8e9f23a2363c1bc19e4e8b39"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/awp.png",
+      "bytes": 858668,
+      "sha256": "6ac0289711c886d157bf31437340f28b39fee8662b597745f442612d495a2548"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/awp_lens.png",
+      "bytes": 53678,
+      "sha256": "ff9436a9db72de8b3ddaf3dff5ab447de90dabbfbc30ce20effbaf8b07859122"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/awp_lens_normal.png",
+      "bytes": 77,
+      "sha256": "5cf6a04873c681f66cecbd3306a2cc4282001d74164c247d7ad3d2025fb6779c"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/awp_lens_orm.png",
+      "bytes": 24305,
+      "sha256": "13b8eed96fa051015090d14c4f8f25c3c08e283abd81c78eee8ce1ec2db0c676"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/awp_normal.png",
+      "bytes": 4544,
+      "sha256": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/awp_orm.png",
+      "bytes": 1023039,
+      "sha256": "1ec2a922ac171afb1545cccf4bf587f0eb7019ab878bcc8a9e31c8af95cb1175"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/bayonet.png",
+      "bytes": 408209,
+      "sha256": "a6b11a5df651944bf2cb72f5ab6c2327b680abef1250a859c8368056be8dc470"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/bayonet_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/bayonet_orm.png",
+      "bytes": 260855,
+      "sha256": "6f55f0a1e23137bc876e55c6d8370a38077571bbaddc032ee8488603c8d0eab4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/bowie.png",
+      "bytes": 268871,
+      "sha256": "fd32464a0ceff31ad157d446dd9dec284ae70d7b08415b9b9c8388fae222c7e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/bowie_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/bowie_orm.png",
+      "bytes": 183590,
+      "sha256": "bedda5f58e15adf3c9ce389b2ec59c0d5dabfda216f519d7c7c8b9e5eb49ccf5"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/butterfly.png",
+      "bytes": 117030,
+      "sha256": "ee989046cd420eeb2693f792043993d3aac383835893d26e69cdc2b8004fa48e"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/butterfly_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/butterfly_orm.png",
+      "bytes": 176603,
+      "sha256": "784b4e3a55b7e73841b2f36c59362d4e7fbe71939e64bcf32bb7feb5af5bf5be"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/canis.png",
+      "bytes": 120664,
+      "sha256": "9652e402f1a0ab02999206fb4c085b5ed1ba73645f4e1e8d4a54bf4b2a1e7d42"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/canis_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/canis_orm.png",
+      "bytes": 195410,
+      "sha256": "722ad8667253933cd579bc2b7eaebff197749f3720d841c5f2713b3bf4174922"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cord.png",
+      "bytes": 425075,
+      "sha256": "951aa753bc1ae7a66a722a3c597aca1d1431bafda14b1bda7a1bc0fa4484af1f"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cord_normal.png",
+      "bytes": 319515,
+      "sha256": "0f86d138f823fa76e1c3930a716da6a5c000e8a6fd94ce0d92152c8f78a434ba"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cord_orm.png",
+      "bytes": 292482,
+      "sha256": "1a02b749bc307e6fb8d652e3cf85c38f7b2ffa15376d759a8153ff8806f911c9"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/css.png",
+      "bytes": 305451,
+      "sha256": "7efa4dcfb0c236dcb821855a9b1d52f27a9a4569da65d22783be1e2b8841b1bd"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/css_normal.png",
+      "bytes": 104602,
+      "sha256": "2c0375bf90a6e0124f35fb4da5480ee4b54dae4537791c9277f2bebe6ba0194c"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/css_orm.png",
+      "bytes": 187744,
+      "sha256": "0b95f19c754ec870161cab21225f7417b0780353e3794f2079758413681a8671"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/default_ct.png",
+      "bytes": 288754,
+      "sha256": "843cdc19fa11a96de704fbf110c430475367e600317c57061e7cc21fe04f5d94"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/default_ct_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/default_ct_orm.png",
+      "bytes": 213989,
+      "sha256": "41904ac54dce143cd07e1c6d9b6418bcc081ace57388072fe8b71fff4a942e0c"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/default_t.png",
+      "bytes": 304770,
+      "sha256": "9cb999bb18065b5e9e02504abdd96d1a7280b7f70dbbf4eb0be62af91de4ceb9"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/default_t_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/default_t_orm.png",
+      "bytes": 246762,
+      "sha256": "30b9f5da902d3d532397fde27a396552296e3a82baff2e7b90a2f9f25c2bea2d"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/falchion.png",
+      "bytes": 139009,
+      "sha256": "5a4a7f6ceb61a46047eb78e638f3c195ed0137679382c39fda1ef96fd7b55eb1"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/falchion_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/falchion_orm.png",
+      "bytes": 185033,
+      "sha256": "a032ccc380bea3ef6f1686f81ea7860fe9e4c05b311813e817826190d72dc21d"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/flip.png",
+      "bytes": 173670,
+      "sha256": "e6d7632dcd97574e60226d9526defc624ab8707c47ae400ac93dae7231931d70"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/flip_normal.png",
+      "bytes": 118626,
+      "sha256": "8dca097223b061c27c5e6c6196efca4070001dedf57f3463964288ac48890e39"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/flip_orm.png",
+      "bytes": 174851,
+      "sha256": "b7b60bf77da766a574d124b5234c798b420f3fd62aad05ea51530636e7612872"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/gut.png",
+      "bytes": 282370,
+      "sha256": "3761a2f5ba84e3cb43a32536cde98cc89673200dc4fe45324fe16bbd79d422c6"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/gut_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/gut_orm.png",
+      "bytes": 242328,
+      "sha256": "2c617816182fd35701643e353d838a4f8998981f06d09899509b6a9c0127cc38"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/karambit.png",
+      "bytes": 172594,
+      "sha256": "dc4810767e7733e2a0156b413f4f4aed318ca34358bd77334ee53916bf100dfb"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/karambit_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/karambit_orm.png",
+      "bytes": 182660,
+      "sha256": "538ee18fa4f1124a4ab6790c7c984b5686b7f900009dd8271d9ae31fcae0be3d"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/kukri.png",
+      "bytes": 234094,
+      "sha256": "f3833ee9a178e12928b7f2f623fb7cdb40ba808f722a0d42e1fb4739810d5a88"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/kukri_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/kukri_orm.png",
+      "bytes": 152534,
+      "sha256": "c4077344b2f5bcf40d6a78870545e3257729a1d4f4ee969eb1af87a63217cfcb"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/m4a1s.png",
+      "bytes": 452973,
+      "sha256": "27bbf44a464c21f6534a58ca6a1e96d30169225b8477256cc0f75b9f33f9c267"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/m4a1s_normal.png",
+      "bytes": 4544,
+      "sha256": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/m4a1s_orm.png",
+      "bytes": 998054,
+      "sha256": "dc606dda2b6cf779e9f521a06dc2f0dd761f4f5b4bb2f0968ae1f797810fd963"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/m9.png",
+      "bytes": 319661,
+      "sha256": "6681799ecb48ad667dce050b49766c135d069109a317322dea05deafb66ca491"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/m9_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/m9_orm.png",
+      "bytes": 265347,
+      "sha256": "0baa2fe3e983553baecc31d6f83b7ae2fed10fb8e0d9db9652dc55ce43dd13d2"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/navaja.png",
+      "bytes": 378816,
+      "sha256": "08f5ec7c4c7e48d4e6ec97904a47a5804c74055f16c50c47ff0d6564bcb9521b"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/navaja_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/navaja_orm.png",
+      "bytes": 247680,
+      "sha256": "67d41456c7093c487c5fc9348ff5e0d22e5d134cdfc00ae83d4a61f146f09a48"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/outdoor.png",
+      "bytes": 230962,
+      "sha256": "d45e394c226a76e67fe432745c6e9f324a1efc833b50914a8ca22a0437e58629"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/outdoor_normal.png",
+      "bytes": 80661,
+      "sha256": "b11757a5050ab155f993a0fde6785501e33bc7517658341c555d64a9c89b30ce"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/outdoor_orm.png",
+      "bytes": 246351,
+      "sha256": "3ad1649f5c7d4ece2e7dfd91e9bd6ff1d8707e7669eae56fd45faea8d81b2bd4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/push.png",
+      "bytes": 139037,
+      "sha256": "1ec13f6e539eafa892df028bfa78209cc5b3687447a21acc65b77b5313e30257"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/push_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/push_orm.png",
+      "bytes": 182033,
+      "sha256": "fdae96d11522cf0d552bb747e9dc302846da87d824f1d6c6b1b77ac6e56d405c"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/scope.png",
+      "bytes": 43870,
+      "sha256": "f925040ad63770b8614004e6236ef6f146d920aea6a7e990595d40e8a3935d55"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/scope12.png",
+      "bytes": 45091,
+      "sha256": "4988e148af82819476340948a51ed0f0dde24ad1bd75ec58823a9c9a1063b950"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/scope2.png",
+      "bytes": 44590,
+      "sha256": "195e3f08759ffea0f646440df5b1eda20baa22c33da2f68d674684dfd1ec129d"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/scope4.png",
+      "bytes": 44939,
+      "sha256": "c7f0d39d024d2c548f758a4557ae15fbd9a5ee4a242b26b2284748879f4c16f5"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/scope6.png",
+      "bytes": 44996,
+      "sha256": "c201808c3ef4fc1decf4f4e8108d58fd71fc33c8faebc6212b111020245363d9"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/scope8.png",
+      "bytes": 44998,
+      "sha256": "ea58844839855ebd7301466ee416c0249bbdc2e064e1173199e9096392fff657"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/skeleton.png",
+      "bytes": 202840,
+      "sha256": "8e51cb36674db4aab2b21889f8deb0cdf8eab505c73ff02ddff9a06f65594731"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/skeleton_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/skeleton_orm.png",
+      "bytes": 173612,
+      "sha256": "375222d491121f416261272f1ef7782ac1625ae5c7ef512076dd9c045044ae28"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/stiletto.png",
+      "bytes": 343074,
+      "sha256": "dbf7b899324adba55d6d80b88c3d65cd16b02a224cb8351ffb4f0468f2f8d3a0"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/stiletto_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/stiletto_orm.png",
+      "bytes": 231084,
+      "sha256": "9dcac1b700a581118c418b692b613d4bcd4f6f5b00248daccc9e6fb7b1a29673"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/tactical.png",
+      "bytes": 210581,
+      "sha256": "dca7fe8868a5fe1fff2fdef870a4192e5f733d6a561d72a9379d97943a6dd3c5"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/tactical_normal.png",
+      "bytes": 140107,
+      "sha256": "e53b7dfa5190767783b1552ae76066fc08aa08314a9960600263e55abe433c71"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/tactical_orm.png",
+      "bytes": 209365,
+      "sha256": "7e8f5859bd90b48536eac8e31190ef6627744d6dd362806f1c949d34aae3a9e8"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/talon.png",
+      "bytes": 289095,
+      "sha256": "e2b1ef1141fe707a6cb55c180584c9e6cf4aff820b110e61ba0df320268dce4b"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/talon_normal.png",
+      "bytes": 77,
+      "sha256": "b8e871ad80427c679edeb3e0d690a38638bd2ea14a215edc97123505255014e4"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/talon_orm.png",
+      "bytes": 216136,
+      "sha256": "882c0f4c27787b1b2d6ee1457164e35a6e564b607bcf399a8a28399ffc7cf011"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/ursus.png",
+      "bytes": 226376,
+      "sha256": "05efbe24b0f5c57c577c86dfbe474fc3d87f502a0a87e07d9eec5a320e3b8259"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/ursus_normal.png",
+      "bytes": 114840,
+      "sha256": "1a603696ccd766a46088676ab889c7c70b5162f8aed888938665b0b331332b48"
+    },
+    {
+      "path": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/ursus_orm.png",
+      "bytes": 112213,
+      "sha256": "4bf2388310cf2b713951b0d7a9064cc133c7542f07c3178d9153bd5bfc81942f"
+    }
+  ],
+  "retained": "CS2 models, skins, animations, textures, slot icons, shared audio/effects and PBR environment. External CS2 extraction and other projects untouched."
+}

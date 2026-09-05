@@ -173,6 +173,7 @@ public static class KnifePbrRenderer {
         shader.EnvSampler.SetValue(SamplerState.LinearClamp);
         shader.BrdfSampler.SetValue(SamplerState.LinearClamp);
 
+        shader.ScopeCutout.SetValue(Vector2.Zero);
         shader.ViewToWorld.SetValue(viewToWorld);
         shader.LightDir1.SetValue(lighting.Dir1);
         shader.LightDir2.SetValue(lighting.Dir2);
@@ -217,7 +218,7 @@ public static class KnifePbrRenderer {
     /// </summary>
     public static bool TryDrawSkinned(Cs2SkinnedMesh.Vertex[] vertices, int[] indices,
         Texture2D baseColor, string material, Matrix world, Matrix projection,
-        Matrix viewToWorld, in Lighting lighting, int variant) {
+        Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture = 0f) {
         if (!Enabled || baseColor is null || vertices is null || indices is null || indices.Length == 0) return false;
         if (!EnsureShared()) return false;
         if (!TryGetNamedTextures(material, out Texture2D orm, out Texture2D normal)) return false;
@@ -242,6 +243,7 @@ public static class KnifePbrRenderer {
         shader.NormalSampler.SetValue(SamplerState.LinearWrap);
         shader.EnvSampler.SetValue(SamplerState.LinearClamp);
         shader.BrdfSampler.SetValue(SamplerState.LinearClamp);
+        shader.ScopeCutout.SetValue(new Vector2(scopeAperture, projection.M22));
         shader.ViewToWorld.SetValue(viewToWorld);
         shader.LightDir1.SetValue(lighting.Dir1);
         shader.LightDir2.SetValue(lighting.Dir2);

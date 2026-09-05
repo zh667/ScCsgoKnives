@@ -518,7 +518,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) {
                 m_states[player] = state = new GunState();
-                if (m_savedRecharge.TryGetValue(player.PlayerData.PlayerIndex, out double at)) state.RechargeAt = at;
+                if (m_savedRecharge.Remove(player.PlayerData.PlayerIndex, out double at))
+                    state.RechargeAt = double.IsFinite(at) ? Math.Min(at, m_time.GameTime + GunSpec.ForAsset("taser").RechargeSeconds) : -1;
             }
             int value = player.ComponentMiner.ActiveBlockValue;
             bool holdingGun = Terrain.ExtractContents(value) == gunIndex && player.ComponentHealth.Health > 0f;
@@ -743,7 +744,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (spec.MuzzleEffects)
             CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, muzzleBone, spec.Name, silenced);
         PlaySound(player, spec.HasSilencer && silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
-        // No reload: the Zeus recharges instead, on CS2's timing (assumed, see GunSpec).
+        // No reload: the Zeus starts its ten-second recharge at the shot.
         if (rounds <= 0 && spec.RechargeSeconds > 0f) state.RechargeAt = now + spec.RechargeSeconds;
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
         ShowAmmo(player, spec, rounds);

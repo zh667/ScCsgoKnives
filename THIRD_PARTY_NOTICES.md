@@ -1,5 +1,9 @@
 # Third-party notices
 
+Current weapon models, materials, skeletal animations and real hand/glove meshes are converted from the user's existing Counter-Strike 2 exports. Counter-Strike 2 and its assets are by Valve. The local source inventory and conversion history are recorded in `ASSET_SOURCES.md` and the CS2 acquisition reports under `docs/`.
+
+Version 0.20.4 removes the retired CS:MC weapon models and animation payloads. The historical attributions below remain for shared resources and conversion history; removal of a weapon mesh does not remove attribution for retained icons, sounds or lighting resources.
+
 This project contains adapted assets from:
 
 - CSMC client weapon resources: M9 bayonet, karambit, and butterfly knife `.meshbin`, `basecolor.webp`, and `.animbin` files

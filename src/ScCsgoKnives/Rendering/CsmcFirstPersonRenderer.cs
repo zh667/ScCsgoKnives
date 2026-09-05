@@ -6,16 +6,9 @@ using Engine.Input;
 namespace Game;
 
 /// <summary>
-/// Draws CSMC weapon records with their Source2 binding matrices, and puts
-/// Survivalcraft's own first-person hand box around each knife's grip as a fist.
-///
-/// The composition is what the CS:MC photos show, measured off them per knife
-/// (tools/fistsolve.py, tools/fistfit.py): a face-on box arm whose axis runs from
-/// a fixed off-screen elbow to the grip, with the knife's handle passing through
-/// the box's centre and the box reaching most of its own width past the grip, so
-/// only the guard and the pommel show on either side of the fist. The knife's own
-/// rig moves the grip; the arm pivots about its elbow to follow and rolls with the
-/// wrist so the handle stays along one face of the fist (ResolveRoll).
+/// CS2 first-person weapons and real skinned hands. The historical class name
+/// and offline placement helpers remain for diagnostic-tool compatibility;
+/// Draw has no CS:MC / box-hand path.
 /// </summary>
 public static class CsmcFirstPersonRenderer {
     sealed class Part {
@@ -584,7 +577,7 @@ public static class CsmcFirstPersonRenderer {
     static float s_flashSeconds = 0.06f;
     static string s_flashBone = "muzzle";
     static float s_flashRoll;
-    static Texture2D s_scopeTexture, s_fireAtlas, s_smokeAtlas;
+    static Texture2D s_fireAtlas, s_smokeAtlas;
     /// <summary>CS:MC's muzzle flash sprites (CSMCTextureResources: particle/muzzle_flash/fire_gas_seq0 and wispy_steam_seq3), 8 columns per atlas.</summary>
     const int FireFrames = 32, SmokeFrames = 26, AtlasColumns = 8, AtlasRows = 4;
     const float SmokeSeconds = 0.45f;
@@ -606,19 +599,13 @@ public static class CsmcFirstPersonRenderer {
     /// and the controller runs the ironsight clips; nothing is hidden or overlaid.
     /// </summary>
     public static void SetScope(bool on, float magnification, bool hideWeapon = true) {
-        // Both kinds hide the weapon here. CS2 keeps the AUG's viewmodel when zoomed
-        // (m_bHideViewModelWhenZoomed false) because its ironsight puts the scope's
-        // eyepiece at the camera - the tube fills the frame and only the lens is seen
-        // through. That framing is not reproduced; 0.20.2 drew the gun in its
-        // ironsight pose inside the HUD window and the device test saw "the gun and
-        // the scope" instead of a view through the lens. The HUD filter stands in
-        // for the tube, so nothing of the gun is drawn behind it.
-        s_scoped = on;
+        // Snipers use the HUD mask; AUG / SG 553 keep their actual scope mesh.
+        s_scoped = on && hideWeapon;
         s_ironsight = on && !hideWeapon;
         s_scopeMagnification = magnification;
     }
 
-    /// <summary>Zoomed on the AUG / SG 553: the scope_filter HUD instead of the sniper circle.</summary>
+    /// <summary>Zoomed AUG / SG 553: visible 3D scope plus luminous reticle.</summary>
     static bool s_ironsight;
     public static bool IronsightScopeActive => s_ironsight && ScopeOverlayActive;
 
@@ -646,7 +633,7 @@ public static class CsmcFirstPersonRenderer {
 
     static void AdvanceAim() {
         float dt = MathUtils.Clamp(KnifeClock.Dt, 0f, 0.1f);
-        float target = s_scoped ? 1f : 0f;
+        float target = s_scoped || s_ironsight ? 1f : 0f;
         AimProgress = MathUtils.Saturate(AimProgress + MathF.Sign(target - AimProgress) * dt / AimSeconds);
         if (MathF.Abs(AimProgress - target) < 0.01f) AimProgress = target;
     }
@@ -850,93 +837,9 @@ public static class CsmcFirstPersonRenderer {
                 $"{s_assetNames[variant]} cannot be drawn ({route[5..]}); falling back to Survivalcraft item rendering.");
             return false;
         }
-        // Field of view is a player setting and the aspect follows the window, so
-        // the screen-space anchor has to be re-resolved whenever either changes;
-        // in exact mode the weapon's own FOV (per table row, blended by aim) too.
-        // A CS2-only variant has no CS:MC table row and draws through Cs2Placement's
-        // own projection, so it is not asked.
-        if (!CsmcKnifeRig.IsCs2Only(variant)) s_weaponFov = WeaponFovDegrees(variant);
-        if (SyncProjection(camera)) RebuildPlacements();
-        EnsurePlacement(variant);
-        if (route == "csmc" && (s_parts[variant] is null || s_baseColor[variant] is null)) {
-            KnifeDiagnostics.WarnOnce($"assets-missing-{s_assetNames[variant]}",
-                $"{s_assetNames[variant]} has no usable first-person assets; falling back to Survivalcraft item rendering.");
-            return false;
-        }
-
-        // Moves the whole composition -- knife and hands alike -- so the grip
-        // stays attached while the body moves. CSMC clips own the draw, inspect
-        // and slash motion, so SC's poke transform is the one piece of vanilla
-        // that must not be multiplied on top.
         Matrix post = CreateBodyMotion(firstPerson)
             * Matrix.CreateFromYawPitchRoll(firstPerson.m_lagAngles.X, firstPerson.m_lagAngles.Y, 0f);
-        // The cs2 profile replaces the whole chain: CS2's own rig is already posed in
-        // the camera's frame, so there is no placement to solve (Cs2Placement).
-        if (route == "cs2") return DrawCs2(firstPerson, camera, variant, pose, post);
-
-        Matrix placement = PlacementFor(pose, variant);
-        Matrix root = placement * post;
-
-        float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
-        LogComposition(firstPerson, variant, pose, placement, post);
-        // Through the scope: CS hides the weapon and shows the lens the moment the key
-        // is pressed. It used to wait for the aim blend, AimSeconds = 0.25 s, while
-        // SetZoom narrowed SettingsManager.ViewAngle on the same frame - so for a
-        // quarter second the world was already magnified and the scope was not there
-        // yet. CS2's own m_flZoomTime for the AWP is 0.05, three frames at 60 fps, and
-        // the overlay is not gated on it at all.
-        if (s_scoped) {
-            // The mask itself is drawn by SubsystemScGunBlockBehavior at draw order 350, after the
-            // sky (105) and particles (300): drawn here, in the first-person pass, the sky dome
-            // painted over it whenever the player looked up (0.15.8 "对着天空变透明").
-            s_overlayFrame = Time.FrameIndex;
-            return true;
-        }
-        // CS:MC draws the weapon through its own per-weapon projection (48 degrees for
-        // every knife). The fists are solved in view space onto the knife's grip and
-        // drawn through the same projection so they stay on the handle; only CS:MC's
-        // own stretched arm boxes (ExactArms) use Minecraft's 70 degree hand pass.
-        // No depth clear here: Survivalcraft's first-person draw already squeezes the
-        // viewport depth range (MaxDepth x 0.1) so the composition draws in front of
-        // the world, and a clear at this draw order let the sky dome paint over the
-        // terrain (the "world turned white" of 0.14.0).
-        Matrix projection = Exact ? ExactProjection(camera, s_weaponFov) : camera.ProjectionMatrix;
-        Matrix weaponProjection = projection;
-        Matrix handProjection = Exact && ExactArms ? ExactProjection(camera, KnifeTuning.ExactHandFovDegrees) : projection;
-        DrawHands(firstPerson, camera, handProjection, variant, pose, placement, post, light);
-        KnifePbrRenderer.Lighting lighting = KnifePbrRenderer.FirstPersonLighting(camera, light);
-        bool hideSilencer = SilencerHidden(firstPerson, variant);
-        foreach (Part part in s_parts[variant]) {
-            if (part.Binding == LatchPart && KnifeTuning.ShowButterflyLatch <= 0.5f) continue;
-            if (hideSilencer && part.Binding == SilencerPart) continue;
-            string material = PartMaterial(variant, part.Binding);
-            Texture2D partBase = material is null ? s_baseColor[variant] : PartBaseTexture(material);
-            // A part held in the left hand (the shadow daggers' second blade) goes
-            // where the left fist goes: the fist is pinned to its reference position
-            // by a view-space correction, and without the same shift the dagger was
-            // left floating where the rig's hand_l bone is.
-            Matrix world = part.Binding == LeftHeldPart && !BoneArms(variant)
-                ? pose.GetBinding(part.Binding) * placement * Matrix.CreateTranslation(s_leftHandCorrection[variant]) * post
-                : pose.GetBinding(part.Binding) * root;
-            // PBR when the shader and this knife's maps are available; the plain
-            // lit draw otherwise, so a device that cannot compile it still sees a knife.
-            if (!KnifePbrRenderer.TryDrawPart(part.Model, partBase, variant, world, weaponProjection,
-                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, material)) {
-                DrawModel(part.Model, s_baseColor[variant], world, camera, weaponProjection, light,
-                    SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
-            }
-        }
-
-        if (s_smokeUntil > KnifeClock.Now) DrawMuzzleFlash(pose, root, weaponProjection);
-
-        if (!s_logged[variant]) {
-            s_logged[variant] = true;
-            KnifeLog.Information(
-                $"[ScCsgoKnives] first-person render active: asset={s_assetNames[variant]}, clip={pose.SourceClip}, "
-                + $"parts=[{string.Join(',', s_parts[variant].Select(part => part.Binding))}], root={KnifeDiagnostics.MatrixSummary(root)}."
-            );
-        }
-        return true;
+        return DrawCs2(firstPerson, camera, variant, pose, post);
     }
 
     static readonly Dictionary<string, Part[]> s_cs2Parts = new(StringComparer.Ordinal);
@@ -950,9 +853,7 @@ public static class CsmcFirstPersonRenderer {
     /// built from viewmodel_fov. SC's body motion still rides on top, so walking and
     /// item swaps move the weapon the way the rest of the game moves.
     ///
-    /// Arms are not drawn here. The CS:MC fist and arm-box solvers are measured
-    /// against the CS:MC rig and its placement, and neither applies; CS2's own arms
-    /// and gloves are stage 4. Until then the cs2 profile shows the weapon alone.
+    /// The weapon and CS2 skinned arms share the same placement and projection.
     /// </summary>
     static bool DrawCs2(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, Matrix post) {
         string gun = CsmcKnifeRig.GetAssetName(variant);
@@ -967,7 +868,7 @@ public static class CsmcFirstPersonRenderer {
             : MathUtils.Clamp(pose.RequestedTime, 0f, MathF.Max(cs2Duration, 0f));
         Cs2Rig.Pose cs2 = Cs2Rig.Sample(gun, pose.ClipAlias, cs2Time);
         if (cs2 is null) {
-            KnifeDiagnostics.WarnOnce($"cs2-pose-{gun}", $"No CS2 pose for {gun}/{pose.ClipAlias}; falling back to the CS:MC chain.");
+            KnifeDiagnostics.WarnOnce($"cs2-pose-{gun}", $"No CS2 pose for {gun}/{pose.ClipAlias}; CS2 weapon drawing skipped.");
             return false;
         }
         if (!EnsureCs2Assets(gun)) return false;
@@ -977,8 +878,14 @@ public static class CsmcFirstPersonRenderer {
             return true;
         }
 
-        Matrix root = Cs2Placement.Placement() * post;
         Matrix projection = Cs2Placement.Projection(camera);
+        if (s_ironsight) {
+            s_overlayFrame = Time.FrameIndex;
+            post = Cs2Ironsight.Correction(gun);
+            float aspect = camera.ProjectionMatrix.M22 / camera.ProjectionMatrix.M11;
+            projection = Cs2Ironsight.Projection(aspect);
+        }
+        Matrix root = Cs2Placement.Placement() * post;
         RecordMuzzleFrame(root, projection, camera, cs2, gun);
         float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
         KnifePbrRenderer.Lighting lighting = KnifePbrRenderer.FirstPersonLighting(camera, light);
@@ -1153,7 +1060,8 @@ public static class CsmcFirstPersonRenderer {
             // would put a patch of receiver on it.
             if (part.Material == ScopeLensMaterial) { lens = part; lensWorld = bone * post; continue; }
             KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, part.Indices, baseColor, material,
-                bone * post, projection, camera.InvertedViewMatrix, in lighting, variant);
+                bone * post, projection, camera.InvertedViewMatrix, in lighting, variant,
+                scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(asset) : 0f);
         }
         if (mesh.BlendedTriangleCount > 0) {
             mesh.SkinBlended();
@@ -1203,70 +1111,20 @@ public static class CsmcFirstPersonRenderer {
     public const float ScopeDotScreenFraction = 40f / 1080f;   // assumed
     /// <summary>scope_filter.png, measured: the window's radius and where the black is fully opaque, as fractions of the image's half-size.</summary>
     public const float ScopeFilterWindowFraction = 0.64f, ScopeFilterBlackFraction = 0.76f;
-    static Texture2D s_scopeFilter;
 
-    /// <summary>
-    /// The AUG / SG 553 zoomed HUD: CS2's scope_filter (the one ui.vfx material in
-    /// the shared scope folder - a window of radius 0.64 of its half-size, tinted
-    /// (0,9,8) at alpha 120 inside, feathered to opaque black by 0.76; measured by
-    /// tools/cs2_scope_filter_texture.py) drawn as a screen-height square with black
-    /// either side, and the white dot at the centre. The square's size is the one
-    /// thing the export does not say and is assumed, like the sniper overlay's.
-    /// 0.20.1 drew the dot alone, which the device test called "not CS2's scope".
-    /// </summary>
+    /// <summary>Only the green reticle overlays the aimed 3D scope; the world stays visible outside.</summary>
     static void DrawIronsightScope() {
         if (!s_ironsight) return;
-        try {
-            s_scopeFilter ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_filter");
-            s_scopeDot ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_dot");
-        }
-        catch (Exception e) {
-            KnifeDiagnostics.WarnOnce("cs2-ironsight-scope", $"No ironsight scope texture: {e.Message}");
-            return;
-        }
-        if (s_scopeFilter is null || s_scopeDot is null) return;
+        s_scopeDot ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_dot");
         s_primitives2D ??= new PrimitivesRenderer2D();
         float w = Display.Viewport.Width, h = Display.Viewport.Height;
-        // The image's window is 0.64 of its half-size (measured); the square is sized so
-        // the window spans IronsightScopeWindow of the screen height. 0.20.2 drew the
-        // square at the screen height, which left most of the screen black.
-        float half = h * MathUtils.Clamp(KnifeTuning.IronsightScopeWindow, 0.2f, 2f) * 0.5f / ScopeFilterWindowFraction;
-        Vector2 c = new(w * 0.5f, h * 0.5f);
-        FlatBatch2D fill = s_primitives2D.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
-        if (c.X - half > 0f) {
-            foreach (float x0 in new[] { 0f, c.X + half }) {
-                float x1 = x0 == 0f ? c.X - half : w;
-                fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, 0f), new Vector2(x1, h), 0f, Color.Black);
-                fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, h), new Vector2(x0, h), 0f, Color.Black);
-            }
-        }
-        // The tint inside the window is the image's own alpha; the tunable scales the
-        // whole image's alpha, which leaves the opaque black outside (255) nearly as it
-        // is and mostly moves the 120 inside.
-        byte tintAlpha = (byte)MathUtils.Clamp(255f * MathUtils.Clamp(KnifeTuning.IronsightScopeTint, 0f, 1f), 0f, 255f);
-        TexturedBatch2D filter = s_primitives2D.TexturedBatch(s_scopeFilter, false, 1,
-            DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.NonPremultiplied, SamplerState.LinearClamp);
-        filter.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
-            0f, Vector2.Zero, Vector2.One, new Color((byte)255, (byte)255, (byte)255, tintAlpha));
-        if (tintAlpha < 255) {
-            // The black outside must stay black whatever the tint: a second, opaque pass
-            // of the image masked to alpha 255 is not available, so the outside ring is
-            // filled from the window's outer edge (0.76 of the half-size) outwards.
-            FlatBatch2D ring = s_primitives2D.FlatBatch(1, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
-            float rIn = half * ScopeFilterBlackFraction, far = MathF.Max(w, h) * 1.5f;
-            const int segments = 96;
-            for (int i = 0; i < segments; i++) {
-                float a0 = MathF.PI * 2f * i / segments, a1 = MathF.PI * 2f * (i + 1) / segments;
-                Vector2 d0 = new(MathF.Cos(a0), MathF.Sin(a0)), d1 = new(MathF.Cos(a1), MathF.Sin(a1));
-                ring.QueueTriangle(c + d0 * rIn, c + d0 * far, c + d1 * far, 0f, Color.Black);
-                ring.QueueTriangle(c + d0 * rIn, c + d1 * far, c + d1 * rIn, 0f, Color.Black);
-            }
-        }
-        float dot = h * ScopeDotScreenFraction * 0.5f;
-        TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_scopeDot, false, 2,
+        Vector2 center = new(w * 0.5f, h * 0.5f);
+        // Green luminous point measured in both recordings; no fullscreen black filter.
+        float half = h * (18f / 1056f) * 0.5f;
+        TexturedBatch2D dot = s_primitives2D.TexturedBatch(s_scopeDot, false, 0,
             DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
-        batch.QueueQuad(new Vector2(c.X - dot, c.Y - dot), new Vector2(c.X + dot, c.Y + dot),
-            0f, Vector2.Zero, Vector2.One, Color.White);
+        dot.QueueQuad(center - new Vector2(half), center + new Vector2(half), 0f,
+            Vector2.Zero, Vector2.One, new Color(80, 255, 110));
         s_primitives2D.Flush();
     }
 
@@ -1444,7 +1302,7 @@ public static class CsmcFirstPersonRenderer {
             if (parts.Length == 0) parts = null;
         }
         catch (Exception e) {
-            KnifeDiagnostics.WarnOnce($"cs2-assets-{gun}", $"CS2 assets for {gun} are missing ({e.Message}); falling back to the CS:MC chain.");
+            KnifeDiagnostics.WarnOnce($"cs2-assets-{gun}", $"CS2 assets for {gun} are missing ({e.Message}); CS2 weapon drawing skipped.");
             parts = null;
         }
         s_cs2Parts[gun] = parts;
@@ -1461,7 +1319,7 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static int s_overlayFrame = -1;
     /// <summary>True while the scoped view (gun hidden, mask due) is active for the frame being drawn.</summary>
-    public static bool ScopeOverlayActive => s_scoped && Time.FrameIndex - s_overlayFrame <= 1;
+    public static bool ScopeOverlayActive => (s_scoped || s_ironsight) && Time.FrameIndex - s_overlayFrame <= 1;
 
     static Texture2D s_cs2ScopeCircle;
 
