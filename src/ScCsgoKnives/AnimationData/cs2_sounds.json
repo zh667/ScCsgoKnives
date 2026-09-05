@@ -6086,6 +6086,246 @@
      ]
     }
    ]
+  },
+  "m249:deploy": {
+   "SourceClip": "draw_m249",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.0,
+     "Frame": 0.0,
+     "Duration": 0.3,
+     "Event": "Weapon_M249.Draw",
+     "Asset": "m249_draw",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "m249_draw.wav"
+     ]
+    },
+    {
+     "At": 0.233333,
+     "Frame": 7.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.pump_Q",
+     "Asset": "m249_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "m249_pump.wav"
+     ]
+    }
+   ]
+  },
+  "m249:reload": {
+   "SourceClip": "reload_m249",
+   "FrameRate": 60.000004,
+   "Cues": [
+    {
+     "At": 0.566667,
+     "Frame": 34.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Coverup",
+     "Asset": "m249_coverup",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_coverup.wav"
+     ]
+    },
+    {
+     "At": 0.783333,
+     "Frame": 47.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Chain",
+     "Asset": "m249_chain",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_chain.wav"
+     ]
+    },
+    {
+     "At": 1.333333,
+     "Frame": 80.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Boxout",
+     "Asset": "m249_boxout",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_boxout.wav"
+     ]
+    },
+    {
+     "At": 2.283333,
+     "Frame": 137.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Chain",
+     "Asset": "m249_chain",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_chain.wav"
+     ]
+    },
+    {
+     "At": 2.65,
+     "Frame": 159.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Boxin",
+     "Asset": "m249_boxin",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_boxin.wav"
+     ]
+    },
+    {
+     "At": 2.95,
+     "Frame": 177.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Chain",
+     "Asset": "m249_chain",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_chain.wav"
+     ]
+    },
+    {
+     "At": 3.733333,
+     "Frame": 224.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.Coverdown",
+     "Asset": "m249_coverdown",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_coverdown.wav"
+     ]
+    },
+    {
+     "At": 4.433333,
+     "Frame": 266.0,
+     "Duration": 0.0,
+     "Event": "Weapon_M249.pump",
+     "Asset": "m249_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "m249_pump.wav"
+     ]
+    }
+   ]
+  },
+  "negev:deploy": {
+   "SourceClip": "draw_negev",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.0,
+     "Frame": 0.0,
+     "Duration": 0.3,
+     "Event": "Weapon_Negev.Draw",
+     "Asset": "negev_draw",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "negev_draw.wav"
+     ]
+    },
+    {
+     "At": 0.2,
+     "Frame": 6.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Pump_Q",
+     "Asset": "negev_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "negev_pump.wav"
+     ]
+    }
+   ]
+  },
+  "negev:reload": {
+   "SourceClip": "reload_negev",
+   "FrameRate": 30.000002,
+   "Cues": [
+    {
+     "At": 0.6,
+     "Frame": 18.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Coverup",
+     "Asset": "negev_coverup",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "negev_coverup.wav"
+     ]
+    },
+    {
+     "At": 1.366667,
+     "Frame": 41.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Boxout",
+     "Asset": "negev_boxout",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "negev_boxout.wav"
+     ]
+    },
+    {
+     "At": 2.7,
+     "Frame": 81.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Boxin",
+     "Asset": "negev_boxin",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "negev_boxin.wav"
+     ]
+    },
+    {
+     "At": 3.0,
+     "Frame": 90.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Chain",
+     "Asset": "negev_chain",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "negev_chain.wav"
+     ]
+    },
+    {
+     "At": 3.833333,
+     "Frame": 115.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Coverdown",
+     "Asset": "negev_coverdown",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "negev_coverdown.wav"
+     ]
+    },
+    {
+     "At": 4.566666,
+     "Frame": 137.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Negev.Pump",
+     "Asset": "negev_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "negev_pump.wav"
+     ]
+    }
+   ]
   }
  }
 }

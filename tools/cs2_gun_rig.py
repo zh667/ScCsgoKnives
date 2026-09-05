@@ -83,6 +83,18 @@ ALIASES = [
     # from it. The gun stays drawn (HideViewModelWhenZoomed is false for them).
     ("ironsightIdle",   ["ironsight_fidget_{s}"]),
     ("ironsightShoot",  ["ironsight_shoot_{s}"]),
+    # The R8 Revolver: the hammer is drawn before the primary shot; the alternate
+    # fire fans it; an empty chamber clicks.
+    ("prepareShoot",    ["prepare_shoot_{s}"]),
+    ("shootAlt",        ["shoot_alt1_{s}"]),
+    ("dryFire",         ["dryfire_{s}"]),
+    # The Dual Berettas: shoot1 is the right gun; the left has its own clip, each has
+    # a last-round clip, and the idles say which gun is empty.
+    ("shootLeft",       ["shoot_left1_{s}"]),
+    ("shootLeftLast",   ["shoot_leftlast_{s}"]),
+    ("shootRightLast",  ["shoot_rightlast_{s}"]),
+    ("idleLeftEmpty",   ["idle_leftempty_{s}"]),
+    ("idleBothEmpty",   ["idle_leftrightempty_{s}"]),
 ]
 
 # The clips a gun must have for the mod to draw it at all.

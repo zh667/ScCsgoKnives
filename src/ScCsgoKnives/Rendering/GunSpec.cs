@@ -228,6 +228,16 @@ public sealed class GunSpec {
             KickPitchDegrees = 8.800f, KickYawDegrees = 1.528f, KickRecoverPerSecond = 2.50f,
             SpreadDegrees = 2.6909f, Pellets = 8,
         },
+        new() {
+            Name = "m249", Magazine = 100, CycleSeconds = 0.08f, Automatic = true, AttackPower = 32f,
+            KickPitchDegrees = 1.333f, KickYawDegrees = 0.563f, KickRecoverPerSecond = 1.21f,
+            SpreadDegrees = 0.5557f,
+        },
+        new() {
+            Name = "negev", Magazine = 150, CycleSeconds = 0.075f, Automatic = true, AttackPower = 35f,
+            KickPitchDegrees = 1.067f, KickYawDegrees = 0.000f, KickRecoverPerSecond = 3.33f,
+            SpreadDegrees = 0.6973f,
+        },
     ];
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);

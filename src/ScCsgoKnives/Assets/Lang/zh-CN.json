@@ -207,6 +207,14 @@
   "ScGunBlock:29": {
    "DisplayName": "MAG-7",
    "Description": "弹匣供弹霰弹枪，5 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:30": {
+   "DisplayName": "M249",
+   "Description": "5.56 毫米轻机枪，100 发弹链，100 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:31": {
+   "DisplayName": "内格夫",
+   "Description": "5.56 毫米轻机枪，150 发弹链，150 发弹匣，全自动。左键开火，R 换弹。"
   }
  },
  "ScCsgoKnives": {

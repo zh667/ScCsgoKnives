@@ -226,5 +226,19 @@
   "SourceReferenceScale": 0.0,
   "Table": "mag7",
   "Cs2Only": true
+ },
+ {
+  "Name": "m249",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "m249",
+  "Cs2Only": true
+ },
+ {
+  "Name": "negev",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "negev",
+  "Cs2Only": true
  }
 ]

@@ -1,26 +1,26 @@
 [
  {
-  "gun": "negev",
+  "gun": "taser",
   "size": 1024,
-  "vmat": "weapons/models/negev/materials/weapon_mach_negev.vmat",
+  "vmat": "weapons/models/taser/materials/weapon_pist_taser.vmat",
   "sources": {
-   "TextureColor1": "weapons/models/negev/materials/negev_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/negev/materials/negev_default_ao.png",
-   "TextureRoughness1": "weapons/models/negev/materials/negev_default_rough.png",
-   "TextureMetalness1": "weapons/models/negev/materials/negev_default_81bea48d_metal.png",
-   "TextureNormal": "weapons/models/negev/materials/negev_default_normal.png"
+   "TextureColor1": "weapons/models/taser/materials/taser_color.png",
+   "TextureAmbientOcclusion": "weapons/models/taser/materials/taser_ao.png",
+   "TextureRoughness1": "weapons/models/taser/materials/taser_rough.png",
+   "TextureMetalness1": "weapons/models/taser/materials/taser_7140d135_metal.png",
+   "TextureNormal": "weapons/models/taser/materials/taser_normal.png"
   },
   "means": {
    "colour": [
-    97.31,
-    96.76,
-    94.72
+    69.53,
+    75.67,
+    72.06
    ],
-   "ao": 162.81,
-   "roughness": 158.15,
-   "metalness": 30.71
+   "ao": 213.3,
+   "roughness": 129.58,
+   "metalness": 0.29
   },
-  "normal_deviation_from_flat": 12.926,
+  "normal_deviation_from_flat": 13.514,
   "recorded_but_not_implemented": {
    "g_flMetalnessTransitionBias": "2",
    "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",

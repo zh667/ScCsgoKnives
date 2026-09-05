@@ -253,15 +253,20 @@ def main():
     for gun in args.guns:
         print("== %s" % gun)
         assets(gun, skip)
+    # The manifest before the cues: cs2_sound_timings.py walks guns.json, so a gun
+    # not yet in it has no clips in the table and nothing for --cues to install.
+    # Three batches went out with their reload cues missing this way.
+    if args.apply:
+        apply(args.guns)
     if "cues" not in skip:
+        if not args.apply:
+            print("   (no --apply: the cues of a gun not yet in guns.json cannot be installed)")
         cues(args.guns)
     if "effects" not in skip:
         run([sys.executable, TOOLS / "cs2_effects.py"])
     print("\n== GunSpec entries")
     for gun in args.guns:
         print(spec_entry(gun))
-    if args.apply:
-        apply(args.guns)
 
 
 if __name__ == "__main__":

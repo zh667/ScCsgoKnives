@@ -207,6 +207,14 @@
   "ScGunBlock:29": {
    "DisplayName": "MAG-7",
    "Description": "A magazine-fed shotgun, 5 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:30": {
+   "DisplayName": "M249",
+   "Description": "A 5.56 mm light machine gun, 100-round belt, 100 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:31": {
+   "DisplayName": "Negev",
+   "Description": "A 5.56 mm light machine gun, 150-round belt, 150 rounds, automatic. Left click fires. R reloads."
   }
  },
  "ScCsgoKnives": {
