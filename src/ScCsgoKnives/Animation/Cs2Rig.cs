@@ -122,6 +122,14 @@ public static class Cs2Rig {
         return (drop.At, insert.At);
     }
 
+    public static float GrenadeReleaseTime(string asset, string alias) {
+        Clip clip = Resolve(Get(asset), alias);
+        ClipEvent release = clip?.Events?.FirstOrDefault(e => e.Name.EndsWith(".Throw", StringComparison.OrdinalIgnoreCase));
+        if (release is null || release.At < 0 || release.At > clip.Duration)
+            throw new InvalidDataException($"Missing CS2 throw timing: {asset}/{alias}");
+        return release.At;
+    }
+
     sealed class SkeletonBone {
         public int Index { get; set; }
         public string Name { get; set; }

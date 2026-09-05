@@ -1215,8 +1215,11 @@ public static class CsmcFirstPersonRenderer {
         s_cs2WeaponVertices = mesh.Skinned.Length;
         s_cs2WeaponTriangles = mesh.Primitives.Sum(p => p.Indices.Length) / 3;
         foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
-            KnifePbrRenderer.TryDrawSkinned(mesh.Skinned, part.Indices, baseColor,
-                $"{asset}_cs2", post, projection, camera.InvertedViewMatrix, in lighting, variant);
+            string key = ScGrenadeBlock.MaterialKey(asset, part.Material);
+            Texture2D texture = key == asset + "_cs2" ? baseColor : PartBaseTexture(key);
+            if (part.Material == "weapon_molotov_flame") continue; // enabled with incendiary effects in P5
+            KnifePbrRenderer.TryDrawSkinned(mesh.Skinned, part.Indices, texture,
+                key, post, projection, camera.InvertedViewMatrix, in lighting, variant);
         }
     }
 

@@ -370,7 +370,7 @@ public static class Cs2SelfTest {
         // joints actually resolve against that knife's own skeleton - a mesh whose
         // joints did not resolve would silently draw at the origin.
         foreach (string knife in Enumerable.Range(0, CsmcKnifeRig.AssetCount)
-                                            .Where(v => !CsmcKnifeRig.IsGun(v))
+                                            .Where(v => v < CsmcKnifeRig.KnifeCount)
                                             .Select(CsmcKnifeRig.GetAssetName)
                                             .Distinct(StringComparer.Ordinal)) {
             if (!Cs2Rig.Has(knife)) {

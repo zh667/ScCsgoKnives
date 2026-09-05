@@ -1,0 +1,2672 @@
+{
+  "tool": "ValveResourceFormat 20.0",
+  "source": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp-survival-tools\\grenades",
+  "files": [
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/draw_hegrenade.dmx",
+      "sha256": "e4f0b6ec0b3742d066278023e78cf35834809e39d3855c7f0d460f5207aa8ce6",
+      "alias": "deploy",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 29.0,
+          "At": 0.0,
+          "Duration": 0.966667,
+          "Name": "Draw.Gear",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 12.0,
+          "At": 0.066667,
+          "Duration": 0.4,
+          "Name": "HEGrenade.Draw",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/draw_hegrenade.vnmclip",
+      "sha256": "6769d1d0d25837f9e2ba8413ebff6138904a381181fb41bf23ed9aff5120c304"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/idle_hegrenade.dmx",
+      "sha256": "21f3a4203ae1038cb938dbdfa032fd642cd8caaddd666ab7a41fb47bddaeb662",
+      "alias": "idle",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/idle_hegrenade.vnmclip",
+      "sha256": "25721c92f5c2023a92bf337cb3a8d0d1f616b6252a0e1ca9ac685628180478f2"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/lookat01_hegrenade.dmx",
+      "sha256": "57b424031cbd9117306214f564378242b88cea04ebdcf29cfd0a3afe3cf28d82",
+      "alias": "inspect",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 51.0,
+          "At": 0.0,
+          "Duration": 1.7,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 87.0,
+          "At": 0.0,
+          "Duration": 2.9,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 15.0,
+          "At": 0.066667,
+          "Duration": 0.5,
+          "Name": "HEGrenade.Inspect01.Handles",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 48.0,
+          "DurationFrames": 51.0,
+          "At": 1.6,
+          "Duration": 1.7,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 55.0,
+          "DurationFrames": 15.0,
+          "At": 1.833333,
+          "Duration": 0.5,
+          "Name": "HEGrenade.Inspect01.Handles",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 87.0,
+          "DurationFrames": 54.0,
+          "At": 2.9,
+          "Duration": 1.8,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 141.0,
+          "DurationFrames": 31.0,
+          "At": 4.7,
+          "Duration": 1.033333,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 141.0,
+          "DurationFrames": 33.0,
+          "At": 4.7,
+          "Duration": 1.1,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 146.0,
+          "DurationFrames": 11.0,
+          "At": 4.866666,
+          "Duration": 0.366667,
+          "Name": "HEGrenade.Inspect01.Handles",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/lookat01_hegrenade.vnmclip",
+      "sha256": "2dbd93d75a9af5e9fc30ed10e24a3df2336205527c8f0eb754df0a76bf7255c7"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/lookat02_hegrenade.dmx",
+      "sha256": "e6c35b3d9805d1c717da200d2a387218a011a10f7ebce540833441b06a71e07a",
+      "alias": "inspect2",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 32.0,
+          "At": 0.0,
+          "Duration": 1.066667,
+          "Name": "Inspect.Gear.GrenadeToss",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 19.0,
+          "At": 0.0,
+          "Duration": 0.633333,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 10.0,
+          "DurationFrames": 18.0,
+          "At": 0.333333,
+          "Duration": 0.6,
+          "Name": "HEGrenade.Inspect02.Toss1",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 19.0,
+          "DurationFrames": 40.0,
+          "At": 0.633333,
+          "Duration": 1.333333,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 24.0,
+          "DurationFrames": 12.0,
+          "At": 0.8,
+          "Duration": 0.4,
+          "Name": "HEGrenade.Inspect02.Catch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 31.0,
+          "DurationFrames": 18.0,
+          "At": 1.033333,
+          "Duration": 0.6,
+          "Name": "HEGrenade.Inspect02.Toss2",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 44.0,
+          "DurationFrames": 12.0,
+          "At": 1.466667,
+          "Duration": 0.4,
+          "Name": "HEGrenade.Inspect02.Catch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 52.0,
+          "DurationFrames": 18.0,
+          "At": 1.733333,
+          "Duration": 0.6,
+          "Name": "HEGrenade.Inspect02.Toss2",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 59.0,
+          "DurationFrames": 31.0,
+          "At": 1.966667,
+          "Duration": 1.033333,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 65.0,
+          "DurationFrames": 12.0,
+          "At": 2.166667,
+          "Duration": 0.4,
+          "Name": "HEGrenade.Inspect02.Catch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/lookat02_hegrenade.vnmclip",
+      "sha256": "442c405da7c0a91828a19fa6af4d182abafc0f6b0d104361cbd0c081c13cc917"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/pullpin_hegrenade.dmx",
+      "sha256": "fad0160f941189dc02e958012ac612bb0360cdd2800a73610a0ef40058f64590",
+      "alias": "pullpin",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 29.0,
+          "At": 0.0,
+          "Duration": 0.9667,
+          "Name": "HEGrenade.PullPin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/pullpin_hegrenade.vnmclip",
+      "sha256": "926bf9ebfef15e4d4dee21068e28ef9ea7fd262ffa38d4533372402d8fdc1c66"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throwcharge_high_hegrenade.dmx",
+      "sha256": "4aa6f9b126a4eda45655e3e188ae5a7a50ed4bc2f2313e7ae6cb23e904a23cb1",
+      "alias": "holdHigh",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throwcharge_high_hegrenade.vnmclip",
+      "sha256": "e31eea0deb15b0d8a679880345e65c831dd34c70aef8d0df78976bcea1d815d5"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throwcharge_low_hegrenade.dmx",
+      "sha256": "7734730e613aeb5be6362f13eba8abc39a45dda91f232d75d434718d9d841abb",
+      "alias": "holdLow",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throwcharge_low_hegrenade.vnmclip",
+      "sha256": "3de9cad8ba245ca0554b9a0fa5a9f6de8dda073f74e6c43647c253a6122195fb"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throw_overhand_hegrenade.dmx",
+      "sha256": "75a0e914440c49f204600ee0af8d2a2f4bd384e497fefff26caf0c80e6e59523",
+      "alias": "throwHigh",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Grenade.PreThrow.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 0.0,
+          "At": 0.06667,
+          "Duration": 0.0,
+          "Name": "HEGrenade.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throw_overhand_hegrenade.vnmclip",
+      "sha256": "8b54ae16d2d3d80c45d4eaee05714bc829ee26eb4589bfc601c8a04a49465439"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throw_underhand_hegrenade.dmx",
+      "sha256": "be5b5917b4afae58ad68955f3394d8e34c597ce9482316b873d63b2c2ed6fd33",
+      "alias": "throwLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 15.0,
+          "At": 0.0,
+          "Duration": 0.5,
+          "Name": "Grenade.ThrowUnder.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 4.0,
+          "DurationFrames": 0.0,
+          "At": 0.133333,
+          "Duration": 0.0,
+          "Name": "HEGrenade.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/throw_underhand_hegrenade.vnmclip",
+      "sha256": "b6fb40dea9399f87f03937a5d71804188e4902a20111bdd0d9cfec479d7dec96"
+    },
+    {
+      "path": "glb/weapons/models/grenade/hegrenade/weapon_hegrenade.glb",
+      "sha256": "77bfe85657403112e661dc57500c416af91f0997ab1488601161fb504211671b",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "handle",
+        "pin",
+        "ring",
+        "ag1_hand_r"
+      ],
+      "primitives": [
+        [
+          "weapon_hegrenade",
+          6793,
+          10398
+        ]
+      ]
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/hegrenade/materials/weapon_hegrenade.vmat",
+      "sha256": "97617a8f2bb6bbc248e912f13b736935c8fdce907978c9f24153e9578986b83e"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/hegrenade/materials/he_grenade_color.png",
+      "sha256": "bf169af93bf4769dbc4d034d9cb90d16126919f5021ace13ba2d5c271a02ac35"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/hegrenade/materials/he_grenade_normal.png",
+      "sha256": "aaf929100461918726e792b6aba9e0589da8833dbc1ac552a8636603eebe3051"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/hegrenade/materials/he_grenade_ao.png",
+      "sha256": "7972efa0210624c338dc7ad30c9a4b247bda87d1f03efcdc493154aca55e38ef"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/hegrenade/materials/he_grenade_rough.png",
+      "sha256": "099af61ab1f1c9e6be9aa8861603054b1ba38d8186a4e062605f41f5f01a5004"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/hegrenade/materials/he_grenade_5ad711f1_metal.png",
+      "sha256": "e4ec579b96123b29531fdded9d63d3848b64aec195145fa16726a6066eb5e3f2"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/draw_flashbang.dmx",
+      "sha256": "2e679e434e4078f83329fbacfbf0ef53eaba709683576a29ac3469bd07e9b061",
+      "alias": "deploy",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 26.0,
+          "At": 0.0,
+          "Duration": 0.866667,
+          "Name": "Draw.Gear",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 15.0,
+          "At": 0.066667,
+          "Duration": 0.5,
+          "Name": "Flashbang.Draw",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/draw_flashbang.vnmclip",
+      "sha256": "0ebb65cb547d9a6f41942c4e618035da4fd514e345bd3b9c3ecbd80ffa289b4f"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/idle_flashbang.dmx",
+      "sha256": "d35aab8dd8be93ae25faabfd922b23a8d3284b0428c982d688e5159897db44b5",
+      "alias": "idle",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/idle_flashbang.vnmclip",
+      "sha256": "64eaf8f2de353427612e8275650a34026d06da7bb27d4c6a9bc2ac758700e60b"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/lookat01_flashbang.dmx",
+      "sha256": "3f0236fb59f414f202b1baff3d7d74c1a28a79d23cca55047deb8a8585a0f4ac",
+      "alias": "inspect",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 53.0,
+          "At": 0.0,
+          "Duration": 1.766667,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 87.0,
+          "At": 0.0,
+          "Duration": 2.9,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 10.0,
+          "DurationFrames": 13.0,
+          "At": 0.333333,
+          "Duration": 0.433333,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 17.0,
+          "DurationFrames": 10.0,
+          "At": 0.566667,
+          "Duration": 0.333333,
+          "Name": "Flashbang.Inspect.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 87.0,
+          "DurationFrames": 54.0,
+          "At": 2.9,
+          "Duration": 1.8,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 141.0,
+          "DurationFrames": 33.0,
+          "At": 4.7,
+          "Duration": 1.1,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 150.0,
+          "DurationFrames": 23.0,
+          "At": 5.0,
+          "Duration": 0.766667,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 151.0,
+          "DurationFrames": 11.0,
+          "At": 5.033333,
+          "Duration": 0.366667,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 158.0,
+          "DurationFrames": 4.0,
+          "At": 5.266666,
+          "Duration": 0.133333,
+          "Name": "Flashbang.Inspect.RingMove",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/lookat01_flashbang.vnmclip",
+      "sha256": "497b0120b9dc78da41035761796dad68b6a2bc55661ec7c20439ea53bccd55ff"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/lookat02_flashbang.dmx",
+      "sha256": "32407597f4b5b20c3f76db9496cd4373654f87fd884bfdf77b93e8c18114eff8",
+      "alias": "inspect2",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 39.0,
+          "At": 0.0,
+          "Duration": 1.29999,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 30.0,
+          "At": 0.066666,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 5.0,
+          "DurationFrames": 15.0,
+          "At": 0.166665,
+          "Duration": 0.499996,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 18.0,
+          "DurationFrames": 30.0,
+          "At": 0.599995,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 21.0,
+          "DurationFrames": 15.0,
+          "At": 0.699995,
+          "Duration": 0.499996,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 39.0,
+          "DurationFrames": 30.0,
+          "At": 1.29999,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 39.0,
+          "DurationFrames": 66.0,
+          "At": 1.29999,
+          "Duration": 2.199983,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 40.0,
+          "DurationFrames": 12.0,
+          "At": 1.333323,
+          "Duration": 0.399997,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 49.0,
+          "DurationFrames": 30.0,
+          "At": 1.633321,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 56.0,
+          "DurationFrames": 12.0,
+          "At": 1.866653,
+          "Duration": 0.399997,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 70.0,
+          "DurationFrames": 11.0,
+          "At": 2.333316,
+          "Duration": 0.366664,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 71.0,
+          "DurationFrames": 30.0,
+          "At": 2.366649,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 82.0,
+          "DurationFrames": 30.0,
+          "At": 2.733313,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 83.0,
+          "DurationFrames": 15.0,
+          "At": 2.766646,
+          "Duration": 0.499996,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 105.0,
+          "DurationFrames": 11.0,
+          "At": 3.499974,
+          "Duration": 0.366664,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 105.0,
+          "DurationFrames": 28.0,
+          "At": 3.499974,
+          "Duration": 0.933326,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 106.0,
+          "DurationFrames": 16.0,
+          "At": 3.533307,
+          "Duration": 0.533329,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 116.0,
+          "DurationFrames": 7.0,
+          "At": 3.866638,
+          "Duration": 0.233332,
+          "Name": "Flashbang.Inspect.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 119.0,
+          "DurationFrames": 13.0,
+          "At": 3.966637,
+          "Duration": 0.43333,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/lookat02_flashbang.vnmclip",
+      "sha256": "47a58cc3f3a948ea83c9e8a5a86b61a83b5a47a12c88616e2c001a2beef33ae9"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/pullpin_flashbang.dmx",
+      "sha256": "b5dc367f14d23554e45723808e4c17128ca98b834e345479e3c7882418bb3239",
+      "alias": "pullpin",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 29.0,
+          "At": 0.0,
+          "Duration": 0.9667,
+          "Name": "Flashbang.PullPin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/pullpin_flashbang.vnmclip",
+      "sha256": "b4daddd92fa223ad9b4628583ee4075cc6f620a1d690f41d7de0594003352615"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throwcharge_high_flashbang.dmx",
+      "sha256": "1f12031f7a928b7991e937e17e57c19e31133be086c144578efd64fb98cb8c1a",
+      "alias": "holdHigh",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throwcharge_high_flashbang.vnmclip",
+      "sha256": "24d01561c0bd29ae2287e7d3b0007fbde718e5e5c1d68eca44e73787efd26ecb"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throwcharge_low_flashbang.dmx",
+      "sha256": "881e35d73bafe5260f6718b076f6e311e7def76dc29f23baebfc9fbbd7aa5e42",
+      "alias": "holdLow",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throwcharge_low_flashbang.vnmclip",
+      "sha256": "5f57a1c9c5e9ab5a98b70f2153793c570b65d58229ba298287bd1c5c0d3acfec"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throw_overhand_flashbang.dmx",
+      "sha256": "48f020fb75be431887f502469e47bb78f979ae2361a044d76b3513f606f41740",
+      "alias": "throwHigh",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Grenade.PreThrow.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 0.0,
+          "At": 0.06667,
+          "Duration": 0.0,
+          "Name": "Flashbang.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throw_overhand_flashbang.vnmclip",
+      "sha256": "52bf1cd55762e9ba6773dc6189886248c151192d3aa5da16174de32818baf93d"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throw_underhand_flashbang.dmx",
+      "sha256": "9aa24cc6bfba01d097f2a2c906a2fdc94715da10fe5fe185713942bb80ddf19b",
+      "alias": "throwLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 15.0,
+          "At": 0.0,
+          "Duration": 0.5,
+          "Name": "Grenade.ThrowUnder.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 4.0,
+          "DurationFrames": 0.0,
+          "At": 0.133333,
+          "Duration": 0.0,
+          "Name": "Flashbang.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_flashbang/throw_underhand_flashbang.vnmclip",
+      "sha256": "2ff64aeab2408642549c70c6a58abad212e01148a370a4a43b778c3f4ec1b6e8"
+    },
+    {
+      "path": "glb/weapons/models/grenade/flashbang/weapon_flashbang.glb",
+      "sha256": "78e38f984101172d9410d6bd025ff0496d63fed23ca8f525d0294f7af3758a29",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "handle",
+        "pin",
+        "ring",
+        "ag1_hand_r"
+      ],
+      "primitives": [
+        [
+          "weapon_flashbang",
+          8526,
+          11469
+        ]
+      ]
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/flashbang/materials/weapon_flashbang.vmat",
+      "sha256": "8e08ede7e056412591d8f5686f0cd9d29ef7b30764b197015c6c5fb14cfe8ae7"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/flashbang/materials/flashbang_color.png",
+      "sha256": "b2bfc48a1f8351744e1aa482d3cd91c5352b2553c42d43e4109c61c88218e08f"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/flashbang/materials/flashbang_normal.png",
+      "sha256": "8b67fe01753488d437949369092b4445b87b2f886193e8216352cd6d00c134a1"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/flashbang/materials/flashbang_ao.png",
+      "sha256": "159351800b741ea08afcb88e868b50fe293016f120e4e2abe34d4a5116eda2f8"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/flashbang/materials/flashbang_rough.png",
+      "sha256": "615e5d682586455585ca20cc24c2a76275f8cfd379fa275b2e6d498351890a76"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/flashbang/materials/flashbang_11efa000_metal.png",
+      "sha256": "2335f196bf4b7fd1d89b56cbb2c7a8dfe9d69f62befb3a85f97e8edb8f75879d"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/draw_smoke.dmx",
+      "sha256": "7ff1190a2bd9b62dc72eb8842f1ff057746d9a78e1e33edcdd0e1f512a96ef43",
+      "alias": "deploy",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 3.0,
+          "DurationFrames": 26.0,
+          "At": 0.1,
+          "Duration": 0.866667,
+          "Name": "SmokeGrenade.Draw",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/draw_smoke.vnmclip",
+      "sha256": "9441ad3f2b2afd9df2da35dc9dbcd546a14f491322adf8e146b65306c6cbf6b1"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/idle_smoke.dmx",
+      "sha256": "1a180ba9451ea593c7c4e209c5c4f30eb730a068001b6e45958e288cc7fcaac8",
+      "alias": "idle",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/idle_smoke.vnmclip",
+      "sha256": "2692d167a866a5b008f1386a3f91084e9c74a21ce2796cdf8c24f24dc1c473ba"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/lookat01_smoke.dmx",
+      "sha256": "0ed8ad42b8e864d27f69841d0699eece3e3b6c519e88de274cc773fee8e7946a",
+      "alias": "inspect",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 40.0,
+          "At": 0.0,
+          "Duration": 1.33334,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 42.0,
+          "At": 0.0,
+          "Duration": 1.400007,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 13.0,
+          "DurationFrames": 25.0,
+          "At": 0.433335,
+          "Duration": 0.833337,
+          "Name": "SmokeGrenade.Inspect01.Turns",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 42.0,
+          "DurationFrames": 113.0,
+          "At": 1.400007,
+          "Duration": 3.766684,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 106.0,
+          "DurationFrames": 40.0,
+          "At": 3.53335,
+          "Duration": 1.33334,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 137.0,
+          "DurationFrames": 40.0,
+          "At": 4.566688,
+          "Duration": 1.33334,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 155.0,
+          "DurationFrames": 57.0,
+          "At": 5.166691,
+          "Duration": 1.900009,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 182.0,
+          "DurationFrames": 30.0,
+          "At": 6.066695,
+          "Duration": 1.000005,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 187.0,
+          "DurationFrames": 25.0,
+          "At": 6.233363,
+          "Duration": 0.833337,
+          "Name": "SmokeGrenade.Inspect01.Turns",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/lookat01_smoke.vnmclip",
+      "sha256": "7bfba2212dddfea3a566180244e37d6e2828831e8a3b7824c177f58e8319e216"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/lookat02_smoke.dmx",
+      "sha256": "51cfce98fc61a28107a8f6101a9127f8bde04d8970453b56c137b124a31ac6ab",
+      "alias": "inspect2",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 31.0,
+          "At": 0.0,
+          "Duration": 1.033345,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 23.0,
+          "At": 0.066667,
+          "Duration": 0.766675,
+          "Name": "SmokeGrenade.Inspect02.Handle",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 3.0,
+          "DurationFrames": 27.0,
+          "At": 0.100001,
+          "Duration": 0.90001,
+          "Name": "Inspect.Gear.GrenadeToss",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 19.0,
+          "DurationFrames": 11.0,
+          "At": 0.63334,
+          "Duration": 0.366671,
+          "Name": "SmokeGrenade.Inspect02.Catch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 19.0,
+          "DurationFrames": 15.0,
+          "At": 0.63334,
+          "Duration": 0.500005,
+          "Name": "SmokeGrenade.Inspect02.Jingle",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 30.0,
+          "DurationFrames": 21.0,
+          "At": 1.000011,
+          "Duration": 0.700008,
+          "Name": "SmokeGrenade.Inspect02.Handle",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 31.0,
+          "DurationFrames": 24.0,
+          "At": 1.033345,
+          "Duration": 0.800009,
+          "Name": "Inspect.Gear.GrenadeToss",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 31.0,
+          "DurationFrames": 41.0,
+          "At": 1.033345,
+          "Duration": 1.366682,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 42.0,
+          "DurationFrames": 13.0,
+          "At": 1.400015,
+          "Duration": 0.433338,
+          "Name": "SmokeGrenade.Inspect02.Catch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 43.0,
+          "DurationFrames": 15.0,
+          "At": 1.433349,
+          "Duration": 0.500005,
+          "Name": "SmokeGrenade.Inspect02.Jingle",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 53.0,
+          "DurationFrames": 27.0,
+          "At": 1.766686,
+          "Duration": 0.90001,
+          "Name": "Inspect.Gear.GrenadeToss",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 57.0,
+          "DurationFrames": 23.0,
+          "At": 1.900021,
+          "Duration": 0.766675,
+          "Name": "SmokeGrenade.Inspect02.Handle",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 63.0,
+          "DurationFrames": 11.0,
+          "At": 2.100023,
+          "Duration": 0.366671,
+          "Name": "SmokeGrenade.Inspect02.Catch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 63.0,
+          "DurationFrames": 15.0,
+          "At": 2.100023,
+          "Duration": 0.500005,
+          "Name": "SmokeGrenade.Inspect02.Jingle",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 72.0,
+          "DurationFrames": 20.0,
+          "At": 2.400026,
+          "Duration": 0.666674,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/lookat02_smoke.vnmclip",
+      "sha256": "0a21563d886e75cfef72b323af63abca05233cfff70749d5e33d0680eef84531"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/pullpin_smoke.dmx",
+      "sha256": "578fad2a3a9ab079fd95ed5b80bdde1abc1aa064ab95caf2eff5439aad27d31e",
+      "alias": "pullpin",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 29.0,
+          "At": 0.0,
+          "Duration": 0.9667,
+          "Name": "SmokeGrenade.PullPin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/pullpin_smoke.vnmclip",
+      "sha256": "1e5be824d642e02b6bc630398ada078fd54f658619920027e4b003987aa50919"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throwcharge_high_smoke.dmx",
+      "sha256": "79eae4df938f389dc0a8629c160be257b67218a35ad62d462287c41da27b3db0",
+      "alias": "holdHigh",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throwcharge_high_smoke.vnmclip",
+      "sha256": "6c6ec98b2d21e663fef7276e0859aa5b9d7d1f090a7cb9b0a733b2bf2601cf71"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throwcharge_low_smoke.dmx",
+      "sha256": "a39c363269ec3d373c322aa6ac1c57facb86ffd332d996c2cc7ae7e6c86953a7",
+      "alias": "holdLow",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throwcharge_low_smoke.vnmclip",
+      "sha256": "9bdd07e989a208da03b4cc7024bd9cb8b3e3c82a62f84207e04714b8acf42bfc"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throw_overhand_smoke.dmx",
+      "sha256": "f540b87e310fea054298ad0be585d7be7efa5ba699374691e6215c930292bf21",
+      "alias": "throwHigh",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Grenade.PreThrow.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 0.0,
+          "At": 0.06667,
+          "Duration": 0.0,
+          "Name": "SmokeGrenade.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throw_overhand_smoke.vnmclip",
+      "sha256": "1195b64fdcef8bb5030bdf3d6ce7984d412b9b01afec00a140f71a6c2227b339"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throw_underhand_smoke.dmx",
+      "sha256": "912fb973222224243f06093b0fe7634afa346e56313112253999d6992ec98c4c",
+      "alias": "throwLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 15.0,
+          "At": 0.0,
+          "Duration": 0.5,
+          "Name": "Grenade.ThrowUnder.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "SmokeGrenade.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_smokegrenade/throw_underhand_smoke.vnmclip",
+      "sha256": "081c11e8a4335196ed0350f81f512e63bb90091ccb6ce7dbef203b5e5ed41a1a"
+    },
+    {
+      "path": "glb/weapons/models/grenade/smokegrenade/weapon_smokegrenade.glb",
+      "sha256": "08a6b885b6dec43d94f67bdf58c247d21e915c3aca83a11baa95ec111f5526d3",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "handle",
+        "pin",
+        "ring",
+        "ag1_hand_r"
+      ],
+      "primitives": [
+        [
+          "weapon_smokegrenade",
+          7773,
+          11121
+        ]
+      ]
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/smokegrenade/materials/weapon_smokegrenade.vmat",
+      "sha256": "3a64d4e764c6376eb71c8d37fb946454e5525e87a58df8b91337bd1dc435e766"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/smokegrenade/materials/smoke_grenade_default_color.png",
+      "sha256": "9493d170b772d0f4a5cb5b472eddb1ea633daeb12ab494eb7c9b139d53fde821"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/smokegrenade/materials/smoke_grenade_normal.png",
+      "sha256": "24b2d91fc248309e668537cd4a807ec03d32132c8888ca110d8664e43d9d83e1"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/smokegrenade/materials/smoke_grenade_ao.png",
+      "sha256": "3d34c5bc71cffccac3051e422789a2f994730a29bfff28da3ac35537821e3bed"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/smokegrenade/materials/smoke_grenade_ct_rough.png",
+      "sha256": "d6a50f831d662b6a59c63872d3990dd25aded9491397b8dfc224dde561a1b2e3"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/smokegrenade/materials/smoke_grenade_ct_4c121564_metal.png",
+      "sha256": "7b6f8cad0b0e7d3bc5c5b994969a94414c4af0e656d08249b04bd14b5bcba4e1"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/draw_molotov.dmx",
+      "sha256": "4ef4c9519e1f936ef3eed0c002f3881fded17c7e0e089188406090742d076924",
+      "alias": "deploy",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 30.0,
+          "At": 0.0,
+          "Duration": 1.0,
+          "Name": "Draw.Gear",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 21.0,
+          "At": 0.066667,
+          "Duration": 0.7,
+          "Name": "Molotov.Draw",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/draw_molotov.vnmclip",
+      "sha256": "e06f172867f7e2e474178867b8e0c3709c9ec4705618c95480b2e4299afb0c13"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/idle_molotov.dmx",
+      "sha256": "0529f3072de194da307db8633cde668a4b834b937e94aff5e8558e1df5efbdd6",
+      "alias": "idle",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/idle_molotov.vnmclip",
+      "sha256": "fe9a3a8f6c45515a9df50b44833b7ffadaad6309377a12ab5a94ad2e49ba7e82"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/lookat01_molotov.dmx",
+      "sha256": "3235244441e17d95c39cb4f0989063a85a9b5c5912c4e969df12bdfb5cb2a247",
+      "alias": "inspect",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 34.0,
+          "At": 0.0,
+          "Duration": 1.13334,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 1.0,
+          "DurationFrames": 37.0,
+          "At": 0.033334,
+          "Duration": 1.233341,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 1.0,
+          "DurationFrames": 48.0,
+          "At": 0.033334,
+          "Duration": 1.60001,
+          "Name": "Molotov.Inspect.Liquid",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 34.0,
+          "DurationFrames": 77.0,
+          "At": 1.13334,
+          "Duration": 2.566682,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 111.0,
+          "DurationFrames": 50.0,
+          "At": 3.700023,
+          "Duration": 1.666677,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 135.0,
+          "DurationFrames": 26.0,
+          "At": 4.500028,
+          "Duration": 0.866672,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 135.0,
+          "DurationFrames": 25.0,
+          "At": 4.500028,
+          "Duration": 0.833338,
+          "Name": "Molotov.Inspect.Liquid",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/lookat01_molotov.vnmclip",
+      "sha256": "1725a0236efc9f29325b1126d64f1fcbf3f5cef32ae699a1ae4c86b090bc317d"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/lookat02_molotov.dmx",
+      "sha256": "983b6d1abc4fa0677ab299e12869af17b6cd26c55f989eedd6711fc48ca89d8e",
+      "alias": "inspect2",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 51.0,
+          "At": 0.0,
+          "Duration": 1.700012,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 3.0,
+          "DurationFrames": 48.0,
+          "At": 0.100001,
+          "Duration": 1.600011,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 4.0,
+          "DurationFrames": 47.0,
+          "At": 0.133334,
+          "Duration": 1.566678,
+          "Name": "Molotov.Inspect.Liquid",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 32.0,
+          "DurationFrames": 40.0,
+          "At": 1.066674,
+          "Duration": 1.333343,
+          "Name": "Molotov.Inspect.ThrowCatch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 51.0,
+          "DurationFrames": 42.0,
+          "At": 1.700012,
+          "Duration": 1.40001,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 54.0,
+          "DurationFrames": 36.0,
+          "At": 1.800012,
+          "Duration": 1.200008,
+          "Name": "Molotov.Inspect.ThrowCatch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 75.0,
+          "DurationFrames": 45.0,
+          "At": 2.500017,
+          "Duration": 1.50001,
+          "Name": "Molotov.Inspect.ThrowCatch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 93.0,
+          "DurationFrames": 50.0,
+          "At": 3.100021,
+          "Duration": 1.666678,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 96.0,
+          "DurationFrames": 40.0,
+          "At": 3.200022,
+          "Duration": 1.333343,
+          "Name": "Molotov.Inspect.ThrowCatch",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 121.0,
+          "DurationFrames": 22.0,
+          "At": 4.033361,
+          "Duration": 0.733338,
+          "Name": "Molotov.Inspect.Liquid",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 122.0,
+          "DurationFrames": 21.0,
+          "At": 4.066695,
+          "Duration": 0.700005,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/lookat02_molotov.vnmclip",
+      "sha256": "075e805440eaf54c2f874752db3739d764be0bc7ee06e6475ea58a9e86879a95"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/pullpin_molotov.dmx",
+      "sha256": "16438b02ad1a1dd4800dd400d42cbe424dd749e15384290887e2e9fdc5b9e29b",
+      "alias": "pullpin",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 3.0,
+          "DurationFrames": 0.0,
+          "At": 0.099997,
+          "Duration": 0.0,
+          "Name": "Molotov.IdleLoop",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/pullpin_molotov.vnmclip",
+      "sha256": "44e71bfce311f5353486d2bfefa1a9c45baf9471954c5a01feeffca7bc402bd8"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throwcharge_high_molotov.dmx",
+      "sha256": "064bdbfd953fd9303b4e3df09ae05253373e92e0238104749d312a33cf7fd26a",
+      "alias": "holdHigh",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throwcharge_high_molotov.vnmclip",
+      "sha256": "2ca5ad8d9f4d5a2ab766ae48c5729dfe849103ba2370afbde3d13c72cff1cefb"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throwcharge_low_molotov.dmx",
+      "sha256": "3fe34d33b4cb083ff666b207a39393d95bddb29fb0abf47b8b0aea63e33e8f20",
+      "alias": "holdLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Particle",
+          "StartFrame": 0.0,
+          "DurationFrames": 1.0,
+          "At": 0.0,
+          "Duration": 0.033333,
+          "Name": "",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throwcharge_low_molotov.vnmclip",
+      "sha256": "fc7348a10411375486f143deaabcc2c1ebaaec9054243277cad56f4c25283969"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throw_overhand_molotov.dmx",
+      "sha256": "df00fad30ec195c17596e0b800447488d4b7011c3e9e1883f3b4b2adfb181232",
+      "alias": "throwHigh",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Grenade.PreThrow.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 1.0,
+          "DurationFrames": 0.0,
+          "At": 0.033335,
+          "Duration": 0.0,
+          "Name": "Molotov.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throw_overhand_molotov.vnmclip",
+      "sha256": "f16603c507bb336dee2569675aaa7e114db3aab839a9948db33cd9fad9a93945"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throw_underhand_molotov.dmx",
+      "sha256": "552fc2d80ff19c0ff860ba618e5fd728545ab8e6050f935cf31240822d2368a4",
+      "alias": "throwLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 12.0,
+          "At": 0.0,
+          "Duration": 0.4,
+          "Name": "Grenade.ThrowUnder.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Molotov.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_molotov/throw_underhand_molotov.vnmclip",
+      "sha256": "058e3bbf4c71d81e84d3e6f6663c45ce3918bb7ec42f3c5c59b8c39e0202b8b9"
+    },
+    {
+      "path": "glb/weapons/models/grenade/molotov/weapon_molotov.glb",
+      "sha256": "063c595ca42511be21005eb8a47c98ce69e7c700085da89a95c82a9198e94ba8",
+      "joints": [
+        "weapon",
+        "weapon_hand_r",
+        "molotov",
+        "molotov_rag_jiggle",
+        "liquid_surface",
+        "weapon_hand_l",
+        "lighter",
+        "lighter_flame",
+        "lighter_hinge",
+        "lighter_lever",
+        "ag1_hand_r"
+      ],
+      "primitives": [
+        [
+          "weapon_molotov",
+          6390,
+          6923
+        ],
+        [
+          "weapon_molotov_flame",
+          6390,
+          2
+        ],
+        [
+          "weapon_molotov_liquid",
+          6390,
+          1988
+        ]
+      ]
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/weapon_molotov.vmat",
+      "sha256": "7d9cc8c82cd8422dfb10569b601e51909955263aac90ce7a59fe90811903ee70"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_color.png",
+      "sha256": "cfa9176202b151bbb20b4089b7a5051779dbad817a5d67b709e4330c658b190d"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_normal.png",
+      "sha256": "a329b360bc81003502ef688d8664f5c2114343c7c1f29800ae52d9bb3e25f676"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_ao.png",
+      "sha256": "5e5a703e63778f201951dda0115f3d93219686c3900afde3c4b532886be0b9c1"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_rough.png",
+      "sha256": "7c6e9b892ac7392e8550525eb27f2a642bd8987ca756dcc436a48925158a89fd"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_733f549c_metal.png",
+      "sha256": "cf8170817c90642c45efd5e188b173a8e77141d9775118090c4aaf1d08c068d3"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/weapon_molotov_flame.vmat",
+      "sha256": "3277225cc530221bed61d65760410cc5c69aa4f70cc7b4ad105dc8ad5515bcfb"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_flame.png",
+      "sha256": "30eee4bba42be20fe26febef88965298fd7ba385e980705940655034fcebee3e"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/weapon_molotov_flame_vmat_g_tnormal_53b47c48.png",
+      "sha256": "9670fe3145c560e98e16155d2febd32f54c4c06feea17046491de69f569c7855"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_flame_c860af6a_trans.png",
+      "sha256": "45dc40f190bf1e240731877bf2ac4e1eb4750a31d71f37afe8b659916921346a"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/weapon_molotov_liquid.vmat",
+      "sha256": "b9c8306439d137b3198ff915e6b05f37f489d6969186bd63ce0f0a2ba559aa7c"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_color.png",
+      "sha256": "cfa9176202b151bbb20b4089b7a5051779dbad817a5d67b709e4330c658b190d"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_normal.png",
+      "sha256": "a329b360bc81003502ef688d8664f5c2114343c7c1f29800ae52d9bb3e25f676"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_a916361b_rough.png",
+      "sha256": "213babbbd18a287dfd2b75fcc14394aaa5e51e4c9af4d3b88dd200dcbd4039e2"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/molotov/materials/molotov_2cf3f23f_metal.png",
+      "sha256": "1ebf0126eede8eb43399940fb8480665cf91d02c7fa4fe29c227a66861a4fa85"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/draw_incendiary.dmx",
+      "sha256": "3684d0e7a717617555299ef22dade20c3a6ee9edd6e930383319e585461e3f2a",
+      "alias": "deploy",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 30.0,
+          "At": 0.0,
+          "Duration": 1.0,
+          "Name": "Draw.Gear",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 12.0,
+          "At": 0.066667,
+          "Duration": 0.4,
+          "Name": "IncGrenade.Draw",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 7.0,
+          "DurationFrames": 12.0,
+          "At": 0.233333,
+          "Duration": 0.4,
+          "Name": "IncGrenade.Draw.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/draw_incendiary.vnmclip",
+      "sha256": "b3b5f3bb59064fb281532405efe21aa27408e4b8b58b79b77f573d3b2ccd512b"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/idle_incendiary.dmx",
+      "sha256": "e37f3051f9d2c97a32bb57bd7884a02526f50bf7a1db56aa5a8149b1c6ad7b13",
+      "alias": "idle",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/idle_incendiary.vnmclip",
+      "sha256": "b716c2e7e327a0ae8de4895b5c4dae3d1ebe9c679d5542b8d1773198a66553a4"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/lookat01_incendiary.dmx",
+      "sha256": "f5ea8d52ed6dcb7dd3206ee9e9b1c7782f76913430f2ca6d84fb01700aed75e2",
+      "alias": "inspect",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 36.0,
+          "At": 0.0,
+          "Duration": 1.200008,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 30.0,
+          "At": 0.0,
+          "Duration": 1.000006,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 4.0,
+          "DurationFrames": 13.0,
+          "At": 0.133334,
+          "Duration": 0.433336,
+          "Name": "IncGrenade.Inspect.Move",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 30.0,
+          "DurationFrames": 110.0,
+          "At": 1.000006,
+          "Duration": 3.66669,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 61.0,
+          "DurationFrames": 36.0,
+          "At": 2.033346,
+          "Duration": 1.200008,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 114.0,
+          "DurationFrames": 36.0,
+          "At": 3.800024,
+          "Duration": 1.200008,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 140.0,
+          "DurationFrames": 18.0,
+          "At": 4.666696,
+          "Duration": 0.600004,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 144.0,
+          "DurationFrames": 14.0,
+          "At": 4.80003,
+          "Duration": 0.46667,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 150.0,
+          "DurationFrames": 8.0,
+          "At": 5.000031,
+          "Duration": 0.266668,
+          "Name": "IncGrenade.Inspect.Move",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 152.0,
+          "DurationFrames": 6.0,
+          "At": 5.066699,
+          "Duration": 0.200001,
+          "Name": "IncGrenade.Inspect.RingMove",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/lookat01_incendiary.vnmclip",
+      "sha256": "4f63ca71b8fa683cd2a37fa8bf850d1e2a31459ff82b1ce7d6c0d4bba7519187"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/lookat02_incendiary.dmx",
+      "sha256": "1dcbe76b7c2df012eac4cc2b77466c9d43ad31052191daaafccf66db0830a4ba",
+      "alias": "inspect2",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 41.0,
+          "At": 0.0,
+          "Duration": 1.366654,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 46.0,
+          "At": 0.0,
+          "Duration": 1.533319,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 9.0,
+          "DurationFrames": 19.0,
+          "At": 0.299997,
+          "Duration": 0.633327,
+          "Name": "IncGrenade.Inspect.Move",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 31.0,
+          "DurationFrames": 75.0,
+          "At": 1.033324,
+          "Duration": 2.499976,
+          "Name": "IncGrenade.Inspect.Shake",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 32.0,
+          "DurationFrames": 26.0,
+          "At": 1.066657,
+          "Duration": 0.866658,
+          "Name": "Inspect.Gear.GrenadeToss",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 46.0,
+          "DurationFrames": 40.0,
+          "At": 1.533319,
+          "Duration": 1.333321,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 86.0,
+          "DurationFrames": 20.0,
+          "At": 2.86664,
+          "Duration": 0.66666,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 86.0,
+          "DurationFrames": 20.0,
+          "At": 2.86664,
+          "Duration": 0.66666,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/lookat02_incendiary.vnmclip",
+      "sha256": "21ef7e86ffc851c2ea048434525d9c38c06fff7725911d283d9278178394363c"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/pullpin_incendiary.dmx",
+      "sha256": "8e9127766e96eac2b9fbf637365fff1001495ee41c45702e6dc3b3baccaec411",
+      "alias": "pullpin",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 29.0,
+          "At": 0.0,
+          "Duration": 0.9667,
+          "Name": "IncGrenade.PullPin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/pullpin_incendiary.vnmclip",
+      "sha256": "96d28421672ae6106e7a81b54b592e48ba01353209d3b13a82655f6ef01b1c0e"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throwcharge_high_incendiary.dmx",
+      "sha256": "bd3c54d88d77f8c08ceb2012323190545a6bbe1dfc51e10b92a9e4b0498e692b",
+      "alias": "holdHigh",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throwcharge_high_incendiary.vnmclip",
+      "sha256": "027eb511820dc2bce6082ddf48a944d9fec00e7bf19fbc0482374bc63aef4ee0"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throwcharge_low_incendiary.dmx",
+      "sha256": "93e5596074f80b7e228ec66e25f2331f271a3300ddec764996e635ed005869dd",
+      "alias": "holdLow",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throwcharge_low_incendiary.vnmclip",
+      "sha256": "3fde3eb7af2de3a97cd308fcf377bc7d975f947d7a2a1dfd991413ed55513d36"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throw_overhand_incendiary.dmx",
+      "sha256": "7b021e7c00200406aebef7ca938a47cdb52d572cee5bdf439aecf712ab1a44c3",
+      "alias": "throwHigh",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Grenade.PreThrow.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 1.0,
+          "DurationFrames": 0.0,
+          "At": 0.033335,
+          "Duration": 0.0,
+          "Name": "IncGrenade.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throw_overhand_incendiary.vnmclip",
+      "sha256": "9b66aaa0362dcc67280266be793b35e72023d4ba3ba101b8e3054b3d224aacde"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throw_underhand_incendiary.dmx",
+      "sha256": "4f59125d14846bc4fed0d68032b4216bce0987db99fe9c1cfe13518e4e207d2d",
+      "alias": "throwLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 15.0,
+          "At": 0.0,
+          "Duration": 0.5,
+          "Name": "Grenade.ThrowUnder.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "IncGrenade.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/grenade_incendiary/throw_underhand_incendiary.vnmclip",
+      "sha256": "f83f5e1fa073d24bda02b4da6dfb68a50a76bfa6537c8ad54e01e7907894e297"
+    },
+    {
+      "path": "glb/weapons/models/grenade/incendiary/weapon_incendiarygrenade.glb",
+      "sha256": "a98d4f3e800490e3388a03d72ad5847a9724994fc193f0a3ce4602192abd0351",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "handle",
+        "pin",
+        "ring",
+        "ag1_hand_r"
+      ],
+      "primitives": [
+        [
+          "weapon_incendiarygrenade",
+          7773,
+          11121
+        ]
+      ]
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/incendiary/materials/weapon_incendiarygrenade.vmat",
+      "sha256": "c0d987bb1f9c0fa91dca4e855617c840b0201a2578ca52fe7e7b3e2610a9efe4"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/incendiary/materials/incendiary_grenade_color.png",
+      "sha256": "1325d626b9923757ef5ed76f2428073ddcc7aad0bf1ef9843fa27f0c8fb2c105"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/incendiary/materials/incendiary_grenade_normal.png",
+      "sha256": "be207d495121535aa24e509e22e097bbccaeb30e2abaa0661e028d2346a52f1d"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/incendiary/materials/incendiary_grenade_ao.png",
+      "sha256": "eb5f17fe16380f361770f4ee07c6429cd7c234a2f3cc0b5ac4c18c923ec6ca13"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/incendiary/materials/incendiary_grenade_rough.png",
+      "sha256": "cda429d145d30e5cc34806f5d7020cb88442ea4175870032b6c2d1659bc068c5"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/incendiary/materials/incendiary_grenade_cc1cc38a_metal.png",
+      "sha256": "61398ccce172623168e22be2d1b74c6abaa6cc93c3b4c560bd182002645521ca"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/draw_grenade.dmx",
+      "sha256": "db42164c523e72bae167619407e456d1773715481eb406538f0f9ef921b3dfe3",
+      "alias": "deploy",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 30.0,
+          "At": 0.0,
+          "Duration": 1.0,
+          "Name": "Draw.Gear",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 18.0,
+          "DurationFrames": 12.0,
+          "At": 0.6,
+          "Duration": 0.4,
+          "Name": "Decoy.Draw",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/draw_grenade.vnmclip",
+      "sha256": "c23e002bff205d3ad08a57f71d51a2ec67e046979d58031e71a52479bddba223"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/idle_grenade.dmx",
+      "sha256": "971082dea6c1182b4339bb11273740b09e814da638f0cc854bc1eb9bc11a2eb3",
+      "alias": "idle",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/idle_grenade.vnmclip",
+      "sha256": "e7cdb86b18ab57775e7272beed47dae5d5b89b4526cf517f948df9b4941d19ed"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/lookat01_grenade.dmx",
+      "sha256": "142db684cfc7f2ff86aef3f893bed1949d8a3487e6e4fd2d210fa7ebf29bd987",
+      "alias": "inspect",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 43.0,
+          "At": 0.0,
+          "Duration": 1.433326,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 3.0,
+          "DurationFrames": 32.0,
+          "At": 0.1,
+          "Duration": 1.066662,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 10.0,
+          "DurationFrames": 8.0,
+          "At": 0.333332,
+          "Duration": 0.266665,
+          "Name": "Decoy.Inspect02.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 21.0,
+          "DurationFrames": 15.0,
+          "At": 0.699997,
+          "Duration": 0.499998,
+          "Name": "Decoy.Inspect01.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 33.0,
+          "DurationFrames": 8.0,
+          "At": 1.099995,
+          "Duration": 0.266665,
+          "Name": "Decoy.Inspect02.Squeeze",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 43.0,
+          "DurationFrames": 98.0,
+          "At": 1.433326,
+          "Duration": 3.266651,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 77.0,
+          "DurationFrames": 32.0,
+          "At": 2.566654,
+          "Duration": 1.066662,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 114.0,
+          "DurationFrames": 32.0,
+          "At": 3.799982,
+          "Duration": 1.066662,
+          "Name": "Inspect.Gear.UltraSmall",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 141.0,
+          "DurationFrames": 70.0,
+          "At": 4.699978,
+          "Duration": 2.333322,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 179.0,
+          "DurationFrames": 32.0,
+          "At": 5.966638,
+          "Duration": 1.066662,
+          "Name": "Inspect.Gear.Small",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 192.0,
+          "DurationFrames": 18.0,
+          "At": 6.399969,
+          "Duration": 0.599997,
+          "Name": "Decoy.Inspect02.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 199.0,
+          "DurationFrames": 8.0,
+          "At": 6.633302,
+          "Duration": 0.266665,
+          "Name": "Decoy.Inspect02.Squeeze",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/lookat01_grenade.vnmclip",
+      "sha256": "6c76a3120236a56a8573ff31bb0558a496436f63ec1b16f286fe01dd15e30d27"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/lookat02_grenade.dmx",
+      "sha256": "427c582271f70c9774444dbe2b3f8c11a70490d9d270108f86067630ce739317",
+      "alias": "inspect2",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 0.0,
+          "DurationFrames": 33.0,
+          "At": 0.0,
+          "Duration": 1.099991,
+          "Name": "WPN_INSPECT_INTRO",
+          "SyncID": "WPN_INSPECT_INTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 11.0,
+          "DurationFrames": 28.0,
+          "At": 0.366664,
+          "Duration": 0.933326,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 14.0,
+          "DurationFrames": 16.0,
+          "At": 0.466663,
+          "Duration": 0.533329,
+          "Name": "Decoy.Inspect02.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 21.0,
+          "DurationFrames": 11.0,
+          "At": 0.699994,
+          "Duration": 0.366664,
+          "Name": "Decoy.Inspect02.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 33.0,
+          "DurationFrames": 41.0,
+          "At": 1.099991,
+          "Duration": 1.366655,
+          "Name": "WPN_INSPECT_LOOP",
+          "SyncID": "WPN_INSPECT_LOOP",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 35.0,
+          "DurationFrames": 27.0,
+          "At": 1.166657,
+          "Duration": 0.899993,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 36.0,
+          "DurationFrames": 16.0,
+          "At": 1.19999,
+          "Duration": 0.533329,
+          "Name": "Decoy.Inspect02.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 43.0,
+          "DurationFrames": 12.0,
+          "At": 1.433321,
+          "Duration": 0.399997,
+          "Name": "Decoy.Inspect02.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 55.0,
+          "DurationFrames": 30.0,
+          "At": 1.833318,
+          "Duration": 0.999992,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 58.0,
+          "DurationFrames": 16.0,
+          "At": 1.933317,
+          "Duration": 0.533329,
+          "Name": "Decoy.Inspect02.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 63.0,
+          "DurationFrames": 12.0,
+          "At": 2.099983,
+          "Duration": 0.399997,
+          "Name": "Decoy.Inspect02.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_ID",
+          "StartFrame": 74.0,
+          "DurationFrames": 47.0,
+          "At": 2.466646,
+          "Duration": 1.566654,
+          "Name": "WPN_INSPECT_OUTRO",
+          "SyncID": "WPN_INSPECT_OUTRO",
+          "Relevance": ""
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 76.0,
+          "DurationFrames": 27.0,
+          "At": 2.533312,
+          "Duration": 0.899993,
+          "Name": "Inspect.Gear.GrenadeSpin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 77.0,
+          "DurationFrames": 16.0,
+          "At": 2.566645,
+          "Duration": 0.533329,
+          "Name": "Decoy.Inspect02.Spins",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 83.0,
+          "DurationFrames": 13.0,
+          "At": 2.766644,
+          "Duration": 0.43333,
+          "Name": "Decoy.Inspect02.Ring",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/lookat02_grenade.vnmclip",
+      "sha256": "fc45dc5a58e2d44ae4a1745f2b37e04bbfb6f3ef8b69e95404235008b3670058"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/pullpin_grenade.dmx",
+      "sha256": "71936e0e2d874008fdfa38a46a2ff573f1a058727f766d4802091dada4c03871",
+      "alias": "pullpin",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 5.0,
+          "DurationFrames": 18.0,
+          "At": 0.166672,
+          "Duration": 0.600021,
+          "Name": "Decoy.PullPin",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 6.0,
+          "DurationFrames": 0.0,
+          "At": 0.200007,
+          "Duration": 0.0,
+          "Name": "Grenade.PullPin.Gear",
+          "SyncID": "",
+          "Relevance": "ClientOnly"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/pullpin_grenade.vnmclip",
+      "sha256": "33d765a1097d899b98a491507cfb0ca0015289ffb010b6f921cd4f8736945b2d"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throwcharge_high_grenade.dmx",
+      "sha256": "23b0893e7e34bb070ba92e727cc3e013d91de9197baa5362a45d55a509a497c0",
+      "alias": "holdHigh",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throwcharge_high_grenade.vnmclip",
+      "sha256": "5af59cc9f6f467d0ac7599e68e1bdae5e75f361a43ea773d1430abe417987e15"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throwcharge_low_grenade.dmx",
+      "sha256": "712c0b003f8ea1123fdc12051a6c80804e439c9ce0c1ee47b453a613acdb88c3",
+      "alias": "holdLow",
+      "events": []
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throwcharge_low_grenade.vnmclip",
+      "sha256": "a70a3c42702f3b7b1f3a3ed6390e4f4ff9af1832ab9c18bf06bc34b584eb20ae"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throw_overhand_grenade.dmx",
+      "sha256": "40f448cad8f35f6c5795ced63624c9ebe98366e8f8f9d879c16e0dac422978f4",
+      "alias": "throwHigh",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Grenade.PreThrow.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 2.0,
+          "DurationFrames": 0.0,
+          "At": 0.06667,
+          "Duration": 0.0,
+          "Name": "Decoy.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throw_overhand_grenade.vnmclip",
+      "sha256": "937d189566fda039b48e78f278730eaeec9d0faabeaca9455f07d5b82d3193e6"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throw_underhand_grenade.dmx",
+      "sha256": "ca182ee265d0acf1bf66f03e3a3ccec48f78990f47dc3ee247b942f85cf929a7",
+      "alias": "throwLow",
+      "events": [
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 0.0,
+          "At": 0.0,
+          "Duration": 0.0,
+          "Name": "Decoy.Throw",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        },
+        {
+          "Class": "CNmClipDocEvent_Sound",
+          "StartFrame": 0.0,
+          "DurationFrames": 15.0,
+          "At": 0.0,
+          "Duration": 0.5,
+          "Name": "Grenade.ThrowUnder.Gear",
+          "SyncID": "",
+          "Relevance": "ClientAndServer"
+        }
+      ]
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/grenade/_default_grenade/throw_underhand_grenade.vnmclip",
+      "sha256": "c4c1462cdd0c318bec613d13f5a3f11b97ffb38f3069f9ee9b221d8a892e6f2e"
+    },
+    {
+      "path": "glb/weapons/models/grenade/decoy/weapon_decoy.glb",
+      "sha256": "42217d76e7ef9f2a907b1b54336bf11cbef8601fdb75c94171b0dde03bb64e57",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "handle",
+        "pin",
+        "ring",
+        "ag1_hand_r"
+      ],
+      "primitives": [
+        [
+          "weapon_decoy",
+          8526,
+          11469
+        ]
+      ]
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/decoy/materials/weapon_decoy.vmat",
+      "sha256": "2d2bf24650f4545dfd2112bf23474d0dce135c5127d3bdbb8687e37d3244f4c0"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/decoy/materials/decoy_color.png",
+      "sha256": "7557434d8ab588e34a217657ab00b1b3568e2a50a8944d3351a60f28b07283c7"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/decoy/materials/decoy_normal.png",
+      "sha256": "dfe22208f42c26a4134f2a8898883cdb0d7da92b41620805d8ffb1f16705b021"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/decoy/materials/decoy_ao.png",
+      "sha256": "0f9ef6a35c1e2c3f133a2382e9edd2d0e8421f0537a53ed11a6c9bb5f3cfd4c1"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/decoy/materials/decoy_rough.png",
+      "sha256": "eaf6765a1026009fa879355500d7f4889f3669fe42c8213e0a20e71f62629d72"
+    },
+    {
+      "path": "decompiled/weapons/models/grenade/decoy/materials/decoy_ccd5a76c_metal.png",
+      "sha256": "40dc027c28436f1a85559d263628574b62de5ea23b77b8a3308d7383dbbe81fe"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ using Engine;
 namespace Game;
 
 public static class KnifeAnimationController {
-    enum ActionKind { Idle, Draw, Inspect, Slash, Shoot, Reload, Attach, Detach, Prepare }
+    enum ActionKind { Idle, Draw, Inspect, Slash, Shoot, Reload, Attach, Detach, Prepare, Grenade }
 
     sealed class State {
         public int Variant = -1;
@@ -65,6 +65,7 @@ public static class KnifeAnimationController {
         int contents = Terrain.ExtractContents(itemValue);
         if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return ClampVariant(ScKnifeBlock.GetVariant(itemValue));
         if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue));
+        if (contents == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true)) return ScGrenadeBlock.AssetIndex(itemValue);
         return -1;
     }
 
@@ -107,7 +108,7 @@ public static class KnifeAnimationController {
             Start(state, ActionKind.Draw, deploy);
             PlayDrawSound(variant);
             LogActionStart(state, variant);
-            if (!state.ControlsHintShown && !CsmcKnifeRig.IsGun(variant)) {
+            if (!state.ControlsHintShown && variant < CsmcKnifeRig.KnifeCount) {
                 state.ControlsHintShown = true;
                 model.m_componentPlayer.ComponentGui.DisplaySmallMessage(
                     string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"), GetEditKeyName()),
@@ -197,7 +198,7 @@ public static class KnifeAnimationController {
     public static bool TriggerKnifeAttack(ComponentPlayer player, bool heavy) {
         var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
         int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
-        if (model is null || variant < 0 || CsmcKnifeRig.IsGun(variant) || IsBusy(model)) return false;
+        if (model is null || variant < 0 || variant >= CsmcKnifeRig.KnifeCount || IsBusy(model)) return false;
         string alias = heavy ? "stab" : s_random.Next(2) == 0 ? "slash1" : "slash2";
         if (!HasAlias(variant, alias)) return false;
         State state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
@@ -234,7 +235,7 @@ public static class KnifeAnimationController {
     /// <summary>A reload, silencer or draw clip is playing: the gun cannot fire, scope or inspect until it ends.</summary>
     public static bool IsBusy(ComponentFirstPersonModel model) {
         if (model is null || !s_states.TryGetValue(model, out State state)) return false;
-        if (state.Action is not (ActionKind.Draw or ActionKind.Reload or ActionKind.Attach or ActionKind.Detach)) return false;
+        if (state.Action is not (ActionKind.Draw or ActionKind.Reload or ActionKind.Attach or ActionKind.Detach or ActionKind.Grenade)) return false;
         return KnifeClock.Now - state.StartedAt < ActionDuration(state, state.Variant);
     }
 
@@ -390,6 +391,14 @@ public static class KnifeAnimationController {
         Start(state, ActionKind.Idle, "idle");
     }
 
+    public static void GrenadeAction(ComponentPlayer player, string alias, float elapsed = 0) {
+        var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
+        int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
+        if (model is null || variant < 0 || !CsmcKnifeRig.IsGrenade(variant)) return;
+        var state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
+        Start(state, ActionKind.Grenade, alias); state.StartedAt -= elapsed;
+    }
+
     public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false, int shells = 0) {
         State state = GunState(player, out int variant);
         if (state is null || ReloadClip(variant, magazineEmpty) is not string clip) return;
@@ -474,6 +483,10 @@ public static class KnifeAnimationController {
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";
 
     static void PlayDrawSound(int variant) {
+        if (CsmcKnifeRig.IsGrenade(variant)) {
+            if (variant-CsmcKnifeRig.GrenadeOffset < 2) AudioManager.PlaySound("Audio/ScCsgoKnives/"+CsmcKnifeRig.GetAssetName(variant)+"_draw",1,0,0);
+            return;
+        }
         if (CsmcKnifeRig.IsGun(variant)) return;          // guns: SubsystemScGunBlockBehavior plays their own files when shipped
         string sound = IsBalisong(variant) ? "Audio/ScCsgoKnives/butterfly_draw" : "Audio/ScCsgoKnives/knife_deploy";
         AudioManager.PlaySound(sound, 1f, 0f, 0f);

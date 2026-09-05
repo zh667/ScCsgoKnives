@@ -13,6 +13,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
+        ModsManager.RegisterHook("ChaseBehaviorScoreTarget", this);
         ModsManager.RegisterHook("HandleMoveInventoryItem", this);
         ModsManager.RegisterHook("HandleInventoryDragMove", this);
         ModsManager.RegisterHook("UpdatePlayerInputDrop", this);
@@ -23,9 +24,15 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
     }
 
+    public override void ChaseBehaviorScoreTarget(ComponentChaseBehavior chase, ComponentCreature target, ref float score) =>
+        chase.Project.FindSubsystem<SubsystemScGrenades>()?.ScoreTarget(chase, ref score);
+
     public override void OnPlayerInputHit(ComponentPlayer player, ref bool operated, ref double interval, ref float range, bool skipped, out bool skipVanilla) {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
-        skipVanilla = knife || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        skipVanilla = knife || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (SubsystemScGrenades.Holding(player) && !operated && !skipped) {
+            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
+        }
         if (knife && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, player.ComponentInput.PlayerInput.Aim.HasValue);
             operated = true;
@@ -33,14 +40,20 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
     public override void UpdatePlayerInputDig(ComponentPlayer player, bool digging, ref bool operated, ref double interval, bool skipped, out bool skipVanilla) {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
-        skipVanilla = knife || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        skipVanilla = knife || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (SubsystemScGrenades.Holding(player) && digging && !operated && !skipped) {
+            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
+        }
         if (knife && digging && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, player.ComponentInput.PlayerInput.Aim.HasValue);
             operated = true;
         }
     }
     public override void UpdatePlayerInputAim(ComponentPlayer player, bool aiming, ref bool operated, ref float interval, bool skipped, out bool skipVanilla) {
-        skipVanilla = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
+        skipVanilla = SubsystemScKnifeBlockBehavior.HoldingKnife(player) || SubsystemScGrenades.Holding(player);
+        if (SubsystemScGrenades.Holding(player) && aiming && !operated && !skipped) {
+            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, true); operated = true;
+        }
         if (skipVanilla && aiming && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, true); operated = true;
         }
@@ -90,6 +103,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {
         skip = false;
+        itemValue = componentFirstPersonModel.Project.FindSubsystem<SubsystemScGrenades>()?.ViewmodelValue(componentFirstPersonModel.m_componentPlayer,itemValue) ?? itemValue;
         int variant = KnifeAnimationController.ResolveVariant(itemValue);
         if (variant < 0) {
             KnifeAnimationController.Update(componentFirstPersonModel, itemValue);

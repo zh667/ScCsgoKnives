@@ -56,10 +56,12 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             }
             bool knife = HoldingKnife(player);
             bool gun = Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
-            button.IsVisible = (knife || gun) && CanOperate(player);
-            button.Text = knife ? "重刀" : "换弹";
+            bool grenade = SubsystemScGrenades.Holding(player);
+            button.IsVisible = (knife || gun || grenade) && CanOperate(player);
+            button.Text = knife ? "重刀" : grenade ? "轻投" : "换弹";
             if (button.IsVisible && button.IsClicked) {
                 if (knife) RequestAttack(player, true);
+                else if (grenade) Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, true);
                 else Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
             }
             var state = State(player);

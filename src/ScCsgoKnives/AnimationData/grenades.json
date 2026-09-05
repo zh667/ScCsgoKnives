@@ -1,0 +1,44 @@
+[
+  {
+    "Name": "grenade_hegrenade",
+    "MeshParts": [],
+    "SourceReferenceScale": 1,
+    "Cs2Only": true,
+    "IsGrenade": true
+  },
+  {
+    "Name": "grenade_flashbang",
+    "MeshParts": [],
+    "SourceReferenceScale": 1,
+    "Cs2Only": true,
+    "IsGrenade": true
+  },
+  {
+    "Name": "grenade_smokegrenade",
+    "MeshParts": [],
+    "SourceReferenceScale": 1,
+    "Cs2Only": true,
+    "IsGrenade": true
+  },
+  {
+    "Name": "grenade_molotov",
+    "MeshParts": [],
+    "SourceReferenceScale": 1,
+    "Cs2Only": true,
+    "IsGrenade": true
+  },
+  {
+    "Name": "grenade_incendiary",
+    "MeshParts": [],
+    "SourceReferenceScale": 1,
+    "Cs2Only": true,
+    "IsGrenade": true
+  },
+  {
+    "Name": "grenade_decoy",
+    "MeshParts": [],
+    "SourceReferenceScale": 1,
+    "Cs2Only": true,
+    "IsGrenade": true
+  }
+]

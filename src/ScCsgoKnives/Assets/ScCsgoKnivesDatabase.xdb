@@ -9,5 +9,8 @@
     <MemberSubsystemTemplate Name="ScWeaponWorkbench" Guid="b99759b8-3d36-4457-af27-d3e27d018ef8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="58bb03c1-a350-4d65-84bd-88f47c4dcba8" Value="Game.SubsystemScWeaponWorkbench" Type="string" />
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="ScGrenades" Guid="1386b8c7-c2b2-4948-a73a-bc73060b2c87" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="620e8f31-a3bb-43cc-8e21-5bb21c27826a" Value="Game.SubsystemScGrenades" Type="string" />
+    </MemberSubsystemTemplate>
   </ProjectTemplate>
 </Mod>

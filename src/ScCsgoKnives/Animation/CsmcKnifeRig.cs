@@ -104,6 +104,7 @@ public static class CsmcKnifeRig {
         /// <summary>Key into weapon_table.json (CS:MC's registration row); knives default to knife_&lt;name&gt;.</summary>
         public string Table { get; set; }
         public bool IsGun { get; set; }
+        public bool IsGrenade { get; set; }
         /// <summary>
         /// Drawn entirely from CS2: no CS:MC animation, no OBJ mesh parts. The guns
         /// added in 0.18.0 are all of these. They still need a manifest entry, because
@@ -151,6 +152,8 @@ public static class CsmcKnifeRig {
     }
 
     public static bool IsGun(int variant) => Entry(variant).IsGun;
+    public static bool IsGrenade(int variant) => Entry(variant).IsGrenade;
+    public static int GrenadeOffset => KnifeCount + GunSpec.All.Length;
     /// <summary>Knife variants come first in the combined manifest; guns follow.</summary>
     public static readonly string[] FrozenKnifeOrder = ["karambit", "m9", "butterfly", "bayonet", "bowie", "canis", "cord", "css", "default_ct", "default_t", "falchion", "flip", "gut", "kukri", "navaja", "outdoor", "push", "skeleton", "stiletto", "tactical", "talon", "ursus"];
     public static int KnifeCount => s_knifeCount;
@@ -468,7 +471,8 @@ public static class CsmcKnifeRig {
         ManifestEntry[] guns = Read("AnimationData.guns.json", false);
         foreach (ManifestEntry g in guns) g.IsGun = true;
         s_knifeCount = knives.Length;
-        ManifestEntry[] entries = [.. knives, .. guns];
+        ManifestEntry[] grenades = Read("AnimationData.grenades.json", false);
+        ManifestEntry[] entries = [.. knives, .. guns, .. grenades];
         KnifeLog.Information($"[ScCsgoKnives] rig manifest: {knives.Length} knives + {guns.Length} guns = [{string.Join(",", entries.Select(e => e.Name))}].");
         return entries;
     }

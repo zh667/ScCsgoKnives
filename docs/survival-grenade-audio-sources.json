@@ -1,0 +1,52 @@
+[
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\hegrenade\\he_draw.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_hegrenade_draw.wav",
+    "sha256": "d4dee7723b6b79a66528784d1bc6d251c29b99603662611fb8f82496e8ce3107"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\hegrenade\\pinpull.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_hegrenade_pin.wav",
+    "sha256": "df7823339b8d6ba2bb98bb9ef2c2c3c08ce02013899a5dee0eea238c7505b32a"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\hegrenade\\grenade_throw.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_hegrenade_throw.wav",
+    "sha256": "f69bafba011129edf6cf822c7e1bb26448e8952671e18f31f498bf3563fe519e"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\hegrenade\\he_bounce-1.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_hegrenade_bounce.wav",
+    "sha256": "967974eacd15c529915c35e5756f79503589e39bf013252e17c6126356496bca"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\hegrenade\\hegrenade_detonate_02.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_hegrenade_explode.wav",
+    "sha256": "774840d68641471d8fe21dfd37f49797689e0b96e067393f0c18d027bdb7c8b0"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\flashbang\\flashbang_draw.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_flashbang_draw.wav",
+    "sha256": "66ea68f782601cf6979fb37f465b79f7d91dab9aa809d51f3fb12157d5f7bf60"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\flashbang\\pinpull.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_flashbang_pin.wav",
+    "sha256": "df7823339b8d6ba2bb98bb9ef2c2c3c08ce02013899a5dee0eea238c7505b32a"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\flashbang\\grenade_throw.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_flashbang_throw.wav",
+    "sha256": "f69bafba011129edf6cf822c7e1bb26448e8952671e18f31f498bf3563fe519e"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\flashbang\\grenade_hit1.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_flashbang_bounce.wav",
+    "sha256": "73ef3c2d10885a54d1c11ec5da16225614275413500094d468d42f3a9aa536f0"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\flashbang\\flashbang_explode1.wav",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_flashbang_explode.wav",
+    "sha256": "a94dfe03e67a18884dcf68e402e91ff68487b98dacff35399f5eccceeee9940b"
+  }
+]

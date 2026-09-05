@@ -197,6 +197,12 @@ public sealed class Cs2SkinnedMesh {
         return resolved > 0;
     }
 
+    public float UnresolvedWeight(Cs2Rig.Pose pose) {
+        float total=0;
+        for (int i=0;i<m_bones.Length;i++) if (m_weights[i]>0 && !TryBone(pose,Joints[m_bones[i]],out _)) total+=m_weights[i];
+        return total;
+    }
+
     static bool TryBone(Cs2Rig.Pose pose, string name, out Matrix absolute) {
         if (pose.Bones.TryGetValue(name, out absolute)) return true;
         foreach ((string bone, string parent, string input, float weight) in Twist) {

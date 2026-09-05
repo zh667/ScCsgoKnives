@@ -43,6 +43,7 @@
     <EmbeddedResource Include="AnimationData\cs2_sound_variants.json" />
     <EmbeddedResource Include="AnimationData\knives.json" />
     <EmbeddedResource Include="AnimationData\guns.json" />
+    <EmbeddedResource Include="AnimationData\grenades.json" />
     <EmbeddedResource Include="AnimationData\weapon_table.json" />
     <EmbeddedResource Include="Shaders\*.vsh;Shaders\*.psh" />
   </ItemGroup>
