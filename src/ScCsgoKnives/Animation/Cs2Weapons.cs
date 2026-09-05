@@ -48,6 +48,18 @@ public static class Cs2Weapons {
         public float[] MaxSpeed { get; set; }
         [JsonPropertyName("ZoomFov")]
         public float?[] ZoomFov { get; set; }
+        [JsonPropertyName("ZoomLevels")]
+        public int ZoomLevels { get; set; }
+        /// <summary>
+        /// CS2's m_flZoomTime per level: how long it interpolates to each zoomed FOV.
+        /// The AWP's are all 0.05, three frames at 60 fps, which is why its scope
+        /// reads as instant. 0.17.1 held the lens overlay back for a 0.25 s aim blend
+        /// while the world FOV changed on the key frame.
+        /// </summary>
+        [JsonPropertyName("ZoomSeconds")]
+        public float?[] ZoomSeconds { get; set; }
+        [JsonPropertyName("HideViewModelWhenZoomed")]
+        public bool HideViewModelWhenZoomed { get; set; }
         [JsonPropertyName("RecoveryTimeStand")]
         public float RecoveryTimeStand { get; set; }
         [JsonPropertyName("SpreadDegrees")]

@@ -40,7 +40,8 @@ SCALAR = ["m_nDamage", "m_iMaxClip1", "m_nPrimaryReserveAmmoMax", "m_flCycleTime
           "m_flRange", "m_flRangeModifier", "m_flArmorRatio", "m_flHeadshotMultiplier",
           "m_flPenetration", "m_flRecoveryTimeStand", "m_flRecoveryTimeCrouch",
           "m_flRecoveryTimeStandFinal", "m_nRecoilSeed", "m_nZoomFOV1", "m_nZoomFOV2",
-          "m_nZoomLevels", "m_flDeployDuration", "m_flKillAward"]
+          "m_nZoomLevels", "m_flDeployDuration", "m_flKillAward",
+          "m_flZoomTime0", "m_flZoomTime1", "m_flZoomTime2"]
 PAIRS = ["m_flSpread", "m_flInaccuracyStand", "m_flInaccuracyCrouch", "m_flInaccuracyMove",
          "m_flInaccuracyFire", "m_flInaccuracyJump", "m_flRecoilAngle",
          "m_flRecoilAngleVariance", "m_flRecoilMagnitude", "m_flRecoilMagnitudeVariance",
@@ -64,6 +65,8 @@ def read(stem: str) -> dict:
             out[name] = [float(x) for x in m.group(1).split(",")]
     m = re.search(r"m_bIsFullAuto\s*=\s*(true|false)", text)
     out["m_bIsFullAuto"] = m.group(1) == "true" if m else None
+    m = re.search(r"m_bHideViewModelWhenZoomed\s*=\s*(true|false)", text)
+    out["m_bHideViewModelWhenZoomed"] = m.group(1) == "true" if m else None
     return out
 
 
@@ -94,6 +97,14 @@ def main():
             "RangeModifier": v["m_flRangeModifier"],
             "MaxSpeed": v["m_flMaxSpeed"],
             "ZoomFov": [v.get("m_nZoomFOV1"), v.get("m_nZoomFOV2")],
+            "ZoomLevels": int(v.get("m_nZoomLevels", 0)),
+            # How long CS2 takes to interpolate to each zoomed FOV. The AWP's is 0.05
+            # for all three, three frames at 60 fps, which is why its scope reads as
+            # instant. 0.17.1 gated the lens overlay on a 0.25 s aim blend while the
+            # world FOV changed immediately, so a quarter second of the shot was
+            # magnified with no scope drawn.
+            "ZoomSeconds": [v.get("m_flZoomTime0"), v.get("m_flZoomTime1"), v.get("m_flZoomTime2")],
+            "HideViewModelWhenZoomed": v.get("m_bHideViewModelWhenZoomed"),
             "RecoveryTimeStand": v["m_flRecoveryTimeStand"],
             "RecoilSeed": v.get("m_nRecoilSeed"),
             "RecoilAngleVariance": v["m_flRecoilAngleVariance"],

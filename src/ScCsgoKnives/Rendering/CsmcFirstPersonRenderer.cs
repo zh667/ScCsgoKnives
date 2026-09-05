@@ -586,10 +586,16 @@ public static class CsmcFirstPersonRenderer {
     const float SmokeSeconds = 0.45f;
     static PrimitivesRenderer2D s_primitives2D;
     static PrimitivesRenderer3D s_primitives3D;
-    /// <summary>Seconds the aim blend takes from hip to sights (CS:GO's scope-in is a quarter second).</summary>
+    /// <summary>
+    /// Seconds the hip-to-sights blend takes for the weapon's own pose and FOV.
+    ///
+    /// It no longer gates the scope. A scoped weapon hides and shows its lens at once,
+    /// because the world FOV changes at once; making the overlay wait was what put a
+    /// quarter second of magnified-but-unscoped view between the key and the scope.
+    /// </summary>
     const float AimSeconds = 0.25f;
 
-    /// <summary>Scope on: the weapon eases into its aim pose and FOV, then the scope overlay replaces it.</summary>
+    /// <summary>Scope on: the weapon is hidden and the lens overlay replaces it, on this frame.</summary>
     public static void SetScope(bool on, float magnification) {
         s_scoped = on;
         s_scopeMagnification = magnification;
@@ -828,8 +834,13 @@ public static class CsmcFirstPersonRenderer {
 
         float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
         LogComposition(firstPerson, variant, pose, placement, post);
-        // Through the scope: CS hides the weapon and shows the lens overlay once the aim blend completes.
-        if (s_scoped && AimProgress >= 0.999f) {
+        // Through the scope: CS hides the weapon and shows the lens the moment the key
+        // is pressed. It used to wait for the aim blend, AimSeconds = 0.25 s, while
+        // SetZoom narrowed SettingsManager.ViewAngle on the same frame - so for a
+        // quarter second the world was already magnified and the scope was not there
+        // yet. CS2's own m_flZoomTime for the AWP is 0.05, three frames at 60 fps, and
+        // the overlay is not gated on it at all.
+        if (s_scoped) {
             // The mask itself is drawn by SubsystemScGunBlockBehavior at draw order 350, after the
             // sky (105) and particles (300): drawn here, in the first-person pass, the sky dome
             // painted over it whenever the player looked up (0.15.8 "对着天空变透明").
@@ -916,7 +927,7 @@ public static class CsmcFirstPersonRenderer {
         }
         if (!EnsureCs2Assets(gun)) return false;
 
-        if (s_scoped && AimProgress >= 0.999f) {
+        if (s_scoped) {
             s_overlayFrame = Time.FrameIndex;
             return true;
         }
@@ -1164,7 +1175,7 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static int s_overlayFrame = -1;
     /// <summary>True while the scoped view (gun hidden, mask due) is active for the frame being drawn.</summary>
-    public static bool ScopeOverlayActive => s_scoped && AimProgress >= 0.999f && Time.FrameIndex - s_overlayFrame <= 1;
+    public static bool ScopeOverlayActive => s_scoped && Time.FrameIndex - s_overlayFrame <= 1;
 
     static Texture2D s_cs2ScopeCircle;
 

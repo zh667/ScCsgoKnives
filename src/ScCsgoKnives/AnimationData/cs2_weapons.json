@@ -24,6 +24,13 @@
     90.0,
     90.0
    ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
    "RecoveryTimeStand": 0.368,
    "RecoilSeed": 223.0,
    "RecoilAngleVariance": [
@@ -59,6 +66,9 @@
     "m_nZoomFOV2": 90.0,
     "m_nZoomLevels": 0.0,
     "m_flDeployDuration": 1.0,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
     "m_flSpread": [
      0.0006,
      0.0006
@@ -103,7 +113,8 @@
      215.0,
      215.0
     ],
-    "m_bIsFullAuto": true
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false
    }
   },
   "m4a1s": {
@@ -125,6 +136,13 @@
     90.0,
     90.0
    ],
+   "ZoomLevels": 0,
+   "ZoomSeconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HideViewModelWhenZoomed": false,
    "RecoveryTimeStand": 0.338941,
    "RecoilSeed": 38965.0,
    "RecoilAngleVariance": [
@@ -160,6 +178,9 @@
     "m_nZoomFOV2": 90.0,
     "m_nZoomLevels": 0.0,
     "m_flDeployDuration": 1.133333,
+    "m_flZoomTime0": 0.0,
+    "m_flZoomTime1": 0.0,
+    "m_flZoomTime2": 0.0,
     "m_flSpread": [
      0.0006,
      0.0005
@@ -204,7 +225,8 @@
      225.0,
      225.0
     ],
-    "m_bIsFullAuto": true
+    "m_bIsFullAuto": true,
+    "m_bHideViewModelWhenZoomed": false
    }
   },
   "awp": {
@@ -226,6 +248,13 @@
     40.0,
     10.0
    ],
+   "ZoomLevels": 2,
+   "ZoomSeconds": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "HideViewModelWhenZoomed": true,
    "RecoveryTimeStand": 0.34539,
    "RecoilSeed": 4100.0,
    "RecoilAngleVariance": [
@@ -261,6 +290,9 @@
     "m_nZoomFOV2": 10.0,
     "m_nZoomLevels": 2.0,
     "m_flDeployDuration": 1.266667,
+    "m_flZoomTime0": 0.05,
+    "m_flZoomTime1": 0.05,
+    "m_flZoomTime2": 0.05,
     "m_flSpread": [
      0.0002,
      0.0002
@@ -305,7 +337,8 @@
      200.0,
      100.0
     ],
-    "m_bIsFullAuto": false
+    "m_bIsFullAuto": false,
+    "m_bHideViewModelWhenZoomed": true
    }
   }
  }

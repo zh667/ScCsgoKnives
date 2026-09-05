@@ -265,6 +265,31 @@ public static class Cs2SelfTest {
             }
         }
 
+        // The AWP's scope numbers come from the vdata, and GunSpec's magnifications
+        // must stay equal to CS2's base FOV over each zoomed FOV. They were right but
+        // unrecorded; a hand edit to either side would have gone unnoticed.
+        KnifeTuning.Override("GunNumbers", 1f);
+        Cs2Weapons.Gun awp = Cs2Weapons.Get("awp");
+        if (awp is null) {
+            Check("weapons/awp/zoom", false, "no CS2 weapon data");
+        }
+        else {
+            Check("weapons/awp/zoom.levels", awp.ZoomLevels == 2 && awp.ZoomFov is { Length: >= 2 },
+                  $"{awp.ZoomLevels} levels, fov [{string.Join(',', awp.ZoomFov ?? [])}]");
+            float[] want = [.. (awp.ZoomFov ?? []).Where(f => f is > 0f).Select(f => 90f / f.Value)];
+            float[] have = GunSpec.ForAsset("awp")?.ZoomLevels ?? [];
+            Check("weapons/awp/zoom.magnification",
+                  want.Length == have.Length && want.Zip(have).All(p => MathF.Abs(p.First - p.Second) < 1e-3f),
+                  $"vdata gives [{string.Join(',', want.Select(x => x.ToString("0.##")))}], "
+                  + $"GunSpec has [{string.Join(',', have.Select(x => x.ToString("0.##")))}]");
+            Check("weapons/awp/zoom.seconds",
+                  awp.ZoomSeconds is { Length: >= 1 } && awp.ZoomSeconds[0] is > 0f and < 0.2f,
+                  $"m_flZoomTime [{string.Join(',', awp.ZoomSeconds ?? [])}]; the lens is not gated on it");
+            Check("weapons/awp/zoom.hidevm", awp.HideViewModelWhenZoomed,
+                  $"{awp.HideViewModelWhenZoomed}");
+        }
+        KnifeTuning.Override("GunNumbers", 0f);
+
         Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
         Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,
               Cs2Sounds.TryGet("ak47:reload", out var r2) ? $"{r2.Length} cues" : "missing");
