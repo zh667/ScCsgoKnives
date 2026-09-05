@@ -167,6 +167,12 @@ def main():
             continue
         t = g.get("Tracer") or {}
         passes = t.get("Passes") or []
+        if not g.get("Flash") and not passes:
+            # The Zeus: no muzzle particle in its model and a wire tracer the ribbon
+            # does not draw. GunSpec turns its effects off (MuzzleEffects = false) and
+            # the packaged self-test asserts the table is empty for it; here that is
+            # the expected shape, not a fault.
+            continue
         rope = bool(passes) and all(ps.get("Renderer") == "C_OP_RenderRopes" for ps in passes)
         if len(passes) != (1 if rope else 2):
             tracer_faults.append("%s has %d tracer passes, not %d" % (gun, len(passes), 1 if rope else 2))

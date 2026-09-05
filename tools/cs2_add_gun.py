@@ -178,6 +178,32 @@ def spec_entry(gun: str) -> str:
     if w["HasBurstMode"]:
         lines.append("            HasBurstMode = true, BurstCycleSeconds = %gf, BurstShotSeconds = %gf,"
                      % (w["BurstCycleSeconds"], w["BurstShotSeconds"]))
+    # The specials, each from a file: the alternate cycle from the vdata pair, the
+    # muzzle bones from the rig's skeleton, the flash from the effects table, the
+    # range from the vdata where it is short, the recharge for a gun with no reload.
+    rig = json.loads((DATA / ("%s.cs2.animation.json" % gun)).read_text("utf-8"))
+    bones = {b["Name"] for b in rig["Skeleton"]}
+    aliases = {c.get("Alias") for c in rig["Clips"].values()}
+    special = []
+    # The vdata pair's second value is an alternate fire only where the rig has a
+    # clip for it (shoot_alt1_*: the R8's fanning); the pistols' [0.15, 0.3] carry a
+    # second slot CS2 never fires.
+    if w.get("CycleSecondsAlternate") and "shootAlt" in aliases:
+        lines.append("            // m_flCycleTime [%g, %g]: the second is the fanned shot on the aim key." % (w["CycleSeconds"], w["CycleSecondsAlternate"]))
+        special.append("CycleSecondsAlternate = %gf" % w["CycleSecondsAlternate"])
+    if "muzzle_l" in bones and "muzzle_r" in bones:
+        special.append('MuzzleBone = "muzzle_r", LeftMuzzleBone = "muzzle_l"')
+    effects = json.loads((DATA / "cs2_effects.json").read_text("utf-8"))["Guns"].get(gun) or {}
+    if not effects.get("Flash"):
+        special.append("MuzzleEffects = false")
+    if w["RangeUnits"] < 1000:
+        lines.append("            // m_flRange %g in, i.e. %.2f m; the rifles' 4096 stay on the default." % (w["RangeUnits"], w["RangeUnits"] * 0.0254))
+        special.append("RangeBlocks = %.2ff" % (w["RangeUnits"] * 0.0254))
+    if w["Magazine"] == 1 and "reload" not in aliases:
+        lines.append("            // No reload clip and one round: recharges. 30 s is CS2's Zeus timing, not in the vdata - assumed.")
+        special.append("RechargeSeconds = 30f")
+    if special:
+        lines.append("            " + ", ".join(special) + ",")
     return "        new() {\n" + "\n".join(lines) + "\n        },"
 
 

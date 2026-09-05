@@ -215,6 +215,18 @@
   "ScGunBlock:31": {
    "DisplayName": "Negev",
    "Description": "A 5.56 mm light machine gun, 150-round belt, 150 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:32": {
+   "DisplayName": "R8 Revolver",
+   "Description": "An 8-round revolver; left click cocks and fires, right click fans the hammer, 8 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:33": {
+   "DisplayName": "Dual Berettas",
+   "Description": "Two 9 mm pistols, fired in turn, 30 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:34": {
+   "DisplayName": "Zeus x27",
+   "Description": "A single-shot stun gun, lethal up close, 1 round, semi-automatic. Left click fires."
   }
  },
  "ScCsgoKnives": {

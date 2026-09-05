@@ -38,6 +38,9 @@ public static class Cs2Weapons {
         public int ReserveClips { get; set; }
         [JsonPropertyName("CycleSeconds")]
         public float CycleSeconds { get; set; }
+        /// <summary>The vdata pair's second cycle time where it differs (the R8's fanning); 0 otherwise.</summary>
+        [JsonPropertyName("CycleSecondsAlternate")]
+        public float CycleSecondsAlternate { get; set; }
         [JsonPropertyName("FullAuto")]
         public bool FullAuto { get; set; }
         [JsonPropertyName("RangeUnits")]

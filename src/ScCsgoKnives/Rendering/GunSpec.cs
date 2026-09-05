@@ -49,6 +49,24 @@ public sealed class GunSpec {
     public bool ScopeHidesWeapon = true;
     public string MuzzleBone = "muzzle";
     public string SilencedMuzzleBone = "muzzle2";
+    /// <summary>The Dual Berettas' left gun: its shots flash and trace from muzzle_l.</summary>
+    public string LeftMuzzleBone;
+    /// <summary>
+    /// CS2's second m_flCycleTime, the alternate fire's, where it differs from the
+    /// first: the R8 Revolver fans the hammer on the aim key at 0.4 s against 0.5 s
+    /// for the cocked shot. 0 for a gun with no alternate fire.
+    /// </summary>
+    public float CycleSecondsAlternate;
+    /// <summary>
+    /// Seconds until a gun with no reload has a fresh charge: the Zeus x27. CS2 does
+    /// not write this in the vdata; 30 s is the game's own timing and is marked assumed.
+    /// </summary>
+    public float RechargeSeconds;
+    /// <summary>
+    /// False for the Zeus: its model spawns no muzzle particle and its tracer is a
+    /// wire (weapon_tracers_taser), so neither the flash sprite nor the ribbon is drawn.
+    /// </summary>
+    public bool MuzzleEffects = true;
     public float RangeBlocks = 64f;
     /// <summary>
     /// Per-gun multiplier on KnifeTuning.PbrGunEnvIntensity, fitted offline (tools/pbr_emulate.py,
@@ -237,6 +255,27 @@ public sealed class GunSpec {
             Name = "negev", Magazine = 150, CycleSeconds = 0.075f, Automatic = true, AttackPower = 35f,
             KickPitchDegrees = 1.067f, KickYawDegrees = 0.000f, KickRecoverPerSecond = 3.33f,
             SpreadDegrees = 0.6973f,
+        },
+        new() {
+            Name = "revolver", Magazine = 8, CycleSeconds = 0.5f, Automatic = true, AttackPower = 86f,
+            KickPitchDegrees = 1.067f, KickYawDegrees = 0.365f, KickRecoverPerSecond = 1.11f,
+            SpreadDegrees = 0.1444f,
+            // m_flCycleTime [0.5, 0.4]: the second is the fanned shot on the aim key.
+            CycleSecondsAlternate = 0.4f,
+        },
+        new() {
+            Name = "elite", Magazine = 30, CycleSeconds = 0.12f, Automatic = false, AttackPower = 38f,
+            KickPitchDegrees = 1.440f, KickYawDegrees = 0.250f, KickRecoverPerSecond = 1.90f,
+            SpreadDegrees = 0.5157f,
+            MuzzleBone = "muzzle_r", LeftMuzzleBone = "muzzle_l",
+        },
+        new() {
+            Name = "taser", Magazine = 1, CycleSeconds = 0.15f, Automatic = false, AttackPower = 500f,
+            KickPitchDegrees = 0.000f, KickYawDegrees = 0.000f, KickRecoverPerSecond = 0.00f,
+            SpreadDegrees = 0.0000f,
+            // m_flRange 120 in, i.e. 3.05 m; the rifles' 4096 stay on the default.
+            // No reload clip and one round: recharges. 30 s is CS2's Zeus timing, not in the vdata - assumed.
+            MuzzleEffects = false, RangeBlocks = 3.05f, RechargeSeconds = 30f,
         },
     ];
 

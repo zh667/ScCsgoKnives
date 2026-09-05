@@ -75,6 +75,13 @@ def all_events() -> dict:
     return timings.CaseFold({e["event"]: e for e in json.loads(path.read_text("utf-8"))})
 
 
+# Sounds the game plays outside any clip event: the Zeus's charge is ready
+# (Weapon_Taser.ChargeReady) after its recharge. Installed with --cues.
+EXTRA_CUES = {
+    "taser": {"Weapon_Taser.ChargeReady": "taser_chargeready"},
+}
+
+
 def install_cues(guns: list, dry: bool) -> int:
     """Install the OGGs the guns' CS2 clips cue and the table still marks Asset null."""
     import cs2_sound_timings as timings
@@ -82,6 +89,19 @@ def install_cues(guns: list, dry: bool) -> int:
     mapping = all_events()
     missing = []
     written = set()
+    for gun in guns:
+        for event, name in (EXTRA_CUES.get(gun) or {}).items():
+            entry = mapping.get(event) or {}
+            decoded = entry.get("decoded_files") or []
+            files = [AUDIO.parent / f for f in decoded if f.endswith(".wav")] \
+                or [AUDIO.parent / f for f in decoded if f.endswith(".mp3")]
+            files = [f for f in files if f.exists()]
+            target = OUT / ("%s.ogg" % name)
+            if not files:
+                missing.append((gun, "extra", event))
+            elif not target.exists():
+                rate, ch, seconds, peak = write_mono(sorted(files)[0], target, dry)
+                print("%-13s %-30s %-28s %5d Hz %d ch %6.3f s -> %s" % (gun, event, sorted(files)[0].name, rate, ch, seconds, target.name))
     for key, clip in table["Clips"].items():
         gun = key.split(":", 1)[0]
         if gun not in guns:

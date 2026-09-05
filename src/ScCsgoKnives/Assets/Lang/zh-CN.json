@@ -215,6 +215,18 @@
   "ScGunBlock:31": {
    "DisplayName": "内格夫",
    "Description": "5.56 毫米轻机枪，150 发弹链，150 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:32": {
+   "DisplayName": "R8 左轮",
+   "Description": "8 发左轮手枪，左键扣扳机击发，右键快速扇射，8 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:33": {
+   "DisplayName": "双持贝瑞塔",
+   "Description": "9 毫米双持手枪，左右轮流击发，30 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:34": {
+   "DisplayName": "电击枪",
+   "Description": "单发电击枪，近距离一击致命，1 发，半自动。左键开火。"
   }
  },
  "ScCsgoKnives": {

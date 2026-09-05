@@ -240,5 +240,26 @@
   "SourceReferenceScale": 0.0,
   "Table": "negev",
   "Cs2Only": true
+ },
+ {
+  "Name": "revolver",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "revolver",
+  "Cs2Only": true
+ },
+ {
+  "Name": "elite",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "elite",
+  "Cs2Only": true
+ },
+ {
+  "Name": "taser",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "taser",
+  "Cs2Only": true
  }
 ]

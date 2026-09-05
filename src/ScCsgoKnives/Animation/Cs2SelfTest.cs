@@ -65,6 +65,13 @@ public static class Cs2SelfTest {
             Cs2Effects.Gun fx = Cs2Effects.Get(gun);
             GunSpec fxSpec = GunSpec.ForAsset(gun);
             Check($"effects/{gun}/loaded", fx is not null, fx is null ? "Cs2Effects.Get returned null" : "ok");
+            if (fx is not null && fxSpec is { MuzzleEffects: false }) {
+                // The Zeus: its model spawns no muzzle particle and its tracer is a wire
+                // the ribbon does not draw; the table must say so, and GunSpec must agree.
+                bool none = (fx.Flash is null || fx.Flash.Count == 0) && (fx.Tracer?.Passes is null || fx.Tracer.Passes.Length == 0);
+                Check($"effects/{gun}/none", none, none ? "no flash, no drawable tracer, as the model and the vpcf say" : "the table has effects GunSpec turns off");
+                continue;
+            }
             if (fx is not null) {
                 Check($"effects/{gun}/muzzle0", fx.MuzzlePos0 is { Length: >= 3 },
                       fx.MuzzlePos0 is null ? "null" : $"[{string.Join(',', fx.MuzzlePos0)}]");
@@ -170,8 +177,10 @@ public static class Cs2SelfTest {
             Check($"weapons/{gun}/loaded", wp is not null, wp is null ? "null" : "ok");
             if (wp is not null) {
                 Check($"weapons/{gun}/damage", wp.Damage > 0f, $"{wp.Damage:0.#}");
-                Check($"weapons/{gun}/spread", wp.SpreadDegrees > 0f, $"{wp.SpreadDegrees:0.####} deg");
-                Check($"weapons/{gun}/kick", wp.KickPitchDegrees > 0f, $"{wp.KickPitchDegrees:0.####} deg");
+                GunSpec wpSpec = GunSpec.ForAsset(gun);
+                bool notAFirearm = wpSpec is { MuzzleEffects: false };   // the Zeus: 0 spread, 0 kick in the vdata
+                Check($"weapons/{gun}/spread", notAFirearm ? wp.SpreadDegrees == 0f : wp.SpreadDegrees > 0f, $"{wp.SpreadDegrees:0.####} deg");
+                Check($"weapons/{gun}/kick", notAFirearm ? wp.KickPitchDegrees == 0f : wp.KickPitchDegrees > 0f, $"{wp.KickPitchDegrees:0.####} deg");
                 Check($"weapons/{gun}/falloff", wp.RangeModifier is > 0f and < 1f, $"{wp.RangeModifier:0.###}");
                 Check($"weapons/{gun}/maxspeed", wp.MaxSpeed is { Length: >= 1 }, wp.MaxSpeed is null ? "null" : $"{wp.MaxSpeed[0]:0.#}");
             }
@@ -211,8 +220,9 @@ public static class Cs2SelfTest {
                     if (d > magazineMoves) { magazineMoves = d; mover = bone; }
                 }
                 bool moves = later is not null && magazineMoves > 0.05f;
-                Check($"rig/{gun}/animates", moves,
-                      later is null ? "no reload clip" : $"{mover} moves {magazineMoves:0.##} in mid-reload");
+                bool noReloadInCs2 = reloadSeconds <= 0f && !Cs2Rig.HasAlias(gun, "reload");
+                Check($"rig/{gun}/animates", moves || noReloadInCs2,
+                      noReloadInCs2 ? "no reload in CS2 (the Zeus)" : later is null ? "no reload clip" : $"{mover} moves {magazineMoves:0.##} in mid-reload");
             }
 
             // The tracer must leave the barrel the player sees, not the eye. Both
@@ -414,6 +424,7 @@ public static class Cs2SelfTest {
             string gun = spec.Name;
             bool legacy = Guns.Contains(gun);
             Cs2Weapons.Gun data = Cs2Weapons.Get(gun);
+            Cs2Effects.Gun fx = Cs2Effects.Get(gun);
             Check($"gun/{gun}/rig", Cs2Rig.Has(gun), Cs2Rig.Has(gun) ? "ok" : "no CS2 rig");
             if (!Cs2Rig.Has(gun)) continue;
 
@@ -440,7 +451,8 @@ public static class Cs2SelfTest {
             string shot = KnifeAnimationController.ShootClip(variant, false, _ => 0);
             bool shotOk = shot != "idle" && (!Cs2Placement.Active(variant) || Cs2Rig.HasAlias(gun, shot));
             Check($"gun/{gun}/shootClip", shotOk, shot);
-            if (spec.Magazine > 0)
+            bool reloads = spec.Magazine > 0 && !(spec.Magazine == 1 && spec.RechargeSeconds > 0f);
+            if (reloads)
                 Check($"gun/{gun}/reloadClip", KnifeAnimationController.ReloadClip(variant) is not null,
                       KnifeAnimationController.ReloadClip(variant) ?? "none");
             if (spec.HasSilencer)
@@ -461,7 +473,7 @@ public static class Cs2SelfTest {
                   Cs2Rig.HasAlias(gun, "idleEmpty") ? emptyIdle == "idleEmpty" : emptyIdle == "idle",
                   emptyIdle);
             Check($"gun/{gun}/idleClip.loaded", KnifeAnimationController.IdleClip(variant, false) == "idle", "idle");
-            if (spec.Magazine > 0) {
+            if (reloads) {
                 string emptyReload = KnifeAnimationController.ReloadClip(variant, true);
                 Check($"gun/{gun}/reloadClip.empty",
                       Cs2Rig.HasAlias(gun, "reloadEmpty") ? emptyReload == "reloadEmpty" : emptyReload == "reload",
@@ -523,6 +535,43 @@ public static class Cs2SelfTest {
                 Check($"gun/{gun}/reload.seconds", MathF.Abs(KnifeAnimationController.ReloadSeconds(variant, true, spec.Magazine) - full) < 1e-4f,
                       $"{KnifeAnimationController.ReloadSeconds(variant, true, spec.Magazine):0.###} s for a full magazine");
             }
+            // The three specials. The R8: an alternate cycle only with a fanning clip,
+            // and the hammer clip for the primary. The Dual Berettas: left, right, left
+            // from 30, each gun's last-round clip, the idles by count. The Zeus: no
+            // muzzle particle in its model, no tracer to draw, one round and a recharge.
+            bool fans = Cs2Rig.HasAlias(gun, "shootAlt");
+            Check($"gun/{gun}/altfire", (spec.CycleSecondsAlternate > 0f) == fans
+                      && (!fans || (data is not null && MathF.Abs(spec.CycleSecondsAlternate - data.CycleSecondsAlternate) < 1e-4f)),
+                  fans ? $"shootAlt at {spec.CycleSecondsAlternate:0.###} s (vdata pair {data?.CycleSecondsAlternate:0.###})" : "no alternate fire");
+            if (fans) {
+                Check($"gun/{gun}/altfire.clip", KnifeAnimationController.ShootClip(variant, false, false, false, true, -1, _ => 0) == "shootAlt", "shootAlt");
+                Check($"gun/{gun}/altfire.prepare", Cs2Rig.HasAlias(gun, "prepareShoot") && Cs2Rig.Duration(gun, "prepareShoot") > 0f,
+                      $"prepareShoot {Cs2Rig.Duration(gun, "prepareShoot"):0.###} s");
+            }
+            if (Cs2Rig.HasAlias(gun, "shootLeft")) {
+                string s30 = KnifeAnimationController.ShootClip(variant, false, false, false, false, 30, _ => 0);
+                string s29 = KnifeAnimationController.ShootClip(variant, false, false, false, false, 29, _ => 0);
+                string s2 = KnifeAnimationController.ShootClip(variant, false, false, false, false, 2, _ => 0);
+                string s1 = KnifeAnimationController.ShootClip(variant, false, true, false, false, 1, _ => 0);
+                Check($"gun/{gun}/dual.alternation", s30 == "shootLeft" && s29 == "shoot1" && s2 == "shootLeftLast" && s1 == "shootRightLast",
+                      $"30:{s30} 29:{s29} 2:{s2} 1:{s1}");
+                Check($"gun/{gun}/dual.idles",
+                      KnifeAnimationController.IdleClip(variant, 1, false) == "idleLeftEmpty"
+                          && KnifeAnimationController.IdleClip(variant, 0, false) == "idleBothEmpty"
+                          && KnifeAnimationController.IdleClip(variant, 2, false) == "idle",
+                      $"1:{KnifeAnimationController.IdleClip(variant, 1, false)} 0:{KnifeAnimationController.IdleClip(variant, 0, false)}");
+                Check($"gun/{gun}/dual.muzzles", spec.LeftMuzzleBone is not null
+                          && Cs2Rig.Sample(gun, "idle", 0f) is { } dp && dp.HasBone(spec.MuzzleBone) && dp.HasBone(spec.LeftMuzzleBone),
+                      $"{spec.MuzzleBone} / {spec.LeftMuzzleBone ?? "none"}");
+            }
+            else
+                Check($"gun/{gun}/single.idle", KnifeAnimationController.IdleClip(variant, 2, false) == "idle", "idle");
+            bool noFlash = fx is not null && (fx.Flash is null || fx.Flash.Count == 0);
+            Check($"gun/{gun}/muzzleEffects", spec.MuzzleEffects == !noFlash,
+                  spec.MuzzleEffects ? "drawn" : "none: the model spawns no muzzle particle");
+            if (spec.Magazine == 1 && KnifeAnimationController.ReloadClip(variant, true) is null)
+                Check($"gun/{gun}/recharge", spec.RechargeSeconds > 0f,
+                      $"{spec.RechargeSeconds:0.#} s (assumed), one round, no reload clip");
             string silencedDraw = KnifeAnimationController.DeployClip(variant, true);
             Check($"gun/{gun}/deployClip.silenced",
                   Cs2Rig.HasAlias(gun, "deploySilenced") ? silencedDraw == "deploySilenced" : silencedDraw == "deploy",
@@ -537,7 +586,7 @@ public static class Cs2SelfTest {
             // sound events), so it is reported but not required; a draw or a reload
             // with no cue at all is a hole.
             foreach ((string clip, int atLeast) in new[] { ("deploy", 1), ("reload", 2), ("inspect", 0) }) {
-                if (clip == "reload" && spec.Magazine <= 0) continue;
+                if (clip == "reload" && !reloads) continue;
                 bool has = Cs2Sounds.TryGet($"{gun}:{clip}", out var cues);
                 Check($"gun/{gun}/cues.{clip}", atLeast == 0 || (has && cues.Length >= atLeast),
                       has ? $"{cues.Length} cues [{string.Join(',', cues.Select(c => c.Name).Distinct())}]" : "no CS2 cues (the clip has no sound events)");
@@ -553,7 +602,7 @@ public static class Cs2SelfTest {
                 // has not got; anything else missing is a hole. "shoot" stands for
                 // whichever shot alias the gun uses: the M4A1-S has shootSilenced and
                 // shootUnsilenced where the rest have shoot1.
-                if (alias == "reload" && spec.Magazine <= 0) continue;
+                if (alias == "reload" && (spec.Magazine <= 0 || (spec.Magazine == 1 && spec.RechargeSeconds > 0f))) continue;
                 string[] tried = alias == "shoot"
                     ? ["shoot1", "shootSilenced", "shootUnsilenced"] : [alias];
                 string found = tried.FirstOrDefault(a => Cs2Rig.HasAlias(gun, a));

@@ -3,7 +3,7 @@ using Engine;
 namespace Game;
 
 public static class KnifeAnimationController {
-    enum ActionKind { Idle, Draw, Inspect, Slash, Shoot, Reload, Attach, Detach }
+    enum ActionKind { Idle, Draw, Inspect, Slash, Shoot, Reload, Attach, Detach, Prepare }
 
     sealed class State {
         public int Variant = -1;
@@ -134,8 +134,8 @@ public static class KnifeAnimationController {
             // drops it the moment a round is chambered. The magazine is written by
             // the behaviour, possibly a frame after this idle began, so the choice
             // is re-made here rather than only when the idle starts.
-            if (CsmcKnifeRig.IsGun(variant) && state.ClipAlias is "idle" or "idleEmpty" or "ironsightIdle") {
-                string wanted = IdleClip(variant, MagazineEmpty(variant, itemValue), state.Scoped);
+            if (CsmcKnifeRig.IsGun(variant) && state.ClipAlias is "idle" or "idleEmpty" or "ironsightIdle" or "idleLeftEmpty" or "idleBothEmpty") {
+                string wanted = IdleClip(variant, Rounds(variant, itemValue), state.Scoped);
                 if (wanted != state.ClipAlias) {
                     Start(state, ActionKind.Idle, wanted);
                     elapsed = 0f;
@@ -156,7 +156,7 @@ public static class KnifeAnimationController {
                 state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
                 return state.Pose;
             }
-            string idle = IdleClip(variant, MagazineEmpty(variant, itemValue), state.Scoped);
+            string idle = IdleClip(variant, Rounds(variant, itemValue), state.Scoped);
             if (idle == "idle" && !KnifeQa.Active && HasAlias(variant, "idle2") && s_random.Next(5) == 0) idle = "idle2";
             Start(state, ActionKind.Idle, idle);
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
@@ -272,8 +272,26 @@ public static class KnifeAnimationController {
         ShootClip(variant, silenced, lastRound, false, pick);
 
     /// <summary>With scoped, a shot from the gun's own scope (ironsight_shoot_*) where the rig has one.</summary>
-    public static string ShootClip(int variant, bool silenced, bool lastRound, bool scoped, Func<int, int> pick = null) {
+    public static string ShootClip(int variant, bool silenced, bool lastRound, bool scoped, Func<int, int> pick = null) =>
+        ShootClip(variant, silenced, lastRound, scoped, false, -1, pick);
+
+    /// <summary>
+    /// The full choice. alternate: the aim key's shot (the R8's fanning, shoot_alt1_*).
+    /// roundsBefore: the magazine before this shot, for the Dual Berettas, which fire
+    /// left, right, left ... from a full 30 - so an even count is the left gun's turn -
+    /// and play each gun's last-round clip when its own last round goes (the left's
+    /// with one round remaining, the right's with none).
+    /// </summary>
+    public static string ShootClip(int variant, bool silenced, bool lastRound, bool scoped, bool alternate, int roundsBefore, Func<int, int> pick = null) {
+        if (alternate && HasAlias(variant, "shootAlt")) return "shootAlt";
         if (scoped && HasAlias(variant, "ironsightShoot")) return "ironsightShoot";
+        if (roundsBefore >= 0 && HasAlias(variant, "shootLeft")) {
+            int after = roundsBefore - 1;
+            bool left = roundsBefore % 2 == 0;
+            if (after == 1 && left && HasAlias(variant, "shootLeftLast")) return "shootLeftLast";
+            if (after == 0 && !left && HasAlias(variant, "shootRightLast")) return "shootRightLast";
+            return left ? "shootLeft" : "shoot1";
+        }
         if (lastRound && HasAlias(variant, "shootEmpty")) return "shootEmpty";
         if (HasAlias(variant, "shootSilenced")) return silenced ? "shootSilenced" : "shootUnsilenced";
         string[] shots = [.. new[] { "shoot1", "shoot2", "shoot3" }.Where(alias => HasAlias(variant, alias))];
@@ -297,6 +315,29 @@ public static class KnifeAnimationController {
     public static string IdleClip(int variant, bool magazineEmpty, bool scoped) {
         if (scoped && HasAlias(variant, "ironsightIdle")) return "ironsightIdle";
         return magazineEmpty && HasAlias(variant, "idleEmpty") ? "idleEmpty" : "idle";
+    }
+
+    /// <summary>
+    /// By the round count: the Dual Berettas idle with the left gun's slide back at one
+    /// round (the right still has it) and both back at none; every other gun reads
+    /// "empty" as zero.
+    /// </summary>
+    public static string IdleClip(int variant, int rounds, bool scoped) {
+        if (scoped && HasAlias(variant, "ironsightIdle")) return "ironsightIdle";
+        if (rounds == 0 && HasAlias(variant, "idleBothEmpty")) return "idleBothEmpty";
+        if (rounds == 1 && HasAlias(variant, "idleLeftEmpty")) return "idleLeftEmpty";
+        return IdleClip(variant, rounds <= 0, scoped);
+    }
+
+    static int Rounds(int variant, int itemValue) =>
+        CsmcKnifeRig.IsGun(variant) ? GunSpec.GetRounds(Terrain.ExtractData(itemValue)) : 1;
+
+    /// <summary>The R8's hammer being drawn before its cocked shot (prepare_shoot_*); false when the rig has none.</summary>
+    public static bool TriggerPrepare(ComponentPlayer player) {
+        State state = GunState(player, out int variant);
+        if (state is null || !HasAlias(variant, "prepareShoot")) return false;
+        Start(state, ActionKind.Prepare, "prepareShoot");
+        return true;
     }
 
     /// <summary>The behaviour's zoom state, so the idle and the shot can follow the scope.</summary>
@@ -325,11 +366,12 @@ public static class KnifeAnimationController {
         return HasAlias(variant, clip) ? clip : null;
     }
 
-    public static void TriggerShoot(ComponentPlayer player, bool silenced, bool lastRound = false, bool scoped = false) {
+    public static void TriggerShoot(ComponentPlayer player, bool silenced, bool lastRound = false, bool scoped = false,
+                                    bool alternate = false, int roundsBefore = -1) {
         State state = GunState(player, out int variant);
         if (state is null) return;
         state.Scoped = scoped;
-        Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound, scoped));
+        Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound, scoped, alternate, roundsBefore));
     }
 
     public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false, int shells = 0) {

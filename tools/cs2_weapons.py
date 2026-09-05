@@ -108,10 +108,14 @@ def read(stem: str) -> dict:
         if m:
             out[name] = float(m.group(1))
             continue
-        m = re.search(r"%s\s*=\s*\[\s*([\d.\-]+)" % re.escape(name), text)
+        m = re.search(r"%s\s*=\s*\[\s*([\d.\-]+)\s*,?\s*([\d.\-]+)?" % re.escape(name), text)
         if m:
             out[name] = float(m.group(1))
             out[name + "_isPair"] = True
+            # The second element is the alternate fire's: the R8's [0.5, 0.4] is the
+            # hammer shot then the fanned one. Kept where it differs.
+            if m.group(2) is not None:
+                out[name + "_second"] = float(m.group(2))
     for name in PAIRS:
         m = re.search(r"%s\s*=\s*\[([^\]]*)\]" % re.escape(name), text)
         if m:
@@ -161,6 +165,10 @@ def main():
             "Magazine": int(v["m_iMaxClip1"]),
             "ReserveClips": int(v.get("m_nPrimaryReserveAmmoMax", 0)),
             "CycleSeconds": v["m_flCycleTime"],
+            # The alternate fire's cycle where the vdata gives a pair with a different
+            # second value: the R8 Revolver's fanning (0.4 against 0.5). 0 otherwise.
+            "CycleSecondsAlternate": (v.get("m_flCycleTime_second")
+                                      if v.get("m_flCycleTime_second") not in (None, v["m_flCycleTime"]) else 0.0),
             "FullAuto": v["m_bIsFullAuto"],
             "RangeUnits": v["m_flRange"],
             "RangeModifier": v["m_flRangeModifier"],

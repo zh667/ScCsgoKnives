@@ -1031,11 +1031,14 @@ public static class CsmcFirstPersonRenderer {
     /// placement and inverse view matrix lets the gun subsystem ask for a world point
     /// that projects onto the drawn muzzle, instead of starting the tracer at the eye.
     /// </summary>
-    static Vector3? s_cs2MuzzleBone, s_cs2MuzzleBone2;
+    /// <summary>The muzzle bones a rig may carry: one, a suppressed one, or the Dual Berettas' pair.</summary>
+    static readonly string[] MuzzleBoneNames = ["muzzle", "muzzle2", "muzzle_l", "muzzle_r"];
+    static readonly Dictionary<string, Vector3> s_cs2MuzzleBones = new(StringComparer.Ordinal);
 
     /// <summary>
-    /// The muzzle in rig space: the pose's muzzle bone (muzzle2 when suppressed and the
-    /// rig has one), else the .vdata's m_vecMuzzlePos.
+    /// The muzzle in rig space: the named bone when the pose has it (the Dual Berettas'
+    /// muzzle_l / muzzle_r by hand), else the pose's muzzle bone (muzzle2 when
+    /// suppressed and the rig has one), else the .vdata's m_vecMuzzlePos.
     ///
     /// The bone is where the model attaches CS2's own flash (attachment muzzle_flash
     /// in the AE_CL_CREATE_PARTICLE_EFFECT events) and it moves with the clip. The
@@ -1043,8 +1046,9 @@ public static class CsmcFirstPersonRenderer {
     /// but sits 0.95 in behind it on the AWP and 7.73 in behind it on the SSG08 -
     /// along the barrel, inside it - so it is the fallback, not the source.
     /// </summary>
-    static Vector3? MuzzleRigPoint(string gun, bool silenced, Cs2Rig.Pose pose) {
+    static Vector3? MuzzleRigPoint(string gun, bool silenced, Cs2Rig.Pose pose, string bone = null) {
         if (pose is not null) {
+            if (bone is not null && pose.HasBone(bone)) return pose.GetBoneOrigin(bone);
             if (silenced && pose.HasBone("muzzle2")) return pose.GetBoneOrigin("muzzle2");
             if (pose.HasBone("muzzle")) return pose.GetBoneOrigin("muzzle");
         }
@@ -1058,8 +1062,10 @@ public static class CsmcFirstPersonRenderer {
         s_cs2MuzzleInvView = camera.InvertedViewMatrix;
         s_cs2MuzzleFovRatio = projection.M11 / world;
         s_cs2MuzzleFrame = Time.FrameIndex;
-        s_cs2MuzzleBone = MuzzleRigPoint(gun, false, pose);
-        s_cs2MuzzleBone2 = MuzzleRigPoint(gun, true, pose);
+        s_cs2MuzzleBones.Clear();
+        if (pose is null) return;
+        foreach (string name in MuzzleBoneNames)
+            if (pose.HasBone(name)) s_cs2MuzzleBones[name] = pose.GetBoneOrigin(name);
     }
 
     /// <summary>
@@ -1068,10 +1074,14 @@ public static class CsmcFirstPersonRenderer {
     /// muzzle for it, or when the muzzle is behind the near plane - the caller then
     /// keeps the shot ray's own origin.
     /// </summary>
-    public static bool TryGetMuzzleWorld(string gun, bool silenced, out Vector3 world) {
+    public static bool TryGetMuzzleWorld(string gun, bool silenced, out Vector3 world, string bone = null) {
         world = default;
         if (s_cs2MuzzleFrame < 0 || Time.FrameIndex - s_cs2MuzzleFrame > 4) return false;
-        Vector3? rig = (silenced ? s_cs2MuzzleBone2 : s_cs2MuzzleBone) ?? Cs2Effects.MuzzlePosition(gun, silenced);
+        Vector3? rig = null;
+        if (bone is not null && s_cs2MuzzleBones.TryGetValue(bone, out Vector3 named)) rig = named;
+        else if (silenced && s_cs2MuzzleBones.TryGetValue("muzzle2", out Vector3 m2)) rig = m2;
+        else if (s_cs2MuzzleBones.TryGetValue("muzzle", out Vector3 m)) rig = m;
+        rig ??= Cs2Effects.MuzzlePosition(gun, silenced);
         if (rig is null) return false;
         Vector3 view = Vector3.Transform(rig.Value, s_cs2MuzzleRoot);
         if (!(view.Z < -0.02f)) return false;
@@ -1087,7 +1097,7 @@ public static class CsmcFirstPersonRenderer {
     /// <summary>The cs2 profile's flash, at the muzzle bone the model attaches CS2's own flash to (MuzzleRigPoint).</summary>
     static void DrawCs2MuzzleFlash(Cs2Rig.Pose pose, string gun, Matrix post, Matrix projection) {
         bool silenced = s_flashBone == "muzzle2";
-        Vector3 rig = MuzzleRigPoint(gun, silenced, pose) ?? Vector3.Zero;
+        Vector3 rig = MuzzleRigPoint(gun, silenced, pose, s_flashBone) ?? Vector3.Zero;
         Vector3 p = Vector3.Transform(rig, Cs2Placement.Placement() * post);
         DrawFlashAt(p, projection, silenced);
     }

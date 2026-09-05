@@ -24,6 +24,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public readonly List<double> ShellTimes = [];
         /// <summary>Fire was pressed during a shell-by-shell reload: shoot as soon as the pump is done.</summary>
         public bool FireAfterReload;
+        /// <summary>The R8's hammer is drawn; the cocked shot fires at this time.</summary>
+        public double PrepareUntil = -1;
+        public double PrepareStartedAt;
+        /// <summary>A gun with no reload (the Zeus) has a fresh charge at this time.</summary>
+        public double RechargeAt = -1;
         public bool PendingSilencerOff;
         public bool SilencerPending;
         public int Zoom;                       // 0 = hip, 1.. = scope level
@@ -369,6 +374,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.Scheduled.Clear();
                 state.ShellTimes.Clear();
                 state.FireAfterReload = false;
+                state.PrepareUntil = -1;
                 // The draw clip's own cues where CS2 has them - the FAMAS and M4A4 work
                 // the bolt quietly during theirs - else the single draw file.
                 if (!Schedule(state, spec.Name, deployClip, now)) PlaySound(player, $"{spec.Name}_draw");
@@ -421,6 +427,24 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool wantsFire = spec.Automatic ? input.Dig.HasValue || input.Hit.HasValue : input.Hit.HasValue && !state.FireLatch;
         state.FireLatch = input.Dig.HasValue || input.Hit.HasValue;
         bool reloadKey = Keyboard.IsKeyDownOnce(Key.R);
+        // The Zeus: a fresh charge after its recharge time, announced by CS2's own cue.
+        if (state.RechargeAt >= 0 && now >= state.RechargeAt) {
+            state.RechargeAt = -1;
+            if (rounds < spec.Magazine) {
+                rounds = spec.Magazine;
+                data = GunSpec.SetRounds(data, rounds);
+                value = WriteData(player, value, data);
+                PlaySound(player, $"{spec.Name}_chargeready");
+                ShowAmmo(player, spec, rounds);
+            }
+        }
+        // The R8's cocked shot: the hammer has been drawn for the cycle time, the shot goes.
+        if (state.PrepareUntil >= 0 && now >= state.PrepareUntil) {
+            state.PrepareUntil = -1;
+            if (rounds > 0 && !busy) Fire(player, state, model, spec, value, data, rounds, input, cycleFrom: state.PrepareStartedAt);
+            return;
+        }
+        if (state.PrepareUntil >= 0) return;
         // Fire during a shell-by-shell reload cuts it short after the shell in hand.
         if (busy && wantsFire && rounds > 0 && state.ShellTimes.Count > 0 && !state.FireAfterReload) {
             CutReloadShort(player, state, spec, now);
@@ -455,6 +479,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
 
         if (!busy && wantsFire && rounds > 0 && now >= state.NextShot && state.BurstRemaining == 0) {
+            // The R8 draws its hammer first (prepare_shoot_revolver) and fires when the
+            // cycle time is up. The vdata gives no separate hammer time, so the primary
+            // m_flCycleTime (0.5 s) is taken as it - assumed, the one number here that is.
+            if (spec.CycleSecondsAlternate > 0f && KnifeAnimationController.TriggerPrepare(player)) {
+                state.PrepareStartedAt = now;
+                state.PrepareUntil = now + spec.CycleSeconds;
+                state.NextShot = now + spec.CycleSeconds;
+                return;
+            }
             Fire(player, state, model, spec, value, data, rounds, input);
         }
 
@@ -463,8 +496,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 spec.KickRecoverPerSecond).Recover);
     }
 
-    void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input, bool inBurst = false) {
+    void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input,
+              bool inBurst = false, bool alternateFire = false, double? cycleFrom = null) {
         double now = m_time.GameTime;
+        int roundsBefore = rounds;
         // A burst costs its own cycle time once, not one per round: CS2's Glock-18
         // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55
         // against 0.09. The remaining rounds are scheduled at m_flTimeBetweenBurstShots.
@@ -475,8 +510,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.BurstRemaining = Math.Max(0, spec.BurstShots - 1);
             state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
         }
+        else if (alternateFire) {
+            // The R8's fanned shot: the vdata pair's second cycle time.
+            state.NextShot = now + spec.CycleSecondsAlternate;
+        }
         else if (!inBurst) {
-            state.NextShot = now + spec.CycleSeconds;
+            // The cycle counts from the press: for the R8's cocked shot that is when the
+            // hammer started back, not when it fell.
+            state.NextShot = (cycleFrom ?? now) + spec.CycleSeconds;
         }
         rounds--;
         value = WriteData(player, value, GunSpec.SetRounds(data, rounds));
@@ -493,16 +534,25 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.RescopeAt = now + spec.CycleSeconds;
             LeaveScope(player, state);
         }
-        KnifeAnimationController.TriggerShoot(player, silenced, lastRound, state.Zoom > 0);
-        CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, silenced ? spec.SilencedMuzzleBone : spec.MuzzleBone, spec.Name, silenced);
+        KnifeAnimationController.TriggerShoot(player, silenced, lastRound, state.Zoom > 0, alternateFire,
+            spec.LeftMuzzleBone is not null ? roundsBefore : -1);
+        // The Dual Berettas flash and trace from the gun that fired.
+        string shotClip = KnifeAnimationController.CurrentClip(model);
+        string muzzleBone = silenced ? spec.SilencedMuzzleBone
+            : spec.LeftMuzzleBone is not null && shotClip is "shootLeft" or "shootLeftLast" ? spec.LeftMuzzleBone
+            : spec.MuzzleBone;
+        if (spec.MuzzleEffects)
+            CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, muzzleBone, spec.Name, silenced);
         PlaySound(player, spec.HasSilencer && silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
+        // No reload: the Zeus recharges instead, on CS2's timing (assumed, see GunSpec).
+        if (rounds <= 0 && spec.RechargeSeconds > 0f) state.RechargeAt = now + spec.RechargeSeconds;
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
         ShowAmmo(player, spec, rounds);
 
         // Camera kick, applied now and eased back in RecoverKick. The cs2 profile takes
         // the ratios between guns from m_flRecoilMagnitude and the yaw scatter from
         // m_flRecoilAngleVariance; the absolute scale is still the fitted AK value.
-        bool alternate = silenced || state.Zoom > 0;
+        bool alternate = silenced || state.Zoom > 0 || alternateFire;
         (float kickPitch, float kickYaw, float _) = Cs2Weapons.Kick(spec.Name, alternate,
             spec.KickPitchDegrees, spec.KickYawDegrees, spec.KickRecoverPerSecond);
         float pitch = MathUtils.DegToRad(kickPitch) * (0.8f + 0.4f * m_random.Float(0f, 1f));
@@ -536,11 +586,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // game camera; without one - no cs2 profile, or the gun not drawn this frame -
             // the shot ray's origin is used, which is what every earlier version did.
             Vector3 impact = start + direction * travel;
-            Vector3 tracerStart = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, silenced, out Vector3 muzzle)
+            Vector3 tracerStart = spec.MuzzleEffects && CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, silenced, out Vector3 muzzle, muzzleBone)
                 ? muzzle : start;
             Vector3 tracerDirection = impact - tracerStart;
             float tracerTravel = tracerDirection.Length();
-            if (tracerTravel > 1e-3f) QueueTracer(spec.Name, tracerStart, tracerDirection / tracerTravel, tracerTravel);
+            if (spec.MuzzleEffects && tracerTravel > 1e-3f) QueueTracer(spec.Name, tracerStart, tracerDirection / tracerTravel, tracerTravel);
             if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
                 Vector3 hitPoint = body.Value.HitPoint();
                 // CS damage falls off with distance: damage * RangeModifier^(units/500).
@@ -661,6 +711,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 LanguageControl.Get("ScCsgoKnives", "Message",
                                     gun.BurstMode ? "BurstOn" : "BurstOff"),
                 Color.White, true, false);
+        }
+        else if (spec.CycleSecondsAlternate > 0f && !busy) {
+            // The R8 fans the hammer on the aim key: an immediate shot with the
+            // alternate spread and kick, on the pair's second cycle time.
+            int data = Terrain.ExtractData(value);
+            int rounds = GunSpec.GetRounds(data);
+            if (rounds > 0 && gun.PrepareUntil < 0 && m_time.GameTime >= gun.NextShot)
+                Fire(player, gun, model, spec, value, data, rounds, player.ComponentInput.PlayerInput, alternateFire: true);
         }
         else if (spec.HasSilencer && !busy) {
             bool off = GunSpec.GetSilencerOff(Terrain.ExtractData(value));
