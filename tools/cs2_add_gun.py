@@ -125,7 +125,15 @@ def assets(gun: str, skip: set):
 
 def cues(guns):
     run([sys.executable, TOOLS / "cs2_sound_timings.py"], check=False)
-    run([sys.executable, TOOLS / "install_gun_sounds_cs2.py", "--cues", *guns], check=False)
+    out = run([sys.executable, TOOLS / "install_gun_sounds_cs2.py", "--cues", *guns], check=False)
+    # Say what the installer did: three batches in a row came out short here and
+    # the reason never reached the log.
+    lines = (out.stdout or "").splitlines()
+    print("     cues installed: %d, without a source: %d"
+          % (sum(1 for l in lines if " -> " in l), sum(1 for l in lines if l.startswith("!!"))))
+    for l in lines:
+        if l.startswith("!!"):
+            print("     " + l)
     run([sys.executable, TOOLS / "cs2_sound_timings.py"])
 
 

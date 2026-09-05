@@ -204,6 +204,30 @@ public sealed class GunSpec {
             KickPitchDegrees = 1.493f, KickYawDegrees = 0.747f, KickRecoverPerSecond = 2.21f,
             SpreadDegrees = 0.3673f, ZoomLevels = [2f], ScopeHidesWeapon = false,
         },
+        new() {
+            // m_nNumBullets 9.
+            Name = "nova", Magazine = 8, CycleSeconds = 0.88f, Automatic = false, AttackPower = 26f,
+            KickPitchDegrees = 7.627f, KickYawDegrees = 1.324f, KickRecoverPerSecond = 2.17f,
+            SpreadDegrees = 2.6909f, Pellets = 9,
+        },
+        new() {
+            // m_nNumBullets 6.
+            Name = "xm1014", Magazine = 7, CycleSeconds = 0.35f, Automatic = true, AttackPower = 20f,
+            KickPitchDegrees = 4.267f, KickYawDegrees = 0.741f, KickRecoverPerSecond = 1.97f,
+            SpreadDegrees = 2.5766f, Pellets = 6,
+        },
+        new() {
+            // m_nNumBullets 8.
+            Name = "sawedoff", Magazine = 7, CycleSeconds = 0.85f, Automatic = false, AttackPower = 32f,
+            KickPitchDegrees = 7.627f, KickYawDegrees = 1.324f, KickRecoverPerSecond = 2.17f,
+            SpreadDegrees = 3.9472f, Pellets = 8,
+        },
+        new() {
+            // m_nNumBullets 8.
+            Name = "mag7", Magazine = 5, CycleSeconds = 0.85f, Automatic = false, AttackPower = 30f,
+            KickPitchDegrees = 8.800f, KickYawDegrees = 1.528f, KickRecoverPerSecond = 2.50f,
+            SpreadDegrees = 2.6909f, Pellets = 8,
+        },
     ];
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);

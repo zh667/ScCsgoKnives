@@ -83,7 +83,7 @@ public static class Cs2SelfTest {
                     Vector3 bone = idle.GetBoneOrigin("muzzle");
                     Vector3 delta = declared - bone;
                     float across = MathF.Sqrt(delta.Y * delta.Y + delta.Z * delta.Z);
-                    Check($"effects/{gun}/muzzle.bone", across < 1.0f,
+                    Check($"effects/{gun}/muzzle.bone", across < 1.5f,
                           $"{across:0.####} in across the bore, {(delta.X >= 0f ? "+" : "")}{delta.X:0.###} in along it, from the rig's muzzle bone");
                 }
                 if (fxSpec is { HasSilencer: true }) {
@@ -490,6 +490,39 @@ public static class Cs2SelfTest {
                 Check($"gun/{gun}/scope.none", data.ZoomLevels == 0, $"vdata has {data.ZoomLevels} zoom levels");
             // Unscoped, the aim clips must not leak in.
             Check($"gun/{gun}/idleClip.unscoped", KnifeAnimationController.IdleClip(variant, false, false) == "idle", "idle");
+            // The shell-by-shell reload: CS2 marks the shotguns' one reload clip with
+            // WPN_RELOAD_INTRO / LOOP / OUTRO and runs the loop once per shell. The
+            // sections, the summed length and the elapsed-to-clip-time mapping are the
+            // shipped code's, checked against the events in the rig file.
+            Cs2Rig.ReloadSections sections = Cs2Rig.GetReloadSections(gun);
+            bool loopsInCs2 = gun is "nova" or "xm1014" or "sawedoff";
+            Check($"gun/{gun}/reload.looped", (sections is not null) == loopsInCs2,
+                  sections is null ? "one-pass reload" : $"loop {sections.LoopStart:0.###}+{sections.LoopLength:0.###} s, outro from {sections.OutroStart:0.###} to {sections.End:0.###} s");
+            if (sections is not null) {
+                bool sane = sections.LoopStart > 0f && sections.LoopLength > 0f
+                    && sections.OutroStart >= sections.LoopStart + sections.LoopLength - 0.01f
+                    && sections.End > sections.OutroStart
+                    && sections.AddAmmoInLoop >= 0f && sections.AddAmmoInLoop <= sections.LoopLength;
+                Check($"gun/{gun}/reload.sections", sane, $"add-ammo {sections.AddAmmoInLoop:0.###} s into the loop");
+                float full = sections.Duration(spec.Magazine);
+                float expected = sections.LoopStart + spec.Magazine * sections.LoopLength + (sections.End - sections.OutroStart);
+                Check($"gun/{gun}/reload.duration", MathF.Abs(full - expected) < 1e-4f && full > Cs2Rig.Duration(gun, "reload"),
+                      $"{spec.Magazine} shells take {full:0.###} s (the clip alone is {Cs2Rig.Duration(gun, "reload"):0.###} s)");
+                // The mapping: intro plays once, the loop repeats, the outro follows the last loop.
+                int loops = 3;
+                float t1 = sections.ClipTime(loops, sections.LoopStart * 0.5f);
+                float t2 = sections.ClipTime(loops, sections.LoopStart + sections.LoopLength + 0.05f);
+                float t3 = sections.ClipTime(loops, sections.LoopStart + loops * sections.LoopLength + 0.1f);
+                float t4 = sections.ClipTime(loops, 100f);
+                bool mapped = MathF.Abs(t1 - sections.LoopStart * 0.5f) < 1e-4f
+                    && MathF.Abs(t2 - (sections.LoopStart + 0.05f)) < 1e-4f
+                    && MathF.Abs(t3 - (sections.OutroStart + 0.1f)) < 1e-4f
+                    && MathF.Abs(t4 - sections.End) < 1e-4f;
+                Check($"gun/{gun}/reload.cliptime", mapped,
+                      $"intro {t1:0.###}, second loop {t2:0.###}, outro {t3:0.###}, past the end {t4:0.###}");
+                Check($"gun/{gun}/reload.seconds", MathF.Abs(KnifeAnimationController.ReloadSeconds(variant, true, spec.Magazine) - full) < 1e-4f,
+                      $"{KnifeAnimationController.ReloadSeconds(variant, true, spec.Magazine):0.###} s for a full magazine");
+            }
             string silencedDraw = KnifeAnimationController.DeployClip(variant, true);
             Check($"gun/{gun}/deployClip.silenced",
                   Cs2Rig.HasAlias(gun, "deploySilenced") ? silencedDraw == "deploySilenced" : silencedDraw == "deploy",

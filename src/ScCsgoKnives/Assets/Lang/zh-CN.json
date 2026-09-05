@@ -191,6 +191,22 @@
   "ScGunBlock:25": {
    "DisplayName": "SG 553",
    "Description": "5.56 毫米突击步枪，带瞄准镜，30 发弹匣，全自动。右键开镜，R 换弹。"
+  },
+  "ScGunBlock:26": {
+   "DisplayName": "新星",
+   "Description": "泵动霰弹枪，8 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:27": {
+   "DisplayName": "XM1014",
+   "Description": "半自动霰弹枪，7 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:28": {
+   "DisplayName": "短管霰弹枪",
+   "Description": "短管泵动霰弹枪，近距离威力大，7 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:29": {
+   "DisplayName": "MAG-7",
+   "Description": "弹匣供弹霰弹枪，5 发弹匣，半自动。左键开火，R 换弹。"
   }
  },
  "ScCsgoKnives": {

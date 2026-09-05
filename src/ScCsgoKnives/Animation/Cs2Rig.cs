@@ -44,6 +44,63 @@ public static class Cs2Rig {
         public int FrameCount { get; set; }
         public float Duration { get; set; }
         public Dictionary<string, BoneCurves> Bones { get; set; }
+        /// <summary>CS2's own clip events (CNmClipDocEvent_*), as the generator read them.</summary>
+        public List<ClipEvent> Events { get; set; }
+    }
+
+    public sealed class ClipEvent {
+        public string Class { get; set; }
+        public string Name { get; set; }
+        public float At { get; set; }
+        public float Duration { get; set; }
+    }
+
+    /// <summary>
+    /// A shotgun's reload as CS2 plays it: one clip whose WPN_RELOAD_INTRO, _LOOP
+    /// and _OUTRO events mark three sections, the loop run once per shell. The Nova
+    /// loads a shell in 0.433 s of a 1.633 s clip; a full reload from empty is the
+    /// intro, eight loops and the outro. Null for a gun whose reload is one pass.
+    /// </summary>
+    public sealed class ReloadSections {
+        public float LoopStart;      // WPN_RELOAD_LOOP.At: the intro ends here
+        public float LoopLength;     // WPN_RELOAD_LOOP.Duration: one shell
+        public float OutroStart;     // WPN_RELOAD_OUTRO.At
+        public float End;            // the clip's length
+        public float AddAmmoInLoop;  // WPN_RELOAD_ADD_AMMO.At - LoopStart: when the shell counts
+
+        public float Duration(int loops) => LoopStart + Math.Max(0, loops) * LoopLength + (End - OutroStart);
+
+        /// <summary>The clip time for a reload of `loops` shells at `elapsed` seconds in.</summary>
+        public float ClipTime(int loops, float elapsed) {
+            if (elapsed < LoopStart) return Math.Max(0f, elapsed);
+            float inLoops = elapsed - LoopStart;
+            if (LoopLength > 0f && inLoops < loops * LoopLength) return LoopStart + inLoops % LoopLength;
+            float outro = OutroStart + (inLoops - Math.Max(0, loops) * LoopLength);
+            return Math.Min(outro, End);
+        }
+    }
+
+    static readonly Dictionary<string, ReloadSections> s_reloadSections = new(StringComparer.Ordinal);
+
+    public static ReloadSections GetReloadSections(string gun) {
+        if (gun is null) return null;
+        if (s_reloadSections.TryGetValue(gun, out ReloadSections hit)) return hit;
+        ReloadSections sections = null;
+        Clip clip = Resolve(Get(gun), "reload");
+        if (clip?.Events is not null) {
+            ClipEvent loop = clip.Events.FirstOrDefault(e => e.Class == "CNmClipDocEvent_ID" && e.Name == "WPN_RELOAD_LOOP");
+            ClipEvent outro = clip.Events.FirstOrDefault(e => e.Class == "CNmClipDocEvent_ID" && e.Name == "WPN_RELOAD_OUTRO");
+            ClipEvent add = clip.Events.FirstOrDefault(e => e.Class == "CNmClipDocEvent_ID" && e.Name == "WPN_RELOAD_ADD_AMMO");
+            if (loop is not null && loop.Duration > 0f) {
+                sections = new ReloadSections {
+                    LoopStart = loop.At, LoopLength = loop.Duration,
+                    OutroStart = outro?.At ?? loop.At + loop.Duration, End = clip.Duration,
+                    AddAmmoInLoop = add is not null ? Math.Clamp(add.At - loop.At, 0f, loop.Duration) : loop.Duration * 0.5f,
+                };
+            }
+        }
+        s_reloadSections[gun] = sections;
+        return sections;
     }
 
     sealed class SkeletonBone {

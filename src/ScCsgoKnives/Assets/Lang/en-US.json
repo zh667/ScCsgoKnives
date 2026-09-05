@@ -191,6 +191,22 @@
   "ScGunBlock:25": {
    "DisplayName": "SG 553",
    "Description": "A 5.56 mm assault rifle with a scope, 30 rounds, automatic. Right click scopes. R reloads."
+  },
+  "ScGunBlock:26": {
+   "DisplayName": "Nova",
+   "Description": "A pump-action shotgun, 8 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:27": {
+   "DisplayName": "XM1014",
+   "Description": "A semi-automatic shotgun, 7 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:28": {
+   "DisplayName": "Sawed-Off",
+   "Description": "A sawed-off pump shotgun, devastating up close, 7 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:29": {
+   "DisplayName": "MAG-7",
+   "Description": "A magazine-fed shotgun, 5 rounds, semi-automatic. Left click fires. R reloads."
   }
  },
  "ScCsgoKnives": {

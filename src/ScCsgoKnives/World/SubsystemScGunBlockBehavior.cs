@@ -20,6 +20,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public double NextShot;
         public double BusyUntil = -1;          // reload or silencer clip in progress
         public int PendingRounds = -1;         // magazine to write when the reload clip ends
+        /// <summary>A shotgun reload: when each shell counts (WPN_RELOAD_ADD_AMMO of each loop).</summary>
+        public readonly List<double> ShellTimes = [];
+        /// <summary>Fire was pressed during a shell-by-shell reload: shoot as soon as the pump is done.</summary>
+        public bool FireAfterReload;
         public bool PendingSilencerOff;
         public bool SilencerPending;
         public int Zoom;                       // 0 = hip, 1.. = scope level
@@ -363,6 +367,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.PendingRounds = -1;
                 state.SilencerPending = false;
                 state.Scheduled.Clear();
+                state.ShellTimes.Clear();
+                state.FireAfterReload = false;
                 // The draw clip's own cues where CS2 has them - the FAMAS and M4A4 work
                 // the bolt quietly during theirs - else the single draw file.
                 if (!Schedule(state, spec.Name, deployClip, now)) PlaySound(player, $"{spec.Name}_draw");
@@ -392,6 +398,16 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             }
         }
         PlayScheduled(player, state, now);
+        // A shotgun's shells count one at a time, at each loop's add-ammo moment.
+        while (state.ShellTimes.Count > 0 && now >= state.ShellTimes[0]) {
+            state.ShellTimes.RemoveAt(0);
+            if (rounds < spec.Magazine) {
+                rounds++;
+                data = GunSpec.SetRounds(data, rounds);
+                value = WriteData(player, value, data);
+                ShowAmmo(player, spec, rounds);
+            }
+        }
         bool busy = state.BusyUntil >= 0 || KnifeAnimationController.IsBusy(model);
         if (state.RescopeAt >= 0 && now >= state.RescopeAt) {
             state.RescopeAt = -1;
@@ -405,6 +421,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool wantsFire = spec.Automatic ? input.Dig.HasValue || input.Hit.HasValue : input.Hit.HasValue && !state.FireLatch;
         state.FireLatch = input.Dig.HasValue || input.Hit.HasValue;
         bool reloadKey = Keyboard.IsKeyDownOnce(Key.R);
+        // Fire during a shell-by-shell reload cuts it short after the shell in hand.
+        if (busy && wantsFire && rounds > 0 && state.ShellTimes.Count > 0 && !state.FireAfterReload) {
+            CutReloadShort(player, state, spec, now);
+            return;
+        }
+        if (!busy && state.FireAfterReload) {
+            state.FireAfterReload = false;
+            if (rounds > 0 && now >= state.NextShot) wantsFire = true;
+        }
         if (!busy && rounds < spec.Magazine && (reloadKey || (wantsFire && rounds == 0))) {
             StartReload(player, state, model, spec, value);
             return;
@@ -539,16 +564,71 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
         // From an empty magazine the pistols run their reload_empty clip, which also
         // releases the slide; the clip, its length and its cues all follow that choice.
-        bool empty = GunSpec.GetRounds(Terrain.ExtractData(value)) <= 0;
+        int rounds = GunSpec.GetRounds(Terrain.ExtractData(value));
+        bool empty = rounds <= 0;
         string clip = KnifeAnimationController.ReloadClip(variant, empty) ?? "reload";
-        float duration = CsmcKnifeRig.GetProfileDuration(variant, clip);
+        int shells = spec.Magazine - rounds;
+        float duration = KnifeAnimationController.ReloadSeconds(variant, empty, shells);
         if (duration <= 0f) return;
         LeaveScope(player, state);
-        KnifeAnimationController.TriggerReload(player, empty);
+        KnifeAnimationController.TriggerReload(player, empty, shells);
         state.Scheduled.Clear();
-        Schedule(state, spec.Name, clip, m_time.GameTime, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
-        state.BusyUntil = m_time.GameTime + duration;
+        state.ShellTimes.Clear();
+        state.FireAfterReload = false;
+        double now = m_time.GameTime;
+        Cs2Rig.ReloadSections sections = clip == "reload" && Cs2Placement.Active(variant)
+            ? Cs2Rig.GetReloadSections(spec.Name) : null;
+        if (sections is not null && shells > 0) {
+            // Shell by shell, as CS2 plays it: the magazine grows at each loop's
+            // WPN_RELOAD_ADD_AMMO, and the cues of the loop section repeat per shell.
+            for (int k = 0; k < shells; k++)
+                state.ShellTimes.Add(now + sections.LoopStart + k * sections.LoopLength + sections.AddAmmoInLoop);
+            ScheduleLooped(state, spec.Name, clip, now, sections, shells);
+            state.BusyUntil = now + duration;
+            state.PendingRounds = -1;
+            return;
+        }
+        Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
+        state.BusyUntil = now + duration;
         state.PendingRounds = spec.Magazine;
+    }
+
+    /// <summary>
+    /// The cues of a looped reload: those before the loop section once, those inside
+    /// it once per shell, those after it once at the end.
+    /// </summary>
+    void ScheduleLooped(GunState state, string spec, string clip, double startedAt, Cs2Rig.ReloadSections sections, int loops) {
+        string key = $"{spec}:{clip}";
+        if (!Cs2Sounds.TryGet(key, out var list)) return;
+        foreach ((float at, string name) in list) {
+            if (at < sections.LoopStart) state.Scheduled.Add((startedAt + at, name));
+            else if (at < sections.OutroStart)
+                for (int k = 0; k < loops; k++)
+                    state.Scheduled.Add((startedAt + sections.LoopStart + k * sections.LoopLength + (at - sections.LoopStart), name));
+            else state.Scheduled.Add((startedAt + sections.LoopStart + loops * sections.LoopLength + (at - sections.OutroStart), name));
+        }
+    }
+
+    /// <summary>
+    /// Fire during a shell-by-shell reload: the shell in hand goes in, the loop stops,
+    /// the pump plays, and the shot follows it. Cues past the cut are dropped and the
+    /// outro's re-timed to the new end.
+    /// </summary>
+    void CutReloadShort(ComponentPlayer player, GunState state, GunSpec spec, double now) {
+        (int loaded, float remaining) = KnifeAnimationController.FinishReloadEarly(player);
+        if (loaded < 0) return;
+        double end = now + remaining;
+        state.ShellTimes.RemoveAll(t => t > end);
+        state.Scheduled.RemoveAll(c => c.At > end);
+        Cs2Rig.ReloadSections sections = Cs2Rig.GetReloadSections(spec.Name);
+        if (sections is not null && Cs2Sounds.TryGet($"{spec.Name}:reload", out var list)) {
+            double outroStart = end - (sections.End - sections.OutroStart);
+            foreach ((float at, string name) in list)
+                if (at >= sections.OutroStart && outroStart + (at - sections.OutroStart) > now)
+                    state.Scheduled.Add((outroStart + (at - sections.OutroStart), name));
+        }
+        state.BusyUntil = end;
+        state.FireAfterReload = true;
     }
 
     public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state) {

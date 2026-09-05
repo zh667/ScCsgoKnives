@@ -17,8 +17,23 @@ public static class KnifeAnimationController {
         public bool PendingInspect;
         /// <summary>Aiming down the gun's own scope (AUG, SG 553): idle and shots use the ironsight clips.</summary>
         public bool Scoped;
+        /// <summary>A shotgun reload: how many shells the loop section runs for (-1: a one-pass reload).</summary>
+        public int ReloadLoops = -1;
+        public Cs2Rig.ReloadSections Sections;
         public KnifeRigPose Pose;
     }
+
+    /// <summary>The length of the action that is running: the looped reload's own sum, else the clip's.</summary>
+    static float ActionDuration(State state, int variant) =>
+        state.Action == ActionKind.Reload && state.Sections is not null && state.ReloadLoops >= 0
+            ? state.Sections.Duration(state.ReloadLoops)
+            : CsmcKnifeRig.GetProfileDuration(variant, state.ClipAlias);
+
+    /// <summary>The clip time to draw at `elapsed` seconds into the action.</summary>
+    static float ClipTime(State state, float elapsed) =>
+        state.Action == ActionKind.Reload && state.Sections is not null && state.ReloadLoops >= 0
+            ? state.Sections.ClipTime(state.ReloadLoops, elapsed)
+            : Math.Max(0f, elapsed);
 
     static readonly Dictionary<ComponentFirstPersonModel, State> s_states = [];
     static readonly System.Random s_random = new();
@@ -130,7 +145,7 @@ public static class KnifeAnimationController {
             return state.Pose;
         }
 
-        float duration = CsmcKnifeRig.GetProfileDuration(variant, state.ClipAlias);
+        float duration = ActionDuration(state, variant);
         if (elapsed >= duration) {
             // An inspect asked for during the draw runs now rather than being lost.
             if (state.PendingInspect && !KnifeQa.Active) {
@@ -146,7 +161,7 @@ public static class KnifeAnimationController {
             Start(state, ActionKind.Idle, idle);
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
         }
-        else state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, Math.Max(0f, elapsed));
+        else state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, ClipTime(state, elapsed));
         return state.Pose;
     }
 
@@ -211,7 +226,32 @@ public static class KnifeAnimationController {
     public static bool IsBusy(ComponentFirstPersonModel model) {
         if (model is null || !s_states.TryGetValue(model, out State state)) return false;
         if (state.Action is not (ActionKind.Draw or ActionKind.Reload or ActionKind.Attach or ActionKind.Detach)) return false;
-        return KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetProfileDuration(state.Variant, state.ClipAlias);
+        return KnifeClock.Now - state.StartedAt < ActionDuration(state, state.Variant);
+    }
+
+    /// <summary>How long a reload of this many shells runs: the looped sum where the rig loops, else the clip.</summary>
+    public static float ReloadSeconds(int variant, bool magazineEmpty, int shells) {
+        string clip = ReloadClip(variant, magazineEmpty);
+        if (clip is null) return 0f;
+        Cs2Rig.ReloadSections sections = clip == "reload" && Cs2Placement.Active(variant)
+            ? Cs2Rig.GetReloadSections(CsmcKnifeRig.GetAssetName(variant)) : null;
+        return sections is not null && shells > 0 ? sections.Duration(shells) : CsmcKnifeRig.GetProfileDuration(variant, clip);
+    }
+
+    /// <summary>
+    /// Fire pressed during a shell-by-shell reload: the loop stops after the shell in
+    /// hand and the outro (the pump) plays. Returns how many shells were loaded and
+    /// the seconds left until the gun is free, or (-1, 0) when nothing was looping.
+    /// </summary>
+    public static (int Loaded, float Remaining) FinishReloadEarly(ComponentPlayer player) {
+        State state = GunState(player, out int variant);
+        if (state is null || state.Action != ActionKind.Reload || state.Sections is null || state.ReloadLoops < 0) return (-1, 0f);
+        float elapsed = (float)(KnifeClock.Now - state.StartedAt);
+        int loaded = elapsed <= state.Sections.LoopStart ? 0
+            : Math.Min(state.ReloadLoops, (int)MathF.Ceiling((elapsed - state.Sections.LoopStart) / state.Sections.LoopLength));
+        if (loaded >= state.ReloadLoops) return (state.ReloadLoops, Math.Max(0f, state.Sections.Duration(state.ReloadLoops) - elapsed));
+        state.ReloadLoops = loaded;          // the shell in hand finishes, then the outro
+        return (loaded, Math.Max(0f, state.Sections.Duration(loaded) - elapsed));
     }
 
     /// <summary>Plays one of the gun's shot clips (the M4A1-S picks by silencer state); interrupts idle and inspect.</summary>
@@ -292,10 +332,19 @@ public static class KnifeAnimationController {
         Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound, scoped));
     }
 
-    public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false) {
+    public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false, int shells = 0) {
         State state = GunState(player, out int variant);
         if (state is null || ReloadClip(variant, magazineEmpty) is not string clip) return;
         Start(state, ActionKind.Reload, clip);
+        // A shotgun reload loops its shell section once per shell wanted.
+        Cs2Rig.ReloadSections sections = clip == "reload" && Cs2Placement.Active(variant)
+            ? Cs2Rig.GetReloadSections(CsmcKnifeRig.GetAssetName(variant)) : null;
+        if (sections is not null && shells > 0) {
+            state.Sections = sections;
+            state.ReloadLoops = shells;
+            KnifeLog.Information($"[ScCsgoKnives] CS2 reload: asset={CsmcKnifeRig.GetAssetName(variant)} shells={shells} "
+                + $"intro {sections.LoopStart:0.###}s + {shells} x {sections.LoopLength:0.###}s + outro {sections.End - sections.OutroStart:0.###}s = {sections.Duration(shells):0.###}s");
+        }
         LogActionStart(state, variant);
     }
 
@@ -347,6 +396,8 @@ public static class KnifeAnimationController {
         state.ClipAlias = clipAlias;
         state.StartedAt = KnifeClock.Now;
         state.Pose = null;
+        state.ReloadLoops = -1;
+        state.Sections = null;
         // What the alias actually became. Reading the 0.17.0 log, the only way to
         // tell a second draw from a silent fallback to idle was to cross the CS:MC
         // action lines against the rig's clip list by hand.

@@ -5460,6 +5460,632 @@
      ]
     }
    ]
+  },
+  "nova:deploy": {
+   "SourceClip": "draw_nova",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.0,
+     "Frame": 0.0,
+     "Duration": 0.733333,
+     "Event": "Weapon_nova.Draw",
+     "Asset": "nova_draw",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "nova_draw.mp3"
+     ]
+    },
+    {
+     "At": 0.466667,
+     "Frame": 14.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.Pump_Q",
+     "Asset": "nova_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "nova_pump.mp3"
+     ]
+    }
+   ]
+  },
+  "nova:shoot1": {
+   "SourceClip": "shoot1_nova",
+   "FrameRate": 30.000002,
+   "Cues": [
+    {
+     "At": 0.233333,
+     "Frame": 7.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.Pump_Q",
+     "Asset": "nova_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "nova_pump.mp3"
+     ]
+    }
+   ]
+  },
+  "nova:reload": {
+   "SourceClip": "reload_nova",
+   "FrameRate": 30.000614,
+   "Cues": [
+    {
+     "At": 0.366659,
+     "Frame": 11.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.Insertshell",
+     "Asset": "nova_insertshell",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "nova_insertshell_01.mp3",
+      "nova_insertshell_02.mp3",
+      "nova_insertshell_03.mp3"
+     ]
+    },
+    {
+     "At": 0.63332,
+     "Frame": 19.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.AddAmmo",
+     "Asset": "nova_addammo",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "nova_addammo_01.mp3",
+      "nova_addammo_02.mp3",
+      "nova_addammo_03.mp3"
+     ]
+    },
+    {
+     "At": 1.166643,
+     "Frame": 35.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.Pump",
+     "Asset": "nova_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "nova_pump.mp3"
+     ]
+    }
+   ]
+  },
+  "nova:inspect": {
+   "SourceClip": "lookat01_nova",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.066667,
+     "Frame": 2.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement1.wav"
+     ]
+    },
+    {
+     "At": 1.466667,
+     "Frame": 44.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.WeaponMove2",
+     "Asset": "movement2",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement2.wav"
+     ]
+    },
+    {
+     "At": 3.9,
+     "Frame": 117.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Nova.WeaponMove3",
+     "Asset": "movement3",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement3.wav"
+     ]
+    }
+   ]
+  },
+  "xm1014:deploy": {
+   "SourceClip": "draw_xm1014",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.0,
+     "Frame": 0.0,
+     "Duration": 0.533333,
+     "Event": "Weapon_XM1014.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement1.wav",
+      "movement2.wav",
+      "movement3.wav"
+     ]
+    },
+    {
+     "At": 0.233333,
+     "Frame": 7.0,
+     "Duration": 0.4,
+     "Event": "Weapon_XM1014.Draw",
+     "Asset": "xm1014_draw",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "xm1014_draw.mp3"
+     ]
+    },
+    {
+     "At": 0.6,
+     "Frame": 18.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.Grab",
+     "Asset": "xm1014_grab",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "xm1014_catch_03.mp3"
+     ]
+    }
+   ]
+  },
+  "xm1014:reload": {
+   "SourceClip": "reload_xm1014",
+   "FrameRate": 30.000578,
+   "Cues": [
+    {
+     "At": 0.033333,
+     "Frame": 1.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "movement1.wav",
+      "movement2.wav",
+      "movement3.wav"
+     ]
+    },
+    {
+     "At": 0.733319,
+     "Frame": 22.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.InsertShell",
+     "Asset": "xm1014_insertshell",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "xm1014_insertshell_01.mp3",
+      "xm1014_insertshell_02.mp3",
+      "xm1014_insertshell_03.mp3"
+     ]
+    },
+    {
+     "At": 1.033313,
+     "Frame": 31.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.AddAmmo",
+     "Asset": "xm1014_addammo",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "xm1014_addammo_01.mp3",
+      "xm1014_addammo_02.mp3",
+      "xm1014_addammo_03.mp3"
+     ]
+    },
+    {
+     "At": 1.333308,
+     "Frame": 40.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "movement1.wav",
+      "movement2.wav",
+      "movement3.wav"
+     ]
+    }
+   ]
+  },
+  "xm1014:inspect": {
+   "SourceClip": "lookat01_xm1014",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.066667,
+     "Frame": 2.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.WeaponMove3",
+     "Asset": "movement3",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement3.wav"
+     ]
+    },
+    {
+     "At": 2.2,
+     "Frame": 66.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement1.wav",
+      "movement2.wav",
+      "movement3.wav"
+     ]
+    },
+    {
+     "At": 3.466667,
+     "Frame": 104.0,
+     "Duration": 0.0,
+     "Event": "Weapon_XM1014.WeaponMove2",
+     "Asset": "movement2",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement2.wav"
+     ]
+    }
+   ]
+  },
+  "sawedoff:deploy": {
+   "SourceClip": "draw_sawedoff",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.0,
+     "Frame": 0.0,
+     "Duration": 0.466667,
+     "Event": "Weapon_Sawedoff.Draw",
+     "Asset": "sawedoff_draw",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "sawedoff_draw.wav"
+     ]
+    },
+    {
+     "At": 0.466667,
+     "Frame": 14.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.Pump_Q",
+     "Asset": "sawedoff_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "sawedoff_pump.wav"
+     ]
+    }
+   ]
+  },
+  "sawedoff:shoot1": {
+   "SourceClip": "shoot1_sawedoff",
+   "FrameRate": 30.000002,
+   "Cues": [
+    {
+     "At": 0.166667,
+     "Frame": 5.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.Pump_Q",
+     "Asset": "sawedoff_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "sawedoff_pump.wav"
+     ]
+    }
+   ]
+  },
+  "sawedoff:reload": {
+   "SourceClip": "reload_sawedoff",
+   "FrameRate": 30.000578,
+   "Cues": [
+    {
+     "At": 0.433325,
+     "Frame": 13.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.InsertShell",
+     "Asset": "sawedoff_insertshell",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "sawedoff_insertshell_01.wav",
+      "sawedoff_insertshell_02.wav"
+     ]
+    },
+    {
+     "At": 0.666654,
+     "Frame": 20.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.AddAmmo",
+     "Asset": "sawedoff_addammo",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "sawedoff_addammo_01.mp3",
+      "sawedoff_addammo_02.mp3",
+      "sawedoff_addammo_03.mp3",
+      "sawedoff_addammo_04.mp3"
+     ]
+    },
+    {
+     "At": 1.299975,
+     "Frame": 39.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.Pump_Q",
+     "Asset": "sawedoff_pump",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "sawedoff_pump.wav"
+     ]
+    }
+   ]
+  },
+  "sawedoff:inspect": {
+   "SourceClip": "lookat01_sawedoff",
+   "FrameRate": 29.999828,
+   "Cues": [
+    {
+     "At": 0.066667,
+     "Frame": 2.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement1.wav"
+     ]
+    },
+    {
+     "At": 3.166685,
+     "Frame": 95.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.WeaponMove2",
+     "Asset": "movement2",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement2.wav"
+     ]
+    },
+    {
+     "At": 4.833361,
+     "Frame": 145.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Sawedoff.WeaponMove3",
+     "Asset": "movement3",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement3.wav"
+     ]
+    }
+   ]
+  },
+  "mag7:deploy": {
+   "SourceClip": "draw_mag7",
+   "FrameRate": 30.0,
+   "Cues": [
+    {
+     "At": 0.0,
+     "Frame": 0.0,
+     "Duration": 0.433333,
+     "Event": "Weapon_MAG7.Draw",
+     "Asset": "mag7_draw",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "mag7_draw.mp3"
+     ]
+    },
+    {
+     "At": 0.033333,
+     "Frame": 1.0,
+     "Duration": 0.566667,
+     "Event": "Weapon_Mag7.WeaponMove",
+     "Asset": "movement2",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement2.wav"
+     ]
+    },
+    {
+     "At": 0.5,
+     "Frame": 15.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.PumpBack_Q",
+     "Asset": "mag7_pumpback",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "mag7_pump_back.mp3"
+     ]
+    },
+    {
+     "At": 0.6,
+     "Frame": 18.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.PumpForward_Q",
+     "Asset": "mag7_pumpforward",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "mag7_pump_forward.wav"
+     ]
+    }
+   ]
+  },
+  "mag7:shoot1": {
+   "SourceClip": "shoot1_mag7",
+   "FrameRate": 30.000002,
+   "Cues": [
+    {
+     "At": 0.133333,
+     "Frame": 4.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.PumpBack",
+     "Asset": "mag7_pumpback",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "mag7_pump_back.mp3"
+     ]
+    },
+    {
+     "At": 0.4,
+     "Frame": 12.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.PumpForward",
+     "Asset": "mag7_pumpforward",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "mag7_pump_forward.wav"
+     ]
+    }
+   ]
+  },
+  "mag7:reload": {
+   "SourceClip": "reload_mag7",
+   "FrameRate": 29.999596,
+   "Cues": [
+    {
+     "At": 0.300004,
+     "Frame": 9.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.Clipout",
+     "Asset": "mag7_clipout",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "mag7_clipout.wav"
+     ]
+    },
+    {
+     "At": 0.700009,
+     "Frame": 21.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Mag7.WeaponMove",
+     "Asset": "movement2",
+     "Match": "wav name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "movement2.wav"
+     ]
+    },
+    {
+     "At": 0.96668,
+     "Frame": 29.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.Clipin",
+     "Asset": "mag7_clipin",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "mag7_clipin.mp3"
+     ]
+    },
+    {
+     "At": 1.066681,
+     "Frame": 32.0,
+     "Duration": 0.0,
+     "Event": "Weapon_Mag7.AddAmmo",
+     "Asset": "mag7_addammo",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "mag7_addammo_01.mp3"
+     ]
+    },
+    {
+     "At": 1.666689,
+     "Frame": 50.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.PumpBack",
+     "Asset": "mag7_pumpback",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "mag7_pump_back.mp3"
+     ]
+    },
+    {
+     "At": 1.900026,
+     "Frame": 57.0,
+     "Duration": 0.0,
+     "Event": "Weapon_MAG7.PumpForward",
+     "Asset": "mag7_pumpforward",
+     "Match": "mod gun and cue name",
+     "Relevance": "ClientAndServer",
+     "Wav": [
+      "mag7_pump_forward.wav"
+     ]
+    }
+   ]
+  },
+  "mag7:inspect": {
+   "SourceClip": "lookat01_mag7",
+   "FrameRate": 30.000238,
+   "Cues": [
+    {
+     "At": 0.066666,
+     "Frame": 2.0,
+     "Duration": 0.0,
+     "Event": "Weapon_sg556.WeaponMove1",
+     "Asset": "movement1",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement1.wav"
+     ]
+    },
+    {
+     "At": 1.73332,
+     "Frame": 52.0,
+     "Duration": 0.0,
+     "Event": "Weapon_sg556.WeaponMove2",
+     "Asset": "movement2",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement2.wav"
+     ]
+    },
+    {
+     "At": 2.633312,
+     "Frame": 79.0,
+     "Duration": 0.0,
+     "Event": "Weapon_sg556.WeaponMove3",
+     "Asset": "movement3",
+     "Match": "wav name",
+     "Relevance": "ClientOnly",
+     "Wav": [
+      "movement3.wav"
+     ]
+    }
+   ]
   }
  }
 }

@@ -198,5 +198,33 @@
   "SourceReferenceScale": 0.0,
   "Table": "sg556",
   "Cs2Only": true
+ },
+ {
+  "Name": "nova",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "nova",
+  "Cs2Only": true
+ },
+ {
+  "Name": "xm1014",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "xm1014",
+  "Cs2Only": true
+ },
+ {
+  "Name": "sawedoff",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "sawedoff",
+  "Cs2Only": true
+ },
+ {
+  "Name": "mag7",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "mag7",
+  "Cs2Only": true
  }
 ]
