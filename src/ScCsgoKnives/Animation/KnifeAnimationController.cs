@@ -13,11 +13,35 @@ public static class KnifeAnimationController {
         public float LastPokePhase;
         public bool ControlsHintShown;
         public bool DrawWhenVisible;
+        /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
+        public bool PendingInspect;
         public KnifeRigPose Pose;
     }
 
     static readonly Dictionary<ComponentFirstPersonModel, State> s_states = [];
     static readonly System.Random s_random = new();
+
+    /// <summary>
+    /// Whether the profile that will actually draw this variant has the clip.
+    ///
+    /// Asking CsmcKnifeRig alone is what broke 0.17.0: with KnifeProfile=1 the
+    /// controller kept picking deploy2 and inspect2/3 from the CS:MC table while the
+    /// CS2 rig had no such clip, so the renderer drew idle and the knife appeared to
+    /// jump straight to the finished pose. 67 of one session's 182 actions went that
+    /// way. The clips exist in CS2 and now ship, but the query has to follow the
+    /// profile regardless, or the next asymmetry does the same thing silently.
+    /// </summary>
+    static bool HasAlias(int variant, string alias) =>
+        Cs2Placement.Active(variant)
+            ? Cs2Rig.HasAlias(CsmcKnifeRig.GetAssetName(variant), alias)
+            : CsmcKnifeRig.HasClip(variant, alias);
+
+    /// <summary>One of the inspect clips the active profile can play.</summary>
+    static string PickInspect(int variant) {
+        string[] available = [.. new[] { "inspect", "inspect2", "inspect3" }
+            .Where(alias => HasAlias(variant, alias))];
+        return available.Length > 0 ? available[s_random.Next(available.Length)] : "inspect";
+    }
 
     /// <summary>Rig manifest index of a held item: a knife variant, a gun variant after the knives, or -1.</summary>
     public static int ResolveVariant(int itemValue) {
@@ -60,7 +84,8 @@ public static class KnifeAnimationController {
             // of it being the butterfly.
             Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
             state.Variant = variant;
-            string deploy = !KnifeQa.Active && CsmcKnifeRig.HasClip(variant, "deploy2") && s_random.Next(2) == 0 ? "deploy2" : "deploy";
+            state.PendingInspect = false;
+            string deploy = !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0 ? "deploy2" : "deploy";
             Start(state, ActionKind.Draw, deploy);
             PlayDrawSound(variant);
             LogActionStart(state, variant);
@@ -78,7 +103,7 @@ public static class KnifeAnimationController {
         float pokePhase = model.m_pokeAnimationTime;
         // Guns have no swing: their attack is the shot (TriggerShoot), never the poke.
         if (pokePhase > 0f && state.LastPokePhase <= 0f && state.Action != ActionKind.Draw && !KnifeQa.Active && !CsmcKnifeRig.IsGun(variant)) {
-            string slash = CsmcKnifeRig.HasClip(variant, "slash2") && s_random.Next(2) == 1 ? "slash2" : "slash1";
+            string slash = HasAlias(variant, "slash2") && s_random.Next(2) == 1 ? "slash2" : "slash1";
             Start(state, ActionKind.Slash, slash);
             AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", 0.85f, (float)s_random.NextDouble() * 0.16f - 0.08f, 0f);
             LogActionStart(state, variant);
@@ -93,7 +118,16 @@ public static class KnifeAnimationController {
 
         float duration = CsmcKnifeRig.GetProfileDuration(variant, state.ClipAlias);
         if (elapsed >= duration) {
-            Start(state, ActionKind.Idle, !KnifeQa.Active && CsmcKnifeRig.HasClip(variant, "idle2") && s_random.Next(5) == 0 ? "idle2" : "idle");
+            // An inspect asked for during the draw runs now rather than being lost.
+            if (state.PendingInspect && !KnifeQa.Active) {
+                state.PendingInspect = false;
+                Start(state, ActionKind.Inspect, PickInspect(variant));
+                LogActionStart(state, variant);
+                if (IsBalisong(variant)) AudioManager.PlaySound("Audio/ScCsgoKnives/butterfly_inspect", 1f, 0f, 0f);
+                state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
+                return state.Pose;
+            }
+            Start(state, ActionKind.Idle, !KnifeQa.Active && HasAlias(variant, "idle2") && s_random.Next(5) == 0 ? "idle2" : "idle");
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
         }
         else state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, Math.Max(0f, elapsed));
@@ -109,21 +143,30 @@ public static class KnifeAnimationController {
         int value = player.ComponentMiner.ActiveBlockValue;
         int variant = ResolveVariant(value);
         if (variant < 0) return false;
-        if (IsBusy(model)) return true;
 
         if (!s_states.TryGetValue(model, out State state)) {
             state = new State { Variant = variant };
             s_states.Add(model, state);
         }
         state.Variant = variant;
+
+        // Pressed during a draw or a reload: remember it and run it when that ends,
+        // instead of swallowing the key. 0.17.0 returned true here and did nothing,
+        // so inspecting right after a switch looked dead.
+        if (IsBusy(model)) {
+            state.PendingInspect = !KnifeQa.Active && !KnifeQa.Armed;
+            return true;
+        }
+        // Already inspecting: keep the clip running. Restarting it reset StartedAt,
+        // and a device log showed repeats 0.17 s apart holding the animation at frame 0.
+        if (state.Action == ActionKind.Inspect
+            && KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetProfileDuration(variant, state.ClipAlias))
+            return true;
         // With the capture armed, the inspect key runs the capture instead (KnifeQa).
         if (KnifeQa.Active) return true;
         if (KnifeQa.Armed) return KnifeQa.Begin(model, variant);
-        // Some rigs ship two or three lookat clips; pick from whatever exists.
-        string[] available = [.. new[] { "inspect", "inspect2", "inspect3" }
-            .Where(alias => CsmcKnifeRig.HasClip(variant, alias))];
-        string clip = available.Length > 0 ? available[s_random.Next(available.Length)] : "inspect";
-        Start(state, ActionKind.Inspect, clip);
+        // Some rigs ship two or three lookat clips; pick from whatever the profile has.
+        Start(state, ActionKind.Inspect, PickInspect(variant));
         LogActionStart(state, variant);
         if (IsBalisong(variant)) AudioManager.PlaySound("Audio/ScCsgoKnives/butterfly_inspect", 1f, 0f, 0f);
         return true;
@@ -220,6 +263,15 @@ public static class KnifeAnimationController {
         state.ClipAlias = clipAlias;
         state.StartedAt = KnifeClock.Now;
         state.Pose = null;
+        // What the alias actually became. Reading the 0.17.0 log, the only way to
+        // tell a second draw from a silent fallback to idle was to cross the CS:MC
+        // action lines against the rig's clip list by hand.
+        if (state.Variant >= 0 && Cs2Placement.Active(state.Variant)) {
+            string asset = CsmcKnifeRig.GetAssetName(state.Variant);
+            KnifeLog.Information(
+                $"[ScCsgoKnives] CS2 action: asset={asset} requested={clipAlias} "
+                + $"resolved={Cs2Rig.ResolvedClip(asset, clipAlias) ?? "(none, drawing idle)"}");
+        }
     }
 
     static int ClampVariant(int variant) => Math.Clamp(variant, 0, CsmcKnifeRig.KnifeCount - 1);

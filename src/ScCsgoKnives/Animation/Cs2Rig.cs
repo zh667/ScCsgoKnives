@@ -154,9 +154,42 @@ public static class Cs2Rig {
         return clip?.Duration ?? 0f;
     }
 
-    /// <summary>What Sample will draw for this alias: the clip, else idle.</summary>
-    static Clip ResolveOrIdle(Asset asset, string clipAlias) =>
-        Resolve(asset, clipAlias) ?? Resolve(asset, "idle");
+    /// <summary>
+    /// True when this asset has a clip for the alias, without the idle fallback.
+    /// The controller picks from these, so it can no longer choose an alias the
+    /// CS2 file cannot answer - which is what made the butterfly's second draw and
+    /// most second inspects come out as the finished idle pose in 0.17.0.
+    /// </summary>
+    public static bool HasAlias(string gun, string clipAlias) =>
+        Resolve(Get(gun), clipAlias) is not null;
+
+    /// <summary>
+    /// The CS2 clip an alias resolves to, or null. Two aliases that resolve to the
+    /// same clip are indistinguishable on screen - which is the whole bug: 0.17.0's
+    /// deploy2 resolved to idle, so a second draw looked like no draw at all. Their
+    /// durations are no test, deploy and deploy2 both run 1.0000 s on six knives.
+    /// </summary>
+    public static string ResolvedClip(string gun, string clipAlias) =>
+        Resolve(Get(gun), clipAlias)?.SourceName;
+
+    /// <summary>
+    /// What Sample will draw for this alias: the clip, else idle.
+    ///
+    /// The fallback stays, because drawing idle beats drawing nothing, but it is no
+    /// longer silent. Falling back on anything except idle2 means something asked for
+    /// a clip this rig has not got, and in 0.17.0 that happened 67 times in one
+    /// five-minute session without a word in the log. idle2 is exempt: CS2 and CS:MC
+    /// agree that bowie, falchion and push have a single idle.
+    /// </summary>
+    static Clip ResolveOrIdle(Asset asset, string clipAlias) {
+        Clip clip = Resolve(asset, clipAlias);
+        if (clip is not null || asset is null) return clip;
+        if (clipAlias is not ("idle" or "idle2"))
+            KnifeDiagnostics.WarnOnce($"cs2-alias-{asset.Name}-{clipAlias}",
+                $"{asset.Name} has no CS2 clip for '{clipAlias}'; drawing idle instead. "
+                + $"It has [{(asset.ByAlias is null ? "" : string.Join(Char.Parse(","), asset.ByAlias.Keys))}].");
+        return Resolve(asset, "idle");
+    }
 
     public static Pose Sample(string gun, string clipAlias, float time) {
         Asset asset = Get(gun);

@@ -1048,12 +1048,17 @@ public static class CsmcFirstPersonRenderer {
             s_cs2WeaponBase[asset] = baseColor;
         }
         if (baseColor is null) return;
+        double started = Time.RealTime;
         if (!mesh.SetPose(pose, Cs2Placement.Placement())) {
             KnifeDiagnostics.WarnOnce($"cs2-weapon-pose-{asset}",
                 $"No joint of {asset}'s mesh resolved against the clip's skeleton.");
             return;
         }
         mesh.Skin();
+        s_cs2WeaponSkinMillis += (Time.RealTime - started) * 1000.0;
+        s_cs2WeaponName = asset;
+        s_cs2WeaponVertices = mesh.Skinned.Length;
+        s_cs2WeaponTriangles = mesh.Primitives.Sum(p => p.Indices.Length) / 3;
         foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
             KnifePbrRenderer.TryDrawSkinned(mesh.Skinned, part.Indices, baseColor,
                 $"{asset}_cs2", post, projection, camera.InvertedViewMatrix, in lighting, variant);
@@ -1064,6 +1069,9 @@ public static class CsmcFirstPersonRenderer {
     static bool s_cs2ArmsLogged;
     static double s_cs2SkinMillis;
     static int s_cs2SkinFrames;
+    static double s_cs2WeaponSkinMillis;
+    static int s_cs2WeaponVertices, s_cs2WeaponTriangles;
+    static string s_cs2WeaponName;
 
     /// <summary>
     /// CS2's arms and the fingerless glove, skinned on the CPU against the same pose
@@ -1097,13 +1105,21 @@ public static class CsmcFirstPersonRenderer {
         }
 
         if (++s_cs2SkinFrames >= 120) {
+            // Arms, weapon and combined are reported separately. 0.17.0 timed only the
+            // arms and the log still said "cs2 arms", so the 0.169 ms/frame it showed
+            // was not the cost of the two meshes the knives added.
+            int weaponVertices = s_cs2WeaponVertices, weaponTris = s_cs2WeaponTriangles;
             KnifeLog.Information(
-                $"[ScCsgoKnives] cs2 arms: CPU skinning {s_cs2SkinMillis / s_cs2SkinFrames:0.###} ms/frame "
-                + $"over {s_cs2SkinFrames} frames ({mesh.Skinned.Length} vertices, "
-                + $"{mesh.Primitives.Sum(p => p.Indices.Length) / 3} triangles)."
+                $"[ScCsgoKnives] cs2 CPU skinning over {s_cs2SkinFrames} frames: "
+                + $"arms {s_cs2SkinMillis / s_cs2SkinFrames:0.###} ms/frame "
+                + $"({mesh.Skinned.Length} vertices, {mesh.Primitives.Sum(p => p.Indices.Length) / 3} triangles); "
+                + $"weapon {s_cs2WeaponSkinMillis / s_cs2SkinFrames:0.###} ms/frame "
+                + $"({s_cs2WeaponName ?? "none"}, {weaponVertices} vertices, {weaponTris} triangles); "
+                + $"combined {(s_cs2SkinMillis + s_cs2WeaponSkinMillis) / s_cs2SkinFrames:0.###} ms/frame."
             );
             s_cs2SkinFrames = 0;
             s_cs2SkinMillis = 0.0;
+            s_cs2WeaponSkinMillis = 0.0;
         }
         if (!s_cs2ArmsLogged) {
             s_cs2ArmsLogged = true;

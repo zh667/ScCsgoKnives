@@ -292,7 +292,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     public override void Load(ValuesDictionary valuesDictionary) {
         base.Load(valuesDictionary);
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
-        Project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(this);
+        // The engine logs an ERROR when a drawable is added twice, and this Load can
+        // run again on a project reload. AddDrawable itself is a TryAdd and does not
+        // throw, so the only damage was the error line - removed rather than left to
+        // be read as a real fault next time someone reads the log.
+        SubsystemDrawing drawing = Project.FindSubsystem<SubsystemDrawing>(true);
+        drawing.RemoveDrawable(this);
+        drawing.AddDrawable(this);
         m_bodies = Project.FindSubsystem<SubsystemBodies>(true);
         m_audio = Project.FindSubsystem<SubsystemAudio>(true);
         m_particles = Project.FindSubsystem<SubsystemParticles>(true);

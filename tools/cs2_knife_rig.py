@@ -22,9 +22,12 @@ What made this possible, measured rather than assumed (2026-09-05):
 
 So the CS:MC skeleton is not involved and nothing is retargeted.
 
-Clip aliases are the ones the mod already plays. CS2 and CS:MC agree on which
-knives have a second idle: bowie, falchion and push have one idle in both, so
-those three map idle2 to idle rather than inventing a clip.
+Clip aliases are the ones the mod already plays, and the alias set is checked
+against what CS:MC offers for the same knife: a knife whose CS:MC rig has deploy2
+must get one here too, or the controller will pick an alias the CS2 file cannot
+answer. CS2 and CS:MC agree on which knives have a second idle - bowie, falchion
+and push have one idle in both - so those three map idle2 to idle rather than
+inventing a clip.
 
 Usage:  python3 tools/cs2_knife_rig.py [--knife m9] [--out DIR]
         (on Windows: python tools\\cs2_knife_rig.py ...)
@@ -47,13 +50,22 @@ DATA = ROOT / "src/ScCsgoKnives/AnimationData"
 KNIVES_JSON = DATA / "knives.json"
 
 # mod alias -> the CS2 clip stem to try, in order. "%s" is the knife's own stem.
+#
+# deploy2, inspect2 and inspect3 were missing from 0.17.0 and that is what made the
+# butterfly and the skeleton dagger jump to the finished pose: the controller picks
+# an alias from the CS:MC table, and one it picked was not in the CS2 file, so the
+# rig fell back to idle. CS2 ships every one of them - 7 draw2_*, 10 lookat02_*, and
+# lookat03_butterfly - they simply were not imported.
 ALIASES = [
-    ("deploy",  ["draw_%s"]),
-    ("idle",    ["idle1_%s", "idle_%s"]),
-    ("idle2",   ["idle2_%s"]),
-    ("inspect", ["lookat01_%s"]),
-    ("slash1",  ["light_miss1_%s"]),
-    ("slash2",  ["light_miss2_%s"]),
+    ("deploy",   ["draw_%s"]),
+    ("deploy2",  ["draw2_%s"]),
+    ("idle",     ["idle1_%s", "idle_%s"]),
+    ("idle2",    ["idle2_%s"]),
+    ("inspect",  ["lookat01_%s"]),
+    ("inspect2", ["lookat02_%s"]),
+    ("inspect3", ["lookat03_%s"]),
+    ("slash1",   ["light_miss1_%s"]),
+    ("slash2",   ["light_miss2_%s"]),
 ]
 
 
@@ -81,6 +93,14 @@ def config(knife: str) -> dict:
             missing.append(alias)
     return {"folder": folder, "stem": stem, "clips": clips,
             "missing": missing, "available": sorted(available)}
+
+
+def csmc_aliases(knife: str) -> set:
+    """What the CS:MC rig offers, i.e. what the controller may pick from."""
+    path = DATA / ("%s.csmc.animation.json" % knife)
+    if not path.exists():
+        return set()
+    return set(json.loads(path.read_text("utf-8"))["Clips"])
 
 
 def convert(knife: str) -> dict:
@@ -125,6 +145,12 @@ def convert(knife: str) -> dict:
             "Bones": bones,
         }
 
+    # Anything the CS:MC rig offers and CS2 cannot answer would be picked by the
+    # controller and silently drawn as idle. idle2 is the one accepted absence:
+    # CS2 and CS:MC agree that bowie, falchion and push have a single idle.
+    wanted = csmc_aliases(knife) & {a for a, _ in ALIASES}
+    unanswered = sorted(wanted - set(cfg["clips"].values()) - {"idle2"})
+
     return {
         "Format": "ScCsgoKnives.Cs2Animation/1",
         "Units": "inch",
@@ -138,6 +164,7 @@ def convert(knife: str) -> dict:
             "analysis": "local_cs2_analysis/all_weapons/09_knives",
             "folder": cfg["folder"],
             "aliasesMissing": cfg["missing"],
+            "csmcAliasesUnanswered": unanswered,
             "clipsNotUsed": [s for s in cfg["available"] if s not in clips],
         },
         "MeshParts": [],
@@ -160,25 +187,36 @@ def main():
     if unknown:
         raise SystemExit("unknown knife(s): %s" % ", ".join(unknown))
 
-    total_missing = []
+    broken, no_idle2 = [], []
     for knife in names:
         doc = convert(knife)
         path = args.out / ("%s.cs2.animation.json" % knife)
         path.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")), "utf-8")
         frames = sum(c["FrameCount"] for c in doc["Clips"].values())
         events = sum(len(c["Events"]) for c in doc["Clips"].values())
-        miss = doc["Source"]["aliasesMissing"]
-        if miss:
-            total_missing.append((knife, miss))
-        print("%-11s %d clips, %4d frames, %2d events, %2d bones -> %s (%.1f KB)%s"
+        unanswered = doc["Source"]["csmcAliasesUnanswered"]
+        if unanswered:
+            broken.append((knife, unanswered))
+        # Only an alias CS:MC also offers is worth reporting: the controller can
+        # only pick from those, so an alias neither rig has is not a hole.
+        wanted = sorted(csmc_aliases(knife) & {a for a, _ in ALIASES})
+        answered = sorted(set(doc["Clips"][s]["Alias"] for s in doc["Clips"]))
+        print("%-11s %d clips, %4d frames, %2d events, %2d bones -> %-32s %s"
               % (knife, len(doc["Clips"]), frames, events, len(doc["Skeleton"]),
-                 path.name, path.stat().st_size / 1024,
-                 "  no " + ",".join(miss) if miss else ""))
-    if total_missing:
-        print("\nCS2 ships no second idle for: %s"
-              % ", ".join(k for k, _ in total_missing)
-              + " - CS:MC agrees, so the mod falls back to idle for them.")
+                 "%s (%.0f KB)" % (path.name, path.stat().st_size / 1024),
+                 "CS:MC wants [%s], answered [%s]" % (",".join(wanted), ",".join(answered))))
+        if "idle2" in wanted and "idle2" not in answered:
+            no_idle2.append(knife)
+    if no_idle2:
+        print("\nCS2 ships no second idle for %s; CS:MC agrees, so idle2 plays idle."
+              % ", ".join(no_idle2))
+    if broken:
+        for knife, aliases in broken:
+            print("FAIL %s: the CS:MC rig offers %s and this file answers none of them"
+                  % (knife, ", ".join(aliases)))
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

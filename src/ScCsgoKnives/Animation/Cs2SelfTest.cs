@@ -25,6 +25,23 @@ namespace Game;
 public static class Cs2SelfTest {
     static readonly string[] Guns = ["ak47", "m4a1s", "awp"];
 
+    /// <summary>Every alias KnifeAnimationController can pick for a knife.</summary>
+    static readonly string[] ControllerAliases =
+        ["deploy", "deploy2", "idle", "idle2", "inspect", "inspect2", "inspect3", "slash1", "slash2"];
+
+    /// <summary>
+    /// The knives whose CS:MC rig offers a second draw or a second/third inspect.
+    /// Named rather than counted so the check cannot pass by the table going empty:
+    /// 0.17.0 would have passed a "no knife is missing an alias" test, because the
+    /// aliases were not in the CS2 files for anything to be missing from.
+    /// </summary>
+    static readonly (string Alias, string[] Knives)[] RequiredVariants = [
+        ("deploy2", ["butterfly", "canis", "cord", "kukri", "outdoor", "skeleton", "ursus"]),
+        ("inspect2", ["butterfly", "canis", "cord", "css", "falchion", "outdoor",
+                      "skeleton", "stiletto", "talon", "ursus"]),
+        ("inspect3", ["butterfly"]),
+    ];
+
     sealed class Check {
         public string Name { get; set; }
         public bool Ok { get; set; }
@@ -195,6 +212,22 @@ public static class Cs2SelfTest {
             // so it must resolve to idle rather than to nothing.
             Check($"knife/{knife}/idle2", Cs2Rig.Duration(knife, "idle2") > 0f,
                   $"{Cs2Rig.Duration(knife, "idle2"):0.####} s");
+            // Every alias the CS:MC rig offers is one the controller may pick, so
+            // with KnifeProfile=1 every one of them has to resolve to a CS2 clip
+            // without the idle fallback. 0.17.0 had 18 holes across deploy2,
+            // inspect2 and inspect3, and each was drawn as the finished idle pose.
+            int variant = Enumerable.Range(0, CsmcKnifeRig.AssetCount)
+                .First(v => CsmcKnifeRig.GetAssetName(v) == knife);
+            var unanswered = new List<string>();
+            foreach (string alias in ControllerAliases) {
+                if (!CsmcKnifeRig.HasClip(variant, alias)) continue;
+                if (!Cs2Rig.HasAlias(knife, alias)) unanswered.Add(alias);
+            }
+            Check($"knife/{knife}/aliases", unanswered.Count == 0,
+                  unanswered.Count == 0
+                      ? $"all of [{string.Join(',', ControllerAliases.Where(a => CsmcKnifeRig.HasClip(variant, a)))}] resolve"
+                      : $"no CS2 clip for [{string.Join(',', unanswered)}]");
+
             Cs2SkinnedMesh km = Cs2SkinnedMesh.Weapon(knife);
             Check($"knife/{knife}/mesh", km is not null,
                   km is null ? "no skinned mesh" : $"{km.Skinned.Length} vertices, {km.Joints.Length} joints");
@@ -213,6 +246,22 @@ public static class Cs2SelfTest {
                     Check($"knife/{knife}/skinned", span is > 0.05f and < 1.5f && hi.Z < 0f,
                           $"{span * 100f:0.#} cm across, front face z={hi.Z:0.###}");
                 }
+            }
+        }
+
+        // Forced coverage: these must be present by name, not by whatever the rigs
+        // happen to carry. Each also has to be a different clip from its base - a
+        // deploy2 that resolved to deploy would look exactly like the bug it fixes.
+        foreach ((string alias, string[] knives) in RequiredVariants) {
+            string baseAlias = alias.StartsWith("deploy", StringComparison.Ordinal) ? "deploy" : "inspect";
+            foreach (string knife in knives) {
+                string clip = Cs2Rig.ResolvedClip(knife, alias);
+                string basis = Cs2Rig.ResolvedClip(knife, baseAlias);
+                Check($"variant/{knife}/{alias}",
+                      clip is not null && clip != basis && Cs2Rig.Duration(knife, alias) > 0f,
+                      clip is null ? "missing"
+                      : clip == basis ? $"resolves to {clip}, the same clip as {baseAlias}"
+                      : $"{clip} ({Cs2Rig.Duration(knife, alias):0.####} s), {baseAlias} is {basis}");
             }
         }
 

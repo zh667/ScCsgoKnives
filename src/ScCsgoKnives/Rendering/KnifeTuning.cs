@@ -766,6 +766,8 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(PbrEnvYawDegrees), PbrEnvYawDegrees));
         text.AppendLine("# 反射带多少环境的颜色：1 = 全带（天空会把刀染蓝），0 = 只反亮度不反颜色。");
         text.AppendLine(Line(nameof(PbrEnvSaturation), PbrEnvSaturation));
+        text.AppendLine("# 22 把刀走哪条管线：0 = 一直以来的 CS:MC 链，1 = CS2 本体（CS2 网格/骨架/动画 + 真实手臂）。枪不受影响。");
+        text.AppendLine(Line(nameof(KnifeProfile), KnifeProfile));
         text.AppendLine("# 三把枪走哪条管线：0 = 一直以来的 CS:MC 链，1 = CS2 本体（CS2 网格/材质/动画/摆放）。刀不受影响。");
         text.AppendLine("# 下面四个是你自己 CS2 里的 viewmodel 设置（已从 cs2_user_convars 读到），只有 GunProfile=1 时才用。");
         text.AppendLine(Line(nameof(GunProfile), GunProfile));
