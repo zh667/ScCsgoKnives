@@ -1,0 +1,4504 @@
+[
+  {
+    "knife": "karambit",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_karambit/heavy_miss1_karambit.dmx",
+    "sha256": "b2856a1103561517104259cdd9f418820c13d59c405e32da9efe8e83ad52faa1",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 16.0,
+        "At": 0.0,
+        "Duration": 0.533349,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 16.0,
+        "DurationFrames": 12.0,
+        "At": 0.533349,
+        "Duration": 0.400011,
+        "Name": "Inspect.Gear.Small",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "karambit",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_karambit/heavy_hit1_karambit.dmx",
+    "sha256": "f4d330007c9929a4f266e59840d0936a5a50ac95ec899708f88a3d6b512e356d",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 16.0,
+        "At": 0.0,
+        "Duration": 0.533349,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "karambit",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_karambit/light_hit1_karambit.dmx",
+    "sha256": "342a6590070019bc146e5ffc3fd5eff7d444f47531361b3dccf3ba71b46e9169",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "karambit",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_karambit/light_hit2_karambit.dmx",
+    "sha256": "e2af4a18fbd3a17feafd12f8102551608f3b3047bfa3ba9482eaa5437af33d86",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "m9",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_m9/heavy_miss1_m9.dmx",
+    "sha256": "56e81c926a3c2f3e6529787d5b784c0824f38b1726b59133c7bbd2e7f2e71817",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "m9",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_m9/heavy_hit1_m9.dmx",
+    "sha256": "28476b45a8bbf86c1e69d9936a7efa5a81b7007df69b13fd312382c46eee1fd3",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "m9",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_m9/light_hit1_m9.dmx",
+    "sha256": "865e77f3fa139b91c281b8873f2774f485c9ea26e3d3722cfa266357a506c29d",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "m9",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_m9/light_hit2_m9.dmx",
+    "sha256": "cec670928cfd939abada24d19c929f71cb6eccd3eeb3e3897d0d134d3b5a8493",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "butterfly",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_butterfly/heavy_miss1_butterfly.dmx",
+    "sha256": "ba4271bae633d946a37d56004014ab988206ec7896a38167abee287c51486512",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.200006,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "butterfly",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_butterfly/heavy_hit1_butterfly.dmx",
+    "sha256": "e58cad0079d894e6751a66977e3a80bdad93d58ea3dc63ef3f133fd462357060",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "butterfly",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_butterfly/light_hit1_butterfly.dmx",
+    "sha256": "debf51d3135c63678fe5f29056d39145a1e9846b97cdab1326bc80bf417b773c",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "butterfly",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_butterfly/light_hit2_butterfly.dmx",
+    "sha256": "1d4357b9d3320924ee9d026109a1dd5eb2129caf27b34074656d3a00cb87b5f4",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bayonet",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bayonet/heavy_miss1_bayonet.dmx",
+    "sha256": "87f24ba6337f863b9a8783cd639c7b6ee7a060bab9134daccbd079bb8f55d8aa",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bayonet",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bayonet/heavy_hit1_bayonet.dmx",
+    "sha256": "cd75977038faf7009b45e011eafc293e7efa5f8dad0b67408d43a87cbbb90e1e",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 19.0,
+        "At": 0.0,
+        "Duration": 0.633351,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bayonet",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bayonet/light_hit1_bayonet.dmx",
+    "sha256": "113fb03a4363db9c064aae7c1086da06271d411bcb301858d55486106abf0d61",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bayonet",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bayonet/light_hit2_bayonet.dmx",
+    "sha256": "0c0183c85e9fb192cab6c3aa9fef245ccd5d45373157edbac9bfee72c3bbc173",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bowie",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bowie/heavy_miss1_bowie.dmx",
+    "sha256": "d14d9642b087a357cc0b0593fd417d2e463d88485f98ab3236ecddd837f911db",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433321,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366656,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 1.0,
+        "DurationFrames": 9.0,
+        "At": 0.033332,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366656,
+        "Duration": 0.366656,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bowie",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bowie/heavy_hit1_bowie.dmx",
+    "sha256": "1a276afe68775f9f1f4b89dcc6f46c26dcd7555ef04d2f2cb20e093c991b17ae",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 14.0,
+        "At": 0.0,
+        "Duration": 0.466653,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.599982,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366656,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.299991,
+        "Duration": 0.366656,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bowie",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bowie/light_hit1_bowie.dmx",
+    "sha256": "fa6fa60e16e6656722f0e1f379ea06d7b12b54717dcc8ba1ce87b47f78aa1b96",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166662,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "bowie",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_bowie/light_hit2_bowie.dmx",
+    "sha256": "1a79383d3715c1171756249c207b761937230df03f5bf14bfbe7fa84b87a8cb3",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 10.0,
+        "At": 0.0,
+        "Duration": 0.333324,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166662,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "canis",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_canis/heavy_miss1_canis.dmx",
+    "sha256": "86c5ac9774b324f14beb4389e980b850c2cbfe1e5bc0e1712eb13195da05438b",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "canis",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_canis/heavy_hit1_canis.dmx",
+    "sha256": "ebccd71d411939a3fd6df6479933e4b6fe4085a94a5d983bf01f62baa63afa3e",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "canis",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_canis/light_hit1_canis.dmx",
+    "sha256": "ab1019c551d8eff898efa730b771d220514b3e28b1e6f2b1c99309ff2c4d6985",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "canis",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_canis/light_hit2_canis.dmx",
+    "sha256": "a9858c8c746fef8e6c4a90b74aae14e859b2f122cd2985ef7f55128ce0625343",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "cord",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_cord/heavy_miss1_cord.dmx",
+    "sha256": "f0fe91052609f78bf02da798ef39182ee6419bd85c75f7a2d70e41784a7f6e33",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 10.0,
+        "At": 0.300009,
+        "Duration": 0.333343,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "cord",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_cord/heavy_hit1_cord.dmx",
+    "sha256": "401ddb48c66962bebb79f4cbb5c50be3b05db6e4ed4f9501fdf37fbc69c5a443",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 19.0,
+        "At": 0.0,
+        "Duration": 0.633351,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "cord",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_cord/light_hit1_cord.dmx",
+    "sha256": "28b9201de6d83d727627c74c7025ab25783006b27c106a4243a30965a0064af4",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "cord",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_cord/light_hit2_cord.dmx",
+    "sha256": "ef00228255403263ef68c06b076a5f5d12a56fc5efb8f360590a26dfaf5106eb",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "css",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_css/heavy_miss1_css.dmx",
+    "sha256": "b990906de454d7fdf16559b29e0bd4cc4a84e2f9ace9a036812170ee86e6ebb8",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "css",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_css/heavy_hit1_css.dmx",
+    "sha256": "7a18cf6fb2b87bafbbb92fd2d91417aaaa0fa82a0a15902d98bb206307ce5c1e",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "css",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_css/light_hit1_css.dmx",
+    "sha256": "4ec87ff50467991d6afe0a96cba7062bfa51672958d984efb2559bd23f97f2a0",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "css",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_css/light_hit2_css.dmx",
+    "sha256": "41ea05a3cd494157a4c48a19c012e8bed0febd3eee86e4bc0c246b6287da86db",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_ct",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/_default_knife/heavy_miss1_knife.dmx",
+    "sha256": "4016277b9b2dfd2409ac99d26ba262dfda37fe48b9ebacccaebade5af153b411",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_ct",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/_default_knife/heavy_hit1_knife.dmx",
+    "sha256": "77285441284a566427d2afe9f7ca4997d5a8334138bd895be280c8470c5f1d63",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_ct",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/_default_knife/light_hit1_knife.dmx",
+    "sha256": "e8856348804d9fd51505f77ca608899e1b678e3a0f059311fb6ef212088fdd80",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_ct",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/_default_knife/light_hit2_knife.dmx",
+    "sha256": "8653df9676b9116abfb51ecbf65e377d43f50699e80ef00af1f339f17464a320",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 10.0,
+        "At": 0.0,
+        "Duration": 0.333343,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_t",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_default_t/heavy_miss1_default_t.dmx",
+    "sha256": "d9d553fa1107f10092f1e8195eb8745f253cc6eebf0560c4bb378cc988fb8e83",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_t",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_default_t/heavy_hit1_default_t.dmx",
+    "sha256": "6359c7eb841414c5fbd1c72c3b090859670a875bccf85fbf855796fb562118fa",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_t",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_default_t/light_hit1_default_t.dmx",
+    "sha256": "b8edb54d2c857a8ae6987b4da3492eb224539edf7128c85ec35ef15cb16bfd4b",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "default_t",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_default_t/light_hit2_default_t.dmx",
+    "sha256": "26f95cd58bb60d6b51b6eb0d6decd2725fe767a4f0474edb9c62104042135dc3",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "falchion",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_falchion/heavy_miss1_falchion.dmx",
+    "sha256": "92694d1417e3e370968b73d20e55536a39e06c9fb4bedbaf0433a8a6a6a9940e",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366656,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.299991,
+        "Duration": 0.399988,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 19.0,
+        "DurationFrames": 0.0,
+        "At": 0.633315,
+        "Duration": 0.0,
+        "Name": "Knife.Catch.SoftGrab.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientOnly"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 20.0,
+        "DurationFrames": 0.0,
+        "At": 0.666647,
+        "Duration": 0.0,
+        "Name": "Knife.Catch",
+        "SyncID": "",
+        "Relevance": "ClientOnly"
+      }
+    ]
+  },
+  {
+    "knife": "falchion",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_falchion/heavy_hit1_falchion.dmx",
+    "sha256": "ac0391cfae2ea067efea352f28d7e933ce40f94a5d92cb9fc37d54ac7877bae1",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733312,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366656,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.299991,
+        "Duration": 0.399988,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 21.0,
+        "DurationFrames": 0.0,
+        "At": 0.699979,
+        "Duration": 0.0,
+        "Name": "Knife.Catch",
+        "SyncID": "",
+        "Relevance": "ClientOnly"
+      }
+    ]
+  },
+  {
+    "knife": "falchion",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_falchion/light_hit1_falchion.dmx",
+    "sha256": "48c54a2e40a68f5ffe9030e90fde52406337c62b6180bc471d1cb32f0714b123",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266659,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166662,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "falchion",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_falchion/light_hit2_falchion.dmx",
+    "sha256": "d3f527c24e43b61bdba971e33ae35fc729ae11724eb0bf3a1e80dd50e6ec3e45",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266659,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166662,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "flip",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_flip/heavy_miss1_flip.dmx",
+    "sha256": "15bb79dee965e40170d3da4a4e734c5a18a544d3e48be8d67369b923287d85c4",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "flip",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_flip/heavy_hit1_flip.dmx",
+    "sha256": "17030e72431ae3e008e2c45e62f5835cede75ffbc9dc11746a35271c21be86e8",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 10.0,
+        "At": 0.0,
+        "Duration": 0.333343,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 6.0,
+        "DurationFrames": 11.0,
+        "At": 0.200006,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "flip",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_flip/light_hit1_flip.dmx",
+    "sha256": "8f500faf1d94c81e33df7b8c75e360f503561482ef65b1dd7fb06d4decbd29e1",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "flip",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_flip/light_hit2_flip.dmx",
+    "sha256": "68126c9df36f048e90d06109027be0d9be9d2c26ee5e4572b82f65fe5b35666c",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "gut",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_gut/heavy_miss1_gut.dmx",
+    "sha256": "3e1c0c480eb6b5cb6262a304536a694d65dd8989b9badee7146cdfc142ee19f5",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "gut",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_gut/heavy_hit1_gut.dmx",
+    "sha256": "37e2997c30d62a4daf8a3e47380a4e0462dbcc55ed0fd848d3e43a3beff86257",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 10.0,
+        "At": 0.0,
+        "Duration": 0.333343,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "gut",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_gut/light_hit1_gut.dmx",
+    "sha256": "a7ce294e46ab181b4b8805561ff7c0bcc5f83b141fba5625e81606d99695aa48",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "gut",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_gut/light_hit2_gut.dmx",
+    "sha256": "9111314e30e7ec5b13adcd2484a8057a4ef5c53a7acf37705d4d65cbc1ac863d",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "kukri",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_kukri/heavy_miss1_kukri.dmx",
+    "sha256": "a4503c1affc242e41f3774fc7b66add114f9a6eeabb3d2d0230840e8a92365b0",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 3.0,
+        "At": 0.0,
+        "Duration": 0.100003,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 16.0,
+        "At": 0.0,
+        "Duration": 0.533349,
+        "Name": "WPN_INSPECT_USE_FIXUP_VERSION",
+        "SyncID": "WPN_INSPECT_USE_FIXUP_VERSION",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 1.0,
+        "DurationFrames": 12.0,
+        "At": 0.033334,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 12.0,
+        "At": 0.366677,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "kukri",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_kukri/heavy_hit1_kukri.dmx",
+    "sha256": "191580401e65f3edf74d04be38c2bea569bc307ddfbdc2f6f5073ebfa004951d",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 3.0,
+        "At": 0.0,
+        "Duration": 0.100003,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 16.0,
+        "At": 0.0,
+        "Duration": 0.533349,
+        "Name": "WPN_INSPECT_USE_FIXUP_VERSION",
+        "SyncID": "WPN_INSPECT_USE_FIXUP_VERSION",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "kukri",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_kukri/light_hit1_kukri.dmx",
+    "sha256": "a19db95f619f85b0888891494f3e8e0f4dbfaaf188b820ce75794d27e153a31a",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "kukri",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_kukri/light_hit2_kukri.dmx",
+    "sha256": "86552c60f339ffcdf768eb49a4d2a6e77cd8a575a065b08efd4fc2744d21b883",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "navaja",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_navaja/heavy_miss1_navaja.dmx",
+    "sha256": "4a696c61ef20c4547b431d5baedc75d132eb5c34a9537ad344b8fd42f78c5d21",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "navaja",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_navaja/light_hit1_navaja.dmx",
+    "sha256": "2f0b11ebf63b269277f146eb09fdf973c6116cca36ddf66b57a441d91666dc33",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "navaja",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_navaja/light_hit2_navaja.dmx",
+    "sha256": "291a7e0f1088f518740bfddf703319048c19a7c4dc2f7552b7f48db4288539ff",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "navaja",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_navaja/heavy_miss1_navaja.dmx",
+    "sha256": "4a696c61ef20c4547b431d5baedc75d132eb5c34a9537ad344b8fd42f78c5d21",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "outdoor",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_outdoor/heavy_miss1_outdoor.dmx",
+    "sha256": "4ff943591f1eafe92f86e1b5deffa8b50eaf6ecd3d655599648b3429f7e1380b",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 12.0,
+        "At": 0.300009,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "outdoor",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_outdoor/heavy_hit1_outdoor.dmx",
+    "sha256": "ccaa55352ba9e4305c9839445799973434dad4040e8d3080f43d43aaede4474e",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "outdoor",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_outdoor/light_hit1_outdoor.dmx",
+    "sha256": "d432cb545117a6d9478e719910456b41f405ac823d5fe4e3bb4c50442e9ba9d1",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "outdoor",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_outdoor/light_hit2_outdoor.dmx",
+    "sha256": "980463da2e75bc8f7bf9a677d70b0d80649ff224bbc074c80437b98060775245",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "push",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_push/heavy_miss1_push.dmx",
+    "sha256": "cc6780151b316d1156a45dcc2316c7482d02c03fd45dcc7a09f3b83eca68054d",
+    "duration": 0.7666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233343,
+        "Name": "KnifePush.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366683,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400017,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 6.0,
+        "DurationFrames": 11.0,
+        "At": 0.200009,
+        "Duration": 0.366683,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "push",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_push/heavy_hit1_push.dmx",
+    "sha256": "cc17d7616e3fd9bcdcb7e199914ff779ea8c3d9703220454f314a69335821599",
+    "duration": 0.7666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233343,
+        "Name": "KnifePush.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366683,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733365,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400017,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 6.0,
+        "DurationFrames": 11.0,
+        "At": 0.200009,
+        "Duration": 0.366683,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "push",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_push/light_hit1_push.dmx",
+    "sha256": "8d51b86db0994c1bbd03ed16004254c9b6f4aa5c1e5370fd74bb8d73fe9d9da9",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "KnifePush.Hit.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "KnifePush.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 10.0,
+        "At": 0.0,
+        "Duration": 0.333324,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "push",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_push/light_hit2_push.dmx",
+    "sha256": "f2a2de92cfaae1e5719bda5c6cb4cfdfbf9493090fc9e8f0bfab96d9c2ddd95e",
+    "duration": 1.1332,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.233326,
+        "Name": "KnifePush.Hit.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 6.0,
+        "At": 0.0,
+        "Duration": 0.199994,
+        "Name": "KnifePush.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 10.0,
+        "At": 0.0,
+        "Duration": 0.333324,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.299991,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "skeleton",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_skeleton/heavy_miss1_skeleton.dmx",
+    "sha256": "84d7fe54406a0c336f8c2b0eb524f2111dccd4b53fcac687c4187203168c1d87",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Heavy.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 8.0,
+        "DurationFrames": 12.0,
+        "At": 0.266674,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "skeleton",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_skeleton/heavy_hit1_skeleton.dmx",
+    "sha256": "70e3db960969ad4381c4d8ca259cdc4f462b8c724931885b06918b2efeb98f7e",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 11.0,
+        "At": 0.0,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Heavy.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 8.0,
+        "DurationFrames": 12.0,
+        "At": 0.266674,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "skeleton",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_skeleton/light_hit1_skeleton.dmx",
+    "sha256": "8c6fef1281a2a6dcc925b72b0744f38de0b0b1532c7be9f8be9cd7c9ba112223",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "skeleton",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_skeleton/light_hit2_skeleton.dmx",
+    "sha256": "5019a20926c6fd67c720abd1253e762fedd1f107108526ae0421847d8213d798",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "stiletto",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_stiletto/heavy_miss1_stiletto.dmx",
+    "sha256": "047a179953b2a28220fa5618bf487a789e546368fa110c3b379dc081f2057852",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "stiletto",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_stiletto/heavy_hit1_stiletto.dmx",
+    "sha256": "d2324d2475de1b4016a710a8544d272b33ea6ed3885bc90556d1244a365ef4ea",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "stiletto",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_stiletto/light_hit1_stiletto.dmx",
+    "sha256": "9ae335c586843b90644e1b03343ddc36341ec42f44636330021a78b1119980d2",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "stiletto",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_stiletto/light_hit2_stiletto.dmx",
+    "sha256": "2dca027f69d3786f9b131e85f8402ec8c0c3969c7134a81a495b0d42d7c2b700",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "tactical",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_tactical/heavy_miss1_tactical.dmx",
+    "sha256": "aeb5d64662c288be6d6950bc600c8c3422f843925f16dbc8f0730671018e2272",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "tactical",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_tactical/heavy_hit1_tactical.dmx",
+    "sha256": "18be04f59a202302f8cacf61d17fb7422652c88c83903a8fe148e95b2b2d3baf",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "tactical",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_tactical/light_hit1_tactical.dmx",
+    "sha256": "efd87d136f8950357d56136e08760e3e748a49f4105c5f07069f0110a4eef073",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "tactical",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_tactical/light_hit2_tactical.dmx",
+    "sha256": "0ddf833cbbba40819e1a3d97429ddcc8c29a92ceccfd9a704c2dfd1909ad09bb",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "talon",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_talon/heavy_miss1_talon.dmx",
+    "sha256": "9555e9c0702c1eafea04492477eae28aa8e6221fd30288faaa7f6bf3a1a81522",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 17.0,
+        "DurationFrames": 12.0,
+        "At": 0.566683,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "talon",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_talon/heavy_hit1_talon.dmx",
+    "sha256": "0e70f389f95c5058a20f067d7de8cd78e0fb9301e5af60b3cc6c2f6db5353a35",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 18.0,
+        "At": 0.0,
+        "Duration": 0.600017,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "talon",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_talon/light_hit1_talon.dmx",
+    "sha256": "caf0948d1f958cfc8635051e3d44739f1fa39d0de847cd533a3e12b9d8d1b3b7",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "talon",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_talon/light_hit2_talon.dmx",
+    "sha256": "c515f035374458a8896d80480e556c3b7e2a609d16a63e659eb29ec08d39fd2b",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "ursus",
+    "alias": "stab",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_ursus/heavy_miss1_ursus.dmx",
+    "sha256": "0e3d6a0297e78109cafa3f7017d919f5166b8b9ad93289b147740845961274dc",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 9.0,
+        "DurationFrames": 11.0,
+        "At": 0.300009,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "ursus",
+    "alias": "stabHit",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_ursus/heavy_hit1_ursus.dmx",
+    "sha256": "0c966ad8c2819c9c8225b930781f668103896af3ee8877eb32328e30d42dd330",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 13.0,
+        "At": 0.0,
+        "Duration": 0.433346,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 22.0,
+        "At": 0.0,
+        "Duration": 0.733354,
+        "Name": "Weapon_Knife.Hit.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 12.0,
+        "At": 0.0,
+        "Duration": 0.400011,
+        "Name": "Weapon_Knife.Swish.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 9.0,
+        "At": 0.0,
+        "Duration": 0.300009,
+        "Name": "Weapon_Knife.Swish.Heavy",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 11.0,
+        "DurationFrames": 11.0,
+        "At": 0.366677,
+        "Duration": 0.366677,
+        "Name": "Weapon_Knife.Swish.Gear.Quiet",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "ursus",
+    "alias": "slashHit1",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_ursus/light_hit1_ursus.dmx",
+    "sha256": "41aa8bdf8cf73c5b74978c2791e6e0900691e2a89fd2df661910230ab42b4f85",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  },
+  {
+    "knife": "ursus",
+    "alias": "slashHit2",
+    "source": "09_knives/decompiled/animation/anims/viewmodel/knife/knife_ursus/light_hit2_ursus.dmx",
+    "sha256": "c694705500caabff4c5b80ff367af23c452b9438e0781b02d4b6565322b085c1",
+    "duration": 1.1666,
+    "events": [
+      {
+        "Class": "CNmClipDocEvent_ID",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "WPN_BLOCK_INSPECT",
+        "SyncID": "WPN_BLOCK_INSPECT",
+        "Relevance": ""
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 8.0,
+        "At": 0.0,
+        "Duration": 0.266674,
+        "Name": "Weapon_Knife.Hit.Gear",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 7.0,
+        "At": 0.0,
+        "Duration": 0.23334,
+        "Name": "Weapon_Knife.Hit.Slice",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      },
+      {
+        "Class": "CNmClipDocEvent_Sound",
+        "StartFrame": 0.0,
+        "DurationFrames": 5.0,
+        "At": 0.0,
+        "Duration": 0.166671,
+        "Name": "Weapon_Knife.Swish.Light",
+        "SyncID": "",
+        "Relevance": "ClientAndServer"
+      }
+    ]
+  }
+]

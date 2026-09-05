@@ -118,16 +118,7 @@ public static class KnifeAnimationController {
             }
         }
 
-        float pokePhase = model.m_pokeAnimationTime;
-        // Guns have no swing: their attack is the shot (TriggerShoot), never the poke.
-        if (pokePhase > 0f && state.LastPokePhase <= 0f && state.Action != ActionKind.Draw && !KnifeQa.Active && !CsmcKnifeRig.IsGun(variant)) {
-            string slash = HasAlias(variant, "slash2") && s_random.Next(2) == 1 ? "slash2" : "slash1";
-            Start(state, ActionKind.Slash, slash);
-            AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", 0.85f, (float)s_random.NextDouble() * 0.16f - 0.08f, 0f);
-            LogActionStart(state, variant);
-        }
-        state.LastPokePhase = pokePhase;
-
+        // Knife strikes are dispatched by the gameplay subsystem, never inferred from vanilla poke.
         float elapsed = (float)(KnifeClock.Now - state.StartedAt);
         if (state.Action == ActionKind.Idle) {
             // A pistol idles with the slide back while its magazine is empty and
@@ -201,6 +192,24 @@ public static class KnifeAnimationController {
         LogActionStart(state, variant);
         if (IsBalisong(variant)) AudioManager.PlaySound("Audio/ScCsgoKnives/butterfly_inspect", 1f, 0f, 0f);
         return true;
+    }
+
+    public static bool TriggerKnifeAttack(ComponentPlayer player, bool heavy) {
+        var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
+        int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
+        if (model is null || variant < 0 || CsmcKnifeRig.IsGun(variant) || IsBusy(model)) return false;
+        string alias = heavy ? "stab" : s_random.Next(2) == 0 ? "slash1" : "slash2";
+        if (!HasAlias(variant, alias)) return false;
+        State state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
+        Start(state, ActionKind.Slash, alias);
+        AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", .85f, heavy ? -.12f : 0f, 0f);
+        return true;
+    }
+    public static void KnifeHitPose(ComponentPlayer player, bool heavy) {
+        var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (model is null || !s_states.TryGetValue(model, out State state) || state.Action != ActionKind.Slash) return;
+        string hit = heavy ? "stabHit" : state.ClipAlias == "slash2" ? "slashHit2" : "slashHit1";
+        if (HasAlias(state.Variant, hit)) state.ClipAlias = hit; // preserve elapsed time, don't restart at impact
     }
 
     // ---- guns --------------------------------------------------------------------

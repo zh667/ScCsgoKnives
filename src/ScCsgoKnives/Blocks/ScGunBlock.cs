@@ -16,10 +16,12 @@ public class ScGunBlock : Block {
     readonly Texture2D[] m_slotTextures = new Texture2D[s_count];
 
     /// <summary>Rig manifest index of a gun variant.</summary>
-    public static int AssetIndex(int variant) => CsmcKnifeRig.KnifeCount + Math.Clamp(variant, 0, s_count - 1);
+    public static int AssetIndex(int variant) => variant >= 0 && variant < s_count ? CsmcKnifeRig.KnifeCount + variant : -1;
     public static int GetVariant(int value) => GunSpec.GetVariant(Terrain.ExtractData(value));
     public static string GetAssetName(int variant) => s_names[Math.Clamp(variant, 0, s_names.Length - 1)];
-    public static GunSpec SpecOf(int value) => GunSpec.All[GetVariant(value)];
+    static readonly GunSpec Unknown = new() { Name = "unknown", Magazine = 0 };
+    public static bool IsKnown(int value) => GetVariant(value) < s_count;
+    public static GunSpec SpecOf(int value) => IsKnown(value) ? GunSpec.All[GetVariant(value)] : Unknown;
 
     public override void Initialize() {
         for (int i = 0; i < s_count; i++) {
@@ -100,6 +102,10 @@ public class ScGunBlock : Block {
 
     public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) {
         int variant = GetVariant(value);
+        if (!IsKnown(value)) {
+            BlocksManager.DrawFlatBlock(primitivesRenderer, value, size, ref matrix, ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, false, environmentData);
+            return;
+        }
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI) {
             BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, m_slotTextures[variant], color, false, environmentData);
             return;
@@ -122,6 +128,7 @@ public class ScGunBlock : Block {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
+        if (!IsKnown(value)) return $"未知枪械（型号 {GetVariant(value)}，保留数据）";
         if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "DisplayName", out string result)) return result;
         return base.GetDisplayName(subsystemTerrain, value);
     }

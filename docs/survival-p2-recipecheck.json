@@ -1,0 +1,90 @@
+{
+  "originalRecipes": 251,
+  "checks": [
+    {
+      "source": "ScAmmoBlock.cs",
+      "ingredients": [
+        "ironingot",
+        "copperingot",
+        "copperingot",
+        "gunpowder",
+        "gunpowder",
+        "gunpowder"
+      ],
+      "cells": 6,
+      "originalCollision": false
+    },
+    {
+      "source": "ScAmmoBlock.cs",
+      "ingredients": [
+        "ironingot",
+        "copperingot",
+        "gunpowder",
+        "gunpowder",
+        "canvas"
+      ],
+      "cells": 5,
+      "originalCollision": false
+    },
+    {
+      "source": "ScWeaponMaterialBlock.cs",
+      "ingredients": [
+        "ironingot",
+        "ironingot",
+        "ironingot",
+        "ironingot",
+        "coalchunk"
+      ],
+      "cells": 5,
+      "originalCollision": false
+    },
+    {
+      "source": "ScWeaponMaterialBlock.cs",
+      "ingredients": [
+        "sccsgomaterial:0",
+        "copperingot",
+        "copperingot",
+        "germaniumchunk"
+      ],
+      "cells": 4,
+      "originalCollision": false
+    },
+    {
+      "source": "ScWeaponMaterialBlock.cs",
+      "ingredients": [
+        "leather",
+        "leather",
+        "planks"
+      ],
+      "cells": 3,
+      "originalCollision": false
+    },
+    {
+      "source": "ScWeaponMaterialBlock.cs",
+      "ingredients": [
+        "glass",
+        "glass",
+        "copperingot",
+        "germaniumchunk"
+      ],
+      "cells": 4,
+      "originalCollision": false
+    },
+    {
+      "source": "ScWeaponWorkbenchBlock.cs",
+      "ingredients": [
+        "ironingot",
+        "ironingot",
+        "ironingot",
+        "ironingot",
+        "copperingot",
+        "copperingot",
+        "planks",
+        "planks",
+        "planks"
+      ],
+      "cells": 9,
+      "originalCollision": false
+    }
+  ]
+}

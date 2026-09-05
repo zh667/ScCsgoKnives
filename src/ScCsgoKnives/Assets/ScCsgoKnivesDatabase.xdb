@@ -6,5 +6,8 @@
     <MemberSubsystemTemplate Name="ScGunBlockBehavior" Guid="7c0f2c1e-4b0d-4d7a-9c9a-2f6f8a1d5b21" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="b2c7d3e4-1f5a-4b6c-8d9e-0a1b2c3d4e5f" Value="Game.SubsystemScGunBlockBehavior" Type="string" />
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="ScWeaponWorkbench" Guid="b99759b8-3d36-4457-af27-d3e27d018ef8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="58bb03c1-a350-4d65-84bd-88f47c4dcba8" Value="Game.SubsystemScWeaponWorkbench" Type="string" />
+    </MemberSubsystemTemplate>
   </ProjectTemplate>
 </Mod>

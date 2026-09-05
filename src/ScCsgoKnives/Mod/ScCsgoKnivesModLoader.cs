@@ -16,8 +16,34 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("HandleMoveInventoryItem", this);
         ModsManager.RegisterHook("HandleInventoryDragMove", this);
         ModsManager.RegisterHook("UpdatePlayerInputDrop", this);
+        ModsManager.RegisterHook("OnPlayerInputHit", this);
+        ModsManager.RegisterHook("UpdatePlayerInputDig", this);
+        ModsManager.RegisterHook("UpdatePlayerInputAim", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
+    }
+
+    public override void OnPlayerInputHit(ComponentPlayer player, ref bool operated, ref double interval, ref float range, bool skipped, out bool skipVanilla) {
+        bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
+        skipVanilla = knife || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (knife && !operated && !skipped) {
+            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, player.ComponentInput.PlayerInput.Aim.HasValue);
+            operated = true;
+        }
+    }
+    public override void UpdatePlayerInputDig(ComponentPlayer player, bool digging, ref bool operated, ref double interval, bool skipped, out bool skipVanilla) {
+        bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
+        skipVanilla = knife || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (knife && digging && !operated && !skipped) {
+            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, player.ComponentInput.PlayerInput.Aim.HasValue);
+            operated = true;
+        }
+    }
+    public override void UpdatePlayerInputAim(ComponentPlayer player, bool aiming, ref bool operated, ref float interval, bool skipped, out bool skipVanilla) {
+        skipVanilla = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
+        if (skipVanilla && aiming && !operated && !skipped) {
+            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, true); operated = true;
+        }
     }
 
     public override void HandleMoveInventoryItem(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, ref int count, out bool moved) {

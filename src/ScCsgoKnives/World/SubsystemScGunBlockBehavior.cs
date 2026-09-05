@@ -524,7 +524,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                     state.RechargeAt = double.IsFinite(at) ? Math.Min(at, m_time.GameTime + GunSpec.ForAsset("taser").RechargeSeconds) : -1;
             }
             int value = player.ComponentMiner.ActiveBlockValue;
-            bool holdingGun = Terrain.ExtractContents(value) == gunIndex && player.ComponentHealth.Health > 0f;
+            bool holdingGun = Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsKnown(value) && player.ComponentHealth.Health > 0f;
             if (!holdingGun) {
                 CancelReload(player, state);
                 LeaveScope(player, state);
@@ -791,6 +791,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // scatter: Nova 9, MAG-7 and Sawed-Off 8, XM1014 6. Every other gun is 1, and
         // the body below is then exactly the single shot it always was.
         int pellets = Math.Max(1, spec.Pellets);
+        var hits = new Dictionary<ComponentBody, (float Power, Vector3 Point, Vector3 Direction)>();
         for (int pellet = 0; pellet < pellets; pellet++) {
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
@@ -820,9 +821,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             }
             if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
                 Vector3 hitPoint = body.Value.HitPoint();
-                // CS damage falls off with distance: damage * RangeModifier^(units/500).
-                float power = Cs2Weapons.DamageAt(spec.Name, body.Value.Distance, spec.AttackPower);
-                ComponentMiner.AttackBody(body.Value.ComponentBody, player, hitPoint, direction, power, false);
+                // Survival damage is a per-shot budget, shared across pellets.
+                float power = ScSurvivalBalance.PelletPower(spec, body.Value.Distance);
+                var target = body.Value.ComponentBody;
+                hits.TryGetValue(target, out var prior);
+                hits[target] = (prior.Power + power, hitPoint, direction);
             }
             else if (terrain.HasValue) {
                 Vector3 hitPoint = start + direction * terrain.Value.Distance;
@@ -835,6 +838,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (!string.IsNullOrEmpty(material)) m_audio.PlayRandomSound("Audio/Impacts/" + material, 0.7f, m_random.Float(-0.2f, 0.2f), hitPoint, 6f, true);
             }
         }
+        foreach (var hit in hits)
+            ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0);
     }
 
     void CancelReload(ComponentPlayer player, GunState state) {
@@ -843,6 +848,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.DropAt = state.InsertAt = state.BusyUntil = -1;
         state.ShellTimes.Clear(); state.Scheduled.Clear(); state.FireAfterReload = false;
         KnifeAnimationController.CancelAction(player);
+    }
+
+    public void RequestReload(ComponentPlayer player) {
+        int value = player.ComponentMiner.ActiveBlockValue;
+        if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || player.ComponentHealth.Health <= 0) return;
+        if (!m_states.TryGetValue(player, out GunState state)) return;
+        var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (state.BusyUntil >= 0 || KnifeAnimationController.IsBusy(model)) return;
+        StartReload(player, state, model, ScGunBlock.SpecOf(value), value);
     }
 
     void StartReload(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value) {
