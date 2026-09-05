@@ -14,6 +14,24 @@ public static class ScWeaponCrafting {
         }
     }
     public static readonly Entry[] All = Build();
+    public static Entry Find(int value) {
+        int contents = Terrain.ExtractContents(value);
+        bool knife = contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
+        if (!knife && contents != BlocksManager.GetBlockIndex<ScGunBlock>(true)) return null;
+        int variant = knife ? ScKnifeBlock.GetVariant(value) : ScGunBlock.GetVariant(value);
+        return All.FirstOrDefault(e => e.Knife == knife && e.Variant == variant);
+    }
+    public static string Help(int value) {
+        var e = Find(value);
+        if (e is null) return "";
+        string text = $"\n武器装配台 · 等级 {e.Level}\n金属坯件 ×{e.B}";
+        if (e.M > 0) text += $"，精密机构 ×{e.M}";
+        text += $"，握持组件 ×{e.H}";
+        if (e.O > 0) text += $"，光学组件 ×{e.O}";
+        if (e.Diamond > 0) text += $"，钻石 ×{e.Diamond}";
+        if (e.Germanium > 0) text += $"，锗 ×{e.Germanium}";
+        return text + (e.Knife ? "。" : "。交付空枪，弹药另制。");
+    }
     static Entry[] Build() {
         var entries = new List<Entry>();
         for (int v = 0; v < CsmcKnifeRig.KnifeCount; v++) {

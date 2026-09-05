@@ -8,6 +8,17 @@ using TemplatesDatabase;
 
 /// <summary>Uses the actual API database merge and recipe matcher; no game world or graphics.</summary>
 static class SurvivalPackageIntegration {
+    // Headless button using the real engine's child UpdateCeases lifecycle.
+    sealed class RecipeButton : ButtonWidget {
+        public readonly ClickableWidget Click = new();
+        public RecipeButton() { Children.Add(Click); }
+        public override bool IsClicked => Click.IsClicked;
+        public override bool IsChecked { get; set; }
+        public override bool IsAutoCheckingEnabled { get; set; }
+        public override string Text { get; set; }
+        public override Engine.Media.BitmapFont Font { get; set; }
+        public override Engine.Color Color { get; set; }
+    }
     internal record Result(string Name,bool Ok,string Detail);
     internal static List<Result> Run(Assembly mod,string package,string vanillaContent) {
         var results=new List<Result>();
@@ -44,6 +55,29 @@ static class SurvivalPackageIntegration {
                 foreach (var b in blocks) {
                     int[] values=b.GetCreativeValues().ToArray();
                     Check($"dynamic-index/{b.GetType().Name}/{pass}",b.IsIndexDynamic && values.All(v=>Terrain.ExtractContents(v)==b.BlockIndex),"two simulated mod loading orders; no fixed runtime contents");
+                    if (b.GetType().Name is "ScKnifeBlock" or "ScGunBlock") {
+                        var catalog=mod.GetType("Game.ScWeaponCrafting");
+                        var find=catalog.GetMethod("Find");
+                        foreach(int v in values) {
+                            object entry=find.Invoke(null,[v]);
+                            int output=entry is null?0:(int)entry.GetType().GetProperty("Value").GetValue(entry);
+                            string help=(string)catalog.GetMethod("Help").Invoke(null,[v]);
+                            Check($"assembly-help/{b.GetType().Name}/{Terrain.ExtractData(v)}/{pass}",entry is not null
+                                && ReferenceEquals(entry,find.Invoke(null,[output])) && Terrain.ExtractContents(output)==b.BlockIndex
+                                && help.Contains("武器装配台") && help.Contains("金属坯件 ×"),"creative full weapon and assembled empty weapon share canonical entry");
+                        }
+                        Check($"assembly-no-grid-bypass/{b.GetType().Name}/{pass}",!b.GetProceduralCraftingRecipes().Any(),"help-only station recipe; no nine-grid shortcut");
+                        var screen=(RecipaediaScreen)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(RecipaediaScreen));
+                        screen.m_blocksList=new ListPanelWidget(); screen.m_blocksList.AddItem(values[0]);screen.m_blocksList.SelectedItem=values[0];
+                        var button=new RecipeButton();screen.m_recipesButton=button;button.Click.IsClicked=true;
+                        var loader=(ModLoader)Activator.CreateInstance(mod.GetType("Game.ScCsgoKnivesModLoader"));
+                        loader.BeforeWidgetUpdate(screen);
+                        button.IsEnabled=false; // actual vanilla empty-recipe path clears child click
+                        var pending=loader.GetType().GetField("m_assemblyClickScreen",BindingFlags.NonPublic|BindingFlags.Instance);
+                        Check($"assembly-click-survives-disable/{b.GetType().Name}/{pass}",!button.IsClicked && ReferenceEquals(pending.GetValue(loader),screen),"captured before real engine UpdateCeases erased button click");
+                        loader.AfterWidgetUpdate(screen);
+                        Check($"assembly-button-enabled/{b.GetType().Name}/{pass}",button.IsEnabled && button.Text=="装配配方" && pending.GetValue(loader) is null,"re-enabled after vanilla update; consumed captured event once");
+                    }
                     foreach (var recipe in b.GetProceduralCraftingRecipes()) {
                         Check($"recipe/{b.GetType().Name}/{Terrain.ExtractData(recipe.ResultValue)}/{pass}",Terrain.ExtractContents(recipe.ResultValue)==b.BlockIndex
                             && recipe.Ingredients.Length==9 && recipe.Ingredients.Any(s=>!string.IsNullOrEmpty(s)) && recipe.RequiredPlayerLevel is >=1 and <=3 && recipe.ResultCount>0,
@@ -82,6 +116,9 @@ static class SurvivalPackageIntegration {
             foreach (string suffix in new[] {".png","_normal.png","_orm.png"})
                 Check("grenade-texture/"+kind+suffix,zip.GetEntry("Assets/Textures/ScCsgoKnives/grenade_"+kind+"_cs2"+suffix) is not null,"base/normal/ORM exists in package");
         }
+        foreach(string name in new[]{"survival_surface","grenade_glow","grenade_fire_atlas","grenade_blast_atlas","grenade_smoke_atlas",
+            "grenade_hegrenade_slot","grenade_flashbang_slot","grenade_smokegrenade_slot","grenade_molotov_slot","grenade_incendiary_slot","grenade_decoy_slot"})
+            Check("polish-texture/"+name,zip.GetEntry("Assets/Textures/ScCsgoKnives/"+name+".png") is not null,"new rendering dependency present in final package");
         return results;
     }
 }

@@ -133,9 +133,11 @@ public class ScGunBlock : Block {
         return base.GetDisplayName(subsystemTerrain, value);
     }
 
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
+
     public override string GetDescription(int value) {
-        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result;
-        return base.GetDescription(value);
+        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value);
+        return base.GetDescription(value) + ScWeaponCrafting.Help(value);
     }
 
     /// <summary>

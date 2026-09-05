@@ -21,6 +21,7 @@ public static class SurvivalSelfTest {
         public void DropAllItems(Vector3 position) => Array.Clear(Counts);
     }
     public static void Run(Action<string, bool, string> check) {
+        ScPolishSelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
             var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(0, rounds)), 1); i.AddSlotItems(1, ammo, count); return i;
@@ -92,7 +93,7 @@ public static class SurvivalSelfTest {
             s.Remaining=0;return blocked && !near && !ScSmokeVolume.Blocks([s],new Vector3(-5,0,0),new Vector3(5,0,0));
         });
         Test("smoke-save-no-reset",()=> {var s=ScGrenadeState.Load(new ScGrenadeState {Kind=2,Effect=true,Age=8,Remaining=7}.Save());return s.Effect && s.Age==8 && s.Remaining==7;});
-        Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==24 && ScSmokeVolume.SpriteCount(20)==12 && ScSmokeVolume.SpriteCount(50)==6 && 16*ScSmokeVolume.SpriteCount(0)<=384);
+        Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==24 && ScSmokeVolume.SpriteCount(20)==12 && ScSmokeVolume.SpriteCount(50)==6 && 16*ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count<=768);
         Test("fire-overlap-budget",()=> {
             var a=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var b=new ScGrenadeState {Kind=4,Effect=true,Remaining=7};
             return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==4 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1;

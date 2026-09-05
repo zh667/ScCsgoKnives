@@ -28,8 +28,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     readonly PrimitivesRenderer3D m_renderer = new();
     readonly PrimitivesRenderer2D m_overlay = new();
     readonly DrawBlockEnvironmentData m_environment = new();
-    Texture2D m_smokeTexture;
-    Texture2D m_fireTexture;
+    readonly Texture2D[] m_effectTextures = new Texture2D[4];
     Sound m_fireLoop;
     readonly Dictionary<ScGrenadeState,List<Vector3>> m_firePoints=[];
     SubsystemTime m_time;
@@ -261,7 +260,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 if (duration>.05f) m_blind[body]=new Blindness {Until=m_time.GameTime+duration,Duration=duration,ImmuneUntil=m_time.GameTime+duration+3};
             }
         }
-        s.Effect=true;s.Remaining=.25f;s.Age=0;
+        s.Effect=true;s.Remaining=s.Kind==0?ScGrenadeVisuals.BlastLifetime:ScGrenadeVisuals.FlashLifetime;s.Age=0;
         Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,8,true);
     }
     void DecoyPulse(ScGrenadeState s) {
@@ -325,10 +324,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 } else if (s.Kind==2) {
                     DrawSmoke(camera,s);
                 } else {
-                    float radius=.4f+s.Age*5;
-                    var batch=m_renderer.FlatBatch(0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.AlphaBlend);
-                    Vector3 r=camera.ViewRight*radius,u=camera.ViewUp*radius;
-                    batch.QueueQuad(s.Position-r-u,s.Position+r-u,s.Position+r+u,s.Position-r+u,new Color(255,225,150,(int)(150*s.Remaining/.25f)));
+                    bool reduced=m_reducedFlash.Contains(camera.GameWidget.PlayerData.PlayerIndex);
+                    DrawSprites(camera,s,ScGrenadeVisuals.Burst(s.Position,s.Age,s.Kind==1,reduced,Vector3.Distance(camera.ViewPosition,s.Position)));
                 }
             }
             m_renderer.Flush(camera.ViewProjectionMatrix);
@@ -348,23 +345,24 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         Vector2 size=new(camera.ViewportSize.X,camera.ViewportSize.Y);
         batch.QueueQuad(Vector2.Zero,size,0,color);batch.TransformTriangles(camera.ViewportMatrix);batch.Flush();
     }
-    void DrawSmoke(Camera camera,ScGrenadeState s) {
-        m_smokeTexture??=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/grenade_smoke_particle");
-        float radius=ScSmokeVolume.CurrentRadius(s);if (radius<.01f) return;
-        Vector3 center=ScSmokeVolume.Center(s);
-        int count=ScSmokeVolume.SpriteCount(Vector3.Distance(camera.ViewPosition,center));
-        var batch=m_renderer.TexturedBatch(m_smokeTexture,false,0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.AlphaBlend,SamplerState.LinearClamp);
-        for (int i=0;i<count;i++) {
-            float y=1-2*(i+.5f)/count,ring=MathF.Sqrt(1-y*y),angle=i*2.399963f+s.Age*.025f;
-            Vector3 offset=new Vector3(MathF.Cos(angle)*ring,y,MathF.Sin(angle)*ring)*radius*.5f;
-            Vector3 pos=center+offset;
-            if (!Clear(s.Position+Vector3.UnitY*.1f,pos)) continue;
-            Vector3 r=camera.ViewRight*radius*.55f,u=camera.ViewUp*radius*.55f;
-            batch.QueueQuad(pos-r-u,pos+r-u,pos+r+u,pos-r+u,Vector2.Zero,Vector2.UnitX,Vector2.One,Vector2.UnitY,new Color(145,150,153,210));
+    void DrawSprites(Camera camera,ScGrenadeState s,List<ScGrenadeVisuals.Sprite> sprites) {
+        foreach(var sprite in sprites.OrderByDescending(p=>Vector3.DistanceSquared(camera.ViewPosition,p.Position))) {
+            if (!Clear(s.Position+Vector3.UnitY*.1f,sprite.Position)) continue;
+            int key=sprite.Texture;
+            var texture=m_effectTextures[key]??=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+ScGrenadeVisuals.Textures[key]);
+            var batch=m_renderer.TexturedBatch(texture,false,sprite.Additive?2:0,DepthStencilState.DepthRead,
+                RasterizerState.CullNoneScissor,sprite.Additive?BlendState.Additive:BlendState.AlphaBlend,SamplerState.LinearClamp);
+            Vector3 right=camera.ViewRight,up=sprite.Upright?Vector3.UnitY:camera.ViewUp;
+            if(sprite.Upright) { right=new Vector3(right.X,0,right.Z);right=right.LengthSquared()>.001f?Vector3.Normalize(right):Vector3.UnitX; }
+            float c=MathF.Cos(sprite.Rotation),n=MathF.Sin(sprite.Rotation);
+            Vector3 r=(right*c+up*n)*sprite.Width,u=(up*c-right*n)*sprite.Height,p=sprite.Position;
+            float x=key==3?0:(sprite.Frame%4)*.25f+.004f,y=key==3?0:(sprite.Frame/4)*.25f+.004f,span=key==3?1:.242f;
+            batch.QueueQuad(p-r-u,p+r-u,p+r+u,p-r+u,new Vector2(x,y+span),new Vector2(x+span,y+span),new Vector2(x+span,y),new Vector2(x,y),sprite.Color);
         }
     }
+    void DrawSmoke(Camera camera,ScGrenadeState s) =>
+        DrawSprites(camera,s,ScGrenadeVisuals.Smoke(s,Vector3.Distance(camera.ViewPosition,ScSmokeVolume.Center(s))));
     void DrawFire(Camera camera,ScGrenadeState s) {
-        m_fireTexture??=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/grenade_fire_particle");
         if (!m_firePoints.TryGetValue(s,out var points)) {
             points=[];m_firePoints[s]=points;float radius=ScFireArea.Radius(s.Kind);
             for (float x=-radius+.4f;x<radius;x+=.8f) for (float z=-radius+.4f;z<radius;z+=.8f) {
@@ -375,15 +373,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                     && Clear(s.Position+Vector3.UnitY*.2f,hit.Value.HitPoint()+Vector3.UnitY*.2f)) points.Add(hit.Value.HitPoint()+Vector3.UnitY*.03f);
             }
         }
-        var batch=m_renderer.TexturedBatch(m_fireTexture,false,0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.AlphaBlend,SamplerState.LinearClamp);
-        int i=0;
-        foreach (Vector3 p in points) {
-            if (Water(p) || Clear(p+Vector3.UnitY*.05f,p-Vector3.UnitY*.10f)) continue;
-            float height=.6f+.25f*MathF.Sin(s.Age*13+i++*2.3f);
-            Vector3 r=camera.ViewRight*.45f,u=Vector3.UnitY*height;
-            batch.QueueQuad(p-r,p+r,p+r+u,p-r+u,Vector2.UnitY,Vector2.One,Vector2.UnitX,Vector2.Zero,new Color(255,245,230,220));
-        }
+        var supported=points.Where(p=>!Water(p) && !Clear(p+Vector3.UnitY*.05f,p-Vector3.UnitY*.10f)).ToArray();
+        DrawSprites(camera,s,ScGrenadeVisuals.Fire(s,supported,Vector3.Distance(camera.ViewPosition,s.Position)));
     }
+
     public override void Dispose() {
         if (m_fireLoop is not null) { m_fireLoop.Stop();m_fireLoop.Dispose();Project.FindSubsystem<SubsystemAudio>()?.m_sounds.Remove(m_fireLoop);m_fireLoop=null; }
         m_preparing.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();

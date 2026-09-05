@@ -901,7 +901,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.InsertAt = now + milestones.Value.Insert;
             Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
         }
-        player.ComponentGui.DisplaySmallMessage($"装填消耗：{(spec.Pellets > 1 ? "霰弹" : "通用弹匣")} ×{(tube ? shells : cost)}", Color.White, false, false);
+        player.ComponentGui.DisplaySmallMessage(ScReloadTransaction.CostMessage(creative, spec.Pellets > 1, tube ? shells : cost), Color.White, false, false);
     }
 
     /// <summary>

@@ -90,3 +90,10 @@ Six grenade body models and 54 first-person clips were read from the local CS2 i
 Source hashes and material dependencies: `docs/survival-grenade-sources.json`. Existing local CS2 audio/particle exports and derived output paths: `docs/survival-grenade-audio-sources.json`, `docs/survival-smoke-sources.json`, `docs/survival-fire-decoy-sources.json`.
 
 The body already carries its attached pin/ring/handle; detached shared pin/spoon debris is not duplicated. The Molotov rag/liquid helper bones use their exported local bind under the animated parent; cloth and liquid simulation are not reproduced. Body, liquid and flame materials remain separate. Smoke/fire use CS2 sprite slices with this mod's bounded particle arrangement, not the original Source 2 simulation. HE/flash bursts are simplified transient light. The release time uses the exported `.Throw` sound cue as an explicit port mapping; it is not an exported server gameplay event.
+
+## 0.26.0 生存内容外观完善
+
+- 六种投掷物栏位图来自既有 CS2 `panorama/images/econ/weapons/base_weapons/` 导出，按透明边界裁切并统一留白。
+- 火焰、爆炸烟尘和烟雾来自既有 CS2 `fire_small_sim_a`、`explosion_fireball_large_01_smoke`、`vistasmokev1_emods` 图像序列，各抽取 16 帧组成带边距的 atlas。
+- `survival_surface.png` 是本项目生成的金属、橡胶、黄铜、镜片和工作垫材质；物品与工作台网格由 `ScSurvivalMesh` 创建。`grenade_glow.png` 为程序生成的柔边光核。
+- 可重复导入脚本：`tools/build_survival_polish_assets.py`；逐文件 SHA-256 和源路径见 `docs/survival-polish-sources.json`。本轮不删除任何既有本地、Steam 或 VPS 资源。

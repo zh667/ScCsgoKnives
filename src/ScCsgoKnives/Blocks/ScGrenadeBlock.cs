@@ -34,6 +34,11 @@ public sealed class ScGrenadeBlock : Block {
     }
     public override void DrawBlock(PrimitivesRenderer3D renderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData env) {
         int kind = Kind(value); if (kind < 0 || kind >= 6) return;
+        if (env?.DrawBlockMode == DrawBlockMode.UI && env.GetType().FullName != "Game.ScCsgoBoxModelPreviewEnvironmentData") {
+            BlocksManager.DrawFlatBlock(renderer,value,1.45f*size,ref matrix,
+                ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+Assets[kind]+"_slot"),color,false,env);
+            return;
+        }
         foreach (var part in m_parts[kind]) BlocksManager.DrawMeshBlock(renderer, part.Mesh, part.Texture, color, .65f * size, ref matrix, env);
     }
     public void DrawProjectile(PrimitivesRenderer3D renderer,int kind,ref Matrix matrix,DrawBlockEnvironmentData env) {

@@ -1,6 +1,6 @@
 # ScCsgoKnives
 
-《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.25.1（生存玩法 P0–P5，程序检查通过，实机验收待完成）。
+《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.26.0（生存内容第二轮完善，包内程序检查通过，实机验收待完成）。
 
 - 22 把刀、35 把枪、6 种投掷物，全部使用 CS2 模型、骨骼动画和真实手臂／手套。
 - 旧配置中的 `KnifeProfile=0`、`GunProfile=0` 不再启用方块手。
@@ -11,6 +11,9 @@
 生存玩法：
 
 - 原版工作台制作零件、武器装配台和弹药；在装配台选型号组装，等级只需 1–6，制作出来的枪为空枪。
+- 游戏帮助中选择枪刀后点击“装配配方”，可查看装配台、等级和实际材料数量；枪械满弹/空枪均对应同一份配方。
+- 创造模式换弹提示无限弹药、无需消耗；通用弹匣、霰弹、四种装配零件和装配台均有立体网格，投掷物使用统一 CS2 栏位图。
+- 烟火使用 16 帧 CS2 粒子序列，高爆带烟尘和火星，闪光采用柔边光晕，保留减弱闪光选项。
 - 通用弹匣按枪容量消耗 1/2/3/5 个；换下的余弹作废。Nova、XM1014、Sawed-Off 逐颗装霰弹；MAG-7 每次消耗 5 颗。
 - 所有刀左键轻击（7）、右键重击（12），触屏有“重刀”按钮；持枪时该按钮用于换弹。
 - 投掷物左键强投，右键或“轻投”按钮近抛；拉环后切走可取消，出手才扣除。高爆、闪光、烟雾、燃烧瓶、燃烧弹和诱饵均有制作配方。
@@ -19,7 +22,7 @@
 
 升级前备份世界。三代旧枪数据继续读取；新版物品/150 发数据不保证能用旧版 DLL 降级读取，回退需配套还原升级前存档。
 
-阶段证据、尚未完成的实机测试与资源近似见 [实施进度](docs/survival-implementation-progress.md)，具体成本见 [规划](docs/survival-progression-ammo-damage-grenades-plan-2026-09-06.md)。
+阶段证据、尚未完成的实机测试与资源近似见 [实施进度](docs/survival-implementation-progress.md)，本轮实现与离线预览见 [完善记录](docs/survival-polish-plan-2026-09-06.md)，具体成本见 [规划](docs/survival-progression-ammo-damage-grenades-plan-2026-09-06.md)。
 
 构建和交付：
 
@@ -28,6 +31,6 @@ dotnet build ScCsgoKnives.sln -c Release
 python -X utf8 tools/pack_scmod.py
 ```
 
-安装包：`output/ScCsgoKnives-0.25.1.scmod`。资源来源见 `ASSET_SOURCES.md`，第三方署名见 `THIRD_PARTY_NOTICES.md`。
+安装包：`output/ScCsgoKnives-0.26.0.scmod`。资源来源见 `ASSET_SOURCES.md`，第三方署名见 `THIRD_PARTY_NOTICES.md`。
 
 0.20.4 的清理清单、验证结果和视觉限制见 `docs/cs2-0.20.4-report.md`。代码采用 GPL-3.0。

@@ -2,6 +2,10 @@ namespace Game;
 
 /// <summary>Reload events commit independently. Cancellation never refunds a discarded magazine.</summary>
 public sealed class ScReloadTransaction {
+    public static string CostMessage(bool creative, bool shells, int count) => creative
+        ? "创造模式：无限弹药，无需消耗"
+        : $"装填消耗：{(shells ? "霰弹" : "通用弹匣")} ×{count}";
+
     public readonly IInventory Inventory;
     public readonly int Slot, Ammo, Cost, Capacity;
     public int Expected { get; private set; }

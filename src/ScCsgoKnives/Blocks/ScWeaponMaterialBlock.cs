@@ -2,7 +2,7 @@ using Engine;
 using Engine.Graphics;
 namespace Game;
 
-public sealed class ScWeaponMaterialBlock : FlatBlock {
+public sealed class ScWeaponMaterialBlock : ScSupplyBlock {
     public static readonly string[] Names = ["金属坯件", "精密机构", "握持组件", "光学组件"];
     public ScWeaponMaterialBlock() {
         DefaultDisplayName = Names[0]; DefaultCategory = "Items"; CraftingId = "sccsgomaterial";
@@ -11,7 +11,7 @@ public sealed class ScWeaponMaterialBlock : FlatBlock {
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScWeaponMaterialBlock>(true), 0, kind);
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Names[Math.Clamp(Terrain.ExtractData(value), 0, 3)];
     public override string GetDescription(int value) => "在武器装配台选择型号组装。材料和等级不足时不扣料。";
-    public override Texture2D GetDefaultTexture(int value) => ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_part" + Math.Clamp(Terrain.ExtractData(value), 0, 3));
+    protected override int MeshKind(int value) => 2 + Math.Clamp(Terrain.ExtractData(value), 0, 3);
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override int GetTextureSlotCount(int value) => 1;
     public override IEnumerable<int> GetCreativeValues() => Enumerable.Range(0, 4).Select(Value);

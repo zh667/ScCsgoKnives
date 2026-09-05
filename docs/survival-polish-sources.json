@@ -1,0 +1,225 @@
+{
+  "imports": [
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_icons\\panorama\\images\\econ\\weapons\\base_weapons\\weapon_hegrenade_png.png",
+      "sha256": "6364fb46e0b1bc94cbea37faa8bc80800a1047449b089745814b1789d99a1cca"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_icons\\panorama\\images\\econ\\weapons\\base_weapons\\weapon_flashbang_png.png",
+      "sha256": "7bb7941bb8e77ebfac1bef987b6cc32dc16bb4f250acf304e2a56a5c8a06b5c5"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_icons\\panorama\\images\\econ\\weapons\\base_weapons\\weapon_smokegrenade_png.png",
+      "sha256": "bf915608a74029c6413a6b870bfdd7728985217755d9d9707307fb85dee3fdd0"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_icons\\panorama\\images\\econ\\weapons\\base_weapons\\weapon_molotov_png.png",
+      "sha256": "54418107ed5544ced53f2a40fb0789533e8b61409f6d3ecf080d2498fac378da"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_icons\\panorama\\images\\econ\\weapons\\base_weapons\\weapon_incgrenade_png.png",
+      "sha256": "dcdd7a151ad8f8e9bd607df873f0647a502c0381af288e8fd897ceaa483e2969"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_icons\\panorama\\images\\econ\\weapons\\base_weapons\\weapon_decoy_png.png",
+      "sha256": "96cb2d32e11ee388f5a7badbcf142fcb744ff29d1b7e660cf7b40111c85b75bd"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_0.png",
+      "sha256": "ad0a7e0ae8b5ef39d8501c9b8c22cc607d83bc8721eb5863f351ff552bba1ecc"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_1.png",
+      "sha256": "f95a384f56f3795963757b3ec193276ab07e47f28f8346b238e9cb344c7a04da"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_2.png",
+      "sha256": "9817018ba4321c13321bfd35f277f3805b2111a0242142a821d17c3974ccd1c1"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_3.png",
+      "sha256": "7623c2266e53e151b1761eadf0cd45b204b04fd3038d09b3a39b096e689883f9"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_4.png",
+      "sha256": "b5da4fca921f170a4b4f1c9f5578040f91814e9b259aec246fc8bd7228db7b40"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_5.png",
+      "sha256": "752fb097ab5312baa66122615a562bdb29854c186c1cb45d3820badb32b28727"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_6.png",
+      "sha256": "ad11122a76387f9e6e44a4270e32c95c5d0b5134008e51bdd0eb602b15a12e6e"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_7.png",
+      "sha256": "58b2dfff278bbe77c1a50e21d965211fb21f3d9d90580ecf5b465d0ca2b5a47e"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_8.png",
+      "sha256": "9980e670d72417c3d5ce98894259cec68572e5224f5f2e2676fab45af3e2e68c"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_9.png",
+      "sha256": "a6176618f3070d5c52d8984046eab946fb2d24326045a278b96f7e0462d987f4"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_10.png",
+      "sha256": "f624b3b28bdfbdd97303811f596568f734a907f0c4dbf2d2b5532aeed89c105e"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_11.png",
+      "sha256": "cdecdf0004274993127d7df1ae42263ecd8178bf626fd9cd8b06ddc298726093"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_12.png",
+      "sha256": "6a76cfe973ca261af9f708fe74002f3650fbc3d86177585cab6565b431da60ca"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_13.png",
+      "sha256": "65f553a85f3641ee1322000cc336084c1135441ec8a98596ce53c3d9e28e7034"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_14.png",
+      "sha256": "90615ccd25d15aa204b447bd65e959b37389bb50d17d335906a2261a0f2a2b2d"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_16.png",
+      "sha256": "baee4c5d4bc1ef19904c4cdf82d597870baeddc7483e542fdbfb4f1b83ca867c"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_0.png",
+      "sha256": "f899d2c6ff594153abeebf4e9e6bf93c07c5f4d95e65cead864ef8382453dbb2"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_2.png",
+      "sha256": "73dfefda3b47dc6c0329fd9c553459d3b8f5b3fc67809542edf0b7dbd7d60c41"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_4.png",
+      "sha256": "1bb5543039146456d57c9999be959453ae31732fbea013d708e33eedf657b651"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_6.png",
+      "sha256": "ff7dfd76e637e0c6bfd2bf8808340f42ace7c0d291ec76822cc5264da2c6e726"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_8.png",
+      "sha256": "e3fd49ce944e3768cec8defe65435f8a24119aec36f50ba65a47877e22464bb3"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_10.png",
+      "sha256": "5ee94f2cedff5bb900320022f9914e6bf864c3c1a862e0f6e9e9e01d57afb929"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_12.png",
+      "sha256": "f39edbd2f815036ca7cfc3ad6f0bc712210c918be96e06762b622a1fcb5ddd19"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_14.png",
+      "sha256": "e45671c7f2effe7ad39d2ab3f8e3ed21da72a3dbd209150e309a6433a6faeeff"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_16.png",
+      "sha256": "f6750ce20ef8d5116d3cce838b4e8e3132485fb8dcf8d54e37516742285a40ef"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_18.png",
+      "sha256": "8eb17f2b7f39a921db81c62ba268b54589c3e129127dfca95f67724f4f3f38a5"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_20.png",
+      "sha256": "af65503847c6651755dd4b9e4f65c091c68b16b748741bed2b95cbc186e27964"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_22.png",
+      "sha256": "63ed21f41a5da750a5d9996329b1d61a740f1c138fa340f924d95759cff8e290"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_24.png",
+      "sha256": "fe8cc35c7cf2e2f2aca6c31280e8edb6996491d8fbf8d128357d087f88c463c4"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_26.png",
+      "sha256": "b779c9462c249ae024b078590621c0cbb70105b3467c40ad60d5775f1d0237df"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_28.png",
+      "sha256": "1cd3c01e93be2641f10df1267d3916056ddd8d1778ea0e9b2b999ef2158c8ce8"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_31.png",
+      "sha256": "751cffe12dd5050d1187bf5752f79032f6439f33cbeea632bc058edf8c5d039c"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_0.png",
+      "sha256": "6625ef402f0dc9cf905529832bb3f1dd1c2fc44374b6d6c0656fd7630259009d"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_1.png",
+      "sha256": "cac119c010f3499c28f25e3f25ff85ee0f2238ccf5fcf17a94a69f8219123c03"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_2.png",
+      "sha256": "faa0f0282fafeec9342ebdd090351c5e9cda6e2f3045f14643bd2e8c159ed404"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_3.png",
+      "sha256": "3f655fe36c82351d4d7d82114a427933eb6172aa9a018c6e02681d3b16e134ee"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_4.png",
+      "sha256": "d39ca709a8348248d7d47edf18fc5f29a4d885b423c52bda8f31ebbf3bb93985"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_5.png",
+      "sha256": "7561bf8d0a94f905351105d67fe3b121c8ba2581971fefffc88e6a0f602a1a27"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_6.png",
+      "sha256": "2baa9fc84a7e08b613ac992278161848ecfd044965e32bebf4c5397084fea2fc"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_7.png",
+      "sha256": "9b4b51faa3ce6f506e91036288f8f7a3bab97caf6d2bd7d43d141be8311a3ad7"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_8.png",
+      "sha256": "b7531c7a6d69422fdf5d01bfab152527fdd613c2f1b89d51f095206d3a4c96f8"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_9.png",
+      "sha256": "6ce1dbfdea9450c9e96a91976c821701371410fcdca15b9fd50d1ea9faa20869"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_10.png",
+      "sha256": "d66b687b2d0a957ea2a1faa307e24b43e62b3a969b529771c445c9149c75752b"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_11.png",
+      "sha256": "d8f986b3aba4691f9a7e08686a0a68c44ba511b297a37e836d84c0f9be7b5743"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_12.png",
+      "sha256": "84a9292389cd6e4613c0c353b3268e7f2bea20a1a1186ae30ee3b792a4f1d152"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_13.png",
+      "sha256": "6730987724f3cb8dac70cc56490272f8179de8e30aad5112f54921de8d3e9a46"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_14.png",
+      "sha256": "88395a48ddf365c1ca6d9f15d8a2faf92396dbbd97fe5f8ba235a9ab5fa44181"
+    },
+    {
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_15.png",
+      "sha256": "b68898af7e7e91997c982a49f84141a010709b3cd13660ae96f7556c50bc04ea"
+    }
+  ],
+  "generated": [
+    "survival_surface.png",
+    "grenade_glow.png"
+  ],
+  "conversion": "128px transparent icons; padded 4x4 RGBA animation atlases, 16 frames each"
+}

@@ -64,9 +64,17 @@
 - 自查修正：第一人称燃烧瓶主体还含左手打火机，库存/掉落/投射物世界网格按骨骼去掉打火机；已投出的手雷去掉拉环/保险片。先压缩剩余顶点再归一化范围，防止被隐藏部件撑大范围、缩小瓶身。
 - 第一人称模型保持完整，未删除任何资产；6 种投掷物新增世界/飞行几何检查。所有已投出的物品只参与效果，不生成可反复拾取的副本。
 
+## 0.26.0 — 用户反馈第二轮完善
+
+- 创造模式换弹显示“无限弹药，无需消耗”，覆盖普通换匣、管式霰弹与 MAG-7；生存事务规则保持不变。
+- 枪刀的帮助页面有“装配配方”入口，展示原有 57 项真实成本、等级和装配台，满弹/空枪同型号共用清单；原版九宫格仍为 13 项，未开放绕过装配的配方。
+- 六种投掷物的栏位图统一使用 CS2 图标；通用弹匣、霰弹、四种零件使用立体网格；装配台改为独立金属台、工作垫、抽屉和夹具，并匹配支架碰撞。
+- 烟、火、爆炸烟尘接入 16 帧 CS2 序列，增加错相翻滚、余烬和柔边光晕。烟面片上限更新为近/中/远 48/24/12，全场最多 768；高爆可见尾迹 1.25 秒，伤害仍单次结算。
+- 3250 项包内检查通过，0 失败；包含原版控件禁用会清掉点击事件的回归。计划、完成内容和实机待测清单见 [本轮记录](survival-polish-plan-2026-09-06.md)；[包检查](survival-polish-packagecheck.json)、[新物品离线预览](survival-items-offline.png)、[效果离线预览](survival-effects-offline.png)。
+
 ## 总回归与交付
 
-- 最新安装包：`output/ScCsgoKnives-0.25.1.scmod`。P0、P1、P2、P3、P4 的独立版本仍保留，阶段代码分别提交。
+- 最新安装包：`output/ScCsgoKnives-0.26.0.scmod`。P0、P1、P2、P3、P4 的独立版本仍保留，阶段代码分别提交。
 - 最新包内 DLL 自检与真实 API 集成检查P5 共 3091 项通过、0 失败，见 [P5 检查](survival-p5-packagecheck.json)；0.25.1 共 3097 项通过、0 失败，增补世界模型检查见 [最终检查](survival-final-packagecheck.json)。集成检查用游戏实际 `CombineDataBase` 和数据库继承加载，验证狼/熊/野猪/牛/犀牛获得诱饵行为、四个世界子系统唯一注册；用两组模拟模组顺序检查动态索引；全部 13 个九宫格配方调用原版配方匹配器，与 251 种原版布局及彼此比较，无平移/镜像冲突。
 - [六种投掷物离线图](survival-grenades-offline.png)使用**安装包 DLL 导出的真实蒙皮顶点**、模组 PBR 着色器与贴图绘制，抽查待机和拉环；真实手、拉环、瓶身及布条没有缺失骨骼造成的塌陷。这是简化照明下的离线渲染，未画火焰附加通道，**不是游戏截图**。
 - 未完成的实机验收：鼠标/触屏实际操作与界面布局、枪刀对各动物的命中数及体感、墙后烟闪/火区实际表现、4 烟团最低设备帧率、真实旧世界/箱子/掉落升级、多人权威与同步。当前实现为本地游戏逻辑，不宣称多人验收通过。
@@ -77,5 +85,5 @@
 ```powershell
 dotnet build ScCsgoKnives.sln -c Release --no-restore
 python -X utf8 tools/pack_scmod.py
-dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod output/ScCsgoKnives-0.25.1.scmod --json docs/survival-final-packagecheck.json --vanilla-content 'E:\EdgeDownload\[Windows]SurvivalcraftAPI_1.9.2.1\Content.zip'
+dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod output/ScCsgoKnives-0.26.0.scmod --json docs/survival-polish-packagecheck.json --vanilla-content 'E:\EdgeDownload\[Windows]SurvivalcraftAPI_1.9.2.1\Content.zip'
 ```

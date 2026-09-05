@@ -3,7 +3,7 @@ using Engine.Graphics;
 
 namespace Game;
 
-public sealed class ScAmmoBlock : FlatBlock {
+public sealed class ScAmmoBlock : ScSupplyBlock {
     public const int Magazine = 0, Shell = 1;
     public ScAmmoBlock() {
         DefaultDisplayName = "通用弹匣"; DefaultCategory = "Weapons";
@@ -15,7 +15,7 @@ public sealed class ScAmmoBlock : FlatBlock {
     public override string GetDescription(int value) => Terrain.ExtractData(value) == Shell
         ? "管式霰弹枪每次插入消耗 1 颗；MAG-7 每次换匣消耗 5 颗，丢弃旧匣余弹。"
         : "容量 35 发以内每次换弹消耗 1 个；P90/野牛 2 个，M249 3 个，内格夫 5 个。旧匣余弹作废。";
-    public override Texture2D GetDefaultTexture(int value) => ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + (Terrain.ExtractData(value) == Shell ? "survival_shell" : "survival_magazine"));
+    protected override int MeshKind(int value) => Terrain.ExtractData(value) == Shell ? 1 : 0;
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override int GetTextureSlotCount(int value) => 1;
     public override IEnumerable<int> GetCreativeValues() { yield return Value(Magazine); yield return Value(Shell); }

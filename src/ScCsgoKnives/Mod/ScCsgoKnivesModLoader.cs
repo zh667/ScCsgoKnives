@@ -13,6 +13,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
+        ModsManager.RegisterHook("BeforeWidgetUpdate", this);
+        ModsManager.RegisterHook("AfterWidgetUpdate", this);
         ModsManager.RegisterHook("ChaseBehaviorScoreTarget", this);
         ModsManager.RegisterHook("UpdateChaseBehaviorChasing", this);
         ModsManager.RegisterHook("HandleMoveInventoryItem", this);
@@ -23,6 +25,35 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("UpdatePlayerInputAim", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
+    }
+
+    RecipaediaScreen m_assemblyClickScreen;
+    int m_assemblyClickValue;
+    public override void BeforeWidgetUpdate(Widget widget) {
+        if (widget is RecipaediaScreen screen) {
+            m_assemblyClickScreen = null;
+            if (screen.m_recipesButton.IsClicked && screen.m_blocksList.SelectedItem is int value
+                && ScWeaponCrafting.Find(value) is not null) {
+                m_assemblyClickScreen = screen; m_assemblyClickValue = value;
+            }
+        }
+    }
+    public override void AfterWidgetUpdate(Widget widget) {
+        if (widget is not RecipaediaScreen screen) return;
+        if (screen.m_blocksList.SelectedItem is int value && ScWeaponCrafting.Find(value) is not null) {
+            screen.m_recipesButton.Text = "装配配方";
+            screen.m_recipesButton.IsEnabled = true;
+        }
+        // Vanilla temporarily disables an empty nine-grid recipe button and
+        // UpdateCeases clears its click. Capture before that happens; navigate
+        // after the vanilla update, without replacing the shared help screen.
+        if (m_assemblyClickScreen == screen) {
+            m_assemblyClickScreen = null;
+            if (ScreensManager.CurrentScreen == screen) {
+                ScreensManager.m_screens["RecipaediaRecipes"] = new ScAssemblyRecipesScreen();
+                ScreensManager.SwitchScreen("RecipaediaRecipes", m_assemblyClickValue);
+            }
+        }
     }
 
     public override void ChaseBehaviorScoreTarget(ComponentChaseBehavior chase, ComponentCreature target, ref float score) =>

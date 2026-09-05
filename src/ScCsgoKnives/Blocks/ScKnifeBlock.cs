@@ -107,9 +107,11 @@ public class ScKnifeBlock : Block {
         return base.GetDisplayName(subsystemTerrain, value);
     }
 
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
+
     public override string GetDescription(int value) {
-        if (LanguageControl.TryGetBlock($"{nameof(ScKnifeBlock)}:{GetVariant(value)}", "Description", out string result)) return result;
-        return base.GetDescription(value);
+        if (LanguageControl.TryGetBlock($"{nameof(ScKnifeBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value);
+        return base.GetDescription(value) + ScWeaponCrafting.Help(value);
     }
 
     public static int GetVariant(int value) => Terrain.ExtractData(value) & 0x1F;
