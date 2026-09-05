@@ -9,7 +9,8 @@ draw. Convention matches ``rigprobe.py`` and ``CsmcKnifeRig``: row vectors,
 
 An exported clip DMX carries the merged tree already: the 56-bone viewmodel
 skeleton and the weapon's own bones sit side by side as two roots of the
-DmeModel. The weapon root is re-parented onto the viewmodel's attach bone
+DmeModel. That holds for the knives too - knife_m9's idle carries 59 bones, of
+which the same 44 arm bones the AK's 64 carry. The weapon root is re-parented onto the viewmodel's attach bone
 (``wpn``, per ``viewmodel.vnmskel``'s m_secondarySkeletons) to make one tree.
 """
 
@@ -23,10 +24,60 @@ import numpy as np
 
 import cs2_dmx
 
-ANALYSIS = (Path.home() / "workspaces/CSMCReverse/local_cs2_analysis"
-            / "all_weapons/08_first_person")
+_EXPORTS = Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"
+
+# Two export trees, same conventions. The guns came first, in 08_first_person;
+# the 22 knives arrived on 2026-09-05 in 09_knives. They share one primary
+# skeleton - every one of the knives' 317 clips names
+# animation/skeletons/characters/viewmodel.vnmskel, which only 08_first_person
+# carries - so ANALYSIS stays the guns' tree and only the clip lookup spans both.
+ROOTS = [_EXPORTS / "08_first_person", _EXPORTS / "09_knives"]
+
+ANALYSIS = ROOTS[0]
 ANIM = ANALYSIS / "decompiled/animation"
 CLIPS = ANIM / "anims/viewmodel"
+
+
+def clip_roots():
+    """Every decompiled/animation/anims/viewmodel that exists."""
+    return [r / "decompiled/animation/anims/viewmodel" for r in ROOTS
+            if (r / "decompiled/animation/anims/viewmodel").is_dir()]
+
+
+def clip_path(folder: str, stem: str) -> Path:
+    """<folder>/<stem>.dmx from whichever export tree has it.
+
+    Raises rather than returning a missing path: a silently absent clip used to
+    surface much later as an empty rig.
+    """
+    tried = []
+    for root in clip_roots():
+        candidate = root / folder / (stem + ".dmx")
+        tried.append(candidate)
+        if candidate.is_file():
+            return candidate
+    raise FileNotFoundError("no clip %s/%s.dmx in any export tree:\n  %s"
+                            % (folder, stem, "\n  ".join(str(t) for t in tried)))
+
+
+def clip_stems(folder: str):
+    """Every clip stem in a folder, from whichever tree has it."""
+    for root in clip_roots():
+        d = root / folder
+        if d.is_dir():
+            return sorted(p.stem for p in d.glob("*.dmx"))
+    return []
+
+
+def relative_to_root(path) -> str:
+    """A path as <tree>/... so SourceFile says which export it came from."""
+    path = Path(path)
+    for root in ROOTS:
+        try:
+            return "%s/%s" % (root.name, path.relative_to(root))
+        except ValueError:
+            continue
+    return str(path)
 
 # Bone the weapon skeletons hang off. viewmodel.vnmskel lists it explicitly for
 # 13 of the 35 weapons and names "wpn" every time; the rest (AWP included) carry
