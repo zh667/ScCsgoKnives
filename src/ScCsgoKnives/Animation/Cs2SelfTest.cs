@@ -476,7 +476,9 @@ public static class Cs2SelfTest {
                   : $"[{string.Join(',', GunSpec.All.Select(g => g.Name))}] no longer starts with "
                     + $"[{string.Join(',', GunSpec.FrozenOrder)}]; variants may only be appended");
 
-        // The widened variant field has to read old saves and round-trip new ones.
+        Check("knives/order", CsmcKnifeRig.FrozenKnifeOrder.Select((n, i) => CsmcKnifeRig.GetAssetName(i) == n).All(x => x), "all 22 published knife variants frozen");
+        // Exercise actual engine terrain serialization, not merely shifts in a separate host.
+
         var layout = new List<string>();
         for (int v = 0; v < Math.Min(GunSpec.All.Length, 4); v++) {
             for (int r = 0; r <= 63; r += 21) {
@@ -490,19 +492,28 @@ public static class Cs2SelfTest {
             }
         }
         for (int v = 0; v < 64; v++) {
-            foreach (int r in new[] { 0, 1, 30, 100, 127 }) {
+            foreach (int r in new[] { 0, 1, 63, 64, 127, 128, 150, 255 }) {
                 foreach (bool sil in new[] { false, true }) {
                     int data = GunSpec.MakeData(v, r, sil);
                     if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != r
                         || GunSpec.GetSilencerOff(data) != sil)
                         layout.Add($"new({v},{r},{sil}) -> ({GunSpec.GetVariant(data)},{GunSpec.GetRounds(data)},{GunSpec.GetSilencerOff(data)})");
-                    if (data >> 15 != 0) layout.Add($"new({v},{r},{sil}) uses bit {data:X} beyond 15");
+                    if (data >> 17 != 0) layout.Add($"new({v},{r},{sil}) exceeds safe data bits");
+                    foreach (int contents in new[] { 1, 512, 1023 }) {
+                        int value = Terrain.MakeBlockValue(contents, 15, data);
+                        if (Terrain.ExtractData(value) != data || Terrain.ExtractContents(value) != contents)
+                            layout.Add($"terrain round-trip {v}/{r}/{sil}/{contents}");
+                    }
+                    int priorRounds = Math.Min(r, 127);
+                    int v2 = (1 << 14) | (sil ? 1 << 13 : 0) | (priorRounds << 6) | v;
+                    if (GunSpec.GetVariant(v2) != v || GunSpec.GetRounds(v2) != priorRounds || GunSpec.GetSilencerOff(v2) != sil
+                        || GunSpec.SetRounds(v2, priorRounds) != GunSpec.MakeData(v, priorRounds, sil)) layout.Add("v2 migration failed");
                 }
             }
         }
         Check("gunspec/layout", layout.Count == 0,
               layout.Count == 0
-                  ? "old saves read back unchanged, and 64 variants x 0..127 rounds x silencer round-trip in 15 bits"
+                  ? "three layouts preserved; 64 variants x eight ammo boundaries x both silencers round-trip through terrain contents 1/512/1023"
                   : string.Join("; ", layout.Take(4)));
 
         Check("load/variants", Cs2SoundVariants.LoadError is null, Cs2SoundVariants.LoadError ?? $"{Cs2SoundVariants.All.Count} cues");

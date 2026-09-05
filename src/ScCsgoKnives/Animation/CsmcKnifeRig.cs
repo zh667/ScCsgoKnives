@@ -152,6 +152,7 @@ public static class CsmcKnifeRig {
 
     public static bool IsGun(int variant) => Entry(variant).IsGun;
     /// <summary>Knife variants come first in the combined manifest; guns follow.</summary>
+    public static readonly string[] FrozenKnifeOrder = ["karambit", "m9", "butterfly", "bayonet", "bowie", "canis", "cord", "css", "default_ct", "default_t", "falchion", "flip", "gut", "kukri", "navaja", "outdoor", "push", "skeleton", "stiletto", "tactical", "talon", "ursus"];
     public static int KnifeCount => s_knifeCount;
     static int s_knifeCount;
 
