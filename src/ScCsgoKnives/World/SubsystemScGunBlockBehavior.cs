@@ -149,7 +149,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>How many quads the ribbon is cut into; the width is solved per joint.</summary>
     const int TracerSegments = 24;
 
-    Texture2D m_tracerAdd, m_tracerBlend, m_tracerSmg;
+    Texture2D m_tracerAdd, m_tracerBlend, m_tracerSmg, m_tracerTintable;
     bool m_tracerTexturesTried;
 
     Texture2D TracerTexture(string name) {
@@ -160,6 +160,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 m_tracerBlend = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_blend");
                 // The SMG rope's streak (bullet_tracer_seq), one repeat, head at U = 1.
                 m_tracerSmg = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_smg");
+                // The AUG / SG 553 rope's streak (bullet_tracer_tintable), white in the file.
+                m_tracerTintable = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_tintable");
             }
             catch (Exception e) {
                 KnifeDiagnostics.WarnOnce("cs2-tracer-textures", $"Could not load the CS2 tracer textures: {e.Message}");
@@ -171,6 +173,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             "cs2_tracer_add" => m_tracerAdd,
             "cs2_tracer_blend" => m_tracerBlend,
             "cs2_tracer_smg" => m_tracerSmg,
+            "cs2_tracer_tintable" => m_tracerTintable,
             _ => null,
         };
     }
@@ -465,7 +468,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.RescopeAt = now + spec.CycleSeconds;
             LeaveScope(player, state);
         }
-        KnifeAnimationController.TriggerShoot(player, silenced, lastRound);
+        KnifeAnimationController.TriggerShoot(player, silenced, lastRound, state.Zoom > 0);
         CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, silenced ? spec.SilencedMuzzleBone : spec.MuzzleBone, spec.Name, silenced);
         PlaySound(player, spec.HasSilencer && silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
@@ -625,7 +628,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // CS2 scales look sensitivity with the zoomed FOV (zoom_sensitivity_ratio_mouse 1.0): 1/magnification.
         if (float.IsNaN(state.SavedLookSensitivity)) state.SavedLookSensitivity = SettingsManager.LookSensitivity;
         SettingsManager.LookSensitivity = state.SavedLookSensitivity / magnification;
-        CsmcFirstPersonRenderer.SetScope(true, magnification);
+        CsmcFirstPersonRenderer.SetScope(true, magnification, spec.ScopeHidesWeapon);
+        KnifeAnimationController.SetScoped(player, true);
     }
 
     void LeaveScope(ComponentPlayer player, GunState state) {
@@ -636,6 +640,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.SavedLookSensitivity = float.NaN;
         state.Zoom = 0;
         CsmcFirstPersonRenderer.SetScope(false, 1f);
+        KnifeAnimationController.SetScoped(player, false);
     }
 
     // ---- recoil ------------------------------------------------------------------

@@ -41,6 +41,12 @@ public sealed class GunSpec {
     public int BurstShots = 3;
     /// <summary>Scope magnifications; empty for iron sights only.</summary>
     public float[] ZoomLevels = [];
+    /// <summary>
+    /// CS2's m_bHideViewModelWhenZoomed: the snipers hide the gun behind the scope
+    /// overlay; the AUG and SG 553 keep it drawn and aim down their own scope
+    /// (ironsight clips), with no overlay.
+    /// </summary>
+    public bool ScopeHidesWeapon = true;
     public string MuzzleBone = "muzzle";
     public string SilencedMuzzleBone = "muzzle2";
     public float RangeBlocks = 64f;
@@ -173,6 +179,30 @@ public sealed class GunSpec {
             Name = "galilar", Magazine = 35, CycleSeconds = 0.09f, Automatic = true, AttackPower = 30f,
             KickPitchDegrees = 1.120f, KickYawDegrees = 0.642f, KickRecoverPerSecond = 3.33f,
             SpreadDegrees = 0.5369f,
+        },
+        new() {
+            // Scope: m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6.
+            Name = "scar20", Magazine = 20, CycleSeconds = 0.25f, Automatic = true, AttackPower = 80f,
+            KickPitchDegrees = 1.653f, KickYawDegrees = 0.428f, KickRecoverPerSecond = 1.84f,
+            SpreadDegrees = 1.4951f, ZoomLevels = [2.25f, 6f],
+        },
+        new() {
+            // Scope: m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6.
+            Name = "g3sg1", Magazine = 20, CycleSeconds = 0.25f, Automatic = true, AttackPower = 80f,
+            KickPitchDegrees = 1.600f, KickYawDegrees = 0.414f, KickRecoverPerSecond = 1.84f,
+            SpreadDegrees = 1.4951f, ZoomLevels = [2.25f, 6f],
+        },
+        new() {
+            // Scope: m_nZoomFOV1 45 against CS2's 90, i.e. 2. m_bHideViewModelWhenZoomed false: the gun stays drawn and aims down its own scope.
+            Name = "aug", Magazine = 30, CycleSeconds = 0.1f, Automatic = true, AttackPower = 28f,
+            KickPitchDegrees = 1.280f, KickYawDegrees = 0.640f, KickRecoverPerSecond = 2.33f,
+            SpreadDegrees = 0.3094f, ZoomLevels = [2f], ScopeHidesWeapon = false,
+        },
+        new() {
+            // Scope: m_nZoomFOV1 45 against CS2's 90, i.e. 2. m_bHideViewModelWhenZoomed false: the gun stays drawn and aims down its own scope.
+            Name = "sg556", Magazine = 30, CycleSeconds = 0.11f, Automatic = true, AttackPower = 30f,
+            KickPitchDegrees = 1.493f, KickYawDegrees = 0.747f, KickRecoverPerSecond = 2.21f,
+            SpreadDegrees = 0.3673f, ZoomLevels = [2f], ScopeHidesWeapon = false,
         },
     ];
 

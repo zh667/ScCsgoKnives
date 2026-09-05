@@ -60,6 +60,12 @@ PASSES = [
     ("cs2_tracer_smg", "particle/effects/bullet_tracer_seq.png",
      "materials/particle/effects/bullet_tracer_seq.vtex",
      "PARTICLE_OUTPUT_BLEND_MODE_ADD", (128, 64)),
+    # weapon_tracers_assrifle_aug.vpcf (AUG, SG 553): the same kind of rope with a
+    # streak whose head is a plateau rather than a bright tip; white, so the
+    # ColorInterpolate tint is what colours it in CS2 (unmodelled here).
+    ("cs2_tracer_tintable", "particle/effects/bullet_tracer_tintable.png",
+     "materials/particle/effects/bullet_tracer_tintable.vtex",
+     "PARTICLE_OUTPUT_BLEND_MODE_ADD", (128, 64)),
 ]
 
 

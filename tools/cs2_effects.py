@@ -228,6 +228,7 @@ TRACER_TEXTURES = {
     "materials/effects/spark.vtex": "cs2_tracer_add",
     "materials/particle/sparks/sparks.vtex": "cs2_tracer_blend",
     "materials/particle/effects/bullet_tracer_seq.vtex": "cs2_tracer_smg",
+    "materials/particle/effects/bullet_tracer_tintable.vtex": "cs2_tracer_tintable",
 }
 
 
@@ -288,6 +289,21 @@ def read_tracer(path: str) -> dict:
         elif cls == "C_INIT_InitFloat":
             field = op.get("m_nOutputField", RADIUS)   # Source's default output is RADIUS
             v = literal(op.get("m_InputValue"))
+            if v is None and field == RADIUS:
+                # The AUG's and M249's ropes take their radius from a curve over the
+                # particle's index along the rope (PF_TYPE_PARTICLE_NUMBER_NORMALIZED
+                # mapped through m_Curve): 2..3 in and 1..3 in, thicker towards the
+                # end. The range is what the ribbon can use; the taper is not modelled.
+                node = op.get("m_InputValue") or {}
+                curve = node.get("m_Curve") if isinstance(node, dict) else None
+                if (isinstance(node, dict) and node.get("m_nType") == "PF_TYPE_PARTICLE_NUMBER_NORMALIZED"
+                        and curve and curve.get("m_vDomainMins") and curve.get("m_vDomainMaxs")):
+                    ys = [float(pt.get("y", 0.0)) for pt in (curve.get("m_spline") or [])]
+                    if ys:
+                        out["Radius"] = [min(ys), max(ys)]
+                        out["RadiusSource"] = "curve over the particle index along the rope"
+                        out["Unmodelled"].append("radius tapers %g..%g in along the rope" % (min(ys), max(ys)))
+                continue
             if v is None:
                 continue
             if field == ALPHA:
@@ -399,9 +415,18 @@ def read_tracer(path: str) -> dict:
         out["ColorMin"], out["ColorMax"] = c, list(c)
         out["ColorFromTexture"] = c == [255, 255, 255]
         out["ColorSource"] = "m_ConstantColor"
+    elif "ColorMin" not in out and out["Passes"]:
+        # Neither a RandomColor nor a constant colour: Source's default is white, and
+        # the texture is all the colour there is (the AUG's and the M249's ropes).
+        out["ColorMin"], out["ColorMax"] = [255, 255, 255], [255, 255, 255]
+        out["ColorFromTexture"] = True
+        out["ColorSource"] = "default white"
     if "Alpha" not in out and doc.get("m_ConstantColor") is not None and len(doc["m_ConstantColor"]) >= 4:
         a = float(doc["m_ConstantColor"][3]) / 255.0
         out["Alpha"] = [a, a]
+    elif "Alpha" not in out and out["Passes"]:
+        out["Alpha"] = [1.0, 1.0]          # Source's default particle alpha
+        out["AlphaSource"] = "default"
 
     speed = out.get("SpeedMin") or out.get("SpeedMax")
     if speed:

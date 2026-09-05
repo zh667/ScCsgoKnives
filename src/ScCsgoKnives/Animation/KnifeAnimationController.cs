@@ -15,6 +15,8 @@ public static class KnifeAnimationController {
         public bool DrawWhenVisible;
         /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
         public bool PendingInspect;
+        /// <summary>Aiming down the gun's own scope (AUG, SG 553): idle and shots use the ironsight clips.</summary>
+        public bool Scoped;
         public KnifeRigPose Pose;
     }
 
@@ -117,8 +119,8 @@ public static class KnifeAnimationController {
             // drops it the moment a round is chambered. The magazine is written by
             // the behaviour, possibly a frame after this idle began, so the choice
             // is re-made here rather than only when the idle starts.
-            if (CsmcKnifeRig.IsGun(variant) && state.ClipAlias is "idle" or "idleEmpty") {
-                string wanted = IdleClip(variant, MagazineEmpty(variant, itemValue));
+            if (CsmcKnifeRig.IsGun(variant) && state.ClipAlias is "idle" or "idleEmpty" or "ironsightIdle") {
+                string wanted = IdleClip(variant, MagazineEmpty(variant, itemValue), state.Scoped);
                 if (wanted != state.ClipAlias) {
                     Start(state, ActionKind.Idle, wanted);
                     elapsed = 0f;
@@ -139,7 +141,7 @@ public static class KnifeAnimationController {
                 state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
                 return state.Pose;
             }
-            string idle = IdleClip(variant, MagazineEmpty(variant, itemValue));
+            string idle = IdleClip(variant, MagazineEmpty(variant, itemValue), state.Scoped);
             if (idle == "idle" && !KnifeQa.Active && HasAlias(variant, "idle2") && s_random.Next(5) == 0) idle = "idle2";
             Start(state, ActionKind.Idle, idle);
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
@@ -226,7 +228,12 @@ public static class KnifeAnimationController {
     /// With lastRound, the shot that empties the magazine: CS2's pistols lock the
     /// slide back on it (shoot_empty_*), and the rig says whether this gun does.
     /// </summary>
-    internal static string ShootClip(int variant, bool silenced, bool lastRound, Func<int, int> pick = null) {
+    internal static string ShootClip(int variant, bool silenced, bool lastRound, Func<int, int> pick = null) =>
+        ShootClip(variant, silenced, lastRound, false, pick);
+
+    /// <summary>With scoped, a shot from the gun's own scope (ironsight_shoot_*) where the rig has one.</summary>
+    public static string ShootClip(int variant, bool silenced, bool lastRound, bool scoped, Func<int, int> pick = null) {
+        if (scoped && HasAlias(variant, "ironsightShoot")) return "ironsightShoot";
         if (lastRound && HasAlias(variant, "shootEmpty")) return "shootEmpty";
         if (HasAlias(variant, "shootSilenced")) return silenced ? "shootSilenced" : "shootUnsilenced";
         string[] shots = [.. new[] { "shoot1", "shoot2", "shoot3" }.Where(alias => HasAlias(variant, alias))];
@@ -244,8 +251,20 @@ public static class KnifeAnimationController {
     }
 
     /// <summary>The idle for the magazine state: idle_slide_back_* while empty, where the rig has it.</summary>
-    public static string IdleClip(int variant, bool magazineEmpty) =>
-        magazineEmpty && HasAlias(variant, "idleEmpty") ? "idleEmpty" : "idle";
+    public static string IdleClip(int variant, bool magazineEmpty) => IdleClip(variant, magazineEmpty, false);
+
+    /// <summary>With scoped, the held aim pose (ironsight_fidget_*) where the rig has one.</summary>
+    public static string IdleClip(int variant, bool magazineEmpty, bool scoped) {
+        if (scoped && HasAlias(variant, "ironsightIdle")) return "ironsightIdle";
+        return magazineEmpty && HasAlias(variant, "idleEmpty") ? "idleEmpty" : "idle";
+    }
+
+    /// <summary>The behaviour's zoom state, so the idle and the shot can follow the scope.</summary>
+    public static void SetScoped(ComponentPlayer player, bool scoped) {
+        ComponentFirstPersonModel model = player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (model is null || !s_states.TryGetValue(model, out State state)) return;
+        state.Scoped = scoped;
+    }
 
     /// <summary>The draw for the silencer state: draw_silenced_* with the silencer on, where the rig has it.</summary>
     public static string DeployClip(int variant, bool silencerOn) =>
@@ -266,10 +285,11 @@ public static class KnifeAnimationController {
         return HasAlias(variant, clip) ? clip : null;
     }
 
-    public static void TriggerShoot(ComponentPlayer player, bool silenced, bool lastRound = false) {
+    public static void TriggerShoot(ComponentPlayer player, bool silenced, bool lastRound = false, bool scoped = false) {
         State state = GunState(player, out int variant);
         if (state is null) return;
-        Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound));
+        state.Scoped = scoped;
+        Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound, scoped));
     }
 
     public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false) {

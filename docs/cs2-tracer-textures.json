@@ -91,5 +91,36 @@
    "col_peak": 0.5500510620915036,
    "carries_shape": "rgb"
   }
+ },
+ {
+  "texture": "cs2_tracer_tintable",
+  "source_png": "/home/dev/workspaces/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/effects/bullet_tracer_tintable.png",
+  "vtex": "materials/particle/effects/bullet_tracer_tintable.vtex",
+  "blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+  "source_size": [
+   128,
+   256
+  ],
+  "output_size": [
+   128,
+   64
+  ],
+  "source_sha256": "8f8ff2a8acb6642e100942627de8cb41a04c7e34370a8481875a6ff2b3bb7803",
+  "pixels_sha256": "81cdbd572581fab65e6f4db14b11c32827e8831eb0744548ac0f1c4abfc383e2",
+  "profile": {
+   "rows": 256,
+   "cols": 128,
+   "row_ends": [
+    0.0,
+    0.0
+   ],
+   "col_ends": [
+    0.0,
+    0.0
+   ],
+   "row_peak": 0.1862234477124183,
+   "col_peak": 0.638796977124183,
+   "carries_shape": "rgb"
+  }
  }
 ]

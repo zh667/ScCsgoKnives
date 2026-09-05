@@ -175,6 +175,22 @@
   "ScGunBlock:21": {
    "DisplayName": "Galil AR",
    "Description": "A 5.56 mm assault rifle, 35 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:22": {
+   "DisplayName": "SCAR-20",
+   "Description": "A 7.62 mm auto sniper, 20 rounds, automatic. Right click scopes (again to magnify, a third time to leave). R reloads."
+  },
+  "ScGunBlock:23": {
+   "DisplayName": "G3SG1",
+   "Description": "A 7.62 mm auto sniper, 20 rounds, automatic. Right click scopes (again to magnify, a third time to leave). R reloads."
+  },
+  "ScGunBlock:24": {
+   "DisplayName": "AUG",
+   "Description": "A 5.56 mm assault rifle with a scope, 30 rounds, automatic. Right click scopes. R reloads."
+  },
+  "ScGunBlock:25": {
+   "DisplayName": "SG 553",
+   "Description": "A 5.56 mm assault rifle with a scope, 30 rounds, automatic. Right click scopes. R reloads."
   }
  },
  "ScCsgoKnives": {

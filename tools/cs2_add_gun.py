@@ -99,7 +99,14 @@ def body_glb(gun: str) -> Path:
 
 def run(cmd, **kw):
     print("   $", " ".join(str(c) for c in cmd))
-    cs2_run.run([str(c) for c in cmd], **kw)
+    out = cs2_run.run([str(c) for c in cmd], **kw)
+    if out.returncode != 0:
+        print("     (exit %d)" % out.returncode)
+        for line in (out.stdout or "").splitlines()[-8:]:
+            print("     | " + line)
+        for line in (out.stderr or "").splitlines()[-8:]:
+            print("     ! " + line)
+    return out
 
 
 def assets(gun: str, skip: set):
@@ -133,9 +140,11 @@ def spec_entry(gun: str) -> str:
     if w["ZoomLevels"] > 0:
         fovs = w["ZoomFov"][:w["ZoomLevels"]]
         zoom = [round(90.0 / f, 4) for f in fovs]
-        notes.append("Scope: %s against CS2's 90, i.e. %s."
+        notes.append("Scope: %s against CS2's 90, i.e. %s.%s"
                      % (" and ".join("m_nZoomFOV%d %g" % (i + 1, f) for i, f in enumerate(fovs)),
-                        " and ".join("%g" % z for z in zoom)))
+                        " and ".join("%g" % z for z in zoom),
+                        "" if w.get("HideViewModelWhenZoomed", True)
+                        else " m_bHideViewModelWhenZoomed false: the gun stays drawn and aims down its own scope."))
     if w["Pellets"] > 1:
         notes.append("m_nNumBullets %d." % w["Pellets"])
     if w["SilencerType"] == "WEAPONSILENCER_INTEGRATED":
@@ -155,6 +164,8 @@ def spec_entry(gun: str) -> str:
         extras.append("Pellets = %d" % w["Pellets"])
     if zoom:
         extras.append("ZoomLevels = [%s]" % ", ".join("%gf" % z for z in zoom))
+        if not w.get("HideViewModelWhenZoomed", True):
+            extras.append("ScopeHidesWeapon = false")
     lines.append("            " + ", ".join(extras) + ",")
     if w["HasBurstMode"]:
         lines.append("            HasBurstMode = true, BurstCycleSeconds = %gf, BurstShotSeconds = %gf,"

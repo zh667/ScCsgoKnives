@@ -175,6 +175,22 @@
   "ScGunBlock:21": {
    "DisplayName": "加利尔 AR",
    "Description": "5.56 毫米突击步枪，35 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:22": {
+   "DisplayName": "SCAR-20",
+   "Description": "7.62 毫米自动狙击步枪，20 发弹匣，全自动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:23": {
+   "DisplayName": "G3SG1",
+   "Description": "7.62 毫米自动狙击步枪，20 发弹匣，全自动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:24": {
+   "DisplayName": "AUG",
+   "Description": "5.56 毫米突击步枪，带瞄准镜，30 发弹匣，全自动。右键开镜，R 换弹。"
+  },
+  "ScGunBlock:25": {
+   "DisplayName": "SG 553",
+   "Description": "5.56 毫米突击步枪，带瞄准镜，30 发弹匣，全自动。右键开镜，R 换弹。"
   }
  },
  "ScCsgoKnives": {

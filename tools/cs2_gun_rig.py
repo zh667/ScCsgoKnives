@@ -79,6 +79,10 @@ ALIASES = [
     ("inspect3",        ["lookat03_{s}"]),
     ("attach",          ["silencer_attach_{s}"]),
     ("detach",          ["silencer_detach_{s}"]),
+    # AUG / SG 553 aim down their own scope: a one-frame held pose and a shot
+    # from it. The gun stays drawn (HideViewModelWhenZoomed is false for them).
+    ("ironsightIdle",   ["ironsight_fidget_{s}"]),
+    ("ironsightShoot",  ["ironsight_shoot_{s}"]),
 ]
 
 # The clips a gun must have for the mod to draw it at all.

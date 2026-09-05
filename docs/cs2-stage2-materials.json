@@ -1,28 +1,28 @@
 [
  {
-  "gun": "galilar",
+  "gun": "mag7",
   "size": 1024,
-  "vmat": "weapons/models/galilar/materials/weapon_rif_galilar.vmat",
+  "vmat": "weapons/models/mag7/materials/weapon_shot_mag7.vmat",
   "sources": {
-   "TextureColor1": "weapons/models/galilar/materials/galilar_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/galilar/materials/galilar_default_ao.png",
-   "TextureRoughness1": "weapons/models/galilar/materials/galilar_default_rough.png",
-   "TextureMetalness1": "weapons/models/galilar/materials/galilar_default_875185b_metal.png",
-   "TextureNormal": "weapons/models/galilar/materials/galilar_default_normal.png"
+   "TextureColor1": "weapons/models/mag7/materials/mag7_default_color.png",
+   "TextureAmbientOcclusion": "weapons/models/mag7/materials/mag7_default_ao.png",
+   "TextureRoughness1": "weapons/models/mag7/materials/mag7_default_rough.png",
+   "TextureMetalness1": "weapons/models/mag7/materials/mag7_default_3ae223a5_metal.png",
+   "TextureNormal": "weapons/models/mag7/materials/mag7_default_normal.png"
   },
   "means": {
    "colour": [
-    71.36,
-    70.63,
-    69.23
+    77.83,
+    77.8,
+    77.64
    ],
-   "ao": 173.24,
-   "roughness": 106.76,
-   "metalness": 15.59
+   "ao": 193.78,
+   "roughness": 133.45,
+   "metalness": 27.03
   },
-  "normal_deviation_from_flat": 16.662,
+  "normal_deviation_from_flat": 10.856,
   "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2.095",
+   "g_flMetalnessTransitionBias": "2",
    "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
    "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
    "g_flModelTintAmount": "1"

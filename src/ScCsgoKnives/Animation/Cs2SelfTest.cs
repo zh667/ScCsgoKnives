@@ -108,7 +108,7 @@ public static class Cs2SelfTest {
                 Cs2Effects.Tracer tr = fx.Tracer;
                 Check($"effects/{gun}/tracer.speed", tr is not null && tr.Speed is > 1000f,
                       tr?.Speed?.ToString("0.#") ?? "null");
-                string[] baked = ["cs2_tracer_add", "cs2_tracer_blend", "cs2_tracer_smg"];
+                string[] baked = ["cs2_tracer_add", "cs2_tracer_blend", "cs2_tracer_smg", "cs2_tracer_tintable"];
                 Check($"effects/{gun}/tracer.textures",
                       tr?.Passes is { Length: >= 1 } && tr.Passes.All(p => p.Texture is not null && baked.Contains(p.Texture)),
                       tr?.Passes is null ? "no passes"
@@ -134,8 +134,10 @@ public static class Cs2SelfTest {
                     Check($"effects/{gun}/tracer.sizeclamp", clamped,
                           tr.Passes is null ? "no passes"
                           : string.Join(", ", tr.Passes.Select(p => $"{p.MinSize:0.#####}..{p.MaxSize:0.#####}")));
+                    // Trails are clamped on screen so their world width barely matters;
+                    // a rope's is what is drawn, and CS2's AUG rope is 2..3 in (63 mm mid).
                     bool radius = tr.Passes is { Length: > 0 }
-                        && tr.Passes.All(p => tr.HalfWidthMetres(p) is > 0.001f and < 0.05f);
+                        && tr.Passes.All(p => tr.HalfWidthMetres(p) is > 0.001f && tr.HalfWidthMetres(p) < (p.IsRope ? 0.1f : 0.05f));
                     Check($"effects/{gun}/tracer.radius", radius,
                           tr.Passes is null ? "no passes"
                           : string.Join(", ", tr.Passes.Select(p => $"{tr.HalfWidthMetres(p) * 1000f:0.##} mm")));
@@ -246,12 +248,19 @@ public static class Cs2SelfTest {
                 // The rope has no screen clamp, so its 1.9 in half-width is 87 px at half a
                 // metre - and is never drawn there: its head is 5 m out by the first frame
                 // after the shot. It is judged at 5 m instead.
+                // A rope is judged where it is seen: its head is 5 m out by the first
+                // frame after the shot, and CS2 gives the AUG's a 2..3 in radius that
+                // no clamp narrows, so the near limit is taken at 10 m and the far floor
+                // at 40 m; the clamped trails keep 0.5 m and 80 m.
                 bool ropePass = spec.Passes.All(p => p.IsRope);
-                float nearAt = ropePass ? 5f : 0.5f;
-                if (ropePass)
+                float nearAt = ropePass ? 10f : 0.5f;
+                float farAt = ropePass ? 40f : 80f;
+                if (ropePass) {
                     worstNear = spec.Passes.Max(pass => Cs2Tracer.HalfWidthScreenFraction(spec, pass, nearAt, worldProjection.M22, out _) * Height);
+                    worstFar = spec.Passes.Min(pass => Cs2Tracer.HalfWidthScreenFraction(spec, pass, farAt, worldProjection.M22, out _) * Height);
+                }
                 Check($"tracer/{gun}/width.near", worstNear <= 16f, $"{worstNear:0.##} px half-width at {nearAt:0.#} m");
-                Check($"tracer/{gun}/width.far", worstFar >= 0.5f, $"{worstFar:0.##} px half-width at 80 m");
+                Check($"tracer/{gun}/width.far", worstFar >= 0.5f, $"{worstFar:0.##} px half-width at {farAt:0.#} m");
             }
         }
 
@@ -404,6 +413,7 @@ public static class Cs2SelfTest {
         foreach (GunSpec spec in GunSpec.All) {
             string gun = spec.Name;
             bool legacy = Guns.Contains(gun);
+            Cs2Weapons.Gun data = Cs2Weapons.Get(gun);
             Check($"gun/{gun}/rig", Cs2Rig.Has(gun), Cs2Rig.Has(gun) ? "ok" : "no CS2 rig");
             if (!Cs2Rig.Has(gun)) continue;
 
@@ -460,6 +470,26 @@ public static class Cs2SelfTest {
                     Check($"gun/{gun}/cues.reloadEmpty", Cs2Sounds.TryGet($"{gun}:reloadEmpty", out var rc) && rc.Length >= 2,
                           Cs2Sounds.TryGet($"{gun}:reloadEmpty", out var rc2) ? $"{rc2.Length} cues" : "no CS2 cues");
             }
+            // The scope: how many levels and whether it hides the gun are CS2's
+            // (m_nZoomLevels, m_bHideViewModelWhenZoomed); a gun that keeps its
+            // viewmodel aims down its own scope with the ironsight clips.
+            if (data is not null && spec.ZoomLevels.Length > 0) {
+                Check($"gun/{gun}/scope.levels", spec.ZoomLevels.Length == data.ZoomLevels,
+                      $"{spec.ZoomLevels.Length} in GunSpec, {data.ZoomLevels} in the vdata");
+                Check($"gun/{gun}/scope.hides", spec.ScopeHidesWeapon == data.HideViewModelWhenZoomed,
+                      $"GunSpec {spec.ScopeHidesWeapon}, vdata {data.HideViewModelWhenZoomed}");
+                if (!spec.ScopeHidesWeapon) {
+                    Check($"gun/{gun}/scope.ironsight",
+                          KnifeAnimationController.IdleClip(variant, false, true) == "ironsightIdle"
+                              && KnifeAnimationController.ShootClip(variant, false, false, true, _ => 0) == "ironsightShoot",
+                          $"{KnifeAnimationController.IdleClip(variant, false, true)} / "
+                              + $"{KnifeAnimationController.ShootClip(variant, false, false, true, _ => 0)}");
+                }
+            }
+            if (data is not null && spec.ZoomLevels.Length == 0)
+                Check($"gun/{gun}/scope.none", data.ZoomLevels == 0, $"vdata has {data.ZoomLevels} zoom levels");
+            // Unscoped, the aim clips must not leak in.
+            Check($"gun/{gun}/idleClip.unscoped", KnifeAnimationController.IdleClip(variant, false, false) == "idle", "idle");
             string silencedDraw = KnifeAnimationController.DeployClip(variant, true);
             Check($"gun/{gun}/deployClip.silenced",
                   Cs2Rig.HasAlias(gun, "deploySilenced") ? silencedDraw == "deploySilenced" : silencedDraw == "deploy",
@@ -543,7 +573,6 @@ public static class Cs2SelfTest {
                       Cs2SoundVariants.All.TryGetValue($"{gun}_fire_silenced", out int m)
                           ? $"{m} silenced variants" : "no silenced fire sound");
             // Burst is CS2's, not ours: only two guns have one and both need its timing.
-            Cs2Weapons.Gun data = Cs2Weapons.Get(gun);
             if (data is not null)
                 Check($"gun/{gun}/burst", spec.HasBurstMode == data.HasBurstMode
                           && (!spec.HasBurstMode || (spec.BurstCycleSeconds > 0f && spec.BurstShotSeconds > 0f)),

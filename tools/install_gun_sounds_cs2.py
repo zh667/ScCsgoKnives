@@ -104,7 +104,13 @@ def install_cues(guns: list, dry: bool) -> int:
                 continue
             written.add(name)
             source = sorted(files)[0]
-            rate, ch, seconds, peak = write_mono(source, target, dry)
+            # One undecodable file must not stop the rest of the batch: it is reported
+            # with the others at the end and the cue stays without an asset.
+            try:
+                rate, ch, seconds, peak = write_mono(source, target, dry)
+            except Exception as e:
+                missing.append((gun, key, "%s (%s: %s)" % (event, source.name, e)))
+                continue
             size = target.stat().st_size if target.exists() else 0
             print("%-13s %-30s %-28s %5d Hz %d ch %6.3f s -> %-30s %6.1f KB"
                   % (gun, event, source.name, rate, ch, seconds, target.name, size / 1024))

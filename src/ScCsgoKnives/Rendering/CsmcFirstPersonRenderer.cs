@@ -599,9 +599,14 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     const float AimSeconds = 0.25f;
 
-    /// <summary>Scope on: the weapon is hidden and the lens overlay replaces it, on this frame.</summary>
-    public static void SetScope(bool on, float magnification) {
-        s_scoped = on;
+    /// <summary>
+    /// Scope on: the weapon is hidden and the lens overlay replaces it, on this frame -
+    /// unless the gun keeps its viewmodel when zoomed (the AUG and SG 553, CS2's
+    /// m_bHideViewModelWhenZoomed false), in which case only the world FOV changes
+    /// and the controller runs the ironsight clips; nothing is hidden or overlaid.
+    /// </summary>
+    public static void SetScope(bool on, float magnification, bool hideWeapon = true) {
+        s_scoped = on && hideWeapon;
         s_scopeMagnification = magnification;
     }
 
@@ -1108,12 +1113,21 @@ public static class CsmcFirstPersonRenderer {
             return;
         }
         string material = $"{asset}_hd";
+        Cs2RigidMesh.Part lens = null;
+        Matrix lensWorld = Matrix.Identity;
         foreach (Cs2RigidMesh.Part part in mesh.Parts) {
             if (hideSilencer && mesh.Joints[part.Joint] == "silencer") continue;
             if (!mesh.TryPartWorld(part, out Matrix bone)) continue;
+            // The AUG's and SG 553's scope lens is CS2's shared_scope_lens material:
+            // ui.vfx, additive, the reticle dot texture at intensity 6 - a glowing
+            // dot on glass that is otherwise invisible. Drawn after the body, additive
+            // and unlit, with the lens's own UVs; the body texture would put a patch of
+            // receiver on it.
+            if (part.Material == ScopeLensMaterial) { lens = part; lensWorld = bone * post; continue; }
             KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, part.Indices, baseColor, material,
                 bone * post, projection, camera.InvertedViewMatrix, in lighting, variant);
         }
+        if (lens is not null) DrawScopeLens(mesh, lens, lensWorld, projection);
         if (mesh.BlendedTriangleCount > 0) {
             mesh.SkinBlended();
             foreach (Cs2SkinnedMesh.Primitive part in mesh.BlendedParts) {
@@ -1121,6 +1135,40 @@ public static class CsmcFirstPersonRenderer {
                     material, post, projection, camera.InvertedViewMatrix, in lighting, variant);
             }
         }
+    }
+
+    const string ScopeLensMaterial = "shared_scope_lens";
+    static Texture2D s_scopeDot;
+
+    /// <summary>
+    /// The scope lens triangles with CS2's scope_dot_white_color, additive and unlit
+    /// (materials/models/weapons/shared/scope/scope.vmat: ui.vfx, F_ADDITIVE 1,
+    /// g_flIntensity 6). The intensity is not reproduced - one additive pass of the
+    /// white dot - so the dot reads a little softer than CS2's.
+    /// </summary>
+    static void DrawScopeLens(Cs2RigidMesh mesh, Cs2RigidMesh.Part lens, Matrix world, Matrix projection) {
+        try {
+            s_scopeDot ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_dot");
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce("cs2-scope-dot", $"No scope dot texture: {e.Message}");
+            return;
+        }
+        if (s_scopeDot is null || !KnifeDiagnostics.IsFinite(world)) return;
+        s_primitives3D ??= new PrimitivesRenderer3D();
+        TexturedBatch3D batch = s_primitives3D.TexturedBatch(s_scopeDot, false, 0,
+            DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
+        Cs2SkinnedMesh.Vertex[] v = mesh.Vertices;
+        int[] idx = lens.Indices;
+        for (int i = 0; i + 2 < idx.Length; i += 3) {
+            ref Cs2SkinnedMesh.Vertex a = ref v[idx[i]];
+            ref Cs2SkinnedMesh.Vertex b = ref v[idx[i + 1]];
+            ref Cs2SkinnedMesh.Vertex c = ref v[idx[i + 2]];
+            batch.QueueTriangle(
+                Vector3.Transform(a.Position, world), Vector3.Transform(b.Position, world), Vector3.Transform(c.Position, world),
+                a.TextureCoordinate, b.TextureCoordinate, c.TextureCoordinate, Color.White);
+        }
+        s_primitives3D.Flush(projection);
     }
 
     static Texture2D Cs2WeaponTexture(string asset) {
