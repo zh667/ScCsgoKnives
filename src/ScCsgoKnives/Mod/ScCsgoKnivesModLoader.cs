@@ -13,8 +13,21 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
+        ModsManager.RegisterHook("HandleMoveInventoryItem", this);
+        ModsManager.RegisterHook("HandleInventoryDragMove", this);
+        ModsManager.RegisterHook("UpdatePlayerInputDrop", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
+    }
+
+    public override void HandleMoveInventoryItem(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, ref int count, out bool moved) {
+        ScInventoryTransaction.Changed(source); ScInventoryTransaction.Changed(target); moved = false;
+    }
+    public override void HandleInventoryDragMove(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, bool skipped, out bool skip) {
+        ScInventoryTransaction.Changed(source); ScInventoryTransaction.Changed(target); skip = false;
+    }
+    public override void OnPlayerInputDrop(ComponentPlayer player, bool skipped, out bool skipVanilla) {
+        ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
     public override void OnLoadingFinished(List<Action> actions) {

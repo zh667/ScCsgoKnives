@@ -114,6 +114,14 @@ public static class Cs2Rig {
         return sections;
     }
 
+    public static (float Drop, float Insert)? ReloadMilestones(string gun, string alias) {
+        Clip clip = Resolve(Get(gun), alias);
+        ClipEvent drop = clip?.Events?.FirstOrDefault(e => e.Name == "WPN_DROP_MAG");
+        ClipEvent insert = clip?.Events?.FirstOrDefault(e => e.Name == "WPN_RELOAD_ADD_AMMO");
+        if (drop is null || insert is null || drop.At < 0 || insert.At < drop.At || insert.At > clip.Duration) return null;
+        return (drop.At, insert.At);
+    }
+
     sealed class SkeletonBone {
         public int Index { get; set; }
         public string Name { get; set; }

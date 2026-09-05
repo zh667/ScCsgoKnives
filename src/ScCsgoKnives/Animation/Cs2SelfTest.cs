@@ -464,6 +464,8 @@ public static class Cs2SelfTest {
         }
         KnifeTuning.Override("GunNumbers", 0f);
 
+        SurvivalSelfTest.Run(Check);
+
         // The variant number is GunSpec.All's index and it goes into saved worlds, so
         // the order is frozen: append only. Inserting a gun renumbers everything after
         // it and a saved AWP comes back as whatever took index 2.

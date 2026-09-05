@@ -19,6 +19,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     sealed class GunState {
         public double NextShot;
         public double BusyUntil = -1;          // reload or silencer clip in progress
+        public ScReloadTransaction Reload;
+        public double DropAt = -1, InsertAt = -1;
         public int PendingRounds = -1;         // magazine to write when the reload clip ends
         /// <summary>A shotgun reload: when each shell counts (WPN_RELOAD_ADD_AMMO of each loop).</summary>
         public readonly List<double> ShellTimes = [];
@@ -524,6 +526,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             int value = player.ComponentMiner.ActiveBlockValue;
             bool holdingGun = Terrain.ExtractContents(value) == gunIndex && player.ComponentHealth.Health > 0f;
             if (!holdingGun) {
+                CancelReload(player, state);
                 LeaveScope(player, state);
                 RecoverKick(player, state, dt, 12f);
                 state.BusyUntil = -1;
@@ -544,6 +547,23 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int data = Terrain.ExtractData(value);
         int rounds = GunSpec.GetRounds(data);
         PlayerInput input = player.ComponentInput.PlayerInput;
+        if (state.Reload is not null && (!state.Reload.Valid || player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)))
+            CancelReload(player, state);
+        if (player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)) return;
+        if (state.Reload is not null) {
+            if (state.DropAt >= 0 && now >= state.DropAt) {
+                state.DropAt = -1;
+                if (!state.Reload.Discard()) CancelReload(player, state);
+            }
+            if (state.Reload is not null && state.InsertAt >= 0 && now >= state.InsertAt) {
+                state.InsertAt = -1;
+                if (!state.Reload.InsertMagazine()) CancelReload(player, state);
+            }
+            value = player.ComponentMiner.ActiveBlockValue;
+            data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
+            state.LastValue = value;
+        }
+
 
         if (value != state.LastValue) {
             if (Terrain.ExtractContents(state.LastValue) != Terrain.ExtractContents(value) || ScGunBlock.GetVariant(state.LastValue) != ScGunBlock.GetVariant(value)) {
@@ -571,31 +591,26 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.LastValue = value;
         }
 
-        // A reload or silencer clip that has run its course commits its result.
-        if (state.BusyUntil >= 0 && now >= state.BusyUntil) {
-            state.BusyUntil = -1;
-            if (state.PendingRounds >= 0) {
-                data = GunSpec.SetRounds(data, state.PendingRounds);
-                rounds = state.PendingRounds;
-                state.PendingRounds = -1;
-                value = WriteData(player, value, data);
-                ShowAmmo(player, spec, rounds);
-            }
-            if (state.SilencerPending) {
-                state.SilencerPending = false;
-                data = GunSpec.SetSilencerOff(data, state.PendingSilencerOff);
-                value = WriteData(player, value, data);
-            }
-        }
         PlayScheduled(player, state, now);
         // A shotgun's shells count one at a time, at each loop's add-ammo moment.
         while (state.ShellTimes.Count > 0 && now >= state.ShellTimes[0]) {
             state.ShellTimes.RemoveAt(0);
-            if (rounds < spec.Magazine) {
-                rounds++;
-                data = GunSpec.SetRounds(data, rounds);
-                value = WriteData(player, value, data);
+            if (state.Reload is not null && state.Reload.InsertShell()) {
+                value = state.Reload.Expected; state.LastValue = value;
+                data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
                 ShowAmmo(player, spec, rounds);
+            }
+            else { CancelReload(player, state); break; }
+        }
+
+        // A reload or silencer clip that has run its course commits its result.
+        if (state.BusyUntil >= 0 && now >= state.BusyUntil) {
+            state.BusyUntil = -1;
+            state.Reload = null;
+            if (state.SilencerPending) {
+                state.SilencerPending = false;
+                data = GunSpec.SetSilencerOff(data, state.PendingSilencerOff);
+                value = WriteData(player, value, data);
             }
         }
         bool busy = state.BusyUntil >= 0 || KnifeAnimationController.IsBusy(model);
@@ -822,37 +837,55 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
     }
 
+    void CancelReload(ComponentPlayer player, GunState state) {
+        if (state.Reload is null) return;
+        state.Reload.Cancel(); state.Reload = null;
+        state.DropAt = state.InsertAt = state.BusyUntil = -1;
+        state.ShellTimes.Clear(); state.Scheduled.Clear(); state.FireAfterReload = false;
+        KnifeAnimationController.CancelAction(player);
+    }
+
     void StartReload(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value) {
-        int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
-        // From an empty magazine the pistols run their reload_empty clip, which also
-        // releases the slide; the clip, its length and its cues all follow that choice.
         int rounds = GunSpec.GetRounds(Terrain.ExtractData(value));
-        bool empty = rounds <= 0;
-        string clip = KnifeAnimationController.ReloadClip(variant, empty) ?? "reload";
-        int shells = spec.Magazine - rounds;
-        float duration = KnifeAnimationController.ReloadSeconds(variant, empty, shells);
-        if (duration <= 0f) return;
-        LeaveScope(player, state);
-        KnifeAnimationController.TriggerReload(player, empty, shells);
-        state.Scheduled.Clear();
-        state.ShellTimes.Clear();
-        state.FireAfterReload = false;
-        double now = m_time.GameTime;
-        Cs2Rig.ReloadSections sections = clip == "reload" && Cs2Placement.Active(variant)
-            ? Cs2Rig.GetReloadSections(spec.Name) : null;
-        if (sections is not null && shells > 0) {
-            // Shell by shell, as CS2 plays it: the magazine grows at each loop's
-            // WPN_RELOAD_ADD_AMMO, and the cues of the loop section repeat per shell.
-            for (int k = 0; k < shells; k++)
-                state.ShellTimes.Add(now + sections.LoopStart + k * sections.LoopLength + sections.AddAmmoInLoop);
-            ScheduleLooped(state, spec.Name, clip, now, sections, shells);
-            state.BusyUntil = now + duration;
-            state.PendingRounds = -1;
+        if (rounds >= spec.Magazine || spec.RechargeSeconds > 0) return;
+        bool creative = Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
+        IInventory inventory = player.ComponentMiner.Inventory;
+        int ammo = ScAmmoBlock.Value(ScReloadTransaction.AmmoKind(spec));
+        int cost = creative ? 0 : ScReloadTransaction.Required(spec);
+        int available = ScInventoryTransaction.Count(inventory, ammo);
+        if (available < cost) {
+            player.ComponentGui.DisplaySmallMessage($"装填需要{(spec.Pellets > 1 ? "霰弹" : "通用弹匣")} ×{cost}（现有 {available}）", Color.Red, false, false);
             return;
         }
-        Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
-        state.BusyUntil = now + duration;
-        state.PendingRounds = spec.Magazine;
+        int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
+        bool empty = rounds == 0;
+        string clip = KnifeAnimationController.ReloadClip(variant, empty);
+        bool tube = ScReloadTransaction.IsTube(spec.Name);
+        int shells = tube && !creative ? Math.Min(spec.Magazine - rounds, available) : spec.Magazine - rounds;
+        float duration = KnifeAnimationController.ReloadSeconds(variant, empty, shells);
+        var milestones = Cs2Rig.ReloadMilestones(spec.Name, clip);
+        var sections = tube ? Cs2Rig.GetReloadSections(spec.Name) : null;
+        if (duration <= 0 || (tube ? sections is null : milestones is null)) {
+            player.ComponentGui.DisplaySmallMessage("该武器缺少可靠装填事件，未消耗弹药。", Color.Red, false, false);
+            return;
+        }
+        LeaveScope(player, state);
+        KnifeAnimationController.TriggerReload(player, empty, shells);
+        state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, spec.Magazine);
+        state.Scheduled.Clear(); state.ShellTimes.Clear(); state.FireAfterReload = false;
+        double now = m_time.GameTime;
+        state.BusyUntil = now + duration; state.PendingRounds = -1;
+        state.DropAt = state.InsertAt = -1;
+        if (tube) {
+            for (int k = 0; k < shells; k++) state.ShellTimes.Add(now + sections.LoopStart + k * sections.LoopLength + sections.AddAmmoInLoop);
+            ScheduleLooped(state, spec.Name, clip, now, sections, shells);
+        }
+        else {
+            state.DropAt = now + milestones.Value.Drop;
+            state.InsertAt = now + milestones.Value.Insert;
+            Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
+        }
+        player.ComponentGui.DisplaySmallMessage($"装填消耗：{(spec.Pellets > 1 ? "霰弹" : "通用弹匣")} ×{(tube ? shells : cost)}", Color.White, false, false);
     }
 
     /// <summary>
@@ -1038,6 +1071,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int count = inventory.GetSlotCount(slot);
         inventory.RemoveSlotItems(slot, count);
         inventory.AddSlotItems(slot, newValue, count);
+        ScInventoryTransaction.Changed(inventory);
         return newValue;
     }
 

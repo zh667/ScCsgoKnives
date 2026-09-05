@@ -374,6 +374,13 @@ public static class KnifeAnimationController {
         Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound, scoped, alternate, roundsBefore));
     }
 
+    public static void CancelAction(ComponentPlayer player) {
+        ComponentFirstPersonModel model = player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (model is null || !s_states.TryGetValue(model, out State state)) return;
+        state.PendingInspect = false;
+        Start(state, ActionKind.Idle, "idle");
+    }
+
     public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false, int shells = 0) {
         State state = GunState(player, out int variant);
         if (state is null || ReloadClip(variant, magazineEmpty) is not string clip) return;
