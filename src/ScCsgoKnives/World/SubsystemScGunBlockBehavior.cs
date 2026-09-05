@@ -547,7 +547,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int data = Terrain.ExtractData(value);
         int rounds = GunSpec.GetRounds(data);
         PlayerInput input = player.ComponentInput.PlayerInput;
-        if (state.Reload is not null && (!state.Reload.Valid || player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)))
+        if (state.Reload is not null && (!state.Reload.Valid
+            || !state.Reload.ModeMatches(Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode==GameMode.Creative)
+            || player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)))
             CancelReload(player, state);
         if (player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)) return;
         if (state.Reload is not null) {

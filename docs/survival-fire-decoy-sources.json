@@ -1,0 +1,72 @@
+[
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\molotov\\molotov_draw.wav",
+    "sha256": "8ca8f4c8708cae39db4975b5a532d5bc31e7db8b4a1e7962cdb6f17445686e97",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_molotov_draw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\molotov\\fire_ignite_1.wav",
+    "sha256": "61b84a711f4777df69b5a35c47eca9c51f7c406d218ca7dc5c8b2bdc2a0b2035",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_molotov_pin.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\molotov\\grenade_throw.wav",
+    "sha256": "f69bafba011129edf6cf822c7e1bb26448e8952671e18f31f498bf3563fe519e",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_molotov_throw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\molotov\\molotov_detonate_1.wav",
+    "sha256": "d43968fce809b9ef3f81a6d2379723b0b0e4d53811eec9c81a7ced522fbc0710",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_molotov_explode.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\incgrenade\\inc_grenade_draw.wav",
+    "sha256": "8ca8f4c8708cae39db4975b5a532d5bc31e7db8b4a1e7962cdb6f17445686e97",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_incendiary_draw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\incgrenade\\pinpull.wav",
+    "sha256": "df7823339b8d6ba2bb98bb9ef2c2c3c08ce02013899a5dee0eea238c7505b32a",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_incendiary_pin.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\incgrenade\\inc_grenade_throw.wav",
+    "sha256": "f69bafba011129edf6cf822c7e1bb26448e8952671e18f31f498bf3563fe519e",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_incendiary_throw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\incgrenade\\inc_grenade_detonate_1.wav",
+    "sha256": "057ed2948b8fd6f13341cb7e37eb90cc484f3794fc1b5bf9e1830ce63d2ae90b",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_incendiary_explode.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\decoy\\decoy_draw.wav",
+    "sha256": "d4dee7723b6b79a66528784d1bc6d251c29b99603662611fb8f82496e8ce3107",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_decoy_draw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\decoy\\pinpull.wav",
+    "sha256": "df7823339b8d6ba2bb98bb9ef2c2c3c08ce02013899a5dee0eea238c7505b32a",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_decoy_pin.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\decoy\\grenade_throw.wav",
+    "sha256": "f69bafba011129edf6cf822c7e1bb26448e8952671e18f31f498bf3563fe519e",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_decoy_throw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\molotov\\fire_idle_loop_1.wav",
+    "sha256": "02e2d3b1136a28c95343aa9763b9e5c4e238c6163253cef54eeb009dd406c29d",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_fire_loop.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\molotov\\molotov_extinguish.wav",
+    "sha256": "b7a7a89d9a0bea82fce85716a1f68185d9069c1fa0635038f59d91619560f490",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_fire_extinguish.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_burning_character\\fire_burning_character_seq0_3.png",
+    "sha256": "c69331bd2e13a18615957a9d6dce47f4de36baae69a008d66c2de366351d21e6",
+    "output": "src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\grenade_fire_particle.png"
+  }
+]

@@ -10,9 +10,9 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         Point3 position = new(hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z);
         bool Available() => player.ComponentHealth.Health > 0 && Vector3.Distance(player.ComponentBody.Position, new Vector3(position)) < 6
             && Terrain.ExtractContents(terrain.Terrain.GetCellValue(position.X, position.Y, position.Z)) == HandledBlocks[0];
-        bool creative = Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
+        bool Creative() => Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
         string Name(ScWeaponCrafting.Entry e) => BlocksManager.Blocks[Terrain.ExtractContents(e.Value)].GetDisplayName(terrain, e.Value);
-        string Level(ScWeaponCrafting.Entry e) => !creative && CraftingRecipesManager.EnableLevelRestrictions ? $"  制作等级 {e.Level}" : "";
+        string Level(ScWeaponCrafting.Entry e) => !Creative() && CraftingRecipesManager.EnableLevelRestrictions ? $"  制作等级 {e.Level}" : "";
         void ShowList() {
             if (!Available()) return;
             DialogsManager.ShowDialog(player.GuiWidget, new ListSelectionDialog("武器装配台 · 选择型号", ScWeaponCrafting.All, 56,
@@ -24,8 +24,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     detail += Level(entry);
                     DialogsManager.ShowDialog(player.GuiWidget, new MessageDialog(Name(entry), detail, "组装", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
-                            bool levelOk = creative || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= entry.Level;
-                            bool crafted = levelOk && ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, creative ? new Dictionary<int, int>() : materials);
+                            bool levelOk = Creative() || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= entry.Level;
+                            bool crafted = levelOk && ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, Creative() ? new Dictionary<int, int>() : materials);
                             player.ComponentGui.DisplaySmallMessage(crafted ? "组装完成：" + Name(entry) : levelOk ? "材料不足或没有成品空位，未扣除材料。" : $"制作需要等级 {entry.Level}，未扣除材料。", crafted ? Color.White : Color.Red, true, false);
                         }
                         ShowList();

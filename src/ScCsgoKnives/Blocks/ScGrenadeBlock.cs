@@ -5,7 +5,7 @@ namespace Game;
 public sealed class ScGrenadeBlock : Block {
     public static readonly string[] Assets = ["grenade_hegrenade", "grenade_flashbang", "grenade_smokegrenade", "grenade_molotov", "grenade_incendiary", "grenade_decoy"];
     public static readonly string[] Names = ["高爆手雷", "闪光弹", "烟雾弹", "燃烧瓶", "燃烧弹", "诱饵弹"];
-    public static bool Enabled(int kind) => kind is 0 or 1 or 2;
+    public static bool Enabled(int kind) => kind is >= 0 and < 6;
     readonly List<(BlockMesh Mesh, Texture2D Texture)>[] m_parts = new List<(BlockMesh, Texture2D)>[6];
     public ScGrenadeBlock() {
         DefaultDisplayName = "CS2 投掷物"; DefaultCategory = "Weapons"; CraftingId = "sccsgogrenade";

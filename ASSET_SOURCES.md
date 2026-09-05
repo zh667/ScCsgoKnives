@@ -81,3 +81,12 @@ Exported by `tools/export_pbr_textures.py` from the same CS:MC client package as
 
 The shader itself (`Shaders/KnifePbr.vsh/.psh`) is written from the standard metallic-roughness
 model; CS:MC's own shader files are a protected container and were not opened.
+
+
+## Survival grenades — 0.23.0–0.25.0
+
+Six grenade body models and 54 first-person clips were read from the local CS2 installation using ValveResourceFormat 20.0. Conversion: `tools/import_cs2_grenades.py`. The existing CS2 arm/glove rig is reused. The Steam installation, prior exports and VPS resources were not modified or removed.
+
+Source hashes and material dependencies: `docs/survival-grenade-sources.json`. Existing local CS2 audio/particle exports and derived output paths: `docs/survival-grenade-audio-sources.json`, `docs/survival-smoke-sources.json`, `docs/survival-fire-decoy-sources.json`.
+
+The body already carries its attached pin/ring/handle; detached shared pin/spoon debris is not duplicated. The Molotov rag/liquid helper bones use their exported local bind under the animated parent; cloth and liquid simulation are not reproduced. Body, liquid and flame materials remain separate. Smoke/fire use CS2 sprite slices with this mod's bounded particle arrangement, not the original Source 2 simulation. HE/flash bursts are simplified transient light. The release time uses the exported `.Throw` sound cue as an explicit port mapping; it is not an exported server gameplay event.

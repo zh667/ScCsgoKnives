@@ -897,7 +897,8 @@ public static class CsmcFirstPersonRenderer {
         // is nothing to place as a rigid part. The guns keep the part loop below.
         Cs2SkinnedMesh weapon = Cs2SkinnedMesh.Weapon(gun);
         if (weapon is not null) {
-            DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant);
+            DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant,
+                KnifeAnimationController.CurrentClip(firstPerson) is "pullpin" or "holdHigh" or "holdLow" or "throwHigh" or "throwLow");
         }
 
         // A gun is rigid pieces, one bone each, so each is drawn with its own matrix
@@ -1193,7 +1194,7 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static void DrawCs2SkinnedWeapon(Cs2SkinnedMesh mesh, Cs2Rig.Pose pose, string asset,
         Matrix post, Matrix projection, Camera camera,
-        in KnifePbrRenderer.Lighting lighting, int variant) {
+        in KnifePbrRenderer.Lighting lighting, int variant, bool litGrenade) {
         if (!s_cs2WeaponBase.TryGetValue(asset, out Texture2D baseColor)) {
             try { baseColor = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{asset}_cs2"); }
             catch (Exception e) {
@@ -1217,10 +1218,22 @@ public static class CsmcFirstPersonRenderer {
         foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
             string key = ScGrenadeBlock.MaterialKey(asset, part.Material);
             Texture2D texture = key == asset + "_cs2" ? baseColor : PartBaseTexture(key);
-            if (part.Material == "weapon_molotov_flame") continue; // enabled with incendiary effects in P5
+            if (part.Material == "weapon_molotov_flame") {
+                if (litGrenade) DrawGrenadeFlame(mesh,part,texture,post,projection);
+                continue;
+            }
             KnifePbrRenderer.TryDrawSkinned(mesh.Skinned, part.Indices, texture,
                 key, post, projection, camera.InvertedViewMatrix, in lighting, variant);
         }
+    }
+    static readonly PrimitivesRenderer3D s_grenadeFlameRenderer=new();
+    static void DrawGrenadeFlame(Cs2SkinnedMesh mesh,Cs2SkinnedMesh.Primitive part,Texture2D texture,Matrix post,Matrix projection) {
+        var batch=s_grenadeFlameRenderer.TexturedBatch(texture,false,0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.Additive,SamplerState.LinearClamp);
+        for (int i=0;i<part.Indices.Length;i+=3) {
+            var a=mesh.Skinned[part.Indices[i]];var b=mesh.Skinned[part.Indices[i+1]];var c=mesh.Skinned[part.Indices[i+2]];
+            batch.QueueTriangle(Vector3.Transform(a.Position,post),Vector3.Transform(b.Position,post),Vector3.Transform(c.Position,post),a.TextureCoordinate,b.TextureCoordinate,c.TextureCoordinate,Color.White);
+        }
+        s_grenadeFlameRenderer.Flush(projection);
     }
 
     static Texture2D s_cs2ArmBase, s_cs2GloveBase;

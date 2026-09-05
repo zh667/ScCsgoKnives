@@ -1,13 +1,19 @@
 using Engine;
 using Engine.Graphics;
+using Engine.Audio;
 using TemplatesDatabase;
 namespace Game;
 
 public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, IDrawable {
+    sealed class AreaAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
+        : ProjectileAttackment(body,owner,point,direction,power,null) {
+        public override bool DisableFriendlyFire() => Attacker!=Target && base.DisableFriendlyFire();
+    }
     sealed class Preparation {
         public ScThrowTransaction Transaction;
         public int Kind, Slot, ReturnSlot = -1, Stage = -1;
         public bool Low, Released;
+        public long CommittedRevision;
         public double Start;
         public float Pull, ThrowStart, Release, End;
     }
@@ -15,12 +21,17 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
     readonly Dictionary<ComponentPlayer, int> m_lastWeapon = [];
     readonly Dictionary<ComponentBody, Blindness> m_blind = [];
+    readonly Dictionary<int, Blindness> m_savedBlind = [];
     readonly HashSet<int> m_reducedFlash = [];
     readonly List<ScGrenadeState> m_active = [];
+    readonly HashSet<ScGrenadeState> m_justReleased = [];
     readonly PrimitivesRenderer3D m_renderer = new();
     readonly PrimitivesRenderer2D m_overlay = new();
     readonly DrawBlockEnvironmentData m_environment = new();
     Texture2D m_smokeTexture;
+    Texture2D m_fireTexture;
+    Sound m_fireLoop;
+    readonly Dictionary<ScGrenadeState,List<Vector3>> m_firePoints=[];
     SubsystemTime m_time;
     SubsystemTerrain m_terrain;
     SubsystemPlayers m_players;
@@ -42,11 +53,26 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (item.Value is ValuesDictionary d && ScGrenadeState.Load(d) is ScGrenadeState state && ScGrenadeState.CanAdd(m_active,state.Owner)) m_active.Add(state);
         }
         foreach (string s in values.GetValue<string>("ReducedFlash", "").Split(',')) if (int.TryParse(s,out int i)) m_reducedFlash.Add(i);
+        var flashes=values.GetValue<ValuesDictionary>("Blindness",null);
+        if (flashes is not null) foreach (var pair in flashes) if (int.TryParse(pair.Key,out int id) && pair.Value is ValuesDictionary d) {
+            float left=d.GetValue<float>("Left",0),immune=d.GetValue<float>("Immune",0),duration=d.GetValue<float>("Duration",0);
+            if (float.IsFinite(left) && float.IsFinite(immune) && float.IsFinite(duration))
+                m_savedBlind[id]=new Blindness {Until=m_time.GameTime+Math.Clamp(left,0,2),ImmuneUntil=m_time.GameTime+Math.Clamp(immune,0,5),Duration=Math.Clamp(duration,.01f,2)};
+        }
     }
     public override void Save(ValuesDictionary values) {
         base.Save(values); var saved=new ValuesDictionary();
         for (int i=0;i<m_active.Count;i++) saved.SetValue(i.ToString(),m_active[i].Save());
         values.SetValue("Grenades",saved); values.SetValue("ReducedFlash",string.Join(",",m_reducedFlash));
+        var flashes=new ValuesDictionary();
+        void SaveBlind(int id,Blindness blind) {
+            if (blind.ImmuneUntil<=m_time.GameTime) return;
+            var d=new ValuesDictionary();d.SetValue("Left",(float)Math.Max(0,blind.Until-m_time.GameTime));
+            d.SetValue("Immune",(float)(blind.ImmuneUntil-m_time.GameTime));d.SetValue("Duration",blind.Duration);flashes.SetValue(id.ToString(),d);
+        }
+        foreach (var pair in m_savedBlind) SaveBlind(pair.Key,pair.Value);
+        foreach (var pair in m_blind) SaveBlind(pair.Key.Entity.Id,pair.Value);
+        values.SetValue("Blindness",flashes);
         // Preparations are intentionally absent: inventory has changed only for released throws.
     }
     public void RequestThrow(ComponentPlayer player, bool low) {
@@ -66,8 +92,15 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
     }
     static void Message(ComponentPlayer p,string text) => p.ComponentGui.DisplaySmallMessage(text,Color.White,true,false);
-    void Cancel(ComponentPlayer p, Preparation prep) { prep.Transaction.Cancel(); m_preparing.Remove(p); KnifeAnimationController.CancelAction(p); }
+    void Cancel(ComponentPlayer p, Preparation prep) {
+        prep.Transaction.Cancel();m_preparing.Remove(p);
+        if (p.ComponentMiner.Inventory.ActiveSlotIndex==prep.Slot && (Holding(p) || p.ComponentMiner.ActiveBlockValue==0)) KnifeAnimationController.CancelAction(p);
+    }
     public void Update(float dt) {
+        if (m_savedBlind.Count>0) {
+            foreach (var body in m_bodies.Bodies) if (m_savedBlind.Remove(body.Entity.Id,out var blind) && blind.ImmuneUntil>m_time.GameTime) m_blind[body]=blind;
+            foreach (var pair in m_savedBlind.Where(p=>p.Value.ImmuneUntil<=m_time.GameTime).ToArray()) m_savedBlind.Remove(pair.Key);
+        }
         foreach (var p in m_players.ComponentPlayers) {
             if (!Holding(p)) {
                 int contents=Terrain.ExtractContents(p.ComponentMiner.ActiveBlockValue);
@@ -77,7 +110,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         foreach (var pair in m_preparing.ToArray()) {
             var p=pair.Key; var prep=pair.Value;
             if (!Operable(p) || (!prep.Released && !prep.Transaction.Valid)
-                || prep.Released && p.ComponentMiner.Inventory.ActiveSlotIndex!=prep.Slot) { Cancel(p,prep); continue; }
+                || prep.Released && (p.ComponentMiner.Inventory.ActiveSlotIndex!=prep.Slot
+                    || ScInventoryTransaction.Revision(p.ComponentMiner.Inventory)!=prep.CommittedRevision)) { Cancel(p,prep); continue; }
             float elapsed=(float)(m_time.GameTime-prep.Start);
             int stage=elapsed<prep.Pull?0:elapsed<prep.ThrowStart?1:2;
             if (stage != prep.Stage) {
@@ -91,12 +125,13 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 Vector3 origin=camera.ViewPosition, pos=origin+direction*.45f;
                 var wall=SolidRay(origin,pos); if (wall.HasValue) pos=wall.Value.HitPoint()-direction*.10f;
                 var state=new ScGrenadeState { Kind=prep.Kind,Owner=p.PlayerData.PlayerIndex,Position=pos,
-                    Velocity=direction*(prep.Low?6:14)+p.ComponentBody.Velocity*.5f };
+                    Velocity=direction*(prep.Low?6:14)+p.ComponentBody.Velocity*.5f,Remaining=prep.Kind is 3 or 4?2:1.5f };
                 if (!prep.Transaction.Commit(m_info.WorldSettings.GameMode==GameMode.Creative,
-                    ()=>ScGrenadeState.CanAdd(m_active,state.Owner),()=>{ m_active.Add(state);return true; })) {
+                    ()=>ScGrenadeState.CanAdd(m_active,state.Owner),()=>{ m_active.Add(state);m_justReleased.Add(state);return true; })) {
                     Message(p,"投掷取消：物品已移动或活动数量已满，未消耗物品。");Cancel(p,prep);continue;
                 }
                 prep.Released=true;
+                prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
                 AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
             }
             if (elapsed>=prep.End) {
@@ -108,20 +143,27 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 }
             }
         }
+        UpdateFire(dt);
         foreach (var s in m_active.ToArray()) {
+            if (m_justReleased.Remove(s)) continue; // this frame's elapsed time preceded the release
             s.Age+=dt;
             if (!s.Effect) {
                 float simulated=Math.Min(dt,.5f);
                 for (float remaining=simulated;remaining>0;) { float step=Math.Min(.02f,remaining);Move(s,step);remaining-=step; }
+                if (s.Kind is 3 or 4) {
+                    if (Water(s.Position)) { RemoveEffect(s,true);continue; }
+                    if (s.Grounded) { Detonate(s);continue; }
+                }
             }
+            if (s.Effect && s.Kind==5 && (int)s.Age>(int)(s.Age-dt)) DecoyPulse(s);
             s.Remaining-=dt;
             if (s.Remaining<=0) {
                 s.Remaining=0;
-                if (!s.Effect && s.Kind==2 && !s.Grounded && s.Age<4) continue; // settle; bounded airborne timeout
-                if (!s.Effect) Detonate(s); else m_active.Remove(s);
+                if (!s.Effect && s.Kind is 2 or 5 && !s.Grounded && s.Age<4) continue; // settle; bounded airborne timeout
+                if (!s.Effect) Detonate(s); else RemoveEffect(s,false);
             }
         }
-        foreach (var body in m_bodies.Bodies) {
+        if (m_active.Any(s=>s.Effect && s.Kind==2)) foreach (var body in m_bodies.Bodies) {
             var chase=body.Entity.FindComponent<ComponentChaseBehavior>();
             if (chase?.m_target is not null) ApplyChaseOcclusion(chase);
             // These vanilla sight behaviours have no scoring hook. Clear only a
@@ -166,7 +208,13 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (hit.HasValue) {
             Vector3 normal=CellFace.FaceToVector3(hit.Value.CellFace.Face);
             s.Position=hit.Value.HitPoint()+normal*.06f;
+            if (s.Kind is not (3 or 4) && s.Velocity.LengthSquared()>1 && s.Age>=s.NextBounceSound) {
+                s.NextBounceSound=s.Age+.15f;
+                string sound=ScGrenadeBlock.Assets[s.Kind is 0 or 1 or 2?s.Kind:1];
+                Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+sound+"_bounce",.35f,0,s.Position,3,true);
+            }
             s.Velocity=(s.Velocity-2*Vector3.Dot(s.Velocity,normal)*normal)*.48f;
+            if (s.Kind is 3 or 4 && normal.Y>.5f) { s.Grounded=true;s.Velocity=Vector3.Zero; }
             if (normal.Y>.5f && s.Velocity.LengthSquared()<.5f) { s.Grounded=true;s.Velocity=Vector3.Zero; }
         } else s.Position=next;
     }
@@ -174,15 +222,28 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         var target=body.Entity.FindComponent<ComponentPlayer>();
         return target is null || target.PlayerData.PlayerIndex==s.Owner || m_info.WorldSettings.IsFriendlyFireEnabled;
     }
-    void Damage(ScGrenadeState s,ComponentBody body,float power) {
+    void Damage(ScGrenadeState s,ComponentBody body,float power,bool fire=false) {
         if (power<=0 || !Friendly(s,body)) return;
         var owner=m_players.ComponentPlayers.FirstOrDefault(p=>p.PlayerData.PlayerIndex==s.Owner);
         Vector3 direction=Eye(body)-s.Position; direction=direction.LengthSquared()>.0001f?Vector3.Normalize(direction):Vector3.UnitY;
-        var attack=new ProjectileAttackment(body,owner?.Entity,Eye(body),direction,power,null) {
-            StunTimeSet=0,StunTimeAdd=0,ImpulseFactor=0,AllowImpulseAndStunWhenDamageIsZero=false };
+        var attack=new AreaAttack(body,owner?.Entity,Eye(body),direction,power) {
+            StunTimeSet=0,StunTimeAdd=0,ImpulseFactor=0,AllowImpulseAndStunWhenDamageIsZero=false,
+            EnableHitValueParticleSystem=!fire,AttackSoundVolume=fire?0:1 };
         ComponentMiner.AttackBody(attack);
     }
     void Detonate(ScGrenadeState s) {
+        if (s.Kind is 3 or 4) {
+            // A bounded airborne timeout may ignite a reachable floor below it,
+            // never an unsupported sphere of fire in mid-air.
+            var floor=SolidRay(s.Position+Vector3.UnitY*.1f,s.Position-Vector3.UnitY*4);
+            if (!floor.HasValue || CellFace.FaceToVector3(floor.Value.CellFace.Face).Y<.5f) { RemoveEffect(s,false);return; }
+            s.Position=floor.Value.HitPoint()+Vector3.UnitY*.06f;
+            if (Water(s.Position)) { RemoveEffect(s,true);return; }
+            s.Effect=true;s.Remaining=ScFireArea.Lifetime(s.Kind);s.Age=0;s.Velocity=Vector3.Zero;
+            Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,6,true);
+            return;
+        }
+        if (s.Kind==5) { s.Effect=true;s.Remaining=10;s.Age=0;s.Velocity=Vector3.Zero;DecoyPulse(s);return; }
         if (s.Kind==2) {
             s.Effect=true;s.Remaining=ScSmokeVolume.Lifetime;s.Age=0;s.Velocity=Vector3.Zero;
             Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_smokegrenade_emit",.8f,0,s.Position,6,true);
@@ -202,6 +263,34 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         s.Effect=true;s.Remaining=.25f;s.Age=0;
         Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,8,true);
+    }
+    void DecoyPulse(ScGrenadeState s) {
+        Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/ak47_fire_1",.6f,0,s.Position,5,true);
+        foreach (var body in m_bodies.Bodies) if (Vector3.DistanceSquared(body.Position,s.Position)<=18*18 && Clear(s.Position+Vector3.UnitY*.2f,Eye(body)))
+            body.Entity.FindComponent<ComponentScDecoyBehavior>()?.HearDecoy(s.Position);
+    }
+    void RemoveEffect(ScGrenadeState s,bool extinguished) {
+        m_active.Remove(s);m_justReleased.Remove(s);m_firePoints.Remove(s);
+        if (extinguished) Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_fire_extinguish",.7f,0,s.Position,4,true);
+        else if (s.Kind==2 && s.Effect) Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_smokegrenade_clear",.6f,0,s.Position,4,true);
+    }
+    void UpdateFire(float dt) {
+        foreach (var s in m_active.Where(ScFireArea.IsFire).ToArray()) {
+            bool extinguish=Water(s.Position) || m_active.Any(smoke=>ScFireArea.SmokeTouches(s,smoke) && Clear(s.Position+Vector3.UnitY*.1f,smoke.Position+Vector3.UnitY*.1f));
+            if (extinguish) RemoveEffect(s,true);
+        }
+        var fires=m_active.Where(ScFireArea.IsFire).ToArray();
+        if (fires.Length>0) {
+            foreach (var body in m_bodies.Bodies.ToArray()) {
+                if (Water(body.Position) || body.Entity.FindComponent<ComponentHealth>() is null) continue;
+                var hit=ScFireArea.Exposure(fires,body.Position,dt,s=>Friendly(s,body) && Clear(s.Position+Vector3.UnitY*.15f,body.Position+Vector3.UnitY*.2f));
+                if (hit.Source is not null) Damage(hit.Source,body,hit.Power,true);
+            }
+            var audio=Project.FindSubsystem<SubsystemAudio>(true);
+            if (m_fireLoop is null) { m_fireLoop=audio.CreateSound("Audio/ScCsgoKnives/grenade_fire_loop");m_fireLoop.IsLooped=true; }
+            float volume=fires.Max(s=>audio.CalculateVolume(audio.CalculateListenerDistance(s.Position),ScFireArea.Radius(s.Kind)));
+            m_fireLoop.Volume=SettingsManager.SoundsVolume*.6f*volume;m_fireLoop.Play();
+        } else m_fireLoop?.Pause();
     }
     public void ScoreTarget(ComponentChaseBehavior chase,ComponentCreature target,ref float score) {
         if (m_blind.TryGetValue(chase.m_componentCreature.ComponentBody,out var blind) && m_time.GameTime<blind.Until) score=0;
@@ -227,10 +316,12 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (drawOrder==10) {
             foreach (var s in m_active.OrderByDescending(s=>Vector3.DistanceSquared(camera.ViewPosition,s.Position))) {
                 if (Vector3.DistanceSquared(camera.ViewPosition,s.Position)>80*80) continue;
-                if (!s.Effect) {
+                if (!s.Effect || s.Kind==5) {
                     Matrix matrix=Matrix.CreateRotationY(s.Age*6)*Matrix.CreateTranslation(s.Position);
                     m_environment.Light=15; m_environment.DrawBlockMode=DrawBlockMode.ThirdPerson;
                     BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGrenadeBlock>()].DrawBlock(m_renderer,ScGrenadeBlock.Value(s.Kind),Color.White,.35f,ref matrix,m_environment);
+                } else if (ScFireArea.IsFire(s)) {
+                    DrawFire(camera,s);
                 } else if (s.Kind==2) {
                     DrawSmoke(camera,s);
                 } else {
@@ -271,5 +362,30 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             Vector3 r=camera.ViewRight*radius*.55f,u=camera.ViewUp*radius*.55f;
             batch.QueueQuad(pos-r-u,pos+r-u,pos+r+u,pos-r+u,Vector2.Zero,Vector2.UnitX,Vector2.One,Vector2.UnitY,new Color(145,150,153,210));
         }
+    }
+    void DrawFire(Camera camera,ScGrenadeState s) {
+        m_fireTexture??=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/grenade_fire_particle");
+        if (!m_firePoints.TryGetValue(s,out var points)) {
+            points=[];m_firePoints[s]=points;float radius=ScFireArea.Radius(s.Kind);
+            for (float x=-radius+.4f;x<radius;x+=.8f) for (float z=-radius+.4f;z<radius;z+=.8f) {
+                if (x*x+z*z>radius*radius) continue;
+                Vector3 p=s.Position+new Vector3(x,0,z);
+                var hit=SolidRay(p+Vector3.UnitY*.5f,p-Vector3.UnitY*.5f);
+                if (hit.HasValue && CellFace.FaceToVector3(hit.Value.CellFace.Face).Y>.5f && !Water(p)
+                    && Clear(s.Position+Vector3.UnitY*.2f,hit.Value.HitPoint()+Vector3.UnitY*.2f)) points.Add(hit.Value.HitPoint()+Vector3.UnitY*.03f);
+            }
+        }
+        var batch=m_renderer.TexturedBatch(m_fireTexture,false,0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.AlphaBlend,SamplerState.LinearClamp);
+        int i=0;
+        foreach (Vector3 p in points) {
+            if (Water(p) || Clear(p+Vector3.UnitY*.05f,p-Vector3.UnitY*.10f)) continue;
+            float height=.6f+.25f*MathF.Sin(s.Age*13+i++*2.3f);
+            Vector3 r=camera.ViewRight*.45f,u=Vector3.UnitY*height;
+            batch.QueueQuad(p-r,p+r,p+r+u,p-r+u,Vector2.UnitY,Vector2.One,Vector2.UnitX,Vector2.Zero,new Color(255,245,230,220));
+        }
+    }
+    public override void Dispose() {
+        if (m_fireLoop is not null) { m_fireLoop.Stop();m_fireLoop.Dispose();Project.FindSubsystem<SubsystemAudio>()?.m_sounds.Remove(m_fireLoop);m_fireLoop=null; }
+        m_preparing.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
     }
 }

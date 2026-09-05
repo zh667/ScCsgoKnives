@@ -39,6 +39,7 @@ public static class SurvivalSelfTest {
         Test("tube-preserves-rounds", () => { var i = Setup(3, 2); var t = Tx(i, 1, 8); bool added = t.InsertShell() && t.InsertShell(); t.Cancel(); return added && !t.InsertShell() && R(i) == 5 && i.Counts[1] == 0; });
         Test("mag7-discards-remainder", () => { var i = Setup(3, 5); var t = Tx(i, 5, 5); return t.Discard() && t.InsertMagazine() && R(i) == 5 && i.Counts[1] == 0; });
         Test("creative-free", () => { var i = Setup(0, 0); var t = Tx(i, 0); return t.Discard() && t.InsertMagazine() && R(i) == 30 && i.Counts[1] == 0; });
+        Test("reload-world-mode-change",()=>{var i=Setup(0,1);return Tx(i,0).ModeMatches(true) && !Tx(i,0).ModeMatches(false) && Tx(i,1).ModeMatches(false) && !Tx(i,1).ModeMatches(true);});
         Test("partial-removal-rollback", () => { var i = Setup(0, 2); i.AddSlotItems(2, ammo, 3); i.RefuseSlot = 2; var t = Tx(i, 5, 150); t.Discard(); return !t.InsertMagazine() && R(i) == 0 && i.Counts[1] == 2 && i.Counts[2] == 3; });
         Test("death-before-event", () => { var i = Setup(12, 2); var t = Tx(i); i.DropAllItems(default); return !t.Discard() && i.Counts[0] == 0 && i.Counts[1] == 0; });
         Test("saved-commits-only", () => {
@@ -92,6 +93,22 @@ public static class SurvivalSelfTest {
         });
         Test("smoke-save-no-reset",()=> {var s=ScGrenadeState.Load(new ScGrenadeState {Kind=2,Effect=true,Age=8,Remaining=7}.Save());return s.Effect && s.Age==8 && s.Remaining==7;});
         Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==24 && ScSmokeVolume.SpriteCount(20)==12 && ScSmokeVolume.SpriteCount(50)==6 && 16*ScSmokeVolume.SpriteCount(0)<=384);
+        Test("fire-overlap-budget",()=> {
+            var a=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var b=new ScGrenadeState {Kind=4,Effect=true,Remaining=7};
+            return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==4 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1;
+        });
+        Test("fire-wall-and-height",()=> {
+            var s=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};
+            return ScFireArea.Exposure([s],Vector3.Zero,1,_=>false).Power==0 && !ScFireArea.Contains(s,Vector3.UnitY*3) && !ScFireArea.Contains(s,Vector3.UnitX*3);
+        });
+        Test("fire-expiry-budget",()=> {var s=new ScGrenadeState {Kind=4,Effect=true,Remaining=.1f};return Math.Abs(ScFireArea.Exposure([s],Vector3.Zero,1,_=>true).Power-.4f)<.001f;});
+        Test("smoke-extinguishes-fire",()=> {
+            var fire=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var smoke=new ScGrenadeState {Kind=2,Effect=true,Remaining=15,Age=1};
+            bool near=ScFireArea.SmokeTouches(fire,smoke);smoke.Position=Vector3.UnitX*20;return near && !ScFireArea.SmokeTouches(fire,smoke);
+        });
+        Test("decoy-anti-chain",()=> {var d=new ScDecoyResponse();return d.TryStart(0) && !d.TryStart(10) && !d.TryStart(17.9) && d.TryStart(18);});
+        Test("decoy-animal-policy",()=>ScDecoyResponse.Investigates(CreatureCategory.LandPredator) && !ScDecoyResponse.Investigates(CreatureCategory.LandOther) && !ScDecoyResponse.Investigates(CreatureCategory.Bird));
+        Test("grenade-all-six-enabled-frozen",()=> Enumerable.Range(0,6).All(ScGrenadeBlock.Enabled) && string.Join(",",ScGrenadeBlock.Assets)=="grenade_hegrenade,grenade_flashbang,grenade_smokegrenade,grenade_molotov,grenade_incendiary,grenade_decoy");
         foreach (string grenade in ScGrenadeBlock.Assets) {
             foreach (string alias in new[] {"deploy","idle","inspect","inspect2","pullpin","holdHigh","holdLow","throwHigh","throwLow"}) {
                 Test("grenade/"+grenade+"/"+alias,()=> {

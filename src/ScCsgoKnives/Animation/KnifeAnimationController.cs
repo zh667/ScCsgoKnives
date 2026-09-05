@@ -484,7 +484,7 @@ public static class KnifeAnimationController {
 
     static void PlayDrawSound(int variant) {
         if (CsmcKnifeRig.IsGrenade(variant)) {
-            if (variant-CsmcKnifeRig.GrenadeOffset < 3) AudioManager.PlaySound("Audio/ScCsgoKnives/"+CsmcKnifeRig.GetAssetName(variant)+"_draw",1,0,0);
+            if (variant-CsmcKnifeRig.GrenadeOffset < 6) AudioManager.PlaySound("Audio/ScCsgoKnives/"+CsmcKnifeRig.GetAssetName(variant)+"_draw",1,0,0);
             return;
         }
         if (CsmcKnifeRig.IsGun(variant)) return;          // guns: SubsystemScGunBlockBehavior plays their own files when shipped

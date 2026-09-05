@@ -24,12 +24,14 @@ static string Sha256(string path) {
     return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
 }
 
-string scmod = null, expected = null, jsonOut = null;
+string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--scmod": scmod = args[++i]; break;
         case "--sha256": expected = args[++i]; break;
         case "--json": jsonOut = args[++i]; break;
+        case "--vanilla-content": vanillaContent = args[++i]; break;
+        case "--frames-out": framesOut = args[++i]; break;
         default: Console.Error.WriteLine($"unknown argument '{args[i]}'"); return 2;
     }
 }
@@ -113,6 +115,10 @@ var checks = result["checks"].AsArray().Select(c => new {
     name = c["name"].GetValue<string>(), ok = c["ok"].GetValue<bool>(), detail = c["detail"].GetValue<string>(),
 }).Cast<object>().ToList();
 checks.AddRange(soundChecks);
+if (vanillaContent is not null) {
+    foreach (var c in SurvivalPackageIntegration.Run(mod,scmod,vanillaContent))
+        checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+}
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {
@@ -130,6 +136,7 @@ string output = JsonSerializer.Serialize(new {
 }, new JsonSerializerOptions { WriteIndented = false });
 Console.WriteLine(output);
 if (jsonOut is not null) File.WriteAllText(jsonOut, output);
+if (framesOut is not null && failed==0) FrameExport.Write(mod,framesOut);
 return failed == 0 ? 0 : 1;
 
 /// <summary>Loads the mod from the package; everything else falls through to the host.</summary>

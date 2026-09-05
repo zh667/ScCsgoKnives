@@ -7,6 +7,7 @@ public sealed class ScGrenadeState {
     public int Kind, Owner;
     public Vector3 Position, Velocity;
     public float Remaining = 1.5f, Age;
+    public float NextBounceSound;
     public bool Effect, Grounded;
     public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => states.Count() < 16 && states.Count(s => s.Owner == owner) < 4;
     public static float HePower(float distance) => 24 * Math.Clamp(1 - distance / 4, 0, 1);
