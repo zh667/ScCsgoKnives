@@ -1,0 +1,8 @@
+# Source2Viewer-CLI --vpk_filepath 的前缀，逗号分隔，前缀匹配、大小写敏感。
+# 每行: 批次 | 说明 | 文件数 | 压缩体积 | 前缀（原样粘贴到 --vpk_filepath 后面）
+
+## C1  物品栏图标：CS2 自己的 base_weapons 渲染图（必做）  —— 68 个文件，9.3 MB
+panorama/images/econ/weapons/base_weapons/
+
+## C2  Taser 充能音（可选，3 个文件，42 KB）
+sounds/ambient/common/energy/zap

@@ -71,7 +71,22 @@ def event_files() -> dict:
         decoded = row.get("decoded_files") or []
         out[row["event"]] = ([f for f in decoded if f.endswith(".wav")]
                              or [f for f in decoded if f.endswith(".mp3")])
-    return out
+    return CaseFold(out)
+
+
+class CaseFold(dict):
+    """Soundevent names are case-insensitive in CS2 and the clips spell them
+    freely: reload_p250 cues Weapon_p250.Clipin, the soundevents file defines
+    Weapon_P250.Clipin. 24 cues across MAG-7, P250, SCAR-20, M249, Nova, Sawed-Off
+    and SG 553 resolved to nothing on an exact match."""
+    def __init__(self, base):
+        super().__init__(base)
+        self._fold = {k.lower(): k for k in base}
+    def get(self, key, default=None):
+        hit = self._fold.get(key.lower()) if isinstance(key, str) else None
+        return super().get(hit, default) if hit is not None else default
+    def __contains__(self, key):
+        return isinstance(key, str) and key.lower() in self._fold
 
 
 def norm(name: str) -> str:
