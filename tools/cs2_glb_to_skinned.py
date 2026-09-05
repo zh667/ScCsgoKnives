@@ -55,13 +55,35 @@ def write_string(out, text: str):
     return out
 
 
-def convert(path: Path) -> bytes:
-    glb = cs2_glb.Glb(path)
+def pick_mesh(glb, path: Path, want: str = None):
+    """Which mesh to convert, and its index.
+
+    The arms GLB has one. A gun GLB has two - body_legacy, which CS:MC was built on,
+    and body_hd, which CS2 draws today and which the mod's textures already come from
+    - and the Dual Berettas add an eholster. So body_hd wins by default, and --mesh
+    picks by name substring when that is not what is wanted.
+    """
     meshes = glb.meshes()
-    if len(meshes) != 1:
-        raise SystemExit("%s: expected one mesh, got %d" % (path.name, len(meshes)))
-    mesh = meshes[0]
-    skin = glb.mesh_skin(0)
+    if not meshes:
+        raise SystemExit("%s: no mesh" % path.name)
+    names = [getattr(m, "name", "") or "" for m in meshes]
+    if want:
+        hits = [i for i, n in enumerate(names) if want in n]
+        if len(hits) != 1:
+            raise SystemExit("%s: --mesh %r matches %d of %s" % (path.name, want, len(hits), names))
+        return meshes[hits[0]], hits[0]
+    if len(meshes) == 1:
+        return meshes[0], 0
+    hd = [i for i, n in enumerate(names) if n.endswith(".body_hd")]
+    if len(hd) == 1:
+        return meshes[hd[0]], hd[0]
+    raise SystemExit("%s: %d meshes and no single body_hd: %s" % (path.name, len(meshes), names))
+
+
+def convert(path: Path, want_mesh: str = None) -> bytes:
+    glb = cs2_glb.Glb(path)
+    mesh, mesh_index = pick_mesh(glb, path, want_mesh)
+    skin = glb.mesh_skin(mesh_index)
     if skin is None:
         raise SystemExit("%s: no skin" % path.name)
 
@@ -81,25 +103,46 @@ def convert(path: Path) -> bytes:
         body = write_string(body, name)
         body += struct.pack("<16f", *m.reshape(-1))
 
-    # Both primitives index the same vertex accessors - only the index lists and the
-    # material differ - so the vertex block is written once and skinned once. Writing
+    # The arms' two primitives index the same vertex accessors - only the index lists
+    # and the material differ - so the block is written once and skinned once; writing
     # it per primitive would double the per-frame CPU skinning for identical data.
-    shared = {k: v["attributes"] for k, v in enumerate([])}
+    # Guns do not share: the AK's body_hd has 21414 vertices in one primitive and 36 in
+    # the other. Those are concatenated and the indices offset, which the format
+    # already allows. The shared case is kept exactly as it was so cs2_arms.skin does
+    # not change.
+    keys = ("POSITION", "NORMAL", "TEXCOORD_0", "JOINTS_0", "WEIGHTS_0")
     first = mesh.primitives[0]
-    for prim in mesh.primitives[1:]:
-        for key in ("POSITION", "NORMAL", "TEXCOORD_0", "JOINTS_0", "WEIGHTS_0"):
-            if not np.array_equal(prim.attributes[key], first.attributes[key]):
-                raise SystemExit("%s: primitives do not share %s" % (path.name, key))
+    shared = all(np.array_equal(prim.attributes[k], first.attributes[k])
+                 for prim in mesh.primitives[1:] for k in keys)
 
-    pos = first.attributes["POSITION"].astype(np.float32) * INCHES_PER_METRE
-    nor = first.attributes.get("NORMAL")
-    nor = (nor.astype(np.float32) if nor is not None
-           else np.tile(np.float32([0, 0, 1]), (len(pos), 1)))
-    uv = first.attributes["TEXCOORD_0"].astype(np.float32)
-    w = first.attributes["WEIGHTS_0"].astype(np.float32)
+    if shared:
+        blocks = [first]
+        offsets = [0] * len(mesh.primitives)
+    else:
+        blocks = list(mesh.primitives)
+        offsets, running = [], 0
+        for prim in mesh.primitives:
+            offsets.append(running)
+            running += len(prim.attributes["POSITION"])
+
+    def stack(key, default=None):
+        out = []
+        for prim in blocks:
+            v = prim.attributes.get(key)
+            if v is None:
+                if default is None:
+                    raise SystemExit("%s: a primitive has no %s" % (path.name, key))
+                v = np.tile(default, (len(prim.attributes["POSITION"]), 1))
+            out.append(v)
+        return np.concatenate(out, 0)
+
+    pos = stack("POSITION").astype(np.float32) * INCHES_PER_METRE
+    nor = stack("NORMAL", np.float32([0, 0, 1])).astype(np.float32)
+    uv = stack("TEXCOORD_0").astype(np.float32)
+    w = stack("WEIGHTS_0").astype(np.float32)
     if w.max() > 1.5:
         w = w / np.float32(255.0)
-    j = first.attributes["JOINTS_0"].astype(np.uint8)
+    j = stack("JOINTS_0").astype(np.uint8)
 
     # Drop influences below a rounding threshold and renormalise: a stray 1e-7 on an
     # unmapped joint would otherwise pull a vertex toward the origin.
@@ -118,8 +161,10 @@ def convert(path: Path) -> bytes:
 
     body += struct.pack("<H", len(mesh.primitives))
     stats = []
-    for prim in mesh.primitives:
-        idx = prim.indices.astype(np.uint32)
+    for prim, offset in zip(mesh.primitives, offsets):
+        idx = (prim.indices.astype(np.uint32) + np.uint32(offset))
+        if idx.max(initial=0) >= len(pos):
+            raise SystemExit("%s: an index points past the vertex block" % path.name)
         body = write_string(body, prim.material or "")
         body += struct.pack("<I", len(idx))
         body += idx.tobytes()
@@ -132,9 +177,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--source", type=Path, default=ARMS)
     ap.add_argument("--out", type=Path, default=DATA / "cs2_arms.skin")
+    ap.add_argument("--mesh", help="mesh name substring; body_hd is preferred by default")
     args = ap.parse_args()
 
-    blob, joints, stats = convert(args.source)
+    blob, joints, stats = convert(args.source, args.mesh)
     args.out.write_bytes(blob)
     print("%s: %d joints, %d shared vertices, %d primitives -> %s (%.1f KB)"
           % (args.source.name, len(joints), stats[0][1], len(stats), args.out.name, len(blob) / 1024))
