@@ -606,14 +606,21 @@ public static class CsmcFirstPersonRenderer {
     /// and the controller runs the ironsight clips; nothing is hidden or overlaid.
     /// </summary>
     public static void SetScope(bool on, float magnification, bool hideWeapon = true) {
-        s_scoped = on && hideWeapon;
+        // Both kinds hide the weapon here. CS2 keeps the AUG's viewmodel when zoomed
+        // (m_bHideViewModelWhenZoomed false) because its ironsight puts the scope's
+        // eyepiece at the camera - the tube fills the frame and only the lens is seen
+        // through. That framing is not reproduced; 0.20.2 drew the gun in its
+        // ironsight pose inside the HUD window and the device test saw "the gun and
+        // the scope" instead of a view through the lens. The HUD filter stands in
+        // for the tube, so nothing of the gun is drawn behind it.
+        s_scoped = on;
         s_ironsight = on && !hideWeapon;
         s_scopeMagnification = magnification;
     }
 
-    /// <summary>Zoomed on a gun that keeps its viewmodel (AUG, SG 553): the lens goes clear and the HUD scope is drawn.</summary>
+    /// <summary>Zoomed on the AUG / SG 553: the scope_filter HUD instead of the sniper circle.</summary>
     static bool s_ironsight;
-    public static bool IronsightScopeActive => s_ironsight;
+    public static bool IronsightScopeActive => s_ironsight && ScopeOverlayActive;
 
     static Cs2Effects.Flash s_flashSpec;
 
@@ -1194,6 +1201,8 @@ public static class CsmcFirstPersonRenderer {
     /// chosen so the bright core reads about 14 px tall at 1080p.
     /// </summary>
     public const float ScopeDotScreenFraction = 40f / 1080f;   // assumed
+    /// <summary>scope_filter.png, measured: the window's radius and where the black is fully opaque, as fractions of the image's half-size.</summary>
+    public const float ScopeFilterWindowFraction = 0.64f, ScopeFilterBlackFraction = 0.76f;
     static Texture2D s_scopeFilter;
 
     /// <summary>
@@ -1205,7 +1214,7 @@ public static class CsmcFirstPersonRenderer {
     /// thing the export does not say and is assumed, like the sniper overlay's.
     /// 0.20.1 drew the dot alone, which the device test called "not CS2's scope".
     /// </summary>
-    public static void DrawIronsightScope() {
+    static void DrawIronsightScope() {
         if (!s_ironsight) return;
         try {
             s_scopeFilter ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_filter");
@@ -1218,20 +1227,41 @@ public static class CsmcFirstPersonRenderer {
         if (s_scopeFilter is null || s_scopeDot is null) return;
         s_primitives2D ??= new PrimitivesRenderer2D();
         float w = Display.Viewport.Width, h = Display.Viewport.Height;
-        float half = h * 0.5f;
+        // The image's window is 0.64 of its half-size (measured); the square is sized so
+        // the window spans IronsightScopeWindow of the screen height. 0.20.2 drew the
+        // square at the screen height, which left most of the screen black.
+        float half = h * MathUtils.Clamp(KnifeTuning.IronsightScopeWindow, 0.2f, 2f) * 0.5f / ScopeFilterWindowFraction;
         Vector2 c = new(w * 0.5f, h * 0.5f);
         FlatBatch2D fill = s_primitives2D.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
-        if (w > h) {
+        if (c.X - half > 0f) {
             foreach (float x0 in new[] { 0f, c.X + half }) {
                 float x1 = x0 == 0f ? c.X - half : w;
                 fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, 0f), new Vector2(x1, h), 0f, Color.Black);
                 fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, h), new Vector2(x0, h), 0f, Color.Black);
             }
         }
+        // The tint inside the window is the image's own alpha; the tunable scales the
+        // whole image's alpha, which leaves the opaque black outside (255) nearly as it
+        // is and mostly moves the 120 inside.
+        byte tintAlpha = (byte)MathUtils.Clamp(255f * MathUtils.Clamp(KnifeTuning.IronsightScopeTint, 0f, 1f), 0f, 255f);
         TexturedBatch2D filter = s_primitives2D.TexturedBatch(s_scopeFilter, false, 1,
             DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.NonPremultiplied, SamplerState.LinearClamp);
         filter.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
-            0f, Vector2.Zero, Vector2.One, Color.White);
+            0f, Vector2.Zero, Vector2.One, new Color((byte)255, (byte)255, (byte)255, tintAlpha));
+        if (tintAlpha < 255) {
+            // The black outside must stay black whatever the tint: a second, opaque pass
+            // of the image masked to alpha 255 is not available, so the outside ring is
+            // filled from the window's outer edge (0.76 of the half-size) outwards.
+            FlatBatch2D ring = s_primitives2D.FlatBatch(1, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
+            float rIn = half * ScopeFilterBlackFraction, far = MathF.Max(w, h) * 1.5f;
+            const int segments = 96;
+            for (int i = 0; i < segments; i++) {
+                float a0 = MathF.PI * 2f * i / segments, a1 = MathF.PI * 2f * (i + 1) / segments;
+                Vector2 d0 = new(MathF.Cos(a0), MathF.Sin(a0)), d1 = new(MathF.Cos(a1), MathF.Sin(a1));
+                ring.QueueTriangle(c + d0 * rIn, c + d0 * far, c + d1 * far, 0f, Color.Black);
+                ring.QueueTriangle(c + d0 * rIn, c + d1 * far, c + d1 * rIn, 0f, Color.Black);
+            }
+        }
         float dot = h * ScopeDotScreenFraction * 0.5f;
         TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_scopeDot, false, 2,
             DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
@@ -1474,6 +1504,7 @@ public static class CsmcFirstPersonRenderer {
 
     public static void DrawScopeOverlay() {
         try {
+            if (s_ironsight) { DrawIronsightScope(); return; }
             if (KnifeTuning.GunProfile >= 0.5f && DrawCs2ScopeOverlay()) return;
             s_primitives2D ??= new PrimitivesRenderer2D();
             float w = Display.Viewport.Width, h = Display.Viewport.Height;

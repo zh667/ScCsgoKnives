@@ -46,7 +46,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
         // Zoomed on the AUG / SG 553 the reticle is the scope's own dot, so the
         // vanilla crosshair goes too (it grew with the FOV in 0.20.0's video).
-        if (CsmcFirstPersonRenderer.ScopeOverlayActive || CsmcFirstPersonRenderer.IronsightScopeActive) isVisible = false;
+        if (CsmcFirstPersonRenderer.ScopeOverlayActive) isVisible = false;
     }
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {

@@ -430,6 +430,13 @@ public static class KnifeTuning {
     public static float Cs2ViewmodelOffsetX = 2.5f;
     public static float Cs2ViewmodelOffsetY = 0f;
     public static float Cs2ViewmodelOffsetZ = -1.5f;
+    /// <summary>
+    /// The AUG / SG 553 scoped HUD (CS2's scope_filter): how much of the screen
+    /// height its window spans, and a multiplier on the tint inside it. Neither is in
+    /// the export (no panorama layout), so both are estimates the player can move.
+    /// </summary>
+    public static float IronsightScopeWindow = 0.94f;   // assumed
+    public static float IronsightScopeTint = 1f;        // assumed
 
     /// <summary>
     /// Which gameplay numbers the three guns use: 0 = the values shipped since 0.15.10,
@@ -616,6 +623,8 @@ public static class KnifeTuning {
             case nameof(Cs2ViewmodelOffsetX): Cs2ViewmodelOffsetX = v; return true;
             case nameof(Cs2ViewmodelOffsetY): Cs2ViewmodelOffsetY = v; return true;
             case nameof(Cs2ViewmodelOffsetZ): Cs2ViewmodelOffsetZ = v; return true;
+            case nameof(IronsightScopeWindow): IronsightScopeWindow = v; return true;
+            case nameof(IronsightScopeTint): IronsightScopeTint = v; return true;
             case nameof(GunSoundProfile): GunSoundProfile = v; return true;
             case nameof(PbrDebug): PbrDebug = v; return true;
             default: return false;
@@ -775,6 +784,9 @@ public static class KnifeTuning {
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetX), Cs2ViewmodelOffsetX));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetY), Cs2ViewmodelOffsetY));
         text.AppendLine(Line(nameof(Cs2ViewmodelOffsetZ), Cs2ViewmodelOffsetZ));
+        text.AppendLine("# AUG / SG 553 开镜 HUD：圆窗直径占屏高的比例，和窗内色调的强度（0 = 不染色）。CS2 导出里没有布局，这两个是估计值。");
+        text.AppendLine(Line(nameof(IronsightScopeWindow), IronsightScopeWindow));
+        text.AppendLine(Line(nameof(IronsightScopeTint), IronsightScopeTint));
         text.AppendLine("# 玩法数值单独一个开关：0 = 一直以来的值，1 = CS2 vdata 的伤害/衰减/散布/后坐。");
         text.AppendLine("# 与 GunProfile 分开是有意的：把画面换成 CS2 不应该顺带改手感（CS2 的 AWP 不开镜散布是 4.63 度）。");
         text.AppendLine(Line(nameof(GunNumbers), GunNumbers));

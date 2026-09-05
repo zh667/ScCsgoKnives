@@ -459,7 +459,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             DrawTracers(camera);
             DrawZeus(camera);
             if (CsmcFirstPersonRenderer.ScopeOverlayActive) CsmcFirstPersonRenderer.DrawScopeOverlay();
-            if (CsmcFirstPersonRenderer.IronsightScopeActive) CsmcFirstPersonRenderer.DrawIronsightScope();
         }
         finally {
             Display.BlendState = blend;
@@ -760,7 +759,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         Kick(player, state, pitch, yaw);
 
         // Hitscan along the view ray with a small random cone.
-        Ray3 ray = input.Dig ?? input.Hit ?? new Ray3(player.ComponentCreatureModel.EyePosition, Vector3.Transform(Vector3.UnitZ, player.ComponentCreatureModel.EyeRotation));
+        // The press's own ray where there is one. A shot that fires later than the
+        // press - the R8's cocked shot half a second after the click, its fanned shot
+        // on the aim key - has none, and the fallback here used +Z of the eye rotation,
+        // which in this engine is *behind* the player (Matrix.Forward is -Z): the R8
+        // shot backwards and hit nothing (0.20.2). The camera's own ray is what
+        // ComponentInput builds Dig and Hit from.
+        Ray3 ray = input.Dig ?? input.Hit ?? LookRay(player);
         // CS keeps a separate inaccuracy per stance; the cs2 profile blends the vdata's
         // standing and moving values by speed instead of scaling one cone by a constant.
         float spread = Cs2Weapons.SpreadDegrees(spec.Name, alternate,
@@ -1033,6 +1038,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         inventory.RemoveSlotItems(slot, count);
         inventory.AddSlotItems(slot, newValue, count);
         return newValue;
+    }
+
+    static Ray3 LookRay(ComponentPlayer player) {
+        Camera camera = player.GameWidget?.ActiveCamera;
+        if (camera is not null) return new Ray3(camera.ViewPosition, camera.ViewDirection);
+        return new Ray3(player.ComponentCreatureModel.EyePosition,
+            Matrix.CreateFromQuaternion(player.ComponentCreatureModel.EyeRotation).Forward);
     }
 
     void ShowAmmo(ComponentPlayer player, GunSpec spec, int rounds) =>
