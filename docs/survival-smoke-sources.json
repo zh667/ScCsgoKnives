@@ -1,0 +1,37 @@
+[
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_8.png",
+    "sha256": "b7531c7a6d69422fdf5d01bfab152527fdd613c2f1b89d51f095206d3a4c96f8",
+    "conversion": "CS2 smoke alpha mask with white RGB for runtime tint"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\smokegrenade\\smokegrenade_draw.wav",
+    "sha256": "8673cb34b11cb65aa683bf5030dcba93ce2f8a856fa0efc21130b37815c53ddf",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_smokegrenade_draw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\smokegrenade\\pinpull.wav",
+    "sha256": "df7823339b8d6ba2bb98bb9ef2c2c3c08ce02013899a5dee0eea238c7505b32a",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_smokegrenade_pin.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\smokegrenade\\grenade_throw.wav",
+    "sha256": "f69bafba011129edf6cf822c7e1bb26448e8952671e18f31f498bf3563fe519e",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_smokegrenade_throw.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\smokegrenade\\smoke_emit.wav",
+    "sha256": "36adf17c9a9aec93bb01d8f20127b8b94c749f07689076ddd840a27b3e5faacc",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_smokegrenade_emit.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\smokegrenade\\smoke_clear.wav",
+    "sha256": "de5d6124dad6a401730a1ab6202364ebaeca79ec23cdc97057dc3e998f2058c7",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_smokegrenade_clear.wav"
+  },
+  {
+    "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\05_audio\\decoded\\sounds\\weapons\\smokegrenade\\grenade_hit1.wav",
+    "sha256": "73ef3c2d10885a54d1c11ec5da16225614275413500094d468d42f3a9aa536f0",
+    "output": "src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\grenade_smokegrenade_bounce.wav"
+  }
+]

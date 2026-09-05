@@ -20,6 +20,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     readonly PrimitivesRenderer3D m_renderer = new();
     readonly PrimitivesRenderer2D m_overlay = new();
     readonly DrawBlockEnvironmentData m_environment = new();
+    Texture2D m_smokeTexture;
     SubsystemTime m_time;
     SubsystemTerrain m_terrain;
     SubsystemPlayers m_players;
@@ -114,13 +115,33 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 for (float remaining=simulated;remaining>0;) { float step=Math.Min(.02f,remaining);Move(s,step);remaining-=step; }
             }
             s.Remaining-=dt;
-            if (s.Remaining<=0) { s.Remaining=0; if (!s.Effect) Detonate(s); else m_active.Remove(s); }
+            if (s.Remaining<=0) {
+                s.Remaining=0;
+                if (!s.Effect && s.Kind==2 && !s.Grounded && s.Age<4) continue; // settle; bounded airborne timeout
+                if (!s.Effect) Detonate(s); else m_active.Remove(s);
+            }
+        }
+        foreach (var body in m_bodies.Bodies) {
+            var chase=body.Entity.FindComponent<ComponentChaseBehavior>();
+            if (chase?.m_target is not null) ApplyChaseOcclusion(chase);
+            // These vanilla sight behaviours have no scoring hook. Clear only a
+            // hidden visual target; their sound/flee behaviours remain independent.
+            var avoid=body.Entity.FindComponent<ComponentAvoidPlayerBehavior>();
+            if (avoid?.m_target is not null && ScSmokeVolume.Blocks(m_active,Eye(body),Eye(avoid.m_target.ComponentBody),Clear)) {
+                bool active=avoid.IsActive;avoid.m_target=null;avoid.m_importanceLevel=0;
+                if (active) avoid.m_componentPathfinding.Stop();
+            }
+            var find=body.Entity.FindComponent<ComponentFindPlayerBehavior>();
+            if (find?.m_target is not null && ScSmokeVolume.Blocks(m_active,Eye(body),Eye(find.m_target.ComponentBody),Clear)) {
+                bool active=find.IsActive;find.m_target=null;find.m_importanceLevel=0;
+                if (active) find.m_componentPathfinding.Stop();
+            }
         }
         foreach (var pair in m_blind.ToArray()) {
             if (m_time.GameTime>=pair.Value.ImmuneUntil || !m_bodies.Bodies.Contains(pair.Key)) { m_blind.Remove(pair.Key);continue; }
             if (m_time.GameTime<pair.Value.Until) {
                 var chase=pair.Key.Entity.FindComponent<ComponentChaseBehavior>();
-                if (chase?.m_target is not null) chase.StopAttack();
+                if (chase?.m_target is not null) { chase.m_componentPathfinding.Stop();chase.StopAttack(); }
                 var p=pair.Key.Entity.FindComponent<ComponentPlayer>();
                 if (p is not null) { var overlay=p.Entity.FindComponent<ComponentScreenOverlays>(); overlay.Message="闪光影响中";overlay.MessageFactor=1; }
             }
@@ -162,6 +183,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         ComponentMiner.AttackBody(attack);
     }
     void Detonate(ScGrenadeState s) {
+        if (s.Kind==2) {
+            s.Effect=true;s.Remaining=ScSmokeVolume.Lifetime;s.Age=0;s.Velocity=Vector3.Zero;
+            Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_smokegrenade_emit",.8f,0,s.Position,6,true);
+            return;
+        }
         foreach (var body in m_bodies.Bodies.ToArray()) {
             Vector3 point=Eye(body); float distance=Vector3.Distance(s.Position,point);
             if (!Friendly(s,body) || distance>(s.Kind==0?4:16) || !Clear(s.Position,point)) continue;
@@ -177,8 +203,17 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         s.Effect=true;s.Remaining=.25f;s.Age=0;
         Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,8,true);
     }
-    public void ScoreTarget(ComponentChaseBehavior chase,ref float score) {
+    public void ScoreTarget(ComponentChaseBehavior chase,ComponentCreature target,ref float score) {
         if (m_blind.TryGetValue(chase.m_componentCreature.ComponentBody,out var blind) && m_time.GameTime<blind.Until) score=0;
+        if (target is not null && ScSmokeVolume.Blocks(m_active,Eye(chase.m_componentCreature.ComponentBody),Eye(target.ComponentBody),Clear)) score=0;
+    }
+    public void ApplyChaseOcclusion(ComponentChaseBehavior chase) {
+        if (chase.m_target is null) return;
+        Vector3 eye=Eye(chase.m_componentCreature.ComponentBody),target=Eye(chase.m_target.ComponentBody);
+        if (!ScSmokeVolume.Blocks(m_active,eye,target,Clear)) return;
+        // Scoring alone leaves three seconds of exact target path prediction in
+        // vanilla chasing. Stop it now; sound behaviours may still respond.
+        chase.m_componentPathfinding.Stop();chase.StopAttack();
     }
     public override bool OnEditInventoryItem(IInventory inventory,int slotIndex,ComponentPlayer player) {
         if (m_preparing.TryGetValue(player,out var prep)) Cancel(player,prep);
@@ -190,12 +225,14 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     public void Draw(Camera camera,int drawOrder) {
         if (drawOrder==10) {
-            foreach (var s in m_active) {
+            foreach (var s in m_active.OrderByDescending(s=>Vector3.DistanceSquared(camera.ViewPosition,s.Position))) {
                 if (Vector3.DistanceSquared(camera.ViewPosition,s.Position)>80*80) continue;
                 if (!s.Effect) {
                     Matrix matrix=Matrix.CreateRotationY(s.Age*6)*Matrix.CreateTranslation(s.Position);
                     m_environment.Light=15; m_environment.DrawBlockMode=DrawBlockMode.ThirdPerson;
                     BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGrenadeBlock>()].DrawBlock(m_renderer,ScGrenadeBlock.Value(s.Kind),Color.White,.35f,ref matrix,m_environment);
+                } else if (s.Kind==2) {
+                    DrawSmoke(camera,s);
                 } else {
                     float radius=.4f+s.Age*5;
                     var batch=m_renderer.FlatBatch(0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.AlphaBlend);
@@ -206,13 +243,33 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             m_renderer.Flush(camera.ViewProjectionMatrix);
         } else {
             var player=camera.GameWidget.PlayerData.ComponentPlayer;
+            float smoke=m_active.Where(s=>s.Effect && s.Kind==2 && Clear(s.Position+Vector3.UnitY*.1f,camera.ViewPosition)).Select(s=>Math.Clamp(ScSmokeVolume.CurrentRadius(s)-Vector3.Distance(camera.ViewPosition,ScSmokeVolume.Center(s)),0,1)).DefaultIfEmpty(0).Max();
+            if (smoke>0) Overlay(camera,new Color(125,130,133,(int)(230*smoke)));
             if (player is null || !m_blind.TryGetValue(player.ComponentBody,out var blind)) return;
             float fade=Math.Clamp((float)(blind.Until-m_time.GameTime)/Math.Max(.01f,blind.Duration),0,1); if (fade<=0) return;
             bool reduced=m_reducedFlash.Contains(player.PlayerData.PlayerIndex);
-            var batch=m_overlay.FlatBatch(0,DepthStencilState.None,null,BlendState.AlphaBlend);
-            Vector2 size=new(camera.ViewportSize.X,camera.ViewportSize.Y);
             Color color=reduced?new Color(70,75,85,(int)(110*fade)):new Color(255,255,255,(int)(245*fade));
-            batch.QueueQuad(Vector2.Zero,size,0,color);batch.TransformTriangles(camera.ViewportMatrix);batch.Flush();
+            Overlay(camera,color);
+        }
+    }
+    void Overlay(Camera camera,Color color) {
+        var batch=m_overlay.FlatBatch(0,DepthStencilState.None,null,BlendState.AlphaBlend);
+        Vector2 size=new(camera.ViewportSize.X,camera.ViewportSize.Y);
+        batch.QueueQuad(Vector2.Zero,size,0,color);batch.TransformTriangles(camera.ViewportMatrix);batch.Flush();
+    }
+    void DrawSmoke(Camera camera,ScGrenadeState s) {
+        m_smokeTexture??=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/grenade_smoke_particle");
+        float radius=ScSmokeVolume.CurrentRadius(s);if (radius<.01f) return;
+        Vector3 center=ScSmokeVolume.Center(s);
+        int count=ScSmokeVolume.SpriteCount(Vector3.Distance(camera.ViewPosition,center));
+        var batch=m_renderer.TexturedBatch(m_smokeTexture,false,0,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.AlphaBlend,SamplerState.LinearClamp);
+        for (int i=0;i<count;i++) {
+            float y=1-2*(i+.5f)/count,ring=MathF.Sqrt(1-y*y),angle=i*2.399963f+s.Age*.025f;
+            Vector3 offset=new Vector3(MathF.Cos(angle)*ring,y,MathF.Sin(angle)*ring)*radius*.5f;
+            Vector3 pos=center+offset;
+            if (!Clear(s.Position+Vector3.UnitY*.1f,pos)) continue;
+            Vector3 r=camera.ViewRight*radius*.55f,u=camera.ViewUp*radius*.55f;
+            batch.QueueQuad(pos-r-u,pos+r-u,pos+r+u,pos-r+u,Vector2.Zero,Vector2.UnitX,Vector2.One,Vector2.UnitY,new Color(145,150,153,210));
         }
     }
 }

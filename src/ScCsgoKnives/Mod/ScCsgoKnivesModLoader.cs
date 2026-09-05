@@ -14,6 +14,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
         ModsManager.RegisterHook("ChaseBehaviorScoreTarget", this);
+        ModsManager.RegisterHook("UpdateChaseBehaviorChasing", this);
         ModsManager.RegisterHook("HandleMoveInventoryItem", this);
         ModsManager.RegisterHook("HandleInventoryDragMove", this);
         ModsManager.RegisterHook("UpdatePlayerInputDrop", this);
@@ -25,7 +26,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
 
     public override void ChaseBehaviorScoreTarget(ComponentChaseBehavior chase, ComponentCreature target, ref float score) =>
-        chase.Project.FindSubsystem<SubsystemScGrenades>()?.ScoreTarget(chase, ref score);
+        chase.Project.FindSubsystem<SubsystemScGrenades>()?.ScoreTarget(chase, target, ref score);
+    public override void UpdateChaseBehaviorChasing(ComponentChaseBehavior chase) =>
+        chase.Project.FindSubsystem<SubsystemScGrenades>()?.ApplyChaseOcclusion(chase);
 
     public override void OnPlayerInputHit(ComponentPlayer player, ref bool operated, ref double interval, ref float range, bool skipped, out bool skipVanilla) {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
