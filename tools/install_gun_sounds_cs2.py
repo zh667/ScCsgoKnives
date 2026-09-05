@@ -65,9 +65,14 @@ def events() -> dict:
 
 
 def all_events() -> dict:
-    """Every weapon soundevent CS2 names, not only the shoot ones."""
+    """Every weapon soundevent CS2 names, not only the shoot ones.
+
+    Case-insensitive, as soundevents are in CS2: the P250's clips cue
+    Weapon_p250.Clipin and the soundevents file defines Weapon_P250.Clipin.
+    """
+    import cs2_sound_timings as timings
     path = AUDIO / "weapon-soundevent-mapping.json"
-    return {e["event"]: e for e in json.loads(path.read_text("utf-8"))}
+    return timings.CaseFold({e["event"]: e for e in json.loads(path.read_text("utf-8"))})
 
 
 def install_cues(guns: list, dry: bool) -> int:

@@ -1,231 +1,28 @@
 [
  {
-  "gun": "deagle",
+  "gun": "galilar",
   "size": 1024,
-  "vmat": "weapons/models/deagle/materials/weapon_pist_deagle.vmat",
+  "vmat": "weapons/models/galilar/materials/weapon_rif_galilar.vmat",
   "sources": {
-   "TextureColor1": "weapons/models/deagle/materials/deagle_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/deagle/materials/deagle_default_ao.png",
-   "TextureRoughness1": "weapons/models/deagle/materials/deagle_default_rough.png",
-   "TextureMetalness1": "weapons/models/deagle/materials/deagle_default_b238a11a_metal.png",
-   "TextureNormal": "weapons/models/deagle/materials/deagle_default_normal.png"
+   "TextureColor1": "weapons/models/galilar/materials/galilar_default_color.png",
+   "TextureAmbientOcclusion": "weapons/models/galilar/materials/galilar_default_ao.png",
+   "TextureRoughness1": "weapons/models/galilar/materials/galilar_default_rough.png",
+   "TextureMetalness1": "weapons/models/galilar/materials/galilar_default_875185b_metal.png",
+   "TextureNormal": "weapons/models/galilar/materials/galilar_default_normal.png"
   },
   "means": {
    "colour": [
-    161.02,
-    160.35,
-    159.18
+    71.36,
+    70.63,
+    69.23
    ],
-   "ao": 198.67,
-   "roughness": 130.54,
-   "metalness": 196.19
+   "ao": 173.24,
+   "roughness": 106.76,
+   "metalness": 15.59
   },
-  "normal_deviation_from_flat": 12.192,
+  "normal_deviation_from_flat": 16.662,
   "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "glock18",
-  "size": 1024,
-  "vmat": "weapons/models/glock18/materials/weapon_pist_glock.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/glock18/materials/glock_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/glock18/materials/glock_ao.png",
-   "TextureRoughness1": "weapons/models/glock18/materials/glock_default_rough.png",
-   "TextureMetalness1": "weapons/models/glock18/materials/glock_default_9f47a69a_metal.png",
-   "TextureNormal": "weapons/models/glock18/materials/glock_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    106.2,
-    100.02,
-    92.85
-   ],
-   "ao": 207.35,
-   "roughness": 133.68,
-   "metalness": 26.66
-  },
-  "normal_deviation_from_flat": 9.806,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "usp_silencer",
-  "size": 1024,
-  "vmat": "weapons/models/usp_silencer/materials/weapon_pist_usp_silencer.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/usp_silencer/materials/usp_silencer_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/usp_silencer/materials/usp_silencer_default_ao.png",
-   "TextureRoughness1": "weapons/models/usp_silencer/materials/usp_silencer_default_rough.png",
-   "TextureMetalness1": "weapons/models/usp_silencer/materials/usp_silencer_default_5a307155_metal.png",
-   "TextureNormal": "weapons/models/usp_silencer/materials/usp_silencer_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    66.03,
-    65.53,
-    64.48
-   ],
-   "ao": 192.12,
-   "roughness": 98.14,
-   "metalness": 13.11
-  },
-  "normal_deviation_from_flat": 12.009,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "m4a4",
-  "size": 1024,
-  "vmat": "weapons/models/m4a4/materials/weapon_rif_m4a4.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/m4a4/materials/m4a4_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/m4a4/materials/m4a4_default_ao.png",
-   "TextureRoughness1": "weapons/models/m4a4/materials/m4a4_default_rough.png",
-   "TextureMetalness1": "weapons/models/m4a4/materials/m4a4_default_be175f5f_metal.png",
-   "TextureNormal": "weapons/models/m4a4/materials/m4a4_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    76.04,
-    75.95,
-    75.79
-   ],
-   "ao": 151.01,
-   "roughness": 184.95,
-   "metalness": 17.55
-  },
-  "normal_deviation_from_flat": 15.139,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "famas",
-  "size": 1024,
-  "vmat": "weapons/models/famas/materials/weapon_rif_famas.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/famas/materials/famas_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/famas/materials/famas_default_ao.png",
-   "TextureRoughness1": "weapons/models/famas/materials/famas_default_rough.png",
-   "TextureMetalness1": "weapons/models/famas/materials/famas_default_e4f589c7_metal.png",
-   "TextureNormal": "weapons/models/famas/materials/famas_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    92.64,
-    91.63,
-    90.82
-   ],
-   "ao": 160.37,
-   "roughness": 100.62,
-   "metalness": 70.01
-  },
-  "normal_deviation_from_flat": 12.686,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "mp9",
-  "size": 1024,
-  "vmat": "weapons/models/mp9/materials/weapon_smg_mp9.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/mp9/materials/mp9_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/mp9/materials/mp9_ao.png",
-   "TextureRoughness1": "weapons/models/mp9/materials/mp9_default_rough.png",
-   "TextureMetalness1": "weapons/models/mp9/materials/mp9_default_ee7a1ed7_metal.png",
-   "TextureNormal": "weapons/models/mp9/materials/mp9_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    70.74,
-    70.11,
-    69.27
-   ],
-   "ao": 183.8,
-   "roughness": 102.39,
-   "metalness": 12.08
-  },
-  "normal_deviation_from_flat": 12.876,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "3",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "p90",
-  "size": 1024,
-  "vmat": "weapons/models/p90/materials/weapon_smg_p90.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/p90/materials/p90_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/p90/materials/p90_default_ao.png",
-   "TextureRoughness1": "weapons/models/p90/materials/p90_default_rough.png",
-   "TextureMetalness1": "weapons/models/p90/materials/p90_default_7ac6dedb_metal.png",
-   "TextureNormal": "weapons/models/p90/materials/p90_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    70.74,
-    69.65,
-    68.06
-   ],
-   "ao": 196.37,
-   "roughness": 126.71,
-   "metalness": 3.83
-  },
-  "normal_deviation_from_flat": 10.903,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
-   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
-   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
-   "g_flModelTintAmount": "1"
-  }
- },
- {
-  "gun": "ssg08",
-  "size": 1024,
-  "vmat": "weapons/models/ssg08/materials/weapon_snip_ssg08.vmat",
-  "sources": {
-   "TextureColor1": "weapons/models/ssg08/materials/ssg08_default_color.png",
-   "TextureAmbientOcclusion": "weapons/models/ssg08/materials/ssg08_default_ao.png",
-   "TextureRoughness1": "weapons/models/ssg08/materials/ssg08_default_rough.png",
-   "TextureMetalness1": "weapons/models/ssg08/materials/ssg08_default_b6130e00_metal.png",
-   "TextureNormal": "weapons/models/ssg08/materials/ssg08_default_normal.png"
-  },
-  "means": {
-   "colour": [
-    76.05,
-    75.26,
-    74.29
-   ],
-   "ao": 175.73,
-   "roughness": 149.2,
-   "metalness": 24.27
-  },
-  "normal_deviation_from_flat": 13.851,
-  "recorded_but_not_implemented": {
-   "g_flMetalnessTransitionBias": "2",
+   "g_flMetalnessTransitionBias": "2.095",
    "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
    "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
    "g_flModelTintAmount": "1"

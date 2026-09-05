@@ -452,7 +452,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         rounds--;
         value = WriteData(player, value, GunSpec.SetRounds(data, rounds));
-        bool silenced = spec.HasSilencer && !GunSpec.GetSilencerOff(data);
+        // A detachable silencer that is on, or an integral one (the MP5-SD): the
+        // flash, the muzzle and the kick follow it. Only the detachable kind has a
+        // separate sound file; the integral one's WEAPON_SOUND_SINGLE is already
+        // the suppressed shot.
+        bool silenced = spec.SilencedAlways || (spec.HasSilencer && !GunSpec.GetSilencerOff(data));
         // The round that empties the magazine locks a pistol's slide back (shoot_empty).
         bool lastRound = rounds <= 0;
         if (state.Zoom > 0) {
@@ -463,7 +467,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         KnifeAnimationController.TriggerShoot(player, silenced, lastRound);
         CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, silenced ? spec.SilencedMuzzleBone : spec.MuzzleBone, spec.Name, silenced);
-        PlaySound(player, silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
+        PlaySound(player, spec.HasSilencer && silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
         ShowAmmo(player, spec, rounds);
 

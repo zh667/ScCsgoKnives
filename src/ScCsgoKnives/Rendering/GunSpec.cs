@@ -118,6 +118,62 @@ public sealed class GunSpec {
             KickPitchDegrees = 1.760f, KickYawDegrees = 0.306f, KickRecoverPerSecond = 7.04f,
             SpreadDegrees = 1.8317f, ZoomLevels = [2.25f, 6f],
         },
+        new() {
+            Name = "fiveseven", Magazine = 20, CycleSeconds = 0.15f, Automatic = false, AttackPower = 32f,
+            KickPitchDegrees = 1.333f, KickYawDegrees = 0.058f, KickRecoverPerSecond = 5.00f,
+            SpreadDegrees = 0.6360f,
+        },
+        new() {
+            Name = "hkp2000", Magazine = 13, CycleSeconds = 0.17f, Automatic = false, AttackPower = 35f,
+            KickPitchDegrees = 1.387f, KickYawDegrees = 0.000f, KickRecoverPerSecond = 2.86f,
+            SpreadDegrees = 0.3953f,
+        },
+        new() {
+            Name = "p250", Magazine = 13, CycleSeconds = 0.15f, Automatic = false, AttackPower = 38f,
+            KickPitchDegrees = 1.387f, KickYawDegrees = 0.121f, KickRecoverPerSecond = 2.90f,
+            SpreadDegrees = 0.6360f,
+        },
+        new() {
+            Name = "tec9", Magazine = 18, CycleSeconds = 0.12f, Automatic = false, AttackPower = 33f,
+            KickPitchDegrees = 1.227f, KickYawDegrees = 0.613f, KickRecoverPerSecond = 2.56f,
+            SpreadDegrees = 0.3953f,
+        },
+        new() {
+            Name = "cz75a", Magazine = 12, CycleSeconds = 0.1f, Automatic = true, AttackPower = 31f,
+            KickPitchDegrees = 1.653f, KickYawDegrees = 1.432f, KickRecoverPerSecond = 4.12f,
+            SpreadDegrees = 0.7694f,
+        },
+        new() {
+            Name = "mac10", Magazine = 30, CycleSeconds = 0.075f, Automatic = true, AttackPower = 29f,
+            KickPitchDegrees = 0.960f, KickYawDegrees = 0.551f, KickRecoverPerSecond = 2.50f,
+            SpreadDegrees = 0.7964f,
+        },
+        new() {
+            Name = "mp7", Magazine = 30, CycleSeconds = 0.08f, Automatic = true, AttackPower = 30f,
+            KickPitchDegrees = 0.853f, KickYawDegrees = 0.489f, KickRecoverPerSecond = 2.29f,
+            SpreadDegrees = 0.6073f,
+        },
+        new() {
+            Name = "ump45", Magazine = 25, CycleSeconds = 0.09f, Automatic = true, AttackPower = 35f,
+            KickPitchDegrees = 1.227f, KickYawDegrees = 0.420f, KickRecoverPerSecond = 2.86f,
+            SpreadDegrees = 0.8267f,
+        },
+        new() {
+            Name = "bizon", Magazine = 64, CycleSeconds = 0.08f, Automatic = true, AttackPower = 27f,
+            KickPitchDegrees = 0.960f, KickYawDegrees = 0.551f, KickRecoverPerSecond = 3.02f,
+            SpreadDegrees = 0.8594f,
+        },
+        new() {
+            // Integral suppressor: WEAPONSILENCER_INTEGRATED, the single shot sound is the suppressed one.
+            Name = "mp5sd", Magazine = 30, CycleSeconds = 0.08f, Automatic = true, AttackPower = 28f,
+            KickPitchDegrees = 0.853f, KickYawDegrees = 0.489f, KickRecoverPerSecond = 2.29f,
+            SpreadDegrees = 0.6073f, SilencedAlways = true,
+        },
+        new() {
+            Name = "galilar", Magazine = 35, CycleSeconds = 0.09f, Automatic = true, AttackPower = 30f,
+            KickPitchDegrees = 1.120f, KickYawDegrees = 0.642f, KickRecoverPerSecond = 3.33f,
+            SpreadDegrees = 0.5369f,
+        },
     ];
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);

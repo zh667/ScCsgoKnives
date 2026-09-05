@@ -131,6 +131,50 @@
   "ScGunBlock:10": {
    "DisplayName": "SSG 08",
    "Description": "A bolt-action sniper rifle, 10 rounds. Right click scopes (again to magnify, a third time to leave). R reloads."
+  },
+  "ScGunBlock:11": {
+   "DisplayName": "Five-SeveN",
+   "Description": "A 5.7 mm pistol, 20 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:12": {
+   "DisplayName": "P2000",
+   "Description": "A 9 mm pistol, 13 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:13": {
+   "DisplayName": "P250",
+   "Description": "A .357 pistol, 13 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:14": {
+   "DisplayName": "Tec-9",
+   "Description": "A 9 mm pistol, 18 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:15": {
+   "DisplayName": "CZ75-Auto",
+   "Description": "A 9 mm automatic pistol, 12 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:16": {
+   "DisplayName": "MAC-10",
+   "Description": "A .45 SMG, 30 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:17": {
+   "DisplayName": "MP7",
+   "Description": "A 4.6 mm SMG, 30 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:18": {
+   "DisplayName": "UMP-45",
+   "Description": "A .45 SMG, 25 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:19": {
+   "DisplayName": "PP-Bizon",
+   "Description": "A 9 mm SMG with a 64-round helical magazine, 64 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:20": {
+   "DisplayName": "MP5-SD",
+   "Description": "A 9 mm SMG with an integral suppressor, 30 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:21": {
+   "DisplayName": "Galil AR",
+   "Description": "A 5.56 mm assault rifle, 35 rounds, automatic. Left click fires. R reloads."
   }
  },
  "ScCsgoKnives": {

@@ -74,6 +74,41 @@ GUNS = {
     "mp9": ("weapon_mp9", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
     "p90": ("weapon_p90", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
     "ssg08": ("weapon_ssg08", {"default": UNIFIED + "uweapon_muzflsh_awp_primaryflash.vpcf"}),
+    # The remaining 24, same source (02_models/events_full/<weapon>.analysis.txt):
+    #   pistols            uweapon_muzzleflash_pist          -> pist_fire
+    #   revolver           uweapon_muzzleflash_pist_revolver -> pist_fire_revolver
+    #   SMGs               uweapon_muzzleflash_subm          -> subm_fire
+    #   mp5sd              uweapon_muzsilenced_subm          -> muzsilenced_subm_smoke (integral suppressor)
+    #   galilar, sg556     uweapon_muzflsh_riffle_lrg        -> ak47_primaryflash
+    #   aug                uweapon_muzflsh_aug               -> aug_primaryflash
+    #   scar20, g3sg1      weapon_muzzleflash_snip_ar        -> awp_primaryflash
+    #   shotguns           uweapon_muzflsh_shot              -> shot_primaryflash
+    #   m249, negev        uweapon_muzflsh_mach              -> mach_primaryflash_alt (its only flash child)
+    #   taser              no muzzle particle in the model
+    "cz75a": ("weapon_cz75a", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "elite": ("weapon_elite", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "fiveseven": ("weapon_fiveseven", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "hkp2000": ("weapon_hkp2000", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "p250": ("weapon_p250", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "revolver": ("weapon_revolver", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire_revolver.vpcf"}),
+    "taser": ("weapon_taser", {}),
+    "tec9": ("weapon_tec9", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "aug": ("weapon_aug", {"default": UNIFIED + "uweapon_muzflsh_aug_primaryflash.vpcf"}),
+    "bizon": ("weapon_bizon", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
+    "g3sg1": ("weapon_g3sg1", {"default": UNIFIED + "uweapon_muzflsh_awp_primaryflash.vpcf"}),
+    "galilar": ("weapon_galilar", {"default": UNIFIED + "uweapon_muzflsh_ak47_primaryflash.vpcf"}),
+    "m249": ("weapon_m249", {"default": UNIFIED + "uweapon_muzflsh_mach_primaryflash_alt.vpcf"}),
+    "mac10": ("weapon_mac10", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
+    "mag7": ("weapon_mag7", {"default": UNIFIED + "uweapon_muzflsh_shot_primaryflash.vpcf"}),
+    "mp5sd": ("weapon_mp5sd", {"default": UNIFIED + "uweapon_muzsilenced_subm_smoke.vpcf"}),
+    "mp7": ("weapon_mp7", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
+    "negev": ("weapon_negev", {"default": UNIFIED + "uweapon_muzflsh_mach_primaryflash_alt.vpcf"}),
+    "nova": ("weapon_nova", {"default": UNIFIED + "uweapon_muzflsh_shot_primaryflash.vpcf"}),
+    "sawedoff": ("weapon_sawedoff", {"default": UNIFIED + "uweapon_muzflsh_shot_primaryflash.vpcf"}),
+    "scar20": ("weapon_scar20", {"default": UNIFIED + "uweapon_muzflsh_awp_primaryflash.vpcf"}),
+    "sg556": ("weapon_sg556", {"default": UNIFIED + "uweapon_muzflsh_ak47_primaryflash.vpcf"}),
+    "ump45": ("weapon_ump45", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
+    "xm1014": ("weapon_xm1014", {"default": UNIFIED + "uweapon_muzflsh_shot_primaryflash.vpcf"}),
 }
 
 # Source 2 particle attribute ids used below.
@@ -126,7 +161,11 @@ def read_flash(path: Path) -> dict:
 
     for op in doc.get("m_Emitters") or []:
         if op.get("_class") == "C_OP_InstantaneousEmitter":
-            out["Particles"] = literal(op.get("m_nParticlesToEmit"))
+            # A curve-driven count (the M249's and the shotguns' flashes) has no
+            # literal; the key is left out rather than written as null.
+            count = literal(op.get("m_nParticlesToEmit"))
+            if count is not None:
+                out["Particles"] = count
 
     for op in doc.get("m_Initializers") or []:
         cls = op.get("_class")

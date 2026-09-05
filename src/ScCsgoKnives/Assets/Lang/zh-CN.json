@@ -131,6 +131,50 @@
   "ScGunBlock:10": {
    "DisplayName": "SSG 08",
    "Description": "狙击步枪，10 发弹匣，栓动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:11": {
+   "DisplayName": "FN57",
+   "Description": "5.7 毫米手枪，20 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:12": {
+   "DisplayName": "P2000",
+   "Description": "9 毫米手枪，13 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:13": {
+   "DisplayName": "P250",
+   "Description": "0.357 英寸手枪，13 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:14": {
+   "DisplayName": "Tec-9",
+   "Description": "9 毫米手枪，18 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:15": {
+   "DisplayName": "CZ75 自动",
+   "Description": "9 毫米全自动手枪，12 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:16": {
+   "DisplayName": "MAC-10",
+   "Description": "0.45 英寸冲锋枪，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:17": {
+   "DisplayName": "MP7",
+   "Description": "4.6 毫米冲锋枪，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:18": {
+   "DisplayName": "UMP-45",
+   "Description": "0.45 英寸冲锋枪，25 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:19": {
+   "DisplayName": "PP-野牛",
+   "Description": "9 毫米冲锋枪，64 发螺旋弹鼓，64 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:20": {
+   "DisplayName": "MP5-SD",
+   "Description": "9 毫米冲锋枪，自带消音器，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:21": {
+   "DisplayName": "加利尔 AR",
+   "Description": "5.56 毫米突击步枪，35 发弹匣，全自动。左键开火，R 换弹。"
   }
  },
  "ScCsgoKnives": {

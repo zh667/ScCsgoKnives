@@ -51,8 +51,9 @@ public static class Cs2Effects {
         [JsonPropertyName("Lifetime")]
         [JsonConverter(typeof(ScalarOrArray))]
         public float[] Lifetime { get; set; }
+        /// <summary>Null when the emitter's count is a curve rather than a literal (the M249's flash).</summary>
         [JsonPropertyName("Particles")]
-        public float Particles { get; set; }
+        public float? Particles { get; set; }
         [JsonPropertyName("SequenceFrames")]
         public int SequenceFrames { get; set; }
         [JsonPropertyName("ColorMin")]
