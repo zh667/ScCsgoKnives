@@ -95,6 +95,9 @@ public static class Cs2Weapons {
         public float?[] ZoomSeconds { get; set; }
         [JsonPropertyName("HideViewModelWhenZoomed")]
         public bool HideViewModelWhenZoomed { get; set; }
+        /// <summary>m_bUnzoomsAfterShot: the AWP and SSG 08 drop the scope for the bolt; the other four scoped guns stay zoomed.</summary>
+        [JsonPropertyName("UnzoomsAfterShot")]
+        public bool UnzoomsAfterShot { get; set; }
         [JsonPropertyName("RecoveryTimeStand")]
         public float RecoveryTimeStand { get; set; }
         [JsonPropertyName("SpreadDegrees")]

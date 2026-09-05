@@ -47,6 +47,12 @@ public sealed class GunSpec {
     /// (ironsight clips), with no overlay.
     /// </summary>
     public bool ScopeHidesWeapon = true;
+    /// <summary>
+    /// CS2's m_bUnzoomsAfterShot: a scoped shot drops the scope for the cycle and
+    /// re-zooms afterwards. True for the two bolt actions only; the SCAR-20, G3SG1,
+    /// AUG and SG 553 fire with the scope up. 0.20.0 unscoped all six.
+    /// </summary>
+    public bool UnzoomsAfterShot;
     public string MuzzleBone = "muzzle";
     public string SilencedMuzzleBone = "muzzle2";
     /// <summary>The Dual Berettas' left gun: its shots flash and trace from muzzle_l.</summary>
@@ -94,7 +100,7 @@ public sealed class GunSpec {
             // magnifications 90/40 = 2.25 and 90/10 = 9 (not the earlier guessed 4/8).
             Name = "awp", Magazine = 5, CycleSeconds = 1.455f, Automatic = false, AttackPower = 115f,
             KickPitchDegrees = 6f, KickYawDegrees = 1f, KickRecoverPerSecond = 6f, SpreadDegrees = 0.1f,
-            ZoomLevels = [2.25f, 9f],
+            ZoomLevels = [2.25f, 9f], UnzoomsAfterShot = true,   // m_bUnzoomsAfterShot true
         },
         // ---- appended 2026-09-05, all values from CS2 weapons.vdata ----
         new() {
@@ -140,7 +146,7 @@ public sealed class GunSpec {
             // m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6.
             Name = "ssg08", Magazine = 10, CycleSeconds = 1.25f, Automatic = false, AttackPower = 88f,
             KickPitchDegrees = 1.760f, KickYawDegrees = 0.306f, KickRecoverPerSecond = 7.04f,
-            SpreadDegrees = 1.8317f, ZoomLevels = [2.25f, 6f],
+            SpreadDegrees = 1.8317f, ZoomLevels = [2.25f, 6f], UnzoomsAfterShot = true,   // m_bUnzoomsAfterShot true
         },
         new() {
             Name = "fiveseven", Magazine = 20, CycleSeconds = 0.15f, Automatic = false, AttackPower = 32f,
@@ -199,13 +205,13 @@ public sealed class GunSpec {
             SpreadDegrees = 0.5369f,
         },
         new() {
-            // Scope: m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6.
+            // Scope: m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6. m_bUnzoomsAfterShot false: fires scoped.
             Name = "scar20", Magazine = 20, CycleSeconds = 0.25f, Automatic = true, AttackPower = 80f,
             KickPitchDegrees = 1.653f, KickYawDegrees = 0.428f, KickRecoverPerSecond = 1.84f,
             SpreadDegrees = 1.4951f, ZoomLevels = [2.25f, 6f],
         },
         new() {
-            // Scope: m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6.
+            // Scope: m_nZoomFOV1 40 and m_nZoomFOV2 15 against CS2's 90, i.e. 2.25 and 6. m_bUnzoomsAfterShot false: fires scoped.
             Name = "g3sg1", Magazine = 20, CycleSeconds = 0.25f, Automatic = true, AttackPower = 80f,
             KickPitchDegrees = 1.600f, KickYawDegrees = 0.414f, KickRecoverPerSecond = 1.84f,
             SpreadDegrees = 1.4951f, ZoomLevels = [2.25f, 6f],
@@ -214,13 +220,13 @@ public sealed class GunSpec {
             // Scope: m_nZoomFOV1 45 against CS2's 90, i.e. 2. m_bHideViewModelWhenZoomed false: the gun stays drawn and aims down its own scope.
             Name = "aug", Magazine = 30, CycleSeconds = 0.1f, Automatic = true, AttackPower = 28f,
             KickPitchDegrees = 1.280f, KickYawDegrees = 0.640f, KickRecoverPerSecond = 2.33f,
-            SpreadDegrees = 0.3094f, ZoomLevels = [2f], ScopeHidesWeapon = false,
+            SpreadDegrees = 0.3094f, ZoomLevels = [2f], ScopeHidesWeapon = false,   // m_bUnzoomsAfterShot false: fires scoped
         },
         new() {
             // Scope: m_nZoomFOV1 45 against CS2's 90, i.e. 2. m_bHideViewModelWhenZoomed false: the gun stays drawn and aims down its own scope.
             Name = "sg556", Magazine = 30, CycleSeconds = 0.11f, Automatic = true, AttackPower = 30f,
             KickPitchDegrees = 1.493f, KickYawDegrees = 0.747f, KickRecoverPerSecond = 2.21f,
-            SpreadDegrees = 0.3673f, ZoomLevels = [2f], ScopeHidesWeapon = false,
+            SpreadDegrees = 0.3673f, ZoomLevels = [2f], ScopeHidesWeapon = false,   // m_bUnzoomsAfterShot false: fires scoped
         },
         new() {
             // m_nNumBullets 9.

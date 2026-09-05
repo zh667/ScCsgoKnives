@@ -153,6 +153,11 @@ public static class KnifePbrRenderer {
 
         Display.DepthStencilState = DepthStencilState.Default;
         Display.RasterizerState = RasterizerState.CullNoneScissor;
+        // Set every time: a batch flushed just before (the scope lens went through an
+        // additive TexturedBatch3D in 0.20.0) leaves its own blend state behind, and
+        // the arms drawn after it came out additive - pale and see-through on the
+        // AUG and SG 553, the only guns with a lens.
+        Display.BlendState = BlendState.Opaque;
 
         KnifePbrShader shader = s_shader;
         shader.BaseColor.SetValue(baseColor);
@@ -220,6 +225,11 @@ public static class KnifePbrRenderer {
 
         Display.DepthStencilState = DepthStencilState.Default;
         Display.RasterizerState = RasterizerState.CullNoneScissor;
+        // Set every time: a batch flushed just before (the scope lens went through an
+        // additive TexturedBatch3D in 0.20.0) leaves its own blend state behind, and
+        // the arms drawn after it came out additive - pale and see-through on the
+        // AUG and SG 553, the only guns with a lens.
+        Display.BlendState = BlendState.Opaque;
 
         KnifePbrShader shader = s_shader;
         shader.BaseColor.SetValue(baseColor);

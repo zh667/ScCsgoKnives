@@ -70,6 +70,30 @@ public static class Cs2SelfTest {
                 // the ribbon does not draw; the table must say so, and GunSpec must agree.
                 bool none = (fx.Flash is null || fx.Flash.Count == 0) && (fx.Tracer?.Passes is null || fx.Tracer.Passes.Length == 0);
                 Check($"effects/{gun}/none", none, none ? "no flash, no drawable tracer, as the model and the vpcf say" : "the table has effects GunSpec turns off");
+                // The Zeus has its own effect file: the arc CS2 draws over the wires,
+                // the muzzle glow, flare and sparks, the impact glow and sparks.
+                // Not gated on Applies(): a file that failed to load makes Applies false
+                // for every gun, and the checks below would simply vanish (the first
+                // negative test of 0.20.1 passed 2475/2475 that way). The one gun with
+                // no muzzle effects is the one the file must name.
+                {
+                    Cs2TaserEffect.File z = Cs2TaserEffect.Data;
+                    Check($"effects/{gun}/zeus.loaded", Cs2TaserEffect.LoadError is null && z is not null && z.Gun == gun,
+                          Cs2TaserEffect.LoadError ?? (z?.Gun == gun ? "cs2_taser_effect.json" : $"cs2_taser_effect.json names {z?.Gun ?? "nothing"}, not {gun}"));
+                    if (z is not null && z.Gun == gun) {
+                        Check($"effects/{gun}/zeus.arc",
+                              z.Arc.Life > 0f && z.Arc.Points >= 2 && z.Arc.Passes is { Length: > 0 } && z.Arc.ColorMin is { Length: >= 3 } && z.Arc.RadiusInchesAt(1) > 0f,
+                              $"{z.Arc.Life:0.##} s from {z.Arc.StartSeconds:0.##} s, {z.Arc.Points:0} points, {z.Arc.Passes?.Length ?? 0} rope passes, colour {string.Join(',', z.Arc.ColorMin ?? [])}, radius to {z.Arc.RadiusInchesAt((int)z.Arc.Points):0.##} in");
+                        Check($"effects/{gun}/zeus.muzzle", z.MuzzleGlow?.Count > 0 && z.MuzzleFlash?.Count > 0 && z.MuzzleSparks?.Count > 0,
+                              $"{z.MuzzleGlow?.Count:0} glow, {z.MuzzleFlash?.Count:0} flare ({z.MuzzleFlash?.Blend}), {z.MuzzleSparks?.Count} sparks");
+                        Check($"effects/{gun}/zeus.impact", z.ImpactGlow?.Count > 0 && z.ImpactSparks?.Count > 0,
+                              $"{z.ImpactGlow?.Count:0} glow, {z.ImpactSparks?.Count} sparks over {z.ImpactSparks?.EmissionSeconds:0.##} s");
+                        string[] needed = [z.Arc.Passes?[0].Textures?[0], z.MuzzleGlow?.Texture, z.MuzzleFlash?.Texture, z.MuzzleSparks?.Texture, z.ImpactGlow?.Texture];
+                        Check($"effects/{gun}/zeus.textures", needed.All(t => t is not null && Cs2TaserEffect.BakedTexture(t) is not null),
+                              string.Join(", ", needed.Select(t => $"{t}->{Cs2TaserEffect.BakedTexture(t) ?? "MISSING"}")));
+                        Check($"effects/{gun}/zeus.wire", z.Wire is { Rendered: false }, "the wires have no renderer in CS2; only the arc over them is drawn");
+                    }
+                }
                 continue;
             }
             if (fx is not null) {
@@ -223,6 +247,29 @@ public static class Cs2SelfTest {
                 bool noReloadInCs2 = reloadSeconds <= 0f && !Cs2Rig.HasAlias(gun, "reload");
                 Check($"rig/{gun}/animates", moves || noReloadInCs2,
                       noReloadInCs2 ? "no reload in CS2 (the Zeus)" : later is null ? "no reload clip" : $"{mover} moves {magazineMoves:0.##} in mid-reload");
+                // An additive clip (the R8's prepare_shoot) is deltas over the idle:
+                // composed, its hands stay within an inch or two of the idle's while
+                // something - the hammer, the fingers - moves against it. Read as a
+                // plain clip the hands sit at the origin, which is what 0.20.0 drew.
+                foreach (string alias in Cs2Rig.AdditiveAliases(gun)) {
+                    float half = Cs2Rig.Duration(gun, alias) * 0.5f;
+                    Cs2Rig.Pose layered = Cs2Rig.Sample(gun, alias, half);
+                    Cs2Rig.Pose under = Cs2Rig.Sample(gun, "idle", half);
+                    float handDrift = layered is null || under is null ? float.NaN
+                        : Vector3.Distance(layered.GetBoneOrigin("hand_R"), under.GetBoneOrigin("hand_R"));
+                    float handFromOrigin = layered?.GetBoneOrigin("hand_R").Length() ?? 0f;
+                    float largest = 0f;
+                    string moved = "";
+                    if (layered is not null && under is not null) {
+                        foreach ((string name, Matrix m) in layered.Bones) {
+                            float d = Vector3.Distance(m.Translation, under.GetBoneOrigin(name));
+                            if (d > largest) { largest = d; moved = name; }
+                        }
+                    }
+                    Check($"rig/{gun}/{alias}.additive",
+                          layered is not null && under is not null && handFromOrigin > 1f && handDrift < 2f && largest > 0.1f,
+                          layered is null ? "no pose" : $"hand_R {handFromOrigin:0.##} in from origin, {handDrift:0.###} in off the idle; {moved} moves {largest:0.##} in");
+                }
             }
 
             // The tracer must leave the barrel the player sees, not the eye. Both
@@ -490,6 +537,10 @@ public static class Cs2SelfTest {
                       $"{spec.ZoomLevels.Length} in GunSpec, {data.ZoomLevels} in the vdata");
                 Check($"gun/{gun}/scope.hides", spec.ScopeHidesWeapon == data.HideViewModelWhenZoomed,
                       $"GunSpec {spec.ScopeHidesWeapon}, vdata {data.HideViewModelWhenZoomed}");
+                // m_bUnzoomsAfterShot: the bolt actions leave the scope for the cycle, the
+                // auto-snipers and the AUG / SG 553 do not (0.20.0 unscoped all six).
+                Check($"gun/{gun}/scope.unzoom", spec.UnzoomsAfterShot == data.UnzoomsAfterShot,
+                      $"GunSpec {spec.UnzoomsAfterShot}, vdata {data.UnzoomsAfterShot}");
                 if (!spec.ScopeHidesWeapon) {
                     Check($"gun/{gun}/scope.ironsight",
                           KnifeAnimationController.IdleClip(variant, false, true) == "ironsightIdle"

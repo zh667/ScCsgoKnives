@@ -174,6 +174,8 @@ def spec_entry(gun: str) -> str:
         extras.append("ZoomLevels = [%s]" % ", ".join("%gf" % z for z in zoom))
         if not w.get("HideViewModelWhenZoomed", True):
             extras.append("ScopeHidesWeapon = false")
+        if w.get("UnzoomsAfterShot"):
+            extras.append("UnzoomsAfterShot = true")
     lines.append("            " + ", ".join(extras) + ",")
     if w["HasBurstMode"]:
         lines.append("            HasBurstMode = true, BurstCycleSeconds = %gf, BurstShotSeconds = %gf,"

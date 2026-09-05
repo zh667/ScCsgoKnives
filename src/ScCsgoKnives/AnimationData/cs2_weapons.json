@@ -42,6 +42,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.368,
    "RecoilSeed": 223.0,
    "RecoilAngleVariance": [
@@ -129,6 +130,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -175,6 +177,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.338941,
    "RecoilSeed": 38965.0,
    "RecoilAngleVariance": [
@@ -262,6 +265,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_DETACHABLE",
     "m_aShootSounds": {
@@ -310,6 +314,7 @@
     0.05
    ],
    "HideViewModelWhenZoomed": true,
+   "UnzoomsAfterShot": true,
    "RecoveryTimeStand": 0.34539,
    "RecoilSeed": 4100.0,
    "RecoilAngleVariance": [
@@ -397,6 +402,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": true,
+    "m_bUnzoomsAfterShot": true,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -446,6 +452,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.429727,
    "RecoilSeed": 24204.0,
    "RecoilAngleVariance": [
@@ -533,6 +540,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -580,6 +588,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.331572,
    "RecoilSeed": 36387.0,
    "RecoilAngleVariance": [
@@ -667,6 +676,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -712,6 +722,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.2425,
    "RecoilSeed": 9788.0,
    "RecoilAngleVariance": [
@@ -799,6 +810,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -844,6 +856,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.8112,
    "RecoilSeed": 1454.0,
    "RecoilAngleVariance": [
@@ -927,6 +940,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -972,6 +986,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.524989,
    "RecoilSeed": 24563.0,
    "RecoilAngleVariance": [
@@ -1059,6 +1074,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1104,6 +1120,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.25,
    "RecoilSeed": 39623.0,
    "RecoilAngleVariance": [
@@ -1191,6 +1208,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": true,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1236,6 +1254,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.2,
    "RecoilSeed": 33244.0,
    "RecoilAngleVariance": [
@@ -1325,6 +1344,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1372,6 +1392,7 @@
     0.05
    ],
    "HideViewModelWhenZoomed": true,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.544331,
    "RecoilSeed": 29908.0,
    "RecoilAngleVariance": [
@@ -1459,6 +1480,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": true,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1506,6 +1528,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.3,
    "RecoilSeed": 51191.0,
    "RecoilAngleVariance": [
@@ -1593,6 +1616,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1638,6 +1662,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.2,
    "RecoilSeed": 4484.0,
    "RecoilAngleVariance": [
@@ -1727,6 +1752,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": true,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1772,6 +1798,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.349532,
    "RecoilSeed": 5426.0,
    "RecoilAngleVariance": [
@@ -1859,6 +1886,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -1904,6 +1932,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.828931,
    "RecoilSeed": 50310.0,
    "RecoilAngleVariance": [
@@ -1991,6 +2020,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2037,6 +2067,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.338941,
    "RecoilSeed": 38965.0,
    "RecoilAngleVariance": [
@@ -2124,6 +2155,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2170,6 +2202,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.399729,
    "RecoilSeed": 34079.0,
    "RecoilAngleVariance": [
@@ -2257,6 +2290,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2302,6 +2336,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.399729,
    "RecoilSeed": 12518.0,
    "RecoilAngleVariance": [
@@ -2389,6 +2424,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2435,6 +2471,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.437491,
    "RecoilSeed": 61649.0,
    "RecoilAngleVariance": [
@@ -2522,6 +2559,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_INTEGRATED",
     "m_aShootSounds": {
@@ -2568,6 +2606,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.437491,
    "RecoilSeed": 61649.0,
    "RecoilAngleVariance": [
@@ -2655,6 +2694,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2700,6 +2740,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.25789,
    "RecoilSeed": 50729.0,
    "RecoilAngleVariance": [
@@ -2787,6 +2828,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2833,6 +2875,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.3,
    "RecoilSeed": 57966.0,
    "RecoilAngleVariance": [
@@ -2920,6 +2963,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -2966,6 +3010,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.460517,
    "RecoilSeed": 7763.0,
    "RecoilAngleVariance": [
@@ -3053,6 +3098,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3098,6 +3144,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.345388,
    "RecoilSeed": 9788.0,
    "RecoilAngleVariance": [
@@ -3187,6 +3234,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3232,6 +3280,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.372098,
    "RecoilSeed": 6213.0,
    "RecoilAngleVariance": [
@@ -3319,6 +3368,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3364,6 +3414,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.9,
    "RecoilSeed": 12345.0,
    "RecoilAngleVariance": [
@@ -3453,6 +3504,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3498,6 +3550,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.460517,
    "RecoilSeed": 1089.0,
    "RecoilAngleVariance": [
@@ -3585,6 +3638,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3632,6 +3686,7 @@
     0.05
    ],
    "HideViewModelWhenZoomed": true,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.544331,
    "RecoilSeed": 19364.0,
    "RecoilAngleVariance": [
@@ -3719,6 +3774,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": true,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3768,6 +3824,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.452886,
    "RecoilSeed": 43500.0,
    "RecoilAngleVariance": [
@@ -3855,6 +3912,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -3904,6 +3962,7 @@
     0.05
    ],
    "HideViewModelWhenZoomed": true,
+   "UnzoomsAfterShot": true,
    "RecoveryTimeStand": 0.142096,
    "RecoilSeed": 1278.0,
    "RecoilAngleVariance": [
@@ -3991,6 +4050,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": true,
+    "m_bUnzoomsAfterShot": true,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -4037,6 +4097,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.0,
    "RecoilSeed": 687.0,
    "RecoilAngleVariance": [
@@ -4082,6 +4143,7 @@
     "m_flTimeBetweenBurstShots": 0.0,
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -4127,6 +4189,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.391,
    "RecoilSeed": 789.0,
    "RecoilAngleVariance": [
@@ -4214,6 +4277,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -4259,6 +4323,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.349993,
    "RecoilSeed": 59299.0,
    "RecoilAngleVariance": [
@@ -4346,6 +4411,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {
@@ -4392,6 +4458,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.349532,
    "RecoilSeed": 5426.0,
    "RecoilAngleVariance": [
@@ -4479,6 +4546,7 @@
     ],
     "m_bIsFullAuto": false,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_DETACHABLE",
     "m_aShootSounds": {
@@ -4525,6 +4593,7 @@
     0.0
    ],
    "HideViewModelWhenZoomed": false,
+   "UnzoomsAfterShot": false,
    "RecoveryTimeStand": 0.506569,
    "RecoilSeed": 24862.0,
    "RecoilAngleVariance": [
@@ -4612,6 +4681,7 @@
     ],
     "m_bIsFullAuto": true,
     "m_bHideViewModelWhenZoomed": false,
+    "m_bUnzoomsAfterShot": false,
     "m_bHasBurstMode": false,
     "m_eSilencerType": "WEAPONSILENCER_NONE",
     "m_aShootSounds": {

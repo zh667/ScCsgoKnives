@@ -305,9 +305,277 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
     }
 
+    // ---- the Zeus ------------------------------------------------------------------
+
+    sealed class ZeusSprite { public Vector3 Offset; public float Life, Radius, Roll; public Color Tint; }
+    sealed class ZeusSpark { public Vector3 Origin, Velocity; public float Life, Born; }
+
+    /// <summary>One Zeus shot: CS2's weapon_tracers_taser (the arc, the impact glow) and weapon_muzzle_flash_taser (glow, flare, sparks).</summary>
+    sealed class ZeusShot {
+        public Vector3 Muzzle, End, Direction;
+        public double At;
+        public bool Hit;
+        public Color ArcTint;
+        public float ArcScroll;
+        public readonly List<ZeusSprite> MuzzleGlow = [], MuzzleFlash = [], ImpactGlow = [];
+        public readonly List<ZeusSpark> MuzzleSparks = [], ImpactSparks = [];
+    }
+
+    readonly List<ZeusShot> m_zeus = [];
+    readonly Dictionary<string, Texture2D> m_zeusTextures = new(StringComparer.Ordinal);
+
+    /// <summary>The ropes' texture scroll, repeats per second: CS2 drives m_flTextureVScrollRate by noise, so a constant per shot is assumed.</summary>
+    const float ArcScrollMin = 2f, ArcScrollMax = 4f;          // assumed
+    /// <summary>World length of one repeat of the arc texture along the rope (m_flTextureVWorldSize is noise-driven too).</summary>
+    const float ArcTextureMetres = 0.5f;                       // assumed
+    /// <summary>A spark trail is its velocity over this slice of time; C_OP_RenderTrails' length scale is not read.</summary>
+    const float SparkTrailSeconds = 0.06f;                     // assumed
+    /// <summary>The flare's MOD2X blend has no engine equivalent: drawn additive at this alpha with its radius capped.</summary>
+    const float FlareAlpha = 0.25f;                            // assumed
+    const float FlareRadiusCapInches = 40f;                    // assumed
+    /// <summary>The effect is gone by then (the arc ends at 0.45 s, the longest sparks at 0.4 s).</summary>
+    const float ZeusSeconds = 1f;
+
+    Texture2D ZeusTexture(string cs2Name) {
+        string baked = Cs2TaserEffect.BakedTexture(cs2Name);
+        if (baked is null) {
+            KnifeDiagnostics.WarnOnce($"cs2-zeus-texture-{cs2Name ?? "none"}", $"No baked texture for the Zeus's {cs2Name ?? "unnamed texture"}; that part is not drawn.");
+            return null;
+        }
+        if (baked == "cs2_tracer_add") return TracerTexture(baked);
+        if (m_zeusTextures.TryGetValue(baked, out Texture2D t)) return t;
+        try { t = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + baked); }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce($"cs2-zeus-texture-{baked}", $"Could not load the Zeus texture {baked}: {e.Message}");
+            t = null;
+        }
+        m_zeusTextures[baked] = t;
+        return t;
+    }
+
+    static Color LerpColor(int[] a, int[] b, float t) =>
+        a is { Length: >= 3 } && b is { Length: >= 3 }
+            ? new Color((byte)MathUtils.Lerp(a[0], b[0], t), (byte)MathUtils.Lerp(a[1], b[1], t), (byte)MathUtils.Lerp(a[2], b[2], t), (byte)255)
+            : Color.White;
+
+    Vector3 RandomInSphere(float radius) {
+        Vector3 d = new(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+        float l = d.Length();
+        if (l < 1e-4f) return Vector3.Zero;
+        return d / l * radius * MathF.Cbrt(m_random.Float(0f, 1f));
+    }
+
+    void QueueZeus(Vector3 muzzle, Vector3 end, Vector3 direction, bool hit) {
+        Cs2TaserEffect.File fx = Cs2TaserEffect.Data;
+        if (fx is null || KnifeTuning.GunProfile < 0.5f) return;
+        var shot = new ZeusShot {
+            Muzzle = muzzle, End = end, Direction = direction, At = m_time.GameTime, Hit = hit,
+            ArcTint = LerpColor(fx.Arc.ColorMin, fx.Arc.ColorMax, m_random.Float(0f, 1f)),
+            ArcScroll = m_random.Float(ArcScrollMin, ArcScrollMax),
+        };
+        Sprites(shot.MuzzleGlow, fx.MuzzleGlow);
+        Sprites(shot.MuzzleFlash, fx.MuzzleFlash);
+        Sprites(shot.ImpactGlow, fx.ImpactGlow);
+        Sparks(shot.MuzzleSparks, fx.MuzzleSparks, direction, muzzle);
+        // The impact sparks fly off the surface: CS2's CP1 frame faces back along the trace.
+        if (hit) Sparks(shot.ImpactSparks, fx.ImpactSparks, -direction, end);
+        if (m_zeus.Count > 8) m_zeus.RemoveAt(0);
+        m_zeus.Add(shot);
+
+        void Sprites(List<ZeusSprite> list, Cs2TaserEffect.Sprites s) {
+            if (s?.LifeSeconds is not { Length: >= 2 } || s.RadiusInches is not { Length: >= 2 }) return;
+            int n = (int)MathF.Round(s.Count);
+            for (int i = 0; i < n; i++) {
+                list.Add(new ZeusSprite {
+                    Offset = RandomInSphere(s.SphereInches * Cs2Placement.InchesToEngine),
+                    Life = m_random.Float(s.LifeSeconds[0], s.LifeSeconds[1]),
+                    Radius = m_random.Float(s.RadiusInches[0], s.RadiusInches[1]) * Cs2Placement.InchesToEngine,
+                    Roll = m_random.Float(0f, MathF.PI * 2f),
+                    Tint = LerpColor(s.ColorMin, s.ColorMax, m_random.Float(0f, 1f)),
+                });
+            }
+        }
+
+        void Sparks(List<ZeusSpark> list, Cs2TaserEffect.Sparks s, Vector3 forward, Vector3 origin) {
+            if (s?.SpeedMin is not { Length: >= 3 } || s.SpeedMax is not { Length: >= 3 } || s.LifeSeconds is not { Length: >= 2 }) return;
+            // C_INIT_CreateWithinSphereTransform's local frame: X along the control point, Z up.
+            Vector3 side = Vector3.Cross(forward, Vector3.UnitY);
+            if (side.LengthSquared() < 1e-6f) side = Vector3.UnitX;
+            side = Vector3.Normalize(side);
+            Vector3 up = Vector3.Normalize(Vector3.Cross(side, forward));
+            int n = s.Count;
+            for (int i = 0; i < n; i++) {
+                Vector3 v = forward * m_random.Float(s.SpeedMin[0], s.SpeedMax[0])
+                          + side * m_random.Float(s.SpeedMin[1], s.SpeedMax[1])
+                          + up * m_random.Float(s.SpeedMin[2], s.SpeedMax[2]);
+                list.Add(new ZeusSpark {
+                    Origin = origin, Velocity = v * Cs2Placement.InchesToEngine,
+                    Life = m_random.Float(s.LifeSeconds[0], s.LifeSeconds[1]),
+                    Born = n > 1 ? s.EmissionSeconds * i / (n - 1) : 0f,
+                });
+            }
+        }
+    }
+
+    void DrawZeus(Camera camera) {
+        if (m_zeus.Count == 0) return;
+        Cs2TaserEffect.File fx = Cs2TaserEffect.Data;
+        if (fx is null) return;
+        m_tracerRenderer ??= new PrimitivesRenderer3D();
+        double now = m_time.GameTime;
+        Vector3 eye = camera.ViewPosition, right = camera.ViewRight, up = camera.ViewUp;
+        for (int i = m_zeus.Count - 1; i >= 0; i--) {
+            ZeusShot shot = m_zeus[i];
+            float age = (float)(now - shot.At);
+            if (age > ZeusSeconds) { m_zeus.RemoveAt(i); continue; }
+            // The muzzle systems are position-locked to CP0: they follow the drawn gun.
+            Vector3 muzzle = CsmcFirstPersonRenderer.TryGetMuzzleWorld(fx.Gun, false, out Vector3 m) ? m : shot.Muzzle;
+            DrawZeusArc(shot, fx.Arc, age, muzzle, eye);
+            DrawZeusSprites(shot.MuzzleGlow, fx.MuzzleGlow, age, muzzle, right, up);
+            DrawZeusSprites(shot.MuzzleFlash, fx.MuzzleFlash, age, muzzle, right, up);
+            DrawZeusSprites(shot.ImpactGlow, fx.ImpactGlow, age, shot.End, right, up);
+            DrawZeusSparks(shot.MuzzleSparks, fx.MuzzleSparks, age, eye);
+            DrawZeusSparks(shot.ImpactSparks, fx.ImpactSparks, age, eye);
+        }
+        m_tracerRenderer.Flush(camera.ViewProjectionMatrix);
+    }
+
+    /// <summary>
+    /// weapon_tracers_taser_wire2: 15 particles from the wire's path, from 0.05 s for
+    /// 0.4 s, radius 0..2 in by index shrinking to 0.35 with bias 0.85, gravity on the
+    /// free middle (the ends dampened to the control points within 25 in), fading out
+    /// over the last 0.1 s; two C_OP_RenderRopes passes at radius scale 0.5.
+    /// </summary>
+    void DrawZeusArc(ZeusShot shot, Cs2TaserEffect.Arc arc, float age, Vector3 muzzle, Vector3 eye) {
+        if (arc?.Passes is null) return;
+        float t = age - arc.StartSeconds;
+        if (t < 0f || t >= arc.Life) return;
+        int n = Math.Max(2, (int)MathF.Round(arc.Points));
+        float f = t / arc.Life;
+        float fadeSeconds = arc.FadeOut?.Seconds ?? 0f;
+        float alpha = fadeSeconds > 0f && arc.Life - t < fadeSeconds ? (arc.Life - t) / fadeSeconds : 1f;
+        float scale = arc.Radius?.At(f) ?? 1f;
+        float drop = 0.5f * MathF.Abs(arc.Movement?.GravityMetres ?? 0f) * t * t;
+        float hold = arc.DampenRangeInches * Cs2Placement.InchesToEngine;
+        Vector3 start = muzzle, end = shot.End;
+        float length = Vector3.Distance(start, end);
+        if (length < 1e-3f) return;
+        Vector3[] points = new Vector3[n];
+        float[] half = new float[n];
+        for (int k = 0; k < n; k++) {
+            float u = k / (float)(n - 1);
+            Vector3 p = Vector3.Lerp(start, end, u);
+            float free = hold > 0f ? MathUtils.Saturate(MathUtils.Min(u * length, (1f - u) * length) / hold) : 1f;
+            p.Y -= drop * free;
+            points[k] = p;
+            half[k] = arc.RadiusInchesAt(k) * Cs2Placement.InchesToEngine * scale;
+        }
+        float repeats = MathF.Max(1f, length / ArcTextureMetres);
+        for (int passIndex = 0; passIndex < arc.Passes.Length; passIndex++) {
+            Cs2TaserEffect.RopePass pass = arc.Passes[passIndex];
+            string source = pass.Textures is { Length: > 0 } ? pass.Textures[Math.Min(passIndex, pass.Textures.Length - 1)] : null;
+            Texture2D texture = ZeusTexture(source);
+            if (texture is null) continue;
+            float scroll = shot.ArcScroll * age + passIndex * 0.37f;
+            QueueRope(texture, points, half, pass.RadiusScale ?? 1f, shot.ArcTint, alpha, repeats, scroll, eye);
+        }
+    }
+
+    void QueueRope(Texture2D texture, Vector3[] points, float[] half, float radiusScale, Color tint, float alpha,
+                   float repeats, float scroll, Vector3 eye) {
+        TexturedBatch3D batch = m_tracerRenderer.TexturedBatch(texture, useAlphaTest: false, layer: 0,
+            DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearWrap);
+        Color col = new(tint.R, tint.G, tint.B, (byte)MathUtils.Clamp(255f * alpha, 0f, 255f));
+        Vector3 previous = default, previousSide = default;
+        float previousU = 0f;
+        bool hasPrevious = false;
+        for (int k = 0; k < points.Length; k++) {
+            Vector3 p = points[k];
+            Vector3 along = k + 1 < points.Length ? points[k + 1] - p : p - points[k - 1];
+            Vector3 side = Vector3.Cross(along, p - eye);
+            float l = side.Length();
+            if (!float.IsFinite(l) || l < 1e-6f) { hasPrevious = false; continue; }
+            side *= half[k] * radiusScale / l;
+            float u = k / (float)(points.Length - 1) * repeats + scroll;
+            if (hasPrevious) {
+                batch.QueueTriangle(previous - previousSide, previous + previousSide, p + side,
+                                    new Vector2(previousU, 1f), new Vector2(previousU, 0f), new Vector2(u, 0f), col);
+                batch.QueueTriangle(previous - previousSide, p + side, p - side,
+                                    new Vector2(previousU, 1f), new Vector2(u, 0f), new Vector2(u, 1f), col);
+            }
+            previous = p;
+            previousSide = side;
+            previousU = u;
+            hasPrevious = true;
+        }
+    }
+
+    /// <summary>Camera-facing sprites (C_OP_RenderSprites): radius by the ramp over life, alpha off over the last FadeOut seconds.</summary>
+    void DrawZeusSprites(List<ZeusSprite> list, Cs2TaserEffect.Sprites spec, float age, Vector3 anchor, Vector3 right, Vector3 up) {
+        if (spec is null || list.Count == 0) return;
+        Texture2D texture = ZeusTexture(spec.Texture);
+        if (texture is null) return;
+        TexturedBatch3D batch = m_tracerRenderer.TexturedBatch(texture, useAlphaTest: false, layer: 1,
+            DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
+        float fadeSeconds = spec.FadeOut?.Seconds ?? 0f;
+        foreach (ZeusSprite s in list) {
+            if (age >= s.Life) continue;
+            float f = age / s.Life;
+            float radius = s.Radius * (spec.Radius?.At(f) ?? 1f);
+            float alpha = fadeSeconds > 0f && s.Life - age < fadeSeconds ? (s.Life - age) / fadeSeconds : 1f;
+            if (spec.Mod2x) {
+                alpha *= FlareAlpha;
+                radius = MathF.Min(radius, FlareRadiusCapInches * Cs2Placement.InchesToEngine);
+            }
+            Vector3 c = anchor + s.Offset;
+            (float sin, float cos) = MathF.SinCos(s.Roll);
+            Vector3 r = (right * cos + up * sin) * radius, u = (up * cos - right * sin) * radius;
+            Color col = new(s.Tint.R, s.Tint.G, s.Tint.B, (byte)MathUtils.Clamp(255f * alpha, 0f, 255f));
+            batch.QueueTriangle(c - r - u, c - r + u, c + r + u, new Vector2(0f, 1f), new Vector2(0f, 0f), new Vector2(1f, 0f), col);
+            batch.QueueTriangle(c - r - u, c + r + u, c + r - u, new Vector2(0f, 1f), new Vector2(1f, 0f), new Vector2(1f, 1f), col);
+        }
+    }
+
+    /// <summary>Spark trails (C_OP_RenderTrails): each flies its velocity under CS2's gravity, fading in and out as the file says.</summary>
+    void DrawZeusSparks(List<ZeusSpark> list, Cs2TaserEffect.Sparks spec, float age, Vector3 eye) {
+        if (spec is null || list.Count == 0) return;
+        Texture2D texture = ZeusTexture(spec.Texture);
+        if (texture is null) return;
+        TexturedBatch3D batch = m_tracerRenderer.TexturedBatch(texture, useAlphaTest: false, layer: 0,
+            DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
+        float g = spec.Movement?.GravityMetres ?? 0f;
+        float half = (spec.RadiusInches is { Length: >= 1 } ? spec.RadiusInches[0] : 1f) * (spec.RadiusScale ?? 1f) * Cs2Placement.InchesToEngine;
+        float fadeIn = spec.FadeIn?.Seconds ?? 0f, fadeOut = spec.FadeOut?.Seconds ?? 0f;
+        Color tint = spec.Color is { Length: >= 3 } ? new Color((byte)spec.Color[0], (byte)spec.Color[1], (byte)spec.Color[2], (byte)255) : Color.White;
+        float maxLength = (spec.MaxLengthInches ?? 1e6f) * Cs2Placement.InchesToEngine;
+        foreach (ZeusSpark s in list) {
+            float t = age - s.Born;
+            if (t < 0f || t >= s.Life) continue;
+            Vector3 p = s.Origin + s.Velocity * t + new Vector3(0f, 0.5f * g * t * t, 0f);
+            Vector3 v = s.Velocity + new Vector3(0f, g * t, 0f);
+            float speed = v.Length();
+            if (speed < 1e-5f) continue;
+            float trail = MathF.Min(speed * SparkTrailSeconds, maxLength);
+            Vector3 dir = v / speed;
+            Vector3 tail = p - dir * trail;
+            float alpha = 1f;
+            if (fadeIn > 0f && t < fadeIn) alpha = t / fadeIn;
+            if (fadeOut > 0f && s.Life - t < fadeOut) alpha = MathF.Min(alpha, (s.Life - t) / fadeOut);
+            Vector3 side = Vector3.Cross(dir, p - eye);
+            float sl = side.Length();
+            if (!float.IsFinite(sl) || sl < 1e-6f) continue;
+            side *= half / sl;
+            Color col = new(tint.R, tint.G, tint.B, (byte)MathUtils.Clamp(255f * alpha, 0f, 255f));
+            batch.QueueTriangle(tail - side, tail + side, p + side, new Vector2(0f, 1f), new Vector2(0f, 0f), new Vector2(1f, 0f), col);
+            batch.QueueTriangle(tail - side, p + side, p - side, new Vector2(0f, 1f), new Vector2(1f, 0f), new Vector2(1f, 1f), col);
+        }
+    }
+
     public void Draw(Camera camera, int drawOrder) {
         DrawTracers(camera);
+        DrawZeus(camera);
         if (CsmcFirstPersonRenderer.ScopeOverlayActive) CsmcFirstPersonRenderer.DrawScopeOverlay();
+        if (CsmcFirstPersonRenderer.ScopeDotActive) CsmcFirstPersonRenderer.DrawScopeDot();
     }
 
     public override void Dispose() {
@@ -428,6 +696,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.FireLatch = input.Dig.HasValue || input.Hit.HasValue;
         bool reloadKey = Keyboard.IsKeyDownOnce(Key.R);
         // The Zeus: a fresh charge after its recharge time, announced by CS2's own cue.
+        // A discharged one with no timer running - the state is per session, so a
+        // world reloaded on an empty Zeus had none - starts one now rather than
+        // staying empty for good (0.20.0).
+        if (spec.RechargeSeconds > 0f && rounds < spec.Magazine && state.RechargeAt < 0) state.RechargeAt = now + spec.RechargeSeconds;
         if (state.RechargeAt >= 0 && now >= state.RechargeAt) {
             state.RechargeAt = -1;
             if (rounds < spec.Magazine) {
@@ -455,6 +727,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             if (rounds > 0 && now >= state.NextShot) wantsFire = true;
         }
         if (!busy && rounds < spec.Magazine && (reloadKey || (wantsFire && rounds == 0))) {
+            if (spec.RechargeSeconds > 0f) {
+                // No reload clip to run: say how long the charge has left instead of nothing.
+                int left = (int)Math.Ceiling(Math.Max(0.0, state.RechargeAt - now));
+                player.ComponentGui.DisplaySmallMessage(string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "Recharging"), left), Color.White, false, false);
+                return;
+            }
             StartReload(player, state, model, spec, value);
             return;
         }
@@ -528,13 +806,16 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool silenced = spec.SilencedAlways || (spec.HasSilencer && !GunSpec.GetSilencerOff(data));
         // The round that empties the magazine locks a pistol's slide back (shoot_empty).
         bool lastRound = rounds <= 0;
-        if (state.Zoom > 0) {
-            // CS2: a scoped shot drops the scope for the bolt cycle and re-zooms to the same level afterwards.
+        bool scopedShot = state.Zoom > 0;
+        if (scopedShot && spec.UnzoomsAfterShot) {
+            // CS2's m_bUnzoomsAfterShot (AWP, SSG 08): a scoped shot drops the scope for
+            // the bolt cycle and re-zooms to the same level afterwards. The auto-snipers
+            // and the AUG / SG 553 have it false and fire with the scope up.
             state.RescopeLevel = state.Zoom;
             state.RescopeAt = now + spec.CycleSeconds;
             LeaveScope(player, state);
         }
-        KnifeAnimationController.TriggerShoot(player, silenced, lastRound, state.Zoom > 0, alternateFire,
+        KnifeAnimationController.TriggerShoot(player, silenced, lastRound, scopedShot && !spec.UnzoomsAfterShot, alternateFire,
             spec.LeftMuzzleBone is not null ? roundsBefore : -1);
         // The Dual Berettas flash and trace from the gun that fired.
         string shotClip = KnifeAnimationController.CurrentClip(model);
@@ -591,6 +872,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Vector3 tracerDirection = impact - tracerStart;
             float tracerTravel = tracerDirection.Length();
             if (spec.MuzzleEffects && tracerTravel > 1e-3f) QueueTracer(spec.Name, tracerStart, tracerDirection / tracerTravel, tracerTravel);
+            // The Zeus draws no flash sprite and no ribbon; its own effect runs from the
+            // drawn muzzle to wherever the trace ended (CS2's CP1), sparks only on a hit.
+            if (Cs2TaserEffect.Applies(spec.Name)) {
+                Vector3 zeusMuzzle = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, false, out Vector3 zm) ? zm : start;
+                QueueZeus(zeusMuzzle, impact, direction, body.HasValue || terrain.HasValue);
+            }
             if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
                 Vector3 hitPoint = body.Value.HitPoint();
                 // CS damage falls off with distance: damage * RangeModifier^(units/500).

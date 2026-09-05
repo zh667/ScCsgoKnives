@@ -124,6 +124,11 @@ def read(stem: str) -> dict:
     out["m_bIsFullAuto"] = m.group(1) == "true" if m else None
     m = re.search(r"m_bHideViewModelWhenZoomed\s*=\s*(true|false)", text)
     out["m_bHideViewModelWhenZoomed"] = m.group(1) == "true" if m else None
+    # Whether a scoped shot drops the scope for the cycle: true on the two bolt
+    # actions (AWP, SSG 08), false on the auto-snipers and the AUG / SG 553, which
+    # keep the scope up and keep firing (0.20.0 unscoped all six after every shot).
+    m = re.search(r"m_bUnzoomsAfterShot\s*=\s*(true|false)", text)
+    out["m_bUnzoomsAfterShot"] = m.group(1) == "true" if m else None
     m = re.search(r"m_bHasBurstMode\s*=\s*(true|false)", text)
     out["m_bHasBurstMode"] = m.group(1) == "true" if m else None
     m = re.search(r'm_eSilencerType\s*=\s*"(\w+)"', text)
@@ -195,6 +200,7 @@ def main():
             # magnified with no scope drawn.
             "ZoomSeconds": [v.get("m_flZoomTime0"), v.get("m_flZoomTime1"), v.get("m_flZoomTime2")],
             "HideViewModelWhenZoomed": v.get("m_bHideViewModelWhenZoomed"),
+            "UnzoomsAfterShot": v.get("m_bUnzoomsAfterShot"),
             "RecoveryTimeStand": v.get("m_flRecoveryTimeStand", 0.0),
             "RecoilSeed": v.get("m_nRecoilSeed"),
             "RecoilAngleVariance": pair("m_flRecoilAngleVariance"),

@@ -607,8 +607,13 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     public static void SetScope(bool on, float magnification, bool hideWeapon = true) {
         s_scoped = on && hideWeapon;
+        s_ironsight = on && !hideWeapon;
         s_scopeMagnification = magnification;
     }
+
+    /// <summary>Zoomed on a gun that keeps its viewmodel (AUG, SG 553): the lens goes clear and the HUD dot is drawn.</summary>
+    static bool s_ironsight;
+    public static bool ScopeDotActive => s_ironsight;
 
     static Cs2Effects.Flash s_flashSpec;
 
@@ -985,8 +990,11 @@ public static class CsmcFirstPersonRenderer {
         // and nothing is transformed per vertex. Only the few triangles that really
         // blend - 145 across all 32 guns - go through the skinning loop.
         Cs2RigidMesh rigid = Cs2RigidMesh.For(gun);
+        Cs2RigidMesh.Part lens = null;
+        Matrix lensWorld = Matrix.Identity;
         if (rigid is not null) {
-            DrawCs2RigidWeapon(rigid, cs2, gun, post, projection, camera, in lighting, variant, hideSilencer);
+            DrawCs2RigidWeapon(rigid, cs2, gun, post, projection, camera, in lighting, variant, hideSilencer,
+                out lens, out lensWorld);
         }
 
         foreach (Part part in s_cs2Parts[gun]) {
@@ -1001,6 +1009,9 @@ public static class CsmcFirstPersonRenderer {
         }
 
         DrawCs2Arms(cs2, post, projection, camera, in lighting, variant);
+
+        // Translucent, so after everything opaque it can sit in front of.
+        if (lens is not null) DrawScopeLens(rigid, lens, lensWorld, projection, camera, in lighting, variant);
 
         if (s_smokeUntil > KnifeClock.Now) DrawCs2MuzzleFlash(cs2, gun, post, projection);
 
@@ -1114,7 +1125,10 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static void DrawCs2RigidWeapon(Cs2RigidMesh mesh, Cs2Rig.Pose pose, string asset,
         Matrix post, Matrix projection, Camera camera,
-        in KnifePbrRenderer.Lighting lighting, int variant, bool hideSilencer) {
+        in KnifePbrRenderer.Lighting lighting, int variant, bool hideSilencer,
+        out Cs2RigidMesh.Part lens, out Matrix lensWorld) {
+        lens = null;
+        lensWorld = Matrix.Identity;
         Texture2D baseColor = Cs2WeaponTexture(asset);
         if (baseColor is null) return;
         if (!mesh.SetPose(pose, Cs2Placement.Placement())) {
@@ -1123,21 +1137,16 @@ public static class CsmcFirstPersonRenderer {
             return;
         }
         string material = $"{asset}_hd";
-        Cs2RigidMesh.Part lens = null;
-        Matrix lensWorld = Matrix.Identity;
         foreach (Cs2RigidMesh.Part part in mesh.Parts) {
             if (hideSilencer && mesh.Joints[part.Joint] == "silencer") continue;
             if (!mesh.TryPartWorld(part, out Matrix bone)) continue;
-            // The AUG's and SG 553's scope lens is CS2's shared_scope_lens material:
-            // ui.vfx, additive, the reticle dot texture at intensity 6 - a glowing
-            // dot on glass that is otherwise invisible. Drawn after the body, additive
-            // and unlit, with the lens's own UVs; the body texture would put a patch of
-            // receiver on it.
+            // The AUG's and SG 553's scope lens has its own material (shared_scope_lens)
+            // and is drawn last, after the arms, by DrawScopeLens; the body texture
+            // would put a patch of receiver on it.
             if (part.Material == ScopeLensMaterial) { lens = part; lensWorld = bone * post; continue; }
             KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, part.Indices, baseColor, material,
                 bone * post, projection, camera.InvertedViewMatrix, in lighting, variant);
         }
-        if (lens is not null) DrawScopeLens(mesh, lens, lensWorld, projection);
         if (mesh.BlendedTriangleCount > 0) {
             mesh.SkinBlended();
             foreach (Cs2SkinnedMesh.Primitive part in mesh.BlendedParts) {
@@ -1148,15 +1157,46 @@ public static class CsmcFirstPersonRenderer {
     }
 
     const string ScopeLensMaterial = "shared_scope_lens";
-    static Texture2D s_scopeDot;
+    static Texture2D s_scopeDot, s_scopeLensBase;
 
     /// <summary>
-    /// The scope lens triangles with CS2's scope_dot_white_color, additive and unlit
-    /// (materials/models/weapons/shared/scope/scope.vmat: ui.vfx, F_ADDITIVE 1,
-    /// g_flIntensity 6). The intensity is not reproduced - one additive pass of the
-    /// white dot - so the dot reads a little softer than CS2's.
+    /// The scope lens as CS2's shared_scope_lens.vmat draws it: csgo_weapon.vfx,
+    /// F_TRANSLUCENT, colour = shared_scope_lens_mask x g_vColorTint 0.157, metalness
+    /// 1, roughness 0.078, and g_flOpacityScale = pow(1 - $ent_ironsight, 0.5) - a dark
+    /// mirror-like glass seen from outside, fully clear once the player aims down it.
+    /// The three textures are baked by tools/cs2_scope_lens_texture.py; the reticle is
+    /// not on the lens at all (scope.vmat is ui.vfx, a HUD element: DrawScopeDot).
+    ///
+    /// 0.20.0 drew these triangles additively with the dot texture stretched over them,
+    /// which read as a white disc, and the additive state it left behind made the arms
+    /// drawn next translucent.
     /// </summary>
-    static void DrawScopeLens(Cs2RigidMesh mesh, Cs2RigidMesh.Part lens, Matrix world, Matrix projection) {
+    static void DrawScopeLens(Cs2RigidMesh mesh, Cs2RigidMesh.Part lens, Matrix world, Matrix projection,
+                              Camera camera, in KnifePbrRenderer.Lighting lighting, int variant) {
+        if (s_ironsight) return;   // opacity pow(1 - 1, 0.5) = 0
+        try {
+            s_scopeLensBase ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_lens");
+        }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce("cs2-scope-lens", $"No scope lens texture: {e.Message}");
+            return;
+        }
+        if (s_scopeLensBase is null || !KnifeDiagnostics.IsFinite(world)) return;
+        KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, lens.Indices, s_scopeLensBase, "cs2_scope_lens",
+            world, projection, camera.InvertedViewMatrix, in lighting, variant);
+    }
+
+    /// <summary>
+    /// The screen-height fraction the HUD dot image is drawn at. CS2 draws
+    /// scope_dot_white_color through scope.vmat (ui.vfx, F_ADDITIVE, g_flIntensity 6)
+    /// as a HUD element; its layout is not in the export, so the size is an estimate
+    /// chosen so the bright core reads about 14 px tall at 1080p.
+    /// </summary>
+    public const float ScopeDotScreenFraction = 40f / 1080f;   // assumed
+
+    /// <summary>The AUG / SG 553 reticle while zoomed: CS2's white dot, additive, at the centre of the screen.</summary>
+    public static void DrawScopeDot() {
+        if (!s_ironsight) return;
         try {
             s_scopeDot ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_dot");
         }
@@ -1164,21 +1204,16 @@ public static class CsmcFirstPersonRenderer {
             KnifeDiagnostics.WarnOnce("cs2-scope-dot", $"No scope dot texture: {e.Message}");
             return;
         }
-        if (s_scopeDot is null || !KnifeDiagnostics.IsFinite(world)) return;
-        s_primitives3D ??= new PrimitivesRenderer3D();
-        TexturedBatch3D batch = s_primitives3D.TexturedBatch(s_scopeDot, false, 0,
-            DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
-        Cs2SkinnedMesh.Vertex[] v = mesh.Vertices;
-        int[] idx = lens.Indices;
-        for (int i = 0; i + 2 < idx.Length; i += 3) {
-            ref Cs2SkinnedMesh.Vertex a = ref v[idx[i]];
-            ref Cs2SkinnedMesh.Vertex b = ref v[idx[i + 1]];
-            ref Cs2SkinnedMesh.Vertex c = ref v[idx[i + 2]];
-            batch.QueueTriangle(
-                Vector3.Transform(a.Position, world), Vector3.Transform(b.Position, world), Vector3.Transform(c.Position, world),
-                a.TextureCoordinate, b.TextureCoordinate, c.TextureCoordinate, Color.White);
-        }
-        s_primitives3D.Flush(projection);
+        if (s_scopeDot is null) return;
+        s_primitives2D ??= new PrimitivesRenderer2D();
+        float w = Display.Viewport.Width, h = Display.Viewport.Height;
+        float half = h * ScopeDotScreenFraction * 0.5f;
+        Vector2 c = new(w * 0.5f, h * 0.5f);
+        TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_scopeDot, false, 0,
+            DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
+        batch.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
+            0f, Vector2.Zero, Vector2.One, Color.White);
+        s_primitives2D.Flush();
     }
 
     static Texture2D Cs2WeaponTexture(string asset) {
@@ -2369,6 +2404,7 @@ public static class CsmcFirstPersonRenderer {
         }
         Display.DepthStencilState = DepthStencilState.Default;
         Display.RasterizerState = rasterizer;
+        Display.BlendState = BlendState.Opaque;
         ComponentFirstPersonModel.LitShader.Texture = texture;
         ComponentFirstPersonModel.LitShader.SamplerState = sampler;
         ComponentFirstPersonModel.LitShader.MaterialColor = Vector4.One;

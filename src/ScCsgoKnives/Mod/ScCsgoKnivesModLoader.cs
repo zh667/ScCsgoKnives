@@ -43,7 +43,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     /// <summary>The vanilla crosshair is a fixed-size quad 50 units ahead, so it grows with the scope's FOV; the scope draws its own.</summary>
     public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
-        if (CsmcFirstPersonRenderer.ScopeOverlayActive) isVisible = false;
+        // Zoomed on the AUG / SG 553 the reticle is the scope's own dot, so the
+        // vanilla crosshair goes too (it grew with the FOV in 0.20.0's video).
+        if (CsmcFirstPersonRenderer.ScopeOverlayActive || CsmcFirstPersonRenderer.ScopeDotActive) isVisible = false;
     }
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {

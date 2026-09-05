@@ -1,0 +1,394 @@
+{
+ "Format": "ScCsgoKnives.Cs2TaserEffect/1",
+ "Gun": "taser",
+ "Source": {
+  "vdata": "01_weapon_data/firearm_blocks/weapon_taser.vdata",
+  "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_taser.vpcf",
+  "TracerFrequency": 1,
+  "TracerChildren": [
+   "weapon_tracers_taser_wire1a",
+   "weapon_tracers_taser_wire1b",
+   "weapon_taser_glow_impact"
+  ],
+  "MuzzleFlashChildren": [
+   "weapon_taser_glow",
+   "weapon_taser_sparks",
+   "weapon_taser_flash"
+  ],
+  "RangeInches": 120.0
+ },
+ "Wire": {
+  "Source": "weapon_tracers_taser_wire1a.vpcf (wire1b identical)",
+  "Points": 15.0,
+  "LifeSeconds": [
+   1.8,
+   1.8
+  ],
+  "RadiusInches": [
+   1.0,
+   1.0
+  ],
+  "Bulge": 1.0,
+  "Color": [
+   52,
+   52,
+   52
+  ],
+  "FadeOut": {
+   "Min": 1.4,
+   "Max": 1.4,
+   "Proportional": false
+  },
+  "Movement": {
+   "Gravity": [
+    0.0,
+    0.0,
+    -350.0
+   ],
+   "Drag": 0.05
+  },
+  "Rendered": false
+ },
+ "Arc": {
+  "Source": "weapon_tracers_taser_wire2.vpcf",
+  "StartSeconds": 0.05,
+  "Points": 15.0,
+  "LifeSeconds": [
+   0.4,
+   0.4
+  ],
+  "RadiusCurveDomainMax": [
+   15.0,
+   2.0
+  ],
+  "Radius": {
+   "StartScale": 1.0,
+   "EndScale": 0.35,
+   "Bias": 0.85
+  },
+  "FadeOut": {
+   "Min": 0.1,
+   "Max": 0.1,
+   "Proportional": false
+  },
+  "Movement": {
+   "Gravity": [
+    0.0,
+    0.0,
+    -500.0
+   ],
+   "Drag": 0.05
+  },
+  "DampenRangeInches": 25.0,
+  "ColorMin": [
+   149,
+   218,
+   255
+  ],
+  "ColorMax": [
+   149,
+   232,
+   255
+  ],
+  "Passes": [
+   {
+    "Textures": [
+     "particle/beam_crack_06_bw_center",
+     "particle/flames/beam_flame"
+    ],
+    "RadiusScale": 0.5,
+    "Overbright": 4.0,
+    "ScrollRateNoise": true
+   },
+   {
+    "Textures": [
+     "particle/beam_crack_06_bw_center",
+     "particle/flames/beam_flame"
+    ],
+    "RadiusScale": 0.5,
+    "Overbright": 4.0,
+    "ScrollRateNoise": true
+   }
+  ]
+ },
+ "MuzzleGlow": {
+  "Source": "weapon_taser_glow.vpcf",
+  "Count": 3.0,
+  "LifeSeconds": [
+   0.1,
+   0.2
+  ],
+  "RadiusInches": [
+   1.0,
+   2.0
+  ],
+  "SphereInches": 2.0,
+  "Radius": {
+   "StartScale": 0.25,
+   "EndScale": 12.0,
+   "Bias": 0.5
+  },
+  "FadeOut": {
+   "Min": 0.1,
+   "Max": 0.1,
+   "Proportional": false
+  },
+  "ColorMin": [
+   89,
+   105,
+   255
+  ],
+  "ColorMax": [
+   89,
+   105,
+   255
+  ],
+  "Overbright": null,
+  "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+  "StartFadeSize": null,
+  "EndFadeSize": null,
+  "Texture": "particle/particle_glow_04"
+ },
+ "MuzzleFlash": {
+  "Source": "weapon_taser_flash.vpcf",
+  "Count": 3.0,
+  "LifeSeconds": [
+   0.1,
+   0.15
+  ],
+  "RadiusInches": [
+   8.0,
+   10.0
+  ],
+  "SphereInches": 2.0,
+  "Radius": {
+   "StartScale": 0.25,
+   "EndScale": 12.0,
+   "Bias": 0.5
+  },
+  "FadeOut": {
+   "Min": 0.1,
+   "Max": 0.1,
+   "Proportional": false
+  },
+  "ColorMin": [
+   150,
+   150,
+   255
+  ],
+  "ColorMax": [
+   150,
+   150,
+   255
+  ],
+  "Overbright": 10.0,
+  "Blend": "PARTICLE_OUTPUT_BLEND_MODE_MOD2X",
+  "StartFadeSize": 7.0,
+  "EndFadeSize": 8.0,
+  "Texture": "particle/particle_flares/particle_flare_004b_mod"
+ },
+ "MuzzleSparks": {
+  "Source": "weapon_taser_sparks.vpcf",
+  "MaxParticles": 20,
+  "EmissionSeconds": 0.1,
+  "EmitRate": null,
+  "LifeSeconds": [
+   0.3,
+   0.3
+  ],
+  "RadiusInches": [
+   1.0,
+   1.0
+  ],
+  "RadiusScale": 0.5,
+  "MaxLengthInches": null,
+  "SpeedMin": [
+   40.0,
+   -40.0,
+   -20.0
+  ],
+  "SpeedMax": [
+   60.0,
+   40.0,
+   20.0
+  ],
+  "DistanceBias": null,
+  "Movement": {
+   "Gravity": [
+    0.0,
+    0.0,
+    -200.0
+   ],
+   "Drag": 0.0
+  },
+  "FadeIn": {
+   "Min": 0.1,
+   "Max": 0.1
+  },
+  "FadeOut": {
+   "Min": 0.2,
+   "Max": 0.2,
+   "Proportional": false
+  },
+  "Color": [
+   100,
+   100,
+   255
+  ],
+  "Texture": "effects/spark"
+ },
+ "ImpactGlow": {
+  "Source": "weapon_taser_glow_impact.vpcf",
+  "Count": 3.0,
+  "LifeSeconds": [
+   0.1,
+   0.15
+  ],
+  "RadiusInches": [
+   0.75,
+   1.4
+  ],
+  "SphereInches": 1.0,
+  "Radius": {
+   "StartScale": 0.5,
+   "EndScale": 3.0,
+   "Bias": 0.9
+  },
+  "FadeOut": {
+   "Min": 0.1,
+   "Max": 0.1,
+   "Proportional": false
+  },
+  "ColorMin": [
+   143,
+   210,
+   241
+  ],
+  "ColorMax": [
+   117,
+   210,
+   245
+  ],
+  "Overbright": null,
+  "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+  "StartFadeSize": null,
+  "EndFadeSize": null,
+  "Texture": "particle/particle_glow_05"
+ },
+ "ImpactSparks": {
+  "Source": "weapon_taser_sparks_impact.vpcf",
+  "MaxParticles": 20,
+  "EmissionSeconds": 0.1,
+  "EmitRate": 250.0,
+  "LifeSeconds": [
+   0.3,
+   0.3
+  ],
+  "RadiusInches": [
+   1.0,
+   1.0
+  ],
+  "RadiusScale": 0.5,
+  "MaxLengthInches": 100.0,
+  "SpeedMin": [
+   -60.0,
+   -60.0,
+   -10.0
+  ],
+  "SpeedMax": [
+   60.0,
+   60.0,
+   60.0
+  ],
+  "DistanceBias": [
+   1.0,
+   0.0,
+   0.0
+  ],
+  "Movement": {
+   "Gravity": [
+    0.0,
+    0.0,
+    -200.0
+   ],
+   "Drag": 0.0
+  },
+  "FadeIn": {
+   "Min": 0.1,
+   "Max": 0.1
+  },
+  "FadeOut": {
+   "Min": 0.2,
+   "Max": 0.2,
+   "Proportional": false
+  },
+  "Color": [
+   100,
+   100,
+   255
+  ],
+  "Texture": "effects/spark"
+ },
+ "Baked": {
+  "cs2_zeus_arc": {
+   "source": "particle/beam_crack_06_bw_center.png",
+   "source_size": [
+    256,
+    512
+   ],
+   "output_size": [
+    512,
+    128
+   ],
+   "transposed": true
+  },
+  "cs2_zeus_flame": {
+   "source": "particle/flames/beam_flame.png",
+   "source_size": [
+    256,
+    512
+   ],
+   "output_size": [
+    512,
+    128
+   ],
+   "transposed": true
+  },
+  "cs2_zeus_glow": {
+   "source": "particle/particle_glow_04.png",
+   "source_size": [
+    512,
+    512
+   ],
+   "output_size": [
+    128,
+    128
+   ],
+   "transposed": false
+  },
+  "cs2_zeus_flare": {
+   "source": "particle/particle_flares/particle_flare_004b_mod.png",
+   "source_size": [
+    128,
+    128
+   ],
+   "output_size": [
+    128,
+    128
+   ],
+   "transposed": false
+  },
+  "cs2_zeus_glow_impact": {
+   "source": "particle/particle_glow_05.png",
+   "source_size": [
+    256,
+    256
+   ],
+   "output_size": [
+    128,
+    128
+   ],
+   "transposed": false
+  }
+ }
+}

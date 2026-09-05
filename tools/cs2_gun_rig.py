@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -30,6 +31,31 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import cs2_viewmodel as vm
 from cs2_dmx_to_rig import curve, r6, read_events
+
+_ADDITIVE = re.compile(r'(?m)^\s*m_additiveType\s*=\s*"([^"]+)"')
+_ADDITIVE_BASE = re.compile(r'(?m)^\s*m_additiveBaseFrame\s*=\s*"([^"]+)"')
+
+
+def read_additive(vnmclip: Path):
+    """How CS2 layers this clip, from the KV3 sidecar.
+
+    Fourteen viewmodel clips are m_additiveType "RelativeToFrame" with
+    m_additiveBaseFrame "FirstFrame": the R8's prepare_shoot and its eight
+    chamber positions, the M249/Negev/XM1014 bullet_hide and the two
+    idle_from_activity. Their DMX holds *deltas against their own first frame* -
+    frame 0 is the identity for every bone - and CS2 adds them to whatever pose the
+    animgraph is playing underneath. Read as a plain clip, the hands collapse onto
+    the camera (0.20.0: the R8's cocked shot showed a skin-coloured wall). Returns
+    (type, baseFrame) or None for an ordinary clip.
+    """
+    if not vnmclip.exists():
+        return None
+    text = vnmclip.read_text("utf-8", "replace")
+    m = _ADDITIVE.search(text)
+    if not m or m.group(1) == "None":
+        return None
+    b = _ADDITIVE_BASE.search(text)
+    return m.group(1), (b.group(1) if b else None)
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "src/ScCsgoKnives/AnimationData"
@@ -164,7 +190,7 @@ def convert(gun: str, folder: str) -> dict:
                 entry["Translation"] = curve(*b.position, "v")
             if entry:
                 bones[b.name] = entry
-        clips[stem] = {
+        entry = {
             "SourceName": stem,
             "Alias": cfg["clips"][stem],
             "SourceFile": vm.relative_to_root(path),
@@ -174,6 +200,16 @@ def convert(gun: str, folder: str) -> dict:
             "Events": read_events(path.with_suffix(".vnmclip"), clip.frame_rate),
             "Bones": bones,
         }
+        additive = read_additive(path.with_suffix(".vnmclip"))
+        if additive:
+            # The curves stay as CS2 stores them - deltas from frame 0 - and the
+            # sampler composes them onto the base. Which base is the mod's choice:
+            # CS2's animgraph layers the clip over whatever plays beneath it, and
+            # here that is the idle at the same moment.
+            entry["Additive"] = additive[0]
+            entry["AdditiveBase"] = additive[1]
+            entry["AdditiveOver"] = "idle"
+        clips[stem] = entry
 
     return {
         "Format": "ScCsgoKnives.Cs2Animation/1",

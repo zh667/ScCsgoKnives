@@ -46,6 +46,17 @@ public static class Cs2Rig {
         public Dictionary<string, BoneCurves> Bones { get; set; }
         /// <summary>CS2's own clip events (CNmClipDocEvent_*), as the generator read them.</summary>
         public List<ClipEvent> Events { get; set; }
+        /// <summary>
+        /// CS2's m_additiveType when it is not "None". The R8's prepare_shoot is
+        /// "RelativeToFrame" against its "FirstFrame": its curves are deltas from
+        /// frame 0 (the identity for every bone) that CS2 adds onto the pose playing
+        /// beneath it. Sampled as a plain clip its hands sat at the origin, on the
+        /// camera - the 0.20.0 skin-coloured wall.
+        /// </summary>
+        public string Additive { get; set; }
+        public string AdditiveBase { get; set; }
+        /// <summary>The alias of the clip the deltas are laid over (the generator writes idle).</summary>
+        public string AdditiveOver { get; set; }
     }
 
     public sealed class ClipEvent {
@@ -234,6 +245,18 @@ public static class Cs2Rig {
     public static string ResolvedClip(string gun, string clipAlias) =>
         Resolve(Get(gun), clipAlias)?.SourceName;
 
+    /// <summary>True when the alias resolves to a clip CS2 layers additively (see Clip.Additive).</summary>
+    public static bool IsAdditive(string gun, string clipAlias) =>
+        Resolve(Get(gun), clipAlias)?.Additive is not null;
+
+    /// <summary>The aliases of this asset's additive clips, for the self-test.</summary>
+    public static IEnumerable<string> AdditiveAliases(string gun) {
+        Asset asset = Get(gun);
+        if (asset?.File?.Clips is null) yield break;
+        foreach (Clip clip in asset.File.Clips.Values)
+            if (clip.Additive is not null && clip.Alias is not null) yield return clip.Alias;
+    }
+
     /// <summary>
     /// What Sample will draw for this alias: the clip, else idle.
     ///
@@ -260,11 +283,25 @@ public static class Cs2Rig {
         if (clip is null) return null;
         time = MathUtils.Clamp(time, 0f, Math.Max(0f, clip.Duration));
 
+        // An additive clip is deltas over a base clip: the base is sampled at the same
+        // moment (looped, the idle is longer than the layer) and the deltas composed
+        // onto it bone by bone. A base that cannot be resolved leaves the deltas alone,
+        // which is the 0.20.0 picture; the self-test reports that case.
+        Clip baseClip = null;
+        float baseTime = 0f;
+        if (clip.Additive is not null) {
+            baseClip = Resolve(asset, clip.AdditiveOver ?? "idle");
+            if (baseClip is not null && baseClip.Duration > 0f)
+                baseTime = time - baseClip.Duration * MathF.Floor(time / baseClip.Duration);
+        }
+
         List<SkeletonBone> skeleton = asset.File.Skeleton;
         Matrix[] absolute = new Matrix[skeleton.Count];
         Matrix[] local = new Matrix[skeleton.Count];
         bool[] done = new bool[skeleton.Count];
-        for (int i = 0; i < skeleton.Count; i++) local[i] = SampleLocal(skeleton[i], clip, time);
+        for (int i = 0; i < skeleton.Count; i++)
+            local[i] = baseClip is null ? SampleLocal(skeleton[i], clip, time)
+                                        : SampleAdditive(skeleton[i], baseClip, baseTime, clip, time);
         for (int i = 0; i < skeleton.Count; i++) Calculate(i);
 
         var bones = new Dictionary<string, Matrix>(skeleton.Count, StringComparer.Ordinal);
@@ -313,6 +350,37 @@ public static class Cs2Rig {
             rotation = SampleQuaternion(curves.Rotation, time, restR);
         }
         return Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(translation);
+    }
+
+    /// <summary>
+    /// The base clip's local transform with the additive clip's delta composed on:
+    /// translation added, the delta rotation applied in the bone's own frame before
+    /// the base rotation carries it into the parent's. A bone the layer does not
+    /// touch has no curve there and contributes the identity.
+    /// </summary>
+    static Matrix SampleAdditive(SkeletonBone bone, Clip baseClip, float baseTime, Clip layer, float time) {
+        Vector3 restT = ReadVector(bone.Translation, Vector3.Zero);
+        Quaternion restR = ReadQuaternion(bone.Rotation, Quaternion.Identity);
+        Vector3 translation = restT;
+        Quaternion rotation = restR;
+        if (baseClip.Bones is not null && baseClip.Bones.TryGetValue(bone.Name, out BoneCurves baseCurves)) {
+            translation = SampleVector(baseCurves.Translation, baseTime, restT);
+            rotation = SampleQuaternion(baseCurves.Rotation, baseTime, restR);
+        }
+        // "RelativeToFrame" / "FirstFrame": the delta is the curve's value now against
+        // its value at frame 0. Most bones sit at the identity on frame 0 so the value
+        // is the delta, but the decompile writes the rest rotation on root_motion and
+        // wpn (and zero translations everywhere); taken as deltas those turned the
+        // whole arm 120 degrees. Against their own frame 0 they are the identity.
+        Vector3 deltaT = Vector3.Zero;
+        Quaternion deltaR = Quaternion.Identity;
+        if (layer.Bones is not null && layer.Bones.TryGetValue(bone.Name, out BoneCurves deltaCurves)) {
+            deltaT = SampleVector(deltaCurves.Translation, time, Vector3.Zero) - SampleVector(deltaCurves.Translation, 0f, Vector3.Zero);
+            Quaternion first = SampleQuaternion(deltaCurves.Rotation, 0f, Quaternion.Identity);
+            deltaR = Quaternion.Normalize(Quaternion.Inverse(first) * SampleQuaternion(deltaCurves.Rotation, time, Quaternion.Identity));
+        }
+        return Matrix.CreateFromQuaternion(deltaR) * Matrix.CreateFromQuaternion(rotation)
+            * Matrix.CreateTranslation(translation + deltaT);
     }
 
     static Vector3 SampleVector(Curve curve, float time, Vector3 fallback) {
