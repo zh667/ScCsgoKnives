@@ -37,7 +37,7 @@ ARMPREVIEW = ROOT / "tools/ArmPreview/bin/Release/net10.0/ArmPreview.dll"
 VPCF = (Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons/06_particles"
         / "definitions/particles/weapons/cs_weapon_fx")
 TEXTURES = ROOT / "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives"
-GUNS = ["ak47", "m4a1s", "awp"]
+GUNS = ["ak47", "m4a1s", "awp", "deagle", "glock18", "usp_silencer", "m4a4", "famas", "mp9", "p90", "ssg08"]
 
 
 def run(gun: str, fov: float = 60.0, width: int = 1400, height: int = 1050) -> dict:
@@ -73,6 +73,25 @@ def vpcf_facts(name: str) -> dict:
                 "min_size": float(op.get("m_flMinSize", 0.0)),
                 "max_size": float(op.get("m_flMaxSize", 0.0)),
             })
+        elif op["_class"] == "C_OP_RenderRopes" and not op.get("m_bOnlyRenderInEffectsBloomPass"):
+            # The SMG rope: read exactly as tools/cs2_effects.py reads it - the scroll
+            # rate is the speed, one texture repeat is the trail and the max length,
+            # and the rope has no screen clamp (0..1) and no length fade-in (the C#
+            # default 0.08 s is what the ribbon then uses, and is what is dumped).
+            texture = None
+            for t in op.get("m_vecTexturesInput") or []:
+                if t.get("m_hTexture") and not t.get("m_nTextureType"):
+                    texture = t["m_hTexture"]
+                    break
+            def num(v):
+                return float(lit(v) if isinstance(v, dict) else (v or 0.0))
+            facts["speed"] = abs(num(op.get("m_flTextureVScrollRate")))
+            facts["max_length"] = num(op.get("m_flTextureVWorldSize"))
+            facts["rope"] = True
+            facts["passes"].append({
+                "texture": texture, "radius_scale": lit(op.get("m_flRadiusScale")),
+                "length_fade_in": None, "min_size": 0.0, "max_size": 1.0,
+            })
     return facts
 
 
@@ -101,16 +120,28 @@ def case_source(dumps) -> Case:
                 "%s speed %s in/s == %s in the vpcf" % (gun, d["Speed"], facts["speed"]))
         c.check(abs(d["MaxLength"] - facts["max_length"]) < 1e-6,
                 "%s max length %s in == %s" % (gun, d["MaxLength"], facts["max_length"]))
-        c.check(len(d["passes"]) == len(facts["passes"]) == 2,
+        c.check(len(d["passes"]) == len(facts["passes"]) >= 1,
                 "%s draws %d passes, the vpcf has %d" % (gun, len(d["passes"]), len(facts["passes"])))
         for got, want in zip(d["passes"], facts["passes"]):
             c.check(got["SourceTexture"] == want["texture"],
                     "%s pass texture %s == %s" % (gun, got["SourceTexture"], want["texture"]))
             for key, wkey in (("RadiusScale", "radius_scale"), ("LengthFadeIn", "length_fade_in"),
                               ("MinSize", "min_size"), ("MaxSize", "max_size")):
+                if want[wkey] is None:
+                    c.check(got[key] is None or key == "LengthFadeIn",
+                            "%s %s %s (the vpcf declares none)" % (gun, key, got[key]))
+                    continue
                 c.check(abs(float(got[key]) - float(want[wkey])) < 1e-9,
                         "%s %s %s == %s" % (gun, key, got[key], want[wkey]))
         env = d["envelope"]
+        if "fade" not in facts:
+            # The rope has no C_OP_FadeAndKillForTracers, so the ribbon's path alpha is
+            # flat once the shot is under way (u = 0 itself is the StartAlpha instant):
+            # it must be full at every sample after that, right to the end.
+            after = [e["alpha"] for e in env if e["u"] > 0.0]
+            low = min(after) if after else 0.0
+            c.check(low > 0.99, "%s no fade-in in the vpcf; the flat alpha's minimum after u=0 is %.3f" % (gun, low))
+            continue
         want = facts["fade"]
         peak = max(e["alpha"] for e in env)
         dark = 0.0
@@ -141,27 +172,37 @@ def case_origin(dumps) -> Case:
     return c
 
 
-def case_width(dumps) -> Case:
-    """C: no plank near, no sub-pixel thread far, and the clamp is what does it."""
+def case_width(dumps, ropes=()) -> Case:
+    """C: no plank near, no sub-pixel thread far, and the clamp is what does it.
+
+    The SMG rope is CS2's own exception: C_OP_RenderRopes has no screen clamp, so
+    its 1.9 in half-width is judged from 5 m out (its head is 5 m away by the first
+    frame after the shot) and the clamp is asserted not to bind anywhere.
+    """
     c = Case("C width")
     for gun, d in dumps.items():
+        rope = gun in ropes
         for p in d["passes"]:
-            near = [w for w in p["widths"] if w["depth"] <= 1.0]
+            near = [w for w in p["widths"] if (5.0 <= w["depth"] <= 6.0 if rope else w["depth"] <= 1.0)]
             far = [w for w in p["widths"] if w["depth"] >= 40.0]
             worst_near = max(w["halfPixels"] for w in near)
             worst_far = min(w["halfPixels"] for w in far)
             c.check(worst_near <= 16.0,
-                    "%s/%s <= %.2f px half-width inside 1 m (0.16.5 drew 21.8 px there)"
-                    % (gun, p["Texture"], worst_near))
+                    "%s/%s <= %.2f px half-width %s (0.16.5 drew 21.8 px inside 1 m)"
+                    % (gun, p["Texture"], worst_near, "at 5 m, the rope being unclamped" if rope else "inside 1 m"))
             c.check(worst_far >= 0.5,
                     "%s/%s >= %.2f px half-width past 40 m (0.16.5 drew 0.14 px at 80 m)"
                     % (gun, p["Texture"], worst_far))
-            # The clamp must actually bind, or the numbers above are luck.
             binds_near = any(w["unclampedPixels"] > w["halfPixels"] + 1e-4 for w in near)
             binds_far = any(w["unclampedPixels"] < w["halfPixels"] - 1e-4 for w in far)
-            c.check(binds_near and binds_far,
-                    "%s/%s the clamp binds at both ends (near %s, far %s)"
-                    % (gun, p["Texture"], binds_near, binds_far))
+            if rope:
+                unclamped = all(abs(w["unclampedPixels"] - w["halfPixels"]) < 1e-4 for w in p["widths"])
+                c.check(unclamped, "%s/%s the rope draws its world width unclamped at every depth" % (gun, p["Texture"]))
+            else:
+                # The clamp must actually bind, or the numbers above are luck.
+                c.check(binds_near and binds_far,
+                        "%s/%s the clamp binds at both ends (near %s, far %s)"
+                        % (gun, p["Texture"], binds_near, binds_far))
             # Monotone in depth: a trail may not get wider as it goes away.
             px = [w["halfPixels"] for w in sorted(p["widths"], key=lambda w: w["depth"])]
             c.check(all(a >= b - 1e-4 for a, b in zip(px, px[1:])),
@@ -175,21 +216,28 @@ def case_width(dumps) -> Case:
     return c
 
 
-def case_envelope(dumps) -> Case:
-    """D: the trail grows, holds, and goes out; it is not one flat bar."""
+def case_envelope(dumps, ropes=()) -> Case:
+    """D: the trail grows, holds, and goes out; it is not one flat bar.
+
+    The SMG rope has no C_OP_FadeAndKillForTracers: it is full from the first
+    sample after the muzzle to the impact, and that flatness is what is asserted.
+    """
     c = Case("D envelope")
     for gun, d in dumps.items():
         env = d["envelope"]
         alphas = [e["alpha"] for e in env]
         c.check(alphas[0] <= 1e-6, "%s invisible at the muzzle (alpha %.4f at u=0)" % (gun, alphas[0]))
         c.check(max(alphas) > 0.5, "%s reaches alpha %.3f mid-flight" % (gun, max(alphas)))
-        c.check(alphas[-1] < max(alphas), "%s fades before impact (%.3f vs %.3f)" % (gun, alphas[-1], max(alphas)))
-        peak = max(alphas)
-        rising = [e for e in env if 0.0 < e["alpha"] < peak - 1e-6 and e["u"] < 0.5]
-        falling = [e for e in env if 0.0 < e["alpha"] < peak - 1e-6 and e["u"] > 0.5]
-        c.check(len(rising) >= 3 and len(falling) >= 2,
-                "%s ramps rather than switching: %d steps fading in, %d fading out"
-                % (gun, len(rising), len(falling)))
+        if gun in ropes:
+            c.check(min(alphas[1:]) > 0.99, "%s rope: flat at %.3f from the first sample to impact" % (gun, min(alphas[1:])))
+        else:
+            c.check(alphas[-1] < max(alphas), "%s fades before impact (%.3f vs %.3f)" % (gun, alphas[-1], max(alphas)))
+            peak = max(alphas)
+            rising = [e for e in env if 0.0 < e["alpha"] < peak - 1e-6 and e["u"] < 0.5]
+            falling = [e for e in env if 0.0 < e["alpha"] < peak - 1e-6 and e["u"] > 0.5]
+            c.check(len(rising) >= 3 and len(falling) >= 2,
+                    "%s ramps rather than switching: %d steps fading in, %d fading out"
+                    % (gun, len(rising), len(falling)))
         for p in d["passes"]:
             lengths = [l["trailMetres"] for l in sorted(p["lengths"], key=lambda l: l["age"])]
             c.check(all(a <= b + 1e-6 for a, b in zip(lengths, lengths[1:])),
@@ -204,7 +252,7 @@ def case_envelope(dumps) -> Case:
     return c
 
 
-def case_textures(dumps) -> Case:
+def case_textures(dumps, ropes=()) -> Case:
     """E: the shipped strips are CS2's, soft across and ramped along."""
     c = Case("E textures")
     manifest = json.loads((ROOT / "docs/cs2-tracer-textures.json").read_text("utf-8"))
@@ -236,7 +284,10 @@ def case_textures(dumps) -> Case:
                 "%s is not a flat bar: %.0f%% of the cross-section is within 10%% of peak"
                 % (stem, 100.0 * np.count_nonzero(interior > peak * 0.9) / len(interior)))
     for gun, d in dumps.items():
-        if d["ColorFromTexture"]:
+        if gun in ropes:
+            c.check(d["ColorMin"] == d["ColorMax"] and d["ColorMin"] != [255, 255, 255],
+                    "%s rope tints with its one m_ConstantColor %s" % (gun, d["ColorMin"]))
+        elif d["ColorFromTexture"]:
             c.check(d["ColorMin"] == d["ColorMax"] == [255, 255, 255],
                     "%s takes its colour from the spark texture (vpcf tint is white)" % gun)
         else:
@@ -272,9 +323,12 @@ def main():
     if args.json:
         args.json.write_text(json.dumps(dumps, indent=1), "utf-8")
 
-    cases = [case_source(dumps), case_origin(dumps), case_width(dumps),
-             case_envelope(dumps), case_textures(dumps)]
-    ok = all(c.report() for c in cases)
+    ropes = {gun for gun, d in dumps.items() if vpcf_facts(Path(d["Source"]).name).get("rope")}
+    cases = [case_source(dumps), case_origin(dumps), case_width(dumps, ropes),
+             case_envelope(dumps, ropes), case_textures(dumps, ropes)]
+    # Every case reports; all() over a generator stopped at the first failure and
+    # hid the rest (C/D/E showed a "!" in the verdict with nothing above it).
+    ok = all([c.report() for c in cases])
     report_flights(dumps)
     print("%s: %s" % ("PASS" if ok else "FAIL",
                       " ".join(c.name.split()[0] + ("" if not c.failures else "!") for c in cases)))

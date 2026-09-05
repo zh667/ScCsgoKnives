@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CS2's two tracer trail textures -> Assets/Textures/ScCsgoKnives/cs2_tracer_*.png.
+"""CS2's tracer trail textures -> Assets/Textures/ScCsgoKnives/cs2_tracer_*.png.
 
 weapon_tracers_assrifle.vpcf and weapon_tracers_rifle.vpcf each draw the trail
 twice, with different textures and blend modes:
@@ -53,6 +53,13 @@ PASSES = [
      "PARTICLE_OUTPUT_BLEND_MODE_ADD", (128, 64)),
     ("cs2_tracer_blend", "particle/sparks/sparks_seq4.png", "materials/particle/sparks/sparks.vtex",
      "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD", (128, 64)),
+    # weapon_tracers_smg.vpcf scrolls this one down a rope (C_OP_RenderRopes) rather
+    # than moving a particle; one repeat of it is the streak the ribbon draws. Its
+    # shape is in RGB, opaque alpha, the bright head at the high row index - so after
+    # the transpose the head lands at U = 1, which is the ribbon's head end.
+    ("cs2_tracer_smg", "particle/effects/bullet_tracer_seq.png",
+     "materials/particle/effects/bullet_tracer_seq.vtex",
+     "PARTICLE_OUTPUT_BLEND_MODE_ADD", (128, 64)),
 ]
 
 

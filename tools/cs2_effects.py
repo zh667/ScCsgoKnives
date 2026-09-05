@@ -45,12 +45,35 @@ PARTICLES = ANALYSIS / "06_particles/definitions"
 #                                muzzle has no flare, only the gas puff)
 #   weapon_muzzleflash_snip   -> uweapon_muzflsh_awp_primaryflash
 UNIFIED = "particles/unified_weapon_fx/"
+#
+# Which container a weapon plays is in its model, as the AE_CL_CREATE_PARTICLE_EFFECT
+# events Source2Viewer lists in 02_models/events_full/<weapon>.analysis.txt:
+#   weapon_deagle        uweapon_muzflsh_deagle       -> uweapon_muzflsh_deagle_primaryflash
+#   weapon_glock         uweapon_muzzleflash_pist     -> uweapon_muzzleflash_pist_fire
+#   weapon_usp_silencer  uweapon_muzzleflash_pist     -> uweapon_muzzleflash_pist_fire
+#                        uweapon_muzsilenced_subm     -> uweapon_muzsilenced_subm_smoke (muzzle_flash2)
+#   weapon_m4a1 (M4A4)   uweapon_muzflsh_riffle       -> uweapon_muzflsh_ak47_primaryflash
+#   weapon_famas         uweapon_muzflsh_riffle       -> uweapon_muzflsh_ak47_primaryflash
+#   weapon_mp9, p90      uweapon_muzzleflash_subm     -> uweapon_muzzleflash_subm_fire
+#   weapon_ssg08         weapon_muzzleflash_snip      -> uweapon_muzflsh_awp_primaryflash
+# The leaf is the container's flash child (its m_Children), the rest being smoke,
+# sparks, a fake light and a beam the sprite does not model.
 GUNS = {
     "ak47": ("weapon_ak47", {"default": UNIFIED + "uweapon_muzflsh_ak47_primaryflash.vpcf"}),
     "m4a1s": ("weapon_m4a1_silencer",
               {"default": UNIFIED + "uweapon_muzflsh_ak47_primaryflash.vpcf",
                "silenced": UNIFIED + "uweapon_muzsilenced_subm_smoke.vpcf"}),
     "awp": ("weapon_awp", {"default": UNIFIED + "uweapon_muzflsh_awp_primaryflash.vpcf"}),
+    "deagle": ("weapon_deagle", {"default": UNIFIED + "uweapon_muzflsh_deagle_primaryflash.vpcf"}),
+    "glock18": ("weapon_glock", {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf"}),
+    "usp_silencer": ("weapon_usp_silencer",
+                     {"default": UNIFIED + "uweapon_muzzleflash_pist_fire.vpcf",
+                      "silenced": UNIFIED + "uweapon_muzsilenced_subm_smoke.vpcf"}),
+    "m4a4": ("weapon_m4a1", {"default": UNIFIED + "uweapon_muzflsh_ak47_primaryflash.vpcf"}),
+    "famas": ("weapon_famas", {"default": UNIFIED + "uweapon_muzflsh_ak47_primaryflash.vpcf"}),
+    "mp9": ("weapon_mp9", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
+    "p90": ("weapon_p90", {"default": UNIFIED + "uweapon_muzzleflash_subm_fire.vpcf"}),
+    "ssg08": ("weapon_ssg08", {"default": UNIFIED + "uweapon_muzflsh_awp_primaryflash.vpcf"}),
 }
 
 # Source 2 particle attribute ids used below.
@@ -165,6 +188,7 @@ TRAIL_LENGTH = 10
 TRACER_TEXTURES = {
     "materials/effects/spark.vtex": "cs2_tracer_add",
     "materials/particle/sparks/sparks.vtex": "cs2_tracer_blend",
+    "materials/particle/effects/bullet_tracer_seq.vtex": "cs2_tracer_smg",
 }
 
 
@@ -276,8 +300,69 @@ def read_tracer(path: str) -> dict:
             u = literal(op.get("m_flFinalTextureScaleU"))
             if u not in (None, 1.0):
                 out["Unmodelled"].append("m_flFinalTextureScaleU=%g (would repeat the baked head/tail ramp)" % u)
+        elif cls == "C_OP_RenderRopes":
+            # weapon_tracers_smg does not move a particle: C_INIT_CreateSequentialPathV2
+            # lays six of them from the muzzle (CP0) to the hit (CP1) and the renderer
+            # scrolls its texture down that rope at m_flTextureVScrollRate, one repeat
+            # every m_flTextureVWorldSize. On screen that is a streak one repeat long
+            # travelling at the scroll rate, which is what the ribbon draws: the rate
+            # is its speed, the repeat its trail, and the bake carries one repeat.
+            # The rope names two textures: the streak, and a UV-distortion normal map
+            # (m_nTextureType SPRITECARD_TEXTURE_UVDISTORTION). The streak is the one
+            # with no type, Source's default colour slot.
+            texture = None
+            for t in op.get("m_vecTexturesInput") or []:
+                if t.get("m_hTexture") and not t.get("m_nTextureType"):
+                    texture = t["m_hTexture"]
+                    break
+            if op.get("m_bOnlyRenderInEffectsBloomPass"):
+                out["Unmodelled"].append("bloom-only second rope pass")
+                continue
+            def number(v):
+                if isinstance(v, dict):
+                    v = literal(v)
+                return float(v) if isinstance(v, (int, float)) else 0.0
+            signed_rate = number(op.get("m_flTextureVScrollRate"))
+            rate = abs(signed_rate)
+            repeat = number(op.get("m_flTextureVWorldSize"))
+            if rate > 0 and repeat > 0:
+                out["Speed"] = rate
+                out["MaxLength"] = repeat
+                out["TrailSeconds"] = [repeat / rate, repeat / rate]
+                out["RopeScroll"] = {"VScrollRate": signed_rate, "VWorldSize": repeat,
+                                     "VOffset": number(op.get("m_flTextureVOffset"))}
+            entry = {
+                "SourceTexture": texture,
+                "Texture": TRACER_TEXTURES.get(texture),
+                "Blend": op.get("m_nOutputBlendMode"),
+                "RadiusScale": literal(op.get("m_flRadiusScale")),
+                "LengthFadeIn": None,
+                # A rope has no screen-space clamp; 0..1 of the viewport lets the
+                # ribbon's clamp pass the world width through unchanged.
+                "MinSize": 0.0, "MaxSize": 1.0,
+                "StartFadeSize": 0.0, "EndFadeSize": 0.0,
+                "Renderer": "C_OP_RenderRopes",
+            }
+            if entry["Texture"] is None:
+                out["Unmodelled"].append("no baked texture for %s" % texture)
+            out["Passes"].append(entry)
+            out["Unmodelled"].append("C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)")
+        elif cls == "C_OP_ColorInterpolate":
+            out["ColorFade"] = [int(x) for x in (op.get("m_ColorFade") or [255, 255, 255])[:3]]
+            out["Unmodelled"].append("C_OP_ColorInterpolate to %s over life" % out["ColorFade"])
         elif cls not in ("C_OP_BasicMovement",):
             out["Unmodelled"].append(cls)
+
+    # A system with no C_INIT_RandomColor tints with its m_ConstantColor (the SMG
+    # rope: 247,210,185) and, with no alpha initializer, draws at that colour's alpha.
+    if "ColorMin" not in out and doc.get("m_ConstantColor") is not None:
+        c = [int(x) for x in doc["m_ConstantColor"][:3]]
+        out["ColorMin"], out["ColorMax"] = c, list(c)
+        out["ColorFromTexture"] = c == [255, 255, 255]
+        out["ColorSource"] = "m_ConstantColor"
+    if "Alpha" not in out and doc.get("m_ConstantColor") is not None and len(doc["m_ConstantColor"]) >= 4:
+        a = float(doc["m_ConstantColor"][3]) / 255.0
+        out["Alpha"] = [a, a]
 
     speed = out.get("SpeedMin") or out.get("SpeedMax")
     if speed:

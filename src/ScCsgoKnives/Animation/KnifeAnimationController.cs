@@ -85,7 +85,8 @@ public static class KnifeAnimationController {
             Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
             state.Variant = variant;
             state.PendingInspect = false;
-            string deploy = !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0 ? "deploy2" : "deploy";
+            string deploy = DeployClip(variant, SilencerOn(variant, itemValue));
+            if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
             PlayDrawSound(variant);
             LogActionStart(state, variant);
@@ -112,6 +113,17 @@ public static class KnifeAnimationController {
 
         float elapsed = (float)(KnifeClock.Now - state.StartedAt);
         if (state.Action == ActionKind.Idle) {
+            // A pistol idles with the slide back while its magazine is empty and
+            // drops it the moment a round is chambered. The magazine is written by
+            // the behaviour, possibly a frame after this idle began, so the choice
+            // is re-made here rather than only when the idle starts.
+            if (CsmcKnifeRig.IsGun(variant) && state.ClipAlias is "idle" or "idleEmpty") {
+                string wanted = IdleClip(variant, MagazineEmpty(variant, itemValue));
+                if (wanted != state.ClipAlias) {
+                    Start(state, ActionKind.Idle, wanted);
+                    elapsed = 0f;
+                }
+            }
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, elapsed, true);
             return state.Pose;
         }
@@ -127,7 +139,9 @@ public static class KnifeAnimationController {
                 state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
                 return state.Pose;
             }
-            Start(state, ActionKind.Idle, !KnifeQa.Active && HasAlias(variant, "idle2") && s_random.Next(5) == 0 ? "idle2" : "idle");
+            string idle = IdleClip(variant, MagazineEmpty(variant, itemValue));
+            if (idle == "idle" && !KnifeQa.Active && HasAlias(variant, "idle2") && s_random.Next(5) == 0) idle = "idle2";
+            Start(state, ActionKind.Idle, idle);
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f, true);
         }
         else state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, Math.Max(0f, elapsed));
@@ -205,7 +219,15 @@ public static class KnifeAnimationController {
     /// showed two idle requests per P90 round - because they have no CS:MC clips.
     /// Exposed for the self-test: a gun whose shot resolves to idle is drawn wrong.
     /// </summary>
-    internal static string ShootClip(int variant, bool silenced, Func<int, int> pick = null) {
+    internal static string ShootClip(int variant, bool silenced, Func<int, int> pick = null) =>
+        ShootClip(variant, silenced, false, pick);
+
+    /// <summary>
+    /// With lastRound, the shot that empties the magazine: CS2's pistols lock the
+    /// slide back on it (shoot_empty_*), and the rig says whether this gun does.
+    /// </summary>
+    internal static string ShootClip(int variant, bool silenced, bool lastRound, Func<int, int> pick = null) {
+        if (lastRound && HasAlias(variant, "shootEmpty")) return "shootEmpty";
         if (HasAlias(variant, "shootSilenced")) return silenced ? "shootSilenced" : "shootUnsilenced";
         string[] shots = [.. new[] { "shoot1", "shoot2", "shoot3" }.Where(alias => HasAlias(variant, alias))];
         if (shots.Length == 0) return "idle";
@@ -213,7 +235,30 @@ public static class KnifeAnimationController {
     }
 
     /// <summary>The reload clip, or null when the drawing rig has none (the Taser).</summary>
-    internal static string ReloadClip(int variant) => HasAlias(variant, "reload") ? "reload" : null;
+    internal static string ReloadClip(int variant) => ReloadClip(variant, false);
+
+    /// <summary>From an empty magazine the pistols run reload_empty_*, which releases the slide.</summary>
+    public static string ReloadClip(int variant, bool magazineEmpty) {
+        if (magazineEmpty && HasAlias(variant, "reloadEmpty")) return "reloadEmpty";
+        return HasAlias(variant, "reload") ? "reload" : null;
+    }
+
+    /// <summary>The idle for the magazine state: idle_slide_back_* while empty, where the rig has it.</summary>
+    public static string IdleClip(int variant, bool magazineEmpty) =>
+        magazineEmpty && HasAlias(variant, "idleEmpty") ? "idleEmpty" : "idle";
+
+    /// <summary>The draw for the silencer state: draw_silenced_* with the silencer on, where the rig has it.</summary>
+    public static string DeployClip(int variant, bool silencerOn) =>
+        silencerOn && HasAlias(variant, "deploySilenced") ? "deploySilenced" : "deploy";
+
+    static bool MagazineEmpty(int variant, int itemValue) =>
+        CsmcKnifeRig.IsGun(variant) && GunSpec.GetRounds(Terrain.ExtractData(itemValue)) <= 0;
+
+    static bool SilencerOn(int variant, int itemValue) {
+        if (!CsmcKnifeRig.IsGun(variant)) return false;
+        GunSpec spec = GunSpec.ForAsset(CsmcKnifeRig.GetAssetName(variant));
+        return spec is { HasSilencer: true } && !GunSpec.GetSilencerOff(Terrain.ExtractData(itemValue));
+    }
 
     /// <summary>The silencer clip, or null when the drawing rig has none.</summary>
     internal static string SilencerClip(int variant, bool attach) {
@@ -221,15 +266,15 @@ public static class KnifeAnimationController {
         return HasAlias(variant, clip) ? clip : null;
     }
 
-    public static void TriggerShoot(ComponentPlayer player, bool silenced) {
+    public static void TriggerShoot(ComponentPlayer player, bool silenced, bool lastRound = false) {
         State state = GunState(player, out int variant);
         if (state is null) return;
-        Start(state, ActionKind.Shoot, ShootClip(variant, silenced));
+        Start(state, ActionKind.Shoot, ShootClip(variant, silenced, lastRound));
     }
 
-    public static void TriggerReload(ComponentPlayer player) {
+    public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false) {
         State state = GunState(player, out int variant);
-        if (state is null || ReloadClip(variant) is not string clip) return;
+        if (state is null || ReloadClip(variant, magazineEmpty) is not string clip) return;
         Start(state, ActionKind.Reload, clip);
         LogActionStart(state, variant);
     }

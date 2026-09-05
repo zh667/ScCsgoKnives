@@ -59,12 +59,40 @@ public static class Cs2SelfTest {
         Check("load/weapons", Cs2Weapons.LoadError is null, Cs2Weapons.LoadError ?? "ok");
         Check("load/sounds", Cs2Sounds.LoadError is null, Cs2Sounds.LoadError ?? "ok");
 
-        foreach (string gun in Guns) {
+        // Every gun in the table, not the first three: 0.18.2 shipped eight with no
+        // entry at all, drawing their flash and tracer from defaults.
+        foreach (string gun in GunSpec.All.Select(g => g.Name)) {
             Cs2Effects.Gun fx = Cs2Effects.Get(gun);
             Check($"effects/{gun}/loaded", fx is not null, fx is null ? "Cs2Effects.Get returned null" : "ok");
             if (fx is not null) {
                 Check($"effects/{gun}/muzzle0", fx.MuzzlePos0 is { Length: >= 3 },
                       fx.MuzzlePos0 is null ? "null" : $"[{string.Join(',', fx.MuzzlePos0)}]");
+                // The vdata's muzzle and the rig's muzzle bone at idle describe one point
+                // in two files; the AK's agree to three decimals. A gun whose vdata stem
+                // was matched to the wrong weapon would show up here as inches apart.
+                Cs2Rig.Pose idle = Cs2Rig.Sample(gun, "idle", 0f);
+                if (fx.MuzzlePos0 is { Length: >= 3 } && idle is not null && idle.HasBone("muzzle")) {
+                    // The two agree to a thousandth on the AK, P90, FAMAS and Desert Eagle,
+                    // by 0.95 in on the AWP and by 7.7 in on the SSG08 - each time along
+                    // the barrel only, the vdata sitting behind the bone. So the same
+                    // bore line is what is asserted (across the barrel), the along-barrel
+                    // offset is reported, and the renderer draws from the bone, which is
+                    // where the model attaches CS2's own flash (attachment muzzle_flash).
+                    Vector3 declared = new(fx.MuzzlePos0[0], fx.MuzzlePos0[1], fx.MuzzlePos0[2]);
+                    Vector3 bone = idle.GetBoneOrigin("muzzle");
+                    Vector3 delta = declared - bone;
+                    float across = MathF.Sqrt(delta.Y * delta.Y + delta.Z * delta.Z);
+                    Check($"effects/{gun}/muzzle.bone", across < 0.5f,
+                          $"{across:0.####} in across the bore, {(delta.X >= 0f ? "+" : "")}{delta.X:0.###} in along it, from the rig's muzzle bone");
+                }
+                GunSpec fxSpec = GunSpec.ForAsset(gun);
+                if (fxSpec is { HasSilencer: true }) {
+                    Check($"effects/{gun}/muzzle1", fx.MuzzlePos1 is { Length: >= 3 },
+                          fx.MuzzlePos1 is null ? "no silenced muzzle" : $"[{string.Join(',', fx.MuzzlePos1)}]");
+                    Check($"effects/{gun}/flash.silenced", Cs2Effects.GetFlash(gun, true) is not null
+                              && !ReferenceEquals(Cs2Effects.GetFlash(gun, true), Cs2Effects.GetFlash(gun, false)),
+                          Cs2Effects.GetFlash(gun, true) is null ? "no silenced flash" : "own silenced flash");
+                }
                 Cs2Effects.Flash flash = Cs2Effects.GetFlash(gun, false);
                 Check($"effects/{gun}/flash", flash is not null, flash is null ? "no default flash" : "ok");
                 if (flash is not null) {
@@ -77,20 +105,29 @@ public static class Cs2SelfTest {
                 Cs2Effects.Tracer tr = fx.Tracer;
                 Check($"effects/{gun}/tracer.speed", tr is not null && tr.Speed is > 1000f,
                       tr?.Speed?.ToString("0.#") ?? "null");
-                Check($"effects/{gun}/tracer.length", tr is not null && tr.MaxLength is > 100f,
+                string[] baked = ["cs2_tracer_add", "cs2_tracer_blend", "cs2_tracer_smg"];
+                Check($"effects/{gun}/tracer.textures",
+                      tr?.Passes is { Length: >= 1 } && tr.Passes.All(p => p.Texture is not null && baked.Contains(p.Texture)),
+                      tr?.Passes is null ? "no passes"
+                          : string.Join(',', tr.Passes.Select(p => p.Texture ?? $"(none for {p.SourceTexture})")));
+                // The SMG tracer is a rope with the texture scrolled down it, not a
+                // moving trail: one pass, one texture repeat (100 in) as the trail, no
+                // screen clamp and no fade envelope. Those are its numbers, not holes.
+                bool rope = tr?.Passes is { Length: > 0 } && tr.Passes.All(p => p.IsRope);
+                Check($"effects/{gun}/tracer.length", tr is not null && (rope ? tr.MaxLength is > 50f : tr.MaxLength is > 100f),
                       tr?.MaxLength?.ToString("0.#") ?? "null");
                 if (tr is not null) {
                     // The trail is drawn twice, with the CS2 textures. A single pass, or
                     // one with no baked texture, means the ribbon falls back to nothing.
-                    Check($"effects/{gun}/tracer.passes", tr.Passes is { Length: 2 },
-                          $"{tr.Passes?.Length ?? 0} passes");
+                    Check($"effects/{gun}/tracer.passes", rope ? tr.Passes is { Length: 1 } : tr.Passes is { Length: 2 },
+                          $"{tr.Passes?.Length ?? 0} passes{(rope ? " (rope)" : "")}");
                     bool textured = tr.Passes is { Length: > 0 }
                         && tr.Passes.All(p => !string.IsNullOrEmpty(p.Texture) && !string.IsNullOrEmpty(p.SourceTexture));
                     Check($"effects/{gun}/tracer.textures", textured,
                           tr.Passes is null ? "no passes"
                           : string.Join(", ", tr.Passes.Select(p => $"{p.Texture ?? "none"}<-{p.SourceTexture ?? "none"}")));
                     bool clamped = tr.Passes is { Length: > 0 }
-                        && tr.Passes.All(p => p.MinSize > 0f && p.MaxSize > p.MinSize);
+                        && tr.Passes.All(p => p.IsRope ? p.MinSize == 0f && p.MaxSize >= 1f : p.MinSize > 0f && p.MaxSize > p.MinSize);
                     Check($"effects/{gun}/tracer.sizeclamp", clamped,
                           tr.Passes is null ? "no passes"
                           : string.Join(", ", tr.Passes.Select(p => $"{p.MinSize:0.#####}..{p.MaxSize:0.#####}")));
@@ -99,12 +136,14 @@ public static class Cs2SelfTest {
                     Check($"effects/{gun}/tracer.radius", radius,
                           tr.Passes is null ? "no passes"
                           : string.Join(", ", tr.Passes.Select(p => $"{tr.HalfWidthMetres(p) * 1000f:0.##} mm")));
-                    Check($"effects/{gun}/tracer.trailseconds", tr.TrailSecondsMid is > 0.01f and < 1f,
+                    Check($"effects/{gun}/tracer.trailseconds", rope ? tr.TrailSecondsMid is > 0.001f and < 1f : tr.TrailSecondsMid is > 0.01f and < 1f,
                           $"{tr.TrailSecondsMid:0.####} s");
                     // The fade envelope must actually be an envelope: dark at the muzzle,
-                    // full in the middle, going out at the end.
-                    bool envelope = tr.PathAlpha(0.1f) < 0.01f && tr.PathAlpha(0.5f) > 0.99f
-                                    && tr.PathAlpha(0.99f) < 0.99f;
+                    // full in the middle, going out at the end. The rope has none and
+                    // must be flat instead.
+                    bool envelope = rope
+                        ? tr.PathAlpha(0.1f) > 0.99f && tr.PathAlpha(0.5f) > 0.99f
+                        : tr.PathAlpha(0.1f) < 0.01f && tr.PathAlpha(0.5f) > 0.99f && tr.PathAlpha(0.99f) < 0.99f;
                     Check($"effects/{gun}/tracer.envelope", envelope,
                           $"{tr.PathAlpha(0.1f):0.###} / {tr.PathAlpha(0.5f):0.###} / {tr.PathAlpha(0.99f):0.###} at u=0.1/0.5/0.99");
                     Check($"effects/{gun}/tracer.alpha", tr.AlphaMid is > 0.1f and <= 1f, $"{tr.AlphaMid:0.####}");
@@ -133,7 +172,11 @@ public static class Cs2SelfTest {
             }
             KnifeTuning.Override("GunNumbers", 0f);
 
-            Check($"rig/{gun}/parts", Cs2Rig.GetMeshParts(gun).Count > 0, $"{Cs2Rig.GetMeshParts(gun).Count} parts");
+            // The first three carry OBJ mesh parts in the rig; the rest a .cs2.parts.
+            int rigParts = Cs2Rig.GetMeshParts(gun).Count;
+            int rigidParts = rigParts == 0 ? Cs2RigidMesh.For(gun)?.Parts.Length ?? 0 : 0;
+            Check($"rig/{gun}/parts", rigParts + rigidParts > 0,
+                  rigParts > 0 ? $"{rigParts} parts" : $"{rigidParts} rigid parts (.cs2.parts)");
             Check($"rig/{gun}/deploy", Cs2Rig.Duration(gun, "deploy") > 0f, $"{Cs2Rig.Duration(gun, "deploy"):0.####} s");
             Cs2Rig.Pose pose = Cs2Rig.Sample(gun, "idle", 0f);
             Check($"rig/{gun}/sample", pose is not null && pose.Bones.Count >= 60,
@@ -149,11 +192,14 @@ public static class Cs2SelfTest {
                       placed ? "all parts placed" : "a part matrix is the identity");
                 float reloadSeconds = Cs2Rig.Duration(gun, "reload");
                 Cs2Rig.Pose later = reloadSeconds > 0.2f ? Cs2Rig.Sample(gun, "reload", reloadSeconds * 0.5f) : null;
-                bool moves = later is not null
-                    && Vector3.Distance(later.GetBoneOrigin("clip"), pose.GetBoneOrigin("clip")) > 0.05f;
+                // CS2 names the magazine bone clip on most guns and magazine on the
+                // Glock-18 and FAMAS.
+                string magazine = pose.HasBone("clip") ? "clip" : "magazine";
+                float magazineMoves = later is null ? 0f
+                    : Vector3.Distance(later.GetBoneOrigin(magazine), pose.GetBoneOrigin(magazine));
+                bool moves = later is not null && magazineMoves > 0.05f;
                 Check($"rig/{gun}/animates", moves,
-                      later is null ? "no reload clip" :
-                      $"magazine moves {Vector3.Distance(later.GetBoneOrigin("clip"), pose.GetBoneOrigin("clip")):0.##} in mid-reload");
+                      later is null ? "no reload clip" : $"{magazine} moves {magazineMoves:0.##} in mid-reload");
             }
 
             // The tracer must leave the barrel the player sees, not the eye. Both
@@ -186,7 +232,14 @@ public static class Cs2SelfTest {
                     worstFar = MathF.Min(worstFar,
                         Cs2Tracer.HalfWidthScreenFraction(spec, pass, 80f, worldProjection.M22, out _) * Height);
                 }
-                Check($"tracer/{gun}/width.near", worstNear <= 16f, $"{worstNear:0.##} px half-width at 0.5 m");
+                // The rope has no screen clamp, so its 1.9 in half-width is 87 px at half a
+                // metre - and is never drawn there: its head is 5 m out by the first frame
+                // after the shot. It is judged at 5 m instead.
+                bool ropePass = spec.Passes.All(p => p.IsRope);
+                float nearAt = ropePass ? 5f : 0.5f;
+                if (ropePass)
+                    worstNear = spec.Passes.Max(pass => Cs2Tracer.HalfWidthScreenFraction(spec, pass, nearAt, worldProjection.M22, out _) * Height);
+                Check($"tracer/{gun}/width.near", worstNear <= 16f, $"{worstNear:0.##} px half-width at {nearAt:0.#} m");
                 Check($"tracer/{gun}/width.far", worstFar >= 0.5f, $"{worstFar:0.##} px half-width at 80 m");
             }
         }
@@ -375,6 +428,35 @@ public static class Cs2SelfTest {
                           && KnifeAnimationController.SilencerClip(variant, false) is not null,
                       $"{KnifeAnimationController.SilencerClip(variant, true) ?? "none"}/"
                           + $"{KnifeAnimationController.SilencerClip(variant, false) ?? "none"}");
+            // The empty magazine: a rig that carries shoot_empty / idle_slide_back /
+            // reload_empty must be asked for them on the last round and after it, and
+            // one that does not (the rifles) must get exactly what it got before.
+            bool slideLocks = Cs2Rig.HasAlias(gun, "shootEmpty");
+            string lastShot = KnifeAnimationController.ShootClip(variant, false, true, _ => 0);
+            Check($"gun/{gun}/shootClip.empty", slideLocks ? lastShot == "shootEmpty" : lastShot == shot,
+                  $"{lastShot}{(slideLocks ? "" : " (rig has no shootEmpty)")}");
+            string emptyIdle = KnifeAnimationController.IdleClip(variant, true);
+            Check($"gun/{gun}/idleClip.empty",
+                  Cs2Rig.HasAlias(gun, "idleEmpty") ? emptyIdle == "idleEmpty" : emptyIdle == "idle",
+                  emptyIdle);
+            Check($"gun/{gun}/idleClip.loaded", KnifeAnimationController.IdleClip(variant, false) == "idle", "idle");
+            if (spec.Magazine > 0) {
+                string emptyReload = KnifeAnimationController.ReloadClip(variant, true);
+                Check($"gun/{gun}/reloadClip.empty",
+                      Cs2Rig.HasAlias(gun, "reloadEmpty") ? emptyReload == "reloadEmpty" : emptyReload == "reload",
+                      emptyReload ?? "none");
+                if (Cs2Rig.HasAlias(gun, "reloadEmpty"))
+                    Check($"gun/{gun}/cues.reloadEmpty", Cs2Sounds.TryGet($"{gun}:reloadEmpty", out var rc) && rc.Length >= 2,
+                          Cs2Sounds.TryGet($"{gun}:reloadEmpty", out var rc2) ? $"{rc2.Length} cues" : "no CS2 cues");
+            }
+            string silencedDraw = KnifeAnimationController.DeployClip(variant, true);
+            Check($"gun/{gun}/deployClip.silenced",
+                  Cs2Rig.HasAlias(gun, "deploySilenced") ? silencedDraw == "deploySilenced" : silencedDraw == "deploy",
+                  silencedDraw);
+            Check($"gun/{gun}/deployClip.plain", KnifeAnimationController.DeployClip(variant, false) == "deploy", "deploy");
+            if (Cs2Rig.HasAlias(gun, "deploySilenced"))
+                Check($"gun/{gun}/cues.deploySilenced", Cs2Sounds.TryGet($"{gun}:deploySilenced", out var dc) && dc.Length >= 1,
+                      Cs2Sounds.TryGet($"{gun}:deploySilenced", out var dc2) ? $"{dc2.Length} cues" : "no CS2 cues");
             // CS2's own cue times for the clips the behaviour schedules: a reload with
             // no cues is a silent reload, which the device showed for all eight.
             foreach ((string clip, int atLeast) in new[] { ("deploy", 1), ("reload", 2), ("inspect", 1) }) {

@@ -109,6 +109,10 @@ public static class Cs2Effects {
         [JsonPropertyName("MaxSize")]
         public float MaxSize { get; set; }
         /// <summary>The AWP's trail fades out entirely once it is this big on screen.</summary>
+        /// <summary>"C_OP_RenderRopes" for the SMG's rope, drawn by the same ribbon; null for a trail.</summary>
+        [JsonPropertyName("Renderer")]
+        public string Renderer { get; set; }
+        public bool IsRope => Renderer == "C_OP_RenderRopes";
         [JsonPropertyName("StartFadeSize")]
         public float StartFadeSize { get; set; }
         [JsonPropertyName("EndFadeSize")]

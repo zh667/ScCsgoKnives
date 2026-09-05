@@ -29,6 +29,7 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import cs2_run
+import cs2_gun_rig as gun_rig
 import cs2_effects
 import cs2_viewmodel as vm
 from cs2_rig_selftest import GUNS
@@ -47,18 +48,31 @@ def main():
     rows = []
 
     print("A. Declared muzzle position vs the rig's muzzle bone at idle (inches)")
+    # Every gun in the JSON. The vdata and the bone sit on the same bore line on all
+    # of them; along the barrel the vdata is 0.95 in behind the bone on the AWP and
+    # 7.73 in on the SSG08, so it is the across-the-bore distance that is judged and
+    # the renderer draws from the bone, which is where the model attaches the flash.
     worst = 0.0
-    for gun, cfg in GUNS.items():
-        stem = [k for k, v in cfg["clips"].items() if v == "idle"][0]
-        clip = vm.load_clip(vm.CLIPS / cfg["folder"] / (stem + ".dmx"))
+    for gun in doc["Guns"]:
+        if gun in GUNS:
+            cfg = GUNS[gun]
+            folder = cfg["folder"]
+            stem = [k for k, v in cfg["clips"].items() if v == "idle"][0]
+        else:
+            folder = gun_rig.ALL_FOLDERS[gun]
+            clips = gun_rig.config(gun, folder)["clips"]
+            stem = [k for k, v in clips.items() if v == "idle"][0]
+        clip = vm.load_clip(vm.clip_path(folder, stem))
         bone = clip.absolute(0.0)["muzzle"][3, :3]
         declared = np.array(doc["Guns"][gun]["MuzzlePos0"], float)
-        d = float(np.linalg.norm(declared - bone))
-        worst = max(worst, d)
+        delta = declared - bone
+        across = float(np.linalg.norm(delta[1:]))
+        worst = max(worst, across)
         rows.append({"gun": gun, "vdata": declared.tolist(),
-                     "bone": [round(float(x), 4) for x in bone], "delta_in": d})
-        print("   %-6s vdata %s  bone %s  ->  %.4f in"
-              % (gun, np.round(declared, 3), np.round(bone, 3), d))
+                     "bone": [round(float(x), 4) for x in bone],
+                     "across_in": across, "along_in": float(delta[0])})
+        print("   %-13s vdata %s  bone %s  ->  %.4f in across the bore, %+.3f along"
+              % (gun, np.round(declared, 3), np.round(bone, 3), across, delta[0]))
 
     print("\nB. Sources")
     missing = []
@@ -112,7 +126,9 @@ def main():
     def walk(node, path=""):
         if isinstance(node, dict):
             for k, v in node.items():
-                if _re.search(r"[a-z]_[a-z]", k):
+                # Property names only: the keys under Guns are asset names, and
+                # usp_silencer is one of them.
+                if path != "Guns." and _re.search(r"[a-z]_[a-z]", k):
                     snake.append(path + k)
                 if k in ("Lifetime", "Alpha") and v is not None and not isinstance(v, list):
                     shapes.append("%s%s is %r, expected an array" % (path, k, v))
@@ -127,27 +143,33 @@ def main():
     print("   format: %s" % doc.get("Format"))
 
     # The tracer is the part the runtime draws geometry from, so its shape is pinned
-    # here too: two RenderTrails passes, each with a baked texture and a size clamp.
+    # here too: two RenderTrails passes, each with a baked texture and a size clamp -
+    # or, for the SMG rope, one C_OP_RenderRopes pass with the open 0..1 clamp.
     tracer_faults = []
     for gun, g in doc["Guns"].items():
         t = g.get("Tracer") or {}
         passes = t.get("Passes") or []
-        if len(passes) != 2:
-            tracer_faults.append("%s has %d tracer passes, not 2" % (gun, len(passes)))
+        rope = bool(passes) and all(ps.get("Renderer") == "C_OP_RenderRopes" for ps in passes)
+        if len(passes) != (1 if rope else 2):
+            tracer_faults.append("%s has %d tracer passes, not %d" % (gun, len(passes), 1 if rope else 2))
         for ps in passes:
             if not ps.get("Texture") or not ps.get("SourceTexture"):
                 tracer_faults.append("%s pass has no texture (%r <- %r)"
                                      % (gun, ps.get("Texture"), ps.get("SourceTexture")))
-            if not (0.0 < ps.get("MinSize", 0.0) < ps.get("MaxSize", 0.0)):
+            if rope:
+                if not (ps.get("MinSize") == 0.0 and ps.get("MaxSize") == 1.0):
+                    tracer_faults.append("%s rope pass clamp is %r..%r, expected the open 0..1"
+                                         % (gun, ps.get("MinSize"), ps.get("MaxSize")))
+            elif not (0.0 < ps.get("MinSize", 0.0) < ps.get("MaxSize", 0.0)):
                 tracer_faults.append("%s pass screen clamp is %r..%r"
                                      % (gun, ps.get("MinSize"), ps.get("MaxSize")))
         for key in ("Speed", "MaxLength", "Radius", "TrailSeconds", "Alpha", "ColorMin", "ColorMax"):
             if t.get(key) in (None, [], ""):
                 tracer_faults.append("%s tracer has no %s" % (gun, key))
-    print("   tracer schema: %s" % ("2 passes with textures and size clamps for all three guns"
+    print("   tracer schema: %s" % ("trail passes with textures and size clamps for every gun, the SMG rope with one"
                                     if not tracer_faults else "; ".join(tracer_faults)))
 
-    ok = (worst < 1.5 and not missing and stable and inner < 0.02 and 0.9 < crossing < 1.0
+    ok = (worst < 0.5 and not missing and stable and inner < 0.02 and 0.9 < crossing < 1.0
           and not snake and not shapes and not tracer_faults
           and doc.get("Format") == "ScCsgoKnives.Cs2Effects/3")
     print("\nA/B/C/D %s" % ("PASS" if ok else "FAIL"))

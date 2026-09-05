@@ -149,7 +149,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>How many quads the ribbon is cut into; the width is solved per joint.</summary>
     const int TracerSegments = 24;
 
-    Texture2D m_tracerAdd, m_tracerBlend;
+    Texture2D m_tracerAdd, m_tracerBlend, m_tracerSmg;
     bool m_tracerTexturesTried;
 
     Texture2D TracerTexture(string name) {
@@ -158,6 +158,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             try {
                 m_tracerAdd = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_add");
                 m_tracerBlend = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_blend");
+                // The SMG rope's streak (bullet_tracer_seq), one repeat, head at U = 1.
+                m_tracerSmg = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_tracer_smg");
             }
             catch (Exception e) {
                 KnifeDiagnostics.WarnOnce("cs2-tracer-textures", $"Could not load the CS2 tracer textures: {e.Message}");
@@ -168,6 +170,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         return name switch {
             "cs2_tracer_add" => m_tracerAdd,
             "cs2_tracer_blend" => m_tracerBlend,
+            "cs2_tracer_smg" => m_tracerSmg,
             _ => null,
         };
     }
@@ -349,13 +352,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (value != state.LastValue) {
             if (Terrain.ExtractContents(state.LastValue) != Terrain.ExtractContents(value) || ScGunBlock.GetVariant(state.LastValue) != ScGunBlock.GetVariant(value)) {
                 LeaveScope(player, state);
-                state.BusyUntil = now + CsmcKnifeRig.GetProfileDuration(ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value)), "deploy");
+                // The USP-S draws with draw_silenced_pistol when its silencer is on; the
+                // controller picks the same clip, so the busy time and the cues match it.
+                int drawnVariant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
+                string deployClip = KnifeAnimationController.DeployClip(drawnVariant, spec.HasSilencer && !GunSpec.GetSilencerOff(data));
+                state.BusyUntil = now + CsmcKnifeRig.GetProfileDuration(drawnVariant, deployClip);
                 state.PendingRounds = -1;
                 state.SilencerPending = false;
                 state.Scheduled.Clear();
                 // The draw clip's own cues where CS2 has them - the FAMAS and M4A4 work
                 // the bolt quietly during theirs - else the single draw file.
-                if (!Schedule(state, spec.Name, "deploy", now)) PlaySound(player, $"{spec.Name}_draw");
+                if (!Schedule(state, spec.Name, deployClip, now)) PlaySound(player, $"{spec.Name}_draw");
                 ShowAmmo(player, spec, rounds);
                 if (!state.HintShown) {
                     state.HintShown = true;
@@ -446,16 +453,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         rounds--;
         value = WriteData(player, value, GunSpec.SetRounds(data, rounds));
         bool silenced = spec.HasSilencer && !GunSpec.GetSilencerOff(data);
+        // The round that empties the magazine locks a pistol's slide back (shoot_empty).
+        bool lastRound = rounds <= 0;
         if (state.Zoom > 0) {
             // CS2: a scoped shot drops the scope for the bolt cycle and re-zooms to the same level afterwards.
             state.RescopeLevel = state.Zoom;
             state.RescopeAt = now + spec.CycleSeconds;
             LeaveScope(player, state);
         }
-        KnifeAnimationController.TriggerShoot(player, silenced);
+        KnifeAnimationController.TriggerShoot(player, silenced, lastRound);
         CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, silenced ? spec.SilencedMuzzleBone : spec.MuzzleBone, spec.Name, silenced);
         PlaySound(player, silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
-        if (!spec.Automatic) Schedule(state, spec.Name, "shoot1", now);
+        if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
         ShowAmmo(player, spec, rounds);
 
         // Camera kick, applied now and eased back in RecoverKick. The cs2 profile takes
@@ -521,12 +530,16 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     void StartReload(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value) {
         int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
-        float duration = CsmcKnifeRig.GetProfileDuration(variant, "reload");
+        // From an empty magazine the pistols run their reload_empty clip, which also
+        // releases the slide; the clip, its length and its cues all follow that choice.
+        bool empty = GunSpec.GetRounds(Terrain.ExtractData(value)) <= 0;
+        string clip = KnifeAnimationController.ReloadClip(variant, empty) ?? "reload";
+        float duration = CsmcKnifeRig.GetProfileDuration(variant, clip);
         if (duration <= 0f) return;
         LeaveScope(player, state);
-        KnifeAnimationController.TriggerReload(player);
+        KnifeAnimationController.TriggerReload(player, empty);
         state.Scheduled.Clear();
-        Schedule(state, spec.Name, "reload", m_time.GameTime, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
+        Schedule(state, spec.Name, clip, m_time.GameTime, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
         state.BusyUntil = m_time.GameTime + duration;
         state.PendingRounds = spec.Magazine;
     }
