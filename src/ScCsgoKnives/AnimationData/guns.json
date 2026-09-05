@@ -1,0 +1,265 @@
+[
+ {
+  "Name": "ak47",
+  "MeshParts": [
+   "weapon_hand_r",
+   "v_weapon_ak47_clip",
+   "v_weapon_ak47_trigger",
+   "v_weapon_ak47_cliprelease",
+   "v_weapon_ak47_bolt",
+   "weapon_hand_r__2"
+  ],
+  "SourceReferenceScale": 37.74615,
+  "Table": "ak47"
+ },
+ {
+  "Name": "m4a1s",
+  "MeshParts": [
+   "v_weapon_silencer",
+   "weapon_hand_r__c1",
+   "weapon_hand_r__c2",
+   "v_weapon_m4a1_clip",
+   "v_weapon_m4a1_bolt",
+   "v_weapon_m4a1_trigger"
+  ],
+  "SourceReferenceScale": 47.46058,
+  "Table": "m4a1_silencer"
+ },
+ {
+  "Name": "awp",
+  "MeshParts": [
+   "weapon_hand_r",
+   "v_weapon_awp_bolt_rail",
+   "v_weapon_awp_trigger",
+   "v_weapon_awp_bolt_action",
+   "v_weapon_awp_clip",
+   "weapon_hand_r__2"
+  ],
+  "SourceReferenceScale": 53.80389,
+  "Table": "awp"
+ },
+ {
+  "Name": "deagle",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "deagle",
+  "Cs2Only": true
+ },
+ {
+  "Name": "glock18",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "glock18",
+  "Cs2Only": true
+ },
+ {
+  "Name": "usp_silencer",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "usp_silencer",
+  "Cs2Only": true
+ },
+ {
+  "Name": "m4a4",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "m4a4",
+  "Cs2Only": true
+ },
+ {
+  "Name": "famas",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "famas",
+  "Cs2Only": true
+ },
+ {
+  "Name": "mp9",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "mp9",
+  "Cs2Only": true
+ },
+ {
+  "Name": "p90",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "p90",
+  "Cs2Only": true
+ },
+ {
+  "Name": "ssg08",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "ssg08",
+  "Cs2Only": true
+ },
+ {
+  "Name": "fiveseven",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "fiveseven",
+  "Cs2Only": true
+ },
+ {
+  "Name": "hkp2000",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "hkp2000",
+  "Cs2Only": true
+ },
+ {
+  "Name": "p250",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "p250",
+  "Cs2Only": true
+ },
+ {
+  "Name": "tec9",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "tec9",
+  "Cs2Only": true
+ },
+ {
+  "Name": "cz75a",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "cz75a",
+  "Cs2Only": true
+ },
+ {
+  "Name": "mac10",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "mac10",
+  "Cs2Only": true
+ },
+ {
+  "Name": "mp7",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "mp7",
+  "Cs2Only": true
+ },
+ {
+  "Name": "ump45",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "ump45",
+  "Cs2Only": true
+ },
+ {
+  "Name": "bizon",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "bizon",
+  "Cs2Only": true
+ },
+ {
+  "Name": "mp5sd",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "mp5sd",
+  "Cs2Only": true
+ },
+ {
+  "Name": "galilar",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "galilar",
+  "Cs2Only": true
+ },
+ {
+  "Name": "scar20",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "scar20",
+  "Cs2Only": true
+ },
+ {
+  "Name": "g3sg1",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "g3sg1",
+  "Cs2Only": true
+ },
+ {
+  "Name": "aug",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "aug",
+  "Cs2Only": true
+ },
+ {
+  "Name": "sg556",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "sg556",
+  "Cs2Only": true
+ },
+ {
+  "Name": "nova",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "nova",
+  "Cs2Only": true
+ },
+ {
+  "Name": "xm1014",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "xm1014",
+  "Cs2Only": true
+ },
+ {
+  "Name": "sawedoff",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "sawedoff",
+  "Cs2Only": true
+ },
+ {
+  "Name": "mag7",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "mag7",
+  "Cs2Only": true
+ },
+ {
+  "Name": "m249",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "m249",
+  "Cs2Only": true
+ },
+ {
+  "Name": "negev",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "negev",
+  "Cs2Only": true
+ },
+ {
+  "Name": "revolver",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "revolver",
+  "Cs2Only": true
+ },
+ {
+  "Name": "elite",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "elite",
+  "Cs2Only": true
+ },
+ {
+  "Name": "taser",
+  "MeshParts": [],
+  "SourceReferenceScale": 0.0,
+  "Table": "taser",
+  "Cs2Only": true
+ }
+]

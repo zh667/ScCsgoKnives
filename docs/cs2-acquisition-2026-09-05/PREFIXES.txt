@@ -1,0 +1,35 @@
+# Source2Viewer-CLI --vpk_filepath 的前缀，逗号分隔，前缀匹配、大小写敏感。
+# 每行: 批次 | 说明 | 文件数 | 压缩体积 | 前缀（原样粘贴到 --vpk_filepath 后面）
+
+## A  刀：模型+材质+动画+图+骨架  —— 528 个文件，96.7 MB
+weapons/models/knife/,animation/anims/viewmodel/knife/,animation/graphs/viewmodel/viewmodel_knife,animation/graphs/viewmodel/viewmodel_inspects.vnmgraph+knife,animation/skeletons/weapons/knife
+
+## A4  刀：音效（可选）  —— 460 个文件，10.4 MB
+sounds/weapons/knife,sounds/weapons/bknife
+
+## B234  涂装配方：vmat + legacy + 贴纸（先做这个）  —— 2500 个文件，9.5 MB
+materials/models/weapons/customization/paints/vmats/,weapons/paints/,materials/default/stickers/
+
+## B1-1  涂装图案 第1批 anodized_air  —— 17 个文件，12.1 MB
+materials/models/weapons/customization/paints/anodized_air/
+
+## B1-2  涂装图案 第2批 spray  —— 56 个文件，47.2 MB
+materials/models/weapons/customization/paints/spray/
+
+## B1-3  涂装图案 第3批 anodized_multi  —— 90 个文件，67.6 MB
+materials/models/weapons/customization/paints/anodized_multi/
+
+## B1-4  涂装图案 第4批 hydrographic  —— 95 个文件，73.1 MB
+materials/models/weapons/customization/paints/hydrographic/
+
+## B1-5  涂装图案 第5批 antiqued  —— 102 个文件，165.6 MB
+materials/models/weapons/customization/paints/antiqued/
+
+## B1-6  涂装图案 第6批 custom  —— 437 个文件，1057.7 MB
+materials/models/weapons/customization/paints/custom/
+
+## B1-7  涂装图案 第7批 gunsmith  —— 348 个文件，850.7 MB
+materials/models/weapons/customization/paints/gunsmith/
+
+## B1-x  涂装图案 其余 shared  —— 1 个文件，0.0 MB
+materials/models/weapons/customization/paints/shared/

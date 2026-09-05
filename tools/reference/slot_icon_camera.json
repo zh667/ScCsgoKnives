@@ -1,0 +1,64 @@
+{
+  "yaw": 48,
+  "pitch": 8,
+  "roll": 18,
+  "fit": {
+    "meanIoU": 0.5074,
+    "perGun": {
+      "ak47": 0.4818,
+      "m4a1s": 0.5199,
+      "awp": 0.4839
+    },
+    "flatSideViewIoU": 0.2963,
+    "method": "silhouette IoU against the CS:MC icon after box fit, mean of ak47/m4a1s/awp",
+    "tool": "tools/fit_slot_icon_camera.py",
+    "reference": "ak47/m4a1s/awp _slot.png from CS:MC, rendered from their own CS2 meshes"
+  },
+  "ambient": 0.6,
+  "diffuse": 1.5,
+  "gamma": 1.1,
+  "toneFit": {
+    "error": 44.5,
+    "perGun": {
+      "ak47": {
+        "render": [
+          78.3,
+          50.0,
+          129.2
+        ],
+        "csmc": [
+          83.9,
+          34.9,
+          129.1
+        ]
+      },
+      "m4a1s": {
+        "render": [
+          79.3,
+          43.0,
+          131.4
+        ],
+        "csmc": [
+          84.8,
+          45.4,
+          132.8
+        ]
+      },
+      "awp": {
+        "render": [
+          72.4,
+          44.4,
+          122.1
+        ],
+        "csmc": [
+          80.9,
+          38.4,
+          122.0
+        ]
+      }
+    },
+    "method": "grid search on luminance mean/p10/p90 against the CS:MC icons of ak47/m4a1s/awp",
+    "tool": "tools/fit_slot_icon_tone.py",
+    "note": "one-sided n.l; the negative-yaw mirror (-48,-8,18) scores 0.5046, within 0.003 of this, and is rejected by the visible faces: the CS:MC AK icon shows the dust cover and the front of the magazine, i.e. the camera is in front of and above the gun"
+  }
+}

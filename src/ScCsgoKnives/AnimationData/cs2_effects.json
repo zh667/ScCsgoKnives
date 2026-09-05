@@ -1,0 +1,4160 @@
+{
+ "Format": "ScCsgoKnives.Cs2Effects/3",
+ "Notes": "Muzzle positions and tracer references are from each gun's .vdata; flash and tracer numbers from the .vpcf systems CS2 plays. The mod draws a sprite, not a particle system, so 'unmodelled' lists what a single sprite cannot reproduce rather than approximating it.",
+ "Guns": {
+  "ak47": {
+   "MuzzlePos0": [
+    37.422,
+    -4.938,
+    -3.394
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
+    "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
+    "MaxLength": 1200.0,
+    "Speed": 20500.0
+   }
+  },
+  "m4a1s": {
+   "MuzzlePos0": [
+    39.583,
+    -4.846,
+    -3.367
+   ],
+   "MuzzlePos1": [
+    46.463,
+    -4.83,
+    -3.374
+   ],
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    },
+    "silenced": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzsilenced_subm_smoke.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_MaxVelocity",
+      "C_OP_SetFloat"
+     ],
+     "Particles": 1.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.3,
+      0.85
+     ],
+     "Alpha": [
+      0.470588,
+      0.941177
+     ],
+     "ColorMin": [
+      211,
+      222,
+      232
+     ],
+     "ColorMax": [
+      168,
+      168,
+      168
+     ],
+     "SequenceFrames": 4,
+     "Drag": 0.15,
+     "FadeOut": 1.0,
+     "RadiusScale": 2.0,
+     "Textures": [
+      "materials/particle/simulated/steam/wispy_steam_set.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_flwmix.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_sc_hardedge.vtex"
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
+    "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
+    "MaxLength": 1200.0,
+    "Speed": 20500.0
+   }
+  },
+  "awp": {
+   "MuzzlePos0": [
+    54.128,
+    -5.022,
+    -3.124
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_awp_primaryflash.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_SetFloat",
+      "C_OP_SpinUpdate",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 4.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.15,
+      0.2
+     ],
+     "Alpha": [
+      0.470588,
+      0.705882
+     ],
+     "ColorMin": [
+      255,
+      255,
+      255
+     ],
+     "ColorMax": [
+      255,
+      255,
+      255
+     ],
+     "SequenceFrames": 3,
+     "FadeOut": 1.0,
+     "Drag": 0.3,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex",
+      "materials/particle/particle_ring_wave_8.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      2.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 30000.0,
+    "SpeedMax": 30000.0,
+    "Alpha": [
+     0.54902,
+     0.705882
+    ],
+    "ColorMin": [
+     247,
+     188,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.1,
+     0.1
+    ],
+    "Radius": [
+     2.0,
+     2.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     500.0,
+     6400.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 30000.0
+   }
+  },
+  "deagle": {
+   "MuzzlePos0": [
+    24.317,
+    -3.83,
+    -1.22
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_deagle_primaryflash.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -180.0,
+      -120.0
+     ],
+     "Lifetime": [
+      0.056,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex",
+      "materials/particle/fire_small_sim/fire_small_sim_b_top_mv.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "glock18": {
+   "MuzzlePos0": [
+    21.775,
+    -2.805,
+    -1.975
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "usp_silencer": {
+   "MuzzlePos0": [
+    22.818,
+    -2.801,
+    -2.2
+   ],
+   "MuzzlePos1": [
+    30.599,
+    -2.8,
+    -2.361
+   ],
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    },
+    "silenced": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzsilenced_subm_smoke.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_MaxVelocity",
+      "C_OP_SetFloat"
+     ],
+     "Particles": 1.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.3,
+      0.85
+     ],
+     "Alpha": [
+      0.470588,
+      0.941177
+     ],
+     "ColorMin": [
+      211,
+      222,
+      232
+     ],
+     "ColorMax": [
+      168,
+      168,
+      168
+     ],
+     "SequenceFrames": 4,
+     "Drag": 0.15,
+     "FadeOut": 1.0,
+     "RadiusScale": 2.0,
+     "Textures": [
+      "materials/particle/simulated/steam/wispy_steam_set.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_flwmix.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_sc_hardedge.vtex"
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "m4a4": {
+   "MuzzlePos0": [
+    35.62,
+    -4.975,
+    -3.707
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
+    "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
+    "MaxLength": 1200.0,
+    "Speed": 20500.0
+   }
+  },
+  "famas": {
+   "MuzzlePos0": [
+    36.464,
+    -6.028,
+    -4.783
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
+    "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
+    "MaxLength": 1200.0,
+    "Speed": 20500.0
+   }
+  },
+  "mp9": {
+   "MuzzlePos0": [
+    22.783,
+    -4.759,
+    -2.531
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_subm_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "p90": {
+   "MuzzlePos0": [
+    24.058,
+    -5.247,
+    -3.181
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_subm_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "ssg08": {
+   "MuzzlePos0": [
+    48.901,
+    -5.688,
+    -3.681
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle_ssg.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_awp_primaryflash.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_SetFloat",
+      "C_OP_SpinUpdate",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 4.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.15,
+      0.2
+     ],
+     "Alpha": [
+      0.470588,
+      0.705882
+     ],
+     "ColorMin": [
+      255,
+      255,
+      255
+     ],
+     "ColorMax": [
+      255,
+      255,
+      255
+     ],
+     "SequenceFrames": 3,
+     "FadeOut": 1.0,
+     "Drag": 0.3,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex",
+      "materials/particle/particle_ring_wave_8.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      2.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle_ssg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 30000.0,
+    "SpeedMax": 30000.0,
+    "Alpha": [
+     0.54902,
+     0.705882
+    ],
+    "ColorMin": [
+     247,
+     188,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.1,
+     0.1
+    ],
+    "Radius": [
+     2.0,
+     2.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     500.0,
+     6400.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 30000.0
+   }
+  },
+  "cz75a": {
+   "MuzzlePos0": [
+    23.526,
+    -2.805,
+    -1.753
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "elite": {
+   "MuzzlePos0": [
+    23.752,
+    -3.066,
+    -1.754
+   ],
+   "MuzzlePos1": [
+    23.496,
+    3.105,
+    -1.799
+   ],
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "fiveseven": {
+   "MuzzlePos0": [
+    22.214,
+    -2.825,
+    -1.692
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "hkp2000": {
+   "MuzzlePos0": [
+    21.32,
+    -2.801,
+    -1.704
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "p250": {
+   "MuzzlePos0": [
+    21.729,
+    -2.82,
+    -1.623
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "revolver": {
+   "MuzzlePos0": [
+    24.558,
+    -3.634,
+    -1.894
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire_revolver.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -60.0,
+      -120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.1
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b.vtex",
+      "materials/particle/simulated/steam/wispy_steam_burst_b.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      5.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "taser": {
+   "MuzzlePos0": [
+    23.182,
+    -2.848,
+    -3.111
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_taser.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {},
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_taser.vpcf",
+    "Passes": [],
+    "Unmodelled": []
+   }
+  },
+  "tec9": {
+   "MuzzlePos0": [
+    27.931,
+    -5.126,
+    -3.697
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_pist_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.05
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Alpha": [
+      0.196078,
+      0.392157
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_pistol.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 18000.0,
+    "SpeedMax": 18000.0,
+    "Alpha": [
+     0.54902,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     213,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "TrailSeconds": [
+     0.05,
+     0.05
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.35,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     4800.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 18000.0
+   }
+  },
+  "aug": {
+   "MuzzlePos0": [
+    29.957,
+    -3.597,
+    -2.666
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle_aug.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_aug_primaryflash.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 12.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.056
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      255,
+      255,
+      255
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.5,
+     "Textures": [
+      "materials/particle/fire_small_sim/fire_small_sim_b.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      7.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle_aug.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_tintable.vtex",
+      "Texture": "cs2_tracer_tintable",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": null,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass",
+     "radius tapers 2..3 in along the rope"
+    ],
+    "Radius": [
+     2.0,
+     3.0
+    ],
+    "RadiusSource": "curve over the particle index along the rope",
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 20500.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.004878048780487805,
+     0.004878048780487805
+    ],
+    "RopeScroll": {
+     "VScrollRate": -20500.0,
+     "VWorldSize": 100.0,
+     "VOffset": 500.0
+    },
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "ColorSource": "default white",
+    "Alpha": [
+     1.0,
+     1.0
+    ],
+    "AlphaSource": "default"
+   }
+  },
+  "bizon": {
+   "MuzzlePos0": [
+    33.442,
+    -5.107,
+    -3.014
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_subm_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "g3sg1": {
+   "MuzzlePos0": [
+    45.492,
+    -5.287,
+    -4.119
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle_ssg.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_awp_primaryflash.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_SetFloat",
+      "C_OP_SpinUpdate",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 4.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.15,
+      0.2
+     ],
+     "Alpha": [
+      0.470588,
+      0.705882
+     ],
+     "ColorMin": [
+      255,
+      255,
+      255
+     ],
+     "ColorMax": [
+      255,
+      255,
+      255
+     ],
+     "SequenceFrames": 3,
+     "FadeOut": 1.0,
+     "Drag": 0.3,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex",
+      "materials/particle/particle_ring_wave_8.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      2.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle_ssg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 30000.0,
+    "SpeedMax": 30000.0,
+    "Alpha": [
+     0.54902,
+     0.705882
+    ],
+    "ColorMin": [
+     247,
+     188,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.1,
+     0.1
+    ],
+    "Radius": [
+     2.0,
+     2.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     500.0,
+     6400.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 30000.0
+   }
+  },
+  "galilar": {
+   "MuzzlePos0": [
+    34.673,
+    -5.319,
+    -3.601
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.08,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": 0.095,
+      "MinSize": 0.00075,
+      "MaxSize": 0.002,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "SpeedMin": 20500.0,
+    "SpeedMax": 20500.0,
+    "TrailSeconds": [
+     0.085,
+     0.1
+    ],
+    "Alpha": [
+     0.627451,
+     0.686275
+    ],
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     8400.0
+    ],
+    "LengthScaleOutput": [
+     0.8,
+     1.2
+    ],
+    "MaxLength": 1200.0,
+    "Speed": 20500.0
+   }
+  },
+  "m249": {
+   "MuzzlePos0": [
+    52.925,
+    -7.43,
+    -3.928
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_mach.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_mach_primaryflash_alt.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -60.0,
+      -120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.095
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/simulated/steam/wispy_steam_burst_b.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_mach.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_tintable.vtex",
+      "Texture": "cs2_tracer_tintable",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 1.25,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass",
+     "radius tapers 1..3 in along the rope"
+    ],
+    "Radius": [
+     1.0,
+     3.0
+    ],
+    "RadiusSource": "curve over the particle index along the rope",
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 15500.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.0064516129032258064,
+     0.0064516129032258064
+    ],
+    "RopeScroll": {
+     "VScrollRate": -15500.0,
+     "VWorldSize": 100.0,
+     "VOffset": 200.0
+    },
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "ColorSource": "default white",
+    "Alpha": [
+     1.0,
+     1.0
+    ],
+    "AlphaSource": "default"
+   }
+  },
+  "mac10": {
+   "MuzzlePos0": [
+    28.289,
+    -6.171,
+    -3.444
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_subm_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "mag7": {
+   "MuzzlePos0": [
+    39.795,
+    -6.293,
+    -5.04
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_shot_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 24000.0,
+    "SpeedMax": 24500.0,
+    "Alpha": [
+     0.627451,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     134,
+     93
+    ],
+    "ColorMax": [
+     255,
+     236,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.03,
+     0.05
+    ],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.15,
+    "FadeInEnd": 0.25,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     1200.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 24000.0
+   }
+  },
+  "mp5sd": {
+   "MuzzlePos0": [
+    38.905,
+    -5.166,
+    -4.33
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 0.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzsilenced_subm_smoke.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_MaxVelocity",
+      "C_OP_SetFloat"
+     ],
+     "Particles": 1.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.3,
+      0.85
+     ],
+     "Alpha": [
+      0.470588,
+      0.941177
+     ],
+     "ColorMin": [
+      211,
+      222,
+      232
+     ],
+     "ColorMax": [
+      168,
+      168,
+      168
+     ],
+     "SequenceFrames": 4,
+     "Drag": 0.15,
+     "FadeOut": 1.0,
+     "RadiusScale": 2.0,
+     "Textures": [
+      "materials/particle/simulated/steam/wispy_steam_set.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_flwmix.vtex",
+      "materials/particle/smoke/smokeburst/smokeloop_i_0_sc_hardedge.vtex"
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "mp7": {
+   "MuzzlePos0": [
+    27.101,
+    -5.278,
+    -3.958
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_subm_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "negev": {
+   "MuzzlePos0": [
+    45.371,
+    -7.503,
+    -3.87
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_mach.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_mach_primaryflash_alt.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -60.0,
+      -120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.095
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "Textures": [
+      "materials/particle/simulated/steam/wispy_steam_burst_b.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_mach.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_tintable.vtex",
+      "Texture": "cs2_tracer_tintable",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 1.25,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass",
+     "radius tapers 1..3 in along the rope"
+    ],
+    "Radius": [
+     1.0,
+     3.0
+    ],
+    "RadiusSource": "curve over the particle index along the rope",
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 15500.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.0064516129032258064,
+     0.0064516129032258064
+    ],
+    "RopeScroll": {
+     "VScrollRate": -15500.0,
+     "VWorldSize": 100.0,
+     "VOffset": 200.0
+    },
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "ColorSource": "default white",
+    "Alpha": [
+     1.0,
+     1.0
+    ],
+    "AlphaSource": "default"
+   }
+  },
+  "nova": {
+   "MuzzlePos0": [
+    42.23,
+    -4.268,
+    -3.652
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_shot_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 24000.0,
+    "SpeedMax": 24500.0,
+    "Alpha": [
+     0.627451,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     134,
+     93
+    ],
+    "ColorMax": [
+     255,
+     236,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.03,
+     0.05
+    ],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.15,
+    "FadeInEnd": 0.25,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     1200.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 24000.0
+   }
+  },
+  "sawedoff": {
+   "MuzzlePos0": [
+    35.318,
+    -4.309,
+    -2.752
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_shot_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 24000.0,
+    "SpeedMax": 24500.0,
+    "Alpha": [
+     0.627451,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     134,
+     93
+    ],
+    "ColorMax": [
+     255,
+     236,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.03,
+     0.05
+    ],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.15,
+    "FadeInEnd": 0.25,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     1200.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 24000.0
+   }
+  },
+  "scar20": {
+   "MuzzlePos0": [
+    44.474,
+    -5.69,
+    -4.37
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle_scar.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_awp_primaryflash.vpcf",
+     "Unmodelled": [
+      "C_OP_ColorInterpolate",
+      "C_OP_InterpolateRadius",
+      "C_OP_SetFloat",
+      "C_OP_SpinUpdate",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 4.0,
+     "RotationDegrees": [
+      0.0,
+      360.0
+     ],
+     "Lifetime": [
+      0.15,
+      0.2
+     ],
+     "Alpha": [
+      0.470588,
+      0.705882
+     ],
+     "ColorMin": [
+      255,
+      255,
+      255
+     ],
+     "ColorMax": [
+      255,
+      255,
+      255
+     ],
+     "SequenceFrames": 3,
+     "FadeOut": 1.0,
+     "Drag": 0.3,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex",
+      "materials/particle/particle_ring_wave_8.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      2.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_rifle_scar.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.1,
+      "MinSize": 0.001,
+      "MaxSize": 0.01,
+      "StartFadeSize": 0.015,
+      "EndFadeSize": 0.025
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 30000.0,
+    "SpeedMax": 30000.0,
+    "Alpha": [
+     0.54902,
+     0.705882
+    ],
+    "ColorMin": [
+     247,
+     188,
+     94
+    ],
+    "ColorMax": [
+     255,
+     245,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.1,
+     0.1
+    ],
+    "Radius": [
+     2.0,
+     2.0
+    ],
+    "FadeInStart": 0.2,
+    "FadeInEnd": 0.3,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     0.0,
+     6400.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 30000.0
+   }
+  },
+  "sg556": {
+   "MuzzlePos0": [
+    40.466,
+    -5.134,
+    -3.871
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle_aug.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_ak47_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 8.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_assrifle_aug.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_tintable.vtex",
+      "Texture": "cs2_tracer_tintable",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": null,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass",
+     "radius tapers 2..3 in along the rope"
+    ],
+    "Radius": [
+     2.0,
+     3.0
+    ],
+    "RadiusSource": "curve over the particle index along the rope",
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 20500.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.004878048780487805,
+     0.004878048780487805
+    ],
+    "RopeScroll": {
+     "VScrollRate": -20500.0,
+     "VWorldSize": 100.0,
+     "VOffset": 500.0
+    },
+    "ColorMin": [
+     255,
+     255,
+     255
+    ],
+    "ColorMax": [
+     255,
+     255,
+     255
+    ],
+    "ColorFromTexture": true,
+    "ColorSource": "default white",
+    "Alpha": [
+     1.0,
+     1.0
+    ],
+    "AlphaSource": "default"
+   }
+  },
+  "ump45": {
+   "MuzzlePos0": [
+    34.674,
+    -5.162,
+    -4.139
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+   "TracerFrequency": 3.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzzleflash_subm_fire.vpcf",
+     "Unmodelled": [
+      "C_OP_InterpolateRadius",
+      "bloom-only second sprite pass"
+     ],
+     "Particles": 6.0,
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05,
+      0.075
+     ],
+     "Alpha": [
+      0.705882,
+      0.784314
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": null,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      8.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_smg.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/particle/effects/bullet_tracer_seq.vtex",
+      "Texture": "cs2_tracer_smg",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.75,
+      "LengthFadeIn": null,
+      "MinSize": 0.0,
+      "MaxSize": 1.0,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0,
+      "Renderer": "C_OP_RenderRopes"
+     }
+    ],
+    "Unmodelled": [
+     "C_OP_ColorInterpolate to [229, 172, 112] over life",
+     "C_OP_Decay",
+     "C_OP_RenderRopes drawn as the moving ribbon (tessellation, normal map)",
+     "C_OP_SetFloat",
+     "bloom-only second rope pass"
+    ],
+    "Radius": [
+     2.5,
+     2.5
+    ],
+    "ColorFade": [
+     229,
+     172,
+     112
+    ],
+    "Speed": 18000.0,
+    "MaxLength": 100.0,
+    "TrailSeconds": [
+     0.005555555555555556,
+     0.005555555555555556
+    ],
+    "RopeScroll": {
+     "VScrollRate": -18000.0,
+     "VWorldSize": 100.0,
+     "VOffset": 150.0
+    },
+    "ColorMin": [
+     247,
+     210,
+     185
+    ],
+    "ColorMax": [
+     247,
+     210,
+     185
+    ],
+    "ColorFromTexture": false,
+    "ColorSource": "m_ConstantColor",
+    "Alpha": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "xm1014": {
+   "MuzzlePos0": [
+    39.73,
+    -4.274,
+    -4.177
+   ],
+   "MuzzlePos1": null,
+   "TracerParticle": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+   "TracerFrequency": 1.0,
+   "Flash": {
+    "default": {
+     "Source": "06_particles/definitions/particles/unified_weapon_fx/uweapon_muzflsh_shot_primaryflash.vpcf",
+     "Unmodelled": [
+      "bloom-only second sprite pass"
+     ],
+     "SequenceFrames": 4,
+     "RotationDegrees": [
+      -30.0,
+      120.0
+     ],
+     "Lifetime": [
+      0.05
+     ],
+     "Alpha": [
+      0.235294,
+      0.588235
+     ],
+     "ColorMin": [
+      198,
+      131,
+      80
+     ],
+     "ColorMax": [
+      216,
+      216,
+      216
+     ],
+     "Drag": 0.2,
+     "FadeOut": 0.015,
+     "RadiusScale": 0.5,
+     "Textures": [
+      "materials/particle/fire_gas/fire_gas_batch_b_top.vtex"
+     ],
+     "RadiusCurveRange": [
+      1.0,
+      10.0
+     ]
+    }
+   },
+   "Tracer": {
+    "Source": "particles/weapons/cs_weapon_fx/weapon_tracers_shot.vpcf",
+    "Passes": [
+     {
+      "SourceTexture": "materials/effects/spark.vtex",
+      "Texture": "cs2_tracer_add",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+      "RadiusScale": 0.5,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     },
+     {
+      "SourceTexture": "materials/particle/sparks/sparks.vtex",
+      "Texture": "cs2_tracer_blend",
+      "Blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+      "RadiusScale": 0.65,
+      "LengthFadeIn": 0.05,
+      "MinSize": 0.0005,
+      "MaxSize": 0.005,
+      "StartFadeSize": 0.0,
+      "EndFadeSize": 0.0
+     }
+    ],
+    "Unmodelled": [],
+    "SpeedMin": 24000.0,
+    "SpeedMax": 24500.0,
+    "Alpha": [
+     0.627451,
+     0.803922
+    ],
+    "ColorMin": [
+     247,
+     134,
+     93
+    ],
+    "ColorMax": [
+     255,
+     236,
+     219
+    ],
+    "ColorFromTexture": false,
+    "TrailSeconds": [
+     0.03,
+     0.05
+    ],
+    "Radius": [
+     1.0,
+     1.0
+    ],
+    "LifeFromShotDistance": true,
+    "FadeInStart": 0.15,
+    "FadeInEnd": 0.25,
+    "FadeOutStart": 0.95,
+    "FadeOutEnd": 1.0,
+    "StartAlpha": 0.0,
+    "EndAlpha": 0.0,
+    "LengthScaleInput": [
+     100.0,
+     1200.0
+    ],
+    "LengthScaleOutput": [
+     1.0,
+     1.2
+    ],
+    "MaxLength": 900.0,
+    "Speed": 24000.0
+   }
+  }
+ }
+}

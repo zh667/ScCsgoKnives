@@ -1,5 +1,25 @@
 bin/
 obj/
+.tmp-csmc/
 *.user
 *.suo
+# peer-local working directories and Syncthing metadata (see CLAUDE.md)
+.tmp-*/
+.stfolder/
+.stignore
+*.lnk
+__pycache__/
+# build deliverables reach Windows through the sync folder, not through git
+output/
+# screenshots of our own build, replaced every round
+PHOTO2/
+# CS:MC reference screenshots (tools/mccs_masks.py reads them); not published
+photo/
+# screen recordings used for frame-by-frame comparison; not source
+SC_VIDEO/
+MCCS_VIDEO/
 
+# CS:MC gun source assets copied from the client stream cache (synced, never committed)
+csmc_guns/
+# capture folder synced from Windows (screenshots/dump hits); never source
+CAPTURE/

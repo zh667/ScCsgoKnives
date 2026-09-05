@@ -1,0 +1,28 @@
+[
+ {
+  "name": "cs2_arm",
+  "size": 1024,
+  "sources": {
+   "color": "bare_arm_133_color_psd_5b76e0cf.png",
+   "ao": "bare_arm_133_vmat_g_tambientocclusion_9782fd5c.png",
+   "normal": "bare_arm_normal_tga_c9fefc2d.png"
+  },
+  "roughness_estimated": 0.55,
+  "metalness": 0,
+  "ao_mean": 255.0,
+  "normal_deviation_from_flat": 5.902
+ },
+ {
+  "name": "cs2_glove",
+  "size": 1024,
+  "sources": {
+   "color": "glove_fingerless_color_psd_19aa3701.png",
+   "ao": "glove_fingerless_ao_psd_ce290e8d.png",
+   "normal": "glove_fingerless_normal_tga_5acd72d3.png"
+  },
+  "roughness_estimated": 0.75,
+  "metalness": 0,
+  "ao_mean": 249.62,
+  "normal_deviation_from_flat": 10.357
+ }
+]

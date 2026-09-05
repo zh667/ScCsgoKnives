@@ -1,0 +1,31 @@
+[
+ {
+  "gun": "taser",
+  "size": 1024,
+  "vmat": "weapons/models/taser/materials/weapon_pist_taser.vmat",
+  "sources": {
+   "TextureColor1": "weapons/models/taser/materials/taser_color.png",
+   "TextureAmbientOcclusion": "weapons/models/taser/materials/taser_ao.png",
+   "TextureRoughness1": "weapons/models/taser/materials/taser_rough.png",
+   "TextureMetalness1": "weapons/models/taser/materials/taser_7140d135_metal.png",
+   "TextureNormal": "weapons/models/taser/materials/taser_normal.png"
+  },
+  "means": {
+   "colour": [
+    69.53,
+    75.67,
+    72.06
+   ],
+   "ao": 213.3,
+   "roughness": 129.58,
+   "metalness": 0.29
+  },
+  "normal_deviation_from_flat": 13.514,
+  "recorded_but_not_implemented": {
+   "g_flMetalnessTransitionBias": "2",
+   "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+   "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+   "g_flModelTintAmount": "1"
+  }
+ }
+]

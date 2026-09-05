@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <RollForward>Major</RollForward>
+    <AssemblyName>PackageCheck</AssemblyName>
+  </PropertyGroup>
+  <!-- Deliberately no ProjectReference to src/ScCsgoKnives: this host must load the
+       mod out of the .scmod under acceptance, never out of the working tree. The
+       Survivalcraft reference is here only so Engine and Game resolve for it. -->
+  <ItemGroup>
+    <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.2.1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,580 @@
+{
+  "rig": [
+    {
+      "gun": "ak47",
+      "bones": [
+        "weapon",
+        "weapon_offset",
+        "bolt",
+        "clip",
+        "cliprelease",
+        "trigger"
+      ],
+      "scale": 39.37008575848744,
+      "rotation": [
+        [
+          0.0,
+          1.0,
+          -0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.0,
+          0.0
+        ]
+      ],
+      "max_residual_in": 3.558987539085877e-07,
+      "mean_residual_in": 2.489196916660877e-07
+    },
+    {
+      "gun": "m4a1s",
+      "bones": [
+        "weapon",
+        "weapon_offset",
+        "bolt",
+        "clip",
+        "silencer",
+        "trigger"
+      ],
+      "scale": 39.370085562838646,
+      "rotation": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          -0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.0,
+          -0.0
+        ]
+      ],
+      "max_residual_in": 1.9201919927145408e-07,
+      "mean_residual_in": 1.1855724469912166e-07
+    },
+    {
+      "gun": "awp",
+      "bones": [
+        "weapon",
+        "weapon_offset",
+        "clip",
+        "rail",
+        "bolt_action",
+        "trigger"
+      ],
+      "scale": 39.37008556534528,
+      "rotation": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          -0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.0,
+          -0.0
+        ]
+      ],
+      "max_residual_in": 2.4571530929467973e-07,
+      "mean_residual_in": 1.4204523846582285e-07
+    }
+  ],
+  "rigid": [
+    {
+      "gun": "ak47",
+      "body": "hd",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "bolt",
+        "clip",
+        "cliprelease",
+        "trigger",
+        "ag1_hand_r"
+      ],
+      "parts": [
+        {
+          "name": "weapon_offset",
+          "bone": "weapon_offset",
+          "primitive": 0,
+          "faces": 18515,
+          "vertices": 15772,
+          "file": "ak47_cs2_weapon_offset.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "weapon_offset__p2",
+          "bone": "weapon_offset",
+          "primitive": 1,
+          "faces": 33,
+          "vertices": 36,
+          "file": "ak47_cs2_weapon_offset__p2.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "bolt",
+          "bone": "bolt",
+          "primitive": 0,
+          "faces": 271,
+          "vertices": 270,
+          "file": "ak47_cs2_bolt.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "clip",
+          "bone": "clip",
+          "primitive": 0,
+          "faces": 7223,
+          "vertices": 5246,
+          "file": "ak47_cs2_clip.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "trigger",
+          "bone": "trigger",
+          "primitive": 0,
+          "faces": 124,
+          "vertices": 126,
+          "file": "ak47_cs2_trigger.obj",
+          "over_ushort": false
+        }
+      ],
+      "split_triangles": 0,
+      "blended_vertices": 0,
+      "total_faces": 26166
+    },
+    {
+      "gun": "awp",
+      "body": "hd",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "clip",
+        "rail",
+        "bolt_action",
+        "trigger",
+        "ag1_hand_r"
+      ],
+      "parts": [
+        {
+          "name": "weapon_offset__c1",
+          "bone": "weapon_offset",
+          "primitive": 0,
+          "faces": 21845,
+          "vertices": 18384,
+          "file": "awp_cs2_weapon_offset__c1.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "weapon_offset__c2",
+          "bone": "weapon_offset",
+          "primitive": 0,
+          "faces": 12033,
+          "vertices": 10714,
+          "file": "awp_cs2_weapon_offset__c2.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "clip",
+          "bone": "clip",
+          "primitive": 0,
+          "faces": 3334,
+          "vertices": 2729,
+          "file": "awp_cs2_clip.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "rail",
+          "bone": "rail",
+          "primitive": 0,
+          "faces": 819,
+          "vertices": 850,
+          "file": "awp_cs2_rail.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "bolt_action",
+          "bone": "bolt_action",
+          "primitive": 0,
+          "faces": 1547,
+          "vertices": 1236,
+          "file": "awp_cs2_bolt_action.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "trigger",
+          "bone": "trigger",
+          "primitive": 0,
+          "faces": 186,
+          "vertices": 154,
+          "file": "awp_cs2_trigger.obj",
+          "over_ushort": false
+        }
+      ],
+      "split_triangles": 0,
+      "blended_vertices": 0,
+      "total_faces": 39764
+    },
+    {
+      "gun": "m4a1s",
+      "body": "hd",
+      "joints": [
+        "weapon",
+        "weapon_offset",
+        "bolt",
+        "clip",
+        "silencer",
+        "trigger",
+        "ag1_hand_r"
+      ],
+      "parts": [
+        {
+          "name": "weapon_offset__c1",
+          "bone": "weapon_offset",
+          "primitive": 0,
+          "faces": 21845,
+          "vertices": 16733,
+          "file": "m4a1s_cs2_weapon_offset__c1.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "weapon_offset__c2",
+          "bone": "weapon_offset",
+          "primitive": 0,
+          "faces": 14870,
+          "vertices": 13576,
+          "file": "m4a1s_cs2_weapon_offset__c2.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "bolt",
+          "bone": "bolt",
+          "primitive": 0,
+          "faces": 870,
+          "vertices": 876,
+          "file": "m4a1s_cs2_bolt.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "clip",
+          "bone": "clip",
+          "primitive": 0,
+          "faces": 5318,
+          "vertices": 4037,
+          "file": "m4a1s_cs2_clip.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "silencer",
+          "bone": "silencer",
+          "primitive": 0,
+          "faces": 2116,
+          "vertices": 1698,
+          "file": "m4a1s_cs2_silencer.obj",
+          "over_ushort": false
+        },
+        {
+          "name": "trigger",
+          "bone": "trigger",
+          "primitive": 0,
+          "faces": 353,
+          "vertices": 330,
+          "file": "m4a1s_cs2_trigger.obj",
+          "over_ushort": false
+        }
+      ],
+      "split_triangles": 0,
+      "blended_vertices": 0,
+      "total_faces": 45372
+    }
+  ],
+  "legacy": [
+    {
+      "gun": "ak47",
+      "parts": [
+        {
+          "file": "ak47_v_weapon_ak47_bolt.obj",
+          "bone": "bolt",
+          "shipped_vertices": 80,
+          "glb_vertices": 266,
+          "max_mm": 0.005900633746748149,
+          "mean_mm": 0.0037851626327673276,
+          "known_difference": null
+        },
+        {
+          "file": "ak47_v_weapon_ak47_clip.obj",
+          "bone": "clip",
+          "shipped_vertices": 420,
+          "glb_vertices": 1792,
+          "max_mm": 0.006104163226998458,
+          "mean_mm": 0.0036368469283412598,
+          "known_difference": null
+        },
+        {
+          "file": "ak47_v_weapon_ak47_cliprelease.obj",
+          "bone": "cliprelease",
+          "shipped_vertices": 56,
+          "glb_vertices": 280,
+          "max_mm": 0.005491017569380785,
+          "mean_mm": 0.003676307439348474,
+          "known_difference": null
+        },
+        {
+          "file": "ak47_v_weapon_ak47_trigger.obj",
+          "bone": "trigger",
+          "shipped_vertices": 24,
+          "glb_vertices": 104,
+          "max_mm": 0.005070759957577668,
+          "mean_mm": 0.003769989917827328,
+          "known_difference": null
+        },
+        {
+          "file": "ak47_weapon_hand_r.obj",
+          "bone": "weapon_offset",
+          "shipped_vertices": 6987,
+          "glb_vertices": 23428,
+          "max_mm": 0.006511444948880403,
+          "mean_mm": 0.0036817307019620456,
+          "known_difference": null
+        },
+        {
+          "file": "ak47_weapon_hand_r__2.obj",
+          "bone": "weapon_offset",
+          "shipped_vertices": 46,
+          "glb_vertices": 23428,
+          "max_mm": 0.005294070358291467,
+          "mean_mm": 0.003981074781728008,
+          "known_difference": null
+        }
+      ]
+    },
+    {
+      "gun": "awp",
+      "parts": [
+        {
+          "file": "awp_v_weapon_awp_bolt_action.obj",
+          "bone": "bolt_action",
+          "shipped_vertices": 293,
+          "glb_vertices": 860,
+          "max_mm": 0.012895047814219527,
+          "mean_mm": 0.007372317974183734,
+          "known_difference": null
+        },
+        {
+          "file": "awp_v_weapon_awp_bolt_rail.obj",
+          "bone": "rail",
+          "shipped_vertices": 98,
+          "glb_vertices": 610,
+          "max_mm": 0.012584081895256491,
+          "mean_mm": 0.006728393675310878,
+          "known_difference": null
+        },
+        {
+          "file": "awp_v_weapon_awp_clip.obj",
+          "bone": "clip",
+          "shipped_vertices": 382,
+          "glb_vertices": 1528,
+          "max_mm": 1.3650718334710552,
+          "mean_mm": 1.0220296197199223,
+          "known_difference": "CS:MC ships a different AWP magazine mesh"
+        },
+        {
+          "file": "awp_v_weapon_awp_trigger.obj",
+          "bone": "trigger",
+          "shipped_vertices": 82,
+          "glb_vertices": 320,
+          "max_mm": 0.013469645571424764,
+          "mean_mm": 0.00805719430665805,
+          "known_difference": null
+        },
+        {
+          "file": "awp_weapon_hand_r.obj",
+          "bone": "weapon_offset",
+          "shipped_vertices": 10671,
+          "glb_vertices": 41738,
+          "max_mm": 0.020000188968141607,
+          "mean_mm": 0.007887325681898828,
+          "known_difference": null
+        },
+        {
+          "file": "awp_weapon_hand_r__2.obj",
+          "bone": "weapon_offset",
+          "shipped_vertices": 50,
+          "glb_vertices": 41738,
+          "max_mm": 0.014346715417746514,
+          "mean_mm": 0.009860070910780571,
+          "known_difference": null
+        }
+      ]
+    },
+    {
+      "gun": "m4a1s",
+      "parts": [
+        {
+          "file": "m4a1s_v_weapon_m4a1_bolt.obj",
+          "bone": "bolt",
+          "shipped_vertices": 118,
+          "glb_vertices": 303,
+          "max_mm": 0.010050912736270894,
+          "mean_mm": 0.005465570605545636,
+          "known_difference": null
+        },
+        {
+          "file": "m4a1s_v_weapon_m4a1_clip.obj",
+          "bone": "clip",
+          "shipped_vertices": 401,
+          "glb_vertices": 1160,
+          "max_mm": 0.009231273868490809,
+          "mean_mm": 0.004866191307127203,
+          "known_difference": null
+        },
+        {
+          "file": "m4a1s_v_weapon_m4a1_trigger.obj",
+          "bone": "trigger",
+          "shipped_vertices": 64,
+          "glb_vertices": 136,
+          "max_mm": 0.008918349126175886,
+          "mean_mm": 0.004947620191436955,
+          "known_difference": null
+        },
+        {
+          "file": "m4a1s_v_weapon_silencer.obj",
+          "bone": "silencer",
+          "shipped_vertices": 272,
+          "glb_vertices": 510,
+          "max_mm": 0.013995226269089608,
+          "mean_mm": 0.006789599052184712,
+          "known_difference": null
+        },
+        {
+          "file": "m4a1s_weapon_hand_r__c1.obj",
+          "bone": "weapon_offset",
+          "shipped_vertices": 11651,
+          "glb_vertices": 25600,
+          "max_mm": 0.01398225373839518,
+          "mean_mm": 0.005428237253538031,
+          "known_difference": null
+        },
+        {
+          "file": "m4a1s_weapon_hand_r__c2.obj",
+          "bone": "weapon_offset",
+          "shipped_vertices": 255,
+          "glb_vertices": 25600,
+          "max_mm": 0.013834560710732352,
+          "mean_mm": 0.007908841093503528,
+          "known_difference": null
+        }
+      ]
+    }
+  ],
+  "obj": {
+    "files": 17,
+    "output": "17 files checked, 0 bad",
+    "returncode": 0,
+    "total_bytes": 9418866
+  },
+  "materials": [
+    {
+      "gun": "ak47",
+      "size": 1024,
+      "vmat": "weapons/models/ak47/materials/weapon_rif_ak47.vmat",
+      "sources": {
+        "TextureColor1": "weapons/models/ak47/materials/ak47_default_color.png",
+        "TextureAmbientOcclusion": "weapons/models/ak47/materials/ak47_default_ao.png",
+        "TextureRoughness1": "weapons/models/ak47/materials/ak47_default_rough.png",
+        "TextureMetalness1": "weapons/models/ak47/materials/ak47_default_469dc584_metal.png",
+        "TextureNormal": "weapons/models/ak47/materials/ak47_default_normal.png"
+      },
+      "means": {
+        "colour": [
+          88.07,
+          83.06,
+          79.83
+        ],
+        "ao": 178.79,
+        "roughness": 105.91,
+        "metalness": 18.52
+      },
+      "normal_deviation_from_flat": 13.569,
+      "recorded_but_not_implemented": {
+        "g_flMetalnessTransitionBias": "2",
+        "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+        "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+        "g_flModelTintAmount": "1"
+      }
+    },
+    {
+      "gun": "awp",
+      "size": 1024,
+      "vmat": "weapons/models/awp/materials/weapon_snip_awp.vmat",
+      "sources": {
+        "TextureColor1": "weapons/models/awp/materials/awp_default_color.png",
+        "TextureAmbientOcclusion": "weapons/models/awp/materials/awp_default_ao.png",
+        "TextureRoughness1": "weapons/models/awp/materials/awp_default_rough.png",
+        "TextureMetalness1": "weapons/models/awp/materials/awp_default_4e233c92_metal.png",
+        "TextureNormal": "weapons/models/awp/materials/awp_default_normal.png"
+      },
+      "means": {
+        "colour": [
+          71.6,
+          71.81,
+          66.68
+        ],
+        "ao": 179.99,
+        "roughness": 118.48,
+        "metalness": 15.72
+      },
+      "normal_deviation_from_flat": 11.379,
+      "recorded_but_not_implemented": {
+        "g_flMetalnessTransitionBias": "2",
+        "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+        "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+        "g_flModelTintAmount": "1"
+      }
+    },
+    {
+      "gun": "m4a1s",
+      "size": 1024,
+      "vmat": "weapons/models/m4a1_silencer/materials/weapon_rif_m4a1_silencer.vmat",
+      "sources": {
+        "TextureColor1": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_color.png",
+        "TextureAmbientOcclusion": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_ao.png",
+        "TextureRoughness1": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_rough.png",
+        "TextureMetalness1": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_ba5e1173_metal.png",
+        "TextureNormal": "weapons/models/m4a1_silencer/materials/m4a1_silencer_default_normal.png"
+      },
+      "means": {
+        "colour": [
+          84.73,
+          84.6,
+          84.35
+        ],
+        "ao": 178.25,
+        "roughness": 161.89,
+        "metalness": 22.96
+      },
+      "normal_deviation_from_flat": 13.373,
+      "recorded_but_not_implemented": {
+        "g_flMetalnessTransitionBias": "2.407",
+        "g_vMetalnessRemapRange": "[0.000000 1.000000 0.000000 0.000000]",
+        "g_vColorTint": "[1.000000 1.000000 1.000000 0.000000]",
+        "g_flModelTintAmount": "1"
+      }
+    }
+  ]
+}

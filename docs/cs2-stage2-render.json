@@ -1,0 +1,92 @@
+[
+ {
+  "gun": "ak47",
+  "clip": "idle",
+  "shipped": {
+   "line": "ak47: pixels 39832  mean srgb [0.592 0.585 0.593]  metal mean 0.84 rough mean 0.67 ao mean 0.91 base(lin) mean 0.173",
+   "pixels": 39830,
+   "mean_srgb": [
+    0.5899,
+    0.5831,
+    0.5909
+   ],
+   "luminance_mean": 0.5851,
+   "luminance_median": 0.6059,
+   "luminance_p10": 0.4104,
+   "luminance_p90": 0.7233
+  },
+  "cs2": {
+   "line": "ak47_cs2: pixels 38871  mean srgb [0.444 0.441 0.444]  metal mean 0.06 rough mean 0.36 ao mean 0.90 base(lin) mean 0.088",
+   "pixels": 38862,
+   "mean_srgb": [
+    0.4419,
+    0.4395,
+    0.4418
+   ],
+   "luminance_mean": 0.4402,
+   "luminance_median": 0.428,
+   "luminance_p10": 0.3098,
+   "luminance_p90": 0.5879
+  }
+ },
+ {
+  "gun": "awp",
+  "clip": "idle",
+  "shipped": {
+   "line": "awp: pixels 45493  mean srgb [0.464 0.475 0.447]  metal mean 0.34 rough mean 0.56 ao mean 0.81 base(lin) mean 0.070",
+   "pixels": 45493,
+   "mean_srgb": [
+    0.4622,
+    0.4735,
+    0.4455
+   ],
+   "luminance_mean": 0.4691,
+   "luminance_median": 0.5258,
+   "luminance_p10": 0.2316,
+   "luminance_p90": 0.6496
+  },
+  "cs2": {
+   "line": "awp_cs2: pixels 51551  mean srgb [0.406 0.416 0.398]  metal mean 0.02 rough mean 0.36 ao mean 0.90 base(lin) mean 0.057",
+   "pixels": 51531,
+   "mean_srgb": [
+    0.4038,
+    0.4145,
+    0.3955
+   ],
+   "luminance_mean": 0.4109,
+   "luminance_median": 0.4182,
+   "luminance_p10": 0.2364,
+   "luminance_p90": 0.5748
+  }
+ },
+ {
+  "gun": "m4a1s",
+  "clip": "idle",
+  "shipped": {
+   "line": "m4a1s: pixels 45636  mean srgb [0.429 0.437 0.446]  metal mean 0.00 rough mean 0.45 ao mean 0.93 base(lin) mean 0.059",
+   "pixels": 45616,
+   "mean_srgb": [
+    0.427,
+    0.435,
+    0.4436
+   ],
+   "luminance_mean": 0.4339,
+   "luminance_median": 0.4431,
+   "luminance_p10": 0.2473,
+   "luminance_p90": 0.5955
+  },
+  "cs2": {
+   "line": "m4a1s_cs2: pixels 43776  mean srgb [0.465 0.472 0.48 ]  metal mean 0.03 rough mean 0.52 ao mean 0.91 base(lin) mean 0.071",
+   "pixels": 43744,
+   "mean_srgb": [
+    0.4627,
+    0.4702,
+    0.4784
+   ],
+   "luminance_mean": 0.4692,
+   "luminance_median": 0.4533,
+   "luminance_p10": 0.3064,
+   "luminance_p90": 0.6376
+  }
+ }
+]

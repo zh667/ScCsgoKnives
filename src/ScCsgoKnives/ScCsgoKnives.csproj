@@ -34,6 +34,17 @@
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
     <EmbeddedResource Include="AnimationData\*.animation.json" />
+    <EmbeddedResource Include="AnimationData\cs2_sounds.json" />
+    <EmbeddedResource Include="AnimationData\*.skin" />
+    <EmbeddedResource Include="AnimationData\*.parts" />
+    <EmbeddedResource Include="AnimationData\cs2_effects.json" />
+    <EmbeddedResource Include="AnimationData\cs2_taser_effect.json" />
+    <EmbeddedResource Include="AnimationData\cs2_weapons.json" />
+    <EmbeddedResource Include="AnimationData\cs2_sound_variants.json" />
+    <EmbeddedResource Include="AnimationData\knives.json" />
+    <EmbeddedResource Include="AnimationData\guns.json" />
+    <EmbeddedResource Include="AnimationData\weapon_table.json" />
+    <EmbeddedResource Include="Shaders\*.vsh;Shaders\*.psh" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <PropertyGroup><PathOfScmod>$(TargetDir)..\$(AssemblyName).scmod</PathOfScmod></PropertyGroup>

@@ -1,22 +1,243 @@
 {
-  "Blocks": {
-    "ScKnifeBlock:0": {
-      "DisplayName": "Karambit",
-      "Description": "A curved blade with a finger ring. Switch to draw; use Edit Item (G by default) on PC or tap the pencil button on mobile to inspect."
-    },
-    "ScKnifeBlock:1": {
-      "DisplayName": "M9 Bayonet",
-      "Description": "A heavy tactical bayonet. Switch to draw; use Edit Item (G by default) on PC or tap the pencil button on mobile to inspect."
-    },
-    "ScKnifeBlock:2": {
-      "DisplayName": "Butterfly Knife",
-      "Description": "A folding knife with split handles. Switch to draw; use Edit Item (G by default) on PC or tap the pencil button on mobile to inspect."
-    }
+ "Blocks": {
+  "ScKnifeBlock:0": {
+   "DisplayName": "Karambit",
+   "Description": "Curved blade with a ring pommel, the most recognisable CS melee weapon. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
   },
-  "ScCsgoKnives": {
-    "Message": {
-      "Inspect": "Inspecting {0}.",
-      "ControlsHint": "Inspect: press {0} on PC; tap the pencil button on mobile."
-    }
+  "ScKnifeBlock:1": {
+   "DisplayName": "M9 Bayonet",
+   "Description": "Broad military bayonet with a serrated spine. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:2": {
+   "DisplayName": "Butterfly Knife",
+   "Description": "Twin-handle balisong with the flashiest deploy. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:3": {
+   "DisplayName": "Bayonet",
+   "Description": "The original long-bladed military bayonet. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:4": {
+   "DisplayName": "Bowie Knife",
+   "Description": "Heavy hunting knife with a swept tip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:5": {
+   "DisplayName": "Survival Knife",
+   "Description": "Field survival blade with a finger-grooved grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:6": {
+   "DisplayName": "Paracord Knife",
+   "Description": "Light straight blade with a cord-wrapped handle. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:7": {
+   "DisplayName": "Classic Knife",
+   "Description": "Short blade carried over from the older CS games. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:8": {
+   "DisplayName": "CT Knife",
+   "Description": "Standard issue Counter-Terrorist knife. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:9": {
+   "DisplayName": "T Knife",
+   "Description": "Standard issue Terrorist knife. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:10": {
+   "DisplayName": "Falchion Knife",
+   "Description": "Single-edged folding falchion. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:11": {
+   "DisplayName": "Flip Knife",
+   "Description": "Classic folder that tucks into its own handle. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:12": {
+   "DisplayName": "Gut Knife",
+   "Description": "Skinning knife with a gut hook. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:13": {
+   "DisplayName": "Kukri Knife",
+   "Description": "Forward-curved Nepalese service blade. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:14": {
+   "DisplayName": "Navaja Knife",
+   "Description": "Slim Spanish-style folder. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:15": {
+   "DisplayName": "Nomad Knife",
+   "Description": "Outdoors folder with an oversized grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:16": {
+   "DisplayName": "Shadow Daggers",
+   "Description": "A push dagger in each hand. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:17": {
+   "DisplayName": "Skeleton Knife",
+   "Description": "Light straight blade with a skeletonised grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:18": {
+   "DisplayName": "Stiletto Knife",
+   "Description": "Slender switchblade built for thrusting. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:19": {
+   "DisplayName": "Huntsman Knife",
+   "Description": "Tactical straight blade with a sawback spine. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:20": {
+   "DisplayName": "Talon Knife",
+   "Description": "Longer, sawback variant of the karambit. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScKnifeBlock:21": {
+   "DisplayName": "Ursus Knife",
+   "Description": "Thick straight blade with a textured grip. Plays its own deploy animation on switch. Inspect with the Edit Item key (G by default) on desktop, or the pencil button on mobile."
+  },
+  "ScGunBlock:0": {
+   "DisplayName": "AK-47",
+   "Description": "7.62 mm assault rifle, 30-round magazine, automatic. Left click fires, R reloads, the Edit Item key inspects."
+  },
+  "ScGunBlock:1": {
+   "DisplayName": "M4A1-S",
+   "Description": "5.56 mm assault rifle, 20-round magazine, automatic. Right click attaches or detaches the silencer, R reloads."
+  },
+  "ScGunBlock:2": {
+   "DisplayName": "AWP",
+   "Description": "Bolt-action sniper rifle, 5-round magazine. Right click scopes (again to zoom further, a third time to leave), R reloads."
+  },
+  "ScGunBlock:3": {
+   "DisplayName": "Desert Eagle",
+   "Description": "A .50 pistol, 7 rounds, semi-automatic. Heavy damage and heavy kick. R reloads."
+  },
+  "ScGunBlock:4": {
+   "DisplayName": "Glock-18",
+   "Description": "A 9mm pistol, 20 rounds. Right click switches between semi-automatic and a three-round burst. R reloads."
+  },
+  "ScGunBlock:5": {
+   "DisplayName": "USP-S",
+   "Description": "A .45 pistol, 12 rounds, semi-automatic. Right click fits or removes the silencer. R reloads."
+  },
+  "ScGunBlock:6": {
+   "DisplayName": "M4A4",
+   "Description": "A 5.56 rifle, 30 rounds, fully automatic. R reloads."
+  },
+  "ScGunBlock:7": {
+   "DisplayName": "FAMAS",
+   "Description": "A 5.56 rifle, 25 rounds. Right click switches between fully automatic and a three-round burst. R reloads."
+  },
+  "ScGunBlock:8": {
+   "DisplayName": "MP9",
+   "Description": "A 9mm SMG, 30 rounds, fully automatic. Fast and light-recoiling. R reloads."
+  },
+  "ScGunBlock:9": {
+   "DisplayName": "P90",
+   "Description": "A 5.7 SMG, 50 rounds, fully automatic. A big magazine and a wide cone. R reloads."
+  },
+  "ScGunBlock:10": {
+   "DisplayName": "SSG 08",
+   "Description": "A bolt-action sniper rifle, 10 rounds. Right click scopes (again to magnify, a third time to leave). R reloads."
+  },
+  "ScGunBlock:11": {
+   "DisplayName": "Five-SeveN",
+   "Description": "A 5.7 mm pistol, 20 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:12": {
+   "DisplayName": "P2000",
+   "Description": "A 9 mm pistol, 13 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:13": {
+   "DisplayName": "P250",
+   "Description": "A .357 pistol, 13 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:14": {
+   "DisplayName": "Tec-9",
+   "Description": "A 9 mm pistol, 18 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:15": {
+   "DisplayName": "CZ75-Auto",
+   "Description": "A 9 mm automatic pistol, 12 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:16": {
+   "DisplayName": "MAC-10",
+   "Description": "A .45 SMG, 30 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:17": {
+   "DisplayName": "MP7",
+   "Description": "A 4.6 mm SMG, 30 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:18": {
+   "DisplayName": "UMP-45",
+   "Description": "A .45 SMG, 25 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:19": {
+   "DisplayName": "PP-Bizon",
+   "Description": "A 9 mm SMG with a 64-round helical magazine, 64 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:20": {
+   "DisplayName": "MP5-SD",
+   "Description": "A 9 mm SMG with an integral suppressor, 30 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:21": {
+   "DisplayName": "Galil AR",
+   "Description": "A 5.56 mm assault rifle, 35 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:22": {
+   "DisplayName": "SCAR-20",
+   "Description": "A 7.62 mm auto sniper, 20 rounds, automatic. Right click scopes (again to magnify, a third time to leave). R reloads."
+  },
+  "ScGunBlock:23": {
+   "DisplayName": "G3SG1",
+   "Description": "A 7.62 mm auto sniper, 20 rounds, automatic. Right click scopes (again to magnify, a third time to leave). R reloads."
+  },
+  "ScGunBlock:24": {
+   "DisplayName": "AUG",
+   "Description": "A 5.56 mm assault rifle with a scope, 30 rounds, automatic. Right click scopes. R reloads."
+  },
+  "ScGunBlock:25": {
+   "DisplayName": "SG 553",
+   "Description": "A 5.56 mm assault rifle with a scope, 30 rounds, automatic. Right click scopes. R reloads."
+  },
+  "ScGunBlock:26": {
+   "DisplayName": "Nova",
+   "Description": "A pump-action shotgun, 8 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:27": {
+   "DisplayName": "XM1014",
+   "Description": "A semi-automatic shotgun, 7 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:28": {
+   "DisplayName": "Sawed-Off",
+   "Description": "A sawed-off pump shotgun, devastating up close, 7 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:29": {
+   "DisplayName": "MAG-7",
+   "Description": "A magazine-fed shotgun, 5 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:30": {
+   "DisplayName": "M249",
+   "Description": "A 5.56 mm light machine gun, 100-round belt, 100 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:31": {
+   "DisplayName": "Negev",
+   "Description": "A 5.56 mm light machine gun, 150-round belt, 150 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:32": {
+   "DisplayName": "R8 Revolver",
+   "Description": "An 8-round revolver; left click cocks and fires, right click fans the hammer, 8 rounds, automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:33": {
+   "DisplayName": "Dual Berettas",
+   "Description": "Two 9 mm pistols, fired in turn, 30 rounds, semi-automatic. Left click fires. R reloads."
+  },
+  "ScGunBlock:34": {
+   "DisplayName": "Zeus x27",
+   "Description": "A single-shot stun gun, lethal up close, 1 round, semi-automatic. Left click fires."
   }
+ },
+ "ScCsgoKnives": {
+  "Message": {
+   "Inspect": "Inspecting {0}.",
+   "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile.",
+   "Ammo": "{0} / ∞",
+   "Recharging": "Recharging, {0} s to go",
+   "GunHint": "Left click fires, R reloads; right click scopes the AWP or toggles the M4A1-S silencer; {0} inspects.",
+   "BurstOn": "Burst fire",
+   "BurstOff": "Single fire"
+  }
+ }
 }

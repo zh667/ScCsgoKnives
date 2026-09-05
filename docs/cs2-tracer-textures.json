@@ -1,0 +1,126 @@
+[
+ {
+  "texture": "cs2_tracer_add",
+  "source_png": "/home/dev/workspaces/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/effects/spark.png",
+  "vtex": "materials/effects/spark.vtex",
+  "blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+  "source_size": [
+   32,
+   64
+  ],
+  "output_size": [
+   128,
+   64
+  ],
+  "source_sha256": "40f26247efa28592c0d3f08d2df19c58bcec89d244280fd808d87167fc87056b",
+  "pixels_sha256": "6711118ea1e3f80494771d42f770743ce3c55f7d8b46199fb69ab6b7f46ea544",
+  "profile": {
+   "rows": 64,
+   "cols": 32,
+   "row_ends": [
+    0.0,
+    0.0
+   ],
+   "col_ends": [
+    0.0,
+    0.0
+   ],
+   "row_peak": 0.1833741830065359,
+   "col_peak": 0.5882557189542486,
+   "carries_shape": "rgb"
+  }
+ },
+ {
+  "texture": "cs2_tracer_blend",
+  "source_png": "/home/dev/workspaces/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/sparks/sparks_seq4.png",
+  "vtex": "materials/particle/sparks/sparks.vtex",
+  "blend": "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD",
+  "source_size": [
+   60,
+   64
+  ],
+  "output_size": [
+   128,
+   64
+  ],
+  "source_sha256": "ed617060791678259c685e5d9b0a5d4dbea50f76693ce76ee8396ca6c0299583",
+  "pixels_sha256": "eb760efb370cb153ad03ce4efd5be819b7b017f3b6f63f09e8de69a6eb94234b",
+  "profile": {
+   "rows": 64,
+   "cols": 60,
+   "row_ends": [
+    0.0371900826446281,
+    0.07914812460267007
+   ],
+   "col_ends": [
+    0.0013186399171140623,
+    0.0006593199585570312
+   ],
+   "row_peak": 0.20562091503267974,
+   "col_peak": 0.6505514705882353,
+   "carries_shape": "alpha"
+  }
+ },
+ {
+  "texture": "cs2_tracer_smg",
+  "source_png": "/home/dev/workspaces/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/effects/bullet_tracer_seq.png",
+  "vtex": "materials/particle/effects/bullet_tracer_seq.vtex",
+  "blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+  "source_size": [
+   128,
+   256
+  ],
+  "output_size": [
+   128,
+   64
+  ],
+  "source_sha256": "b1db69c0659b1a9f9b393e65c4fd3a8e97080b4208aacc6fdf43c7401b7bf381",
+  "pixels_sha256": "18b67dd30625c21728fb6971e1955dda95d917e4b6db4ae10947c4b7750590c8",
+  "profile": {
+   "rows": 256,
+   "cols": 128,
+   "row_ends": [
+    0.0,
+    0.0
+   ],
+   "col_ends": [
+    0.0,
+    0.0
+   ],
+   "row_peak": 0.1862234477124183,
+   "col_peak": 0.5500510620915036,
+   "carries_shape": "rgb"
+  }
+ },
+ {
+  "texture": "cs2_tracer_tintable",
+  "source_png": "/home/dev/workspaces/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/effects/bullet_tracer_tintable.png",
+  "vtex": "materials/particle/effects/bullet_tracer_tintable.vtex",
+  "blend": "PARTICLE_OUTPUT_BLEND_MODE_ADD",
+  "source_size": [
+   128,
+   256
+  ],
+  "output_size": [
+   128,
+   64
+  ],
+  "source_sha256": "8f8ff2a8acb6642e100942627de8cb41a04c7e34370a8481875a6ff2b3bb7803",
+  "pixels_sha256": "81cdbd572581fab65e6f4db14b11c32827e8831eb0744548ac0f1c4abfc383e2",
+  "profile": {
+   "rows": 256,
+   "cols": 128,
+   "row_ends": [
+    0.0,
+    0.0
+   ],
+   "col_ends": [
+    0.0,
+    0.0
+   ],
+   "row_peak": 0.1862234477124183,
+   "col_peak": 0.638796977124183,
+   "carries_shape": "rgb"
+  }
+ }
+]

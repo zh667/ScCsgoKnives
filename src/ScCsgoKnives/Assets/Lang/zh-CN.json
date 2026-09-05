@@ -1,22 +1,243 @@
 {
-  "Blocks": {
-    "ScKnifeBlock:0": {
-      "DisplayName": "爪子刀",
-      "Description": "弯曲刀身与指环握柄。切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
-    },
-    "ScKnifeBlock:1": {
-      "DisplayName": "M9 刺刀",
-      "Description": "宽厚的战术刺刀。切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
-    },
-    "ScKnifeBlock:2": {
-      "DisplayName": "蝴蝶刀",
-      "Description": "双柄折叠刀。切换时播放翻刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
-    }
+ "Blocks": {
+  "ScKnifeBlock:0": {
+   "DisplayName": "爪子刀",
+   "Description": "弯曲刀身配指环握柄，CS 中最有辨识度的近战武器。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
   },
-  "ScCsgoKnives": {
-    "Message": {
-      "Inspect": "正在检视 {0}。",
-      "ControlsHint": "检视：电脑按 {0}；手机版点击右侧铅笔按钮。"
-    }
+  "ScKnifeBlock:1": {
+   "DisplayName": "M9 刺刀",
+   "Description": "宽厚的军用刺刀，锯齿刀背。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:2": {
+   "DisplayName": "蝴蝶刀",
+   "Description": "双柄折叠刀，翻刀动作最花哨。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:3": {
+   "DisplayName": "刺刀",
+   "Description": "最早的军刺造型，刀身修长。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:4": {
+   "DisplayName": "鲍伊猎刀",
+   "Description": "厚重的猎刀，刀尖上翘。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:5": {
+   "DisplayName": "求生匕首",
+   "Description": "野外求生用直刀，握柄带指槽。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:6": {
+   "DisplayName": "系绳匕首",
+   "Description": "握柄缠伞绳的轻量直刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:7": {
+   "DisplayName": "海豹短刀",
+   "Description": "沿用旧版 CS 造型的短刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:8": {
+   "DisplayName": "反恐精英默认匕首",
+   "Description": "反恐精英阵营的制式匕首。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:9": {
+   "DisplayName": "恐怖分子默认匕首",
+   "Description": "恐怖分子阵营的制式匕首。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:10": {
+   "DisplayName": "弯刀",
+   "Description": "单侧开刃的折叠弯刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:11": {
+   "DisplayName": "折叠刀",
+   "Description": "刀身可折入握柄的经典折刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:12": {
+   "DisplayName": "穿肠刀",
+   "Description": "带开膛钩的剥皮刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:13": {
+   "DisplayName": "廓尔喀刀",
+   "Description": "前弯厚背的尼泊尔军刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:14": {
+   "DisplayName": "折刀",
+   "Description": "西班牙风格的细长折刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:15": {
+   "DisplayName": "流浪者匕首",
+   "Description": "户外风格折刀，握柄粗大。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:16": {
+   "DisplayName": "暗影双匕",
+   "Description": "左右手各持一把的推刺短匕。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:17": {
+   "DisplayName": "骷髅匕首",
+   "Description": "镂空握柄的轻量直刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:18": {
+   "DisplayName": "短剑",
+   "Description": "细长刺击型弹簧折刀。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:19": {
+   "DisplayName": "猎杀者匕首",
+   "Description": "战术直刀，刀背带锯齿。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:20": {
+   "DisplayName": "锯齿爪刀",
+   "Description": "爪刀的加长变体，刀背开齿。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScKnifeBlock:21": {
+   "DisplayName": "熊刀",
+   "Description": "厚实的直刀，握柄有防滑纹。 切换时播放切刀动作；电脑使用“编辑物品”键（默认 G），手机点右侧铅笔按钮检视。"
+  },
+  "ScGunBlock:0": {
+   "DisplayName": "AK-47",
+   "Description": "7.62 毫米突击步枪，30 发弹匣，全自动。左键开火，R 换弹，“编辑物品”键检视。"
+  },
+  "ScGunBlock:1": {
+   "DisplayName": "M4A1 消音型",
+   "Description": "5.56 毫米突击步枪，20 发弹匣，全自动。右键装卸消音器，R 换弹。"
+  },
+  "ScGunBlock:2": {
+   "DisplayName": "AWP",
+   "Description": "狙击步枪，5 发弹匣，栓动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:3": {
+   "DisplayName": "沙漠之鹰",
+   "Description": "0.50 英寸手枪，7 发弹匣，半自动。威力极高，后坐大。左键开火，R 换弹。"
+  },
+  "ScGunBlock:4": {
+   "DisplayName": "格洛克 18",
+   "Description": "9 毫米手枪，20 发弹匣。右键在半自动与三连发之间切换，R 换弹。"
+  },
+  "ScGunBlock:5": {
+   "DisplayName": "USP 消音型",
+   "Description": "0.45 英寸手枪，12 发弹匣，半自动。右键装卸消音器，R 换弹。"
+  },
+  "ScGunBlock:6": {
+   "DisplayName": "M4A4",
+   "Description": "5.56 毫米突击步枪，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:7": {
+   "DisplayName": "法玛斯",
+   "Description": "5.56 毫米突击步枪，25 发弹匣。右键在全自动与三连发之间切换，R 换弹。"
+  },
+  "ScGunBlock:8": {
+   "DisplayName": "MP9",
+   "Description": "9 毫米冲锋枪，30 发弹匣，全自动。射速高，后坐小。R 换弹。"
+  },
+  "ScGunBlock:9": {
+   "DisplayName": "P90",
+   "Description": "5.7 毫米冲锋枪，50 发弹匣，全自动。弹匣大，散布大。R 换弹。"
+  },
+  "ScGunBlock:10": {
+   "DisplayName": "SSG 08",
+   "Description": "狙击步枪，10 发弹匣，栓动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:11": {
+   "DisplayName": "FN57",
+   "Description": "5.7 毫米手枪，20 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:12": {
+   "DisplayName": "P2000",
+   "Description": "9 毫米手枪，13 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:13": {
+   "DisplayName": "P250",
+   "Description": "0.357 英寸手枪，13 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:14": {
+   "DisplayName": "Tec-9",
+   "Description": "9 毫米手枪，18 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:15": {
+   "DisplayName": "CZ75 自动",
+   "Description": "9 毫米全自动手枪，12 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:16": {
+   "DisplayName": "MAC-10",
+   "Description": "0.45 英寸冲锋枪，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:17": {
+   "DisplayName": "MP7",
+   "Description": "4.6 毫米冲锋枪，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:18": {
+   "DisplayName": "UMP-45",
+   "Description": "0.45 英寸冲锋枪，25 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:19": {
+   "DisplayName": "PP-野牛",
+   "Description": "9 毫米冲锋枪，64 发螺旋弹鼓，64 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:20": {
+   "DisplayName": "MP5-SD",
+   "Description": "9 毫米冲锋枪，自带消音器，30 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:21": {
+   "DisplayName": "加利尔 AR",
+   "Description": "5.56 毫米突击步枪，35 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:22": {
+   "DisplayName": "SCAR-20",
+   "Description": "7.62 毫米自动狙击步枪，20 发弹匣，全自动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:23": {
+   "DisplayName": "G3SG1",
+   "Description": "7.62 毫米自动狙击步枪，20 发弹匣，全自动。右键开镜（再按一次放大，第三次退出），R 换弹。"
+  },
+  "ScGunBlock:24": {
+   "DisplayName": "AUG",
+   "Description": "5.56 毫米突击步枪，带瞄准镜，30 发弹匣，全自动。右键开镜，R 换弹。"
+  },
+  "ScGunBlock:25": {
+   "DisplayName": "SG 553",
+   "Description": "5.56 毫米突击步枪，带瞄准镜，30 发弹匣，全自动。右键开镜，R 换弹。"
+  },
+  "ScGunBlock:26": {
+   "DisplayName": "新星",
+   "Description": "泵动霰弹枪，8 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:27": {
+   "DisplayName": "XM1014",
+   "Description": "半自动霰弹枪，7 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:28": {
+   "DisplayName": "短管霰弹枪",
+   "Description": "短管泵动霰弹枪，近距离威力大，7 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:29": {
+   "DisplayName": "MAG-7",
+   "Description": "弹匣供弹霰弹枪，5 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:30": {
+   "DisplayName": "M249",
+   "Description": "5.56 毫米轻机枪，100 发弹链，100 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:31": {
+   "DisplayName": "内格夫",
+   "Description": "5.56 毫米轻机枪，150 发弹链，150 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:32": {
+   "DisplayName": "R8 左轮",
+   "Description": "8 发左轮手枪，左键扣扳机击发，右键快速扇射，8 发弹匣，全自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:33": {
+   "DisplayName": "双持贝瑞塔",
+   "Description": "9 毫米双持手枪，左右轮流击发，30 发弹匣，半自动。左键开火，R 换弹。"
+  },
+  "ScGunBlock:34": {
+   "DisplayName": "电击枪",
+   "Description": "单发电击枪，近距离一击致命，1 发，半自动。左键开火。"
   }
+ },
+ "ScCsgoKnives": {
+  "Message": {
+   "Inspect": "正在检视 {0}。",
+   "ControlsHint": "检视：电脑按 {0}；手机版点击右侧铅笔按钮。",
+   "Ammo": "{0} / ∞",
+   "Recharging": "充能中，还要 {0} 秒",
+   "GunHint": "左键开火，R 换弹；AWP 右键开镜，M4A1 右键装卸消音器；{0} 键检视。",
+   "BurstOn": "三连发",
+   "BurstOff": "半自动"
+  }
+ }
 }

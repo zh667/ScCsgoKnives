@@ -1,0 +1,11 @@
+materials/default/stickers/default_holomask_tga_ce4f22fe.vtex_c
+materials/default/stickers/default_holomask_tga_daef1ed1.vtex_c
+materials/default/stickers/default_holospectrum_tga_e12c79bd.vtex_c
+materials/default/stickers/default_rough_tga_de722910.vtex_c
+materials/default/stickers/holowarp_default_tga_60b485a7.vtex_c
+materials/default/stickers/squares_glitter_normal_tga_25145674.vtex_c
+materials/default/stickers/sticker_default_backing_psd_a83fef52.vtex_c
+materials/default/stickers/sticker_default_backing_psd_a8e114d8.vtex_c
+materials/default/stickers/sticker_default_psd_7f7731d3.vtex_c
+materials/default/stickers/sticker_default_psd_c0f175c0.vtex_c
+materials/default/stickers/sticker_default_scratches_psd_a9ad199b.vtex_c

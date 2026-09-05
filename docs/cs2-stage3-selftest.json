@@ -1,0 +1,132 @@
+{
+  "cases": [
+    {
+      "gun": "ak47",
+      "clip": "idle",
+      "t": 0.0,
+      "cs2_clip": "idle_ak",
+      "landmarks": 8,
+      "max_view_error_m": 4.9699999999930355e-06,
+      "max_screen_error_px": 0.04965000000004238
+    },
+    {
+      "gun": "ak47",
+      "clip": "deploy",
+      "t": 0.0,
+      "cs2_clip": "draw_ak",
+      "landmarks": 8,
+      "max_view_error_m": 4.67000000003992e-06,
+      "max_screen_error_px": 0.0442000000000462
+    },
+    {
+      "gun": "ak47",
+      "clip": "deploy",
+      "t": 0.5,
+      "cs2_clip": "draw_ak",
+      "landmarks": 8,
+      "max_view_error_m": 5.029999999961454e-06,
+      "max_screen_error_px": 0.04759999999998854
+    },
+    {
+      "gun": "ak47",
+      "clip": "reload",
+      "t": 1.0,
+      "cs2_clip": "reload_ak",
+      "landmarks": 8,
+      "max_view_error_m": 4.9972000000001425e-06,
+      "max_screen_error_px": 0.04899999999997817
+    },
+    {
+      "gun": "ak47",
+      "clip": "inspect",
+      "t": 2.0,
+      "cs2_clip": "lookat01_ak",
+      "landmarks": 8,
+      "max_view_error_m": 5.169999999998787e-06,
+      "max_screen_error_px": 0.047799999999938336
+    },
+    {
+      "gun": "ak47",
+      "clip": "shoot1",
+      "t": 0.1,
+      "cs2_clip": "shoot1_ak",
+      "landmarks": 8,
+      "max_view_error_m": 5.359999999982046e-06,
+      "max_screen_error_px": 0.046399999999948704
+    },
+    {
+      "gun": "m4a1s",
+      "clip": "idle",
+      "t": 0.0,
+      "cs2_clip": "idle_rifle",
+      "landmarks": 8,
+      "max_view_error_m": 5.069999999995911e-06,
+      "max_screen_error_px": 0.04712999999992462
+    },
+    {
+      "gun": "m4a1s",
+      "clip": "deploy",
+      "t": 0.4,
+      "cs2_clip": "draw_rifle",
+      "landmarks": 8,
+      "max_view_error_m": 4.7000000000796405e-06,
+      "max_screen_error_px": 0.04369999999994434
+    },
+    {
+      "gun": "m4a1s",
+      "clip": "reload",
+      "t": 1.5,
+      "cs2_clip": "reload_rifle",
+      "landmarks": 8,
+      "max_view_error_m": 4.789999999997574e-06,
+      "max_screen_error_px": 0.05040000000008149
+    },
+    {
+      "gun": "m4a1s",
+      "clip": "attach",
+      "t": 2.0,
+      "cs2_clip": "silencer_attach_rifle",
+      "landmarks": 8,
+      "max_view_error_m": 4.909999999996861e-06,
+      "max_screen_error_px": 0.0501000000001568
+    },
+    {
+      "gun": "awp",
+      "clip": "idle",
+      "t": 0.0,
+      "cs2_clip": "idle_awp",
+      "landmarks": 8,
+      "max_view_error_m": 4.729999999980583e-06,
+      "max_screen_error_px": 0.045699999999897045
+    },
+    {
+      "gun": "awp",
+      "clip": "deploy",
+      "t": 0.6,
+      "cs2_clip": "draw_awp",
+      "landmarks": 8,
+      "max_view_error_m": 4.489999999995886e-06,
+      "max_screen_error_px": 0.049840000000017426
+    },
+    {
+      "gun": "awp",
+      "clip": "reload",
+      "t": 2.0,
+      "cs2_clip": "reload_awp",
+      "landmarks": 8,
+      "max_view_error_m": 4.740000000003075e-06,
+      "max_screen_error_px": 0.04539999999997235
+    },
+    {
+      "gun": "awp",
+      "clip": "shoot1",
+      "t": 0.7,
+      "cs2_clip": "shoot1_awp",
+      "landmarks": 8,
+      "max_view_error_m": 4.949999999975807e-06,
+      "max_screen_error_px": 0.04100000000005366
+    }
+  ],
+  "worst_view_error_m": 5.359999999982046e-06,
+  "worst_screen_error_px": 0.05040000000008149
+}

@@ -1,0 +1,81 @@
+{
+  "segments_agree": 48,
+  "segments_total": 55,
+  "unresolved_joints": [],
+  "twist_weight_fraction": 0.15548138289635186,
+  "skinning": [
+    {
+      "gun": "ak47",
+      "clip": "idle",
+      "t": 0.0,
+      "vertices": 6274,
+      "max_error_m": 9.51107928441127e-07,
+      "mean_error_m": 5.329960650999228e-07
+    },
+    {
+      "gun": "ak47",
+      "clip": "reload",
+      "t": 1.0,
+      "vertices": 6274,
+      "max_error_m": 1.0447432060206373e-06,
+      "mean_error_m": 4.884463326931173e-07
+    },
+    {
+      "gun": "m4a1s",
+      "clip": "deploy",
+      "t": 0.5,
+      "vertices": 6274,
+      "max_error_m": 1.4079992821121684e-06,
+      "mean_error_m": 5.427026996047991e-07
+    },
+    {
+      "gun": "awp",
+      "clip": "inspect",
+      "t": 2.0,
+      "vertices": 6274,
+      "max_error_m": 1.364367767170592e-06,
+      "mean_error_m": 6.255198174533444e-07
+    }
+  ],
+  "contact": [
+    {
+      "gun": "ak47",
+      "right": {
+        "vertices": 290,
+        "median_in": 0.7289152478344216,
+        "p90_in": 1.2039306103838845
+      },
+      "left": {
+        "vertices": 286,
+        "median_in": 0.8281811137490932,
+        "p90_in": 1.4354257329781084
+      }
+    },
+    {
+      "gun": "m4a1s",
+      "right": {
+        "vertices": 290,
+        "median_in": 0.888919079921621,
+        "p90_in": 1.4459705580933933
+      },
+      "left": {
+        "vertices": 286,
+        "median_in": 0.6227026464190031,
+        "p90_in": 1.0530253500136761
+      }
+    },
+    {
+      "gun": "awp",
+      "right": {
+        "vertices": 290,
+        "median_in": 0.44800674838769855,
+        "p90_in": 0.8977490453366958
+      },
+      "left": {
+        "vertices": 286,
+        "median_in": 1.110950486862564,
+        "p90_in": 1.6737200876234535
+      }
+    }
+  ]
+}
