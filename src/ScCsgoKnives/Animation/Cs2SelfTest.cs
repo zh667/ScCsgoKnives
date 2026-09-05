@@ -173,6 +173,49 @@ public static class Cs2SelfTest {
             }
         }
 
+        // The 22 knives, added 2026-09-05 from CS2's own viewmodel clips. They run
+        // the same rig and the same arms as the guns; what is checked here is that
+        // each one loads, animates, carries a skinned mesh, and that the mesh's
+        // joints actually resolve against that knife's own skeleton - a mesh whose
+        // joints did not resolve would silently draw at the origin.
+        foreach (string knife in Enumerable.Range(0, CsmcKnifeRig.AssetCount)
+                                            .Where(v => !CsmcKnifeRig.IsGun(v))
+                                            .Select(CsmcKnifeRig.GetAssetName)
+                                            .Distinct(StringComparer.Ordinal)) {
+            if (!Cs2Rig.Has(knife)) {
+                Check($"knife/{knife}/rig", false, "no CS2 rig");
+                continue;
+            }
+            Check($"knife/{knife}/deploy", Cs2Rig.Duration(knife, "deploy") > 0f,
+                  $"{Cs2Rig.Duration(knife, "deploy"):0.####} s");
+            Cs2Rig.Pose kp = Cs2Rig.Sample(knife, "idle", 0f);
+            Check($"knife/{knife}/sample", kp is not null && kp.Bones.Count >= 55,
+                  kp is null ? "null" : $"{kp.Bones.Count} bones");
+            // idle2 is absent for bowie, falchion and push in CS2 and in CS:MC alike,
+            // so it must resolve to idle rather than to nothing.
+            Check($"knife/{knife}/idle2", Cs2Rig.Duration(knife, "idle2") > 0f,
+                  $"{Cs2Rig.Duration(knife, "idle2"):0.####} s");
+            Cs2SkinnedMesh km = Cs2SkinnedMesh.Weapon(knife);
+            Check($"knife/{knife}/mesh", km is not null,
+                  km is null ? "no skinned mesh" : $"{km.Skinned.Length} vertices, {km.Joints.Length} joints");
+            if (km is not null && kp is not null) {
+                bool posed = km.SetPose(kp, Cs2Placement.Placement());
+                Check($"knife/{knife}/pose", posed, posed ? "joints resolved" : "no joint resolved");
+                if (posed) {
+                    km.Skin();
+                    Vector3 lo = km.Skinned[0].Position, hi = lo;
+                    foreach (Cs2SkinnedMesh.Vertex v in km.Skinned) {
+                        lo = Vector3.Min(lo, v.Position); hi = Vector3.Max(hi, v.Position);
+                    }
+                    float span = Vector3.Distance(lo, hi);
+                    // A knife is 15-35 cm across and sits in front of the eye. A mesh
+                    // whose joints failed to bind collapses to a point at the origin.
+                    Check($"knife/{knife}/skinned", span is > 0.05f and < 1.5f && hi.Z < 0f,
+                          $"{span * 100f:0.#} cm across, front face z={hi.Z:0.###}");
+                }
+            }
+        }
+
         Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
         Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,
               Cs2Sounds.TryGet("ak47:reload", out var r2) ? $"{r2.Length} cues" : "missing");

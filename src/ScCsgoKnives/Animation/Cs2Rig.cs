@@ -33,6 +33,13 @@ public static class Cs2Rig {
 
     sealed class Clip {
         public string SourceName { get; set; }
+        /// <summary>
+        /// The mod alias this clip answers to, written by the generator. The three
+        /// guns keep their table below because it maps several aliases onto one clip
+        /// (shoot1/2/3, inspectStart/Loop/End); the 22 knives carry the alias in the
+        /// file instead, so adding a knife needs no C# change.
+        /// </summary>
+        public string Alias { get; set; }
         public float FrameRate { get; set; }
         public int FrameCount { get; set; }
         public float Duration { get; set; }
@@ -58,6 +65,8 @@ public static class Cs2Rig {
 
     sealed class RigFile {
         public string Format { get; set; }
+        /// <summary>The .cs2.skin beside this rig, for a weapon that is one skinned mesh.</summary>
+        public string Skinned { get; set; }
         public string Units { get; set; }
         public float[] MeshCenter { get; set; }
         public float MeshNormalizationScale { get; set; }
@@ -71,6 +80,7 @@ public static class Cs2Rig {
         public string Name;
         public RigFile File;
         public Dictionary<string, Binding> Bindings;
+        public Dictionary<string, Clip> ByAlias;
         public Matrix Normalization;
         public Matrix InverseNormalization;
     }
@@ -116,21 +126,42 @@ public static class Cs2Rig {
 
     static readonly Dictionary<string, Asset> s_assets = new(StringComparer.Ordinal);
 
-    public static bool Has(string gun) => s_clipAliases.ContainsKey(gun);
+    /// <summary>
+    /// True when a CS2 rig exists for this asset. The three guns are listed in
+    /// s_clipAliases; the knives are not, so this loads (and caches) instead of
+    /// consulting a table, which is what lets a knife be added by shipping its
+    /// .cs2.animation.json alone.
+    /// </summary>
+    public static bool Has(string gun) => s_clipAliases.ContainsKey(gun) || Get(gun) is not null;
+
+    /// <summary>The .cs2.skin this asset's mesh lives in, or null when it has none.</summary>
+    public static string SkinnedResource(string gun) => Get(gun)?.File.Skinned;
 
     public static IReadOnlyList<string> GetMeshParts(string gun) => Get(gun)?.File.MeshParts ?? [];
 
-    /// <summary>Length of a clip in seconds, or 0 when the gun or clip is unknown.</summary>
+    /// <summary>
+    /// Length in seconds of the clip that would actually play for this alias, or 0
+    /// when the asset is unknown.
+    ///
+    /// It resolves exactly as Sample does, idle fallback included. They used to
+    /// differ: Sample fell back to idle and Duration returned 0, which for the three
+    /// knives CS2 gives no second idle - bowie, falchion, push - would have had the
+    /// controller time a zero-length idle2 while the renderer drew idle.
+    /// </summary>
     public static float Duration(string gun, string clipAlias) {
         Asset asset = Get(gun);
-        Clip clip = Resolve(asset, clipAlias);
+        Clip clip = ResolveOrIdle(asset, clipAlias);
         return clip?.Duration ?? 0f;
     }
+
+    /// <summary>What Sample will draw for this alias: the clip, else idle.</summary>
+    static Clip ResolveOrIdle(Asset asset, string clipAlias) =>
+        Resolve(asset, clipAlias) ?? Resolve(asset, "idle");
 
     public static Pose Sample(string gun, string clipAlias, float time) {
         Asset asset = Get(gun);
         if (asset is null) return null;
-        Clip clip = Resolve(asset, clipAlias) ?? Resolve(asset, "idle");
+        Clip clip = ResolveOrIdle(asset, clipAlias);
         if (clip is null) return null;
         time = MathUtils.Clamp(time, 0f, Math.Max(0f, clip.Duration));
 
@@ -169,6 +200,11 @@ public static class Cs2Rig {
         if (s_clipAliases.TryGetValue(asset.Name, out var aliases)
             && aliases.TryGetValue(clipAlias, out string stem)
             && asset.File.Clips.TryGetValue(stem, out Clip byAlias)) return byAlias;
+        // The knives declare their alias in the file. bowie, falchion and push have
+        // no second idle in CS2 - and none in CS:MC either - so idle2 falls through
+        // to idle rather than resolving to nothing.
+        if (asset.ByAlias is not null && asset.ByAlias.TryGetValue(clipAlias, out Clip declared))
+            return declared;
         return asset.File.Clips.TryGetValue(clipAlias, out Clip direct) ? direct : null;
     }
 
@@ -253,12 +289,18 @@ public static class Cs2Rig {
         var asset = new Asset {
             Name = gun, File = file,
             Bindings = file.Bindings.ToDictionary(b => b.Name, StringComparer.Ordinal),
+            ByAlias = file.Clips.Values.Where(c => !string.IsNullOrEmpty(c.Alias))
+                          .GroupBy(c => c.Alias, StringComparer.Ordinal)
+                          .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal),
             Normalization = normalization,
             InverseNormalization = Matrix.Invert(normalization)
         };
         KnifeLog.Information(
             $"[ScCsgoKnives] CS2 rig {gun}: bones={file.Skeleton.Count}, clips=[{string.Join(',', file.Clips.Keys)}], "
-            + $"parts=[{string.Join(',', file.MeshParts)}], units={file.Units}."
+            + (file.MeshParts is { Length: > 0 }
+                ? $"parts=[{string.Join(',', file.MeshParts)}]"
+                : $"skinned={file.Skinned ?? "none"}")
+            + $", units={file.Units}."
         );
         return asset;
     }

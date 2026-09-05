@@ -1,0 +1,530 @@
+[
+ {
+  "knife": "karambit",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_karambit.vmat",
+  "sources": {
+   "TextureColor1": "karam_color.png",
+   "TextureAmbientOcclusion": "default_ao_tga_559f1ac6.png",
+   "TextureRoughness1": "karam_rough.png",
+   "TextureMetalness1": "karam_b223c31d_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    74.47,
+    74.22,
+    74.22
+   ],
+   "ao": 255.0,
+   "roughness": 145.66,
+   "metalness": 67.65
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "m9",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_m9.vmat",
+  "sources": {
+   "TextureColor1": "knife_m9_bay_color.png",
+   "TextureAmbientOcclusion": "knife_m9_bay_ao.png",
+   "TextureRoughness1": "knife_m9_bay_rough.png",
+   "TextureMetalness1": "knife_m9_bay_2cd44509_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    88.76,
+    89.29,
+    90.18
+   ],
+   "ao": 241.07,
+   "roughness": 120.82,
+   "metalness": 119.59
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "butterfly",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_butterfly.vmat",
+  "sources": {
+   "TextureColor1": "knife_butterfly_color.png",
+   "TextureAmbientOcclusion": "knife_butterfly_ao.png",
+   "TextureRoughness1": "knife_butterfly_rough.png",
+   "TextureMetalness1": "knife_butterfly_80f06397_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    81.05,
+    81.38,
+    82.47
+   ],
+   "ao": 195.11,
+   "roughness": 143.64,
+   "metalness": 128.95
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "bayonet",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_bayonet.vmat",
+  "sources": {
+   "TextureColor1": "knife_bayonet_color.png",
+   "TextureAmbientOcclusion": "knife_bayonet_ao.png",
+   "TextureRoughness1": "knife_bayonet_rough.png",
+   "TextureMetalness1": "knife_bayonet_296ed580_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    117.9,
+    118.65,
+    111.72
+   ],
+   "ao": 234.62,
+   "roughness": 124.34,
+   "metalness": 90.66
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "bowie",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_bowie.vmat",
+  "sources": {
+   "TextureColor1": "knife_survival_bowie_color.png",
+   "TextureAmbientOcclusion": "knife_survival_bowie_ao.png",
+   "TextureRoughness1": "knife_survival_bowie_rough.png",
+   "TextureMetalness1": "knife_survival_bowie_f6cf88c6_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    102.31,
+    104.1,
+    99.87
+   ],
+   "ao": 238.04,
+   "roughness": 138.06,
+   "metalness": 172.21
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "canis",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_canis.vmat",
+  "sources": {
+   "TextureColor1": "knife_canis_color.png",
+   "TextureAmbientOcclusion": "knife_canis_ao.png",
+   "TextureRoughness1": "knife_canis_rough.png",
+   "TextureMetalness1": "knife_canis_5aea1c6c_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    74.75,
+    75.97,
+    75.85
+   ],
+   "ao": 194.78,
+   "roughness": 124.01,
+   "metalness": 154.54
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "cord",
+  "size": 1024,
+  "flatNormalFromDefault": false,
+  "vmat": "weapon_knife_cord.vmat",
+  "sources": {
+   "TextureColor1": "knife_cord_color.png",
+   "TextureAmbientOcclusion": "knife_cord_ao.png",
+   "TextureRoughness1": "knife_cord_rough.png",
+   "TextureMetalness1": "knife_cord_41b03a75_metal.png",
+   "TextureNormal": "knife_cord_normal.png"
+  },
+  "means": {
+   "colour": [
+    80.61,
+    81.44,
+    80.66
+   ],
+   "ao": 196.3,
+   "roughness": 130.67,
+   "metalness": 113.85
+  },
+  "normal_deviation_from_flat": 10.819
+ },
+ {
+  "knife": "css",
+  "size": 1024,
+  "flatNormalFromDefault": false,
+  "vmat": "weapon_knife_css.vmat",
+  "sources": {
+   "TextureColor1": "knife_css_color.png",
+   "TextureAmbientOcclusion": "knife_css_ao.png",
+   "TextureRoughness1": "knife_css_rough.png",
+   "TextureMetalness1": "knife_css_f3092984_metal.png",
+   "TextureNormal": "knife_css_normal.png"
+  },
+  "means": {
+   "colour": [
+    99.37,
+    99.13,
+    97.84
+   ],
+   "ao": 238.14,
+   "roughness": 119.74,
+   "metalness": 216.72
+  },
+  "normal_deviation_from_flat": 3.21
+ },
+ {
+  "knife": "default_ct",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_default_ct.vmat",
+  "sources": {
+   "TextureColor1": "knife_ct_color.png",
+   "TextureAmbientOcclusion": "knife_ct_ao.png",
+   "TextureRoughness1": "knife_ct_rough.png",
+   "TextureMetalness1": "knife_ct_8c860d48_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    113.17,
+    111.95,
+    102.69
+   ],
+   "ao": 223.94,
+   "roughness": 146.2,
+   "metalness": 182.05
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "default_t",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_default_t.vmat",
+  "sources": {
+   "TextureColor1": "knife_t_color.png",
+   "TextureAmbientOcclusion": "default_ao_tga_559f1ac6.png",
+   "TextureRoughness1": "knife_t_rough.png",
+   "TextureMetalness1": "knife_t_bb4cad6e_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    95.58,
+    92.15,
+    85.52
+   ],
+   "ao": 255.0,
+   "roughness": 129.29,
+   "metalness": 93.12
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "falchion",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_falchion.vmat",
+  "sources": {
+   "TextureColor1": "knife_falchion_advanced_color.png",
+   "TextureAmbientOcclusion": "knife_falchion_advanced_ao.png",
+   "TextureRoughness1": "knife_falchion_advanced_rough.png",
+   "TextureMetalness1": "knife_falchion_advanced_2c53fc9_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    87.08,
+    87.47,
+    87.9
+   ],
+   "ao": 182.58,
+   "roughness": 125.59,
+   "metalness": 207.57
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "flip",
+  "size": 1024,
+  "flatNormalFromDefault": false,
+  "vmat": "weapon_knife_flip.vmat",
+  "sources": {
+   "TextureColor1": "knife_flip_color.png",
+   "TextureAmbientOcclusion": "knife_flip_ao.png",
+   "TextureRoughness1": "knife_flip_rough.png",
+   "TextureMetalness1": "knife_flip_a6e13a6b_metal.png",
+   "TextureNormal": "knife_flip_normal.png"
+  },
+  "means": {
+   "colour": [
+    115.15,
+    115.43,
+    113.69
+   ],
+   "ao": 222.34,
+   "roughness": 130.86,
+   "metalness": 196.45
+  },
+  "normal_deviation_from_flat": 2.227
+ },
+ {
+  "knife": "gut",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_gut.vmat",
+  "sources": {
+   "TextureColor1": "knife_gut_color.png",
+   "TextureAmbientOcclusion": "knife_gut_ao.png",
+   "TextureRoughness1": "knife_gut_rough.png",
+   "TextureMetalness1": "knife_gut_88b83b19_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    123.86,
+    112.79,
+    110.87
+   ],
+   "ao": 221.52,
+   "roughness": 136.49,
+   "metalness": 209.39
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "kukri",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_kukri.vmat",
+  "sources": {
+   "TextureColor1": "knife_kukri_color.png",
+   "TextureAmbientOcclusion": "knife_kukri_ao.png",
+   "TextureRoughness1": "knife_kukri_rough.png",
+   "TextureMetalness1": "knife_kukri_d7014a4f_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    82.75,
+    82.8,
+    82.29
+   ],
+   "ao": 202.69,
+   "roughness": 85.57,
+   "metalness": 111.84
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "navaja",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_navaja.vmat",
+  "sources": {
+   "TextureColor1": "knife_gypsy_jack_color.png",
+   "TextureAmbientOcclusion": "knife_gypsy_jack_ao.png",
+   "TextureRoughness1": "knife_gypsy_jack_rough.png",
+   "TextureMetalness1": "knife_gypsy_jack_8743bf1_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    125.38,
+    118.13,
+    112.35
+   ],
+   "ao": 180.55,
+   "roughness": 99.02,
+   "metalness": 200.35
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "outdoor",
+  "size": 1024,
+  "flatNormalFromDefault": false,
+  "vmat": "weapon_knife_outdoor.vmat",
+  "sources": {
+   "TextureColor1": "knife_outdoor_color.png",
+   "TextureAmbientOcclusion": "knife_outdoor_ao.png",
+   "TextureRoughness1": "knife_outdoor_rough.png",
+   "TextureMetalness1": "knife_outdoor_a9ca0ca9_metal.png",
+   "TextureNormal": "knife_outdoor_normal.png"
+  },
+  "means": {
+   "colour": [
+    85.41,
+    85.8,
+    85.83
+   ],
+   "ao": 183.36,
+   "roughness": 137.33,
+   "metalness": 220.46
+  },
+  "normal_deviation_from_flat": 1.984
+ },
+ {
+  "knife": "push",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_push.vmat",
+  "sources": {
+   "TextureColor1": "knife_push_color.png",
+   "TextureAmbientOcclusion": "knife_push_ao.png",
+   "TextureRoughness1": "knife_push_rough.png",
+   "TextureMetalness1": "knife_push_d0e691f_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    62.0,
+    59.61,
+    61.75
+   ],
+   "ao": 247.7,
+   "roughness": 91.49,
+   "metalness": 254.12
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "skeleton",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_skeleton.vmat",
+  "sources": {
+   "TextureColor1": "knife_skeleton_color.png",
+   "TextureAmbientOcclusion": "knife_skeleton_ao.png",
+   "TextureRoughness1": "knife_skeleton_rough.png",
+   "TextureMetalness1": "knife_skeleton_21feb3ec_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    96.53,
+    97.23,
+    96.84
+   ],
+   "ao": 157.28,
+   "roughness": 123.86,
+   "metalness": 217.96
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "stiletto",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_stiletto.vmat",
+  "sources": {
+   "TextureColor1": "knife_stiletto_color.png",
+   "TextureAmbientOcclusion": "knife_stiletto_ao.png",
+   "TextureRoughness1": "knife_stiletto_rough.png",
+   "TextureMetalness1": "knife_stiletto_85024b89_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    96.46,
+    94.51,
+    92.11
+   ],
+   "ao": 190.72,
+   "roughness": 127.8,
+   "metalness": 180.23
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "tactical",
+  "size": 1024,
+  "flatNormalFromDefault": false,
+  "vmat": "weapon_knife_tactical.vmat",
+  "sources": {
+   "TextureColor1": "knife_tactical_color.png",
+   "TextureAmbientOcclusion": "knife_tactical_ao.png",
+   "TextureRoughness1": "knife_tactical_rough.png",
+   "TextureMetalness1": "knife_tactical_e738a352_metal.png",
+   "TextureNormal": "knife_tactical_normal.png"
+  },
+  "means": {
+   "colour": [
+    70.68,
+    70.98,
+    71.75
+   ],
+   "ao": 207.21,
+   "roughness": 154.56,
+   "metalness": 172.33
+  },
+  "normal_deviation_from_flat": 1.523
+ },
+ {
+  "knife": "talon",
+  "size": 1024,
+  "flatNormalFromDefault": true,
+  "vmat": "weapon_knife_talon.vmat",
+  "sources": {
+   "TextureColor1": "knife_widowmaker_color.png",
+   "TextureAmbientOcclusion": "knife_widowmaker_ao.png",
+   "TextureRoughness1": "knife_widowmaker_rough.png",
+   "TextureMetalness1": "knife_widowmaker_4a0ba78a_metal.png",
+   "TextureNormal": "default_normal_tga_4fc2d3dd.png"
+  },
+  "means": {
+   "colour": [
+    131.69,
+    129.12,
+    122.04
+   ],
+   "ao": 187.61,
+   "roughness": 125.92,
+   "metalness": 175.57
+  },
+  "normal_deviation_from_flat": 0.0
+ },
+ {
+  "knife": "ursus",
+  "size": 1024,
+  "flatNormalFromDefault": false,
+  "vmat": "weapon_knife_ursus.vmat",
+  "sources": {
+   "TextureColor1": "knife_ursus_color.png",
+   "TextureAmbientOcclusion": "knife_ursus_ao.png",
+   "TextureRoughness1": "knife_ursus_rough.png",
+   "TextureMetalness1": "knife_ursus_caa640d2_metal.png",
+   "TextureNormal": "knife_ursus_normal.png"
+  },
+  "means": {
+   "colour": [
+    73.16,
+    72.48,
+    68.51
+   ],
+   "ao": 238.14,
+   "roughness": 130.09,
+   "metalness": 127.49
+  },
+  "normal_deviation_from_flat": 1.876
+ }
+]

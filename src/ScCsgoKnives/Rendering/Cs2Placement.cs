@@ -58,9 +58,14 @@ public static class Cs2Placement {
             MathUtils.DegToRad(FovYDegrees(KnifeTuning.Cs2ViewmodelFov)), aspect, 0.02f, 64f);
     }
 
-    /// <summary>True when the cs2 profile should draw this variant.</summary>
-    public static bool Active(int variant) =>
-        KnifeTuning.GunProfile >= 0.5f
-        && CsmcKnifeRig.IsGun(variant)
-        && Cs2Rig.Has(CsmcKnifeRig.GetAssetName(variant));
+    /// <summary>
+    /// True when the cs2 profile should draw this variant. Guns and knives are
+    /// gated separately: they were built at different times, and a regression in
+    /// one must not force the other back to CS:MC.
+    /// </summary>
+    public static bool Active(int variant) {
+        bool isGun = CsmcKnifeRig.IsGun(variant);
+        float profile = isGun ? KnifeTuning.GunProfile : KnifeTuning.KnifeProfile;
+        return profile >= 0.5f && Cs2Rig.Has(CsmcKnifeRig.GetAssetName(variant));
+    }
 }

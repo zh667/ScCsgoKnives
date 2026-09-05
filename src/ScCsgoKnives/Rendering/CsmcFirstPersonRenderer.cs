@@ -929,6 +929,14 @@ public static class CsmcFirstPersonRenderer {
         bool hideSilencer = SilencerHidden(firstPerson, variant);
         Texture2D baseColor = s_cs2Base[gun];
 
+        // CS2 ships each knife as one skinned mesh whose moving parts ride bones in
+        // the clip's own skeleton - butterfly weights blade, lock and rear - so there
+        // is nothing to place as a rigid part. The guns keep the part loop below.
+        Cs2SkinnedMesh weapon = Cs2SkinnedMesh.Weapon(gun);
+        if (weapon is not null) {
+            DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant);
+        }
+
         foreach (Part part in s_cs2Parts[gun]) {
             // CS2 names the silencer part after its own bone, not CS:MC's binding.
             if (hideSilencer && part.Binding == "silencer") continue;
@@ -1016,6 +1024,42 @@ public static class CsmcFirstPersonRenderer {
         DrawFlashAt(p, projection, silenced);
     }
 
+    static readonly Dictionary<string, Texture2D> s_cs2WeaponBase = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// A weapon that is one skinned mesh, CPU-skinned against the same pose and
+    /// placement the arms use. Only the knives take this path; the guns are rigid
+    /// pieces and go through the part loop.
+    ///
+    /// The texture is the CS2 set (tools/install_knife_textures_cs2.py), not the
+    /// CS:MC one: the mesh carries CS2's UVs. Sixteen of the 22 knives bind CS2's
+    /// flat default normal, because their detail is in the mesh - the M9 is 10124
+    /// triangles - so a missing normal map there is the source, not a gap.
+    /// </summary>
+    static void DrawCs2SkinnedWeapon(Cs2SkinnedMesh mesh, Cs2Rig.Pose pose, string asset,
+        Matrix post, Matrix projection, Camera camera,
+        in KnifePbrRenderer.Lighting lighting, int variant) {
+        if (!s_cs2WeaponBase.TryGetValue(asset, out Texture2D baseColor)) {
+            try { baseColor = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{asset}_cs2"); }
+            catch (Exception e) {
+                KnifeDiagnostics.WarnOnce($"cs2-weapon-texture-{asset}",
+                    $"No CS2 texture for {asset}: {e.Message}");
+            }
+            s_cs2WeaponBase[asset] = baseColor;
+        }
+        if (baseColor is null) return;
+        if (!mesh.SetPose(pose, Cs2Placement.Placement())) {
+            KnifeDiagnostics.WarnOnce($"cs2-weapon-pose-{asset}",
+                $"No joint of {asset}'s mesh resolved against the clip's skeleton.");
+            return;
+        }
+        mesh.Skin();
+        foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
+            KnifePbrRenderer.TryDrawSkinned(mesh.Skinned, part.Indices, baseColor,
+                $"{asset}_cs2", post, projection, camera.InvertedViewMatrix, in lighting, variant);
+        }
+    }
+
     static Texture2D s_cs2ArmBase, s_cs2GloveBase;
     static bool s_cs2ArmsLogged;
     static double s_cs2SkinMillis;
@@ -1068,6 +1112,14 @@ public static class CsmcFirstPersonRenderer {
     }
 
     static bool EnsureCs2Assets(string gun) {
+        // A skinned weapon has no rigid parts and no <asset>_hd texture; its mesh and
+        // texture are fetched where it is drawn. Returning false here would send the
+        // knives back to the CS:MC chain for want of assets they never needed.
+        if (Cs2Rig.SkinnedResource(gun) is not null) {
+            s_cs2Parts.TryAdd(gun, []);
+            s_cs2Base.TryAdd(gun, null);
+            return true;
+        }
         if (s_cs2Parts.ContainsKey(gun)) return s_cs2Parts[gun] is not null;
         Part[] parts = null;
         Texture2D baseColor = null;

@@ -375,6 +375,15 @@ public static class KnifeTuning {
     public static float ExactArmBaseLength = 0.625f;
     public static float ExactArmStretchMin = 0.65f;
     public static float ExactArmStretchMax = 4.8f;
+    /// <summary>
+    /// 0 draws the 22 knives through the CS:MC chain, 1 through CS2's own rig,
+    /// mesh and arms. Separate from GunProfile because the two routes were built
+    /// at different times and each has to be switchable on its own; the default
+    /// stays 0 until the CS2 knives have been through the same acceptance the
+    /// CS:MC ones have.
+    /// </summary>
+    public static float KnifeProfile;
+
     /// <summary>Twist added to the forearm box about its own axis after the wrist twist, degrees (CS:MC rotateY(45) then +-90).</summary>
     public static float ExactArmTwistOffsetDegrees = 45f;
 
@@ -581,6 +590,7 @@ public static class KnifeTuning {
             case nameof(ExactArmBaseLength): ExactArmBaseLength = v; return true;
             case nameof(ExactArmStretchMin): ExactArmStretchMin = v; return true;
             case nameof(ExactArmStretchMax): ExactArmStretchMax = v; return true;
+            case nameof(KnifeProfile): KnifeProfile = v; return true;
             case nameof(ExactArmTwistOffsetDegrees): ExactArmTwistOffsetDegrees = v; return true;
             case nameof(ExactHandX): ExactHandX = v; return true;
             case nameof(ExactScaleOverride): ExactScaleOverride = v; return true;

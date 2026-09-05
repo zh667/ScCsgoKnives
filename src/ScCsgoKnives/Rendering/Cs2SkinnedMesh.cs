@@ -69,13 +69,46 @@ public sealed class Cs2SkinnedMesh {
     const string Resource = "AnimationData.cs2_arms.skin";
     static Cs2SkinnedMesh s_arms;
     static bool s_tried;
+    static readonly Dictionary<string, Cs2SkinnedMesh> s_weapons = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// A weapon that ships as one skinned mesh, by asset name. All 22 knives are:
+    /// CS2 gives each a single primitive whose moving parts ride bones inside the
+    /// clip's own skeleton - the butterfly weights blade, lock and rear, the folders
+    /// weight blade, the push dagger weapon_l and weapon_r - so there is nothing to
+    /// bind as a separate mesh part the way the guns' rigid pieces are.
+    ///
+    /// Null for the guns, which have no Skinned entry in their rig.
+    /// </summary>
+    public static Cs2SkinnedMesh Weapon(string asset) {
+        if (asset is null) return null;
+        if (s_weapons.TryGetValue(asset, out Cs2SkinnedMesh hit)) return hit;
+        Cs2SkinnedMesh mesh = null;
+        string resource = Cs2Rig.SkinnedResource(asset);
+        if (!string.IsNullOrEmpty(resource)) {
+            try {
+                mesh = Load("AnimationData." + resource);
+                KnifeLog.Information(
+                    $"[ScCsgoKnives] CS2 weapon mesh {asset}: {mesh.Joints.Length} joints, "
+                    + $"{mesh.Skinned.Length} vertices, "
+                    + $"{string.Join(", ", mesh.Primitives.Select(p => $"{p.Material} {p.Indices.Length / 3}t"))}."
+                );
+            }
+            catch (Exception e) {
+                KnifeDiagnostics.WarnOnce($"cs2-weapon-mesh-{asset}",
+                    $"Could not read {resource}: {e.Message}");
+            }
+        }
+        s_weapons[asset] = mesh;
+        return mesh;
+    }
 
     public static Cs2SkinnedMesh Arms {
         get {
             if (s_tried) return s_arms;
             s_tried = true;
             try {
-                s_arms = Load();
+                s_arms = Load(Resource);
                 KnifeLog.Information(
                     $"[ScCsgoKnives] CS2 arms: {s_arms.Joints.Length} joints, "
                     + $"{s_arms.Skinned.Length} shared vertices, "
@@ -89,10 +122,10 @@ public sealed class Cs2SkinnedMesh {
         }
     }
 
-    static Cs2SkinnedMesh Load() {
+    static Cs2SkinnedMesh Load(string resource) {
         Assembly assembly = typeof(Cs2SkinnedMesh).Assembly;
-        string name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(Resource, StringComparison.OrdinalIgnoreCase))
-            ?? throw new InvalidOperationException($"Missing embedded {Resource}.");
+        string name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(resource, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidOperationException($"Missing embedded {resource}.");
         using Stream stream = assembly.GetManifestResourceStream(name);
         using BinaryReader reader = new(stream);
         if (new string(reader.ReadChars(8)) != "SCK2SKIN") throw new InvalidDataException("bad magic");
