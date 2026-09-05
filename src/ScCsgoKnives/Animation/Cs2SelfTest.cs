@@ -290,6 +290,47 @@ public static class Cs2SelfTest {
         }
         KnifeTuning.Override("GunNumbers", 0f);
 
+        // The variant number is GunSpec.All's index and it goes into saved worlds, so
+        // the order is frozen: append only. Inserting a gun renumbers everything after
+        // it and a saved AWP comes back as whatever took index 2.
+        bool orderKept = GunSpec.All.Length >= GunSpec.FrozenOrder.Length
+            && GunSpec.FrozenOrder.Select((n, i) => GunSpec.All[i].Name == n).All(x => x);
+        Check("gunspec/order", orderKept,
+              orderKept
+                  ? $"[{string.Join(',', GunSpec.All.Select(g => g.Name))}] still starts with "
+                    + $"[{string.Join(',', GunSpec.FrozenOrder)}]"
+                  : $"[{string.Join(',', GunSpec.All.Select(g => g.Name))}] no longer starts with "
+                    + $"[{string.Join(',', GunSpec.FrozenOrder)}]; variants may only be appended");
+
+        // The widened variant field has to read old saves and round-trip new ones.
+        var layout = new List<string>();
+        for (int v = 0; v < Math.Min(GunSpec.All.Length, 4); v++) {
+            for (int r = 0; r <= 63; r += 21) {
+                foreach (bool sil in new[] { false, true }) {
+                    // Old encoding, exactly as versions up to 0.17.2 wrote it.
+                    int old = (v & 0x3) | ((r & 0x3F) << 2) | (sil ? 1 << 8 : 0);
+                    if (GunSpec.GetVariant(old) != v || GunSpec.GetRounds(old) != r
+                        || GunSpec.GetSilencerOff(old) != sil)
+                        layout.Add($"old({v},{r},{sil}) -> ({GunSpec.GetVariant(old)},{GunSpec.GetRounds(old)},{GunSpec.GetSilencerOff(old)})");
+                }
+            }
+        }
+        for (int v = 0; v < 64; v++) {
+            foreach (int r in new[] { 0, 1, 30, 100, 127 }) {
+                foreach (bool sil in new[] { false, true }) {
+                    int data = GunSpec.MakeData(v, r, sil);
+                    if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != r
+                        || GunSpec.GetSilencerOff(data) != sil)
+                        layout.Add($"new({v},{r},{sil}) -> ({GunSpec.GetVariant(data)},{GunSpec.GetRounds(data)},{GunSpec.GetSilencerOff(data)})");
+                    if (data >> 15 != 0) layout.Add($"new({v},{r},{sil}) uses bit {data:X} beyond 15");
+                }
+            }
+        }
+        Check("gunspec/layout", layout.Count == 0,
+              layout.Count == 0
+                  ? "old saves read back unchanged, and 64 variants x 0..127 rounds x silencer round-trip in 15 bits"
+                  : string.Join("; ", layout.Take(4)));
+
         Check("sounds/clips", Cs2Sounds.ClipCount > 0, $"{Cs2Sounds.ClipCount} clips");
         Check("sounds/ak47:reload", Cs2Sounds.TryGet("ak47:reload", out var reload) && reload.Length >= 5,
               Cs2Sounds.TryGet("ak47:reload", out var r2) ? $"{r2.Length} cues" : "missing");
