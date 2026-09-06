@@ -1,0 +1,18 @@
+{
+  "game": "Battlefield 1",
+  "asset": "Sound/UI/UI_KillMessage_HeadShotAdd_Wave",
+  "sourceSpsSha256": "737e011e7278128d1c09526715cc38543435cbca4f2e9ce15774428904a8b372",
+  "ebxSha1": "6806046a483c8e1833ca1da9ceb4f9e97083a79e",
+  "processing": "BF1 additional confirmation layer, selected and equalized for a crisp kill confirmation on all kills. See filters and dynamics. No headshot scoring is added.",
+  "output": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Audio\\ScCsgoKnives\\bf1_kill_ding.wav",
+  "outputSha256": "a6007c135180ed7a91d21566179cc5c18366e56f05de4864ba4849312bb134a6",
+  "samples": 45600,
+  "seconds": 0.95,
+  "peak": 0.8500000000000001,
+  "rms": 0.15054723863156644,
+  "sourceWavSha256": "4f41081ecdf27bc3a5a7db2abb83c557ffe5ed53bf25f137841f0b6f41915c69",
+  "filters": "atrim=start=0.30:end=1.25,asetpts=PTS-STARTPTS,highpass=f=1300,lowpass=f=8500,afade=t=in:d=0.004,afade=t=out:st=0.70:d=0.25",
+  "dynamics": "tanh(3 * peak-normalized samples); output peak 0.85",
+  "sampleRate": 48000,
+  "channels": 1
+}

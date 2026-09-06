@@ -27,3 +27,5 @@ Battlefield 1 feedback audio:
 - `bf1_kill_confirm.ogg`: original `Sound/UI/UI_KillMessage_Wave` from the user-provided local Battlefield 1 installation (EA / DICE), converted from PCM to Ogg Vorbis.
 - Game audio remains the property of its respective rights holders and is not covered by the project code license. Provenance: `docs/bf1-feedback-source.json`.
 - Extraction tools: NicknineTheEagle/Frostbite-Scripts; vgmstream r2117. Tools themselves are not bundled in the mod.
+
+- 0.28.1 `bf1_kill_ding.wav`: edited metallic confirmation layer from EA / DICE Battlefield 1 `Sound/UI/UI_KillMessage_HeadShotAdd_Wave`. Source and conversion details: `docs/bf1-ding-0281-source.json`.

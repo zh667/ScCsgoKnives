@@ -485,7 +485,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool sound = outcome == 2 && now - state.Feedback.KillAt > .07;
         state.Feedback.Record(outcome, body.Entity.FindComponent<ComponentCreature>()?.DisplayName ?? "生物", name,
             Vector3.Distance(player.ComponentCreatureModel.EyePosition, point), now);
-        if (sound) m_audio.PlaySound("Audio/ScCsgoKnives/bf1_kill_confirm", .8f, 0f, 0f, 0f);
+        if (sound) ScCombatAudio.PlayKill();
     }
 
     /// <summary>The Zeus recharge times read from the world, by player index, until each player's state exists.</summary>
@@ -753,6 +753,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // The round that empties the magazine locks a pistol's slide back (shoot_empty).
         bool lastRound = rounds <= 0;
         bool scopedShot = state.Zoom > 0;
+        // Capture before automatic unzoom, animation callbacks or recoil can change aim state.
+        var shot = ScShotAim.Capture(spec.Name, ScMobileControls.UsesTouchInput(player), scopedShot, silenced,
+            alternateFire, input.Dig, input.Hit, LookRay(player), player.ComponentBody.Velocity.Length(), spec.SpreadDegrees);
         if (scopedShot && spec.UnzoomsAfterShot) {
             // CS2's m_bUnzoomsAfterShot (AWP, SSG 08): a scoped shot drops the scope for
             // the bolt cycle and re-zooms to the same level afterwards. The auto-snipers
@@ -779,12 +782,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // Camera kick, applied now and eased back in RecoverKick. The cs2 profile takes
         // the ratios between guns from m_flRecoilMagnitude and the yaw scatter from
         // m_flRecoilAngleVariance; the absolute scale is still the fitted AK value.
-        bool alternate = silenced || state.Zoom > 0 || alternateFire;
+        bool alternate = shot.Alternate;
         (float kickPitch, float kickYaw, float _) = Cs2Weapons.Kick(spec.Name, alternate,
             spec.KickPitchDegrees, spec.KickYawDegrees, spec.KickRecoverPerSecond);
         float pitch = MathUtils.DegToRad(kickPitch) * (0.8f + 0.4f * m_random.Float(0f, 1f));
         float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
-        Ray3 ray = ScShotAim.Select(ScMobileControls.UsesTouchInput(player), input.Dig, input.Hit, LookRay(player));
+        Ray3 ray = shot.Ray;
         Kick(player, state, pitch, yaw);
 
         // Hitscan along the view ray with a small random cone.
@@ -796,9 +799,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // ComponentInput builds Dig and Hit from.
         // CS keeps a separate inaccuracy per stance; the cs2 profile blends the vdata's
         // standing and moving values by speed instead of scaling one cone by a constant.
-        float spread = Cs2Weapons.SpreadDegrees(spec.Name, alternate,
-            player.ComponentBody.Velocity.Length(),
-            spec.SpreadDegrees * (state.Zoom > 0 ? 0.35f : 1f));
+        float spread = shot.Spread;
         // A shotgun fires m_nNumBullets pellets on one trigger pull, each with its own
         // scatter: Nova 9, MAG-7 and Sawed-Off 8, XM1014 6. Every other gun is 1, and
         // the body below is then exactly the single shot it always was.

@@ -17,6 +17,7 @@ def main():
     parser = argparse.ArgumentParser()
     for name in ('game', 'frostbite', 'decoder', 'work'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--kind', choices=('kill', 'ding'), default='kill')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
     game, scripts, decoder, work = (getattr(args, n).resolve() for n in ('game', 'frostbite', 'decoder', 'work'))
@@ -27,7 +28,7 @@ def main():
     for part in ('Data', 'Patch'):
         for cat in (game / part).rglob('cas.cat'):
             cas.readCat3(str(cat))
-    name = 'sound/ui/ui_killmessage_wave'
+    name = 'sound/ui/ui_killmessage_headshotadd_wave' if args.kind == 'ding' else 'sound/ui/ui_killmessage_wave'
     ebx_path = work / 'ebx' / (name + '.ebx')
     source = None
     wanted = set()
@@ -90,13 +91,18 @@ def main():
     if wanted:
         raise RuntimeError(f'Missing sound chunks: {wanted}')
     obj.extractAssets(str(work / 'chunks'), str(work / 'chunks'), str(work / 'res'), str(work / 'sps'))
-    sps = work / 'sps/Sound/UI/UI_KillMessage_Wave.sps'
+    asset = 'Sound/UI/UI_KillMessage_HeadShotAdd_Wave' if args.kind == 'ding' else 'Sound/UI/UI_KillMessage_Wave'
+    sps = work / ('sps/' + asset + '.sps')
     wav = work / 'kill.wav'
     subprocess.run([str(decoder), '-o', str(wav), str(sps)], check=True)
     samples, rate = sf.read(wav)
-    target = root / 'src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/bf1_kill_confirm.ogg'
-    sf.write(target, samples, rate, format='OGG', subtype='VORBIS')
-    source.update(asset='Sound/UI/UI_KillMessage_Wave', chunkIds=chunk_ids,
+    target = root / ('src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/' + ('bf1_kill_ding.wav' if args.kind == 'ding' else 'bf1_kill_confirm.ogg'))
+    if args.kind == 'ding':
+        from build_bf1_ding import build
+        source['conversion'] = build(wav, target)
+    else:
+        sf.write(target, samples, rate, format='OGG', subtype='VORBIS')
+    source.update(asset=asset, chunkIds=chunk_ids,
                   sampleRate=rate, samples=len(samples), sha256=hashlib.sha256(target.read_bytes()).hexdigest())
     (work / 'provenance.json').write_bytes((json.dumps(source, indent=2) + '\n').encode('utf-8'))
     print(target)
