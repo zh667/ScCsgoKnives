@@ -17,6 +17,7 @@ namespace Game;
 /// </summary>
 public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdateable, IDrawable {
     sealed class GunState {
+        public ScAmmoHud AmmoHud;
         public double NextShot;
         public double BusyUntil = -1;          // reload or silencer clip in progress
         public ScReloadTransaction Reload;
@@ -469,6 +470,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public override void Dispose() {
+        foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
         base.Dispose();
     }
@@ -516,6 +518,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     public void Update(float dt) {
         KnifeQa.Step();
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        foreach (var pair in m_states) if (!m_players.ComponentPlayers.Contains(pair.Key)) {
+            pair.Value.AmmoHud?.Dispose(); pair.Value.AmmoHud = null;
+        }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) {
                 m_states[player] = state = new GunState();
@@ -525,6 +530,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             int value = player.ComponentMiner.ActiveBlockValue;
             bool holdingGun = Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsKnown(value) && player.ComponentHealth.Health > 0f;
             if (!holdingGun) {
+                state.AmmoHud?.Hide();
                 CancelReload(player, state);
                 LeaveScope(player, state);
                 RecoverKick(player, state, dt, 12f);
@@ -536,6 +542,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 continue;
             }
             UpdateGun(player, state, value, dt);
+            UpdateAmmoHud(player, state);
         }
     }
 
@@ -583,7 +590,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 // The draw clip's own cues where CS2 has them - the FAMAS and M4A4 work
                 // the bolt quietly during theirs - else the single draw file.
                 if (!Schedule(state, spec.Name, deployClip, now)) PlaySound(player, $"{spec.Name}_draw");
-                ShowAmmo(player, spec, rounds);
             }
             state.LastValue = value;
         }
@@ -595,7 +601,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             if (state.Reload is not null && state.Reload.InsertShell()) {
                 value = state.Reload.Expected; state.LastValue = value;
                 data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
-                ShowAmmo(player, spec, rounds);
             }
             else { CancelReload(player, state); break; }
         }
@@ -637,7 +642,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                     data = GunSpec.SetRounds(data, rounds);
                     value = WriteData(player, value, data);
                     PlaySound(player, $"{spec.Name}_chargeready");
-                    ShowAmmo(player, spec, rounds);
                 }
             }
         }
@@ -659,9 +663,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         if (!busy && rounds < spec.Magazine && (reloadKey || (wantsFire && rounds == 0))) {
             if (spec.RechargeSeconds > 0f) {
-                // No reload clip to run: say how long the charge has left instead of nothing.
-                int left = (int)Math.Ceiling(Math.Max(0.0, state.RechargeAt - now));
-                player.ComponentGui.DisplaySmallMessage(string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "Recharging"), left), Color.White, false, false);
+                // The persistent ammo HUD already shows the live charge countdown.
                 return;
             }
             StartReload(player, state, model, spec, value);
@@ -759,7 +761,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // No reload: the Zeus starts its ten-second recharge at the shot.
         if (rounds <= 0 && spec.RechargeSeconds > 0f) state.RechargeAt = now + spec.RechargeSeconds;
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
-        ShowAmmo(player, spec, rounds);
+
 
         // Camera kick, applied now and eased back in RecoverKick. The cs2 profile takes
         // the ratios between guns from m_flRecoilMagnitude and the yaw scatter from
@@ -1099,8 +1101,24 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Matrix.CreateFromQuaternion(player.ComponentCreatureModel.EyeRotation).Forward);
     }
 
-    void ShowAmmo(ComponentPlayer player, GunSpec spec, int rounds) =>
-        player.ComponentGui.DisplaySmallMessage(string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "Ammo"), rounds), rounds == 0 ? Color.Red : Color.White, false, false);
+    void UpdateAmmoHud(ComponentPlayer player, GunState state) {
+        var gui = player.ComponentGui;
+        int value = player.ComponentMiner.ActiveBlockValue;
+        if (gui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)
+            || !gui.ControlsContainerWidget.IsVisible
+            || Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || !ScGunBlock.IsKnown(value)) {
+            state.AmmoHud?.Hide(); return;
+        }
+        if (state.AmmoHud is null) {
+            var hud = new ScAmmoHud();
+            if (!hud.Attach(gui)) { hud.Dispose(); return; }
+            state.AmmoHud = hud;
+        }
+        var spec = ScGunBlock.SpecOf(value);
+        bool creative = Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
+        state.AmmoHud.Show(ScAmmoReadout.Read(spec, value, player.ComponentMiner.Inventory, creative,
+            state.RechargeAt < 0 ? -1 : Math.Max(0, state.RechargeAt - m_time.GameTime), state.Reload is not null));
+    }
 
     /// <summary>Plays Audio/ScCsgoKnives/&lt;name&gt; when the mod ships it; nothing (and no placeholder) when it does not.</summary>
     void PlaySound(ComponentPlayer player, string name) {

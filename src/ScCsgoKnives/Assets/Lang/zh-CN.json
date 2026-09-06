@@ -233,13 +233,24 @@
   "Message": {
    "Inspect": "正在检视 {0}。",
    "ControlsHint": "检视：电脑按 {0}；手机版点击右侧铅笔按钮。",
-   "Ammo": "{0} / ∞",
-   "Recharging": "充能中，还要 {0} 秒",
    "KnifeTouchHint": "点按或长按屏幕轻刀，“重刀”按钮重击；编辑物品可检视。",
    "GunTouchHint": "点按屏幕开火，自动武器可长按；用换弹和副功能按钮操作，编辑物品可检视。",
    "GunHint": "左键开火，R 换弹；AWP 右键开镜，M4A1 右键装卸消音器；{0} 键检视。",
    "BurstOn": "三连发",
    "BurstOff": "半自动"
+  },
+  "AmmoHud": {
+   "Ready": "电击枪 · 就绪",
+   "SingleCharge": "可放电 1 次",
+   "Charging": "充能 {0:0.0} 秒",
+   "AutoCharge": "自动恢复电量",
+   "Magazines": "{0} / {1} 发 · 弹匣 ×{2}",
+   "Shells": "{0} / {1} 发 · 霰弹 ×{2}",
+   "Tube": "逐发装填 · 保留余弹",
+   "WholeMagazine": "整匣更换 ×{0} 弹匣 · 丢弃余弹",
+   "ShellMagazine": "整匣更换 ×{0} 霰弹 · 丢弃余弹",
+   "Loading": "装填中",
+   "Reloading": "换弹中"
   }
  }
 }

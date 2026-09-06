@@ -233,13 +233,24 @@
   "Message": {
    "Inspect": "Inspecting {0}.",
    "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile.",
-   "Ammo": "{0} / ∞",
-   "Recharging": "Recharging, {0} s to go",
    "KnifeTouchHint": "Tap or hold the view for a light slash; use Heavy for a stab. Edit Item inspects.",
    "GunTouchHint": "Tap to fire; hold for automatic fire. Use reload and secondary buttons; Edit Item inspects.",
    "GunHint": "Left click fires, R reloads; right click scopes the AWP or toggles the M4A1-S silencer; {0} inspects.",
    "BurstOn": "Burst fire",
    "BurstOff": "Single fire"
+  },
+  "AmmoHud": {
+   "Ready": "ZEUS · READY",
+   "SingleCharge": "1 discharge available",
+   "Charging": "CHARGING {0:0.0}s",
+   "AutoCharge": "Automatic recharge",
+   "Magazines": "{0} / {1} rounds · Mags ×{2}",
+   "Shells": "{0} / {1} rounds · Shells ×{2}",
+   "Tube": "Load one shell · Keep leftovers",
+   "WholeMagazine": "Swap ×{0} mags · Discard leftovers",
+   "ShellMagazine": "Swap ×{0} shells · Discard leftovers",
+   "Loading": "Loading",
+   "Reloading": "Reloading"
   }
  }
 }
