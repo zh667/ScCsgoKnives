@@ -1,6 +1,6 @@
 # ScCsgoKnives
 
-《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.26.4（生存内容第二轮完善，包内程序检查通过，实机验收待完成）。
+《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.26.5（生存内容第二轮完善，包内程序检查通过，实机验收待完成）。
 
 - 22 把刀、35 把枪、6 种投掷物，全部使用 CS2 模型、骨骼动画和真实手臂／手套。
 - 旧配置中的 `KnifeProfile=0`、`GunProfile=0` 不再启用方块手。
@@ -15,6 +15,8 @@
 0.26.3 按设备自动启用手机按钮和触屏适配，修复长按主副操作冲突及双指投掷误判；桌面端隐藏全部模组操作按钮。见 [手机适配与待验收项目](docs/mobile-adaptation-0263.md)。
 
 0.26.4 去掉检视、换弹开始及首次持有武器的重复提示；本机旧安装包已备份并更新，重启游戏后生效。见 [修复与安装记录](docs/survival-0264-fixes.md)。
+
+0.26.5 修复开枪后快速切刀误划轻刀，以及物品栏打开时切入/检视动画冻结，见 [动画修复记录](docs/survival-0265-fixes.md)。
 
 生存玩法：
 
@@ -39,6 +41,6 @@ dotnet build ScCsgoKnives.sln -c Release
 python -X utf8 tools/pack_scmod.py
 ```
 
-安装包：`output/ScCsgoKnives-0.26.4.scmod`。资源来源见 `ASSET_SOURCES.md`，第三方署名见 `THIRD_PARTY_NOTICES.md`。
+安装包：`output/ScCsgoKnives-0.26.5.scmod`。资源来源见 `ASSET_SOURCES.md`，第三方署名见 `THIRD_PARTY_NOTICES.md`。
 
 0.20.4 的清理清单、验证结果和视觉限制见 `docs/cs2-0.20.4-report.md`。代码采用 GPL-3.0。

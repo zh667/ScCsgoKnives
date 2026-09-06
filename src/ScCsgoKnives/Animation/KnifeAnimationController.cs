@@ -11,7 +11,6 @@ public static class KnifeAnimationController {
         public string ClipAlias = "idle";
         public double StartedAt;
         public float LastPokePhase;
-        public bool DrawWhenVisible;
         /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
         public bool PendingInspect;
         /// <summary>Aiming down the gun's own scope (AUG, SG 553): idle and shots use the ironsight clips.</summary>
@@ -73,7 +72,6 @@ public static class KnifeAnimationController {
         if (variant < 0) {
             if (s_states.TryGetValue(model, out State oldState)) {
                 oldState.Variant = -1;
-                oldState.DrawWhenVisible = false;
                 oldState.Pose = null;
             }
             return null;
@@ -84,22 +82,10 @@ public static class KnifeAnimationController {
             s_states.Add(model, state);
         }
 
-        bool viewObscured = model.m_componentPlayer.ComponentGui.ModalPanelWidget != null
-            || DialogsManager.HasDialogs(model.m_componentPlayer.GuiWidget);
-        if (viewObscured) {
-            if (state.Variant != variant) {
-                state.Variant = variant;
-                state.DrawWhenVisible = true;
-                state.Pose = CsmcKnifeRig.Sample(variant, IdleClip(variant, Rounds(variant,itemValue), false), 0, true);
-            }
-            // Keep the same real-hands renderer behind inventory/dialogs. A null
-            // pose lets vanilla draw the unrelated world mesh at block scale.
-            state.Pose ??= CsmcKnifeRig.Sample(variant, IdleClip(variant, Rounds(variant,itemValue), state.Scoped), 0, true);
-            return state.Pose;
-        }
-
-        if (state.DrawWhenVisible || state.Variant != variant) {
-            state.DrawWhenVisible = false;
+        // Inventory/dialogs affect gameplay input, not the visual animation clock.
+        // Keep sampling real hands every frame, including a switch made in a menu.
+        if (state.Variant != variant) {
+            state.Scoped = false;
             // Whether a knife has a second draw is a property of its rig, not
             // of it being the butterfly.
             Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
@@ -166,11 +152,10 @@ public static class KnifeAnimationController {
         int variant = ResolveVariant(value);
         if (variant < 0) return false;
 
-        if (!s_states.TryGetValue(model, out State state)) {
-            state = new State { Variant = variant };
-            s_states.Add(model, state);
-        }
-        state.Variant = variant;
+        State state = StateFor(model);
+        // Inspect can arrive before the drawing hook observes an inventory switch.
+        // Initialize that weapon's deploy first, then queue the inspect behind it.
+        if (state.Variant != variant) Update(model, value);
 
         // Pressed during a draw or a reload: remember it and run it when that ends,
         // instead of swallowing the key. 0.17.0 returned true here and did nothing,
@@ -197,10 +182,14 @@ public static class KnifeAnimationController {
     public static bool TriggerKnifeAttack(ComponentPlayer player, bool heavy) {
         var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
         int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
-        if (model is null || variant < 0 || variant >= CsmcKnifeRig.KnifeCount || IsBusy(model)) return false;
+        if (model is null || variant < 0 || variant >= CsmcKnifeRig.KnifeCount) return false;
+        State state = StateFor(model);
+        // Input updates can precede rendering after a shot + quick switch. Do not
+        // turn the old gun's state into a slash and hide the pending knife deploy.
+        if (state.Variant != variant || IsBusy(model)) return false;
         string alias = heavy ? "stab" : s_random.Next(2) == 0 ? "slash1" : "slash2";
         if (!HasAlias(variant, alias)) return false;
-        State state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
+        state.PendingInspect = false;
         Start(state, ActionKind.Slash, alias);
         AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", .85f, heavy ? -.12f : 0f, 0f);
         return true;
@@ -394,7 +383,7 @@ public static class KnifeAnimationController {
         var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
         int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
         if (model is null || variant < 0 || !CsmcKnifeRig.IsGrenade(variant)) return;
-        var state = StateFor(model); state.Variant = variant; state.PendingInspect = false; state.DrawWhenVisible = false;
+        var state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
         Start(state, ActionKind.Grenade, alias); state.StartedAt -= elapsed;
     }
 
@@ -425,7 +414,6 @@ public static class KnifeAnimationController {
     internal static void QaDraw(ComponentFirstPersonModel model, int variant) {
         State state = StateFor(model);
         state.Variant = variant;
-        state.DrawWhenVisible = false;
         state.LastPokePhase = 0f;
         Start(state, ActionKind.Draw, "deploy");
     }

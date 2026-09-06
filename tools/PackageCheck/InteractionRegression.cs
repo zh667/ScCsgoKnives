@@ -22,14 +22,14 @@ static class InteractionRegression {
             var player=Blank<ComponentPlayer>();player.ComponentGui=gui;player.PlayerData=data;
             for(int variant=0;variant<63;variant++) {
                 int v=variant;
-                Test("menu-keeps-real-pose/"+v,()=>{
+                Test("menu-keeps-real-route/"+v,()=>{
                     var model=Blank<ComponentFirstPersonModel>();model.m_componentPlayer=player;
                     object state=ctrl.GetMethod("StateFor",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,[model]);
                     object pose=rig.GetMethod("Sample").Invoke(null,[v,"idle",0f,true]);
                     state.GetType().GetField("Variant").SetValue(state,v);state.GetType().GetField("Pose").SetValue(state,pose);
                     int value=v<22?Terrain.MakeBlockValue(700,0,v):v<57?Terrain.MakeBlockValue(701,0,65536+(v-22)):Terrain.MakeBlockValue(702,0,v-57);
                     object actual=ctrl.GetMethod("Update").Invoke(null,[model,value]);
-                    return actual is not null && ReferenceEquals(pose,actual);
+                    return actual is not null && (string)actual.GetType().GetProperty("AssetName").GetValue(actual) == (string)pose.GetType().GetProperty("AssetName").GetValue(pose);
                 });
             }
             gui.m_modalPanelContainerWidget.Children.Clear();
