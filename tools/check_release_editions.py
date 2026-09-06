@@ -19,6 +19,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--full', required=True)
     ap.add_argument('--lite', required=True)
+    ap.add_argument('--mini', help='the Mini (256px) package; checked against Full the same way, with 256 in place of 512')
     ap.add_argument('--baseline', required=True)
     ap.add_argument('--json', required=True)
     ap.add_argument('--allow-reencoded-texture', action='append', default=[], help='Allow PNG encoding changes only when decoded RGBA pixels are identical')
@@ -62,7 +63,32 @@ def main():
                 check('baseline-asset/' + name, name in full.namelist() and preserved(name, old.read(name), full.read(name)))
         check('resized-exactly-177', len(changes) == 177)
         check('same-dll', digest(full, 'ScCsgoKnives.dll') == digest(lite, 'ScCsgoKnives.dll'))
-    result = {'full': str(Path(args.full).resolve()), 'lite': str(Path(args.lite).resolve()),
+        if args.mini:
+            with zipfile.ZipFile(args.mini) as mini:
+                mm = json.loads(mini.read('modinfo.json'))
+                check('mini-same-paths', set(full.namelist()) == set(mini.namelist()))
+                check('mini-same-package-identity', mm['PackageName'] == 'zh667.ScCsgoKnives'
+                      and all(fm[k] == mm[k] for k in fm if k not in ('Name', 'Description')))
+                check('mini-edition-marker', b'Name="Mini"' in mini.read('Assets/ScCsgoKnivesEdition.xml'))
+                check('mini-same-dll', digest(full, 'ScCsgoKnives.dll') == digest(mini, 'ScCsgoKnives.dll'))
+                resized = 0
+                for name in full.namelist():
+                    if name.endswith('.png'):
+                        a, b = full.read(name), mini.read(name)
+                        w, h = struct.unpack('>II', a[16:24]); mw, mh = struct.unpack('>II', b[16:24])
+                        if (w, h) == (1024, 1024):
+                            resized += 1
+                            check('mini-size/' + name, (mw, mh) == (256, 256))
+                            if name.endswith('_normal.png'):
+                                arr = np.asarray(Image.open(io.BytesIO(b)).convert('RGB'), dtype=np.float32) / 127.5 - 1
+                                error = float(np.max(np.abs(np.linalg.norm(arr, axis=2) - 1)))
+                                check('mini-normal-unit-vectors/' + name, error < .012, str(error))
+                        else:
+                            check('mini-other-textures-identical/' + name, a == b)
+                    elif name not in ('modinfo.json', 'Assets/ScCsgoKnivesEdition.xml'):
+                        check('mini-identical/' + name, digest(full, name) == digest(mini, name))
+                check('mini-resized-exactly-177', resized == 177)
+    result = {'full': str(Path(args.full).resolve()), 'lite': str(Path(args.lite).resolve()), 'mini': str(Path(args.mini).resolve()) if args.mini else None,
               'checks': checks, 'failed': sum(not c['ok'] for c in checks), 'resized': changes}
     Path(args.json).write_bytes(json.dumps(result, ensure_ascii=False, indent=2).encode('utf-8'))
     print(json.dumps({'checks':len(checks), 'failed':result['failed'], 'resized':len(changes)}))

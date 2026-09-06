@@ -110,7 +110,8 @@ static class ResourceRegression {
                     string key = "ScCsgoKnivesEdition"; bool had = caches.TryGetValue(key, out var previous);
                     try {
                         caches[key] = [xml]; policy.GetMethod("LoadEdition").Invoke(null, null);
-                        return (bool)policy.GetProperty("Lite").GetValue(null) == ((string)xml.Attribute("Name") == "Lite");
+                        // Lite and the smaller Mini share the reduced-particle policy; Full does not.
+                        return (bool)policy.GetProperty("Lite").GetValue(null) == ((string)xml.Attribute("Name") is "Lite" or "Mini");
                     } finally { if (had) caches[key] = previous; else caches.Remove(key); Lite(false); }
                 });
                 Test("lite-keeps-smoke-and-flash-coverage", () => {

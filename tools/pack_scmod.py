@@ -31,13 +31,23 @@ def check_catalog():
         raise SystemExit('cs2_catalog.json is stale; run tools/generate_cs2_catalog.py and rebuild.')
 
 
-def lite_texture(data, name):
+# Edition -> the size 1024 x 1024 textures are derived at. Lite is the phone
+# edition; Mini goes one step further for the smallest download (weapon textures
+# visibly softer up close). Everything else - DLL, audio, gameplay - is shared.
+EDITION_TEXTURE_SIZE = {'Lite': 512, 'Mini': 256}
+EDITION_META = {
+    'Lite': ('ScCsgoKnives 轻量版 Lite', 'CS2 real hands and all weapons. 512px textures and reduced decorative particles. 与完整版二选一安装，玩法与存档兼容。'),
+    'Mini': ('ScCsgoKnives 迷你版 Mini', 'CS2 real hands and all weapons. 256px textures and reduced decorative particles; the smallest download. 与其它版本二选一安装，玩法与存档兼容。'),
+}
+
+
+def lite_texture(data, name, size=512):
     from PIL import Image
     import numpy as np
     with Image.open(io.BytesIO(data)) as image:
         if image.size != (1024, 1024):
             return data, None
-        image = image.resize((512, 512), Image.Resampling.LANCZOS)
+        image = image.resize((size, size), Image.Resampling.LANCZOS)
         normal = name.endswith('_normal.png')
         if normal:
             # Normals are vectors, not colors. Normalize after filtering; preserve alpha.
@@ -51,28 +61,27 @@ def lite_texture(data, name):
             image = Image.fromarray(pixels)
         stream = io.BytesIO()
         image.save(stream, format='PNG', optimize=True)
-        return stream.getvalue(), {'path': name, 'from': [1024, 1024], 'to': [512, 512],
+        return stream.getvalue(), {'path': name, 'from': [1024, 1024], 'to': [size, size],
             'normalRenormalized': normal, 'sourceSha256': hashlib.sha256(data).hexdigest(),
             'resultSha256': hashlib.sha256(stream.getvalue()).hexdigest()}
 
 
 def pack(edition, files, info):
-    suffix = '-Lite' if edition == 'Lite' else ''
+    suffix = '' if edition == 'Full' else f'-{edition}'
     target = OUT / f"ScCsgoKnives-{info['Version']}{suffix}.scmod"
     transformed = []
     with zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as archive:
         for name, path in files:
             data = path.read_bytes()
-            if edition == 'Lite':
+            if edition in EDITION_TEXTURE_SIZE:
                 if name == 'modinfo.json':
                     meta = dict(info)
-                    meta['Name'] = 'ScCsgoKnives 轻量版 Lite'
-                    meta['Description'] = 'CS2 real hands and all weapons. 512px textures and reduced decorative particles. 与完整版二选一安装，玩法与存档兼容。'
+                    meta['Name'], meta['Description'] = EDITION_META[edition]
                     data = (json.dumps(meta, ensure_ascii=False, indent=2) + '\n').encode('utf-8')
                 elif name == 'Assets/ScCsgoKnivesEdition.xml':
-                    data = b'<Edition Name="Lite" />\n'
+                    data = f'<Edition Name="{edition}" />\n'.encode('utf-8')
                 elif name.lower().endswith('.png'):
-                    data, record = lite_texture(data, name)
+                    data, record = lite_texture(data, name, EDITION_TEXTURE_SIZE[edition])
                     if record:
                         transformed.append(record)
             entry = zipfile.ZipInfo.from_file(path, name)
@@ -88,7 +97,8 @@ def pack(edition, files, info):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--edition', choices=('full', 'lite', 'both'), default='full')
+    parser.add_argument('--edition', choices=('full', 'lite', 'mini', 'both', 'all'), default='full',
+                        help='both = Full + Lite; all = Full + Lite + Mini')
     args = parser.parse_args()
     dll = BUILD / 'ScCsgoKnives.dll'
     if not dll.exists() or dll.stat().st_mtime < newest_source_mtime():
@@ -108,7 +118,9 @@ def main():
         if not path.is_file():
             raise SystemExit(f'missing build file: {name}')
     OUT.mkdir(exist_ok=True)
-    for edition in (('Full', 'Lite') if args.edition == 'both' else ('Lite',) if args.edition == 'lite' else ('Full',)):
+    editions = {'full': ('Full',), 'lite': ('Lite',), 'mini': ('Mini',),
+                'both': ('Full', 'Lite'), 'all': ('Full', 'Lite', 'Mini')}[args.edition]
+    for edition in editions:
         pack(edition, files, info)
 
 

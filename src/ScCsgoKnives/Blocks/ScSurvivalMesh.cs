@@ -1,3 +1,4 @@
+using System;
 using Engine;
 using Engine.Graphics;
 namespace Game;
@@ -15,6 +16,27 @@ public static class ScSurvivalMesh {
         }
         foreach (int i in source.Indices) mesh.Indices.Add(i);
         return mesh;
+    }
+    static bool s_logged;
+    /// <summary>
+    /// Once per session: what the game handed the supply meshes. The 0.26.1 device
+    /// session drew the magazine, shell, four parts and the bench as solid black in
+    /// the inventory; the offline checks could not reproduce it, and Texture2D has no
+    /// read-back here, so the next log has to say which of the inputs is off - the
+    /// texture object (size, format, mips, sRGB), the vertex colour, the light or the
+    /// colour transform.
+    /// </summary>
+    public static void LogFirstDraw(Texture2D texture,BlockMesh mesh,Color color,DrawBlockEnvironmentData env) {
+        if(s_logged) return;
+        s_logged=true;
+        try {
+            string tex=texture is null ? "null"
+                : $"{texture.Width}x{texture.Height} format={texture.ColorFormat} mips={texture.MipLevelsCount} srgb={texture.IsSrgb} sampler={(texture.SamplerState is null ? "none" : "set")}";
+            Color v=mesh.Vertices.Count>0 ? mesh.Vertices[0].Color : Color.Transparent;
+            KnifeLog.Information($"[ScCsgoKnives] supply mesh first draw: texture {Texture} = {tex}; vertex0 colour ({v.R},{v.G},{v.B},{v.A}) emissive={(mesh.Vertices.Count>0 && mesh.Vertices[0].IsEmissive)}; "
+                + $"colour transform ({color.R},{color.G},{color.B},{color.A}); env light={env?.Light.ToString() ?? "null"} mode={env?.DrawBlockMode.ToString() ?? "null"}; {mesh.Vertices.Count} vertices.");
+        }
+        catch(Exception e) { KnifeLog.Information($"[ScCsgoKnives] supply mesh first draw: could not describe the inputs: {e.Message}"); }
     }
     // Atlas cells: brushed steel, dark steel, brass, red polymer, rubber,
     // blue glass, work mat, painted cabinet. Every face has real thickness.
@@ -124,7 +146,9 @@ public abstract class ScSupplyBlock : ScNoDurabilityBlock {
             if(!m_icons.TryGetValue(kind,out var icon)) m_icons[kind]=icon=ScSurvivalMesh.InventoryMesh(mesh);
             mesh=icon;
         }
-        BlocksManager.DrawMeshBlock(renderer,mesh,GetDefaultTexture(value),color,size,ref matrix,env);
+        Texture2D texture=GetDefaultTexture(value);
+        ScSurvivalMesh.LogFirstDraw(texture,mesh,color,env);
+        BlocksManager.DrawMeshBlock(renderer,mesh,texture,color,size,ref matrix,env);
     }
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z) { }
 }

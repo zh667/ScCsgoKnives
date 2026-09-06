@@ -1,6 +1,6 @@
 # ScCsgoKnives
 
-《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.28.1（击杀清脆提示音与倍镜射击修复；包内程序检查与实机听感分别验收）。
+《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.28.2（新增 Mini 迷你版；补给品发黑待实机日志定位）。
 
 - 22 把刀、35 把枪、6 种投掷物，全部使用 CS2 模型、骨骼动画和真实手臂／手套。
 - 旧配置中的 `KnifeProfile=0`、`GunProfile=0` 不再启用方块手。
@@ -30,6 +30,8 @@
 
 0.28.1 补上清脆的 BF1 金属击杀提示音，射击前固定开镜弹道，修复 AWP／SSG 08 退镜后误用腰射散布，并处理旧配置下部分狙击枪开镜精度不足。见 [修复与验证记录](docs/combat-0281.md)。
 
+0.28.2 新增 **Mini 迷你版约 77 MB**（256 贴图，粒子同 Lite），三版同 DLL 三选一；为物品栏补给品发黑加了一次性诊断日志。见 [Mini 版与发黑诊断](docs/resource-0282-mini.md)。
+
 生存玩法：
 
 - 原版工作台制作零件、武器装配台和弹药；在装配台选型号组装，等级只需 1–6，制作出来的枪为空枪。
@@ -50,7 +52,7 @@
 
 ```powershell
 dotnet build ScCsgoKnives.sln -c Release
-python -X utf8 tools/pack_scmod.py
+python -X utf8 tools/pack_scmod.py --edition all
 ```
 
 安装包：`output/ScCsgoKnives-0.26.6.scmod`。资源来源见 `ASSET_SOURCES.md`，第三方署名见 `THIRD_PARTY_NOTICES.md`。
