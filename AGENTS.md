@@ -7,3 +7,5 @@
 - Report packaged-DLL checks separately from actual game testing; an offline render is not an in-game screenshot.
 
 - All mod items have no durability. Inherit `ScNoDurabilityBlock`, keep durability metadata at -1, and never store vanilla wear in variant/ammunition data. This is the user’s standing preference from 2026-09-06.
+
+- Release Full and Lite together from the same DLL. Keep original-quality source textures; derive Lite 512px textures only while packaging, renormalizing normal maps. Preserve PackageName, item indices, animations and gameplay across editions. Install only one edition per game. This is the user’s preference from 2026-09-06.

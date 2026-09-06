@@ -1,0 +1,14 @@
+{
+  "packageSha256": "cbdf0eccbaed1e6fd472fb040ded6815b1c0058be8311b506b2e290a6ca38152",
+  "assets": 63,
+  "elapsedMs": 2148,
+  "managedBeforeBytes": 553744,
+  "managedAfterBytes": 26178960,
+  "managedGrowthBytes": 25625216,
+  "cacheEntries": [
+    12,
+    8,
+    8
+  ],
+  "scope": "Fresh headless host, visit all 63 animations/meshes then force GC. Managed heap only; excludes GPU textures, game world, native memory and process working set. Timing is not an FPS benchmark."
+}

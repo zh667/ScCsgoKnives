@@ -24,9 +24,10 @@ static string Sha256(string path) {
     return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
 }
 
-string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null;
+string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--resource-audit": resourceAudit = args[++i]; break;
         case "--scmod": scmod = args[++i]; break;
         case "--sha256": expected = args[++i]; break;
         case "--json": jsonOut = args[++i]; break;
@@ -72,6 +73,8 @@ if (selfTest is null) { Console.Error.WriteLine("the packaged assembly has no Ga
 // The mod logs through Engine's Log; send it to stderr so stdout stays one JSON blob.
 Type knifeLog = mod.GetType("Game.KnifeLog");
 knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, true);
+
+if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
 
 string runJson;
 try {
@@ -127,6 +130,7 @@ foreach(var c in MobileRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok
 foreach(var c in StarterEquipmentRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in SurvivalDurabilityRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in AmmoHudRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in ResourceRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {

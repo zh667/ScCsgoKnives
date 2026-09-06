@@ -55,7 +55,7 @@ public sealed class Cs2RigidMesh {
     public int BlendedTriangleCount => BlendedParts?.Sum(p => p.Indices.Length) / 3 ?? 0;
     public Cs2SkinnedMesh.Vertex[] BlendedSkinned => m_blendedSkinned;
 
-    static readonly Dictionary<string, Cs2RigidMesh> s_cache = new(StringComparer.Ordinal);
+    static readonly ScResourceCache<string, Cs2RigidMesh> s_cache = new("rigid-weapons", 8);
 
     /// <summary>Loads the .cs2.parts a gun's rig names, or null when it has none.</summary>
     public static Cs2RigidMesh For(string asset) {

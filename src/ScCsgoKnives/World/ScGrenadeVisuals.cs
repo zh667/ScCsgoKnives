@@ -32,7 +32,7 @@ public static class ScGrenadeVisuals {
             list.Add(new(origin+Vector3.UnitY*.15f,.7f+age*2,.7f+age*2,Tint(255,211,142,fade),1,Frame(age/.3f),Additive:true));
             list.Add(new(origin,.9f+age*2,.9f+age*2,Tint(255,169,67,fade),3,0,Additive:true));
         }
-        if(distance<35 && age<.7f) for(int i=0;i<18;i++) {
+        if(distance<35 && age<.7f) for(int i=0;i<18;i+=ScResourcePolicy.Lite?2:1) {
             float angle=i*2.399963f, speed=2+Hash(i)*2;
             Vector3 velocity=new(MathF.Cos(angle)*speed,.8f+Hash(i+2)*3,MathF.Sin(angle)*speed);
             Vector3 p=origin+velocity*age-Vector3.UnitY*(age*age*2);
@@ -66,12 +66,12 @@ public static class ScGrenadeVisuals {
             Vector3 p=points[i];float phase=(s.Age*1.25f+Hash(i))%1;
             float height=.66f+.24f*MathF.Sin(s.Age*7+i*2.3f);
             list.Add(new(p+Vector3.UnitY*height*.5f,.42f,height*.5f,Tint(255,246,225,fade),1,Frame(phase),Upright:true));
-            if(distance<25 && i%2==0) {
+            if(!ScResourcePolicy.Lite && distance<25 && i%2==0) {
                 list.Add(new(p+new Vector3(.12f,.20f,-.07f),.25f,.28f,Tint(255,190,100,fade*.7f),1,Frame((phase+.5f)%1),Additive:true,Upright:true));
                 float lift=(s.Age*.6f+Hash(i+4))%1;
                 list.Add(new(p+new Vector3(MathF.Sin(i+s.Age)*.15f,.2f+lift,0),.018f,.038f,Tint(255,173,72,fade*(1-lift)),3,0,Additive:true));
             }
-            if(i%4==0) {
+            if(i%(ScResourcePolicy.Lite?8:4)==0) {
                 float lift=(s.Age*.35f+Hash(i+8))%1;
                 list.Add(new(p+Vector3.UnitY*(.5f+lift),.28f+lift*.2f,.28f+lift*.2f,Tint(87,84,80,fade*(1-lift)*.22f),2,Frame(lift),i));
             }

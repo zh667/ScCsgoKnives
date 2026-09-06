@@ -6,42 +6,21 @@ namespace Game;
 public class ScKnifeBlock : ScNoDurabilityBlock {
     static readonly int s_count = CsmcKnifeRig.KnifeCount;
     static readonly string[] s_names = Enumerable.Range(0, s_count).Select(CsmcKnifeRig.GetAssetName).ToArray();
-    readonly BlockMesh[] m_meshes = Enumerable.Range(0, s_count).Select(_ => new BlockMesh()).ToArray();
-    readonly Texture2D[] m_textures = new Texture2D[s_count];
-    readonly Texture2D[] m_slotTextures = new Texture2D[s_count];
-    readonly Vector3[] m_boundsMin = new Vector3[s_count];
-    readonly Vector3[] m_boundsMax = new Vector3[s_count];
+    sealed record ItemModel(BlockMesh Mesh, Vector3 Min, Vector3 Max);
+    readonly ScResourceCache<int, ItemModel> m_models = new("knife-items", 12, 2000);
     readonly bool[] m_firstPersonLogged = new bool[s_count];
 
-    public override void Initialize() {
-        for (int i = 0; i < s_names.Length; i++) {
-            try {
-                LoadVariant(i);
-            }
-            catch (Exception e) {
-                Log.Error($"[ScCsgoKnives] failed to load block assets for {s_names[i]}: {e.Message}");
-            }
-        }
-        base.Initialize();
-    }
-
-    void LoadVariant(int i) {
-        {
-            m_textures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}_cs2");
-            m_slotTextures[i] = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[i]}_slot");
-            Cs2SkinnedMesh mesh = Cs2SkinnedMesh.Weapon(s_names[i])
-                ?? throw new InvalidOperationException($"Missing CS2 knife mesh: {s_names[i]}");
-            if (!mesh.SetPose(Cs2Rig.Sample(s_names[i], "idle", 0f), Cs2Placement.Placement()))
-                throw new InvalidOperationException($"Invalid CS2 knife pose: {s_names[i]}");
-            mesh.Skin();
-            Cs2BlockMesh.Append(m_meshes[i], mesh.Skinned, mesh.Primitives.SelectMany(p => p.Indices));
-            (m_boundsMin[i], m_boundsMax[i]) = CalculateBounds(m_meshes[i]);
-            Log.Information(
-                $"[ScCsgoKnives] asset {s_names[i]}: vertices={m_meshes[i].Vertices.Count}, indices={m_meshes[i].Indices.Count}, "
-                + $"texture={m_textures[i].Width}x{m_textures[i].Height}, slot={m_slotTextures[i].Width}x{m_slotTextures[i].Height}, "
-                + $"bounds={FormatBounds(m_boundsMin[i], m_boundsMax[i])}."
-            );
-        }
+    ItemModel Model(int variant) {
+        if (m_models.TryGetValue(variant, out var hit)) return hit;
+        Cs2SkinnedMesh source = Cs2SkinnedMesh.Weapon(s_names[variant])
+            ?? throw new InvalidOperationException($"Missing CS2 knife mesh: {s_names[variant]}");
+        if (!source.SetPose(Cs2Rig.Sample(s_names[variant], "idle", 0f), Cs2Placement.Placement()))
+            throw new InvalidOperationException($"Invalid CS2 knife pose: {s_names[variant]}");
+        source.Skin();
+        var mesh = new BlockMesh();
+        Cs2BlockMesh.Append(mesh, source.Skinned, source.Primitives.SelectMany(p => p.Indices));
+        var bounds = CalculateBounds(mesh);
+        return m_models[variant] = new ItemModel(mesh, bounds.Min, bounds.Max);
     }
 
     public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z) { }
@@ -67,7 +46,7 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
                 value,
                 1.45f * size,
                 ref matrix,
-                m_slotTextures[variant],
+                ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[variant]}_slot"),
                 color,
                 false,
                 environmentData
@@ -78,17 +57,23 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
             KnifeDiagnostics.WarnOnce($"{s_names[variant]}-draw-matrix-invalid", $"{s_names[variant]} first-person draw matrix is not finite; skipped model draw.");
             return;
         }
+        ItemModel model;
+        try { model = Model(variant); }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce($"knife-item-{variant}", $"Could not build {s_names[variant]} item model: {e.Message}");
+            return;
+        }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !m_firstPersonLogged[variant]) {
             m_firstPersonLogged[variant] = true;
             Log.Information($"[ScCsgoKnives] block first-person fallback: value={value} (0x{value:X}), data={Terrain.ExtractData(value)}, variant={variant}, name={s_names[variant]}.");
             Matrix sizedMatrix = Matrix.CreateScale(size) * matrix;
-            (Vector3 viewMin, Vector3 viewMax) = TransformBounds(m_boundsMin[variant], m_boundsMax[variant], sizedMatrix);
+            (Vector3 viewMin, Vector3 viewMax) = TransformBounds(model.Min, model.Max, sizedMatrix);
             Log.Information(
                 $"[ScCsgoKnives] first-person {s_names[variant]}: size={size:0.###}, light={environmentData.Light}, "
                 + $"matrix={KnifeDiagnostics.MatrixSummary(matrix)}, viewBounds={FormatBounds(viewMin, viewMax)}."
             );
         }
-        BlocksManager.DrawMeshBlock(primitivesRenderer, m_meshes[variant], m_textures[variant], color, size, ref matrix, environmentData);
+        BlocksManager.DrawMeshBlock(primitivesRenderer, model.Mesh, ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[variant]}_cs2"), color, size, ref matrix, environmentData);
     }
 
     public override int GetTextureSlotCount(int value) => 1;

@@ -13,6 +13,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
+        ModsManager.RegisterHook("OnProjectDisposed", this);
         ModsManager.RegisterHook("OnPlayerSpawned", this);
         ModsManager.RegisterHook("BeforeWidgetUpdate", this);
         ModsManager.RegisterHook("AfterWidgetUpdate", this);
@@ -121,7 +122,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
+    public override void OnProjectDisposed() => ScResourceCaches.ClearAll();
+
     public override void OnLoadingFinished(List<Action> actions) {
+        ScResourcePolicy.LoadEdition();
         int index = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] values = BlocksManager.Blocks[index].GetCreativeValues().ToArray();
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);

@@ -69,7 +69,7 @@ public sealed class Cs2SkinnedMesh {
     const string Resource = "AnimationData.cs2_arms.skin";
     static Cs2SkinnedMesh s_arms;
     static bool s_tried;
-    static readonly Dictionary<string, Cs2SkinnedMesh> s_weapons = new(StringComparer.Ordinal);
+    static readonly ScResourceCache<string, Cs2SkinnedMesh> s_weapons = new("skinned-weapons", 8);
 
     /// <summary>
     /// A weapon that ships as one skinned mesh, by asset name. All 22 knives are:

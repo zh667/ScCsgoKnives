@@ -11,9 +11,7 @@ namespace Game;
 public class ScGunBlock : ScNoDurabilityBlock {
     static readonly int s_count = GunSpec.All.Length;
     static readonly string[] s_names = GunSpec.All.Select(spec => spec.Name).ToArray();
-    readonly BlockMesh[] m_meshes = Enumerable.Range(0, s_count).Select(_ => new BlockMesh()).ToArray();
-    readonly Texture2D[] m_textures = new Texture2D[s_count];
-    readonly Texture2D[] m_slotTextures = new Texture2D[s_count];
+    readonly ScResourceCache<int, BlockMesh> m_models = new("gun-items", 12, 2000);
 
     /// <summary>Rig manifest index of a gun variant.</summary>
     public static int AssetIndex(int variant) => variant >= 0 && variant < s_count ? CsmcKnifeRig.KnifeCount + variant : -1;
@@ -23,31 +21,22 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public static bool IsKnown(int value) => GetVariant(value) < s_count;
     public static GunSpec SpecOf(int value) => IsKnown(value) ? GunSpec.All[GetVariant(value)] : Unknown;
 
-    public override void Initialize() {
-        for (int i = 0; i < s_count; i++) {
-            try {
-                m_textures[i] = LoadTexture(s_names[i] + "_hd");
-                m_slotTextures[i] = LoadTexture(s_names[i] + "_slot") ?? m_textures[i];
-                var parts = Cs2Rig.GetMeshParts(s_names[i]);
-                if (parts.Count > 0) {
-                    foreach (string part in parts) {
-                        ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{s_names[i]}_cs2_{part}");
-                        foreach (ModelMesh mesh in model.Meshes) {
-                            Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
-                            foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                                m_meshes[i].AppendModelMeshPart(meshPart, transform, false, false, true, false, Color.White);
-                        }
-                    }
+    BlockMesh Model(int variant) {
+        if (m_models.TryGetValue(variant, out var hit)) return hit;
+        var result = new BlockMesh();
+        var parts = Cs2Rig.GetMeshParts(s_names[variant]);
+        if (parts.Count > 0) {
+            foreach (string part in parts) {
+                ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{s_names[variant]}_cs2_{part}");
+                foreach (ModelMesh mesh in model.Meshes) {
+                    Matrix transform = BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone);
+                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                        result.AppendModelMeshPart(meshPart, transform, false, false, true, false, Color.White);
                 }
-                else AppendRigidMesh(m_meshes[i], s_names[i]);
-                Log.Information($"[ScCsgoKnives] gun asset {s_names[i]}: vertices={m_meshes[i].Vertices.Count}, "
-                                + $"texture={(m_textures[i] is null ? "none" : $"{m_textures[i].Width}x{m_textures[i].Height}")}.");
-            }
-            catch (Exception e) {
-                Log.Error($"[ScCsgoKnives] failed to load block assets for gun {s_names[i]}: {e.Message}");
             }
         }
-        base.Initialize();
+        else AppendRigidMesh(result, s_names[variant]);
+        return m_models[variant] = result;
     }
 
     static Texture2D LoadTexture(string name) {
@@ -107,11 +96,17 @@ public class ScGunBlock : ScNoDurabilityBlock {
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI) {
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, m_slotTextures[variant], color, false, environmentData);
+            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !KnifeDiagnostics.IsFinite(matrix)) return;
-        BlocksManager.DrawMeshBlock(primitivesRenderer, m_meshes[variant], m_textures[variant], color, size, ref matrix, environmentData);
+        BlockMesh model;
+        try { model = Model(variant); }
+        catch (Exception e) {
+            KnifeDiagnostics.WarnOnce($"gun-item-{variant}", $"Could not build {s_names[variant]} item model: {e.Message}");
+            return;
+        }
+        BlocksManager.DrawMeshBlock(primitivesRenderer, model, LoadTexture(s_names[variant] + "_hd"), color, size, ref matrix, environmentData);
     }
 
     public override int GetTextureSlotCount(int value) => 1;

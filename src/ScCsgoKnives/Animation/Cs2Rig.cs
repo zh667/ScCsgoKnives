@@ -210,7 +210,7 @@ public static class Cs2Rig {
         },
     };
 
-    static readonly Dictionary<string, Asset> s_assets = new(StringComparer.Ordinal);
+    static readonly ScResourceCache<string, Asset> s_assets = new("animations", 12);
 
     /// <summary>
     /// True when a CS2 rig exists for this asset. The three guns are listed in
@@ -218,15 +218,15 @@ public static class Cs2Rig {
     /// consulting a table, which is what lets a knife be added by shipping its
     /// .cs2.animation.json alone.
     /// </summary>
-    public static bool Has(string gun) => s_clipAliases.ContainsKey(gun) || Get(gun) is not null;
+    public static bool Has(string gun) => Cs2Catalog.Get(gun) is not null;
 
     /// <summary>The .cs2.skin this asset's mesh lives in, or null when it has none.</summary>
-    public static string SkinnedResource(string gun) => Get(gun)?.File.Skinned;
+    public static string SkinnedResource(string gun) => Cs2Catalog.Get(gun)?.Skinned;
 
     /// <summary>The .cs2.parts this asset's mesh lives in, or null when it has none.</summary>
-    public static string PartsResource(string gun) => Get(gun)?.File.Parts;
+    public static string PartsResource(string gun) => Cs2Catalog.Get(gun)?.Parts;
 
-    public static IReadOnlyList<string> GetMeshParts(string gun) => Get(gun)?.File.MeshParts ?? [];
+    public static IReadOnlyList<string> GetMeshParts(string gun) => Cs2Catalog.Get(gun)?.MeshParts ?? [];
 
     /// <summary>
     /// Length in seconds of the clip that would actually play for this alias, or 0
