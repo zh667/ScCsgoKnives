@@ -13,6 +13,6 @@
 # Two-peer git sync (Windows Codex + VPS Claude)
 
 - The working tree is shared by Syncthing; `.git` is peer-local (`.stignore`) and must stay that way. Commits travel only through `origin`.
-- The peer that does the work commits and pushes the current branch (`fix/cs2-only-hands-0.20.4` until it is merged) at the end of every version, before handing over. Uncommitted work is invisible to the other peer's git even though its files are already there.
+- The peer that does the work commits and pushes `main` (the fix/cs2-only-hands-0.20.4 branch was fast-forwarded into it at 0.28.2) at the end of every version, before handing over. Uncommitted work is invisible to the other peer's git even though its files are already there.
 - Before starting anything, the other peer runs `git fetch origin` and `git reset --mixed origin/<branch>` (VPS: `bash tools/sync_git_from_origin.sh`). That moves HEAD and the index to the pushed commit without touching files, so `git status` shows only what is genuinely uncommitted on the other side. Never `git pull` / `merge` into a tree the other peer has already updated, and never commit the other peer's uncommitted files.
 - Never edit the same file on both peers at the same time; check `git status` for the other peer's in-progress files first.
