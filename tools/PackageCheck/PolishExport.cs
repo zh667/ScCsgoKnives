@@ -11,7 +11,7 @@ static class PolishExport {
         foreach(string name in new[]{"ScGrenadeBlock","ScWeaponWorkbenchBlock","ScAmmoBlock","ScWeaponMaterialBlock"}) {
             var block=(Block)Activator.CreateInstance(mod.GetType("Game."+name));
             float[] V(Vector3 p)=>[p.X,p.Y,p.Z];
-            presentation.Add(new{name,slots=block.GetTextureSlotCount(0),face=block.GetFaceTextureSlot(-1,0),
+            presentation.Add(new{name,drawSize=name=="ScGrenadeBlock"?(float)block.GetType().GetField("IconDrawSize").GetRawConstantValue():1f,slots=block.GetTextureSlotCount(0),face=block.GetFaceTextureSlot(-1,0),
                 view=V(block.GetIconViewOffset(0,new DrawBlockEnvironmentData {DrawBlockMode=DrawBlockMode.UI})),
                 scale=block.GetFirstPersonScale(0),offset=V(block.GetFirstPersonOffset(0)),rotation=V(block.GetFirstPersonRotation(0))});
         }

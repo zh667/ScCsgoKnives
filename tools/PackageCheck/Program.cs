@@ -121,6 +121,7 @@ if (vanillaContent is not null) {
         checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 }
 foreach(var c in CreativeRuntimeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in InteractionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {

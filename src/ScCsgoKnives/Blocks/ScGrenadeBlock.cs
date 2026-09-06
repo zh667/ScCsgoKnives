@@ -3,6 +3,7 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class ScGrenadeBlock : Block {
+    public const float IconDrawSize = .8f;
     public static readonly string[] Assets = ["grenade_hegrenade", "grenade_flashbang", "grenade_smokegrenade", "grenade_molotov", "grenade_incendiary", "grenade_decoy"];
     public static readonly string[] Names = ["高爆手雷", "闪光弹", "烟雾弹", "燃烧瓶", "燃烧弹", "诱饵弹"];
     public static bool Enabled(int kind) => kind is >= 0 and < 6;
@@ -39,7 +40,7 @@ public sealed class ScGrenadeBlock : Block {
     public override void DrawBlock(PrimitivesRenderer3D renderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData env) {
         int kind = Kind(value); if (kind < 0 || kind >= 6) return;
         if (env?.DrawBlockMode == DrawBlockMode.UI && env.GetType().FullName != "Game.ScCsgoBoxModelPreviewEnvironmentData") {
-            BlocksManager.DrawFlatBlock(renderer,value,1.45f*size,ref matrix,
+            BlocksManager.DrawFlatBlock(renderer,value,IconDrawSize*size,ref matrix,
                 ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+Assets[kind]+"_slot"),color,false,env);
             return;
         }
@@ -51,7 +52,7 @@ public sealed class ScGrenadeBlock : Block {
     public override void GenerateTerrainVertices(BlockGeometryGenerator g, TerrainGeometry t, int value, int x, int y, int z) { }
     public override bool IsSwapAnimationNeeded(int oldValue, int newValue) => false;
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Kind(value) is >= 0 and < 6 ? Names[Kind(value)] : "未知投掷物（保留数据）";
-    public override string GetDescription(int value) => "左键强投，右键或“轻投”按钮近抛；出手才消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。";
+    public override string GetDescription(int value) => "按住左键准备强投，按住右键或“轻投”按钮准备近抛；松开才投出，出手后计时并消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。";
     public override IEnumerable<int> GetCreativeValues() { for (int i = 0; i < 6; i++) if (Enabled(i)) yield return Value(i); }
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
         string b = "sccsgomaterial:0";

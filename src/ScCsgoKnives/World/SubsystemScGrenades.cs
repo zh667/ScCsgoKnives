@@ -11,15 +11,15 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     sealed class Preparation {
         public ScThrowTransaction Transaction;
-        public int Kind, Slot, ReturnSlot = -1, Stage = -1;
-        public bool Low, Released;
+        public int Kind, Slot, ReturnSlot = -1, Stage = 0;
+        public bool Low, Released, FromButton;
         public long CommittedRevision;
-        public double Start;
-        public float Pull, ThrowStart, Release, End;
+        public ScGrenadePreparation Timeline;
     }
     sealed class Blindness { public double Until, ImmuneUntil; public float Duration; }
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
     readonly Dictionary<ComponentPlayer, int> m_lastWeapon = [];
+    readonly Dictionary<ComponentPlayer, bool> m_lowButton = [];
     readonly Dictionary<ComponentBody, Blindness> m_blind = [];
     readonly Dictionary<int, Blindness> m_savedBlind = [];
     readonly HashSet<int> m_reducedFlash = [];
@@ -74,7 +74,13 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         values.SetValue("Blindness",flashes);
         // Preparations are intentionally absent: inventory has changed only for released throws.
     }
-    public void RequestThrow(ComponentPlayer player, bool low) {
+    public void SetLowThrowButton(ComponentPlayer player, bool pressed, bool clicked, bool pointerDown) {
+        // Keep a pressed button captured while the pointer moves away to aim.
+        pressed |= m_lowButton.GetValueOrDefault(player) && pointerDown;
+        m_lowButton[player] = pressed;
+        if (pressed || clicked) RequestThrow(player, true, true);
+    }
+    public void RequestThrow(ComponentPlayer player, bool low, bool fromButton = false) {
         if (!Holding(player) || !Operable(player) || m_preparing.ContainsKey(player)) return;
         int kind=ScGrenadeBlock.Kind(player.ComponentMiner.ActiveBlockValue);
         if (!ScGrenadeBlock.Enabled(kind)) return;
@@ -82,11 +88,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
         if (KnifeAnimationController.IsBusy(model)) return;
         string asset=ScGrenadeBlock.Assets[kind], alias=low?"throwLow":"throwHigh";
-        float pull=Cs2Rig.Duration(asset,"pullpin"), start=pull+.12f;
+        float pull=Cs2Rig.Duration(asset,"pullpin");
         var inv=player.ComponentMiner.Inventory;
         m_preparing[player]=new Preparation { Transaction=new ScThrowTransaction(inv),Kind=kind,Low=low,Slot=inv.ActiveSlotIndex,
-            ReturnSlot=m_lastWeapon.GetValueOrDefault(player,-1), Start=m_time.GameTime,Pull=pull,ThrowStart=start,
-            Release=start+Cs2Rig.GrenadeReleaseTime(asset,alias),End=start+Cs2Rig.Duration(asset,alias) };
+            ReturnSlot=m_lastWeapon.GetValueOrDefault(player,-1), FromButton=fromButton,
+            Timeline=new ScGrenadePreparation(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias)) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
     }
@@ -111,14 +117,16 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (!Operable(p) || (!prep.Released && !prep.Transaction.Valid)
                 || prep.Released && (p.ComponentMiner.Inventory.ActiveSlotIndex!=prep.Slot
                     || ScInventoryTransaction.Revision(p.ComponentMiner.Inventory)!=prep.CommittedRevision)) { Cancel(p,prep); continue; }
-            float elapsed=(float)(m_time.GameTime-prep.Start);
-            int stage=elapsed<prep.Pull?0:elapsed<prep.ThrowStart?1:2;
+            var input=p.ComponentInput.PlayerInput;
+            bool pressed=prep.FromButton?m_lowButton.GetValueOrDefault(p):prep.Low?input.Aim.HasValue:input.Dig.HasValue || input.Hit.HasValue;
+            prep.Timeline.Step(m_time.GameTime,pressed);
+            int stage=prep.Timeline.Stage(m_time.GameTime);
             if (stage != prep.Stage) {
                 prep.Stage=stage;
                 KnifeAnimationController.GrenadeAction(p,stage==0?"pullpin":stage==1?(prep.Low?"holdLow":"holdHigh"):(prep.Low?"throwLow":"throwHigh"),
-                    Math.Max(0,elapsed-(stage==0?0:stage==1?prep.Pull:prep.ThrowStart)));
+                    prep.Timeline.Elapsed(m_time.GameTime));
             }
-            if (!prep.Released && elapsed>=prep.Release) {
+            if (!prep.Released && m_time.GameTime>=prep.Timeline.ReleaseAt) {
                 var camera=p.GameWidget.ActiveCamera;
                 Vector3 direction=Vector3.Normalize(camera.ViewDirection + Vector3.UnitY*(prep.Low?.08f:.18f));
                 Vector3 origin=camera.ViewPosition, pos=origin+direction*.45f;
@@ -133,7 +141,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
                 AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
             }
-            if (elapsed>=prep.End) {
+            if (m_time.GameTime>=prep.Timeline.EndAt) {
                 m_preparing.Remove(p);
                 var inv=p.ComponentMiner.Inventory;
                 if (inv.ActiveSlotIndex==prep.Slot && (Holding(p)||inv.GetSlotCount(prep.Slot)==0)) {
@@ -379,6 +387,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
 
     public override void Dispose() {
         if (m_fireLoop is not null) { m_fireLoop.Stop();m_fireLoop.Dispose();Project.FindSubsystem<SubsystemAudio>()?.m_sounds.Remove(m_fireLoop);m_fireLoop=null; }
-        m_preparing.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
+        m_preparing.Clear();m_lowButton.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
     }
 }

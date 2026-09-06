@@ -20,8 +20,8 @@ with zipfile.ZipFile(args.scmod) as z:
         sample=im.crop((x,y,x+im.width/slots,y+im.height/slots))
         assert sample.getchannel('A').getbbox(), f'{kind}: runtime UV reads only transparent pixels'
         d.rounded_rectangle((i*112+8,30,i*112+104,126),5,fill=(111,105,88),outline=(151,145,129),width=2)
-        # BlocksManager.DrawFlatBlock: half-size .85*1.45; BlockIconWidget ortho width 3.6.
-        size=round(96*2*.85*1.45/3.6);sample=sample.resize((size,size),Image.Resampling.NEAREST)
+        # BlocksManager.DrawFlatBlock: half-size .85*drawSize; ortho width 3.6, then widget scale is num (not num/2).
+        size=round(96*4*.85*settings["drawSize"]/3.6);sample=sample.resize((size,size),Image.Resampling.NEAREST)
         sheet.paste(sample,(i*112+8+(96-size)//2,30+(96-size)//2),sample)
         d.text((i*112+8,134),kind,fill='white')
 args.out.parent.mkdir(parents=True,exist_ok=True);sheet.save(args.out)

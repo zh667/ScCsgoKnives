@@ -88,12 +88,15 @@ public static class KnifeAnimationController {
         bool viewObscured = model.m_componentPlayer.ComponentGui.ModalPanelWidget != null
             || DialogsManager.HasDialogs(model.m_componentPlayer.GuiWidget);
         if (viewObscured) {
-            if (state.Variant != variant && !state.DrawWhenVisible) {
-                Log.Information($"[ScCsgoKnives] obscured: held variant {state.Variant} -> {variant}, deferring draw.");
+            if (state.Variant != variant) {
+                state.Variant = variant;
                 state.DrawWhenVisible = true;
+                state.Pose = CsmcKnifeRig.Sample(variant, IdleClip(variant, Rounds(variant,itemValue), false), 0, true);
             }
-            state.Pose = null;
-            return null;
+            // Keep the same real-hands renderer behind inventory/dialogs. A null
+            // pose lets vanilla draw the unrelated world mesh at block scale.
+            state.Pose ??= CsmcKnifeRig.Sample(variant, IdleClip(variant, Rounds(variant,itemValue), state.Scoped), 0, true);
+            return state.Pose;
         }
 
         if (state.DrawWhenVisible || state.Variant != variant) {
@@ -138,6 +141,12 @@ public static class KnifeAnimationController {
         }
 
         float duration = ActionDuration(state, variant);
+        if (state.Action == ActionKind.Grenade) {
+            // Preparation clips may contain a single frame (duration zero).
+            // Their owner advances phases; reaching the end must never play idle.
+            state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, Math.Clamp(elapsed, 0, duration));
+            return state.Pose;
+        }
         if (elapsed >= duration) {
             // An inspect asked for during the draw runs now rather than being lost.
             if (state.PendingInspect && !KnifeQa.Active) {
@@ -395,7 +404,7 @@ public static class KnifeAnimationController {
         var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
         int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
         if (model is null || variant < 0 || !CsmcKnifeRig.IsGrenade(variant)) return;
-        var state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
+        var state = StateFor(model); state.Variant = variant; state.PendingInspect = false; state.DrawWhenVisible = false;
         Start(state, ActionKind.Grenade, alias); state.StartedAt -= elapsed;
     }
 

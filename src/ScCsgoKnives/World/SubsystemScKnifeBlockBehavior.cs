@@ -59,9 +59,12 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             bool grenade = SubsystemScGrenades.Holding(player);
             button.IsVisible = (knife || gun || grenade) && CanOperate(player);
             button.Text = knife ? "重刀" : grenade ? "轻投" : "换弹";
-            if (button.IsVisible && button.IsClicked) {
+            Project.FindSubsystem<SubsystemScGrenades>(true).SetLowThrowButton(player,
+                grenade && button.IsVisible && button.m_clickableWidget.IsPressed,
+                grenade && button.IsVisible && button.IsClicked,
+                grenade && button.IsVisible && button.Input.Press.HasValue);
+            if (button.IsVisible && button.IsClicked && !grenade) {
                 if (knife) RequestAttack(player, true);
-                else if (grenade) Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, true);
                 else Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
             }
             var state = State(player);
