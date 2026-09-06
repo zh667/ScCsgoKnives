@@ -65,10 +65,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
         skipVanilla = knife || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
         if (SubsystemScGrenades.Holding(player) && !operated && !skipped) {
-            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
+            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
         }
         if (knife && !operated && !skipped) {
-            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, player.ComponentInput.PlayerInput.Aim.HasValue);
+            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue);
             operated = true;
         }
     }
@@ -76,15 +76,22 @@ public class ScCsgoKnivesModLoader : ModLoader {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
         skipVanilla = knife || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
         if (SubsystemScGrenades.Holding(player) && digging && !operated && !skipped) {
-            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
+            player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
         }
         if (knife && digging && !operated && !skipped) {
-            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, player.ComponentInput.PlayerInput.Aim.HasValue);
+            player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue);
             operated = true;
         }
     }
     public override void UpdatePlayerInputAim(ComponentPlayer player, bool aiming, ref bool operated, ref float interval, bool skipped, out bool skipVanilla) {
         skipVanilla = SubsystemScKnifeBlockBehavior.HoldingKnife(player) || SubsystemScGrenades.Holding(player);
+        if (ScMobileControls.UsesTouchInput(player)) {
+            // Touch Hold emits Dig and Aim together. Only explicit buttons select
+            // secondary actions; leave Dig available for the primary action.
+            skipVanilla |= Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+            if (skipVanilla) { player.m_aim = null; player.m_aimStartTime = null; }
+            return;
+        }
         if (SubsystemScGrenades.Holding(player) && aiming && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, true); operated = true;
         }

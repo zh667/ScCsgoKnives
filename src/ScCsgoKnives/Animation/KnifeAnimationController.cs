@@ -114,7 +114,9 @@ public static class KnifeAnimationController {
             if (!state.ControlsHintShown && variant < CsmcKnifeRig.KnifeCount) {
                 state.ControlsHintShown = true;
                 model.m_componentPlayer.ComponentGui.DisplaySmallMessage(
-                    string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"), GetEditKeyName()),
+                    ScMobileControls.UsesTouchInput(model.m_componentPlayer)
+                        ? LanguageControl.Get("ScCsgoKnives", "Message", "KnifeTouchHint")
+                        : string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"), GetEditKeyName()),
                     Color.White,
                     true,
                     false

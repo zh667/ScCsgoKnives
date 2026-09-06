@@ -587,7 +587,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 ShowAmmo(player, spec, rounds);
                 if (!state.HintShown) {
                     state.HintShown = true;
-                    player.ComponentGui.DisplaySmallMessage(string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "GunHint"), SettingsManager.GetKeyboardMapping("EditItem", false)?.ToString() ?? "G"), Color.White, true, false);
+                    player.ComponentGui.DisplaySmallMessage(ScMobileControls.UsesTouchInput(player)
+                        ? LanguageControl.Get("ScCsgoKnives", "Message", "GunTouchHint")
+                        : string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "GunHint"), SettingsManager.GetKeyboardMapping("EditItem", false)?.ToString() ?? "G"), Color.White, true, false);
                 }
             }
             state.LastValue = value;
@@ -945,11 +947,20 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state) {
         ComponentPlayer player = componentMiner.ComponentPlayer;
         if (player is null) return false;
-        if (!m_states.TryGetValue(player, out GunState gun)) m_states[player] = gun = new GunState();
+        if (ScMobileControls.UsesTouchInput(player)) return false;
         // Act on the release (one press, one action). InProgress and Cancelled must return
         // false: ComponentPlayer treats a true from InProgress as "aim refused" and cancels
         // the aim on the spot, so Completed never arrives (0.15.0/0.15.1 right-click bug).
         if (state != AimState.Completed) return false;
+        return RequestSecondary(player);
+    }
+
+    public bool RequestSecondary(ComponentPlayer player) {
+        var componentMiner = player.ComponentMiner;
+        if (player.ComponentHealth.Health <= 0 || player.ComponentGui.ModalPanelWidget is not null
+            || DialogsManager.HasDialogs(player.GuiWidget)
+            || Terrain.ExtractContents(componentMiner.ActiveBlockValue) != BlocksManager.GetBlockIndex<ScGunBlock>(true)) return false;
+        if (!m_states.TryGetValue(player, out GunState gun)) m_states[player] = gun = new GunState();
         int value = componentMiner.ActiveBlockValue;
         GunSpec spec = ScGunBlock.SpecOf(value);
         ComponentFirstPersonModel model = player.Entity.FindComponent<ComponentFirstPersonModel>();

@@ -235,6 +235,8 @@
    "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile.",
    "Ammo": "{0} / ∞",
    "Recharging": "Recharging, {0} s to go",
+   "KnifeTouchHint": "Tap or hold the view for a light slash; use Heavy for a stab. Edit Item inspects.",
+   "GunTouchHint": "Tap to fire; hold for automatic fire. Use reload and secondary buttons; Edit Item inspects.",
    "GunHint": "Left click fires, R reloads; right click scopes the AWP or toggles the M4A1-S silencer; {0} inspects.",
    "BurstOn": "Burst fire",
    "BurstOff": "Single fire"

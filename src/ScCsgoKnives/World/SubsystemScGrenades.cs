@@ -19,7 +19,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     sealed class Blindness { public double Until, ImmuneUntil; public float Duration; }
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
     readonly Dictionary<ComponentPlayer, int> m_lastWeapon = [];
-    readonly Dictionary<ComponentPlayer, bool> m_lowButton = [];
+    readonly Dictionary<(ComponentPlayer Player, bool Low), bool> m_throwButtons = [];
     readonly Dictionary<ComponentBody, Blindness> m_blind = [];
     readonly Dictionary<int, Blindness> m_savedBlind = [];
     readonly HashSet<int> m_reducedFlash = [];
@@ -74,11 +74,13 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         values.SetValue("Blindness",flashes);
         // Preparations are intentionally absent: inventory has changed only for released throws.
     }
-    public void SetLowThrowButton(ComponentPlayer player, bool pressed, bool clicked, bool pointerDown) {
-        // Keep a pressed button captured while the pointer moves away to aim.
-        pressed |= m_lowButton.GetValueOrDefault(player) && pointerDown;
-        m_lowButton[player] = pressed;
-        if (pressed || clicked) RequestThrow(player, true, true);
+    public void SetThrowButton(ComponentPlayer player, bool low, bool pressed, bool clicked, bool cancelled) {
+        m_throwButtons[(player, low)] = pressed;
+        if (cancelled) {
+            if (m_preparing.TryGetValue(player, out var prep) && prep.FromButton && prep.Low == low) Cancel(player, prep);
+            return;
+        }
+        if (pressed || clicked) RequestThrow(player, low, true);
     }
     public void RequestThrow(ComponentPlayer player, bool low, bool fromButton = false) {
         if (!Holding(player) || !Operable(player) || m_preparing.ContainsKey(player)) return;
@@ -114,11 +116,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         foreach (var pair in m_preparing.ToArray()) {
             var p=pair.Key; var prep=pair.Value;
-            if (!Operable(p) || (!prep.Released && !prep.Transaction.Valid)
+            if (!Window.IsActive || !Operable(p) || (!prep.Released && !prep.Transaction.Valid)
                 || prep.Released && (p.ComponentMiner.Inventory.ActiveSlotIndex!=prep.Slot
                     || ScInventoryTransaction.Revision(p.ComponentMiner.Inventory)!=prep.CommittedRevision)) { Cancel(p,prep); continue; }
             var input=p.ComponentInput.PlayerInput;
-            bool pressed=prep.FromButton?m_lowButton.GetValueOrDefault(p):prep.Low?input.Aim.HasValue:input.Dig.HasValue || input.Hit.HasValue;
+            bool pressed=prep.FromButton?m_throwButtons.GetValueOrDefault((p,prep.Low)):prep.Low?input.Aim.HasValue:input.Dig.HasValue || input.Hit.HasValue;
             prep.Timeline.Step(m_time.GameTime,pressed);
             int stage=prep.Timeline.Stage(m_time.GameTime);
             if (stage != prep.Stage) {
@@ -387,6 +389,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
 
     public override void Dispose() {
         if (m_fireLoop is not null) { m_fireLoop.Stop();m_fireLoop.Dispose();Project.FindSubsystem<SubsystemAudio>()?.m_sounds.Remove(m_fireLoop);m_fireLoop=null; }
-        m_preparing.Clear();m_lowButton.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
+        m_preparing.Clear();m_throwButtons.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
     }
 }

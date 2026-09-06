@@ -99,3 +99,11 @@ dotnet build ScCsgoKnives.sln -c Release --no-restore
 python -X utf8 tools/pack_scmod.py
 dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod output/ScCsgoKnives-0.26.0.scmod --json docs/survival-polish-packagecheck.json --vanilla-content 'E:\EdgeDownload\[Windows]SurvivalcraftAPI_1.9.2.1\Content.zip'
 ```
+
+## 0.26.3 手机端适配
+
+- 设备检测统一放在 ScMobileControls：Android/iOS 启用手机界面，桌面端不创建模组按钮，触屏电脑也不会误启用。手机接键鼠保留原输入。
+- 分离触屏主攻击与副功能；补强投及枪械副功能按钮，每按钮独立捕获触点，双指操作不再误判投掷松手。菜单/触点丢失/失去焦点可取消未出手准备。
+- 手机按钮跟随原版操作面板可见性、UI 缩放和左手布局；提示文字区分设备。
+- 最终安装包 `output/ScCsgoKnives-0.26.3.scmod`，包内及离线检查 3466 项通过、0 失败。详见 [手机审查](mobile-adaptation-0263.md) 和 [检查报告](survival-0263-packagecheck.json)。
+- 手机画面、触屏实操、GPU 兼容性、帧率和内存仍需真实设备验收。

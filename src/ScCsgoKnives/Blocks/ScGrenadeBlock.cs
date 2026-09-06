@@ -52,7 +52,10 @@ public sealed class ScGrenadeBlock : Block {
     public override void GenerateTerrainVertices(BlockGeometryGenerator g, TerrainGeometry t, int value, int x, int y, int z) { }
     public override bool IsSwapAnimationNeeded(int oldValue, int newValue) => false;
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Kind(value) is >= 0 and < 6 ? Names[Kind(value)] : "未知投掷物（保留数据）";
-    public override string GetDescription(int value) => "按住左键准备强投，按住右键或“轻投”按钮准备近抛；松开才投出，出手后计时并消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。";
+    public override string GetDescription(int value) => (ScMobileControls.IsMobileDevice
+        ? "按住“强投”或“轻投”按钮准备，松开投出；屏幕长按为强投。"
+        : "按住左键准备强投，按住右键准备近抛；松开才投出。")
+        + "出手后计时并消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。";
     public override IEnumerable<int> GetCreativeValues() { for (int i = 0; i < 6; i++) if (Enabled(i)) yield return Value(i); }
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
         string b = "sccsgomaterial:0";
