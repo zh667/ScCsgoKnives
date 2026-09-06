@@ -136,16 +136,6 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
 
         if (!KnifeAnimationController.TriggerInspect(componentPlayer)) return true;
 
-        string name = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(
-            componentPlayer.Project.FindSubsystem<SubsystemTerrain>(true),
-            value
-        );
-        componentPlayer.ComponentGui.DisplaySmallMessage(
-            string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "Inspect"), name),
-            Engine.Color.White,
-            true,
-            false
-        );
         return true;
     }
 }

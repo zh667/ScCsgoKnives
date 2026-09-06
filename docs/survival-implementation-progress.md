@@ -107,3 +107,9 @@ dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod outpu
 - 手机按钮跟随原版操作面板可见性、UI 缩放和左手布局；提示文字区分设备。
 - 最终安装包 `output/ScCsgoKnives-0.26.3.scmod`，包内及离线检查 3466 项通过、0 失败。详见 [手机审查](mobile-adaptation-0263.md) 和 [检查报告](survival-0263-packagecheck.json)。
 - 手机画面、触屏实操、GPU 兼容性、帧率和内存仍需真实设备验收。
+
+## 0.26.4 提示精简与旧安装包更新
+
+- 本机日志和包校验确认仍在加载 0.26.2，已备份并替换为 0.26.4；需要完整重启游戏后加载新版。桌面按钮继续由 0.26.3 的设备判断隐藏。
+- 去掉检视、换弹开始和首次持枪/持刀教学弹字，保留剩余弹量与操作失败原因。
+- 最新包 `output/ScCsgoKnives-0.26.4.scmod`，3466 项包内/离线检查通过，0 失败；安装副本哈希一致。详见 [记录](survival-0264-fixes.md)，实机重启和画面复测未执行。

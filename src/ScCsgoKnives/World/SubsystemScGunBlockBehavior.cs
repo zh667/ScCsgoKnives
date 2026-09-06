@@ -45,7 +45,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         /// <summary>Shots still owed by the burst in progress, and when the next is due.</summary>
         public int BurstRemaining;
         public double BurstNextAt = -1;
-        public bool HintShown;
         public int LastValue = int.MinValue;
         /// <summary>Sounds due at a game time: the magazine, bolt and screw noises inside a clip.</summary>
         public readonly List<(double At, string Name)> Scheduled = [];
@@ -585,12 +584,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 // the bolt quietly during theirs - else the single draw file.
                 if (!Schedule(state, spec.Name, deployClip, now)) PlaySound(player, $"{spec.Name}_draw");
                 ShowAmmo(player, spec, rounds);
-                if (!state.HintShown) {
-                    state.HintShown = true;
-                    player.ComponentGui.DisplaySmallMessage(ScMobileControls.UsesTouchInput(player)
-                        ? LanguageControl.Get("ScCsgoKnives", "Message", "GunTouchHint")
-                        : string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "GunHint"), SettingsManager.GetKeyboardMapping("EditItem", false)?.ToString() ?? "G"), Color.White, true, false);
-                }
             }
             state.LastValue = value;
         }
@@ -903,7 +896,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.InsertAt = now + milestones.Value.Insert;
             Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
         }
-        player.ComponentGui.DisplaySmallMessage(ScReloadTransaction.CostMessage(creative, spec.Pellets > 1, tube ? shells : cost), Color.White, false, false);
     }
 
     /// <summary>
@@ -1021,8 +1013,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             string clip = KnifeAnimationController.CurrentClip(componentPlayer.Entity.FindComponent<ComponentFirstPersonModel>());
             Schedule(state, ScGunBlock.SpecOf(value).Name, clip is not null && clip.StartsWith("inspect", StringComparison.Ordinal) ? clip : "inspect", m_time.GameTime);
         }
-        string name = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(m_terrain, value);
-        componentPlayer.ComponentGui.DisplaySmallMessage(string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "Inspect"), name), Color.White, true, false);
         return true;
     }
 

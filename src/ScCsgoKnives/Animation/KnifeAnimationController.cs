@@ -11,7 +11,6 @@ public static class KnifeAnimationController {
         public string ClipAlias = "idle";
         public double StartedAt;
         public float LastPokePhase;
-        public bool ControlsHintShown;
         public bool DrawWhenVisible;
         /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
         public bool PendingInspect;
@@ -111,17 +110,6 @@ public static class KnifeAnimationController {
             Start(state, ActionKind.Draw, deploy);
             PlayDrawSound(variant);
             LogActionStart(state, variant);
-            if (!state.ControlsHintShown && variant < CsmcKnifeRig.KnifeCount) {
-                state.ControlsHintShown = true;
-                model.m_componentPlayer.ComponentGui.DisplaySmallMessage(
-                    ScMobileControls.UsesTouchInput(model.m_componentPlayer)
-                        ? LanguageControl.Get("ScCsgoKnives", "Message", "KnifeTouchHint")
-                        : string.Format(LanguageControl.Get("ScCsgoKnives", "Message", "ControlsHint"), GetEditKeyName()),
-                    Color.White,
-                    true,
-                    false
-                );
-            }
         }
 
         // Knife strikes are dispatched by the gameplay subsystem, never inferred from vanilla poke.
@@ -523,6 +511,4 @@ public static class KnifeAnimationController {
     }
 
     static string Format(Vector3 value) => $"({value.X:0.###},{value.Y:0.###},{value.Z:0.###})";
-
-    static string GetEditKeyName() => SettingsManager.GetKeyboardMapping("EditItem", false)?.ToString() ?? "G";
 }
