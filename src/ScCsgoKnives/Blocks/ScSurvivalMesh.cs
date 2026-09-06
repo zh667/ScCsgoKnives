@@ -96,7 +96,7 @@ public static class ScSurvivalMesh {
 }
 
 // This base has no static Index, so the API still allocates each concrete block dynamically.
-public abstract class ScSupplyBlock : Block {
+public abstract class ScSupplyBlock : ScNoDurabilityBlock {
     protected ScSupplyBlock() {
         FirstPersonScale = .3f; FirstPersonOffset = new(.4f, -.3f, -.55f); FirstPersonRotation = new(0, 25, 0);
         InHandScale = .4f; InHandOffset = new(0, .1f, -.2f);

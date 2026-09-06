@@ -3,7 +3,7 @@ using Engine.Graphics;
 
 namespace Game;
 
-public class ScKnifeBlock : Block {
+public class ScKnifeBlock : ScNoDurabilityBlock {
     static readonly int s_count = CsmcKnifeRig.KnifeCount;
     static readonly string[] s_names = Enumerable.Range(0, s_count).Select(CsmcKnifeRig.GetAssetName).ToArray();
     readonly BlockMesh[] m_meshes = Enumerable.Range(0, s_count).Select(_ => new BlockMesh()).ToArray();
@@ -55,6 +55,12 @@ public class ScKnifeBlock : Block {
         DrawBlockEnvironmentData environmentData
     ) {
         int variant = GetVariant(value);
+        // Old wear data can contain an out-of-range model. Preserve the item without indexing its assets.
+        if (!IsKnown(value)) {
+            BlocksManager.DrawFlatBlock(primitivesRenderer, value, size, ref matrix,
+                ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, false, environmentData);
+            return;
+        }
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI && !IsModelPreview(environmentData)) {
             BlocksManager.DrawFlatBlock(
                 primitivesRenderer,
@@ -103,6 +109,7 @@ public class ScKnifeBlock : Block {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
+        if (!IsKnown(value)) return $"未知刀具（型号 {GetVariant(value)}，保留数据）";
         if (LanguageControl.TryGetBlock($"{nameof(ScKnifeBlock)}:{GetVariant(value)}", "DisplayName", out string result)) return result;
         return base.GetDisplayName(subsystemTerrain, value);
     }
@@ -110,9 +117,12 @@ public class ScKnifeBlock : Block {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
 
     public override string GetDescription(int value) {
+        if (!IsKnown(value)) return "无法识别的刀具型号，原始物品数据已保留。";
         if (LanguageControl.TryGetBlock($"{nameof(ScKnifeBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value);
         return base.GetDescription(value) + ScWeaponCrafting.Help(value);
     }
+
+    public static bool IsKnown(int value) => GetVariant(value) < s_count;
 
     public static int GetVariant(int value) => Terrain.ExtractData(value) & 0x1F;
 

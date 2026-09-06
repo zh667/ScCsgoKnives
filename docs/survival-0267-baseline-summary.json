@@ -1,0 +1,24 @@
+{
+  "baselineVersion": "0.26.6",
+  "baselineSha256": "6c3bf46400e38a37ade00e7ab19a8c7933e6cef298edd33a8b0baed93185d86d",
+  "baselineChecks": 5289,
+  "baselineFailed": 1008,
+  "failuresByGroup": {
+    "starter/checkpoint-deferred-until-ready-current-project-once": 1,
+    "starter/checkpoint-failure-remains-pending": 1,
+    "starter/checkpoint-per-player-and-loaded-claim": 1,
+    "survival-runtime/metadata": 2,
+    "survival-runtime/wear": 209,
+    "survival-runtime/active-tool-and-save": 784,
+    "survival-runtime/unknown-knife": 10
+  },
+  "fixedVersion": "0.26.7",
+  "fixedSha256": "9a245929abbaa6c511e2ec3556b3ae556a35beb0f1c314e8a77ae00d6aa250fb",
+  "fixedChecks": 5289,
+  "fixedFailed": 0,
+  "newChecks": 1387,
+  "scope": "Packaged DLL and real SCAPI wear, ComponentMiner and inventory serialization; no live game or disk-world save test.",
+  "baselineUnavailableNewApis": 13,
+  "baselineComparableFailures": 995,
+  "baselineNotes": "13 checks call APIs added in 0.26.7 (10 unknown-knife checks and 3 checkpoint tests); these are unavailable in 0.26.6, not reproduced runtime failures. The remaining 995 failing checks use existing API behavior."
+}

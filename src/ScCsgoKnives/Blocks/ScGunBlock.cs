@@ -8,7 +8,7 @@ namespace Game;
 /// variants map onto the rig manifest after the knives: asset = KnifeCount + variant.
 /// Block data also carries the magazine and the M4A1-S silencer state (GunSpec).
 /// </summary>
-public class ScGunBlock : Block {
+public class ScGunBlock : ScNoDurabilityBlock {
     static readonly int s_count = GunSpec.All.Length;
     static readonly string[] s_names = GunSpec.All.Select(spec => spec.Name).ToArray();
     readonly BlockMesh[] m_meshes = Enumerable.Range(0, s_count).Select(_ => new BlockMesh()).ToArray();
@@ -140,10 +140,4 @@ public class ScGunBlock : Block {
         return base.GetDescription(value) + ScWeaponCrafting.Help(value);
     }
 
-    /// <summary>
-    /// Block data holds the magazine and silencer, never tool wear: Survivalcraft's damage
-    /// bookkeeping (digging with the gun in hand) must not touch it.
-    /// </summary>
-    public override int GetDamage(int value) => 0;
-    public override int SetDamage(int value, int damage) => value;
 }

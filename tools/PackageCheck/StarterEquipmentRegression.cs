@@ -77,6 +77,31 @@ static class StarterEquipmentRegression {
                     && items.All(item => Count(inv, item.Value) + dropped.GetValueOrDefault(item.Value) == item.Count)
                     && dropped.GetValueOrDefault(items[2].Value) == 3;
             });
+            var checkpoint = type.GetMethod("TryCheckpoint", BindingFlags.Instance | BindingFlags.NonPublic);
+            bool Checkpoint(object system, bool current, int[] ready, Action save) => (bool)checkpoint.Invoke(system, [current, ready, save]);
+            Test("checkpoint-deferred-until-ready-current-project-once", () => {
+                var system = Activator.CreateInstance(type); int saves = 0; Action save = () => saves++;
+                if (!Grant(system, 4, 1, Inventory()) || saves != 0) return false;
+                return !Checkpoint(system, false, [4], save) && !Checkpoint(system, true, [], save)
+                    && !Checkpoint(system, true, [5], save) && saves == 0
+                    && Checkpoint(system, true, [4], save) && saves == 1 && !Checkpoint(system, true, [4], save);
+            });
+            Test("checkpoint-failure-remains-pending", () => {
+                var system = Activator.CreateInstance(type); Grant(system, 4, 1, Inventory());
+                bool failed = false;
+                try { Checkpoint(system, true, [4], () => throw new InvalidOperationException("simulated snapshot failure")); }
+                catch (TargetInvocationException e) when (e.InnerException is InvalidOperationException) { failed = true; }
+                int saves = 0;
+                return failed && Checkpoint(system, true, [4], () => saves++) && saves == 1;
+            });
+            Test("checkpoint-per-player-and-loaded-claim", () => {
+                var system = Activator.CreateInstance(type); Grant(system, 4, 1, Inventory()); Grant(system, 5, 1, Inventory());
+                int saves = 0; Action save = () => saves++;
+                if (!Checkpoint(system, true, [4], save) || !Checkpoint(system, true, [5], save) || saves != 2) return false;
+                var saved = new ValuesDictionary(); type.GetMethod("Save").Invoke(system, [saved]);
+                var loaded = Activator.CreateInstance(type); type.GetMethod("Load").Invoke(loaded, [saved]);
+                return !Checkpoint(loaded, true, [4, 5], save) && !Grant(loaded, 4, 1, Inventory()) && saves == 2;
+            });
             Test("creative-inventory-rejected-even-if-mode-mismatches", () => !Grant(Activator.CreateInstance(type), 1, 1, new ComponentCreativeInventory()));
         } finally {
             for (int i = 0; i < 3; i++) BlocksManager.Blocks[700 + i] = previous[i];

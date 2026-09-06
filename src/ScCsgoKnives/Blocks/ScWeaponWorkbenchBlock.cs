@@ -3,7 +3,7 @@ using Engine.Graphics;
 namespace Game;
 
 // Independent mesh; do not inherit CraftingTableBlock's static Index field.
-public sealed class ScWeaponWorkbenchBlock : Block {
+public sealed class ScWeaponWorkbenchBlock : ScNoDurabilityBlock {
     public ScWeaponWorkbenchBlock() {
         DefaultDisplayName = "武器装配台"; DefaultCategory = "Items"; CraftingId = "sccsgoworkbench";
         // Match vanilla workbench presentation; world meshes remain full size.

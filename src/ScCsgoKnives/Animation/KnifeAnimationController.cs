@@ -61,7 +61,7 @@ public static class KnifeAnimationController {
     /// <summary>Rig manifest index of a held item: a knife variant, a gun variant after the knives, or -1.</summary>
     public static int ResolveVariant(int itemValue) {
         int contents = Terrain.ExtractContents(itemValue);
-        if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return ClampVariant(ScKnifeBlock.GetVariant(itemValue));
+        if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return ScKnifeBlock.IsKnown(itemValue) ? ScKnifeBlock.GetVariant(itemValue) : -1;
         if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue));
         if (contents == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true)) return ScGrenadeBlock.AssetIndex(itemValue);
         return -1;
@@ -464,7 +464,6 @@ public static class KnifeAnimationController {
         }
     }
 
-    static int ClampVariant(int variant) => Math.Clamp(variant, 0, CsmcKnifeRig.KnifeCount - 1);
 
     // The flipping sounds were recorded for a balisong and only fit that knife.
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";

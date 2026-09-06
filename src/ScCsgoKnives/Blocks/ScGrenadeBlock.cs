@@ -2,7 +2,7 @@ using Engine;
 using Engine.Graphics;
 namespace Game;
 
-public sealed class ScGrenadeBlock : Block {
+public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
     public const float IconDrawSize = .8f;
     public static readonly string[] Assets = ["grenade_hegrenade", "grenade_flashbang", "grenade_smokegrenade", "grenade_molotov", "grenade_incendiary", "grenade_decoy"];
     public static readonly string[] Names = ["高爆手雷", "闪光弹", "烟雾弹", "燃烧瓶", "燃烧弹", "诱饵弹"];
