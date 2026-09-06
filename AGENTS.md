@@ -16,3 +16,8 @@
 - The peer that does the work commits and pushes `main` (the fix/cs2-only-hands-0.20.4 branch was fast-forwarded into it at 0.28.2) at the end of every version, before handing over. Uncommitted work is invisible to the other peer's git even though its files are already there.
 - Before starting anything, the other peer runs `git fetch origin` and `git reset --mixed origin/<branch>` (VPS: `bash tools/sync_git_from_origin.sh`). That moves HEAD and the index to the pushed commit without touching files, so `git status` shows only what is genuinely uncommitted on the other side. Never `git pull` / `merge` into a tree the other peer has already updated, and never commit the other peer's uncommitted files.
 - Never edit the same file on both peers at the same time; check `git status` for the other peer's in-progress files first.
+
+# Textures and threads
+
+- `Engine.Graphics.Texture2D.Load` creates the GL object on the calling thread with no dispatch and no check, and `ContentManager` caches the result. Any texture a placeable block needs in `GenerateTerrainVertices` (terrain worker thread) must be resolved on the main thread first, in `Block.Initialize()`, and read from a field afterwards. A worker thread that first-touches `ContentManager.Get<Texture2D>` gets a broken texture that then draws black everywhere for the session (0.26.1-0.28.2 supply icons and the placed bench).
+
