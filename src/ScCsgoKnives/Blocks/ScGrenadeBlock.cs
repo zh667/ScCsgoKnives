@@ -12,6 +12,10 @@ public sealed class ScGrenadeBlock : Block {
         DefaultDisplayName = "CS2 投掷物"; DefaultCategory = "Weapons"; CraftingId = "sccsgogrenade";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 4; DefaultTextureSlot = 0;
     }
+    public override int GetTextureSlotCount(int value) => 1;
+    public override int GetFaceTextureSlot(int face, int value) => 0;
+    public override Vector3 GetIconViewOffset(int value, DrawBlockEnvironmentData env) =>
+        env?.GetType().FullName == "Game.ScCsgoBoxModelPreviewEnvironmentData" ? base.GetIconViewOffset(value, env) : Vector3.UnitZ;
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGrenadeBlock>(true), 0, kind);
     public static int Kind(int value) => Terrain.ExtractData(value);
     public static int AssetIndex(int value) => Kind(value) is >= 0 and < 6 ? CsmcKnifeRig.GrenadeOffset + Kind(value) : -1;

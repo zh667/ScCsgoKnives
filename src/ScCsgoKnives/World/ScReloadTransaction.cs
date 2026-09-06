@@ -18,7 +18,7 @@ public sealed class ScReloadTransaction {
         Revision = ScInventoryTransaction.Revision(inventory);
     }
     public bool Valid => !Cancelled && Inventory is not null && Inventory.ActiveSlotIndex == Slot
-        && ScInventoryTransaction.Revision(Inventory) == Revision && Inventory.GetSlotCount(Slot) == 1 && Inventory.GetSlotValue(Slot) == Expected;
+        && ScInventoryTransaction.Revision(Inventory) == Revision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot) && Inventory.GetSlotValue(Slot) == Expected;
     public void Cancel() => Cancelled = true;
     public bool ModeMatches(bool creative) => creative == (Cost == 0);
     bool Write(int rounds, int cost) {

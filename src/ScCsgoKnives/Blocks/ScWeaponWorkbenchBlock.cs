@@ -5,7 +5,10 @@ namespace Game;
 // Independent mesh; do not inherit CraftingTableBlock's static Index field.
 public sealed class ScWeaponWorkbenchBlock : Block {
     public ScWeaponWorkbenchBlock() {
-        DefaultDisplayName = "武器装配台"; DefaultCategory = "Construction"; CraftingId = "sccsgoworkbench";
+        DefaultDisplayName = "武器装配台"; DefaultCategory = "Items"; CraftingId = "sccsgoworkbench";
+        // Match vanilla workbench presentation; world meshes remain full size.
+        FirstPersonScale = .4f; FirstPersonOffset = new(.5f, -.5f, -.6f); FirstPersonRotation = new(0, 40, 0);
+        InHandScale = .5f; InHandOffset = new(0, .1f, -.26f); InHandRotation = new(0, 45, 0);
         IsTransparent = true; DefaultIsInteractive = true; MaxStacking = 40; DefaultSoundMaterialName = "Metal";
     }
     static readonly BoundingBox[] Collision = [

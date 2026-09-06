@@ -7,6 +7,15 @@ using Game;
 static class PolishExport {
     internal static void Write(Assembly mod,string directory) {
         Directory.CreateDirectory(directory);
+        var presentation=new List<object>();
+        foreach(string name in new[]{"ScGrenadeBlock","ScWeaponWorkbenchBlock","ScAmmoBlock","ScWeaponMaterialBlock"}) {
+            var block=(Block)Activator.CreateInstance(mod.GetType("Game."+name));
+            float[] V(Vector3 p)=>[p.X,p.Y,p.Z];
+            presentation.Add(new{name,slots=block.GetTextureSlotCount(0),face=block.GetFaceTextureSlot(-1,0),
+                view=V(block.GetIconViewOffset(0,new DrawBlockEnvironmentData {DrawBlockMode=DrawBlockMode.UI})),
+                scale=block.GetFirstPersonScale(0),offset=V(block.GetFirstPersonOffset(0)),rotation=V(block.GetFirstPersonRotation(0))});
+        }
+        File.WriteAllText(Path.Combine(directory,"presentation.json"),JsonSerializer.Serialize(presentation));
         var build=mod.GetType("Game.ScSurvivalMesh").GetMethod("Build");
         for(int kind=0;kind<7;kind++) {
             var mesh=(BlockMesh)build.Invoke(null,[kind]);

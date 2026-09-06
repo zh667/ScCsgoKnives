@@ -868,7 +868,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         IInventory inventory = player.ComponentMiner.Inventory;
         int ammo = ScAmmoBlock.Value(ScReloadTransaction.AmmoKind(spec));
         int cost = creative ? 0 : ScReloadTransaction.Required(spec);
-        int available = ScInventoryTransaction.Count(inventory, ammo);
+        int available = creative ? 0 : ScInventoryTransaction.Count(inventory, ammo);
         if (available < cost) {
             player.ComponentGui.DisplaySmallMessage($"装填需要{(spec.Pellets > 1 ? "霰弹" : "通用弹匣")} ×{cost}（现有 {available}）", Color.Red, false, false);
             return;
