@@ -21,10 +21,18 @@ def main():
     ap.add_argument('--lite', required=True)
     ap.add_argument('--baseline', required=True)
     ap.add_argument('--json', required=True)
+    ap.add_argument('--allow-reencoded-texture', action='append', default=[], help='Allow PNG encoding changes only when decoded RGBA pixels are identical')
     args = ap.parse_args()
     checks, changes = [], []
     def check(name, ok, detail=''):
         checks.append(dict(name=name, ok=bool(ok), detail=detail))
+    def preserved(name, a, b):
+        if a == b:
+            return True
+        if name not in args.allow_reencoded_texture:
+            return False
+        first, second = Image.open(io.BytesIO(a)).convert('RGBA'), Image.open(io.BytesIO(b)).convert('RGBA')
+        return first.size == second.size and first.tobytes() == second.tobytes()
     with zipfile.ZipFile(args.full) as full, zipfile.ZipFile(args.lite) as lite, zipfile.ZipFile(args.baseline) as old:
         check('same-paths', set(full.namelist()) == set(lite.namelist()))
         fm = json.loads(full.read('modinfo.json')); lm = json.loads(lite.read('modinfo.json'))
@@ -35,7 +43,7 @@ def main():
             if name.endswith('.png'):
                 a, b = full.read(name), lite.read(name)
                 w, h = struct.unpack('>II', a[16:24]); lw, lh = struct.unpack('>II', b[16:24])
-                check('full-preserves/' + name, a == old.read(name))
+                check('full-preserves/' + name, name in old.namelist() and preserved(name, a, old.read(name)))
                 if (w, h) == (1024, 1024):
                     check('lite-size/' + name, (lw, lh) == (512, 512))
                     record = {'path': name, 'sourceSha256': hashlib.sha256(a).hexdigest(), 'liteSha256': hashlib.sha256(b).hexdigest(), 'sourceSize': [w,h], 'liteSize': [lw,lh]}
@@ -51,7 +59,7 @@ def main():
         # New code is allowed; all previously shipped external gameplay/visual resources remain intact in Full.
         for name in old.namelist():
             if name.startswith('Assets/'):
-                check('baseline-asset/' + name, name in full.namelist() and digest(old, name) == digest(full, name))
+                check('baseline-asset/' + name, name in full.namelist() and preserved(name, old.read(name), full.read(name)))
         check('resized-exactly-177', len(changes) == 177)
         check('same-dll', digest(full, 'ScCsgoKnives.dll') == digest(lite, 'ScCsgoKnives.dll'))
     result = {'full': str(Path(args.full).resolve()), 'lite': str(Path(args.lite).resolve()),

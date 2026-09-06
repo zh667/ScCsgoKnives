@@ -17,6 +17,7 @@ namespace Game;
 /// </summary>
 public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdateable, IDrawable {
     sealed class GunState {
+        public readonly ScCombatFeedback Feedback = new();
         public ScAmmoHud AmmoHud;
         public double NextShot;
         public double BusyUntil = -1;          // reload or silencer clip in progress
@@ -461,6 +462,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             DrawTracers(camera);
             DrawZeus(camera);
             if (CsmcFirstPersonRenderer.ScopeOverlayActive) CsmcFirstPersonRenderer.DrawScopeOverlay();
+            var player = camera.GameWidget.PlayerData.ComponentPlayer;
+            if (player is not null && m_states.TryGetValue(player, out var state)) state.Feedback.Draw(camera, m_time.GameTime);
         }
         finally {
             Display.BlendState = blend;
@@ -471,8 +474,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public override void Dispose() {
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
+        m_states.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
         base.Dispose();
+    }
+
+    public void ReportHit(ComponentPlayer player, ComponentBody body, int weapon, Vector3 point, int outcome, double now) {
+        if (!m_states.TryGetValue(player, out var state)) m_states[player] = state = new GunState();
+        string name = BlocksManager.Blocks[Terrain.ExtractContents(weapon)].GetDisplayName(m_terrain, weapon);
+        bool sound = outcome == 2 && now - state.Feedback.KillAt > .07;
+        state.Feedback.Record(outcome, body.Entity.FindComponent<ComponentCreature>()?.DisplayName ?? "生物", name,
+            Vector3.Distance(player.ComponentCreatureModel.EyePosition, point), now);
+        if (sound) m_audio.PlaySound("Audio/ScCsgoKnives/bf1_kill_confirm", .8f, 0f, 0f, 0f);
     }
 
     /// <summary>The Zeus recharge times read from the world, by player index, until each player's state exists.</summary>
@@ -565,7 +578,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             }
             if (state.Reload is not null && state.InsertAt >= 0 && now >= state.InsertAt) {
                 state.InsertAt = -1;
-                if (!state.Reload.InsertMagazine()) CancelReload(player, state);
+                if (!state.Reload.FinishMagazine(now, state.BusyUntil)) CancelReload(player, state);
             }
             value = player.ComponentMiner.ActiveBlockValue;
             data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
@@ -771,6 +784,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             spec.KickPitchDegrees, spec.KickYawDegrees, spec.KickRecoverPerSecond);
         float pitch = MathUtils.DegToRad(kickPitch) * (0.8f + 0.4f * m_random.Float(0f, 1f));
         float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
+        Ray3 ray = ScShotAim.Select(ScMobileControls.UsesTouchInput(player), input.Dig, input.Hit, LookRay(player));
         Kick(player, state, pitch, yaw);
 
         // Hitscan along the view ray with a small random cone.
@@ -780,7 +794,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // which in this engine is *behind* the player (Matrix.Forward is -Z): the R8
         // shot backwards and hit nothing (0.20.2). The camera's own ray is what
         // ComponentInput builds Dig and Hit from.
-        Ray3 ray = input.Dig ?? input.Hit ?? LookRay(player);
         // CS keeps a separate inaccuracy per stance; the cs2 profile blends the vdata's
         // standing and moving values by speed instead of scaling one cone by a constant.
         float spread = Cs2Weapons.SpreadDegrees(spec.Name, alternate,
@@ -895,7 +908,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         else {
             state.DropAt = now + milestones.Value.Drop;
-            state.InsertAt = now + milestones.Value.Insert;
+            state.InsertAt = state.BusyUntil;
             Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
         }
     }

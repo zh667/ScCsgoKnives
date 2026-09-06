@@ -25,6 +25,9 @@ public static class ScSurvivalBalance {
     }
     public static float PelletPower(GunSpec gun, float distance) => Power(gun.Name) * Falloff(gun, distance) / Math.Max(1, gun.Pellets);
     public static void Attack(ComponentBody body, ComponentPlayer player, Vector3 point, Vector3 direction, float power, double now, bool melee = false, bool zeus = false) {
+        ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
+        float before = health?.Health ?? 0;
+        int weapon = player.ComponentMiner.ActiveBlockValue;
         Attackment attack = melee ? new MeleeAttackment(body, player.Entity, point, direction, power)
             : new ProjectileAttackment(body, player.Entity, point, direction, power, null);
         Control control = Controls.GetOrCreateValue(body);
@@ -35,5 +38,7 @@ public static class ScSurvivalBalance {
         attack.AllowImpulseAndStunWhenDamageIsZero = false;
         if (eligible) control.Next = now + (zeus ? 5 : .8);
         ComponentMiner.AttackBody(attack);
+        int outcome = ScCombatFeedback.Outcome(before, health?.Health ?? before);
+        if (outcome > 0) player.Project.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.ReportHit(player, body, weapon, point, outcome, now);
     }
 }

@@ -21,3 +21,9 @@ Architecture references:
 
 - [MCModderAnchor/TACZ](https://github.com/MCModderAnchor/TACZ), GPL-3.0 code.
 - [LesRaisins-Studios/LesRaisins-Tactical-Equipements](https://github.com/LesRaisins-Studios/LesRaisins-Tactical-Equipements), GPL-3.0 code.
+
+Battlefield 1 feedback audio:
+
+- `bf1_kill_confirm.ogg`: original `Sound/UI/UI_KillMessage_Wave` from the user-provided local Battlefield 1 installation (EA / DICE), converted from PCM to Ogg Vorbis.
+- Game audio remains the property of its respective rights holders and is not covered by the project code license. Provenance: `docs/bf1-feedback-source.json`.
+- Extraction tools: NicknineTheEagle/Frostbite-Scripts; vgmstream r2117. Tools themselves are not bundled in the mod.

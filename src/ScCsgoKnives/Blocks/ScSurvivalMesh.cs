@@ -5,6 +5,17 @@ namespace Game;
 /// <summary>Small closed, shaded meshes for survival supplies. No weapon/hand resources are replaced.</summary>
 public static class ScSurvivalMesh {
     public const string Texture = "Textures/ScCsgoKnives/survival_surface";
+    public static BlockMesh InventoryMesh(BlockMesh source) {
+        var mesh = new BlockMesh();
+        foreach (var v in source.Vertices) {
+            var copy = v;
+            // UI has baked directional shading, independent of scene light.
+            copy.IsEmissive = true;
+            mesh.Vertices.Add(copy);
+        }
+        foreach (int i in source.Indices) mesh.Indices.Add(i);
+        return mesh;
+    }
     // Atlas cells: brushed steel, dark steel, brass, red polymer, rubber,
     // blue glass, work mat, painted cabinet. Every face has real thickness.
     public static BlockMesh Build(int kind) {
@@ -102,12 +113,17 @@ public abstract class ScSupplyBlock : ScNoDurabilityBlock {
         InHandScale = .4f; InHandOffset = new(0, .1f, -.2f);
     }
     readonly Dictionary<int,BlockMesh> m_meshes=[];
+    readonly Dictionary<int,BlockMesh> m_icons=[];
     protected abstract int MeshKind(int value);
     public override Texture2D GetDefaultTexture(int value) => ContentManager.Get<Texture2D>(ScSurvivalMesh.Texture);
     public override Vector3 GetIconViewOffset(int value,DrawBlockEnvironmentData env) => new(1.1f,.8f,2);
     public override void DrawBlock(PrimitivesRenderer3D renderer,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env) {
         int kind=MeshKind(value);
         if(!m_meshes.TryGetValue(kind,out var mesh)) m_meshes[kind]=mesh=ScSurvivalMesh.Build(kind);
+        if(env?.DrawBlockMode == DrawBlockMode.UI) {
+            if(!m_icons.TryGetValue(kind,out var icon)) m_icons[kind]=icon=ScSurvivalMesh.InventoryMesh(mesh);
+            mesh=icon;
+        }
         BlocksManager.DrawMeshBlock(renderer,mesh,GetDefaultTexture(value),color,size,ref matrix,env);
     }
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z) { }

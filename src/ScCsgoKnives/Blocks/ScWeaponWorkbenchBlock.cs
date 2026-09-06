@@ -21,9 +21,10 @@ public sealed class ScWeaponWorkbenchBlock : ScNoDurabilityBlock {
         new(new Vector3(.07f,.1475f,.16f),new Vector3(.93f,.2125f,.84f))
     ];
     public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain terrain,int value) => Collision;
-    BlockMesh m_world, m_item;
+    BlockMesh m_world, m_item, m_icon;
     public override void Initialize() {
         m_item=ScSurvivalMesh.Build(6); m_world=ScSurvivalMesh.Build(6);
+        m_icon=ScSurvivalMesh.InventoryMesh(m_item);
         m_world.TransformPositions(Matrix.CreateTranslation(.5f,.5f,.5f));
         base.Initialize();
     }
@@ -32,7 +33,7 @@ public sealed class ScWeaponWorkbenchBlock : ScNoDurabilityBlock {
     public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z) =>
         generator.GenerateShadedMeshVertices(this,x,y,z,m_world,Color.White,null,null,geometry.GetGeometry(GetDefaultTexture(value)).SubsetOpaque);
     public override void DrawBlock(PrimitivesRenderer3D renderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData env) =>
-        BlocksManager.DrawMeshBlock(renderer,m_item,GetDefaultTexture(value),color,size,ref matrix,env);
+        BlocksManager.DrawMeshBlock(renderer,env?.DrawBlockMode == DrawBlockMode.UI ? m_icon : m_item,GetDefaultTexture(value),color,size,ref matrix,env);
     public override string GetDescription(int value) => "交互后选择枪械或刀具，查看材料与等级再组装；枪械以空枪交付。";
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
         yield return ScAmmoBlock.Recipe(Terrain.MakeBlockValue(BlockIndex), 1, "武器装配台", ["ironingot", "ironingot", "ironingot", "ironingot", "copperingot", "copperingot", "planks", "planks", "planks"]);

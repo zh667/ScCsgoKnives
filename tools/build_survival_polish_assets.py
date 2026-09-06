@@ -64,7 +64,7 @@ def main():
         if i not in (4,5,6):
             d.line((2,2,61,2),fill=tuple(min(255,c+25) for c in color));d.line((2,61,61,61),fill=tuple(max(0,c-25) for c in color))
         sheet.paste(cell,((i%4)*64,(i//4)*64))
-    sheet.save(OUT/'survival_surface.png')
+    sheet.convert('RGBA').save(OUT/'survival_surface.png')
     (ROOT/'docs/survival-polish-sources.json').write_bytes((json.dumps({'imports':records,'generated':['survival_surface.png','grenade_glow.png'],'conversion':'128px transparent icons; padded 4x4 RGBA animation atlases, 16 frames each'},ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
 
 if __name__=='__main__':main()

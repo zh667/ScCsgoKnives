@@ -87,7 +87,7 @@ static class AmmoHudRegression {
                             return Step("InsertShell") && Text(Read(gun, inv, loading: true), "Main").StartsWith("4 / ")
                                 && Text(Read(gun, inv), "Main").EndsWith("×9") && Text(Read(gun, inv), "Detail") == localize("Tube");
                         }
-                        if (!Step("Discard") || !Text(Read(gun, inv, loading: true), "Main").StartsWith("0 / ")
+                        if (!Step("Discard") || !Text(Read(gun, inv, loading: true), "Main").StartsWith("3 / ")
                             || !Text(Read(gun, inv), "Main").EndsWith("×10")) return false;
                         return Step("InsertMagazine") && Text(Read(gun, inv), "Main").StartsWith(capacity + " / ")
                             && Text(Read(gun, inv), "Main").EndsWith("×" + (10 - cost));

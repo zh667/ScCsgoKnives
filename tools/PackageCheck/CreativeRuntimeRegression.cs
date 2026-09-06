@@ -31,7 +31,7 @@ static class CreativeRuntimeRegression {
                 if(name is "nova" or "xm1014" or "sawedoff") {
                     for(int n=initial;n<capacity;n++)if(!Call(t,"InsertShell") || !Valid(t) || R(inv.GetSlotValue(0))!=n+1)return false;
                     if(Call(t,"InsertShell"))return false;
-                } else if(!Call(t,"Discard") || !Valid(t) || R(inv.GetSlotValue(0))!=0 || !Call(t,"InsertMagazine") || Call(t,"InsertMagazine"))return false;
+                } else if(!Call(t,"Discard") || !Valid(t) || R(inv.GetSlotValue(0))!=initial || !Call(t,"InsertMagazine") || Call(t,"InsertMagazine"))return false;
                 return R(inv.GetSlotValue(0))==capacity && inv.GetSlotCount(0)==ComponentCreativeInventory.m_largeNumber
                     && inv.GetSlotValue(1)==0 && inv.GetSlotValue(10)==value && Valid(t);
             });
@@ -40,8 +40,8 @@ static class CreativeRuntimeRegression {
         Test("creative-switch-cancels",()=>{var inv=Inventory(sample);var t=Tx(inv,30);inv.ActiveSlotIndex=1;return !Call(t,"Discard") && inv.GetSlotValue(0)==sample;});
         Test("creative-replacement-cancels",()=>{var inv=Inventory(sample);var t=Tx(inv,30);inv.AddSlotItems(0,Terrain.MakeBlockValue(512,0,Data(1,0)),1);return !Valid(t) && !Call(t,"Discard");});
         Test("creative-catalog-readonly",()=>{var inv=Inventory(sample);var t=Tx(inv,30,0,10);return !Valid(t) && !Call(t,"Discard") && inv.GetSlotValue(10)==sample;});
-        Test("creative-paid-mode-rejected",()=>{var inv=Inventory(sample);var t=Tx(inv,30,1);return Call(t,"Discard") && !Call(t,"InsertMagazine") && R(inv.GetSlotValue(0))==0;});
-        Test("creative-cancel-after-discard",()=>{var inv=Inventory(sample);var t=Tx(inv,30);bool dropped=Call(t,"Discard");tx.GetMethod("Cancel").Invoke(t,null);return dropped && !Call(t,"InsertMagazine") && R(inv.GetSlotValue(0))==0;});
+        Test("creative-paid-mode-rejected",()=>{var inv=Inventory(sample);var t=Tx(inv,30,1);return Call(t,"Discard") && !Call(t,"InsertMagazine") && R(inv.GetSlotValue(0))==8;});
+        Test("creative-cancel-after-discard",()=>{var inv=Inventory(sample);var t=Tx(inv,30);bool dropped=Call(t,"Discard");tx.GetMethod("Cancel").Invoke(t,null);return dropped && !Call(t,"InsertMagazine") && R(inv.GetSlotValue(0))==8;});
         var grenade=(Block)Activator.CreateInstance(mod.GetType("Game.ScGrenadeBlock"));
         for(int kind=0;kind<6;kind++) {
             int value=Terrain.MakeBlockValue(700,0,kind);

@@ -97,3 +97,9 @@ The body already carries its attached pin/ring/handle; detached shared pin/spoon
 - 火焰、爆炸烟尘和烟雾来自既有 CS2 `fire_small_sim_a`、`explosion_fireball_large_01_smoke`、`vistasmokev1_emods` 图像序列，各抽取 16 帧组成带边距的 atlas。
 - `survival_surface.png` 是本项目生成的金属、橡胶、黄铜、镜片和工作垫材质；物品与工作台网格由 `ScSurvivalMesh` 创建。`grenade_glow.png` 为程序生成的柔边光核。
 - 可重复导入脚本：`tools/build_survival_polish_assets.py`；逐文件 SHA-256 和源路径见 `docs/survival-polish-sources.json`。本轮不删除任何既有本地、Steam 或 VPS 资源。
+
+### 0.28.0 combat feedback
+
+BF1 normal kill confirmation is extracted from the user-provided installation, `Sound/UI/UI_KillMessage_Wave`, chunk `28a7c346-7512-c4af-22b0-cedf75129c6e`. See `docs/bf1-feedback-source.json` and `tools/extract_bf1_feedback.py`. The full 2.521-second stereo sound is preserved and converted to Ogg.
+
+The supply atlas is encoded as RGBA with alpha 255; all decoded color pixels and its 256×128 size are identical to 0.27.0. Original weapon texture quality is unchanged.

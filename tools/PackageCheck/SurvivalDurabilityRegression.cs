@@ -120,7 +120,7 @@ static class SurvivalDurabilityRegression {
                     t.GetType().GetMethod("Cancel").Invoke(t, null);
                     if (Step(t, tube ? "InsertShell" : "InsertMagazine")) return false;
                     var copy = Reload(inv);
-                    return Same(inv, copy) && (int)Call("GunSpec", "GetRounds", Terrain.ExtractData(copy.GetSlotValue(0))) == (tube ? capacity : 0)
+                    return Same(inv, copy) && (int)Call("GunSpec", "GetRounds", Terrain.ExtractData(copy.GetSlotValue(0))) == (tube ? capacity : capacity - 1)
                         && copy.GetSlotCount(1) == (tube ? 9 : 10);
                 });
                 Test("insufficient-ammo/" + name, () => {

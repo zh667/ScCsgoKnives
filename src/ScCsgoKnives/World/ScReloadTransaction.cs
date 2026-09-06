@@ -1,6 +1,6 @@
 namespace Game;
 
-/// <summary>Reload events commit independently. Cancellation never refunds a discarded magazine.</summary>
+/// <summary>Magazine replacement is atomic at animation completion; tube shells commit individually.</summary>
 public sealed class ScReloadTransaction {
     public static string CostMessage(bool creative, bool shells, int count) => creative
         ? "创造模式：无限弹药，无需消耗"
@@ -29,7 +29,8 @@ public sealed class ScReloadTransaction {
     }
     public bool Discard() {
         if (Discarded || Inserted) return false;
-        if (!Write(0, 0)) return false;
+        // The drop cue is visual only; cancellation preserves rounds and reserves.
+        if (!Valid) { Cancel(); return false; }
         Discarded = true; return true;
     }
     public bool InsertMagazine() {
@@ -37,6 +38,8 @@ public sealed class ScReloadTransaction {
         if (!Write(Capacity, Cost)) return false;
         Inserted = true; return true;
     }
+    public bool FinishMagazine(double now, double completeAt) => double.IsFinite(now)
+        && double.IsFinite(completeAt) && now >= completeAt && InsertMagazine();
     public bool InsertShell() {
         int rounds = GunSpec.GetRounds(Terrain.ExtractData(Expected));
         return rounds < Capacity && Write(rounds + 1, Cost == 0 ? 0 : 1);

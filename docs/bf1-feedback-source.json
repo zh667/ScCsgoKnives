@@ -1,0 +1,14 @@
+{
+  "game": "Battlefield 1",
+  "asset": "Sound/UI/UI_KillMessage_Wave",
+  "sourceDirectory": "E:\\SteamLibrary\\steamapps\\common\\Battlefield 1",
+  "chunkId": "28a7c346-7512-c4af-22b0-cedf75129c6e",
+  "ebxSha1": "7ea4f492a9a3dd3ca4bc2a00faff171490035545",
+  "decoder": "vgmstream r2117",
+  "sampleRate": 48000,
+  "channels": 2,
+  "samples": 121009,
+  "processing": "Complete original PCM decoded to Ogg Vorbis",
+  "output": "src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/bf1_kill_confirm.ogg",
+  "sha256": "974996d24dfe2c0cf418d71cf07945e4f9617c925547e62a7523e65eb31748ea"
+}
