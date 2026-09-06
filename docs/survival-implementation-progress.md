@@ -119,3 +119,9 @@ dotnet run --project tools/PackageCheck -c Release --no-restore -- --scmod outpu
 - 刀攻击不能抢在新武器切入前覆盖动画；快速切换后检视先排队到切入结束。
 - 菜单中真实手动画继续逐帧播放，菜单内切换立即切入，关闭不重播。
 - 最新包 `output/ScCsgoKnives-0.26.5.scmod`，3832 项通过、0 失败；旧版复现 366 项失败。已备份旧安装包并更新，重启游戏后加载。见 [记录](survival-0265-fixes.md)。
+
+## 0.26.6 生存开局装备
+
+- 每位新玩家首次生存出生给予 CT 默认刀 ×1、满弹 USP-S ×1、通用弹匣 ×3。
+- 世界保存领取标记；旧角色、死亡重生和重复事件不补发，背包溢出在出生点附近掉落，保留原有物品。
+- 最新包 `output/ScCsgoKnives-0.26.6.scmod`，3902 项包内/离线检查通过、0 失败，已备份并安装。包含 0.26.5 动画修复，重启游戏后生效。见 [记录](survival-0266-starter-equipment.md)。

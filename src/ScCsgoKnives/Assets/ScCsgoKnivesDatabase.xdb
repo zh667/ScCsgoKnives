@@ -12,6 +12,9 @@
     <MemberSubsystemTemplate Name="ScGrenades" Guid="1386b8c7-c2b2-4948-a73a-bc73060b2c87" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="620e8f31-a3bb-43cc-8e21-5bb21c27826a" Value="Game.SubsystemScGrenades" Type="string" />
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="ScStarterEquipment" Guid="78a906d2-bf71-4739-b096-7398c6d4c3da" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="e7dde55c-3916-4b0f-a8ca-4e116e68bab8" Value="Game.SubsystemScStarterEquipment" Type="string" />
+    </MemberSubsystemTemplate>
   </ProjectTemplate>
   <EntityTemplate Name="LandAnimal" Guid="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="ScDecoyBehavior" Guid="185134db-5aeb-4b96-9181-6dc726728f52" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">

@@ -13,6 +13,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("OnLoadingFinished", this);
+        ModsManager.RegisterHook("OnPlayerSpawned", this);
         ModsManager.RegisterHook("BeforeWidgetUpdate", this);
         ModsManager.RegisterHook("AfterWidgetUpdate", this);
         ModsManager.RegisterHook("ChaseBehaviorScoreTarget", this);
@@ -54,6 +55,16 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 ScreensManager.SwitchScreen("RecipaediaRecipes", m_assemblyClickValue);
             }
         }
+    }
+
+    public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer player, Vector3 position) {
+        if (player is null) return false;
+        var project = player.Project;
+        project.FindSubsystem<SubsystemScStarterEquipment>(true).TryGrant(
+            project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode, spawnMode,
+            player.PlayerData.PlayerIndex, player.PlayerData.SpawnsCount, player.ComponentMiner.Inventory,
+            (value, count) => project.FindSubsystem<SubsystemPickables>(true).AddPickable(value, count, position + Vector3.UnitY * .5f, null, null));
+        return false;
     }
 
     public override void ChaseBehaviorScoreTarget(ComponentChaseBehavior chase, ComponentCreature target, ref float score) =>

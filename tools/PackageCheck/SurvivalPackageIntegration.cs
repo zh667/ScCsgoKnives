@@ -38,8 +38,12 @@ static class SurvivalPackageIntegration {
                 Check("database/"+name,behavior?.GetValue<string>("Class")=="Game.ComponentScDecoyBehavior","actual database merge and inherited component values");
             }
             var project=database.Descendants("ProjectTemplate").Single(e=>(string)e.Attribute("Name")=="Project");
-            foreach (string name in new[] {"ScKnifeBlockBehavior","ScGunBlockBehavior","ScWeaponWorkbench","ScGrenades"})
+            foreach (string name in new[] {"ScKnifeBlockBehavior","ScGunBlockBehavior","ScWeaponWorkbench","ScGrenades","ScStarterEquipment"})
                 Check("subsystem/"+name,project.Elements("MemberSubsystemTemplate").Count(e=>(string)e.Attribute("Name")==name)==1,"exactly one registration after engine merge");
+            var starter = project.Elements("MemberSubsystemTemplate").Single(e => (string)e.Attribute("Name") == "ScStarterEquipment");
+            string starterClass = (string)starter.Elements("Parameter").Single(e => (string)e.Attribute("Name") == "Class").Attribute("Value");
+            Check("subsystem/starter-class", starterClass == "Game.SubsystemScStarterEquipment"
+                && mod.GetType(starterClass)?.IsSubclassOf(typeof(GameEntitySystem.Subsystem)) == true, "registered starter subsystem resolves from the packaged DLL");
         } catch (Exception e) {Check("database/load",false,e.ToString());}
         string[] types=["ScKnifeBlock","ScGunBlock","ScAmmoBlock","ScWeaponMaterialBlock","ScWeaponWorkbenchBlock","ScGrenadeBlock"];
         var blocks=types.Select(name=>(Block)Activator.CreateInstance(mod.GetType("Game."+name,true))).ToArray();
