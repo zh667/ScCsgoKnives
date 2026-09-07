@@ -105,6 +105,38 @@ public static class SurvivalSelfTest {
             var fresh = new ScSlotHistory(); fresh.Observe(3, 0);                 // world loaded holding the grenade
             return wheel && blink && held && fresh.Previous == -1;
         });
+        Test("smoke-heated-by-fire", () => {
+            var fire = new ScGrenadeState { Kind = 3, Effect = true, Remaining = 5, Position = Vector3.Zero };
+            ScGrenadeState Smoke(Vector3 at, bool popped = false) => new() { Kind = 2, Effect = popped, Position = at };
+            bool inside = ScFireArea.Heats(fire, Smoke(new Vector3(1, .5f, 1))) && ScFireArea.Heats(fire, Smoke(new Vector3(2.4f, 1.1f, 0)));
+            bool outside = !ScFireArea.Heats(fire, Smoke(new Vector3(3.5f, 0, 0))) && !ScFireArea.Heats(fire, Smoke(new Vector3(0, 2, 0))) && !ScFireArea.Heats(fire, Smoke(new Vector3(0, -1, 0)));
+            bool onlyOnce = !ScFireArea.Heats(fire, Smoke(Vector3.Zero, popped: true));
+            fire.Remaining = 0; bool dead = !ScFireArea.Heats(fire, Smoke(Vector3.Zero));
+            bool notDecoy = !ScFireArea.Heats(new ScGrenadeState { Kind = 4, Effect = true, Remaining = 5 }, new ScGrenadeState { Kind = 5 });
+            return inside && outside && onlyOnce && dead && notDecoy;
+        });
+        Test("smoke-he-opening", () => {
+            var d = new ScSmokeDisturbance { Center = Vector3.Zero };
+            bool hold = d.Clearing(Vector3.Zero) == 1 && d.Clearing(new Vector3(2.4f, 0, 0)) == 1 && Math.Abs(d.Clearing(new Vector3(2.75f, 0, 0)) - .5f) < .001f && d.Clearing(new Vector3(3, 0, 0)) == 0;
+            d.Remaining = 1; bool refilling = Math.Abs(d.Clearing(Vector3.Zero) - .5f) < .001f;
+            d.Remaining = 0; bool gone = d.Clearing(Vector3.Zero) == 0 && !d.Active;
+            var l = ScSmokeDisturbance.Load(new ScSmokeDisturbance { Center = new Vector3(1, 2, 3), Remaining = 2.2f }.Save());
+            bool saved = l is not null && l.Center == new Vector3(1, 2, 3) && l.Remaining == 2.2f && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Remaining = 0 }.Save()) is null
+                && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Remaining = 99 }.Save()) is null;
+            return hold && refilling && gone && saved && ScSmokeDisturbance.Total == 3.5f && ScSmokeDisturbance.Clearing(null, Vector3.Zero) == 0;
+        });
+        Test("smoke-opening-opens-sight", () => {
+            var smoke = new ScGrenadeState { Kind = 2, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
+            Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
+            var opening = new ScSmokeDisturbance { Center = Vector3.Zero };
+            float intact = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, null), open = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]);
+            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 6) < .001f;
+            bool openNow = open <= .5f + 1e-3f /* only the 0.5 m soft rim on each side is left */ && !ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && ScSmokeVolume.Density(smoke, Vector3.Zero, [opening]) == 0 && ScSmokeVolume.Density(smoke, Vector3.Zero) == 1;
+            var side = new ScSmokeDisturbance { Center = new Vector3(0, 0, 4) }; // opening beside the path: sight still blocked
+            bool sideBlocked = ScSmokeVolume.Blocks([smoke], a, b, null, [side]);
+            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 6) < .001f;
+            return blockedBefore && openNow && sideBlocked && refilled;
+        });
         Test("headshot-geometry", () => {
             // A human-sized target in a vanilla-like bone space: inch units (0.0254) and a yawed, translated root.
             Matrix bone = Matrix.CreateScale(.0254f) * Matrix.CreateRotationY(1.1f) * Matrix.CreateTranslation(new Vector3(10, 3, -7));

@@ -17,6 +17,9 @@ public static class ScFireArea {
         }
         return (source,power);
     }
+    /// <summary>F05: a thrown, not yet popped smoke grenade inside a live fire area (same cylinder as creatures' feet) is heated.
+    /// The caller adds the line-of-sight check from the fire's origin so a wall between them does not count.</summary>
+    public static bool Heats(ScGrenadeState fire,ScGrenadeState smoke) => smoke.Kind==2 && !smoke.Effect && Contains(fire,smoke.Position);
     public static bool SmokeTouches(ScGrenadeState fire,ScGrenadeState smoke) => ScFireArea.IsFire(fire) && smoke.Effect && smoke.Kind==2 && smoke.Remaining>0
         && Vector3.Distance(fire.Position,ScSmokeVolume.Center(smoke)) < Radius(fire.Kind)+ScSmokeVolume.CurrentRadius(smoke);
 }
