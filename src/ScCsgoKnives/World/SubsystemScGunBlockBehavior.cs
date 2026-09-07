@@ -491,6 +491,33 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>The Zeus recharge times read from the world, by player index, until each player's state exists.</summary>
     readonly Dictionary<int, double> m_savedRecharge = [];
     const string RechargeKey = "ZeusRechargeAt";
+    /// <summary>M4: shots fired inside the current durability level, per player hotbar slot; reset when the slot holds another gun type.
+    /// Moving a gun to another slot forfeits at most one level's partial progress (the item itself carries only the level).</summary>
+    readonly Dictionary<(int Player, int Slot), (int Variant, int Shots)> m_wear = [];
+    const string WearKey = "GunWear";
+    readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
+    SubsystemGameInfo m_gameInfo;
+    bool Creative => (m_gameInfo ??= Project.FindSubsystem<SubsystemGameInfo>(true)).WorldSettings.GameMode == GameMode.Creative;
+    /// <summary>One real shot: counts toward the slot's level and returns the data to write (level lowered when due).</summary>
+    int Wear(ComponentPlayer player, GunSpec spec, int data) {
+        if (Creative) return data;
+        int level = GunSpec.GetDurability(data);
+        if (level <= 0) return data;
+        var key = (player.PlayerData.PlayerIndex, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
+        int variant = GunSpec.GetVariant(data);
+        int shots = m_wear.TryGetValue(key, out var entry) && entry.Variant == variant ? entry.Shots : 0;
+        int after = ScGunDurability.Wear(spec.Name, level, ref shots);
+        m_wear[key] = (variant, shots);
+        if (after == level) return data;
+        KnifeLog.Information($"gun wear: {spec.Name} slot {key.Item2} level {level} -> {after} ({ScGunDurability.ShotsPerLevel(spec.Name)} shots per level)");
+        if (after <= 0) player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false);
+        return GunSpec.SetDurability(data, after);
+    }
+    void BrokenNotice(ComponentPlayer player, double now) {
+        if (m_brokenNoticeAt.TryGetValue(player, out double last) && now - last < 2) return;
+        m_brokenNoticeAt[player] = now;
+        player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false);
+    }
 
     public override void Load(ValuesDictionary valuesDictionary) {
         base.Load(valuesDictionary);
@@ -499,6 +526,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             foreach (KeyValuePair<string, object> kv in saved) {
                 if (int.TryParse(kv.Key, out int index) && kv.Value is double at) m_savedRecharge[index] = at;
             }
+        }
+        ValuesDictionary wear = valuesDictionary.GetValue<ValuesDictionary>(WearKey, null);
+        if (wear is not null) foreach (KeyValuePair<string, object> kv in wear) {
+            var m = System.Text.RegularExpressions.Regex.Match(kv.Key, @"^p(\d+)s(\d+)$");
+            string[] parts = (kv.Value as string ?? "").Split(',');
+            if (m.Success && parts.Length == 2 && int.TryParse(parts[0], out int variant) && int.TryParse(parts[1], out int shots) && shots >= 0)
+                m_wear[(int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value))] = (variant, shots);
         }
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
@@ -526,6 +560,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             else if (saved.ContainsKey(key)) saved.Remove(key);
         }
         valuesDictionary.SetValue(RechargeKey, saved);
+        var wear = new ValuesDictionary();
+        foreach (var (key, entry) in m_wear) if (entry.Shots > 0) wear.SetValue($"p{key.Player}s{key.Slot}", $"{entry.Variant},{entry.Shots}");
+        valuesDictionary.SetValue(WearKey, wear);
     }
 
     public void Update(float dt) {
@@ -723,6 +760,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input,
               bool inBurst = false, bool alternateFire = false, double? cycleFrom = null) {
         double now = m_time.GameTime;
+        // M4: a broken gun never fires; it can still be reloaded, inspected, moved and repaired.
+        if (!Creative && ScGunDurability.IsBroken(data)) { BrokenNotice(player, now); return; }
         int roundsBefore = rounds;
         // A burst costs its own cycle time once, not one per round: CS2's Glock-18
         // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55
@@ -744,7 +783,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.NextShot = (cycleFrom ?? now) + spec.CycleSeconds;
         }
         rounds--;
-        value = WriteData(player, value, GunSpec.SetRounds(data, rounds));
+        // The round and the wear are one write: only a shot that really happens counts (plan C1).
+        value = WriteData(player, value, Wear(player, spec, GunSpec.SetRounds(data, rounds)));
         // A detachable silencer that is on, or an integral one (the MP5-SD): the
         // flash, the muzzle and the kick follow it. Only the detachable kind has a
         // separate sound file; the integral one's WEAPON_SOUND_SINGLE is already

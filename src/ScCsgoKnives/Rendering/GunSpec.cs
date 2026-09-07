@@ -287,19 +287,25 @@ public sealed class GunSpec {
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);
 
-    // v3 uses 17 non-sign data bits; v2 (0.17.3–0.20.4) and legacy saves remain readable.
-    const int Layout3 = 1 << 16;
-    const int Layout2 = 1 << 14;
-    public const int VariantMask = 0x3;
-    static bool IsV3(int data) => (data & Layout3) != 0;
-    static bool IsV2(int data) => (data & Layout2) != 0;
-    public static int GetVariant(int data) => IsV3(data) || IsV2(data) ? data & 63 : data & 3;
-    public static int GetRounds(int data) => IsV3(data) ? (data >> 6) & 255 : IsV2(data) ? (data >> 6) & 127 : (data >> 2) & 63;
-    public static bool GetSilencerOff(int data) => (data & (1 << (IsV3(data) ? 14 : IsV2(data) ? 13 : 8))) != 0;
-    public static int MakeData(int variant, int rounds, bool silencerOff = false) =>
-        Layout3 | (variant & 63) | (Math.Clamp(rounds, 0, 255) << 6) | (silencerOff ? 1 << 14 : 0);
-    public static int SetRounds(int data, int rounds) => MakeData(GetVariant(data), rounds, GetSilencerOff(data));
-    public static int SetSilencerOff(int data, bool off) => MakeData(GetVariant(data), GetRounds(data), off);
+    // Item data layout v4 (0.32.0). Terrain.ExtractData sign-extends bit 17, so 17 bits are usable:
+    //   bits 0-13  ((rounds * 2 + silencerOff) * 43 + variant), mixed radix: variant 0-42, rounds 0-150 (the Negev's 150 is the largest magazine)
+    //   bits 14-16 durability level 0-7 (7 = new, 0 = broken); see ScGunDurability
+    // v1-v3 items (up to 0.31.0) are not decoded: a new world per version is the rule for this batch.
+    public const int VariantRadix = 43, RoundsMax = 150, MaxDurability = 7;
+    const int RoundsRadix = RoundsMax + 1, PackedMask = (1 << 14) - 1, DurabilityShift = 14, DurabilityMask = 7;
+    public const int VariantMask = VariantRadix - 1;
+    public static int GetVariant(int data) => (data & PackedMask) % VariantRadix;
+    public static int GetRounds(int data) => ((data & PackedMask) / VariantRadix) / 2;
+    public static bool GetSilencerOff(int data) => ((data & PackedMask) / VariantRadix) % 2 == 1;
+    public static int GetDurability(int data) => (data >> DurabilityShift) & DurabilityMask;
+    /// <summary>A new gun: full durability. Kept at three parameters because tools find it by name through reflection.</summary>
+    public static int MakeData(int variant, int rounds, bool silencerOff = false) => Pack(variant, rounds, silencerOff, MaxDurability);
+    public static int Pack(int variant, int rounds, bool silencerOff, int durability) =>
+        ((Math.Clamp(rounds, 0, RoundsMax) * 2 + (silencerOff ? 1 : 0)) * VariantRadix + Math.Clamp(variant, 0, VariantRadix - 1))
+        | (Math.Clamp(durability, 0, MaxDurability) << DurabilityShift);
+    public static int SetRounds(int data, int rounds) => Pack(GetVariant(data), rounds, GetSilencerOff(data), GetDurability(data));
+    public static int SetSilencerOff(int data, bool off) => Pack(GetVariant(data), GetRounds(data), off, GetDurability(data));
+    public static int SetDurability(int data, int durability) => Pack(GetVariant(data), GetRounds(data), GetSilencerOff(data), durability);
 
     // Complete published 0.20.4 registry. Append only, including retired placeholders.
     public static readonly string[] FrozenOrder = ["ak47", "m4a1s", "awp", "deagle", "glock18", "usp_silencer", "m4a4", "famas", "mp9", "p90", "ssg08", "fiveseven", "hkp2000", "p250", "tec9", "cz75a", "mac10", "mp7", "ump45", "bizon", "mp5sd", "galilar", "scar20", "g3sg1", "aug", "sg556", "nova", "xm1014", "sawedoff", "mag7", "m249", "negev", "revolver", "elite", "taser"];

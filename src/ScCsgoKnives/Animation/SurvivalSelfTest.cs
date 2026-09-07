@@ -189,9 +189,52 @@ public static class SurvivalSelfTest {
                 && ScCombatFeedback.HeadshotColor is { R: 255, G: 210, B: 50 };
         });
         Test("smoke-neutral-grey", () => ScGrenadeVisuals.Smoke(new() { Kind = 2, Effect = true, Age = 2, Remaining = 13 }, 0).All(sp => sp.Color.R == sp.Color.G && sp.Color.G == sp.Color.B)
-            && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 230 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
+            && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 255 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
+        Test("gun-durability-levels", () => {
+            int fresh = GunSpec.MakeData(0, 30);
+            bool layout = GunSpec.GetDurability(fresh) == 7 && GunSpec.GetDurability(GunSpec.SetRounds(GunSpec.SetDurability(fresh, 3), 5)) == 3
+                && GunSpec.GetRounds(GunSpec.SetDurability(fresh, 3)) == 30 && ScGunDurability.Percent(7) == 100 && ScGunDurability.Percent(1) == 14 && ScGunDurability.Percent(0) == 0
+                && ScGunDurability.IsLow(GunSpec.SetDurability(fresh, 1)) && !ScGunDurability.IsLow(GunSpec.SetDurability(fresh, 2)) && ScGunDurability.IsBroken(GunSpec.SetDurability(fresh, 0)) && !ScGunDurability.IsLow(GunSpec.SetDurability(fresh, 0));
+            bool classes = GunSpec.All.All(g => ScGunDurability.ShotsPerLevel(g.Name) >= 1) && ScGunDurability.ShotsPerLevel("ak47") == 214 && ScGunDurability.ShotsPerLevel("awp") == 29
+                && ScGunDurability.ShotsPerLevel("taser") == 14 && ScGunDurability.ShotsPerLevel("negev") == 571 && ScGunDurability.ShotsPerLevel("nova") == 43 && ScGunDurability.ShotsPerLevel("elite") == 171;
+            int shots = 0, level = 7;
+            for (int i = 0; i < 213; i++) level = ScGunDurability.Wear("ak47", level, ref shots);
+            bool holds = level == 7 && shots == 213;
+            level = ScGunDurability.Wear("ak47", level, ref shots); bool drops = level == 6 && shots == 0;
+            level = 1; shots = 213; level = ScGunDurability.Wear("ak47", level, ref shots); bool breaks = level == 0;
+            bool stays = ScGunDurability.Wear("ak47", 0, ref shots) == 0;
+            return layout && classes && holds && drops && breaks && stays;
+        });
+        Test("gun-repair-cost", () => {
+            var ak = ScWeaponCrafting.All.First(e => e.Name == "ak47"); var glock = ScWeaponCrafting.All.First(e => e.Name == "glock18");
+            var m249 = ScWeaponCrafting.All.First(e => e.Name == "m249"); var knife = ScWeaponCrafting.All.First(e => e.Knife);
+            int blank = ScWeaponRepair.Blank, mech = ScWeaponRepair.Mechanism;
+            var full = ScWeaponRepair.FullCost(ak); var pistol = ScWeaponRepair.FullCost(glock); var mg = ScWeaponRepair.FullCost(m249);
+            bool fullOk = full[blank] == 1 && full[mech] == 1 && full.Count == 2 && pistol[blank] == 1 && !pistol.ContainsKey(mech) && mg[blank] == 2 && mg[mech] == 1
+                && ScWeaponRepair.FullCost(knife).Count == 0 && ScWeaponCrafting.All.Where(e => !e.Knife).All(e => ScWeaponRepair.FullCost(e).Values.Sum() >= 1
+                    && ScWeaponRepair.FullCost(e).Values.Sum() <= Math.Max(1, (e.B + e.M + e.H + e.O) * 3 / 10 + 1));
+            var none = ScWeaponRepair.Cost(ak, 7); var one = ScWeaponRepair.Cost(ak, 6); var broken = ScWeaponRepair.Cost(ak, 0); var half = ScWeaponRepair.Cost(m249, 4);
+            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 1 && broken[mech] == 1 && half[blank] == 1 && half[mech] == 1;
+        });
+        Test("gun-repair-transaction", () => {
+            int blank = 950, mech = 951; // material item values stand in for the blocks, which are not registered in the headless self-test
+            int worn = Terrain.MakeBlockValue(512, 0, GunSpec.Pack(0, 12, false, 2));
+            var i = new Inventory(); i.AddSlotItems(0, worn, 1); i.AddSlotItems(2, blank, 3); i.AddSlotItems(3, mech, 1);
+            var c = ScWeaponRepair.Candidates(i, 512).Single();
+            var cost = new Dictionary<int, int> { [blank] = 1, [mech] = 1 };
+            bool picked = c.Slot == 0 && c.Level == 2;
+            bool ok = ScWeaponRepair.TryRepair(i, c, cost) && GunSpec.GetDurability(Terrain.ExtractData(i.Values[0])) == 7 && GunSpec.GetRounds(Terrain.ExtractData(i.Values[0])) == 12
+                && i.Counts[2] == 2 && i.Counts[3] == 0 && !ScWeaponRepair.Candidates(i, 512).Any();
+            bool again = !ScWeaponRepair.TryRepair(i, c, cost) && i.Counts[2] == 2;                      // target changed (already repaired): refused, nothing deducted
+            var j = new Inventory(); j.AddSlotItems(0, worn, 1); j.AddSlotItems(2, blank, 1);
+            bool poor = !ScWeaponRepair.TryRepair(j, ScWeaponRepair.Candidates(j, 512).Single(), cost) && j.Counts[2] == 1 && j.Values[0] == worn; // short one mechanism: untouched
+            var k = new Inventory(); k.AddSlotItems(0, worn, 1); k.AddSlotItems(2, blank, 2); k.AddSlotItems(3, mech, 2); k.RefuseSlot = 3;
+            bool rollback = !ScWeaponRepair.TryRepair(k, ScWeaponRepair.Candidates(k, 512).Single(), cost) && k.Counts[2] == 2 && k.Values[0] == worn; // removal fails midway: blanks restored
+            bool free = ScWeaponRepair.TryRepair(j, ScWeaponRepair.Candidates(j, 512).Single(), new Dictionary<int, int>()) && GunSpec.GetDurability(Terrain.ExtractData(j.Values[0])) == 7;
+            return picked && ok && again && poor && rollback && free;
+        });
         Test("workbench-no-inherited-index", () => typeof(ScWeaponWorkbenchBlock).GetFields().All(f => f.Name != "Index"));
-        Test("unknown-gun-preserved", () => ScGunBlock.AssetIndex(63) == -1 && GunSpec.GetVariant(GunSpec.SetRounds(GunSpec.MakeData(63, 10), 7)) == 63);
+        Test("unknown-gun-preserved", () => ScGunBlock.AssetIndex(63) == -1 && ScGunBlock.AssetIndex(42) == -1 && GunSpec.GetVariant(GunSpec.SetRounds(GunSpec.MakeData(42, 10), 7)) == 42);
         Test("throw-once", () => { var i=Setup(0,1);var tx=new ScThrowTransaction(i);int spawned=0;return tx.Commit(false,()=>true,()=>{spawned++;return true;}) && !tx.Commit(false,()=>true,()=>true) && spawned==1 && i.Counts[0]==0; });
         Test("throw-capacity-no-charge", () => { var i=Setup(0,1);return !new ScThrowTransaction(i).Commit(false,()=>false,()=>true) && i.Counts[0]==1; });
         Test("throw-spawn-rollback", () => { var i=Setup(0,1);return !new ScThrowTransaction(i).Commit(false,()=>true,()=>false) && i.Counts[0]==1; });
@@ -211,7 +254,7 @@ public static class SurvivalSelfTest {
             s.Remaining=0;return blocked && !near && !ScSmokeVolume.Blocks([s],new Vector3(-5,0,0),new Vector3(5,0,0));
         });
         Test("smoke-save-no-reset",()=> {var s=ScGrenadeState.Load(new ScGrenadeState {Kind=2,Effect=true,Age=8,Remaining=7}.Save());return s.Effect && s.Age==8 && s.Remaining==7;});
-        Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==24 && ScSmokeVolume.SpriteCount(20)==12 && ScSmokeVolume.SpriteCount(50)==6 && 16*ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count<=768);
+        Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==24 && ScSmokeVolume.SpriteCount(20)==16 && ScSmokeVolume.SpriteCount(50)==12 && 16*ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count<=768);
         Test("fire-overlap-budget",()=> {
             var a=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var b=new ScGrenadeState {Kind=4,Effect=true,Remaining=7};
             return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==4 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1;

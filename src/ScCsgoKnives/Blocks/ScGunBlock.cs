@@ -131,8 +131,16 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
 
     public override string GetDescription(int value) {
-        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value);
-        return base.GetDescription(value) + ScWeaponCrafting.Help(value);
+        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value) + DurabilityText(value);
+        return base.GetDescription(value) + ScWeaponCrafting.Help(value) + DurabilityText(value);
+    }
+    /// <summary>M4: the item's own durability level; the number itself never goes into the display name.</summary>
+    public static string DurabilityText(int value) {
+        if (!IsKnown(value)) return "";
+        int level = GunSpec.GetDurability(Terrain.ExtractData(value));
+        var spec = SpecOf(value);
+        return level <= 0 ? "\n耐久：损坏，请到装配台维修（消耗金属坯件/精密机构）"
+            : $"\n耐久 {ScGunDurability.Percent(level)}%（{level}/{ScGunDurability.Levels} 级，每级约 {ScGunDurability.ShotsPerLevel(spec.Name)} 发）";
     }
 
 }

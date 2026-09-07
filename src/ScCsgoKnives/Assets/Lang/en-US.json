@@ -250,7 +250,9 @@
    "WholeMagazine": "Swap ×{0} mags · Discard leftovers",
    "ShellMagazine": "Swap ×{0} shells · Discard leftovers",
    "Loading": "Loading",
-   "Reloading": "Reloading"
+   "Reloading": "Reloading",
+   "Durability": "Durability {0}%",
+   "Broken": "BROKEN · repair at the workbench"
   }
  }
 }

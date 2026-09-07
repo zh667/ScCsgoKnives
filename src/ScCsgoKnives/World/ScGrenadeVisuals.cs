@@ -42,7 +42,7 @@ public static class ScGrenadeVisuals {
         return list;
     }
     /// <summary>F01: the in-smoke screen tint is neutral grey; only alpha follows the depth inside the volume.</summary>
-    public static Color SmokeInside(float smoke) => new(128,128,128,(int)(230*Math.Clamp(smoke,0,1)));
+    public static Color SmokeInside(float smoke) => new(128,128,128,(int)(255*Math.Clamp(smoke,0,1)));
     public static List<Sprite> Smoke(ScGrenadeState s,float distance) {
         List<Sprite> list=[];
         float radius=ScSmokeVolume.CurrentRadius(s);if(radius<.01f) return list;

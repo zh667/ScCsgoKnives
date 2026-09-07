@@ -41,5 +41,6 @@ public static class ScSmokeVolume {
             return clear is null || clear(s.Position+Vector3.UnitY*.1f,point);
         });
     }
-    public static int SpriteCount(float distance) => distance<18?24:distance<40?12:6;
+    /// <summary>Per-shell sprite count by distance (×2 shells). Far counts rose in 0.32.0 so a distant sphere still overlaps enough to occlude.</summary>
+    public static int SpriteCount(float distance) => distance<18?24:distance<40?16:12;
 }

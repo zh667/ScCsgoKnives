@@ -39,7 +39,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     SubsystemGameInfo m_info;
     public override int[] HandledBlocks => [BlocksManager.GetBlockIndex<ScGrenadeBlock>()];
     public UpdateOrder UpdateOrder => UpdateOrder.Default;
-    public int[] DrawOrders => [10, 1102];
+    /// <summary>Grenade bodies draw with the world's other projectiles (10). Smoke, fire and burst sprites draw at
+    /// 310: after terrain alpha (100), creature models (99/201), shadows (200) and particles (300) - a sprite
+    /// only reads depth, so anything drawn later would paint over the smoke (F07). The overlay is 2D at 1102.</summary>
+    public const int EffectsDrawOrder = 310;
+    public int[] DrawOrders => [10, EffectsDrawOrder, 1102];
     public static bool Holding(ComponentPlayer player) => Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true);
     public int ViewmodelValue(ComponentPlayer p, int value) => m_preparing.TryGetValue(p,out var prep) && prep.Released
         && p.ComponentMiner.Inventory.ActiveSlotIndex==prep.Slot && p.ComponentMiner.ActiveBlockValue==0 && Operable(p) ? ScGrenadeBlock.Value(prep.Kind) : value;
@@ -365,13 +369,17 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     public void Draw(Camera camera,int drawOrder) {
         if (drawOrder==10) {
+            foreach (var s in m_active) {
+                if (Vector3.DistanceSquared(camera.ViewPosition,s.Position)>80*80 || (s.Effect && s.Kind!=5)) continue;
+                Matrix matrix=Matrix.CreateRotationY(s.Age*6)*Matrix.CreateTranslation(s.Position);
+                m_environment.Light=15; m_environment.DrawBlockMode=DrawBlockMode.ThirdPerson;
+                ((ScGrenadeBlock)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGrenadeBlock>()]).DrawProjectile(m_renderer,s.Kind,ref matrix,m_environment);
+            }
+            m_renderer.Flush(camera.ViewProjectionMatrix);
+        } else if (drawOrder==EffectsDrawOrder) {
             foreach (var s in m_active.OrderByDescending(s=>Vector3.DistanceSquared(camera.ViewPosition,s.Position))) {
-                if (Vector3.DistanceSquared(camera.ViewPosition,s.Position)>80*80) continue;
-                if (!s.Effect || s.Kind==5) {
-                    Matrix matrix=Matrix.CreateRotationY(s.Age*6)*Matrix.CreateTranslation(s.Position);
-                    m_environment.Light=15; m_environment.DrawBlockMode=DrawBlockMode.ThirdPerson;
-                    ((ScGrenadeBlock)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGrenadeBlock>()]).DrawProjectile(m_renderer,s.Kind,ref matrix,m_environment);
-                } else if (ScFireArea.IsFire(s)) {
+                if (Vector3.DistanceSquared(camera.ViewPosition,s.Position)>80*80 || !s.Effect || s.Kind==5) continue;
+                if (ScFireArea.IsFire(s)) {
                     DrawFire(camera,s);
                 } else if (s.Kind==2) {
                     DrawSmoke(camera,s);
@@ -383,8 +391,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             m_renderer.Flush(camera.ViewProjectionMatrix);
         } else {
             var player=camera.GameWidget.PlayerData.ComponentPlayer;
-            float smoke=m_active.Where(s=>s.Effect && s.Kind==2 && Clear(s.Position+Vector3.UnitY*.1f,camera.ViewPosition)).Select(s=>Math.Clamp(ScSmokeVolume.CurrentRadius(s)-Vector3.Distance(camera.ViewPosition,ScSmokeVolume.Center(s)),0,1)).DefaultIfEmpty(0).Max();
-            smoke*=1-ScSmokeDisturbance.Clearing(m_disturbances,camera.ViewPosition); // the HE opening thins the inside overlay too
+            // F07: the inside overlay follows the unified density (fully opaque deep inside, HE openings included).
+            float smoke=m_active.Where(s=>s.Effect && s.Kind==2 && Clear(s.Position+Vector3.UnitY*.1f,camera.ViewPosition)).Select(s=>ScSmokeVolume.Density(s,camera.ViewPosition,m_disturbances)).DefaultIfEmpty(0).Max();
             if (smoke>0) Overlay(camera,ScGrenadeVisuals.SmokeInside(smoke));
             if (player is null || !m_blind.TryGetValue(player.ComponentBody,out var blind)) return;
             float fade=Math.Clamp((float)(blind.Until-m_time.GameTime)/Math.Max(.01f,blind.Duration),0,1); if (fade<=0) return;

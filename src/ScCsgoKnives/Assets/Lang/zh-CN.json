@@ -250,7 +250,9 @@
    "WholeMagazine": "整匣更换 ×{0} 弹匣 · 丢弃余弹",
    "ShellMagazine": "整匣更换 ×{0} 霰弹 · 丢弃余弹",
    "Loading": "装填中",
-   "Reloading": "换弹中"
+   "Reloading": "换弹中",
+   "Durability": "耐久 {0}%",
+   "Broken": "损坏 · 请到装配台维修"
   }
  }
 }
