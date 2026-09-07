@@ -27,17 +27,17 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("UpdatePlayerInputAim", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
-        ModsManager.RegisterHook("OnModelAnimate", this);       // third person: pose the human's arms around the mod weapon
+        ModsManager.RegisterHook("OnModelCalculateBones", this); // third person: pose the human's arms around the mod weapon
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
     }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
     /// around the weapon's CS2 grip points; vanilla's in-hand block draw is replaced by the baked weapon.</summary>
-    public override void OnModelAnimate(ComponentCreatureModel componentCreatureModel, out bool skip) {
-        skip = false;
-        if (componentCreatureModel is not ComponentHumanModel human) return;
-        try { skip = ScThirdPerson.Animate(human, Time.FrameDuration); }
-        catch (Exception e) { KnifeDiagnostics.WarnOnce("third-person-animate", "third person animate: " + e); }
+    public override void OnModelCalculateBones(ComponentModel componentModel, Camera camera, out bool skip) {
+        skip = false; // vanilla still composes the absolute matrices; only the two hand bones were rewritten
+        if (componentModel is not ComponentHumanModel human) return;
+        try { ScThirdPerson.Pose(human, Time.FrameDuration); }
+        catch (Exception e) { KnifeDiagnostics.WarnOnce("third-person-pose", "third person pose: " + e); }
     }
     public override void OnModelDrawExtra(ComponentModel componentModel, Camera camera, out bool skip) {
         skip = false;

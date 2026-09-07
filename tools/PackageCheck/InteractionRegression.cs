@@ -27,7 +27,7 @@ static class InteractionRegression {
                     object state=ctrl.GetMethod("StateFor",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,[model]);
                     object pose=rig.GetMethod("Sample").Invoke(null,[v,"idle",0f,true]);
                     state.GetType().GetField("Variant").SetValue(state,v);state.GetType().GetField("Pose").SetValue(state,pose);
-                    int value=v<22?Terrain.MakeBlockValue(700,0,v):v<57?Terrain.MakeBlockValue(701,0,65536+(v-22)):Terrain.MakeBlockValue(702,0,v-57);
+                    int value=v<22?Terrain.MakeBlockValue(700,0,v):v<57?Terrain.MakeBlockValue(701,0,(int)mod.GetType("Game.GunSpec").GetMethod("MakeData").Invoke(null,[v-22,0,false])):Terrain.MakeBlockValue(702,0,v-57);
                     object actual=ctrl.GetMethod("Update").Invoke(null,[model,value]);
                     return actual is not null && (string)actual.GetType().GetProperty("AssetName").GetValue(actual) == (string)pose.GetType().GetProperty("AssetName").GetValue(pose);
                 });

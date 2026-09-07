@@ -193,17 +193,25 @@ public static class ScThirdPerson {
         _ => ScGunDurability.ClassOf(gun) is ScGunDurability.Class.Pistol or ScGunDurability.Class.Taser ? ScThirdPersonStance.Pistol : ScThirdPersonStance.Rifle
     };
 
-    /// <summary>OnModelAnimate: vanilla first, then both hands. Returns false to let vanilla run untouched.</summary>
-    public static bool Animate(ComponentHumanModel human, float dt) {
-        if (human.m_componentMiner is null || human.m_hand1Bone is null || human.m_hand2Bone is null || human.m_bodyBone is null) return false;
+    /// <summary>OnModelCalculateBones: runs after the model animated (SCAPI 1.9.2.1 drives the human through an
+    /// AnimationController, so OnModelAnimate never fires for it) and before the absolute matrices are composed.
+    /// Once per frame the pose is solved from the animated body bone; every camera's call re-applies the hand bones.
+    /// Returns false to leave vanilla untouched.</summary>
+    public static bool Pose(ComponentHumanModel human, float dt) {
+        if (human.m_componentMiner is null || human.m_hand1Bone is null || human.m_hand2Bone is null || human.m_bodyBone is null || human.m_boneTransforms is null) return false;
         if (human.m_componentCreature?.ComponentHealth?.Health <= 0 || human.m_lieDownFactorModel > 0) return false;
         int value = human.m_componentMiner.ActiveBlockValue;
         string asset = AssetFor(value, out var stance);
         if (asset is null) return false;
         var weapon = ScThirdPersonWeapon.For(asset);
         if (weapon is null || !weapon.HasRightGrip) return false;
-        human.AnimateCreature();
         var state = s_states.GetOrCreateValue(human);
+        if (state.Valid && state.Asset == asset && state.Frame == Time.FrameIndex) {
+            human.SetBoneTransform(human.m_hand2Bone.Index, ScThirdPersonMath.HandLocal(state.Right));
+            human.SetBoneTransform(human.m_hand1Bone.Index, ScThirdPersonMath.HandLocal(state.Left));
+            return true;
+        }
+        if (!human.m_boneTransforms[human.m_bodyBone.Index].HasValue) return false; // the body was not placed this frame
         var absolute = new Matrix[human.Model.Bones.Count];
         human.ProcessBoneHierarchy(human.Model.RootBone, Matrix.Identity, absolute);
         Matrix body = absolute[human.m_bodyBone.Index];

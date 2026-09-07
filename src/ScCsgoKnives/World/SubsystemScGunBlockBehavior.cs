@@ -493,7 +493,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     const string RechargeKey = "ZeusRechargeAt";
     /// <summary>M4: shots fired inside the current durability level, per player hotbar slot; reset when the slot holds another gun type.
     /// Moving a gun to another slot forfeits at most one level's partial progress (the item itself carries only the level).</summary>
-    readonly Dictionary<(int Player, int Slot), (int Variant, int Shots)> m_wear = [];
+    readonly Dictionary<(int Player, int Slot), (int Variant, bool SilencerOff, int Level, int Shots)> m_wear = [];
     const string WearKey = "GunWear";
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
     SubsystemGameInfo m_gameInfo;
@@ -504,10 +504,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int level = GunSpec.GetDurability(data);
         if (level <= 0) return data;
         var key = (player.PlayerData.PlayerIndex, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
-        int variant = GunSpec.GetVariant(data);
-        int shots = m_wear.TryGetValue(key, out var entry) && entry.Variant == variant ? entry.Shots : 0;
+        int variant = GunSpec.GetVariant(data); bool silencerOff = GunSpec.GetSilencerOff(data);
+        // The count belongs to this gun as far as the slot can tell: same model, silencer state and level. A repair
+        // changes the level, so it starts a fresh count; a different gun of the same model and level would inherit it.
+        int shots = m_wear.TryGetValue(key, out var entry) && entry.Variant == variant && entry.SilencerOff == silencerOff && entry.Level == level ? entry.Shots : 0;
         int after = ScGunDurability.Wear(spec.Name, level, ref shots);
-        m_wear[key] = (variant, shots);
+        m_wear[key] = (variant, silencerOff, after, shots);
         if (after == level) return data;
         KnifeLog.Information($"gun wear: {spec.Name} slot {key.Item2} level {level} -> {after} ({ScGunDurability.ShotsPerLevel(spec.Name)} shots per level)");
         if (after <= 0) player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false);
@@ -531,8 +533,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (wear is not null) foreach (KeyValuePair<string, object> kv in wear) {
             var m = System.Text.RegularExpressions.Regex.Match(kv.Key, @"^p(\d+)s(\d+)$");
             string[] parts = (kv.Value as string ?? "").Split(',');
-            if (m.Success && parts.Length == 2 && int.TryParse(parts[0], out int variant) && int.TryParse(parts[1], out int shots) && shots >= 0)
-                m_wear[(int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value))] = (variant, shots);
+            if (m.Success && parts.Length == 4 && int.TryParse(parts[0], out int variant) && int.TryParse(parts[1], out int silencer) && int.TryParse(parts[2], out int level) && int.TryParse(parts[3], out int shots) && shots >= 0)
+                m_wear[(int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value))] = (variant, silencer != 0, level, shots);
         }
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
@@ -561,7 +563,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         valuesDictionary.SetValue(RechargeKey, saved);
         var wear = new ValuesDictionary();
-        foreach (var (key, entry) in m_wear) if (entry.Shots > 0) wear.SetValue($"p{key.Player}s{key.Slot}", $"{entry.Variant},{entry.Shots}");
+        foreach (var (key, entry) in m_wear) if (entry.Shots > 0) wear.SetValue($"p{key.Player}s{key.Slot}", $"{entry.Variant},{(entry.SilencerOff ? 1 : 0)},{entry.Level},{entry.Shots}");
         valuesDictionary.SetValue(WearKey, wear);
     }
 
@@ -898,14 +900,22 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 Block block = BlocksManager.Blocks[contents];
                 int slot = block.GetFaceTextureSlot(terrain.Value.CellFace.Face, hitValue);
                 m_particles.AddParticleSystem(new BlockDebrisParticleSystem(m_terrain, hitPoint, 0.45f, 1f, Color.White, slot));
-                string material = block.GetSoundMaterialName(m_terrain, hitValue);
-                if (!string.IsNullOrEmpty(material)) m_audio.PlayRandomSound("Audio/Impacts/" + material, 0.7f, m_random.Float(-0.2f, 0.2f), hitPoint, 6f, true);
+                string material = ImpactFolder(block.GetSoundMaterialName(m_terrain, hitValue));
+                if (material is not null) m_audio.PlayRandomSound("Audio/Impacts/" + material, 0.7f, m_random.Float(-0.2f, 0.2f), hitPoint, 6f, true);
             }
         }
         foreach (var hit in hits)
             ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0, headshot: hit.Value.Head);
     }
 
+    /// <summary>Vanilla ships impact folders Body/Dirt/Glass/Metal/Plant/Soft/Stone/Wood only; its block materials also name
+    /// Leaves, Sand and Snow, which 0.33.0 asked for verbatim and the log reported missing.</summary>
+    public static string ImpactFolder(string material) => material switch {
+        null or "" => null,
+        "Stone" or "Wood" or "Plant" or "Metal" or "Soft" or "Dirt" or "Glass" or "Body" => material,
+        "Leaves" => "Plant", "Sand" => "Dirt", "Snow" => "Soft",
+        _ => "Stone"
+    };
     readonly Dictionary<ComponentPlayer, double> m_pelletLogAt = [];
     /// <summary>Game.log line per confirmed body pellet, throttled to four a second per player except head hits.</summary>
     void LogPellet(ComponentPlayer player, GunSpec spec, ComponentBody target, ScHitPart part, float distance, string why, double now) {

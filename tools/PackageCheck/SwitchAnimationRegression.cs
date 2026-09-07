@@ -16,7 +16,7 @@ static class SwitchAnimationRegression {
         T Blank<T>() => (T)RuntimeHelpers.GetUninitializedObject(typeof(T));
         void Time(double now) => clock.GetField("VirtualNow").SetValue(null, now);
         float Duration(int variant, string alias) => (float)rig.GetMethod("GetProfileDuration").Invoke(null, [variant, alias]);
-        int Value(int v) => v < 22 ? Terrain.MakeBlockValue(700, 0, v) : v < 57 ? Terrain.MakeBlockValue(701, 0, 65536 + v - 22) : Terrain.MakeBlockValue(702, 0, v - 57);
+        int Value(int v) => v < 22 ? Terrain.MakeBlockValue(700, 0, v) : v < 57 ? Terrain.MakeBlockValue(701, 0, (int)mod.GetType("Game.GunSpec").GetMethod("MakeData").Invoke(null, [v - 22, 0, false])) : Terrain.MakeBlockValue(702, 0, v - 57);
         string Clip(object pose) => (string)pose.GetType().GetProperty("ClipAlias").GetValue(pose);
         float SampleTime(object pose) => (float)pose.GetType().GetProperty("RequestedTime").GetValue(pose);
         try {

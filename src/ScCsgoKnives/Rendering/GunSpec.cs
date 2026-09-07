@@ -287,22 +287,29 @@ public sealed class GunSpec {
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);
 
-    // Item data layout v4 (0.32.0). Terrain.ExtractData sign-extends bit 17, so 17 bits are usable:
+    // Item data layout v4 (0.32.0, revised 0.34.0). Terrain.ExtractData sign-extends bit 17, so 17 bits are usable:
     //   bits 0-13  ((rounds * 2 + silencerOff) * 43 + variant), mixed radix: variant 0-42, rounds 0-150 (the Negev's 150 is the largest magazine)
-    //   bits 14-16 durability level 0-7 (7 = new, 0 = broken); see ScGunDurability
-    // v1-v3 items (up to 0.31.0) are not decoded: a new world per version is the rule for this batch.
-    public const int VariantRadix = 43, RoundsMax = 150, MaxDurability = 7;
-    const int RoundsRadix = RoundsMax + 1, PackedMask = (1 << 14) - 1, DurabilityShift = 14, DurabilityMask = 7;
+    //   bits 14-16 durability code: levels 0..5 are stored as 000 001 010 011 110 111. Codes 100 and 101 are never
+    //              written by v4 - they are exactly what a v3 item (0.20.5-0.31.0: variant | rounds << 6 | silencer << 14 | 1 << 16)
+    //              carries in those bits - so a v3 gun is recognised and read as itself at full durability, and the next
+    //              write (a shot, a reload) re-packs it as v4. v1/v2 items (up to 0.20.4) are not decoded.
+    public const int VariantRadix = 43, RoundsMax = 150, MaxDurability = 5;
+    const int RoundsRadix = RoundsMax + 1, PackedMask = (1 << 14) - 1, DurabilityShift = 14;
+    static readonly int[] LevelToCode = [0, 1, 2, 3, 6, 7];
+    static readonly int[] CodeToLevel = [0, 1, 2, 3, -1, -1, 4, 5];
     public const int VariantMask = VariantRadix - 1;
-    public static int GetVariant(int data) => (data & PackedMask) % VariantRadix;
-    public static int GetRounds(int data) => ((data & PackedMask) / VariantRadix) / 2;
-    public static bool GetSilencerOff(int data) => ((data & PackedMask) / VariantRadix) % 2 == 1;
-    public static int GetDurability(int data) => (data >> DurabilityShift) & DurabilityMask;
+    static int Code(int data) => (data >> DurabilityShift) & 7;
+    /// <summary>A pre-0.32 item: bit 16 set, bit 15 clear, which v4 never writes.</summary>
+    public static bool IsLegacy(int data) => Code(data) is 4 or 5;
+    public static int GetVariant(int data) => IsLegacy(data) ? data & 63 : (data & PackedMask) % VariantRadix;
+    public static int GetRounds(int data) => IsLegacy(data) ? (data >> 6) & 255 : ((data & PackedMask) / VariantRadix) / 2;
+    public static bool GetSilencerOff(int data) => IsLegacy(data) ? (data & (1 << 14)) != 0 : ((data & PackedMask) / VariantRadix) % 2 == 1;
+    public static int GetDurability(int data) => IsLegacy(data) ? MaxDurability : CodeToLevel[Code(data)];
     /// <summary>A new gun: full durability. Kept at three parameters because tools find it by name through reflection.</summary>
     public static int MakeData(int variant, int rounds, bool silencerOff = false) => Pack(variant, rounds, silencerOff, MaxDurability);
     public static int Pack(int variant, int rounds, bool silencerOff, int durability) =>
         ((Math.Clamp(rounds, 0, RoundsMax) * 2 + (silencerOff ? 1 : 0)) * VariantRadix + Math.Clamp(variant, 0, VariantRadix - 1))
-        | (Math.Clamp(durability, 0, MaxDurability) << DurabilityShift);
+        | (LevelToCode[Math.Clamp(durability, 0, MaxDurability)] << DurabilityShift);
     public static int SetRounds(int data, int rounds) => Pack(GetVariant(data), rounds, GetSilencerOff(data), GetDurability(data));
     public static int SetSilencerOff(int data, bool off) => Pack(GetVariant(data), GetRounds(data), off, GetDurability(data));
     public static int SetDurability(int data, int durability) => Pack(GetVariant(data), GetRounds(data), GetSilencerOff(data), durability);

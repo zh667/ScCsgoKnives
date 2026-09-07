@@ -485,7 +485,7 @@ public static class Cs2SelfTest {
         for (int v = 0; v < GunSpec.VariantRadix; v++) {
             foreach (int r in new[] { 0, 1, 30, 63, 64, 100, 127, 128, 150 }) {
                 foreach (bool sil in new[] { false, true }) {
-                    foreach (int d in new[] { 0, 1, 4, 7 }) {
+                    foreach (int d in new[] { 0, 1, 3, 4, 5 }) {
                         int data = GunSpec.Pack(v, r, sil, d);
                         if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != r || GunSpec.GetSilencerOff(data) != sil || GunSpec.GetDurability(data) != d)
                             layout.Add($"v4({v},{r},{sil},{d}) -> ({GunSpec.GetVariant(data)},{GunSpec.GetRounds(data)},{GunSpec.GetSilencerOff(data)},{GunSpec.GetDurability(data)})");
@@ -503,9 +503,20 @@ public static class Cs2SelfTest {
         }
         if (GunSpec.GetRounds(GunSpec.MakeData(0, 255)) != GunSpec.RoundsMax || GunSpec.GetVariant(GunSpec.MakeData(63, 0)) != GunSpec.VariantRadix - 1)
             layout.Add("out-of-range rounds/variant not clamped");
+        // v3 items (0.20.5-0.31.0) read as themselves at full durability and re-pack as v4 on the first write.
+        for (int v = 0; v < GunSpec.All.Length; v++) foreach (int r in new[] { 0, 5, 30, 150 }) foreach (bool sil in new[] { false, true }) {
+            int old = v | (r << 6) | (sil ? 1 << 14 : 0) | (1 << 16);
+            if (!GunSpec.IsLegacy(old) || GunSpec.GetVariant(old) != v || GunSpec.GetRounds(old) != r || GunSpec.GetSilencerOff(old) != sil || GunSpec.GetDurability(old) != GunSpec.MaxDurability)
+                layout.Add($"v3({v},{r},{sil}) -> ({GunSpec.GetVariant(old)},{GunSpec.GetRounds(old)},{GunSpec.GetSilencerOff(old)},{GunSpec.GetDurability(old)})");
+            int repacked = GunSpec.SetRounds(old, r);
+            if (GunSpec.IsLegacy(repacked) || repacked != GunSpec.MakeData(v, r, sil)) layout.Add($"v3({v},{r},{sil}) did not re-pack as v4");
+        }
+        if (GunSpec.IsLegacy(GunSpec.MakeData(0, 0)) || GunSpec.All.Select((g, i) => i).Any(v => Enumerable.Range(0, 6).Any(d => GunSpec.IsLegacy(GunSpec.Pack(v, 30, false, d)))))
+            layout.Add("a v4 value reads as legacy");
+        if (GunSpec.GetVariant(65858) != 2 || GunSpec.GetRounds(65858) != 5 || GunSpec.All[GunSpec.GetVariant(65858)].Name != "awp") layout.Add("the 0.33 report's AWP (65858) is not read as an AWP with 5 rounds");
         Check("gunspec/layout", layout.Count == 0,
               layout.Count == 0
-                  ? "layout v4: 43 variants x nine ammo values x both silencers x four durability levels round-trip through terrain contents 1/512/1023 within 17 bits"
+                  ? "layout v4: 43 variants x nine ammo values x both silencers x five durability levels round-trip within 17 bits; v3 items decode as themselves and re-pack"
                   : string.Join("; ", layout.Take(4)));
 
         Check("load/variants", Cs2SoundVariants.LoadError is null, Cs2SoundVariants.LoadError ?? $"{Cs2SoundVariants.All.Count} cues");

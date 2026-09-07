@@ -1,6 +1,6 @@
 namespace Game;
 
-/// <summary>Gun wear (community plan F10 / M4, 0.32.0). The item carries a 3-bit level (7 new, 0 broken);
+/// <summary>Gun wear (community plan F10 / M4, 0.32.0; six levels since 0.34.0 so v3 items stay recognisable). The item carries a level (5 new, 0 broken);
 /// the shots inside the current level are counted per player hotbar slot by SubsystemScGunBlockBehavior.
 /// Full lives per class are the plan's first test baseline (C2); the class of every gun is listed
 /// explicitly. Nothing here changes damage, rate of fire or accuracy.</summary>
@@ -26,7 +26,7 @@ public static class ScGunDurability {
     public static int ShotsPerLevel(string gun) => Math.Max(1, (int)Math.Round(FullShots(ClassOf(gun)) / (double)Levels));
     public static int Percent(int level) => (int)Math.Round(100.0 * Math.Clamp(level, 0, Levels) / Levels);
     public static bool IsBroken(int data) => GunSpec.GetDurability(data) <= 0;
-    /// <summary>Plan C3: at or under 20 % shows orange (level 1 = 14 %).</summary>
+    /// <summary>Plan C3: at or under 20 % shows orange (level 1 = 20 %).</summary>
     public static bool IsLow(int data) => !IsBroken(data) && Percent(GunSpec.GetDurability(data)) <= 20;
     /// <summary>Advances the per-slot shot counter by one real shot; returns the new level (the caller writes it).</summary>
     public static int Wear(string gun, int level, ref int shotsInLevel) {
