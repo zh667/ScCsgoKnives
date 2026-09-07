@@ -25,6 +25,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     readonly HashSet<int> m_reducedFlash = [];
     readonly List<ScGrenadeState> m_active = [];
     readonly List<ScSmokeDisturbance> m_disturbances = [];
+    int m_nextGrenadeId = 1;
+    void Register(ScGrenadeState s) { if (s.Id <= 0) s.Id = m_nextGrenadeId; m_nextGrenadeId = Math.Max(m_nextGrenadeId, s.Id + 1); }
     readonly HashSet<ScGrenadeState> m_justReleased = [];
     readonly PrimitivesRenderer3D m_renderer = new();
     readonly PrimitivesRenderer2D m_overlay = new();
@@ -54,8 +56,9 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         m_players=Project.FindSubsystem<SubsystemPlayers>(true); m_bodies=Project.FindSubsystem<SubsystemBodies>(true); m_info=Project.FindSubsystem<SubsystemGameInfo>(true);
         var saved=values.GetValue<ValuesDictionary>("Grenades",null);
         if (saved is not null) foreach (var item in saved) {
-            if (item.Value is ValuesDictionary d && ScGrenadeState.Load(d) is ScGrenadeState state && ScGrenadeState.CanAdd(m_active,state.Owner)) m_active.Add(state);
+            if (item.Value is ValuesDictionary d && ScGrenadeState.Load(d) is ScGrenadeState state && ScGrenadeState.CanAdd(m_active,state.Owner)) { m_active.Add(state); Register(state); }
         }
+        m_nextGrenadeId=Math.Max(m_nextGrenadeId,values.GetValue<int>("NextGrenadeId",1));
         var openings=values.GetValue<ValuesDictionary>("SmokeDisturbances",null);
         if (openings is not null) foreach (var item in openings) {
             if (item.Value is ValuesDictionary d && ScSmokeDisturbance.Load(d) is ScSmokeDisturbance opening && ScSmokeDisturbance.CanAdd(m_disturbances)) m_disturbances.Add(opening);
@@ -74,7 +77,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         values.SetValue("Grenades",saved); values.SetValue("ReducedFlash",string.Join(",",m_reducedFlash));
         var openings=new ValuesDictionary();
         for (int i=0;i<m_disturbances.Count;i++) if (m_disturbances[i].Active) openings.SetValue(i.ToString(),m_disturbances[i].Save());
-        values.SetValue("SmokeDisturbances",openings);
+        values.SetValue("SmokeDisturbances",openings); values.SetValue("NextGrenadeId",m_nextGrenadeId);
         var flashes=new ValuesDictionary();
         void SaveBlind(int id,Blindness blind) {
             if (blind.ImmuneUntil<=m_time.GameTime) return;
@@ -148,14 +151,16 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 // body and the hand, or the hand and the flight, pull the start point back rather than spawning behind them.
                 Vector3 chest=p.ComponentBody.Position+Vector3.UnitY*p.ComponentBody.BoxSize.Y*.7f;
                 Vector3 aimTarget=SolidRay(origin,origin+direction*48)?.HitPoint() ?? origin+direction*48;
-                Vector3 pos=ScThirdPerson.TryGetFist(p.Entity.FindComponent<ComponentHumanModel>(),out Vector3 fist) ? fist : origin+direction*.45f;
+                // The hand is solved here from the body's own position/yaw/crouch and the throw stance - the logic pose,
+                // not whatever the renderer last drew - so first and third person, every camera, get the same point.
+                Vector3 pos=ScThirdPerson.FistFromLogic(p.Entity.FindComponent<ComponentHumanModel>(),p.ComponentBody,ScThirdPersonStance.Grenade,out Vector3 fist) ? fist : origin+direction*.45f;
                 var reach=SolidRay(chest,pos); if (reach.HasValue) pos=Vector3.Lerp(chest,reach.Value.HitPoint(),.8f);
                 Vector3 toTarget=aimTarget-pos; if (toTarget.LengthSquared()>.01f) direction=Vector3.Normalize(toTarget);
                 var wall=SolidRay(pos,pos+direction*.45f); if (wall.HasValue) pos=wall.Value.HitPoint()-direction*.10f; else pos+=direction*.1f;
                 var state=new ScGrenadeState { Kind=prep.Kind,Owner=p.PlayerData.PlayerIndex,Position=pos,
                     Velocity=ScGrenadeBallistics.LaunchVelocity(direction,p.ComponentBody.Velocity,prep.Low),Remaining=ScGrenadeBallistics.Fuse(prep.Kind) };
                 if (!prep.Transaction.Commit(m_info.WorldSettings.GameMode==GameMode.Creative,
-                    ()=>ScGrenadeState.CanAdd(m_active,state.Owner),()=>{ m_active.Add(state);m_justReleased.Add(state);return true; })) {
+                    ()=>ScGrenadeState.CanAdd(m_active,state.Owner),()=>{ Register(state);m_active.Add(state);m_justReleased.Add(state);return true; })) {
                     Message(p,"投掷取消：物品已移动或活动数量已满，未消耗物品。");Cancel(p,prep);continue;
                 }
                 prep.Released=true;
@@ -207,10 +212,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (s.Remaining<=0) {
                 s.Remaining=0;
                 if (!s.Effect && s.Kind is 2 or 5 && !ScGrenadeBallistics.Settled(s)) {
-                    // F04: smoke and decoy pop only after resting on support. The timeout covers a grenade
-                    // that never comes to rest (wedged, endless slope); it is not a normal trigger path.
+                    // F04: smoke and decoy pop only after resting on support. A grenade that never comes to rest
+                    // (wedged, endless slope) is cleaned up after the timeout without any effect - never popped mid-air.
                     if (s.Age<ScGrenadeBallistics.SettleTimeout) continue;
-                    KnifeLog.Warning($"grenade kind {s.Kind} never settled within {ScGrenadeBallistics.SettleTimeout:0} s at {s.Position}; popping in place");
+                    KnifeLog.Warning($"grenade kind {s.Kind} id {s.Id} never settled within {ScGrenadeBallistics.SettleTimeout:0} s at {s.Position} (grounded={s.Grounded} rested={s.Rested:0.00} v={s.Velocity.Length():0.00}); removed without effect");
+                    RemoveEffect(s,false);continue;
                 }
                 if (!s.Effect && s.Kind is 2 or 5) KnifeLog.Information($"grenade kind {s.Kind} pops: age {s.Age:0.00} s rested {s.Rested:0.00} s at {s.Position}");
                 if (!s.Effect) Detonate(s); else RemoveEffect(s,false);
@@ -317,11 +323,13 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (s.Kind==0) {
             // F06: the blast blows a temporary opening into every live smoke it can reach with a clear line; walls and floors stop it.
             Vector3 blast=s.Position+Vector3.UnitY*.3f;
-            int cleared=m_active.Count(smoke=>smoke.Effect && smoke.Kind==2 && smoke.Remaining>0
-                && Vector3.Distance(blast,ScSmokeVolume.Center(smoke))<ScSmokeDisturbance.Radius+ScSmokeVolume.CurrentRadius(smoke) && Clear(blast,ScSmokeVolume.Center(smoke)));
-            if (cleared>0 && ScSmokeDisturbance.CanAdd(m_disturbances)) {
-                m_disturbances.Add(new ScSmokeDisturbance { Center=blast });
-                KnifeLog.Information($"HE at {blast} opens {cleared} smoke(s): radius {ScSmokeDisturbance.Radius} m, hold {ScSmokeDisturbance.Hold} s, recovery {ScSmokeDisturbance.Recovery} s");
+            var reached=m_active.Where(smoke=>smoke.Effect && smoke.Kind==2 && smoke.Remaining>0
+                && Vector3.Distance(blast,ScSmokeVolume.Center(smoke))<ScSmokeDisturbance.Radius+ScSmokeVolume.CurrentRadius(smoke) && Clear(blast,ScSmokeVolume.Center(smoke))).ToArray();
+            if (reached.Length>0 && ScSmokeDisturbance.CanAdd(m_disturbances)) {
+                var opening=new ScSmokeDisturbance { Center=blast };
+                foreach (var smoke in reached) opening.SmokeIds.Add(smoke.Id); // a smoke behind a wall is not on this list and stays whole
+                m_disturbances.Add(opening);
+                KnifeLog.Information($"HE at {blast} opens smoke(s) [{string.Join(",",opening.SmokeIds)}]: radius {ScSmokeDisturbance.Radius} m, hold {ScSmokeDisturbance.Hold} s, recovery {ScSmokeDisturbance.Recovery} s");
             }
         }
         s.Effect=true;s.Remaining=s.Kind==0?ScGrenadeVisuals.BlastLifetime:ScGrenadeVisuals.FlashLifetime;s.Age=0;
@@ -431,10 +439,12 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     void DrawSmoke(Camera camera,ScGrenadeState s) {
         var sprites=ScGrenadeVisuals.Smoke(s,Vector3.Distance(camera.ViewPosition,ScSmokeVolume.Center(s)));
-        if (m_disturbances.Count>0) // F06: sprites inside an HE opening fade with the same clearing value the AI sight query uses
+        if (m_disturbances.Any(o=>o.Affects(s))) // F06: a sprite fades by the clearing over the area it covers (centre and four edges), not its centre alone
             for (int i=0;i<sprites.Count;i++) {
-                float keep=1-ScSmokeDisturbance.Clearing(m_disturbances,sprites[i].Position);
-                if (keep<1) sprites[i]=sprites[i] with { Color=new Color(sprites[i].Color.R,sprites[i].Color.G,sprites[i].Color.B,(int)(sprites[i].Color.A*keep)) };
+                var sp=sprites[i]; Vector3 r=camera.ViewRight*sp.Width*.7f,u=camera.ViewUp*sp.Height*.7f; float cleared=0;
+                foreach (var point in new[] { sp.Position, sp.Position+r, sp.Position-r, sp.Position+u, sp.Position-u }) cleared+=ScSmokeDisturbance.Clearing(m_disturbances,point,s);
+                float keep=1-cleared/5;
+                if (keep<1) sprites[i]=sp with { Color=new Color(sp.Color.R,sp.Color.G,sp.Color.B,(int)(sp.Color.A*keep)) };
             }
         DrawSprites(camera,s,sprites);
     }

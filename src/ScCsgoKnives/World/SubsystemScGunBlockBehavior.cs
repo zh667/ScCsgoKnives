@@ -476,6 +476,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
+        if (ScGunRegistry.Current == m_registry) ScGunRegistry.Current = null;
         base.Dispose();
     }
 
@@ -491,29 +492,50 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>The Zeus recharge times read from the world, by player index, until each player's state exists.</summary>
     readonly Dictionary<int, double> m_savedRecharge = [];
     const string RechargeKey = "ZeusRechargeAt";
-    /// <summary>M4: shots fired inside the current durability level, per player hotbar slot; reset when the slot holds another gun type.
-    /// Moving a gun to another slot forfeits at most one level's partial progress (the item itself carries only the level).</summary>
-    readonly Dictionary<(int Player, int Slot), (int Variant, bool SilencerOff, int Level, int Shots)> m_wear = [];
-    const string WearKey = "GunWear";
+    /// <summary>M4 (0.35.0): the world's gun state table. Every gun's rounds, silencer and exact durability live in its
+    /// record; the item value carries only the model and the record id, so state follows the item everywhere.</summary>
+    ScGunRegistry m_registry;
+    const string RegistryKey = "GunRegistry";
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
+    double m_duplicateScanAt = -1;
     SubsystemGameInfo m_gameInfo;
     bool Creative => (m_gameInfo ??= Project.FindSubsystem<SubsystemGameInfo>(true)).WorldSettings.GameMode == GameMode.Creative;
-    /// <summary>One real shot: counts toward the slot's level and returns the data to write (level lowered when due).</summary>
+    /// <summary>One real shot costs the record one point. Returns the data to write.</summary>
     int Wear(ComponentPlayer player, GunSpec spec, int data) {
         if (Creative) return data;
-        int level = GunSpec.GetDurability(data);
-        if (level <= 0) return data;
-        var key = (player.PlayerData.PlayerIndex, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
-        int variant = GunSpec.GetVariant(data); bool silencerOff = GunSpec.GetSilencerOff(data);
-        // The count belongs to this gun as far as the slot can tell: same model, silencer state and level. A repair
-        // changes the level, so it starts a fresh count; a different gun of the same model and level would inherit it.
-        int shots = m_wear.TryGetValue(key, out var entry) && entry.Variant == variant && entry.SilencerOff == silencerOff && entry.Level == level ? entry.Shots : 0;
-        int after = ScGunDurability.Wear(spec.Name, level, ref shots);
-        m_wear[key] = (variant, silencerOff, after, shots);
-        if (after == level) return data;
-        KnifeLog.Information($"gun wear: {spec.Name} slot {key.Item2} level {level} -> {after} ({ScGunDurability.ShotsPerLevel(spec.Name)} shots per level)");
-        if (after <= 0) player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false);
-        return GunSpec.SetDurability(data, after);
+        int before = GunSpec.GetDurability(data), full = ScGunDurability.Full(spec.Name);
+        int worn = ScGunDurability.Wear(data);
+        int after = GunSpec.GetDurability(worn);
+        if (after <= 0 && before > 0) {
+            player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false);
+            KnifeLog.Information($"gun broken: {spec.Name} record {GunSpec.GetId(worn)} after {full} shots");
+        }
+        else if (before > 0 && after * 5 / Math.Max(1, full) != before * 5 / Math.Max(1, full))
+            KnifeLog.Information($"gun wear: {spec.Name} record {GunSpec.GetId(worn)} {after}/{full} ({ScGunDurability.PercentText(after, full)})");
+        return worn;
+    }
+    /// <summary>Two items sharing one record (a creative copy, a glitch) would wear each other; the later one gets its own.</summary>
+    void SplitDuplicates() {
+        if (m_registry is null) return;
+        var seen = new Dictionary<int, (ComponentPlayer Player, int Slot)>();
+        int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        foreach (ComponentPlayer player in m_players.ComponentPlayers) {
+            IInventory inventory = player.ComponentMiner?.Inventory;
+            if (inventory is null) continue;
+            for (int slot = 0; slot < inventory.SlotsCount; slot++) {
+                int value = inventory.GetSlotValue(slot);
+                if (inventory.GetSlotCount(slot) == 0 || Terrain.ExtractContents(value) != gunIndex) continue;
+                int id = GunSpec.GetId(Terrain.ExtractData(value));
+                if (id < GunSpec.FirstId || id > GunSpec.LastId) continue;
+                if (!seen.TryGetValue(id, out var first)) { seen[id] = (player, slot); continue; }
+                int copy = m_registry.Clone(id);
+                if (copy < 0) continue;
+                int count = inventory.GetSlotCount(slot), replacement = Terrain.ReplaceData(value, GunSpec.GetVariant(Terrain.ExtractData(value)) | (copy << 6));
+                inventory.RemoveSlotItems(slot, count); inventory.AddSlotItems(slot, replacement, count);
+                ScInventoryTransaction.Changed(inventory);
+                KnifeLog.Warning($"gun record {id} was held twice (player {first.Player.PlayerData.PlayerIndex} slot {first.Slot} and player {player.PlayerData.PlayerIndex} slot {slot}); the second copy is now record {copy}");
+            }
+        }
     }
     void BrokenNotice(ComponentPlayer player, double now) {
         if (m_brokenNoticeAt.TryGetValue(player, out double last) && now - last < 2) return;
@@ -529,13 +551,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (int.TryParse(kv.Key, out int index) && kv.Value is double at) m_savedRecharge[index] = at;
             }
         }
-        ValuesDictionary wear = valuesDictionary.GetValue<ValuesDictionary>(WearKey, null);
-        if (wear is not null) foreach (KeyValuePair<string, object> kv in wear) {
-            var m = System.Text.RegularExpressions.Regex.Match(kv.Key, @"^p(\d+)s(\d+)$");
-            string[] parts = (kv.Value as string ?? "").Split(',');
-            if (m.Success && parts.Length == 4 && int.TryParse(parts[0], out int variant) && int.TryParse(parts[1], out int silencer) && int.TryParse(parts[2], out int level) && int.TryParse(parts[3], out int shots) && shots >= 0)
-                m_wear[(int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value))] = (variant, silencer != 0, level, shots);
-        }
+        m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null));
+        ScGunRegistry.Current = m_registry;
+        KnifeLog.Information($"gun registry: {m_registry.Count} records, next id {m_registry.Next}");
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
         // run again on a project reload. AddDrawable itself is a TryAdd and does not
@@ -562,9 +580,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             else if (saved.ContainsKey(key)) saved.Remove(key);
         }
         valuesDictionary.SetValue(RechargeKey, saved);
-        var wear = new ValuesDictionary();
-        foreach (var (key, entry) in m_wear) if (entry.Shots > 0) wear.SetValue($"p{key.Player}s{key.Slot}", $"{entry.Variant},{(entry.SilencerOff ? 1 : 0)},{entry.Level},{entry.Shots}");
-        valuesDictionary.SetValue(WearKey, wear);
+        if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save());
     }
 
     public void Update(float dt) {
@@ -573,6 +589,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var pair in m_states) if (!m_players.ComponentPlayers.Contains(pair.Key)) {
             pair.Value.AmmoHud?.Dispose(); pair.Value.AmmoHud = null;
         }
+        if (m_time.GameTime >= m_duplicateScanAt) { m_duplicateScanAt = m_time.GameTime + .5; SplitDuplicates(); }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) {
                 m_states[player] = state = new GunState();
@@ -764,6 +781,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         double now = m_time.GameTime;
         // M4: a broken gun never fires; it can still be reloaded, inspected, moved and repaired.
         if (!Creative && ScGunDurability.IsBroken(data)) { BrokenNotice(player, now); return; }
+        // A fresh gun needs a record for its first shot; with the table full it stays fresh and would never run dry.
+        if (GunSpec.IsFresh(data) && (ScGunRegistry.Current is null || ScGunRegistry.Current.IsFull)) {
+            if (!m_brokenNoticeAt.TryGetValue(player, out double last) || now - last >= 2) { m_brokenNoticeAt[player] = now; player.ComponentGui.DisplaySmallMessage($"枪械状态表已满（{GunSpec.LastId} 把），请新建世界", Color.Red, true, false); }
+            return;
+        }
         int roundsBefore = rounds;
         // A burst costs its own cycle time once, not one per round: CS2's Glock-18
         // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55

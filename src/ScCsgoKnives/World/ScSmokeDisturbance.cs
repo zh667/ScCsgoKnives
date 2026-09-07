@@ -11,7 +11,10 @@ public sealed class ScSmokeDisturbance {
     public const int MaxActive = 16;
     public Vector3 Center;
     public float Remaining = Total;
+    /// <summary>Ids of the smokes the blast could actually reach (line of sight checked at detonation); no other smoke is touched.</summary>
+    public readonly List<int> SmokeIds = [];
     public bool Active => Remaining > 0;
+    public bool Affects(ScGrenadeState smoke) => smoke is not null && SmokeIds.Contains(smoke.Id);
     /// <summary>0 = smoke intact, 1 = fully cleared at this point.</summary>
     public float Clearing(Vector3 point) {
         if (Remaining <= 0) return 0;
@@ -21,16 +24,17 @@ public sealed class ScSmokeDisturbance {
         float time = Remaining >= Recovery ? 1 : Remaining / Recovery;
         return rim * time;
     }
-    public static float Clearing(IEnumerable<ScSmokeDisturbance> list, Vector3 point) {
+    public static float Clearing(IEnumerable<ScSmokeDisturbance> list, Vector3 point, ScGrenadeState smoke) {
         float best = 0;
-        if (list is not null) foreach (var d in list) best = Math.Max(best, d.Clearing(point));
+        if (list is not null) foreach (var d in list) if (d.Affects(smoke)) best = Math.Max(best, d.Clearing(point));
         return best;
     }
     public static bool CanAdd(IEnumerable<ScSmokeDisturbance> list) => list.Count() < MaxActive;
-    public ValuesDictionary Save() { var d = new ValuesDictionary(); d.SetValue("Center", Center); d.SetValue("Remaining", Remaining); return d; }
+    public ValuesDictionary Save() { var d = new ValuesDictionary(); d.SetValue("Center", Center); d.SetValue("Remaining", Remaining); d.SetValue("Smokes", string.Join(",", SmokeIds)); return d; }
     public static ScSmokeDisturbance Load(ValuesDictionary d) {
         var s = new ScSmokeDisturbance { Center = d.GetValue<Vector3>("Center"), Remaining = d.GetValue<float>("Remaining", 0) };
-        if (!ScGrenadeState.Finite(s.Center) || !float.IsFinite(s.Remaining) || s.Remaining <= 0 || s.Remaining > Total) return null;
+        foreach (string part in d.GetValue<string>("Smokes", "").Split(',', StringSplitOptions.RemoveEmptyEntries)) if (int.TryParse(part, out int id) && id > 0) s.SmokeIds.Add(id);
+        if (!ScGrenadeState.Finite(s.Center) || !float.IsFinite(s.Remaining) || s.Remaining <= 0 || s.Remaining > Total || s.SmokeIds.Count == 0) return null;
         return s;
     }
 }

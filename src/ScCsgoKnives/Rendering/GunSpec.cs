@@ -287,32 +287,54 @@ public sealed class GunSpec {
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);
 
-    // Item data layout v4 (0.32.0, revised 0.34.0). Terrain.ExtractData sign-extends bit 17, so 17 bits are usable:
-    //   bits 0-13  ((rounds * 2 + silencerOff) * 43 + variant), mixed radix: variant 0-42, rounds 0-150 (the Negev's 150 is the largest magazine)
-    //   bits 14-16 durability code: levels 0..5 are stored as 000 001 010 011 110 111. Codes 100 and 101 are never
-    //              written by v4 - they are exactly what a v3 item (0.20.5-0.31.0: variant | rounds << 6 | silencer << 14 | 1 << 16)
-    //              carries in those bits - so a v3 gun is recognised and read as itself at full durability, and the next
-    //              write (a shot, a reload) re-packs it as v4. v1/v2 items (up to 0.20.4) are not decoded.
-    public const int VariantRadix = 43, RoundsMax = 150, MaxDurability = 5;
-    const int RoundsRadix = RoundsMax + 1, PackedMask = (1 << 14) - 1, DurabilityShift = 14;
-    static readonly int[] LevelToCode = [0, 1, 2, 3, 6, 7];
-    static readonly int[] CodeToLevel = [0, 1, 2, 3, -1, -1, 4, 5];
-    public const int VariantMask = VariantRadix - 1;
-    static int Code(int data) => (data >> DurabilityShift) & 7;
-    /// <summary>A pre-0.32 item: bit 16 set, bit 15 clear, which v4 never writes.</summary>
-    public static bool IsLegacy(int data) => Code(data) is 4 or 5;
-    public static int GetVariant(int data) => IsLegacy(data) ? data & 63 : (data & PackedMask) % VariantRadix;
-    public static int GetRounds(int data) => IsLegacy(data) ? (data >> 6) & 255 : ((data & PackedMask) / VariantRadix) / 2;
-    public static bool GetSilencerOff(int data) => IsLegacy(data) ? (data & (1 << 14)) != 0 : ((data & PackedMask) / VariantRadix) % 2 == 1;
-    public static int GetDurability(int data) => IsLegacy(data) ? MaxDurability : CodeToLevel[Code(data)];
-    /// <summary>A new gun: full durability. Kept at three parameters because tools find it by name through reflection.</summary>
-    public static int MakeData(int variant, int rounds, bool silencerOff = false) => Pack(variant, rounds, silencerOff, MaxDurability);
-    public static int Pack(int variant, int rounds, bool silencerOff, int durability) =>
-        ((Math.Clamp(rounds, 0, RoundsMax) * 2 + (silencerOff ? 1 : 0)) * VariantRadix + Math.Clamp(variant, 0, VariantRadix - 1))
-        | (LevelToCode[Math.Clamp(durability, 0, MaxDurability)] << DurabilityShift);
-    public static int SetRounds(int data, int rounds) => Pack(GetVariant(data), rounds, GetSilencerOff(data), GetDurability(data));
-    public static int SetSilencerOff(int data, bool off) => Pack(GetVariant(data), GetRounds(data), off, GetDurability(data));
-    public static int SetDurability(int data, int durability) => Pack(GetVariant(data), GetRounds(data), GetSilencerOff(data), durability);
+    // Item data layout v5 (0.35.0). Terrain.ExtractData sign-extends bit 17, so 17 bits are usable:
+    //   bits 0-5   variant 0-63
+    //   bits 6-15  instance id: 0 = a new gun with a full magazine, 1023 = a new gun with an empty magazine,
+    //              1-1022 = a record in the world's ScGunRegistry (rounds, silencer, exact durability)
+    //   bit 16     never set by v5. A set bit 16 is a v3 item (0.20.5-0.31.0: variant | rounds << 6 | silencer << 14 | 1 << 16):
+    //              it reads as itself at full durability and receives a record on its first write. v4 items (0.32-0.34) are not decoded.
+    public const int FreshFull = 0, FreshEmpty = 1023, FirstId = 1, LastId = 1022;
+    public const int VariantMask = 63;
+    public static bool IsLegacy(int data) => (data & (1 << 16)) != 0;
+    public static int GetVariant(int data) => data & VariantMask;
+    public static int GetId(int data) => IsLegacy(data) ? -1 : (data >> 6) & 1023;
+    public static bool IsFresh(int data) => !IsLegacy(data) && GetId(data) is FreshFull or FreshEmpty;
+    static int MagazineOf(int variant) => variant >= 0 && variant < All.Length ? All[variant].Magazine : 0;
+    static ScGunRecord Record(int data) => IsLegacy(data) ? null : ScGunRegistry.Current?.Get(GetId(data));
+    public static int GetRounds(int data) {
+        if (IsLegacy(data)) return (data >> 6) & 255;
+        int id = GetId(data);
+        if (id == FreshEmpty) return 0;
+        if (id == FreshFull) return MagazineOf(GetVariant(data));
+        return Record(data)?.Rounds ?? MagazineOf(GetVariant(data));
+    }
+    public static bool GetSilencerOff(int data) => IsLegacy(data) ? (data & (1 << 14)) != 0 : Record(data)?.SilencerOff ?? false;
+    public static int GetDurability(int data) => Record(data)?.Durability ?? ScGunDurability.Full(GetVariant(data));
+    /// <summary>A new gun. Full or empty magazines need no record (creative lists, recipes, starter kits work without a world);
+    /// anything else takes a record, or falls back to the nearer fresh state when there is no registry.</summary>
+    public static int MakeData(int variant, int rounds, bool silencerOff = false) {
+        variant &= VariantMask; int magazine = MagazineOf(variant);
+        if (!silencerOff && rounds <= 0) return variant | (FreshEmpty << 6);
+        if (!silencerOff && rounds >= magazine) return variant | (FreshFull << 6);
+        int id = ScGunRegistry.Current?.Allocate(variant, Math.Clamp(rounds, 0, Math.Max(magazine, rounds)), silencerOff, ScGunDurability.Full(variant)) ?? -1;
+        return id > 0 ? variant | (id << 6) : variant | ((rounds > 0 ? FreshFull : FreshEmpty) << 6);
+    }
+    /// <summary>The item's record, created from its fresh defaults or its v3 fields when it has none. Null (data unchanged)
+    /// without a registry or when the table is full; a dangling id is rebuilt from the defaults.</summary>
+    static ScGunRecord Materialize(ref int data) {
+        var registry = ScGunRegistry.Current;
+        if (registry is null) return null;
+        var existing = Record(data);
+        if (existing is not null) return existing;
+        int variant = GetVariant(data);
+        int id = registry.Allocate(variant, GetRounds(data), GetSilencerOff(data), GetDurability(data));
+        if (id < 0) return null;
+        data = variant | (id << 6);
+        return registry.Get(id);
+    }
+    public static int SetRounds(int data, int rounds) { var r = Materialize(ref data); if (r is not null) r.Rounds = Math.Clamp(rounds, 0, 255); return data; }
+    public static int SetSilencerOff(int data, bool off) { var r = Materialize(ref data); if (r is not null) r.SilencerOff = off; return data; }
+    public static int SetDurability(int data, int durability) { var r = Materialize(ref data); if (r is not null) r.Durability = Math.Max(0, durability); return data; }
 
     // Complete published 0.20.4 registry. Append only, including retired placeholders.
     public static readonly string[] FrozenOrder = ["ak47", "m4a1s", "awp", "deagle", "glock18", "usp_silencer", "m4a4", "famas", "mp9", "p90", "ssg08", "fiveseven", "hkp2000", "p250", "tec9", "cz75a", "mac10", "mp7", "ump45", "bizon", "mp5sd", "galilar", "scar20", "g3sg1", "aug", "sg556", "nova", "xm1014", "sawedoff", "mag7", "m249", "negev", "revolver", "elite", "taser"];

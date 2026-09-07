@@ -482,41 +482,45 @@ public static class Cs2SelfTest {
         // Exercise actual engine terrain serialization, not merely shifts in a separate host.
 
         var layout = new List<string>();
-        for (int v = 0; v < GunSpec.VariantRadix; v++) {
-            foreach (int r in new[] { 0, 1, 30, 63, 64, 100, 127, 128, 150 }) {
-                foreach (bool sil in new[] { false, true }) {
-                    foreach (int d in new[] { 0, 1, 3, 4, 5 }) {
-                        int data = GunSpec.Pack(v, r, sil, d);
-                        if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != r || GunSpec.GetSilencerOff(data) != sil || GunSpec.GetDurability(data) != d)
-                            layout.Add($"v4({v},{r},{sil},{d}) -> ({GunSpec.GetVariant(data)},{GunSpec.GetRounds(data)},{GunSpec.GetSilencerOff(data)},{GunSpec.GetDurability(data)})");
-                        if (data >> 17 != 0) layout.Add($"v4({v},{r},{sil},{d}) exceeds safe data bits");
-                        if (GunSpec.SetRounds(data, 7) != GunSpec.Pack(v, 7, sil, d) || GunSpec.SetSilencerOff(data, !sil) != GunSpec.Pack(v, r, !sil, d)
-                            || GunSpec.SetDurability(data, 3) != GunSpec.Pack(v, r, sil, 3)) layout.Add($"v4({v},{r},{sil},{d}) setters disturb other fields");
-                        foreach (int contents in new[] { 1, 512, 1023 }) {
-                            int value = Terrain.MakeBlockValue(contents, 15, data);
-                            if (Terrain.ExtractData(value) != data || Terrain.ExtractContents(value) != contents)
-                                layout.Add($"terrain round-trip {v}/{r}/{sil}/{d}/{contents}");
-                        }
-                    }
+        ScGunRegistry.Current ??= new ScGunRegistry();
+        for (int v = 0; v < 64; v++) {
+            int full = GunSpec.MakeData(v, 999), empty = GunSpec.MakeData(v, 0);
+            if (GunSpec.GetVariant(full) != v || GunSpec.GetId(full) != GunSpec.FreshFull || GunSpec.GetVariant(empty) != v || GunSpec.GetId(empty) != GunSpec.FreshEmpty || GunSpec.GetRounds(empty) != 0)
+                layout.Add($"fresh({v}) -> ({GunSpec.GetVariant(full)},{GunSpec.GetId(full)}) / ({GunSpec.GetVariant(empty)},{GunSpec.GetId(empty)})");
+            if (v < GunSpec.All.Length && GunSpec.GetRounds(full) != GunSpec.All[v].Magazine) layout.Add($"fresh({v}) rounds {GunSpec.GetRounds(full)}");
+            foreach (int data in new[] { full, empty }) {
+                if (data >> 16 != 0) layout.Add($"fresh({v}) sets bit 16");
+                foreach (int contents in new[] { 1, 512, 1023 }) {
+                    int value = Terrain.MakeBlockValue(contents, 15, data);
+                    if (Terrain.ExtractData(value) != data || Terrain.ExtractContents(value) != contents) layout.Add($"terrain round-trip {v}/{contents}");
                 }
             }
         }
-        if (GunSpec.GetRounds(GunSpec.MakeData(0, 255)) != GunSpec.RoundsMax || GunSpec.GetVariant(GunSpec.MakeData(63, 0)) != GunSpec.VariantRadix - 1)
-            layout.Add("out-of-range rounds/variant not clamped");
-        // v3 items (0.20.5-0.31.0) read as themselves at full durability and re-pack as v4 on the first write.
-        for (int v = 0; v < GunSpec.All.Length; v++) foreach (int r in new[] { 0, 5, 30, 150 }) foreach (bool sil in new[] { false, true }) {
-            int old = v | (r << 6) | (sil ? 1 << 14 : 0) | (1 << 16);
-            if (!GunSpec.IsLegacy(old) || GunSpec.GetVariant(old) != v || GunSpec.GetRounds(old) != r || GunSpec.GetSilencerOff(old) != sil || GunSpec.GetDurability(old) != GunSpec.MaxDurability)
-                layout.Add($"v3({v},{r},{sil}) -> ({GunSpec.GetVariant(old)},{GunSpec.GetRounds(old)},{GunSpec.GetSilencerOff(old)},{GunSpec.GetDurability(old)})");
-            int repacked = GunSpec.SetRounds(old, r);
-            if (GunSpec.IsLegacy(repacked) || repacked != GunSpec.MakeData(v, r, sil)) layout.Add($"v3({v},{r},{sil}) did not re-pack as v4");
+        for (int v = 0; v < GunSpec.All.Length; v++) {
+            foreach (int r in new[] { 1, 7, 29 }) foreach (bool sil in new[] { false, true }) {
+                int data = GunSpec.MakeData(v, Math.Min(r, GunSpec.All[v].Magazine), sil);
+                bool partial = Math.Min(r, GunSpec.All[v].Magazine) < GunSpec.All[v].Magazine || sil;
+                if (partial != !GunSpec.IsFresh(data)) layout.Add($"record({v},{r},{sil}) fresh={GunSpec.IsFresh(data)}");
+                if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != Math.Min(r, GunSpec.All[v].Magazine) || GunSpec.GetSilencerOff(data) != sil || GunSpec.GetDurability(data) != ScGunDurability.Full(v))
+                    layout.Add($"record({v},{r},{sil}) -> ({GunSpec.GetVariant(data)},{GunSpec.GetRounds(data)},{GunSpec.GetSilencerOff(data)},{GunSpec.GetDurability(data)})");
+                int changed = GunSpec.SetDurability(GunSpec.SetSilencerOff(GunSpec.SetRounds(data, 3), !sil), 42);
+                if (GunSpec.IsFresh(data) ? GunSpec.IsFresh(changed) : changed != data) layout.Add($"record({v},{r},{sil}) writes moved the id");
+                if (GunSpec.GetRounds(changed) != 3 || GunSpec.GetSilencerOff(changed) != !sil || GunSpec.GetDurability(changed) != 42 || GunSpec.GetVariant(changed) != v) layout.Add($"record({v},{r},{sil}) setters disturb other fields");
+                if (changed >> 16 != 0) layout.Add($"record({v},{r},{sil}) sets bit 16");
+            }
+            // v3 items (0.20.5-0.31.0) read as themselves at full durability and take a record on the first write.
+            foreach (int r in new[] { 0, 5, 30, 150 }) foreach (bool sil in new[] { false, true }) {
+                int old = v | (r << 6) | (sil ? 1 << 14 : 0) | (1 << 16);
+                if (!GunSpec.IsLegacy(old) || GunSpec.GetVariant(old) != v || GunSpec.GetRounds(old) != r || GunSpec.GetSilencerOff(old) != sil || GunSpec.GetDurability(old) != ScGunDurability.Full(v))
+                    layout.Add($"v3({v},{r},{sil}) -> ({GunSpec.GetVariant(old)},{GunSpec.GetRounds(old)},{GunSpec.GetSilencerOff(old)},{GunSpec.GetDurability(old)})");
+                int migrated = GunSpec.SetRounds(old, r);
+                if (GunSpec.IsLegacy(migrated) || GunSpec.GetVariant(migrated) != v || GunSpec.GetRounds(migrated) != r || GunSpec.GetSilencerOff(migrated) != sil) layout.Add($"v3({v},{r},{sil}) did not migrate");
+            }
         }
-        if (GunSpec.IsLegacy(GunSpec.MakeData(0, 0)) || GunSpec.All.Select((g, i) => i).Any(v => Enumerable.Range(0, 6).Any(d => GunSpec.IsLegacy(GunSpec.Pack(v, 30, false, d)))))
-            layout.Add("a v4 value reads as legacy");
         if (GunSpec.GetVariant(65858) != 2 || GunSpec.GetRounds(65858) != 5 || GunSpec.All[GunSpec.GetVariant(65858)].Name != "awp") layout.Add("the 0.33 report's AWP (65858) is not read as an AWP with 5 rounds");
         Check("gunspec/layout", layout.Count == 0,
               layout.Count == 0
-                  ? "layout v4: 43 variants x nine ammo values x both silencers x five durability levels round-trip within 17 bits; v3 items decode as themselves and re-pack"
+                  ? "layout v5: 64 fresh variants full/empty, records for 35 guns x three ammo values x both silencers with stable ids, v3 items decode and migrate, bit 16 never set"
                   : string.Join("; ", layout.Take(4)));
 
         Check("load/variants", Cs2SoundVariants.LoadError is null, Cs2SoundVariants.LoadError ?? $"{Cs2SoundVariants.All.Count} cues");

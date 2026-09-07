@@ -23,8 +23,15 @@ public sealed class ScReloadTransaction {
     public bool ModeMatches(bool creative) => creative == (Cost == 0);
     bool Write(int rounds, int cost) {
         if (!Valid) { Cancel(); return false; }
-        int replacement = Terrain.ReplaceData(Expected, GunSpec.SetRounds(Terrain.ExtractData(Expected), rounds));
-        if (!ScInventoryTransaction.ReplaceWithCost(Inventory, Slot, Expected, replacement, Ammo, cost)) { Cancel(); return false; }
+        // Layout v5: SetRounds writes the gun's record, so the ammo has to be known affordable before it runs, and the
+        // record is put back if the inventory step still refuses (a rejected paid reload must not fill the magazine).
+        bool creative = Inventory is ComponentCreativeInventory;
+        if (creative ? cost != 0 : ScInventoryTransaction.Count(Inventory, Ammo) < cost) { Cancel(); return false; }
+        int data = Terrain.ExtractData(Expected), previous = GunSpec.GetRounds(data);
+        int replacement = Terrain.ReplaceData(Expected, GunSpec.SetRounds(data, rounds));
+        if (!ScInventoryTransaction.ReplaceWithCost(Inventory, Slot, Expected, replacement, Ammo, cost)) {
+            GunSpec.SetRounds(Terrain.ExtractData(replacement), previous); Cancel(); return false;
+        }
         Expected = replacement; Revision = ScInventoryTransaction.Revision(Inventory); return true;
     }
     public bool Discard() {

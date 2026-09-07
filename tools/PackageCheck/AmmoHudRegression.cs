@@ -83,14 +83,18 @@ static class AmmoHudRegression {
                         var inv = Inventory(Value(gun, 3), ammo, 10);
                         var t = Activator.CreateInstance(mod.GetType("Game.ScReloadTransaction"), inv, 0, inv.GetSlotValue(0), ammo, cost, capacity);
                         bool Step(string method) => (bool)t.GetType().GetMethod(method).Invoke(t, null);
+                        string Why(string step) => $"{step}: main '{Text(Read(gun, inv), "Main")}' detail '{Text(Read(gun, inv), "Detail")}' value {inv.GetSlotValue(0)} count {inv.GetSlotCount(0)} ammo {inv.GetSlotCount(1)}";
                         if (tube) {
-                            return Step("InsertShell") && Text(Read(gun, inv, loading: true), "Main").StartsWith("4 / ")
-                                && Text(Read(gun, inv), "Main").EndsWith("×9") && Text(Read(gun, inv), "Detail") == localize("Tube");
+                            if (!Step("InsertShell")) throw new InvalidOperationException(Why("InsertShell refused"));
+                            if (!Text(Read(gun, inv, loading: true), "Main").StartsWith("4 / ")) throw new InvalidOperationException(Why("after shell"));
+                            if (!Text(Read(gun, inv), "Main").EndsWith("×9") || Text(Read(gun, inv), "Detail") != localize("Tube")) throw new InvalidOperationException(Why("tube text"));
+                            return true;
                         }
-                        if (!Step("Discard") || !Text(Read(gun, inv, loading: true), "Main").StartsWith("3 / ")
-                            || !Text(Read(gun, inv), "Main").EndsWith("×10")) return false;
-                        return Step("InsertMagazine") && Text(Read(gun, inv), "Main").StartsWith(capacity + " / ")
-                            && Text(Read(gun, inv), "Main").EndsWith("×" + (10 - cost));
+                        if (!Step("Discard")) throw new InvalidOperationException(Why("Discard refused"));
+                        if (!Text(Read(gun, inv, loading: true), "Main").StartsWith("3 / ") || !Text(Read(gun, inv), "Main").EndsWith("×10")) throw new InvalidOperationException(Why("after discard"));
+                        if (!Step("InsertMagazine")) throw new InvalidOperationException(Why("InsertMagazine refused"));
+                        if (!Text(Read(gun, inv), "Main").StartsWith(capacity + " / ") || !Text(Read(gun, inv), "Main").EndsWith("×" + (10 - cost))) throw new InvalidOperationException(Why("after insert"));
+                        return true;
                     });
                 }
             }

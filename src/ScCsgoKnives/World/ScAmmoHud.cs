@@ -10,9 +10,9 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
     public ScAmmoReadout(string Main, string Detail, bool Empty, bool Charging, bool Insufficient) : this(Main, Detail, Empty, Charging, Insufficient, "", 0) { }
     /// <summary>M4 durability line: 0 normal, 1 low (orange), 2 broken (red).</summary>
     public static (string Text, int State) WearOf(int value, Func<string, string> text) {
-        int data = Terrain.ExtractData(value), level = GunSpec.GetDurability(data);
-        if (level <= 0) return (text("Broken"), 2);
-        return (string.Format(CultureInfo.InvariantCulture, text("Durability"), ScGunDurability.Percent(level)), ScGunDurability.IsLow(data) ? 1 : 0);
+        int data = Terrain.ExtractData(value);
+        if (ScGunDurability.IsBroken(data)) return (text("Broken"), 2);
+        return (string.Format(CultureInfo.InvariantCulture, text("Durability"), ScGunDurability.PercentText(data).TrimEnd('%')), ScGunDurability.IsLow(data) ? 1 : 0);
     }
     public static ScAmmoReadout Read(GunSpec gun, int value, IInventory inventory, bool creative,
         double rechargeRemaining, bool reloading, Func<string, string> text = null) {

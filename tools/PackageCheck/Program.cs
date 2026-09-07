@@ -83,6 +83,10 @@ knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.S
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
 
 ThirdPersonExport.ProvideObj(mod, scmod); // the self-test bakes the OBJ-piece guns for third person from the package's own files
+// The gun state table a world would own (layout v5): partial magazines and durability live in records, not in the item value.
+var registryType = mod.GetType("Game.ScGunRegistry");
+void FreshRegistry() => registryType?.GetField("Current").SetValue(null, Activator.CreateInstance(registryType)); // each check set gets an empty table: 1022 records is a world's budget, not the suite's
+FreshRegistry();
 string runJson;
 try {
     runJson = (string)selfTest.GetMethod("RunJson", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
@@ -127,20 +131,21 @@ var checks = result["checks"].AsArray().Select(c => new {
 }).Cast<object>().ToList();
 checks.AddRange(soundChecks);
 if (vanillaContent is not null) {
+    FreshRegistry();
     foreach (var c in SurvivalPackageIntegration.Run(mod,scmod,vanillaContent))
         checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
     foreach (var c in HeadshotRegression.Run(mod,vanillaContent))
         checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 }
-foreach(var c in CreativeRuntimeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in InteractionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in SwitchAnimationRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in MobileRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in StarterEquipmentRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in SurvivalDurabilityRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in AmmoHudRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in ResourceRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
-foreach(var c in CombatRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in CreativeRuntimeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in InteractionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in SwitchAnimationRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in MobileRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in StarterEquipmentRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in SurvivalDurabilityRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in AmmoHudRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in ResourceRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in CombatRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {

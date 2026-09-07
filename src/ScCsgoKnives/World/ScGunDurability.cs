@@ -1,12 +1,10 @@
 namespace Game;
 
-/// <summary>Gun wear (community plan F10 / M4, 0.32.0; six levels since 0.34.0 so v3 items stay recognisable). The item carries a level (5 new, 0 broken);
-/// the shots inside the current level are counted per player hotbar slot by SubsystemScGunBlockBehavior.
-/// Full lives per class are the plan's first test baseline (C2); the class of every gun is listed
-/// explicitly. Nothing here changes damage, rate of fire or accuracy.</summary>
+/// <summary>Gun wear (community plan F10 / M4). Since 0.35.0 the durability is an exact shot count kept in the
+/// gun's ScGunRecord; a new gun starts at its class's full life and every real shot costs one. Nothing here
+/// changes damage, rate of fire or accuracy.</summary>
 public static class ScGunDurability {
     public enum Class { Pistol, Smg, Rifle, Shotgun, BoltSniper, AutoSniper, MachineGun, Taser }
-    public const int Levels = GunSpec.MaxDurability;
     /// <summary>估计 (plan C2): shots from new to broken.</summary>
     public static int FullShots(Class c) => c switch {
         Class.Pistol => 1200, Class.Smg => 2000, Class.Rifle => 1500, Class.Shotgun => 300,
@@ -22,17 +20,25 @@ public static class ScGunDurability {
         "taser" => Class.Taser,
         _ => throw new InvalidOperationException("No durability class for gun " + gun)
     };
-    /// <summary>Shots that drop the level by one; the last level's last shot still fires, then the gun is broken.</summary>
-    public static int ShotsPerLevel(string gun) => Math.Max(1, (int)Math.Round(FullShots(ClassOf(gun)) / (double)Levels));
-    public static int Percent(int level) => (int)Math.Round(100.0 * Math.Clamp(level, 0, Levels) / Levels);
+    public static int Full(string gun) => FullShots(ClassOf(gun));
+    public static int Full(int variant) => variant >= 0 && variant < GunSpec.All.Length ? Full(GunSpec.All[variant].Name) : 1500;
+    public static int FullOf(int data) => Full(GunSpec.GetVariant(data));
     public static bool IsBroken(int data) => GunSpec.GetDurability(data) <= 0;
-    /// <summary>Plan C3: at or under 20 % shows orange (level 1 = 20 %).</summary>
-    public static bool IsLow(int data) => !IsBroken(data) && Percent(GunSpec.GetDurability(data)) <= 20;
-    /// <summary>Advances the per-slot shot counter by one real shot; returns the new level (the caller writes it).</summary>
-    public static int Wear(string gun, int level, ref int shotsInLevel) {
-        if (level <= 0) return 0;
-        shotsInLevel++;
-        if (shotsInLevel < ShotsPerLevel(gun)) return level;
-        shotsInLevel = 0; return level - 1;
+    /// <summary>Plan C3: at or under 20 % shows orange.</summary>
+    public static bool IsLow(int data) { int d = GunSpec.GetDurability(data); return d > 0 && d * 5 <= FullOf(data); }
+    /// <summary>Plan C5: a positive value never reads as broken and a worn gun never reads as full.</summary>
+    public static string PercentText(int durability, int full) {
+        if (full <= 0 || durability <= 0) return "0%";
+        if (durability >= full) return "100%";
+        double percent = 100.0 * durability / full;
+        if (percent < 1) return "<1%";
+        if (percent > 99) return ">99%";
+        return $"{(int)Math.Round(percent)}%";
+    }
+    public static string PercentText(int data) => PercentText(GunSpec.GetDurability(data), FullOf(data));
+    /// <summary>One real shot: the record loses one point (never below zero). Returns the data to write.</summary>
+    public static int Wear(int data) {
+        int d = GunSpec.GetDurability(data);
+        return d <= 0 ? data : GunSpec.SetDurability(data, d - 1);
     }
 }

@@ -43,16 +43,16 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             var candidates = ScWeaponRepair.Candidates(miner.Inventory).ToArray();
             if (candidates.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有需要维修的枪械。", Color.White, true, false); ShowList(); return; }
             DialogsManager.ShowDialog(player.GuiWidget, new ListSelectionDialog("武器装配台 · 维修", candidates, 56,
-                (Func<object, string>)(item => { var c = (ScWeaponRepair.Candidate)item; return $"{ValueName(c.Value)} · 耐久 {ScGunDurability.Percent(c.Level)}% · 第 {c.Slot + 1} 格"; }), item => {
+                (Func<object, string>)(item => { var c = (ScWeaponRepair.Candidate)item; return $"{ValueName(c.Value)} · 耐久 {ScGunDurability.PercentText(c.Durability, c.Full)} · 第 {c.Slot + 1} 格"; }), item => {
                     var c = (ScWeaponRepair.Candidate)item;
                     var entry = ScWeaponCrafting.Find(c.Value);
-                    var cost = Creative() || entry is null ? new Dictionary<int, int>() : ScWeaponRepair.CostValues(entry, c.Level);
-                    string detail = $"当前耐久 {ScGunDurability.Percent(c.Level)}% → 维修后 100%\n" + (Creative() ? "创造模式：免费" : cost.Count == 0 ? "无需材料" : MaterialLines(cost))
+                    var cost = Creative() || entry is null ? new Dictionary<int, int>() : ScWeaponRepair.CostValues(entry, c.Durability, c.Full);
+                    string detail = $"当前耐久 {c.Durability} / {c.Full}（{ScGunDurability.PercentText(c.Durability, c.Full)}）→ 维修后 {c.Full} / {c.Full}\n" + (Creative() ? "创造模式：免费" : cost.Count == 0 ? "无需材料" : MaterialLines(cost))
                         + "\n只恢复耐久，不改变余弹、消音器和型号。";
                     DialogsManager.ShowDialog(player.GuiWidget, new MessageDialog(ValueName(c.Value), detail, "维修", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             bool repaired = ScWeaponRepair.TryRepair(miner.Inventory, c, cost);
-                            KnifeLog.Information($"gun repair: {ValueName(c.Value)} slot {c.Slot} level {c.Level} -> {(repaired ? ScGunDurability.Levels : c.Level)} cost {string.Join(",", cost.Select(m => m.Value))} ok={repaired}");
+                            KnifeLog.Information($"gun repair: {ValueName(c.Value)} slot {c.Slot} {c.Durability}/{c.Full} -> {(repaired ? c.Full : c.Durability)} cost {string.Join(",", cost.Select(m => m.Value))} ok={repaired}");
                             player.ComponentGui.DisplaySmallMessage(repaired ? "维修完成：" + ValueName(c.Value) : "材料不足或枪械已移动，未扣除材料。", repaired ? Color.White : Color.Red, true, false);
                         }
                         ShowRepair();

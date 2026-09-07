@@ -102,20 +102,22 @@ static class SurvivalDurabilityRegression {
                 int cost = (int)Call("ScReloadTransaction", "Required", gun);
                 int ammo = (int)Call("ScReloadTransaction", "AmmoKind", gun) == 1 ? shell : magazine;
                 int full = Terrain.MakeBlockValue(701, 0, (int)Call("GunSpec", "MakeData", v, capacity, false));
-                int partial = Terrain.ReplaceData(full, (int)Call("GunSpec", "SetRounds", Terrain.ExtractData(full), capacity - 1));
+                // Layout v5: a partial magazine is a record, so each test takes its own gun instead of sharing one mutable identity.
+                int Partial() => Terrain.ReplaceData(full, (int)Call("GunSpec", "SetRounds", Terrain.ExtractData(full), capacity - 1));
                 bool tube = (bool)Call("ScReloadTransaction", "IsTube", name);
                 object Transaction(ComponentInventory inv) => Activator.CreateInstance(mod.GetType("Game.ScReloadTransaction"), inv, 0, inv.GetSlotValue(0), ammo, cost, capacity);
                 bool Step(object t, string method) => (bool)t.GetType().GetMethod(method).Invoke(t, null);
                 Test("shoot-reload-save/" + name, () => {
-                    var inv = Inventory(full, 1, ammo, 10);
+                    var inv = Inventory(full, 1, ammo, 10); int partial = Partial();
                     if (!(bool)Call("ScInventoryTransaction", "ReplaceWithCost", inv, 0, full, partial, 0, 0)) return false;
                     var copy = Reload(inv); if (!Same(inv, copy)) return false;
                     var t = Transaction(copy);
                     if (tube ? !Step(t, "InsertShell") : !Step(t, "Discard") || !Step(t, "InsertMagazine")) return false;
-                    return copy.GetSlotValue(0) == full && copy.GetSlotCount(1) == 10 - (tube ? 1 : cost) && Same(copy, Reload(copy));
+                    // Layout v5: the reloaded gun keeps its record id, so compare the rounds the record holds rather than the raw value.
+                    return (int)Call("GunSpec", "GetRounds", Terrain.ExtractData(copy.GetSlotValue(0))) == capacity && copy.GetSlotCount(1) == 10 - (tube ? 1 : cost) && Same(copy, Reload(copy));
                 });
                 Test("interrupted-reload-save/" + name, () => {
-                    var inv = Inventory(partial, 1, ammo, 10); var t = Transaction(inv);
+                    var inv = Inventory(Partial(), 1, ammo, 10); var t = Transaction(inv);
                     if (tube ? !Step(t, "InsertShell") : !Step(t, "Discard")) return false;
                     t.GetType().GetMethod("Cancel").Invoke(t, null);
                     if (Step(t, tube ? "InsertShell" : "InsertMagazine")) return false;
@@ -124,7 +126,7 @@ static class SurvivalDurabilityRegression {
                         && copy.GetSlotCount(1) == (tube ? 9 : 10);
                 });
                 Test("insufficient-ammo/" + name, () => {
-                    var inv = Inventory(partial); var t = Transaction(inv);
+                    var inv = Inventory(Partial()); var t = Transaction(inv);
                     if (!tube && !Step(t, "Discard")) return false;
                     int expected = inv.GetSlotValue(0);
                     return !Step(t, tube ? "InsertShell" : "InsertMagazine") && inv.GetSlotValue(0) == expected && Same(inv, Reload(inv));

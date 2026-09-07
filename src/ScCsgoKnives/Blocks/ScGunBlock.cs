@@ -137,10 +137,9 @@ public class ScGunBlock : ScNoDurabilityBlock {
     /// <summary>M4: the item's own durability level; the number itself never goes into the display name.</summary>
     public static string DurabilityText(int value) {
         if (!IsKnown(value)) return "";
-        int level = GunSpec.GetDurability(Terrain.ExtractData(value));
-        var spec = SpecOf(value);
-        return level <= 0 ? "\n耐久：损坏，请到装配台维修（消耗金属坯件/精密机构）"
-            : $"\n耐久 {ScGunDurability.Percent(level)}%（{level}/{ScGunDurability.Levels} 级，每级约 {ScGunDurability.ShotsPerLevel(spec.Name)} 发）";
+        int data = Terrain.ExtractData(value), durability = GunSpec.GetDurability(data), full = ScGunDurability.FullOf(data);
+        return durability <= 0 ? $"\n耐久：损坏（0 / {full}），请到装配台维修（消耗金属坯件/精密机构）"
+            : $"\n耐久 {durability} / {full}（{ScGunDurability.PercentText(durability, full)}，每发 1 点）";
     }
 
 }

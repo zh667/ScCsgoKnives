@@ -19,19 +19,16 @@ public static class ScSmokeVolume {
         if (!s.Effect || s.Kind!=2 || s.Remaining<=0) return 0;
         float radius=CurrentRadius(s); if (radius<=0) return 0;
         float inside=Math.Clamp((radius-Vector3.Distance(point,Center(s)))/.5f,0,1);
-        return inside*(1-ScSmokeDisturbance.Clearing(disturbances,point));
+        return inside*(1-ScSmokeDisturbance.Clearing(disturbances,point,s));
     }
-    /// <summary>Smoke-filled length of the segment once HE openings are subtracted; equals InsideLength with none.</summary>
+    /// <summary>Smoke-filled length of the segment: the same Density the overlay and the sprites use, integrated every
+    /// 0.25 m, so the AI's sight edge is the soft edge the player sees and an HE opening reads the same for both.</summary>
     public static float EffectiveInsideLength(Vector3 start,Vector3 end,ScGrenadeState s,IEnumerable<ScSmokeDisturbance> disturbances) {
-        float geometric=InsideLength(start,end,Center(s),CurrentRadius(s));
-        if (geometric<=0 || disturbances is null || !disturbances.Any(d=>d.Active)) return geometric;
+        if (InsideLength(start,end,Center(s),CurrentRadius(s)+.5f)<=0) return 0; // segment clear of the soft edge too
         Vector3 delta=end-start;float length=delta.Length();if (length<.001f) return 0;
         Vector3 direction=delta/length;const float step=.25f;float sum=0;
-        for (float t=step*.5f;t<length;t+=step) {
-            Vector3 point=start+direction*t;
-            if (Vector3.Distance(point,Center(s))<=CurrentRadius(s)) sum+=step*(1-ScSmokeDisturbance.Clearing(disturbances,point));
-        }
-        return Math.Min(sum,geometric);
+        for (float t=step*.5f;t<length;t+=step) sum+=step*Density(s,start+direction*t,disturbances);
+        return sum;
     }
     public static bool Blocks(IEnumerable<ScGrenadeState> states,Vector3 eye,Vector3 target,Func<Vector3,Vector3,bool> clear=null,IEnumerable<ScSmokeDisturbance> disturbances=null) {
         Vector3 segment=target-eye;float length2=segment.LengthSquared();if (length2<=1.5f*1.5f) return false;

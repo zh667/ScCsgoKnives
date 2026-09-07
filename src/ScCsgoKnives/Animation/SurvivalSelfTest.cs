@@ -21,6 +21,7 @@ public static class SurvivalSelfTest {
         public void DropAllItems(Vector3 position) => Array.Clear(Counts);
     }
     public static void Run(Action<string, bool, string> check) {
+        ScGunRegistry.Current ??= new ScGunRegistry(); // headless: the gun state table a world would own
         ScPolishSelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
@@ -120,21 +121,23 @@ public static class SurvivalSelfTest {
             bool hold = d.Clearing(Vector3.Zero) == 1 && d.Clearing(new Vector3(2.4f, 0, 0)) == 1 && Math.Abs(d.Clearing(new Vector3(2.75f, 0, 0)) - .5f) < .001f && d.Clearing(new Vector3(3, 0, 0)) == 0;
             d.Remaining = 1; bool refilling = Math.Abs(d.Clearing(Vector3.Zero) - .5f) < .001f;
             d.Remaining = 0; bool gone = d.Clearing(Vector3.Zero) == 0 && !d.Active;
-            var l = ScSmokeDisturbance.Load(new ScSmokeDisturbance { Center = new Vector3(1, 2, 3), Remaining = 2.2f }.Save());
-            bool saved = l is not null && l.Center == new Vector3(1, 2, 3) && l.Remaining == 2.2f && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Remaining = 0 }.Save()) is null
-                && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Remaining = 99 }.Save()) is null;
-            return hold && refilling && gone && saved && ScSmokeDisturbance.Total == 3.5f && ScSmokeDisturbance.Clearing(null, Vector3.Zero) == 0;
+            var bound = new ScSmokeDisturbance { Center = new Vector3(1, 2, 3), Remaining = 2.2f }; bound.SmokeIds.Add(7);
+            var l = ScSmokeDisturbance.Load(bound.Save());
+            var expired = new ScSmokeDisturbance { Remaining = 0 }; expired.SmokeIds.Add(1); var overlong = new ScSmokeDisturbance { Remaining = 99 }; overlong.SmokeIds.Add(1);
+            bool saved = l is not null && l.Center == new Vector3(1, 2, 3) && l.Remaining == 2.2f && l.SmokeIds.SequenceEqual([7]) && ScSmokeDisturbance.Load(expired.Save()) is null
+                && ScSmokeDisturbance.Load(overlong.Save()) is null;
+            return hold && refilling && gone && saved && ScSmokeDisturbance.Total == 3.5f && ScSmokeDisturbance.Clearing(null, Vector3.Zero, null) == 0;
         });
         Test("smoke-opening-opens-sight", () => {
-            var smoke = new ScGrenadeState { Kind = 2, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
+            var smoke = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
             Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
-            var opening = new ScSmokeDisturbance { Center = Vector3.Zero };
+            var opening = new ScSmokeDisturbance { Center = Vector3.Zero }; opening.SmokeIds.Add(1);
             float intact = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, null), open = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]);
-            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 6) < .001f;
+            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 5.5f) < .2f; // radius 3 with the 0.5 m soft edge inside it
             bool openNow = open <= .5f + 1e-3f /* only the 0.5 m soft rim on each side is left */ && !ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && ScSmokeVolume.Density(smoke, Vector3.Zero, [opening]) == 0 && ScSmokeVolume.Density(smoke, Vector3.Zero) == 1;
-            var side = new ScSmokeDisturbance { Center = new Vector3(0, 0, 4) }; // opening beside the path: sight still blocked
+            var side = new ScSmokeDisturbance { Center = new Vector3(0, 0, 4) }; side.SmokeIds.Add(1); // opening beside the path: sight still blocked
             bool sideBlocked = ScSmokeVolume.Blocks([smoke], a, b, null, [side]);
-            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 6) < .001f;
+            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 5.5f) < .2f;
             return blockedBefore && openNow && sideBlocked && refilled;
         });
         Test("impact-sound-folders", () => new[] { "Stone", "Wood", "Plant", "Metal", "Soft", "Dirt", "Glass" }.All(m => SubsystemScGunBlockBehavior.ImpactFolder(m) == m)
@@ -163,7 +166,7 @@ public static class SurvivalSelfTest {
         Test("third-person-stances", () => ScThirdPerson.StanceForGun("ak47") == ScThirdPersonStance.Rifle && ScThirdPerson.StanceForGun("glock18") == ScThirdPersonStance.Pistol
             && ScThirdPerson.StanceForGun("taser") == ScThirdPersonStance.Pistol && ScThirdPerson.StanceForGun("elite") == ScThirdPersonStance.Dual && ScThirdPerson.StanceForGun("awp") == ScThirdPersonStance.Rifle
             && GunSpec.All.All(g => ScThirdPerson.StanceForGun(g.Name) is not null));
-        foreach (string asset in new[] { "ak47", "awp", "glock18", "elite", "taser", "m249", "nova", "karambit", "grenade_hegrenade", "grenade_molotov" }) {
+        foreach (string asset in new[] { "ak47", "awp", "glock18", "elite", "taser", "m249", "nova", "karambit", "grenade_hegrenade", "grenade_molotov", "m4a1s" }) {
             Test("third-person-weapon/" + asset, () => {
                 var w = ScThirdPersonWeapon.For(asset);
                 if (w is null || w.Vertices == 0 || !w.HasRightGrip) throw new InvalidOperationException(w is null ? "no weapon" : $"vertices {w.Vertices} rightGrip {w.HasRightGrip}");
@@ -230,20 +233,53 @@ public static class SurvivalSelfTest {
         });
         Test("smoke-neutral-grey", () => ScGrenadeVisuals.Smoke(new() { Kind = 2, Effect = true, Age = 2, Remaining = 13 }, 0).All(sp => sp.Color.R == sp.Color.G && sp.Color.G == sp.Color.B)
             && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 255 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
-        Test("gun-durability-levels", () => {
+        Test("gun-durability-exact", () => {
             int fresh = GunSpec.MakeData(0, 30);
-            bool layout = GunSpec.GetDurability(fresh) == 5 && GunSpec.GetDurability(GunSpec.SetRounds(GunSpec.SetDurability(fresh, 3), 5)) == 3
-                && GunSpec.GetRounds(GunSpec.SetDurability(fresh, 3)) == 30 && ScGunDurability.Percent(5) == 100 && ScGunDurability.Percent(1) == 20 && ScGunDurability.Percent(0) == 0
-                && ScGunDurability.IsLow(GunSpec.SetDurability(fresh, 1)) && !ScGunDurability.IsLow(GunSpec.SetDurability(fresh, 2)) && ScGunDurability.IsBroken(GunSpec.SetDurability(fresh, 0)) && !ScGunDurability.IsLow(GunSpec.SetDurability(fresh, 0));
-            bool classes = GunSpec.All.All(g => ScGunDurability.ShotsPerLevel(g.Name) >= 1) && ScGunDurability.ShotsPerLevel("ak47") == 300 && ScGunDurability.ShotsPerLevel("awp") == 40
-                && ScGunDurability.ShotsPerLevel("taser") == 20 && ScGunDurability.ShotsPerLevel("negev") == 800 && ScGunDurability.ShotsPerLevel("nova") == 60 && ScGunDurability.ShotsPerLevel("elite") == 240;
-            int shots = 0, level = 5;
-            for (int i = 0; i < 299; i++) level = ScGunDurability.Wear("ak47", level, ref shots);
-            bool holds = level == 5 && shots == 299;
-            level = ScGunDurability.Wear("ak47", level, ref shots); bool drops = level == 4 && shots == 0;
-            level = 1; shots = 299; level = ScGunDurability.Wear("ak47", level, ref shots); bool breaks = level == 0;
-            bool stays = ScGunDurability.Wear("ak47", 0, ref shots) == 0;
-            return layout && classes && holds && drops && breaks && stays;
+            bool freshState = GunSpec.IsFresh(fresh) && GunSpec.GetDurability(fresh) == 1500 && GunSpec.GetRounds(fresh) == 30 && !GunSpec.GetSilencerOff(fresh);
+            int worn = GunSpec.SetDurability(fresh, 1200);
+            bool record = !GunSpec.IsFresh(worn) && GunSpec.GetId(worn) >= GunSpec.FirstId && GunSpec.GetDurability(worn) == 1200 && GunSpec.GetRounds(worn) == 30
+                && GunSpec.GetDurability(GunSpec.SetRounds(worn, 5)) == 1200 && GunSpec.GetRounds(worn) == 5 && GunSpec.SetRounds(worn, 7) == worn; // the id is the identity; writes keep it
+            bool text = ScGunDurability.PercentText(1500, 1500) == "100%" && ScGunDurability.PercentText(1499, 1500) == ">99%" && ScGunDurability.PercentText(1, 1500) == "<1%"
+                && ScGunDurability.PercentText(1290, 1500) == "86%" && ScGunDurability.PercentText(0, 1500) == "0%";
+            bool low = ScGunDurability.IsLow(GunSpec.SetDurability(worn, 300)) && !ScGunDurability.IsLow(GunSpec.SetDurability(worn, 301)) && ScGunDurability.IsBroken(GunSpec.SetDurability(worn, 0)) && !ScGunDurability.IsLow(worn);
+            bool classes = GunSpec.All.All(g => ScGunDurability.Full(g.Name) >= 100) && ScGunDurability.Full("ak47") == 1500 && ScGunDurability.Full("awp") == 200 && ScGunDurability.Full("taser") == 100 && ScGunDurability.Full("negev") == 4000;
+            int d = GunSpec.SetDurability(fresh, 2); d = ScGunDurability.Wear(d); bool wear1 = GunSpec.GetDurability(d) == 1; d = ScGunDurability.Wear(d); bool wear0 = GunSpec.GetDurability(d) == 0 && GunSpec.GetDurability(ScGunDurability.Wear(d)) == 0;
+            return freshState && record && text && low && classes && wear1 && wear0;
+        });
+        Test("gun-identity-follows-the-item", () => {
+            // The three 0.34 review cases: a fresh gun swapped into the same slot, a silencer detached, the gun moved to another slot.
+            int a = GunSpec.MakeData(0, 30); for (int i = 0; i < 299; i++) a = ScGunDurability.Wear(a);
+            int b = GunSpec.MakeData(0, 30);
+            bool swap = GunSpec.GetDurability(a) == 1201 && GunSpec.GetDurability(b) == 1500 && GunSpec.GetDurability(ScGunDurability.Wear(b)) == 1499 && GunSpec.GetDurability(a) == 1201;
+            int m4 = GunSpec.MakeData(1, 25); for (int i = 0; i < 299; i++) m4 = ScGunDurability.Wear(m4);
+            int detached = GunSpec.SetSilencerOff(m4, true);
+            bool silencer = detached == m4 && GunSpec.GetSilencerOff(detached) && GunSpec.GetDurability(ScGunDurability.Wear(detached)) == 1200;
+            var inv = new Inventory(); inv.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, a), 1);
+            int moved = inv.Values[0]; inv.RemoveSlotItems(0, 1); inv.AddSlotItems(3, moved, 1);
+            bool move = GunSpec.GetDurability(Terrain.ExtractData(inv.Values[3])) == 1201 && GunSpec.GetDurability(ScGunDurability.Wear(Terrain.ExtractData(inv.Values[3]))) == 1200;
+            int copy = ScGunRegistry.Current.Clone(GunSpec.GetId(a)); int copyData = GunSpec.GetVariant(a) | (copy << 6);
+            bool cloned = copy > 0 && copy != GunSpec.GetId(a) && GunSpec.GetDurability(copyData) == 1200 && GunSpec.GetDurability(ScGunDurability.Wear(copyData)) == 1199 && GunSpec.GetDurability(a) == 1200;
+            return swap && silencer && move && cloned;
+        });
+        Test("gun-registry-save-and-limits", () => {
+            var r = new ScGunRegistry(); int id = r.Allocate(3, 7, true, 1234); var l = ScGunRegistry.Load(r.Save());
+            bool round = l.Get(id) is { Variant: 3, Rounds: 7, SilencerOff: true, Durability: 1234 } && l.Next == r.Next && l.Count == 1;
+            var full = new ScGunRegistry(); int allocated = 0; while (!full.IsFull) { if (full.Allocate(0, 0, false, 1) > 0) allocated++; }
+            bool limit = allocated == GunSpec.LastId && full.Allocate(0, 0, false, 1) == -1 && full.Clone(1) == -1 && full.Get(GunSpec.LastId) is not null;
+            var saved = ScGunRegistry.Current; ScGunRegistry.Current = full;
+            int partial = GunSpec.MakeData(0, 7); bool fallback = GunSpec.IsFresh(partial) && GunSpec.GetRounds(partial) == 30 && GunSpec.SetRounds(partial, 3) == partial; // no room: stays a fresh gun, unchanged
+            ScGunRegistry.Current = saved;
+            bool empty = ScGunRegistry.Load(null).Count == 0 && ScGunRegistry.Load(new ScGunRegistry().Save()).Next == GunSpec.FirstId;
+            return round && limit && fallback && empty;
+        });
+        Test("gun-legacy-v3-migrates", () => {
+            int old = 2 | (5 << 6) | (1 << 16); // the 0.33 report's AWP: data 65858
+            bool read = old == 65858 && GunSpec.IsLegacy(old) && GunSpec.GetVariant(old) == 2 && GunSpec.All[2].Name == "awp" && GunSpec.GetRounds(old) == 5 && !GunSpec.GetSilencerOff(old) && GunSpec.GetDurability(old) == 200;
+            int migrated = GunSpec.SetRounds(old, 4);
+            bool moved = !GunSpec.IsLegacy(migrated) && GunSpec.GetVariant(migrated) == 2 && GunSpec.GetRounds(migrated) == 4 && GunSpec.GetDurability(migrated) == 200 && GunSpec.GetId(migrated) >= GunSpec.FirstId;
+            int oldSilenced = 1 | (20 << 6) | (1 << 14) | (1 << 16);
+            bool silenced = GunSpec.GetSilencerOff(oldSilenced) && GunSpec.GetSilencerOff(GunSpec.SetDurability(oldSilenced, 100));
+            return read && moved && silenced;
         });
         Test("gun-repair-cost", () => {
             var ak = ScWeaponCrafting.All.First(e => e.Name == "ak47"); var glock = ScWeaponCrafting.All.First(e => e.Name == "glock18");
@@ -253,25 +289,49 @@ public static class SurvivalSelfTest {
             bool fullOk = full[blank] == 1 && full[mech] == 1 && full.Count == 2 && pistol[blank] == 1 && !pistol.ContainsKey(mech) && mg[blank] == 2 && mg[mech] == 1
                 && ScWeaponRepair.FullCost(knife).Count == 0 && ScWeaponCrafting.All.Where(e => !e.Knife).All(e => ScWeaponRepair.FullCost(e).Values.Sum() >= 1
                     && ScWeaponRepair.FullCost(e).Values.Sum() <= Math.Max(1, (e.B + e.M + e.H + e.O) * 3 / 10 + 1));
-            var none = ScWeaponRepair.Cost(ak, 5); var one = ScWeaponRepair.Cost(ak, 4); var broken = ScWeaponRepair.Cost(ak, 0); var half = ScWeaponRepair.Cost(m249, 3);
-            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 1 && broken[mech] == 1 && half[blank] == 1 && half[mech] == 1;
+            var none = ScWeaponRepair.Cost(ak, 1500, 1500); var one = ScWeaponRepair.Cost(ak, 1499, 1500); var broken = ScWeaponRepair.Cost(ak, 0, 1500); var half = ScWeaponRepair.Cost(m249, 750, 4000);
+            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 1 && broken[mech] == 1 && half[blank] == 2 && half[mech] == 1;
         });
         Test("gun-repair-transaction", () => {
             int blank = 950, mech = 951; // material item values stand in for the blocks, which are not registered in the headless self-test
-            int worn = Terrain.MakeBlockValue(512, 0, GunSpec.Pack(0, 12, false, 2));
+            int worn = Terrain.MakeBlockValue(512, 0, GunSpec.SetDurability(GunSpec.MakeData(0, 12), 600));
             var i = new Inventory(); i.AddSlotItems(0, worn, 1); i.AddSlotItems(2, blank, 3); i.AddSlotItems(3, mech, 1);
             var c = ScWeaponRepair.Candidates(i, 512).Single();
             var cost = new Dictionary<int, int> { [blank] = 1, [mech] = 1 };
-            bool picked = c.Slot == 0 && c.Level == 2;
-            bool ok = ScWeaponRepair.TryRepair(i, c, cost) && GunSpec.GetDurability(Terrain.ExtractData(i.Values[0])) == 5 && GunSpec.GetRounds(Terrain.ExtractData(i.Values[0])) == 12
+            bool picked = c.Slot == 0 && c.Durability == 600 && c.Full == 1500;
+            bool ok = ScWeaponRepair.TryRepair(i, c, cost) && GunSpec.GetDurability(Terrain.ExtractData(i.Values[0])) == 1500 && GunSpec.GetRounds(Terrain.ExtractData(i.Values[0])) == 12
                 && i.Counts[2] == 2 && i.Counts[3] == 0 && !ScWeaponRepair.Candidates(i, 512).Any();
-            bool again = !ScWeaponRepair.TryRepair(i, c, cost) && i.Counts[2] == 2;                      // target changed (already repaired): refused, nothing deducted
-            var j = new Inventory(); j.AddSlotItems(0, worn, 1); j.AddSlotItems(2, blank, 1);
-            bool poor = !ScWeaponRepair.TryRepair(j, ScWeaponRepair.Candidates(j, 512).Single(), cost) && j.Counts[2] == 1 && j.Values[0] == worn; // short one mechanism: untouched
-            var k = new Inventory(); k.AddSlotItems(0, worn, 1); k.AddSlotItems(2, blank, 2); k.AddSlotItems(3, mech, 2); k.RefuseSlot = 3;
-            bool rollback = !ScWeaponRepair.TryRepair(k, ScWeaponRepair.Candidates(k, 512).Single(), cost) && k.Counts[2] == 2 && k.Values[0] == worn; // removal fails midway: blanks restored
-            bool free = ScWeaponRepair.TryRepair(j, ScWeaponRepair.Candidates(j, 512).Single(), new Dictionary<int, int>()) && GunSpec.GetDurability(Terrain.ExtractData(j.Values[0])) == 5;
+            bool again = !ScWeaponRepair.TryRepair(i, c, cost) && i.Counts[2] == 2;                      // already full: refused, nothing deducted
+            int worn2 = Terrain.MakeBlockValue(512, 0, GunSpec.SetDurability(GunSpec.MakeData(0, 12), 600));
+            var j = new Inventory(); j.AddSlotItems(0, worn2, 1); j.AddSlotItems(2, blank, 1);
+            bool poor = !ScWeaponRepair.TryRepair(j, ScWeaponRepair.Candidates(j, 512).Single(), cost) && j.Counts[2] == 1 && GunSpec.GetDurability(Terrain.ExtractData(j.Values[0])) == 600; // short one mechanism: untouched
+            int worn3 = Terrain.MakeBlockValue(512, 0, GunSpec.SetDurability(GunSpec.MakeData(0, 12), 600));
+            var k = new Inventory(); k.AddSlotItems(0, worn3, 1); k.AddSlotItems(2, blank, 2); k.AddSlotItems(3, mech, 2); k.RefuseSlot = 3;
+            bool rollback = !ScWeaponRepair.TryRepair(k, ScWeaponRepair.Candidates(k, 512).Single(), cost) && k.Counts[2] == 2 && GunSpec.GetDurability(Terrain.ExtractData(k.Values[0])) == 600; // removal fails midway: blanks restored
+            bool free = ScWeaponRepair.TryRepair(j, ScWeaponRepair.Candidates(j, 512).Single(), new Dictionary<int, int>()) && GunSpec.GetDurability(Terrain.ExtractData(j.Values[0])) == 1500;
             return picked && ok && again && poor && rollback && free;
+        });
+        Test("smoke-opening-bound-to-its-smokes", () => {
+            var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
+            var behindWall = new ScGrenadeState { Kind = 2, Id = 2, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f + Vector3.UnitZ * 2 };
+            var opening = new ScSmokeDisturbance { Center = Vector3.Zero }; opening.SmokeIds.Add(1);
+            Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
+            bool nearOpened = ScSmokeVolume.Density(near, Vector3.Zero, [opening]) == 0 && !ScSmokeVolume.Blocks([near], a, b, null, [opening]);
+            bool otherWhole = ScSmokeVolume.Density(behindWall, Vector3.Zero, [opening]) == 1 && ScSmokeVolume.Blocks([behindWall], a, b, null, [opening]);
+            var l = ScSmokeDisturbance.Load(opening.Save());
+            bool saved = l is not null && l.SmokeIds.SequenceEqual([1]) && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Center = Vector3.Zero }.Save()) is null; // an opening naming no smoke is dropped
+            bool sameDensity = Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, near, null) - 5.5f) < .2f; // the same soft-edged density the overlay uses, integrated
+            return nearOpened && otherWhole && saved && sameDensity;
+        });
+        Test("third-person-body-fist", () => {
+            Matrix root = Matrix.CreateScale(.0241f) * Matrix.CreateRotationX(-MathF.PI / 2);
+            Matrix body = ScThirdPersonMath.BodyAbsolute(root, .5f, new Vector3(10, 64, -3));
+            Matrix hand = ScThirdPersonMath.HandAbsolute(new Vector3(7.48f, .12f, 51.5f), new Vector2(ScThirdPersonStance.Grenade.RightRaise, ScThirdPersonStance.Grenade.RightSwing), body);
+            Vector3 fist = Vector3.Transform(ScThirdPersonMath.HandEndLocal(true), hand), shoulder = hand.Translation;
+            Vector3 forward = Matrix.CreateRotationY(.5f).Forward;
+            bool height = shoulder.Y > 64 + 1.1f && shoulder.Y < 64 + 1.4f && fist.Y < shoulder.Y && fist.Y > 64 + .6f;
+            bool reach = Math.Abs((fist - shoulder).Length() - 20.5f * .0241f) < .05f && Vector3.Dot(fist - shoulder, forward) > .2f; // the raised arm reaches forward
+            return height && reach && ScGrenadeState.Finite(fist);
         });
         Test("workbench-no-inherited-index", () => typeof(ScWeaponWorkbenchBlock).GetFields().All(f => f.Name != "Index"));
         Test("unknown-gun-preserved", () => ScGunBlock.AssetIndex(63) == -1 && ScGunBlock.AssetIndex(42) == -1 && GunSpec.GetVariant(GunSpec.SetRounds(GunSpec.MakeData(42, 10), 7)) == 42);
