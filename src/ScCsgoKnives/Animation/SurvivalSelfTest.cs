@@ -105,6 +105,57 @@ public static class SurvivalSelfTest {
             var fresh = new ScSlotHistory(); fresh.Observe(3, 0);                 // world loaded holding the grenade
             return wheel && blink && held && fresh.Previous == -1;
         });
+        Test("headshot-geometry", () => {
+            // A human-sized target in a vanilla-like bone space: inch units (0.0254) and a yawed, translated root.
+            Matrix bone = Matrix.CreateScale(.0254f) * Matrix.CreateRotationY(1.1f) * Matrix.CreateTranslation(new Vector3(10, 3, -7));
+            var body = new ScPartBox(new BoundingBox(new Vector3(-12, 0, -8), new Vector3(12, 48, 8)), bone, false);
+            var head = new ScPartBox(new BoundingBox(new Vector3(-8, 48, -8), new Vector3(8, 64, 8)), bone, true);
+            var parts = new[] { body, head };
+            Vector3 headCentre = Vector3.Transform(new Vector3(0, 56, 0), bone), bodyCentre = Vector3.Transform(new Vector3(0, 24, 0), bone);
+            var fromAbove = ScHeadshot.Resolve(parts, headCentre + Vector3.UnitY * 5, -Vector3.UnitY, 64);          // top-down: head first
+            var fromBelow = ScHeadshot.Resolve(parts, bodyCentre - Vector3.UnitY * 5, Vector3.UnitY, 64);           // body shields the head
+            var insideHead = ScHeadshot.Resolve(parts, headCentre, Vector3.UnitX, 64);
+            var miss = ScHeadshot.Resolve(parts, headCentre + new Vector3(3, 0, 0), -Vector3.UnitY, 64);
+            var tooFar = ScHeadshot.Resolve(parts, headCentre + Vector3.UnitY * 5, -Vector3.UnitY, 1);
+            var twice = ScHeadshot.Resolve(parts, headCentre + Vector3.UnitY * 5, -Vector3.UnitY * 2, 64);            // unnormalised: parameter halves
+            float headTop = 8 * .0254f; // half height of the head box in metres
+            return fromAbove.Part == ScHitPart.Head && Math.Abs(fromAbove.Distance - (5 - headTop)) < .01f
+                && fromBelow.Part == ScHitPart.Body && Math.Abs(fromBelow.Distance - (5 - 24 * .0254f)) < .01f
+                && insideHead.Part == ScHitPart.Head && insideHead.Distance == 0
+                && miss.Part == ScHitPart.Unknown && miss.Distance == -1 && tooFar.Part == ScHitPart.Unknown
+                && twice.Part == ScHitPart.Head && Math.Abs(twice.Distance - (5 - headTop) / 2) < .01f;
+        });
+        Test("headshot-bind-pose-compose", () => {
+            var bones = new List<(Matrix, int)> { (Matrix.CreateScale(.0254f), -1), (Matrix.CreateTranslation(0, 50, 0), 0), (Matrix.CreateTranslation(0, 0, 10), 1) };
+            var a = ScHeadshot.ComposeBindPose(bones); var b = ScHeadshot.ComposeBindPose(bones, 2);
+            var shrunk = new ScHeadRule(["Head"], new Vector3(.5f, 1, 1)).Apply(new BoundingBox(new Vector3(-4, 0, 0), new Vector3(4, 2, 2)));
+            return (a[1].Translation - new Vector3(0, 1.27f, 0)).Length() < 1e-4f && (a[2].Translation - new Vector3(0, 1.27f, .254f)).Length() < 1e-4f
+                && (b[2].Translation - new Vector3(0, 2.54f, .508f)).Length() < 1e-4f
+                && shrunk.Min == new Vector3(-2, 0, 0) && shrunk.Max == new Vector3(2, 2, 2);
+        });
+        Test("headshot-rules", () => {
+            bool vanilla = ScHeadRules.VanillaHeadModels.Length == 32 && ScHeadRules.VanillaHeadModels.All(ScHeadRules.IsRegistered)
+                && ScHeadRules.For("Models/Cow", false, false) == ScHeadRule.Default && ScHeadRules.For("Models/Bass", false, false) is null
+                && ScHeadRules.For("Models/ModCreature", true, true) == ScHeadRule.Default && ScHeadRules.For("Models/ModCreature", true, false) is null
+                && ScHeadRules.For("Models/ModCreature", false, true) is null && ScHeadRules.For(null, false, true) is null;
+            ScHeadRules.Register("Models/SelfTestDisabled", null);
+            bool disabled = ScHeadRules.IsRegistered("Models/SelfTestDisabled") && ScHeadRules.For("Models/SelfTestDisabled", true, true) is null;
+            ScHeadRules.Register("Models/SelfTestCustom", new ScHeadRule(["Skull"], Vector3.One));
+            bool custom = ScHeadRules.For("Models/SelfTestCustom", false, false).IsHead("Skull") && !ScHeadRules.For("Models/SelfTestCustom", false, false).IsHead("Head");
+            return vanilla && disabled && custom && ScHeadshot.MultiplierFor(GunSpec.All.First(g => g.Name == "taser")) == 1
+                && ScHeadshot.MultiplierFor(GunSpec.All.First(g => g.Name == "ak47")) == 2 && ScHeadshot.Multiplier == 2;
+        });
+        Test("hit-marker-priority", () => {
+            var f = new ScCombatFeedback();
+            f.Record(1, "a", "ak47", 5, 10); f.Record(3, "b", "ak47", 5, 10); bool headWins = f.LastKind == 3 && f.LastAt == 10;
+            f.Record(1, "c", "ak47", 5, 10); bool hitDoesNotDemote = f.LastKind == 3;
+            f.Record(2, "d", "ak47", 5, 10); bool killWins = f.LastKind == 2 && f.KillAt == 10;
+            f.Record(3, "e", "ak47", 5, 10); bool killHolds = f.LastKind == 2;
+            f.Record(3, "f", "ak47", 5, 10.2); bool laterReplaces = f.LastKind == 3 && f.LastAt == 10.2 && f.KillAt == 10;
+            f.Record(0, "g", "ak47", 5, 11); bool nothingOnMiss = f.LastKind == 3 && f.LastAt == 10.2;
+            return headWins && hitDoesNotDemote && killWins && killHolds && laterReplaces && nothingOnMiss && ScCombatFeedback.HeadshotOutcome == 3
+                && ScCombatFeedback.HeadshotColor is { R: 255, G: 210, B: 50 };
+        });
         Test("smoke-neutral-grey", () => ScGrenadeVisuals.Smoke(new() { Kind = 2, Effect = true, Age = 2, Remaining = 13 }, 0).All(sp => sp.Color.R == sp.Color.G && sp.Color.G == sp.Color.B)
             && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 230 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
         Test("workbench-no-inherited-index", () => typeof(ScWeaponWorkbenchBlock).GetFields().All(f => f.Name != "Index"));

@@ -127,6 +127,8 @@ checks.AddRange(soundChecks);
 if (vanillaContent is not null) {
     foreach (var c in SurvivalPackageIntegration.Run(mod,scmod,vanillaContent))
         checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+    foreach (var c in HeadshotRegression.Run(mod,vanillaContent))
+        checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 }
 foreach(var c in CreativeRuntimeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in InteractionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });

@@ -6,8 +6,14 @@ namespace Game;
 public sealed class ScCombatFeedback {
     public sealed record Kill(string Target, string Weapon, float Distance, double At);
     public readonly List<Kill> Kills = [];
+    public const int HeadshotOutcome = 3; // Outcome() yields 0 none, 1 hit, 2 kill; 3 is a confirmed non-lethal head hit
+    public static readonly Color HeadshotColor = new(255, 210, 50);
     public double HitAt { get; private set; } = -100;
     public double KillAt { get; private set; } = -100;
+    /// <summary>Kind (1 hit, 2 kill, 3 headshot) and time of the newest confirmed event; the marker draws only this one.</summary>
+    public int LastKind { get; private set; }
+    public double LastAt { get; private set; } = -100;
+    static int Rank(int kind) => kind == 2 ? 3 : kind == HeadshotOutcome ? 2 : kind == 1 ? 1 : 0;
     readonly PrimitivesRenderer2D m_renderer = new();
     public static int Outcome(float before, float after) => float.IsFinite(before) && float.IsFinite(after)
         && before > 0 && after < before ? (after <= 0 ? 2 : 1) : 0;
@@ -18,6 +24,10 @@ public sealed class ScCombatFeedback {
     public void Record(int outcome, string target, string weapon, float distance, double now) {
         if (outcome <= 0) return;
         HitAt = now;
+        // Bodies hit by one trigger pull report at the same instant: kill > headshot > hit. A later
+        // event always replaces the marker, so a kill's red hold never hides the next yellow head hit.
+        if (now == LastAt) { if (Rank(outcome) > Rank(LastKind)) LastKind = outcome; }
+        else { LastKind = outcome; LastAt = now; }
         if (outcome != 2) return;
         KillAt = now;
         Kills.Insert(0, new(Clean(target), Clean(weapon), float.IsFinite(distance) ? Math.Max(0, distance) : 0, now));
@@ -29,11 +39,11 @@ public sealed class ScCombatFeedback {
             || DialogsManager.HasDialogs(player.GuiWidget)) return;
         Vector2 size = camera.ViewportSize, center = size * .5f;
         float scale = Math.Clamp(Math.Min(size.X / 960f, size.Y / 540f), .55f, 2.5f);
-        bool killed = now - KillAt < .45;
-        float age = (float)(now - (killed ? KillAt : HitAt)), duration = killed ? .45f : .22f;
-        if (age >= 0 && age < duration) {
+        bool killed = LastKind == 2;
+        float age = (float)(now - LastAt), duration = killed ? .45f : .22f;
+        if (LastKind > 0 && age >= 0 && age < duration) {
             var batch = m_renderer.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.AlphaBlend);
-            Color color = (killed ? new Color(255, 65, 55) : Color.White) * Math.Min(1, (duration - age) / .1f);
+            Color color = (killed ? new Color(255, 65, 55) : LastKind == HeadshotOutcome ? HeadshotColor : Color.White) * Math.Min(1, (duration - age) / .1f);
             foreach (int x in new[] { -1, 1 }) foreach (int y in new[] { -1, 1 }) {
                 Vector2 direction = new(x, y), side = new Vector2(-y, x) * (1.05f * scale);
                 Vector2 a = center + direction * (7 * scale), b = center + direction * (13 * scale);

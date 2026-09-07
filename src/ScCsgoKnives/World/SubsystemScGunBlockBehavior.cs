@@ -804,7 +804,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // scatter: Nova 9, MAG-7 and Sawed-Off 8, XM1014 6. Every other gun is 1, and
         // the body below is then exactly the single shot it always was.
         int pellets = Math.Max(1, spec.Pellets);
-        var hits = new Dictionary<ComponentBody, (float Power, Vector3 Point, Vector3 Direction)>();
+        var hits = new Dictionary<ComponentBody, (float Power, Vector3 Point, Vector3 Direction, bool Head)>();
         for (int pellet = 0; pellet < pellets; pellet++) {
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
@@ -832,13 +832,24 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 bool solved = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, false, out Vector3 zm);
                 QueueZeus(solved ? zm : start, solved, impact, direction, body.HasValue || terrain.HasValue);
             }
-            if (body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance)) {
-                Vector3 hitPoint = body.Value.HitPoint();
-                // Survival damage is a per-shot budget, shared across pellets.
-                float power = ScSurvivalBalance.PelletPower(spec, body.Value.Distance);
+            bool bodyFirst = body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance);
+            ScHitPart part = ScHitPart.Unknown; float partDistance = -1; string why = null;
+            if (bodyFirst) {
+                // M1b: which mesh of the creature this pellet actually crosses, from its current pose. The
+                // tolerant body AABB stays the damage fallback (Unknown); a mesh box that lies behind the
+                // wall the pellet also hit is not a hit at all.
+                part = ScHeadshotProbe.Resolve(body.Value.ComponentBody, start, direction, spec.RangeBlocks, out partDistance, out why);
+                if (part != ScHitPart.Unknown && terrain.HasValue && partDistance > terrain.Value.Distance) bodyFirst = false;
+            }
+            if (bodyFirst) {
+                float distance = part == ScHitPart.Unknown ? body.Value.Distance : partDistance;
+                Vector3 hitPoint = start + direction * distance;
+                // Survival damage is a per-shot budget, shared across pellets; a head pellet is scaled once, here.
+                float power = ScSurvivalBalance.PelletPower(spec, distance) * (part == ScHitPart.Head ? ScHeadshot.MultiplierFor(spec) : 1);
                 var target = body.Value.ComponentBody;
                 hits.TryGetValue(target, out var prior);
-                hits[target] = (prior.Power + power, hitPoint, direction);
+                hits[target] = (prior.Power + power, hitPoint, direction, prior.Head || part == ScHitPart.Head);
+                LogPellet(player, spec, target, part, distance, why, now);
             }
             else if (terrain.HasValue) {
                 Vector3 hitPoint = start + direction * terrain.Value.Distance;
@@ -852,7 +863,16 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             }
         }
         foreach (var hit in hits)
-            ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0);
+            ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0, headshot: hit.Value.Head);
+    }
+
+    readonly Dictionary<ComponentPlayer, double> m_pelletLogAt = [];
+    /// <summary>Game.log line per confirmed body pellet, throttled to four a second per player except head hits.</summary>
+    void LogPellet(ComponentPlayer player, GunSpec spec, ComponentBody target, ScHitPart part, float distance, string why, double now) {
+        if (part != ScHitPart.Head && m_pelletLogAt.TryGetValue(player, out double last) && now - last < .25) return;
+        m_pelletLogAt[player] = now;
+        string name = target.Entity.FindComponent<ComponentCreature>()?.DisplayName ?? "body";
+        KnifeLog.Information($"shot {spec.Name}: {name} part={part} at {distance:0.0} m ({why})");
     }
 
     void CancelReload(ComponentPlayer player, GunState state) {

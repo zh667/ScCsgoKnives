@@ -29,7 +29,7 @@ public static class ScSurvivalBalance {
         return MathUtils.Lerp(1, floor, Math.Clamp((distance - start) / (end - start), 0, 1));
     }
     public static float PelletPower(GunSpec gun, float distance) => Power(gun.Name) * Falloff(gun, distance) / Math.Max(1, gun.Pellets);
-    public static void Attack(ComponentBody body, ComponentPlayer player, Vector3 point, Vector3 direction, float power, double now, bool melee = false, bool zeus = false) {
+    public static void Attack(ComponentBody body, ComponentPlayer player, Vector3 point, Vector3 direction, float power, double now, bool melee = false, bool zeus = false, bool headshot = false) {
         ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
         float before = health?.Health ?? 0;
         int weapon = player.ComponentMiner.ActiveBlockValue;
@@ -44,6 +44,8 @@ public static class ScSurvivalBalance {
         if (eligible) control.Next = now + (zeus ? 5 : .8);
         ComponentMiner.AttackBody(attack);
         int outcome = ScCombatFeedback.Outcome(before, health?.Health ?? before);
+        // A head pellet that confirmed damage without a kill reports 3 (yellow); a kill stays 2 whatever was hit.
+        if (outcome == 1 && headshot) outcome = ScCombatFeedback.HeadshotOutcome;
         if (outcome > 0) player.Project.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.ReportHit(player, body, weapon, point, outcome, now);
     }
 }
