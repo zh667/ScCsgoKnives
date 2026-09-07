@@ -498,6 +498,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// record; the item value carries only the model and the record id, so state follows the item everywhere.</summary>
     ScGunRegistry m_registry;
     const string RegistryKey = "GunRegistry";
+    const string LayoutKey = "GunDataLayout";
+    int m_worldLayout;
+    readonly HashSet<ComponentPlayer> m_oldFormatTold = [];
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
     double m_duplicateScanAt = -1;
     SubsystemGameInfo m_gameInfo;
@@ -555,7 +558,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null));
         ScGunRegistry.Current = m_registry;
-        KnifeLog.Information($"gun registry: {m_registry.Count} records, next id {m_registry.Next}");
+        m_worldLayout = valuesDictionary.GetValue<int>(LayoutKey, 0);
+        KnifeLog.Information($"gun registry: {m_registry.Count} records, next id {m_registry.Next}; world gun data layout {(m_worldLayout == 0 ? "unstamped (saved by 0.34 or earlier, or new)" : m_worldLayout.ToString())}, this version {GunSpec.DataLayout}");
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
         // run again on a project reload. AddDrawable itself is a TryAdd and does not
@@ -583,6 +587,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         valuesDictionary.SetValue(RechargeKey, saved);
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save());
+        valuesDictionary.SetValue(LayoutKey, GunSpec.DataLayout);
     }
 
     public void Update(float dt) {
@@ -599,6 +604,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                     state.RechargeAt = double.IsFinite(at) ? Math.Min(at, m_time.GameTime + GunSpec.ForAsset("taser").RechargeSeconds) : -1;
             }
             int value = player.ComponentMiner.ActiveBlockValue;
+            if (Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsOldFormat(value) && m_oldFormatTold.Add(player)) {
+                player.ComponentGui.DisplaySmallMessage("这把枪是旧版本的数据，本版无法使用（已保留原样）。请新建世界。", Color.Red, true, false);
+                KnifeLog.Warning($"old-format gun data {Terrain.ExtractData(value)} held by player {player.PlayerData.PlayerIndex}; world layout stamp {m_worldLayout}; not decoded, not written");
+            }
             bool holdingGun = Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsKnown(value) && player.ComponentHealth.Health > 0f;
             if (!holdingGun) {
                 state.AmmoHud?.Hide();

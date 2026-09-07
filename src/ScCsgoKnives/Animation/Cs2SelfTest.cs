@@ -508,19 +508,16 @@ public static class Cs2SelfTest {
                 if (GunSpec.GetRounds(changed) != 3 || GunSpec.GetSilencerOff(changed) != !sil || GunSpec.GetDurability(changed) != 42 || GunSpec.GetVariant(changed) != v) layout.Add($"record({v},{r},{sil}) setters disturb other fields");
                 if (changed >> 16 != 0) layout.Add($"record({v},{r},{sil}) sets bit 16");
             }
-            // v3 items (0.20.5-0.31.0) read as themselves at full durability and take a record on the first write.
+            // Anything with bit 16 set (v3 flag or a v4 durability code) is foreign: untouched, no record, unusable.
             foreach (int r in new[] { 0, 5, 30, 150 }) foreach (bool sil in new[] { false, true }) {
                 int old = v | (r << 6) | (sil ? 1 << 14 : 0) | (1 << 16);
-                if (!GunSpec.IsLegacy(old) || GunSpec.GetVariant(old) != v || GunSpec.GetRounds(old) != r || GunSpec.GetSilencerOff(old) != sil || GunSpec.GetDurability(old) != ScGunDurability.Full(v))
-                    layout.Add($"v3({v},{r},{sil}) -> ({GunSpec.GetVariant(old)},{GunSpec.GetRounds(old)},{GunSpec.GetSilencerOff(old)},{GunSpec.GetDurability(old)})");
-                int migrated = GunSpec.SetRounds(old, r);
-                if (GunSpec.IsLegacy(migrated) || GunSpec.GetVariant(migrated) != v || GunSpec.GetRounds(migrated) != r || GunSpec.GetSilencerOff(migrated) != sil) layout.Add($"v3({v},{r},{sil}) did not migrate");
+                if (!GunSpec.IsForeign(old) || GunSpec.SetRounds(old, r) != old || GunSpec.GetId(old) != -1 || GunSpec.IsFresh(old)) layout.Add($"foreign({v},{r},{sil}) was decoded or written");
             }
         }
-        if (GunSpec.GetVariant(65858) != 2 || GunSpec.GetRounds(65858) != 5 || GunSpec.All[GunSpec.GetVariant(65858)].Name != "awp") layout.Add("the 0.33 report's AWP (65858) is not read as an AWP with 5 rounds");
+        foreach (int d in new[] { 65858, 116173, 115720 }) if (!GunSpec.IsForeign(d)) layout.Add($"old-format item {d} not recognised as foreign");
         Check("gunspec/layout", layout.Count == 0,
               layout.Count == 0
-                  ? "layout v5: 64 fresh variants full/empty, records for 35 guns x three ammo values x both silencers with stable ids, v3 items decode and migrate, bit 16 never set"
+                  ? "layout v5: 64 fresh variants full/empty, records for 35 guns x three ammo values x both silencers with stable ids, bit 16 never set and old-format items left untouched"
                   : string.Join("; ", layout.Take(4)));
 
         Check("load/variants", Cs2SoundVariants.LoadError is null, Cs2SoundVariants.LoadError ?? $"{Cs2SoundVariants.All.Count} cues");

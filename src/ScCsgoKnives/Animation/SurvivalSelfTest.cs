@@ -279,14 +279,15 @@ public static class SurvivalSelfTest {
             bool empty = ScGunRegistry.Load(null).Count == 0 && ScGunRegistry.Load(new ScGunRegistry().Save()).Next == GunSpec.FirstId;
             return round && limit && fallback && empty;
         });
-        Test("gun-legacy-v3-migrates", () => {
-            int old = 2 | (5 << 6) | (1 << 16); // the 0.33 report's AWP: data 65858
-            bool read = old == 65858 && GunSpec.IsLegacy(old) && GunSpec.GetVariant(old) == 2 && GunSpec.All[2].Name == "awp" && GunSpec.GetRounds(old) == 5 && !GunSpec.GetSilencerOff(old) && GunSpec.GetDurability(old) == 200;
-            int migrated = GunSpec.SetRounds(old, 4);
-            bool moved = !GunSpec.IsLegacy(migrated) && GunSpec.GetVariant(migrated) == 2 && GunSpec.GetRounds(migrated) == 4 && GunSpec.GetDurability(migrated) == 200 && GunSpec.GetId(migrated) >= GunSpec.FirstId;
-            int oldSilenced = 1 | (20 << 6) | (1 << 14) | (1 << 16);
-            bool silenced = GunSpec.GetSilencerOff(oldSilenced) && GunSpec.GetSilencerOff(GunSpec.SetDurability(oldSilenced, 100));
-            return read && moved && silenced;
+        Test("gun-old-format-kept-untouched", () => {
+            // 65858 was a v3 AWP; 116173 and 115720 were v4 guns (0.32-0.34) that 0.35.0 misread as a P250 and an MP9. Bit 16 cannot
+            // tell the two layouts apart, so any such item is foreign: kept as is, never written, never fired.
+            int before = ScGunRegistry.Current.Count;
+            bool foreign = new[] { 65858, 116173, 115720 }.All(d => GunSpec.IsForeign(d) && GunSpec.GetId(d) == -1 && !GunSpec.IsFresh(d) && GunSpec.GetRounds(d) == 0 && GunSpec.GetDurability(d) == 0
+                && GunSpec.SetRounds(d, 4) == d && GunSpec.SetSilencerOff(d, true) == d && GunSpec.SetDurability(d, 9) == d && !ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, d)) && ScGunBlock.IsOldFormat(Terrain.MakeBlockValue(512, 0, d)));
+            bool noRecords = ScGunRegistry.Current.Count == before;
+            bool fresh = !GunSpec.IsForeign(GunSpec.MakeData(2, 5)) && ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(2, 5))) && !ScGunBlock.IsOldFormat(Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(2, 5)));
+            return foreign && noRecords && fresh && GunSpec.DataLayout == 5;
         });
         Test("gun-repair-cost", () => {
             var ak = ScWeaponCrafting.All.First(e => e.Name == "ak47"); var glock = ScWeaponCrafting.All.First(e => e.Name == "glock18");
