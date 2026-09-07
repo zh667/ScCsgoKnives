@@ -130,11 +130,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             }
             if (!prep.Released && m_time.GameTime>=prep.Timeline.ReleaseAt) {
                 var camera=p.GameWidget.ActiveCamera;
-                Vector3 direction=Vector3.Normalize(camera.ViewDirection + Vector3.UnitY*(prep.Low?.08f:.18f));
+                Vector3 direction=ScGrenadeBallistics.Direction(camera.ViewDirection,prep.Low);
                 Vector3 origin=camera.ViewPosition, pos=origin+direction*.45f;
                 var wall=SolidRay(origin,pos); if (wall.HasValue) pos=wall.Value.HitPoint()-direction*.10f;
                 var state=new ScGrenadeState { Kind=prep.Kind,Owner=p.PlayerData.PlayerIndex,Position=pos,
-                    Velocity=direction*(prep.Low?6:14)+p.ComponentBody.Velocity*.5f,Remaining=prep.Kind is 3 or 4?2:1.5f };
+                    Velocity=ScGrenadeBallistics.LaunchVelocity(direction,p.ComponentBody.Velocity,prep.Low),Remaining=ScGrenadeBallistics.Fuse(prep.Kind) };
                 if (!prep.Transaction.Commit(m_info.WorldSettings.GameMode==GameMode.Creative,
                     ()=>ScGrenadeState.CanAdd(m_active,state.Owner),()=>{ m_active.Add(state);m_justReleased.Add(state);return true; })) {
                     Message(p,"投掷取消：物品已移动或活动数量已满，未消耗物品。");Cancel(p,prep);continue;
@@ -146,8 +146,12 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (m_time.GameTime>=prep.Timeline.EndAt) {
                 m_preparing.Remove(p);
                 var inv=p.ComponentMiner.Inventory;
-                if (inv.ActiveSlotIndex==prep.Slot && (Holding(p)||inv.GetSlotCount(prep.Slot)==0)) {
-                    if (prep.ReturnSlot>=0 && inv.GetSlotCount(prep.ReturnSlot)>0) inv.ActiveSlotIndex=prep.ReturnSlot;
+                // F02: a finished throw selects the third hotbar slot; an empty third slot falls back to the
+                // last knife/gun slot, otherwise the player stays put. A manual switch, an open screen or an
+                // inventory change already cancelled the preparation above, so nothing is switched then.
+                if (prep.Released && inv.ActiveSlotIndex==prep.Slot && (Holding(p)||inv.GetSlotCount(prep.Slot)==0)) {
+                    int target=ScGrenadeBallistics.FollowUpSlot(inv.GetSlotCount,inv.SlotsCount,prep.Slot,prep.ReturnSlot);
+                    if (target>=0 && target!=prep.Slot) inv.ActiveSlotIndex=target;
                     else if (Holding(p)) KnifeAnimationController.GrenadeAction(p,"deploy");
                 }
             }
@@ -155,20 +159,26 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         UpdateFire(dt);
         foreach (var s in m_active.ToArray()) {
             if (m_justReleased.Remove(s)) continue; // this frame's elapsed time preceded the release
-            s.Age+=dt;
+            // Physics, age and fuse advance by one clamped step, so a stall cannot pop a grenade that barely moved (F03).
+            float step=ScGrenadeBallistics.Step(dt);
+            s.Age+=step;
             if (!s.Effect) {
-                float simulated=Math.Min(dt,.5f);
-                for (float remaining=simulated;remaining>0;) { float step=Math.Min(.02f,remaining);Move(s,step);remaining-=step; }
+                for (float remaining=step;remaining>0;) { float sub=Math.Min(.02f,remaining);Move(s,sub);remaining-=sub; }
                 if (s.Kind is 3 or 4) {
                     if (Water(s.Position)) { RemoveEffect(s,true);continue; }
                     if (s.Grounded) { Detonate(s);continue; }
                 }
             }
-            if (s.Effect && s.Kind==5 && (int)s.Age>(int)(s.Age-dt)) DecoyPulse(s);
-            s.Remaining-=dt;
+            if (s.Effect && s.Kind==5 && (int)s.Age>(int)(s.Age-step)) DecoyPulse(s);
+            s.Remaining-=step;
             if (s.Remaining<=0) {
                 s.Remaining=0;
-                if (!s.Effect && s.Kind is 2 or 5 && !s.Grounded && s.Age<4) continue; // settle; bounded airborne timeout
+                if (!s.Effect && s.Kind is 2 or 5 && !ScGrenadeBallistics.Settled(s)) {
+                    // F04: smoke and decoy pop only after resting on support. The timeout covers a grenade
+                    // that never comes to rest (wedged, endless slope); it is not a normal trigger path.
+                    if (s.Age<ScGrenadeBallistics.SettleTimeout) continue;
+                    KnifeLog.Warning($"grenade kind {s.Kind} never settled within {ScGrenadeBallistics.SettleTimeout:0} s at {s.Position}; popping in place");
+                }
                 if (!s.Effect) Detonate(s); else RemoveEffect(s,false);
             }
         }
@@ -202,8 +212,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     bool Clear(Vector3 a,Vector3 b) => !SolidRay(a,b).HasValue;
     bool Water(Vector3 p) => BlocksManager.Blocks[Terrain.ExtractContents(m_terrain.Terrain.GetCellValue(Terrain.ToCell(p.X),Terrain.ToCell(p.Y),Terrain.ToCell(p.Z)))] is WaterBlock;
     void Move(ScGrenadeState s,float dt) {
-        if (s.Grounded && Clear(s.Position,s.Position-Vector3.UnitY*.15f)) s.Grounded=false;
-        if (s.Grounded) return;
+        if (s.Grounded && Clear(s.Position,s.Position-Vector3.UnitY*.15f)) { s.Grounded=false;s.Rested=0; }
+        if (s.Grounded) { s.Rested+=dt;return; }
         bool water=Water(s.Position);
         s.Velocity+=Vector3.UnitY*(water?-3f:-10f)*dt;
         s.Velocity*=MathF.Exp(-(water?3:.08f)*dt);
@@ -342,7 +352,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         } else {
             var player=camera.GameWidget.PlayerData.ComponentPlayer;
             float smoke=m_active.Where(s=>s.Effect && s.Kind==2 && Clear(s.Position+Vector3.UnitY*.1f,camera.ViewPosition)).Select(s=>Math.Clamp(ScSmokeVolume.CurrentRadius(s)-Vector3.Distance(camera.ViewPosition,ScSmokeVolume.Center(s)),0,1)).DefaultIfEmpty(0).Max();
-            if (smoke>0) Overlay(camera,new Color(125,130,133,(int)(230*smoke)));
+            if (smoke>0) Overlay(camera,ScGrenadeVisuals.SmokeInside(smoke));
             if (player is null || !m_blind.TryGetValue(player.ComponentBody,out var blind)) return;
             float fade=Math.Clamp((float)(blind.Until-m_time.GameTime)/Math.Max(.01f,blind.Duration),0,1); if (fade<=0) return;
             bool reduced=m_reducedFlash.Contains(player.PlayerData.PlayerIndex);

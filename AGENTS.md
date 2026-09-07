@@ -18,6 +18,15 @@
 - Before starting anything, the other peer runs `git fetch origin` and `git reset --mixed origin/<branch>` (VPS: `bash tools/sync_git_from_origin.sh`). That moves HEAD and the index to the pushed commit without touching files, so `git status` shows only what is genuinely uncommitted on the other side. Never `git pull` / `merge` into a tree the other peer has already updated, and never commit the other peer's uncommitted files.
 - Never edit the same file on both peers at the same time; check `git status` for the other peer's in-progress files first.
 
+# PackageCheck runs headless
+
+`tools/PackageCheck` needs no window or GPU. Its only host requirement was `Engine.Dispatcher.Initialize()`,
+which `Program.cs` calls before loading the package (0.29.0): without it the finalizers of engine objects the
+regressions create through `GetUninitializedObject` post to an uninitialized Dispatcher and kill the process
+mid-run. On the VPS run
+`dotnet tools/PackageCheck/bin/Release/net10.0/PackageCheck.dll --scmod <pkg> --sha256 <sha> --vanilla-content <Content.zip> --json <out>`.
+Do not add a "skip GPU tests" switch; nothing in the check set draws.
+
 # Textures and threads
 
 - `Engine.Graphics.Texture2D.Load` creates the GL object on the calling thread with no dispatch and no check, and `ContentManager` caches the result. Any texture a placeable block needs in `GenerateTerrainVertices` (terrain worker thread) must be resolved on the main thread first, in `Block.Initialize()`, and read from a field afterwards. A worker thread that first-touches `ContentManager.Get<Texture2D>` gets a broken texture that then draws black everywhere for the session (0.26.1-0.28.2 supply icons and the placed bench).

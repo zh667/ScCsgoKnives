@@ -41,6 +41,8 @@ public static class ScGrenadeVisuals {
         }
         return list;
     }
+    /// <summary>F01: the in-smoke screen tint is neutral grey; only alpha follows the depth inside the volume.</summary>
+    public static Color SmokeInside(float smoke) => new(128,128,128,(int)(230*Math.Clamp(smoke,0,1)));
     public static List<Sprite> Smoke(ScGrenadeState s,float distance) {
         List<Sprite> list=[];
         float radius=ScSmokeVolume.CurrentRadius(s);if(radius<.01f) return list;
@@ -51,10 +53,11 @@ public static class ScGrenadeVisuals {
             float shell=i%3==0?.25f:.58f;
             Vector3 offset=new Vector3(MathF.Cos(a)*ring,y,MathF.Sin(a)*ring)*radius*shell;
             float pulse=1+.08f*MathF.Sin(s.Age*1.6f+i),size=radius*.49f*pulse;
+            // F01: neutral grey with the shading kept in the value, never in a hue offset (atlas RGB is white).
             int light=(int)(142+y*20+Hash(i)*10);
             // Ping-pong frame selection avoids a hard last-to-first atlas jump.
             float phase=(s.Age*.16f+Hash(i))%2;phase=phase>1?2-phase:phase;
-            list.Add(new(ScSmokeVolume.Center(s)+offset,size,size,Tint(light,light+3,light+5,fade*.76f),0,Frame(phase),a*.3f));
+            list.Add(new(ScSmokeVolume.Center(s)+offset,size,size,Tint(light,light,light,fade*.76f),0,Frame(phase),a*.3f));
         }
         return list;
     }

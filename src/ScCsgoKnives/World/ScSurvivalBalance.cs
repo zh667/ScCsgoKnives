@@ -5,7 +5,12 @@ namespace Game;
 public static class ScSurvivalBalance {
     sealed class Control { public double Next; }
     static readonly ConditionalWeakTable<ComponentBody, Control> Controls = new();
-    public static float Power(string gun) => gun switch {
+    /// <summary>F13 (community plan 2026-09-07): every gun's survival power is 1.5 × the 0.28.x table.
+    /// Applied exactly once, here; distance falloff, pellet split and any later headshot work build on the result.</summary>
+    public const float GunPowerMultiplier = 1.5f;
+    public static float Power(string gun) => BasePower(gun) * GunPowerMultiplier;
+    /// <summary>0.28.x per-gun table, kept unscaled so the multiplier is the only place the 1.5 lives.</summary>
+    public static float BasePower(string gun) => gun switch {
         "deagle" => 14, "revolver" => 18,
         "mac10" or "mp9" or "mp7" or "ump45" or "mp5sd" or "p90" or "bizon" => 6,
         "galilar" or "famas" => 9,

@@ -71,7 +71,40 @@ public static class SurvivalSelfTest {
             Test("damage/" + gun.Name, () => ScSurvivalBalance.Power(gun.Name) > 0 && Math.Abs(ScSurvivalBalance.PelletPower(gun, 0) * gun.Pellets - ScSurvivalBalance.Power(gun.Name)) < .0001f
                 && ScSurvivalBalance.Falloff(gun, 64) > 0 && ScSurvivalBalance.Falloff(gun, 64) <= 1);
         }
-        Test("animal-shot-targets", () => Math.Ceiling(70 / ScSurvivalBalance.Power("ak47")) == 7 && Math.Ceiling(70 / ScSurvivalBalance.Power("awp")) == 2);
+        Test("animal-shot-targets", () => Math.Ceiling(70 / ScSurvivalBalance.Power("ak47")) == 5 && Math.Ceiling(70 / ScSurvivalBalance.Power("awp")) == 2);
+        Test("gun-power-x1.5", () => ScSurvivalBalance.GunPowerMultiplier == 1.5f && ScSurvivalBalance.Power("ak47") == 15 && ScSurvivalBalance.Power("awp") == 57
+            && ScSurvivalBalance.Power("taser") == 27 && ScSurvivalBalance.Power("glock18") == 10.5f && ScSurvivalBalance.BasePower("ak47") == 10
+            && GunSpec.All.All(g => Math.Abs(ScSurvivalBalance.Power(g.Name) - ScSurvivalBalance.BasePower(g.Name) * 1.5f) < .0001f));
+        Test("knife-range-2.2-1.8", () => ScKnifeStrike.Range(false) == 2.2f && ScKnifeStrike.Range(true) == 1.8f && ScKnifeStrike.Power(false) == 7 && ScKnifeStrike.Power(true) == 12);
+        Test("throw-speed-inherits-velocity", () => {
+            Vector3 d = ScGrenadeBallistics.Direction(Vector3.UnitZ, false);
+            Vector3 stand = ScGrenadeBallistics.LaunchVelocity(d, Vector3.Zero, false), run = ScGrenadeBallistics.LaunchVelocity(d, Vector3.UnitZ * 4, false), back = ScGrenadeBallistics.LaunchVelocity(d, -Vector3.UnitZ * 4, false);
+            Vector3 weak = ScGrenadeBallistics.LaunchVelocity(ScGrenadeBallistics.Direction(Vector3.UnitZ, true), Vector3.Zero, true);
+            return Math.Abs(stand.Length() - 20) < .001f && run.Z > stand.Z && back.Z < stand.Z && Math.Abs(run.Z - stand.Z - 5) < .001f
+                && Math.Abs(weak.Length() - 10) < .001f && d.Y > 0 && ScGrenadeBallistics.Fuse(3) == 2 && ScGrenadeBallistics.Fuse(2) == 1.5f;
+        });
+        Test("throw-step-clamped", () => ScGrenadeBallistics.Step(.016f) == .016f && ScGrenadeBallistics.Step(3) == .5f && ScGrenadeBallistics.Step(float.NaN) == 0);
+        Test("smoke-settles-before-pop", () => {
+            var s = new ScGrenadeState { Kind = 2, Remaining = 0, Age = 5 };
+            bool flying = !ScGrenadeBallistics.Settled(s); s.Grounded = true; s.Rested = .05f; bool touching = !ScGrenadeBallistics.Settled(s);
+            s.Rested = .2f; bool rested = ScGrenadeBallistics.Settled(s); s.Grounded = false; bool lifted = !ScGrenadeBallistics.Settled(s);
+            var l = ScGrenadeState.Load(new ScGrenadeState { Kind = 2, Grounded = true, Rested = .3f, Remaining = 0 }.Save());
+            return flying && touching && rested && lifted && l.Grounded && l.Rested == .3f && ScGrenadeState.Load(new ScGrenadeState { Kind = 2, Rested = -1 }.Save()) is null;
+        });
+        Test("after-throw-third-slot", () => {
+            int Count(int[] counts, int i) => i >= 0 && i < counts.Length ? counts[i] : 0;
+            int Pick(int[] counts, int thrown, int last) => ScGrenadeBallistics.FollowUpSlot(i => Count(counts, i), counts.Length, thrown, last);
+            return Pick([1, 0, 1, 0, 0, 0], 4, 0) == 2      // third slot holds a knife/gun/anything: go there
+                && Pick([1, 0, 0, 0, 0, 0], 4, 0) == 0      // third slot empty: last weapon slot
+                && Pick([0, 0, 0, 0, 0, 0], 4, 0) == -1     // nothing usable: stay
+                && Pick([0, 0, 0, 0, 0, 0], 4, -1) == -1    // no last weapon: stay
+                && Pick([0, 0, 3, 0, 0, 0], 2, 0) == 2      // thrown from the third slot with stack left: stay there (caller deploys)
+                && Pick([1, 0, 0, 0, 0, 0], 2, 0) == 0      // last grenade thrown from the third slot: last weapon
+                && Pick([1, 0, 0, 0, 0, 0], 2, 2) == -1     // last weapon is the (now empty) thrown slot: stay
+                && Pick([1, 0], 1, 0) == 0;                 // hotbar shorter than three: fallback only
+        });
+        Test("smoke-neutral-grey", () => ScGrenadeVisuals.Smoke(new() { Kind = 2, Effect = true, Age = 2, Remaining = 13 }, 0).All(sp => sp.Color.R == sp.Color.G && sp.Color.G == sp.Color.B)
+            && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 230 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
         Test("workbench-no-inherited-index", () => typeof(ScWeaponWorkbenchBlock).GetFields().All(f => f.Name != "Index"));
         Test("unknown-gun-preserved", () => ScGunBlock.AssetIndex(63) == -1 && GunSpec.GetVariant(GunSpec.SetRounds(GunSpec.MakeData(63, 10), 7)) == 63);
         Test("throw-once", () => { var i=Setup(0,1);var tx=new ScThrowTransaction(i);int spawned=0;return tx.Commit(false,()=>true,()=>{spawned++;return true;}) && !tx.Commit(false,()=>true,()=>true) && spawned==1 && i.Counts[0]==0; });

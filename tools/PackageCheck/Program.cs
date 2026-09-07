@@ -38,6 +38,11 @@ for (int i = 0; i < args.Length; i++) {
     }
 }
 if (scmod is null) { Console.Error.WriteLine("usage: PackageCheck --scmod <path> [--sha256 <hex>] [--json <out>]"); return 2; }
+// Headless hosts (the VPS) have no game window, so nothing ever calls Engine.Dispatcher.Initialize().
+// Engine objects the regressions create through GetUninitializedObject still run GraphicsResource's
+// finalizer, which posts to the Dispatcher and throws "Dispatcher is not initialized" on the finalizer
+// thread, killing the process mid-run. Initializing it here makes those posts inert queue entries.
+Engine.Dispatcher.Initialize();
 if (!File.Exists(scmod)) { Console.Error.WriteLine($"no such package: {scmod}"); return 2; }
 
 string digest = Sha256(scmod);
