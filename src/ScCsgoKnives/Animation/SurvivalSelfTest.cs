@@ -91,17 +91,19 @@ public static class SurvivalSelfTest {
             var l = ScGrenadeState.Load(new ScGrenadeState { Kind = 2, Grounded = true, Rested = .3f, Remaining = 0 }.Save());
             return flying && touching && rested && lifted && l.Grounded && l.Rested == .3f && ScGrenadeState.Load(new ScGrenadeState { Kind = 2, Rested = -1 }.Save()) is null;
         });
-        Test("after-throw-third-slot", () => {
-            int Count(int[] counts, int i) => i >= 0 && i < counts.Length ? counts[i] : 0;
-            int Pick(int[] counts, int thrown, int last) => ScGrenadeBallistics.FollowUpSlot(i => Count(counts, i), counts.Length, thrown, last);
-            return Pick([1, 0, 1, 0, 0, 0], 4, 0) == 2      // third slot holds a knife/gun/anything: go there
-                && Pick([1, 0, 0, 0, 0, 0], 4, 0) == 0      // third slot empty: last weapon slot
-                && Pick([0, 0, 0, 0, 0, 0], 4, 0) == -1     // nothing usable: stay
-                && Pick([0, 0, 0, 0, 0, 0], 4, -1) == -1    // no last weapon: stay
-                && Pick([0, 0, 3, 0, 0, 0], 2, 0) == 2      // thrown from the third slot with stack left: stay there (caller deploys)
-                && Pick([1, 0, 0, 0, 0, 0], 2, 0) == 0      // last grenade thrown from the third slot: last weapon
-                && Pick([1, 0, 0, 0, 0, 0], 2, 2) == -1     // last weapon is the (now empty) thrown slot: stay
-                && Pick([1, 0], 1, 0) == 0;                 // hotbar shorter than three: fallback only
+        Test("after-throw-previous-slot", () => ScGrenadeBallistics.FollowUpSlot(6, 4, 0) == 0   // held slot 0 before the grenade: back to 0, whatever it holds
+            && ScGrenadeBallistics.FollowUpSlot(6, 4, 5) == 5 && ScGrenadeBallistics.FollowUpSlot(6, 4, -1) == -1  // no earlier slot known: stay
+            && ScGrenadeBallistics.FollowUpSlot(6, 4, 4) == -1 && ScGrenadeBallistics.FollowUpSlot(6, 4, 6) == -1); // thrown slot itself / out of range: stay
+        Test("slot-history-dwell", () => {
+            var h = new ScSlotHistory(); h.Observe(0, 0);                       // knife held from t=0
+            h.Observe(1, 5); h.Observe(2, 5.05); h.Observe(3, 5.1);              // wheel through 1 and 2 to the grenade in slot 3
+            bool wheel = h.Current == 3 && h.Previous == 0;
+            h.Observe(0, 9); h.Observe(3, 9.01);                                  // blinked to 0 and back: the grenade slot itself is not "previous", 0 still is
+            bool blink = h.Previous == 0 && h.Current == 3;
+            h.Observe(5, 20); h.Observe(3, 21);                                   // held slot 5 for a second, then the grenade
+            bool held = h.Previous == 5 && h.Current == 3;
+            var fresh = new ScSlotHistory(); fresh.Observe(3, 0);                 // world loaded holding the grenade
+            return wheel && blink && held && fresh.Previous == -1;
         });
         Test("smoke-neutral-grey", () => ScGrenadeVisuals.Smoke(new() { Kind = 2, Effect = true, Age = 2, Remaining = 13 }, 0).All(sp => sp.Color.R == sp.Color.G && sp.Color.G == sp.Color.B)
             && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 230 } && ScGrenadeVisuals.SmokeInside(0).A == 0);

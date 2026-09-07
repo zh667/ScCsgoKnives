@@ -21,20 +21,14 @@ public static class ScGrenadeBallistics {
     public const float SettleTimeout = 12f;
     // One frame simulates at most this much game time; the fuse consumes the same clamped step.
     public const float MaxStep = .5f;
-    // F02: a finished throw selects the hotbar's third slot when it holds anything.
-    public const int AfterThrowSlot = 2;
 
     public static Vector3 Direction(Vector3 view, bool low) => Vector3.Normalize(view + Vector3.UnitY * (low ? WeakLift : StrongLift));
     public static Vector3 LaunchVelocity(Vector3 direction, Vector3 playerVelocity, bool low) => direction * (low ? WeakSpeed : StrongSpeed) + playerVelocity * PlayerVelocityShare;
     public static float Fuse(int kind) => kind is 3 or 4 ? FireFuseSeconds : FuseSeconds;
     public static float Step(float dt) => float.IsFinite(dt) ? Math.Clamp(dt, 0, MaxStep) : 0;
     public static bool Settled(ScGrenadeState s) => s.Grounded && s.Rested >= SettleHold;
-    /// <summary>Slot to select once a throw has finished, or -1 to stay. The third slot wins when it
-    /// holds anything (including the thrown stack itself); an empty third slot falls back to the last
-    /// knife/gun slot if that slot is still occupied and is not the thrown slot.</summary>
-    public static int FollowUpSlot(Func<int, int> slotCount, int slotsCount, int thrownSlot, int lastWeaponSlot) {
-        if (AfterThrowSlot < slotsCount && slotCount(AfterThrowSlot) > 0) return AfterThrowSlot;
-        if (lastWeaponSlot >= 0 && lastWeaponSlot < slotsCount && lastWeaponSlot != thrownSlot && slotCount(lastWeaponSlot) > 0) return lastWeaponSlot;
-        return -1;
-    }
+    /// <summary>F02 (user, 2026-09-07): once a throw has finished, go back to the slot the player held
+    /// before the grenade slot, whatever it holds now; -1 (stay) when there is no such slot.</summary>
+    public static int FollowUpSlot(int slotsCount, int thrownSlot, int previousSlot)
+        => previousSlot >= 0 && previousSlot < slotsCount && previousSlot != thrownSlot ? previousSlot : -1;
 }

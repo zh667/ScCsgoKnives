@@ -18,7 +18,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     sealed class Blindness { public double Until, ImmuneUntil; public float Duration; }
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
-    readonly Dictionary<ComponentPlayer, int> m_lastWeapon = [];
+    readonly Dictionary<ComponentPlayer, ScSlotHistory> m_slots = [];
     readonly Dictionary<(ComponentPlayer Player, bool Low), bool> m_throwButtons = [];
     readonly Dictionary<ComponentBody, Blindness> m_blind = [];
     readonly Dictionary<int, Blindness> m_savedBlind = [];
@@ -93,10 +93,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         float pull=Cs2Rig.Duration(asset,"pullpin");
         var inv=player.ComponentMiner.Inventory;
         m_preparing[player]=new Preparation { Transaction=new ScThrowTransaction(inv),Kind=kind,Low=low,Slot=inv.ActiveSlotIndex,
-            ReturnSlot=m_lastWeapon.GetValueOrDefault(player,-1), FromButton=fromButton,
+            ReturnSlot=m_slots.TryGetValue(player,out var history)?history.Previous:-1, FromButton=fromButton,
             Timeline=new ScGrenadePreparation(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias)) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
+        KnifeLog.Information($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
     }
     static void Message(ComponentPlayer p,string text) => p.ComponentGui.DisplaySmallMessage(text,Color.White,true,false);
     void Cancel(ComponentPlayer p, Preparation prep) {
@@ -109,10 +110,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             foreach (var pair in m_savedBlind.Where(p=>p.Value.ImmuneUntil<=m_time.GameTime).ToArray()) m_savedBlind.Remove(pair.Key);
         }
         foreach (var p in m_players.ComponentPlayers) {
-            if (!Holding(p)) {
-                int contents=Terrain.ExtractContents(p.ComponentMiner.ActiveBlockValue);
-                if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true) || contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) m_lastWeapon[p]=p.ComponentMiner.Inventory.ActiveSlotIndex;
-            }
+            if (!m_slots.TryGetValue(p,out var history)) m_slots[p]=history=new ScSlotHistory();
+            history.Observe(p.ComponentMiner.Inventory.ActiveSlotIndex,m_time.GameTime);
         }
         foreach (var pair in m_preparing.ToArray()) {
             var p=pair.Key; var prep=pair.Value;
@@ -141,17 +140,19 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 }
                 prep.Released=true;
                 prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
+                KnifeLog.Information($"grenade release: {ScGrenadeBlock.Assets[prep.Kind]} speed {state.Velocity.Length():0.0} (player {p.ComponentBody.Velocity.Length():0.0}) low={prep.Low} at {pos}");
                 AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
             }
             if (m_time.GameTime>=prep.Timeline.EndAt) {
                 m_preparing.Remove(p);
                 var inv=p.ComponentMiner.Inventory;
-                // F02: a finished throw selects the third hotbar slot; an empty third slot falls back to the
-                // last knife/gun slot, otherwise the player stays put. A manual switch, an open screen or an
-                // inventory change already cancelled the preparation above, so nothing is switched then.
+                // F02: a finished throw returns to the slot held before the grenade slot, whatever it holds now;
+                // with no such slot the player stays put. A manual switch, an open screen or an inventory
+                // change already cancelled the preparation above, so nothing is switched then.
                 if (prep.Released && inv.ActiveSlotIndex==prep.Slot && (Holding(p)||inv.GetSlotCount(prep.Slot)==0)) {
-                    int target=ScGrenadeBallistics.FollowUpSlot(inv.GetSlotCount,inv.SlotsCount,prep.Slot,prep.ReturnSlot);
-                    if (target>=0 && target!=prep.Slot) inv.ActiveSlotIndex=target;
+                    int target=ScGrenadeBallistics.FollowUpSlot(inv.SlotsCount,prep.Slot,prep.ReturnSlot);
+                    KnifeLog.Information($"grenade follow-up: thrown slot {prep.Slot} previous slot {prep.ReturnSlot} -> {(target>=0?"slot "+target:"stay")} holding={Holding(p)}");
+                    if (target>=0) inv.ActiveSlotIndex=target;
                     else if (Holding(p)) KnifeAnimationController.GrenadeAction(p,"deploy");
                 }
             }
@@ -179,6 +180,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                     if (s.Age<ScGrenadeBallistics.SettleTimeout) continue;
                     KnifeLog.Warning($"grenade kind {s.Kind} never settled within {ScGrenadeBallistics.SettleTimeout:0} s at {s.Position}; popping in place");
                 }
+                if (!s.Effect && s.Kind is 2 or 5) KnifeLog.Information($"grenade kind {s.Kind} pops: age {s.Age:0.00} s rested {s.Rested:0.00} s at {s.Position}");
                 if (!s.Effect) Detonate(s); else RemoveEffect(s,false);
             }
         }
