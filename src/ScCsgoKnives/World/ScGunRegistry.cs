@@ -84,6 +84,12 @@ public sealed class ScGunRegistry {
         int max = maxDurability > 0 ? maxDurability : ScGunDurability.Full(variant);
         return Publish(new ScGunRecord { Variant = variant, Rounds = Math.Max(0, rounds), SilencerOff = silencerOff, Durability = Math.Clamp(durability, 0, max), MaxDurability = max });
     }
+    /// <summary>A record that was published but could not be tied to its item: kept as text under its id so the watermark stands, never reused.</summary>
+    internal void Abandon(int id, string reason) {
+        if (!m_records.Remove(id, out var record)) return;
+        m_quarantined[id.ToString()] = Format(record, 0) + ",abandoned:" + reason;
+        KnifeLog.Error($"gun record {id} abandoned: {reason}");
+    }
     /// <summary>A duplicate item (creative copy, glitch) gets its own record so the two guns wear independently.</summary>
     public int Clone(int id) {
         var source = Get(id);
@@ -112,21 +118,19 @@ public sealed class ScGunRegistry {
         var records = d.GetValue<ValuesDictionary>("Records", null);
         int highest = GunSpec.FirstId - 1;
         if (records is not null) foreach (var pair in records) {
+            // Schema 1 is exactly seven fields, every one of them parsed and in range; anything else is kept as text, unusable.
             string raw = pair.Value as string ?? "";
             string[] f = raw.Split(',');
             var ci = System.Globalization.CultureInfo.InvariantCulture;
+            var ints = System.Globalization.NumberStyles.Integer;
             int id = 0, variant = 0, rounds = 0, sil = 0, durability = 0, max = 0, revision = 0; double remaining = -1;
-            bool ok = int.TryParse(pair.Key, out id) && id >= GunSpec.FirstId && id <= GunSpec.LastId && f.Length >= 4;
-            ok = ok && int.TryParse(f[0], out variant) && int.TryParse(f[1], out rounds) && int.TryParse(f[2], out sil) && int.TryParse(f[3], out durability);
-            ok = ok && variant >= 0 && variant < GunSpec.All.Length;
+            bool ok = int.TryParse(pair.Key, ints, ci, out id) && id >= GunSpec.FirstId && id <= GunSpec.LastId && f.Length == 7;
+            ok = ok && int.TryParse(f[0], ints, ci, out variant) && int.TryParse(f[1], ints, ci, out rounds) && int.TryParse(f[2], ints, ci, out sil) && int.TryParse(f[3], ints, ci, out durability);
+            ok = ok && int.TryParse(f[4], ints, ci, out max) && int.TryParse(f[5], ints, ci, out revision) && double.TryParse(f[6], System.Globalization.NumberStyles.Float, ci, out remaining);
+            ok = ok && variant >= 0 && variant < GunSpec.All.Length && (sil == 0 || sil == 1) && rounds >= 0 && rounds <= GunSpec.All[variant].Magazine
+                && max >= 1 && durability >= 0 && durability <= max && revision >= 0 && double.IsFinite(remaining) && (remaining < 0 ? remaining == -1 : remaining <= 1e6);
             if (ok) {
-                max = f.Length >= 5 && int.TryParse(f[4], out int m) ? m : ScGunDurability.Full(variant);
-                revision = f.Length >= 6 && int.TryParse(f[5], out int rev) ? rev : 0;
-                remaining = f.Length >= 7 && double.TryParse(f[6], System.Globalization.NumberStyles.Float, ci, out double rem) ? rem : -1;
-                ok = rounds >= 0 && rounds <= GunSpec.All[variant].Magazine && max >= 1 && durability >= 0 && durability <= max && revision >= 0 && double.IsFinite(remaining);
-            }
-            if (ok) {
-                registry.m_records[id] = new ScGunRecord { Variant = variant, Rounds = rounds, SilencerOff = sil != 0, Durability = durability, MaxDurability = max, Revision = revision, RechargeReadyAt = remaining >= 0 ? now + remaining : -1 };
+                registry.m_records[id] = new ScGunRecord { Variant = variant, Rounds = rounds, SilencerOff = sil == 1, Durability = durability, MaxDurability = max, Revision = revision, RechargeReadyAt = remaining >= 0 ? now + remaining : -1 };
                 highest = Math.Max(highest, id);
             }
             else { registry.m_quarantined[pair.Key] = raw; if (int.TryParse(pair.Key, out int bad)) highest = Math.Max(highest, bad); }

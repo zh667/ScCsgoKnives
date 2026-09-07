@@ -476,7 +476,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
-        if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; }
+        if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; ScGunMutation.HoldersChanged = null; }
         base.Dispose();
     }
 
@@ -504,6 +504,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     SubsystemGameInfo m_gameInfo;
     bool Creative => (m_gameInfo ??= Project.FindSubsystem<SubsystemGameInfo>(true)).WorldSettings.GameMode == GameMode.Creative;
     static string HolderKey(ComponentPlayer player) => ScGunHolders.PlayerKey(player, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
+    List<ScGunHolders.Holder> m_holders = []; int m_holdersFrame = -1;
+    /// <summary>The world's gun holders, scanned at most once per frame and again after any commit that moved an id.</summary>
+    List<ScGunHolders.Holder> Holders() {
+        if (m_holdersFrame != Time.FrameIndex) { m_holders = ScGunHolders.Scan(Project, BlocksManager.GetBlockIndex<ScGunBlock>(true)).ToList(); m_holdersFrame = Time.FrameIndex; }
+        return m_holders;
+    }
     /// <summary>A refused shot or reload: tell the player once per two seconds, never fire, never charge.</summary>
     void Refused(ComponentPlayer player, ScGunResult result, double now) {
         if (result is ScGunResult.StateChanged or ScGunResult.Busy) return; // transient: the next frame sees the settled state
@@ -512,26 +518,19 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         player.ComponentGui.DisplaySmallMessage(ScGunMutation.Explain(result), Color.Red, true, false);
         KnifeLog.Warning($"gun operation refused for player {player.PlayerData.PlayerIndex}: {result}");
     }
-    /// <summary>Holder audit (plan §6): a record held in two places at once (creative copy, glitch) is split - the holder the
-    /// record last saw keeps it, every other holder whose slot can be rewritten gets a clone; a dropped item waits for pickup.
-    /// Never reclaims ids. Also the first-use guard: ScGunMutation.Prepare asks HolderLocator before touching a moved gun.</summary>
+    /// <summary>Holder audit (plan §6): a record held in two places at once (creative copy, glitch) is split through the
+    /// same transaction every other change uses - Commit sees the other holder and publishes a clone for the acting copy.
+    /// The first holder in scan order keeps the id when no one has used it since the split; a dropped item waits for pickup.
+    /// Never reclaims ids. First use of a moved gun is guarded by ScGunMutation itself, this is the sweep for the rest.</summary>
     void SplitDuplicates() {
         if (m_registry is null || m_registry.Disabled) return;
-        int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        var holders = ScGunHolders.Scan(Project, gunIndex).ToList();
-        foreach (var group in holders.GroupBy(h => h.Id).Where(g => g.Count() > 1)) {
-            var record = m_registry.Get(group.Key);
-            if (record is null) continue;
-            var keeper = group.FirstOrDefault(h => h.Key == record.Holder);
-            if (keeper.Key is null) keeper = group.First(); // no confirmed holder: the first found in scan order keeps it
-            foreach (var other in group.Where(h => h.Key != keeper.Key && h.Inventory is not null)) {
-                int copy = m_registry.Clone(group.Key);
-                if (copy < 0) { KnifeLog.Warning($"gun record {group.Key} is held at {keeper.Key} and {other.Key} but the registry is full; the copy stays unusable until a new world"); continue; }
-                int value = other.Inventory.GetSlotValue(other.Slot), count = other.Inventory.GetSlotCount(other.Slot);
-                int replacement = Terrain.ReplaceData(value, GunSpec.WithId(GunSpec.GetVariant(Terrain.ExtractData(value)), copy));
-                other.Inventory.RemoveSlotItems(other.Slot, count); other.Inventory.AddSlotItems(other.Slot, replacement, count);
-                ScInventoryTransaction.Changed(other.Inventory);
-                KnifeLog.Warning($"gun record {group.Key} was held at {keeper.Key} and {other.Key}; the copy at {other.Key} is now record {copy}");
+        m_holdersFrame = -1;
+        foreach (var group in Holders().GroupBy(h => h.Id).Where(g => g.Count() > 1).ToArray()) {
+            var keeper = group.First();
+            foreach (var other in group.Skip(1).Where(h => h.Inventory is not null)) {
+                var m = ScGunMutation.Prepare(other.Inventory, other.Slot, other.Key, out ScGunResult why);
+                var result = m is null ? why : m.Commit(_ => { });
+                KnifeLog.Warning($"gun record {group.Key} held at {keeper.Key} and {other.Key}: split -> {result}{(m is not null && result == ScGunResult.Success ? " record " + m.Id : "")}");
             }
         }
     }
@@ -546,7 +545,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
         ScGunRegistry.Current = m_registry;
-        ScGunMutation.HolderLocator = (id, except) => ScGunHolders.Scan(Project, BlocksManager.GetBlockIndex<ScGunBlock>(true)).Where(h => h.Id == id && h.Key != except).Select(h => h.Key).ToArray();
+        ScGunMutation.HolderLocator = (id, except) => Holders().Where(h => h.Id == id && h.Key != except).Select(h => h.Key).ToArray();
+        ScGunMutation.HoldersChanged = () => m_holdersFrame = -1;
         m_worldLayout = valuesDictionary.GetValue<int>(LayoutKey, 0);
         m_worldStatus = ScGunRegistry.Classify(m_worldLayout, valuesDictionary.ContainsKey(RegistryKey), valuesDictionary.ContainsKey(RechargeKey) || valuesDictionary.ContainsKey("GunWear"));
         m_registry.LegacyWorld = m_worldStatus == ScGunRegistry.WorldStatus.Legacy;

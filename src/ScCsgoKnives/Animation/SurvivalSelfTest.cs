@@ -12,12 +12,16 @@ public static class SurvivalSelfTest {
         public int ActiveSlotIndex { get; set; }
         public readonly int[] Values = new int[8], Counts = new int[8];
         public int RefuseSlot = -1;
+        /// <summary>Fault injection: RemoveSlotItems throws on this slot; AddSlotItems silently does nothing on FailAddSlot; OnAdd runs inside AddSlotItems (a hostile callback).</summary>
+        public int ThrowOnRemoveSlot = -1, FailAddSlot = -1;
+        public bool FailAddAll;
+        public Action OnAdd;
         public int GetSlotValue(int i) => Values[i];
         public int GetSlotCount(int i) => Counts[i];
         public int GetSlotCapacity(int i, int v) => i == 0 ? 1 : 40;
         public int GetSlotProcessCapacity(int i, int v) => 0;
-        public void AddSlotItems(int i, int v, int n) { if (n == 0) return; if (Counts[i] > 0 && Values[i] != v) throw new InvalidOperationException("mixed slot"); Values[i] = v; Counts[i] += n; }
-        public int RemoveSlotItems(int i, int n) { if (i == RefuseSlot) return 0; n = Math.Min(n, Counts[i]); Counts[i] -= n; return n; }
+        public void AddSlotItems(int i, int v, int n) { if (n == 0 || i == FailAddSlot || FailAddAll) return; if (Counts[i] > 0 && Values[i] != v) throw new InvalidOperationException("mixed slot"); Values[i] = v; Counts[i] += n; var hook = OnAdd; OnAdd = null; hook?.Invoke(); }
+        public int RemoveSlotItems(int i, int n) { if (i == ThrowOnRemoveSlot) throw new InvalidOperationException("injected removal failure"); if (i == RefuseSlot) return 0; n = Math.Min(n, Counts[i]); Counts[i] -= n; return n; }
         public void ProcessSlotItems(int i, int v, int count, int process, out int result, out int resultCount) { result = v; resultCount = 0; }
         public void DropAllItems(Vector3 position) => Array.Clear(Counts);
     }
@@ -296,20 +300,99 @@ public static class SurvivalSelfTest {
             return before.Rounds == 2 && before.Durability == 197 && same && Shoot(other, 2, "player:1:2") == ScGunResult.Success && GunSpec.GetDurability(Terrain.ExtractData(other.Values[2])) == 196;
         });
         Test("m4-t04-copy-split", () => {
-            var i = new Inventory(); i.AddSlotItems(0, Gun(0, 30), 1);
-            if (Shoot(i, 0) != ScGunResult.Success) return false;
-            int id = GunSpec.GetId(Data(i, 0)), value = i.Values[0];
-            var copyHolder = new Inventory(); copyHolder.AddSlotItems(4, value, 1);                                  // the same value copied elsewhere
+            // A locator that reports every other Inventory stub holding the id, like the engine scan does in the game.
             var savedLocator = ScGunMutation.HolderLocator;
-            ScGunMutation.HolderLocator = (rid, except) => rid == id && except != "player:0:0" ? ["player:0:0"] : Array.Empty<string>();
+            var world = new List<(Inventory Inv, int Slot, string Key)>();
+            ScGunMutation.HolderLocator = (rid, except) => world.Where(w => w.Inv.Counts[w.Slot] > 0 && GunSpec.GetId(Terrain.ExtractData(w.Inv.Values[w.Slot])) == rid && w.Key != except).Select(w => w.Key).ToArray();
             try {
-                var copyResult = Shoot(copyHolder, 4, "player:1:4"); int copyData = Terrain.ExtractData(copyHolder.Values[4]);
-                bool split = copyResult == ScGunResult.Success && GunSpec.GetId(copyData) != id && GunSpec.GetDurability(copyData) == 1498 && Dur(i, 0) == 1499;   // the copy wore, the original did not
-                var originalResult = Shoot(i, 0);
-                bool original = originalResult == ScGunResult.Success && Dur(i, 0) == 1498 && GunSpec.GetId(Data(i, 0)) == id;
-                if (!(split && original)) throw new InvalidOperationException($"copy {copyResult} id {GunSpec.GetId(copyData)} vs {id} dur {GunSpec.GetDurability(copyData)} orig {Dur(i, 0)}; original shot {originalResult} dur {Dur(i, 0)} id {GunSpec.GetId(Data(i, 0))}");
-                return true;
+                var a = new Inventory(); a.AddSlotItems(0, Gun(0, 30), 1); world.Add((a, 0, "A"));
+                if (Shoot(a, 0, "A") != ScGunResult.Success) return false;
+                int id = GunSpec.GetId(Data(a, 0));
+                var b = new Inventory(); b.AddSlotItems(4, a.Values[0], 1); world.Add((b, 4, "B"));               // the same value copied elsewhere
+                // Case 1: the ORIGINAL is used first while the copy exists: the original moves to its own record, the copy keeps the old one.
+                bool originalFirst = Shoot(a, 0, "A") == ScGunResult.Success && GunSpec.GetId(Data(a, 0)) != id && Dur(a, 0) == 1498
+                    && GunSpec.GetId(Terrain.ExtractData(b.Values[4])) == id && GunSpec.GetDurability(Terrain.ExtractData(b.Values[4])) == 1499;
+                bool copyThen = Shoot(b, 4, "B") == ScGunResult.Success && GunSpec.GetId(Terrain.ExtractData(b.Values[4])) == id && GunSpec.GetDurability(Terrain.ExtractData(b.Values[4])) == 1498 && Dur(a, 0) == 1498;
+                // Case 2: a reload wiped every Holder; a copy of a used gun is used first: it gets its own record.
+                var reloaded = ScGunRegistry.Load(ScGunRegistry.Current.Save(0), 0); var savedRegistry = ScGunRegistry.Current; ScGunRegistry.Current = reloaded;
+                try {
+                    var c = new Inventory(); c.AddSlotItems(1, a.Values[0], 1); world.Add((c, 1, "C"));             // copy of a (record id2, durability 1498)
+                    int id2 = GunSpec.GetId(Data(a, 0));
+                    bool afterReload = Shoot(c, 1, "C") == ScGunResult.Success && GunSpec.GetId(Terrain.ExtractData(c.Values[1])) != id2 && GunSpec.GetDurability(Terrain.ExtractData(c.Values[1])) == 1497
+                        && reloaded.TryGetSnapshot(id2, out var orig) && orig.Durability == 1498;
+                    bool originalStill = Shoot(a, 0, "A") == ScGunResult.Success && GunSpec.GetId(Data(a, 0)) == id2 && Dur(a, 0) == 1497 && GunSpec.GetDurability(Terrain.ExtractData(c.Values[1])) == 1497;
+                    if (!(originalFirst && copyThen && afterReload && originalStill)) throw new InvalidOperationException($"originalFirst={originalFirst} copyThen={copyThen} afterReload={afterReload} originalStill={originalStill}");
+                    return true;
+                } finally { ScGunRegistry.Current = savedRegistry; }
             } finally { ScGunMutation.HolderLocator = savedLocator; }
+        });
+        Test("m4-nested-registration-refused", () => {
+            // A hostile inventory runs another fresh-gun commit from inside AddSlotItems: the inner one must be refused, and
+            // the outer item must end up pointing at the record that was published for it.
+            var i = new Inventory(); i.AddSlotItems(0, Gun(0, 30), 1); i.AddSlotItems(3, Gun(4, 20), 1);
+            ScGunResult inner = ScGunResult.Success;
+            i.OnAdd = () => { var m = ScGunMutation.Prepare(i, 3, "player:0:3", out var w); inner = m is null ? w : m.Commit(r => r.Rounds--); };
+            var outer = ScGunMutation.Prepare(i, 0, "player:0:0", out _);
+            var result = outer.Commit(r => r.Rounds--);
+            int id0 = GunSpec.GetId(Data(i, 0));
+            bool consistent = result == ScGunResult.Success && inner == ScGunResult.Busy && ScGunRegistry.Current.TryGetSnapshot(id0, out var s0) && s0.Rounds == 29 && s0.Variant == 0
+                && GunSpec.IsFresh(Data(i, 3)) && GunSpec.GetRounds(Data(i, 3)) == 20;
+            bool later = Shoot(i, 3, "player:0:3") == ScGunResult.Success && GunSpec.GetId(Data(i, 3)) != id0 && GunSpec.GetRounds(Data(i, 3)) == 19 && GunSpec.GetRounds(Data(i, 0)) == 29;
+            return consistent && later;
+        });
+        Test("m4-rollback-on-faults", () => {
+            int blank = 950, mech = 951; var entry = ScWeaponCrafting.All.First(e => e.Name == "ak47");
+            // Deducting the second material throws: the first material comes back, the record is untouched, no exception escapes.
+            var i = new Inventory(); i.AddSlotItems(0, Gun(0, 30), 1); i.AddSlotItems(2, blank, 1); i.AddSlotItems(3, mech, 1);
+            if (Shoot(i, 0) != ScGunResult.Success) return false;
+            var quote = ScWeaponRepair.Prepare(ScWeaponRepair.Candidates(i, 512).Single(), entry, false, kind => kind == 0 ? blank : mech);
+            i.ThrowOnRemoveSlot = 3; int rev = GunSpec.TryGetSnapshot(Data(i, 0), out var s1) ? s1.Revision : -1;
+            var r1 = ScWeaponRepair.TryRepair(i, quote, "player:0:0"); i.ThrowOnRemoveSlot = -1;
+            bool threw = r1 == ScGunResult.InventoryRejected && i.Counts[2] == 1 && i.Counts[3] == 1 && Dur(i, 0) == 1499 && GunSpec.TryGetSnapshot(Data(i, 0), out var s2) && s2.Revision == rev && ScGunMutation.PendingRestore.Count == 0;
+            // The slot silently drops the added gun: the gun and the ammo paid come back.
+            var j = new Inventory(); j.AddSlotItems(0, Gun(0, 3), 1); j.AddSlotItems(1, 900, 2); j.FailAddSlot = 0; int gunValue = j.Values[0];
+            var r2 = Reload(j, 0, 900, 1, 30); j.FailAddSlot = -1;
+            int gunSlot = Enumerable.Range(0, j.Values.Length).FirstOrDefault(idx => j.Values[idx] == gunValue && j.Counts[idx] == 1, -1);
+            bool dropped = r2 == ScGunResult.InventoryRejected && j.Counts[1] == 2 && gunSlot >= 0 && j.Counts.Sum() == 3 && GunSpec.GetRounds(Terrain.ExtractData(j.Values[gunSlot])) == 3 && ScGunMutation.PendingRestore.Count == 0; // the gun came back (into the first slot that took it), the ammo too
+            // The restore itself is refused: the loss is recorded and reported, not hidden.
+            var k = new Inventory(); k.AddSlotItems(0, Gun(0, 30), 1); k.AddSlotItems(2, blank, 1); k.AddSlotItems(3, mech, 1);
+            if (Shoot(k, 0) != ScGunResult.Success) return false;
+            var quoteK = ScWeaponRepair.Prepare(ScWeaponRepair.Candidates(k, 512).Single(), entry, false, kind => kind == 0 ? blank : mech);
+            int pendingBefore = ScGunMutation.PendingRestore.Count;
+            k.ThrowOnRemoveSlot = 3; k.FailAddAll = true; var r3 = ScWeaponRepair.TryRepair(k, quoteK, "player:0:0"); k.ThrowOnRemoveSlot = -1; k.FailAddAll = false;
+            bool reported = r3 == ScGunResult.InventoryRejected && ScGunMutation.PendingRestore.Count == pendingBefore + 1 && ScGunMutation.PendingRestore[^1].Value == blank && ScGunMutation.Explain(r3).Contains("未能放回") && Dur(k, 0) == 1499;
+            ScGunMutation.PendingRestore.Clear();
+            return threw && dropped && reported;
+        });
+        Test("m4-strict-record-parse", () => {
+            var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
+            records.SetValue("1", "0,30,0,1500,badMax,badRevision,badCharge"); records.SetValue("2", "0,30,0,1500"); records.SetValue("3", "0,30,0,1500,1500,0,-1,extra"); records.SetValue("4", "0,30,2,1500,1500,0,-1"); records.SetValue("5", "0,30,0,1500,1500,0,-1");
+            d.SetValue("Records", records);
+            var r = ScGunRegistry.Load(d, 0);
+            bool strict = r.Count == 1 && r.QuarantinedCount == 4 && r.TryGetSnapshot(5, out _) && !r.TryGetSnapshot(1, out _) && r.Next == 6;
+            bool kept = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "0,30,0,1500,badMax,badRevision,badCharge";
+            return strict && kept;
+        });
+        Test("m4-t13-save-snapshots", () => {
+            var reg = new ScGunRegistry(); var saved = ScGunRegistry.Current; ScGunRegistry.Current = reg;
+            try {
+                var i = new Inventory(); i.AddSlotItems(0, Gun(0, 30), 1); i.AddSlotItems(1, 900, 3);
+                if (Shoot(i, 0) != ScGunResult.Success) return false;
+                var first = reg.Save(10); string firstRow = first.GetValue<ValuesDictionary>("Records").GetValue<string>("1");
+                for (int n = 0; n < 5; n++) if (Shoot(i, 0) != ScGunResult.Success) return false;             // the world keeps changing while the first snapshot would be written
+                if (Reload(i, 0, 900, 1, 30) != ScGunResult.Success) return false;
+                var second = reg.Save(20); string secondRow = second.GetValue<ValuesDictionary>("Records").GetValue<string>("1");
+                bool immutable = first.GetValue<ValuesDictionary>("Records").GetValue<string>("1") == firstRow && firstRow.StartsWith("0,29,0,1499,1500,1,") && secondRow.StartsWith("0,30,0,1494,1500,7,");
+                var fromFirst = ScGunRegistry.Load(first, 0); var fromSecond = ScGunRegistry.Load(second, 0);
+                bool distinct = fromFirst.TryGetSnapshot(1, out var a) && a.Rounds == 29 && a.Durability == 1499 && fromSecond.TryGetSnapshot(1, out var b) && b.Rounds == 30 && b.Durability == 1494 && b.Revision == 7;
+                bool matches = GunSpec.TryGetSnapshot(Data(i, 0), out var live) && live.Rounds == 30 && live.Durability == 1494 && live.Revision == 7 && i.Counts[1] == 2;
+                return immutable && distinct && matches;
+            } finally { ScGunRegistry.Current = saved; }
+        });
+        Test("m4-holder-keys-unique", () => {
+            var a = new Inventory(); var b = new Inventory();
+            return ScGunHolders.Key(a, 0) != ScGunHolders.Key(b, 0) && ScGunHolders.Key(a, 0) != ScGunHolders.Key(a, 1) && ScGunHolders.Key(a, 2) == ScGunHolders.Key(a, 2)
+                && ScGunHolders.Key(new object(), 0) != ScGunHolders.Key(new object(), 0) && ScGunHolders.Key(null, 3) == "none:3";
         });
         Test("m4-t05-full-table-new-guns", () => {
             var saved = ScGunRegistry.Current; var full = new ScGunRegistry(); while (!full.IsFull) full.Allocate(0, 0, false, 1); ScGunRegistry.Current = full;
