@@ -32,6 +32,9 @@ public sealed class ScGunRegistry {
     /// <summary>The registry of the world being played; set by SubsystemScGunBlockBehavior.Load, cleared on dispose.
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
+    public ScGunRecovery Recovery { get; private set; } = new();
+    // Runtime-only resolver. Persistence contains owner keys, never live inventory references.
+    public Func<IInventory, string> RecoveryOwner;
     public enum WorldStatus { New, Compatible, Legacy }
     /// <summary>What a world's saved gun data is. An explicit stamp decides first: exactly this layout = compatible, the
     /// legacy stamp (4) = legacy for good (a legacy world saves a registry too, so the registry key must not outrank it), any
@@ -102,18 +105,25 @@ public sealed class ScGunRegistry {
     /// <summary>A snapshot of the table taken on the game thread. Zeus charge is saved as seconds still to go, because
     /// SubsystemTime.GameTime restarts from zero every session.</summary>
     public ValuesDictionary Save(double now) {
+        if (ScGunMutation.IsCommitting) throw new InvalidOperationException("Cannot snapshot gun records during an inventory transaction/recovery; retry saving after this update");
         if (UnknownSchema && m_preserved is not null) return m_preserved;
         var d = new ValuesDictionary(); d.SetValue("Schema", Schema); d.SetValue("Next", Next);
         var records = new ValuesDictionary();
         foreach (var (id, r) in m_records) records.SetValue(id.ToString(), Format(r, now));
         foreach (var (key, raw) in m_quarantined) if (!records.ContainsKey(key)) records.SetValue(key, raw);
-        d.SetValue("Records", records); return d;
+        d.SetValue("Records", records); d.SetValue("Recovery", Recovery.Save()); return d;
     }
     public static ScGunRegistry Load(ValuesDictionary d, double now) {
         var registry = new ScGunRegistry();
         if (d is null) return registry;
         int schema = d.GetValue<int>("Schema", 0);
         if (schema != Schema) { registry.UnknownSchema = true; registry.m_preserved = d; KnifeLog.Error($"gun registry schema {schema} is not {Schema}; kept verbatim, guns disabled"); return registry; }
+        try { registry.Recovery = ScGunRecovery.Load(d.GetValue<ValuesDictionary>("Recovery", null)); }
+        catch (Exception e) {
+            registry.UnknownSchema = true; registry.m_preserved = d;
+            KnifeLog.Error("Gun recovery data is invalid; whole table retained, guns disabled: " + e.Message);
+            return registry;
+        }
         int next = d.GetValue<int>("Next", GunSpec.FirstId);
         var records = d.GetValue<ValuesDictionary>("Records", null);
         int highest = GunSpec.FirstId - 1;

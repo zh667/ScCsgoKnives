@@ -476,7 +476,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
-        if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; ScGunMutation.HoldersChanged = null; }
+        if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; }
+        if (m_registry is not null) m_registry.RecoveryOwner = null;
         base.Dispose();
     }
 
@@ -504,11 +505,19 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     SubsystemGameInfo m_gameInfo;
     bool Creative => (m_gameInfo ??= Project.FindSubsystem<SubsystemGameInfo>(true)).WorldSettings.GameMode == GameMode.Creative;
     static string HolderKey(ComponentPlayer player) => ScGunHolders.PlayerKey(player, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
-    List<ScGunHolders.Holder> m_holders = []; int m_holdersFrame = -1;
-    /// <summary>The world's gun holders, scanned at most once per frame and again after any commit that moved an id.</summary>
+    double m_recoveryAt = -1;
+    /// <summary>Always a new engine snapshot, including changes made by other mods in this frame.
+    /// Pending gun refunds also hold an instance until they have been delivered.</summary>
     List<ScGunHolders.Holder> Holders() {
-        if (m_holdersFrame != Time.FrameIndex) { m_holders = ScGunHolders.Scan(Project, BlocksManager.GetBlockIndex<ScGunBlock>(true)).ToList(); m_holdersFrame = Time.FrameIndex; }
-        return m_holders;
+        int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        var holders = ScGunHolders.Scan(Project, gunIndex).ToList();
+        foreach (var batch in m_registry.Recovery.Batches) foreach (var step in batch.Steps) {
+            if (step.Count <= 0 || Terrain.ExtractContents(step.Value) != gunIndex) continue;
+            int id = GunSpec.GetId(Terrain.ExtractData(step.Value));
+            if (id >= GunSpec.FirstId && id <= GunSpec.LastId)
+                holders.Add(new ScGunHolders.Holder(id, $"recovery:{batch.Id}", null, -1));
+        }
+        return holders;
     }
     /// <summary>A refused shot or reload: tell the player once per two seconds, never fire, never charge.</summary>
     void Refused(ComponentPlayer player, ScGunResult result, double now) {
@@ -524,7 +533,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// Never reclaims ids. First use of a moved gun is guarded by ScGunMutation itself, this is the sweep for the rest.</summary>
     void SplitDuplicates() {
         if (m_registry is null || m_registry.Disabled) return;
-        m_holdersFrame = -1;
         foreach (var group in Holders().GroupBy(h => h.Id).Where(g => g.Count() > 1).ToArray()) {
             var keeper = group.First();
             foreach (var other in group.Skip(1).Where(h => h.Inventory is not null)) {
@@ -545,8 +553,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
         ScGunRegistry.Current = m_registry;
+        m_registry.RecoveryOwner = inventory => ScGunHolders.RecoveryOwner(Project, inventory);
         ScGunMutation.HolderLocator = (id, except) => Holders().Where(h => h.Id == id && h.Key != except).Select(h => h.Key).ToArray();
-        ScGunMutation.HoldersChanged = () => m_holdersFrame = -1;
         m_worldLayout = valuesDictionary.GetValue<int>(LayoutKey, 0);
         m_worldStatus = ScGunRegistry.Classify(m_worldLayout, valuesDictionary.ContainsKey(RegistryKey), valuesDictionary.ContainsKey(RechargeKey) || valuesDictionary.ContainsKey("GunWear"));
         m_registry.LegacyWorld = m_worldStatus == ScGunRegistry.WorldStatus.Legacy;
@@ -576,6 +584,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public void Update(float dt) {
         KnifeQa.Step();
+        if (m_registry is not null && !m_registry.Disabled && m_time.GameTime >= m_recoveryAt) {
+            m_recoveryAt = m_time.GameTime + 1;
+            m_registry.Recovery.Retry(owner => ScGunHolders.ResolveRecoveryOwner(Project, owner));
+        }
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         foreach (var pair in m_states) if (!m_players.ComponentPlayers.Contains(pair.Key)) {
             pair.Value.AmmoHud?.Dispose(); pair.Value.AmmoHud = null;

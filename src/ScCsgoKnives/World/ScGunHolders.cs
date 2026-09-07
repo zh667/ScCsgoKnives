@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Engine;
 using GameEntitySystem;
 namespace Game;
@@ -10,9 +11,53 @@ namespace Game;
 /// never collide. Read on the game thread; used to split shared records, never to reclaim ids.</summary>
 public static class ScGunHolders {
     public readonly record struct Holder(int Id, string Key, IInventory Inventory, int Slot);
+    sealed class Identity { public readonly long Number = Interlocked.Increment(ref s_nextIdentity); }
+    static long s_nextIdentity;
+    static readonly ConditionalWeakTable<object, Identity> s_identities = new();
     /// <summary>Unique within the running world: object identity of the container, then the slot/index.</summary>
-    public static string Key(object container, int index) => container is null ? $"none:{index}" : $"{container.GetType().Name}#{RuntimeHelpers.GetHashCode(container)}:{index}";
+    public static string Key(object container, int index) => container is null ? $"none:{index}" : $"holder:{s_identities.GetValue(container, _ => new Identity()).Number}:{index}";
     public static string PlayerKey(ComponentPlayer player, int slot) => Key(player?.ComponentMiner?.Inventory, slot);
+
+    // These keys survive world saves. Entity.Id is persisted by EntityData/Project in SCAPI 1.9.2.1.
+    // Unlike holder keys they identify a recovery destination, not an individual slot or gun.
+    public static string RecoveryOwner(Project project, IInventory inventory) {
+        if (project is null || inventory is null) return null;
+        var players = project.FindSubsystem<SubsystemPlayers>(false);
+        if (players is not null) foreach (var p in players.ComponentPlayers)
+            if (ReferenceEquals(p.ComponentMiner?.Inventory, inventory)) return $"player/{p.PlayerData.PlayerIndex}";
+        foreach (var entity in project.Entities) {
+            int index = 0;
+            foreach (var component in entity.Components) {
+                if (ReferenceEquals(component, inventory)) return $"entity/{entity.Id}/{index}/{component.GetType().FullName}";
+                index++;
+            }
+        }
+        int subsystemIndex = 0;
+        foreach (var subsystem in project.Subsystems) {
+            if (ReferenceEquals(subsystem, inventory)) return $"subsystem/{subsystemIndex}/{subsystem.GetType().FullName}";
+            subsystemIndex++;
+        }
+        return null; // no durable owner: refuse a transaction before taking any items
+    }
+    public static IInventory ResolveRecoveryOwner(Project project, string owner) {
+        if (project is null || owner is null) return null;
+        var players = project.FindSubsystem<SubsystemPlayers>(false);
+        if (players is not null) foreach (var p in players.ComponentPlayers)
+            if (owner == $"player/{p.PlayerData.PlayerIndex}") return p.ComponentMiner?.Inventory;
+        foreach (var entity in project.Entities) {
+            int index = 0;
+            foreach (var component in entity.Components) {
+                if (component is IInventory inventory && owner == $"entity/{entity.Id}/{index}/{component.GetType().FullName}") return inventory;
+                index++;
+            }
+        }
+        int subsystemIndex = 0;
+        foreach (var subsystem in project.Subsystems) {
+            if (subsystem is IInventory inventory && owner == $"subsystem/{subsystemIndex}/{subsystem.GetType().FullName}") return inventory;
+            subsystemIndex++;
+        }
+        return null;
+    }
     public static IEnumerable<Holder> Scan(Project project, int gunBlockIndex) {
         var scanner = project.FindSubsystem<SubsystemItemsScanner>(false);
         var seen = new HashSet<string>();

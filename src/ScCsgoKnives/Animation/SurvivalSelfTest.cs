@@ -27,6 +27,7 @@ public static class SurvivalSelfTest {
     }
     public static void Run(Action<string, bool, string> check) {
         ScGunRegistry.Current ??= new ScGunRegistry(); // headless: the gun state table a world would own
+        ScGunRecoverySelfTest.Run(check);
         ScPolishSelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
@@ -348,21 +349,21 @@ public static class SurvivalSelfTest {
             var quote = ScWeaponRepair.Prepare(ScWeaponRepair.Candidates(i, 512).Single(), entry, false, kind => kind == 0 ? blank : mech);
             i.ThrowOnRemoveSlot = 3; int rev = GunSpec.TryGetSnapshot(Data(i, 0), out var s1) ? s1.Revision : -1;
             var r1 = ScWeaponRepair.TryRepair(i, quote, "player:0:0"); i.ThrowOnRemoveSlot = -1;
-            bool threw = r1 == ScGunResult.InventoryRejected && i.Counts[2] == 1 && i.Counts[3] == 1 && Dur(i, 0) == 1499 && GunSpec.TryGetSnapshot(Data(i, 0), out var s2) && s2.Revision == rev && ScGunMutation.PendingRestore.Count == 0;
+            bool threw = r1 == ScGunResult.InventoryRejected && i.Counts[2] == 1 && i.Counts[3] == 1 && Dur(i, 0) == 1499 && GunSpec.TryGetSnapshot(Data(i, 0), out var s2) && s2.Revision == rev && ScGunRegistry.Current.Recovery.Count == 0;
             // The slot silently drops the added gun: the gun and the ammo paid come back.
-            var j = new Inventory(); j.AddSlotItems(0, Gun(0, 3), 1); j.AddSlotItems(1, 900, 2); j.FailAddSlot = 0; int gunValue = j.Values[0];
+            var j = new Inventory(); j.AddSlotItems(0, Gun(0, 0), 1); j.AddSlotItems(1, 900, 2); j.FailAddSlot = 0; int gunValue = j.Values[0];
             var r2 = Reload(j, 0, 900, 1, 30); j.FailAddSlot = -1;
             int gunSlot = Enumerable.Range(0, j.Values.Length).FirstOrDefault(idx => j.Values[idx] == gunValue && j.Counts[idx] == 1, -1);
-            bool dropped = r2 == ScGunResult.InventoryRejected && j.Counts[1] == 2 && gunSlot >= 0 && j.Counts.Sum() == 3 && GunSpec.GetRounds(Terrain.ExtractData(j.Values[gunSlot])) == 3 && ScGunMutation.PendingRestore.Count == 0; // the gun came back (into the first slot that took it), the ammo too
+            bool dropped = r2 == ScGunResult.InventoryRejected && j.Counts[1] == 2 && gunSlot >= 0 && j.Counts.Sum() == 3 && GunSpec.GetRounds(Terrain.ExtractData(j.Values[gunSlot])) == 0 && ScGunRegistry.Current.Recovery.Count == 0; // a fresh gun requiring an id came back, ammo too; existing IDs update in place
             // The restore itself is refused: the loss is recorded and reported, not hidden.
             var k = new Inventory(); k.AddSlotItems(0, Gun(0, 30), 1); k.AddSlotItems(2, blank, 1); k.AddSlotItems(3, mech, 1);
             if (Shoot(k, 0) != ScGunResult.Success) return false;
             var quoteK = ScWeaponRepair.Prepare(ScWeaponRepair.Candidates(k, 512).Single(), entry, false, kind => kind == 0 ? blank : mech);
-            int pendingBefore = ScGunMutation.PendingRestore.Count;
+            int pendingBefore = ScGunRegistry.Current.Recovery.Count;
             k.ThrowOnRemoveSlot = 3; k.FailAddAll = true; var r3 = ScWeaponRepair.TryRepair(k, quoteK, "player:0:0"); k.ThrowOnRemoveSlot = -1; k.FailAddAll = false;
-            bool reported = r3 == ScGunResult.InventoryRejected && ScGunMutation.PendingRestore.Count == pendingBefore + 1 && ScGunMutation.PendingRestore[^1].Value == blank && ScGunMutation.Explain(r3).Contains("未能放回") && Dur(k, 0) == 1499;
-            ScGunMutation.PendingRestore.Clear();
-            return threw && dropped && reported;
+            bool reported = r3 == ScGunResult.RecoveryPending && ScGunRegistry.Current.Recovery.Count == pendingBefore + 1 && ScGunRegistry.Current.Recovery.Batches.Last().Steps[0].Value == blank && ScGunMutation.Explain(r3).Contains("尚未归还") && Dur(k, 0) == 1499;
+            int delivered = ScGunRegistry.Current.Recovery.Retry(_ => k);
+            return threw && dropped && reported && delivered == 1 && k.Counts[2] == 1 && ScGunRegistry.Current.Recovery.Count == pendingBefore;
         });
         Test("m4-strict-record-parse", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
@@ -424,9 +425,9 @@ public static class SurvivalSelfTest {
         Test("m4-t07-reload-faults", () => {
             var i = new Inventory(); i.AddSlotItems(0, Gun(0, 3), 1); i.ActiveSlotIndex = 0; int before = i.Values[0];
             bool noAmmo = Reload(i, 0, 900, 1, 30) == ScGunResult.InsufficientMaterials && GunSpec.GetRounds(Data(i, 0)) == 3 && i.Values[0] == before;
-            i.AddSlotItems(1, 900, 2); i.RefuseSlot = 0;
-            bool refused = Reload(i, 0, 900, 1, 30) == ScGunResult.InventoryRejected && i.Counts[1] == 2 && GunSpec.GetRounds(Data(i, 0)) == 3; // the slot would not give the gun up: ammo back, record untouched
-            i.RefuseSlot = -1;
+            i.AddSlotItems(1, 900, 2);
+            var blocked = new Inventory(); blocked.AddSlotItems(0, Gun(0, 0), 1); blocked.AddSlotItems(1, 900, 2); blocked.RefuseSlot = 0;
+            bool refused = Reload(blocked, 0, 900, 1, 30) == ScGunResult.InventoryRejected && blocked.Counts[1] == 2 && GunSpec.GetRounds(Data(blocked, 0)) == 0;
             var t = new ScReloadTransaction(i, 0, i.Values[0], 900, 1, 30, "player:0:0"); bool started = t.Discard();
             if (Shoot(i, 0) != ScGunResult.Success) return false;                                                     // the gun changed under the transaction
             bool stale = !t.InsertMagazine() && (t.LastResult == ScGunResult.StateChanged || !t.Valid) && i.Counts[1] == 2 && GunSpec.GetRounds(Data(i, 0)) == 2;
