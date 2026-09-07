@@ -7,6 +7,7 @@ models are debris and are deliberately not duplicated onto the held body.
 import argparse
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 from PIL import Image
@@ -24,7 +25,10 @@ ALIASES = {'deploy':'draw', 'idle':'idle', 'inspect':'lookat01', 'inspect2':'loo
            'throwHigh':'throw_overhand', 'throwLow':'throw_underhand'}
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--source', type=Path, required=True); args = ap.parse_args()
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--source', type=Path,
+                    default=ROOT.parent / 'CSMCReverse/local_cs2_analysis/all_weapons/12_grenades')
+    args = ap.parse_args()
     source = args.source.resolve(); decomp = source / 'decompiled'
     vm.ROOTS = [source]
     audit, manifest = [], []
@@ -91,6 +95,13 @@ def main():
         manifest.append(dict(Name=asset,MeshParts=[],SourceReferenceScale=1,Cs2Only=True,IsGrenade=True))
         print(asset,len(clips),'clips',len(joints),'joints',stats,flush=True)
     (DATA/'grenades.json').write_bytes(json.dumps(manifest,indent=2).encode())
-    (ROOT/'docs/survival-grenade-sources.json').write_bytes(json.dumps(dict(tool='ValveResourceFormat 20.0',source=str(source),files=audit),ensure_ascii=False,indent=2).encode('utf-8'))
+    try:
+        source_ref = Path(os.path.relpath(source, ROOT)).as_posix()
+    except ValueError:  # An explicitly supplied source may be on another Windows drive.
+        source_ref = source.as_posix()
+    (ROOT/'docs/survival-grenade-sources.json').write_bytes(json.dumps(dict(
+        tool='ValveResourceFormat 20.0', source=source_ref,
+        sourceResolution='Relative to the ScCsgoKnives project root unless absolute.',
+        files=audit),ensure_ascii=False,indent=2).encode('utf-8'))
 
 if __name__=='__main__': main()

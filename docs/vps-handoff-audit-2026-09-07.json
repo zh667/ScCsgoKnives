@@ -1,0 +1,318 @@
+{
+  "checkedAtUtc": "2026-09-07T08:19:48.948905+00:00",
+  "local": {
+    "workspace": "E:\\Obsidian Document\\Document1",
+    "inventories": {
+      "ScCsgoKnives/src/ScCsgoKnives": {
+        "exists": true,
+        "files": 903,
+        "bytes": 321612474,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "fee3d0c041279488f6ae0bb3740b0569a38fa56b28d40ce8197cc4255388c0ac"
+      },
+      "ScCsgoKnives/tools": {
+        "exists": true,
+        "files": 141,
+        "bytes": 1083725,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "0e3008208ae7dc7b373630f095ace67908474e85ca7d7f8efa2bc8557b18c675"
+      },
+      "ScCsgoKnives/docs/feedback-2026-09-07": {
+        "exists": true,
+        "files": 3,
+        "bytes": 58702,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "3f150e5e53604fc5c0760d6ebf581db2caff1b39975fc7aa0d8287e59725c913"
+      },
+      "ScCsgoBox/src/ScCsgoBox": {
+        "exists": true,
+        "files": 30,
+        "bytes": 238674,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "183ffdb7cbffca2334983d695ea3e88b0f3bd2497409a27382de9fb8f210d079"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/01_weapon_data": {
+        "exists": true,
+        "files": 42,
+        "bytes": 9108706,
+        "comparison": "path-size-only",
+        "indexSha256": "24355260b1681bdd43ad9ff576d2e4fd35bfcdaaae6d32bd238183ed8c1b7937"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/02_models": {
+        "exists": true,
+        "files": 929,
+        "bytes": 2446726025,
+        "comparison": "path-size-only",
+        "indexSha256": "61f567308743ca035811bc83dc3f9125d7e926e33a6bf7590661018eadb1b2eb"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/03_legacy_vmodels_materials": {
+        "exists": true,
+        "files": 724,
+        "bytes": 857797322,
+        "comparison": "path-size-only",
+        "indexSha256": "49f8d13ff383b5280074b49b33ae0df2db883380b8c13a58b2d65e800c645451"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/04_current_weapon_materials": {
+        "exists": true,
+        "files": 1109,
+        "bytes": 4349003086,
+        "comparison": "path-size-only",
+        "indexSha256": "c24bdad6594be803278e83916b29520d4b8fd09e1e6d87b5a0ef05b4bbc527dd"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/05_audio": {
+        "exists": true,
+        "files": 2221,
+        "bytes": 126940285,
+        "comparison": "path-size-only",
+        "indexSha256": "9c41fd22b64fc06f4f95e0246383a8b77ca7b2afc0d5f5ffded3f13089d2e35f"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/06_particles": {
+        "exists": true,
+        "files": 2726,
+        "bytes": 56478353,
+        "comparison": "path-size-only",
+        "indexSha256": "491fb27520a684dc2e94caac041930294b5db15765d2854ffc6856877862f663"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/07_scope": {
+        "exists": true,
+        "files": 51,
+        "bytes": 1999251,
+        "comparison": "path-size-only",
+        "indexSha256": "7459ecb1c8813339b8b7899a4873539bf50f04608d138ae1312dcf9724f4ed98"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/08_first_person": {
+        "exists": true,
+        "files": 1286,
+        "bytes": 266718123,
+        "comparison": "path-size-only",
+        "indexSha256": "b130db3f906f220c576ed13d4cdf04249aa01a3eef463b25a563c285c426a301"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/09_knives": {
+        "exists": true,
+        "files": 2200,
+        "bytes": 1106252005,
+        "comparison": "path-size-only",
+        "indexSha256": "b83d8ec44276609f19be841dc283455426756235034f64f2df9753ad3300fdcf"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/10_paints": {
+        "exists": true,
+        "files": 8439,
+        "bytes": 9308323464,
+        "comparison": "path-size-only",
+        "indexSha256": "6fc1b21cd55df0cb0cb6ccc3580eede26c989999d6ea78b59082bcd3cb361d3e"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/11_icons": {
+        "exists": true,
+        "files": 159,
+        "bytes": 103462755,
+        "comparison": "path-size-only",
+        "indexSha256": "13354f098d8a8df32786345148dcbc3e60b7d1dc7819cf14c18cf952483cbd11"
+      }
+    },
+    "archives": {
+      "CSMCReverse/local_cs2_analysis/all_weapons/12_grenades": {
+        "manifestExists": true,
+        "manifestSha256": "d894d8afea5869a9c5b31a623649d9eca68952ba7e3c36654b477b9ebb6fafb3",
+        "expectedFiles": 313,
+        "failureCount": 0,
+        "failures": []
+      },
+      "CSMCReverse/references/scapi-1.9.2.1-windows-20260907": {
+        "manifestExists": true,
+        "manifestSha256": "a00830b9e07300b2cc1aee7f68cf265c8776e5ec581428da5e38008ae4d26a3f",
+        "expectedFiles": 39,
+        "failureCount": 0,
+        "failures": []
+      }
+    },
+    "documents": {
+      "AGENTS.md": "5bff07855b4d61f60394f8f6466cf0480c19a523a0adb4865df9ffc926ea8c24",
+      "ASSET_SOURCES.md": "dc836f42d64ba4b5d8c0d797f4f97fe6e56c81cb77c4c69d0f6efb1dc78bf1ab",
+      "docs/survival-grenade-sources.json": "390dbf4cc1853afa6a0eaca27c24f5594cc5c84ce91b3adb99263b9cbde01f6d",
+      "docs/community-feedback-plan-2026-09-07.md": "7e32fca06f74d2d2375e49102832fd879bd0c6900ab79612fddc793731f062d8",
+      "docs/vps-handoff-2026-09-07.md": "cf508c8af15e0a5211411928cc7b73423f7963fc359f45f30c039d63c7e12c31"
+    },
+    "pythonModules": {
+      "PIL": true,
+      "numpy": true,
+      "soundfile": true,
+      "scipy": false,
+      "moderngl": true
+    },
+    "commandsOnPath": {
+      "dotnet": "C:\\Program Files\\dotnet\\dotnet.EXE",
+      "python3": "C:\\Users\\张衡\\AppData\\Local\\Microsoft\\WindowsApps\\python3.EXE",
+      "ffmpeg": null,
+      "xvfb-run": null,
+      "ilspycmd": "C:\\Users\\张衡\\.dotnet\\tools\\ilspycmd.EXE",
+      "glslangValidator": null
+    },
+    "explicitToolPaths": {
+      ".dotnet/dotnet": false,
+      ".dotnet/tools/ilspycmd": false,
+      "tools/ffmpeg": false,
+      "tools/glslang/bin/glslang": false
+    },
+    "nugetCoreDlls": {}
+  },
+  "vps": {
+    "workspace": "/home/dev/workspaces",
+    "inventories": {
+      "ScCsgoKnives/src/ScCsgoKnives": {
+        "exists": true,
+        "files": 903,
+        "bytes": 321612474,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "fee3d0c041279488f6ae0bb3740b0569a38fa56b28d40ce8197cc4255388c0ac"
+      },
+      "ScCsgoKnives/tools": {
+        "exists": true,
+        "files": 141,
+        "bytes": 1083725,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "0e3008208ae7dc7b373630f095ace67908474e85ca7d7f8efa2bc8557b18c675"
+      },
+      "ScCsgoKnives/docs/feedback-2026-09-07": {
+        "exists": true,
+        "files": 3,
+        "bytes": 58702,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "3f150e5e53604fc5c0760d6ebf581db2caff1b39975fc7aa0d8287e59725c913"
+      },
+      "ScCsgoBox/src/ScCsgoBox": {
+        "exists": true,
+        "files": 30,
+        "bytes": 238674,
+        "comparison": "path-size-content-sha256",
+        "indexSha256": "183ffdb7cbffca2334983d695ea3e88b0f3bd2497409a27382de9fb8f210d079"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/01_weapon_data": {
+        "exists": true,
+        "files": 42,
+        "bytes": 9108706,
+        "comparison": "path-size-only",
+        "indexSha256": "24355260b1681bdd43ad9ff576d2e4fd35bfcdaaae6d32bd238183ed8c1b7937"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/02_models": {
+        "exists": true,
+        "files": 929,
+        "bytes": 2446726025,
+        "comparison": "path-size-only",
+        "indexSha256": "61f567308743ca035811bc83dc3f9125d7e926e33a6bf7590661018eadb1b2eb"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/03_legacy_vmodels_materials": {
+        "exists": true,
+        "files": 724,
+        "bytes": 857797322,
+        "comparison": "path-size-only",
+        "indexSha256": "49f8d13ff383b5280074b49b33ae0df2db883380b8c13a58b2d65e800c645451"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/04_current_weapon_materials": {
+        "exists": true,
+        "files": 1109,
+        "bytes": 4349003086,
+        "comparison": "path-size-only",
+        "indexSha256": "c24bdad6594be803278e83916b29520d4b8fd09e1e6d87b5a0ef05b4bbc527dd"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/05_audio": {
+        "exists": true,
+        "files": 2221,
+        "bytes": 126940285,
+        "comparison": "path-size-only",
+        "indexSha256": "9c41fd22b64fc06f4f95e0246383a8b77ca7b2afc0d5f5ffded3f13089d2e35f"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/06_particles": {
+        "exists": true,
+        "files": 2726,
+        "bytes": 56478353,
+        "comparison": "path-size-only",
+        "indexSha256": "491fb27520a684dc2e94caac041930294b5db15765d2854ffc6856877862f663"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/07_scope": {
+        "exists": true,
+        "files": 51,
+        "bytes": 1999251,
+        "comparison": "path-size-only",
+        "indexSha256": "7459ecb1c8813339b8b7899a4873539bf50f04608d138ae1312dcf9724f4ed98"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/08_first_person": {
+        "exists": true,
+        "files": 1286,
+        "bytes": 266718123,
+        "comparison": "path-size-only",
+        "indexSha256": "b130db3f906f220c576ed13d4cdf04249aa01a3eef463b25a563c285c426a301"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/09_knives": {
+        "exists": true,
+        "files": 2200,
+        "bytes": 1106252005,
+        "comparison": "path-size-only",
+        "indexSha256": "b83d8ec44276609f19be841dc283455426756235034f64f2df9753ad3300fdcf"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/10_paints": {
+        "exists": true,
+        "files": 8439,
+        "bytes": 9308323464,
+        "comparison": "path-size-only",
+        "indexSha256": "6fc1b21cd55df0cb0cb6ccc3580eede26c989999d6ea78b59082bcd3cb361d3e"
+      },
+      "CSMCReverse/local_cs2_analysis/all_weapons/11_icons": {
+        "exists": true,
+        "files": 159,
+        "bytes": 103462755,
+        "comparison": "path-size-only",
+        "indexSha256": "13354f098d8a8df32786345148dcbc3e60b7d1dc7819cf14c18cf952483cbd11"
+      }
+    },
+    "archives": {
+      "CSMCReverse/local_cs2_analysis/all_weapons/12_grenades": {
+        "manifestExists": true,
+        "manifestSha256": "d894d8afea5869a9c5b31a623649d9eca68952ba7e3c36654b477b9ebb6fafb3",
+        "expectedFiles": 313,
+        "failureCount": 0,
+        "failures": []
+      },
+      "CSMCReverse/references/scapi-1.9.2.1-windows-20260907": {
+        "manifestExists": true,
+        "manifestSha256": "a00830b9e07300b2cc1aee7f68cf265c8776e5ec581428da5e38008ae4d26a3f",
+        "expectedFiles": 39,
+        "failureCount": 0,
+        "failures": []
+      }
+    },
+    "documents": {
+      "AGENTS.md": "5bff07855b4d61f60394f8f6466cf0480c19a523a0adb4865df9ffc926ea8c24",
+      "ASSET_SOURCES.md": "dc836f42d64ba4b5d8c0d797f4f97fe6e56c81cb77c4c69d0f6efb1dc78bf1ab",
+      "docs/survival-grenade-sources.json": "390dbf4cc1853afa6a0eaca27c24f5594cc5c84ce91b3adb99263b9cbde01f6d",
+      "docs/community-feedback-plan-2026-09-07.md": "7e32fca06f74d2d2375e49102832fd879bd0c6900ab79612fddc793731f062d8",
+      "docs/vps-handoff-2026-09-07.md": "cf508c8af15e0a5211411928cc7b73423f7963fc359f45f30c039d63c7e12c31"
+    },
+    "pythonModules": {
+      "PIL": true,
+      "numpy": true,
+      "soundfile": true,
+      "scipy": true,
+      "moderngl": false
+    },
+    "commandsOnPath": {
+      "dotnet": null,
+      "python3": "/usr/bin/python3",
+      "ffmpeg": null,
+      "xvfb-run": null,
+      "ilspycmd": null,
+      "glslangValidator": null
+    },
+    "explicitToolPaths": {
+      ".dotnet/dotnet": true,
+      ".dotnet/tools/ilspycmd": true,
+      "tools/ffmpeg": true,
+      "tools/glslang/bin/glslang": true
+    },
+    "nugetCoreDlls": {
+      ".nuget/packages/survivalcraftapi.survivalcraft/1.9.2.1/lib/net10.0/Survivalcraft.dll": "e334ed5ee69976e35fb7736ce603d4e651b14c6c4aa05d9e3596f2ff8c5286ea",
+      ".nuget/packages/survivalcraftapi.engine/1.9.2.1/lib/net10.0/Engine.dll": "168c2ba0b1e749248a521814d6d3854f87f8021a77fefb6da0ff0325d00ecc5c",
+      ".nuget/packages/survivalcraftapi.entitysystem/1.9.2.1/lib/net10.0/EntitySystem.dll": "322007734782d48e6e8eb4c8e960729a233a152ea6bfc776cbf20ab310006036"
+    }
+  },
+  "differences": {}
+}

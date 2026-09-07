@@ -6,7 +6,8 @@
 - Deliver versioned `.scmod` packages in the project-root `output/` directory. Package only assets present in the current source manifest, so incremental build leftovers do not return to the package.
 - Report packaged-DLL checks separately from actual game testing; an offline render is not an in-game screenshot.
 
-- All mod items have no durability. Inherit `ScNoDurabilityBlock`, keep durability metadata at -1, and never store vanilla wear in variant/ammunition data. This is the user’s standing preference from 2026-09-06.
+- Current runtime remains no-durability until the planned feature is implemented. The user's 2026-09-07 instructions supersede the prior all-items-no-durability preference for guns only: implement gun wear, broken-but-retained guns and workbench repair per `docs/community-feedback-plan-2026-09-07.md`. Other items remain on `ScNoDurabilityBlock`. Never write vanilla wear into variant/ammunition bits. Testing uses new worlds per version; old-save migration and cross-version compatibility are out of scope, while same-version persistence and item transfers remain required.
+- Follow the current community-feedback plan one milestone at a time. Third-person character and throwing poses are authored for vanilla limbs; only weapon-part animation and event timing reuse CS2 clips. Do not claim full CS2 character animation reproduction. Do not add distant-audio variants. Guns use the planned 1.5x survival damage; knife reach is planned as 2.2 light / 1.8 heavy. Headshot non-kills are yellow; all kills are red. These are implementation requirements, not claims that runtime changes already exist.
 
 - Release Full and Lite together from the same DLL. Keep original-quality source textures; derive Lite 512px textures only while packaging, renormalizing normal maps. Preserve PackageName, item indices, animations and gameplay across editions. Install only one edition per game. This is the user’s preference from 2026-09-06.
 
@@ -20,4 +21,3 @@
 # Textures and threads
 
 - `Engine.Graphics.Texture2D.Load` creates the GL object on the calling thread with no dispatch and no check, and `ContentManager` caches the result. Any texture a placeable block needs in `GenerateTerrainVertices` (terrain worker thread) must be resolved on the main thread first, in `Block.Initialize()`, and read from a field afterwards. A worker thread that first-touches `ContentManager.Get<Texture2D>` gets a broken texture that then draws black everywhere for the session (0.26.1-0.28.2 supply icons and the placed bench).
-

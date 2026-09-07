@@ -1,6 +1,7 @@
 {
   "tool": "ValveResourceFormat 20.0",
-  "source": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp-survival-tools\\grenades",
+  "source": "../CSMCReverse/local_cs2_analysis/all_weapons/12_grenades",
+  "sourceResolution": "Relative to the ScCsgoKnives project root; original extraction preserved. See source-relocation-manifest.json in the resource directory.",
   "files": [
     {
       "path": "decompiled/animation/anims/viewmodel/grenade/grenade_hegrenade/draw_hegrenade.dmx",

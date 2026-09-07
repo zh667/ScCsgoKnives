@@ -87,6 +87,8 @@ model; CS:MC's own shader files are a protected container and were not opened.
 
 Six grenade body models and 54 first-person clips were read from the local CS2 installation using ValveResourceFormat 20.0. Conversion: `tools/import_cs2_grenades.py`. The existing CS2 arm/glove rig is reused. The Steam installation, prior exports and VPS resources were not modified or removed.
 
+On 2026-09-07 the complete 313-file grenade extraction was copied, with per-file SHA-256 verification, to the shared sibling `CSMCReverse/local_cs2_analysis/all_weapons/12_grenades` directory. The original `.tmp-survival-tools/grenades` remains preserved. `source-relocation-manifest.json` in the formal directory records the original location and hashes; the importer now defaults to the formal directory. `docs/survival-grenade-sources.json` resolves its source relative to this project root on either peer.
+
 Source hashes and material dependencies: `docs/survival-grenade-sources.json`. Existing local CS2 audio/particle exports and derived output paths: `docs/survival-grenade-audio-sources.json`, `docs/survival-smoke-sources.json`, `docs/survival-fire-decoy-sources.json`.
 
 The body already carries its attached pin/ring/handle; detached shared pin/spoon debris is not duplicated. The Molotov rag/liquid helper bones use their exported local bind under the animated parent; cloth and liquid simulation are not reproduced. Body, liquid and flame materials remain separate. Smoke/fire use CS2 sprite slices with this mod's bounded particle arrangement, not the original Source 2 simulation. HE/flash bursts are simplified transient light. The release time uses the exported `.Throw` sound cue as an explicit port mapping; it is not an exported server gameplay event.
