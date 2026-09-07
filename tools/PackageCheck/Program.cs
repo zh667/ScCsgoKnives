@@ -24,7 +24,7 @@ static string Sha256(string path) {
     return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
 }
 
-string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null;
+string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--resource-audit": resourceAudit = args[++i]; break;
@@ -34,6 +34,7 @@ for (int i = 0; i < args.Length; i++) {
         case "--vanilla-content": vanillaContent = args[++i]; break;
         case "--frames-out": framesOut = args[++i]; break;
         case "--polish-out": polishOut = args[++i]; break;
+        case "--third-person-out": thirdPersonOut = args[++i]; break;
         default: Console.Error.WriteLine($"unknown argument '{args[i]}'"); return 2;
     }
 }
@@ -81,6 +82,7 @@ knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.S
 
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
 
+ThirdPersonExport.ProvideObj(mod, scmod); // the self-test bakes the OBJ-piece guns for third person from the package's own files
 string runJson;
 try {
     runJson = (string)selfTest.GetMethod("RunJson", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
@@ -158,6 +160,7 @@ Console.WriteLine(output);
 if (jsonOut is not null) File.WriteAllText(jsonOut, output);
 if (framesOut is not null && failed==0) FrameExport.Write(mod,framesOut);
 if (polishOut is not null && failed==0) PolishExport.Write(mod,polishOut);
+if (thirdPersonOut is not null && vanillaContent is not null) ThirdPersonExport.Write(mod,vanillaContent,thirdPersonOut);
 return failed == 0 ? 0 : 1;
 
 /// <summary>Loads the mod from the package; everything else falls through to the host.</summary>

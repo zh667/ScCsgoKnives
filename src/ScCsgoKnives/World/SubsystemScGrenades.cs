@@ -142,8 +142,16 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (!prep.Released && m_time.GameTime>=prep.Timeline.ReleaseAt) {
                 var camera=p.GameWidget.ActiveCamera;
                 Vector3 direction=ScGrenadeBallistics.Direction(camera.ViewDirection,prep.Low);
-                Vector3 origin=camera.ViewPosition, pos=origin+direction*.45f;
-                var wall=SolidRay(origin,pos); if (wall.HasValue) pos=wall.Value.HitPoint()-direction*.10f;
+                Vector3 origin=camera.ViewPosition;
+                // F09: the crosshair ray picks the target; the grenade leaves from the hand (the posed third-person fist when
+                // that model was drawn, else just ahead of the eye) and is then aimed at that target. Walls between the
+                // body and the hand, or the hand and the flight, pull the start point back rather than spawning behind them.
+                Vector3 chest=p.ComponentBody.Position+Vector3.UnitY*p.ComponentBody.BoxSize.Y*.7f;
+                Vector3 aimTarget=SolidRay(origin,origin+direction*48)?.HitPoint() ?? origin+direction*48;
+                Vector3 pos=ScThirdPerson.TryGetFist(p.Entity.FindComponent<ComponentHumanModel>(),out Vector3 fist) ? fist : origin+direction*.45f;
+                var reach=SolidRay(chest,pos); if (reach.HasValue) pos=Vector3.Lerp(chest,reach.Value.HitPoint(),.8f);
+                Vector3 toTarget=aimTarget-pos; if (toTarget.LengthSquared()>.01f) direction=Vector3.Normalize(toTarget);
+                var wall=SolidRay(pos,pos+direction*.45f); if (wall.HasValue) pos=wall.Value.HitPoint()-direction*.10f; else pos+=direction*.1f;
                 var state=new ScGrenadeState { Kind=prep.Kind,Owner=p.PlayerData.PlayerIndex,Position=pos,
                     Velocity=ScGrenadeBallistics.LaunchVelocity(direction,p.ComponentBody.Velocity,prep.Low),Remaining=ScGrenadeBallistics.Fuse(prep.Kind) };
                 if (!prep.Transaction.Commit(m_info.WorldSettings.GameMode==GameMode.Creative,

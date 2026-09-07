@@ -137,6 +137,43 @@ public static class SurvivalSelfTest {
             opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 6) < .001f;
             return blockedBefore && openNow && sideBlocked && refilled;
         });
+        Test("third-person-arm-maths", () => {
+            // Closed-form angles must invert the engine's own rotation matrices for a range of directions.
+            bool roundTrip = true;
+            foreach (float raise in new[] { -.5f, 0f, .4f, 1.05f, 1.5f }) foreach (float swing in new[] { -.6f, -.2f, 0f, .35f, .7f }) {
+                Vector3 d = ScThirdPersonMath.ArmDirection(new Vector2(raise, swing));
+                Vector2 back = ScThirdPersonMath.AnglesToward(d);
+                roundTrip &= Math.Abs(back.X - raise) < 1e-3f && Math.Abs(back.Y - swing) < 1e-3f && Math.Abs(d.Length() - 1) < 1e-4f;
+            }
+            Vector3 rest = ScThirdPersonMath.ArmDirection(Vector2.Zero), forward = ScThirdPersonMath.ArmDirection(new Vector2(MathF.PI / 2, 0)), inward = ScThirdPersonMath.ArmDirection(new Vector2(0, .5f));
+            bool axes = (rest + Vector3.UnitZ).Length() < 1e-4f && (forward - Vector3.UnitY).Length() < 1e-4f && inward.X < -.4f; // body frame: -Z down, +Y forward, +X right
+            Matrix body = Matrix.CreateScale(.0241f) * Matrix.CreateRotationX(-MathF.PI / 2) * Matrix.CreateRotationY(.7f) * Matrix.CreateTranslation(3, 0, -2);
+            Matrix hand = ScThirdPersonMath.HandAbsolute(new Vector3(7.48f, .12f, 51.5f), new Vector2(1.05f, .35f), body);
+            Vector3 fist = Vector3.Transform(ScThirdPersonMath.HandEndLocal(true), hand), shoulder = hand.Translation;
+            Vector2 solved = ScThirdPersonMath.AnglesToward(ScThirdPersonMath.BodyDirection(shoulder, fist, body));
+            bool ik = Math.Abs(solved.X - 1.05f) < .02f && Math.Abs(solved.Y - .35f) < .12f; // the fist sits 2.41 units off the bone axis, hence the swing tolerance
+            Matrix world = ScThirdPersonMath.WeaponWorld(new Vector3(.02f, -.05f, .1f), fist, ScThirdPersonMath.AimDirection(body.Forward, .3f), Vector3.UnitY);
+            bool grip = (Vector3.Transform(new Vector3(.02f, -.05f, .1f), world) - fist).Length() < 1e-3f && Vector3.Dot(Vector3.TransformNormal(-Vector3.UnitZ, world), ScThirdPersonMath.AimDirection(body.Forward, .3f)) > .999f;
+            bool aim = Math.Abs(ScThirdPersonMath.AimDirection(-Vector3.UnitZ, .5f).Y - MathF.Sin(.5f)) < 1e-4f && ScThirdPersonMath.AimDirection(-Vector3.UnitZ, 0) == -Vector3.UnitZ;
+            return roundTrip && axes && ik && grip && aim;
+        });
+        Test("third-person-stances", () => ScThirdPerson.StanceForGun("ak47") == ScThirdPersonStance.Rifle && ScThirdPerson.StanceForGun("glock18") == ScThirdPersonStance.Pistol
+            && ScThirdPerson.StanceForGun("taser") == ScThirdPersonStance.Pistol && ScThirdPerson.StanceForGun("elite") == ScThirdPersonStance.Dual && ScThirdPerson.StanceForGun("awp") == ScThirdPersonStance.Rifle
+            && GunSpec.All.All(g => ScThirdPerson.StanceForGun(g.Name) is not null));
+        foreach (string asset in new[] { "ak47", "awp", "glock18", "elite", "taser", "m249", "nova", "karambit", "grenade_hegrenade", "grenade_molotov" }) {
+            Test("third-person-weapon/" + asset, () => {
+                var w = ScThirdPersonWeapon.For(asset);
+                if (w is null || w.Vertices == 0 || !w.HasRightGrip) throw new InvalidOperationException(w is null ? "no weapon" : $"vertices {w.Vertices} rightGrip {w.HasRightGrip}");
+                Vector3 lo = new(float.MaxValue), hi = new(float.MinValue);
+                foreach (var g in w.Groups) foreach (var v in g.Mesh.Vertices) { lo = Vector3.Min(lo, v.Position); hi = Vector3.Max(hi, v.Position); }
+                Vector3 size = hi - lo; bool metres = size.Length() > .1f && size.Length() < 2f;                         // a real-scale weapon, not a unit cube
+                bool gripInside = w.GripRight.X > lo.X - .1f && w.GripRight.X < hi.X + .1f && w.GripRight.Z > lo.Z - .15f && w.GripRight.Z < hi.Z + .15f;
+                bool forward = !GunSpec.All.Any(g => g.Name == asset) || w.Muzzle.Z < w.GripRight.Z - .1f;                 // the muzzle is ahead (-Z) of the grip on every gun
+                bool ok = metres && gripInside && forward && (asset == "grenade_hegrenade" || asset == "karambit" || w.HasLeftGrip);
+                if (!ok) throw new InvalidOperationException($"size {size} lo {lo} hi {hi} gripR {w.GripRight} gripL {w.GripLeft} ({w.HasLeftGrip}) muzzle {w.Muzzle} vertices {w.Vertices}");
+                return true;
+            });
+        }
         Test("headshot-geometry", () => {
             // A human-sized target in a vanilla-like bone space: inch units (0.0254) and a yawed, translated root.
             Matrix bone = Matrix.CreateScale(.0254f) * Matrix.CreateRotationY(1.1f) * Matrix.CreateTranslation(new Vector3(10, 3, -7));

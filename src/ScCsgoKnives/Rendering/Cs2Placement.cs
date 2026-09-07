@@ -42,6 +42,9 @@ public static class Cs2Placement {
         return MathUtils.RadToDeg(2f * MathF.Atan(half / (4f / 3f)));
     }
 
+    /// <summary>Rig inches in Source axes to engine metres in engine axes, with no viewmodel offset (third person, tools).</summary>
+    public static Matrix RigToEngine => Matrix.CreateScale(InchesToEngine) * s_axis;
+
     /// <summary>Rig inches (Source view space) to engine view space.</summary>
     public static Matrix Placement() {
         Vector3 offset = new Vector3(KnifeTuning.Cs2ViewmodelOffsetX,
