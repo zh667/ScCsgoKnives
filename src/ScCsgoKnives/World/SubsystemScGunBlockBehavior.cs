@@ -499,6 +499,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     const string LayoutKey = "GunDataLayout";
     int m_worldLayout;
     ScGunRegistry.WorldStatus m_worldStatus;
+    ValuesDictionary m_officialMigration;
+    bool m_migrationNotice;
+    readonly HashSet<ComponentPlayer> m_migrationTold = [];
     readonly HashSet<ComponentPlayer> m_oldFormatTold = [], m_legacyTold = [];
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
     double m_duplicateScanAt = -1;
@@ -550,6 +553,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public override void Load(ValuesDictionary valuesDictionary) {
         base.Load(valuesDictionary);
+        string migrationError = valuesDictionary.GetValue<string>(ScGun0282Migration.ErrorKey, null);
+        if (migrationError is not null) throw new InvalidOperationException("0.28.2 枪械迁移未执行，原世界未改动：" + migrationError);
+        m_officialMigration = valuesDictionary.GetValue<ValuesDictionary>(ScGun0282Migration.Marker, null);
+        m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
         ScGunRegistry.Current = m_registry;
@@ -579,6 +586,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         base.Save(valuesDictionary);
         // Zeus charge lives in the gun records now (per instance); the per-player ZeusRechargeAt table is no longer written.
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save(m_time.GameTime));
+        if (m_officialMigration is not null) valuesDictionary.SetValue(ScGun0282Migration.Marker, m_officialMigration);
         valuesDictionary.SetValue(LayoutKey, ScGunRegistry.StampFor(m_registry?.LegacyWorld == true)); // a legacy world stays marked legacy
     }
 
@@ -596,6 +604,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
             int value = player.ComponentMiner.ActiveBlockValue;
+            if (m_migrationNotice && m_migrationTold.Add(player))
+                player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。原世界已备份。", Color.White, true, false);
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage("此世界由 0.34 及更早版本保存，本版的枪械在这里全部停用（物品保留原样）。请新建世界。", Color.Red, true, false);
             if (Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsOldFormat(value) && m_oldFormatTold.Add(player)) {

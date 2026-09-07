@@ -1,5 +1,6 @@
 using Engine;
 using Engine.Graphics;
+using System.Xml.Linq;
 
 namespace Game;
 
@@ -12,6 +13,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     string ModVersion => Entity?.modInfo?.Version ?? "unknown";
 
     public override void __ModInitialize() {
+        ModsManager.RegisterHook("ProjectXmlLoad", this);
         ModsManager.RegisterHook("OnLoadingFinished", this);
         ModsManager.RegisterHook("OnProjectDisposed", this);
         ModsManager.RegisterHook("OnPlayerSpawned", this);
@@ -30,6 +32,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnModelCalculateBones", this); // third person: pose the human's arms around the mod weapon
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
     }
+
+    public override void ProjectXmlLoad(XElement project, WorldInfo world, ContainerWidget widget) => ScGun0282Migration.BeforeLoad(project, world);
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
     /// around the weapon's CS2 grip points; vanilla's in-hand block draw is replaced by the baked weapon.</summary>

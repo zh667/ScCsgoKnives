@@ -28,6 +28,7 @@ public static class SurvivalSelfTest {
     public static void Run(Action<string, bool, string> check) {
         ScGunRegistry.Current ??= new ScGunRegistry(); // headless: the gun state table a world would own
         ScGunRecoverySelfTest.Run(check);
+        ScGun0282MigrationSelfTest.Run(check);
         ScPolishSelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
