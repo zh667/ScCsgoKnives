@@ -18,9 +18,10 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public static int GetVariant(int value) => GunSpec.GetVariant(Terrain.ExtractData(value));
     public static string GetAssetName(int variant) => s_names[Math.Clamp(variant, 0, s_names.Length - 1)];
     static readonly GunSpec Unknown = new() { Name = "unknown", Magazine = 0 };
-    /// <summary>A gun this version can use: v5 data with a listed model. Older-layout data (bit 16) is kept but unusable.</summary>
-    public static bool IsKnown(int value) => !GunSpec.IsForeign(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
-    public static bool IsOldFormat(int value) => GunSpec.IsForeign(Terrain.ExtractData(value));
+    /// <summary>A gun this version can use: v5 data (fresh, or with its record) of a listed model. Older-layout data, a legacy
+    /// world's items and ids without a record are kept but unusable.</summary>
+    public static bool IsKnown(int value) => GunSpec.IsUsable(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
+    public static bool IsOldFormat(int value) => !GunSpec.IsUsable(Terrain.ExtractData(value));
     public static GunSpec SpecOf(int value) => IsKnown(value) ? GunSpec.All[GetVariant(value)] : Unknown;
 
     BlockMesh Model(int variant) {
@@ -125,7 +126,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
-        if (IsOldFormat(value)) return "旧版本枪械数据（0.34 及更早，已保留，请新建世界）";
+        if (IsOldFormat(value)) return GunSpec.IsForeign(Terrain.ExtractData(value)) ? "旧版本枪械数据（0.34 及更早，已保留，请新建世界）" : "枪械记录缺失（旧版本数据或损坏存档，已保留）";
         if (!IsKnown(value)) return $"未知枪械（型号 {GetVariant(value)}，保留数据）";
         if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "DisplayName", out string result)) return result;
         return base.GetDisplayName(subsystemTerrain, value);
@@ -134,6 +135,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
 
     public override string GetDescription(int value) {
+        if (!IsKnown(value)) return "本版无法读取这件物品的数据，已原样保留。请在新世界中使用枪械。";
         if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value) + DurabilityText(value);
         return base.GetDescription(value) + ScWeaponCrafting.Help(value) + DurabilityText(value);
     }

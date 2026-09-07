@@ -298,7 +298,10 @@ public sealed class GunSpec {
     public const int VariantMask = 63;
     /// <summary>The layout stamp a world carries once saved by this version; a world without it was last saved by 0.34 or earlier.</summary>
     public const int DataLayout = 5;
-    public static bool IsForeign(int data) => (data & (1 << 16)) != 0;
+    public static bool IsForeign(int data) => (data & (1 << 16)) != 0 || (ScGunRegistry.Current?.LegacyWorld ?? false);
+    /// <summary>A gun this version may read and write: v5 data that is fresh or whose record exists. An id with no record
+    /// (a v4 value whose bits happen to look like an id, or a damaged save) is refused rather than rebuilt from defaults.</summary>
+    public static bool IsUsable(int data) => !IsForeign(data) && (IsFresh(data) || Record(data) is not null);
     public static int GetVariant(int data) => data & VariantMask;
     public static int GetId(int data) => IsForeign(data) ? -1 : (data >> 6) & 1023;
     public static bool IsFresh(int data) => !IsForeign(data) && GetId(data) is FreshFull or FreshEmpty;
@@ -309,10 +312,10 @@ public sealed class GunSpec {
         int id = GetId(data);
         if (id == FreshEmpty) return 0;
         if (id == FreshFull) return MagazineOf(GetVariant(data));
-        return Record(data)?.Rounds ?? MagazineOf(GetVariant(data));
+        return Record(data)?.Rounds ?? 0;
     }
     public static bool GetSilencerOff(int data) => Record(data)?.SilencerOff ?? false;
-    public static int GetDurability(int data) => IsForeign(data) ? 0 : Record(data)?.Durability ?? ScGunDurability.Full(GetVariant(data));
+    public static int GetDurability(int data) => IsForeign(data) ? 0 : IsFresh(data) ? ScGunDurability.Full(GetVariant(data)) : Record(data)?.Durability ?? 0;
     /// <summary>A new gun. Full or empty magazines need no record (creative lists, recipes, starter kits work without a world);
     /// anything else takes a record, or falls back to the nearer fresh state when there is no registry.</summary>
     public static int MakeData(int variant, int rounds, bool silencerOff = false) {
@@ -322,13 +325,14 @@ public sealed class GunSpec {
         int id = ScGunRegistry.Current?.Allocate(variant, Math.Clamp(rounds, 0, Math.Max(magazine, rounds)), silencerOff, ScGunDurability.Full(variant)) ?? -1;
         return id > 0 ? variant | (id << 6) : variant | ((rounds > 0 ? FreshFull : FreshEmpty) << 6);
     }
-    /// <summary>The item's record, created from its fresh defaults when it has none. Null (data unchanged) for a foreign item,
-    /// without a registry or when the table is full; a dangling id is rebuilt from the defaults.</summary>
+    /// <summary>The item's record, created from its fresh defaults when it is fresh. Null (data unchanged) for a foreign item,
+    /// for an id without a record, without a registry, or when the table is full.</summary>
     static ScGunRecord Materialize(ref int data) {
         var registry = ScGunRegistry.Current;
         if (registry is null || IsForeign(data)) return null;
         var existing = Record(data);
         if (existing is not null) return existing;
+        if (!IsFresh(data)) return null;
         int variant = GetVariant(data);
         int id = registry.Allocate(variant, GetRounds(data), GetSilencerOff(data), GetDurability(data));
         if (id < 0) return null;

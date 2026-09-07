@@ -500,7 +500,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     const string RegistryKey = "GunRegistry";
     const string LayoutKey = "GunDataLayout";
     int m_worldLayout;
-    readonly HashSet<ComponentPlayer> m_oldFormatTold = [];
+    ScGunRegistry.WorldStatus m_worldStatus;
+    readonly HashSet<ComponentPlayer> m_oldFormatTold = [], m_legacyTold = [];
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
     double m_duplicateScanAt = -1;
     SubsystemGameInfo m_gameInfo;
@@ -559,7 +560,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null));
         ScGunRegistry.Current = m_registry;
         m_worldLayout = valuesDictionary.GetValue<int>(LayoutKey, 0);
-        KnifeLog.Information($"gun registry: {m_registry.Count} records, next id {m_registry.Next}; world gun data layout {(m_worldLayout == 0 ? "unstamped (saved by 0.34 or earlier, or new)" : m_worldLayout.ToString())}, this version {GunSpec.DataLayout}");
+        m_worldStatus = ScGunRegistry.Classify(m_worldLayout, valuesDictionary.ContainsKey(RegistryKey), valuesDictionary.ContainsKey(RechargeKey) || valuesDictionary.ContainsKey("GunWear"));
+        m_registry.LegacyWorld = m_worldStatus == ScGunRegistry.WorldStatus.Legacy;
+        KnifeLog.Information($"gun registry: {m_registry.Count} records, next id {m_registry.Next}; world gun data layout stamp {m_worldLayout}, status {m_worldStatus}, this version {GunSpec.DataLayout}"
+            + (m_registry.LegacyWorld ? " - guns disabled in this world" : ""));
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
         // run again on a project reload. AddDrawable itself is a TryAdd and does not
@@ -587,7 +591,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         valuesDictionary.SetValue(RechargeKey, saved);
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save());
-        valuesDictionary.SetValue(LayoutKey, GunSpec.DataLayout);
+        valuesDictionary.SetValue(LayoutKey, m_registry?.LegacyWorld == true ? GunSpec.DataLayout - 1 : GunSpec.DataLayout); // a legacy world stays marked legacy
     }
 
     public void Update(float dt) {
@@ -604,9 +608,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                     state.RechargeAt = double.IsFinite(at) ? Math.Min(at, m_time.GameTime + GunSpec.ForAsset("taser").RechargeSeconds) : -1;
             }
             int value = player.ComponentMiner.ActiveBlockValue;
+            if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))
+                player.ComponentGui.DisplaySmallMessage("此世界由 0.34 及更早版本保存，本版的枪械在这里全部停用（物品保留原样）。请新建世界。", Color.Red, true, false);
             if (Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsOldFormat(value) && m_oldFormatTold.Add(player)) {
-                player.ComponentGui.DisplaySmallMessage("这把枪是旧版本的数据，本版无法使用（已保留原样）。请新建世界。", Color.Red, true, false);
-                KnifeLog.Warning($"old-format gun data {Terrain.ExtractData(value)} held by player {player.PlayerData.PlayerIndex}; world layout stamp {m_worldLayout}; not decoded, not written");
+                player.ComponentGui.DisplaySmallMessage(GunSpec.IsForeign(Terrain.ExtractData(value)) ? "这把枪是旧版本的数据，本版无法使用（已保留原样）。请新建世界。" : "这把枪的状态记录不存在（旧版本数据或损坏存档），已保留原样。", Color.Red, true, false);
+                KnifeLog.Warning($"unusable gun data {Terrain.ExtractData(value)} held by player {player.PlayerData.PlayerIndex}; world status {m_worldStatus}; not decoded, not written");
             }
             bool holdingGun = Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsKnown(value) && player.ComponentHealth.Health > 0f;
             if (!holdingGun) {

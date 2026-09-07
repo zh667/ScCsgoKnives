@@ -289,6 +289,27 @@ public static class SurvivalSelfTest {
             bool fresh = !GunSpec.IsForeign(GunSpec.MakeData(2, 5)) && ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(2, 5))) && !ScGunBlock.IsOldFormat(Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(2, 5)));
             return foreign && noRecords && fresh && GunSpec.DataLayout == 5;
         });
+        Test("gun-unusable-without-record", () => {
+            // 49154: a 0.34 empty AWP (bit 16 clear) whose bits read as v5 id 768. No record exists for it, so it is refused, not rebuilt.
+            int before = ScGunRegistry.Current.Count;
+            int d = 49154;
+            bool refused = !GunSpec.IsForeign(d) && !GunSpec.IsFresh(d) && !GunSpec.IsUsable(d) && GunSpec.GetRounds(d) == 0 && GunSpec.GetDurability(d) == 0
+                && GunSpec.SetRounds(d, 5) == d && GunSpec.SetDurability(d, 100) == d && ScGunRegistry.Current.Count == before
+                && !ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, d)) && ScGunBlock.IsOldFormat(Terrain.MakeBlockValue(512, 0, d));
+            int real = GunSpec.SetRounds(GunSpec.MakeData(2, 5), 3);
+            bool usable = GunSpec.IsUsable(real) && ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, real)) && GunSpec.GetRounds(real) == 3;
+            return refused && usable;
+        });
+        Test("world-layout-status", () => ScGunRegistry.Classify(5, false, false) == ScGunRegistry.WorldStatus.Compatible && ScGunRegistry.Classify(0, true, true) == ScGunRegistry.WorldStatus.Compatible
+            && ScGunRegistry.Classify(0, false, true) == ScGunRegistry.WorldStatus.Legacy && ScGunRegistry.Classify(4, false, false) == ScGunRegistry.WorldStatus.Legacy
+            && ScGunRegistry.Classify(0, false, false) == ScGunRegistry.WorldStatus.New && ScGunRegistry.Classify(6, false, false) == ScGunRegistry.WorldStatus.Compatible);
+        Test("legacy-world-disables-guns", () => {
+            var saved = ScGunRegistry.Current; var legacy = new ScGunRegistry { LegacyWorld = true }; ScGunRegistry.Current = legacy;
+            try {
+                int fresh = GunSpec.MakeData(0, 30);
+                return GunSpec.IsForeign(fresh) && !GunSpec.IsUsable(fresh) && !ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, fresh)) && GunSpec.SetRounds(fresh, 3) == fresh && legacy.Count == 0;
+            } finally { ScGunRegistry.Current = saved; }
+        });
         Test("gun-repair-cost", () => {
             var ak = ScWeaponCrafting.All.First(e => e.Name == "ak47"); var glock = ScWeaponCrafting.All.First(e => e.Name == "glock18");
             var m249 = ScWeaponCrafting.All.First(e => e.Name == "m249"); var knife = ScWeaponCrafting.All.First(e => e.Knife);

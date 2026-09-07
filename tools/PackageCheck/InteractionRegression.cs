@@ -17,6 +17,13 @@ static class InteractionRegression {
             clock.GetField("Virtual").SetValue(null,true);clock.GetField("VirtualNow").SetValue(null,0d);
             string[] names=["ScKnifeBlock","ScGunBlock","ScGrenadeBlock"];
             for(int i=0;i<3;i++){Type type=mod.GetType("Game."+names[i]);BlocksManager.BlockTypeToIndex[type]=700+i;BlocksManager.BlockNameToIndex[names[i]]=700+i;}
+            var resolve=mod.GetType("Game.KnifeAnimationController").GetMethod("ResolveVariant");
+            Test("old-format-gun-draws-no-model",()=>{
+                var registryType=mod.GetType("Game.ScGunRegistry"); registryType.GetField("Current").SetValue(null,Activator.CreateInstance(registryType));
+                int fresh=(int)mod.GetType("Game.GunSpec").GetMethod("MakeData").Invoke(null,[13,0,false]);
+                return (int)resolve.Invoke(null,[Terrain.MakeBlockValue(701,0,116173)])==-1 && (int)resolve.Invoke(null,[Terrain.MakeBlockValue(701,0,49154)])==-1
+                    && (int)resolve.Invoke(null,[Terrain.MakeBlockValue(701,0,fresh)])==22+13;
+            });
             var gui=Blank<ComponentGui>();gui.m_modalPanelContainerWidget=new CanvasWidget();gui.m_modalPanelContainerWidget.Children.Add(new CanvasWidget());
             var gameWidget=Blank<GameWidget>();gameWidget.GuiWidget=new CanvasWidget();var data=Blank<PlayerData>();data.m_gameWidget=gameWidget;
             var player=Blank<ComponentPlayer>();player.ComponentGui=gui;player.PlayerData=data;

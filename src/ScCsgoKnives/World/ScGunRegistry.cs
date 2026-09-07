@@ -15,6 +15,14 @@ public sealed class ScGunRegistry {
     /// <summary>The registry of the world being played; set by SubsystemScGunBlockBehavior.Load, cleared on dispose.
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
+    public enum WorldStatus { New, Compatible, Legacy }
+    /// <summary>What a world's saved gun data is: stamped 5 or carrying a v5 registry = compatible; stamped 4 or carrying only
+    /// pre-v5 keys (ZeusRechargeAt, GunWear) = saved by 0.34 or earlier; nothing at all = a new world.</summary>
+    public static WorldStatus Classify(int stamp, bool hasRegistry, bool hasOldKeys) =>
+        stamp >= GunSpec.DataLayout || hasRegistry ? WorldStatus.Compatible : stamp == GunSpec.DataLayout - 1 || hasOldKeys ? WorldStatus.Legacy : WorldStatus.New;
+    /// <summary>A world last saved by 0.34 or earlier: every gun item in it is left alone and unusable, new ones included,
+    /// because its old-layout values cannot be told from v5 values by their bits.</summary>
+    public bool LegacyWorld;
     readonly Dictionary<int, ScGunRecord> m_records = [];
     bool m_fullLogged;
     public int Next { get; private set; } = GunSpec.FirstId;

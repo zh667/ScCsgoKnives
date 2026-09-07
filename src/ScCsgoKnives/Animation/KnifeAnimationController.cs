@@ -62,7 +62,7 @@ public static class KnifeAnimationController {
     public static int ResolveVariant(int itemValue) {
         int contents = Terrain.ExtractContents(itemValue);
         if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return ScKnifeBlock.IsKnown(itemValue) ? ScKnifeBlock.GetVariant(itemValue) : -1;
-        if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue));
+        if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.IsKnown(itemValue) ? ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue)) : -1; // old-format data draws no gun
         if (contents == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true)) return ScGrenadeBlock.AssetIndex(itemValue);
         return -1;
     }
