@@ -31,8 +31,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         /// <summary>The R8's hammer is drawn; the cocked shot fires at this time.</summary>
         public double PrepareUntil = -1;
         public double PrepareStartedAt;
-        /// <summary>A gun with no reload (the Zeus) has a fresh charge at this time.</summary>
-        public double RechargeAt = -1;
         public bool PendingSilencerOff;
         public bool SilencerPending;
         public int Zoom;                       // 0 = hip, 1.. = scope level
@@ -478,7 +476,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
-        if (ScGunRegistry.Current == m_registry) ScGunRegistry.Current = null;
+        if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; }
         base.Dispose();
     }
 
@@ -491,8 +489,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (sound) ScCombatAudio.PlayKill();
     }
 
-    /// <summary>The Zeus recharge times read from the world, by player index, until each player's state exists.</summary>
-    readonly Dictionary<int, double> m_savedRecharge = [];
+    /// <summary>Pre-0.35 key: only read to recognise a world saved by 0.34 or earlier.</summary>
     const string RechargeKey = "ZeusRechargeAt";
     /// <summary>M4 (0.35.0): the world's gun state table. Every gun's rounds, silencer and exact durability live in its
     /// record; the item value carries only the model and the record id, so state follows the item everywhere.</summary>
@@ -506,40 +503,35 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     double m_duplicateScanAt = -1;
     SubsystemGameInfo m_gameInfo;
     bool Creative => (m_gameInfo ??= Project.FindSubsystem<SubsystemGameInfo>(true)).WorldSettings.GameMode == GameMode.Creative;
-    /// <summary>One real shot costs the record one point. Returns the data to write.</summary>
-    int Wear(ComponentPlayer player, GunSpec spec, int data) {
-        if (Creative) return data;
-        int before = GunSpec.GetDurability(data), full = ScGunDurability.Full(spec.Name);
-        int worn = ScGunDurability.Wear(data);
-        int after = GunSpec.GetDurability(worn);
-        if (after <= 0 && before > 0) {
-            player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false);
-            KnifeLog.Information($"gun broken: {spec.Name} record {GunSpec.GetId(worn)} after {full} shots");
-        }
-        else if (before > 0 && after * 5 / Math.Max(1, full) != before * 5 / Math.Max(1, full))
-            KnifeLog.Information($"gun wear: {spec.Name} record {GunSpec.GetId(worn)} {after}/{full} ({ScGunDurability.PercentText(after, full)})");
-        return worn;
+    static string HolderKey(ComponentPlayer player) => ScGunHolders.PlayerKey(player, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
+    /// <summary>A refused shot or reload: tell the player once per two seconds, never fire, never charge.</summary>
+    void Refused(ComponentPlayer player, ScGunResult result, double now) {
+        if (result is ScGunResult.StateChanged or ScGunResult.Busy) return; // transient: the next frame sees the settled state
+        if (m_brokenNoticeAt.TryGetValue(player, out double last) && now - last < 2) return;
+        m_brokenNoticeAt[player] = now;
+        player.ComponentGui.DisplaySmallMessage(ScGunMutation.Explain(result), Color.Red, true, false);
+        KnifeLog.Warning($"gun operation refused for player {player.PlayerData.PlayerIndex}: {result}");
     }
-    /// <summary>Two items sharing one record (a creative copy, a glitch) would wear each other; the later one gets its own.</summary>
+    /// <summary>Holder audit (plan §6): a record held in two places at once (creative copy, glitch) is split - the holder the
+    /// record last saw keeps it, every other holder whose slot can be rewritten gets a clone; a dropped item waits for pickup.
+    /// Never reclaims ids. Also the first-use guard: ScGunMutation.Prepare asks HolderLocator before touching a moved gun.</summary>
     void SplitDuplicates() {
-        if (m_registry is null) return;
-        var seen = new Dictionary<int, (ComponentPlayer Player, int Slot)>();
+        if (m_registry is null || m_registry.Disabled) return;
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        foreach (ComponentPlayer player in m_players.ComponentPlayers) {
-            IInventory inventory = player.ComponentMiner?.Inventory;
-            if (inventory is null) continue;
-            for (int slot = 0; slot < inventory.SlotsCount; slot++) {
-                int value = inventory.GetSlotValue(slot);
-                if (inventory.GetSlotCount(slot) == 0 || Terrain.ExtractContents(value) != gunIndex) continue;
-                int id = GunSpec.GetId(Terrain.ExtractData(value));
-                if (id < GunSpec.FirstId || id > GunSpec.LastId) continue;
-                if (!seen.TryGetValue(id, out var first)) { seen[id] = (player, slot); continue; }
-                int copy = m_registry.Clone(id);
-                if (copy < 0) continue;
-                int count = inventory.GetSlotCount(slot), replacement = Terrain.ReplaceData(value, GunSpec.GetVariant(Terrain.ExtractData(value)) | (copy << 6));
-                inventory.RemoveSlotItems(slot, count); inventory.AddSlotItems(slot, replacement, count);
-                ScInventoryTransaction.Changed(inventory);
-                KnifeLog.Warning($"gun record {id} was held twice (player {first.Player.PlayerData.PlayerIndex} slot {first.Slot} and player {player.PlayerData.PlayerIndex} slot {slot}); the second copy is now record {copy}");
+        var holders = ScGunHolders.Scan(Project, gunIndex).ToList();
+        foreach (var group in holders.GroupBy(h => h.Id).Where(g => g.Count() > 1)) {
+            var record = m_registry.Get(group.Key);
+            if (record is null) continue;
+            var keeper = group.FirstOrDefault(h => h.Key == record.Holder);
+            if (keeper.Key is null) keeper = group.First(); // no confirmed holder: the first found in scan order keeps it
+            foreach (var other in group.Where(h => h.Key != keeper.Key && h.Inventory is not null)) {
+                int copy = m_registry.Clone(group.Key);
+                if (copy < 0) { KnifeLog.Warning($"gun record {group.Key} is held at {keeper.Key} and {other.Key} but the registry is full; the copy stays unusable until a new world"); continue; }
+                int value = other.Inventory.GetSlotValue(other.Slot), count = other.Inventory.GetSlotCount(other.Slot);
+                int replacement = Terrain.ReplaceData(value, GunSpec.WithId(GunSpec.GetVariant(Terrain.ExtractData(value)), copy));
+                other.Inventory.RemoveSlotItems(other.Slot, count); other.Inventory.AddSlotItems(other.Slot, replacement, count);
+                ScInventoryTransaction.Changed(other.Inventory);
+                KnifeLog.Warning($"gun record {group.Key} was held at {keeper.Key} and {other.Key}; the copy at {other.Key} is now record {copy}");
             }
         }
     }
@@ -551,19 +543,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public override void Load(ValuesDictionary valuesDictionary) {
         base.Load(valuesDictionary);
-        ValuesDictionary saved = valuesDictionary.GetValue<ValuesDictionary>(RechargeKey, null);
-        if (saved is not null) {
-            foreach (KeyValuePair<string, object> kv in saved) {
-                if (int.TryParse(kv.Key, out int index) && kv.Value is double at) m_savedRecharge[index] = at;
-            }
-        }
-        m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null));
+        m_time = Project.FindSubsystem<SubsystemTime>(true);
+        m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
         ScGunRegistry.Current = m_registry;
+        ScGunMutation.HolderLocator = (id, except) => ScGunHolders.Scan(Project, BlocksManager.GetBlockIndex<ScGunBlock>(true)).Where(h => h.Id == id && h.Key != except).Select(h => h.Key).ToArray();
         m_worldLayout = valuesDictionary.GetValue<int>(LayoutKey, 0);
         m_worldStatus = ScGunRegistry.Classify(m_worldLayout, valuesDictionary.ContainsKey(RegistryKey), valuesDictionary.ContainsKey(RechargeKey) || valuesDictionary.ContainsKey("GunWear"));
         m_registry.LegacyWorld = m_worldStatus == ScGunRegistry.WorldStatus.Legacy;
-        KnifeLog.Information($"gun registry: {m_registry.Count} records, next id {m_registry.Next}; world gun data layout stamp {m_worldLayout}, status {m_worldStatus}, this version {GunSpec.DataLayout}"
-            + (m_registry.LegacyWorld ? " - guns disabled in this world" : ""));
+        KnifeLog.Information($"gun registry: {m_registry.Count} records ({m_registry.QuarantinedCount} quarantined), next id {m_registry.Next}; world gun data layout stamp {m_worldLayout}, status {m_worldStatus}, this version {GunSpec.DataLayout}, schema {(m_registry.UnknownSchema ? "unknown" : ScGunRegistry.Schema.ToString())}"
+            + (m_registry.Disabled ? " - guns disabled in this world" : ""));
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
         // run again on a project reload. AddDrawable itself is a TryAdd and does not
@@ -581,16 +569,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public override void Save(ValuesDictionary valuesDictionary) {
         base.Save(valuesDictionary);
-        var saved = new ValuesDictionary();
-        foreach ((int index, double at) in m_savedRecharge) saved.SetValue(index.ToString(), at);
-        foreach ((ComponentPlayer player, GunState state) in m_states) {
-            if (player.PlayerData is null) continue;
-            string key = player.PlayerData.PlayerIndex.ToString();
-            if (state.RechargeAt >= 0) saved.SetValue(key, state.RechargeAt);
-            else if (saved.ContainsKey(key)) saved.Remove(key);
-        }
-        valuesDictionary.SetValue(RechargeKey, saved);
-        if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save());
+        // Zeus charge lives in the gun records now (per instance); the per-player ZeusRechargeAt table is no longer written.
+        if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save(m_time.GameTime));
         valuesDictionary.SetValue(LayoutKey, ScGunRegistry.StampFor(m_registry?.LegacyWorld == true)); // a legacy world stays marked legacy
     }
 
@@ -602,11 +582,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         if (m_time.GameTime >= m_duplicateScanAt) { m_duplicateScanAt = m_time.GameTime + .5; SplitDuplicates(); }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
-            if (!m_states.TryGetValue(player, out GunState state)) {
-                m_states[player] = state = new GunState();
-                if (m_savedRecharge.Remove(player.PlayerData.PlayerIndex, out double at))
-                    state.RechargeAt = double.IsFinite(at) ? Math.Min(at, m_time.GameTime + GunSpec.ForAsset("taser").RechargeSeconds) : -1;
-            }
+            if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
             int value = player.ComponentMiner.ActiveBlockValue;
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage("此世界由 0.34 及更早版本保存，本版的枪械在这里全部停用（物品保留原样）。请新建世界。", Color.Red, true, false);
@@ -651,7 +627,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             }
             if (state.Reload is not null && state.InsertAt >= 0 && now >= state.InsertAt) {
                 state.InsertAt = -1;
-                if (!state.Reload.FinishMagazine(now, state.BusyUntil)) CancelReload(player, state);
+                if (!state.Reload.FinishMagazine(now, state.BusyUntil)) { if (state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); }
             }
             value = player.ComponentMiner.ActiveBlockValue;
             data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
@@ -688,7 +664,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 value = state.Reload.Expected; state.LastValue = value;
                 data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
             }
-            else { CancelReload(player, state); break; }
+            else { if (state.Reload is not null && state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); break; }
         }
 
         // A reload or silencer clip that has run its course commits its result.
@@ -697,8 +673,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.Reload = null;
             if (state.SilencerPending) {
                 state.SilencerPending = false;
-                data = GunSpec.SetSilencerOff(data, state.PendingSilencerOff);
-                value = WriteData(player, value, data);
+                var silencer = ScGunMutation.Prepare(player.ComponentMiner.Inventory, player.ComponentMiner.Inventory.ActiveSlotIndex, HolderKey(player), out ScGunResult silencerWhy);
+                bool off = state.PendingSilencerOff;
+                var outcome = silencer is null ? silencerWhy : silencer.Commit(r => r.SilencerOff = off);
+                if (outcome == ScGunResult.Success) { value = silencer.Expected; data = Terrain.ExtractData(value); state.LastValue = value; }
+                else Refused(player, outcome, now);
             }
         }
         bool busy = state.BusyUntil >= 0 || KnifeAnimationController.IsBusy(model);
@@ -719,16 +698,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // gun was held at the 30 s mark consume it (and top itself up), so a Zeus put
         // away and picked up again started over. The timer is game time, saved with
         // the world (Save below), so it also survives leaving and reloading.
-        if (spec.RechargeSeconds > 0f) {
-            if (rounds < spec.Magazine && state.RechargeAt < 0) state.RechargeAt = now + spec.RechargeSeconds;
-            if (state.RechargeAt >= 0 && now >= state.RechargeAt) {
-                state.RechargeAt = -1;
-                if (rounds < spec.Magazine) {
-                    rounds = spec.Magazine;
-                    data = GunSpec.SetRounds(data, rounds);
-                    value = WriteData(player, value, data);
-                    PlaySound(player, $"{spec.Name}_chargeready");
+        if (spec.RechargeSeconds > 0f && rounds < spec.Magazine && GunSpec.TryGetSnapshot(data, out var charge)) {
+            // Per instance (plan §7): the record says when this Zeus is ready, in game time; a fresh empty one starts charging
+            // on first sight, a ready one gets its charge back through the same transaction path as every other change.
+            bool ready = charge.RechargeReadyAt >= 0 && now >= charge.RechargeReadyAt;
+            if (charge.RechargeReadyAt < 0 || ready) {
+                var zeus = ScGunMutation.Prepare(player.ComponentMiner.Inventory, player.ComponentMiner.Inventory.ActiveSlotIndex, HolderKey(player), out ScGunResult zeusWhy);
+                var outcome = zeus is null ? zeusWhy : zeus.Commit(r => { if (ready) { r.Rounds = spec.Magazine; r.RechargeReadyAt = -1; } else r.RechargeReadyAt = now + spec.RechargeSeconds; });
+                if (outcome == ScGunResult.Success) {
+                    value = zeus.Expected; data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data); state.LastValue = value;
+                    if (ready) PlaySound(player, $"{spec.Name}_chargeready");
                 }
+                else Refused(player, outcome, now);
             }
         }
         // The R8's cocked shot: the hammer has been drawn for the cycle time, the shot goes.
@@ -798,12 +779,24 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         double now = m_time.GameTime;
         // M4: a broken gun never fires; it can still be reloaded, inspected, moved and repaired.
         if (!Creative && ScGunDurability.IsBroken(data)) { BrokenNotice(player, now); return; }
-        // A fresh gun needs a record for its first shot; with the table full it stays fresh and would never run dry.
-        if (GunSpec.IsFresh(data) && (ScGunRegistry.Current is null || ScGunRegistry.Current.IsFull)) {
-            if (!m_brokenNoticeAt.TryGetValue(player, out double last) || now - last >= 2) { m_brokenNoticeAt[player] = now; player.ComponentGui.DisplaySmallMessage($"枪械状态表已满（{GunSpec.LastId} 把），请新建世界", Color.Red, true, false); }
-            return;
-        }
         int roundsBefore = rounds;
+        // The shot is a transaction first (plan §5): one round out, one durability point off (survival), the Zeus's recharge
+        // set - all in the record, with a fresh gun getting its record here. Only a committed shot settles anything below;
+        // a refused one changes no cycle time, fires no round, plays no effect.
+        bool creative = Creative;
+        var transaction = ScGunMutation.Prepare(player.ComponentMiner.Inventory, player.ComponentMiner.Inventory.ActiveSlotIndex, HolderKey(player), out ScGunResult shotWhy);
+        var result = transaction is null ? shotWhy : transaction.Commit(r => {
+            r.Rounds = Math.Max(0, r.Rounds - 1);
+            if (!creative) r.Durability = Math.Max(0, r.Durability - 1);
+            if (spec.RechargeSeconds > 0f && r.Rounds <= 0) r.RechargeReadyAt = now + spec.RechargeSeconds;
+        });
+        if (result != ScGunResult.Success) { Refused(player, result, now); return; }
+        value = transaction.Expected; data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data); state.LastValue = value;
+        if (!creative) {
+            int durability = GunSpec.GetDurability(data), full = GunSpec.GetMaxDurability(data);
+            if (durability <= 0) { player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false); KnifeLog.Information($"gun broken: {spec.Name} record {GunSpec.GetId(data)} after {full} shots"); }
+            else if ((durability + 1) * 5 / Math.Max(1, full) != durability * 5 / Math.Max(1, full)) KnifeLog.Information($"gun wear: {spec.Name} record {GunSpec.GetId(data)} {durability}/{full} ({ScGunDurability.PercentText(durability, full)})");
+        }
         // A burst costs its own cycle time once, not one per round: CS2's Glock-18
         // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55
         // against 0.09. The remaining rounds are scheduled at m_flTimeBetweenBurstShots.
@@ -823,9 +816,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // hammer started back, not when it fell.
             state.NextShot = (cycleFrom ?? now) + spec.CycleSeconds;
         }
-        rounds--;
-        // The round and the wear are one write: only a shot that really happens counts (plan C1).
-        value = WriteData(player, value, Wear(player, spec, GunSpec.SetRounds(data, rounds)));
         // A detachable silencer that is on, or an integral one (the MP5-SD): the
         // flash, the muzzle and the kick follow it. Only the detachable kind has a
         // separate sound file; the integral one's WEAPON_SOUND_SINGLE is already
@@ -855,8 +845,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (spec.MuzzleEffects)
             CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, muzzleBone, spec.Name, silenced);
         PlaySound(player, spec.HasSilencer && silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
-        // No reload: the Zeus starts its ten-second recharge at the shot.
-        if (rounds <= 0 && spec.RechargeSeconds > 0f) state.RechargeAt = now + spec.RechargeSeconds;
+        // No reload: the Zeus's ten-second recharge was written into its record by the shot transaction above.
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
 
 
@@ -1007,7 +996,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         LeaveScope(player, state);
         KnifeAnimationController.TriggerReload(player, empty, shells);
-        state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, spec.Magazine);
+        state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, spec.Magazine, ScGunHolders.PlayerKey(player, inventory.ActiveSlotIndex));
         state.Scheduled.Clear(); state.ShellTimes.Clear(); state.FireAfterReload = false;
         double now = m_time.GameTime;
         state.BusyUntil = now + duration; state.PendingRounds = -1;
@@ -1258,8 +1247,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         var spec = ScGunBlock.SpecOf(value);
         bool creative = Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
-        state.AmmoHud.Show(ScAmmoReadout.Read(spec, value, player.ComponentMiner.Inventory, creative,
-            state.RechargeAt < 0 ? -1 : Math.Max(0, state.RechargeAt - m_time.GameTime), state.Reload is not null));
+        double rechargeRemaining = GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var snapshot) && snapshot.RechargeReadyAt >= 0 ? Math.Max(0, snapshot.RechargeReadyAt - m_time.GameTime) : -1;
+        state.AmmoHud.Show(ScAmmoReadout.Read(spec, value, player.ComponentMiner.Inventory, creative, rechargeRemaining, state.Reload is not null));
     }
 
     /// <summary>Plays Audio/ScCsgoKnives/&lt;name&gt; when the mod ships it; nothing (and no placeholder) when it does not.</summary>

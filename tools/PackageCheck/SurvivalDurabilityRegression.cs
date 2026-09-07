@@ -55,8 +55,7 @@ static class SurvivalDurabilityRegression {
                     foreach (int full in values.ToArray()) {
                         int data = Terrain.ExtractData(full);
                         foreach (int rounds in new[] { 0, 1 }) foreach (bool off in new[] { false, true }) {
-                            int changed = (int)Call("GunSpec", "SetRounds", data, rounds);
-                            changed = (int)Call("GunSpec", "SetSilencerOff", changed, off);
+                            int changed = (int)Call("GunSpec", "MakeData", (int)Call("GunSpec", "GetVariant", data), rounds, off);
                             values.Add(Terrain.ReplaceData(full, changed));
                         }
                     }
@@ -103,7 +102,7 @@ static class SurvivalDurabilityRegression {
                 int ammo = (int)Call("ScReloadTransaction", "AmmoKind", gun) == 1 ? shell : magazine;
                 int full = Terrain.MakeBlockValue(701, 0, (int)Call("GunSpec", "MakeData", v, capacity, false));
                 // Layout v5: a partial magazine is a record, so each test takes its own gun instead of sharing one mutable identity.
-                int Partial() => Terrain.ReplaceData(full, (int)Call("GunSpec", "SetRounds", Terrain.ExtractData(full), capacity - 1));
+                int Partial() => Terrain.MakeBlockValue(701, 0, (int)Call("GunSpec", "MakeData", v, capacity - 1, false));
                 bool tube = (bool)Call("ScReloadTransaction", "IsTube", name);
                 object Transaction(ComponentInventory inv) => Activator.CreateInstance(mod.GetType("Game.ScReloadTransaction"), inv, 0, inv.GetSlotValue(0), ammo, cost, capacity);
                 bool Step(object t, string method) => (bool)t.GetType().GetMethod(method).Invoke(t, null);

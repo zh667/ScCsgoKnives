@@ -298,50 +298,36 @@ public sealed class GunSpec {
     public const int VariantMask = 63;
     /// <summary>The layout stamp a world carries once saved by this version; a world without it was last saved by 0.34 or earlier.</summary>
     public const int DataLayout = 5;
-    public static bool IsForeign(int data) => (data & (1 << 16)) != 0 || (ScGunRegistry.Current?.LegacyWorld ?? false);
-    /// <summary>A gun this version may read and write: v5 data that is fresh or whose record exists. An id with no record
-    /// (a v4 value whose bits happen to look like an id, or a damaged save) is refused rather than rebuilt from defaults.</summary>
-    public static bool IsUsable(int data) => !IsForeign(data) && (IsFresh(data) || Record(data) is not null);
+    public static bool IsForeign(int data) => (data & (1 << 16)) != 0 || (ScGunRegistry.Current?.Disabled ?? false);
     public static int GetVariant(int data) => data & VariantMask;
     public static int GetId(int data) => IsForeign(data) ? -1 : (data >> 6) & 1023;
     public static bool IsFresh(int data) => !IsForeign(data) && GetId(data) is FreshFull or FreshEmpty;
+    public static int WithId(int variant, int id) => (variant & VariantMask) | ((id & 1023) << 6);
     static int MagazineOf(int variant) => variant >= 0 && variant < All.Length ? All[variant].Magazine : 0;
-    static ScGunRecord Record(int data) => IsForeign(data) ? null : ScGunRegistry.Current?.Get(GetId(data));
-    public static int GetRounds(int data) {
-        if (IsForeign(data)) return 0;
-        int id = GetId(data);
-        if (id == FreshEmpty) return 0;
-        if (id == FreshFull) return MagazineOf(GetVariant(data));
-        return Record(data)?.Rounds ?? 0;
+    /// <summary>The gun's state: a fresh gun's defaults, or its record. False for foreign data, an id without a record, or a record of another model.</summary>
+    public static bool TryGetSnapshot(int data, out ScGunSnapshot snapshot) {
+        snapshot = default;
+        if (IsForeign(data)) return false;
+        int variant = GetVariant(data), id = GetId(data);
+        if (id is FreshFull or FreshEmpty) { snapshot = ScGunSnapshot.ForFresh(variant, id == FreshFull); return true; }
+        return ScGunRegistry.Current is { } registry && registry.TryGetSnapshot(id, out snapshot) && snapshot.Variant == variant;
     }
-    public static bool GetSilencerOff(int data) => Record(data)?.SilencerOff ?? false;
-    public static int GetDurability(int data) => IsForeign(data) ? 0 : IsFresh(data) ? ScGunDurability.Full(GetVariant(data)) : Record(data)?.Durability ?? 0;
+    /// <summary>A gun this version may read and write: v5 data that is fresh or whose record exists for this model. An id with
+    /// no record (a v4 value whose bits happen to look like an id, or a damaged save) is refused rather than rebuilt from defaults.</summary>
+    public static bool IsUsable(int data) => TryGetSnapshot(data, out _);
+    public static int GetRounds(int data) => TryGetSnapshot(data, out var s) ? s.Rounds : 0;
+    public static bool GetSilencerOff(int data) => TryGetSnapshot(data, out var s) && s.SilencerOff;
+    public static int GetDurability(int data) => TryGetSnapshot(data, out var s) ? s.Durability : 0;
+    public static int GetMaxDurability(int data) => TryGetSnapshot(data, out var s) ? s.MaxDurability : ScGunDurability.Full(GetVariant(data));
     /// <summary>A new gun. Full or empty magazines need no record (creative lists, recipes, starter kits work without a world);
-    /// anything else takes a record, or falls back to the nearer fresh state when there is no registry.</summary>
+    /// anything else takes a record, or falls back to the nearer fresh state when there is no registry or it is full.</summary>
     public static int MakeData(int variant, int rounds, bool silencerOff = false) {
         variant &= VariantMask; int magazine = MagazineOf(variant);
-        if (!silencerOff && rounds <= 0) return variant | (FreshEmpty << 6);
-        if (!silencerOff && rounds >= magazine) return variant | (FreshFull << 6);
-        int id = ScGunRegistry.Current?.Allocate(variant, Math.Clamp(rounds, 0, Math.Max(magazine, rounds)), silencerOff, ScGunDurability.Full(variant)) ?? -1;
-        return id > 0 ? variant | (id << 6) : variant | ((rounds > 0 ? FreshFull : FreshEmpty) << 6);
+        if (!silencerOff && rounds <= 0) return WithId(variant, FreshEmpty);
+        if (!silencerOff && rounds >= magazine) return WithId(variant, FreshFull);
+        int id = ScGunRegistry.Current?.Allocate(variant, Math.Clamp(rounds, 0, magazine), silencerOff, ScGunDurability.Full(variant)) ?? -1;
+        return id > 0 ? WithId(variant, id) : WithId(variant, rounds > 0 ? FreshFull : FreshEmpty);
     }
-    /// <summary>The item's record, created from its fresh defaults when it is fresh. Null (data unchanged) for a foreign item,
-    /// for an id without a record, without a registry, or when the table is full.</summary>
-    static ScGunRecord Materialize(ref int data) {
-        var registry = ScGunRegistry.Current;
-        if (registry is null || IsForeign(data)) return null;
-        var existing = Record(data);
-        if (existing is not null) return existing;
-        if (!IsFresh(data)) return null;
-        int variant = GetVariant(data);
-        int id = registry.Allocate(variant, GetRounds(data), GetSilencerOff(data), GetDurability(data));
-        if (id < 0) return null;
-        data = variant | (id << 6);
-        return registry.Get(id);
-    }
-    public static int SetRounds(int data, int rounds) { var r = Materialize(ref data); if (r is not null) r.Rounds = Math.Clamp(rounds, 0, 255); return data; }
-    public static int SetSilencerOff(int data, bool off) { var r = Materialize(ref data); if (r is not null) r.SilencerOff = off; return data; }
-    public static int SetDurability(int data, int durability) { var r = Materialize(ref data); if (r is not null) r.Durability = Math.Max(0, durability); return data; }
 
     // Complete published 0.20.4 registry. Append only, including retired placeholders.
     public static readonly string[] FrozenOrder = ["ak47", "m4a1s", "awp", "deagle", "glock18", "usp_silencer", "m4a4", "famas", "mp9", "p90", "ssg08", "fiveseven", "hkp2000", "p250", "tec9", "cz75a", "mac10", "mp7", "ump45", "bizon", "mp5sd", "galilar", "scar20", "g3sg1", "aug", "sg556", "nova", "xm1014", "sawedoff", "mag7", "m249", "negev", "revolver", "elite", "taser"];

@@ -36,9 +36,4 @@ public static class ScGunDurability {
         return $"{(int)Math.Round(percent)}%";
     }
     public static string PercentText(int data) => PercentText(GunSpec.GetDurability(data), FullOf(data));
-    /// <summary>One real shot: the record loses one point (never below zero). Returns the data to write.</summary>
-    public static int Wear(int data) {
-        int d = GunSpec.GetDurability(data);
-        return d <= 0 ? data : GunSpec.SetDurability(data, d - 1);
-    }
 }

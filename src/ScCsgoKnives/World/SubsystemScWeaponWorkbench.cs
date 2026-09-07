@@ -46,14 +46,17 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 (Func<object, string>)(item => { var c = (ScWeaponRepair.Candidate)item; return $"{ValueName(c.Value)} · 耐久 {ScGunDurability.PercentText(c.Durability, c.Full)} · 第 {c.Slot + 1} 格"; }), item => {
                     var c = (ScWeaponRepair.Candidate)item;
                     var entry = ScWeaponCrafting.Find(c.Value);
-                    var cost = Creative() || entry is null ? new Dictionary<int, int>() : ScWeaponRepair.CostValues(entry, c.Durability, c.Full);
-                    string detail = $"当前耐久 {c.Durability} / {c.Full}（{ScGunDurability.PercentText(c.Durability, c.Full)}）→ 维修后 {c.Full} / {c.Full}\n" + (Creative() ? "创造模式：免费" : cost.Count == 0 ? "无需材料" : MaterialLines(cost))
+                    // The quote freezes the record revision, the priced durability and the materials; the click re-checks all of it.
+                    var quote = ScWeaponRepair.Prepare(c, entry, Creative(), ScWeaponMaterialBlock.Value);
+                    if (quote is null) { player.ComponentGui.DisplaySmallMessage("这把枪的状态无法读取。", Color.Red, true, false); ShowRepair(); return; }
+                    string detail = $"当前耐久 {quote.Durability} / {quote.Full}（{ScGunDurability.PercentText(quote.Durability, quote.Full)}）→ 维修后 {quote.Full} / {quote.Full}\n" + (Creative() ? "创造模式：免费" : quote.Cost.Count == 0 ? "无需材料" : MaterialLines(quote.Cost))
                         + "\n只恢复耐久，不改变余弹、消音器和型号。";
                     DialogsManager.ShowDialog(player.GuiWidget, new MessageDialog(ValueName(c.Value), detail, "维修", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
-                            bool repaired = ScWeaponRepair.TryRepair(miner.Inventory, c, cost);
-                            KnifeLog.Information($"gun repair: {ValueName(c.Value)} slot {c.Slot} {c.Durability}/{c.Full} -> {(repaired ? c.Full : c.Durability)} cost {string.Join(",", cost.Select(m => m.Value))} ok={repaired}");
-                            player.ComponentGui.DisplaySmallMessage(repaired ? "维修完成：" + ValueName(c.Value) : "材料不足或枪械已移动，未扣除材料。", repaired ? Color.White : Color.Red, true, false);
+                            var result = ScWeaponRepair.TryRepair(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
+                            KnifeLog.Information($"gun repair: {ValueName(c.Value)} slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.Durability}/{quote.Full} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
+                            player.ComponentGui.DisplaySmallMessage(result == ScGunResult.Success ? "维修完成：" + ValueName(c.Value)
+                                : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。", result == ScGunResult.Success ? Color.White : Color.Red, true, false);
                         }
                         ShowRepair();
                     }));

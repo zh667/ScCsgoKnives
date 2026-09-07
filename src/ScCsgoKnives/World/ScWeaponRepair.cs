@@ -1,13 +1,16 @@
 namespace Game;
 
-/// <summary>Workbench repair (plan C4). A full repair costs roughly a quarter of the gun's assembly blanks and
-/// mechanisms (at least one blank); this repair charges ceil(missing/full × full cost) per material, so any wear
-/// costs at least one item and the quote shown is exactly what is deducted.</summary>
+/// <summary>Workbench repair (plan C4/C7). A full repair costs roughly a quarter of the gun's assembly blanks and
+/// mechanisms (at least one blank); a repair charges ceil(missing/full × full cost) per material. The quote freezes the
+/// record id and revision, the durability it priced and the materials; the commit re-checks all of it through
+/// ScGunMutation, so a gun that changed (or was swapped for a same-looking one) is re-quoted, never repaired at the old price.</summary>
 public static class ScWeaponRepair {
     public sealed record Candidate(int Slot, int Value) {
         public int Durability => GunSpec.GetDurability(Terrain.ExtractData(Value));
-        public int Full => ScGunDurability.FullOf(Terrain.ExtractData(Value));
+        public int Full => GunSpec.GetMaxDurability(Terrain.ExtractData(Value));
     }
+    /// <summary>A priced repair, valid only for this record revision.</summary>
+    public sealed record Quote(int Slot, int Value, int Id, int Revision, int Durability, int Full, IReadOnlyDictionary<int, int> Cost);
     public const int Blank = 0, Mechanism = 1; // ScWeaponMaterialBlock kinds: 金属坯件, 精密机构
     /// <summary>Full-repair cost by material kind (0 blank, 1 mechanism): about a quarter of the assembly recipe.</summary>
     public static Dictionary<int, int> FullCost(ScWeaponCrafting.Entry e) {
@@ -30,8 +33,6 @@ public static class ScWeaponRepair {
         }
         return cost;
     }
-    /// <summary>The same cost keyed by item value, for the inventory transaction.</summary>
-    public static Dictionary<int, int> CostValues(ScWeaponCrafting.Entry e, int durability, int full) => Cost(e, durability, full).ToDictionary(p => ScWeaponMaterialBlock.Value(p.Key), p => p.Value);
     public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {
         int gun = gunBlockIndex >= 0 ? gunBlockIndex : BlocksManager.GetBlockIndex<ScGunBlock>(true);
         for (int i = 0; i < inventory.SlotsCount; i++) {
@@ -42,35 +43,22 @@ public static class ScWeaponRepair {
             }
         }
     }
-    public static int Repaired(int value) => Terrain.ReplaceData(value, GunSpec.SetDurability(Terrain.ExtractData(value), ScGunDurability.FullOf(Terrain.ExtractData(value))));
-    /// <summary>Re-checks the target and the materials, deducts, then rewrites the gun; any shortfall rolls the deduction back.</summary>
-    public static bool TryRepair(IInventory inventory, Candidate target, IReadOnlyDictionary<int, int> cost) {
-        if (inventory is null || target is null || target.Slot < 0 || target.Slot >= inventory.SlotsCount) return false;
-        int count = inventory.GetSlotCount(target.Slot);
-        if (count <= 0 || inventory.GetSlotValue(target.Slot) != target.Value || target.Durability >= target.Full) return false;
-        if (cost.Any(p => p.Value <= 0 || ScInventoryTransaction.Count(inventory, p.Key) < p.Value)) return false;
-        var taken = new List<(int Slot, int Value, int Count)>();
-        foreach (var material in cost) {
-            int needed = material.Value;
-            for (int i = 0; i < inventory.SlotsCount && needed > 0; i++) {
-                if (i == target.Slot || inventory.GetSlotValue(i) != material.Key || inventory.GetSlotCount(i) == 0) continue;
-                int want = Math.Min(needed, inventory.GetSlotCount(i)), got = inventory.RemoveSlotItems(i, want);
-                taken.Add((i, material.Key, got)); needed -= got;
-                if (got != want) break;
-            }
-            if (needed > 0) {
-                foreach (var item in taken) inventory.AddSlotItems(item.Slot, item.Value, item.Count);
-                return false;
-            }
-        }
-        int removed = inventory.RemoveSlotItems(target.Slot, count);
-        if (removed != count) {
-            if (removed > 0) inventory.AddSlotItems(target.Slot, target.Value, removed);
-            foreach (var item in taken) inventory.AddSlotItems(item.Slot, item.Value, item.Count);
-            return false;
-        }
-        inventory.AddSlotItems(target.Slot, Repaired(target.Value), count);
-        ScInventoryTransaction.Changed(inventory);
-        return true;
+    /// <summary>Prices a candidate from its current snapshot. <paramref name="materialValue"/> maps a material kind to its item value
+    /// (the block registry in the game, anything in tests); null cost = free (creative).</summary>
+    public static Quote Prepare(Candidate c, ScWeaponCrafting.Entry entry, bool free, Func<int, int> materialValue) {
+        if (c is null || !GunSpec.TryGetSnapshot(Terrain.ExtractData(c.Value), out var s)) return null;
+        var cost = free || entry is null ? new Dictionary<int, int>() : Cost(entry, s.Durability, s.MaxDurability).ToDictionary(p => materialValue(p.Key), p => p.Value);
+        return new Quote(c.Slot, c.Value, s.Id, s.Revision, s.Durability, s.MaxDurability, cost);
+    }
+    /// <summary>Commits a quote: the slot must still hold that value, the record must still be at the quoted revision and
+    /// durability, the materials must all be there; then durability goes to full in one transaction.</summary>
+    public static ScGunResult TryRepair(IInventory inventory, Quote quote, string holder) {
+        if (inventory is null || quote is null || quote.Slot < 0 || quote.Slot >= inventory.SlotsCount) return ScGunResult.Invalid;
+        if (inventory.GetSlotValue(quote.Slot) != quote.Value) return ScGunResult.StateChanged;
+        var mutation = ScGunMutation.Prepare(inventory, quote.Slot, holder, out ScGunResult why);
+        if (mutation is null) return why;
+        if (mutation.Before.Id != quote.Id || mutation.Before.Revision != quote.Revision || mutation.Before.Durability != quote.Durability) return ScGunResult.StateChanged;
+        if (quote.Durability >= quote.Full) return ScGunResult.Invalid;
+        return mutation.Commit(r => r.Durability = r.MaxDurability, materials: quote.Cost);
     }
 }

@@ -1,6 +1,7 @@
 namespace Game;
 
-/// <summary>Magazine replacement is atomic at animation completion; tube shells commit individually.</summary>
+/// <summary>Magazine replacement is atomic at animation completion; tube shells commit individually. Every write goes
+/// through ScGunMutation, so a refused reload (no ammo, full table, changed record) pays nothing and fills nothing.</summary>
 public sealed class ScReloadTransaction {
     public static string CostMessage(bool creative, bool shells, int count) => creative
         ? "创造模式：无限弹药，无需消耗"
@@ -8,13 +9,17 @@ public sealed class ScReloadTransaction {
 
     public readonly IInventory Inventory;
     public readonly int Slot, Ammo, Cost, Capacity;
+    public readonly string Holder;
     public int Expected { get; private set; }
     public long Revision { get; private set; }
     public bool Discarded { get; private set; }
     public bool Inserted { get; private set; }
     public bool Cancelled { get; private set; }
-    public ScReloadTransaction(IInventory inventory, int slot, int value, int ammo, int cost, int capacity) {
-        Inventory = inventory; Slot = slot; Expected = value; Ammo = ammo; Cost = cost; Capacity = capacity;
+    /// <summary>Why the last write was refused, for the caller's message.</summary>
+    public ScGunResult LastResult { get; private set; } = ScGunResult.Success;
+    public ScReloadTransaction(IInventory inventory, int slot, int value, int ammo, int cost, int capacity) : this(inventory, slot, value, ammo, cost, capacity, null) { }
+    public ScReloadTransaction(IInventory inventory, int slot, int value, int ammo, int cost, int capacity, string holder) {
+        Inventory = inventory; Slot = slot; Expected = value; Ammo = ammo; Cost = cost; Capacity = capacity; Holder = holder ?? $"inventory:{slot}";
         Revision = ScInventoryTransaction.Revision(inventory);
     }
     public bool Valid => !Cancelled && Inventory is not null && Inventory.ActiveSlotIndex == Slot
@@ -23,16 +28,10 @@ public sealed class ScReloadTransaction {
     public bool ModeMatches(bool creative) => creative == (Cost == 0);
     bool Write(int rounds, int cost) {
         if (!Valid) { Cancel(); return false; }
-        // Layout v5: SetRounds writes the gun's record, so the ammo has to be known affordable before it runs, and the
-        // record is put back if the inventory step still refuses (a rejected paid reload must not fill the magazine).
-        bool creative = Inventory is ComponentCreativeInventory;
-        if (creative ? cost != 0 : ScInventoryTransaction.Count(Inventory, Ammo) < cost) { Cancel(); return false; }
-        int data = Terrain.ExtractData(Expected), previous = GunSpec.GetRounds(data);
-        int replacement = Terrain.ReplaceData(Expected, GunSpec.SetRounds(data, rounds));
-        if (!ScInventoryTransaction.ReplaceWithCost(Inventory, Slot, Expected, replacement, Ammo, cost)) {
-            GunSpec.SetRounds(Terrain.ExtractData(replacement), previous); Cancel(); return false;
-        }
-        Expected = replacement; Revision = ScInventoryTransaction.Revision(Inventory); return true;
+        var mutation = ScGunMutation.Prepare(Inventory, Slot, Holder, out ScGunResult why);
+        LastResult = mutation is null ? why : mutation.Commit(r => r.Rounds = Math.Clamp(rounds, 0, Capacity), Ammo, cost);
+        if (LastResult != ScGunResult.Success) { Cancel(); return false; }
+        Expected = mutation.Expected; Revision = ScInventoryTransaction.Revision(Inventory); return true;
     }
     public bool Discard() {
         if (Discarded || Inserted) return false;

@@ -498,20 +498,21 @@ public static class Cs2SelfTest {
         }
         for (int v = 0; v < GunSpec.All.Length; v++) {
             foreach (int r in new[] { 1, 7, 29 }) foreach (bool sil in new[] { false, true }) {
-                int data = GunSpec.MakeData(v, Math.Min(r, GunSpec.All[v].Magazine), sil);
-                bool partial = Math.Min(r, GunSpec.All[v].Magazine) < GunSpec.All[v].Magazine || sil;
+                int rounds = Math.Min(r, GunSpec.All[v].Magazine);
+                int data = GunSpec.MakeData(v, rounds, sil);
+                bool partial = rounds < GunSpec.All[v].Magazine || sil;
                 if (partial != !GunSpec.IsFresh(data)) layout.Add($"record({v},{r},{sil}) fresh={GunSpec.IsFresh(data)}");
-                if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != Math.Min(r, GunSpec.All[v].Magazine) || GunSpec.GetSilencerOff(data) != sil || GunSpec.GetDurability(data) != ScGunDurability.Full(v))
+                if (GunSpec.GetVariant(data) != v || GunSpec.GetRounds(data) != rounds || GunSpec.GetSilencerOff(data) != sil || GunSpec.GetDurability(data) != ScGunDurability.Full(v))
                     layout.Add($"record({v},{r},{sil}) -> ({GunSpec.GetVariant(data)},{GunSpec.GetRounds(data)},{GunSpec.GetSilencerOff(data)},{GunSpec.GetDurability(data)})");
-                int changed = GunSpec.SetDurability(GunSpec.SetSilencerOff(GunSpec.SetRounds(data, 3), !sil), 42);
-                if (GunSpec.IsFresh(data) ? GunSpec.IsFresh(changed) : changed != data) layout.Add($"record({v},{r},{sil}) writes moved the id");
-                if (GunSpec.GetRounds(changed) != 3 || GunSpec.GetSilencerOff(changed) != !sil || GunSpec.GetDurability(changed) != 42 || GunSpec.GetVariant(changed) != v) layout.Add($"record({v},{r},{sil}) setters disturb other fields");
-                if (changed >> 16 != 0) layout.Add($"record({v},{r},{sil}) sets bit 16");
+                if (data >> 16 != 0) layout.Add($"record({v},{r},{sil}) sets bit 16");
+                if (!partial) continue;
+                int id = GunSpec.GetId(data);
+                if (GunSpec.WithId(v, id) != data || !ScGunRegistry.Current.TryGetSnapshot(id, out var s) || s.Id != id || s.Variant != v) layout.Add($"record({v},{r},{sil}) id {id} does not round-trip");
             }
             // Anything with bit 16 set (v3 flag or a v4 durability code) is foreign: untouched, no record, unusable.
             foreach (int r in new[] { 0, 5, 30, 150 }) foreach (bool sil in new[] { false, true }) {
                 int old = v | (r << 6) | (sil ? 1 << 14 : 0) | (1 << 16);
-                if (!GunSpec.IsForeign(old) || GunSpec.SetRounds(old, r) != old || GunSpec.GetId(old) != -1 || GunSpec.IsFresh(old)) layout.Add($"foreign({v},{r},{sil}) was decoded or written");
+                if (!GunSpec.IsForeign(old) || GunSpec.GetId(old) != -1 || GunSpec.IsFresh(old) || GunSpec.IsUsable(old)) layout.Add($"foreign({v},{r},{sil}) was decoded");
             }
         }
         foreach (int d in new[] { 65858, 116173, 115720 }) if (!GunSpec.IsForeign(d)) layout.Add($"old-format item {d} not recognised as foreign");
