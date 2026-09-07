@@ -42,6 +42,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public float SavedLookSensitivity = float.NaN;
         public float KickPitch, KickYaw;
         public bool FireLatch;
+        /// <summary>Right button held last frame (PC): the scope/mode key acts once per press, on the press edge.</summary>
+        public bool AimLatch;
         /// <summary>Burst mode selected, on the two guns CS2 gives one (Glock-18, FAMAS).</summary>
         public bool BurstMode;
         /// <summary>Shots still owed by the burst in progress, and when the next is due.</summary>
@@ -1044,10 +1046,23 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.FireAfterReload = true;
     }
 
+    /// <summary>One action per press: true on the frame the button goes down, never while it stays down.</summary>
+    public static bool PressEdge(ref bool latch, bool aiming) { bool edge = aiming && !latch; latch = aiming; return edge; }
+    /// <summary>PC right button while a gun is held (called from the UpdatePlayerInputAim hook every frame, whatever the item):
+    /// tracks the button and, on a press edge with a gun in hand, runs the secondary action at once. Vanilla's aim path
+    /// with its 1.4 s survival / 0.1 s creative cooldown and its release-time trigger is bypassed for guns (0.35.1).</summary>
+    public bool AimPressed(ComponentPlayer player, bool aiming, bool holdingGun) {
+        if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
+        bool edge = PressEdge(ref state.AimLatch, aiming);
+        return edge && holdingGun && RequestSecondary(player);
+    }
+
     public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state) {
         ComponentPlayer player = componentMiner.ComponentPlayer;
         if (player is null) return false;
         if (ScMobileControls.UsesTouchInput(player)) return false;
+        // Since 0.35.1 the PC press edge is handled in the UpdatePlayerInputAim hook and vanilla's aim never starts for a
+        // gun; this stays for any path that still reaches ComponentMiner.Aim.
         // Act on the release (one press, one action). InProgress and Cancelled must return
         // false: ComponentPlayer treats a true from InProgress as "aim refused" and cancels
         // the aim on the spot, so Completed never arrives (0.15.0/0.15.1 right-click bug).

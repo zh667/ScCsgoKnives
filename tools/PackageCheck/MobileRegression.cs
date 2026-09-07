@@ -75,7 +75,9 @@ static class MobileRegression {
             for (int i = 0; i < names.Length; i++) { BlocksManager.BlockTypeToIndex[mod.GetType("Game." + names[i])] = 700 + i; BlocksManager.BlockNameToIndex[names[i]] = 700 + i; }
             for (int kind = 0; kind < 3; kind++) {
                 int contents = 700 + kind;
-                Test("desktop-touchscreen-preserves-aim-route/" + names[kind], () => {
+                // Knives and grenades skip vanilla's aim and leave its state alone; a gun (0.35.1) skips it too and clears the
+                // aim it would otherwise hold, because the scope key now acts on the press edge inside this hook.
+                Test("desktop-touchscreen-aim-route/" + names[kind], () => {
                     var player = Blank<ComponentPlayer>(); player.ComponentInput = Blank<ComponentInput>(); player.ComponentMiner = Blank<ComponentMiner>();
                     var inventory = new ComponentCreativeInventory { OpenSlotsCount = 10 }; inventory.m_slots.Add(Terrain.MakeBlockValue(contents));
                     player.ComponentMiner.Inventory = inventory; player.ComponentInput.IsControlledByTouch = true;
@@ -85,7 +87,9 @@ static class MobileRegression {
                     var loader = Activator.CreateInstance(mod.GetType("Game.ScCsgoKnivesModLoader"));
                     object[] args = [player, false, false, 0f, false, false];
                     loader.GetType().GetMethod("UpdatePlayerInputAim").Invoke(loader, args);
-                    return (bool)args[5] == (contents != 701) && !(bool)args[2] && player.m_aim.HasValue && player.m_aimStartTime.HasValue && player.ComponentInput.PlayerInput.Dig.HasValue;
+                    bool gun = contents == 701;
+                    return (bool)args[5] && !(bool)args[2] && (gun ? !player.m_aim.HasValue && !player.m_aimStartTime.HasValue : player.m_aim.HasValue && player.m_aimStartTime.HasValue)
+                        && player.ComponentInput.PlayerInput.Dig.HasValue;
                 });
             }
             var mobile = mod.GetType("Game.ScMobileControls");

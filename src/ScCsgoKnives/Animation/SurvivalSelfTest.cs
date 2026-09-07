@@ -140,6 +140,13 @@ public static class SurvivalSelfTest {
             opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 5.5f) < .2f;
             return blockedBefore && openNow && sideBlocked && refilled;
         });
+        Test("scope-key-press-edge", () => {
+            bool latch = false;
+            bool first = SubsystemScGunBlockBehavior.PressEdge(ref latch, true), held = SubsystemScGunBlockBehavior.PressEdge(ref latch, true), released = SubsystemScGunBlockBehavior.PressEdge(ref latch, false);
+            bool again = SubsystemScGunBlockBehavior.PressEdge(ref latch, true), idle = SubsystemScGunBlockBehavior.PressEdge(ref latch, false);
+            bool drawnHeld = true; bool noActionOnDraw = !SubsystemScGunBlockBehavior.PressEdge(ref drawnHeld, true); // button already down when the gun comes up
+            return first && !held && !released && again && !idle && noActionOnDraw && !latch;
+        });
         Test("impact-sound-folders", () => new[] { "Stone", "Wood", "Plant", "Metal", "Soft", "Dirt", "Glass" }.All(m => SubsystemScGunBlockBehavior.ImpactFolder(m) == m)
             && SubsystemScGunBlockBehavior.ImpactFolder("Leaves") == "Plant" && SubsystemScGunBlockBehavior.ImpactFolder("Sand") == "Dirt" && SubsystemScGunBlockBehavior.ImpactFolder("Snow") == "Soft"
             && SubsystemScGunBlockBehavior.ImpactFolder("") is null && SubsystemScGunBlockBehavior.ImpactFolder(null) is null && SubsystemScGunBlockBehavior.ImpactFolder("Marble") == "Stone");

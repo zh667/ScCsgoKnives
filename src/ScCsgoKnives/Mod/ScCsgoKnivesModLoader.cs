@@ -114,6 +114,16 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
     public override void UpdatePlayerInputAim(ComponentPlayer player, bool aiming, ref bool operated, ref float interval, bool skipped, out bool skipVanilla) {
         skipVanilla = SubsystemScKnifeBlockBehavior.HoldingKnife(player) || SubsystemScGrenades.Holding(player);
+        bool holdingGun = Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (!ScMobileControls.UsesTouchInput(player)) {
+            // PC guns: the scope / burst / silencer key acts on the press edge, once per press, with no vanilla aim
+            // cooldown (1.4 s survival, 0.1 s creative) and no wait for the release. The button is tracked whatever
+            // the item, so a button already held when a gun is drawn does not fire the action on the draw.
+            SubsystemScGunBlockBehavior guns = null;
+            try { guns = player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false); } catch (NullReferenceException) { } // a bare test player has no entity
+            bool acted = guns is not null && guns.AimPressed(player, aiming, holdingGun && !skipped);
+            if (holdingGun) { skipVanilla = true; player.m_aim = null; player.m_aimStartTime = null; if (acted) operated = true; return; }
+        }
         if (ScMobileControls.UsesTouchInput(player)) {
             // Touch Hold emits Dig and Aim together. Only explicit buttons select
             // secondary actions; leave Dig available for the primary action.
