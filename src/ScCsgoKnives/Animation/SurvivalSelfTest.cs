@@ -300,9 +300,21 @@ public static class SurvivalSelfTest {
             bool usable = GunSpec.IsUsable(real) && ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, real)) && GunSpec.GetRounds(real) == 3;
             return refused && usable;
         });
-        Test("world-layout-status", () => ScGunRegistry.Classify(5, false, false) == ScGunRegistry.WorldStatus.Compatible && ScGunRegistry.Classify(0, true, true) == ScGunRegistry.WorldStatus.Compatible
-            && ScGunRegistry.Classify(0, false, true) == ScGunRegistry.WorldStatus.Legacy && ScGunRegistry.Classify(4, false, false) == ScGunRegistry.WorldStatus.Legacy
-            && ScGunRegistry.Classify(0, false, false) == ScGunRegistry.WorldStatus.New && ScGunRegistry.Classify(6, false, false) == ScGunRegistry.WorldStatus.Compatible);
+        Test("world-layout-status", () => {
+            var C = ScGunRegistry.WorldStatus.Compatible; var L = ScGunRegistry.WorldStatus.Legacy; var N = ScGunRegistry.WorldStatus.New;
+            bool stamped = ScGunRegistry.Classify(5, false, false) == C && ScGunRegistry.Classify(5, true, true) == C
+                && ScGunRegistry.Classify(4, false, false) == L && ScGunRegistry.Classify(4, true, true) == L      // a legacy world that has saved (registry present) stays legacy
+                && ScGunRegistry.Classify(6, true, false) == L && ScGunRegistry.Classify(3, false, false) == L;    // unknown stamps are never let through
+            bool inferred = ScGunRegistry.Classify(0, true, true) == C && ScGunRegistry.Classify(0, true, false) == C
+                && ScGunRegistry.Classify(0, false, true) == L && ScGunRegistry.Classify(0, false, false) == N;
+            // Legacy world round trip: load (inferred legacy) -> save (stamp 4 + registry) -> load (legacy) -> save (still 4).
+            bool legacy1 = ScGunRegistry.Classify(0, false, true) == L; int stamp1 = ScGunRegistry.StampFor(legacy1);
+            bool legacy2 = ScGunRegistry.Classify(stamp1, true, true) == L; int stamp2 = ScGunRegistry.StampFor(legacy2);
+            bool roundTrip = stamp1 == 4 && legacy2 && stamp2 == 4;
+            // New world round trip: new -> save (stamp 5) -> compatible.
+            bool fresh = ScGunRegistry.Classify(0, false, false) == N && ScGunRegistry.Classify(ScGunRegistry.StampFor(false), true, false) == C;
+            return stamped && inferred && roundTrip && fresh;
+        });
         Test("legacy-world-disables-guns", () => {
             var saved = ScGunRegistry.Current; var legacy = new ScGunRegistry { LegacyWorld = true }; ScGunRegistry.Current = legacy;
             try {

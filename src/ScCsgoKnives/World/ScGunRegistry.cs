@@ -16,10 +16,19 @@ public sealed class ScGunRegistry {
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
     public enum WorldStatus { New, Compatible, Legacy }
-    /// <summary>What a world's saved gun data is: stamped 5 or carrying a v5 registry = compatible; stamped 4 or carrying only
-    /// pre-v5 keys (ZeusRechargeAt, GunWear) = saved by 0.34 or earlier; nothing at all = a new world.</summary>
-    public static WorldStatus Classify(int stamp, bool hasRegistry, bool hasOldKeys) =>
-        stamp >= GunSpec.DataLayout || hasRegistry ? WorldStatus.Compatible : stamp == GunSpec.DataLayout - 1 || hasOldKeys ? WorldStatus.Legacy : WorldStatus.New;
+    /// <summary>What a world's saved gun data is. An explicit stamp decides first: exactly this layout = compatible, the
+    /// legacy stamp (4) = legacy for good (a legacy world saves a registry too, so the registry key must not outrank it), any
+    /// other stamp = written by a version this one does not know, treated as legacy rather than guessed. Only an unstamped
+    /// world is inferred from its keys: a v5 registry (0.35.0/0.35.1) = compatible, pre-v5 keys (ZeusRechargeAt, GunWear) =
+    /// saved by 0.34 or earlier, nothing at all = new.</summary>
+    public static WorldStatus Classify(int stamp, bool hasRegistry, bool hasOldKeys) {
+        if (stamp == GunSpec.DataLayout) return WorldStatus.Compatible;
+        if (stamp != 0) return WorldStatus.Legacy;
+        return hasRegistry ? WorldStatus.Compatible : hasOldKeys ? WorldStatus.Legacy : WorldStatus.New;
+    }
+    public const int LegacyStamp = GunSpec.DataLayout - 1;
+    /// <summary>The stamp a world is saved with: a legacy world keeps its legacy stamp on every save.</summary>
+    public static int StampFor(bool legacyWorld) => legacyWorld ? LegacyStamp : GunSpec.DataLayout;
     /// <summary>A world last saved by 0.34 or earlier: every gun item in it is left alone and unusable, new ones included,
     /// because its old-layout values cannot be told from v5 values by their bits.</summary>
     public bool LegacyWorld;

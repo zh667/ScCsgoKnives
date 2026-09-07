@@ -591,7 +591,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         valuesDictionary.SetValue(RechargeKey, saved);
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save());
-        valuesDictionary.SetValue(LayoutKey, m_registry?.LegacyWorld == true ? GunSpec.DataLayout - 1 : GunSpec.DataLayout); // a legacy world stays marked legacy
+        valuesDictionary.SetValue(LayoutKey, ScGunRegistry.StampFor(m_registry?.LegacyWorld == true)); // a legacy world stays marked legacy
     }
 
     public void Update(float dt) {
@@ -1098,6 +1098,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (spec.ZoomLevels.Length > 0) {
             if (busy) return true;
             gun.RescopeAt = -1;
+            // Scoping interrupts an inspect: the clip goes back to idle (the scoped pose follows from Zoom) and the
+            // inspect cues that have not played yet are dropped, so a zoomed AUG is not still turning in the hands.
+            if (KnifeAnimationController.CurrentClip(model) is string clip && clip.StartsWith("inspect", StringComparison.Ordinal)) {
+                KnifeAnimationController.CancelAction(player);
+                gun.Scheduled.RemoveAll(cue => cue.Name.Contains("inspect", StringComparison.Ordinal));
+            }
             SetZoom(player, gun, spec, gun.Zoom >= spec.ZoomLevels.Length ? 0 : gun.Zoom + 1);
             PlaySound(player, gun.Zoom > 0 ? $"{spec.Name}_zoom" : $"{spec.Name}_zoom_out");
         }
