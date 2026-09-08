@@ -5,6 +5,7 @@ obj/
 *.suo
 # peer-local working directories and Syncthing metadata (see CLAUDE.md)
 .tmp-*/
+/.tmp/
 .stfolder/
 .stignore
 *.lnk

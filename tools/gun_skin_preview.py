@@ -47,10 +47,10 @@ def load_obj(path: Path):
     return np.array(pos, float), np.array(uv, float) if uv else np.zeros((1, 2)), tri
 
 
-def gun_mesh(gun: str):
+def gun_mesh(gun: str, silencer=False):
     verts, uvs, tris = [], [], []
     for obj in sorted(MODELS.glob(f"{gun}_cs2_*.obj")):
-        if obj.stem.endswith("_silencer"):
+        if obj.stem.endswith("_silencer") and not silencer:
             continue  # the detachable silencer is drawn only when the record says it is on
         p, t, f = load_obj(obj)
         base_v, base_t = len(verts), len(uvs)
@@ -63,13 +63,15 @@ def gun_mesh(gun: str):
     return np.array(verts, float), np.array(uvs, float), tris
 
 
-def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.55, pitch: float = 0.25):
+def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.2, pitch: float = 0.1):
     lo, hi = verts.min(0), verts.max(0)
     centre, extent = (lo + hi) / 2, float((hi - lo).max())
     cy, sy = np.cos(yaw), np.sin(yaw)
     cp, sp = np.cos(pitch), np.sin(pitch)
     R = np.array([[cy, 0, -sy], [sp * sy, cp, sp * cy], [cp * sy, -sp, cp * cy]])
-    p = (verts - centre) @ R.T
+    # Runtime OBJ coordinates are Z-up, not Y-up. The old preview looked down
+    # the top edge and hid most of the painted side surfaces.
+    p = (verts - centre)[:, [0, 2, 1]] @ R.T
     scale = size * 0.86 / max(extent, 1e-6)
     xs = size / 2 + p[:, 0] * scale
     ys = size / 2 - p[:, 1] * scale
@@ -111,7 +113,7 @@ def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.55, 
             u = w0 * uvs[a[1], 0] + w1 * uvs[b[1], 0] + w2 * uvs[c[1], 0]
             v = w0 * uvs[a[1], 1] + w1 * uvs[b[1], 1] + w2 * uvs[c[1], 1]
             tx = np.clip((u % 1.0 * tw).astype(int), 0, tw - 1)
-            ty = np.clip(((1 - v % 1.0) * th).astype(int), 0, th - 1)
+            ty = np.clip((v % 1.0 * th).astype(int), 0, th - 1)
             col = texture[ty, tx]
         else:
             col = np.full(gx.shape + (3,), 0.5)
@@ -124,24 +126,47 @@ def main() -> int:
     ap.add_argument("--gun", nargs="*", default=None)
     ap.add_argument("--out", default=str(ROOT / "docs/gun-skins-preview.png"))
     ap.add_argument("--size", type=int, default=420)
+    ap.add_argument("--textures", type=Path, default=TEX)
+    ap.add_argument("--compare", type=Path, help="baseline texture directory; one before/after row per skin")
+    ap.add_argument("--silencer", action="store_true")
+    ap.add_argument("--reverse", action="store_true", help="inspect the opposite side")
     a = ap.parse_args()
     guns = CATALOG["guns"]
     rows = []
     for gun_key, gun in guns.items():
         if a.gun and gun_key not in a.gun:
             continue
-        verts, uvs, tris = gun_mesh(gun["variantAsset"])
+        verts, uvs, tris = gun_mesh(gun["variantAsset"], a.silencer)
+        if a.reverse:
+            verts = verts * [-1, -1, 1]
+        def shot(path):
+            texture = np.asarray(Image.open(path).convert("RGB"), float) / 255
+            im = render(verts, uvs, tris, texture, a.size)
+            return im.crop((0, int(a.size*.23), a.size, int(a.size*.77)))
         skins = [s for s in CATALOG["skins"] if s["gun"] == gun_key]
+        if a.compare:
+            for s in skins:
+                name = f"{gun['variantAsset']}_hd__{s['key']}.png"
+                before, after = a.compare/name, a.textures/name
+                if not after.exists():
+                    continue
+                old, new = shot(before), shot(after)
+                row = Image.new("RGB", (a.size*2, new.height+30), "white")
+                row.paste(old, (0,30))
+                row.paste(new, (a.size,30))
+                d = ImageDraw.Draw(row)
+                d.text((8,8), f"{gun_key} / {s['nameEn']} - BEFORE", fill="black")
+                d.text((a.size+8,8), "AFTER - offline texture check, not in-game PBR", fill="black")
+                rows.append(row)
+            continue
         cells = []
-        base = np.asarray(Image.open(TEX / f"{gun['variantAsset']}_hd.png").convert("RGB"), float) / 255.0
-        cells.append(("原厂 none", render(verts, uvs, tris, base, a.size)))
+        cells.append(("Original (unchanged)", shot(TEX / f"{gun['variantAsset']}_hd.png")))
         for s in skins:
-            p = TEX / f"{gun['variantAsset']}_hd__{s['key']}.png"
+            p = a.textures / f"{gun['variantAsset']}_hd__{s['key']}.png"
             if not p.exists():
                 continue
-            t = np.asarray(Image.open(p).convert("RGB"), float) / 255.0
-            cells.append((f"{s['name']} [{s['mode']}]", render(verts, uvs, tris, t, a.size)))
-        row = Image.new("RGB", (a.size * len(cells), a.size + 20), (255, 255, 255))
+            cells.append((f"{s['nameEn']} [{s['mode']}]", shot(p)))
+        row = Image.new("RGB", (a.size * len(cells), cells[0][1].height + 20), (255, 255, 255))
         d = ImageDraw.Draw(row)
         for i, (label, im) in enumerate(cells):
             row.paste(im, (i * a.size, 20))
