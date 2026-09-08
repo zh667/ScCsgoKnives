@@ -1,0 +1,45 @@
+{
+  "version": "0.39.1",
+  "previousVersion": "0.39.0",
+  "stage": "diagnostic instrumentation only",
+  "editions": {
+    "Full": {
+      "packageSha256": "ad4d9dc7d03b2cce2aa8acbad3f3b9d0741a150b3f7d0cb83bb1d04911facaeb",
+      "dllSha256": "07164827f2e4e4ae81a0c975174c3a1e84259d41526388661814086947b564dc",
+      "packageBytes": 244437454,
+      "entries": 766,
+      "failed": 0,
+      "passed": 6504,
+      "changedEntries": [
+        "ScCsgoKnives.dll",
+        "modinfo.json"
+      ]
+    },
+    "Lite": {
+      "packageSha256": "b647aaf5debac4c83cdf6904b5b3c026abd239bef2ddb34adcb51beb7c60d1bf",
+      "dllSha256": "07164827f2e4e4ae81a0c975174c3a1e84259d41526388661814086947b564dc",
+      "packageBytes": 121005156,
+      "entries": 766,
+      "failed": 0,
+      "passed": 6504,
+      "changedEntries": [
+        "ScCsgoKnives.dll",
+        "modinfo.json"
+      ]
+    }
+  },
+  "removedAssets": [],
+  "unchanged": "All packaged models, textures, audio, animations and other asset files",
+  "saveLayout": 5,
+  "registrySchema": 2,
+  "newCounterGrowthSchema": false,
+  "installedToGame": false,
+  "playerWorldsModified": false,
+  "notYetImplemented": [
+    "P1b attribute UI",
+    "P2 mobile layout editor",
+    "P3 StatTrak and schema migration",
+    "P4 growth"
+  ],
+  "deviceAcceptance": "No new live-world or Android acceptance; test new preset against classic before advancing the planned gate"
+}

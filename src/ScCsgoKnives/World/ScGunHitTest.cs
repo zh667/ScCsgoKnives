@@ -5,6 +5,9 @@ namespace Game;
 /// <summary>Broad candidates are not hits. A definite mesh miss remains a miss;
 /// unknown models retain a small, explicit body fallback and never become heads.</summary>
 public static class ScGunHitTest {
+    public sealed class Trace {
+        public int Visited, BroadCandidates, PreciseTests, PreciseMisses, FallbackCandidates;
+    }
     public readonly record struct Hit(ComponentBody Body,float Distance,ScHitPart Part,string Reason);
     sealed class Cache {
         public int Frame=-1; public Matrix Body; public object Model;
@@ -79,19 +82,27 @@ public static class ScGunHitTest {
         return cache.Parts;
     }
     public static Hit? Raycast(IEnumerable<ComponentBody> bodies,ComponentBody shooter,Vector3 origin,Vector3 direction,float maximum) {
+        return RaycastObserved(bodies,shooter,origin,direction,maximum,null);
+    }
+    public static Hit? RaycastObserved(IEnumerable<ComponentBody> bodies,ComponentBody shooter,Vector3 origin,Vector3 direction,float maximum,Trace trace) {
         Hit? best=null;
         foreach(var body in bodies) {
             if(body==shooter || (shooter is not null && body.Entity is not null && body.Entity==shooter.Entity) || body.Entity?.FindComponent<ComponentHealth>()?.Health<=0) continue;
+            if(trace is not null) trace.Visited++;
             float limit=best?.Distance ?? maximum;
             var box=body.BoundingBox;float pad=Tolerance(box);
             // Broad selection permits animated heads/limbs outside the physics box.
             var broad=new BoundingBox(box.Min-new Vector3(.6f),box.Max+new Vector3(.6f));
             if(BoxDistance(broad,origin,direction,limit) is null) continue;
+            if(trace is not null) trace.BroadCandidates++;
             var parts=Pose(body);
             if(parts is not null) {
+                if(trace is not null) trace.PreciseTests++;
                 var hit=Precise(parts,origin,direction,limit,pad);
+                if(trace is not null && hit.Part==ScHitPart.Unknown) trace.PreciseMisses++;
                 if(hit.Part!=ScHitPart.Unknown && hit.Distance<=limit && (best is null || hit.Distance<best.Value.Distance)) best=new(body,hit.Distance,hit.Part,"logical mesh pose");
             } else {
+                if(trace is not null) trace.FallbackCandidates++;
                 float? d=BoxDistance(new BoundingBox(box.Min-new Vector3(pad),box.Max+new Vector3(pad)),origin,direction,limit);
                 if(d is float distance && distance<=limit && (best is null || distance<best.Value.Distance)) best=new(body,distance,ScHitPart.Body,"unavailable model; narrow body fallback");
             }

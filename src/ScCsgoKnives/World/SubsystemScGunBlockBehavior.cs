@@ -478,6 +478,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public override void Dispose() {
+        m_diagnostics?.Flush("world_dispose");
         CsmcFirstPersonRenderer.ClearFirstPersonEffects();
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
@@ -592,6 +593,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_players = Project.FindSubsystem<SubsystemPlayers>(true);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         ScGunplaySettings.Load();
+        m_diagnostics = new ScGunDiagnostics(ScGunplaySettings.Diagnostics);
         m_saveReady = true;
     }
 
@@ -607,6 +609,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public void Update(float dt) {
         KnifeQa.Step();
+        m_diagnostics?.Tick(m_time.GameTime);
         if (m_registry is not null && !m_registry.Disabled && m_time.GameTime >= m_recoveryAt) {
             m_recoveryAt = m_time.GameTime + 1;
             m_registry.Recovery.Retry(owner => ScGunHolders.ResolveRecoveryOwner(Project, owner));
@@ -829,6 +832,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     readonly Dictionary<int,ScGunBloom> m_blooms = [];
+    ScGunDiagnostics m_diagnostics;
 
     void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input,
               bool inBurst = false, bool alternateFire = false, double? cycleFrom = null) {
@@ -886,17 +890,32 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool handlingAlternate = ScGunHandling.Alternate(spec,scopedShot,silenced,state.BurstMode,alternateFire);
         var effective = EffectiveGunStats.Resolve(spec,value,handlingAlternate);
         ScGunBloom bloom = null;
+        ScGunStance.ConeParts? coneParts = null;
+        float bloomBefore = 0;
+        var shotBody = player.ComponentBody;
+        float speedXZ = new Vector2(shotBody.Velocity.X,shotBody.Velocity.Z).Length();
+        bool fluidOrLadder = shotBody.ImmersionFactor > .1f || player.ComponentLocomotion.LadderValue.HasValue;
         if (ScGunplaySettings.Enabled) {
             int instance = GunSpec.GetId(data);
             if (!m_blooms.TryGetValue(instance,out bloom)) m_blooms[instance] = bloom = new();
-            var bodyState = player.ComponentBody;
-            bool inFluidOrLadder = bodyState.ImmersionFactor > .1f || player.ComponentLocomotion.LadderValue.HasValue;
             var targetMode = ScGunHandling.ForMode(spec.Name,spec.ZoomLevels.Length>0 || handlingAlternate);
-            float cone = state.Stance.Cone(targetMode,ScGunHandling.ForMode(spec.Name,false),spec.ZoomLevels.Length>0,
-                new Vector2(bodyState.Velocity.X,bodyState.Velocity.Z).Length(),bodyState.CrouchFactor,inFluidOrLadder,bloom.At(now));
+            bloomBefore = bloom.At(now);
+            coneParts = state.Stance.ExplainCone(targetMode,ScGunHandling.ForMode(spec.Name,false),spec.ZoomLevels.Length>0,
+                speedXZ,shotBody.CrouchFactor,fluidOrLadder,bloomBefore);
+            float cone = coneParts.Value.Total;
             shot = shot with { Spread = cone, Alternate = handlingAlternate };
             bloom.Fired(effective.Handling,now); // after capturing this shot, once per trigger, not per pellet
         }
+        var diagnostic = m_diagnostics?.Active == true ? m_diagnostics.Begin(new ScGunDiagnostics.Context {
+            Gun=spec.Name, Preset=ScGunplaySettings.Enabled?"survival":"classic", Player=player.PlayerData.PlayerIndex,
+            Instance=GunSpec.GetId(data), Frame=Time.FrameIndex, Time=now, Pellets=Math.Max(1,spec.Pellets),
+            AmmoBefore=roundsBefore, AmmoAfter=rounds, DurabilityAfter=GunSpec.GetDurability(data), GunNumbers=(int)KnifeTuning.GunNumbers,
+            Touch=ScMobileControls.UsesTouchInput(player), Creative=creative, Scoped=scopedShot, Silenced=silenced,
+            Burst=state.BurstMode&&spec.HasBurstMode, Alternate=shot.Alternate, Airborne=state.Stance.Airborne, FluidOrLadder=fluidOrLadder,
+            SpeedXZ=speedXZ, Crouch=shotBody.CrouchFactor, AimBlend=state.Stance.AimBlend, LandingFactor=state.Stance.LandingFactor,
+            Cone=shot.Spread, Range=effective.Range, NearPower=effective.Power, BloomBefore=bloomBefore, BloomAfter=bloom?.Value ?? 0,
+            Components=coneParts, FrameMs=Time.FrameDuration*1000
+        }) : null;
         if (scopedShot && spec.UnzoomsAfterShot) {
             // CS2's m_bUnzoomsAfterShot (AWP, SSG 08): a scoped shot drops the scope for
             // the bolt cycle and re-zooms to the same level afterwards. The auto-snipers
@@ -931,6 +950,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         float pitch = MathUtils.DegToRad(kickPitch) * (ScGunplaySettings.Enabled ? .9f + .2f*m_random.Float(0,1) : .8f+.4f*m_random.Float(0,1));
         float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
+        if (diagnostic is not null) { diagnostic.State.KickPitchDegrees=MathUtils.RadToDeg(pitch);diagnostic.State.KickYawDegrees=MathUtils.RadToDeg(yaw); }
         Ray3 ray = shot.Ray;
         Kick(player, state, pitch, yaw);
 
@@ -953,9 +973,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
             Vector3 end = start + direction * effective.Range;
+            long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
             TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
             ScGunHitTest.Hit? gunHit;
-            if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.Raycast(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):effective.Range);
+            if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):effective.Range,diagnostic?.Trace);
             else {
                 var body=m_bodies.Raycast(start,end,.35f,(b,d)=>b!=player.ComponentBody && b.Entity!=player.Entity);
                 gunHit=null;
@@ -969,6 +990,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             float travel = effective.Range;
             if (gunHit.HasValue) travel = MathUtils.Min(travel, gunHit.Value.Distance);
             if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
+            if (diagnostic is not null) {
+                int outcome = gunHit.HasValue ? (gunHit.Value.Part==ScHitPart.Head?0:1) : terrain.HasValue?2:3;
+                bool fallback = gunHit.HasValue && (gunHit.Value.Reason?.Contains("fallback")==true || gunHit.Value.Part==ScHitPart.Unknown);
+                double power = gunHit.HasValue ? effective.PelletPower(spec,gunHit.Value.Distance)*(gunHit.Value.Part==ScHitPart.Head?effective.HeadMultiplier:1) : 0;
+                diagnostic.Pellet(ray.Direction,direction,outcome,travel,fallback,gunHit?.Reason=="logical mesh pose",ScGunDiagnostics.ElapsedMs(traceStarted),power);
+            }
             // The tracer leaves the muzzle the player can see, not the hit-detection ray's
             // origin at the eye. The weapon is drawn in CS2's viewmodel projection, so the
             // renderer solves for a world point that lands on the drawn muzzle under the
@@ -1007,8 +1034,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (material is not null) m_audio.PlayRandomSound("Audio/Impacts/" + material, 0.7f, m_random.Float(-0.2f, 0.2f), hitPoint, 6f, true);
             }
         }
-        foreach (var hit in hits)
+        foreach (var hit in hits) {
+            var observedHealth = diagnostic is not null ? hit.Key.Entity.FindComponent<ComponentHealth>() : null;
+            float healthBefore = observedHealth?.Health ?? float.NaN;
             ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0, headshot: hit.Value.Head);
+            diagnostic?.Health(healthBefore,observedHealth?.Health ?? float.NaN);
+        }
+        m_diagnostics?.Complete(diagnostic);
     }
 
     /// <summary>Vanilla ships impact folders Body/Dirt/Glass/Metal/Plant/Soft/Stone/Wood only; its block materials also name

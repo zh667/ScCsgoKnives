@@ -120,12 +120,16 @@ public sealed class ScGunStance {
         m_last=now;
     }
     public float Cone(ScGunHandling.Mode mode,ScGunHandling.Mode hip, bool hasScope,float horizontalSpeed,float crouch,bool waterOrLadder,float bloom) {
+        return ExplainCone(mode,hip,hasScope,horizontalSpeed,crouch,waterOrLadder,bloom).Total;
+    }
+    public readonly record struct ConeParts(float Base,float Move,float Air,float Bloom) { public float Total=>Base+Move+Air+Bloom; }
+    public ConeParts ExplainCone(ScGunHandling.Mode mode,ScGunHandling.Mode hip, bool hasScope,float horizontalSpeed,float crouch,bool waterOrLadder,float bloom) {
         float b=MathUtils.Lerp(mode.BaseCone,mode.CrouchingCone,Math.Clamp(crouch,0,1));
         float movement=mode.MovingExtra,air=mode.JumpExtra;
         if(hasScope) {
             float h=MathUtils.Lerp(hip.BaseCone,hip.CrouchingCone,Math.Clamp(crouch,0,1));
             b=MathUtils.Lerp(h,b,AimBlend);movement=MathUtils.Lerp(hip.MovingExtra,movement,AimBlend);air=MathUtils.Lerp(hip.JumpExtra,air,AimBlend);
         }
-        return b+movement*(waterOrLadder?1:ScGunHandling.MoveFactor(horizontalSpeed))+(waterOrLadder?0:air*(Airborne?1:LandingFactor))+bloom;
+        return new(b,movement*(waterOrLadder?1:ScGunHandling.MoveFactor(horizontalSpeed)),waterOrLadder?0:air*(Airborne?1:LandingFactor),bloom);
     }
 }
