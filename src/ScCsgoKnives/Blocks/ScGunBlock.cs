@@ -122,6 +122,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
                 }
                 ScGunNativeMesh.DrawWorld(primitivesRenderer, nativeModel, part.Texture ?? texture, color, size, ref matrix, environmentData);
             }
+            ScStatTrakRenderer.DrawItem(value, s_names[variant], true, primitivesRenderer, color, size, ref matrix, environmentData);
             return;
         }
         BlockMesh model;
@@ -131,6 +132,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
             return;
         }
         BlocksManager.DrawMeshBlock(primitivesRenderer, model, texture, color, size, ref matrix, environmentData);
+        ScStatTrakRenderer.DrawItem(value, s_names[variant], false, primitivesRenderer, color, size, ref matrix, environmentData);
     }
 
     public override int GetTextureSlotCount(int value) => 1;

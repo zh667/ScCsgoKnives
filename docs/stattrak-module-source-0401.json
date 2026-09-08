@@ -1,0 +1,26 @@
+{
+  "Source": "weapons/models/shared/stattrak/stattrak_module.vmdl_c",
+  "Units": "Source inches, glTF ZXY axes",
+  "Inputs": {
+    "stattrak_module.glb": "91c48bf9f5a316cf20c685fcebb57706f8e2032070145b717c68bf84d0416b7c",
+    "stattrak_module_color.png": "4774e60eb8f51d5fa083262208ec387bbc47b70ae27d7a6851b2c829c844e1dc",
+    "stattrak_digit_atlas.png": "84660504b6912d8ccfe6cf79d1b617ecc7381faf67534ef2b9eb97e69e970613",
+    "stattrak_module_ao.png": "f8f686f046666caed68ebf53ef6e5dc4d122800b8819372f7625e545cb13eadd",
+    "stattrak_module_rough.png": "34f2a4932fd2c16897b063582ac1cdebe3f53795a327d31c855bb192663ef065",
+    "stattrak_module_9f02384d_metal.png": "c2f0650ecf6e9bdd445d595e14f5a5d50a0bbb1ae8fc306b426aeb07dd8791da"
+  },
+  "Parts": [
+    {
+      "Name": "stattrak_module",
+      "Vertices": 252,
+      "Triangles": 330
+    },
+    {
+      "Name": "stattrak_module_display",
+      "Vertices": 60,
+      "Triangles": 48
+    }
+  ],
+  "Display": "6 encoded UV slots; atlas 16 columns; row 0 lit digit n is column n+1",
+  "Limitation": "Original maps retained; Source 2 material brightness/contrast and HDR self-illumination are not its exact shader."
+}

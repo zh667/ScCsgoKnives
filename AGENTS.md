@@ -6,10 +6,10 @@
   (attribute page, mobile mod settings and touch layout, kill-feed and gun-crosshair switches, gun-only StatTrak counter,
   ten-level growth at 100 kills a level to 1000, and the Zeus rebuild). Record schema is 3, with the schema 1 and 2
   converters kept; the item layout stamp is still 5 and gun variant order is still frozen. A world saved by 0.40.0 is
-  refused by 0.39.1 and earlier, which is the required forward protection, not damage. The CS2 StatTrak module mesh and
-  digit atlas are not on this machine, so the counter is not drawn on the weapon; see
+  refused by 0.39.1 and earlier, which is the required forward protection, not damage. Windows review 0.40.1 imports the
+  official CS2 StatTrak module mesh/digit atlas and adds actual first-person/third-person/item rendering; see
   `docs/gun-stattrak-attachments-2026-09-09.md` for the exact missing paths and
-  `docs/gun-counter-growth-0400.md` for what is implemented and what still needs device acceptance. Historical five-level
+  `docs/gun-counter-review-0401.md` for review fixes and remaining device acceptance. Historical five-level
   XP, 100-kill or 1600-kill caps, +10% damage, +100% durability and the Zeus 54/81 or 3-second charge are obsolete.
 
 - Execution override, user-directed at 2026-09-08 00:22:15 +08:00 (Asia/Shanghai): only M4 gun durability is ACTIVE. M0 general work, M1, M1b, M2/F07, M3, M5, standalone scope/inspect work and their separate device acceptance are BLOCKED until the user explicitly resumes them. Keep existing features. M4-required identity/transaction/save validation, charge state, box integration and narrow fixes for regressions caused by M4 are in scope. Follow `docs/vps-m4-durability-plan-2026-09-08.md`. Later user authorization on 2026-09-08 adds migration from the only published source version 0.28.2: back up the whole world, preserve model/ammo/silencer and give full durability once. Do not guess internal 0.29–0.36 test formats or reclaim IDs. See `docs/official-0282-compatibility-0370.md`. Do not resume other milestones automatically after M4.

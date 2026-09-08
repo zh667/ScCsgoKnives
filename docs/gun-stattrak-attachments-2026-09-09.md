@@ -2,6 +2,11 @@
 
 日期：2026-09-09。对应实现版本 0.40.0。
 
+> 0.40.1 Windows 审查更新：下文“缺失”描述的是 VPS 的 0.40.0 环境，不是现在的交付状态。
+> 本机已从 CS2 VPK 导出模块与数字图集，并新增真正的第一人称、第三人称、掉落物绘制；
+> 不是仅将 `ModuleAvailable` 改为真。详见 [审查记录](gun-counter-review-0401.md) 和
+> [来源哈希](stattrak-module-source-0401.json)。
+
 ## 1. 已从 CS2 取到并已进入模组的部分
 
 `tools/extract_stattrak_attachments.py` 读取本机 35 份 CS2 枪械模型导出
@@ -13,7 +18,7 @@
 | `stattrak` | **35 / 35** | 高清枪体上的计数器安装位 |
 | `stattrak_legacy` | **34 / 35**（电击枪没有旧版枪体，CS2 本身就没有这一项） | 旧版枪体上的安装位 |
 
-每条包含骨骼名（全部为 `weapon_offset`）、四元数旋转和以英寸为单位的偏移。
+每条包含骨骼名（通常为 `weapon_offset`，双枪为 `weapon_r`）、四元数旋转和以英寸为单位的偏移。
 同一把枪的多个渲染网格上重复出现的附件逐字段比对一致，出现分歧会被标为 `ambiguous` 而不是取其一——本轮 0 条分歧。
 
 产物：
@@ -41,7 +46,7 @@
 
 刀具专用的 `stattrak_module_knife.vmdl_c`、`stattrak_digit_atlas_knife_*` 本期**不需要**：首期计数器只做枪械。
 
-导出后无需改代码即可让 `ScGunStatTrak.ModuleAvailable` 变为真；在此之前它每次世界加载记录一条警告，
+0.40.0 的导出只会让 `ScGunStatTrak.ModuleAvailable` 变为真，并不会自动产生绘制调用；0.40.1 已补齐该调用链。在资源缺失时记录警告，
 说明缺哪几个文件，计数改在属性页与物品说明中显示。
 
 ## 3. 本版对缺失的处理

@@ -10,9 +10,12 @@ namespace Game;
 /// what makes a save between the kill and the write neither lose the kill nor count it twice: an entry exists
 /// exactly once, under its own event id, until the record has taken it.</summary>
 public sealed class ScGunKillQueue {
-    public sealed record Entry(long EventId, int RecordId, int Variant);
-    /// <summary>Beyond this many undeliverable credits the oldest are dropped with an error rather than growing
-    /// the save without bound. Normal play never reaches it: a credit is written on the next update.</summary>
+    public sealed class Entry(long eventId, int recordId, int variant) {
+        public long EventId { get; internal set; } = eventId;
+        public int RecordId { get; } = recordId;
+        public int Variant { get; } = variant;
+    }
+    /// <summary>Diagnostic threshold, not an eviction limit. Confirmed kills are saved until delivered.</summary>
     public const int MaxPending = 1024;
     readonly List<Entry> m_pending = [];
     long m_next = 1;
@@ -25,10 +28,13 @@ public sealed class ScGunKillQueue {
     public long Enqueue(int recordId, int variant) {
         if (recordId < GunSpec.FirstId || recordId > GunSpec.LastId) return -1;
         if (variant < 0 || variant >= GunSpec.All.Length) return -1;
-        if (m_pending.Count >= MaxPending) {
-            var dropped = m_pending[0];
-            m_pending.RemoveAt(0);
-            KnifeLog.Error($"gun kill credit {dropped.EventId} for record {dropped.RecordId} dropped: {MaxPending} credits are already waiting for a reachable gun");
+        if (m_pending.Count == MaxPending)
+            KnifeLog.Warning($"gun kill queue has {MaxPending} waiting credits; all are retained until their guns are reachable");
+        // Event ids are internal queue keys. Rebase only at exhaustion, retaining every credential.
+        if (m_next == long.MaxValue) {
+            // Keep entry identity stable if an update is already walking Pending.ToArray().
+            for (int i = 0; i < m_pending.Count; i++) m_pending[i].EventId = i + 1L;
+            m_next = m_pending.Count + 1L;
         }
         var entry = new Entry(m_next++, recordId, variant);
         m_pending.Add(entry);

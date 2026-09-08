@@ -24,11 +24,12 @@ static string Sha256(string path) {
     return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
 }
 
-string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null, weaponStats = null;
+string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null, weaponStats = null, stattrakOut = null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--resource-audit": resourceAudit = args[++i]; break;
         case "--weapon-stats": weaponStats = args[++i]; break;
+        case "--stattrak-out": stattrakOut = args[++i]; break;
         case "--scmod": scmod = args[++i]; break;
         case "--sha256": expected = args[++i]; break;
         case "--json": jsonOut = args[++i]; break;
@@ -171,6 +172,8 @@ if (jsonOut is not null) File.WriteAllText(jsonOut, output);
 if (framesOut is not null && failed==0) FrameExport.Write(mod,framesOut);
 if (polishOut is not null && failed==0) PolishExport.Write(mod,polishOut);
 if (thirdPersonOut is not null && vanillaContent is not null) ThirdPersonExport.Write(mod,vanillaContent,thirdPersonOut);
+if (stattrakOut is not null) File.WriteAllText(stattrakOut,
+    (string)mod.GetType("Game.ScStatTrakRenderer").GetMethod("PreviewJson").Invoke(null,null));
 return failed == 0 ? 0 : 1;
 
 /// <summary>Loads the mod from the package; everything else falls through to the host.</summary>

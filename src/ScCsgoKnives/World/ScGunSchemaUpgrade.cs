@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Linq;
+using System.Security.Cryptography;
 using Engine;
 namespace Game;
 
@@ -34,8 +35,9 @@ public static class ScGunSchemaUpgrade {
     /// <summary>Whether loading this world would convert it to a schema older builds cannot read.</summary>
     public static bool NeedsBackup(XElement project) {
         int schema = SavedSchema(project);
-        return schema != 0 && schema != ScGunRegistry.Schema && ScGunRegistry.IsKnownSchema(schema)
-            && Group(Subsystem(project), Marker) is null;
+        // A marker from a prior conversion does not prove this older on-disk schema was
+        // backed up. Restored/unsaved old data always gets its own verified source snapshot.
+        return schema != 0 && schema != ScGunRegistry.Schema && ScGunRegistry.IsKnownSchema(schema);
     }
 
     public static string FileName(int from, int to) =>
@@ -44,7 +46,7 @@ public static class ScGunSchemaUpgrade {
     /// <summary>Writes the world to a snapshot under a temporary name, reopens it, checks every file arrived and
     /// that Project.xml is readable, and only then gives it its final name. Existing snapshots are excluded so a
     /// backup can never contain a backup, and no existing snapshot is overwritten.</summary>
-    public static string Snapshot(string directory, string name) {
+    public static string Snapshot(string directory, string name, int expectedSchema = 0) {
         string path = WorldsManager.MakeSnapshotFilename(directory, name);
         string pending = WorldsManager.MakeSnapshotFilename(directory, name + ".incomplete");
         var files = new List<(string Path, string Relative)>();
@@ -69,9 +71,17 @@ public static class ScGunSchemaUpgrade {
         using (var input = Storage.OpenFile(pending, OpenFileMode.Read))
         using (var archive = new System.IO.Compression.ZipArchive(input, System.IO.Compression.ZipArchiveMode.Read)) {
             if (archive.Entries.Count != files.Count) throw new InvalidOperationException("备份文件数量不符");
-            var entry = archive.GetEntry("Project.xml") ?? throw new InvalidOperationException("备份缺少 Project.xml");
-            using var stream = entry.Open();
-            XElement.Load(stream); // a backup that cannot be reopened and parsed is not a backup
+            foreach (var file in files) {
+                var saved = archive.GetEntry(file.Relative) ?? throw new InvalidOperationException("备份缺少 " + file.Relative);
+                using var original = Storage.OpenFile(file.Path, OpenFileMode.Read);
+                using var copy = saved.Open();
+                if (!SHA256.HashData(original).AsSpan().SequenceEqual(SHA256.HashData(copy)))
+                    throw new InvalidOperationException("备份校验失败或源文件发生变化：" + file.Relative);
+            }
+            using var stream = archive.GetEntry("Project.xml").Open();
+            var project = XElement.Load(stream);
+            if (expectedSchema != 0 && SavedSchema(project) != expectedSchema)
+                throw new InvalidOperationException("备份中的枪械 schema 与待迁移来源不一致");
         }
         Storage.MoveFile(pending, path);
         return path;
@@ -93,7 +103,7 @@ public static class ScGunSchemaUpgrade {
     public static string BeforeLoad(XElement project, WorldInfo world) {
         if (world is null || !NeedsBackup(project)) return null;
         int from = SavedSchema(project);
-        string backup = Snapshot(world.DirectoryName, FileName(from, ScGunRegistry.Schema));
+        string backup = Snapshot(world.DirectoryName, FileName(from, ScGunRegistry.Schema), from);
         if (string.IsNullOrWhiteSpace(backup)) throw new InvalidOperationException("世界备份没有成功完成，记录格式升级取消");
         Mark(project, from, backup);
         KnifeLog.Information($"gun record schema {from} -> {ScGunRegistry.Schema}: world backed up to {backup} before the first save in the new format");

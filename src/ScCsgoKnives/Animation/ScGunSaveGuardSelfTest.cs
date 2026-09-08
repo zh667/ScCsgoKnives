@@ -162,7 +162,8 @@ public static class ScGunSaveGuardSelfTest {
             if (!ScGunSchemaUpgrade.NeedsBackup(older) || ScGunSchemaUpgrade.NeedsBackup(current) || ScGunSchemaUpgrade.NeedsBackup(brandNew)) return false;
             // Once marked it never asks again, and the marker records where the backup went.
             ScGunSchemaUpgrade.Mark(older, ScGunRegistry.SchemaWithoutGrowth, "world/Backup.snapshot");
-            if (ScGunSchemaUpgrade.NeedsBackup(older)) return false;
+            // A marker cannot suppress backing up actual older on-disk data (restore/retry).
+            if (!ScGunSchemaUpgrade.NeedsBackup(older)) return false;
             var values = new ValuesDictionary(); values.ApplyOverrides(new XElement(older.Descendants("Values").First(e => (string)e.Attribute("Name") == "ScGunBlockBehavior")));
             var marker = values.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.Marker, null);
             if (marker is null || marker.GetValue<int>("From", 0) != ScGunRegistry.SchemaWithoutGrowth

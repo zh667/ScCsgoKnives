@@ -177,13 +177,27 @@ public static class ScUiSettings {
                 file.Buttons[id] = Layout(s_right, id, false);
                 file.ButtonsLeftHanded[id] = Layout(s_left, id, true);
             }
-            using var stream = Storage.OpenFile(Path, OpenFileMode.Create);
-            JsonSerializer.Serialize(stream, file, s_json);
+            WriteAtomic(Storage.GetSystemPath(Path), JsonSerializer.SerializeToUtf8Bytes(file, s_json));
             return true;
         }
         catch (Exception e) {
             KnifeLog.Warning("Could not save the CS gun interface settings; the previous file is unchanged: " + e.Message);
             return false;
         }
+    }
+    /// <summary>Same-directory rename after a flushed, verified temporary write. Storage.MoveFile
+    /// deletes its destination first, so it must not be used for this replacement.</summary>
+    internal static void WriteAtomic(string path, byte[] bytes, Action beforeReplace = null) {
+        string pending = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try {
+            using (var stream = new FileStream(pending, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
+                stream.Write(bytes); stream.Flush(true);
+            }
+            if (!System.IO.File.ReadAllBytes(pending).AsSpan().SequenceEqual(bytes))
+                throw new IOException("Settings temporary file verification failed");
+            beforeReplace?.Invoke();
+            System.IO.File.Move(pending, path, overwrite: true);
+        }
+        finally { if (System.IO.File.Exists(pending)) System.IO.File.Delete(pending); }
     }
 }

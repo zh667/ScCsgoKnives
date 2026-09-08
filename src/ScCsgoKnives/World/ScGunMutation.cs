@@ -27,6 +27,8 @@ public sealed class ScGunMutation {
     public string Detail { get; private set; } = "";
     // Per-transaction fault seam for rollback tests, never set by gameplay.
     internal Action AfterRecordWrite;
+    // Consumed only after every fallible inventory step, while the save guard is held.
+    internal ScGunKillQueue.Entry KillToComplete;
 
     ScGunMutation(ScGunRegistry registry, IInventory inventory, int slot, int expected, ScGunSnapshot before, bool fresh, string holder, string owner) {
         m_registry = registry; m_owner = owner;
@@ -93,6 +95,8 @@ public sealed class ScGunMutation {
                 NeedsClone = HolderLocator is not null && HolderLocator(Id, Holder).Any(); // runtime locator always scans afresh
             }
             bool creative = Inventory is ComponentCreativeInventory;
+            if (KillToComplete is { } credit && (Fresh || NeedsClone || credit.RecordId != Id || credit.Variant != Variant
+                || !m_registry.Kills.Pending.Contains(credit))) return Fail(ScGunResult.StateChanged, "kill credential no longer matches this sole gun instance");
             if (cost < 0 || (creative && cost != 0) || change is null) return Fail(ScGunResult.Invalid, "invalid operation cost");
             var costs = new Dictionary<int, int>();
             if (cost > 0) costs[ammo] = cost;
@@ -149,6 +153,7 @@ public sealed class ScGunMutation {
             Expected = replacement;
             AfterRecordWrite?.Invoke();
             ScInventoryTransaction.Changed(Inventory);
+            if (KillToComplete is not null) m_registry.Kills.Complete(KillToComplete.EventId);
             return ScGunResult.Success;
         }
         catch (Exception e) {

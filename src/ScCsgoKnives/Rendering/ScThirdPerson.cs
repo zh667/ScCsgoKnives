@@ -310,6 +310,8 @@ public static class ScThirdPerson {
             if (state.Legacy) ScGunNativeMesh.DrawWorld(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
             else BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
         }
+        ScStatTrakRenderer.DrawThirdPerson(held, state.Asset, state.Legacy, view, human.m_subsystemModelsRenderer.PrimitivesRenderer,
+            LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
         return true;
     }
 

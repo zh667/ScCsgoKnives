@@ -59,6 +59,129 @@ public static class ScGunGrowthSelfTest {
     }
 
     static void Checks(Action<string, Func<bool>> Test) {
+        Test("attribute-growth-text-distinguishes-count-only-and-pending", () => {
+            var registry = Fresh(); var (inventory,id) = Gun(registry,"ak47",level:9,kills:1000);
+            Apply(registry,id,r => r.PendingGrowthLevel=10);
+            string pending = ScGunAttributes.GrowthText(inventory.GetSlotValue(0),ScGunGrowthMode.CountAndGrow);
+            string countOnly = ScGunAttributes.GrowthText(inventory.GetSlotValue(0),ScGunGrowthMode.CountOnly);
+            return pending.Contains("已解锁 Lv10") && pending.Contains("已应用 Lv9") && !pending.Contains("已满级")
+                && countOnly.Contains("仅计数") && !countOnly.Contains("满级") && !countOnly.Contains("距 Lv");
+        });
+        Test("terrain-ray-segmentation-blocks-wall-beyond-engine-1000-cap", () => {
+            int calls=0; bool bounded=true;
+            var hit = ScGunRange.TraceTerrain((a,b) => {
+                calls++; bounded &= (b-a).Length() <= 512;
+                return a.X <= 1500 && b.X >= 1500 ? new TerrainRaycastResult { Distance=1500-a.X,Value=42 } : null;
+            },new Vector3(0,100,1),Vector3.UnitX,4800);
+            return calls==3 && bounded && hit is {} wall && wall.Distance==1500 && wall.Value==42
+                && wall.Ray.Position==new Vector3(0,100,1) && wall.HitPoint().X==1500;
+        });
+        Test("loaded-range-beyond-512-and-128-columns", () => {
+            float end = ScGunRange.TraceLoaded((x,z) => x >= 0 && x < 300 && z == 0, 300,
+                new Vector3(1, 100, 1), Vector3.UnitX, ScGunGrowth.LoadedWorldRange);
+            return Math.Abs(end - 4799) < .01f;
+        });
+        Test("loaded-range-stops-at-first-hole", () =>
+            ScGunRange.TraceLoaded((x,z) => x >= 0 && x < 300 && x != 10 && z == 0, 299,
+                new Vector3(1, 100, 1), Vector3.UnitX, ScGunGrowth.LoadedWorldRange) == 159);
+        Test("loaded-range-corner-enters-diagonal", () => {
+            float end = ScGunRange.TraceLoaded((x,z) => x == z && x >= 0 && x < 4, 4,
+                new Vector3(8, 100, 8), new Vector3(1,0,1), ScGunGrowth.LoadedWorldRange);
+            return Math.Abs(end - 56 * MathF.Sqrt(2)) < .01f;
+        });
+        Test("loaded-range-negative-and-vertical-boundaries", () => {
+            bool Loaded(int x, int z) => x >= -3 && x <= 0 && z == 0;
+            return ScGunRange.TraceLoaded(Loaded, 4, new Vector3(0,100,1), -Vector3.UnitX, float.MaxValue) == 48
+                && ScGunRange.TraceLoaded(Loaded, 4, new Vector3(0,100,1), Vector3.UnitY, float.MaxValue) == 156
+                && ScGunRange.TraceLoaded(Loaded, 4, new Vector3(0,100,1), -Vector3.UnitY, float.MaxValue) == 100
+                && ScGunRange.TraceLoaded(Loaded, 4, new Vector3(0,256,1), Vector3.UnitX, float.MaxValue) == 0;
+        });
+        Test("kill-queue-retains-over-1024-two-reloads", () => {
+            var registry = Fresh(); var (inventory, id) = Gun(registry, "ak47");
+            for (int i=0; i<1400; i++) registry.Kills.Enqueue(id, Variant("ak47"));
+            registry = ScGunRegistry.Current = ScGunRegistry.Load(ScGunRegistry.Load(registry.Save(0), 0).Save(0), 0);
+            return registry.Kills.Count == 1400
+                && ScGunGrowthService.DrainKills(registry, [new(id,"test",inventory,0)], false) == 1400
+                && registry.Kills.Count == 0 && Snap(registry,id).KillCount == 1400;
+        });
+        Test("kill-event-overflow-retains-entry-identity", () => {
+            var queue = new ScGunKillQueue(); queue.Enqueue(1,0);
+            var savedQueue = queue.Save(); savedQueue.SetValue("Next", long.MaxValue.ToString()); queue.LoadInto(savedQueue);
+            var entry = queue.Pending[0]; long next = queue.Enqueue(1,0);
+            return ReferenceEquals(entry,queue.Pending[0]) && queue.Count == 2 && next == 2 && queue.NextEventId == 3;
+        });
+        Test("kill-write-rollback-retains-credit-and-blocks-mid-save", () => {
+            var registry = Fresh(); var (inventory,id) = Gun(registry,"ak47"); registry.Kills.Enqueue(id,Variant("ak47"));
+            var tx = ScGunMutation.Prepare(inventory,0,"test",out _); tx.KillToComplete = registry.Kills.Pending[0];
+            bool guarded = false;
+            tx.AfterRecordWrite = () => {
+                try { registry.Save(0); } catch (InvalidOperationException) { guarded = true; }
+                throw new InvalidOperationException("injected after kill write");
+            };
+            return tx.Commit(r => r.KillCount++) != ScGunResult.Success && guarded
+                && Snap(registry,id).KillCount == 0 && registry.Kills.Count == 1
+                && ScGunGrowthService.DrainKills(registry,[new(id,"test",inventory,0)],false) == 1
+                && Snap(registry,id).KillCount == 1 && registry.Kills.Count == 0;
+        });
+        Test("settings-atomic-failure-keeps-old-file", () => {
+            var dir = System.IO.Directory.CreateTempSubdirectory("sc-ui-atomic-");
+            try {
+                string path = System.IO.Path.Combine(dir.FullName,"settings.json");
+                byte[] old = [1,2,3], next = [4,5,6,7];
+                ScUiSettings.WriteAtomic(path,old);
+                try { ScUiSettings.WriteAtomic(path,next,() => throw new System.IO.IOException("injected")); } catch (System.IO.IOException) { }
+                if (!System.IO.File.ReadAllBytes(path).SequenceEqual(old)) return false;
+                ScUiSettings.WriteAtomic(path,next);
+                return System.IO.File.ReadAllBytes(path).SequenceEqual(next) && dir.GetFiles().Length == 1;
+            } finally { dir.Delete(true); }
+        });
+        Test("schema-backup-verifies-whole-world-and-source-schema", () => {
+            var dir = System.IO.Directory.CreateTempSubdirectory("sc-schema-backup-");
+            try {
+                System.IO.File.WriteAllText(System.IO.Path.Combine(dir.FullName,"Project.xml"),
+                    "<Project><Subsystems><Values Name='ScGunBlockBehavior'><Values Name='GunRegistry'><Value Name='Schema' Type='int' Value='2'/></Values></Values></Subsystems></Project>");
+                var extra = dir.CreateSubdirectory("OtherMod");
+                byte[] terrain = Enumerable.Range(0,65536).Select(i => (byte)(i%251)).ToArray();
+                System.IO.File.WriteAllBytes(System.IO.Path.Combine(extra.FullName,"state.bin"),terrain);
+                System.IO.File.WriteAllText(System.IO.Path.Combine(dir.FullName,"old.snapshot"),"exclude");
+                string backup = ScGunSchemaUpgrade.Snapshot(dir.FullName,"test",2);
+                using (var zip = System.IO.Compression.ZipFile.OpenRead(backup)) {
+                    if (zip.Entries.Count != 2 || zip.GetEntry("OtherMod/state.bin") is null) return false;
+                }
+                try { ScGunSchemaUpgrade.Snapshot(dir.FullName,"wrong-source",1); return false; }
+                catch (InvalidOperationException) { return true; }
+            } finally { dir.Delete(true); }
+        });
+        Test("stattrak-official-geometry-and-six-uv-slots", () => {
+            var parts = ScStatTrakRenderer.Parts;
+            if (parts.Length != 2 || parts[0].Indices.Length != 990 || parts[1].Indices.Length != 144) return false;
+            foreach (var part in parts) if (part.Positions.Any(v => !float.IsFinite(v))
+                || part.Indices.Any(i => i < 0 || i >= part.Positions.Length/3)) return false;
+            return parts[1].Uvs.Where((v,i) => i%2==0).Select(v => (int)MathF.Floor(v)).Distinct().Order().SequenceEqual(new[]{1,2,3,4,5,6});
+        });
+        Test("stattrak-digit-order-leading-zero-and-saturation", () => {
+            for (int slot=0; slot<6; slot++) {
+                var encoded = new Vector2(slot + 1 + slot/16f, -1);
+                var uv = ScStatTrakRenderer.DigitUv(encoded,123456);
+                if (Math.Abs(uv.X - (slot+2)/16f) > 1e-6 || uv.Y != 0) return false;
+                if (ScStatTrakRenderer.DigitUv(encoded,0).X != 1/16f
+                    || ScStatTrakRenderer.DigitUv(encoded,long.MaxValue).X != 10/16f) return false;
+            }
+            return true;
+        });
+        Test("stattrak-all-35-attachments-and-normalized-item-frames", () => {
+            foreach (var spec in GunSpec.All) {
+                var pose = Cs2Rig.Sample(spec.Name,"idle",0);
+                if (!ScStatTrakRenderer.AttachmentWorld(spec.Name,false,pose,out var world)
+                    || !ScStatTrakRenderer.ItemMatrix(spec.Name,false,out var item)) return false;
+                if (!KnifeDiagnostics.IsFinite(world) || item.Translation.Length() > 2) return false;
+                var attachment = ScGunStatTrak.For(spec.Name,false);
+                if ((attachment.Matrix.Translation - attachment.Offset).Length() > 1e-5f) return false;
+            }
+            foreach (string asset in new[]{"awp","m4a1s"})
+                if (!ScStatTrakRenderer.ItemMatrix(asset,true,out var m) || m.Translation.Length() > 2) return false;
+            return true;
+        });
         // --- thresholds -------------------------------------------------------------------------------------
         Test("levels-are-100-each-to-1000", () =>
             ScGunGrowth.LevelFor(0) == 0 && ScGunGrowth.LevelFor(99) == 0 && ScGunGrowth.LevelFor(100) == 1
@@ -227,14 +350,16 @@ public static class ScGunGrowthSelfTest {
             return a == 1 && b == 2 && registry.Kills.Count == 2 && reloaded.Kills.Count == 2
                 && reloaded.Kills.Pending[0].EventId == 1 && reloaded.Kills.Pending[1].RecordId == id;
         });
-        Test("kill-queue-drops-unknown-records", () => {
+        Test("kill-queue-preserves-quarantined-record-credits", () => {
             var registry = Fresh();
             var (_, id) = Gun(registry, "ak47");
             registry.Kills.Enqueue(id, Variant("ak47"));
             var saved = registry.Save(0);
             saved.GetValue<ValuesDictionary>("Records", null).SetValue(id.ToString(), "corrupt");
             var reloaded = ScGunRegistry.Load(saved, 0);
-            return reloaded.Kills.Count == 0 && reloaded.QuarantinedCount == 1;
+            var twice = ScGunRegistry.Load(reloaded.Save(0),0);
+            return reloaded.Kills.Count == 1 && reloaded.QuarantinedCount == 1
+                && twice.Kills.Count == 1 && twice.QuarantinedCount == 1;
         });
         Test("kill-queue-rejects-corrupt", () => {
             var d = new ValuesDictionary();

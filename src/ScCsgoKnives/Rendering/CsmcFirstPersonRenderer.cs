@@ -937,6 +937,11 @@ public static class CsmcFirstPersonRenderer {
             }
         }
 
+        if (CsmcKnifeRig.IsGun(variant)) {
+            int held = firstPerson.Entity.FindComponent<ComponentMiner>()?.ActiveBlockValue ?? 0;
+            ScStatTrakRenderer.DrawFirstPerson(held, gun, native is not null, cs2, root,
+                projection, camera, variant, in lighting, light);
+        }
         DrawCs2Arms(cs2, post, projection, camera, in lighting, variant);
 
         // Translucent, so after everything opaque it can sit in front of.

@@ -29,6 +29,9 @@ public sealed class ScGunLayoutScreen : Screen {
     readonly StackPanelWidget m_controls = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(8, 6) };
     readonly CanvasWidget m_panel = new();
     readonly CanvasWidget m_panelHost = new();
+    readonly ButtonWidget m_expand = ScGunUi.Button("展开面板", 130);
+    readonly ScrollPanelWidget m_panelScroll = new() { Direction = LayoutDirection.Vertical,
+        HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     LabelWidget m_title, m_warning;
     CheckboxWidget m_enabled;
     SliderWidget m_size, m_background, m_foreground;
@@ -43,9 +46,15 @@ public sealed class ScGunLayoutScreen : Screen {
             m_preview.Children.Add(proxy);
         }
         m_panel.Children.Add(ScGunUi.Frame());
-        m_panel.Children.Add(m_controls);
+        m_panelScroll.Children.Add(m_controls);
+        m_panel.Children.Add(m_panelScroll);
         m_panelHost.Children.Add(m_panel);
         Children.Add(m_panelHost);
+        m_expand.HorizontalAlignment = WidgetAlignment.Near;
+        m_expand.VerticalAlignment = WidgetAlignment.Near;
+        m_expand.Margin = new Vector2(12, 12);
+        m_expand.IsVisible = false;
+        Children.Add(m_expand);
     }
 
     public override void Enter(object[] parameters) {
@@ -62,6 +71,7 @@ public sealed class ScGunLayoutScreen : Screen {
         m_narrow = narrow; m_built = true;
         m_controls.Children.Clear();
         m_title = ScGunUi.Label("", 1f, ScGunUi.Accent);
+        m_title.WordWrap = true;
         m_controls.Children.Add(m_title);
         var top = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch };
         m_next = ScGunUi.Button("下一个按键", 150); m_collapse = ScGunUi.Button("收起面板", 120);
@@ -77,7 +87,7 @@ public sealed class ScGunLayoutScreen : Screen {
         m_warning = ScGunUi.Note("");
         m_controls.Children.Add(m_warning);
         m_controls.Children.Add(ScGunUi.Note("直接在屏幕上拖动按钮摆位；编辑期间不会触发任何战斗动作。面板挡住的按钮可用「下一个按键」选中，或先收起面板。"));
-        var bar = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 4) };
+        var bar = new StackPanelWidget { Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 4) };
         m_side = ScGunUi.Button("面板换边", 120); m_resetOne = ScGunUi.Button("恢复此键", 120); m_resetAll = ScGunUi.Button("全部默认", 120);
         foreach (var b in new[] { m_side, m_resetOne, m_resetAll }) { b.Margin = new Vector2(3, 0); bar.Children.Add(b); }
         m_controls.Children.Add(bar);
@@ -90,7 +100,10 @@ public sealed class ScGunLayoutScreen : Screen {
         m_panelHost.VerticalAlignment = WidgetAlignment.Stretch;
         m_panel.HorizontalAlignment = m_leftHanded ? WidgetAlignment.Far : WidgetAlignment.Near;
         m_panel.VerticalAlignment = narrow ? WidgetAlignment.Far : WidgetAlignment.Center;
-        m_panel.Size = narrow ? new Vector2(-1, 260) : new Vector2(320, -1);
+        // Three 120-unit buttons need 378 units, not the former 320. Scroll vertically
+        // on short phone screens so Save/Cancel/Reset remain reachable.
+        m_panel.Size = narrow ? new Vector2(-1, Math.Min(320, Math.Max(180, ActualSize.Y * .65f)))
+            : new Vector2(410, Math.Max(180, ActualSize.Y - 24));
         LoadSelected();
     }
 
@@ -132,6 +145,7 @@ public sealed class ScGunLayoutScreen : Screen {
         if (!m_built || narrow != m_narrow) Build(narrow);
         m_controls.IsVisible = !m_collapsed;
         m_panel.IsVisible = !m_collapsed;
+        m_expand.IsVisible = m_collapsed;
         var layout = Selected;
         layout.Enabled = m_enabled.IsChecked;
         layout.Scale = m_size.Value; layout.Background = m_background.Value; layout.Foreground = m_foreground.Value;
@@ -154,6 +168,7 @@ public sealed class ScGunLayoutScreen : Screen {
         }
 
         if (m_collapse.IsClicked) { m_collapsed = !m_collapsed; m_collapse.Text = m_collapsed ? "展开面板" : "收起面板"; }
+        if (m_expand.IsClicked) { m_collapsed = false; m_collapse.Text = "收起面板"; }
         if (m_side.IsClicked) m_panel.HorizontalAlignment = m_panel.HorizontalAlignment == WidgetAlignment.Near ? WidgetAlignment.Far : WidgetAlignment.Near;
         if (m_next.IsClicked) {
             int index = Array.IndexOf(ScGunFunctions.All, m_selected);
@@ -167,8 +182,12 @@ public sealed class ScGunLayoutScreen : Screen {
         }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Back(); return; }
         if (m_save.IsClicked) {
+            var original = ScUiSettings.CopyHand(m_leftHanded);
             ScUiSettings.ReplaceHand(m_leftHanded, m_working);
-            if (!ScUiSettings.Save()) m_warning.Text = "布局未能写入，磁盘上的上一份配置保持不变。";
+            if (!ScUiSettings.Save()) {
+                ScUiSettings.ReplaceHand(m_leftHanded, original);
+                m_warning.Text = "布局未能写入，上一份配置保持不变。";
+            }
             else Back();
         }
     }
@@ -183,6 +202,10 @@ public sealed class ScGunLayoutScreen : Screen {
     void Drag(Vector2 area) {
         Vector2? press = Input.Press;
         if (press is null) { m_dragging = null; return; }
+        if (m_collapsed) {
+            Vector2 onExpand = m_expand.ScreenToWidget(press.Value);
+            if (onExpand.X >= 0 && onExpand.Y >= 0 && onExpand.X <= m_expand.ActualSize.X && onExpand.Y <= m_expand.ActualSize.Y) return;
+        }
         if (m_dragging is null && OverPanel(press.Value)) return;
         Vector2 point = m_preview.ScreenToWidget(press.Value);
         if (m_dragging is null) {

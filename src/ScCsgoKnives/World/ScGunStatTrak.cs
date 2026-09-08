@@ -9,11 +9,10 @@ namespace Game;
 /// on its HD body takes `stattrak`, one drawn on its legacy body takes `stattrak_legacy`, so fitting a counter
 /// never switches a weapon between the two eras or between their UV sets.
 ///
-/// The module's own mesh and digit atlas are separate CS2 files and are not on this machine, so nothing is drawn
-/// on the weapon yet: <see cref="ModuleAvailable"/> is false, the reason is logged once, and the count is shown
-/// in the attribute page and item description instead. No stand-in geometry is ever drawn in its place.</summary>
+/// The official module and encoded digit mesh are imported by tools/import_cs2_stattrak.py.
+/// ScStatTrakRenderer draws them in first person, third person and dropped-item views.</summary>
 public static class ScGunStatTrak {
-    /// <summary>Packaged paths the module display needs. Absent in 0.40.0; see the implementation record.</summary>
+    /// <summary>Packaged paths the module display needs.</summary>
     public const string ModuleModel = "Models/ScCsgoKnives/stattrak_module";
     public const string ModuleMaterial = "stattrak_module";
     public const string DigitAtlas = "stattrak_digit_atlas";
@@ -24,8 +23,9 @@ public static class ScGunStatTrak {
     public static string PanelText(long kills) => Math.Clamp(kills, 0, PanelMaximum).ToString("000000", System.Globalization.CultureInfo.InvariantCulture);
 
     public sealed record Placement(string Bone, Quaternion Rotation, Vector3 Offset) {
-        /// <summary>The attachment in the mod's engine units, on the weapon's own space.</summary>
-        public Matrix Matrix => Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateTranslation(Offset * Cs2Placement.InchesToEngine);
+        /// <summary>Module Source inches -> parent bone Source inches. Convert axes/units only
+        /// after composing the bone: attachment * boneAbsolute * view/world placement.</summary>
+        public Matrix Matrix => Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateTranslation(Offset);
     }
     sealed class Entry { public Raw stattrak { get; set; } public Raw stattrak_legacy { get; set; } }
     sealed class Raw { public string bone { get; set; } public float[] rotation { get; set; } public float[] offset { get; set; } }
@@ -57,14 +57,15 @@ public static class ScGunStatTrak {
     }
     public static bool Has(string asset, bool legacyBody) => For(asset, legacyBody) is not null;
 
-    /// <summary>Whether this build can actually draw the module. False until the CS2 module mesh and digit atlas
-    /// are exported into the package; the counter still installs, counts, levels and displays everywhere else.</summary>
+    /// <summary>Whether all official module resources can be loaded by this package.</summary>
     public static bool ModuleAvailable => s_module ??= Probe();
     static bool? s_module;
     static bool Probe() {
         try {
             ContentManager.Get<Engine.Graphics.Texture2D>("Textures/ScCsgoKnives/" + DigitAtlas);
+            ContentManager.Get<Engine.Graphics.Texture2D>("Textures/ScCsgoKnives/" + ModuleMaterial);
             ContentManager.Get<ObjModel>(ModuleModel);
+            if (ScStatTrakRenderer.Parts.Length != 2) throw new InvalidOperationException("Invalid StatTrak geometry");
             return true;
         }
         catch (Exception e) {

@@ -293,9 +293,10 @@ public sealed class ScGunRegistry {
         }
         if (registry.m_quarantined.Count > 0) KnifeLog.Warning($"gun registry: {registry.m_quarantined.Count} record(s) failed validation and are kept unusable: {string.Join(",", registry.m_quarantined.Keys.Take(8))}");
         registry.Next = Math.Clamp(Math.Max(next, highest + 1), GunSpec.FirstId, GunSpec.LastId + 1);
-        // A pending kill whose gun is not in this table can never be delivered; it is dropped here rather than
-        // retried forever, and said so in the log.
-        registry.Kills.DropUnknown(registry.m_records.ContainsKey);
+        // Corrupt/quarantined records may later be recovered. Keep their credentials exactly
+        // as saved; a missing record is not permission to erase its pending kill history.
+        int heldCredits = registry.Kills.Pending.Count(e => !registry.m_records.ContainsKey(e.RecordId));
+        if (heldCredits > 0) KnifeLog.Warning($"gun kill queue: {heldCredits} credits retained for missing/quarantined records; not applied until their original identity is recovered");
         if (schema != Schema) KnifeLog.Information($"gun registry: converted {registry.m_records.Count} record(s) from schema {schema} to {Schema}; finishes, ammunition, durability, silencer and charge preserved, counter and growth start unset");
         return registry;
     }

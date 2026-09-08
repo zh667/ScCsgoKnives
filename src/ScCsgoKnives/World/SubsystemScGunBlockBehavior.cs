@@ -1083,7 +1083,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Vector3 start = ray.Position;
             Vector3 end = start + direction * shotRange;
             long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
-            TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
+            TerrainRaycastResult? terrain = ScGunRange.TraceTerrain((a,b) => m_terrain.Raycast(a, b, false, true,
+                (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock), start, direction, shotRange);
             ScGunHitTest.Hit? gunHit;
             if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):shotRange,diagnostic?.Trace);
             else {

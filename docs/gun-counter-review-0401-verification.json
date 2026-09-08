@@ -1,0 +1,29 @@
+{
+  "version": "0.40.1",
+  "editions": {
+    "Full": {
+      "package": "ScCsgoKnives-0.40.1.scmod",
+      "bytes": 245092025,
+      "entries": 771,
+      "sha256": "516a507a98dbad04ff1fb395f93a4aa12acc5ce15e8a9590df6035d05446573c",
+      "dllSha256": "9d1db2708853a08e0c849cbd98986ddc4aca0099b49b035af557e2f58ef12d25",
+      "checks": 6579,
+      "failed": [],
+      "exitCode": 0,
+      "report": "ScCsgoKnives-0.40.1-check.json"
+    },
+    "Lite": {
+      "package": "ScCsgoKnives-0.40.1-Lite.scmod",
+      "bytes": 121659728,
+      "entries": 771,
+      "sha256": "3fb70f9ffe2fcf5297e049a8905cd2598596ec610c58352c8b8e085c56f7581f",
+      "dllSha256": "9d1db2708853a08e0c849cbd98986ddc4aca0099b49b035af557e2f58ef12d25",
+      "checks": 6579,
+      "failed": [],
+      "exitCode": 0,
+      "report": "ScCsgoKnives-0.40.1-Lite-check.json"
+    }
+  },
+  "sameDll": true,
+  "allPassed": true
+}

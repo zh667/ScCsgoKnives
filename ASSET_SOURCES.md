@@ -1,5 +1,18 @@
 # Asset sources
 
+## StatTrak addition: 0.40.1
+
+The gun-only StatTrak shell and six-slot display are exported from the locally installed
+CS2 `weapons/models/shared/stattrak/stattrak_module.vmdl_c` using ValveResourceFormat.
+The original module color/AO/roughness/metal maps and `stattrak_digit_atlas` supply the
+visuals; no substitute mesh or font is used. Valve retains rights to these game assets;
+this addition does not assert a new redistribution permission.
+
+`tools/import_cs2_stattrak.py` records input SHA-256 and frame/UV conventions in
+`docs/stattrak-module-source-0401.json`. Geometry has 330 shell triangles and 48 display
+triangles. Source textures retain original resolution; Lite derives its copies during
+packaging. The runtime shader integration is original project code, not Valve shader code.
+
 ## Current package: 0.20.4
 
 All 22 knives and 35 guns now use the CS2 animation / mesh pipeline, including CS2 skinned arms and gloves. Source exports are available in the sibling `CSMCReverse/local_cs2_analysis/all_weapons` directory (guns in `08_first_person`, knives in `09_knives`, meshes/materials in their existing export folders). This extraction remains intact.

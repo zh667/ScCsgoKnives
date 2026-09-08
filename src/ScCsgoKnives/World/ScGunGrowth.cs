@@ -65,7 +65,9 @@ public static class ScGunGrowth {
     }
     /// <summary>How far a shot may actually reach at Lv10: the loaded-world budget, a finite number, never
     /// infinity or NaN, so vectors, serialization and the UI stay well defined.</summary>
-    public const float LoadedWorldRange = 512f;
+    // Metadata sentinel only. LoadedLimit resolves it to a real loaded-world boundary
+    // before any ray endpoint is constructed.
+    public const float LoadedWorldRange = float.MaxValue;
     public static float Range(int variant, int level, float baseRange) {
         if (!float.IsFinite(baseRange) || baseRange <= 0) return 0;
         if (UnlimitedRange(variant, level)) return LoadedWorldRange;

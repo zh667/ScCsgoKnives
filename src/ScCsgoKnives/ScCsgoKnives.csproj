@@ -39,6 +39,7 @@
     <EmbeddedResource Include="AnimationData\gun_native_meshes.json" />
     <EmbeddedResource Include="AnimationData\gun_handling.json" />
     <EmbeddedResource Include="AnimationData\gun_stattrak.json" />
+    <EmbeddedResource Include="AnimationData\stattrak_mesh.json" />
     <EmbeddedResource Include="AnimationData\*.skin" />
     <EmbeddedResource Include="AnimationData\*.parts" />
     <EmbeddedResource Include="AnimationData\cs2_effects.json" />

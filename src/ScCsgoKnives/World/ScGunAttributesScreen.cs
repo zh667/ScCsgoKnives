@@ -17,6 +17,7 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
     int m_instanceValue;          // the item the player came from, when they came from one
     int m_levelMode;              // 0 base, 1 current, 2 next
     bool m_built, m_narrow;
+    int m_lastRevision = -1;
 
     /// <summary>The vertical margin keeps the inherited screen's own top bar - and its Back button - clear.</summary>
     readonly StackPanelWidget m_root = new() { HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(12, 56) };
@@ -75,6 +76,11 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
     }
 
     void Build(bool narrow) {
+        float listScroll = m_list.ScrollPosition, barScroll = m_barScroll.ScrollPosition;
+        // Detach reused widgets from their old nested containers before rebuilding.
+        m_listHost.ParentWidget?.Children.Remove(m_listHost);
+        m_preview.ParentWidget?.Children.Remove(m_preview);
+        m_identity.ParentWidget?.Children.Remove(m_identity);
         m_narrow = narrow; m_built = true;
         m_root.Children.Clear();
         m_root.Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal;
@@ -123,6 +129,7 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         m_right.Children.Add(bar);
         m_root.Children.Add(m_right);
         Refresh();
+        m_list.ScrollPosition = listScroll; m_barScroll.ScrollPosition = barScroll;
     }
 
     /// <summary>One attribute row: label, ten segments, the exact value and its unit. The number is authoritative;
@@ -149,6 +156,7 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
 
     int Level() {
         int applied = EffectiveGunStats.LevelOf(m_value);
+        if (ScGunRegistry.Current?.GrowthMode == ScGunGrowthMode.CountOnly) return applied;
         return m_levelMode switch { 0 => 0, 2 => Math.Min(ScGunGrowth.MaxLevel, applied + 1), _ => applied };
     }
 
@@ -163,9 +171,10 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         if (spec.HasSilencer) identity += GunSpec.GetSilencerOff(Terrain.ExtractData(m_value)) ? " · 消音器已拆" : " · 消音器在位";
         m_identityText.Text = identity;
         bool installed = GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var snap) && snap.CounterInstalled;
-        m_counter.Text = installed ? $"击杀计数器 · Lv{snap.Level}" : "无击杀计数器";
+        m_lastRevision = snap.Revision;
+        m_counter.Text = installed ? $"击杀 {snap.KillCount} · Lv{snap.Level}" : "无击杀计数器";
         m_level.Text = m_levelMode switch { 0 => "显示：基础 Lv0", 2 => $"显示：下一级 Lv{level}", _ => $"显示：当前 Lv{level}" };
-        m_level.IsEnabled = installed;
+        m_level.IsEnabled = installed && ScGunRegistry.Current?.GrowthMode != ScGunGrowthMode.CountOnly;
         m_bars.Children.Clear();
         var rows = ScGunAttributes.Rows(spec, m_value, level);
         if (m_narrow) foreach (var row in rows) m_bars.Children.Add(BarRow(row, true));
@@ -210,6 +219,7 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         m_craftingRecipeWidget.IsVisible = false; m_smeltingRecipeWidget.IsVisible = false;
         m_prevRecipeButton.IsVisible = false; m_nextRecipeButton.IsVisible = false;
         if (m_list.SelectedIndex is int index && index != m_variant) Select(index);
+        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var current) && current.Revision != m_lastRevision) Refresh();
         if (m_level.IsClicked) { m_levelMode = (m_levelMode + 1) % 3; Refresh(); }
         if (m_recipe.IsClicked) {
             ScreensManager.m_screens["RecipaediaRecipes"] = new ScAssemblyRecipesScreen();

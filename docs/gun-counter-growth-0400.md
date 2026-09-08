@@ -249,6 +249,9 @@ python tools/verify_gun_counter_release.py --vanilla-content <Content.zip>
 
 ## 10. 未做与待实机验收
 
+> 历史记录：以下是 0.40.0 VPS 交付时的状态。Windows 0.40.1 已补齐枪身计数器绘制、保留属性页滚动位置，
+> 并修复射程／计数／设置的审查问题。当前结论见 [0.40.1 审查记录](gun-counter-review-0401.md)。
+
 **未做（有明确原因）：**
 
 - 枪身上的计数器数字：缺 CS2 模块网格与数字图集，见第 6 节，路径已列全。

@@ -106,9 +106,11 @@ public static class ScGunAttributes {
     public static string GrowthText(int value, ScGunGrowthMode mode) {
         if (!GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s)) return "枪械记录不可读，无法显示计数。";
         if (!s.CounterInstalled) return "未安装击杀计数器。可在武器装配台原地安装，不更换枪械、不清空弹量与耐久。";
-        string rule = mode == ScGunGrowthMode.CountOnly ? "本世界规则：仅计数，不提供成长加成。" : "";
+        if (mode == ScGunGrowthMode.CountOnly) return $"有效击杀 {s.KillCount}。本世界规则：仅计数，不提供等级成长或属性加成。";
+        string rule = "";
         if (s.EarnedLevel >= ScGunGrowth.MaxLevel)
-            return $"有效击杀 {s.KillCount}（已满级 Lv{ScGunGrowth.MaxLevel}，计数继续累计）。{rule}";
+            return s.Level >= ScGunGrowth.MaxLevel ? $"有效击杀 {s.KillCount}（已满级 Lv{ScGunGrowth.MaxLevel}，计数继续累计）。"
+                : $"有效击杀 {s.KillCount}，已解锁 Lv{ScGunGrowth.MaxLevel}，当前已应用 Lv{s.Level}；动作结束后应用升级，计数继续累计。";
         long next = ScGunGrowth.ToNextLevel(s.KillCount);
         string pending = s.PendingGrowthLevel != ScGunGrowth.NoPending && s.PendingGrowthLevel > s.AppliedGrowthLevel
             ? $" 动作结束后升级至 Lv{s.PendingGrowthLevel}。" : "";

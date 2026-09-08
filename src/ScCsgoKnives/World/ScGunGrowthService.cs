@@ -30,13 +30,11 @@ public static class ScGunGrowthService {
         int written = 0;
         foreach (var entry in registry.Kills.Pending.ToArray()) {
             if (!registry.TryGetSnapshot(entry.RecordId, out var before) || before.Variant != entry.Variant) {
-                registry.Kills.Complete(entry.EventId);
-                KnifeLog.Warning($"gun kill credit {entry.EventId}: record {entry.RecordId} is gone or is another model; credit dropped");
+                KnifeDiagnostics.WarnOnce($"kill-credit-record-{entry.RecordId}", $"gun kill credit {entry.EventId}: record {entry.RecordId} is missing/quarantined or has another model; credit retained, not applied");
                 continue;
             }
             if (!before.CounterInstalled) {
-                registry.Kills.Complete(entry.EventId);
-                KnifeLog.Warning($"gun kill credit {entry.EventId}: record {entry.RecordId} has no counter; credit dropped");
+                KnifeDiagnostics.WarnOnce($"kill-credit-counter-{entry.RecordId}", $"gun kill credit {entry.EventId}: record {entry.RecordId} has no counter; credential retained for diagnosis, not applied");
                 continue;
             }
             var holder = Writable(holders, entry.RecordId);
@@ -46,6 +44,7 @@ public static class ScGunGrowthService {
             if (busy is not null && busy(holder.Value)) continue;
             var mutation = ScGunMutation.Prepare(holder.Value.Inventory, holder.Value.Slot, holder.Value.Key, out ScGunResult why);
             if (mutation is null || mutation.Before.Id != entry.RecordId) continue;
+            mutation.KillToComplete = entry;
             var result = mutation.Commit(r => {
                 if (r.KillCount < long.MaxValue) r.KillCount++;
                 if (!grow) return;
@@ -53,7 +52,6 @@ public static class ScGunGrowthService {
                 if (earned > r.AppliedGrowthLevel && earned > Math.Max(r.PendingGrowthLevel, r.AppliedGrowthLevel)) r.PendingGrowthLevel = earned;
             });
             if (result != ScGunResult.Success) continue; // busy/changed: the same credential is retried
-            registry.Kills.Complete(entry.EventId);
             written++;
             if (registry.TryGetSnapshot(entry.RecordId, out var after) && after.KillCount % ScGunGrowth.KillsPerLevel == 0)
                 KnifeLog.Information($"gun counter: record {entry.RecordId} ({GunSpec.All[after.Variant].Name}) reached {after.KillCount} kills, level {after.EarnedLevel}, applied {after.AppliedGrowthLevel}");
