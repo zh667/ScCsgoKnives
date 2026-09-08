@@ -109,3 +109,11 @@ The supply atlas is encoded as RGBA with alpha 255; all decoded color pixels and
 ### 0.28.1 clear kill chime
 
 `bf1_kill_ding.wav` derives from BF1 `Sound/UI/UI_KillMessage_HeadShotAdd_Wave`: trimmed and equalized metallic layer, 0.95 seconds, mono PCM16 48 kHz. This port uses it on all confirmed kills; no headshot result is inferred. The previous normal kill audio remains preserved. See `docs/bf1-ding-0281-source.json`, `tools/extract_bf1_feedback.py --kind ding` and `tools/build_bf1_ding.py`.
+
+### 0.38.4 native gun finish UVs
+
+Ten legacy finishes use `body_legacy` from the existing CS2 AK47/AWP/M4A1-S GLBs; Fade and the factory looks retain `body_hd`. `tools/cs2_glb_to_obj.py` exports separate rigid parts with native UVs and explicit rest bindings, without replacing the factory meshes. ValveResourceFormat / Source 2 Viewer supplies the GLBs and material/texture decoding, not a complete Valve paint compositor.
+
+Native composite inputs were exported from the installed CS2 VPK into the preserved external resource directory `all_weapons/11_legacy_composite_inputs`. Paint RGB and override normals come from `10_paints`; legacy substrate maps come from `03_legacy_vmodels_materials`. AWP's independent `shared_scope` primitive uses its actual opaque gray metal material from `07_scope`, not the body finish or the AUG's translucent scope lens. Input/output hashes are in `docs/gun-skins-assets.json`; mesh parts and bindings are in `docs/gun-native-meshes-export.json` and `AnimationData/gun_native_meshes.json`.
+
+`tools/build_gun_skins.py` samples custom artwork directly in native UV, uses native coverage for shared patterns and preserves packed alpha as material data. It adds no wear. Pattern seed placement, paint roughness/metal routing and pearlescence remain approximations, not certified Factory New rendering. Existing official `light` icons are unchanged. No source extraction or shared asset is deleted.

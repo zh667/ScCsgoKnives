@@ -7,6 +7,7 @@ public static class KnifeAnimationController {
 
     sealed class State {
         public int Variant = -1;
+        public readonly ScHeldWeaponSelection Selection = new();
         public ActionKind Action;
         public string ClipAlias = "idle";
         public double StartedAt;
@@ -73,6 +74,7 @@ public static class KnifeAnimationController {
             if (s_states.TryGetValue(model, out State oldState)) {
                 oldState.Variant = -1;
                 oldState.Pose = null;
+                oldState.Selection.Reset();
             }
             return null;
         }
@@ -84,7 +86,9 @@ public static class KnifeAnimationController {
 
         // Inventory/dialogs affect gameplay input, not the visual animation clock.
         // Keep sampling real hands every frame, including a switch made in a menu.
-        if (state.Variant != variant) {
+        var inventory = model.m_componentPlayer?.ComponentMiner?.Inventory;
+        bool selectionChanged = state.Selection.Observe(inventory, inventory?.ActiveSlotIndex ?? -1, itemValue, CsmcKnifeRig.IsGun(variant));
+        if (state.Variant != variant || selectionChanged) {
             state.Scoped = false;
             // Whether a knife has a second draw is a property of its rig, not
             // of it being the butterfly.
@@ -155,7 +159,7 @@ public static class KnifeAnimationController {
         State state = StateFor(model);
         // Inspect can arrive before the drawing hook observes an inventory switch.
         // Initialize that weapon's deploy first, then queue the inspect behind it.
-        if (state.Variant != variant) Update(model, value);
+        Update(model, value);
 
         // Pressed during a draw or a reload: remember it and run it when that ends,
         // instead of swallowing the key. 0.17.0 returned true here and did nothing,
@@ -210,7 +214,7 @@ public static class KnifeAnimationController {
         variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
         if (variant < 0 || !CsmcKnifeRig.IsGun(variant)) return null;
         State state = StateFor(model);
-        state.Variant = variant;
+        Update(model, player.ComponentMiner.ActiveBlockValue);
         return state;
     }
 

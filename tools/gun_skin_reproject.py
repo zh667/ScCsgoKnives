@@ -92,10 +92,11 @@ def correspondence(glb_path: Path, size: int, cache: Path):
     return result
 
 
-def lookup(image, uv):
+def lookup(image, uv, wrap=False):
     h, w = image.shape[:2]
     coords = [uv[..., 1]*h-0.5, uv[..., 0]*w-0.5]
+    mode = "grid-wrap" if wrap else "nearest"
     if image.ndim == 2:
-        return map_coordinates(image, coords, order=1, mode="nearest")
-    return np.stack([map_coordinates(image[..., c], coords, order=1, mode="nearest")
+        return map_coordinates(image, coords, order=1, mode=mode)
+    return np.stack([map_coordinates(image[..., c], coords, order=1, mode=mode)
                      for c in range(image.shape[-1])], -1)

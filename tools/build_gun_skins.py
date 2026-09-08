@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Bake clean gun finishes into the unchanged runtime HD UV layout.
+"""Bake finishes for their native CS2 body UV layout.
 
-Custom/gunsmith RGB artwork is transferred from the embedded body_legacy mesh,
-not reduced to an icon palette. Shared patterns keep recipe colours. Painted
+Custom/gunsmith RGB artwork is sampled directly on body_legacy; Fade keeps body_hd.
+Shared patterns keep recipe colours. Painted
 albedo never uses the scratched factory colour as a luminance multiplier.
 No synthetic wear/grunge is added; this is NOT Valve's Factory New compositor.
 Original textures and inventory icons are read-only unless --icons is supplied.
@@ -25,7 +25,7 @@ from scipy.ndimage import distance_transform_edt
 
 import cs2_kv3
 from cs2_glb import Glb
-from gun_skin_reproject import body, correspondence, lookup, raster_surface
+from gun_skin_reproject import body, lookup, raster_surface
 
 Image.MAX_IMAGE_PIXELS = None
 ROOT = Path(__file__).resolve().parent.parent
@@ -114,7 +114,7 @@ def pattern_colors(pattern, u, v, p):
     offset = vec(p.get("g_vPatternTexCoordOffset"))
     x = (u*np.cos(rotation)-v*np.sin(rotation))*scale + offset[0]
     y = (u*np.sin(rotation)+v*np.cos(rotation))*scale + offset[1]
-    w = lookup(pattern, np.stack([x % 1, y % 1], -1))
+    w = lookup(pattern, np.stack([x, y], -1), wrap=True)
     colors = [vec(p.get(f"g_vColor{i}"), (.5, .5, .5)) for i in range(4)]
     # Layered colour masks remain bounded even at overlapping RGB transitions.
     flat = np.broadcast_to(colors[0], w.shape).copy()
@@ -123,13 +123,31 @@ def pattern_colors(pattern, u, v, p):
     return flat
 
 
-def gun_inputs(gun, export, size):
+def gun_inputs(gun, export, size, legacy=False):
     stem = gun["cs2Stem"]
     folder = export / "04_current_weapon_materials/weapons/models" / gun["cs2Dir"] / "materials/composite_inputs"
     masks = folder / f"{stem}_masks.png"
     ao = next(folder.glob(f"{stem}_cavity_*_ao.png"))
     glb = export / "02_models/glb_with_animations/weapons/models" / gun["cs2Dir"] / f"{stem}.glb"
     asset = gun["variantAsset"]
+    if legacy:
+        folder_name = {"ak47": "rif_ak47", "awp": "snip_awp", "m4a1s": "rif_m4a1_s"}[asset]
+        folder = export / "11_legacy_composite_inputs/materials/models/weapons/customization" / folder_name
+        params = parse_vmat(folder / f"{folder_name}_composite_inputs.vmat")
+        maps = {k: find_one(folder, params[k]) for k in ("TextureColor1", "TextureMasks1", "TextureAmbientOcclusion1", "TextureRoughness1")}
+        old_folder = export / "03_legacy_vmodels_materials/materials/models/weapons/v_models" / folder_name
+        old = parse_vmat(old_folder / ({"ak47": "ak47", "awp": "awp", "m4a1s": "rif_m4a1_s"}[asset] + ".vmat"))
+        normal = None if "default_normal" in old["TextureNormal"] else find_one(old_folder, old["TextureNormal"])
+        sources = list(maps.values()) + [folder/f"{folder_name}_composite_inputs.vmat", next(old_folder.glob("*.vmat"))]
+        metal = params.get("TextureMetalness1", "[0 0 0 0]")
+        if not metal.startswith("["):
+            sources.append(find_one(folder, metal))
+        metal = np.full((size,size), vec(metal)[0]) if metal.startswith("[") else load_rgb(find_one(folder, metal), size)[...,0]
+        ao = load_rgb(maps["TextureAmbientOcclusion1"], size)[...,0]
+        orm = np.stack([ao, load_rgb(maps["TextureRoughness1"], size)[...,0], metal], -1)
+        return {"color": load_rgb(maps["TextureColor1"], size), "orm": orm, "normal": normal,
+                "mask": load_rgb(maps["TextureMasks1"], size)[...,0], "masks": load_rgb(maps["TextureMasks1"], size), "ao": ao, "glb": glb,
+                "maskPath": maps["TextureMasks1"], "aoPath": maps["TextureAmbientOcclusion1"], "legacy": True, "sources": sources}
     return {"color": load_rgb(TEX/f"{asset}_hd.png", size), "orm": load_rgb(TEX/f"{asset}_hd_orm.png", size),
             "normal": TEX/f"{asset}_hd_normal.png", "mask": load_rgb(masks, size)[..., 0],
             "ao": load_rgb(ao, size)[..., 0], "glb": glb, "maskPath": masks, "aoPath": ao}
@@ -146,20 +164,23 @@ def bake(skin, gun, src, args):
             "mode": skin["mode"], "wearPolicy": "no-added-wear; not official Factory New",
             "sourceSha256": {str(f): sha256(f) for f in (recipe, material, pattern_path, src["glb"], src["maskPath"], src["aoPath"])}}
     brightness = float(p.get("g_flColorBrightness", 1))
-    if skin["mode"] == "reproject":
-        mapping = correspondence(src["glb"], args.size, args.cache)
-        # Preserve authored RGB details, including intentionally unpainted hardware.
-        color = lookup(pattern, mapping["uv"])
-        mask = src["mask"] if skin.get("coverage") == "hd-metal-mask" else np.ones_like(mask)
+    used["sourceSha256"].update({str(f): sha256(f) for f in src.get("sources", [])})
+    if skin["mode"] == "native":
+        color = load_rgb(pattern_path, args.size)
+        mask = np.ones_like(mask)
+        if skin.get("coverage") == "native-metal-mask":
+            mask = src["mask"]  # Fire Serpent keeps the native wooden furniture.
         color = clean_coat(color, base, mask)
-        used["projectionDistanceMmPercentiles"] = dict(zip(("50", "90", "99", "100"),
-            (np.percentile(mapping["distance"][mapping["valid"]], [50,90,99,100])*1000).round(4).tolist()))
+        used["placement"] = "native body_legacy UV, authored RGB; no nearest-surface reprojection"
         used["brightnessRecordedNotApplied"] = brightness
     elif skin["mode"] == "pattern":
-        v, u = np.mgrid[:args.size, :args.size] / args.size
+        v, u = (np.mgrid[:args.size, :args.size] + .5) / args.size
         flat = pattern_colors(pattern, u, v, p)
+        if skin["key"] == "am_bamboo_jungle":
+            mask = mask * (1-src["masks"][...,1])  # Native yellow category includes bare magazine/hardware.
+            used["coverage"] = "native red coverage excluding green hardware category"
         color = clean_coat(flat * brightness**(1/2.2), base, mask)
-        used["placement"] = "shared pattern in HD UV; not Valve randomized legacy placement"
+        used["placement"] = "shared pattern in native legacy UV with native coverage; fixed recipe seed"
     elif skin["mode"] == "fade":
         mask_path = find_one(paints, p["TextureMasks1"])
         mask = load_rgb(mask_path, args.size)[..., 0]
@@ -196,7 +217,18 @@ def bake(skin, gun, src, args):
     names = [f"{asset}_hd__{key}{suffix}.png" for suffix in ("", "_orm", "_normal")]
     save_rgb(color, args.out/names[0])
     save_rgb(orm, args.out/names[1])
-    normal = Image.open(src["normal"]).convert("RGB").resize((args.size,args.size), Image.Resampling.LANCZOS)
+    normal_path = src["normal"]
+    if skin.get("legacyModel") and int(p.get("F_OVERRIDE_NORMAL", 0)) == 1 and "TextureNormal" in p:
+        normal_path = find_one(paints, p["TextureNormal"])
+    normal = Image.open(normal_path).convert("RGB") if normal_path else Image.new("RGB", (4,4), (128,128,255))
+    normal = normal.resize((args.size,args.size), Image.Resampling.LANCZOS)
+    if skin.get("legacyModel"):
+        n = np.asarray(normal, float)/127.5-1
+        n /= np.maximum(np.linalg.norm(n, axis=-1, keepdims=True), 1e-6)
+        normal = Image.fromarray(np.uint8(np.clip((n+1)*127.5+.5,0,255)))
+    used["normalSource"] = str(normal_path) if normal_path else "material default flat normal"
+    if normal_path:
+        used["sourceSha256"][str(normal_path)] = sha256(normal_path)
     existing = TEX/names[2]
     if existing.exists() and np.array_equal(np.asarray(Image.open(existing).convert("RGB")), np.asarray(normal)):
         # Preserve byte-identical existing normals instead of PNG encoder churn.
@@ -204,7 +236,8 @@ def bake(skin, gun, src, args):
             shutil.copyfile(existing, args.out/names[2])
     else:
         normal.save(args.out/names[2], optimize=True)
-    used["materialLimits"] = "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor"
+    used["body"] = "legacy" if skin.get("legacyModel") else "hd"
+    used["materialLimits"] = "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor"
     retained_icon = TEX/f"{asset}_slot__{key}.png"
     used["unchangedInventoryIcon"] = {"file": retained_icon.name, "sha256": sha256(retained_icon)}
     if args.icons:
@@ -239,14 +272,28 @@ def main():
         ap.error("unknown skin key")
     args.out.mkdir(parents=True, exist_ok=True)
     report = {"catalogVersion": catalog["version"], "size": args.size, "skins": {}}
+    scope = args.export_root / "07_scope/weapons/models/shared/materials/scope"
+    scope_params = parse_vmat(scope / "shared_scope.vmat")
+    save_rgb(np.broadcast_to(vec(scope_params["TextureColor1"]), (4,4,3)), args.out/"cs2_legacy_scope.png")
+    scope_ao = load_rgb(scope/"shared_scope_ao.png")
+    scope_orm = np.empty_like(scope_ao)
+    scope_orm[...,0] = scope_ao[...,0]
+    scope_orm[...,1] = vec(scope_params["TextureRoughness1"])[0]
+    scope_orm[...,2] = vec(scope_params["TextureMetalness1"])[0]
+    save_rgb(scope_orm, args.out/"cs2_legacy_scope_orm.png")
+    shutil.copyfile(scope/"shared_scope_normal.png", args.out/"cs2_legacy_scope_normal.png")
+    report["scope"] = {"material": "shared_scope.vmat (opaque hardware, separate from translucent scope lens)",
+                       "sourceSha256": {str(scope/name): sha256(scope/name) for name in ("shared_scope.vmat", "shared_scope_ao.png", "shared_scope_normal.png")},
+                       "files": {f"cs2_legacy_scope{suffix}.png": sha256(args.out/f"cs2_legacy_scope{suffix}.png") for suffix in ("", "_orm", "_normal")}}
     inputs = {}
     for skin in catalog["skins"]:
         if args.only and skin["key"] not in args.only:
             continue
         gun = catalog["guns"][skin["gun"]]
-        if skin["gun"] not in inputs:
-            inputs[skin["gun"]] = gun_inputs(gun, args.export_root, args.size)
-        report["skins"][skin["key"]] = bake(skin, gun, inputs[skin["gun"]], args)
+        input_key = (skin["gun"], skin.get("legacyModel", False))
+        if input_key not in inputs:
+            inputs[input_key] = gun_inputs(gun, args.export_root, args.size, input_key[1])
+        report["skins"][skin["key"]] = bake(skin, gun, inputs[input_key], args)
         print(f"{skin['key']}: {skin['mode']}", flush=True)
     args.manifest.parent.mkdir(parents=True, exist_ok=True)
     args.manifest.write_text(json.dumps(report, ensure_ascii=False, indent=1)+"\n", encoding="utf-8")

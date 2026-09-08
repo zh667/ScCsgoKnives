@@ -2,7 +2,7 @@ using Engine.Graphics;
 namespace Game;
 
 /// <summary>All gun views select the colour texture and PBR stem together. A fallback must not mix
-/// factory colour with a skin's normal/ORM maps. Mesh caches remain independent of materials.</summary>
+/// factory colour with a skin's normal/ORM maps. Native mesh selection also observes this resolved stem.</summary>
 public static class ScGunVisualMaterial {
     static readonly Dictionary<(string Asset, int Skin), (Texture2D Texture, string Material)> s_cache = [];
     public static T Resolve<T>(string asset, int skin, Func<string, T> load, out string material) where T : class {

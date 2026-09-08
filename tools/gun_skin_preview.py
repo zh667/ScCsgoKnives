@@ -47,15 +47,17 @@ def load_obj(path: Path):
     return np.array(pos, float), np.array(uv, float) if uv else np.zeros((1, 2)), tri
 
 
-def gun_mesh(gun: str, silencer=False):
+def gun_mesh(gun: str, silencer=False, legacy=False):
     verts, uvs, tris = [], [], []
-    for obj in sorted(MODELS.glob(f"{gun}_cs2_*.obj")):
+    prefix = gun + ("_legacy" if legacy else "")
+    for obj in sorted(MODELS.glob(f"{prefix}_cs2_*.obj")):
         if obj.stem.endswith("_silencer") and not silencer:
             continue  # the detachable silencer is drawn only when the record says it is on
         p, t, f = load_obj(obj)
         base_v, base_t = len(verts), len(uvs)
         verts.extend(p.tolist())
-        uvs.extend(t.tolist())
+        lens = legacy and gun == "awp" and "__p2" in obj.stem
+        uvs.extend(np.column_stack([t, np.full(len(t), int(lens))]).tolist())
         for a, b, c in f:
             tris.append(((a[0] + base_v, a[1] + base_t if a[1] >= 0 else -1),
                          (b[0] + base_v, b[1] + base_t if b[1] >= 0 else -1),
@@ -115,6 +117,8 @@ def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.2, p
             tx = np.clip((u % 1.0 * tw).astype(int), 0, tw - 1)
             ty = np.clip((v % 1.0 * th).astype(int), 0, th - 1)
             col = texture[ty, tx]
+            if uvs.shape[1] > 2 and uvs[a[1],2] == 1:
+                col = np.full(col.shape, .290196)  # shared_scope.vmat, opaque hardware not painted body
         else:
             col = np.full(gx.shape + (3,), 0.5)
         img[y0:y1 + 1, x0:x1 + 1][hit] = np.clip(col[hit] * shade, 0, 1)
@@ -139,7 +143,10 @@ def main() -> int:
         verts, uvs, tris = gun_mesh(gun["variantAsset"], a.silencer)
         if a.reverse:
             verts = verts * [-1, -1, 1]
-        def shot(path):
+        def shot(path, legacy=False):
+            verts, uvs, tris = gun_mesh(gun["variantAsset"], a.silencer, legacy)
+            if a.reverse:
+                verts = verts * [-1,-1,1]
             texture = np.asarray(Image.open(path).convert("RGB"), float) / 255
             im = render(verts, uvs, tris, texture, a.size)
             return im.crop((0, int(a.size*.23), a.size, int(a.size*.77)))
@@ -150,7 +157,7 @@ def main() -> int:
                 before, after = a.compare/name, a.textures/name
                 if not after.exists():
                     continue
-                old, new = shot(before), shot(after)
+                old, new = shot(before), shot(after, s.get("legacyModel", False))
                 row = Image.new("RGB", (a.size*2, new.height+30), "white")
                 row.paste(old, (0,30))
                 row.paste(new, (a.size,30))
@@ -165,7 +172,7 @@ def main() -> int:
             p = a.textures / f"{gun['variantAsset']}_hd__{s['key']}.png"
             if not p.exists():
                 continue
-            cells.append((f"{s['nameEn']} [{s['mode']}]", shot(p)))
+            cells.append((f"{s['nameEn']} [native UV]", shot(p, s.get("legacyModel", False))))
         row = Image.new("RGB", (a.size * len(cells), cells[0][1].height + 20), (255, 255, 255))
         d = ImageDraw.Draw(row)
         for i, (label, im) in enumerate(cells):

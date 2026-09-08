@@ -10,6 +10,7 @@ public sealed class ScGunSkinTemplateBlock : ScNoDurabilityBlock {
         DefaultDisplayName = "CS2 涂装枪械"; DefaultCategory = "Weapons";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 1; CraftingId = "sccsgoskintemplate";
         DefaultMeleePower = 0; DefaultProjectilePower = 0;
+        DefaultIconViewScale = .8f;
     }
     public override int GetDisplayOrder(int value) => 222;
     public override IEnumerable<int> GetCreativeValues() => ScGunSkinCatalog.All.Select(s => Terrain.MakeBlockValue(BlockIndex, 0, s.PaintId));

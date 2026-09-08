@@ -18,9 +18,8 @@ public sealed record ScGunSkin(int PaintId, string Key, string Name, string Gun,
 /// Skins are a record field, never a gun variant: <see cref="GunSpec"/>'s 35 models and the v5 item layout
 /// are unchanged, and a world that has never seen a finish stores nothing new.
 ///
-/// <c>Approximate</c> marks a finish whose CS2 pattern is authored in the *legacy* weapon UV layout, which the
-/// current meshes this mod draws do not share. Those bakes carry the finish's colours, not its artwork
-/// placement; see docs/gun-skins-p0-0380.md for the measurement and what would be needed to do better.</summary>
+/// <c>Approximate</c> retains the catalogue's historical quality classification. Legacy finishes now
+/// use their native geometry and UVs, but this is still not Valve's wear/pearlescence compositor.</summary>
 public static class ScGunSkinCatalog {
     /// <summary>No finish. Stored as 0, which is what every schema-1 record converts to.</summary>
     public const int None = 0;

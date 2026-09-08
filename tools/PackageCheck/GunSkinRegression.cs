@@ -23,6 +23,37 @@ static class GunSkinRegression {
             bool Has(string texture) => entries.Contains($"Assets/Textures/ScCsgoKnives/{texture}.png");
 
             Check("catalogue-not-empty", skins.Length > 0, $"{skins.Length} finishes");
+            var native = mod.GetType("Game.ScGunNativeMesh");
+            Check("world-uv-repeat", ReferenceEquals(native.GetProperty("WorldSampler").GetValue(null), Engine.Graphics.SamplerState.LinearWrap), "native world views use repeat sampling instead of BlocksManager PointClamp");
+            var partsMethod = native.GetMethod("Parts");
+            foreach (string asset in new[] { "ak47", "awp", "m4a1s" }) {
+                var parts = (Array)partsMethod.Invoke(null, [asset]);
+                var rig = mod.GetType("Game.Cs2Rig");
+                bool present = parts.Length > 0, bound = true, scope = false;
+                foreach (var part in parts) {
+                    var t = part.GetType();
+                    string path = (string)native.GetMethod("ModelPath").Invoke(null, [asset, part]);
+                    present &= entries.Contains("Assets/" + path + ".obj");
+                    if (t.GetProperty("Material").GetValue(part) is string special) {
+                        scope = true;
+                        present &= Has(special) && Has(special + "_orm") && Has(special + "_normal");
+                    }
+                    foreach (string clip in new[] { "idle", "deploy", "inspect", "reload" }) foreach (float time in new[] { 0f, .4f, 1f }) {
+                        var pose = rig.GetMethod("Sample").Invoke(null, [asset, clip, time]);
+                        var matrix = (Engine.Matrix)t.GetMethod("World").Invoke(part, [pose]);
+                        bound &= float.IsFinite(matrix.M11) && float.IsFinite(matrix.M41) && Math.Abs(matrix.M11)+Math.Abs(matrix.M12)+Math.Abs(matrix.M13) > 1;
+                    }
+                }
+                Check("native-model/" + asset, present && bound && (asset != "awp" || scope), $"{parts.Length} native parts, finite deploy/inspect/reload bindings, separate scope material={scope}");
+                var weaponType = mod.GetType("Game.ScThirdPersonWeapon");
+                var weapon = weaponType.GetMethod("For").Invoke(null, [asset, true]);
+                var groups = weapon is null ? Array.Empty<object>() : ((Array)weaponType.GetField("Groups").GetValue(weapon)).Cast<object>().ToArray();
+                Check("native-third-person/" + asset, weapon is not null && (int)weaponType.GetField("Vertices").GetValue(weapon) > 1000
+                    && (asset != "awp" || groups.Any(g => (string)g.GetType().GetProperty("Texture").GetValue(g) == "cs2_legacy_scope")),
+                    $"packaged OBJ geometry baked into {groups.Length} independent material/silencer groups");
+            }
+            var template = (Game.Block)Activator.CreateInstance(mod.GetType("Game.ScGunSkinTemplateBlock"));
+            Check("template-icon-scale", Math.Abs(template.DefaultIconViewScale - .8f) < .001f, "same .8 icon view scale as original gun CSV");
             var seenId = new HashSet<int>();
             var seenKey = new HashSet<string>(StringComparer.Ordinal);
             foreach (object skin in skins) {
@@ -37,6 +68,8 @@ static class GunSkinRegression {
                     if (!Has(texture)) missing.Add(texture);
                 bool model = Array.IndexOf(names, gun) >= 0;
                 bool unique = seenId.Add(paintId) & seenKey.Add(key);
+                bool legacy = (bool)native.GetMethod("UsesLegacy").Invoke(null, [gun, material]);
+                Check($"native-routing/{key}", legacy == (paintId != 1177), legacy ? "body_legacy" : "body_hd");
                 Check($"assets/{key}", missing.Count == 0 && model && unique && paintId > 0,
                     missing.Count > 0 ? "missing " + string.Join(", ", missing)
                     : !model ? $"{gun} is not a gun variant"
@@ -59,6 +92,7 @@ static class GunSkinRegression {
                 && (string)material2.Invoke(null, [otherGun, firstId]) == $"{otherGun}_hd"
                 && (string)icon2.Invoke(null, [otherGun, firstId]) == $"{otherGun}_slot",
                 "unknown, absent and foreign finishes all resolve to the factory set");
+            Check("factory-geometry-fallback", !(bool)native.GetMethod("UsesLegacy").Invoke(null, [firstGun, firstGun + "_hd"]), "factory material never selects legacy UV geometry");
 
             // Costs live in one table and every tier must charge something.
             var cost = (IDictionary)catalog.GetField("Cost").GetValue(null);

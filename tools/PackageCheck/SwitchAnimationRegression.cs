@@ -39,6 +39,41 @@ static class SwitchAnimationRegression {
                 return (model, state);
             }
             object Update(ComponentFirstPersonModel model, int v) => ctrl.GetMethod("Update").Invoke(null, [model, Value(v)]);
+            foreach (int gun in new[] { 22, 23, 24 }) Test("same-model-slot-deploy/" + gun, () => {
+                inventory.ActiveSlotIndex = 0;
+                var (model, state) = Setup(gun, "Inspect", "inspect", true);
+                Update(model, gun);
+                if (inventory.m_slots.Count < 2) inventory.m_slots.Add(Value(gun)); else inventory.m_slots[1] = Value(gun);
+                inventory.ActiveSlotIndex = 1; Time(.2);
+                var pose = Update(model, gun);
+                inventory.ActiveSlotIndex = 0;
+                return Clip(pose).StartsWith("deploy") && SampleTime(pose) == 0;
+            });
+            Test("instance-not-ammo-or-light", () => {
+                var type = mod.GetType("Game.ScHeldWeaponSelection"); var observer = Activator.CreateInstance(type);
+                bool Observe(object inv, int slot, int value) => (bool)type.GetMethod("Observe").Invoke(observer, [inv, slot, value, true]);
+                int fresh = Value(23), data = Terrain.ExtractData(fresh), instance = (data & ~(1023 << 6)) | (12 << 6);
+                int v = Terrain.MakeBlockValue(701, 0, instance);
+                if (Observe(inventory,0,fresh) || Observe(inventory,0,v) || Observe(inventory,0,Terrain.MakeBlockValue(701, 8, instance))) return false;
+                if (!Observe(inventory,0,Terrain.MakeBlockValue(701,0,(instance & ~(1023 << 6)) | (13 << 6)))) return false;
+                return Observe(new object(),0,v);
+            });
+            Test("cancel-old-reload-preserves-new-deploy", () => {
+                inventory.ActiveSlotIndex = 0;
+                var (model, state) = Setup(23,"Reload","reload",false); Update(model,23);
+                var txType=mod.GetType("Game.ScReloadTransaction");
+                var tx=Activator.CreateInstance(txType,[inventory,0,Value(23),901,0,20]);
+                inventory.m_slots[1]=Value(23); inventory.ActiveSlotIndex=1; Time(.1);
+                var pose=Update(model,23);
+                var behaviorType=mod.GetType("Game.SubsystemScGunBlockBehavior");
+                var gs=Activator.CreateInstance(behaviorType.GetNestedType("GunState",BindingFlags.NonPublic),true);
+                gs.GetType().GetField("Reload").SetValue(gs,tx);
+                behaviorType.GetMethod("CancelReload",BindingFlags.NonPublic|BindingFlags.Instance)
+                    .Invoke(RuntimeHelpers.GetUninitializedObject(behaviorType),[player,gs,false]);
+                bool ok=Clip(pose).StartsWith("deploy") && state.GetType().GetField("Action").GetValue(state).ToString()=="Draw"
+                    && (bool)txType.GetProperty("Cancelled").GetValue(tx) && inventory.GetSlotValue(0)==Value(23) && inventory.GetSlotValue(1)==Value(23);
+                inventory.ActiveSlotIndex=0; return ok;
+            });
             for (int v = 0; v < 63; v++) foreach (string alias in new[] { "deploy", "inspect" }) {
                 int variant = v; float duration = Duration(v, alias); if (duration <= 0) continue;
                 Test($"menu-advances/{variant}/{alias}", () => {

@@ -895,6 +895,7 @@ public static class CsmcFirstPersonRenderer {
         // OBJ guns (AK/M4A1-S/AWP) previously kept the factory colour while only switching ORM/normal.
         Texture2D baseColor = CsmcKnifeRig.IsGun(variant)
             ? ScGunVisualMaterial.Load(gun, SkinId, out gunMaterial) : s_cs2Base[gun];
+        var native = CsmcKnifeRig.IsGun(variant) ? ScGunNativeMesh.Resolve(gun, SkinId, out baseColor, out gunMaterial) : null;
 
         // CS2 ships each knife as one skinned mesh whose moving parts ride bones in
         // the clip's own skeleton - butterfly weights blade, lock and rear - so there
@@ -916,7 +917,16 @@ public static class CsmcFirstPersonRenderer {
                 out lens, out lensWorld);
         }
 
-        foreach (Part part in s_cs2Parts[gun]) {
+        if (native is not null) foreach (var part in native) {
+            if (hideSilencer && part.Bone == "silencer") continue;
+            Matrix world = part.World(cs2) * root;
+            var texture = part.Texture ?? baseColor;
+            if (!KnifePbrRenderer.TryDrawPart(part.Model, texture, variant, world, projection,
+                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, part.Material ?? gunMaterial))
+                DrawModel(part.Model, texture, world, camera, projection, light,
+                    SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
+        }
+        else foreach (Part part in s_cs2Parts[gun]) {
             // CS2 names the silencer part after its own bone, not CS:MC's binding.
             if (hideSilencer && part.Binding == "silencer") continue;
             Matrix world = cs2.GetPart(part.Binding) * root;

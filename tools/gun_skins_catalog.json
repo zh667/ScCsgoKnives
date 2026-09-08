@@ -1,6 +1,6 @@
 {
-  "_comment": "Stable skin identities from the audited 2026-09-08 export. Bake v2 replaces palette approximations with bone-constrained body_legacy-to-body_hd RGB artwork reprojection. Pattern/fade placement and PBR remain approximations, not Valve's Factory New compositor. See docs/gun-skins-clean-0383.md.",
-  "version": 2,
+  "_comment": "Stable paint IDs. Bake v3 uses native body_legacy geometry/UV for ten finishes and body_hd for Fade. Fixed pattern placement and PBR remain approximations, not Valve's Factory New compositor. See docs/gun-skins-native-0384.md.",
+  "version": 3,
   "guns": {
     "awp": { "variantAsset": "awp", "cs2Dir": "awp", "cs2Stem": "weapon_snip_awp" },
     "ak47": { "variantAsset": "ak47", "cs2Dir": "ak47", "cs2Stem": "weapon_rif_ak47" },
@@ -8,15 +8,15 @@
   },
   "skins": [
     { "key": "am_lightning_awp",          "gun": "awp",   "paintId": 51,   "name": "雷击",       "nameEn": "Lightning Strike", "tier": "Standard", "legacyModel": true,  "mode": "pattern", "recipe": "weapons/paints/legacy/am_lightning_awp.vcompmat" },
-    { "key": "gs_awp_gungnir",            "gun": "awp",   "paintId": 756,  "name": "永恒之枪",   "nameEn": "Gungnir",          "tier": "Special",  "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/gs_awp_gungnir.vcompmat" },
-    { "key": "cu_medieval_dragon_awp",    "gun": "awp",   "paintId": 344,  "name": "巨龙传说",   "nameEn": "Dragon Lore",      "tier": "Premium",  "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/cu_medieval_dragon_awp.vcompmat" },
-    { "key": "cu_ak_island_floral",       "gun": "ak47",  "paintId": 724,  "name": "野荷",       "nameEn": "Wild Lotus",       "tier": "Premium",  "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/cu_ak_island_floral.vcompmat" },
-    { "key": "cu_fireserpent_ak47_bravo", "gun": "ak47",  "paintId": 180,  "name": "火蛇",       "nameEn": "Fire Serpent",     "tier": "Standard", "legacyModel": true,  "mode": "reproject", "coverage": "hd-metal-mask", "recipe": "weapons/paints/legacy/cu_fireserpent_ak47_bravo.vcompmat" },
+    { "key": "gs_awp_gungnir",            "gun": "awp",   "paintId": 756,  "name": "永恒之枪",   "nameEn": "Gungnir",          "tier": "Special",  "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/gs_awp_gungnir.vcompmat" },
+    { "key": "cu_medieval_dragon_awp",    "gun": "awp",   "paintId": 344,  "name": "巨龙传说",   "nameEn": "Dragon Lore",      "tier": "Premium",  "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/cu_medieval_dragon_awp.vcompmat" },
+    { "key": "cu_ak_island_floral",       "gun": "ak47",  "paintId": 724,  "name": "野荷",       "nameEn": "Wild Lotus",       "tier": "Premium",  "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/cu_ak_island_floral.vcompmat" },
+    { "key": "cu_fireserpent_ak47_bravo", "gun": "ak47",  "paintId": 180,  "name": "火蛇",       "nameEn": "Fire Serpent",     "tier": "Standard", "legacyModel": true,  "mode": "native", "coverage": "native-metal-mask", "recipe": "weapons/paints/legacy/cu_fireserpent_ak47_bravo.vcompmat" },
     { "key": "am_bamboo_jungle",          "gun": "ak47",  "paintId": 456,  "name": "水栽竹",     "nameEn": "Hydroponic",       "tier": "Standard", "legacyModel": true,  "mode": "pattern", "recipe": "weapons/paints/legacy/am_bamboo_jungle.vcompmat" },
-    { "key": "cu_ak47_rubber",            "gun": "ak47",  "paintId": 302,  "name": "火神",       "nameEn": "Vulcan",           "tier": "Standard", "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/cu_ak47_rubber.vcompmat" },
-    { "key": "cu_m4a1s_printstream",      "gun": "m4a1s", "paintId": 984,  "name": "印花集",     "nameEn": "Printstream",      "tier": "Premium",  "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/cu_m4a1s_printstream.vcompmat" },
-    { "key": "cu_m4a1s_csgo2048",         "gun": "m4a1s", "paintId": 946,  "name": "二号玩家",   "nameEn": "Player Two",       "tier": "Standard", "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/cu_m4a1s_csgo2048.vcompmat" },
+    { "key": "cu_ak47_rubber",            "gun": "ak47",  "paintId": 302,  "name": "火神",       "nameEn": "Vulcan",           "tier": "Standard", "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/cu_ak47_rubber.vcompmat" },
+    { "key": "cu_m4a1s_printstream",      "gun": "m4a1s", "paintId": 984,  "name": "印花集",     "nameEn": "Printstream",      "tier": "Premium",  "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/cu_m4a1s_printstream.vcompmat" },
+    { "key": "cu_m4a1s_csgo2048",         "gun": "m4a1s", "paintId": 946,  "name": "二号玩家",   "nameEn": "Player Two",       "tier": "Standard", "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/cu_m4a1s_csgo2048.vcompmat" },
     { "key": "aa_fade_m4a1s",             "gun": "m4a1s", "paintId": 1177, "name": "渐变之色",   "nameEn": "Fade",             "tier": "Special",  "legacyModel": false, "mode": "fade",    "recipe": "weapons/paints/set_realism_camo/aa_fade_m4a1s.vcompmat" },
-    { "key": "gs_m4a1s_snakebite_gold",   "gun": "m4a1s", "paintId": 497,  "name": "金蛇缠绕",   "nameEn": "Golden Coil",      "tier": "Standard", "legacyModel": true,  "mode": "reproject", "recipe": "weapons/paints/legacy/gs_m4a1s_snakebite_gold.vcompmat" }
+    { "key": "gs_m4a1s_snakebite_gold",   "gun": "m4a1s", "paintId": 497,  "name": "金蛇缠绕",   "nameEn": "Golden Coil",      "tier": "Standard", "legacyModel": true,  "mode": "native", "recipe": "weapons/paints/legacy/gs_m4a1s_snakebite_gold.vcompmat" }
   ]
 }

@@ -12,6 +12,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     static readonly int s_count = GunSpec.All.Length;
     static readonly string[] s_names = GunSpec.All.Select(spec => spec.Name).ToArray();
     readonly ScResourceCache<int, BlockMesh> m_models = new("gun-items", 12, 2000);
+    readonly Dictionary<(int Variant, string Part), BlockMesh> m_nativeModels = [];
 
     /// <summary>Rig manifest index of a gun variant.</summary>
     public static int AssetIndex(int variant) => variant >= 0 && variant < s_count ? CsmcKnifeRig.KnifeCount + variant : -1;
@@ -104,19 +105,32 @@ public class ScGunBlock : ScNoDurabilityBlock {
     }
     internal void DrawVisual(PrimitivesRenderer3D primitivesRenderer, int value, int variant, int skin, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) {
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI) {
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], skin)) ?? LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
+            float iconScale = skin == 0 ? 1.45f : 1.38f; // Generated icons have less transparent edge padding.
+            BlocksManager.DrawFlatBlock(primitivesRenderer, value, iconScale * size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], skin)) ?? LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !KnifeDiagnostics.IsFinite(matrix)) return;
+        var native = ScGunNativeMesh.Resolve(s_names[variant], skin, out var texture, out _);
+        if (native is not null) {
+            foreach (var part in native) {
+                if (part.Bone == "silencer" && Terrain.ExtractContents(value) == BlockIndex && GunSpec.GetSilencerOff(Terrain.ExtractData(value))) continue;
+                if (!m_nativeModels.TryGetValue((variant, part.Name), out var nativeModel)) {
+                    nativeModel = new BlockMesh();
+                    foreach (ModelMesh mesh in part.Model.Meshes) foreach (ModelMeshPart piece in mesh.MeshParts)
+                        nativeModel.AppendModelMeshPart(piece, BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone), false, false, true, false, Color.White);
+                    m_nativeModels[(variant, part.Name)] = nativeModel;
+                }
+                ScGunNativeMesh.DrawWorld(primitivesRenderer, nativeModel, part.Texture ?? texture, color, size, ref matrix, environmentData);
+            }
+            return;
+        }
         BlockMesh model;
         try { model = Model(variant); }
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce($"gun-item-{variant}", $"Could not build {s_names[variant]} item model: {e.Message}");
             return;
         }
-        // Geometry is per model, the texture is per (model, finish): a finish never changes what is drawn,
-        // only what it is sampled from, so the mesh cache stays keyed by variant alone.
-        BlocksManager.DrawMeshBlock(primitivesRenderer, model, ScGunVisualMaterial.Load(s_names[variant], skin, out _), color, size, ref matrix, environmentData);
+        BlocksManager.DrawMeshBlock(primitivesRenderer, model, texture, color, size, ref matrix, environmentData);
     }
 
     public override int GetTextureSlotCount(int value) => 1;

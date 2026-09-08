@@ -1,0 +1,226 @@
+[
+ {
+  "gun": "ak47",
+  "body": "legacy",
+  "joints": [
+   "weapon",
+   "weapon_offset",
+   "bolt",
+   "clip",
+   "cliprelease",
+   "trigger",
+   "ag1_hand_r"
+  ],
+  "parts": [
+   {
+    "name": "weapon_offset",
+    "bone": "weapon_offset",
+    "primitive": 0,
+    "faces": 12413,
+    "vertices": 6987,
+    "file": "ak47_legacy_cs2_weapon_offset.obj",
+    "material": "ak47",
+    "over_ushort": false
+   },
+   {
+    "name": "bolt",
+    "bone": "bolt",
+    "primitive": 0,
+    "faces": 148,
+    "vertices": 80,
+    "file": "ak47_legacy_cs2_bolt.obj",
+    "material": "ak47",
+    "over_ushort": false
+   },
+   {
+    "name": "clip",
+    "bone": "clip",
+    "primitive": 0,
+    "faces": 730,
+    "vertices": 420,
+    "file": "ak47_legacy_cs2_clip.obj",
+    "material": "ak47",
+    "over_ushort": false
+   },
+   {
+    "name": "cliprelease",
+    "bone": "cliprelease",
+    "primitive": 0,
+    "faces": 102,
+    "vertices": 56,
+    "file": "ak47_legacy_cs2_cliprelease.obj",
+    "material": "ak47",
+    "over_ushort": false
+   },
+   {
+    "name": "trigger",
+    "bone": "trigger",
+    "primitive": 0,
+    "faces": 42,
+    "vertices": 24,
+    "file": "ak47_legacy_cs2_trigger.obj",
+    "material": "ak47",
+    "over_ushort": false
+   }
+  ],
+  "split_triangles": 0,
+  "blended_vertices": 0,
+  "total_faces": 13435
+ },
+ {
+  "gun": "awp",
+  "body": "legacy",
+  "joints": [
+   "weapon",
+   "weapon_offset",
+   "clip",
+   "rail",
+   "bolt_action",
+   "trigger",
+   "ag1_hand_r"
+  ],
+  "parts": [
+   {
+    "name": "weapon_offset",
+    "bone": "weapon_offset",
+    "primitive": 0,
+    "faces": 20234,
+    "vertices": 10671,
+    "file": "awp_legacy_cs2_weapon_offset.obj",
+    "material": "awp",
+    "over_ushort": false
+   },
+   {
+    "name": "weapon_offset__p2",
+    "bone": "weapon_offset",
+    "primitive": 1,
+    "faces": 48,
+    "vertices": 50,
+    "file": "awp_legacy_cs2_weapon_offset__p2.obj",
+    "material": "shared_scope",
+    "over_ushort": false
+   },
+   {
+    "name": "clip",
+    "bone": "clip",
+    "primitive": 0,
+    "faces": 748,
+    "vertices": 382,
+    "file": "awp_legacy_cs2_clip.obj",
+    "material": "awp",
+    "over_ushort": false
+   },
+   {
+    "name": "rail",
+    "bone": "rail",
+    "primitive": 0,
+    "faces": 192,
+    "vertices": 98,
+    "file": "awp_legacy_cs2_rail.obj",
+    "material": "awp",
+    "over_ushort": false
+   },
+   {
+    "name": "bolt_action",
+    "bone": "bolt_action",
+    "primitive": 0,
+    "faces": 542,
+    "vertices": 293,
+    "file": "awp_legacy_cs2_bolt_action.obj",
+    "material": "awp",
+    "over_ushort": false
+   },
+   {
+    "name": "trigger",
+    "bone": "trigger",
+    "primitive": 0,
+    "faces": 152,
+    "vertices": 82,
+    "file": "awp_legacy_cs2_trigger.obj",
+    "material": "awp",
+    "over_ushort": false
+   }
+  ],
+  "split_triangles": 0,
+  "blended_vertices": 0,
+  "total_faces": 21916
+ },
+ {
+  "gun": "m4a1s",
+  "body": "legacy",
+  "joints": [
+   "weapon",
+   "weapon_offset",
+   "bolt",
+   "clip",
+   "silencer",
+   "trigger",
+   "ag1_hand_r"
+  ],
+  "parts": [
+   {
+    "name": "weapon_offset__c1",
+    "bone": "weapon_offset",
+    "primitive": 0,
+    "faces": 21845,
+    "vertices": 11651,
+    "file": "m4a1s_legacy_cs2_weapon_offset__c1.obj",
+    "material": "rif_m4a1_s",
+    "over_ushort": false
+   },
+   {
+    "name": "weapon_offset__c2",
+    "bone": "weapon_offset",
+    "primitive": 0,
+    "faces": 237,
+    "vertices": 258,
+    "file": "m4a1s_legacy_cs2_weapon_offset__c2.obj",
+    "material": "rif_m4a1_s",
+    "over_ushort": false
+   },
+   {
+    "name": "bolt",
+    "bone": "bolt",
+    "primitive": 0,
+    "faces": 226,
+    "vertices": 118,
+    "file": "m4a1s_legacy_cs2_bolt.obj",
+    "material": "rif_m4a1_s",
+    "over_ushort": false
+   },
+   {
+    "name": "clip",
+    "bone": "clip",
+    "primitive": 0,
+    "faces": 786,
+    "vertices": 401,
+    "file": "m4a1s_legacy_cs2_clip.obj",
+    "material": "rif_m4a1_s",
+    "over_ushort": false
+   },
+   {
+    "name": "silencer",
+    "bone": "silencer",
+    "primitive": 0,
+    "faces": 488,
+    "vertices": 272,
+    "file": "m4a1s_legacy_cs2_silencer.obj",
+    "material": "rif_m4a1_s",
+    "over_ushort": false
+   },
+   {
+    "name": "trigger",
+    "bone": "trigger",
+    "primitive": 0,
+    "faces": 118,
+    "vertices": 64,
+    "file": "m4a1s_legacy_cs2_trigger.obj",
+    "material": "rif_m4a1_s",
+    "over_ushort": false
+   }
+  ],
+  "split_triangles": 0,
+  "blended_vertices": 0,
+  "total_faces": 23700
+ }
+]

@@ -38,7 +38,7 @@ import cs2_viewmodel as vm
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "src/ScCsgoKnives/AnimationData"
-MODELS = (Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"
+MODELS = (ROOT.parent / "CSMCReverse/local_cs2_analysis/all_weapons"
           / "02_models/glb_with_animations/weapons/models")
 
 # Survivalcraft indexes each OBJ object with ushort indices.
@@ -58,7 +58,7 @@ GUNS = {
 
 
 def normalization(gun: str):
-    doc = json.loads((DATA / ("%s.csmc.animation.json" % gun)).read_text("utf-8"))
+    doc = json.loads((DATA / ("%s.cs2.animation.json" % gun)).read_text("utf-8"))
     return np.array(doc["MeshCenter"], float), float(doc["MeshNormalizationScale"])
 
 
@@ -99,7 +99,7 @@ def write_obj(path: Path, name: str, positions, uvs, normals, faces):
     v, vi = dedupe(positions, 5)
     t, ti = dedupe(uvs, 6)
     n, ni = dedupe(normals, 4)
-    lines = ["# CS2 body_hd, tools/cs2_glb_to_obj.py"]
+    lines = ["# CS2 body mesh, tools/cs2_glb_to_obj.py"]
     lines += ["v %s %s %s" % tuple(fmt(c, 5) for c in row) for row in v]
     lines += ["vt %s %s" % tuple(fmt(c, 6) for c in row) for row in t]
     lines += ["vn %s %s %s" % tuple(fmt(c, 4) for c in row) for row in n]
@@ -128,6 +128,8 @@ def convert(gun: str, out_dir: Path, body: str = "hd", write: bool = True):
     groups = defaultdict(list)   # (joint index, primitive index) -> triangles
     store = {}
     for pi, prim in enumerate(mesh.primitives):
+        if body == "legacy" and prim.material == "sticker_gaps":
+            continue  # Invisible sticker helper geometry is not part of the painted body.
         pos = prim.attributes["POSITION"].astype(float)
         uv = prim.attributes["TEXCOORD_0"].astype(float)
         nor = prim.attributes.get("NORMAL")
@@ -166,26 +168,49 @@ def convert(gun: str, out_dir: Path, body: str = "hd", write: bool = True):
             remap = {v: k for k, v in enumerate(dict.fromkeys(flat.tolist()))}
             local = np.array([remap[v] for v in flat.tolist()]).reshape(-1, 3)
             keep = np.array(list(remap.keys()))
-            path = out_dir / ("%s_cs2_%s.obj" % (gun, name))
+            prefix = gun + ("_legacy" if body == "legacy" else "")
+            path = out_dir / ("%s_cs2_%s.obj" % (prefix, name))
             counts = ((len(keep), 0, 0, len(chunk)) if not write else
                       write_obj(path, name, pos[keep], uv[keep], nor[keep], local))
             report["parts"].append({"name": name, "bone": bone, "primitive": pi,
                                     "faces": len(chunk), "vertices": counts[0],
-                                    "file": path.name,
+                                    "file": path.name, "material": mesh.primitives[pi].material,
                                     "over_ushort": counts[0] > MAX_VERTS})
             report["total_faces"] += len(chunk)
     return report
 
 
+def native_bindings(report):
+    rig = json.loads((DATA / f"{report['gun']}.cs2.animation.json").read_text("utf-8"))
+    bones = {b["Name"]: b for b in rig["Skeleton"]}
+    def rest(name):
+        m = np.eye(4)
+        while True:
+            b = bones[name]
+            m = m @ vm.from_quat(b["Rotation"]) @ vm.translation(b["Translation"])
+            if name == "weapon":
+                return m
+            name = rig["Skeleton"][b["Parent"]]["Name"]
+    root = next(b for b in rig["Bindings"] if b["Bone"] == "weapon_offset")
+    normalized_to_rig = np.array(root["RightMatrix"]).reshape(4,4) @ rest("weapon_offset")
+    return [{"Name": p["name"], "Bone": p["bone"],
+             "Material": "cs2_legacy_scope" if p["material"] == "shared_scope" else None,
+             "RightMatrix": (normalized_to_rig @ np.linalg.inv(rest(p["bone"]))).ravel().tolist()}
+            for p in report["parts"]]
+
+
 def main():
+    global MODELS
     ap = argparse.ArgumentParser()
     ap.add_argument("--gun", action="append", choices=sorted(GUNS))
     ap.add_argument("--body", default="hd", choices=["hd", "legacy"])
     ap.add_argument("--out", type=Path,
                     default=ROOT / "src/ScCsgoKnives/Assets/Models/ScCsgoKnives")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--models", type=Path, default=MODELS)
     ap.add_argument("--json", type=Path)
     args = ap.parse_args()
+    MODELS = args.models
 
     reports = []
     for gun in args.gun or sorted(GUNS):
@@ -200,6 +225,8 @@ def main():
                      "  OVER USHORT" if p["over_ushort"] else ""))
     if args.json:
         args.json.write_text(json.dumps(reports, indent=1), "utf-8")
+    if args.body == "legacy" and not args.dry_run and not args.gun:
+        (DATA / "gun_native_meshes.json").write_text(json.dumps({r["gun"]: native_bindings(r) for r in reports}, indent=1)+"\n", "utf-8")
 
 
 if __name__ == "__main__":

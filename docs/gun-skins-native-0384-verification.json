@@ -1,0 +1,180 @@
+{
+  "version": "0.38.4",
+  "checks": {
+    "Full": {
+      "packageSha256": "1467314c1640e3fdca861263fdbfb25f799c82745ff0e4d2d85c1dbff906ddf3",
+      "packageBytes": 243579928,
+      "dllSha256": "e12543903697712a6340ea9af18a0edda58323f9cbb6ed5caf569943ada18af0",
+      "entries": 766,
+      "failed": 0,
+      "passed": 6295
+    },
+    "Lite": {
+      "packageSha256": "c173de2f71ec3804a1af6170dc2a9444543899e3710a0a90809b10a8510f2f6f",
+      "packageBytes": 120059216,
+      "dllSha256": "e12543903697712a6340ea9af18a0edda58323f9cbb6ed5caf569943ada18af0",
+      "entries": 766,
+      "failed": 0,
+      "passed": 6295
+    }
+  },
+  "removedFiles": [],
+  "replacedFiles": {
+    "ASSET_SOURCES.md": {
+      "before": "dc836f42d64ba4b5d8c0d797f4f97fe6e56c81cb77c4c69d0f6efb1dc78bf1ab",
+      "after": "66ec9e820d6b1ce50c5461e5f5d840f3fb5164637bab9dd667e070cf1e1156b5"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__am_bamboo_jungle.png": {
+      "before": "b73eb6fc20a64cf54f8cff6e34bb19da1db228cf77c706aa402172303e9815c5",
+      "after": "c46c772711a35fa828fe3ed0a212bf396b74cdcc5e64cdd8e877cb25dda19da2"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__am_bamboo_jungle_normal.png": {
+      "before": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+      "after": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__am_bamboo_jungle_orm.png": {
+      "before": "452475e408c64624dbf32d21099f13cd8c48a866bf48ac11e59bbed6c8d0f644",
+      "after": "08340cac90461a5719c5ca896b92e61218eed0922a8c34bb241b592da52f4c8f"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak47_rubber.png": {
+      "before": "cc02409cf14c1e48946bca3c9db1a0b17b8c87fb3c4e039501207209d2867075",
+      "after": "5d856e53aa2c327e57c24ae83c481e1ba3b3d895f26d6ff5c1bd25228a590fb5"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak47_rubber_normal.png": {
+      "before": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+      "after": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak47_rubber_orm.png": {
+      "before": "1f3fa749ac9da3c49be72be98834f7086225d22db2f9a7a190586a2d3bbeb9ab",
+      "after": "2547e1ff51afd85ec76e899efe2d31d540fb0182a139c9c486821455a4926baa"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak_island_floral.png": {
+      "before": "45eb4ff289c3122256335bc9742fb765b06536e87a93b14c196f3d52481386da",
+      "after": "937758a8249d4afd1f9d5b98e561ca9a33add0e5ee60b6a1f829962b56444119"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak_island_floral_normal.png": {
+      "before": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+      "after": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak_island_floral_orm.png": {
+      "before": "0fee8da339c724941ff64e9e1dd8dd585a01a11497208ecd893920596b52f6bd",
+      "after": "f6216971adb88a5968ba0d26f1d373f1e2e7dd0992f9cbd7854a1b7e04bd17d1"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_fireserpent_ak47_bravo.png": {
+      "before": "890ac4390f6c11dcccb7a5d00ccb7a47584cdca34cf64ee76d61326bff030795",
+      "after": "2aa9ee5a00646a6a4754e0f45a7d8497fb0b547e0bda2834e4d14c5bf28de3f7"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_fireserpent_ak47_bravo_normal.png": {
+      "before": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+      "after": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_fireserpent_ak47_bravo_orm.png": {
+      "before": "e12215fc3b6de7b78e5edc67830d1d869af17162fbefebf2e5d716e4395753b5",
+      "after": "5f7b06755ab994e29c2a12aff7b29495fa3865934ff154c7c1d7d260fbffc499"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__am_lightning_awp.png": {
+      "before": "9c45612dd2614ce6f8b32ae26fbbab5d1382e716c0b56ba3c4fcb25ae7d22edd",
+      "after": "586b9a7019ca2e4f1b5c55a8a49347ebfb581cbe83821229ad703784d3503a71"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__am_lightning_awp_normal.png": {
+      "before": "aa090d04c7281dd360a78e14060a237d1df3e56a4ab38e123d79bdc301e51ffa",
+      "after": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__am_lightning_awp_orm.png": {
+      "before": "29266084fc648085c89a9843e6a3a8ad29bc50b9b2a601102cffe723d61f9c55",
+      "after": "31b94e887a915dae321571114091e0a29a691e12375b5c93691da830b9001a62"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__cu_medieval_dragon_awp.png": {
+      "before": "2fb2ac251c4d6ed0962761b9e4683bb305b238415b178ea957f93c623940b23c",
+      "after": "cd4ff802e95ffa2d7b0b04e5a2590c247598c0c425123a847ae520165c2bbfff"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__cu_medieval_dragon_awp_normal.png": {
+      "before": "aa090d04c7281dd360a78e14060a237d1df3e56a4ab38e123d79bdc301e51ffa",
+      "after": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__cu_medieval_dragon_awp_orm.png": {
+      "before": "165448731da343b55086d2fc1e95f445b0916d0bbc9a52586415add92334a4b1",
+      "after": "51d3bc1a8ce98e6e1c54586e48d17f902ba82d47ec5e53b904d34c86b2ff8606"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__gs_awp_gungnir.png": {
+      "before": "b7a87c921b670e6f258d40d87cdf640fa6e2df03814fd7048ede1dc3b0a8ccc9",
+      "after": "6b8fc89279ebb1c2b7aa3886065403be39dad4edd1e9bbc93e7e4503be188fa9"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__gs_awp_gungnir_normal.png": {
+      "before": "aa090d04c7281dd360a78e14060a237d1df3e56a4ab38e123d79bdc301e51ffa",
+      "after": "11f220fe6135af1937142a2703480b2ef2d5f66c8b331fe328e9f24c5560e5a4"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__gs_awp_gungnir_orm.png": {
+      "before": "1d39621947cd54788f2526ae6f445451383cacc7d72994ed83918daf5b365c91",
+      "after": "6718ceb7da326dbe6a17b6b0c91f3210509afd5217f3cec87225fb327618384d"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_csgo2048.png": {
+      "before": "3ab4905873cb0de879a0df86bac06b1cbbf8e2291b8edf6348784ca624bc8b40",
+      "after": "16dfc86b85730b8f428f330b57f2a4397ca858ba84f8ea3c13f805a5992693a9"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_csgo2048_normal.png": {
+      "before": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade",
+      "after": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_csgo2048_orm.png": {
+      "before": "fc4596f62d7c841b1ca93214f283af43e0727a1a1528d975af0a1c6d2595ad32",
+      "after": "6e53a5e0f944a96737116049c7243a26c85e9382077a069359e03efce6b9714e"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_printstream.png": {
+      "before": "6094e7ad08835547052fc5726f847a3470551149faf679fb742b693810665ed0",
+      "after": "2ee53cb67f94bf304946823f86ef85983a353b88922892b032b6f62efbb7f734"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_printstream_normal.png": {
+      "before": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade",
+      "after": "695327d5291a5c49669da253842a6833bb168af43af4840074d2f0bb572502fa"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_printstream_orm.png": {
+      "before": "78fbe7432644f7bd38e57b965399502a015c367c9422c1419fbf21f8dfac06f4",
+      "after": "fd3afb652b0b864acd65d9db345980bce729033c232bf8083396aef0142aa855"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__gs_m4a1s_snakebite_gold.png": {
+      "before": "15b403d4e35caf89e9f09fc06802620daa2ef8f1f3942df537c79e770281909e",
+      "after": "2153e2167dc1810d7ca313d3655ace1c7a8e23405a5fa39cbca28faa2aea3025"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__gs_m4a1s_snakebite_gold_normal.png": {
+      "before": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade",
+      "after": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__gs_m4a1s_snakebite_gold_orm.png": {
+      "before": "12abf75d4bc5a61e2b399671edb051f1e5b673b265ca7408c2d289416df3807e",
+      "after": "1bbde21483f03930064a328515c34fd4129d142601bac7a12d4406f57e11b9dd"
+    },
+    "ScCsgoKnives.dll": {
+      "before": "f7c30b728406b363c95021fd6496a4bc5b7161c9693f8c1bea1026e55fcafe03",
+      "after": "e12543903697712a6340ea9af18a0edda58323f9cbb6ed5caf569943ada18af0"
+    },
+    "modinfo.json": {
+      "before": "354a93ab7aa42619e8e9dd819237bd9e3e30cae8201aa1ddd889e46b40477be1",
+      "after": "646c246f0d23e29a33d2ba1ac360eb97a73c9ac34ff351f36ce09cf55ccc483b"
+    }
+  },
+  "addedFiles": [
+    "Assets/Models/ScCsgoKnives/ak47_legacy_cs2_bolt.obj",
+    "Assets/Models/ScCsgoKnives/ak47_legacy_cs2_clip.obj",
+    "Assets/Models/ScCsgoKnives/ak47_legacy_cs2_cliprelease.obj",
+    "Assets/Models/ScCsgoKnives/ak47_legacy_cs2_trigger.obj",
+    "Assets/Models/ScCsgoKnives/ak47_legacy_cs2_weapon_offset.obj",
+    "Assets/Models/ScCsgoKnives/awp_legacy_cs2_bolt_action.obj",
+    "Assets/Models/ScCsgoKnives/awp_legacy_cs2_clip.obj",
+    "Assets/Models/ScCsgoKnives/awp_legacy_cs2_rail.obj",
+    "Assets/Models/ScCsgoKnives/awp_legacy_cs2_trigger.obj",
+    "Assets/Models/ScCsgoKnives/awp_legacy_cs2_weapon_offset.obj",
+    "Assets/Models/ScCsgoKnives/awp_legacy_cs2_weapon_offset__p2.obj",
+    "Assets/Models/ScCsgoKnives/m4a1s_legacy_cs2_bolt.obj",
+    "Assets/Models/ScCsgoKnives/m4a1s_legacy_cs2_clip.obj",
+    "Assets/Models/ScCsgoKnives/m4a1s_legacy_cs2_silencer.obj",
+    "Assets/Models/ScCsgoKnives/m4a1s_legacy_cs2_trigger.obj",
+    "Assets/Models/ScCsgoKnives/m4a1s_legacy_cs2_weapon_offset__c1.obj",
+    "Assets/Models/ScCsgoKnives/m4a1s_legacy_cs2_weapon_offset__c2.obj",
+    "Assets/Textures/ScCsgoKnives/cs2_legacy_scope.png",
+    "Assets/Textures/ScCsgoKnives/cs2_legacy_scope_normal.png",
+    "Assets/Textures/ScCsgoKnives/cs2_legacy_scope_orm.png"
+  ],
+  "preserved": "Every other prior package entry is byte-identical: default meshes/maps, all icons, audio and unrelated effects.",
+  "gameVisualAcceptance": "pending; offline native-UV renders are not in-game screenshots"
+}
