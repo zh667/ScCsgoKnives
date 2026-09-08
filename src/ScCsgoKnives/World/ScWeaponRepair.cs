@@ -35,7 +35,8 @@ public static class ScWeaponRepair {
     }
     public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {
         int gun = gunBlockIndex >= 0 ? gunBlockIndex : BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        for (int i = 0; i < inventory.SlotsCount; i++) {
+        int slots = inventory is ComponentCreativeInventory creative ? creative.OpenSlotsCount : inventory.SlotsCount;
+        for (int i = 0; i < slots; i++) {
             int value = inventory.GetSlotValue(i);
             if (inventory.GetSlotCount(i) > 0 && Terrain.ExtractContents(value) == gun && ScGunBlock.IsKnown(value)) {
                 var c = new Candidate(i, value);

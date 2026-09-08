@@ -100,8 +100,11 @@ public class ScGunBlock : ScNoDurabilityBlock {
             BlocksManager.DrawFlatBlock(primitivesRenderer, value, size, ref matrix, ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, false, environmentData);
             return;
         }
+        DrawVisual(primitivesRenderer, value, variant, SkinOf(value), color, size, ref matrix, environmentData);
+    }
+    internal void DrawVisual(PrimitivesRenderer3D primitivesRenderer, int value, int variant, int skin, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) {
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI) {
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], SkinOf(value))) ?? LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
+            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], skin)) ?? LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !KnifeDiagnostics.IsFinite(matrix)) return;
@@ -113,7 +116,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
         }
         // Geometry is per model, the texture is per (model, finish): a finish never changes what is drawn,
         // only what it is sampled from, so the mesh cache stays keyed by variant alone.
-        BlocksManager.DrawMeshBlock(primitivesRenderer, model, LoadTexture(ScGunSkinCatalog.Material(s_names[variant], SkinOf(value))) ?? LoadTexture(s_names[variant] + "_hd"), color, size, ref matrix, environmentData);
+        BlocksManager.DrawMeshBlock(primitivesRenderer, model, ScGunVisualMaterial.Load(s_names[variant], skin, out _), color, size, ref matrix, environmentData);
     }
 
     public override int GetTextureSlotCount(int value) => 1;

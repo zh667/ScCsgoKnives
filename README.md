@@ -1,6 +1,6 @@
 # ScCsgoKnives
 
-《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.38.1（完整枪械记录回滚、未知格式加载和保存保护；物品布局 v5、记录 schema 2 不变）。见 [修复记录](docs/gun-state-guards-0381.md)。皮肤实现及近似限制见 [皮肤实施记录](docs/gun-skins-p0-0380.md)，其余批次仍暂停。
+《生存战争 2》SCAPI 1.9.2.1 的 CS2 武器模组，与 `ScCsgoBox` 联动。当前开发版：0.38.2（创造模式武器分类直接取用 11 款涂装枪，修复第一人称 OBJ 枪仍显示原厂颜色贴图；物品布局 v5、记录 schema 2 不变）。见 [修复记录](docs/creative-gun-skins-0382.md)。皮肤资源的近似限制见 [皮肤实施记录](docs/gun-skins-p0-0380.md)，其余批次仍暂停。
 
 - 22 把刀、35 把枪、6 种投掷物，全部使用 CS2 模型、骨骼动画和真实手臂／手套。
 - 旧配置中的 `KnifeProfile=0`、`GunProfile=0` 不再启用方块手。

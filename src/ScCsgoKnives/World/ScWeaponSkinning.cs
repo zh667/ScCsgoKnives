@@ -18,7 +18,8 @@ public static class ScWeaponSkinning {
     /// <summary>Every gun in the inventory this build can read, damaged or not.</summary>
     public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {
         int gun = gunBlockIndex >= 0 ? gunBlockIndex : BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        for (int i = 0; i < inventory.SlotsCount; i++) {
+        int slots = inventory is ComponentCreativeInventory creative ? creative.OpenSlotsCount : inventory.SlotsCount;
+        for (int i = 0; i < slots; i++) {
             int value = inventory.GetSlotValue(i);
             if (inventory.GetSlotCount(i) > 0 && Terrain.ExtractContents(value) == gun && ScGunBlock.IsKnown(value)
                 && ScGunSkinCatalog.For(ScGunBlock.GetVariant(value)).Any())
@@ -30,6 +31,7 @@ public static class ScWeaponSkinning {
     /// or the gun already wears it - re-picking the current finish is refused before anything is charged.</summary>
     public static Quote Prepare(IInventory inventory, int slot, ScGunSkin skin, bool free, Func<int, int> materialValue) {
         if (inventory is null || slot < 0 || slot >= inventory.SlotsCount) return null;
+        if (!ScInventoryTransaction.IsWeaponSlot(inventory, slot)) return null;
         int value = inventory.GetSlotValue(slot);
         if (inventory.GetSlotCount(slot) <= 0 || !GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s)) return null;
         if (skin is not null && !ScGunSkinCatalog.Fits(skin, s.Variant)) return null;

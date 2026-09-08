@@ -280,9 +280,8 @@ public static class ScThirdPerson {
             if (group.Silencer && silencerOff) continue; // the detached silencer is not on the gun in third person either
             // "<gun>_hd" is the factory set; a finish redirects it, and an unreadable finish falls back
             // to the factory texture so the gun is still drawn.
-            string skinned = group.Texture.EndsWith("_hd", StringComparison.Ordinal)
-                ? ScGunSkinCatalog.Material(group.Texture[..^3], skin) : group.Texture;
-            Texture2D texture = Load(skinned) ?? Load(group.Texture);
+            Texture2D texture = group.Texture == state.Asset + "_hd"
+                ? ScGunVisualMaterial.Load(state.Asset, skin, out _) : Load(group.Texture);
             if (texture is null) continue;
             BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
         }

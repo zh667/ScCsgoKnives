@@ -17,7 +17,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         string MaterialLines(IReadOnlyDictionary<int, int> materials) => string.Join("\n", materials.Select(m => $"{ValueName(m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
         void ShowList() {
             if (!Available()) return;
-            object[] items = [RepairMenu.Instance, SkinMenu.Instance, .. ScWeaponCrafting.All];
+            object[] items = Creative() ? [RepairMenu.Instance, .. ScWeaponCrafting.All] : [RepairMenu.Instance, SkinMenu.Instance, .. ScWeaponCrafting.All];
             DialogsManager.ShowDialog(player.GuiWidget, new ListSelectionDialog("武器装配台 · 组装 / 维修 / 涂装", items, 56,
                 (Func<object, string>)(item => item is RepairMenu ? "维修背包中的枪械" : item is SkinMenu ? "更换枪械涂装" : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
                     if (item is RepairMenu) { ShowRepair(); return; }

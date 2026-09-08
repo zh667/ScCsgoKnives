@@ -45,7 +45,7 @@ static class SurvivalPackageIntegration {
             Check("subsystem/starter-class", starterClass == "Game.SubsystemScStarterEquipment"
                 && mod.GetType(starterClass)?.IsSubclassOf(typeof(GameEntitySystem.Subsystem)) == true, "registered starter subsystem resolves from the packaged DLL");
         } catch (Exception e) {Check("database/load",false,e.ToString());}
-        string[] types=["ScKnifeBlock","ScGunBlock","ScAmmoBlock","ScWeaponMaterialBlock","ScWeaponWorkbenchBlock","ScGrenadeBlock"];
+        string[] types=["ScKnifeBlock","ScGunBlock","ScAmmoBlock","ScWeaponMaterialBlock","ScWeaponWorkbenchBlock","ScGrenadeBlock","ScGunSkinTemplateBlock"];
         var blocks=types.Select(name=>(Block)Activator.CreateInstance(mod.GetType("Game."+name,true))).ToArray();
         var namesSnapshot=new Dictionary<string,int>(BlocksManager.BlockNameToIndex);
         var typesSnapshot=new Dictionary<Type,int>(BlocksManager.BlockTypeToIndex);

@@ -18,6 +18,7 @@ public sealed class ScGunMutation {
     public int Variant { get; }
     public int Id { get; private set; }
     public bool Fresh { get; }
+    public bool SkinTemplate { get; private set; }
     public bool NeedsClone { get; private set; }
     public long InventoryRevision { get; }
     public int RecordRevision { get; }
@@ -37,6 +38,15 @@ public sealed class ScGunMutation {
         why = ScGunResult.Invalid;
         if (registry is null || inventory is null || slot < 0 || slot >= inventory.SlotsCount || !ScInventoryTransaction.IsWeaponSlot(inventory, slot)) return null;
         int value = inventory.GetSlotValue(slot), data = Terrain.ExtractData(value);
+        if (ScGunSkinTemplateBlock.IsTemplate(value)) {
+            if (registry.Disabled) { why = ScGunResult.Foreign; return null; }
+            if (!ScGunSkinTemplateBlock.TrySnapshot(value, out var template)) return null;
+            string templateOwner = registry.RecoveryOwner is null ? holder : registry.RecoveryOwner(inventory);
+            if (string.IsNullOrWhiteSpace(templateOwner)) return null;
+            if (registry.Recovery.HasPending(templateOwner)) { why = ScGunResult.RecoveryPending; return null; }
+            why = ScGunResult.Success;
+            return new ScGunMutation(registry, inventory, slot, value, template, true, holder, templateOwner) { SkinTemplate = true };
+        }
         if (registry.Disabled || GunSpec.IsForeign(data)) { why = ScGunResult.Foreign; return null; }
         int variant = GunSpec.GetVariant(data);
         if (variant < 0 || variant >= GunSpec.All.Length) return null;
@@ -94,6 +104,7 @@ public sealed class ScGunMutation {
             if (draft.Variant != Variant || !Valid(draft)) return Fail(ScGunResult.Invalid, "invalid draft state");
             if (!SlotUnchanged() || !ReferenceEquals(ScGunRegistry.Current, m_registry) || (!Fresh && record.Revision != RecordRevision)) return Fail(ScGunResult.StateChanged, "state changed in preparation");
             int replacement = needsId ? Terrain.ReplaceData(Expected, GunSpec.WithId(Variant, candidate)) : Expected;
+            if (SkinTemplate) replacement = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true), Terrain.ExtractLight(Expected), GunSpec.WithId(Variant, candidate));
             if (needsId && Inventory.GetSlotCapacity(Slot, replacement) < 1) return Fail(ScGunResult.InventoryRejected, "slot cannot hold new gun id");
             foreach (var item in costs) {
                 int needed = item.Value;

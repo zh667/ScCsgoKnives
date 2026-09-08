@@ -613,6 +613,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
             int value = player.ComponentMiner.ActiveBlockValue;
+            if (ScGunSkinTemplateBlock.IsTemplate(value) && player.ComponentHealth.Health > 0) {
+                var inventory = player.ComponentMiner.Inventory;
+                var result = ScGunSkinTemplateBlock.Materialize(inventory, inventory.ActiveSlotIndex, HolderKey(player));
+                if (result != ScGunResult.Success) Refused(player, result, m_time.GameTime);
+                value = player.ComponentMiner.ActiveBlockValue;
+            }
             if (m_migrationNotice && m_migrationTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。原世界已备份。", Color.White, true, false);
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))

@@ -891,7 +891,10 @@ public static class CsmcFirstPersonRenderer {
         float light = LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight, 0, 15)];
         KnifePbrRenderer.Lighting lighting = KnifePbrRenderer.FirstPersonLighting(camera, light);
         bool hideSilencer = SilencerHidden(firstPerson, variant);
-        Texture2D baseColor = s_cs2Base[gun];
+        string gunMaterial = gun + "_hd";
+        // OBJ guns (AK/M4A1-S/AWP) previously kept the factory colour while only switching ORM/normal.
+        Texture2D baseColor = CsmcKnifeRig.IsGun(variant)
+            ? ScGunVisualMaterial.Load(gun, SkinId, out gunMaterial) : s_cs2Base[gun];
 
         // CS2 ships each knife as one skinned mesh whose moving parts ride bones in
         // the clip's own skeleton - butterfly weights blade, lock and rear - so there
@@ -918,7 +921,7 @@ public static class CsmcFirstPersonRenderer {
             if (hideSilencer && part.Binding == "silencer") continue;
             Matrix world = cs2.GetPart(part.Binding) * root;
             if (!KnifePbrRenderer.TryDrawPart(part.Model, baseColor, variant, world, projection,
-                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, SkinMaterial(gun))) {
+                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, gunMaterial)) {
                 DrawModel(part.Model, baseColor, world, camera, projection, light,
                     SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
             }
@@ -1074,8 +1077,6 @@ public static class CsmcFirstPersonRenderer {
     /// item's record. First person draws one weapon at a time on the main thread, so a single field is enough;
     /// every texture lookup below goes through it, and the cache key carries it so two finishes never share.</summary>
     public static int SkinId;
-    /// <summary>The colour/ORM/normal stem for a gun under the finish being drawn.</summary>
-    static string SkinMaterial(string asset) => ScGunSkinCatalog.Material(asset, SkinId);
 
     /// <summary>
     /// A gun's rigid pieces. Each part is the single-influence case of the skinning
@@ -1091,14 +1092,13 @@ public static class CsmcFirstPersonRenderer {
         out Cs2RigidMesh.Part lens, out Matrix lensWorld) {
         lens = null;
         lensWorld = Matrix.Identity;
-        Texture2D baseColor = Cs2WeaponTexture(asset);
+        Texture2D baseColor = ScGunVisualMaterial.Load(asset, SkinId, out string material);
         if (baseColor is null) return;
         if (!mesh.SetPose(pose, Cs2Placement.Placement())) {
             KnifeDiagnostics.WarnOnce($"cs2-rigid-pose-{asset}",
                 $"No joint of {asset}'s mesh resolved against the clip's skeleton.");
             return;
         }
-        string material = SkinMaterial(asset);
         foreach (Cs2RigidMesh.Part part in mesh.Parts) {
             if (hideSilencer && mesh.Joints[part.Joint] == "silencer") continue;
             if (!mesh.TryPartWorld(part, out Matrix bone)) continue;
@@ -1214,20 +1214,6 @@ public static class CsmcFirstPersonRenderer {
         s_primitives3D.Flush(projection);
     }
 
-    static Texture2D Cs2WeaponTexture(string asset) {
-        string cacheKey = $"{asset}#{SkinId}";
-        if (s_cs2WeaponBase.TryGetValue(cacheKey, out Texture2D hit)) return hit;
-        Texture2D texture = null;
-        foreach (string name in new[] { SkinMaterial(asset), $"{asset}_hd", $"{asset}_cs2" }) {
-            try { texture = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{name}"); }
-            catch { texture = null; }
-            if (texture is not null) break;
-        }
-        if (texture is null)
-            KnifeDiagnostics.WarnOnce($"cs2-weapon-texture-{asset}", $"No CS2 texture for {asset}.");
-        s_cs2WeaponBase[cacheKey] = texture;
-        return texture;
-    }
 
     /// <summary>
     /// A weapon that is one skinned mesh, CPU-skinned against the same pose and
