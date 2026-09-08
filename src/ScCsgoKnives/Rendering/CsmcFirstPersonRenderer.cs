@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Engine;
 using Engine.Graphics;
 using Engine.Input;
@@ -928,8 +929,10 @@ public static class CsmcFirstPersonRenderer {
         // Translucent, so after everything opaque it can sit in front of.
         if (lens is not null) DrawScopeLens(rigid, lens, lensWorld, projection, camera, in lighting, variant);
 
-        if (s_smokeUntil > KnifeClock.Now) DrawCs2MuzzleFlash(cs2, gun, post, projection);
-        if (s_zeusAt >= 0 && Cs2TaserEffect.Applies(gun)) DrawZeusMuzzle(cs2, gun, post, projection);
+        // The engine draws this at order 1, before sky (5) and water (100).
+        // Blend muzzle particles only after the world, using this exact viewmodel depth range.
+        if (CsmcKnifeRig.IsGun(variant) && (s_smokeUntil > KnifeClock.Now || s_zeusAt >= 0 && Cs2TaserEffect.Applies(gun)))
+            QueueFirstPersonEffects(camera, new(cs2, gun, post, projection, Display.Viewport, Time.FrameIndex));
 
         if (s_cs2Logged.Add(gun)) {
             KnifeLog.Information(
@@ -941,6 +944,43 @@ public static class CsmcFirstPersonRenderer {
             );
         }
         return true;
+    }
+
+    internal sealed record FirstPersonEffects(Cs2Rig.Pose Pose, string Gun, Matrix Post, Matrix Projection, Viewport Viewport, int Frame);
+    static readonly ConditionalWeakTable<Camera, FirstPersonEffects> s_pendingEffects = new();
+
+    internal static void QueueFirstPersonEffects(Camera camera, FirstPersonEffects effects) {
+        s_pendingEffects.Remove(camera);
+        s_pendingEffects.Add(camera, effects);
+    }
+
+    internal static bool TakeFirstPersonEffects(Camera camera, int frame, out FirstPersonEffects effects) {
+        bool found = s_pendingEffects.TryGetValue(camera, out effects);
+        s_pendingEffects.Remove(camera);
+        return found && effects.Frame == frame;
+    }
+
+    public static void ClearFirstPersonEffects() => s_pendingEffects.Clear();
+
+    public static void DrawFirstPersonEffects(Camera camera) {
+        if (!TakeFirstPersonEffects(camera, Time.FrameIndex, out var effects)) return;
+        Viewport viewport = Display.Viewport;
+        BlendState blend = Display.BlendState;
+        DepthStencilState depth = Display.DepthStencilState;
+        RasterizerState rasterizer = Display.RasterizerState;
+        try {
+            Display.Viewport = effects.Viewport;
+            if (s_smokeUntil > KnifeClock.Now)
+                DrawCs2MuzzleFlash(effects.Pose, effects.Gun, effects.Post, effects.Projection);
+            if (s_zeusAt >= 0 && Cs2TaserEffect.Applies(effects.Gun))
+                DrawZeusMuzzle(effects.Pose, effects.Gun, effects.Post, effects.Projection);
+        }
+        finally {
+            Display.Viewport = viewport;
+            Display.BlendState = blend;
+            Display.DepthStencilState = depth;
+            Display.RasterizerState = rasterizer;
+        }
     }
 
     static Matrix s_cs2MuzzleRoot, s_cs2MuzzleInvView;

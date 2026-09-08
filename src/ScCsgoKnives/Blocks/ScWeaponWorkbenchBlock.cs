@@ -21,6 +21,13 @@ public sealed class ScWeaponWorkbenchBlock : ScNoDurabilityBlock {
         new(new Vector3(.07f,.1475f,.16f),new Vector3(.93f,.2125f,.84f))
     ];
     public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain terrain,int value) => Collision;
+    public override void GetDropValues(SubsystemTerrain terrain, int oldValue, int newValue, int toolLevel,
+        List<BlockDropValue> dropValues, out bool showDebris) {
+        showDebris = DestructionDebrisScale > 0f;
+        // The API assigns BlockIndex per world, so a constructor-time drop ID is not valid.
+        if (toolLevel >= RequiredToolLevel)
+            dropValues.Add(new BlockDropValue { Value = Terrain.MakeBlockValue(BlockIndex), Count = 1 });
+    }
     BlockMesh m_world, m_item, m_icon;
     public override void Initialize() {
         ScSurvivalMesh.Preload();   // main thread; the terrain thread must never be the first to load the atlas

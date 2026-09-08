@@ -4,6 +4,25 @@ namespace Game;
 public static class ScPolishSelfTest {
     public static void Run(Action<string,bool,string> check) {
         void Test(string name,Func<bool> test) {try {check("polish/"+name,test(),name);}catch(Exception e){check("polish/"+name,false,e.ToString());}}
+        Test("muzzle-deferred-camera-frame", () => {
+            var a = (Camera)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(FppCamera));
+            var b = (Camera)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(FppCamera));
+            var viewport = new Engine.Graphics.Viewport(0, 0, 1280, 720) { MaxDepth = .1f };
+            var first = new CsmcFirstPersonRenderer.FirstPersonEffects(null, "p90", Matrix.Identity,
+                Matrix.CreatePerspectiveFieldOfView(1f, 16f / 9f, .02f, 64f), viewport, 12);
+            CsmcFirstPersonRenderer.QueueFirstPersonEffects(a, first);
+            if (CsmcFirstPersonRenderer.TakeFirstPersonEffects(b, 12, out _)
+                || !CsmcFirstPersonRenderer.TakeFirstPersonEffects(a, 12, out var taken)
+                || taken != first || taken.Viewport.MaxDepth != .1f
+                || CsmcFirstPersonRenderer.TakeFirstPersonEffects(a, 12, out _)) return false;
+            CsmcFirstPersonRenderer.QueueFirstPersonEffects(a, first);
+            // A skipped first-person draw must not reuse the previous frame's particles.
+            if (CsmcFirstPersonRenderer.TakeFirstPersonEffects(a, 13, out _)) return false;
+            CsmcFirstPersonRenderer.QueueFirstPersonEffects(a, first);
+            CsmcFirstPersonRenderer.QueueFirstPersonEffects(b, first with { Gun = "ak47" });
+            return CsmcFirstPersonRenderer.TakeFirstPersonEffects(b, 12, out var second) && second.Gun == "ak47"
+                && CsmcFirstPersonRenderer.TakeFirstPersonEffects(a, 12, out taken) && taken.Gun == "p90";
+        });
         foreach(bool shell in new[]{false,true}) Test("creative-cost/"+shell,()=>
             ScReloadTransaction.CostMessage(true,shell,0)==ScReloadTransaction.CostMessage(true,shell,5)
             && ScReloadTransaction.CostMessage(true,shell,0).Contains("无需消耗")

@@ -48,6 +48,15 @@ static class SurvivalDurabilityRegression {
                     b.MaxStacking = int.Parse(row[Array.IndexOf(rows[0], "MaxStacking")]);
                 }
             }
+            foreach (int tool in new[] { 0, 1, 3 }) Test("workbench-self-drop/" + tool, () => {
+                var bench = blocks[4];
+                var drops = new List<BlockDropValue>();
+                bench.GetDropValues(null, Terrain.MakeBlockValue(bench.BlockIndex, 15, 0), 0, tool, drops, out bool debris);
+                if (drops.Count != 1 || drops[0].Count != 1 || drops[0].Value != Terrain.MakeBlockValue(bench.BlockIndex) || !debris) return false;
+                var inventory = new ComponentInventory(); inventory.m_slots.Add(new());
+                inventory.AddSlotItems(0, drops[0].Value, drops[0].Count);
+                return Same(inventory, Reload(inventory));
+            });
             foreach (var block in blocks) {
                 Test("metadata/" + block.GetType().Name, () => block.Durability == -1);
                 var values = block.GetCreativeValues().ToList();

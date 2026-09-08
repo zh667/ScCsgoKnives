@@ -461,6 +461,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         try {
             DrawTracers(camera);
             DrawZeus(camera);
+            CsmcFirstPersonRenderer.DrawFirstPersonEffects(camera);
             if (CsmcFirstPersonRenderer.ScopeOverlayActive) CsmcFirstPersonRenderer.DrawScopeOverlay();
             var player = camera.GameWidget.PlayerData.ComponentPlayer;
             if (player is not null && m_states.TryGetValue(player, out var state)) state.Feedback.Draw(camera, m_time.GameTime);
@@ -473,6 +474,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public override void Dispose() {
+        CsmcFirstPersonRenderer.ClearFirstPersonEffects();
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);

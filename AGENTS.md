@@ -1,5 +1,7 @@
 # Project conventions
 
+- Narrow user authorization on 2026-09-08: fix the reported survival weapon-workbench missing drop and first-person muzzle particles being overwritten over water. This does not resume other blocked milestones or permit gun save-format changes. See `docs/workbench-muzzle-fixes-0371.md`.
+
 - Execution override, user-directed at 2026-09-08 00:22:15 +08:00 (Asia/Shanghai): only M4 gun durability is ACTIVE. M0 general work, M1, M1b, M2/F07, M3, M5, standalone scope/inspect work and their separate device acceptance are BLOCKED until the user explicitly resumes them. Keep existing features. M4-required identity/transaction/save validation, charge state, box integration and narrow fixes for regressions caused by M4 are in scope. Follow `docs/vps-m4-durability-plan-2026-09-08.md`. Later user authorization on 2026-09-08 adds migration from the only published source version 0.28.2: back up the whole world, preserve model/ammo/silencer and give full durability once. Do not guess internal 0.29–0.36 test formats or reclaim IDs. See `docs/official-0282-compatibility-0370.md`. Do not resume other milestones automatically after M4.
 
 - Use CS2 resources and real skinned hands for all first-person weapons. Do not restore the CS:MC / block-hand runtime route or expose a switch that re-enables it. This is the user's standing preference from 2026-09-06.
