@@ -49,7 +49,9 @@ public sealed class ScGunMutation {
         return new ScGunMutation(registry, inventory, slot, value, before, fresh, holder, owner);
     }
     static bool Valid(ScGunRecord r) => r.Variant >= 0 && r.Variant < GunSpec.All.Length && r.Rounds >= 0 && r.Rounds <= GunSpec.All[r.Variant].Magazine
-        && r.MaxDurability >= 1 && r.Durability >= 0 && r.Durability <= r.MaxDurability && (r.RechargeReadyAt == -1 || (r.RechargeReadyAt >= 0 && double.IsFinite(r.RechargeReadyAt)));
+        && r.MaxDurability >= 1 && r.Durability >= 0 && r.Durability <= r.MaxDurability && (r.RechargeReadyAt == -1 || (r.RechargeReadyAt >= 0 && double.IsFinite(r.RechargeReadyAt)))
+        // A finish must exist in this build's catalogue and belong to this model; nothing else may be written.
+        && ScGunSkinCatalog.IsKnown(r.SkinId) && (r.SkinId == ScGunSkinCatalog.None || ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(r.SkinId), r.Variant));
     bool SlotUnchanged() => Inventory.GetSlotValue(Slot) == Expected && ScInventoryTransaction.Revision(Inventory) == InventoryRevision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot);
 
     public ScGunResult Commit(Action<ScGunRecord> change, int ammo = 0, int cost = 0, IReadOnlyDictionary<int, int> materials = null) {
@@ -83,7 +85,7 @@ public sealed class ScGunMutation {
             bool needsId = Fresh || NeedsClone;
             int candidate = needsId ? m_registry.PeekNextId() : -1;
             if (needsId && candidate < 0) return Fail(NeedsClone ? ScGunResult.DuplicateUnresolved : ScGunResult.RegistryFull, "registry full");
-            var draft = Fresh ? new ScGunRecord { Variant = Variant, Rounds = Before.Rounds, SilencerOff = Before.SilencerOff, Durability = Before.Durability, MaxDurability = Before.MaxDurability } : record.Copy();
+            var draft = Fresh ? new ScGunRecord { Variant = Variant, Rounds = Before.Rounds, SilencerOff = Before.SilencerOff, Durability = Before.Durability, MaxDurability = Before.MaxDurability, SkinId = Before.SkinId } : record.Copy();
             change(draft);
             if (draft.Variant != Variant || !Valid(draft)) return Fail(ScGunResult.Invalid, "invalid draft state");
             if (!SlotUnchanged() || !ReferenceEquals(ScGunRegistry.Current, m_registry) || (!Fresh && record.Revision != RecordRevision)) return Fail(ScGunResult.StateChanged, "state changed in preparation");
@@ -112,7 +114,7 @@ public sealed class ScGunMutation {
             }
             else {
                 record.Rounds = draft.Rounds; record.SilencerOff = draft.SilencerOff; record.Durability = draft.Durability;
-                record.MaxDurability = draft.MaxDurability; record.RechargeReadyAt = draft.RechargeReadyAt;
+                record.MaxDurability = draft.MaxDurability; record.RechargeReadyAt = draft.RechargeReadyAt; record.SkinId = draft.SkinId;
             }
             var committed = needsId ? draft : record;
             committed.Revision = RecordRevision + 1; committed.Holder = Holder;

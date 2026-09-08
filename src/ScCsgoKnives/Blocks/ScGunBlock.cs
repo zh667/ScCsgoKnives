@@ -22,6 +22,8 @@ public class ScGunBlock : ScNoDurabilityBlock {
     /// world's items and ids without a record are kept but unusable.</summary>
     public static bool IsKnown(int value) => GunSpec.IsUsable(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
     public static bool IsOldFormat(int value) => !GunSpec.IsUsable(Terrain.ExtractData(value));
+    /// <summary>The finish on this item, 0 when it has none or its record cannot be read.</summary>
+    public static int SkinOf(int value) => IsKnown(value) ? GunSpec.GetSkinId(Terrain.ExtractData(value)) : ScGunSkinCatalog.None;
     public static GunSpec SpecOf(int value) => IsKnown(value) ? GunSpec.All[GetVariant(value)] : Unknown;
 
     BlockMesh Model(int variant) {
@@ -99,7 +101,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI) {
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
+            BlocksManager.DrawFlatBlock(primitivesRenderer, value, 1.45f * size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], SkinOf(value))) ?? LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !KnifeDiagnostics.IsFinite(matrix)) return;
@@ -109,7 +111,9 @@ public class ScGunBlock : ScNoDurabilityBlock {
             KnifeDiagnostics.WarnOnce($"gun-item-{variant}", $"Could not build {s_names[variant]} item model: {e.Message}");
             return;
         }
-        BlocksManager.DrawMeshBlock(primitivesRenderer, model, LoadTexture(s_names[variant] + "_hd"), color, size, ref matrix, environmentData);
+        // Geometry is per model, the texture is per (model, finish): a finish never changes what is drawn,
+        // only what it is sampled from, so the mesh cache stays keyed by variant alone.
+        BlocksManager.DrawMeshBlock(primitivesRenderer, model, LoadTexture(ScGunSkinCatalog.Material(s_names[variant], SkinOf(value))) ?? LoadTexture(s_names[variant] + "_hd"), color, size, ref matrix, environmentData);
     }
 
     public override int GetTextureSlotCount(int value) => 1;

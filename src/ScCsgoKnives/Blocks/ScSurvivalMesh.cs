@@ -132,6 +132,10 @@ public static class ScSurvivalMesh {
                 Box(.38f,.46f,.12f,.06f,.09f,.29f,0); Box(-.13f,.382f,-.08f,.30f,.03f,.045f,0);
                 Box(-.28f,.382f,-.08f,.075f,.03f,.12f,0); Box(-.02f,.385f,.16f,.25f,.035f,.045f,4);
                 break;
+            case 7: // Paint tin: squat can with a rim, a lid and a brush laid across it.
+                Tube(0,-.16f,0,.30f,.30f,0); Tube(0,.00f,0,.315f,.035f,1); Tube(0,.02f,0,.26f,.03f,4);
+                Box(-.02f,.10f,.30f,.10f,.32f,.05f,2); Box(-.02f,.28f,.30f,.13f,.10f,.07f,1);
+                break;
             default: throw new ArgumentOutOfRangeException(nameof(kind));
         }
         return mesh;

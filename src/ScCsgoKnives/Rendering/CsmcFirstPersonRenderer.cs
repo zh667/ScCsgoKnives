@@ -918,7 +918,7 @@ public static class CsmcFirstPersonRenderer {
             if (hideSilencer && part.Binding == "silencer") continue;
             Matrix world = cs2.GetPart(part.Binding) * root;
             if (!KnifePbrRenderer.TryDrawPart(part.Model, baseColor, variant, world, projection,
-                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, $"{gun}_hd")) {
+                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, SkinMaterial(gun))) {
                 DrawModel(part.Model, baseColor, world, camera, projection, light,
                     SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
             }
@@ -1070,6 +1070,12 @@ public static class CsmcFirstPersonRenderer {
     }
 
     static readonly Dictionary<string, Texture2D> s_cs2WeaponBase = new(StringComparer.Ordinal);
+    /// <summary>The finish of the weapon being drawn this call, set by the first-person hook from the held
+    /// item's record. First person draws one weapon at a time on the main thread, so a single field is enough;
+    /// every texture lookup below goes through it, and the cache key carries it so two finishes never share.</summary>
+    public static int SkinId;
+    /// <summary>The colour/ORM/normal stem for a gun under the finish being drawn.</summary>
+    static string SkinMaterial(string asset) => ScGunSkinCatalog.Material(asset, SkinId);
 
     /// <summary>
     /// A gun's rigid pieces. Each part is the single-influence case of the skinning
@@ -1092,7 +1098,7 @@ public static class CsmcFirstPersonRenderer {
                 $"No joint of {asset}'s mesh resolved against the clip's skeleton.");
             return;
         }
-        string material = $"{asset}_hd";
+        string material = SkinMaterial(asset);
         foreach (Cs2RigidMesh.Part part in mesh.Parts) {
             if (hideSilencer && mesh.Joints[part.Joint] == "silencer") continue;
             if (!mesh.TryPartWorld(part, out Matrix bone)) continue;
@@ -1209,16 +1215,17 @@ public static class CsmcFirstPersonRenderer {
     }
 
     static Texture2D Cs2WeaponTexture(string asset) {
-        if (s_cs2WeaponBase.TryGetValue(asset, out Texture2D hit)) return hit;
+        string cacheKey = $"{asset}#{SkinId}";
+        if (s_cs2WeaponBase.TryGetValue(cacheKey, out Texture2D hit)) return hit;
         Texture2D texture = null;
-        foreach (string name in new[] { $"{asset}_hd", $"{asset}_cs2" }) {
+        foreach (string name in new[] { SkinMaterial(asset), $"{asset}_hd", $"{asset}_cs2" }) {
             try { texture = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{name}"); }
             catch { texture = null; }
             if (texture is not null) break;
         }
         if (texture is null)
             KnifeDiagnostics.WarnOnce($"cs2-weapon-texture-{asset}", $"No CS2 texture for {asset}.");
-        s_cs2WeaponBase[asset] = texture;
+        s_cs2WeaponBase[cacheKey] = texture;
         return texture;
     }
 

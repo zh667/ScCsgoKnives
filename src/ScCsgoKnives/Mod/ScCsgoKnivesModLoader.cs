@@ -224,9 +224,14 @@ public class ScCsgoKnivesModLoader : ModLoader {
         DepthStencilState depth = Display.DepthStencilState;
         RasterizerState rasterizer = Display.RasterizerState;
         try {
+            // The finish is read from the held item's record here and cleared straight after, so nothing
+            // else in the frame can draw a weapon under another weapon's skin.
+            CsmcFirstPersonRenderer.SkinId = Terrain.ExtractContents(itemValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)
+                ? ScGunBlock.SkinOf(itemValue) : ScGunSkinCatalog.None;
             skip = CsmcFirstPersonRenderer.Draw(componentFirstPersonModel, camera, variant, pose);
         }
         finally {
+            CsmcFirstPersonRenderer.SkinId = ScGunSkinCatalog.None;
             Display.BlendState = blend;
             Display.DepthStencilState = depth;
             Display.RasterizerState = rasterizer;

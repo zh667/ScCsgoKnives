@@ -368,12 +368,221 @@ public static class SurvivalSelfTest {
         });
         Test("m4-strict-record-parse", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
-            records.SetValue("1", "0,30,0,1500,badMax,badRevision,badCharge"); records.SetValue("2", "0,30,0,1500"); records.SetValue("3", "0,30,0,1500,1500,0,-1,extra"); records.SetValue("4", "0,30,2,1500,1500,0,-1"); records.SetValue("5", "0,30,0,1500,1500,0,-1");
+            records.SetValue("1", "0,30,0,1500,badMax,badRevision,badCharge,0"); records.SetValue("2", "0,30,0,1500"); records.SetValue("3", "0,30,0,1500,1500,0,-1,0,extra"); records.SetValue("4", "0,30,2,1500,1500,0,-1,0"); records.SetValue("5", "0,30,0,1500,1500,0,-1,0");
             d.SetValue("Records", records);
             var r = ScGunRegistry.Load(d, 0);
             bool strict = r.Count == 1 && r.QuarantinedCount == 4 && r.TryGetSnapshot(5, out _) && !r.TryGetSnapshot(1, out _) && r.Next == 6;
-            bool kept = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "0,30,0,1500,badMax,badRevision,badCharge";
+            bool kept = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "0,30,0,1500,badMax,badRevision,badCharge,0";
             return strict && kept;
+        });
+        // ---- gun finishes (P1). A finish is a record field: appearance only, and every other field must
+        // come out of the transaction untouched. Material kinds stand in for the blocks, which are not
+        // registered headlessly, so the costs are exercised without a BlocksManager.
+        int MatValue(int kind) => 950 + kind;
+        int AwpVariant() => Array.FindIndex(GunSpec.All, g => g.Name == "awp");
+        ScGunSkin SkinOf(string key) => ScGunSkinCatalog.All.First(x => x.Key == key);
+        void Stock(Inventory i, ScGunSkin skin) {
+            var (b, m, paint) = ScGunSkinCatalog.Cost[skin.Tier];
+            i.AddSlotItems(2, MatValue(ScWeaponMaterialBlock.Blank), b + 4);
+            i.AddSlotItems(3, MatValue(ScWeaponMaterialBlock.Mechanism), m + 4);
+            i.AddSlotItems(4, MatValue(ScWeaponMaterialBlock.Paint), paint + 4);
+        }
+        ScGunResult ApplySkin(Inventory i, int slot, ScGunSkin skin, string holder = "player:0:0", bool free = false) {
+            var q = ScWeaponSkinning.Prepare(i, slot, skin, free, MatValue);
+            return q is null ? ScGunResult.Invalid : ScWeaponSkinning.Apply(i, q, holder);
+        }
+        Test("skin-catalog-shape", () => {
+            bool ids = ScGunSkinCatalog.All.Length == 11 && ScGunSkinCatalog.All.Select(x => x.PaintId).Distinct().Count() == 11
+                && ScGunSkinCatalog.All.Select(x => x.Key).Distinct().Count() == 11
+                && ScGunSkinCatalog.All.All(x => x.PaintId > 0 && GunSpec.All.Any(g => g.Name == x.Gun));
+            bool counts = ScGunSkinCatalog.For(AwpVariant()).Count() == 3
+                && ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "ak47")).Count() == 4
+                && ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "m4a1s")).Count() == 4
+                && !ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "deagle")).Any();
+            bool known = ScGunSkinCatalog.IsKnown(ScGunSkinCatalog.None) && ScGunSkinCatalog.IsKnown(51) && !ScGunSkinCatalog.IsKnown(9999)
+                && ScGunSkinCatalog.Find(51).Key == "am_lightning_awp" && ScGunSkinCatalog.Find(9999) is null;
+            bool fits = ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), AwpVariant())
+                && !ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), Array.FindIndex(GunSpec.All, g => g.Name == "ak47"));
+            bool tiers = ScGunSkinCatalog.Cost[ScSkinTier.Standard] == (2, 1, 1) && ScGunSkinCatalog.Cost[ScSkinTier.Premium] == (4, 2, 2)
+                && ScGunSkinCatalog.Cost[ScSkinTier.Special] == (6, 3, 3) && ScGunSkinCatalog.RemovalCost == (1, 1, 1);
+            bool names = ScGunSkinCatalog.Material("awp", 51) == "awp_hd__am_lightning_awp" && ScGunSkinCatalog.Material("awp", ScGunSkinCatalog.None) == "awp_hd"
+                && ScGunSkinCatalog.Material("ak47", 51) == "ak47_hd" && ScGunSkinCatalog.Icon("awp", 51) == "awp_slot__am_lightning_awp"
+                && ScGunSkinCatalog.Material("awp", 9999) == "awp_hd";
+            return ids && counts && known && fits && tiers && names;
+        });
+        Test("skin-apply-keeps-state", () => {
+            var skin = SkinOf("am_lightning_awp");
+            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(i, skin);
+            for (int n = 0; n < 3; n++) if (Shoot(i, 0) != ScGunResult.Success) return false;
+            var m = ScGunMutation.Prepare(i, 0, "player:0:0", out _);
+            if (m.Commit(r => { r.SilencerOff = false; r.RechargeReadyAt = 42; }) != ScGunResult.Success) return false;
+            var before = GunSpec.TryGetSnapshot(Data(i, 0), out var b) ? b : default;
+            int blanks = i.Counts[2], mechs = i.Counts[3], paints = i.Counts[4];
+            if (ApplySkin(i, 0, skin) != ScGunResult.Success) return false;
+            var after = GunSpec.TryGetSnapshot(Data(i, 0), out var a) ? a : default;
+            bool kept = after.SkinId == skin.PaintId && after.Rounds == before.Rounds && after.Durability == before.Durability
+                && after.MaxDurability == before.MaxDurability && after.SilencerOff == before.SilencerOff
+                && after.RechargeReadyAt == before.RechargeReadyAt && after.Id == before.Id && after.Revision == before.Revision + 1;
+            var (cb, cm, cp) = ScGunSkinCatalog.Cost[skin.Tier];
+            bool charged = i.Counts[2] == blanks - cb && i.Counts[3] == mechs - cm && i.Counts[4] == paints - cp;
+            bool again = ScWeaponSkinning.Prepare(i, 0, skin, false, MatValue) is null && i.Counts[2] == blanks - cb; // the finish it already wears is refused, free
+            return kept && charged && again;
+        });
+        Test("skin-registers-fresh-template", () => {
+            var skin = SkinOf("cu_fireserpent_ak47_bravo");
+            int ak = Array.FindIndex(GunSpec.All, g => g.Name == "ak47");
+            var i = new Inventory(); i.AddSlotItems(0, Gun(ak, GunSpec.All[ak].Magazine), 1); Stock(i, skin);
+            bool fresh = GunSpec.IsFresh(Data(i, 0));
+            if (ApplySkin(i, 0, skin) != ScGunResult.Success) return false;
+            // A finished gun can never be a stackable template again: it now owns an instance record.
+            return fresh && !GunSpec.IsFresh(Data(i, 0)) && GunSpec.GetId(Data(i, 0)) >= GunSpec.FirstId
+                && GunSpec.GetSkinId(Data(i, 0)) == skin.PaintId && GunSpec.GetRounds(Data(i, 0)) == GunSpec.All[ak].Magazine;
+        });
+        Test("skin-strip-and-wrong-gun", () => {
+            var skin = SkinOf("am_lightning_awp");
+            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(i, skin); i.AddSlotItems(5, MatValue(ScWeaponMaterialBlock.Paint), 4);
+            if (ApplySkin(i, 0, skin) != ScGunResult.Success) return false;
+            int blanks = i.Counts[2];
+            bool wrongGun = ScWeaponSkinning.Prepare(i, 0, SkinOf("cu_fireserpent_ak47_bravo"), false, MatValue) is null; // an AK finish is not offered on an AWP
+            var strip = ScWeaponSkinning.Prepare(i, 0, null, false, MatValue);
+            bool stripped = strip is not null && strip.Cost[MatValue(ScWeaponMaterialBlock.Blank)] == ScGunSkinCatalog.RemovalCost.Blank
+                && ScWeaponSkinning.Apply(i, strip, "player:0:0") == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None
+                && i.Counts[2] == blanks - ScGunSkinCatalog.RemovalCost.Blank;
+            bool free = ApplySkin(i, 0, skin, free: true) == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == skin.PaintId;
+            return wrongGun && stripped && free;
+        });
+        Test("skin-rollback-on-faults", () => {
+            var skin = SkinOf("gs_awp_gungnir"); // Special: 6 blanks, 3 mechanisms, 3 paint
+            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1);
+            if (Shoot(i, 0) != ScGunResult.Success) return false;
+            int worn = Dur(i, 0);
+            bool poor = ApplySkin(i, 0, skin) == ScGunResult.InsufficientMaterials && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None;
+            Stock(i, skin);
+            int blanks = i.Counts[2], paints = i.Counts[4];
+            i.ThrowOnRemoveSlot = 4; var threw = ApplySkin(i, 0, skin); i.ThrowOnRemoveSlot = -1;
+            bool rolled = threw == ScGunResult.InventoryRejected && i.Counts[2] == blanks && i.Counts[4] == paints
+                && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None && Dur(i, 0) == worn;
+            var last = ApplySkin(i, 0, skin);
+            bool ok = last == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == skin.PaintId && Dur(i, 0) == worn;
+            // A slot that silently drops what is added only matters when the item value has to change, which
+            // is when a factory template is registered by the finish; an already-registered gun keeps its value.
+            var f = new Inventory(); f.AddSlotItems(0, Gun(AwpVariant(), GunSpec.All[AwpVariant()].Magazine), 1); Stock(f, skin);
+            int fBlanks = f.Counts[2]; f.FailAddSlot = 0;
+            var dropped = ApplySkin(f, 0, skin); f.FailAddSlot = -1;
+            bool refused = dropped != ScGunResult.Success && f.Counts[2] == fBlanks
+                && (f.Counts[0] == 0 || GunSpec.GetSkinId(Terrain.ExtractData(f.Values[0])) == ScGunSkinCatalog.None);
+            if (!(poor && rolled && refused && ok)) throw new InvalidOperationException($"poor={poor} threw={threw} rolled={rolled} dropped={dropped} refused={refused} last={last} skin={GunSpec.GetSkinId(Data(i, 0))} dur={Dur(i, 0)}/{worn} blanks={i.Counts[2]}/{blanks} paints={i.Counts[4]}/{paints} fBlanks={f.Counts[2]}/{fBlanks}");
+            return true;
+        });
+        Test("skin-registry-full-is-safe", () => {
+            var saved = ScGunRegistry.Current; var full = new ScGunRegistry(); while (!full.IsFull) full.Allocate(0, 0, false, 1); ScGunRegistry.Current = full;
+            try {
+                var skin = SkinOf("am_lightning_awp");
+                var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(i, skin);
+                int blanks = i.Counts[2];
+                // A factory template needs a record before it can hold a finish; with no room it stays plain and pays nothing.
+                return ApplySkin(i, 0, skin) == ScGunResult.RegistryFull && GunSpec.IsFresh(Data(i, 0))
+                    && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None && i.Counts[2] == blanks;
+            } finally { ScGunRegistry.Current = saved; }
+        });
+        Test("skin-survives-transfer-and-two-saves", () => {
+            var skin = SkinOf("cu_m4a1s_printstream");
+            int m4 = Array.FindIndex(GunSpec.All, g => g.Name == "m4a1s");
+            var player = new Inventory(); player.AddSlotItems(0, Gun(m4, 5), 1); Stock(player, skin);
+            if (ApplySkin(player, 0, skin) != ScGunResult.Success) return false;
+            if (Shoot(player, 0) != ScGunResult.Success) return false;
+            var want = GunSpec.TryGetSnapshot(Data(player, 0), out var w) ? w : default;
+            int value = player.Values[0];
+            player.RemoveSlotItems(0, 1);
+            var chest = new Inventory(); chest.AddSlotItems(3, value, 1);          // chest
+            int dropped = chest.Values[3]; chest.RemoveSlotItems(3, 1);              // ground / projectile / moving block carry the bare value
+            var other = new Inventory(); other.AddSlotItems(2, dropped, 1);          // another player
+            var once = ScGunRegistry.Load(ScGunRegistry.Current.Save(0), 0);
+            var twice = ScGunRegistry.Load(once.Save(0), 0);                          // save, quit, re-enter, save, re-enter
+            bool kept = twice.TryGetSnapshot(want.Id, out var got) && got.SkinId == skin.PaintId && got.Rounds == want.Rounds
+                && got.Durability == want.Durability && got.SilencerOff == want.SilencerOff && got.Revision == want.Revision
+                && GunSpec.GetId(Terrain.ExtractData(other.Values[2])) == want.Id;
+            return kept && want.SkinId == skin.PaintId;
+        });
+        Test("skin-copies-are-independent", () => {
+            var skin = SkinOf("gs_m4a1s_snakebite_gold");
+            int m4 = Array.FindIndex(GunSpec.All, g => g.Name == "m4a1s");
+            var a = new Inventory(); a.AddSlotItems(0, Gun(m4, 5), 1); Stock(a, skin);
+            if (ApplySkin(a, 0, skin) != ScGunResult.Success) return false;
+            int id = GunSpec.GetId(Data(a, 0));
+            var b = new Inventory(); b.AddSlotItems(1, a.Values[0], 1);              // a creative copy of the finished gun
+            var savedLocator = ScGunMutation.HolderLocator;
+            ScGunMutation.HolderLocator = (rid, except) => rid == id && except != "A" ? ["A"] : Array.Empty<string>();
+            try {
+                bool split = Shoot(b, 1, "B") == ScGunResult.Success && GunSpec.GetId(Terrain.ExtractData(b.Values[1])) != id
+                    && GunSpec.GetSkinId(Terrain.ExtractData(b.Values[1])) == skin.PaintId;   // the copy keeps the finish
+                int copyDur = GunSpec.GetDurability(Terrain.ExtractData(b.Values[1]));
+                // Two shots on the original, none on the copy: the two records must now differ and the copy
+                // must be exactly where it was left.
+                var shotA = Shoot(a, 0, "A"); var shotA2 = Shoot(a, 0, "A");
+                bool apart = shotA == ScGunResult.Success && shotA2 == ScGunResult.Success && Dur(a, 0) == copyDur - 1
+                    && GunSpec.GetDurability(Terrain.ExtractData(b.Values[1])) == copyDur
+                    && GunSpec.GetSkinId(Data(a, 0)) == skin.PaintId;
+                if (!(split && apart)) throw new InvalidOperationException($"split={split} apart={apart} id={id} copyId={GunSpec.GetId(Terrain.ExtractData(b.Values[1]))} copyDur={copyDur} aDur={Dur(a, 0)} shots={shotA}/{shotA2}");
+                return true;
+            } finally { ScGunMutation.HolderLocator = savedLocator; }
+        });
+        Test("skin-never-merges-a-stack", () => {
+            var skin = SkinOf("am_lightning_awp");
+            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(i, skin);
+            int plain = i.Values[0];
+            if (ApplySkin(i, 0, skin) != ScGunResult.Success) return false;
+            int finished = i.Values[0];
+            var j = new Inventory(); j.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(j, skin);
+            if (ApplySkin(j, 0, SkinOf("cu_medieval_dragon_awp")) != ScGunResult.Success) return false;
+            // Different finish, and finished versus factory, are different item values, so no inventory can
+            // put them in one stack even before MaxStacking is considered.
+            bool distinct = finished != plain && finished != j.Values[0] && GunSpec.GetId(Terrain.ExtractData(finished)) != GunSpec.GetId(Terrain.ExtractData(j.Values[0]));
+            if (!distinct) throw new InvalidOperationException($"plain={plain} finished={finished} other={j.Values[0]} idF={GunSpec.GetId(Terrain.ExtractData(finished))} idO={GunSpec.GetId(Terrain.ExtractData(j.Values[0]))}");
+            return true;
+        });
+        Test("skin-schema-1-converts-to-none", () => {
+            // A schema-1 world: seven fields, no finish. Everything else must survive untouched.
+            var d = new ValuesDictionary(); d.SetValue("Schema", ScGunRegistry.SchemaWithoutSkins); d.SetValue("Next", 3);
+            var records = new ValuesDictionary(); records.SetValue("1", "0,17,1,900,1500,4,12.5"); records.SetValue("2", "2,3,0,200,200,0,-1");
+            d.SetValue("Records", records);
+            var r = ScGunRegistry.Load(d, 100);
+            bool converted = r.Count == 2 && r.QuarantinedCount == 0
+                && r.TryGetSnapshot(1, out var a) && a is { Variant: 0, Rounds: 17, SilencerOff: true, Durability: 900, MaxDurability: 1500, Revision: 4, SkinId: ScGunSkinCatalog.None }
+                && Math.Abs(a.RechargeReadyAt - 112.5) < 1e-3
+                && r.TryGetSnapshot(2, out var b) && b is { Variant: 2, Rounds: 3, Durability: 200, SkinId: ScGunSkinCatalog.None };
+            // Saving writes schema 2 with the finish field; reading that back changes nothing else.
+            var again = ScGunRegistry.Load(r.Save(100), 100);
+            bool stable = again.Save(0).GetValue<int>("Schema") == ScGunRegistry.Schema
+                && again.TryGetSnapshot(1, out var c) && c.Rounds == 17 && c.Durability == 900 && c.Revision == 4 && c.SkinId == ScGunSkinCatalog.None;
+            return converted && stable;
+        });
+        Test("skin-bad-records-are-quarantined", () => {
+            var d = new ValuesDictionary(); d.SetValue("Schema", ScGunRegistry.Schema); d.SetValue("Next", 1);
+            var records = new ValuesDictionary();
+            records.SetValue("1", "0,30,0,1500,1500,0,-1,9999");   // a finish this build does not know
+            records.SetValue("2", "0,30,0,1500,1500,0,-1,51");     // an AWP finish on an AK
+            records.SetValue("3", "0,30,0,1500,1500,0,-1");        // schema-1 row inside a schema-2 table
+            records.SetValue("4", "2,5,0,200,200,0,-1,51");        // valid: Lightning Strike on the AWP
+            d.SetValue("Records", records);
+            var r = ScGunRegistry.Load(d, 0);
+            bool only = r.Count == 1 && r.QuarantinedCount == 3 && r.TryGetSnapshot(4, out var ok) && ok.SkinId == 51 && ok.Variant == 2;
+            bool untouched = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "0,30,0,1500,1500,0,-1,9999";
+            bool refused = !r.TryGetSnapshot(1, out _) && !r.TryGetSnapshot(2, out _) && !r.TryGetSnapshot(3, out _);
+            var unknown = new ValuesDictionary(); unknown.SetValue("Schema", 99);
+            var far = ScGunRegistry.Load(unknown, 0);
+            return only && untouched && refused && far.UnknownSchema && far.Disabled && far.Save(0) == unknown;
+        });
+        Test("skin-cannot-be-written-by-a-plain-mutation", () => {
+            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1);
+            if (Shoot(i, 0) != ScGunResult.Success) return false;
+            var m = ScGunMutation.Prepare(i, 0, "player:0:0", out _);
+            // An unknown paint ID, or one from another gun, is refused by the record validator itself.
+            bool unknown = m.Commit(r => r.SkinId = 9999) == ScGunResult.Invalid && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None;
+            var m2 = ScGunMutation.Prepare(i, 0, "player:0:0", out _);
+            bool wrongGun = m2.Commit(r => r.SkinId = SkinOf("cu_fireserpent_ak47_bravo").PaintId) == ScGunResult.Invalid
+                && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None;
+            return unknown && wrongGun;
         });
         Test("m4-t13-save-snapshots", () => {
             var reg = new ScGunRegistry(); var saved = ScGunRegistry.Current; ScGunRegistry.Current = reg;
@@ -492,11 +701,11 @@ public static class SurvivalSelfTest {
         });
         Test("m4-t12-bad-records", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
-            records.SetValue("1", "0,30,0,1500,1500,0,-1"); records.SetValue("2", "0,99,0,1500,1500,0,-1"); records.SetValue("3", "63,1,0,10,10,0,-1"); records.SetValue("4", "junk"); records.SetValue("5", "0,1,0,2000,1500,0,-1");
+            records.SetValue("1", "0,30,0,1500,1500,0,-1,0"); records.SetValue("2", "0,99,0,1500,1500,0,-1,0"); records.SetValue("3", "63,1,0,10,10,0,-1,0"); records.SetValue("4", "junk"); records.SetValue("5", "0,1,0,2000,1500,0,-1,0");
             d.SetValue("Records", records); d.SetValue("Next", 2);
             var r = ScGunRegistry.Load(d, 0);
             bool kept = r.Count == 1 && r.QuarantinedCount == 4 && r.Next == 6 && !r.TryGetSnapshot(2, out _) && !r.TryGetSnapshot(5, out _);
-            var again = r.Save(0).GetValue<ValuesDictionary>("Records"); bool verbatim = again.GetValue<string>("2") == "0,99,0,1500,1500,0,-1" && again.GetValue<string>("4") == "junk";
+            var again = r.Save(0).GetValue<ValuesDictionary>("Records"); bool verbatim = again.GetValue<string>("2") == "0,99,0,1500,1500,0,-1,0" && again.GetValue<string>("4") == "junk";
             var saved = ScGunRegistry.Current; ScGunRegistry.Current = r;
             try {
                 var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.WithId(0, 2)), 1); i.AddSlotItems(1, Terrain.MakeBlockValue(512, 0, GunSpec.WithId(5, 1)), 1);

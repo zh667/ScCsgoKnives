@@ -6,21 +6,23 @@ namespace Game;
 /// Records are only changed through ScGunMutation; everything else reads ScGunSnapshot copies.</summary>
 public sealed class ScGunRecord {
     public int Variant, Rounds, Durability, MaxDurability, Revision;
+    /// <summary>CS2 paint ID of the finish, 0 for the factory look. Appearance only; see ScGunSkinCatalog.</summary>
+    public int SkinId;
     public bool SilencerOff;
     /// <summary>Zeus: game time (this session's SubsystemTime.GameTime) when the charge is back; below zero = not charging.</summary>
     public double RechargeReadyAt = -1;
     /// <summary>Last holder that changed this record (player:index:slot, block:x,y,z:slot); transient, never saved.</summary>
     public string Holder;
     public ScGunRecord Copy() => (ScGunRecord)MemberwiseClone();
-    public ScGunSnapshot Snapshot(int id) => new(id, Variant, Rounds, SilencerOff, Durability, MaxDurability, Revision, RechargeReadyAt);
+    public ScGunSnapshot Snapshot(int id) => new(id, Variant, Rounds, SilencerOff, Durability, MaxDurability, Revision, RechargeReadyAt, SkinId);
 }
 
 /// <summary>Read-only view of a record (or of a fresh gun's defaults). Id 0/1023 = fresh, no record.</summary>
-public readonly record struct ScGunSnapshot(int Id, int Variant, int Rounds, bool SilencerOff, int Durability, int MaxDurability, int Revision, double RechargeReadyAt) {
+public readonly record struct ScGunSnapshot(int Id, int Variant, int Rounds, bool SilencerOff, int Durability, int MaxDurability, int Revision, double RechargeReadyAt, int SkinId = 0) {
     public bool Fresh => Id is GunSpec.FreshFull or GunSpec.FreshEmpty;
     public static ScGunSnapshot ForFresh(int variant, bool full) {
         int magazine = variant >= 0 && variant < GunSpec.All.Length ? GunSpec.All[variant].Magazine : 0, life = ScGunDurability.Full(variant);
-        return new(full ? GunSpec.FreshFull : GunSpec.FreshEmpty, variant, full ? magazine : 0, false, life, life, 0, -1);
+        return new(full ? GunSpec.FreshFull : GunSpec.FreshEmpty, variant, full ? magazine : 0, false, life, life, 0, -1, ScGunSkinCatalog.None);
     }
 }
 
@@ -28,7 +30,11 @@ public readonly record struct ScGunSnapshot(int Id, int Variant, int Rounds, boo
 /// a full table refuses new records. Saved with a schema number; a schema this version does not know keeps the
 /// saved subtree verbatim and disables guns rather than guessing at it.</summary>
 public sealed class ScGunRegistry {
-    public const int Schema = 1;
+    /// <summary>Record schema. 1 was seven fields; 2 appends the finish's CS2 paint ID. A schema this build
+    /// does not know is kept verbatim and disables guns - the item layout stamp (GunSpec.DataLayout) is a
+    /// separate number and does not change for a finish.</summary>
+    public const int Schema = 2;
+    public const int SchemaWithoutSkins = 1;
     /// <summary>The registry of the world being played; set by SubsystemScGunBlockBehavior.Load, cleared on dispose.
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
@@ -83,9 +89,9 @@ public sealed class ScGunRegistry {
         return id;
     }
     /// <summary>A record straight from values (tests, MakeData with a partial magazine). Revision starts at 0.</summary>
-    public int Allocate(int variant, int rounds, bool silencerOff, int durability, int maxDurability = -1) {
+    public int Allocate(int variant, int rounds, bool silencerOff, int durability, int maxDurability = -1, int skinId = ScGunSkinCatalog.None) {
         int max = maxDurability > 0 ? maxDurability : ScGunDurability.Full(variant);
-        return Publish(new ScGunRecord { Variant = variant, Rounds = Math.Max(0, rounds), SilencerOff = silencerOff, Durability = Math.Clamp(durability, 0, max), MaxDurability = max });
+        return Publish(new ScGunRecord { Variant = variant, Rounds = Math.Max(0, rounds), SilencerOff = silencerOff, Durability = Math.Clamp(durability, 0, max), MaxDurability = max, SkinId = skinId });
     }
     /// <summary>A record that was published but could not be tied to its item: kept as text under its id so the watermark stands, never reused.</summary>
     internal void Abandon(int id, string reason) {
@@ -101,7 +107,7 @@ public sealed class ScGunRegistry {
         return Publish(copy);
     }
     static string Format(ScGunRecord r, double now) =>
-        $"{r.Variant},{r.Rounds},{(r.SilencerOff ? 1 : 0)},{r.Durability},{r.MaxDurability},{r.Revision},{(r.RechargeReadyAt >= 0 ? Math.Max(0, r.RechargeReadyAt - now).ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) : "-1")}";
+        $"{r.Variant},{r.Rounds},{(r.SilencerOff ? 1 : 0)},{r.Durability},{r.MaxDurability},{r.Revision},{(r.RechargeReadyAt >= 0 ? Math.Max(0, r.RechargeReadyAt - now).ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) : "-1")},{r.SkinId}";
     /// <summary>A snapshot of the table taken on the game thread. Zeus charge is saved as seconds still to go, because
     /// SubsystemTime.GameTime restarts from zero every session.</summary>
     public ValuesDictionary Save(double now) {
@@ -117,7 +123,9 @@ public sealed class ScGunRegistry {
         var registry = new ScGunRegistry();
         if (d is null) return registry;
         int schema = d.GetValue<int>("Schema", 0);
-        if (schema != Schema) { registry.UnknownSchema = true; registry.m_preserved = d; KnifeLog.Error($"gun registry schema {schema} is not {Schema}; kept verbatim, guns disabled"); return registry; }
+        if (schema != Schema && schema != SchemaWithoutSkins) { registry.UnknownSchema = true; registry.m_preserved = d; KnifeLog.Error($"gun registry schema {schema} is not {SchemaWithoutSkins} or {Schema}; kept verbatim, guns disabled"); return registry; }
+        // Schema 1 had no finish field; every record it holds converts to the factory look and nothing else moves.
+        int fields = schema == SchemaWithoutSkins ? 7 : 8;
         try { registry.Recovery = ScGunRecovery.Load(d.GetValue<ValuesDictionary>("Recovery", null)); }
         catch (Exception e) {
             registry.UnknownSchema = true; registry.m_preserved = d;
@@ -134,13 +142,17 @@ public sealed class ScGunRegistry {
             var ci = System.Globalization.CultureInfo.InvariantCulture;
             var ints = System.Globalization.NumberStyles.Integer;
             int id = 0, variant = 0, rounds = 0, sil = 0, durability = 0, max = 0, revision = 0; double remaining = -1;
-            bool ok = int.TryParse(pair.Key, ints, ci, out id) && id >= GunSpec.FirstId && id <= GunSpec.LastId && f.Length == 7;
+            int skinId = ScGunSkinCatalog.None;
+            bool ok = int.TryParse(pair.Key, ints, ci, out id) && id >= GunSpec.FirstId && id <= GunSpec.LastId && f.Length == fields;
             ok = ok && int.TryParse(f[0], ints, ci, out variant) && int.TryParse(f[1], ints, ci, out rounds) && int.TryParse(f[2], ints, ci, out sil) && int.TryParse(f[3], ints, ci, out durability);
             ok = ok && int.TryParse(f[4], ints, ci, out max) && int.TryParse(f[5], ints, ci, out revision) && double.TryParse(f[6], System.Globalization.NumberStyles.Float, ci, out remaining);
+            ok = ok && (fields == 7 || int.TryParse(f[7], ints, ci, out skinId));
             ok = ok && variant >= 0 && variant < GunSpec.All.Length && (sil == 0 || sil == 1) && rounds >= 0 && rounds <= GunSpec.All[variant].Magazine
-                && max >= 1 && durability >= 0 && durability <= max && revision >= 0 && double.IsFinite(remaining) && (remaining < 0 ? remaining == -1 : remaining <= 1e6);
+                && max >= 1 && durability >= 0 && durability <= max && revision >= 0 && double.IsFinite(remaining) && (remaining < 0 ? remaining == -1 : remaining <= 1e6)
+                // A finish this build does not know, or one that belongs to another gun, is not guessed at.
+                && ScGunSkinCatalog.IsKnown(skinId) && (skinId == ScGunSkinCatalog.None || ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant));
             if (ok) {
-                registry.m_records[id] = new ScGunRecord { Variant = variant, Rounds = rounds, SilencerOff = sil == 1, Durability = durability, MaxDurability = max, Revision = revision, RechargeReadyAt = remaining >= 0 ? now + remaining : -1 };
+                registry.m_records[id] = new ScGunRecord { Variant = variant, Rounds = rounds, SilencerOff = sil == 1, Durability = durability, MaxDurability = max, Revision = revision, RechargeReadyAt = remaining >= 0 ? now + remaining : -1, SkinId = skinId };
                 highest = Math.Max(highest, id);
             }
             else { registry.m_quarantined[pair.Key] = raw; if (int.TryParse(pair.Key, out int bad)) highest = Math.Max(highest, bad); }

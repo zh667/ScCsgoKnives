@@ -108,7 +108,7 @@ static class CombatRegression {
                 && (int)Call("GunSpec", "GetRounds", Terrain.ExtractData(inv.GetSlotValue(0))) == 30
                 && !(bool)type.GetMethod("FinishMagazine").Invoke(tx, [4d, 3d]);
         });
-        for (int kind = 0; kind < 7; kind++) {
+        for (int kind = 0; kind < 8; kind++) {  // 0-6 supplies and the bench, 7 the paint tin
             int k = kind;
             Test("supply-ui-colored-with-zero-scene-light/" + k, () => {
                 var source = (BlockMesh)Call("ScSurvivalMesh", "Build", k);

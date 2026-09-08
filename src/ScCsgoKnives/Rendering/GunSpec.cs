@@ -319,6 +319,9 @@ public sealed class GunSpec {
     public static bool GetSilencerOff(int data) => TryGetSnapshot(data, out var s) && s.SilencerOff;
     public static int GetDurability(int data) => TryGetSnapshot(data, out var s) ? s.Durability : 0;
     public static int GetMaxDurability(int data) => TryGetSnapshot(data, out var s) ? s.MaxDurability : ScGunDurability.Full(GetVariant(data));
+    /// <summary>The finish this gun wears, or 0. A fresh template has none, which is why a finish always
+    /// registers an instance first.</summary>
+    public static int GetSkinId(int data) => TryGetSnapshot(data, out var s) ? s.SkinId : ScGunSkinCatalog.None;
     /// <summary>A new gun. Full or empty magazines need no record (creative lists, recipes, starter kits work without a world);
     /// anything else takes a record, or falls back to the nearer fresh state when there is no registry or it is full.</summary>
     public static int MakeData(int variant, int rounds, bool silencerOff = false) {

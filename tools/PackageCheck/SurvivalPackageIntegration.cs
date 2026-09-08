@@ -90,7 +90,7 @@ static class SurvivalPackageIntegration {
                     }
                 }
             }
-            Check("recipe/count",recipes.Count==13,"2 ammo + 4 parts + workbench + 6 grenades");
+            Check("recipe/count",recipes.Count==14,"2 ammo + 5 parts (the fifth is the paint material) + workbench + 6 grenades");
             var vanilla=Read(original,"Assets/CraftingRecipes.xml");
             var layouts=new List<(string Name,string[] Ingredients)>();
             foreach (var recipe in vanilla.DescendantsAndSelf("Recipe")) {

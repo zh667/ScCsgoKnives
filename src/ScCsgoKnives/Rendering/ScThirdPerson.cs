@@ -253,6 +253,11 @@ public static class ScThirdPerson {
         return true;
     }
 
+    static Texture2D Load(string name) {
+        try { return ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + name); }
+        catch { return null; }
+    }
+
     /// <summary>OnModelDrawExtra: draw the baked weapon at the world matrix the animate step chose.</summary>
     public static bool Draw(ComponentHumanModel human, Camera camera) {
         if (!s_states.TryGetValue(human, out var state) || !state.Valid || state.Weapon is null) return false;
@@ -266,13 +271,19 @@ public static class ScThirdPerson {
             Temperature = terrain.Terrain.GetSeasonalTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y), BillboardDirection = -Vector3.UnitZ,
         };
         Matrix view = state.World * camera.ViewMatrix;
-        int data = Terrain.ExtractData(human.m_componentMiner.ActiveBlockValue);
-        bool silencerOff = ScGunBlock.SpecOf(human.m_componentMiner.ActiveBlockValue) is { HasSilencer: true } && GunSpec.GetSilencerOff(data);
+        int held = human.m_componentMiner.ActiveBlockValue, data = Terrain.ExtractData(held);
+        bool silencerOff = ScGunBlock.SpecOf(held) is { HasSilencer: true } && GunSpec.GetSilencerOff(data);
+        // The bake is per model; the finish only redirects which texture set each group samples, so the
+        // same cached geometry serves every skin and the draw key is (variant, skin, silencer).
+        int skin = Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScGunBlock>(true) ? ScGunBlock.SkinOf(held) : ScGunSkinCatalog.None;
         foreach (var group in state.Weapon.Groups) {
             if (group.Silencer && silencerOff) continue; // the detached silencer is not on the gun in third person either
-            Texture2D texture;
-            try { texture = ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + group.Texture); }
-            catch { continue; }
+            // "<gun>_hd" is the factory set; a finish redirects it, and an unreadable finish falls back
+            // to the factory texture so the gun is still drawn.
+            string skinned = group.Texture.EndsWith("_hd", StringComparison.Ordinal)
+                ? ScGunSkinCatalog.Material(group.Texture[..^3], skin) : group.Texture;
+            Texture2D texture = Load(skinned) ?? Load(group.Texture);
+            if (texture is null) continue;
             BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
         }
         return true;
