@@ -17,6 +17,9 @@ namespace Game;
 /// </summary>
 public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdateable, IDrawable {
     sealed class GunState {
+        public readonly ScGunStance Stance = new();
+        public bool HandlingNotice;
+        public float KickRecoveryRate = 9f;
         public readonly ScCombatFeedback Feedback = new();
         public ScAmmoHud AmmoHud;
         public double NextShot;
@@ -478,6 +481,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         CsmcFirstPersonRenderer.ClearFirstPersonEffects();
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
+        m_blooms.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
         if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; }
         if (m_registry is not null) m_registry.RecoveryOwner = null;
@@ -587,6 +591,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_particles = Project.FindSubsystem<SubsystemParticles>(true);
         m_players = Project.FindSubsystem<SubsystemPlayers>(true);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
+        ScGunplaySettings.Load();
         m_saveReady = true;
     }
 
@@ -613,6 +618,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (m_time.GameTime >= m_duplicateScanAt) { m_duplicateScanAt = m_time.GameTime + .5; SplitDuplicates(); }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
+            var physical = player.ComponentBody;
+            bool grounded = physical.StandingOnValue.HasValue || physical.StandingOnBody is not null;
+            state.Stance.Update(m_time.GameTime, grounded, (player.ComponentLocomotion.JumpOrder > 0 || player.ComponentLocomotion.LastJumpOrder > 0) && physical.Velocity.Y > .1f, state.Zoom > 0);
+            if (ScGunplaySettings.Enabled) RecoverKick(player,state,dt,state.KickRecoveryRate);
             int value = player.ComponentMiner.ActiveBlockValue;
             if (ScGunSkinTemplateBlock.IsTemplate(value) && player.ComponentHealth.Health > 0) {
                 var inventory = player.ComponentMiner.Inventory;
@@ -633,7 +642,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.AmmoHud?.Hide();
                 CancelReload(player, state);
                 LeaveScope(player, state);
-                RecoverKick(player, state, dt, 12f);
+                if (!ScGunplaySettings.Enabled) RecoverKick(player, state, dt, 12f);
                 state.BusyUntil = -1;
                 state.PendingRounds = -1;
                 state.SilencerPending = false;
@@ -641,6 +650,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.LastValue = int.MinValue;
                 state.Selection.Reset();
                 continue;
+            }
+            if (!state.HandlingNotice) {
+                state.HandlingNotice = true;
+                player.ComponentGui.DisplaySmallMessage(ScGunplaySettings.Enabled
+                    ? "已启用轻量枪械手感：分枪型射程、姿态散布与连射恢复；原枪弹量和耐久不变。"
+                    : "当前使用旧版枪械手感（classic）。", Color.White, false, false);
             }
             UpdateGun(player, state, value, dt);
             UpdateAmmoHud(player, state);
@@ -808,10 +823,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Fire(player, state, model, spec, value, data, rounds, input);
         }
 
-        RecoverKick(player, state, dt,
+        if (!ScGunplaySettings.Enabled) RecoverKick(player, state, dt,
             Cs2Weapons.Kick(spec.Name, false, spec.KickPitchDegrees, spec.KickYawDegrees,
                 spec.KickRecoverPerSecond).Recover);
     }
+
+    readonly Dictionary<int,ScGunBloom> m_blooms = [];
 
     void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input,
               bool inBurst = false, bool alternateFire = false, double? cycleFrom = null) {
@@ -866,6 +883,20 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // Capture before automatic unzoom, animation callbacks or recoil can change aim state.
         var shot = ScShotAim.Capture(spec.Name, ScMobileControls.UsesTouchInput(player), scopedShot, silenced,
             alternateFire, input.Dig, input.Hit, LookRay(player), player.ComponentBody.Velocity.Length(), spec.SpreadDegrees);
+        bool handlingAlternate = ScGunHandling.Alternate(spec,scopedShot,silenced,state.BurstMode,alternateFire);
+        var effective = EffectiveGunStats.Resolve(spec,value,handlingAlternate);
+        ScGunBloom bloom = null;
+        if (ScGunplaySettings.Enabled) {
+            int instance = GunSpec.GetId(data);
+            if (!m_blooms.TryGetValue(instance,out bloom)) m_blooms[instance] = bloom = new();
+            var bodyState = player.ComponentBody;
+            bool inFluidOrLadder = bodyState.ImmersionFactor > .1f || player.ComponentLocomotion.LadderValue.HasValue;
+            var targetMode = ScGunHandling.ForMode(spec.Name,spec.ZoomLevels.Length>0 || handlingAlternate);
+            float cone = state.Stance.Cone(targetMode,ScGunHandling.ForMode(spec.Name,false),spec.ZoomLevels.Length>0,
+                new Vector2(bodyState.Velocity.X,bodyState.Velocity.Z).Length(),bodyState.CrouchFactor,inFluidOrLadder,bloom.At(now));
+            shot = shot with { Spread = cone, Alternate = handlingAlternate };
+            bloom.Fired(effective.Handling,now); // after capturing this shot, once per trigger, not per pellet
+        }
         if (scopedShot && spec.UnzoomsAfterShot) {
             // CS2's m_bUnzoomsAfterShot (AWP, SSG 08): a scoped shot drops the scope for
             // the bolt cycle and re-zooms to the same level afterwards. The auto-snipers
@@ -894,7 +925,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool alternate = shot.Alternate;
         (float kickPitch, float kickYaw, float _) = Cs2Weapons.Kick(spec.Name, alternate,
             spec.KickPitchDegrees, spec.KickYawDegrees, spec.KickRecoverPerSecond);
-        float pitch = MathUtils.DegToRad(kickPitch) * (0.8f + 0.4f * m_random.Float(0f, 1f));
+        if (ScGunplaySettings.Enabled) {
+            kickPitch=effective.Handling.KickPitch;kickYaw=effective.Handling.KickYaw;
+            state.KickRecoveryRate=effective.Handling.CameraRecoveryT90>0?MathF.Log(10)/effective.Handling.CameraRecoveryT90:12;
+        }
+        float pitch = MathUtils.DegToRad(kickPitch) * (ScGunplaySettings.Enabled ? .9f + .2f*m_random.Float(0,1) : .8f+.4f*m_random.Float(0,1));
         float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
         Ray3 ray = shot.Ray;
         Kick(player, state, pitch, yaw);
@@ -917,12 +952,22 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         for (int pellet = 0; pellet < pellets; pellet++) {
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
-            Vector3 end = start + direction * spec.RangeBlocks;
-            BodyRaycastResult? body = m_bodies.Raycast(start, end, 0.35f, (b, d) => b != player.ComponentBody && b.Entity != player.Entity);
+            Vector3 end = start + direction * effective.Range;
             TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
+            ScGunHitTest.Hit? gunHit;
+            if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.Raycast(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):effective.Range);
+            else {
+                var body=m_bodies.Raycast(start,end,.35f,(b,d)=>b!=player.ComponentBody && b.Entity!=player.Entity);
+                gunHit=null;
+                if (body.HasValue && (!terrain.HasValue || body.Value.Distance<terrain.Value.Distance)) {
+                    var part=ScHeadshotProbe.Resolve(body.Value.ComponentBody,start,direction,effective.Range,out float precise,out string why);
+                    float distance=part==ScHitPart.Unknown?body.Value.Distance:precise;
+                    if (!terrain.HasValue || distance<terrain.Value.Distance) gunHit=new(body.Value.ComponentBody,distance,part,why);
+                }
+            }
             // The tracer runs the shot line, stopping at whatever the bullet hit.
-            float travel = spec.RangeBlocks;
-            if (body.HasValue) travel = MathUtils.Min(travel, body.Value.Distance);
+            float travel = effective.Range;
+            if (gunHit.HasValue) travel = MathUtils.Min(travel, gunHit.Value.Distance);
             if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
             // The tracer leaves the muzzle the player can see, not the hit-detection ray's
             // origin at the eye. The weapon is drawn in CS2's viewmodel projection, so the
@@ -939,26 +984,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // drawn muzzle to wherever the trace ended (CS2's CP1), sparks only on a hit.
             if (Cs2TaserEffect.Applies(spec.Name)) {
                 bool solved = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, false, out Vector3 zm);
-                QueueZeus(solved ? zm : start, solved, impact, direction, body.HasValue || terrain.HasValue);
+                QueueZeus(solved ? zm : start, solved, impact, direction, gunHit.HasValue || terrain.HasValue);
             }
-            bool bodyFirst = body.HasValue && (!terrain.HasValue || body.Value.Distance < terrain.Value.Distance);
-            ScHitPart part = ScHitPart.Unknown; float partDistance = -1; string why = null;
-            if (bodyFirst) {
-                // M1b: which mesh of the creature this pellet actually crosses, from its current pose. The
-                // tolerant body AABB stays the damage fallback (Unknown); a mesh box that lies behind the
-                // wall the pellet also hit is not a hit at all.
-                part = ScHeadshotProbe.Resolve(body.Value.ComponentBody, start, direction, spec.RangeBlocks, out partDistance, out why);
-                if (part != ScHitPart.Unknown && terrain.HasValue && partDistance > terrain.Value.Distance) bodyFirst = false;
-            }
-            if (bodyFirst) {
-                float distance = part == ScHitPart.Unknown ? body.Value.Distance : partDistance;
+            if (gunHit is { } accepted) {
+                float distance=accepted.Distance;var part=accepted.Part;
                 Vector3 hitPoint = start + direction * distance;
                 // Survival damage is a per-shot budget, shared across pellets; a head pellet is scaled once, here.
-                float power = ScSurvivalBalance.PelletPower(spec, distance) * (part == ScHitPart.Head ? ScHeadshot.MultiplierFor(spec) : 1);
-                var target = body.Value.ComponentBody;
+                float power = effective.PelletPower(spec, distance) * (part == ScHitPart.Head ? effective.HeadMultiplier : 1);
+                var target = accepted.Body;
                 hits.TryGetValue(target, out var prior);
                 hits[target] = (prior.Power + power, hitPoint, direction, prior.Head || part == ScHitPart.Head);
-                LogPellet(player, spec, target, part, distance, why, now);
+                LogPellet(player, spec, target, part, distance, accepted.Reason, now);
             }
             else if (terrain.HasValue) {
                 Vector3 hitPoint = start + direction * terrain.Value.Distance;
@@ -1229,7 +1265,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     void RecoverKick(ComponentPlayer player, GunState state, float dt, float rate) {
         if (MathF.Abs(state.KickPitch) < 0.0001f && MathF.Abs(state.KickYaw) < 0.0001f) return;
-        float k = MathUtils.Saturate(rate * dt);
+        float k = ScGunplaySettings.Enabled ? 1-MathF.Exp(-Math.Max(0,rate)*Math.Max(0,dt)) : MathUtils.Saturate(rate * dt);
         float dp = state.KickPitch * k, dy = state.KickYaw * k;
         ComponentLocomotion locomotion = player.ComponentLocomotion;
         Vector2 look = locomotion.LookAngles;
@@ -1243,13 +1279,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     // ---- helpers -----------------------------------------------------------------
 
     Vector3 Scatter(Vector3 direction, float coneDegrees) {
-        if (coneDegrees <= 0f) return Vector3.Normalize(direction);
-        Vector3 forward = Vector3.Normalize(direction);
-        Vector3 side = Vector3.Normalize(Vector3.Cross(forward, MathF.Abs(forward.Y) < 0.9f ? Vector3.UnitY : Vector3.UnitX));
-        Vector3 up = Vector3.Cross(side, forward);
-        float angle = MathUtils.DegToRad(coneDegrees) * MathF.Sqrt(m_random.Float(0f, 1f));
-        float phi = m_random.Float(0f, MathF.PI * 2f);
-        return Vector3.Normalize(forward * MathF.Cos(angle) + (side * MathF.Cos(phi) + up * MathF.Sin(phi)) * MathF.Sin(angle));
+        return ScGunHandling.Scatter(direction,coneDegrees,m_random.Float(0,1),m_random.Float(0,1));
     }
 
     int WriteData(ComponentPlayer player, int value, int data) {
