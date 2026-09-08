@@ -99,6 +99,18 @@ class SkinBakeTests(unittest.TestCase):
             self.assertEqual(skin["legacyModel"],skin["paintId"]!=1177)
             self.assertEqual(skin["displayBody"],"hd" if skin["gun"]=="ak47" or skin["paintId"]==1177 else "legacy")
 
+    def test_legacy_finish_ao_follows_runtime_material_not_composite_input(self):
+        export=ROOT.parent/"CSMCReverse/local_cs2_analysis/all_weapons"
+        if not export.exists(): self.skipTest("external CS2 export not installed")
+        catalog=json.loads((ROOT/"tools/gun_skins_catalog.json").read_text("utf-8"))
+        for gun in ("awp","m4a1s","ak47"):
+            src=gun_inputs(catalog["guns"][gun],export,1024,True)
+            self.assertIn("03_legacy_vmodels_materials",str(src["aoPath"]))
+            for skin in catalog["skins"]:
+                if skin["gun"]==gun and skin["displayBody"]=="legacy":
+                    orm=load_rgb(TEX/f"{gun}_hd__{skin['key']}_orm.png")
+                    np.testing.assert_allclose(orm[...,0],src["ao"],atol=1/255)
+
     def test_installed_skin_assets_and_unchanged_icons(self):
         catalog=json.loads((ROOT/"tools/gun_skins_catalog.json").read_text("utf-8"))
         report=json.loads((ROOT/"docs/gun-skins-assets.json").read_text("utf-8"))

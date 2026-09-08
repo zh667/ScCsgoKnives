@@ -14,10 +14,10 @@ def digest(data):
 
 def verify():
     ap=argparse.ArgumentParser()
-    ap.add_argument("--version",default="0.38.4",choices=["0.38.4","0.38.5"])
+    ap.add_argument("--version",default="0.38.4",choices=["0.38.4","0.38.5","0.38.6"])
     args=ap.parse_args()
     version=args.version
-    previous_version="0.38.4" if version=="0.38.5" else "0.38.3"
+    previous_version={"0.38.6":"0.38.5","0.38.5":"0.38.4","0.38.4":"0.38.3"}[version]
     old_path = ROOT/f"output/ScCsgoKnives-{previous_version}.scmod"
     full_path = ROOT/f"output/ScCsgoKnives-{version}.scmod"
     lite_path = ROOT/f"output/ScCsgoKnives-{version}-Lite.scmod"
@@ -25,6 +25,8 @@ def verify():
     expected = {f"Assets/Textures/ScCsgoKnives/{s['gun']}_hd__{s['key']}{suffix}.png"
                 for s in catalog["skins"] if (s["gun"]=="ak47" if version=="0.38.5" else s["legacyModel"]) for suffix in ("", "_orm", "_normal")}
     expected |= {"ScCsgoKnives.dll", "modinfo.json", "ASSET_SOURCES.md"}
+    if version=="0.38.6":
+        expected={f"Assets/Textures/ScCsgoKnives/{s['gun']}_hd__{s['key']}_orm.png" for s in catalog["skins"] if s["displayBody"]=="legacy"} | {"ScCsgoKnives.dll","modinfo.json"}
     with zipfile.ZipFile(old_path) as old, zipfile.ZipFile(full_path) as full, zipfile.ZipFile(lite_path) as lite:
         previous, current = set(old.namelist()), set(full.namelist())
         removed = sorted(previous-current)
@@ -35,7 +37,16 @@ def verify():
             if a != b:
                 changed[name] = {"before": a, "after": b}
         assert set(changed) <= expected, set(changed)-expected
-        assert len([n for n in changed if n.endswith(".png")]) == (12 if version=="0.38.5" else 30)
+        assert len([n for n in changed if n.endswith(".png")]) == {"0.38.6":6,"0.38.5":12,"0.38.4":30}[version]
+        if version=="0.38.6":
+            import io
+            import numpy as np
+            from PIL import Image
+            for name in changed:
+                if name.endswith("_orm.png"):
+                    a=np.asarray(Image.open(io.BytesIO(old.read(name))))
+                    b=np.asarray(Image.open(io.BytesIO(full.read(name))))
+                    assert np.array_equal(a[...,1:],b[...,1:]),name+" non-AO channels changed"
         assert current == set(lite.namelist())
         assert full.read("ScCsgoKnives.dll") == lite.read("ScCsgoKnives.dll")
         for name in current:

@@ -144,11 +144,16 @@ def gun_inputs(gun, export, size, legacy=False):
         if not metal.startswith("["):
             sources.append(find_one(folder, metal))
         metal = np.full((size,size), vec(metal)[0]) if metal.startswith("[") else load_rgb(find_one(folder, metal), size)[...,0]
-        ao = load_rgb(maps["TextureAmbientOcclusion1"], size)[...,0]
+        # Composite inputs are packed paint-generation data, not the final shaded
+        # material's AO. The legacy shared recipe retains target-instance AO unless
+        # explicitly overridden. Follow the weapon VMAT's runtime AO binding.
+        runtime_ao = find_one(old_folder, old["TextureAmbientOcclusion"])
+        sources.append(runtime_ao)
+        ao = load_rgb(runtime_ao, size)[...,0]
         orm = np.stack([ao, load_rgb(maps["TextureRoughness1"], size)[...,0], metal], -1)
         return {"color": load_rgb(maps["TextureColor1"], size), "orm": orm, "normal": normal,
                 "mask": load_rgb(maps["TextureMasks1"], size)[...,0], "masks": load_rgb(maps["TextureMasks1"], size), "ao": ao, "glb": glb,
-                "maskPath": maps["TextureMasks1"], "aoPath": maps["TextureAmbientOcclusion1"], "legacy": True, "sources": sources}
+                "maskPath": maps["TextureMasks1"], "aoPath": runtime_ao, "legacy": True, "sources": sources}
     return {"color": load_rgb(TEX/f"{asset}_hd.png", size), "orm": load_rgb(TEX/f"{asset}_hd_orm.png", size),
             "normal": TEX/f"{asset}_hd_normal.png", "mask": load_rgb(masks, size)[..., 0],
             "ao": load_rgb(ao, size)[..., 0], "glb": glb, "maskPath": masks, "aoPath": ao}

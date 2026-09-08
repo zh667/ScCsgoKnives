@@ -1,0 +1,56 @@
+{
+  "version": "0.38.6",
+  "previousVersion": "0.38.5",
+  "checks": {
+    "Full": {
+      "packageSha256": "bcf7908024b32cc1246bc52e1696043e0253eb5a88b0e4541bc2d3493c12185c",
+      "packageBytes": 244409389,
+      "dllSha256": "2466501a9e0809b9c280d9b1c22123994cbc536a17d65b8f48203ec916200d8b",
+      "entries": 766,
+      "failed": 0,
+      "passed": 6306
+    },
+    "Lite": {
+      "packageSha256": "0dea79ad93a76e114519d96b28af984b34b4a48c04bfefa20d8f4a96cf79d499",
+      "packageBytes": 120977092,
+      "dllSha256": "2466501a9e0809b9c280d9b1c22123994cbc536a17d65b8f48203ec916200d8b",
+      "entries": 766,
+      "failed": 0,
+      "passed": 6306
+    }
+  },
+  "removedFiles": [],
+  "replacedFiles": {
+    "Assets/Textures/ScCsgoKnives/awp_hd__am_lightning_awp_orm.png": {
+      "before": "31b94e887a915dae321571114091e0a29a691e12375b5c93691da830b9001a62",
+      "after": "bf2df4c8288265b1462c462f7c4f2ee502e5a18728461e740fa44d637250d035"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__cu_medieval_dragon_awp_orm.png": {
+      "before": "51d3bc1a8ce98e6e1c54586e48d17f902ba82d47ec5e53b904d34c86b2ff8606",
+      "after": "3a78ec28988c90b04b47f0e2ab668875a1fb96c96693e443fefb3a696b49befc"
+    },
+    "Assets/Textures/ScCsgoKnives/awp_hd__gs_awp_gungnir_orm.png": {
+      "before": "6718ceb7da326dbe6a17b6b0c91f3210509afd5217f3cec87225fb327618384d",
+      "after": "6b658be8d32807c08bf9dd4c21f28851a9402f625eeed16c0ddede2f74c6f35e"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_csgo2048_orm.png": {
+      "before": "6e53a5e0f944a96737116049c7243a26c85e9382077a069359e03efce6b9714e",
+      "after": "cc2791edf2e768a873882a4ebdaaf898c62b5e70a4c60bb7e59ca6af047427c6"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__cu_m4a1s_printstream_orm.png": {
+      "before": "fd3afb652b0b864acd65d9db345980bce729033c232bf8083396aef0142aa855",
+      "after": "2d9c24e8b470e6aaefb1f47c7ea686bd7f2272b0cbbb64d62cf5a15a3620035f"
+    },
+    "Assets/Textures/ScCsgoKnives/m4a1s_hd__gs_m4a1s_snakebite_gold_orm.png": {
+      "before": "1bbde21483f03930064a328515c34fd4129d142601bac7a12d4406f57e11b9dd",
+      "after": "7bdd089c90444d744ed6e28bf88708c997f423fc749b98f7b18cf989878d6317"
+    },
+    "modinfo.json": {
+      "before": "8c9eddf2fda4b3a7b9fe9a04b8c78328d3b5c427090c8de0c48d066dfae0c3f9",
+      "after": "ce06cc48dcfccff55b9780a9eed3fee242f81c3390167258d0b4bb1f5b1f778f"
+    }
+  },
+  "addedFiles": [],
+  "preserved": "Every other prior package entry is byte-identical: default meshes/maps, all icons, audio and unrelated effects.",
+  "gameVisualAcceptance": "pending; offline native-UV renders are not in-game screenshots"
+}

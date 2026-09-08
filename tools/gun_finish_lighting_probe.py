@@ -5,6 +5,9 @@ camera and face normals deliberately isolate lighting; this does not validate
 game animation, tangent normals, user tuning or physical CS2 lighting parity.
 """
 import json
+import argparse
+import io
+import zipfile
 import numpy as np
 from PIL import Image, ImageDraw
 from build_gun_skins import TEX, ROOT, load_rgb
@@ -73,21 +76,28 @@ class LightingProbe:
 
 
 def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--baseline-package",type=str)
+    ap.add_argument("--out-stem",default="gun-skins-lighting-0385")
+    args=ap.parse_args()
     rows=[]; metrics={}
     mesh=gun_mesh("m4a1s",True,True)
     for key in ("cu_m4a1s_printstream","cu_m4a1s_csgo2048","gs_m4a1s_snakebite_gold"):
         material="m4a1s_hd__"+key
         color=load_rgb(TEX/f"{material}.png")
         pictures=[]
-        for factor in (.25,1):
+        for index,factor in enumerate((1,1) if args.baseline_package else (.25,1)):
             shader=LightingProbe(material,factor)
+            if args.baseline_package and index==0:
+                with zipfile.ZipFile(args.baseline_package) as z:
+                    shader.orm=np.asarray(Image.open(io.BytesIO(z.read('Assets/Textures/ScCsgoKnives/'+material+'_orm.png'))).convert('RGB'),float)/255
             im=render(*mesh,color,720,shader=shader).crop((0,180,720,520))
             pictures.append(im)
         row=Image.new("RGB",(1440,370),"white")
         for i,im in enumerate(pictures): row.paste(im,(720*i,30))
         d=ImageDraw.Draw(row)
-        d.text((8,8),key+" | BEFORE env=.25",fill="black")
-        d.text((728,8),"AFTER env=1 | offline PBR, face normals; same textures",fill="black")
+        d.text((8,8),key+(" | BEFORE AO" if args.baseline_package else " | BEFORE env=.25"),fill="black")
+        d.text((728,8),"AFTER "+("runtime AO | same lighting/albedo/rough/metal" if args.baseline_package else "env=1 | same textures")+" | offline face normals",fill="black")
         rows.append(row)
         before,after=(np.asarray(im,float)/255 for im in pictures)
         mask=(np.abs(before-.94)>.025).any(-1)
@@ -96,8 +106,8 @@ def main():
         # A white dielectric remains brighter, not an arbitrary recolored albedo.
     sheet=Image.new("RGB",(1440,370*len(rows)),"white")
     for i,row in enumerate(rows): sheet.paste(row,(0,370*i))
-    sheet.save(ROOT/"docs/gun-skins-lighting-0385.png")
-    (ROOT/"docs/gun-skins-lighting-0385.json").write_text(json.dumps({"limits":__doc__,"measurements":metrics},indent=2)+"\n","utf-8")
+    sheet.save(ROOT/f"docs/{args.out_stem}.png")
+    (ROOT/f"docs/{args.out_stem}.json").write_text(json.dumps({"limits":__doc__,"baseline":args.baseline_package,"measurements":metrics},indent=2)+"\n","utf-8")
     print(metrics)
 
 

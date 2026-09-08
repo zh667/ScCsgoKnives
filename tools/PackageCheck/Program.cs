@@ -24,10 +24,11 @@ static string Sha256(string path) {
     return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
 }
 
-string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null;
+string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null, weaponStats = null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--resource-audit": resourceAudit = args[++i]; break;
+        case "--weapon-stats": weaponStats = args[++i]; break;
         case "--scmod": scmod = args[++i]; break;
         case "--sha256": expected = args[++i]; break;
         case "--json": jsonOut = args[++i]; break;
@@ -81,6 +82,7 @@ Type knifeLog = mod.GetType("Game.KnifeLog");
 knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, true);
 
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
+if (weaponStats is not null) { WeaponStatsExport.Write(mod, scmod, weaponStats, digest); return 0; }
 
 ThirdPersonExport.ProvideObj(mod, scmod); // the self-test bakes the OBJ-piece guns for third person from the package's own files
 // The gun state table a world would own (layout v5): partial magazines and durability live in records, not in the item value.
