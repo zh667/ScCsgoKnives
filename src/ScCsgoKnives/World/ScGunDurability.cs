@@ -22,7 +22,10 @@ public static class ScGunDurability {
     };
     public static int Full(string gun) => FullShots(ClassOf(gun));
     public static int Full(int variant) => variant >= 0 && variant < GunSpec.All.Length ? Full(GunSpec.All[variant].Name) : 1500;
-    public static int FullOf(int data) => Full(GunSpec.GetVariant(data));
+    /// <summary>This gun's own life ceiling: the record's maximum, which growth may have raised, falling back to
+    /// the model's class life when there is no record. Percentages, the low-durability warning, repair pricing and
+    /// save validation all read this one number, so none of them can be comparing against the model's original.</summary>
+    public static int FullOf(int data) => GunSpec.GetMaxDurability(data);
     public static bool IsBroken(int data) => GunSpec.GetDurability(data) <= 0;
     /// <summary>Plan C3: at or under 20 % shows orange.</summary>
     public static bool IsLow(int data) { int d = GunSpec.GetDurability(data); return d > 0 && d * 5 <= FullOf(data); }

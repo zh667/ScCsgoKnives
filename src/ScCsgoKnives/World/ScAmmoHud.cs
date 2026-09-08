@@ -18,24 +18,34 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
         double rechargeRemaining, bool reloading, Func<string, string> text = null) {
         text ??= key => LanguageControl.Get("ScCsgoKnives", "AmmoHud", key);
         string Format(string key, params object[] args) => string.Format(CultureInfo.InvariantCulture, text(key), args);
-        int rounds = Math.Clamp(GunSpec.GetRounds(Terrain.ExtractData(value)), 0, gun.Magazine);
+        int data = Terrain.ExtractData(value);
+        // Capacity, charge cycle and reload cost follow this gun's applied level, so the readout can never
+        // disagree with what the gun actually holds.
+        GunSpec.TryGetSnapshot(data, out var loaded);
+        int level = loaded.CounterInstalled ? loaded.Level : 0;
+        int capacity = ScGunGrowth.Capacity(GunSpec.GetVariant(data), level);
+        float cycle = ScGunGrowth.RechargeSeconds(gun, level);
+        int rounds = Math.Clamp(GunSpec.GetRounds(data), 0, capacity);
         var (wear, wearState) = WearOf(value, text);
         if (gun.RechargeSeconds > 0) {
             if (rounds > 0) return new(text("Ready"), text("SingleCharge"), false, false, false, wear, wearState);
             double remaining = double.IsFinite(rechargeRemaining) && rechargeRemaining >= 0
-                ? Math.Min(rechargeRemaining, gun.RechargeSeconds) : gun.RechargeSeconds;
+                ? Math.Min(rechargeRemaining, cycle) : cycle;
             // Round upwards so 0.01 seconds remaining does not falsely look ready.
             return new(Format("Charging", Math.Ceiling(remaining * 10) / 10), text("AutoCharge"), true, true, false, wear, wearState);
         }
         bool shells = ScReloadTransaction.AmmoKind(gun) == ScAmmoBlock.Shell;
         int reserve = ScInventoryTransaction.Count(inventory, ScAmmoBlock.Value(shells ? ScAmmoBlock.Shell : ScAmmoBlock.Magazine));
         bool tube = ScReloadTransaction.IsTube(gun.Name);
-        int cost = ScReloadTransaction.Required(gun);
-        string main = Format(shells ? "Shells" : "Magazines", rounds, gun.Magazine,
+        int cost = ScReloadTransaction.RequiredFor(gun, capacity);
+        string main = Format(shells ? "Shells" : "Magazines", rounds, capacity,
             creative ? "∞" : reserve.ToString(CultureInfo.InvariantCulture));
         string detail = tube ? text("Tube") : Format(shells ? "ShellMagazine" : "WholeMagazine", cost);
+        // Rounds a shrunk capacity left with this gun are shown, so they never look lost.
+        if (loaded.ReserveOverflowRounds > 0) detail += $" · 本枪余弹 {loaded.ReserveOverflowRounds}";
         if (reloading) detail = text(tube ? "Loading" : "Reloading") + " · " + detail;
-        return new(main, detail, rounds == 0, false, !creative && reserve < cost, wear, wearState);
+        bool covered = loaded.ReserveOverflowRounds >= capacity - rounds && capacity > rounds;
+        return new(main, detail, rounds == 0, false, !creative && !covered && reserve < cost, wear, wearState);
     }
 }
 

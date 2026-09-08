@@ -153,12 +153,14 @@ public class ScGunBlock : ScNoDurabilityBlock {
         return base.GetDisplayName(subsystemTerrain, value);
     }
 
-    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
+    /// <summary>The item help entry opens the attribute page, which carries a button through to the assembly
+    /// recipe. The recipe keeps its material list; the attribute card never shows one.</summary>
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen();
 
     public override string GetDescription(int value) {
         if (!IsKnown(value)) return "本版无法读取这件物品的数据，已原样保留。请在新世界中使用枪械。";
-        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value) + DurabilityText(value);
-        return base.GetDescription(value) + ScWeaponCrafting.Help(value) + DurabilityText(value);
+        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value) + DurabilityText(value) + CounterText(value);
+        return base.GetDescription(value) + ScWeaponCrafting.Help(value) + DurabilityText(value) + CounterText(value);
     }
     /// <summary>M4: the item's own durability level; the number itself never goes into the display name.</summary>
     public static string DurabilityText(int value) {
@@ -166,6 +168,13 @@ public class ScGunBlock : ScNoDurabilityBlock {
         int data = Terrain.ExtractData(value), durability = GunSpec.GetDurability(data), full = ScGunDurability.FullOf(data);
         return durability <= 0 ? $"\n耐久：损坏（0 / {full}），请到装配台维修（消耗金属坯件/精密机构）"
             : $"\n耐久 {durability} / {full}（{ScGunDurability.PercentText(durability, full)}，每发 1 点）";
+    }
+    /// <summary>The kill counter line, when this gun carries one. The count itself lives in the record, so it
+    /// follows the gun through chests, drops and other players.</summary>
+    public static string CounterText(int value) {
+        if (!IsKnown(value) || !GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) || !s.CounterInstalled) return "";
+        string pending = s.PendingGrowthLevel != ScGunGrowth.NoPending && s.PendingGrowthLevel > s.AppliedGrowthLevel ? "，动作结束后升级" : "";
+        return $"\n击杀计数器：{s.KillCount} 次 · Lv{s.Level}{pending}";
     }
 
 }

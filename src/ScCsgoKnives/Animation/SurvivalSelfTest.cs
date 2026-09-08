@@ -32,6 +32,7 @@ public static class SurvivalSelfTest {
         ScCreativeSkinsSelfTest.Run(check);
         ScGun0282MigrationSelfTest.Run(check);
         ScPolishSelfTest.Run(check);
+        ScGunGrowthSelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
             var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(0, rounds)), 1); i.AddSlotItems(1, ammo, count); return i;
@@ -83,7 +84,7 @@ public static class SurvivalSelfTest {
         }
         Test("animal-shot-targets", () => Math.Ceiling(70 / ScSurvivalBalance.Power("ak47")) == 5 && Math.Ceiling(70 / ScSurvivalBalance.Power("awp")) == 2);
         Test("gun-power-x1.5", () => ScSurvivalBalance.GunPowerMultiplier == 1.5f && ScSurvivalBalance.Power("ak47") == 15 && ScSurvivalBalance.Power("awp") == 57
-            && ScSurvivalBalance.Power("taser") == 27 && ScSurvivalBalance.Power("glock18") == 10.5f && ScSurvivalBalance.BasePower("ak47") == 10
+            && ScSurvivalBalance.Power("taser") == 150 && ScSurvivalBalance.Power("glock18") == 10.5f && ScSurvivalBalance.BasePower("ak47") == 10
             && GunSpec.All.All(g => Math.Abs(ScSurvivalBalance.Power(g.Name) - ScSurvivalBalance.BasePower(g.Name) * 1.5f) < .0001f));
         Test("knife-range-2.2-1.8", () => ScKnifeStrike.Range(false) == 2.2f && ScKnifeStrike.Range(true) == 1.8f && ScKnifeStrike.Power(false) == 7 && ScKnifeStrike.Power(true) == 12);
         Test("throw-speed-inherits-velocity", () => {
@@ -370,11 +371,16 @@ public static class SurvivalSelfTest {
         });
         Test("m4-strict-record-parse", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
-            records.SetValue("1", "0,30,0,1500,badMax,badRevision,badCharge,0"); records.SetValue("2", "0,30,0,1500"); records.SetValue("3", "0,30,0,1500,1500,0,-1,0,extra"); records.SetValue("4", "0,30,2,1500,1500,0,-1,0"); records.SetValue("5", "0,30,0,1500,1500,0,-1,0");
+            const string tail = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0";
+            records.SetValue("1", "v=0,r=30,s=0,d=1500,m=badMax,n=badRevision,c=badCharge,p=0," + tail);
+            records.SetValue("2", "v=0,r=30,s=0,d=1500");
+            records.SetValue("3", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail + ",extra=1");
+            records.SetValue("4", "v=0,r=30,s=2,d=1500,m=1500,n=0,c=-1,p=0," + tail);
+            records.SetValue("5", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail);
             d.SetValue("Records", records);
             var r = ScGunRegistry.Load(d, 0);
             bool strict = r.Count == 1 && r.QuarantinedCount == 4 && r.TryGetSnapshot(5, out _) && !r.TryGetSnapshot(1, out _) && r.Next == 6;
-            bool kept = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "0,30,0,1500,badMax,badRevision,badCharge,0";
+            bool kept = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "v=0,r=30,s=0,d=1500,m=badMax,n=badRevision,c=badCharge,p=0," + tail;
             return strict && kept;
         });
         // ---- gun finishes (P1). A finish is a record field: appearance only, and every other field must
@@ -562,14 +568,15 @@ public static class SurvivalSelfTest {
         Test("skin-bad-records-are-quarantined", () => {
             var d = new ValuesDictionary(); d.SetValue("Schema", ScGunRegistry.Schema); d.SetValue("Next", 1);
             var records = new ValuesDictionary();
-            records.SetValue("1", "0,30,0,1500,1500,0,-1,9999");   // a finish this build does not know
-            records.SetValue("2", "0,30,0,1500,1500,0,-1,51");     // an AWP finish on an AK
-            records.SetValue("3", "0,30,0,1500,1500,0,-1");        // schema-1 row inside a schema-2 table
-            records.SetValue("4", "2,5,0,200,200,0,-1,51");        // valid: Lightning Strike on the AWP
+            const string skinTail = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0";
+            records.SetValue("1", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=9999," + skinTail);  // a finish this build does not know
+            records.SetValue("2", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=51," + skinTail);    // an AWP finish on an AK
+            records.SetValue("3", "0,30,0,1500,1500,0,-1");                                    // a schema-1 row inside a schema-3 table
+            records.SetValue("4", "v=2,r=5,s=0,d=200,m=200,n=0,c=-1,p=51," + skinTail);       // valid: Lightning Strike on the AWP
             d.SetValue("Records", records);
             var r = ScGunRegistry.Load(d, 0);
             bool only = r.Count == 1 && r.QuarantinedCount == 3 && r.TryGetSnapshot(4, out var ok) && ok.SkinId == 51 && ok.Variant == 2;
-            bool untouched = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "0,30,0,1500,1500,0,-1,9999";
+            bool untouched = r.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>("1") == "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=9999," + skinTail;
             bool refused = !r.TryGetSnapshot(1, out _) && !r.TryGetSnapshot(2, out _) && !r.TryGetSnapshot(3, out _);
             var unknown = new ValuesDictionary(); unknown.SetValue("Schema", 99);
             var far = ScGunRegistry.Load(unknown, 0);
@@ -595,7 +602,7 @@ public static class SurvivalSelfTest {
                 for (int n = 0; n < 5; n++) if (Shoot(i, 0) != ScGunResult.Success) return false;             // the world keeps changing while the first snapshot would be written
                 if (Reload(i, 0, 900, 1, 30) != ScGunResult.Success) return false;
                 var second = reg.Save(20); string secondRow = second.GetValue<ValuesDictionary>("Records").GetValue<string>("1");
-                bool immutable = first.GetValue<ValuesDictionary>("Records").GetValue<string>("1") == firstRow && firstRow.StartsWith("0,29,0,1499,1500,1,") && secondRow.StartsWith("0,30,0,1494,1500,7,");
+                bool immutable = first.GetValue<ValuesDictionary>("Records").GetValue<string>("1") == firstRow && firstRow.StartsWith("v=0,r=29,s=0,d=1499,m=1500,n=1,") && secondRow.StartsWith("v=0,r=30,s=0,d=1494,m=1500,n=7,");
                 var fromFirst = ScGunRegistry.Load(first, 0); var fromSecond = ScGunRegistry.Load(second, 0);
                 bool distinct = fromFirst.TryGetSnapshot(1, out var a) && a.Rounds == 29 && a.Durability == 1499 && fromSecond.TryGetSnapshot(1, out var b) && b.Rounds == 30 && b.Durability == 1494 && b.Revision == 7;
                 bool matches = GunSpec.TryGetSnapshot(Data(i, 0), out var live) && live.Rounds == 30 && live.Durability == 1494 && live.Revision == 7 && i.Counts[1] == 2;
@@ -703,11 +710,16 @@ public static class SurvivalSelfTest {
         });
         Test("m4-t12-bad-records", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
-            records.SetValue("1", "0,30,0,1500,1500,0,-1,0"); records.SetValue("2", "0,99,0,1500,1500,0,-1,0"); records.SetValue("3", "63,1,0,10,10,0,-1,0"); records.SetValue("4", "junk"); records.SetValue("5", "0,1,0,2000,1500,0,-1,0");
+            const string tail12 = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0";
+            records.SetValue("1", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail12);
+            records.SetValue("2", "v=0,r=99,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail12);   // over this model's capacity
+            records.SetValue("3", "v=63,r=1,s=0,d=10,m=10,n=0,c=-1,p=0," + tail12);       // a model this build does not have
+            records.SetValue("4", "junk");
+            records.SetValue("5", "v=0,r=1,s=0,d=2000,m=1500,n=0,c=-1,p=0," + tail12);    // durability above its own maximum
             d.SetValue("Records", records); d.SetValue("Next", 2);
             var r = ScGunRegistry.Load(d, 0);
             bool kept = r.Count == 1 && r.QuarantinedCount == 4 && r.Next == 6 && !r.TryGetSnapshot(2, out _) && !r.TryGetSnapshot(5, out _);
-            var again = r.Save(0).GetValue<ValuesDictionary>("Records"); bool verbatim = again.GetValue<string>("2") == "0,99,0,1500,1500,0,-1,0" && again.GetValue<string>("4") == "junk";
+            var again = r.Save(0).GetValue<ValuesDictionary>("Records"); bool verbatim = again.GetValue<string>("2") == "v=0,r=99,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail12 && again.GetValue<string>("4") == "junk";
             var saved = ScGunRegistry.Current; ScGunRegistry.Current = r;
             try {
                 var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.WithId(0, 2)), 1); i.AddSlotItems(1, Terrain.MakeBlockValue(512, 0, GunSpec.WithId(5, 1)), 1);

@@ -68,12 +68,49 @@ public static class ScGunHandling {
     }
 }
 
-public readonly record struct EffectiveGunStats(float Power,float Range,int Capacity,int MaxDurability,float CycleSeconds,int Pellets,float HeadMultiplier,ScGunHandling.Mode Handling) {
-    public static EffectiveGunStats Resolve(GunSpec spec,int value,bool alternate) => new(
-        ScSurvivalBalance.Power(spec.Name),ScGunplaySettings.Enabled?ScGunHandling.For(spec.Name).Range:spec.RangeBlocks,
-        spec.Magazine,GunSpec.GetMaxDurability(Terrain.ExtractData(value)),spec.CycleSeconds,spec.Pellets,ScHeadshot.MultiplierFor(spec),
-        ScGunplaySettings.Enabled?ScGunHandling.ForMode(spec.Name,alternate):null);
-    public float PelletPower(GunSpec spec,float distance) => Power*(ScGunplaySettings.Enabled?ScGunHandling.Falloff(ScGunHandling.For(spec.Name),distance):ScSurvivalBalance.Falloff(spec,distance))/Math.Max(1,Pellets);
+/// <summary>One gun instance's numbers as they actually take effect: the survival balance, the approved handling
+/// table and this gun's applied growth level combined once, in one place, so combat, the ammunition HUD, the
+/// attribute page and the save validation can never disagree about a Negev that holds 225 rounds.
+///
+/// Growth is read from the record's <c>AppliedGrowthLevel</c>, never from its kill count: a level that has been
+/// earned but deliberately not applied yet must not change anything.</summary>
+public readonly record struct EffectiveGunStats(float Power,float Range,int Capacity,int MaxDurability,float CycleSeconds,int Pellets,float HeadMultiplier,ScGunHandling.Mode Handling,
+                                                int Level,bool UnlimitedRange,float AngleScale,float RechargeSeconds,int Variant) {
+    public static EffectiveGunStats Resolve(GunSpec spec,int value,bool alternate) => ResolveLevel(spec,value,alternate,LevelOf(value));
+    /// <summary>The applied level of the gun this item value points at; 0 for a fresh template or unreadable data.</summary>
+    public static int LevelOf(int value) {
+        int data=Terrain.ExtractData(value);
+        return GunSpec.TryGetSnapshot(data,out var s) ? s.Level : 0;
+    }
+    /// <summary>The same numbers at an arbitrary level, for the attribute page's base / current / next columns.
+    /// A preview never touches the record.</summary>
+    public static EffectiveGunStats ResolveLevel(GunSpec spec,int value,bool alternate,int level) {
+        int data=Terrain.ExtractData(value);
+        int variant=Array.IndexOf(GunSpec.All,spec);
+        if(variant<0) variant=GunSpec.GetVariant(data);
+        int L=ScGunGrowth.Clamp(level);
+        float baseRange=ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is {} g ? g.Range : spec.RangeBlocks;
+        // The gun's own ceiling while previewing the level it is actually carrying; the rule's ceiling for any
+        // other level, so a "next level" column is not quoting today's number.
+        bool known=GunSpec.TryGetSnapshot(data,out var s);
+        int maxDurability=known && s.Level==L ? s.MaxDurability : ScGunGrowth.MaxDurability(variant,L);
+        return new(ScSurvivalBalance.Power(spec.Name)*ScGunGrowth.DamageMultiplier(L),
+            ScGunGrowth.Range(variant,L,baseRange),
+            ScGunGrowth.Capacity(variant,L),maxDurability,spec.CycleSeconds,spec.Pellets,ScHeadshot.MultiplierFor(spec),
+            ScGunplaySettings.Enabled?ScGunHandling.ForMode(spec.Name,alternate):null,
+            L,ScGunGrowth.UnlimitedRange(variant,L),ScGunGrowth.AngleScale(L),ScGunGrowth.RechargeSeconds(spec,L),variant);
+    }
+    /// <summary>Damage of one pellet at a distance: the survival close-range power, this level's multiplier and
+    /// the distance curve, divided across the pellets. At Lv10 a normal bullet gun has no distance falloff left.</summary>
+    public float PelletPower(GunSpec spec,float distance) => Power*Falloff(spec,distance)/Math.Max(1,Pellets);
+    /// <summary>The distance multiplier in force. Growth stretches the curve's own nodes by the same factor the
+    /// range grew by, so a level never both extends the reach and leaves the damage collapsing at the old node.</summary>
+    public float Falloff(GunSpec spec,float distance) {
+        if(UnlimitedRange) return 1;
+        float scale=ScGunGrowth.RangeScale(Variant,Level);
+        float atBase=scale>0?distance/scale:distance;
+        return ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is {} g ? ScGunHandling.Falloff(g,atBase) : ScSurvivalBalance.Falloff(spec,atBase);
+    }
 }
 
 /// <summary>One gun's transient shot bloom. Time is game time, never render-camera time.</summary>

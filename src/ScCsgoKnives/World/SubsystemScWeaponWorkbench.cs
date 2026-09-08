@@ -17,11 +17,17 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         string MaterialLines(IReadOnlyDictionary<int, int> materials) => string.Join("\n", materials.Select(m => $"{ValueName(m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
         void ShowList() {
             if (!Available()) return;
-            object[] items = Creative() ? [RepairMenu.Instance, .. ScWeaponCrafting.All] : [RepairMenu.Instance, SkinMenu.Instance, .. ScWeaponCrafting.All];
-            DialogsManager.ShowDialog(player.GuiWidget, new ListSelectionDialog("武器装配台 · 组装 / 维修 / 涂装", items, 56,
-                (Func<object, string>)(item => item is RepairMenu ? "维修背包中的枪械" : item is SkinMenu ? "更换枪械涂装" : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+            object[] items = Creative()
+                ? [RepairMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All]
+                : [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
+            DialogsManager.ShowDialog(player.GuiWidget, new ListSelectionDialog("武器装配台 · 组装 / 维修 / 涂装 / 计数器", items, 56,
+                (Func<object, string>)(item => item is RepairMenu ? "维修背包中的枪械" : item is SkinMenu ? "更换枪械涂装"
+                    : item is CounterMenu ? "安装击杀计数器" : item is AttributesMenu ? "查看武器属性"
+                    : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
                     if (item is RepairMenu) { ShowRepair(); return; }
                     if (item is SkinMenu) { ShowSkinGuns(); return; }
+                    if (item is CounterMenu) { ShowCounterGuns(); return; }
+                    if (item is AttributesMenu) { ShowAttributes(); return; }
                     var entry = (ScWeaponCrafting.Entry)item;
                     var materials = entry.Materials();
                     string detail = string.Join("\n", materials.Select(m => $"{BlocksManager.Blocks[Terrain.ExtractContents(m.Key)].GetDisplayName(terrain, m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
@@ -101,9 +107,76 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     }));
                 }));
         }
+        // The attribute page is the same reusable view the item help opens, with the gun in hand selected.
+        void ShowAttributes() {
+            int value = miner.Inventory?.GetSlotValue(miner.Inventory.ActiveSlotIndex) ?? 0;
+            if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || !ScGunBlock.IsKnown(value)) {
+                var guns = ScGunCounter.Candidates(miner.Inventory).ToArray();
+                if (guns.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有可查看的枪械。", Color.White, true, false); ShowList(); return; }
+                value = guns[0].Value;
+            }
+            DialogsManager.HideAllDialogs();
+            ScreensManager.m_screens["RecipaediaRecipes"] = new ScGunAttributesScreen();
+            ScreensManager.SwitchScreen("RecipaediaRecipes", value);
+        }
+
+        // Installing a kill counter: pick the actual gun, see the exact components, confirm. The transaction
+        // re-checks the target and the materials and rolls back on any shortfall, so a refused install pays nothing.
+        void ShowCounterGuns() {
+            if (!Available()) return;
+            var registry = ScGunRegistry.Current;
+            if (registry is null || registry.Disabled) { player.ComponentGui.DisplaySmallMessage("本世界的枪械已停用，无法安装计数器。", Color.Red, true, false); ShowList(); return; }
+            var guns = ScGunCounter.Candidates(miner.Inventory).Where(c => !c.Installed).ToArray();
+            if (guns.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有可安装计数器的枪械（已安装的不会重复安装）。", Color.White, true, false); ShowList(); return; }
+            if (registry.GrowthMode == ScGunGrowthMode.Unset) { ChooseGrowthMode(() => ShowCounterGuns()); return; }
+            DialogsManager.ShowDialog(player.GuiWidget, new ListSelectionDialog("安装击杀计数器 · 选择枪械", guns, 56,
+                (Func<object, string>)(item => { var c = (ScGunCounter.Candidate)item; return $"{ValueName(c.Value)} · 第 {c.Slot + 1} 格"; }), item => {
+                    var c = (ScGunCounter.Candidate)item;
+                    var quote = ScGunCounter.Prepare(miner.Inventory, c.Slot, Creative());
+                    if (quote is null) { player.ComponentGui.DisplaySmallMessage("这把枪已装有计数器，或状态无法读取。", Color.White, true, false); ShowCounterGuns(); return; }
+                    bool levelOk = Creative() || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= ScGunGrowth.InstallLevel;
+                    string state = GunSpec.TryGetSnapshot(Terrain.ExtractData(c.Value), out var s)
+                        ? $"当前 {s.Rounds} 发 · 耐久 {ScGunDurability.PercentText(s.Durability, s.MaxDurability)} · 外观 {ScGunSkinCatalog.NameOf(s.SkinId)}" : "";
+                    string detail = $"在原枪上安装，不更换枪械。\n{state}\n"
+                        + (Creative() ? "创造模式：免费" : MaterialLines(quote.Cost))
+                        + (Creative() || !CraftingRecipesManager.EnableLevelRestrictions ? "" : $"\n制作等级 {ScGunGrowth.InstallLevel}")
+                        + "\n弹量、涂装、消音器、耐久与充能保持不变；计数从 0 开始，不补算历史击杀。"
+                        + (ScGunStatTrak.ModuleAvailable ? "" : "\n（本版尚未包含 CS2 计数器模块模型，计数显示在属性页与物品说明中，枪身上不显示数字。）")
+                        + (registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? "\n本世界规则：计数 + 成长（每 100 次有效击杀升 1 级，累计 1000 满级）。" : "\n本世界规则：仅计数，不提供成长加成。");
+                    DialogsManager.ShowDialog(player.GuiWidget, new MessageDialog(ValueName(c.Value), detail, "安装", "返回", button => {
+                        if (button == MessageDialogButton.Button1 && Available()) {
+                            var result = levelOk ? ScGunCounter.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot)) : ScGunResult.InsufficientMaterials;
+                            KnifeLog.Information($"gun counter install: {ValueName(c.Value)} slot {quote.Slot} record {quote.Id} rev {quote.Revision} -> {result}");
+                            player.ComponentGui.DisplaySmallMessage(result == ScGunResult.Success ? "计数器已安装：" + ValueName(c.Value)
+                                : !levelOk ? $"安装需要等级 {ScGunGrowth.InstallLevel}，未扣除材料。"
+                                : result == ScGunResult.StateChanged ? "枪械状态已变化，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
+                                result == ScGunResult.Success ? Color.White : Color.Red, true, false);
+                        }
+                        ShowCounterGuns();
+                    }));
+                }));
+        }
+
+        // The world's counter rule is chosen once, before the first counter exists, and is not switchable in play:
+        // switching would either take levels back or hand them out retroactively.
+        void ChooseGrowthMode(Action then) {
+            DialogsManager.ShowDialog(player.GuiWidget, new MessageDialog("击杀计数器 · 本世界规则",
+                "选择本世界的计数器规则。选定后不可在游戏中切换。\n\n计数 + 成长：每 100 次有效击杀升 1 级，累计 1000 次满级；伤害、射程、弹匣、耐久上限与充能随等级提升。\n仅计数：只记录并显示击杀数，不改变任何战斗数值。",
+                "计数 + 成长", "仅计数", button => {
+                    var mode = button == MessageDialogButton.Button1 ? ScGunGrowthMode.CountAndGrow : ScGunGrowthMode.CountOnly;
+                    var registry = ScGunRegistry.Current;
+                    if (registry is not null && registry.GrowthMode == ScGunGrowthMode.Unset) {
+                        registry.GrowthMode = mode;
+                        KnifeLog.Information("gun counter world rule set to " + mode);
+                    }
+                    then();
+                }));
+        }
         ShowList(); return true;
     }
     sealed class RepairMenu { public static readonly RepairMenu Instance = new(); }
     sealed class SkinMenu { public static readonly SkinMenu Instance = new(); }
+    sealed class CounterMenu { public static readonly CounterMenu Instance = new(); }
+    sealed class AttributesMenu { public static readonly AttributesMenu Instance = new(); }
     sealed class FactoryLook { public static readonly FactoryLook Instance = new(); }
 }

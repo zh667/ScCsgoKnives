@@ -16,7 +16,10 @@ public static class ScSurvivalBalance {
         "galilar" or "famas" => 9,
         "ak47" or "m4a4" or "m4a1s" or "aug" or "sg556" => 10,
         "m249" or "negev" => 8,
-        "ssg08" => 26, "awp" => 38, "scar20" or "g3sg1" or "taser" => 18,
+        "ssg08" => 26, "awp" => 38, "scar20" or "g3sg1" => 18,
+        // Zeus x27 (user-directed 2026-09-08): a high-cost, single-charge, close-range burst weapon. 100 × 1.5 = 150
+        // at Lv0, 225 at Lv10. Its headshot multiplier stays 1 and its range, charge and life are unchanged here.
+        "taser" => 100,
         "nova" => 22, "xm1014" => 16, "sawedoff" or "mag7" => 24,
         "glock18" or "hkp2000" or "p250" or "usp_silencer" or "fiveseven" or "tec9" or "cz75a" or "elite" => 7,
         _ => 0
@@ -29,10 +32,14 @@ public static class ScSurvivalBalance {
         return MathUtils.Lerp(1, floor, Math.Clamp((distance - start) / (end - start), 0, 1));
     }
     public static float PelletPower(GunSpec gun, float distance) => Power(gun.Name) * Falloff(gun, distance) / Math.Max(1, gun.Pellets);
-    public static void Attack(ComponentBody body, ComponentPlayer player, Vector3 point, Vector3 direction, float power, double now, bool melee = false, bool zeus = false, bool headshot = false) {
+    public static void Attack(ComponentBody body, ComponentPlayer player, Vector3 point, Vector3 direction, float power, double now, bool melee = false, bool zeus = false, bool headshot = false, ScGunKillCredit credit = null) {
         ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
         float before = health?.Health ?? 0;
-        int weapon = player.ComponentMiner.ActiveBlockValue;
+        // The kill panel names the gun that fired, taken from the shot's credential; the item in the hand now can
+        // already be a different one. With no credential (a knife, creative, a gun with no counter) it is the held item.
+        int weapon = credit is not null
+            ? Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true), 0, GunSpec.WithId(credit.Variant, GunSpec.FreshFull))
+            : player.ComponentMiner.ActiveBlockValue;
         Attackment attack = melee ? new MeleeAttackment(body, player.Entity, point, direction, power)
             : new ProjectileAttackment(body, player.Entity, point, direction, power, null);
         Control control = Controls.GetOrCreateValue(body);
@@ -46,6 +53,7 @@ public static class ScSurvivalBalance {
         int outcome = ScCombatFeedback.Outcome(before, health?.Health ?? before);
         // A head pellet that confirmed damage without a kill reports 3 (yellow); a kill stays 2 whatever was hit.
         if (outcome == 1 && headshot) outcome = ScCombatFeedback.HeadshotOutcome;
-        if (outcome > 0) player.Project.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.ReportHit(player, body, weapon, point, outcome, now);
+        // The kill belongs to the credential captured when the shot was fired, never to whatever is in the hand now.
+        if (outcome > 0) player.Project.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.ReportHit(player, body, weapon, point, outcome, now, credit);
     }
 }

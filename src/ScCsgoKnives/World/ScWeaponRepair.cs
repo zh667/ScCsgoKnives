@@ -12,10 +12,22 @@ public static class ScWeaponRepair {
     /// <summary>A priced repair, valid only for this record revision.</summary>
     public sealed record Quote(int Slot, int Value, int Id, int Revision, int Durability, int Full, IReadOnlyDictionary<int, int> Cost);
     public const int Blank = 0, Mechanism = 1; // ScWeaponMaterialBlock kinds: 金属坯件, 精密机构
-    /// <summary>Full-repair cost by material kind (0 blank, 1 mechanism): about a quarter of the assembly recipe.</summary>
+    /// <summary>Guns whose full repair is fixed instead of derived from their assembly recipe. The Zeus's
+    /// 2026-09-08 recipe was made deliberately expensive; deriving repair from it would have quietly raised the
+    /// price of repairing guns players already own, which the same instruction rules out.</summary>
+    public static readonly Dictionary<string, (int Blank, int Mechanism)> FixedFullCost = new(StringComparer.Ordinal) {
+        ["taser"] = (1, 1),
+    };
+    /// <summary>Full-repair cost by material kind (0 blank, 1 mechanism): about a quarter of the assembly recipe,
+    /// except where <see cref="FixedFullCost"/> pins it.</summary>
     public static Dictionary<int, int> FullCost(ScWeaponCrafting.Entry e) {
         var cost = new Dictionary<int, int>();
         if (e is null || e.Knife) return cost;
+        if (FixedFullCost.TryGetValue(e.Name, out var fixedCost)) {
+            if (fixedCost.Blank > 0) cost[Blank] = fixedCost.Blank;
+            if (fixedCost.Mechanism > 0) cost[Mechanism] = fixedCost.Mechanism;
+            return cost;
+        }
         cost[Blank] = Math.Max(1, (int)Math.Round(e.B / 4.0, MidpointRounding.AwayFromZero));
         int mechanisms = (int)Math.Round(e.M / 4.0, MidpointRounding.ToZero);
         if (e.M >= 3) mechanisms = Math.Max(1, mechanisms);

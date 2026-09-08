@@ -1,0 +1,1119 @@
+{
+  "version": 1,
+  "note": "CS2's own stattrak / stattrak_legacy attachment transforms, read from the local model dumps. Units are CS2 inches in the weapon's own space; rotation is a quaternion [x,y,z,w]. The counter module mesh and digit atlas are NOT here and are not on this machine.",
+  "attachments": [
+    "stattrak",
+    "stattrak_legacy"
+  ],
+  "missingModels": [],
+  "ambiguous": [],
+  "guns": {
+    "ak47": {
+      "cs2": "weapon_ak47",
+      "sha256": "ad510f317900f1b12db3336602aaa6a13cbfffa83ad5ac8f4d8ae402d012d30d",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          -0.0,
+          -0.0224,
+          -0.0,
+          0.999749
+        ],
+        "offset": [
+          5.410972,
+          0.712275,
+          -1.660331
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          -7e-06,
+          -0.022807,
+          -3e-06,
+          0.99974
+        ],
+        "offset": [
+          5.673595,
+          0.77786,
+          -1.788926
+        ]
+      }
+    },
+    "aug": {
+      "cs2": "weapon_aug",
+      "sha256": "d81fcfecef409e4f8ae17c87eb361c79ce03fc9c3c599fc43a976dca054fa885",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.797972,
+          1.105392,
+          -1.627515
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.653565,
+          1.356276,
+          -1.548629
+        ]
+      }
+    },
+    "awp": {
+      "cs2": "weapon_awp",
+      "sha256": "581b617393849badb2f5c6f73c4e87b77c44fb5447dfce0a7fe2e508db74be59",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -4.322453,
+          0.816197,
+          -1.288105
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -4.276766,
+          0.790415,
+          -1.474666
+        ]
+      }
+    },
+    "bizon": {
+      "cs2": "weapon_bizon",
+      "sha256": "ce28fde5c90a69a235a9e01225557d01c7bfbc96f7a78c49c748adb2258221b4",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -6.424485,
+          0.508689,
+          -1.6706
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -6.109059,
+          0.3385,
+          -1.432955
+        ]
+      }
+    },
+    "cz75a": {
+      "cs2": "weapon_cz75a",
+      "sha256": "d810268d9f6f53224032e2e704a8af47ded60a7f291071a31c137f43d835e274",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          4.283904,
+          0.2846,
+          -0.278201
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          4.233378,
+          0.253364,
+          -0.284537
+        ]
+      }
+    },
+    "deagle": {
+      "cs2": "weapon_deagle",
+      "sha256": "48a03a9989354b8bec2c7df2422602b56f147bee68cdbd82bb6d4c2b3b14d187",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.179347,
+          0.305583,
+          -0.689593
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.931523,
+          0.21503,
+          -0.73497
+        ]
+      }
+    },
+    "elite": {
+      "cs2": "weapon_elite",
+      "sha256": "fb57c37acaba20f16559dd9d28f7815110e3bb1812dc5afbdbe1780771d13eb6",
+      "stattrak": {
+        "bone": "weapon_r",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.539161,
+          0.321476,
+          -0.559314
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_r",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.61091,
+          0.170992,
+          -0.626036
+        ]
+      }
+    },
+    "famas": {
+      "cs2": "weapon_famas",
+      "sha256": "f2e14b74a0209b7612a8cd0475f7ba449d52bbee694456bd22c1b6b5498e7ea9",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -4.608734,
+          0.821457,
+          -0.862732
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -4.748398,
+          0.838468,
+          -1.183868
+        ]
+      }
+    },
+    "fiveseven": {
+      "cs2": "weapon_fiveseven",
+      "sha256": "01ec035801a0eac4f588f967e7e0438491bfafa32203dc6bae5084ca243d6ba8",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.055787,
+          0.222187,
+          -0.750923
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.974078,
+          0.311596,
+          -0.827726
+        ]
+      }
+    },
+    "g3sg1": {
+      "cs2": "weapon_g3sg1",
+      "sha256": "8dfaad8f09ed611830615c46ad3ed502d625c4fae5bf6be7d70789ea931482a8",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -5.739408,
+          0.916354,
+          -0.765139
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -5.168435,
+          0.892805,
+          -0.915783
+        ]
+      }
+    },
+    "galilar": {
+      "cs2": "weapon_galilar",
+      "sha256": "c0c1a2e8ce9350660cb891c166731d752448a6cfbcc368b0ba3658033009e198",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -3.037799,
+          0.720664,
+          -1.389419
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -3.096473,
+          0.745026,
+          -1.193069
+        ]
+      }
+    },
+    "glock18": {
+      "cs2": "weapon_glock",
+      "sha256": "917ade1f3a7cd7bebf5a1806579b4e54dfebcc726eafb80146c567283a8e0e88",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.595489,
+          0.310831,
+          -0.645781
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.483627,
+          0.288358,
+          -0.689347
+        ]
+      }
+    },
+    "hkp2000": {
+      "cs2": "weapon_hkp2000",
+      "sha256": "bdd8ab03be4e7f6dbc92efdb6248328c4e981b67e20d0736877a0f282c73bd15",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.137436,
+          0.27887,
+          -0.66958
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.210206,
+          0.324298,
+          -0.67584
+        ]
+      }
+    },
+    "m249": {
+      "cs2": "weapon_m249",
+      "sha256": "188eee1aee5af25f92cb01ec4e1e97f8aaf6f22f05f3908ac42fe8a3c158533d",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -1.046011,
+          0.795091,
+          -1.705591
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.675544,
+          0.797197,
+          -1.260126
+        ]
+      }
+    },
+    "m4a1s": {
+      "cs2": "weapon_m4a1_silencer",
+      "sha256": "da87041f8724c30fbf716b689756f2503d1acbf6541543adae57acbc263895ff",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.579336,
+          0.51396,
+          -0.125385
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -1.151821,
+          0.591559,
+          -0.193586
+        ]
+      }
+    },
+    "m4a4": {
+      "cs2": "weapon_m4a1",
+      "sha256": "73189e0f61af736d274af6708462c7fa9d5a9e6aff40fe9624b00c0788a708c5",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.445892,
+          0.771804,
+          -0.220241
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.785542,
+          0.778268,
+          -0.298502
+        ]
+      }
+    },
+    "mac10": {
+      "cs2": "weapon_mac10",
+      "sha256": "2bd80b6415a825668c2ea63cb33c87da065cb47f72671d29543d155c664cc9ee",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          1.456845,
+          1.130164,
+          -2.60084
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          1.837085,
+          0.922268,
+          -2.719556
+        ]
+      }
+    },
+    "mag7": {
+      "cs2": "weapon_mag7",
+      "sha256": "5d61cc38b49335d66354121390a97d19cbb071438fda35ca7c0424ee01cf5820",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -8.432167,
+          1.020966,
+          0.742471
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -8.63359,
+          1.00866,
+          0.738275
+        ]
+      }
+    },
+    "mp5sd": {
+      "cs2": "weapon_mp5sd",
+      "sha256": "a05f1b8ef56c13b24832c27f0ca00f0936758c09ccf26ec2bab5f6e50e7ceb93",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          0.325715,
+          0.702095,
+          -1.041369
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          0.225641,
+          0.673589,
+          -1.112182
+        ]
+      }
+    },
+    "mp7": {
+      "cs2": "weapon_mp7",
+      "sha256": "480877e720e36c519e9d905618d06e7c30160c8ec9a5f9a5b2ee59ce3d6ca4bc",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          1.133478,
+          0.442275,
+          0.014127
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.042464,
+          0.380636,
+          0.177984
+        ]
+      }
+    },
+    "mp9": {
+      "cs2": "weapon_mp9",
+      "sha256": "9e71adc1f49f3e78f8e4fa227ddcb28f7edb45bb2e8a145ef847413e1c7718be",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.995963,
+          0.879915,
+          -0.847667
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -1.003757,
+          0.773579,
+          -0.782336
+        ]
+      }
+    },
+    "negev": {
+      "cs2": "weapon_negev",
+      "sha256": "4002f971d460a6725b51efd5af63dbe16f8ebd086e6fd7bbafe208e4f98025d5",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.000786,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          0.699068,
+          1.126254,
+          -1.357054
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          1.153425,
+          1.036098,
+          -1.379105
+        ]
+      }
+    },
+    "nova": {
+      "cs2": "weapon_nova",
+      "sha256": "44615827e28e15e53a6231ff489d9694100dba8f8aea14d813c1f4026e9025a0",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          -0.015629,
+          -6e-06,
+          -5e-06,
+          0.999878
+        ],
+        "offset": [
+          -1.325698,
+          0.806994,
+          -1.812357
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          0.323209,
+          0.730861,
+          -2.09041
+        ]
+      }
+    },
+    "p250": {
+      "cs2": "weapon_p250",
+      "sha256": "84aca2e162c5d9c90a38eb2ca8debb5347b9c745cf087f247065a5d4645bc66f",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.362767,
+          0.219419,
+          -0.935999
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.418435,
+          0.253289,
+          -0.923895
+        ]
+      }
+    },
+    "p90": {
+      "cs2": "weapon_p90",
+      "sha256": "2930987937723a13c3acf246022693fe8847a906e5c5e542c1c84352d55bb9a6",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -4.21268,
+          1.002375,
+          -1.374235
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -4.211604,
+          0.947026,
+          -1.421762
+        ]
+      }
+    },
+    "revolver": {
+      "cs2": "weapon_revolver",
+      "sha256": "146cf1ce206491c91b41d425b62bd8b44555c659b54bd9659c239a32c4eb80f9",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.4267,
+          -0.089109,
+          0.110632
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.624555,
+          0.015543,
+          0.163234
+        ]
+      }
+    },
+    "sawedoff": {
+      "cs2": "weapon_sawedoff",
+      "sha256": "3e526235a9d759af2bcab1a029305acf4f2dafd7914d2635cceea874fe59e726",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.471122,
+          0.744736,
+          -2.13236
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.962799,
+          0.577932,
+          -2.064548
+        ]
+      }
+    },
+    "scar20": {
+      "cs2": "weapon_scar20",
+      "sha256": "485d16520f3f398e0c012eb011b6826939a7004b40371dd260d024e74fec3dc7",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -3.600311,
+          0.846232,
+          -0.4605
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -3.585048,
+          0.734776,
+          -0.669862
+        ]
+      }
+    },
+    "sg556": {
+      "cs2": "weapon_sg556",
+      "sha256": "4d1a518beec4861d5accf00271fb58acc7056763df32f09b1014cb309b561e0e",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.114375,
+          -2.4e-05,
+          -1.1e-05,
+          0.993438
+        ],
+        "offset": [
+          -2.982148,
+          0.500425,
+          0.010268
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.077283,
+          -1e-05,
+          -4e-06,
+          0.997009
+        ],
+        "offset": [
+          -2.613782,
+          0.514878,
+          0.160088
+        ]
+      }
+    },
+    "ssg08": {
+      "cs2": "weapon_ssg08",
+      "sha256": "06a9723abf1fa74c9fa2fb15aa09f090bc0b070f02ebfbf38bf9d45b8f68b1c5",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.317586,
+          0.978261,
+          -1.083446
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          1.599301,
+          1.028021,
+          -1.027107
+        ]
+      }
+    },
+    "taser": {
+      "cs2": "weapon_taser",
+      "sha256": "683b29ec0dec63221076b88352e91bb2dfe96d8abc2a4481f122fcca7e4cf2a2",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          -0.030475,
+          0.0,
+          0.999536
+        ],
+        "offset": [
+          1.156154,
+          0.513379,
+          -2.462179
+        ]
+      },
+      "stattrak_legacy": null
+    },
+    "tec9": {
+      "cs2": "weapon_tec9",
+      "sha256": "1788f1108aff7e8a120951433c4000b664a99621635576a21a29357aa3317aa3",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.740059,
+          0.621154,
+          0.349195
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -0.741023,
+          0.628709,
+          0.297153
+        ]
+      }
+    },
+    "ump45": {
+      "cs2": "weapon_ump45",
+      "sha256": "5505e1c1aec36c2710dfaaf5dd801023b0a2b5935cf36a9d3252549495129203",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          8.351994,
+          0.770951,
+          -1.563747
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          8.347671,
+          0.815076,
+          -1.754771
+        ]
+      }
+    },
+    "usp_silencer": {
+      "cs2": "weapon_usp_silencer",
+      "sha256": "ce602cda7f944bb857fd6d241d695336f6ccbbd1ed8beabca1ceaae017afe6d1",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          2.955275,
+          0.328095,
+          -0.537923
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          3.307845,
+          0.272634,
+          -0.667847
+        ]
+      }
+    },
+    "xm1014": {
+      "cs2": "weapon_xm1014",
+      "sha256": "63846bbbef8533feace53057f2f1e89f90c8ebd295e931112c46da2187bee3aa",
+      "stattrak": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -2.313604,
+          0.6474,
+          -2.148463
+        ]
+      },
+      "stattrak_legacy": {
+        "bone": "weapon_offset",
+        "rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "offset": [
+          -2.763437,
+          0.807478,
+          -2.339647
+        ]
+      }
+    }
+  }
+}

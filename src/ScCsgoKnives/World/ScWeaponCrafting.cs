@@ -53,7 +53,9 @@ public static class ScWeaponCrafting {
                 "awp" => (5, 5, 3, 1, 1, 0),
                 "scar20" or "g3sg1" => (6, 5, 4, 1, 1, 0),
                 "m249" or "negev" => (6, 6, 4, 0, 1, 0),
-                "taser" => (3, 2, 3, 0, 0, 2),
+                // Zeus x27 (user-directed 2026-09-08): level 6, 6 blanks + 6 mechanisms + 1 grip + 4 extra germanium
+                // + 2 diamonds. Expanded that is 48 iron, 12 coal, 12 copper, 10 germanium, 2 leather, 1 plank, 2 diamond.
+                "taser" => (6, 6, 6, 0, 2, 4),
                 _ => throw new InvalidOperationException("No survival recipe for " + n)
             };
             entries.Add(new(n, false, v, level, b, m, 1, o, diamond, germanium));

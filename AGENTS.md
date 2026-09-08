@@ -2,6 +2,16 @@
 
 - Narrow user authorization on 2026-09-08: fix the reported survival weapon-workbench missing drop and first-person muzzle particles being overwritten over water. This does not resume other blocked milestones or permit gun save-format changes. See `docs/workbench-muzzle-fixes-0371.md`.
 
+- User-directed handover of 2026-09-09: the counter/growth/attribute/touch work line is ACTIVE and 0.40.0 implements it
+  (attribute page, mobile mod settings and touch layout, kill-feed and gun-crosshair switches, gun-only StatTrak counter,
+  ten-level growth at 100 kills a level to 1000, and the Zeus rebuild). Record schema is 3, with the schema 1 and 2
+  converters kept; the item layout stamp is still 5 and gun variant order is still frozen. A world saved by 0.40.0 is
+  refused by 0.39.1 and earlier, which is the required forward protection, not damage. The CS2 StatTrak module mesh and
+  digit atlas are not on this machine, so the counter is not drawn on the weapon; see
+  `docs/gun-stattrak-attachments-2026-09-09.md` for the exact missing paths and
+  `docs/gun-counter-growth-0400.md` for what is implemented and what still needs device acceptance. Historical five-level
+  XP, 100-kill or 1600-kill caps, +10% damage, +100% durability and the Zeus 54/81 or 3-second charge are obsolete.
+
 - Execution override, user-directed at 2026-09-08 00:22:15 +08:00 (Asia/Shanghai): only M4 gun durability is ACTIVE. M0 general work, M1, M1b, M2/F07, M3, M5, standalone scope/inspect work and their separate device acceptance are BLOCKED until the user explicitly resumes them. Keep existing features. M4-required identity/transaction/save validation, charge state, box integration and narrow fixes for regressions caused by M4 are in scope. Follow `docs/vps-m4-durability-plan-2026-09-08.md`. Later user authorization on 2026-09-08 adds migration from the only published source version 0.28.2: back up the whole world, preserve model/ammo/silencer and give full durability once. Do not guess internal 0.29–0.36 test formats or reclaim IDs. See `docs/official-0282-compatibility-0370.md`. Do not resume other milestones automatically after M4.
 
 - Use CS2 resources and real skinned hands for all first-person weapons. Do not restore the CS:MC / block-hand runtime route or expose a switch that re-enables it. This is the user's standing preference from 2026-09-06.
@@ -9,6 +19,11 @@
 - Before removing assets, verify first-person, inventory, dropped-item and shared-effect references. Preserve CS2 source extractions and resources shared with other projects. Record removed paths in a manifest; do not delete by a broad “CS” name match.
 - Deliver versioned `.scmod` packages in the project-root `output/` directory. Package only assets present in the current source manifest, so incremental build leftovers do not return to the package.
 - Report packaged-DLL checks separately from actual game testing; an offline render is not an in-game screenshot.
+
+- Do not add an overload to a method a tool or regression binds to by name alone: `Type.GetMethod("Required")` throws
+  AmbiguousMatchException the moment a second `Required` exists. Give the new shape its own name (`RequiredFor`).
+- Self-tests run before BlocksManager has any blocks. A check that needs an item value builds it from a constant, never
+  from `BlocksManager.GetBlockIndex`; production helpers that only need the data half tolerate a missing registry.
 
 - Guns already have custom durability and a v5 instance registry since 0.35.0; M4 is still under correction and acceptance. The user's 2026-09-07 instructions supersede the prior all-items-no-durability preference for guns only. Complete gun wear, broken-but-retained guns and workbench repair per the current M4 plan. Keep `ScNoDurabilityBlock` protection against vanilla wear, including on guns; custom wear must never use vanilla damage bits. Test normal gameplay in new worlds, authorized migration in untouched 0.28.2 world copies, and persistence/upgrade protection from the 0.37.0 baseline per the policy below. Unsupported internal test formats remain out of scope; item transfers remain required.
 - Follow the current community-feedback plan one milestone at a time. Third-person character and throwing poses are authored for vanilla limbs; only weapon-part animation and event timing reuse CS2 clips. Do not claim full CS2 character animation reproduction. Do not add distant-audio variants. Guns use the planned 1.5x survival damage; knife reach is planned as 2.2 light / 1.8 heavy. Headshot non-kills are yellow; all kills are red. These are implementation requirements, not claims that runtime changes already exist.

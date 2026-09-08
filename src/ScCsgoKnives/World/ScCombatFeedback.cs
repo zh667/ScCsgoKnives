@@ -52,6 +52,9 @@ public sealed class ScCombatFeedback {
             batch.TransformTriangles(camera.ViewportMatrix); batch.Flush();
         }
         Kills.RemoveAll(k => now - k.At > 3.2);
+        // The kill panel is a display switch: turning it off clears what is on screen now and never replays the
+        // messages of the time it was off. Counting, growth and damage do not read this flag.
+        if (!ScUiSettings.KillFeed) { Kills.Clear(); return; }
         if (Kills.Count == 0) return;
         var font = m_renderer.FontBatch(LabelWidget.BitmapFont, 1, DepthStencilState.None, null, BlendState.AlphaBlend);
         for (int i = 0; i < Kills.Count; i++) {

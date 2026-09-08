@@ -8,11 +8,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
     public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
     readonly Dictionary<ComponentPlayer, ScKnifeStrike> m_strikes = [];
-    sealed class WeaponButtons {
-        public readonly BevelledButtonWidget Main = new(), Secondary = new();
-        public readonly ScWeaponButtonInput MainInput = new(), SecondaryInput = new();
-    }
-    readonly Dictionary<ComponentPlayer, WeaponButtons> m_buttons = [];
+    readonly Dictionary<ComponentPlayer, ScWeaponTouchPanel> m_buttons = [];
     readonly Dictionary<int, double> m_savedRecovery = [];
     SubsystemTime m_time;
     SubsystemPlayers m_players;
@@ -71,59 +67,52 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             }
         }
     }
+    /// <summary>Which of the mod's secondary actions this gun actually has. A gun with no alternate mode offers
+    /// none: the button is not shown just because the id exists.</summary>
+    public static string SecondaryOf(GunSpec spec) =>
+        spec is null ? null
+        : spec.ZoomLevels.Length > 0 ? ScGunFunctions.Scope
+        : spec.HasBurstMode ? ScGunFunctions.Burst
+        : spec.HasSilencer ? ScGunFunctions.Silencer
+        : spec.CycleSecondsAlternate > 0 ? ScGunFunctions.RevolverAlt
+        : null;
+
     void UpdateButtons(ComponentPlayer player) {
         // Desktop creates no mobile widgets, even on a touchscreen laptop.
         if (!ScMobileControls.IsMobileDevice) return;
-        if (!m_buttons.TryGetValue(player, out var buttons)) {
-            buttons = new WeaponButtons();
-            player.ComponentGui.ControlsContainerWidget.Children.Add(buttons.Main);
-            player.ComponentGui.ControlsContainerWidget.Children.Add(buttons.Secondary);
-            m_buttons[player] = buttons;
-        }
+        var container = player.ComponentGui.ControlsContainerWidget;
+        if (!m_buttons.TryGetValue(player, out var panel)) m_buttons[player] = panel = new ScWeaponTouchPanel();
+        panel.Attach(container);
         bool knife = HoldingKnife(player);
         bool gun = Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
         bool grenade = SubsystemScGrenades.Holding(player);
-        bool touch = player.ComponentInput.IsControlledByTouch || buttons.Main.Input.TouchLocations.Count > 0;
+        bool touch = player.ComponentInput.IsControlledByTouch || panel.AnyCaptured;
         if (touch) player.ComponentInput.IsControlledByTouch = true;
-        bool enabled = Window.IsActive && CanOperate(player) && player.ComponentGui.ControlsContainerWidget.IsVisible;
+        bool enabled = Window.IsActive && CanOperate(player) && container.IsVisible;
         var spec = gun ? ScGunBlock.SpecOf(player.ComponentMiner.ActiveBlockValue) : null;
-        string secondary = grenade ? "强投" : spec?.ZoomLevels.Length > 0 ? "开镜"
-            : spec?.HasBurstMode == true ? "连发" : spec?.HasSilencer == true ? "消音器"
-            : spec?.CycleSecondsAlternate > 0 ? "速射" : null;
-        ConfigureButton(buttons.Main, 0);
-        ConfigureButton(buttons.Secondary, 1);
-        buttons.Main.Text = knife ? "重刀" : grenade ? "轻投" : "换弹";
-        buttons.Main.IsVisible = enabled && (knife || gun || grenade);
-        buttons.Secondary.Text = secondary ?? "";
-        buttons.Secondary.IsVisible = enabled && secondary is not null;
-        buttons.MainInput.Sample(buttons.Main, touch, buttons.Main.IsVisible);
-        buttons.SecondaryInput.Sample(buttons.Secondary, touch, buttons.Secondary.IsVisible);
+        string secondary = gun ? SecondaryOf(spec) : null;
+        panel.Update(container.ActualSize, enabled, touch, id => id switch {
+            ScGunFunctions.Reload => gun,
+            ScGunFunctions.KnifeHeavy => knife,
+            ScGunFunctions.ThrowWeak or ScGunFunctions.ThrowStrong => grenade,
+            ScGunFunctions.Inspect => knife || gun,
+            _ => secondary == id,
+        });
         var grenades = Project.FindSubsystem<SubsystemScGrenades>(true);
-        grenades.SetThrowButton(player, true, grenade && buttons.MainInput.Pressed,
-            grenade && buttons.MainInput.Clicked, !grenade || buttons.MainInput.Cancelled);
-        grenades.SetThrowButton(player, false, grenade && buttons.SecondaryInput.Pressed,
-            grenade && buttons.SecondaryInput.Clicked, !grenade || buttons.SecondaryInput.Cancelled);
-        if (buttons.MainInput.Clicked && !grenade) {
-            if (knife) RequestAttack(player, true);
-            else if (gun) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
+        grenades.SetThrowButton(player, true, grenade && panel.Pressed(ScGunFunctions.ThrowWeak),
+            grenade && panel.Clicked(ScGunFunctions.ThrowWeak), !grenade || panel.Cancelled(ScGunFunctions.ThrowWeak));
+        grenades.SetThrowButton(player, false, grenade && panel.Pressed(ScGunFunctions.ThrowStrong),
+            grenade && panel.Clicked(ScGunFunctions.ThrowStrong), !grenade || panel.Cancelled(ScGunFunctions.ThrowStrong));
+        if (knife && panel.Clicked(ScGunFunctions.KnifeHeavy)) RequestAttack(player, true);
+        if (gun && panel.Clicked(ScGunFunctions.Reload)) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
+        if (gun && secondary is not null && panel.Clicked(secondary)) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestSecondary(player);
+        if ((knife || gun) && panel.Clicked(ScGunFunctions.Inspect)) {
+            if (knife) State(player).Cancel();
+            KnifeAnimationController.TriggerInspect(player);
         }
-        if (gun && buttons.SecondaryInput.Clicked)
-            Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestSecondary(player);
-    }
-    static void ConfigureButton(BevelledButtonWidget button, int row) {
-        bool left = SettingsManager.LeftHandedLayout;
-        button.Size = new Vector2(104, 60);
-        button.HorizontalAlignment = left ? WidgetAlignment.Near : WidgetAlignment.Far;
-        button.VerticalAlignment = WidgetAlignment.Far;
-        button.MarginLeft = left ? 160 : 0;
-        button.MarginRight = left ? 0 : 160;
-        button.MarginBottom = 150 + row * 68;
     }
     public override void Dispose() {
-        foreach (var buttons in m_buttons.Values) {
-            buttons.Main.ParentWidget?.Children.Remove(buttons.Main);
-            buttons.Secondary.ParentWidget?.Children.Remove(buttons.Secondary);
-        }
+        foreach (var panel in m_buttons.Values) panel.Dispose();
         m_buttons.Clear(); m_strikes.Clear(); base.Dispose();
     }
 

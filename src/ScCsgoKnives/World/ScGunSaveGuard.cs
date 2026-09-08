@@ -21,9 +21,23 @@ public static class ScGunSaveGuard {
             var registry = values.GetValue<ValuesDictionary>("GunRegistry");
             if (registry is null) throw Refused("GunRegistry is null");
             int schema = registry.GetValue<int>("Schema", 0);
-            if (schema != ScGunRegistry.Schema && schema != ScGunRegistry.SchemaWithoutSkins)
-                throw Refused($"GunRegistry.Schema={schema}");
+            if (!ScGunRegistry.IsKnownSchema(schema)) throw Refused($"GunRegistry.Schema={schema}");
+            // A growth mode name this build does not know means a rule set it cannot honour; refuse before play.
+            string mode = registry.GetValue<string>("GrowthMode", null);
+            if (mode is not null && !Enum.TryParse<ScGunGrowthMode>(mode, out _)) throw Refused($"GunRegistry.GrowthMode={mode}");
         }
+    }
+
+    /// <summary>Marks this world's gun subsystem so its own Load fails before gameplay or autosave. The XML hook's
+    /// exceptions are swallowed by the API, so an ephemeral error field is the only thing that reliably stops it.</summary>
+    public static void Refuse(XElement project, string detail) {
+        var groups = project.Element("Subsystems")?.Elements("Values")
+            .Where(e => (string)e.Attribute("Name") == "ScGunBlockBehavior").ToArray() ?? [];
+        foreach (var group in groups) {
+            group.Elements("Value").Where(v => (string)v.Attribute("Name") == ErrorKey).Remove();
+            group.Add(new XElement("Value", new XAttribute("Name", ErrorKey), new XAttribute("Type", "string"), new XAttribute("Value", detail)));
+        }
+        KnifeLog.Error("gun load refused: " + detail);
     }
 
     public static bool BeforeLoad(XElement project) {

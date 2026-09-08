@@ -103,9 +103,79 @@ public static class ScGunSaveGuardSelfTest {
                 Set(subsystem, "m_registry", registry); Set(subsystem, "m_time", new SubsystemTime());
                 var saved = new ValuesDictionary(); subsystem.Save(saved);
                 values = new ValuesDictionary(); values.ApplyOverrides(XElement.Parse(Xml(saved)));
-                if (values.GetValue<int>("GunDataLayout") != 5 || values.GetValue<ValuesDictionary>("GunRegistry").GetValue<int>("Schema") != 2) return false;
+                if (values.GetValue<int>("GunDataLayout") != 5 || values.GetValue<ValuesDictionary>("GunRegistry").GetValue<int>("Schema") != ScGunRegistry.Schema) return false;
             }
             return true;
+        });
+        // Two real XML save/reload rounds through the subsystem, carrying the counter and growth state a 0.40.0
+        // world holds. Decoding a string is not proof of persistence; this goes out through Save and back in
+        // through the same ValuesDictionary/XML boundary the engine uses, twice.
+        T("schema2-to-3-two-rounds-preserve-counter-and-growth", () => {
+            var start = Dict(5, ScGunRegistry.SchemaWithoutGrowth);
+            var records = new ValuesDictionary();
+            records.SetValue("1", "0,17,1,900,1500,4,12.5,180");   // schema 2: AK, 17 rounds, silencer off, 900/1500, charge 12.5, Fire Serpent
+            var table = start.GetValue<ValuesDictionary>("GunRegistry");
+            table.SetValue("Records", records); table.SetValue("Next", 20);
+            ScGunSaveGuard.Validate(start);
+            var registry = ScGunRegistry.Load(table, 0);
+            if (registry.LoadedSchema != ScGunRegistry.SchemaWithoutGrowth || !registry.TryGetSnapshot(1, out var converted)) return false;
+            if (converted.CounterInstalled || converted.KillCount != 0 || converted.Rounds != 17 || !converted.SilencerOff
+                || converted.Durability != 900 || converted.MaxDurability != 1500 || converted.SkinId != 180
+                || Math.Abs(converted.RechargeReadyAt - 12.5) > .01) return false;
+            // Fit a counter, earn a level, and mark one still waiting: the state a live world would be carrying.
+            registry.GrowthMode = ScGunGrowthMode.CountAndGrow;
+            var record = registry.Get(1);
+            record.CounterInstalled = true; record.KillCount = 250; record.AppliedGrowthLevel = 2;
+            record.PendingGrowthLevel = 2; record.GrowthRulesVersion = ScGunGrowth.RulesVersion;
+            record.MaxDurability = ScGunGrowth.MaxDurability(0, 2); record.Durability = 900; record.ReserveOverflowRounds = 3;
+            registry.Kills.Enqueue(1, 0);
+            var values = start;
+            for (int round = 0; round < 2; round++) {
+                var subsystem = new SubsystemScGunBlockBehavior();
+                Set(subsystem, "m_saveReady", true); Set(subsystem, "m_worldLayout", 5);
+                Set(subsystem, "m_registry", registry); Set(subsystem, "m_time", new SubsystemTime());
+                var saved = new ValuesDictionary(); subsystem.Save(saved);
+                values = new ValuesDictionary(); values.ApplyOverrides(XElement.Parse(Xml(saved)));
+                ScGunSaveGuard.Validate(values);
+                if (values.GetValue<int>("GunDataLayout") != 5) return false;
+                var reloadedTable = values.GetValue<ValuesDictionary>("GunRegistry");
+                if (reloadedTable.GetValue<int>("Schema") != ScGunRegistry.Schema) return false;
+                registry = ScGunRegistry.Load(reloadedTable, 0);
+                if (!registry.TryGetSnapshot(1, out var s)) return false;
+                if (s.Variant != 0 || s.Rounds != 17 || !s.SilencerOff || s.Durability != 900
+                    || s.MaxDurability != ScGunGrowth.MaxDurability(0, 2) || s.SkinId != 180
+                    || !s.CounterInstalled || s.KillCount != 250 || s.AppliedGrowthLevel != 2
+                    || s.PendingGrowthLevel != 2 || s.GrowthRulesVersion != ScGunGrowth.RulesVersion
+                    || s.ReserveOverflowRounds != 3) return false;
+                if (registry.GrowthMode != ScGunGrowthMode.CountAndGrow || registry.Kills.Count != 1
+                    || registry.Kills.Pending[0].RecordId != 1 || registry.Next != 20) return false;
+            }
+            return true;
+        });
+        // A world about to be converted to a schema older builds cannot read is backed up first, once.
+        T("schema-upgrade-asks-for-a-backup-once", () => {
+            var older = World(GunSpec.DataLayout, ScGunRegistry.SchemaWithoutGrowth);
+            var current = World(GunSpec.DataLayout, ScGunRegistry.Schema);
+            var brandNew = new XElement("Project", new XElement("Subsystems"));
+            if (ScGunSchemaUpgrade.SavedSchema(older) != ScGunRegistry.SchemaWithoutGrowth) return false;
+            if (ScGunSchemaUpgrade.SavedSchema(brandNew) != 0) return false;
+            if (!ScGunSchemaUpgrade.NeedsBackup(older) || ScGunSchemaUpgrade.NeedsBackup(current) || ScGunSchemaUpgrade.NeedsBackup(brandNew)) return false;
+            // Once marked it never asks again, and the marker records where the backup went.
+            ScGunSchemaUpgrade.Mark(older, ScGunRegistry.SchemaWithoutGrowth, "world/Backup.snapshot");
+            if (ScGunSchemaUpgrade.NeedsBackup(older)) return false;
+            var values = new ValuesDictionary(); values.ApplyOverrides(new XElement(older.Descendants("Values").First(e => (string)e.Attribute("Name") == "ScGunBlockBehavior")));
+            var marker = values.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.Marker, null);
+            if (marker is null || marker.GetValue<int>("From", 0) != ScGunRegistry.SchemaWithoutGrowth
+                || marker.GetValue<int>("To", 0) != ScGunRegistry.Schema || marker.GetValue<string>("Backup", "") != "world/Backup.snapshot") return false;
+            // A backup failure refuses the load instead of upgrading without one.
+            var refused = World(GunSpec.DataLayout, ScGunRegistry.SchemaWithoutSkins);
+            ScGunSaveGuard.Refuse(refused, "backup failed");
+            var refusedValues = new ValuesDictionary();
+            refusedValues.ApplyOverrides(new XElement(refused.Descendants("Values").First(e => (string)e.Attribute("Name") == "ScGunBlockBehavior")));
+            try { ScGunSaveGuard.Validate(refusedValues); return false; } catch (InvalidOperationException) { }
+            // Names carry the source and target format, a UTC stamp and a unique suffix.
+            string name = ScGunSchemaUpgrade.FileName(1, ScGunRegistry.Schema);
+            return name.Contains("-1-to-3-") && name != ScGunSchemaUpgrade.FileName(1, ScGunRegistry.Schema);
         });
         T("record-restored-before-refund", () => {
             var registry = new ScGunRegistry(); ScGunRegistry.Current = registry;

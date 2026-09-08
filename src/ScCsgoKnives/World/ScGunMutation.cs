@@ -60,8 +60,17 @@ public sealed class ScGunMutation {
         why = ScGunResult.Success;
         return new ScGunMutation(registry, inventory, slot, value, before, fresh, holder, owner);
     }
-    static bool Valid(ScGunRecord r) => r.Variant >= 0 && r.Variant < GunSpec.All.Length && r.Rounds >= 0 && r.Rounds <= GunSpec.All[r.Variant].Magazine
+    static bool Valid(ScGunRecord r) => r.Variant >= 0 && r.Variant < GunSpec.All.Length && r.Rounds >= 0
+        // Ammunition is bounded by this gun's own capacity at the level it carries, not by the base magazine:
+        // a legitimately grown Negev holds 225 and must not be refused by the model's 150.
+        && r.Rounds <= ScGunGrowth.Capacity(r.Variant, r.AppliedGrowthLevel)
         && r.MaxDurability >= 1 && r.Durability >= 0 && r.Durability <= r.MaxDurability && (r.RechargeReadyAt == -1 || (r.RechargeReadyAt >= 0 && double.IsFinite(r.RechargeReadyAt)))
+        && float.IsFinite(r.RechargeCycleSeconds) && r.RechargeCycleSeconds >= 0 && r.RechargeCycleSeconds <= 1e6f
+        // Counter and growth state: a gun with no counter carries no kills, no level and no rules version.
+        && r.KillCount >= 0 && r.AppliedGrowthLevel >= 0 && r.AppliedGrowthLevel <= ScGunGrowth.MaxLevel
+        && (r.PendingGrowthLevel == ScGunGrowth.NoPending || (r.PendingGrowthLevel >= 0 && r.PendingGrowthLevel <= ScGunGrowth.MaxLevel))
+        && r.GrowthRulesVersion >= 0 && r.ReserveOverflowRounds >= 0 && r.ReserveOverflowRounds <= 1_000_000
+        && (r.CounterInstalled || (r.KillCount == 0 && r.AppliedGrowthLevel == 0 && r.GrowthRulesVersion == 0 && r.PendingGrowthLevel == ScGunGrowth.NoPending))
         // A finish must exist in this build's catalogue and belong to this model; nothing else may be written.
         && ScGunSkinCatalog.IsKnown(r.SkinId) && (r.SkinId == ScGunSkinCatalog.None || ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(r.SkinId), r.Variant));
     bool SlotUnchanged() => Inventory.GetSlotValue(Slot) == Expected && ScInventoryTransaction.Revision(Inventory) == InventoryRevision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot);
@@ -100,6 +109,9 @@ public sealed class ScGunMutation {
             int candidate = needsId ? m_registry.PeekNextId() : -1;
             if (needsId && candidate < 0) return Fail(NeedsClone ? ScGunResult.DuplicateUnresolved : ScGunResult.RegistryFull, "registry full");
             var draft = Fresh ? new ScGunRecord { Variant = Variant, Rounds = Before.Rounds, SilencerOff = Before.SilencerOff, Durability = Before.Durability, MaxDurability = Before.MaxDurability, SkinId = Before.SkinId } : record.Copy();
+            // A record held in two places at once means the item was duplicated. The copy that acts here gets its
+            // own record, and a duplicate never inherits the survival kills or the level they bought.
+            if (NeedsClone) ScGunGrowth.StripGrowth(draft);
             change(draft);
             if (draft.Variant != Variant || !Valid(draft)) return Fail(ScGunResult.Invalid, "invalid draft state");
             if (!SlotUnchanged() || !ReferenceEquals(ScGunRegistry.Current, m_registry) || (!Fresh && record.Revision != RecordRevision)) return Fail(ScGunResult.StateChanged, "state changed in preparation");

@@ -31,10 +31,32 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
         ModsManager.RegisterHook("OnModelCalculateBones", this); // third person: pose the human's arms around the mod weapon
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
+        ModsManager.RegisterHook("OnSettingsScreenCreated", this); // a mod settings entry a phone can actually reach
+    }
+
+    /// <summary>Adds the mod's settings entry to the game's own Settings screen, which the pause menu opens on
+    /// every platform. That is the whole mobile settings route: no file to edit, and the entry cannot be hidden
+    /// by switching the combat buttons off.</summary>
+    public override void OnSettingsScreenCreated(SettingsScreen settingsScreen, out Dictionary<ButtonWidget, Action> buttonsToAdd) {
+        var button = new BevelledButtonWidget { Text = "CS 枪械", Size = new Vector2(-1, 60) };
+        buttonsToAdd = new Dictionary<ButtonWidget, Action> {
+            [button] = () => { EnsureScreens(); ScreensManager.SwitchScreen(ScGunSettingsScreen.ScreenName); },
+        };
+    }
+
+    /// <summary>Registers the mod's screens once. ScreensManager.AddScreen throws on a duplicate name.</summary>
+    static void EnsureScreens() {
+        if (!ScreensManager.m_screens.ContainsKey(ScGunSettingsScreen.ScreenName)) ScreensManager.AddScreen(ScGunSettingsScreen.ScreenName, new ScGunSettingsScreen());
+        if (!ScreensManager.m_screens.ContainsKey(ScGunLayoutScreen.ScreenName)) ScreensManager.AddScreen(ScGunLayoutScreen.ScreenName, new ScGunLayoutScreen());
     }
 
     public override void ProjectXmlLoad(XElement project, WorldInfo world, ContainerWidget widget) {
-        if (ScGunSaveGuard.BeforeLoad(project)) ScGun0282Migration.BeforeLoad(project, world);
+        if (!ScGunSaveGuard.BeforeLoad(project)) return;
+        ScGun0282Migration.BeforeLoad(project, world);
+        // A world saved with an older record schema is about to be converted to one older builds cannot read.
+        // Back it up first, and refuse the load rather than upgrade without a way back.
+        try { ScGunSchemaUpgrade.BeforeLoad(project, world); }
+        catch (Exception e) { ScGunSaveGuard.Refuse(project, "记录格式升级前的世界备份失败：" + e.Message); }
     }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
@@ -75,7 +97,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (m_assemblyClickScreen == screen) {
             m_assemblyClickScreen = null;
             if (ScreensManager.CurrentScreen == screen) {
-                ScreensManager.m_screens["RecipaediaRecipes"] = new ScAssemblyRecipesScreen();
+                // A gun opens on its attribute card, which links to the recipe; a knife goes straight to the recipe.
+                bool gun = Terrain.ExtractContents(m_assemblyClickValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+                ScreensManager.m_screens["RecipaediaRecipes"] = gun ? new ScGunAttributesScreen() : new ScAssemblyRecipesScreen();
                 ScreensManager.SwitchScreen("RecipaediaRecipes", m_assemblyClickValue);
             }
         }
@@ -159,6 +183,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScResourcePolicy.LoadEdition();
+        // Local interface settings: touch buttons, kill feedback and the gun crosshair. Never world data.
+        ScUiSettings.Load();
+        EnsureScreens();
         int index = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] values = BlocksManager.Blocks[index].GetCreativeValues().ToArray();
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
@@ -187,7 +214,15 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
         // Zoomed on the AUG / SG 553 the reticle is the scope's own dot, so the
         // vanilla crosshair goes too (it grew with the FOV in 0.20.0's video).
-        if (CsmcFirstPersonRenderer.ScopeOverlayActive) isVisible = false;
+        if (CsmcFirstPersonRenderer.ScopeOverlayActive) { isVisible = false; return; }
+        // While the mod draws its own gun crosshair, vanilla's is suppressed so there is exactly one layer.
+        // With an empty hand, a knife, a grenade or any vanilla tool this hook changes nothing at all.
+        var player = componentAimingSights?.m_componentPlayer;
+        if (player is null || !ScUiSettings.GunCrosshair || !ScGunCrosshair.HoldingGun(player)) return;
+        SubsystemScGunBlockBehavior guns = null;
+        try { guns = player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false); } catch (NullReferenceException) { }
+        if (guns is null) return;
+        isVisible = false;
     }
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {

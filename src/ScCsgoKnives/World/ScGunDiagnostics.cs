@@ -16,6 +16,10 @@ public sealed class ScGunDiagnostics {
         public bool Touch, Creative, Scoped, Silenced, Burst, Alternate, Airborne, FluidOrLadder;
         public float SpeedXZ, Crouch, AimBlend, LandingFactor, Cone, Range, NearPower, BloomBefore, BloomAfter, FrameMs;
         public float KickPitchDegrees, KickYawDegrees;
+        /// <summary>Counter and growth state of the gun that fired, so a log can tell a level's effect from a preset's.</summary>
+        public bool Counter, UnlimitedRange;
+        public int Level;
+        public long Kills;
         public ScGunStance.ConeParts? Components;
     }
     public sealed class Shot {

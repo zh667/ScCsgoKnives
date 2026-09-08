@@ -126,7 +126,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// The AWP scope mask is drawn here, at order 350 (after the sky at 105 and particles at
     /// 300), not in the first-person pass, so nothing paints over it when the player looks up.
     /// </summary>
-    public int[] DrawOrders => [350];
+    public int[] DrawOrders => [350, 2001];
+    /// <summary>Whether this player's gun is scoped right now; the crosshair and the vanilla-crosshair hook read it.</summary>
+    public bool IsScoped(ComponentPlayer player) => player is not null && m_states.TryGetValue(player, out var state) && state.Zoom > 0;
+    readonly PrimitivesRenderer2D m_crosshairRenderer = new();
 
     /// <summary>
     /// A tracer in flight: CS2 fires hitscan and draws a trail running the shot line.
@@ -462,6 +465,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         BlendState blend = Display.BlendState;
         DepthStencilState depth = Display.DepthStencilState;
         RasterizerState rasterizer = Display.RasterizerState;
+        if (drawOrder == 2001) {
+            // After the vanilla sights pass (2000), so exactly one crosshair is ever on screen.
+            try {
+                var owner = camera.GameWidget.PlayerData.ComponentPlayer;
+                if (ScGunCrosshair.Active(owner, camera, IsScoped(owner)))
+                    ScGunCrosshair.Draw(m_crosshairRenderer, camera, ScUiSettings.CrosshairColor, ScUiSettings.CrosshairStyle);
+            }
+            catch (Exception e) { KnifeDiagnostics.WarnOnce("gun-crosshair", "gun crosshair: " + e); }
+            finally { Display.BlendState = blend; Display.DepthStencilState = depth; Display.RasterizerState = rasterizer; }
+            return;
+        }
         try {
             DrawTracers(camera);
             DrawZeus(camera);
@@ -489,13 +503,38 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         base.Dispose();
     }
 
-    public void ReportHit(ComponentPlayer player, ComponentBody body, int weapon, Vector3 point, int outcome, double now) {
+    /// <summary>A death is credited once. The transition from alive to dead can only happen once per creature, and
+    /// the pellets of one trigger pull are merged before the attack, so a shotgun cannot count a target twice;
+    /// this table is the belt-and-braces guard for a corpse hit by a second source in the same frame.</summary>
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComponentHealth, object> s_countedDeaths = new();
+    static readonly object s_countedMarker = new();
+
+    public void ReportHit(ComponentPlayer player, ComponentBody body, int weapon, Vector3 point, int outcome, double now, ScGunKillCredit credit = null) {
         if (!m_states.TryGetValue(player, out var state)) m_states[player] = state = new GunState();
         string name = BlocksManager.Blocks[Terrain.ExtractContents(weapon)].GetDisplayName(m_terrain, weapon);
+        // The kill sound and the kill panel are display switches; neither gates the counting below.
         bool sound = outcome == 2 && now - state.Feedback.KillAt > .07;
         state.Feedback.Record(outcome, body.Entity.FindComponent<ComponentCreature>()?.DisplayName ?? "生物", name,
             Vector3.Distance(player.ComponentCreatureModel.EyePosition, point), now);
-        if (sound) ScCombatAudio.PlayKill();
+        if (sound && ScUiSettings.KillSound) ScCombatAudio.PlayKill();
+        if (outcome != 2 || credit is null) return;
+        CountKill(player, body, credit);
+    }
+
+    /// <summary>Queues one confirmed kill against the gun that fired the shot. Writing it into the record happens
+    /// on a later update through the one gun transaction; queuing here keeps the write out of a damage callback.</summary>
+    void CountKill(ComponentPlayer player, ComponentBody body, ScGunKillCredit credit) {
+        if (m_registry is null || m_registry.Disabled) return;
+        if (!ScGunKillRules.Counts(body, player, Creative, out string why)) {
+            KnifeLog.Information($"gun kill not counted for record {credit.RecordId}: {why}");
+            return;
+        }
+        var health = body.Entity.FindComponent<ComponentHealth>();
+        if (health is null) return;
+        if (s_countedDeaths.TryGetValue(health, out _)) return;
+        s_countedDeaths.Add(health, s_countedMarker);
+        long id = m_registry.Kills.Enqueue(credit.RecordId, credit.Variant);
+        if (id < 0) KnifeLog.Warning($"gun kill credential for record {credit.RecordId} was refused as malformed");
     }
 
     /// <summary>Pre-0.35 key: only read to recognise a world saved by 0.34 or earlier.</summary>
@@ -509,6 +548,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     int m_worldLayout;
     ScGunRegistry.WorldStatus m_worldStatus;
     ValuesDictionary m_officialMigration;
+    ValuesDictionary m_schemaUpgrade;
     bool m_migrationNotice;
     readonly HashSet<ComponentPlayer> m_migrationTold = [];
     readonly HashSet<ComponentPlayer> m_oldFormatTold = [], m_legacyTold = [];
@@ -543,9 +583,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// same transaction every other change uses - Commit sees the other holder and publishes a clone for the acting copy.
     /// The first holder in scan order keeps the id when no one has used it since the split; a dropped item waits for pickup.
     /// Never reclaims ids. First use of a moved gun is guarded by ScGunMutation itself, this is the sweep for the rest.</summary>
-    void SplitDuplicates() {
+    void SplitDuplicates() => SplitDuplicates(Holders());
+    void SplitDuplicates(List<ScGunHolders.Holder> holders) {
         if (m_registry is null || m_registry.Disabled) return;
-        foreach (var group in Holders().GroupBy(h => h.Id).Where(g => g.Count() > 1).ToArray()) {
+        foreach (var group in holders.GroupBy(h => h.Id).Where(g => g.Count() > 1).ToArray()) {
             var keeper = group.First();
             foreach (var other in group.Skip(1).Where(h => h.Inventory is not null)) {
                 var m = ScGunMutation.Prepare(other.Inventory, other.Slot, other.Key, out ScGunResult why);
@@ -553,6 +594,41 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 KnifeLog.Warning($"gun record {group.Key} held at {keeper.Key} and {other.Key}: split -> {result}{(m is not null && result == ScGunResult.Success ? " record " + m.Id : "")}");
             }
         }
+    }
+    /// <summary>Whether any player holding this inventory is in the middle of an action a record write must not
+    /// disturb: a reload, a silencer change, a burst, the R8's drawn hammer or any first-person action clip.
+    ///
+    /// The test is per inventory, not per slot, because a commit bumps the whole inventory's revision, and a
+    /// reload in progress reads a bumped revision as "the gun moved" and cancels itself. A kill credit or a level
+    /// therefore waits for the action to end; neither is lost, both are retried on the next sweep.</summary>
+    bool ActionBusy(IInventory inventory) {
+        if (inventory is null) return true;
+        foreach (var pair in m_states) {
+            if (!ReferenceEquals(pair.Key.ComponentMiner?.Inventory, inventory)) continue;
+            var state = pair.Value;
+            if (state.BusyUntil >= 0 || state.Reload is not null || state.BurstRemaining > 0 || state.PrepareUntil >= 0
+                || state.ShellTimes.Count > 0 || state.SilencerPending) return true;
+            var model = pair.Key.Entity?.FindComponent<ComponentFirstPersonModel>();
+            if (model is not null && KnifeAnimationController.IsBusy(model)) return true;
+        }
+        return false;
+    }
+    bool HolderBusy(ScGunHolders.Holder holder) => ActionBusy(holder.Inventory);
+    /// <summary>Writes queued kill credits, then applies any level that has been earned and is safe to apply.
+    /// Neither step refills a magazine, repairs a gun or completes a charge.</summary>
+    void UpdateGrowth(List<ScGunHolders.Holder> holders) {
+        if (m_registry is null || m_registry.Disabled) return;
+        bool grow = m_registry.GrowthMode == ScGunGrowthMode.CountAndGrow;
+        ScGunGrowthService.DrainKills(m_registry, holders, grow, HolderBusy);
+        if (!grow) return;
+        ScGunGrowthService.ApplyPendingLevels(m_registry, holders, m_time.GameTime, HolderBusy, (id, from, to) => {
+            KnifeLog.Information($"gun growth: record {id} level {from} -> {to}");
+            foreach (var pair in m_states) {
+                var inventory = pair.Key.ComponentMiner?.Inventory;
+                if (inventory is null || GunSpec.GetId(Terrain.ExtractData(inventory.GetSlotValue(inventory.ActiveSlotIndex))) != id) continue;
+                pair.Key.ComponentGui.DisplaySmallMessage($"枪械成长：Lv{from} → Lv{to}（伤害、射程、容量、耐久上限提升）", Color.White, true, false);
+            }
+        });
     }
     void BrokenNotice(ComponentPlayer player, double now) {
         if (m_brokenNoticeAt.TryGetValue(player, out double last) && now - last < 2) return;
@@ -567,6 +643,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         string migrationError = valuesDictionary.GetValue<string>(ScGun0282Migration.ErrorKey, null);
         if (migrationError is not null) throw new InvalidOperationException("0.28.2 枪械迁移未执行，原世界未改动：" + migrationError);
         m_officialMigration = valuesDictionary.GetValue<ValuesDictionary>(ScGun0282Migration.Marker, null);
+        // Where this world's pre-upgrade backup went, kept with the world so the player can always find it.
+        m_schemaUpgrade = valuesDictionary.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.Marker, null);
+        if (m_schemaUpgrade is not null)
+            KnifeLog.Information($"gun record schema upgraded from {m_schemaUpgrade.GetValue<int>("From", 0)}; world backup at {m_schemaUpgrade.GetValue<string>("Backup", "?")}");
         m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
@@ -577,7 +657,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_worldLayout = valuesDictionary.GetValue<int>(LayoutKey, 0);
         m_worldStatus = ScGunRegistry.Classify(m_worldLayout, valuesDictionary.ContainsKey(RegistryKey), valuesDictionary.ContainsKey(RechargeKey) || valuesDictionary.ContainsKey("GunWear"));
         m_registry.LegacyWorld = m_worldStatus == ScGunRegistry.WorldStatus.Legacy;
-        KnifeLog.Information($"gun registry: {m_registry.Count} records ({m_registry.QuarantinedCount} quarantined), next id {m_registry.Next}; world gun data layout stamp {m_worldLayout}, status {m_worldStatus}, this version {GunSpec.DataLayout}, schema {(m_registry.UnknownSchema ? "unknown" : ScGunRegistry.Schema.ToString())}"
+        KnifeLog.Information($"gun registry: {m_registry.Count} records ({m_registry.QuarantinedCount} quarantined), next id {m_registry.Next}; world gun data layout stamp {m_worldLayout}, status {m_worldStatus}, this version {GunSpec.DataLayout}, schema read {(m_registry.UnknownSchema ? "unknown" : m_registry.LoadedSchema.ToString())} -> written {ScGunRegistry.Schema}, counter rule {m_registry.GrowthMode}, {m_registry.Kills.Count} kill credit(s) pending"
             + (m_registry.Disabled ? " - guns disabled in this world" : ""));
         m_terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         // The engine logs an ERROR when a drawable is added twice, and this Load can
@@ -604,6 +684,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // Zeus charge lives in the gun records now (per instance); the per-player ZeusRechargeAt table is no longer written.
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save(m_time.GameTime));
         if (m_officialMigration is not null) valuesDictionary.SetValue(ScGun0282Migration.Marker, m_officialMigration);
+        if (m_schemaUpgrade is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.Marker, m_schemaUpgrade);
         valuesDictionary.SetValue(LayoutKey, ScGunRegistry.StampFor(m_registry?.LegacyWorld == true)); // a legacy world stays marked legacy
     }
 
@@ -618,7 +699,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var pair in m_states) if (!m_players.ComponentPlayers.Contains(pair.Key)) {
             pair.Value.AmmoHud?.Dispose(); pair.Value.AmmoHud = null;
         }
-        if (m_time.GameTime >= m_duplicateScanAt) { m_duplicateScanAt = m_time.GameTime + .5; SplitDuplicates(); }
+        if (m_time.GameTime >= m_duplicateScanAt) {
+            m_duplicateScanAt = m_time.GameTime + .5;
+            var holders = Holders();
+            SplitDuplicates(holders);
+            UpdateGrowth(holders);
+        }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
             if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
             var physical = player.ComponentBody;
@@ -755,13 +841,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // gun was held at the 30 s mark consume it (and top itself up), so a Zeus put
         // away and picked up again started over. The timer is game time, saved with
         // the world (Save below), so it also survives leaving and reloading.
-        if (spec.RechargeSeconds > 0f && rounds < spec.Magazine && GunSpec.TryGetSnapshot(data, out var charge)) {
+        int capacity = ScGunGrowth.Capacity(ScGunBlock.GetVariant(value), EffectiveGunStats.LevelOf(value));
+        if (spec.RechargeSeconds > 0f && rounds < capacity && GunSpec.TryGetSnapshot(data, out var charge)) {
+            float cycle = ScGunGrowth.RechargeSeconds(spec, charge.Level);
             // Per instance (plan §7): the record says when this Zeus is ready, in game time; a fresh empty one starts charging
             // on first sight, a ready one gets its charge back through the same transaction path as every other change.
             bool ready = charge.RechargeReadyAt >= 0 && now >= charge.RechargeReadyAt;
             if (charge.RechargeReadyAt < 0 || ready) {
                 var zeus = ScGunMutation.Prepare(player.ComponentMiner.Inventory, player.ComponentMiner.Inventory.ActiveSlotIndex, HolderKey(player), out ScGunResult zeusWhy);
-                var outcome = zeus is null ? zeusWhy : zeus.Commit(r => { if (ready) { r.Rounds = spec.Magazine; r.RechargeReadyAt = -1; } else r.RechargeReadyAt = now + spec.RechargeSeconds; });
+                var outcome = zeus is null ? zeusWhy : zeus.Commit(r => {
+                    if (ready) { r.Rounds = ScGunGrowth.Capacity(r.Variant, r.AppliedGrowthLevel); r.RechargeReadyAt = -1; r.RechargeCycleSeconds = 0; }
+                    else { r.RechargeReadyAt = now + cycle; r.RechargeCycleSeconds = cycle; }
+                });
                 if (outcome == ScGunResult.Success) {
                     value = zeus.Expected; data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data); state.LastValue = value;
                     if (ready) PlaySound(player, $"{spec.Name}_chargeready");
@@ -785,7 +876,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.FireAfterReload = false;
             if (rounds > 0 && now >= state.NextShot) wantsFire = true;
         }
-        if (!busy && rounds < spec.Magazine && (reloadKey || (wantsFire && rounds == 0))) {
+        if (!busy && rounds < capacity && (reloadKey || (wantsFire && rounds == 0))) {
             if (spec.RechargeSeconds > 0f) {
                 // The persistent ammo HUD already shows the live charge countdown.
                 return;
@@ -833,6 +924,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     readonly Dictionary<int,ScGunBloom> m_blooms = [];
     ScGunDiagnostics m_diagnostics;
+    /// <summary>Session-local shot number, part of a kill credential so one shot's kills can be told apart in logs.</summary>
+    long m_shotSequence;
 
     void Fire(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value, int data, int rounds, PlayerInput input,
               bool inBurst = false, bool alternateFire = false, double? cycleFrom = null) {
@@ -848,10 +941,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         var result = transaction is null ? shotWhy : transaction.Commit(r => {
             r.Rounds = Math.Max(0, r.Rounds - 1);
             if (!creative) r.Durability = Math.Max(0, r.Durability - 1);
-            if (spec.RechargeSeconds > 0f && r.Rounds <= 0) r.RechargeReadyAt = now + spec.RechargeSeconds;
+            if (spec.RechargeSeconds > 0f && r.Rounds <= 0) {
+                float cycle = ScGunGrowth.RechargeSeconds(spec, r.AppliedGrowthLevel);
+                r.RechargeReadyAt = now + cycle; r.RechargeCycleSeconds = cycle;
+            }
         });
         if (result != ScGunResult.Success) { Refused(player, result, now); return; }
         value = transaction.Expected; data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data); state.LastValue = value;
+        // Frozen here, while the record that fired is still known: a kill confirmed later belongs to this gun.
+        var credit = ScGunKillCredit.For(data, creative, ++m_shotSequence);
         if (!creative) {
             int durability = GunSpec.GetDurability(data), full = GunSpec.GetMaxDurability(data);
             if (durability <= 0) { player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false); KnifeLog.Information($"gun broken: {spec.Name} record {GunSpec.GetId(data)} after {full} shots"); }
@@ -906,6 +1004,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             shot = shot with { Spread = cone, Alternate = handlingAlternate };
             bloom.Fired(effective.Handling,now); // after capturing this shot, once per trigger, not per pellet
         }
+        // Growth scales the final angle once, whatever produced it, and Lv10 sets it to exactly zero in every
+        // stance and mode - there is no leftover bloom or airborne penalty to add back afterwards.
+        if (effective.AngleScale != 1f) shot = shot with { Spread = shot.Spread * effective.AngleScale };
+        // Lv10 removes the weapon's limit, not the world's: the shot stops where the loaded terrain does.
+        float shotRange = effective.UnlimitedRange
+            ? ScGunRange.LoadedLimit(m_terrain.Terrain, shot.Ray.Position, shot.Ray.Direction, effective.Range)
+            : effective.Range;
         var diagnostic = m_diagnostics?.Active == true ? m_diagnostics.Begin(new ScGunDiagnostics.Context {
             Gun=spec.Name, Preset=ScGunplaySettings.Enabled?"survival":"classic", Player=player.PlayerData.PlayerIndex,
             Instance=GunSpec.GetId(data), Frame=Time.FrameIndex, Time=now, Pellets=Math.Max(1,spec.Pellets),
@@ -913,8 +1018,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Touch=ScMobileControls.UsesTouchInput(player), Creative=creative, Scoped=scopedShot, Silenced=silenced,
             Burst=state.BurstMode&&spec.HasBurstMode, Alternate=shot.Alternate, Airborne=state.Stance.Airborne, FluidOrLadder=fluidOrLadder,
             SpeedXZ=speedXZ, Crouch=shotBody.CrouchFactor, AimBlend=state.Stance.AimBlend, LandingFactor=state.Stance.LandingFactor,
-            Cone=shot.Spread, Range=effective.Range, NearPower=effective.Power, BloomBefore=bloomBefore, BloomAfter=bloom?.Value ?? 0,
-            Components=coneParts, FrameMs=Time.FrameDuration*1000
+            Cone=shot.Spread, Range=shotRange, NearPower=effective.Power, BloomBefore=bloomBefore, BloomAfter=bloom?.Value ?? 0,
+            Components=coneParts, FrameMs=Time.FrameDuration*1000,
+            Counter=GunSpec.TryGetSnapshot(data,out var counted) && counted.CounterInstalled,
+            Level=effective.Level, Kills=GunSpec.TryGetSnapshot(data,out var counts) ? counts.KillCount : 0,
+            UnlimitedRange=effective.UnlimitedRange
         }) : null;
         if (scopedShot && spec.UnzoomsAfterShot) {
             // CS2's m_bUnzoomsAfterShot (AWP, SSG 08): a scoped shot drops the scope for
@@ -948,6 +1056,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             kickPitch=effective.Handling.KickPitch;kickYaw=effective.Handling.KickYaw;
             state.KickRecoveryRate=effective.Handling.CameraRecoveryT90>0?MathF.Log(10)/effective.Handling.CameraRecoveryT90:12;
         }
+        kickPitch *= effective.AngleScale; kickYaw *= effective.AngleScale;
         float pitch = MathUtils.DegToRad(kickPitch) * (ScGunplaySettings.Enabled ? .9f + .2f*m_random.Float(0,1) : .8f+.4f*m_random.Float(0,1));
         float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
         if (diagnostic is not null) { diagnostic.State.KickPitchDegrees=MathUtils.RadToDeg(pitch);diagnostic.State.KickYawDegrees=MathUtils.RadToDeg(yaw); }
@@ -972,22 +1081,22 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         for (int pellet = 0; pellet < pellets; pellet++) {
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
-            Vector3 end = start + direction * effective.Range;
+            Vector3 end = start + direction * shotRange;
             long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
             TerrainRaycastResult? terrain = m_terrain.Raycast(start, end, false, true, (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock);
             ScGunHitTest.Hit? gunHit;
-            if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):effective.Range,diagnostic?.Trace);
+            if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):shotRange,diagnostic?.Trace);
             else {
                 var body=m_bodies.Raycast(start,end,.35f,(b,d)=>b!=player.ComponentBody && b.Entity!=player.Entity);
                 gunHit=null;
                 if (body.HasValue && (!terrain.HasValue || body.Value.Distance<terrain.Value.Distance)) {
-                    var part=ScHeadshotProbe.Resolve(body.Value.ComponentBody,start,direction,effective.Range,out float precise,out string why);
+                    var part=ScHeadshotProbe.Resolve(body.Value.ComponentBody,start,direction,shotRange,out float precise,out string why);
                     float distance=part==ScHitPart.Unknown?body.Value.Distance:precise;
                     if (!terrain.HasValue || distance<terrain.Value.Distance) gunHit=new(body.Value.ComponentBody,distance,part,why);
                 }
             }
             // The tracer runs the shot line, stopping at whatever the bullet hit.
-            float travel = effective.Range;
+            float travel = shotRange;
             if (gunHit.HasValue) travel = MathUtils.Min(travel, gunHit.Value.Distance);
             if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
             if (diagnostic is not null) {
@@ -1037,7 +1146,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach (var hit in hits) {
             var observedHealth = diagnostic is not null ? hit.Key.Entity.FindComponent<ComponentHealth>() : null;
             float healthBefore = observedHealth?.Health ?? float.NaN;
-            ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0, headshot: hit.Value.Head);
+            ScSurvivalBalance.Attack(hit.Key, player, hit.Value.Point, hit.Value.Direction, hit.Value.Power, now, zeus: spec.RechargeSeconds > 0, headshot: hit.Value.Head, credit: credit);
             diagnostic?.Health(healthBefore,observedHealth?.Health ?? float.NaN);
         }
         m_diagnostics?.Complete(diagnostic);
@@ -1078,12 +1187,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     void StartReload(ComponentPlayer player, GunState state, ComponentFirstPersonModel model, GunSpec spec, int value) {
-        int rounds = GunSpec.GetRounds(Terrain.ExtractData(value));
-        if (rounds >= spec.Magazine || spec.RechargeSeconds > 0) return;
+        int data0 = Terrain.ExtractData(value);
+        int rounds = GunSpec.GetRounds(data0);
+        int capacity = ScGunGrowth.Capacity(GunSpec.GetVariant(data0), EffectiveGunStats.LevelOf(value));
+        int reserve = GunSpec.TryGetSnapshot(data0, out var loaded) ? loaded.ReserveOverflowRounds : 0;
+        if (rounds >= capacity || spec.RechargeSeconds > 0) return;
         bool creative = Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
         IInventory inventory = player.ComponentMiner.Inventory;
         int ammo = ScAmmoBlock.Value(ScReloadTransaction.AmmoKind(spec));
-        int cost = creative ? 0 : ScReloadTransaction.Required(spec);
+        int cost = creative ? 0 : ScReloadTransaction.RequiredFor(spec, capacity);
+        // A reserve that covers the whole gap pays for the reload on its own.
+        if (!creative && reserve >= capacity - rounds) cost = 0;
         int available = creative ? 0 : ScInventoryTransaction.Count(inventory, ammo);
         if (available < cost) {
             player.ComponentGui.DisplaySmallMessage($"装填需要{(spec.Pellets > 1 ? "霰弹" : "通用弹匣")} ×{cost}（现有 {available}）", Color.Red, false, false);
@@ -1093,7 +1207,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool empty = rounds == 0;
         string clip = KnifeAnimationController.ReloadClip(variant, empty);
         bool tube = ScReloadTransaction.IsTube(spec.Name);
-        int shells = tube && !creative ? Math.Min(spec.Magazine - rounds, available) : spec.Magazine - rounds;
+        int shells = tube && !creative ? Math.Min(capacity - rounds, available + reserve) : capacity - rounds;
         float duration = KnifeAnimationController.ReloadSeconds(variant, empty, shells);
         var milestones = Cs2Rig.ReloadMilestones(spec.Name, clip);
         var sections = tube ? Cs2Rig.GetReloadSections(spec.Name) : null;
@@ -1103,7 +1217,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         LeaveScope(player, state);
         KnifeAnimationController.TriggerReload(player, empty, shells);
-        state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, spec.Magazine, ScGunHolders.PlayerKey(player, inventory.ActiveSlotIndex));
+        state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, capacity, ScGunHolders.PlayerKey(player, inventory.ActiveSlotIndex));
         state.Scheduled.Clear(); state.ShellTimes.Clear(); state.FireAfterReload = false;
         double now = m_time.GameTime;
         state.BusyUntil = now + duration; state.PendingRounds = -1;
