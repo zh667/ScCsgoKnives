@@ -28,6 +28,7 @@ public static class SurvivalSelfTest {
     public static void Run(Action<string, bool, string> check) {
         ScGunRegistry.Current ??= new ScGunRegistry(); // headless: the gun state table a world would own
         ScGunRecoverySelfTest.Run(check);
+        ScGunSaveGuardSelfTest.Run(check);
         ScGun0282MigrationSelfTest.Run(check);
         ScPolishSelfTest.Run(check);
         const int ammo = 900;
@@ -742,7 +743,7 @@ public static class SurvivalSelfTest {
             var C = ScGunRegistry.WorldStatus.Compatible; var L = ScGunRegistry.WorldStatus.Legacy; var N = ScGunRegistry.WorldStatus.New;
             bool stamped = ScGunRegistry.Classify(5, false, false) == C && ScGunRegistry.Classify(5, true, true) == C
                 && ScGunRegistry.Classify(4, false, false) == L && ScGunRegistry.Classify(4, true, true) == L
-                && ScGunRegistry.Classify(6, true, false) == L && ScGunRegistry.Classify(3, false, false) == L;
+                && ScGunRegistry.Classify(6, true, false) == ScGunRegistry.WorldStatus.Unknown && ScGunRegistry.Classify(3, false, false) == ScGunRegistry.WorldStatus.Unknown;
             bool inferred = ScGunRegistry.Classify(0, true, true) == C && ScGunRegistry.Classify(0, true, false) == C
                 && ScGunRegistry.Classify(0, false, true) == L && ScGunRegistry.Classify(0, false, false) == N;
             bool legacy1 = ScGunRegistry.Classify(0, false, true) == L; int stamp1 = ScGunRegistry.StampFor(legacy1);

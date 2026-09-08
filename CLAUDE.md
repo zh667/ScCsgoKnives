@@ -2,6 +2,10 @@
 
 Read and follow [AGENTS.md](AGENTS.md) for project conventions, current M4-only scope, peer synchronization and release requirements. Other milestones remain BLOCKED until the user resumes them.
 
+# Git handoff (user-directed 2026-09-08)
+
+Use independent checkouts and Git for source, documentation and packaged assets. Do not use Syncthing for the live repository. Check `git status` first and preserve uncommitted work; when clean, run `git pull --ff-only origin main`. Finish with validation, an explicit commit and push; the other peer pulls afterwards. Coordinate ownership of files. Retire the reset-based `tools/sync_git_from_origin.sh`; do not use `git reset --mixed` or `git restore` for routine synchronization. See AGENTS.md for exceptions and external-resource transfers.
+
 # Gun save compatibility
 
 Before changing gun IDs/encoding, registry/schema, load/save, durability/charge semantics or related inventory transactions, read [the complete compatibility policy](docs/gun-save-compatibility-policy-2026-09-08.md). This user-directed policy dated 2026-09-08 supersedes historical new-world-only/no-cross-version instructions for guns.

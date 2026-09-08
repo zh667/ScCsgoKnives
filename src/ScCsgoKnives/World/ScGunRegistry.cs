@@ -14,6 +14,11 @@ public sealed class ScGunRecord {
     /// <summary>Last holder that changed this record (player:index:slot, block:x,y,z:slot); transient, never saved.</summary>
     public string Holder;
     public ScGunRecord Copy() => (ScGunRecord)MemberwiseClone();
+    internal void CopyFrom(ScGunRecord source) {
+        Variant = source.Variant; Rounds = source.Rounds; Durability = source.Durability;
+        MaxDurability = source.MaxDurability; Revision = source.Revision; SkinId = source.SkinId;
+        SilencerOff = source.SilencerOff; RechargeReadyAt = source.RechargeReadyAt; Holder = source.Holder;
+    }
     public ScGunSnapshot Snapshot(int id) => new(id, Variant, Rounds, SilencerOff, Durability, MaxDurability, Revision, RechargeReadyAt, SkinId);
 }
 
@@ -41,15 +46,16 @@ public sealed class ScGunRegistry {
     public ScGunRecovery Recovery { get; private set; } = new();
     // Runtime-only resolver. Persistence contains owner keys, never live inventory references.
     public Func<IInventory, string> RecoveryOwner;
-    public enum WorldStatus { New, Compatible, Legacy }
+    public enum WorldStatus { New, Compatible, Legacy, Unknown }
     /// <summary>What a world's saved gun data is. An explicit stamp decides first: exactly this layout = compatible, the
     /// legacy stamp (4) = legacy for good (a legacy world saves a registry too, so the registry key must not outrank it), any
-    /// other stamp = written by a version this one does not know, treated as legacy rather than guessed. Only an unstamped
+    /// other stamp = unknown, rejected by the load/save guard. Only an unstamped
     /// world is inferred from its keys: a v5 registry (0.35.0/0.35.1) = compatible, pre-v5 keys (ZeusRechargeAt, GunWear) =
     /// saved by 0.34 or earlier, nothing at all = new.</summary>
     public static WorldStatus Classify(int stamp, bool hasRegistry, bool hasOldKeys) {
         if (stamp == GunSpec.DataLayout) return WorldStatus.Compatible;
-        if (stamp != 0) return WorldStatus.Legacy;
+        if (stamp == LegacyStamp) return WorldStatus.Legacy;
+        if (stamp != 0) return WorldStatus.Unknown;
         return hasRegistry ? WorldStatus.Compatible : hasOldKeys ? WorldStatus.Legacy : WorldStatus.New;
     }
     public const int LegacyStamp = GunSpec.DataLayout - 1;

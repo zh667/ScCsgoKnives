@@ -497,6 +497,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>M4 (0.35.0): the world's gun state table. Every gun's rounds, silencer and exact durability live in its
     /// record; the item value carries only the model and the record id, so state follows the item everywhere.</summary>
     ScGunRegistry m_registry;
+    bool m_saveReady;
     const string RegistryKey = "GunRegistry";
     const string LayoutKey = "GunDataLayout";
     int m_worldLayout;
@@ -554,6 +555,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public override void Load(ValuesDictionary valuesDictionary) {
+        m_saveReady = false;
+        ScGunSaveGuard.Validate(valuesDictionary); // fail even if the XML hook was bypassed
         base.Load(valuesDictionary);
         string migrationError = valuesDictionary.GetValue<string>(ScGun0282Migration.ErrorKey, null);
         if (migrationError is not null) throw new InvalidOperationException("0.28.2 枪械迁移未执行，原世界未改动：" + migrationError);
@@ -561,6 +564,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
+        if (m_registry.UnknownSchema) throw new InvalidOperationException("枪械记录或补偿格式无法安全读取，已拒绝进入世界；请使用兼容版本或有效备份。");
         ScGunRegistry.Current = m_registry;
         m_registry.RecoveryOwner = inventory => ScGunHolders.RecoveryOwner(Project, inventory);
         ScGunMutation.HolderLocator = (id, except) => Holders().Where(h => h.Id == id && h.Key != except).Select(h => h.Key).ToArray();
@@ -582,9 +586,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_particles = Project.FindSubsystem<SubsystemParticles>(true);
         m_players = Project.FindSubsystem<SubsystemPlayers>(true);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
+        m_saveReady = true;
     }
 
     public override void Save(ValuesDictionary valuesDictionary) {
+        // Before any output mutation, including base.Save: partial/unknown loads cannot be saved.
+        ScGunSaveGuard.ValidateSave(m_saveReady, m_worldLayout, m_registry);
         base.Save(valuesDictionary);
         // Zeus charge lives in the gun records now (per instance); the per-player ZeusRechargeAt table is no longer written.
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save(m_time.GameTime));

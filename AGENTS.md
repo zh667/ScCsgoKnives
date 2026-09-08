@@ -24,12 +24,13 @@
 - Unknown future layout/schema must be rejected before normal loading/autosave without rewriting source data or stamps. Existing gun disabling alone is not proof of this protection. Preserve corrupt raw data; only show a model when its identity is reliable. Do not promise arbitrary old DLLs can safely downgrade.
 - Data-affecting releases require immutable 0.28.2/0.37.0 and later format fixtures, applicable holder/state checks, two save/reload rounds, retry/failure/unknown-format checks and documented evidence. Keep implemented behavior, planned protection, offline results and device acceptance distinct. Do not bump format or mark pending policy requirements complete merely because documentation was added.
 
-# Two-peer git sync (Windows Codex + VPS Claude)
+# Two-peer Git workflow (user-directed 2026-09-08)
 
-- The working tree is shared by Syncthing; `.git` is peer-local (`.stignore`) and must stay that way. Commits travel only through `origin`.
-- The peer that does the work commits and pushes `main` (the fix/cs2-only-hands-0.20.4 branch was fast-forwarded into it at 0.28.2) at the end of every version, before handing over. Uncommitted work is invisible to the other peer's git even though its files are already there.
-- Before starting anything, the other peer runs `git fetch origin` and `git reset --mixed origin/<branch>` (VPS: `bash tools/sync_git_from_origin.sh`). That moves HEAD and the index to the pushed commit without touching files, so `git status` shows only what is genuinely uncommitted on the other side. Never `git pull` / `merge` into a tree the other peer has already updated, and never commit the other peer's uncommitted files.
-- Never edit the same file on both peers at the same time; check `git status` for the other peer's in-progress files first.
+- Source, committed documentation and packaged assets travel through Git only. Each peer owns an independent checkout; do not synchronize a live repository or `.git` with Syncthing. External CS2 extractions, videos and logs may use a separate resource transfer directory. This rule does not itself stop an existing Syncthing service.
+- Before work, run `git status` and preserve existing uncommitted work. Do not overwrite it, silently stash it, or commit another peer's work. Local status cannot tell you whether the other peer is working; coordinate ownership before touching the same files.
+- Once the working tree is clean, run `git pull --ff-only origin main`. On divergence, inspect both histories and resolve deliberately; never force-reset to hide it. With unrelated uncommitted work, preserve it and use an isolated clean checkout if necessary.
+- Complete, validate, commit and push the work before handing over. The receiving peer then pulls the commit. Include required plans/resources in explicit commits; untracked files do not travel through Git.
+- Retire the old `tools/sync_git_from_origin.sh` reset-based handoff. Neither `git reset --mixed` nor `git restore` is a routine synchronization command. Restore/reset is reserved for explicit, backed-up recovery.
 
 # PackageCheck runs headless
 

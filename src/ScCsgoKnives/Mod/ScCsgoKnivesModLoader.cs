@@ -33,7 +33,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
     }
 
-    public override void ProjectXmlLoad(XElement project, WorldInfo world, ContainerWidget widget) => ScGun0282Migration.BeforeLoad(project, world);
+    public override void ProjectXmlLoad(XElement project, WorldInfo world, ContainerWidget widget) {
+        if (ScGunSaveGuard.BeforeLoad(project)) ScGun0282Migration.BeforeLoad(project, world);
+    }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
     /// around the weapon's CS2 grip points; vanilla's in-hand block draw is replaced by the baked weapon.</summary>

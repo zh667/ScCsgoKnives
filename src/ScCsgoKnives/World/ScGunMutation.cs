@@ -24,6 +24,8 @@ public sealed class ScGunMutation {
     public string Holder { get; }
     public ScGunSnapshot Before { get; }
     public string Detail { get; private set; } = "";
+    // Per-transaction fault seam for rollback tests, never set by gameplay.
+    internal Action AfterRecordWrite;
 
     ScGunMutation(ScGunRegistry registry, IInventory inventory, int slot, int expected, ScGunSnapshot before, bool fresh, string holder, string owner) {
         m_registry = registry; m_owner = owner;
@@ -58,6 +60,8 @@ public sealed class ScGunMutation {
         if (!TryEnter()) return Fail(ScGunResult.Busy, "another gun commit/recovery is in progress");
         var journal = new ScGunInventoryJournal(Inventory);
         int published = -1;
+        ScGunRecord original = null, updated = null;
+        int originalId = Id, originalExpected = Expected;
         try {
             if (!ReferenceEquals(ScGunRegistry.Current, m_registry) || m_registry.Disabled) return Fail(ScGunResult.Foreign, "world changed or disabled");
             if (m_registry.Recovery.HasPending(m_owner)) return Fail(ScGunResult.RecoveryPending, "inventory has unfinished compensation");
@@ -113,17 +117,21 @@ public sealed class ScGunMutation {
                 if (published != candidate) throw new InvalidOperationException($"Published {published} instead of {candidate}");
             }
             else {
-                record.Rounds = draft.Rounds; record.SilencerOff = draft.SilencerOff; record.Durability = draft.Durability;
-                record.MaxDurability = draft.MaxDurability; record.RechargeReadyAt = draft.RechargeReadyAt; record.SkinId = draft.SkinId;
+                original = record.Copy(); updated = record;
+                record.CopyFrom(draft);
             }
             var committed = needsId ? draft : record;
             committed.Revision = RecordRevision + 1; committed.Holder = Holder;
             if (needsId) Id = published;
             Expected = replacement;
+            AfterRecordWrite?.Invoke();
             ScInventoryTransaction.Changed(Inventory);
             return ScGunResult.Success;
         }
         catch (Exception e) {
+            // Restore before inventory callbacks run during refund, so observers see the old record.
+            if (updated is not null) updated.CopyFrom(original);
+            Id = originalId; Expected = originalExpected;
             if (published > 0) m_registry.Abandon(published, "inventory commit failed");
             journal.Rollback(m_registry.Recovery, m_owner);
             KnifeLog.Error("gun mutation rejected: " + e.Message);
