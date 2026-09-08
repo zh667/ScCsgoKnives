@@ -1,397 +1,467 @@
 {
-  "catalogVersion": 2,
-  "size": 1024,
-  "skins": {
-    "am_lightning_awp": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_lightning_awp.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_lightning_awp.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\lightning_strike.png",
-      "mode": "pattern",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_lightning_awp.vcompmat": "cf13b7bea4b403362d16385478e6f8b854035e0c89433d67b0549edc16b47c2e",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_lightning_awp.vmat": "be9bc427de547ae0423c4e93c3062e1a7bd12d023f292a9c87f945d2c5c668c4",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\lightning_strike.png": "4f4ee5959f02356cbe63d5f7ca283761b7a41e4f3611255dac5170b6e783efc9",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\awp\\weapon_snip_awp.glb": "b4ce40478f1c7ac2ad989babb0439ff5e966ed7c07d4a2aa58269143acd38009",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\awp\\materials\\composite_inputs\\weapon_snip_awp_masks.png": "f7bb153ada1a4a76f07de1d0a794015d394ee150614b503ec87cb2ba5be24c77",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\awp\\materials\\composite_inputs\\weapon_snip_awp_cavity_37c12137_ao.png": "9f1c6f682a0b2ff7d53b98d99ab135e84eee99346eb9fbb386f6827b1622d04b"
-      },
-      "placement": "shared pattern in HD UV; not Valve randomized legacy placement",
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "awp_slot__am_lightning_awp.png",
-        "sha256": "2c0af8048d00e4b7aa9ca75bf015a67ad6215fe086f51d73b005e2fd3094385a"
-      },
-      "outputs": [
-        "awp_hd__am_lightning_awp.png",
-        "awp_hd__am_lightning_awp_orm.png",
-        "awp_hd__am_lightning_awp_normal.png"
-      ],
-      "files": {
-        "awp_hd__am_lightning_awp.png": "9c45612dd2614ce6f8b32ae26fbbab5d1382e716c0b56ba3c4fcb25ae7d22edd",
-        "awp_hd__am_lightning_awp_orm.png": "29266084fc648085c89a9843e6a3a8ad29bc50b9b2a601102cffe723d61f9c55",
-        "awp_hd__am_lightning_awp_normal.png": "aa090d04c7281dd360a78e14060a237d1df3e56a4ab38e123d79bdc301e51ffa"
-      }
-    },
-    "gs_awp_gungnir": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_awp_gungnir.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_awp_gungnir.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\awp_gungnir.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_awp_gungnir.vcompmat": "274031546e44fe7fe4dada7d1120b4342617fb43a6ee1182125d916fcd280104",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_awp_gungnir.vmat": "a549540556a290f50e1a118840cee90bb8ad95b61525e00040c789424c025596",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\awp_gungnir.png": "2afc8f7949c93585f3b2692804300b423c03ec3c8cf2467b8137c6c66e5fcf8d",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\awp\\weapon_snip_awp.glb": "b4ce40478f1c7ac2ad989babb0439ff5e966ed7c07d4a2aa58269143acd38009",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\awp\\materials\\composite_inputs\\weapon_snip_awp_masks.png": "f7bb153ada1a4a76f07de1d0a794015d394ee150614b503ec87cb2ba5be24c77",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\awp\\materials\\composite_inputs\\weapon_snip_awp_cavity_37c12137_ao.png": "9f1c6f682a0b2ff7d53b98d99ab135e84eee99346eb9fbb386f6827b1622d04b"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 2.2252,
-        "90": 7.3307,
-        "99": 17.2916,
-        "100": 28.2813
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "awp_slot__gs_awp_gungnir.png",
-        "sha256": "5ae53136187936e9bb8d1165d0a125cd8b3f7a15817a70c504f2cb8388a9adc9"
-      },
-      "outputs": [
-        "awp_hd__gs_awp_gungnir.png",
-        "awp_hd__gs_awp_gungnir_orm.png",
-        "awp_hd__gs_awp_gungnir_normal.png"
-      ],
-      "files": {
-        "awp_hd__gs_awp_gungnir.png": "b7a87c921b670e6f258d40d87cdf640fa6e2df03814fd7048ede1dc3b0a8ccc9",
-        "awp_hd__gs_awp_gungnir_orm.png": "1d39621947cd54788f2526ae6f445451383cacc7d72994ed83918daf5b365c91",
-        "awp_hd__gs_awp_gungnir_normal.png": "aa090d04c7281dd360a78e14060a237d1df3e56a4ab38e123d79bdc301e51ffa"
-      }
-    },
-    "cu_medieval_dragon_awp": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_medieval_dragon_awp.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_medieval_dragon_awp.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\dragon_awp.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_medieval_dragon_awp.vcompmat": "7c3607cf3f348c2bad86e5604b74555be69cdef584586cfd2120a5b5ed199f9d",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_medieval_dragon_awp.vmat": "9c82127df90f3710a4fcceb22ce8a4216de11b2b18f95673d6963984a74b9d12",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\dragon_awp.png": "f8439d8f2619bbd88bc3a5319e7e7a8bdeab861dede4a965574ddb7de0810d3d",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\awp\\weapon_snip_awp.glb": "b4ce40478f1c7ac2ad989babb0439ff5e966ed7c07d4a2aa58269143acd38009",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\awp\\materials\\composite_inputs\\weapon_snip_awp_masks.png": "f7bb153ada1a4a76f07de1d0a794015d394ee150614b503ec87cb2ba5be24c77",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\awp\\materials\\composite_inputs\\weapon_snip_awp_cavity_37c12137_ao.png": "9f1c6f682a0b2ff7d53b98d99ab135e84eee99346eb9fbb386f6827b1622d04b"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 2.2252,
-        "90": 7.3307,
-        "99": 17.2916,
-        "100": 28.2813
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "awp_slot__cu_medieval_dragon_awp.png",
-        "sha256": "6232109be452a28b82e65e1053930dd88154cb2382ae98f8beedeca27b34b72e"
-      },
-      "outputs": [
-        "awp_hd__cu_medieval_dragon_awp.png",
-        "awp_hd__cu_medieval_dragon_awp_orm.png",
-        "awp_hd__cu_medieval_dragon_awp_normal.png"
-      ],
-      "files": {
-        "awp_hd__cu_medieval_dragon_awp.png": "2fb2ac251c4d6ed0962761b9e4683bb305b238415b178ea957f93c623940b23c",
-        "awp_hd__cu_medieval_dragon_awp_orm.png": "165448731da343b55086d2fc1e95f445b0916d0bbc9a52586415add92334a4b1",
-        "awp_hd__cu_medieval_dragon_awp_normal.png": "aa090d04c7281dd360a78e14060a237d1df3e56a4ab38e123d79bdc301e51ffa"
-      }
-    },
-    "cu_ak_island_floral": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak_island_floral.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak_island_floral.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\ak_island_floral.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak_island_floral.vcompmat": "95197261fa608a7ea1081917925dc7f741384decc47e185538036cfae053047e",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak_island_floral.vmat": "e0233372c25c04a4517f21f7dd456bbd6e0f7e73792e0abd467fe26a23a60855",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\ak_island_floral.png": "0d50f7af9314a0ae10f614497077b871ea9d3d23c5e5c1d52f81137e98067c2f",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 1.8905,
-        "90": 5.9792,
-        "99": 81.4515,
-        "100": 155.8874
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "ak47_slot__cu_ak_island_floral.png",
-        "sha256": "507016fe027a4564c77036e207d877812710168a50c4eba1b25c9b420d8b50f9"
-      },
-      "outputs": [
-        "ak47_hd__cu_ak_island_floral.png",
-        "ak47_hd__cu_ak_island_floral_orm.png",
-        "ak47_hd__cu_ak_island_floral_normal.png"
-      ],
-      "files": {
-        "ak47_hd__cu_ak_island_floral.png": "45eb4ff289c3122256335bc9742fb765b06536e87a93b14c196f3d52481386da",
-        "ak47_hd__cu_ak_island_floral_orm.png": "0fee8da339c724941ff64e9e1dd8dd585a01a11497208ecd893920596b52f6bd",
-        "ak47_hd__cu_ak_island_floral_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535"
-      }
-    },
-    "cu_fireserpent_ak47_bravo": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_fireserpent_ak47_bravo.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_fireserpent_ak47_bravo.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fireserpent_ak47.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_fireserpent_ak47_bravo.vcompmat": "6a318498eff5fa5a396dbc3921bdb31760083ead078bb668b4282be0486f8ec9",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_fireserpent_ak47_bravo.vmat": "fee50406efc6b4aae8b913c6331fe285e7e9009174afb87bf1fdeb437b8f7b87",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fireserpent_ak47.png": "dc7a75f19a998a3a449020b4f5372a42ef1e923c57fcb447b60873bf78a51745",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 1.8905,
-        "90": 5.9792,
-        "99": 81.4515,
-        "100": 155.8874
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "ak47_slot__cu_fireserpent_ak47_bravo.png",
-        "sha256": "d90862aaf341ff4e1a4e405c3132c52fa53ac4f7a532853e580e982673204f5f"
-      },
-      "outputs": [
-        "ak47_hd__cu_fireserpent_ak47_bravo.png",
-        "ak47_hd__cu_fireserpent_ak47_bravo_orm.png",
-        "ak47_hd__cu_fireserpent_ak47_bravo_normal.png"
-      ],
-      "files": {
-        "ak47_hd__cu_fireserpent_ak47_bravo.png": "890ac4390f6c11dcccb7a5d00ccb7a47584cdca34cf64ee76d61326bff030795",
-        "ak47_hd__cu_fireserpent_ak47_bravo_orm.png": "e12215fc3b6de7b78e5edc67830d1d869af17162fbefebf2e5d716e4395753b5",
-        "ak47_hd__cu_fireserpent_ak47_bravo_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535"
-      }
-    },
-    "am_bamboo_jungle": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_bamboo_jungle.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_bamboo_jungle.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\bamboo_jungle.png",
-      "mode": "pattern",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_bamboo_jungle.vcompmat": "fbcaf0d004400e397eeece0d0de47d79c102c93d4e47c551347a48bb22f296f2",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_bamboo_jungle.vmat": "c8ed401c2f59836f2698ea45a892e174badc9b06ca71069ae23da09bcffa7e86",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\bamboo_jungle.png": "4bdc2ee059c936c7637a1e811de203b7b7d1b80b7243628521b369cd368c4934",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc"
-      },
-      "placement": "shared pattern in HD UV; not Valve randomized legacy placement",
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "ak47_slot__am_bamboo_jungle.png",
-        "sha256": "780c259a72e9d01124a4458b2c8340c5c94d1db37a78cf2bd2a0c6e797f184ad"
-      },
-      "outputs": [
-        "ak47_hd__am_bamboo_jungle.png",
-        "ak47_hd__am_bamboo_jungle_orm.png",
-        "ak47_hd__am_bamboo_jungle_normal.png"
-      ],
-      "files": {
-        "ak47_hd__am_bamboo_jungle.png": "b73eb6fc20a64cf54f8cff6e34bb19da1db228cf77c706aa402172303e9815c5",
-        "ak47_hd__am_bamboo_jungle_orm.png": "452475e408c64624dbf32d21099f13cd8c48a866bf48ac11e59bbed6c8d0f644",
-        "ak47_hd__am_bamboo_jungle_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535"
-      }
-    },
-    "cu_ak47_rubber": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak47_rubber.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak47_rubber.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\rubber_ak47.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak47_rubber.vcompmat": "9ecf7e767d2a9509a9629ba7e2cf431e6b83dd40256f4e55ff87f8bd05c1b837",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak47_rubber.vmat": "96f3a503b63b59dbc0d64225b1b45e4278f32af65727a58c7271b170f5d38540",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\rubber_ak47.png": "31c691292c54ba885db3d14b35973314b2cf9d9e10985bf91e44a41e094196ec",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 1.8905,
-        "90": 5.9792,
-        "99": 81.4515,
-        "100": 155.8874
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "ak47_slot__cu_ak47_rubber.png",
-        "sha256": "63e4eacf51be98d0f55ab018d3f72dd05c24f868453b2e5cc932cd721bd4e848"
-      },
-      "outputs": [
-        "ak47_hd__cu_ak47_rubber.png",
-        "ak47_hd__cu_ak47_rubber_orm.png",
-        "ak47_hd__cu_ak47_rubber_normal.png"
-      ],
-      "files": {
-        "ak47_hd__cu_ak47_rubber.png": "cc02409cf14c1e48946bca3c9db1a0b17b8c87fb3c4e039501207209d2867075",
-        "ak47_hd__cu_ak47_rubber_orm.png": "1f3fa749ac9da3c49be72be98834f7086225d22db2f9a7a190586a2d3bbeb9ab",
-        "ak47_hd__cu_ak47_rubber_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535"
-      }
-    },
-    "cu_m4a1s_printstream": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_printstream.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_printstream.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_printstream.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_printstream.vcompmat": "4a2bef8729ac618b10d113cba5bbe88d9ec79eba648d933fc3bd857e9c2b7eab",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_printstream.vmat": "4cd431a0e198195967b8e6d124cd89b920b0431f80693008bad23c5493efab02",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_printstream.png": "edc27f410c1eb7d064498b9559cba116fd70ee88958acec2ce241654244df1b3",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_masks.png": "47f8af68f89a80780acdb5d5985678ec580014d0cd61e2caca5a99bee510cb22",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_cavity_ca3a9bfe_ao.png": "f091a82e5297c7ef2efeff2fb6d83d50a0a359f5ccba09e7fba26b79f5e999c8"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 2.3954,
-        "90": 7.9412,
-        "99": 31.2812,
-        "100": 86.8599
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "m4a1s_slot__cu_m4a1s_printstream.png",
-        "sha256": "453548f3bfb96ebd44449a98c29a4590bcf3d518c0adf3c8582e393868578bac"
-      },
-      "outputs": [
-        "m4a1s_hd__cu_m4a1s_printstream.png",
-        "m4a1s_hd__cu_m4a1s_printstream_orm.png",
-        "m4a1s_hd__cu_m4a1s_printstream_normal.png"
-      ],
-      "files": {
-        "m4a1s_hd__cu_m4a1s_printstream.png": "6094e7ad08835547052fc5726f847a3470551149faf679fb742b693810665ed0",
-        "m4a1s_hd__cu_m4a1s_printstream_orm.png": "78fbe7432644f7bd38e57b965399502a015c367c9422c1419fbf21f8dfac06f4",
-        "m4a1s_hd__cu_m4a1s_printstream_normal.png": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade"
-      }
-    },
-    "cu_m4a1s_csgo2048": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_csgo2048.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_csgo2048.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_csgo2048.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_csgo2048.vcompmat": "53b325c971029165345f72e0755a0f153ac310d0ee72f7cfbc314c314fb5c25c",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_csgo2048.vmat": "c091b64b75262532f004728a5efe2af7b4eb82875c393cf2cd14fc5ec89207f8",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_csgo2048.png": "e3f886a274da50913f008a435bbe3b0c0ed66fc87e1921fd40ab59050903dfac",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_masks.png": "47f8af68f89a80780acdb5d5985678ec580014d0cd61e2caca5a99bee510cb22",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_cavity_ca3a9bfe_ao.png": "f091a82e5297c7ef2efeff2fb6d83d50a0a359f5ccba09e7fba26b79f5e999c8"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 2.3954,
-        "90": 7.9412,
-        "99": 31.2812,
-        "100": 86.8599
-      },
-      "brightnessRecordedNotApplied": 1.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "m4a1s_slot__cu_m4a1s_csgo2048.png",
-        "sha256": "3806dff4afcc99d12ce4fe60fc9579648e494331edf58eab94a8ddf592793947"
-      },
-      "outputs": [
-        "m4a1s_hd__cu_m4a1s_csgo2048.png",
-        "m4a1s_hd__cu_m4a1s_csgo2048_orm.png",
-        "m4a1s_hd__cu_m4a1s_csgo2048_normal.png"
-      ],
-      "files": {
-        "m4a1s_hd__cu_m4a1s_csgo2048.png": "3ab4905873cb0de879a0df86bac06b1cbbf8e2291b8edf6348784ca624bc8b40",
-        "m4a1s_hd__cu_m4a1s_csgo2048_orm.png": "fc4596f62d7c841b1ca93214f283af43e0727a1a1528d975af0a1c6d2595ad32",
-        "m4a1s_hd__cu_m4a1s_csgo2048_normal.png": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade"
-      }
-    },
-    "aa_fade_m4a1s": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\set_realism_camo\\aa_fade_m4a1s.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\workshop\\paintkits\\templates\\aa_template.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fade.png",
-      "mode": "fade",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\set_realism_camo\\aa_fade_m4a1s.vcompmat": "c52388ae7e8609f92ac21eafbfe4388d2bf2d76f397b3cf67150a203d01342db",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\workshop\\paintkits\\templates\\aa_template.vmat": "57cd6565408d2c927f31862221dee226de05f8190ad8f94a93a074d350872d21",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fade.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_masks.png": "47f8af68f89a80780acdb5d5985678ec580014d0cd61e2caca5a99bee510cb22",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_cavity_ca3a9bfe_ao.png": "f091a82e5297c7ef2efeff2fb6d83d50a0a359f5ccba09e7fba26b79f5e999c8",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\items\\assets\\paintkits\\set_realism_camo\\aa_fade_m4a1s_paint_by_number_masks_psd_e19f334d.png": "c9697cc03200cb5d958ff404620efe83145399a3671b6b364b8630d5ceb1ef04"
-      },
-      "paintByNumberMask": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\items\\assets\\paintkits\\set_realism_camo\\aa_fade_m4a1s_paint_by_number_masks_psd_e19f334d.png",
-      "placement": "recipe colours/rotation, fixed planar gradient; not Valve seed/fade percentage",
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "m4a1s_slot__aa_fade_m4a1s.png",
-        "sha256": "3a7a5aef4bfd799fc0992659d762e03a8382f05318c837456c76bafd5ef7092a"
-      },
-      "outputs": [
-        "m4a1s_hd__aa_fade_m4a1s.png",
-        "m4a1s_hd__aa_fade_m4a1s_orm.png",
-        "m4a1s_hd__aa_fade_m4a1s_normal.png"
-      ],
-      "files": {
-        "m4a1s_hd__aa_fade_m4a1s.png": "912ec7d5d1b35c2625bb8a641b2ff3d076b35bf20cd80e014746ab150ea4e388",
-        "m4a1s_hd__aa_fade_m4a1s_orm.png": "49589980fd59d53ce11140c9c4818433fe4d0983641ce767b2fe1703a06bfa80",
-        "m4a1s_hd__aa_fade_m4a1s_normal.png": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade"
-      }
-    },
-    "gs_m4a1s_snakebite_gold": {
-      "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_m4a1s_snakebite_gold.vcompmat",
-      "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_m4a1s_snakebite_gold.vmat",
-      "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_snakebite_gold.png",
-      "mode": "reproject",
-      "wearPolicy": "no-added-wear; not official Factory New",
-      "sourceSha256": {
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_m4a1s_snakebite_gold.vcompmat": "87458b400cbe1908ac09fe139ae16241c9a4788c8ca8bf844ef60f4cba58d383",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_m4a1s_snakebite_gold.vmat": "ec5c44c535df561ba2e32a3e04af46d69bca58d9ee8b653f0c7c1bd1d85faff4",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_snakebite_gold.png": "748492ed81bc45aac1a0a8f2e833cd0cc9c857070a86699b0269626839faf540",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_masks.png": "47f8af68f89a80780acdb5d5985678ec580014d0cd61e2caca5a99bee510cb22",
-        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_cavity_ca3a9bfe_ao.png": "f091a82e5297c7ef2efeff2fb6d83d50a0a359f5ccba09e7fba26b79f5e999c8"
-      },
-      "projectionDistanceMmPercentiles": {
-        "50": 2.3954,
-        "90": 7.9412,
-        "99": 31.2812,
-        "100": 86.8599
-      },
-      "brightnessRecordedNotApplied": 2.0,
-      "materialLimits": "HD normals retained; uniform paint roughness/metalness; no custom normal or pearlescence compositor",
-      "unchangedInventoryIcon": {
-        "file": "m4a1s_slot__gs_m4a1s_snakebite_gold.png",
-        "sha256": "a1dfc0417b0d9f89139d7caef7623203808f275fa2de7f4a58cb98cb36d144a0"
-      },
-      "outputs": [
-        "m4a1s_hd__gs_m4a1s_snakebite_gold.png",
-        "m4a1s_hd__gs_m4a1s_snakebite_gold_orm.png",
-        "m4a1s_hd__gs_m4a1s_snakebite_gold_normal.png"
-      ],
-      "files": {
-        "m4a1s_hd__gs_m4a1s_snakebite_gold.png": "15b403d4e35caf89e9f09fc06802620daa2ef8f1f3942df537c79e770281909e",
-        "m4a1s_hd__gs_m4a1s_snakebite_gold_orm.png": "12abf75d4bc5a61e2b399671edb051f1e5b673b265ca7408c2d289416df3807e",
-        "m4a1s_hd__gs_m4a1s_snakebite_gold_normal.png": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade"
-      }
-    }
+ "catalogVersion": 4,
+ "size": 1024,
+ "skins": {
+  "am_lightning_awp": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_lightning_awp.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_lightning_awp.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\lightning_strike.png",
+   "mode": "pattern",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_lightning_awp.vcompmat": "cf13b7bea4b403362d16385478e6f8b854035e0c89433d67b0549edc16b47c2e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_lightning_awp.vmat": "be9bc427de547ae0423c4e93c3062e1a7bd12d023f292a9c87f945d2c5c668c4",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\lightning_strike.png": "4f4ee5959f02356cbe63d5f7ca283761b7a41e4f3611255dac5170b6e783efc9",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\awp\\weapon_snip_awp.glb": "b4ce40478f1c7ac2ad989babb0439ff5e966ed7c07d4a2aa58269143acd38009",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_masks.png": "e6226eb0d2f62fa57754fd7e49dbab185fbf78969ff883a6fb37111a7a2e542e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_ao.png": "f3dc426d5c478a055a1ef9b45ee71f1819d1e55304443c55ea2d806f64a1abaf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_substrate_color.png": "35239c35fc526eee427c9b0951bffbe769d99e11ba519463383ac2ab718d998e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_rough.png": "cf8b635f2cf257c06ef4d46b34076f818a1a770ca1b112cdf813510a2a3c5be9",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_composite_inputs.vmat": "ac27b3b6e9c84025d85fd67f14304a4f771748ad7ec4df4e9405200297e643c8",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\snip_awp\\awp.vmat": "c79d08c5b4d9bf09494c60f83fb9c83c5e39c913f740871ed653ab134f3cb56f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_f317ee9_metal.png": "b1f6ad11ea1eba8755c86838d4da517cca50ce6948e25e9a2e4e7c0c07fafe92"
+   },
+   "placement": "shared pattern in native legacy UV with native coverage; fixed recipe seed",
+   "normalSource": "material default flat normal",
+   "body": "legacy",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "awp_slot__am_lightning_awp.png",
+    "sha256": "2c0af8048d00e4b7aa9ca75bf015a67ad6215fe086f51d73b005e2fd3094385a"
+   },
+   "outputs": [
+    "awp_hd__am_lightning_awp.png",
+    "awp_hd__am_lightning_awp_orm.png",
+    "awp_hd__am_lightning_awp_normal.png"
+   ],
+   "files": {
+    "awp_hd__am_lightning_awp.png": "586b9a7019ca2e4f1b5c55a8a49347ebfb581cbe83821229ad703784d3503a71",
+    "awp_hd__am_lightning_awp_orm.png": "31b94e887a915dae321571114091e0a29a691e12375b5c93691da830b9001a62",
+    "awp_hd__am_lightning_awp_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+   }
+  },
+  "gs_awp_gungnir": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_awp_gungnir.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_awp_gungnir.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\awp_gungnir.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_awp_gungnir.vcompmat": "274031546e44fe7fe4dada7d1120b4342617fb43a6ee1182125d916fcd280104",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_awp_gungnir.vmat": "a549540556a290f50e1a118840cee90bb8ad95b61525e00040c789424c025596",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\awp_gungnir.png": "2afc8f7949c93585f3b2692804300b423c03ec3c8cf2467b8137c6c66e5fcf8d",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\awp\\weapon_snip_awp.glb": "b4ce40478f1c7ac2ad989babb0439ff5e966ed7c07d4a2aa58269143acd38009",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_masks.png": "e6226eb0d2f62fa57754fd7e49dbab185fbf78969ff883a6fb37111a7a2e542e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_ao.png": "f3dc426d5c478a055a1ef9b45ee71f1819d1e55304443c55ea2d806f64a1abaf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_substrate_color.png": "35239c35fc526eee427c9b0951bffbe769d99e11ba519463383ac2ab718d998e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_rough.png": "cf8b635f2cf257c06ef4d46b34076f818a1a770ca1b112cdf813510a2a3c5be9",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_composite_inputs.vmat": "ac27b3b6e9c84025d85fd67f14304a4f771748ad7ec4df4e9405200297e643c8",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\snip_awp\\awp.vmat": "c79d08c5b4d9bf09494c60f83fb9c83c5e39c913f740871ed653ab134f3cb56f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_f317ee9_metal.png": "b1f6ad11ea1eba8755c86838d4da517cca50ce6948e25e9a2e4e7c0c07fafe92",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\awp_gungnir_normal.png": "e9289178a8dd0f37f9f4347bbeb45512fc6380ce8540b0a5fcbb9ab5e47dfd47"
+   },
+   "placement": "native body_legacy UV, authored RGB; no nearest-surface reprojection",
+   "brightnessRecordedNotApplied": 1.0,
+   "normalSource": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\awp_gungnir_normal.png",
+   "body": "legacy",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "awp_slot__gs_awp_gungnir.png",
+    "sha256": "5ae53136187936e9bb8d1165d0a125cd8b3f7a15817a70c504f2cb8388a9adc9"
+   },
+   "outputs": [
+    "awp_hd__gs_awp_gungnir.png",
+    "awp_hd__gs_awp_gungnir_orm.png",
+    "awp_hd__gs_awp_gungnir_normal.png"
+   ],
+   "files": {
+    "awp_hd__gs_awp_gungnir.png": "6b8fc89279ebb1c2b7aa3886065403be39dad4edd1e9bbc93e7e4503be188fa9",
+    "awp_hd__gs_awp_gungnir_orm.png": "6718ceb7da326dbe6a17b6b0c91f3210509afd5217f3cec87225fb327618384d",
+    "awp_hd__gs_awp_gungnir_normal.png": "11f220fe6135af1937142a2703480b2ef2d5f66c8b331fe328e9f24c5560e5a4"
+   }
+  },
+  "cu_medieval_dragon_awp": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_medieval_dragon_awp.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_medieval_dragon_awp.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\dragon_awp.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_medieval_dragon_awp.vcompmat": "7c3607cf3f348c2bad86e5604b74555be69cdef584586cfd2120a5b5ed199f9d",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_medieval_dragon_awp.vmat": "9c82127df90f3710a4fcceb22ce8a4216de11b2b18f95673d6963984a74b9d12",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\dragon_awp.png": "f8439d8f2619bbd88bc3a5319e7e7a8bdeab861dede4a965574ddb7de0810d3d",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\awp\\weapon_snip_awp.glb": "b4ce40478f1c7ac2ad989babb0439ff5e966ed7c07d4a2aa58269143acd38009",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_masks.png": "e6226eb0d2f62fa57754fd7e49dbab185fbf78969ff883a6fb37111a7a2e542e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_ao.png": "f3dc426d5c478a055a1ef9b45ee71f1819d1e55304443c55ea2d806f64a1abaf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_substrate_color.png": "35239c35fc526eee427c9b0951bffbe769d99e11ba519463383ac2ab718d998e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_rough.png": "cf8b635f2cf257c06ef4d46b34076f818a1a770ca1b112cdf813510a2a3c5be9",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\snip_awp_composite_inputs.vmat": "ac27b3b6e9c84025d85fd67f14304a4f771748ad7ec4df4e9405200297e643c8",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\snip_awp\\awp.vmat": "c79d08c5b4d9bf09494c60f83fb9c83c5e39c913f740871ed653ab134f3cb56f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\snip_awp\\awp_f317ee9_metal.png": "b1f6ad11ea1eba8755c86838d4da517cca50ce6948e25e9a2e4e7c0c07fafe92"
+   },
+   "placement": "native body_legacy UV, authored RGB; no nearest-surface reprojection",
+   "brightnessRecordedNotApplied": 1.0,
+   "normalSource": "material default flat normal",
+   "body": "legacy",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "awp_slot__cu_medieval_dragon_awp.png",
+    "sha256": "6232109be452a28b82e65e1053930dd88154cb2382ae98f8beedeca27b34b72e"
+   },
+   "outputs": [
+    "awp_hd__cu_medieval_dragon_awp.png",
+    "awp_hd__cu_medieval_dragon_awp_orm.png",
+    "awp_hd__cu_medieval_dragon_awp_normal.png"
+   ],
+   "files": {
+    "awp_hd__cu_medieval_dragon_awp.png": "cd4ff802e95ffa2d7b0b04e5a2590c247598c0c425123a847ae520165c2bbfff",
+    "awp_hd__cu_medieval_dragon_awp_orm.png": "51d3bc1a8ce98e6e1c54586e48d17f902ba82d47ec5e53b904d34c86b2ff8606",
+    "awp_hd__cu_medieval_dragon_awp_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+   }
+  },
+  "cu_ak_island_floral": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak_island_floral.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak_island_floral.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\ak_island_floral.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak_island_floral.vcompmat": "95197261fa608a7ea1081917925dc7f741384decc47e185538036cfae053047e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak_island_floral.vmat": "e0233372c25c04a4517f21f7dd456bbd6e0f7e73792e0abd467fe26a23a60855",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\ak_island_floral.png": "0d50f7af9314a0ae10f614497077b871ea9d3d23c5e5c1d52f81137e98067c2f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_masks.png": "68eeed4a64e557a053f46704ee53c8867031cfa579a1be83ce8efbe274226ab5",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_ao.png": "04e92364540fdec1e2eadccbeb92c8ae5051954bc7b1f64025079cf5ee87ea71",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_color.png": "55c89a7abe86f81f09b27645fc9978cee268d028ea997ad02998ab8139bd4ed3",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_rough.png": "7796373352bbc8150689569601bd9173fcb1ee5a3345eeea9b60d3cdfa0527ad",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_composite_inputs.vmat": "5c2c85bdf877c8967b76caf966115d35e7e70cacf3aa79fc0c0742a70a24eacf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_ak47\\ak47.vmat": "dfb8177be85e24e3c5cf7a8ba80927ee4b3b2a038ac54bbd41bc4a9c760a01cd",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_73589151_metal.png": "d8f679f5619478a0ca72f2c897e60c96bac3ea7d6a0f030e2fadcb97aecfa7fc",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd.png": "713d0452216cfa5a737a6bf6eb2679716449c3a1504a532c07cadbdaebf1712f",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_orm.png": "c368d7d9731a687e9e319576ec12cfc9016a6d356d51fc9c172bf513467b26e6"
+   },
+   "placement": "legacy coat transferred to CS2 body_hd, bone-constrained repeat sampling; geometric adaptation, not an official HD paint",
+   "brightnessRecordedNotApplied": 1.0,
+   "sourceBody": "legacy",
+   "normalSource": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png",
+   "body": "hd",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "ak47_slot__cu_ak_island_floral.png",
+    "sha256": "507016fe027a4564c77036e207d877812710168a50c4eba1b25c9b420d8b50f9"
+   },
+   "outputs": [
+    "ak47_hd__cu_ak_island_floral.png",
+    "ak47_hd__cu_ak_island_floral_orm.png",
+    "ak47_hd__cu_ak_island_floral_normal.png"
+   ],
+   "files": {
+    "ak47_hd__cu_ak_island_floral.png": "91a625f500640bcfc486d437add0ad72c97e2f6ef83a6d48a8b105819af40cd5",
+    "ak47_hd__cu_ak_island_floral_orm.png": "0fee8da339c724941ff64e9e1dd8dd585a01a11497208ecd893920596b52f6bd",
+    "ak47_hd__cu_ak_island_floral_normal.png": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+   }
+  },
+  "cu_fireserpent_ak47_bravo": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_fireserpent_ak47_bravo.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_fireserpent_ak47_bravo.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fireserpent_ak47.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_fireserpent_ak47_bravo.vcompmat": "6a318498eff5fa5a396dbc3921bdb31760083ead078bb668b4282be0486f8ec9",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_fireserpent_ak47_bravo.vmat": "fee50406efc6b4aae8b913c6331fe285e7e9009174afb87bf1fdeb437b8f7b87",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fireserpent_ak47.png": "dc7a75f19a998a3a449020b4f5372a42ef1e923c57fcb447b60873bf78a51745",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_masks.png": "68eeed4a64e557a053f46704ee53c8867031cfa579a1be83ce8efbe274226ab5",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_ao.png": "04e92364540fdec1e2eadccbeb92c8ae5051954bc7b1f64025079cf5ee87ea71",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_color.png": "55c89a7abe86f81f09b27645fc9978cee268d028ea997ad02998ab8139bd4ed3",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_rough.png": "7796373352bbc8150689569601bd9173fcb1ee5a3345eeea9b60d3cdfa0527ad",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_composite_inputs.vmat": "5c2c85bdf877c8967b76caf966115d35e7e70cacf3aa79fc0c0742a70a24eacf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_ak47\\ak47.vmat": "dfb8177be85e24e3c5cf7a8ba80927ee4b3b2a038ac54bbd41bc4a9c760a01cd",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_73589151_metal.png": "d8f679f5619478a0ca72f2c897e60c96bac3ea7d6a0f030e2fadcb97aecfa7fc",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd.png": "713d0452216cfa5a737a6bf6eb2679716449c3a1504a532c07cadbdaebf1712f",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_orm.png": "c368d7d9731a687e9e319576ec12cfc9016a6d356d51fc9c172bf513467b26e6"
+   },
+   "placement": "legacy coat transferred to CS2 body_hd, bone-constrained repeat sampling; geometric adaptation, not an official HD paint",
+   "brightnessRecordedNotApplied": 1.0,
+   "sourceBody": "legacy",
+   "normalSource": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png",
+   "body": "hd",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "ak47_slot__cu_fireserpent_ak47_bravo.png",
+    "sha256": "d90862aaf341ff4e1a4e405c3132c52fa53ac4f7a532853e580e982673204f5f"
+   },
+   "outputs": [
+    "ak47_hd__cu_fireserpent_ak47_bravo.png",
+    "ak47_hd__cu_fireserpent_ak47_bravo_orm.png",
+    "ak47_hd__cu_fireserpent_ak47_bravo_normal.png"
+   ],
+   "files": {
+    "ak47_hd__cu_fireserpent_ak47_bravo.png": "f11a7c50afc3ca8e96fa62b79666d384268c028426238c44c8ac2640f88ebbae",
+    "ak47_hd__cu_fireserpent_ak47_bravo_orm.png": "c78f9285372b08b41a3bd1afcc2d8afa81943b6991e5cc6cb651ffb5dc04792d",
+    "ak47_hd__cu_fireserpent_ak47_bravo_normal.png": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+   }
+  },
+  "am_bamboo_jungle": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_bamboo_jungle.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_bamboo_jungle.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\bamboo_jungle.png",
+   "mode": "pattern",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\am_bamboo_jungle.vcompmat": "fbcaf0d004400e397eeece0d0de47d79c102c93d4e47c551347a48bb22f296f2",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\am_bamboo_jungle.vmat": "c8ed401c2f59836f2698ea45a892e174badc9b06ca71069ae23da09bcffa7e86",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\bamboo_jungle.png": "4bdc2ee059c936c7637a1e811de203b7b7d1b80b7243628521b369cd368c4934",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_masks.png": "68eeed4a64e557a053f46704ee53c8867031cfa579a1be83ce8efbe274226ab5",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_ao.png": "04e92364540fdec1e2eadccbeb92c8ae5051954bc7b1f64025079cf5ee87ea71",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_color.png": "55c89a7abe86f81f09b27645fc9978cee268d028ea997ad02998ab8139bd4ed3",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_rough.png": "7796373352bbc8150689569601bd9173fcb1ee5a3345eeea9b60d3cdfa0527ad",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_composite_inputs.vmat": "5c2c85bdf877c8967b76caf966115d35e7e70cacf3aa79fc0c0742a70a24eacf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_ak47\\ak47.vmat": "dfb8177be85e24e3c5cf7a8ba80927ee4b3b2a038ac54bbd41bc4a9c760a01cd",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_73589151_metal.png": "d8f679f5619478a0ca72f2c897e60c96bac3ea7d6a0f030e2fadcb97aecfa7fc",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd.png": "713d0452216cfa5a737a6bf6eb2679716449c3a1504a532c07cadbdaebf1712f",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_orm.png": "c368d7d9731a687e9e319576ec12cfc9016a6d356d51fc9c172bf513467b26e6"
+   },
+   "coverage": "native red coverage excluding green hardware category",
+   "placement": "legacy coat transferred to CS2 body_hd, bone-constrained repeat sampling; geometric adaptation, not an official HD paint",
+   "sourceBody": "legacy",
+   "normalSource": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png",
+   "body": "hd",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "ak47_slot__am_bamboo_jungle.png",
+    "sha256": "780c259a72e9d01124a4458b2c8340c5c94d1db37a78cf2bd2a0c6e797f184ad"
+   },
+   "outputs": [
+    "ak47_hd__am_bamboo_jungle.png",
+    "ak47_hd__am_bamboo_jungle_orm.png",
+    "ak47_hd__am_bamboo_jungle_normal.png"
+   ],
+   "files": {
+    "ak47_hd__am_bamboo_jungle.png": "53ee9f07b5e4fe276ee3ff5342aaeeb361bb5faebcff5da1159ab31ecb938127",
+    "ak47_hd__am_bamboo_jungle_orm.png": "f3bae4dfb84ae3df6541f148346602a6fc126d201d5a6729dac8ba4a52bc07cf",
+    "ak47_hd__am_bamboo_jungle_normal.png": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+   }
+  },
+  "cu_ak47_rubber": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak47_rubber.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak47_rubber.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\rubber_ak47.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_ak47_rubber.vcompmat": "9ecf7e767d2a9509a9629ba7e2cf431e6b83dd40256f4e55ff87f8bd05c1b837",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_ak47_rubber.vmat": "96f3a503b63b59dbc0d64225b1b45e4278f32af65727a58c7271b170f5d38540",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\rubber_ak47.png": "31c691292c54ba885db3d14b35973314b2cf9d9e10985bf91e44a41e094196ec",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\ak47\\weapon_rif_ak47.glb": "222095d20e0d4406693139a8a7ad639de7e6b1066a02bc8460a93551f9142723",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_masks.png": "68eeed4a64e557a053f46704ee53c8867031cfa579a1be83ce8efbe274226ab5",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_ao.png": "04e92364540fdec1e2eadccbeb92c8ae5051954bc7b1f64025079cf5ee87ea71",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_color.png": "55c89a7abe86f81f09b27645fc9978cee268d028ea997ad02998ab8139bd4ed3",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_rough.png": "7796373352bbc8150689569601bd9173fcb1ee5a3345eeea9b60d3cdfa0527ad",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\rif_ak47_composite_inputs.vmat": "5c2c85bdf877c8967b76caf966115d35e7e70cacf3aa79fc0c0742a70a24eacf",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_ak47\\ak47.vmat": "dfb8177be85e24e3c5cf7a8ba80927ee4b3b2a038ac54bbd41bc4a9c760a01cd",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_ak47\\ak47_73589151_metal.png": "d8f679f5619478a0ca72f2c897e60c96bac3ea7d6a0f030e2fadcb97aecfa7fc",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_masks.png": "6116adcd73c713875f85407842c4e20a3baa7ec9b91aab1faf708a0afebd251f",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\ak47\\materials\\composite_inputs\\weapon_rif_ak47_cavity_952ab3_ao.png": "1072fcf1011c2d9fabd48eda60edf48a5c885ed08963ef193e94cb0f6529e8cc",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png": "30623a060b2bb60c2c60ed1b89d2eb81760823f0fc0aaf7b647ba2a1d0c15535",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd.png": "713d0452216cfa5a737a6bf6eb2679716449c3a1504a532c07cadbdaebf1712f",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_orm.png": "c368d7d9731a687e9e319576ec12cfc9016a6d356d51fc9c172bf513467b26e6"
+   },
+   "placement": "legacy coat transferred to CS2 body_hd, bone-constrained repeat sampling; geometric adaptation, not an official HD paint",
+   "brightnessRecordedNotApplied": 1.0,
+   "sourceBody": "legacy",
+   "normalSource": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ak47_hd_normal.png",
+   "body": "hd",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "ak47_slot__cu_ak47_rubber.png",
+    "sha256": "63e4eacf51be98d0f55ab018d3f72dd05c24f868453b2e5cc932cd721bd4e848"
+   },
+   "outputs": [
+    "ak47_hd__cu_ak47_rubber.png",
+    "ak47_hd__cu_ak47_rubber_orm.png",
+    "ak47_hd__cu_ak47_rubber_normal.png"
+   ],
+   "files": {
+    "ak47_hd__cu_ak47_rubber.png": "23a43ddacd25da889b97b1ff89bc7199cc5cf7ed7b84e9cd9328804cc4fe5611",
+    "ak47_hd__cu_ak47_rubber_orm.png": "1f3fa749ac9da3c49be72be98834f7086225d22db2f9a7a190586a2d3bbeb9ab",
+    "ak47_hd__cu_ak47_rubber_normal.png": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+   }
+  },
+  "cu_m4a1s_printstream": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_printstream.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_printstream.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_printstream.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_printstream.vcompmat": "4a2bef8729ac618b10d113cba5bbe88d9ec79eba648d933fc3bd857e9c2b7eab",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_printstream.vmat": "4cd431a0e198195967b8e6d124cd89b920b0431f80693008bad23c5493efab02",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_printstream.png": "edc27f410c1eb7d064498b9559cba116fd70ee88958acec2ce241654244df1b3",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_masks.png": "b1c0e7afdfafb4f1de1c769a098a3a50518936f6da823a2e86c7641015441878",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_ao.png": "419faf0f3d62da7da346d3ab7deb8222faea6241236704052f920314225c89e7",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_color.png": "f3266975595f308a45464758c62df7b7fcf46a11596dea3d8e6233e8b51c1e7b",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_rough.png": "fb68ba7702a58370d1ad12e8cba52fa7930e681d2ffbf8316ead0acb9dd8031e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_composite_inputs.vmat": "3143f44b827449cd7830c75e02be2e8878a177076c2bef44ef0d3d41a9054b33",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_m4a1_s\\rif_m4a1_s.vmat": "85c58c62df8fcadefd9fbdc61d238b5f4a967ab9e37d6346ee40c75c9c073b23",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_printstream_normal.png": "2970bf49902d94f5a4926bc5bfa9fd76e1b1e1e568a7982866febd1876f40985"
+   },
+   "placement": "native body_legacy UV, authored RGB; no nearest-surface reprojection",
+   "brightnessRecordedNotApplied": 1.0,
+   "normalSource": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_printstream_normal.png",
+   "body": "legacy",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "m4a1s_slot__cu_m4a1s_printstream.png",
+    "sha256": "453548f3bfb96ebd44449a98c29a4590bcf3d518c0adf3c8582e393868578bac"
+   },
+   "outputs": [
+    "m4a1s_hd__cu_m4a1s_printstream.png",
+    "m4a1s_hd__cu_m4a1s_printstream_orm.png",
+    "m4a1s_hd__cu_m4a1s_printstream_normal.png"
+   ],
+   "files": {
+    "m4a1s_hd__cu_m4a1s_printstream.png": "2ee53cb67f94bf304946823f86ef85983a353b88922892b032b6f62efbb7f734",
+    "m4a1s_hd__cu_m4a1s_printstream_orm.png": "fd3afb652b0b864acd65d9db345980bce729033c232bf8083396aef0142aa855",
+    "m4a1s_hd__cu_m4a1s_printstream_normal.png": "695327d5291a5c49669da253842a6833bb168af43af4840074d2f0bb572502fa"
+   }
+  },
+  "cu_m4a1s_csgo2048": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_csgo2048.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_csgo2048.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_csgo2048.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\cu_m4a1s_csgo2048.vcompmat": "53b325c971029165345f72e0755a0f153ac310d0ee72f7cfbc314c314fb5c25c",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\cu_m4a1s_csgo2048.vmat": "c091b64b75262532f004728a5efe2af7b4eb82875c393cf2cd14fc5ec89207f8",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_csgo2048.png": "e3f886a274da50913f008a435bbe3b0c0ed66fc87e1921fd40ab59050903dfac",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_masks.png": "b1c0e7afdfafb4f1de1c769a098a3a50518936f6da823a2e86c7641015441878",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_ao.png": "419faf0f3d62da7da346d3ab7deb8222faea6241236704052f920314225c89e7",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_color.png": "f3266975595f308a45464758c62df7b7fcf46a11596dea3d8e6233e8b51c1e7b",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_rough.png": "fb68ba7702a58370d1ad12e8cba52fa7930e681d2ffbf8316ead0acb9dd8031e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_composite_inputs.vmat": "3143f44b827449cd7830c75e02be2e8878a177076c2bef44ef0d3d41a9054b33",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_m4a1_s\\rif_m4a1_s.vmat": "85c58c62df8fcadefd9fbdc61d238b5f4a967ab9e37d6346ee40c75c9c073b23"
+   },
+   "placement": "native body_legacy UV, authored RGB; no nearest-surface reprojection",
+   "brightnessRecordedNotApplied": 1.0,
+   "normalSource": "material default flat normal",
+   "body": "legacy",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "m4a1s_slot__cu_m4a1s_csgo2048.png",
+    "sha256": "3806dff4afcc99d12ce4fe60fc9579648e494331edf58eab94a8ddf592793947"
+   },
+   "outputs": [
+    "m4a1s_hd__cu_m4a1s_csgo2048.png",
+    "m4a1s_hd__cu_m4a1s_csgo2048_orm.png",
+    "m4a1s_hd__cu_m4a1s_csgo2048_normal.png"
+   ],
+   "files": {
+    "m4a1s_hd__cu_m4a1s_csgo2048.png": "16dfc86b85730b8f428f330b57f2a4397ca858ba84f8ea3c13f805a5992693a9",
+    "m4a1s_hd__cu_m4a1s_csgo2048_orm.png": "6e53a5e0f944a96737116049c7243a26c85e9382077a069359e03efce6b9714e",
+    "m4a1s_hd__cu_m4a1s_csgo2048_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+   }
+  },
+  "aa_fade_m4a1s": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\set_realism_camo\\aa_fade_m4a1s.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\workshop\\paintkits\\templates\\aa_template.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fade.png",
+   "mode": "fade",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\set_realism_camo\\aa_fade_m4a1s.vcompmat": "c52388ae7e8609f92ac21eafbfe4388d2bf2d76f397b3cf67150a203d01342db",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\workshop\\paintkits\\templates\\aa_template.vmat": "57cd6565408d2c927f31862221dee226de05f8190ad8f94a93a074d350872d21",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\fade.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_masks.png": "47f8af68f89a80780acdb5d5985678ec580014d0cd61e2caca5a99bee510cb22",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\04_current_weapon_materials\\weapons\\models\\m4a1_silencer\\materials\\composite_inputs\\weapon_rif_m4a1_silencer_cavity_ca3a9bfe_ao.png": "f091a82e5297c7ef2efeff2fb6d83d50a0a359f5ccba09e7fba26b79f5e999c8",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\items\\assets\\paintkits\\set_realism_camo\\aa_fade_m4a1s_paint_by_number_masks_psd_e19f334d.png": "c9697cc03200cb5d958ff404620efe83145399a3671b6b364b8630d5ceb1ef04",
+    "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m4a1s_hd_normal.png": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade"
+   },
+   "paintByNumberMask": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\selected_20260908\\decompiled\\items\\assets\\paintkits\\set_realism_camo\\aa_fade_m4a1s_paint_by_number_masks_psd_e19f334d.png",
+   "placement": "recipe colours/rotation, fixed planar gradient; not Valve seed/fade percentage",
+   "normalSource": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m4a1s_hd_normal.png",
+   "body": "hd",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "m4a1s_slot__aa_fade_m4a1s.png",
+    "sha256": "3a7a5aef4bfd799fc0992659d762e03a8382f05318c837456c76bafd5ef7092a"
+   },
+   "outputs": [
+    "m4a1s_hd__aa_fade_m4a1s.png",
+    "m4a1s_hd__aa_fade_m4a1s_orm.png",
+    "m4a1s_hd__aa_fade_m4a1s_normal.png"
+   ],
+   "files": {
+    "m4a1s_hd__aa_fade_m4a1s.png": "912ec7d5d1b35c2625bb8a641b2ff3d076b35bf20cd80e014746ab150ea4e388",
+    "m4a1s_hd__aa_fade_m4a1s_orm.png": "49589980fd59d53ce11140c9c4818433fe4d0983641ce767b2fe1703a06bfa80",
+    "m4a1s_hd__aa_fade_m4a1s_normal.png": "25d94e033e6348b55980a474e1295d6728120522756bed807696221b85acbade"
+   }
+  },
+  "gs_m4a1s_snakebite_gold": {
+   "recipe": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_m4a1s_snakebite_gold.vcompmat",
+   "material": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_m4a1s_snakebite_gold.vmat",
+   "pattern": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_snakebite_gold.png",
+   "mode": "native",
+   "wearPolicy": "no-added-wear; not official Factory New",
+   "sourceSha256": {
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\weapons\\paints\\legacy\\gs_m4a1s_snakebite_gold.vcompmat": "87458b400cbe1908ac09fe139ae16241c9a4788c8ca8bf844ef60f4cba58d383",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\gs_m4a1s_snakebite_gold.vmat": "ec5c44c535df561ba2e32a3e04af46d69bca58d9ee8b653f0c7c1bd1d85faff4",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\10_paints\\decompiled\\materials\\models\\weapons\\customization\\paints\\vmats\\m4a1s_snakebite_gold.png": "748492ed81bc45aac1a0a8f2e833cd0cc9c857070a86699b0269626839faf540",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\02_models\\glb_with_animations\\weapons\\models\\m4a1_silencer\\weapon_rif_m4a1_silencer.glb": "3f0d2fe845fe733aa00e1c9467192c7dc3b85cd540ee1be0f3e79b03e59f8509",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_masks.png": "b1c0e7afdfafb4f1de1c769a098a3a50518936f6da823a2e86c7641015441878",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_ao.png": "419faf0f3d62da7da346d3ab7deb8222faea6241236704052f920314225c89e7",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_color.png": "f3266975595f308a45464758c62df7b7fcf46a11596dea3d8e6233e8b51c1e7b",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_rough.png": "fb68ba7702a58370d1ad12e8cba52fa7930e681d2ffbf8316ead0acb9dd8031e",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\11_legacy_composite_inputs\\materials\\models\\weapons\\customization\\rif_m4a1_s\\rif_m4a1_s_composite_inputs.vmat": "3143f44b827449cd7830c75e02be2e8878a177076c2bef44ef0d3d41a9054b33",
+    "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\03_legacy_vmodels_materials\\materials\\models\\weapons\\v_models\\rif_m4a1_s\\rif_m4a1_s.vmat": "85c58c62df8fcadefd9fbdc61d238b5f4a967ab9e37d6346ee40c75c9c073b23"
+   },
+   "placement": "native body_legacy UV, authored RGB; no nearest-surface reprojection",
+   "brightnessRecordedNotApplied": 2.0,
+   "normalSource": "material default flat normal",
+   "body": "legacy",
+   "materialLimits": "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor",
+   "unchangedInventoryIcon": {
+    "file": "m4a1s_slot__gs_m4a1s_snakebite_gold.png",
+    "sha256": "a1dfc0417b0d9f89139d7caef7623203808f275fa2de7f4a58cb98cb36d144a0"
+   },
+   "outputs": [
+    "m4a1s_hd__gs_m4a1s_snakebite_gold.png",
+    "m4a1s_hd__gs_m4a1s_snakebite_gold_orm.png",
+    "m4a1s_hd__gs_m4a1s_snakebite_gold_normal.png"
+   ],
+   "files": {
+    "m4a1s_hd__gs_m4a1s_snakebite_gold.png": "2153e2167dc1810d7ca313d3655ace1c7a8e23405a5fa39cbca28faa2aea3025",
+    "m4a1s_hd__gs_m4a1s_snakebite_gold_orm.png": "1bbde21483f03930064a328515c34fd4129d142601bac7a12d4406f57e11b9dd",
+    "m4a1s_hd__gs_m4a1s_snakebite_gold_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+   }
   }
+ },
+ "scope": {
+  "material": "shared_scope.vmat (opaque hardware, separate from translucent scope lens)",
+  "sourceSha256": {
+   "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\07_scope\\weapons\\models\\shared\\materials\\scope\\shared_scope.vmat": "aa9ccecb630d1136c92d9451a640464a6530796b2f5128fc6c3d716fead0a6a5",
+   "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\07_scope\\weapons\\models\\shared\\materials\\scope\\shared_scope_ao.png": "b5a0b91908cc702f282c8de3bd954a8e14fdc872e103af94c798c8bcf776654c",
+   "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\07_scope\\weapons\\models\\shared\\materials\\scope\\shared_scope_normal.png": "aa6cc77ddd23246774e4ca3b0e84cf18b15f65e53926b7c3e144562638f368d9"
+  },
+  "files": {
+   "cs2_legacy_scope.png": "99eca22a196f04d3d15f62e255cf3216a99efa88cb8279800ae1d0a48d750e17",
+   "cs2_legacy_scope_orm.png": "2180c597eba2d2d4745d5f6232c0ad759eb08051ec846904754c547c8594e3a9",
+   "cs2_legacy_scope_normal.png": "aa6cc77ddd23246774e4ca3b0e84cf18b15f65e53926b7c3e144562638f368d9"
+  }
+ }
 }

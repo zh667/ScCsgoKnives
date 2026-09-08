@@ -65,7 +65,7 @@ def gun_mesh(gun: str, silencer=False, legacy=False):
     return np.array(verts, float), np.array(uvs, float), tris
 
 
-def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.2, pitch: float = 0.1):
+def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.2, pitch: float = 0.1, shader=None):
     lo, hi = verts.min(0), verts.max(0)
     centre, extent = (lo + hi) / 2, float((hi - lo).max())
     cy, sy = np.cos(yaw), np.sin(yaw)
@@ -111,6 +111,8 @@ def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.2, p
         sub = zbuf[y0:y1 + 1, x0:x1 + 1]
         hit = inside & (depth > sub)  # +Z is toward the viewer after the rotation
         sub[hit] = depth[hit]
+        if not hit.any():
+            continue
         if a[1] >= 0 and b[1] >= 0 and c[1] >= 0:
             u = w0 * uvs[a[1], 0] + w1 * uvs[b[1], 0] + w2 * uvs[c[1], 0]
             v = w0 * uvs[a[1], 1] + w1 * uvs[b[1], 1] + w2 * uvs[c[1], 1]
@@ -121,7 +123,10 @@ def render(verts, uvs, tris, texture: np.ndarray, size: int, yaw: float = 0.2, p
                 col = np.full(col.shape, .290196)  # shared_scope.vmat, opaque hardware not painted body
         else:
             col = np.full(gx.shape + (3,), 0.5)
-        img[y0:y1 + 1, x0:x1 + 1][hit] = np.clip(col[hit] * shade, 0, 1)
+        if shader is not None:
+            img[y0:y1 + 1, x0:x1 + 1][hit] = shader(col[hit], np.stack([u[hit],v[hit]],-1), n/ln)
+        else:
+            img[y0:y1 + 1, x0:x1 + 1][hit] = np.clip(col[hit] * shade, 0, 1)
     return Image.fromarray((img * 255).astype(np.uint8), "RGB")
 
 
@@ -157,7 +162,7 @@ def main() -> int:
                 before, after = a.compare/name, a.textures/name
                 if not after.exists():
                     continue
-                old, new = shot(before), shot(after, s.get("legacyModel", False))
+                old, new = shot(before, s.get("legacyModel", False)), shot(after, s.get("displayBody", "legacy") == "legacy")
                 row = Image.new("RGB", (a.size*2, new.height+30), "white")
                 row.paste(old, (0,30))
                 row.paste(new, (a.size,30))
@@ -172,7 +177,8 @@ def main() -> int:
             p = a.textures / f"{gun['variantAsset']}_hd__{s['key']}.png"
             if not p.exists():
                 continue
-            cells.append((f"{s['nameEn']} [native UV]", shot(p, s.get("legacyModel", False))))
+            display = s.get("displayBody", "legacy" if s.get("legacyModel") else "hd")
+            cells.append((f"{s['nameEn']} [{display} UV]", shot(p, display == "legacy")))
         row = Image.new("RGB", (a.size * len(cells), cells[0][1].height + 20), (255, 255, 255))
         d = ImageDraw.Draw(row)
         for i, (label, im) in enumerate(cells):

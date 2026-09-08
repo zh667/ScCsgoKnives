@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Bake finishes for their native CS2 body UV layout.
 
-Custom/gunsmith RGB artwork is sampled directly on body_legacy; Fade keeps body_hd.
+Custom/gunsmith artwork uses its source layout; displayBody selects the output UV.
+AK is explicitly adapted to HD. AWP/M4 native placement and Fade are unchanged.
 Shared patterns keep recipe colours. Painted
 albedo never uses the scratched factory colour as a luminance multiplier.
 No synthetic wear/grunge is added; this is NOT Valve's Factory New compositor.
@@ -25,7 +26,7 @@ from scipy.ndimage import distance_transform_edt
 
 import cs2_kv3
 from cs2_glb import Glb
-from gun_skin_reproject import body, lookup, raster_surface
+from gun_skin_reproject import body, correspondence, lookup, raster_surface
 
 Image.MAX_IMAGE_PIXELS = None
 ROOT = Path(__file__).resolve().parent.parent
@@ -153,6 +154,21 @@ def gun_inputs(gun, export, size, legacy=False):
             "ao": load_rgb(ao, size)[..., 0], "glb": glb, "maskPath": masks, "aoPath": ao}
 
 
+def adapt_hd_coat(color, mask, target, mapping, key):
+    uv = mapping["uv"]
+    coat = lookup(color, uv, wrap=True)
+    coverage = np.clip(lookup(mask, uv, wrap=True), 0, 1)
+    if key in ("am_bamboo_jungle", "cu_fireserpent_ak47_bravo"):
+        coverage *= target["mask"]  # Keep HD wooden furniture, not legacy wood details.
+    if key == "am_bamboo_jungle":
+        hd = body(Glb(target["glb"]), "hd")
+        _, ids = raster_surface(hd, mask.shape[0])
+        near = distance_transform_edt(ids < 0, return_distances=False, return_indices=True)
+        ids = ids[tuple(near)]
+        coverage[hd["bones"][ids] == "clip"] = 0  # No bamboo on the HD magazine or its gutters.
+    return clean_coat(coat, target["color"], coverage), coverage
+
+
 def bake(skin, gun, src, args):
     paints = args.export_root / "10_paints"
     recipe = find_one(paints, skin["recipe"])
@@ -167,9 +183,7 @@ def bake(skin, gun, src, args):
     used["sourceSha256"].update({str(f): sha256(f) for f in src.get("sources", [])})
     if skin["mode"] == "native":
         color = load_rgb(pattern_path, args.size)
-        mask = np.ones_like(mask)
-        if skin.get("coverage") == "native-metal-mask":
-            mask = src["mask"]  # Fire Serpent keeps the native wooden furniture.
+        mask = src["mask"] if skin.get("coverage") == "native-metal-mask" else np.ones_like(mask)
         color = clean_coat(color, base, mask)
         used["placement"] = "native body_legacy UV, authored RGB; no nearest-surface reprojection"
         used["brightnessRecordedNotApplied"] = brightness
@@ -204,6 +218,16 @@ def bake(skin, gun, src, args):
     else:
         raise ValueError(f"Unsupported bake mode: {skin['mode']}")
 
+    adapted = skin["legacyModel"] and skin["displayBody"] == "hd"
+    if adapted:
+        target = gun_inputs(gun, args.export_root, args.size, False)
+        mapping = correspondence(src["glb"], args.size, args.cache)
+        color, mask = adapt_hd_coat(color, mask, target, mapping, skin["key"])
+        used["sourceBody"] = "legacy"
+        used["placement"] = "legacy coat transferred to CS2 body_hd, bone-constrained repeat sampling; geometric adaptation, not an official HD paint"
+        used["sourceSha256"].update({str(f): sha256(f) for f in (target["maskPath"], target["aoPath"], target["normal"], TEX/f"{gun['variantAsset']}_hd.png", TEX/f"{gun['variantAsset']}_hd_orm.png")})
+        src = target
+
     orm = src["orm"].copy()
     orm[..., 0] = src["ao"]  # geometric AO stays in ORM, not scratched colour-derived shading
     rough = float(p.get("g_flPaintRoughness", .4))
@@ -218,11 +242,11 @@ def bake(skin, gun, src, args):
     save_rgb(color, args.out/names[0])
     save_rgb(orm, args.out/names[1])
     normal_path = src["normal"]
-    if skin.get("legacyModel") and int(p.get("F_OVERRIDE_NORMAL", 0)) == 1 and "TextureNormal" in p:
+    if skin.get("legacyModel") and not adapted and int(p.get("F_OVERRIDE_NORMAL", 0)) == 1 and "TextureNormal" in p:
         normal_path = find_one(paints, p["TextureNormal"])
     normal = Image.open(normal_path).convert("RGB") if normal_path else Image.new("RGB", (4,4), (128,128,255))
     normal = normal.resize((args.size,args.size), Image.Resampling.LANCZOS)
-    if skin.get("legacyModel"):
+    if skin.get("legacyModel") and not adapted:
         n = np.asarray(normal, float)/127.5-1
         n /= np.maximum(np.linalg.norm(n, axis=-1, keepdims=True), 1e-6)
         normal = Image.fromarray(np.uint8(np.clip((n+1)*127.5+.5,0,255)))
@@ -236,7 +260,7 @@ def bake(skin, gun, src, args):
             shutil.copyfile(existing, args.out/names[2])
     else:
         normal.save(args.out/names[2], optimize=True)
-    used["body"] = "legacy" if skin.get("legacyModel") else "hd"
+    used["body"] = skin["displayBody"]
     used["materialLimits"] = "native normals; uniform paint roughness/metalness; no Valve wear/pearlescence compositor"
     retained_icon = TEX/f"{asset}_slot__{key}.png"
     used["unchangedInventoryIcon"] = {"file": retained_icon.name, "sha256": sha256(retained_icon)}

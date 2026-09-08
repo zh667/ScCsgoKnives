@@ -28,7 +28,7 @@ public static class ScGunNativeMesh {
         return JsonSerializer.Deserialize<Dictionary<string, Part[]>>(stream);
     }
     public static Part[] Parts(string asset) => s_parts.TryGetValue(asset, out var p) ? p : [];
-    public static bool UsesLegacy(string asset, string material) => ScGunSkinCatalog.All.Any(s => s.Gun == asset && s.PaintId != 1177 && s.Material == material);
+    public static bool UsesLegacy(string asset, string material) => asset != "ak47" && ScGunSkinCatalog.All.Any(s => s.Gun == asset && s.PaintId != 1177 && s.Material == material);
     public static string ModelPath(string asset, Part part) => $"Models/ScCsgoKnives/{asset}_legacy_cs2_{part.Name}";
     public static SamplerState WorldSampler => SamplerState.LinearWrap;
 

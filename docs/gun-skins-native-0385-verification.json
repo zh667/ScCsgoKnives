@@ -1,0 +1,84 @@
+{
+  "version": "0.38.5",
+  "previousVersion": "0.38.4",
+  "checks": {
+    "Full": {
+      "packageSha256": "c6439e64649da37fcbaa2b2dbc24479c4df8bad18b61e54fa4aea2bb468cfb17",
+      "packageBytes": 244984995,
+      "dllSha256": "2466501a9e0809b9c280d9b1c22123994cbc536a17d65b8f48203ec916200d8b",
+      "entries": 766,
+      "failed": 0,
+      "passed": 6306
+    },
+    "Lite": {
+      "packageSha256": "442732d08b104b56ec9f71f19066e08544d25598980fce94167f39949a900739",
+      "packageBytes": 121252140,
+      "dllSha256": "2466501a9e0809b9c280d9b1c22123994cbc536a17d65b8f48203ec916200d8b",
+      "entries": 766,
+      "failed": 0,
+      "passed": 6306
+    }
+  },
+  "removedFiles": [],
+  "replacedFiles": {
+    "Assets/Textures/ScCsgoKnives/ak47_hd__am_bamboo_jungle.png": {
+      "before": "c46c772711a35fa828fe3ed0a212bf396b74cdcc5e64cdd8e877cb25dda19da2",
+      "after": "53ee9f07b5e4fe276ee3ff5342aaeeb361bb5faebcff5da1159ab31ecb938127"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__am_bamboo_jungle_normal.png": {
+      "before": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28",
+      "after": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__am_bamboo_jungle_orm.png": {
+      "before": "08340cac90461a5719c5ca896b92e61218eed0922a8c34bb241b592da52f4c8f",
+      "after": "f3bae4dfb84ae3df6541f148346602a6fc126d201d5a6729dac8ba4a52bc07cf"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak47_rubber.png": {
+      "before": "5d856e53aa2c327e57c24ae83c481e1ba3b3d895f26d6ff5c1bd25228a590fb5",
+      "after": "23a43ddacd25da889b97b1ff89bc7199cc5cf7ed7b84e9cd9328804cc4fe5611"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak47_rubber_normal.png": {
+      "before": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28",
+      "after": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak47_rubber_orm.png": {
+      "before": "2547e1ff51afd85ec76e899efe2d31d540fb0182a139c9c486821455a4926baa",
+      "after": "1f3fa749ac9da3c49be72be98834f7086225d22db2f9a7a190586a2d3bbeb9ab"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak_island_floral.png": {
+      "before": "937758a8249d4afd1f9d5b98e561ca9a33add0e5ee60b6a1f829962b56444119",
+      "after": "91a625f500640bcfc486d437add0ad72c97e2f6ef83a6d48a8b105819af40cd5"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak_island_floral_normal.png": {
+      "before": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28",
+      "after": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_ak_island_floral_orm.png": {
+      "before": "f6216971adb88a5968ba0d26f1d373f1e2e7dd0992f9cbd7854a1b7e04bd17d1",
+      "after": "0fee8da339c724941ff64e9e1dd8dd585a01a11497208ecd893920596b52f6bd"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_fireserpent_ak47_bravo.png": {
+      "before": "2aa9ee5a00646a6a4754e0f45a7d8497fb0b547e0bda2834e4d14c5bf28de3f7",
+      "after": "f11a7c50afc3ca8e96fa62b79666d384268c028426238c44c8ac2640f88ebbae"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_fireserpent_ak47_bravo_normal.png": {
+      "before": "39e3cb27ba79e1501c52fd913b52ba49d7d3204c582fb5fee78efc0e1d070c28",
+      "after": "adc2b8436594949e2fcfae0f48ed9f66254e8bbf2507f72cd50c010357ead077"
+    },
+    "Assets/Textures/ScCsgoKnives/ak47_hd__cu_fireserpent_ak47_bravo_orm.png": {
+      "before": "5f7b06755ab994e29c2a12aff7b29495fa3865934ff154c7c1d7d260fbffc499",
+      "after": "c78f9285372b08b41a3bd1afcc2d8afa81943b6991e5cc6cb651ffb5dc04792d"
+    },
+    "ScCsgoKnives.dll": {
+      "before": "e12543903697712a6340ea9af18a0edda58323f9cbb6ed5caf569943ada18af0",
+      "after": "2466501a9e0809b9c280d9b1c22123994cbc536a17d65b8f48203ec916200d8b"
+    },
+    "modinfo.json": {
+      "before": "646c246f0d23e29a33d2ba1ac360eb97a73c9ac34ff351f36ce09cf55ccc483b",
+      "after": "8c9eddf2fda4b3a7b9fe9a04b8c78328d3b5c427090c8de0c48d066dfae0c3f9"
+    }
+  },
+  "addedFiles": [],
+  "preserved": "Every other prior package entry is byte-identical: default meshes/maps, all icons, audio and unrelated effects.",
+  "gameVisualAcceptance": "pending; offline native-UV renders are not in-game screenshots"
+}

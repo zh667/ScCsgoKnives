@@ -92,9 +92,13 @@ public static class KnifePbrRenderer {
         return s_flatNormal;
     }
 
-    static float GunEnvFactor(int variant) {
+    public static float GunEnvFactor(int variant, string material) {
         if (!CsmcKnifeRig.IsGun(variant)) return 1f;
-        GunSpec spec = GunSpec.ForAsset(CsmcKnifeRig.GetAssetName(variant));
+        string asset = CsmcKnifeRig.GetAssetName(variant);
+        // Factory calibration attenuates environmental lighting to .25. Known M4
+        // finishes use normal studio illumination; scene light/AO/BRDF still apply.
+        if (asset == "m4a1s" && ScGunSkinCatalog.All.Any(s => s.Gun == asset && s.Material == material)) return 1f;
+        GunSpec spec = GunSpec.ForAsset(asset);
         return KnifeTuning.PbrGunEnvIntensity * (spec?.EnvScale ?? 1f);
     }
 
@@ -182,7 +186,7 @@ public static class KnifePbrRenderer {
         shader.LightColor2.SetValue(new Vector3(direct));
         shader.Params.SetValue(new Vector4(
             KnifeTuning.PbrEnvRange,
-            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant),
+            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant, material),
             KnifeTuning.PbrExposure,
             KnifeTuning.PbrNormalFlipY));
         shader.Params2.SetValue(new Vector4(
@@ -252,7 +256,7 @@ public static class KnifePbrRenderer {
         shader.LightColor2.SetValue(new Vector3(direct));
         shader.Params.SetValue(new Vector4(
             KnifeTuning.PbrEnvRange,
-            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant),
+            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant, material),
             KnifeTuning.PbrExposure,
             KnifeTuning.PbrNormalFlipY));
         shader.Params2.SetValue(new Vector4(

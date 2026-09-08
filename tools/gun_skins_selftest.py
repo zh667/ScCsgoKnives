@@ -76,6 +76,29 @@ class SkinBakeTests(unittest.TestCase):
         self.assertEqual(params["g_flPaintRoughness"], .3)
         np.testing.assert_allclose(params["g_vColor1"], np.array([252,179,101])/255)
 
+    def test_hd_hydroponic_magazine_preserves_factory_color(self):
+        from build_gun_skins import adapt_hd_coat
+        from gun_skin_reproject import correspondence, body
+        from cs2_glb import Glb
+        export=ROOT.parent/"CSMCReverse/local_cs2_analysis/all_weapons"
+        if not export.exists(): self.skipTest("external CS2 export not installed")
+        catalog=json.loads((ROOT/"tools/gun_skins_catalog.json").read_text("utf-8"))
+        target=gun_inputs(catalog["guns"]["ak47"],export,64,False)
+        # Deliberately all-magenta source: every magazine texel must still be original.
+        v,u=(np.mgrid[:64,:64]+.5)/64
+        out,mask=adapt_hd_coat(np.broadcast_to([1.,0,1],(64,64,3)),np.ones((64,64)),target,{"uv":np.stack([u,v],-1)},"am_bamboo_jungle")
+        hd=body(Glb(target["glb"]),"hd"); _,ids=raster_surface(hd,64)
+        clip=(ids>=0)&(hd["bones"][np.maximum(ids,0)]=="clip")
+        self.assertGreater(clip.sum(),100)
+        np.testing.assert_array_equal(mask[clip],0)
+        np.testing.assert_array_equal(out[clip],target["color"][clip])
+
+    def test_artwork_layout_separate_from_display_layout(self):
+        catalog=json.loads((ROOT/"tools/gun_skins_catalog.json").read_text("utf-8"))
+        for skin in catalog["skins"]:
+            self.assertEqual(skin["legacyModel"],skin["paintId"]!=1177)
+            self.assertEqual(skin["displayBody"],"hd" if skin["gun"]=="ak47" or skin["paintId"]==1177 else "legacy")
+
     def test_installed_skin_assets_and_unchanged_icons(self):
         catalog=json.loads((ROOT/"tools/gun_skins_catalog.json").read_text("utf-8"))
         report=json.loads((ROOT/"docs/gun-skins-assets.json").read_text("utf-8"))
@@ -92,8 +115,8 @@ class SkinBakeTests(unittest.TestCase):
             icon=row["unchangedInventoryIcon"]
             self.assertEqual(sha256(TEX/icon["file"]), icon["sha256"])
             normal=load_rgb(TEX/f"{skin['gun']}_hd__{skin['key']}_normal.png")
-            self.assertEqual(row["body"], "legacy" if skin["legacyModel"] else "hd")
-            if not skin["legacyModel"]:
+            self.assertEqual(row["body"], skin["displayBody"])
+            if skin["displayBody"] == "hd":
                 np.testing.assert_array_equal(normal, load_rgb(TEX/f"{skin['gun']}_hd_normal.png"))
             elif Path(row["normalSource"]).exists():
                 n=load_rgb(Path(row["normalSource"]),1024)*2-1

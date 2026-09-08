@@ -69,7 +69,13 @@ static class GunSkinRegression {
                 bool model = Array.IndexOf(names, gun) >= 0;
                 bool unique = seenId.Add(paintId) & seenKey.Add(key);
                 bool legacy = (bool)native.GetMethod("UsesLegacy").Invoke(null, [gun, material]);
-                Check($"native-routing/{key}", legacy == (paintId != 1177), legacy ? "body_legacy" : "body_hd");
+                Check($"native-routing/{key}", legacy == (gun != "ak47" && paintId != 1177), legacy ? "body_legacy" : "body_hd");
+                var factor = mod.GetType("Game.KnifePbrRenderer").GetMethod("GunEnvFactor");
+                int variant = (int)mod.GetType("Game.ScGunBlock").GetMethod("AssetIndex").Invoke(null, [Array.IndexOf(names, gun)]);
+                float light = (float)factor.Invoke(null, [variant, material]);
+                float original = (float)factor.Invoke(null, [variant, gun + "_hd"]);
+                Check($"finish-lighting/{key}", gun == "m4a1s" ? light == 1f && original == .25f : light == original,
+                    $"environment factor finish={light}, original={original}; scene light still multiplies both");
                 Check($"assets/{key}", missing.Count == 0 && model && unique && paintId > 0,
                     missing.Count > 0 ? "missing " + string.Join(", ", missing)
                     : !model ? $"{gun} is not a gun variant"
