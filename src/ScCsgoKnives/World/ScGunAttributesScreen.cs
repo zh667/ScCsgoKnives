@@ -103,6 +103,7 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         left.Children.Add(m_currentHost);
         left.Children.Add(m_listHost);
         m_description = ScGunUi.Note("");
+        m_description.IsVisible = !m_narrow;
         left.Children.Add(m_description);
         var leftHost = new CanvasWidget {
             HorizontalAlignment = narrow ? WidgetAlignment.Stretch : WidgetAlignment.Near,

@@ -38,7 +38,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     /// every platform. That is the whole mobile settings route: no file to edit, and the entry cannot be hidden
     /// by switching the combat buttons off.</summary>
     public override void OnSettingsScreenCreated(SettingsScreen settingsScreen, out Dictionary<ButtonWidget, Action> buttonsToAdd) {
-        var button = new BevelledButtonWidget { Text = "CS 枪械", Size = new Vector2(-1, 60) };
+        var button = new BevelledButtonWidget { Text = "CS 枪械", Size = new Vector2(220, 60), HorizontalAlignment = WidgetAlignment.Center };
         buttonsToAdd = new Dictionary<ButtonWidget, Action> {
             [button] = () => { EnsureScreens(); ScreensManager.SwitchScreen(ScGunSettingsScreen.ScreenName); },
         };
@@ -189,7 +189,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         int index = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] values = BlocksManager.Blocks[index].GetCreativeValues().ToArray();
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, guns={GunSpec.All.Length}.");
+        int counterIndex = BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
+        Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, counterTemplateBlock={counterIndex}, guns={GunSpec.All.Length}.");
 
         // Every creative item must survive the round trip through the block
         // value and land on its own asset. A stale variant clamp left over from

@@ -102,7 +102,7 @@ public sealed class ScGunLayoutScreen : Screen {
         m_panel.VerticalAlignment = narrow ? WidgetAlignment.Far : WidgetAlignment.Center;
         // Three 120-unit buttons need 378 units, not the former 320. Scroll vertically
         // on short phone screens so Save/Cancel/Reset remain reachable.
-        m_panel.Size = narrow ? new Vector2(-1, Math.Min(320, Math.Max(180, ActualSize.Y * .65f)))
+        m_panel.Size = narrow ? new Vector2(Math.Min(720, Math.Max(420, ActualSize.X * .86f)), Math.Min(320, Math.Max(180, ActualSize.Y * .65f)))
             : new Vector2(410, Math.Max(180, ActualSize.Y - 24));
         LoadSelected();
     }
