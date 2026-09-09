@@ -37,7 +37,7 @@ public static class KnifeQa {
     public static bool Begin(ComponentFirstPersonModel model, int variant) {
         if (s_active) return false;
         try {
-            string root = "app:/ScreenCapture";
+            string root = ScLocalSettings.PathFor("ScreenCapture");
             if (!Storage.DirectoryExists(root)) Storage.CreateDirectory(root);
             string qa = Storage.CombinePaths(root, "ScCsgoKnivesQA");
             if (!Storage.DirectoryExists(qa)) Storage.CreateDirectory(qa);

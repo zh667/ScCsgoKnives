@@ -34,6 +34,10 @@ public sealed class ScWeaponButtonInput {
     public bool Pressed { get; private set; }
     public bool Clicked { get; private set; }
     public bool Cancelled { get; private set; }
+    public void Cancel() {
+        m_touch.Step([], _ => false, false); m_mousePressed = false;
+        Pressed = Clicked = false; Cancelled = true;
+    }
     public void Sample(BevelledButtonWidget button, bool touch, bool enabled) {
         if (touch || m_touch.TouchId.HasValue) {
             m_mousePressed = false;

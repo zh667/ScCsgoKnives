@@ -61,7 +61,7 @@ public static class ScGunFunctions {
 /// to another player. A file this build cannot read is left exactly as it is and the session falls back to the
 /// defaults, so a newer layout is never silently rewritten into an older one.</summary>
 public static class ScUiSettings {
-    public const string Path = "app:/ScCsgoUi.json";
+    public static string Path => ScLocalSettings.PathFor("ScCsgoUi.json");
     public const int Version = 1;
 
     public static bool CustomButtons = true;
@@ -177,11 +177,13 @@ public static class ScUiSettings {
                 file.Buttons[id] = Layout(s_right, id, false);
                 file.ButtonsLeftHanded[id] = Layout(s_left, id, true);
             }
+            Storage.CreateDirectory(Storage.GetDirectoryName(Path));
             WriteAtomic(Storage.GetSystemPath(Path), JsonSerializer.SerializeToUtf8Bytes(file, s_json));
+            KnifeLog.Information("[CS_UI_0413] settings saved and verified: " + Path);
             return true;
         }
         catch (Exception e) {
-            KnifeLog.Warning("Could not save the CS gun interface settings; the previous file is unchanged: " + e.Message);
+            KnifeLog.Warning("[CS_UI_0413] settings save failed (previous file preserved), path=" + Path + ": " + e);
             return false;
         }
     }

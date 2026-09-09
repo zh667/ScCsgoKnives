@@ -10,6 +10,9 @@ namespace Game;
 ///
 /// Vanilla movement, looking and firing are untouched: this places the mod's extra actions only.</summary>
 public sealed class ScWeaponTouchPanel : IDisposable {
+    static readonly HashSet<ScWeaponTouchPanel> s_instances = [];
+    public static void SuppressAll(bool suppressed) { foreach (var panel in s_instances) panel.SetSuppressed(suppressed); }
+    public static void DisposeAll() { foreach (var panel in s_instances.ToArray()) panel.Dispose(); }
     public sealed class Entry {
         public string Id;
         public readonly BevelledButtonWidget Button = new();
@@ -24,6 +27,7 @@ public sealed class ScWeaponTouchPanel : IDisposable {
 
     readonly Dictionary<string, Entry> m_entries = new(StringComparer.Ordinal);
     ContainerWidget m_container;
+    public static bool MenuActive => ScreensManager.CurrentScreen is ScGunSettingsScreen or ScGunLayoutScreen;
 
     public IReadOnlyDictionary<string, Entry> Entries => m_entries;
     public bool Clicked(string id) => m_entries.TryGetValue(id, out var e) && e.Input.Clicked;
@@ -70,6 +74,7 @@ public sealed class ScWeaponTouchPanel : IDisposable {
         if (ReferenceEquals(m_container, container)) return;
         Dispose();
         m_container = container;
+        s_instances.Add(this);
         foreach (string id in ScGunFunctions.All) {
             var entry = new Entry { Id = id };
             entry.BaseCenter = entry.Button.CenterColor;
@@ -84,7 +89,7 @@ public sealed class ScWeaponTouchPanel : IDisposable {
     /// <summary>One frame. <paramref name="wanted"/> says which functions the held item offers right now;
     /// everything else is hidden, and a hidden or disabled button gives its finger back.</summary>
     public void Update(Vector2 area, bool enabled, bool touch, Func<string, bool> wanted) {
-        bool master = ScUiSettings.CustomButtons;
+        bool master = ScUiSettings.CustomButtons && !MenuActive;
         foreach (var entry in m_entries.Values) {
             var layout = ScUiSettings.Layout(entry.Id);
             bool visible = master && enabled && layout.Enabled && wanted(entry.Id);
@@ -94,10 +99,14 @@ public sealed class ScWeaponTouchPanel : IDisposable {
             entry.Captured = visible && entry.Input.Pressed;
         }
     }
+    void SetSuppressed(bool suppressed) {
+        if (suppressed) foreach (var entry in m_entries.Values) { entry.Button.IsVisible = false; entry.Input.Cancel(); entry.Captured = false; }
+    }
     /// <summary>True while any button owns a finger; a menu or a weapon change must end that capture.</summary>
     public bool AnyCaptured => m_entries.Values.Any(e => e.Captured);
 
     public void Dispose() {
+        s_instances.Remove(this);
         foreach (var entry in m_entries.Values) entry.Button.ParentWidget?.Children.Remove(entry.Button);
         m_entries.Clear();
         m_container = null;

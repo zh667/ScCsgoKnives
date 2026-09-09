@@ -24,6 +24,9 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
     LabelWidget m_preview, m_status;
     SliderWidget m_red, m_green, m_blue;
+    readonly CanvasWidget m_root = new() { Size = new Vector2(float.PositiveInfinity) };
+    readonly LabelWidget m_title = new() { Text = "CS 枪械 · 模组设置", FontScale = 1.1f, TextAnchor = TextAnchor.HorizontalCenter, DropShadow = true };
+    readonly StackPanelWidget m_bar = new() { Direction = LayoutDirection.Horizontal };
     static Snapshot Capture() => new(ScUiSettings.CustomButtons, ScUiSettings.KillFeed, ScUiSettings.KillSound,
         ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor);
     static void Apply(Snapshot s) {
@@ -34,11 +37,11 @@ public sealed class ScGunSettingsScreen : Screen {
     public ScGunSettingsScreen() {
         Children.Add(new ScGunWorldBackground());
         var frame = ScGunUi.Frame();
-        var root = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(18, 14) };
-        root.Children.Add(new LabelWidget { Text = "CS 枪械 · 模组设置", FontScale = 1.25f, Color = ScGunUi.Text, DropShadow = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 6) });
+        var root = m_root;
+        root.Children.Add(m_title);
         m_scroll.Children.Add(m_content);
         root.Children.Add(m_scroll);
-        var bar = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 8) };
+        var bar = m_bar;
         m_defaults = ScGunUi.Button("恢复默认", 150); m_cancel = ScGunUi.Button("取消", 130); m_save = ScGunUi.Button("保存", 130);
         foreach (var b in new[] { m_defaults, m_cancel, m_save }) { b.Margin = new Vector2(6, 0); bar.Children.Add(b); }
         root.Children.Add(bar);
@@ -49,7 +52,22 @@ public sealed class ScGunSettingsScreen : Screen {
         Children.Add(root);
     }
 
+    public override void MeasureOverride(Vector2 available) {
+        float w = Math.Max(280, available.X), h = Math.Max(220, available.Y);
+        bool narrow = w < 650;
+        if (m_working is not null && (!m_built || narrow != m_narrow)) Build(narrow);
+        m_root.SetWidgetPosition(m_title,new Vector2(12,8)); m_title.Size = new Vector2(w-24,40);
+        m_root.SetWidgetPosition(m_scroll,new Vector2(12,56)); m_scroll.DesiredSize = new Vector2(w-24,Math.Max(60,h-156));
+        float bw = Math.Min(150,(w-48)/3);
+        foreach(var b in new[]{m_defaults,m_cancel,m_save}) ((CanvasWidget)b).Size = new Vector2(bw,48);
+        m_root.SetWidgetPosition(m_bar,new Vector2((w-3*(bw+12))/2,h-92)); m_bar.DesiredSize = new Vector2(3*(bw+12),48);
+        m_root.SetWidgetPosition(m_status,new Vector2(12,h-38)); m_status.Size = new Vector2(w-24,32);
+        base.MeasureOverride(available);
+    }
+
     public override void Enter(object[] parameters) {
+        ScWeaponTouchPanel.SuppressAll(true);
+        KnifeLog.Information("[CS_UI_0413] settings enter: isolated background, path=" + ScUiSettings.Path);
         if (!m_returningFromLayout) { m_back = ScreensManager.PreviousScreen; m_working = Capture(); }
         m_returningFromLayout = false;
         m_built = false;
@@ -99,7 +117,7 @@ public sealed class ScGunSettingsScreen : Screen {
     }
 
     public override void Update() {
-        bool narrow = ActualSize.X > 1 && ActualSize.X < ScGunUi.NarrowWidth;
+        bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
         m_working = m_working with { Buttons = m_buttons.IsChecked, KillFeed = m_killFeed.IsChecked,
             KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked,

@@ -186,7 +186,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScWeaponTouchPanel.DisposeAll(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScEnchantmentCompatibility.Initialize();

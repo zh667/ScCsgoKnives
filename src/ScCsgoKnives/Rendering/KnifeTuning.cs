@@ -20,7 +20,7 @@ namespace Game;
 /// needs API 1.9.3 and this build reports 1.9.2.1, so a file it is.
 /// </summary>
 public static class KnifeTuning {
-    public const string Path = "app:/ScCsgoKnivesTuning.txt";
+    public static string Path => ScLocalSettings.PathFor("ScCsgoKnivesTuning.txt");
     const double ReloadInterval = 1.0;
 
     /// <summary>
@@ -613,9 +613,9 @@ public static class KnifeTuning {
     /// <summary>Writes the file with the current values so there is something to edit.</summary>
     public static void Write() {
         try {
-            using Stream stream = Storage.OpenFile(Path, OpenFileMode.Create);
             byte[] bytes = new UTF8Encoding(false).GetBytes(Serialize(Version));
-            stream.Write(bytes, 0, bytes.Length);
+            Storage.CreateDirectory(Storage.GetDirectoryName(Path));
+            ScUiSettings.WriteAtomic(Storage.GetSystemPath(Path), bytes);
             KnifeLog.Information($"[ScCsgoKnives] wrote tuning file {Path}; edit it and it reloads within a second.");
         }
         catch (Exception e) {

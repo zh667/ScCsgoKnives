@@ -6,7 +6,7 @@ namespace Game;
 /// <summary>Separate settings so adding a preset never invalidates the legacy
 /// composition tuning hash or overwrites a player's camera/lighting settings.</summary>
 public static class ScGunplaySettings {
-    public const string Path="app:/ScCsgoGunplay.json";
+    public static string Path=>ScLocalSettings.PathFor("ScCsgoGunplay.json");
     public static bool Enabled=true;
     public static string Diagnostics="sampled";
     sealed class Settings {
@@ -19,8 +19,11 @@ public static class ScGunplaySettings {
         try {
             if(!Storage.FileExists(Path)) {
                 Enabled=true;Diagnostics="sampled";
-                using var stream=Storage.OpenFile(Path,OpenFileMode.Create);
-                JsonSerializer.Serialize(stream,new Settings(),new JsonSerializerOptions{WriteIndented=true});
+                // A first-run write failure must not silently disable the approved gunplay preset.
+                try {
+                    Storage.CreateDirectory(Storage.GetDirectoryName(Path));
+                    ScUiSettings.WriteAtomic(Storage.GetSystemPath(Path),JsonSerializer.SerializeToUtf8Bytes(new Settings(),new JsonSerializerOptions{WriteIndented=true}));
+                } catch(Exception e) { KnifeLog.Warning("[CS_UI_0413] cannot create gunplay defaults; survival preset retained: "+e); }
             } else {
                 using var stream=Storage.OpenFile(Path,OpenFileMode.Read);
                 var settings=JsonSerializer.Deserialize<Settings>(stream);

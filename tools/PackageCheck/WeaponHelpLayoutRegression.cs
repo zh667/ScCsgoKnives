@@ -46,6 +46,36 @@ static class WeaponHelpLayoutRegression {
             using (var glyphs = zip.Entries.Single(e => e.FullName.EndsWith("Fonts/Pericles.lst")).Open())
                 LabelWidget.BitmapFont = BitmapFont.Initialize((Texture2D)null, glyphs);
             caches["Fonts/Pericles"] = [LabelWidget.BitmapFont];
+            var paths=mod.GetType("Game.ScLocalSettings").GetMethod("Resolve",BindingFlags.NonPublic|BindingFlags.Static);
+            foreach(string file in new[]{"ScCsgoUi.json","ScCsgoGunplay.json","ScCsgoKnivesTuning.txt","ScreenCapture"}) {
+                string android=(string)paths.Invoke(null,[file,true,"android:/Android/data/game/files"]);
+                string desktop=(string)paths.Invoke(null,[file,false,"app:/doc"]);
+                Check("android-settings-root/"+file,android=="android:/Android/data/game/files/"+file&&desktop=="app:/"+file,"Android uses game document root; desktop preserves old filename");
+            }
+            var preserve=mod.GetType("Game.ScGunWorldBackground").GetMethod("WithPreservedDisplay",BindingFlags.NonPublic|BindingFlags.Static);
+            var oldVp=Display.Viewport;var oldClip=Display.ScissorRectangle;
+            try {
+                Display.Viewport=new Viewport(0,0,2400,1080);Display.ScissorRectangle=new Rectangle(20,30,1500,900);
+                foreach(bool fail in new[]{false,true}) {
+                    try {preserve.Invoke(null,[(Action)(()=>{Display.Viewport=new Viewport(10,15,320,200);Display.ScissorRectangle=new Rectangle(1,2,30,40);if(fail)throw new IOException("injected world draw failure");})]);}catch(TargetInvocationException e) when(e.InnerException is IOException){}
+                    Check("background-restores-render-state/"+fail,Display.Viewport.Width==2400&&Display.Viewport.Height==1080&&Display.ScissorRectangle==new Rectangle(20,30,1500,900),"nested world draw cannot leak viewport/scissor on success or exception");
+                }
+            } finally {Display.Viewport=oldVp;Display.ScissorRectangle=oldClip;}
+            var panelType=mod.GetType("Game.ScWeaponTouchPanel");var pausedPanel=Activator.CreateInstance(panelType);
+            var host=new CanvasWidget{WidgetsHierarchyInput=new WidgetInput()};panelType.GetMethod("Attach").Invoke(pausedPanel,[host]);
+            foreach(var b in host.Children.OfType<BevelledButtonWidget>())b.IsVisible=true;
+            panelType.GetMethod("SuppressAll").Invoke(null,[true]);
+            Check("settings-immediate-hud-suppression",host.Children.All(w=>!w.IsVisible),"already visible buttons hide without another gameplay Update");
+            ((IDisposable)pausedPanel).Dispose();
+            foreach(var available in new[]{new Vector2(850,383),new Vector2(850,479),new Vector2(360,640),new Vector2(480,850)}) {
+                var settings=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunSettingsScreen"));settings.Enter([]);
+                settings.Measure(available);settings.Arrange(Vector2.Zero,available);settings.Measure(available);settings.Arrange(Vector2.Zero,available);
+                Widget Part(string n)=>(Widget)settings.GetType().GetField(n,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(settings);
+                var scroll=(ScrollPanelWidget)Part("m_scroll");var save=Part("m_save");
+                Check("settings-fixed-footer/"+available,save.GlobalBounds.Max.X<=available.X&&save.GlobalBounds.Max.Y<=available.Y&&scroll.GlobalBounds.Max.Y<=save.GlobalBounds.Min.Y,"scroll region ends above fixed footer, including 20:9 phone");
+                scroll.ScrollPosition=10000;settings.Measure(available);settings.Arrange(Vector2.Zero,available);
+                Check("settings-scroll-retains-footer/"+available,save.GlobalBounds.Max.Y<=available.Y&&Part("m_cancel").GlobalBounds.Min.X>=0,"Save/Cancel remain visible after scrolling");
+            }
             if (LabelWidget.BitmapFont is null) throw new Exception("Failed to read native font metrics");
             for (int i = 0; i < BlocksManager.Blocks.Length; i++) BlocksManager.Blocks[i] = new AirBlock { BlockIndex = i };
             int index = 700;
