@@ -38,6 +38,15 @@ static class CombatRegression {
             catch (Exception e) { result.Add(new("combat/" + name, false, e.ToString())); }
         }
         object Call(string type, string method, params object[] args) => mod.GetType("Game." + type).GetMethod(method).Invoke(null, args);
+        Test("held-counter-template-wired-before-gun-routing", () => {
+            var calls = Calls(mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Update")).ToArray();
+            int counter = Array.FindIndex(calls, c => c.DeclaringType.Name == "ScGunCounterTemplateBlock" && c.Name == "Materialize");
+            return counter >= 0
+                && calls.Any(c => c.DeclaringType.Name == "ScGunCounterTemplateBlock" && c.Name == "IsTemplate")
+                && Array.FindIndex(calls, c => c.DeclaringType.Name == "ScGunBlock" && c.Name == "IsKnown") > counter
+                && Array.FindIndex(calls, c => c.Name == "UpdateGun") > counter
+                && calls.Skip(counter + 1).Any(c => c.Name == "get_ActiveBlockValue");
+        });
         var center = new Ray3(new Vector3(0, 1.5f, 0), Vector3.UnitZ);
         var finger = new Ray3(center.Position, Vector3.Normalize(new Vector3(.4f, -.2f, 1)));
         Ray3 Aim(bool touch, Ray3? dig, Ray3? hit) => (Ray3)Call("ScShotAim", "Select", touch, dig, hit, center);

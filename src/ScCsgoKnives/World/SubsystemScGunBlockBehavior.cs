@@ -712,11 +712,16 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.Stance.Update(m_time.GameTime, grounded, (player.ComponentLocomotion.JumpOrder > 0 || player.ComponentLocomotion.LastJumpOrder > 0) && physical.Velocity.Y > .1f, state.Zoom > 0);
             if (ScGunplaySettings.Enabled) RecoverKick(player,state,dt,state.KickRecoveryRate);
             int value = player.ComponentMiner.ActiveBlockValue;
-            if (ScGunSkinTemplateBlock.IsTemplate(value) && player.ComponentHealth.Health > 0) {
+            if ((ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) && player.ComponentHealth.Health > 0) {
                 var inventory = player.ComponentMiner.Inventory;
-                var result = ScGunSkinTemplateBlock.Materialize(inventory, inventory.ActiveSlotIndex, HolderKey(player));
+                bool counter = ScGunCounterTemplateBlock.IsTemplate(value);
+                var result = counter
+                    ? ScGunCounterTemplateBlock.Materialize(inventory, inventory.ActiveSlotIndex, HolderKey(player))
+                    : ScGunSkinTemplateBlock.Materialize(inventory, inventory.ActiveSlotIndex, HolderKey(player));
                 if (result != ScGunResult.Success) Refused(player, result, m_time.GameTime);
                 value = player.ComponentMiner.ActiveBlockValue;
+                if (result == ScGunResult.Success)
+                    KnifeLog.Information($"[GUN_TEMPLATE] player={player.PlayerData.PlayerIndex} slot={inventory.ActiveSlotIndex} counter={counter} gun={ScGunBlock.SpecOf(value).Name} skin={ScGunBlock.SkinOf(value)} instance={GunSpec.GetId(Terrain.ExtractData(value))} result=Success");
             }
             if (m_migrationNotice && m_migrationTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。原世界已备份。", Color.White, true, false);

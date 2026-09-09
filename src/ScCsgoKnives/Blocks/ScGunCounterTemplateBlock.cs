@@ -56,6 +56,9 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
     public override bool IsSwapAnimationNeeded(int oldValue, int newValue) => false;
     public override void GenerateTerrainVertices(BlockGeometryGenerator g, TerrainGeometry geometry, int value, int x, int y, int z) { }
     public override void DrawBlock(PrimitivesRenderer3D renderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData env) {
+        // A catalogue template has no animated first-person pose. Update materializes it before
+        // normal use; if registration is refused, do not draw its inventory mesh over the camera.
+        if (env?.DrawBlockMode == DrawBlockMode.FirstPerson) return;
         if (!TrySnapshot(value, out var s)) return;
         var gun = (ScGunBlock)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScGunBlock>(true)];
         gun.DrawVisual(renderer, Terrain.MakeBlockValue(gun.BlockIndex, 0, GunSpec.MakeData(s.Variant, GunSpec.All[s.Variant].Magazine)), s.Variant, s.SkinId, color, size, ref matrix, env);
