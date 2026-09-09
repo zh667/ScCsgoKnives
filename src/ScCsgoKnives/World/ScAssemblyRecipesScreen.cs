@@ -17,7 +17,10 @@ public sealed class ScAssemblyRecipesScreen : ScWeaponHelpScreen {
         m_panel.Children.Clear();
         m_attributes = null;
         m_value = parameters is { Length: > 0 } && parameters[0] is int v ? v : 0;
-        var entry = ScWeaponCrafting.Find(m_value);
+        bool skinTemplate = ScGunSkinTemplateBlock.IsTemplate(m_value) || ScGunCounterTemplateBlock.IsTemplate(m_value);
+        int recipeValue = skinTemplate && EffectiveGunStats.TrySnapshotValue(m_value, out var snapshot)
+            ? ScGunAttributes.TemplateValue(snapshot.Variant) : m_value;
+        var entry = ScWeaponCrafting.Find(recipeValue);
         if (entry is null) return;
         void Label(string text, float scale = 1) => m_panel.Children.Add(new LabelWidget {
             Text = text, FontScale = scale, WordWrap = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(4, 5) });

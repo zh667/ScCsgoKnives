@@ -32,6 +32,7 @@ public sealed class ScGunSkinTemplateBlock : ScNoDurabilityBlock {
         return name + " · " + ScGunSkinCatalog.NameOf(s.SkinId);
     }
     public override string GetDescription(int value) => "创造模式涂装枪械，拿到手中即可使用。满弹、满耐久；生存换肤请使用武器装配台。";
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen(value);
     public override int GetTextureSlotCount(int value) => 1;
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override Vector3 GetIconViewOffset(int value, DrawBlockEnvironmentData env) => Vector3.UnitZ;

@@ -49,6 +49,11 @@ static class WeaponHelpLayoutRegression {
             if (LabelWidget.BitmapFont is null) throw new Exception("Failed to read native font metrics");
             for (int i = 0; i < BlocksManager.Blocks.Length; i++) BlocksManager.Blocks[i] = new AirBlock { BlockIndex = i };
             int index = 700;
+            foreach (Block material in new Block[] { new DiamondChunkBlock(), new GermaniumChunkBlock() }) {
+                int materialIndex = material is DiamondChunkBlock ? 730 : 731;
+                material.BlockIndex = materialIndex; BlocksManager.Blocks[materialIndex] = material;
+                BlocksManager.BlockTypeToIndex[material.GetType()] = materialIndex; BlocksManager.BlockNameToIndex[material.GetType().Name] = materialIndex;
+            }
             foreach (string name in new[] { "ScGunBlock", "ScKnifeBlock", "ScWeaponMaterialBlock", "ScAmmoBlock", "ScWeaponWorkbenchBlock", "ScGunSkinTemplateBlock", "ScGunCounterTemplateBlock" }) {
                 var type = mod.GetType("Game." + name, true);
                 var block = (Block)Activator.CreateInstance(type);
@@ -218,7 +223,9 @@ static class WeaponHelpLayoutRegression {
                     screen.Measure(size); screen.Arrange(Vector2.Zero, size);
                     Check(tag + "/scroll-bottom", Field("m_growth").GlobalBounds.Max.Y <= scroll.GlobalBounds.Max.Y + .1f, "last description reachable without covering footer");
                     scroll.ScrollPosition = 0;
-                    int count = ((Array)mod.GetType("Game.GunSpec").GetField("All").GetValue(null)).Length;
+                    int count = ((ListPanelWidget)Field("m_list")).Items.Count;
+                    Check(tag + "/catalogue-includes-skins", count == 46, "35 factory entries plus all 11 supported finishes");
+                    int recordCount = (int)registryType.GetProperty("Count").GetValue(registryField.GetValue(null));
                     var select = screen.GetType().GetMethod("Select", BindingFlags.NonPublic | BindingFlags.Instance);
                     for (int v = 0; v < count; v++) {
                         select.Invoke(screen, [v]);
@@ -228,6 +235,26 @@ static class WeaponHelpLayoutRegression {
                         Check(tag + $"/weapon-{v}", allLabels.All(w => w.ActualSize.X > 0 && float.IsFinite(w.ActualSize.Y)
                             && w.GlobalBounds.Min.X >= right.GlobalBounds.Min.X - .1f && w.GlobalBounds.Max.X <= right.GlobalBounds.Max.X + .1f),
                             "real header + eight stat rows, including long names and Zeus charge, stay inside card");
+                        if (v >= 35) {
+                            var skin = ((Array)mod.GetType("Game.ScGunSkinCatalog").GetField("All").GetValue(null)).GetValue(v - 35);
+                            int paint = (int)skin.GetType().GetProperty("PaintId").GetValue(skin);
+                            string skinName = (string)skin.GetType().GetProperty("Name").GetValue(skin);
+                            string asset = (string)skin.GetType().GetProperty("Gun").GetValue(skin);
+                            int selectedValue = (int)screen.GetType().GetField("m_value", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen);
+                            float basePower = (float)mod.GetType("Game.ScSurvivalBalance").GetMethod("Power").Invoke(null, [asset]);
+                            var levelPreview = screen.GetType().GetMethod("PreviewLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+                            bool correct = Terrain.ExtractData(selectedValue) == paint && ((BlockIconWidget)Field("m_preview")).Value == selectedValue
+                                && ((LabelWidget)Field("m_name")).Text.Contains(skinName);
+                            foreach (int level in new[] { 0, 10 }) {
+                                levelPreview.Invoke(screen, [level]);
+                                var damageLabels = bars.AllChildren.OfType<LabelWidget>().Where(l => l.Text.EndsWith(" 攻击力")).ToArray();
+                                float shown = float.Parse(damageLabels.First().Text.Split(' ')[0], System.Globalization.CultureInfo.InvariantCulture);
+                                correct &= Math.Abs(shown - basePower * (level == 0 ? 1.5f : 3f)) < .051f;
+                            }
+                            recipe.Enter([selectedValue]); // skin catalogue -> recipe uses correct factory model and keeps source value
+                            Check(tag + $"/skin-preview-{paint}", correct && (int)registryType.GetProperty("Count").GetValue(registryField.GetValue(null)) == recordCount,
+                                "skin icon/name/1.5x Lv0 and 3x Lv10; recipe reachable; no registry allocations while browsing");
+                        }
                     }
                     select.Invoke(screen, [0]);
                     var preview = screen.GetType().GetMethod("PreviewLevel", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -251,6 +278,24 @@ static class WeaponHelpLayoutRegression {
                 screen.Measure(sizes[0]); screen.Arrange(Vector2.Zero, sizes[0]);
                 Check(page + "/empty-return", true, "empty Enter before/after browsing does not invoke vanilla parameters[0]");
             }
+            // Open an actual skin+counter instance, visit its factory counterpart, then return to that finish.
+            var skinCounter = counterBlock.GetCreativeValues().Last();
+            var sourceInv = new ComponentInventory(); sourceInv.m_slots.Add(new()); sourceInv.AddSlotItems(0, skinCounter, 1);
+            counterType.GetMethod("Materialize").Invoke(null, [sourceInv, 0, "source-instance"]);
+            int sourceValue = sourceInv.GetSlotValue(0); var gunSpecType = mod.GetType("Game.GunSpec");
+            int sourceId = (int)gunSpecType.GetMethod("GetId").Invoke(null, [Terrain.ExtractData(sourceValue)]);
+            var table = registryField.GetValue(null); var sourceRecord = registryType.GetMethod("Get", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(table, [sourceId]);
+            sourceRecord.GetType().GetField("KillCount").SetValue(sourceRecord, 345L); sourceRecord.GetType().GetField("AppliedGrowthLevel").SetValue(sourceRecord, 3);
+            var instancePage = (Screen)Activator.CreateInstance(attributes.GetType(), [sourceValue]); instancePage.Enter([sourceValue]); instancePage.Measure(new(850,479)); instancePage.Arrange(Vector2.Zero,new(850,479));
+            var indexField = instancePage.GetType().GetField("m_entryIndex", BindingFlags.NonPublic | BindingFlags.Instance);
+            var valueField = instancePage.GetType().GetField("m_value", BindingFlags.NonPublic | BindingFlags.Instance);
+            int sourceEntry = (int)indexField.GetValue(instancePage); var selector = instancePage.GetType().GetMethod("Select", BindingFlags.NonPublic | BindingFlags.Instance);
+            bool instanceOk = sourceEntry >= 35 && (int)valueField.GetValue(instancePage) == sourceValue;
+            selector.Invoke(instancePage, [1]); instanceOk &= (int)valueField.GetValue(instancePage) != sourceValue;
+            selector.Invoke(instancePage, [sourceEntry]);
+            var counterLabel = (LabelWidget)instancePage.GetType().GetField("m_counter", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instancePage);
+            Check("skin-instance-return-preserves-counter", instanceOk && (int)valueField.GetValue(instancePage) == sourceValue
+                && counterLabel.Text.Contains("345") && counterLabel.Text.Contains("Lv3"), "factory and painted variants stay distinct; original skin instance restored with actual kills/level");
         } catch (Exception e) { Check("setup-or-layout", false, e.ToString()); }
         finally {
             caches.Clear(); foreach (var p in savedCaches) caches[p.Key] = p.Value;

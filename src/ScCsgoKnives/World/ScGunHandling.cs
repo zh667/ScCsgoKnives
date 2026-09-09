@@ -79,8 +79,14 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
     public static EffectiveGunStats Resolve(GunSpec spec,int value,bool alternate) => ResolveLevel(spec,value,alternate,LevelOf(value));
     /// <summary>The applied level of the gun this item value points at; 0 for a fresh template or unreadable data.</summary>
     public static int LevelOf(int value) {
-        int data=Terrain.ExtractData(value);
-        return GunSpec.TryGetSnapshot(data,out var s) ? s.Level : 0;
+        return TrySnapshotValue(value,out var s) ? s.Level : 0;
+    }
+    /// <summary>Catalogue paint IDs are NOT gun instance data. Read their immutable snapshot without
+    /// allocating a world record, then use the same stat formulas as a real instance.</summary>
+    public static bool TrySnapshotValue(int value, out ScGunSnapshot snapshot) {
+        if (ScGunSkinTemplateBlock.IsTemplate(value)) return ScGunSkinTemplateBlock.TrySnapshot(value, out snapshot);
+        if (ScGunCounterTemplateBlock.IsTemplate(value)) return ScGunCounterTemplateBlock.TrySnapshot(value, out snapshot);
+        return GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out snapshot);
     }
     /// <summary>The same numbers at an arbitrary level, for the attribute page's base / current / next columns.
     /// A preview never touches the record.</summary>
@@ -92,7 +98,7 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         float baseRange=ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is {} g ? g.Range : spec.RangeBlocks;
         // The gun's own ceiling while previewing the level it is actually carrying; the rule's ceiling for any
         // other level, so a "next level" column is not quoting today's number.
-        bool known=GunSpec.TryGetSnapshot(data,out var s);
+        bool known=TrySnapshotValue(value,out var s);
         int maxDurability=known && s.Level==L ? s.MaxDurability : ScGunGrowth.MaxDurability(variant,L);
         float skinMultiplier = known && s.Variant == variant ? ScGunGrowth.SkinDamageMultiplier(variant,s.SkinId) : 1f;
         return new(ScSurvivalBalance.Power(spec.Name)*skinMultiplier*ScGunGrowth.DamageMultiplier(L),

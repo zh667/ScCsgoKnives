@@ -14,6 +14,14 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
 
     int m_value;
     int m_variant;
+    int m_entryIndex;
+    readonly record struct CatalogueEntry(int Variant, int SkinId) {
+        public int Value => SkinId == 0 ? ScGunAttributes.TemplateValue(Variant)
+            : Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunSkinTemplateBlock>(true), 0, SkinId);
+        public string Name => DisplayName(Variant) + (SkinId == 0 ? "" : " · " + ScGunSkinCatalog.NameOf(SkinId));
+    }
+    static readonly CatalogueEntry[] Catalogue = Enumerable.Range(0, GunSpec.All.Length).Select(v => new CatalogueEntry(v, 0))
+        .Concat(ScGunSkinCatalog.All.Select(s => new CatalogueEntry(Array.FindIndex(GunSpec.All, g => g.Name == s.Gun), s.PaintId))).ToArray();
     int m_instanceValue;          // the item the player came from, when they came from one
     int m_previewLevel = -1;      // -1 follows the real level; never writes to the gun
     readonly List<Widget> m_futureRows = [];
@@ -40,12 +48,12 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_initialValue = 0;
         Body.Children.Add(m_root);
         m_list.ItemWidgetFactory = item => {
-            int variant = (int)item;
+            var entry = Catalogue[(int)item];
             var row = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(4, 0) };
-            row.Children.Add(new BlockIconWidget { Value = ScGunAttributes.TemplateValue(variant), Size = new Vector2(38), Margin = new Vector2(2, 2) });
+            row.Children.Add(new BlockIconWidget { Value = entry.Value, Size = new Vector2(38), Margin = new Vector2(2, 2) });
             row.Children.Add(new LabelWidget {
-                Text = DisplayName(variant), FontScale = .78f, VerticalAlignment = WidgetAlignment.Center,
-                HorizontalAlignment = WidgetAlignment.Stretch, Color = ScGunUi.Text, Ellipsis = true, MaxLines = 1,
+                Text = entry.SkinId == 0 ? entry.Name : DisplayName(entry.Variant) + "\n" + ScGunSkinCatalog.NameOf(entry.SkinId), FontScale = entry.SkinId == 0 ? .78f : .66f, VerticalAlignment = WidgetAlignment.Center,
+                HorizontalAlignment = WidgetAlignment.Stretch, Color = ScGunUi.Text, Ellipsis = true, MaxLines = entry.SkinId == 0 ? 1 : 2,
             });
             return row;
         };
@@ -68,22 +76,25 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
             parameters = [m_initialValue != 0 ? m_initialValue : ScGunAttributes.TemplateValue(0)];
         base.Enter(parameters);
         m_instanceValue = 0;
-        int variant = 0;
-        if (parameters[0] is int value && Terrain.ExtractContents(value) == BlocksManager.GetBlockIndex<ScGunBlock>(true)) {
-            variant = ScGunBlock.GetVariant(value);
+        int variant = 0, skin = 0;
+        if (parameters[0] is int value && EffectiveGunStats.TrySnapshotValue(value, out var source)) {
+            variant = source.Variant; skin = source.SkinId;
             // Only a real instance record gives a level; a catalogue template is browsed at Lv0.
-            if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && !s.Fresh) m_instanceValue = value;
+            if (!source.Fresh || source.CounterInstalled) m_instanceValue = value;
         }
         m_previewLevel = -1;
         m_built = false;
-        Select(Math.Clamp(variant, 0, GunSpec.All.Length - 1));
+        int selected = Array.FindIndex(Catalogue, e => e.Variant == variant && e.SkinId == skin);
+        Select(selected >= 0 ? selected : Math.Clamp(variant, 0, GunSpec.All.Length - 1));
     }
 
-    void Select(int variant) {
+    void Select(int index) {
         m_previewLevel = -1;
-        m_variant = Math.Clamp(variant, 0, GunSpec.All.Length - 1);
-        m_value = m_instanceValue != 0 && ScGunBlock.GetVariant(m_instanceValue) == m_variant ? m_instanceValue : ScGunAttributes.TemplateValue(m_variant);
-        if (m_list.SelectedIndex != m_variant) m_list.SelectedIndex = m_variant;
+        m_entryIndex = Math.Clamp(index, 0, Catalogue.Length - 1);
+        var entry = Catalogue[m_entryIndex]; m_variant = entry.Variant;
+        m_value = m_instanceValue != 0 && EffectiveGunStats.TrySnapshotValue(m_instanceValue, out var origin) && origin.Variant == m_variant
+            && origin.SkinId == entry.SkinId ? m_instanceValue : entry.Value;
+        if (m_list.SelectedIndex != m_entryIndex) m_list.SelectedIndex = m_entryIndex;
         Refresh();
     }
 
@@ -99,8 +110,8 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_root.Children.Clear();
         m_root.Margin = Vector2.Zero;
         m_root.Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal;
-        if (m_list.Items.Count == 0) for (int v = 0; v < GunSpec.All.Length; v++) m_list.AddItem(v);
-        m_list.SelectedIndex = m_variant;
+        if (m_list.Items.Count == 0) for (int v = 0; v < Catalogue.Length; v++) m_list.AddItem(v);
+        m_list.SelectedIndex = m_entryIndex;
 
         // Left column: current instance (when opened from an item), then catalogue list.
         var left = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
@@ -199,17 +210,19 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         var spec = GunSpec.All[m_variant];
         int level = Level();
         m_preview.Value = m_value;
-        m_name.Text = DisplayName(m_variant);
-        int skin = ScGunBlock.SkinOf(m_value);
+        m_name.Text = Catalogue[m_entryIndex].Name;
+        EffectiveGunStats.TrySnapshotValue(m_value, out var snap);
+        int skin = snap.SkinId;
         string identity = $"型号 {spec.Name} · 外观 {ScGunSkinCatalog.NameOf(skin)}";
-        if (spec.HasSilencer) identity += GunSpec.GetSilencerOff(Terrain.ExtractData(m_value)) ? " · 消音器已拆" : " · 消音器在位";
+        if (spec.HasSilencer) identity += snap.SilencerOff ? " · 消音器已拆" : " · 消音器在位";
         m_identityText.Text = identity;
-        bool installed = GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var snap) && snap.CounterInstalled;
+        bool installed = snap.CounterInstalled;
         m_lastRevision = snap.Revision;
         m_counter.Text = installed ? $"击杀 {snap.KillCount} · Lv{snap.Level}" : "无击杀计数器";
+        EffectiveGunStats.TrySnapshotValue(m_instanceValue, out var original);
         m_currentInstance.Text = m_instanceValue != 0
-            ? $"当前物品：{ScGunSkinCatalog.NameOf(ScGunBlock.SkinOf(m_instanceValue))}"
-                + (installed ? $" · 计数 {snap.KillCount} · Lv{snap.Level}" : "") : "";
+            ? $"当前物品：{ScGunSkinCatalog.NameOf(original.SkinId)}"
+                + (original.CounterInstalled ? $" · 计数 {original.KillCount} · Lv{original.Level}" : "") : "";
         m_currentInstance.IsVisible = m_instanceValue != 0;
         int actualLevel = EffectiveGunStats.LevelOf(m_value);
         m_level.Text = $"预览 Lv{level} / 10";
@@ -272,8 +285,8 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     public override void Update() {
         if (BackRequested) { GoBack(); return; }
         if (!m_built) return;
-        if (m_list.SelectedIndex is int index && index != m_variant) Select(index);
-        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var current) && current.Revision != m_lastRevision) Refresh();
+        if (m_list.SelectedIndex is int index && index != m_entryIndex) Select(index);
+        if (EffectiveGunStats.TrySnapshotValue(m_value, out var current) && current.Revision != m_lastRevision) Refresh();
         if (m_levelDown.IsClicked) PreviewLevel(Level() - 1);
         if (m_levelUp.IsClicked) PreviewLevel(Level() + 1);
         if (m_level.IsClicked) { m_previewLevel = -1; Refresh(); }

@@ -86,14 +86,14 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (widget is RecipaediaScreen screen) {
             m_assemblyClickScreen = null;
             if (screen.m_recipesButton.IsClicked && screen.m_blocksList.SelectedItem is int value
-                && ScWeaponCrafting.Find(value) is not null) {
+                && (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
                 m_assemblyClickScreen = screen; m_assemblyClickValue = value;
             }
         }
     }
     public override void AfterWidgetUpdate(Widget widget) {
         if (widget is not RecipaediaScreen screen) return;
-        if (screen.m_blocksList.SelectedItem is int value && ScWeaponCrafting.Find(value) is not null) {
+        if (screen.m_blocksList.SelectedItem is int value && (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
             screen.m_recipesButton.Text = "装配配方";
             screen.m_recipesButton.IsEnabled = true;
         }
@@ -104,7 +104,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
             m_assemblyClickScreen = null;
             if (ScreensManager.CurrentScreen == screen) {
                 // A gun opens on its attribute card, which links to the recipe; a knife goes straight to the recipe.
-                bool gun = Terrain.ExtractContents(m_assemblyClickValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+                bool gun = Terrain.ExtractContents(m_assemblyClickValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)
+                    || ScGunSkinTemplateBlock.IsTemplate(m_assemblyClickValue) || ScGunCounterTemplateBlock.IsTemplate(m_assemblyClickValue);
                 ScreensManager.m_screens["RecipaediaRecipes"] = gun ? new ScGunAttributesScreen(m_assemblyClickValue) : new ScAssemblyRecipesScreen();
                 ScreensManager.SwitchScreen("RecipaediaRecipes", m_assemblyClickValue);
             }

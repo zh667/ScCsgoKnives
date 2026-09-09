@@ -106,7 +106,7 @@ public static class ScGunAttributes {
 
     /// <summary>The growth line: counter state, kills, progress and what the next level is worth.</summary>
     public static string GrowthText(int value, ScGunGrowthMode mode) {
-        if (!GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s)) return "枪械记录不可读，无法显示计数。";
+        if (!EffectiveGunStats.TrySnapshotValue(value, out var s)) return "枪械记录不可读，无法显示计数。";
         if (!s.CounterInstalled) return CounterUnlockNotice + " 可在武器装配台原地安装；不更换枪械，不清空弹量与耐久。";
         if (mode == ScGunGrowthMode.CountOnly) return $"有效击杀 {s.KillCount}。本世界规则：仅计数，不提供等级成长或属性加成。";
         string rule = "";
