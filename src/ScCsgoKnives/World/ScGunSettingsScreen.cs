@@ -22,6 +22,7 @@ public sealed class ScGunSettingsScreen : Screen {
     CheckboxWidget m_buttons, m_killFeed, m_killSound, m_crosshair;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     readonly ButtonWidget m_bindings = ScGunUi.Button("键盘绑定（适配触控映射）", 280);
+    readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
     LabelWidget m_preview, m_status;
     SliderWidget m_red, m_green, m_blue;
@@ -79,10 +80,12 @@ public sealed class ScGunSettingsScreen : Screen {
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;
         m_content.Children.Clear(); m_colors.Clear();
+        m_content.Children.Add(ScGunUi.Heading("视角恢复"));
+        m_content.Children.Add(m_recoverView);
+        m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
         m_content.Children.Add(ScGunUi.Heading("武器操作绑定"));
         m_content.Children.Add(m_bindings);
         m_content.Children.Add(ScGunUi.Note("设置换弹、开镜、检视、开火等对应的键盘按键；玲兰触控映射相同按键即可。与下面的触屏布局独立。"));
-        m_content.Children.Add(ScGunUi.Note($"原版基础视野：{SettingsManager.ViewAngle*100:0}% 。若旧版已保存了异常缩放，请到原版图形设置调回自己的视野；本页不会覆盖此值。"));
         m_content.Children.Add(ScGunUi.Heading("手机按键"));
         m_buttons = ScGunUi.Toggle("启用模组自定义按键", m_working.Buttons);
         m_content.Children.Add(m_buttons);
@@ -125,6 +128,14 @@ public sealed class ScGunSettingsScreen : Screen {
     public override void Update() {
         bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
+        if(m_recoverView.IsClicked) {
+            DialogsManager.ShowDialog(this,new MessageDialog("恢复正常视角？",
+                "将退出 CS 开镜，恢复原版基础视野 100%（80°）和灵敏度 50%，并立即保存。不会重置其他设置、武器或存档；本页取消不会撤销此次恢复。",
+                "恢复并保存","取消",answer=> {
+                    if(answer!=MessageDialogButton.Button1)return;
+                    m_status.Text=ScViewRecovery.RestoreAndSave();m_built=false;
+                }));return;
+        }
         m_working = m_working with { Buttons = m_buttons.IsChecked, KillFeed = m_killFeed.IsChecked,
             KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked,
             Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value) };

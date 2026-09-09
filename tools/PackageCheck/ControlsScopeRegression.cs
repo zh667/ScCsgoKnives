@@ -43,6 +43,32 @@ static class ControlsScopeRegression {
             Check("key-validation",Valid("R")&&Valid("F8")&&Valid("")&&!Valid("Escape")&&!Valid("Null")&&!Valid("no-such-key"));
             bool Conflict(string a,string b)=>(bool)bindings.GetMethod("Conflict").Invoke(null,[a,b]);
             Check("conflict-groups",Conflict("fire","reload")&&Conflict("throw_strong","throw_weak")&&!Conflict("scope","silencer")&&!Conflict("reload","knife_heavy"));
+            foreach(var key in Enum.GetValues<Key>()) {
+                string label=(string)bindings.GetMethod("KeyLabel").Invoke(null,[key.ToString()]);
+                Check("chinese-key/"+key,label.Any(c=>c>='\u4e00'&&c<='\u9fff')&&label!="未知按键",label);
+            }
+            var oldMapping=SettingsManager.KeyboardMappingSettings;
+            try {
+                SettingsManager.InitializeKeyboardMappingSettings();
+                string Native(string id)=>(string)bindings.GetMethod("NativeBinding").Invoke(null,[id]);
+                foreach(var id in new[]{"scope","silencer","burst","revolver_alt","knife_heavy","throw_weak"})
+                    Check("native-right/"+id,Native(id)=="鼠标右键");
+                foreach(var id in new[]{"fire","throw_strong"})Check("native-left/"+id,Native(id)=="鼠标左键");
+                Check("keyboard-only-actions",Native("reload")==""&&Native("inspect")=="");
+                SettingsManager.KeyboardMappingSettings.SetValue("Aim",Key.K);
+                Check("native-remap-not-hardcoded",Native("scope")=="字母 K");
+                string summary=(string)bindings.GetMethod("BindingSummary").Invoke(null,["scope","J"]);
+                Check("native-and-extra-summary",summary.Contains("字母 K")&&summary.Contains("字母 J")&&!summary.Contains("未绑定"));
+            }finally{SettingsManager.KeyboardMappingSettings=oldMapping;}
+            var recovery=mod.GetType("Game.ScViewRecovery");
+            SettingsManager.ViewAngle=.44444445f;SettingsManager.LookSensitivity=.22222222f;
+            float oldSound=SettingsManager.SoundsVolume;
+            recovery.GetMethod("ResetPreferences").Invoke(null,null);
+            Check("recover-exact-user-values",SettingsManager.ViewAngle==1f&&SettingsManager.LookSensitivity==.5f&&SettingsManager.SoundsVolume==oldSound);
+            bool Saved(string xml)=>(bool)recovery.GetMethod("SavedDefaults").Invoke(null,[System.Xml.Linq.XElement.Parse(xml)]);
+            const string saved="<Settings><Value Name='ViewAngle' Value='1'/><Value Name='LookSensitivity' Value='0.5'/></Settings>";
+            Check("recovery-save-verification",Saved(saved)&&!Saved(saved.Replace("Value='1'","Value='0.44444445'"))&&!Saved("<Settings/>")
+                &&!Saved(saved.Replace("</Settings>","<Value Name='ViewAngle' Value='1'/></Settings>")));
             var windowState=typeof(Window).GetField("m_state",BindingFlags.Static|BindingFlags.NonPublic);
             var oldWindow=windowState.GetValue(null);var oldScreen=ScreensManager.CurrentScreen;var oldAnimation=ScreensManager.m_animationData;
             var oldRoot=ScreensManager.RootWidget;

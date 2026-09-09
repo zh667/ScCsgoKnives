@@ -80,6 +80,10 @@ static class WeaponHelpLayoutRegression {
                 settings.Measure(available);settings.Arrange(Vector2.Zero,available);settings.Measure(available);settings.Arrange(Vector2.Zero,available);
                 Widget Part(string n)=>(Widget)settings.GetType().GetField(n,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(settings);
                 var scroll=(ScrollPanelWidget)Part("m_scroll");var save=Part("m_save");
+                var recovery=Part("m_recoverView");
+                Check("view-recovery-entry/"+available,recovery.GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y
+                    &&recovery.GlobalBounds.Max.Y<=scroll.GlobalBounds.Max.Y&&recovery.GlobalBounds.Max.X<=available.X,
+                    "view recovery is visible at the top without scrolling, including narrow phone");
                 Check("settings-fixed-footer/"+available,save.GlobalBounds.Max.X<=available.X&&save.GlobalBounds.Max.Y<=available.Y&&scroll.GlobalBounds.Max.Y<=save.GlobalBounds.Min.Y,"scroll region ends above fixed footer, including 20:9 phone");
                 scroll.ScrollPosition=10000;settings.Measure(available);settings.Arrange(Vector2.Zero,available);
                 Check("settings-scroll-retains-footer/"+available,save.GlobalBounds.Max.Y<=available.Y&&Part("m_cancel").GlobalBounds.Min.X>=0,"Save/Cancel remain visible after scrolling");
