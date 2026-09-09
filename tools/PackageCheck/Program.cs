@@ -19,6 +19,13 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+// A local-engine compatibility probe may carry additional engine dependencies that are not in
+// this host's NuGet deps.json (e.g. OpenXR). Resolve only DLLs already alongside this executable.
+AssemblyLoadContext.Default.Resolving += (context, name) => {
+    string path = Path.Combine(AppContext.BaseDirectory, name.Name + ".dll");
+    return File.Exists(path) ? context.LoadFromAssemblyPath(path) : null;
+};
+
 static string Sha256(string path) {
     using var stream = File.OpenRead(path);
     return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();

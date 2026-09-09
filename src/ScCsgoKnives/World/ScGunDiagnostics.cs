@@ -19,6 +19,8 @@ public sealed class ScGunDiagnostics {
         /// <summary>Counter and growth state of the gun that fired, so a log can tell a level's effect from a preset's.</summary>
         public bool Counter, UnlimitedRange;
         public int Level;
+        public int PendingLevel;
+        public string GrowthRule;
         public long Kills;
         public ScGunStance.ConeParts? Components;
     }
@@ -26,6 +28,7 @@ public sealed class ScGunDiagnostics {
         public Context State;
         public long Sequence;
         public readonly ScGunHitTest.Trace Trace=new();
+        public readonly ScGunRange.BulletTrace VegetationTrace = new();
         public int PelletsSeen, Head, Body, Terrain, RangeEnd, FallbackHits, LogicalHits;
         public float MinDistance=float.PositiveInfinity, MaxDistance;
         public double MinAngle=double.PositiveInfinity, MaxAngle, AngleSquares, TraceMs, SubmittedPower;
@@ -116,7 +119,7 @@ public sealed class ScGunDiagnostics {
                     outcomes=new {shot.PelletsSeen,shot.Head,shot.Body,shot.Terrain,shot.RangeEnd,shot.LogicalHits,shot.FallbackHits},
                     angleDeg=new {min=Optional(shot.MinAngle),max=R(shot.MaxAngle),rms=R(Math.Sqrt(shot.AngleSquares/Math.Max(1,shot.PelletsSeen)))},
                     geometryDistance=new {min=Optional(shot.MinDistance),max=shot.Head+shot.Body>0?R(shot.MaxDistance):(double?)null},
-                    trace=shot.Trace,traceMs=R(shot.TraceMs),submittedPower=R(shot.SubmittedPower),healthLoss=R(shot.ObservedHealthLoss),shot.DamagedTargets,shot.KilledTargets,
+                    trace=shot.Trace,vegetation=shot.VegetationTrace,traceMs=R(shot.TraceMs),submittedPower=R(shot.SubmittedPower),healthLoss=R(shot.ObservedHealthLoss),shot.DamagedTargets,shot.KilledTargets,
                     checks=new {shot.ConeViolations,shot.RangeViolations,pelletMismatch=shot.PelletsSeen!=c.Pellets}});
             }
             if(!Active)return;

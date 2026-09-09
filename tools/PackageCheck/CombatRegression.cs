@@ -42,6 +42,39 @@ static class CombatRegression {
             Test("foliage-pass/" + block.GetType().Name, () => !(bool)Call("ScGunRange", "StopsBullet", block));
         foreach (var block in new Block[] { new GrassBlock(), new DirtBlock(), new GraniteBlock(), new OakWoodBlock(), new GlassBlock() })
             Test("cover-stops/" + block.GetType().Name, () => (bool)Call("ScGunRange", "StopsBullet", block));
+        foreach (var type in typeof(Block).Assembly.GetTypes().Where(t => !t.IsAbstract && (typeof(CrossBlock).IsAssignableFrom(t)
+            || typeof(LeavesBlock).IsAssignableFrom(t) || typeof(WaterPlantBlock).IsAssignableFrom(t))))
+            Test("all-native-vegetation/" + type.Name, () => !(bool)Call("ScGunRange", "StopsBullet", Activator.CreateInstance(type)));
+        Test("runtime-growth-sweep-calls-rule-aware-advance", () => {
+            var update = mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("UpdateGrowth", BindingFlags.Instance | BindingFlags.NonPublic);
+            return Calls(update).Any(c => c.DeclaringType.Name == "ScGunGrowthService" && c.Name == "Advance");
+        });
+        Test("runtime-fire-calls-shared-bullet-ray", () => {
+            var fire = mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Fire", BindingFlags.Instance | BindingFlags.NonPublic);
+            return Calls(fire).Any(c => c.DeclaringType.Name == "ScGunRange" && c.Name == "TraceBullet");
+        });
+        foreach (bool creative in new[] { false, true }) foreach (bool handling in new[] { false, true })
+            foreach (Block plant in new Block[] { new TallGrassBlock(), new RedFlowerBlock(), new PurpleFlowerBlock(), new WhiteFlowerBlock(), new OakLeavesBlock(), new BirchLeavesBlock(), new SpruceLeavesBlock(), new RyeBlock(), new CottonBlock(), new IvyBlock() })
+                Test($"live-ray/{(creative ? "creative" : "survival")}/{handling}/{plant.GetType().Name}", () => {
+                    var old = new[] { BlocksManager.Blocks[710], BlocksManager.Blocks[711] };
+                    using var terrain = new Terrain(); terrain.AllocateChunk(0, 0);
+                    var subsystem = new SubsystemTerrain { Terrain = terrain };
+                    var enabled = mod.GetType("Game.ScGunplaySettings").GetField("Enabled"); var wasEnabled = enabled.GetValue(null);
+                    try {
+                        enabled.SetValue(null, handling);
+                        BlocksManager.Blocks[710] = plant; BlocksManager.Blocks[711] = new OakWoodBlock();
+                        terrain.SetCellValueFast(2, 10, 1, 710); terrain.SetCellValueFast(3, 10, 1, 710); terrain.SetCellValueFast(7, 10, 1, 711);
+                        var start = new Vector3(.5f, 10.25f, 1.5f); var dir = Vector3.UnitX;
+                        var trace = Activator.CreateInstance(mod.GetType("Game.ScGunRange+BulletTrace"));
+                        var hit = (TerrainRaycastResult?)Call("ScGunRange", "TraceBullet", subsystem, start, dir, 12f, trace);
+                        var target = new Target { Position = new Vector3(5.5f, 10.25f, 1.5f) }; var bodies = new SubsystemBodies(); bodies.AddBody(target);
+                        var behindPlant = bodies.Raycast(start, start + dir * (hit?.Distance ?? 12f), 0, (_, _) => true);
+                        if (hit?.CellFace.X != 7 || behindPlant is null) return false;
+                        terrain.SetCellValueFast(4, 10, 1, 711); // real cover before the animal
+                        hit = (TerrainRaycastResult?)Call("ScGunRange", "TraceBullet", subsystem, start, dir, 12f, trace);
+                        return hit?.CellFace.X == 4 && bodies.Raycast(start, start + dir * hit.Value.Distance, 0, (_, _) => true) is null;
+                    } finally { enabled.SetValue(null, wasEnabled); for (int i = 0; i < 2; i++) BlocksManager.Blocks[710 + i] = old[i]; }
+                });
         Test("real-terrain-ray-passes-grass-leaves-stops-at-trunk", () => {
             var old = new[] { BlocksManager.Blocks[710], BlocksManager.Blocks[711], BlocksManager.Blocks[712] };
             using var terrain = new Terrain(); terrain.AllocateChunk(0, 0);

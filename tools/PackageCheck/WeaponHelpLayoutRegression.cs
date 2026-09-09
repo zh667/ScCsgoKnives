@@ -10,6 +10,13 @@ using Game;
 /// <summary>Real API XML, fonts, Measure/Arrange and screen constructors. No window, GPU or player world.
 /// Texture handles are inert stand-ins: these tests check layout, not rendered pixels.</summary>
 static class WeaponHelpLayoutRegression {
+    sealed class NoticeGui : ComponentGui {
+        public readonly List<string> Messages = [];
+        public bool PlayedSound;
+        public override void DisplaySmallMessage(string text, Color color, bool blinking, bool playNotificationSound) {
+            Messages.Add(text); PlayedSound |= playNotificationSound;
+        }
+    }
     internal record Result(string Name, bool Ok, string Detail);
     internal static List<Result> Run(Assembly mod, string contentPath) {
         List<Result> results = [];
@@ -64,6 +71,33 @@ static class WeaponHelpLayoutRegression {
             chest.RemoveSlotItems(0, 1); inventory.AddSlotItems(0, instance, 1);
             Check("counter-name-survives-chest-roundtrip", conversion.ToString() == "Success" && beforeName.Contains("击杀计数器 Lv0")
                 && chestName == beforeName && realGun.GetDisplayName(null, inventory.GetSlotValue(0)) == beforeName, "actual GetDisplayName on instance in inventory -> ComponentChest -> inventory");
+            var registryType = mod.GetType("Game.ScGunRegistry"); var registryField = registryType.GetField("Current"); var previousRegistry = registryField.GetValue(null);
+            try {
+                foreach (bool creative in new[] { false, true }) foreach (int initialKills in new[] { 99, 104 }) {
+                    object registry = Activator.CreateInstance(registryType); registryField.SetValue(null, registry);
+                    IInventory inv;
+                    if (creative) { var ci = new ComponentCreativeInventory { OpenSlotsCount = 10 }; for (int i = 0; i < 10; i++) ci.m_slots.Add(0); inv = ci; }
+                    else { var si = new ComponentInventory(); si.m_slots.Add(new()); inv = si; }
+                    inv.AddSlotItems(0, counterBlock.GetCreativeValues().First(), 1);
+                    counterType.GetMethod("Materialize").Invoke(null, [inv, 0, "notify-test"]);
+                    int held = inv.GetSlotValue(0);
+                    var specType = mod.GetType("Game.GunSpec"); int id = (int)specType.GetMethod("GetId").Invoke(null, [Terrain.ExtractData(held)]);
+                    object record = registryType.GetMethod("Get", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(registry, [id]); record.GetType().GetField("KillCount").SetValue(record, (long)initialKills);
+                    if (initialKills == 99) { object queue = registryType.GetField("Kills").GetValue(registry); queue.GetType().GetMethod("Enqueue").Invoke(queue, [id, 0]); }
+                    var gui = new NoticeGui(); var player = new ComponentPlayer { ComponentMiner = new ComponentMiner { Inventory = inv }, ComponentGui = gui };
+                    var players = new SubsystemPlayers(); players.m_componentPlayers.Add(player);
+                    var behaviorType = mod.GetType("Game.SubsystemScGunBlockBehavior"); var behavior = Activator.CreateInstance(behaviorType);
+                    void Set(string name, object val) => behaviorType.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(behavior, val);
+                    Set("m_registry", registry); Set("m_players", players); Set("m_time", new SubsystemTime());
+                    var holderType = mod.GetType("Game.ScGunHolders+Holder"); var holderList = (System.Collections.IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(holderType));
+                    holderList.Add(Activator.CreateInstance(holderType, [id, "notify-test", inv, 0]));
+                    var update = behaviorType.GetMethod("UpdateGrowth", BindingFlags.Instance | BindingFlags.NonPublic);
+                    update.Invoke(behavior, [holderList]); update.Invoke(behavior, [holderList]);
+                    Check($"runtime-notification/{creative}/{initialKills}", gui.Messages.Count == 1 && gui.Messages[0].Contains("Lv0 → Lv1") && gui.PlayedSound
+                        && realGun.GetDisplayName(null, held).Contains("Lv1") && (long)record.GetType().GetField("KillCount").GetValue(record) == Math.Max(initialKills, 100),
+                        "actual subsystem UpdateGrowth -> rule -> transaction -> GetDisplayName -> player ComponentGui callback; first sweep and repeat; both real inventory classes");
+                }
+            } finally { registryField.SetValue(null, previousRegistry); }
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);
             var recipe = (Screen)Activator.CreateInstance(mod.GetType("Game.ScAssemblyRecipesScreen"));
             // Includes the user's 1536x825 at the game's 850-unit UI width, maximum UI scale,

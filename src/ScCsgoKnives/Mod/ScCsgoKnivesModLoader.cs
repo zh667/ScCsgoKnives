@@ -197,6 +197,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         int counterIndex = BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
         Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, counterTemplateBlock={counterIndex}, guns={GunSpec.All.Length}.");
+        Log.Information("[GUN_FOLIAGE] bullet pass-through registry: " + string.Join(", ", BlocksManager.Blocks
+            .Where(b => b is not null && b is not AirBlock && b is not FluidBlock && !ScGunRange.StopsBullet(b))
+            .Select(b => $"{b.BlockIndex}:{b.GetType().FullName}").Distinct()));
 
         // Every creative item must survive the round trip through the block
         // value and land on its own asset. A stale variant clamp left over from

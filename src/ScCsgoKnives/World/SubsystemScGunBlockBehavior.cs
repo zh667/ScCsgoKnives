@@ -618,19 +618,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// Neither step refills a magazine, repairs a gun or completes a charge.</summary>
     void UpdateGrowth(List<ScGunHolders.Holder> holders) {
         if (m_registry is null || m_registry.Disabled) return;
-        bool grow = m_registry.GrowthMode == ScGunGrowthMode.CountAndGrow;
-        ScGunGrowthService.DrainKills(m_registry, holders, grow, HolderBusy);
-        if (!grow) return;
-        ScGunGrowthService.ApplyPendingLevels(m_registry, holders, m_time.GameTime, HolderBusy, (id, from, to) => {
+        ScGunGrowthService.Advance(m_registry, holders, m_time.GameTime, HolderBusy, (id, from, to) => {
             KnifeLog.Information($"gun growth: record {id} level {from} -> {to}");
-            foreach (var pair in m_states) {
-                var inventory = pair.Key.ComponentMiner?.Inventory;
+            // The first sweep can run before m_states is populated (e.g. an old 104-kill gun).
+            foreach (var player in m_players.ComponentPlayers) {
+                var inventory = player.ComponentMiner?.Inventory;
                 if (inventory is null || inventory.ActiveSlotIndex < 0) continue;
                 int held = inventory.GetSlotValue(inventory.ActiveSlotIndex);
                 if (Terrain.ExtractContents(held) != BlocksManager.GetBlockIndex<ScGunBlock>(true)
                     || GunSpec.GetId(Terrain.ExtractData(held)) != id) continue;
                 string name = BlocksManager.Blocks[Terrain.ExtractContents(held)].GetDisplayName(m_terrain, held);
-                pair.Key.ComponentGui.DisplaySmallMessage($"{name}\n升级成功：Lv{from} → Lv{to}！" + (to == ScGunGrowth.MaxLevel ? "已满级。" : ""), new Color(90, 210, 225), true, true);
+                player.ComponentGui.DisplaySmallMessage($"{name}\n升级成功：Lv{from} → Lv{to}！" + (to == ScGunGrowth.MaxLevel ? "已满级。" : ""), new Color(90, 210, 225), true, true);
             }
         });
     }
@@ -1031,7 +1029,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Components=coneParts, FrameMs=Time.FrameDuration*1000,
             Counter=GunSpec.TryGetSnapshot(data,out var counted) && counted.CounterInstalled,
             Level=effective.Level, Kills=GunSpec.TryGetSnapshot(data,out var counts) ? counts.KillCount : 0,
-            UnlimitedRange=effective.UnlimitedRange
+            UnlimitedRange=effective.UnlimitedRange, GrowthRule=m_registry.GrowthMode.ToString(),
+            PendingLevel=GunSpec.TryGetSnapshot(data,out var pending) ? pending.PendingGrowthLevel : -1
         }) : null;
         if (scopedShot && spec.UnzoomsAfterShot) {
             // CS2's m_bUnzoomsAfterShot (AWP, SSG 08): a scoped shot drops the scope for
@@ -1092,8 +1091,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Vector3 start = ray.Position;
             Vector3 end = start + direction * shotRange;
             long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
-            TerrainRaycastResult? terrain = ScGunRange.TraceTerrain((a,b) => m_terrain.Raycast(a, b, false, true,
-                (v, d) => ScGunRange.TerrainStopsBullet(v)), start, direction, shotRange);
+            TerrainRaycastResult? terrain = ScGunRange.TraceBullet(m_terrain, start, direction, shotRange, diagnostic?.VegetationTrace);
             ScGunHitTest.Hit? gunHit;
             if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):shotRange,diagnostic?.Trace);
             else {

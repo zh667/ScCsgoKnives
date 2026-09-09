@@ -9,6 +9,20 @@ namespace Game;
 ///
 /// Levelling never refills a magazine, never repairs and never completes a charge.</summary>
 public static class ScGunGrowthService {
+    /// <summary>All acquisition routes use this sweep, not just the workbench dialog. Unset is
+    /// not an opt-out: a world already carrying counters defaults to growth. Explicit CountOnly stays.</summary>
+    public static int Advance(ScGunRegistry registry, IReadOnlyList<ScGunHolders.Holder> holders, double now,
+        Func<ScGunHolders.Holder, bool> busy, Action<int, int, int> report) {
+        if (registry is null || registry.Disabled) return 0;
+        if (registry.GrowthMode == ScGunGrowthMode.Unset
+            && registry.Ids.Any(id => registry.TryGetSnapshot(id, out var s) && s.CounterInstalled)) {
+            registry.GrowthMode = ScGunGrowthMode.CountAndGrow;
+            KnifeLog.Information("[GUN_GROWTH] world rule Unset -> CountAndGrow; existing kills retained and earned levels will catch up when idle");
+        }
+        bool grow = registry.GrowthMode == ScGunGrowthMode.CountAndGrow;
+        DrainKills(registry, holders, grow, busy);
+        return grow ? ApplyPendingLevels(registry, holders, now, busy, report) : 0;
+    }
     /// <summary>The one holder that can be written for this record, or null when there is none (a dropped gun, a
     /// projectile) or more than one (a shared record the duplicate sweep has not split yet).</summary>
     public static ScGunHolders.Holder? Writable(IReadOnlyList<ScGunHolders.Holder> holders, int id) {
@@ -69,6 +83,8 @@ public static class ScGunGrowthService {
         var before = mutation.Before;
         if (!before.CounterInstalled) return ScGunResult.Invalid;
         int target = before.PendingGrowthLevel;
+        // Old template-created guns accumulated kills under Unset without ever marking a pending level.
+        if (ScGunRegistry.Current?.GrowthMode == ScGunGrowthMode.CountAndGrow) target = Math.Max(target, before.EarnedLevel);
         if (target == ScGunGrowth.NoPending || target <= before.AppliedGrowthLevel) return ScGunResult.Invalid;
         from = before.AppliedGrowthLevel; to = ScGunGrowth.Clamp(target);
         var spec = GunSpec.All[before.Variant];
@@ -102,12 +118,16 @@ public static class ScGunGrowthService {
         int applied = 0;
         foreach (int id in registry.Ids.ToArray()) {
             if (!registry.TryGetSnapshot(id, out var s) || !s.CounterInstalled) continue;
-            if (s.PendingGrowthLevel == ScGunGrowth.NoPending || s.PendingGrowthLevel <= s.AppliedGrowthLevel) continue;
+            int earned = registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? s.EarnedLevel : 0;
+            if (Math.Max(s.PendingGrowthLevel, earned) <= s.AppliedGrowthLevel) continue;
             var holder = Writable(holders, id);
             if (holder is null) continue;
             if (busy is not null && busy(holder.Value)) continue;
             var result = ApplyPending(holder.Value.Inventory, holder.Value.Slot, holder.Value.Key, now, out int from, out int to);
-            if (result != ScGunResult.Success) continue;
+            if (result != ScGunResult.Success) {
+                KnifeDiagnostics.WarnOnce($"growth-refused-{id}-{to}-{result}", $"[GUN_GROWTH] record {id} upgrade {from}->{to} deferred: {result}");
+                continue;
+            }
             applied++;
             report?.Invoke(id, from, to);
         }

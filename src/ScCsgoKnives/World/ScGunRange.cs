@@ -12,10 +12,33 @@ public static class ScGunRange {
     /// <summary>Foliage is not ballistic cover. Explicit types preserve walls, trunks,
     /// glass and the solid dirt cube named GrassBlock; do not confuse transparency with cover.</summary>
     public static bool StopsBullet(Block block) => block is not null
-        && block is not AirBlock and not FluidBlock and not LeavesBlock and not TallGrassBlock
-            and not FallenLeavesBlock and not IvyBlock;
+        && block is not AirBlock and not FluidBlock and not LeavesBlock and not CrossBlock
+            and not FallenLeavesBlock and not IvyBlock and not WaterPlantBlock;
     public static bool TerrainStopsBullet(int value) => Terrain.ExtractContents(value) != 0
         && StopsBullet(BlocksManager.Blocks[Terrain.ExtractContents(value)]);
+
+    /// <summary>Shared by every gun, mode and pellet, using the live subsystem (not its static test overload).</summary>
+    public static TerrainRaycastResult? TraceBullet(SubsystemTerrain terrain, Vector3 start, Vector3 direction, float range,
+        BulletTrace observation = null) => TraceTerrain((a, b) => terrain.Raycast(a, b, false, true, (value, distance) => {
+            bool stops = TerrainStopsBullet(value);
+            observation?.Observe(value, stops);
+            return stops;
+        }), start, direction, range);
+
+    /// <summary>Bounded observation of the actual predicate; never changes hit tests or RNG.</summary>
+    public sealed class BulletTrace {
+        public int IgnoredVegetation;
+        public string LastBlocker;
+        public readonly List<string> PassedTypes = [];
+        public void Observe(int value, bool stops) {
+            var block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+            if (stops) { LastBlocker = block.GetType().FullName; return; }
+            if (block is AirBlock or FluidBlock) return;
+            IgnoredVegetation++;
+            string type = block.GetType().FullName;
+            if (PassedTypes.Count < 8 && !PassedTypes.Contains(type)) PassedTypes.Add(type);
+        }
+    }
     static bool Finite(Vector3 v) => float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
     /// <summary>The engine silently truncates each terrain ray to 1000 cells. Segment a long
     /// loaded-world shot into <=512-cell engine calls, retaining global hit distance and ray.
