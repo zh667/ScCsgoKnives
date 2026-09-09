@@ -22,6 +22,10 @@ public static class ScGunRange {
         BulletTrace observation = null) => TraceTerrain((a, b) => terrain.Raycast(a, b, false, true, (value, distance) => {
             bool stops = TerrainStopsBullet(value);
             observation?.Observe(value, stops);
+            if (observation is not null && BlocksManager.Blocks[Terrain.ExtractContents(value)] is LeavesBlock) {
+                Vector3 point = a + Vector3.Normalize(b - a) * (distance + .001f);
+                observation.Leaves.Add(new(new Point3(Terrain.ToCell(point.X), Terrain.ToCell(point.Y), Terrain.ToCell(point.Z)), value, Vector3.Distance(a, start) + distance));
+            }
             return stops;
         }), start, direction, range);
 
@@ -30,6 +34,7 @@ public static class ScGunRange {
         public int IgnoredVegetation;
         public string LastBlocker;
         public readonly List<string> PassedTypes = [];
+        [System.Text.Json.Serialization.JsonIgnore] public readonly List<LeafHit> Leaves = [];
         public void Observe(int value, bool stops) {
             var block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
             if (stops) { LastBlocker = block.GetType().FullName; return; }
@@ -39,6 +44,7 @@ public static class ScGunRange {
             if (PassedTypes.Count < 8 && !PassedTypes.Contains(type)) PassedTypes.Add(type);
         }
     }
+    public readonly record struct LeafHit(Point3 Cell, int Value, float Distance);
     static bool Finite(Vector3 v) => float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
     /// <summary>The engine silently truncates each terrain ray to 1000 cells. Segment a long
     /// loaded-world shot into <=512-cell engine calls, retaining global hit distance and ray.

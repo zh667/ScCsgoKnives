@@ -53,6 +53,12 @@ static class CombatRegression {
             var fire = mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Fire", BindingFlags.Instance | BindingFlags.NonPublic);
             return Calls(fire).Any(c => c.DeclaringType.Name == "ScGunRange" && c.Name == "TraceBullet");
         });
+        Test("runtime-shot-noise-and-leaf-effect-wired",()=>{
+            var fire=mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Fire",BindingFlags.Instance|BindingFlags.NonPublic);
+            var calls=Calls(fire).ToArray();
+            int commit=Array.FindIndex(calls,c=>c.Name=="Commit"),noise=Array.FindIndex(calls,c=>c.Name=="NotifyNoise"),ray=Array.FindIndex(calls,c=>c.Name=="TraceBullet"),leaves=Array.FindIndex(calls,c=>c.Name=="BreakLeaves");
+            return commit>=0&&noise>commit&&leaves>ray&&ray>=0&&calls.Any(c=>c.Name=="PlaySound");
+        });
         foreach (bool creative in new[] { false, true }) foreach (bool handling in new[] { false, true })
             foreach (Block plant in new Block[] { new TallGrassBlock(), new RedFlowerBlock(), new PurpleFlowerBlock(), new WhiteFlowerBlock(), new OakLeavesBlock(), new BirchLeavesBlock(), new SpruceLeavesBlock(), new RyeBlock(), new CottonBlock(), new IvyBlock() })
                 Test($"live-ray/{(creative ? "creative" : "survival")}/{handling}/{plant.GetType().Name}", () => {

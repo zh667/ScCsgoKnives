@@ -167,6 +167,7 @@ foreach(var c in GunDiagnosticsRegression.Run(mod)) checks.Add(new { name=c.Name
 if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,published0282,snapshot0282)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {

@@ -63,6 +63,31 @@ static class WeaponHelpLayoutRegression {
                 BlocksManager.BlockNameToIndex[name] = index++;
             }
             int template = (int)mod.GetType("Game.ScGunAttributes").GetMethod("TemplateValue").Invoke(null, [0]);
+            var craftItems=((Array)mod.GetType("Game.ScWeaponCrafting").GetField("All").GetValue(null)).Cast<object>().ToArray();
+            foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
+                var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;
+                var browse=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["武器装配台 · 组装 / 维修 / 涂装 / 计数器",craftItems,56f,
+                    (Func<object,string>)(o=>(string)o.GetType().GetProperty("Name").GetValue(o)),(Action<object>)(_=>choices++),inv,creative]);
+                browse.WidgetsHierarchyInput=new WidgetInput();browse.Measure(available);browse.Arrange(Vector2.Zero,available);
+                Widget Part(string n)=>(Widget)browse.GetType().GetField(n,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(browse);
+                bool Inside(Widget w)=>w.GlobalBounds.Min.X>=browse.GlobalBounds.Min.X-.1f && w.GlobalBounds.Max.X<=browse.GlobalBounds.Max.X+.1f
+                    && w.GlobalBounds.Min.Y>=browse.GlobalBounds.Min.Y-.1f && w.GlobalBounds.Max.Y<=browse.GlobalBounds.Max.Y+.1f;
+                bool ok=Inside(Part("m_listHost"))&&(!Part("m_previewHost").IsVisible||Inside(Part("m_previewHost")))&&Inside(Part("m_detailHost"))&&Inside(Part("m_confirm"))&&Part("m_confirm").ActualSize.Y>=48;
+                var select=browse.GetType().GetMethod("Select",BindingFlags.NonPublic|BindingFlags.Instance);
+                foreach(var item in craftItems){select.Invoke(browse,[item]);browse.Measure(available);browse.Arrange(Vector2.Zero,available);ok &= Inside(Part("m_confirm"))&&Part("m_detailScroll").ActualSize.Y>40;}
+                Check($"workbench-browse/{creative}/{available}",ok&&choices==0,"all 57 weapon recipes: list, preview, scrollable material area and fixed footer; browsing never commits");
+                browse.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(browse,["步枪"]);
+                Check($"workbench-category/{creative}/{available}",((ListPanelWidget)Part("m_list")).Items.Count==7,"category filters rifles without losing available recipes");
+                var confirm=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchConfirmDialog"),["长名称 · 计数器皮肤枪械",string.Join("\n",Enumerable.Repeat("材料需要 6 件，当前持有 12 件；枪械状态保持不变。",80)),"确认组装","返回",(Action<MessageDialogButton>)(_=>choices++)]);
+                confirm.WidgetsHierarchyInput=new WidgetInput();confirm.Measure(available);confirm.Arrange(Vector2.Zero,available);
+                var yes=(ButtonWidget)confirm.GetType().GetField("m_yes",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(confirm);
+                var scroll=(ScrollPanelWidget)confirm.GetType().GetField("m_scroll",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(confirm);
+                scroll.ScrollPosition=Math.Max(0,scroll.CalculateScrollAreaLength()-scroll.ActualSize.Y);confirm.Measure(available);confirm.Arrange(Vector2.Zero,available);
+                Check($"workbench-long-quote/{creative}/{available}",yes.ActualSize.Y>=48&&yes.GlobalBounds.Max.Y<=confirm.GlobalBounds.Max.Y+.1f&&scroll.GlobalBounds.Max.Y<yes.GlobalBounds.Min.Y&&choices==0,
+                    "80-line quote scrolls; confirmation remains visible and cannot be executed by simply selecting a row");
+                ((BevelledButtonWidget)yes).m_clickableWidget.IsClicked=true;confirm.Update();confirm.Update();
+                Check($"workbench-confirm-once/{creative}/{available}",choices==1,"explicit confirmation dispatches the existing transaction callback once, not once per held frame");
+            }
             var counterType = mod.GetType("Game.ScGunCounterTemplateBlock");
             var counterBlock = BlocksManager.Blocks[BlocksManager.BlockTypeToIndex[counterType]];
             var inventory = new ComponentInventory(); inventory.m_slots.Add(new());

@@ -986,6 +986,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // separate sound file; the integral one's WEAPON_SOUND_SINGLE is already
         // the suppressed shot.
         bool silenced = spec.SilencedAlways || (spec.HasSilencer && !GunSpec.GetSilencerOff(data));
+        ScGunWorldEffects.NotifyNoise(Project.FindSubsystem<SubsystemNoise>(false), player.ComponentBody.Position, silenced, spec.RechargeSeconds > 0);
         // The round that empties the magazine locks a pistol's slide back (shoot_empty).
         bool lastRound = rounds <= 0;
         bool scopedShot = state.Zoom > 0;
@@ -1086,12 +1087,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // the body below is then exactly the single shot it always was.
         int pellets = Math.Max(1, spec.Pellets);
         var hits = new Dictionary<ComponentBody, (float Power, Vector3 Point, Vector3 Direction, bool Head)>();
+        var leafAttempts = new HashSet<Point3>();
         for (int pellet = 0; pellet < pellets; pellet++) {
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
             Vector3 end = start + direction * shotRange;
             long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
-            TerrainRaycastResult? terrain = ScGunRange.TraceBullet(m_terrain, start, direction, shotRange, diagnostic?.VegetationTrace);
+            var foliage = diagnostic?.VegetationTrace ?? new ScGunRange.BulletTrace();
+            foliage.Leaves.Clear();
+            TerrainRaycastResult? terrain = ScGunRange.TraceBullet(m_terrain, start, direction, shotRange, foliage);
             ScGunHitTest.Hit? gunHit;
             if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):shotRange,diagnostic?.Trace);
             else {
@@ -1107,6 +1111,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             float travel = shotRange;
             if (gunHit.HasValue) travel = MathUtils.Min(travel, gunHit.Value.Distance);
             if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
+            if (spec.RechargeSeconds <= 0)
+                ScGunWorldEffects.BreakLeaves(m_terrain, foliage.Leaves, travel, leafAttempts, ScGunWorldEffects.LeafSample);
             if (diagnostic is not null) {
                 int outcome = gunHit.HasValue ? (gunHit.Value.Part==ScHitPart.Head?0:1) : terrain.HasValue?2:3;
                 bool fallback = gunHit.HasValue && (gunHit.Value.Reason?.Contains("fallback")==true || gunHit.Value.Part==ScHitPart.Unknown);
