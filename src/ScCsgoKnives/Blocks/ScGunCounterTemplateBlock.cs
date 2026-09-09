@@ -30,7 +30,8 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
         }
         return false;
     }
-    public static bool IsTemplate(int value) => Terrain.ExtractContents(value) == BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
+    public static bool IsTemplate(int value) => BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunCounterTemplateBlock), out int index)
+        && Terrain.ExtractContents(value) == index;
     public static bool TrySnapshot(int value, out ScGunSnapshot snapshot) {
         snapshot = default;
         if (!IsTemplate(value) || !TrySpec(Terrain.ExtractData(value), out int variant, out int skin)) return false;

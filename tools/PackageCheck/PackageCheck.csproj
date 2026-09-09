@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Native UI labels initialize en-US even headless; allow named invariant cultures without ICU. -->
+    <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
     <RollForward>Major</RollForward>
     <AssemblyName>PackageCheck</AssemblyName>
   </PropertyGroup>

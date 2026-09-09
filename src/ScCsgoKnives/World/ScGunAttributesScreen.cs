@@ -9,23 +9,23 @@ namespace Game;
 /// deliberately omits current and maximum durability and any crafting materials; the repair page and the trade
 /// confirmation still show everything they must. Nothing the mod has not implemented appears here - no rarity,
 /// no weight, no armour penetration, no attachments.</summary>
-public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
+public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     public const string ScreenName = "ScCsgoGunAttributes";
 
     int m_value;
     int m_variant;
     int m_instanceValue;          // the item the player came from, when they came from one
     int m_levelMode;              // 0 base, 1 current, 2 next
-    bool m_built, m_narrow;
+    bool m_built, m_narrow, m_singleBars;
     int m_lastRevision = -1;
     int m_initialValue;
 
-    /// <summary>The vertical margin keeps the inherited screen's own top bar - and its Back button - clear.</summary>
-    readonly StackPanelWidget m_root = new() { HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(12, 56) };
+    readonly StackPanelWidget m_root = new() { Name = "ScGunAttributes.Root" };
     readonly ListPanelWidget m_list = new() { Direction = LayoutDirection.Vertical, ItemSize = 46, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
-    readonly CanvasWidget m_listHost = new();
+    readonly CanvasWidget m_listHost = new() { Name = "ScGunAttributes.ListHost", Size = new Vector2(float.PositiveInfinity), ClampToBounds = true };
     readonly StackPanelWidget m_currentHost = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
-    readonly StackPanelWidget m_right = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
+    readonly StackPanelWidget m_right = new() { Direction = LayoutDirection.Vertical };
+    readonly CanvasWidget m_rightHost = new() { Name = "ScGunAttributes.RightHost", Size = new Vector2(float.PositiveInfinity), ClampToBounds = true };
     readonly BlockIconWidget m_preview = new() { Size = new Vector2(150), HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center };
     readonly StackPanelWidget m_identity = new() { Direction = LayoutDirection.Vertical, VerticalAlignment = WidgetAlignment.Center, HorizontalAlignment = WidgetAlignment.Stretch };
     readonly StackPanelWidget m_bars = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
@@ -33,16 +33,16 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
     LabelWidget m_name, m_identityText, m_counter, m_growth, m_description, m_currentInstance;
     ButtonWidget m_level, m_recipe, m_back;
 
-    public ScGunAttributesScreen() {
+    public ScGunAttributesScreen() : base("武器属性") {
         m_initialValue = 0;
-        Children.Add(m_root);
+        Body.Children.Add(m_root);
         m_list.ItemWidgetFactory = item => {
             int variant = (int)item;
             var row = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(4, 0) };
             row.Children.Add(new BlockIconWidget { Value = ScGunAttributes.TemplateValue(variant), Size = new Vector2(38), Margin = new Vector2(2, 2) });
             row.Children.Add(new LabelWidget {
                 Text = DisplayName(variant), FontScale = .78f, VerticalAlignment = WidgetAlignment.Center,
-                HorizontalAlignment = WidgetAlignment.Stretch, Color = ScGunUi.Text,
+                HorizontalAlignment = WidgetAlignment.Stretch, Color = ScGunUi.Text, Ellipsis = true, MaxLines = 1,
             });
             return row;
         };
@@ -64,13 +64,6 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         if (parameters is not { Length: > 0 } || parameters[0] is not int)
             parameters = [m_initialValue != 0 ? m_initialValue : ScGunAttributes.TemplateValue(0)];
         base.Enter(parameters);
-        // RecipaediaRecipesScreen loads its own recipe/list widgets before this
-        // custom card is attached. They must not remain visible underneath it.
-        foreach (Widget child in Children.ToArray()) {
-            if (ReferenceEquals(child, m_root)) continue;
-            if (child.Name == "TopBar") continue;
-            child.IsVisible = false;
-        }
         m_instanceValue = 0;
         int variant = 0;
         if (parameters[0] is int value && Terrain.ExtractContents(value) == BlocksManager.GetBlockIndex<ScGunBlock>(true)) {
@@ -90,23 +83,26 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         Refresh();
     }
 
-    void Build(bool narrow) {
+    void Build(bool narrow, bool singleBars) {
         float listScroll = m_list.ScrollPosition, barScroll = m_barScroll.ScrollPosition;
         // Detach reused widgets from their old nested containers before rebuilding.
         m_listHost.ParentWidget?.Children.Remove(m_listHost);
         m_preview.ParentWidget?.Children.Remove(m_preview);
         m_identity.ParentWidget?.Children.Remove(m_identity);
-        m_narrow = narrow; m_built = true;
+        m_currentHost.ParentWidget?.Children.Remove(m_currentHost);
+        m_rightHost.ParentWidget?.Children.Remove(m_rightHost);
+        m_narrow = narrow; m_singleBars = singleBars; m_built = true;
         m_root.Children.Clear();
-        m_root.Margin = new Vector2(12, 56);
+        m_root.Margin = Vector2.Zero;
         m_root.Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal;
         if (m_list.Items.Count == 0) for (int v = 0; v < GunSpec.All.Length; v++) m_list.AddItem(v);
+        m_list.SelectedIndex = m_variant;
 
         // Left column: current instance (when opened from an item), then catalogue list.
         var left = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
         m_listHost.HorizontalAlignment = WidgetAlignment.Stretch;
         m_listHost.VerticalAlignment = WidgetAlignment.Stretch;
-        m_listHost.Size = narrow ? new Vector2(-1, 250) : new Vector2(-1, -1);
+        m_listHost.Size = new Vector2(float.PositiveInfinity);
         m_currentHost.IsVisible = m_instanceValue != 0;
         left.Children.Add(m_currentHost);
         left.Children.Add(m_listHost);
@@ -116,37 +112,49 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         var leftHost = new CanvasWidget {
             HorizontalAlignment = narrow ? WidgetAlignment.Stretch : WidgetAlignment.Near,
             VerticalAlignment = WidgetAlignment.Stretch,
-            Size = narrow ? new Vector2(-1, 310) : new Vector2(250, -1),
+            Name = "ScGunAttributes.LeftHost",
+            Size = narrow ? new Vector2(float.PositiveInfinity, 120) : new Vector2(200, float.PositiveInfinity),
+            Margin = narrow ? new Vector2(0, 4) : new Vector2(4, 0), ClampToBounds = true,
         };
+        leftHost.Children.Add(NativeArea());
         leftHost.Children.Add(left);
         m_root.Children.Add(leftHost);
 
         // Right column: preview and identity on top, the attribute bars below.
         m_right.Children.Clear();
-        var head = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(6, 0) };
-        var previewHost = new CanvasWidget { Size = new Vector2(narrow ? 110 : 170, narrow ? 90 : 130), VerticalAlignment = WidgetAlignment.Center };
-        m_preview.Size = new Vector2(narrow ? 100 : 150);
+        var head = new StackPanelWidget { Name = "ScGunAttributes.Header", Direction = LayoutDirection.Horizontal, Margin = new Vector2(6, 4) };
+        var previewHost = new CanvasWidget { Size = new Vector2(100, 100), VerticalAlignment = WidgetAlignment.Center };
+        m_preview.Size = new Vector2(96);
         previewHost.Children.Add(m_preview);
         head.Children.Add(previewHost);
         m_identity.Children.Clear();
         m_name = ScGunUi.Label("", 1.15f);
         m_identityText = ScGunUi.Label("", .78f, ScGunUi.Dim);
         m_counter = ScGunUi.Label("", .78f, ScGunUi.Accent);
+        foreach (var label in new[] { m_name, m_identityText, m_counter }) { label.WordWrap = true; label.HorizontalAlignment = WidgetAlignment.Stretch; }
         m_identity.Children.Add(m_name); m_identity.Children.Add(m_identityText); m_identity.Children.Add(m_counter);
         m_level = ScGunUi.Button("当前等级", 160);
         m_level.HorizontalAlignment = WidgetAlignment.Near;
         m_identity.Children.Add(m_level);
-        head.Children.Add(m_identity);
-        m_right.Children.Add(head);
-        m_barScroll.Children.Clear(); m_barScroll.Children.Add(m_bars);
+        var identityHost = new CanvasWidget { Size = new Vector2(float.PositiveInfinity, -1) };
+        identityHost.Children.Add(m_identity);
+        head.Children.Add(identityHost);
+        var details = new StackPanelWidget { Direction = LayoutDirection.Vertical };
+        details.Children.Add(head);
+        m_bars.ParentWidget?.Children.Remove(m_bars);
+        details.Children.Add(m_bars);
+        m_barScroll.Children.Clear(); m_barScroll.Children.Add(details);
         m_right.Children.Add(m_barScroll);
         m_growth = ScGunUi.Note("");
-        m_right.Children.Add(m_growth);
+        details.Children.Add(m_growth);
         var bar = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 6) };
-        m_recipe = ScGunUi.Button("装配配方", 140); m_back = ScGunUi.Button("返回", 120);
+        m_recipe = ScGunUi.Button("装配配方", 132); m_back = ScGunUi.Button("返回", 108);
         foreach (var b in new[] { m_recipe, m_back }) { b.Margin = new Vector2(5, 0); bar.Children.Add(b); }
         m_right.Children.Add(bar);
-        m_root.Children.Add(m_right);
+        m_rightHost.Children.Clear();
+        m_rightHost.Children.Add(NativeArea());
+        m_rightHost.Children.Add(m_right);
+        m_root.Children.Add(m_rightHost);
         Refresh();
         m_list.ScrollPosition = listScroll; m_barScroll.ScrollPosition = barScroll;
     }
@@ -155,9 +163,9 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
     /// the bar is a fixed-range comparison, never a score and never a progress meter.</summary>
     static Widget BarRow(ScGunAttributes.Row row, bool narrow) {
         var panel = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(6, 3) };
-        var top = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch };
-        top.Children.Add(new LabelWidget { Text = row.Label, FontScale = .74f, Color = ScGunUi.Dim, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Center });
-        top.Children.Add(new LabelWidget { Text = row.Text + " " + row.Unit, FontScale = .8f, Color = ScGunUi.Text, HorizontalAlignment = WidgetAlignment.Far, VerticalAlignment = WidgetAlignment.Center });
+        var top = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
+        top.Children.Add(new LabelWidget { Text = row.Label, FontScale = .74f, Color = ScGunUi.Dim, WordWrap = true });
+        top.Children.Add(new LabelWidget { Text = row.Text + " " + row.Unit, FontScale = .8f, Color = ScGunUi.Text, WordWrap = true });
         panel.Children.Add(top);
         var segments = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(0, 2) };
         int filled = (int)MathF.Ceiling(Math.Clamp(row.Fraction, 0, 1) * 10);
@@ -200,11 +208,11 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         m_level.IsEnabled = installed && ScGunRegistry.Current?.GrowthMode != ScGunGrowthMode.CountOnly;
         m_bars.Children.Clear();
         var rows = ScGunAttributes.Rows(spec, m_value, level);
-        if (m_narrow) foreach (var row in rows) m_bars.Children.Add(BarRow(row, true));
+        if (m_singleBars) foreach (var row in rows) m_bars.Children.Add(BarRow(row, true));
         else for (int i = 0; i < rows.Count; i += 2) {
             var pair = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch };
             for (int k = i; k < Math.Min(i + 2, rows.Count); k++) {
-                var cell = new CanvasWidget { Size = new Vector2(-1, -1), HorizontalAlignment = WidgetAlignment.Stretch };
+                var cell = new CanvasWidget { Size = new Vector2(float.PositiveInfinity, -1), HorizontalAlignment = WidgetAlignment.Stretch };
                 cell.Children.Add(BarRow(rows[k], false));
                 pair.Children.Add(cell);
             }
@@ -232,15 +240,18 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         return $"{role}。\n{mode}。\n弹药：{(spec.RechargeSeconds > 0 ? "自动充能，无需弹药" : spec.Pellets > 1 ? "霰弹" : "通用弹匣")}。";
     }
 
+    public override void MeasureOverride(Vector2 availableSize) {
+        // Layout dimensions are logical units (850 / UIScale), not window pixels.
+        float bodyWidth = availableSize.X - 64 - 24;
+        bool narrow = bodyWidth < 620;
+        bool singleBars = (narrow ? bodyWidth : bodyWidth - 208) < 520;
+        if (!m_built || narrow != m_narrow || singleBars != m_singleBars) Build(narrow, singleBars);
+        base.MeasureOverride(availableSize);
+    }
+
     public override void Update() {
-        bool narrow = ActualSize.X > 1 && ActualSize.X < ScGunUi.NarrowWidth;
-        if (!m_built || narrow != m_narrow) Build(narrow);
-        // Vanilla's own recipe widgets belong to the screen this one replaces.
-        m_craftingRecipeWidget.IsVisible = false; m_smeltingRecipeWidget.IsVisible = false;
-        m_prevRecipeButton.IsVisible = false; m_nextRecipeButton.IsVisible = false;
-        base.Update();
-        m_craftingRecipeWidget.IsVisible = false; m_smeltingRecipeWidget.IsVisible = false;
-        m_prevRecipeButton.IsVisible = false; m_nextRecipeButton.IsVisible = false;
+        if (BackRequested) { GoBack(); return; }
+        if (!m_built) return;
         if (m_list.SelectedIndex is int index && index != m_variant) Select(index);
         if (GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var current) && current.Revision != m_lastRevision) Refresh();
         if (m_level.IsClicked) { m_levelMode = (m_levelMode + 1) % 3; Refresh(); }
@@ -249,6 +260,6 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
             ScreensManager.SwitchScreen("RecipaediaRecipes", m_value);
             return;
         }
-        if (m_back.IsClicked) ScreensManager.SwitchScreen(ScreensManager.PreviousScreen ?? ScreensManager.FindScreen<Screen>("Recipaedia"));
+        if (m_back.IsClicked) GoBack();
     }
 }
