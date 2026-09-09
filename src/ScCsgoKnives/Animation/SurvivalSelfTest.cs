@@ -31,6 +31,7 @@ public static class SurvivalSelfTest {
         ScGunSaveGuardSelfTest.Run(check);
         ScCreativeSkinsSelfTest.Run(check);
         ScCreativeCountersSelfTest.Run(check);
+        ScGunSkinGrowthSelfTest.Run(check);
         ScGun0282MigrationSelfTest.Run(check);
         ScPolishSelfTest.Run(check);
         ScGunGrowthSelfTest.Run(check);

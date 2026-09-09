@@ -45,8 +45,10 @@ public static class ScGunAttributes {
         for (int v = 0; v < GunSpec.All.Length; v++) {
             var spec = GunSpec.All[v];
             var top = EffectiveGunStats.ResolveLevel(spec, TemplateValue(v), false, ScGunGrowth.MaxLevel - 1);
-            damage = Math.Max(damage, top.Power);
-            head = Math.Max(head, top.Power * top.HeadMultiplier);
+            float maxPower = ScSurvivalBalance.Power(spec.Name) * ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel)
+                * (ScGunSkinCatalog.For(v).Any() ? 1.5f : 1f);
+            damage = Math.Max(damage, maxPower);
+            head = Math.Max(head, maxPower * top.HeadMultiplier);
             range = Math.Max(range, top.Range);
             rate = Math.Max(rate, spec.CycleSeconds > 0 ? 60f / spec.CycleSeconds : 0);
             capacity = Math.Max(capacity, ScGunGrowth.Capacity(v, ScGunGrowth.MaxLevel));
@@ -105,7 +107,7 @@ public static class ScGunAttributes {
     /// <summary>The growth line: counter state, kills, progress and what the next level is worth.</summary>
     public static string GrowthText(int value, ScGunGrowthMode mode) {
         if (!GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s)) return "枪械记录不可读，无法显示计数。";
-        if (!s.CounterInstalled) return "未安装击杀计数器。可在武器装配台原地安装，不更换枪械、不清空弹量与耐久。";
+        if (!s.CounterInstalled) return CounterUnlockNotice + " 可在武器装配台原地安装；不更换枪械，不清空弹量与耐久。";
         if (mode == ScGunGrowthMode.CountOnly) return $"有效击杀 {s.KillCount}。本世界规则：仅计数，不提供等级成长或属性加成。";
         string rule = "";
         if (s.EarnedLevel >= ScGunGrowth.MaxLevel)
@@ -117,5 +119,6 @@ public static class ScGunAttributes {
         return $"有效击杀 {s.KillCount}，已应用 Lv{s.Level}，距 Lv{s.EarnedLevel + 1} 还需 {next} 次（每级 100 次，累计 1000 次满级）。{pending}{rule}";
     }
     /// <summary>What reaching the cap is worth, in the terms the card is allowed to use.</summary>
-    public const string MaxLevelSummary = "满级收益：伤害 +50%，弹匣容量 +50%，耐久上限 +50%，电击枪充能 10 秒 → 5 秒；普通子弹枪零散布、无射击后坐力、无距离衰减。";
+    public const string CounterUnlockNotice = "安装击杀计数器后才解锁等级机制；从安装时开始计数，安装前的击杀不计入。换肤、去皮和维修保留已有击杀与等级。";
+    public const string MaxLevelSummary = "满级收益：伤害 +100%（皮肤枪先获得基础伤害 +50%，再计算等级加成），弹匣容量 +50%，耐久上限 +50%，电击枪充能 10 秒 → 5 秒；普通子弹枪零散布、无射击后坐力、无距离衰减。";
 }

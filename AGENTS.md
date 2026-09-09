@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-09 (0.40.7): damage grows +10% of the applicable base per level, +100% at Lv10.
+  A valid skin supplies a separate 1.5x base-damage multiplier (skin Lv10 = 3x factory Lv0). Other growth
+  values remain unchanged. Counter installation unlocks leveling and starts counting at zero; no prior kills
+  are backfilled. Applying, replacing or stripping a skin must preserve counter/kill/level/instance state.
+  This supersedes old +50% damage and Zeus 225-at-max text, not the +50% durability/capacity rules.
+
 - Narrow user authorization on 2026-09-08: fix the reported survival weapon-workbench missing drop and first-person muzzle particles being overwritten over water. This does not resume other blocked milestones or permit gun save-format changes. See `docs/workbench-muzzle-fixes-0371.md`.
 
 - User-directed handover of 2026-09-09: the counter/growth/attribute/touch work line is ACTIVE and 0.40.0 implements it

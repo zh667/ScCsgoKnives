@@ -26,8 +26,9 @@ public static class ScGunGrowth {
     public static int Clamp(int level) => Math.Clamp(level, 0, MaxLevel);
     public static bool IsTaser(int variant) => variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].RechargeSeconds > 0f;
 
-    /// <summary>Damage: P = P0 × (1 + 0.05L). Applied once, to the survival close-range power.</summary>
-    public static float DamageMultiplier(int level) => 1f + .05f * Clamp(level);
+    /// <summary>Damage: P = P0 × skin × (1 + 0.10L). Damage is derived, never stored or compounded.</summary>
+    public static float DamageMultiplier(int level) => 1f + .10f * Clamp(level);
+    public static float SkinDamageMultiplier(int variant, int skinId) => ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant) ? 1.5f : 1f;
 
     /// <summary>Magazine: C = C0 + floor(C0 × L / 20); the Zeus stays at one charge. Lv10 always gains at
     /// least one round when the base holds more than one.</summary>

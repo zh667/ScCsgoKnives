@@ -93,7 +93,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         ? $"当前 {s.Rounds} 发 · 耐久 {ScGunDurability.PercentText(s.Durability, s.MaxDurability)} · 消音器{(s.SilencerOff ? "已拆" : "在位")}" : "";
                     string detail = $"{ScGunSkinCatalog.NameOf(quote.FromSkinId)} → {(skin?.Name ?? "原厂外观")}\n{state}\n"
                         + (Creative() ? "创造模式：免费" : quote.Cost.Count == 0 ? "无需材料" : MaterialLines(quote.Cost))
-                        + "\n涂装只改外观：弹量、耐久、消音器和充能保持不变。"
+                        + (skin is null ? "\n去皮后取消皮肤的基础伤害 +50%。" : "\n皮肤基础伤害比原厂 +50%，等级伤害在此基础上增加，满级再 +100%。")
+                        + "\n弹量、耐久、消音器、充能、计数器、击杀与等级保持不变。"
                         + (skin is { Approximate: true } ? "\n注意：该涂装为配色近似，图案位置与 CS2 原版不同。" : "");
                     DialogsManager.ShowDialog(player.GuiWidget, new MessageDialog(skin?.Name ?? "原厂外观", detail, "更换", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {

@@ -1,10 +1,11 @@
 namespace Game;
 
-/// <summary>Applying a CS2 finish at the workbench. Appearance only: the transaction writes the record's
+/// <summary>Applying a CS2 finish at the workbench. The transaction writes the record's
 /// paint ID and nothing else, so rounds, silencer, durability, max durability and the Zeus charge come out
 /// of it byte for byte. Like a repair it is quoted first - the record id, its revision, the finish it wears
 /// and the exact materials are frozen - and the commit re-checks all of it, so a gun that changed under the
-/// dialog is re-quoted instead of being charged at the old price.</summary>
+/// dialog is re-quoted instead of being charged at the old price. EffectiveGunStats derives the skin damage
+/// bonus from that ID; changing finish never resets installed counters, kills, levels or pending growth.</summary>
 public static class ScWeaponSkinning {
     public sealed record Candidate(int Slot, int Value) {
         public int Variant => ScGunBlock.GetVariant(Value);

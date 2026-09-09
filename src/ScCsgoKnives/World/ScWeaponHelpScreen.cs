@@ -34,7 +34,18 @@ public abstract class ScWeaponHelpScreen : RecipaediaRecipesScreen {
     }
 
     protected bool BackRequested => Input.Back || Input.Cancel || m_nativeBack.IsClicked;
-    protected void GoBack() => ScreensManager.SwitchScreen(m_returnScreen ?? ScreensManager.FindScreen<Screen>("Recipaedia"));
+    protected Screen PrepareBackNavigation() {
+        Screen target = m_returnScreen ?? ScreensManager.FindScreen<Screen>("Recipaedia");
+        // SwitchScreen only pops when the destination is the TOP entry. Skipping directly over
+        // attribute/recipe pages without unwinding pushes them back into history (Help <-> catalogue loop).
+        if (ScreensManager.HistoryStack.Contains(target))
+            while (ScreensManager.TopOfHistoryScreen != target) ScreensManager.HistoryStack.Pop();
+        // Vanilla Recipaedia.Enter recognizes children by this registered instance, not by type.
+        // Switching between our two pages replaces that instance; preserve its outer return owner.
+        if (target is RecipaediaScreen) ScreensManager.m_screens["RecipaediaRecipes"] = this;
+        return target;
+    }
+    protected void GoBack() => ScreensManager.SwitchScreen(PrepareBackNavigation());
     protected static BevelledRectangleWidget NativeArea() => new() {
         Style = ContentManager.Get<XElement>("Styles/Area"), IsHitTestVisible = false
     };

@@ -18,7 +18,7 @@ public static class ScSurvivalBalance {
         "m249" or "negev" => 8,
         "ssg08" => 26, "awp" => 38, "scar20" or "g3sg1" => 18,
         // Zeus x27 (user-directed 2026-09-08): a high-cost, single-charge, close-range burst weapon. 100 × 1.5 = 150
-        // at Lv0, 225 at Lv10. Its headshot multiplier stays 1 and its range, charge and life are unchanged here.
+        // at Lv0, 300 at Lv10 under the current +100% damage rule. Headshot multiplier remains 1.
         "taser" => 100,
         "nova" => 22, "xm1014" => 16, "sawedoff" or "mag7" => 24,
         "glock18" or "hkp2000" or "p250" or "usp_silencer" or "fiveseven" or "tec9" or "cz75a" or "elite" => 7,

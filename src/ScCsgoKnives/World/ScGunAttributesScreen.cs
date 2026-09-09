@@ -214,10 +214,11 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         int actualLevel = EffectiveGunStats.LevelOf(m_value);
         m_level.Text = $"预览 Lv{level} / 10";
         m_levelDown.IsEnabled = level > 0; m_levelUp.IsEnabled = level < ScGunGrowth.MaxLevel;
-        m_previewNotice.Text = $"实际 Lv{actualLevel} · −/+ 切换，点等级回到实际等级。"
+        m_previewNotice.Text = ScGunAttributes.CounterUnlockNotice + $"\n实际 Lv{actualLevel} · −/+ 切换，点等级回到实际等级。"
             + (level != actualLevel ? "\n仅预览，不改变枪械等级、弹量或存档。" : "")
             + (level > actualLevel ? " 超出当前等级的变化项会柔和闪烁。" : "")
             + (ScGunRegistry.Current?.GrowthMode == ScGunGrowthMode.CountOnly ? "\n本世界仅计数；预览的成长加成不会生效。" : "");
+        if (skin != ScGunSkinCatalog.None) m_previewNotice.Text += "\n皮肤基础伤害 +50%；等级加成在此基础上计算。";
         m_bars.Children.Clear();
         m_futureRows.Clear();
         var rows = ScGunAttributes.Rows(spec, m_value, level);

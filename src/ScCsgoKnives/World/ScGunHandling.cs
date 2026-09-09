@@ -94,7 +94,8 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         // other level, so a "next level" column is not quoting today's number.
         bool known=GunSpec.TryGetSnapshot(data,out var s);
         int maxDurability=known && s.Level==L ? s.MaxDurability : ScGunGrowth.MaxDurability(variant,L);
-        return new(ScSurvivalBalance.Power(spec.Name)*ScGunGrowth.DamageMultiplier(L),
+        float skinMultiplier = known && s.Variant == variant ? ScGunGrowth.SkinDamageMultiplier(variant,s.SkinId) : 1f;
+        return new(ScSurvivalBalance.Power(spec.Name)*skinMultiplier*ScGunGrowth.DamageMultiplier(L),
             ScGunGrowth.Range(variant,L,baseRange),
             ScGunGrowth.Capacity(variant,L),maxDurability,spec.CycleSeconds,spec.Pellets,ScHeadshot.MultiplierFor(spec),
             ScGunplaySettings.Enabled?ScGunHandling.ForMode(spec.Name,alternate):null,

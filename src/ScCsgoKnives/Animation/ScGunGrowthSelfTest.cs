@@ -214,14 +214,14 @@ public static class ScGunGrowthSelfTest {
             ScGunGrowth.ScaleDurability(750, 1500, 2250) == 1125 && ScGunGrowth.ScaleDurability(0, 1500, 2250) == 0
             && ScGunGrowth.ScaleDurability(1500, 1500, 2250) == 2250 && ScGunGrowth.ScaleDurability(1, 1500, 2250) == 1
             && ScGunGrowth.ScaleDurability(1499, 1500, 2250) == 2248);
-        Test("zeus-damage-150-to-225", () => {
+        Test("zeus-damage-150-to-300", () => {
             float lv0 = ScSurvivalBalance.Power("taser"), lv10 = lv0 * ScGunGrowth.DamageMultiplier(10);
-            return Math.Abs(lv0 - 150f) < .001f && Math.Abs(lv10 - 225f) < .001f && ScHeadshot.MultiplierFor(GunSpec.ForAsset("taser")) == 1f;
+            return Math.Abs(lv0 - 150f) < .001f && Math.Abs(lv10 - 300f) < .001f && ScHeadshot.MultiplierFor(GunSpec.ForAsset("taser")) == 1f;
         });
-        Test("damage-plus-50-percent", () => {
+        Test("damage-plus-100-percent", () => {
             float ak = ScSurvivalBalance.Power("ak47");
-            return Math.Abs(ak - 15f) < .001f && Math.Abs(ak * ScGunGrowth.DamageMultiplier(10) - 22.5f) < .001f
-                && Math.Abs(ScGunGrowth.DamageMultiplier(5) - 1.25f) < .0001f;
+            return Math.Abs(ak - 15f) < .001f && Math.Abs(ak * ScGunGrowth.DamageMultiplier(10) - 30f) < .001f
+                && Math.Abs(ScGunGrowth.DamageMultiplier(5) - 1.5f) < .0001f;
         });
         Test("charge-10-to-5", () => {
             var zeus = GunSpec.ForAsset("taser");
@@ -251,7 +251,7 @@ public static class ScGunGrowthSelfTest {
             var (inventory, id) = Gun(registry, "ak47", level: 10, kills: 1000);
             var spec = GunSpec.ForAsset("ak47");
             var s = EffectiveGunStats.Resolve(spec, inventory.GetSlotValue(0), false);
-            return s.Level == 10 && s.Capacity == 45 && s.MaxDurability == 2250 && Math.Abs(s.Power - 22.5f) < .001f
+            return s.Level == 10 && s.Capacity == 45 && s.MaxDurability == 2250 && Math.Abs(s.Power - 30f) < .001f
                 && s.AngleScale == 0f && s.UnlimitedRange && Math.Abs(s.Falloff(spec, 500) - 1f) < 1e-6f
                 && id > 0;
         });
@@ -654,7 +654,7 @@ public static class ScGunGrowthSelfTest {
             var range = rows.First(r => r.Kind == ScGunAttributes.Kind.Range);
             var capacity = rows.First(r => r.Kind == ScGunAttributes.Kind.Capacity);
             var spread = rows.First(r => r.Kind == ScGunAttributes.Kind.Spread);
-            return damage.Text == "22.5" && capacity.Text == stats.Capacity.ToString() && capacity.Text == "45"
+            return damage.Text == "30" && capacity.Text == stats.Capacity.ToString() && capacity.Text == "45"
                 && range.Unlimited && range.Text == "无限*" && range.Fraction == 1f && spread.Text == "0";
         });
         Test("zeus-card-shows-charge-not-reload", () => {
@@ -664,7 +664,7 @@ public static class ScGunGrowthSelfTest {
             var damage = rows.First(r => r.Kind == ScGunAttributes.Kind.Damage);
             var capacity = rows.First(r => r.Kind == ScGunAttributes.Kind.Capacity);
             return charge.Label.Contains("充能") && charge.LowerIsBetter && charge.Text == "5"
-                && damage.Text == "225" && capacity.Text == "1";
+                && damage.Text == "300" && capacity.Text == "1";
         });
         Test("bar-scales-are-fixed-not-per-selection", () => {
             var r = ScGunAttributes.Ranges;

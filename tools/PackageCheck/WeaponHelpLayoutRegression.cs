@@ -10,6 +10,7 @@ using Game;
 /// <summary>Real API XML, fonts, Measure/Arrange and screen constructors. No window, GPU or player world.
 /// Texture handles are inert stand-ins: these tests check layout, not rendered pixels.</summary>
 static class WeaponHelpLayoutRegression {
+    sealed class HelpBackScreen : Screen { public override void Update() => ScreensManager.GoBack(); }
     sealed class NoticeGui : ComponentGui {
         public readonly List<string> Messages = [];
         public bool PlayedSound;
@@ -100,6 +101,45 @@ static class WeaponHelpLayoutRegression {
             } finally { registryField.SetValue(null, previousRegistry); }
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);
             var recipe = (Screen)Activator.CreateInstance(mod.GetType("Game.ScAssemblyRecipesScreen"));
+            // Execute the real screen switcher/history and vanilla catalogue Enter/Back, not only Enter([]).
+            var savedRoot = ScreensManager.RootWidget; var savedCurrent = ScreensManager.CurrentScreen; var savedPrevious = ScreensManager.PreviousScreen;
+            var savedHistory = ScreensManager.HistoryStack.ToArray(); var savedScreens = ScreensManager.m_screens.ToArray(); var savedAnimation = ScreensManager.m_animationData;
+            var frameDuration = typeof(Time).GetProperty("FrameDuration"); float savedDuration = Time.FrameDuration;
+            bool edge = SettingsManager.AdaptEdgeToEdgeDisplay;
+            try {
+                frameDuration.SetValue(null, .1f); SettingsManager.AdaptEdgeToEdgeDisplay = false;
+                ScreensManager.RootWidget = new CanvasWidget { WidgetsHierarchyInput = new WidgetInput() };
+                ScreensManager.CurrentScreen = null; ScreensManager.PreviousScreen = null; ScreensManager.m_animationData = null; ScreensManager.HistoryStack.Clear();
+                var game = new Screen(); var help = new HelpBackScreen(); var catalogue = new RecipaediaScreen();
+                ScreensManager.m_screens["Game"] = game; ScreensManager.m_screens["Help"] = help; ScreensManager.m_screens["Recipaedia"] = catalogue;
+                void Finish() { for (int i = 0; i < 10 && ScreensManager.IsAnimating; i++) ScreensManager.UpdateAnimation(); if (ScreensManager.IsAnimating) throw new Exception("Navigation animation did not finish"); }
+                void Switch(Screen screen, params object[] args) { ScreensManager.SwitchScreen(screen, args); Finish(); }
+                void Back(Screen screen) { mod.GetType("Game.ScWeaponHelpScreen").GetMethod("GoBack", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(screen, null); Finish(); }
+                Switch(game);
+                for (int cycle = 0; cycle < 4; cycle++) {
+                    Switch(help); Switch(catalogue);
+                    var a = (Screen)Activator.CreateInstance(attributes.GetType(), [template]); ScreensManager.m_screens["RecipaediaRecipes"] = a; Switch(a, template);
+                    var b = (Screen)Activator.CreateInstance(recipe.GetType()); ScreensManager.m_screens["RecipaediaRecipes"] = b; Switch(b, template);
+                    var c = (Screen)Activator.CreateInstance(attributes.GetType(), [template]); ScreensManager.m_screens["RecipaediaRecipes"] = c; Switch(c, template);
+                    // Simulate a registered recipe instance changing after entry, as in the reported loop.
+                    ScreensManager.m_screens["RecipaediaRecipes"] = b;
+                    Back(c);
+                    bool atCatalogue = ScreensManager.CurrentScreen == catalogue && catalogue.m_previousScreen == help && ScreensManager.TopOfHistoryScreen == help;
+                    catalogue.m_listCategoryIndex = catalogue.m_categoryIndex;
+                    var backButton = catalogue.Children.Find<BevelledButtonWidget>("TopBar.Back"); backButton.m_clickableWidget.IsClicked = true;
+                    catalogue.Update(); Finish(); help.Update(); Finish();
+                    Check($"navigation/catalogue-help-exit/{cycle}", atCatalogue && ScreensManager.CurrentScreen == game && ScreensManager.HistoryStack.Count == 0,
+                        "real SwitchScreen/animation/Recipaedia.Enter/Recipaedia.Update/Help GoBack exits; no history loop");
+                }
+                var stationPage = (Screen)Activator.CreateInstance(attributes.GetType(), [template]); Switch(stationPage, template);
+                var stationRecipe = (Screen)Activator.CreateInstance(recipe.GetType()); Switch(stationRecipe, template); Back(stationRecipe);
+                Check("navigation/workbench-returns-to-game", ScreensManager.CurrentScreen == game && ScreensManager.HistoryStack.Count == 0, "direct game entry does not return through catalogue/help");
+            } finally {
+                frameDuration.SetValue(null, savedDuration); SettingsManager.AdaptEdgeToEdgeDisplay = edge;
+                ScreensManager.RootWidget = savedRoot; ScreensManager.CurrentScreen = savedCurrent; ScreensManager.PreviousScreen = savedPrevious; ScreensManager.m_animationData = savedAnimation;
+                ScreensManager.HistoryStack.Clear(); foreach (var s in savedHistory.Reverse()) ScreensManager.HistoryStack.Push(s);
+                ScreensManager.m_screens.Clear(); foreach (var p in savedScreens) ScreensManager.m_screens[p.Key] = p.Value;
+            }
             // Includes the user's 1536x825 at the game's 850-unit UI width, maximum UI scale,
             // landscape phones, portrait, wide windows, and resize back through previous modes.
             Vector2[] sizes = [new(850, 479), new(708, 399), new(1000, 479), new(1200, 675), new(480, 850), new(360, 640), new(850, 479)];
