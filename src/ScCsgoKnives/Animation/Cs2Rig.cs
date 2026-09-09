@@ -97,7 +97,7 @@ public static class Cs2Rig {
         if (gun is null) return null;
         if (s_reloadSections.TryGetValue(gun, out ReloadSections hit)) return hit;
         ReloadSections sections = null;
-        Clip clip = Resolve(Get(gun), "reload");
+        Clip clip = Resolve(GetMetadata(gun), "reload");
         if (clip?.Events is not null) {
             ClipEvent loop = clip.Events.FirstOrDefault(e => e.Class == "CNmClipDocEvent_ID" && e.Name == "WPN_RELOAD_LOOP");
             ClipEvent outro = clip.Events.FirstOrDefault(e => e.Class == "CNmClipDocEvent_ID" && e.Name == "WPN_RELOAD_OUTRO");
@@ -115,7 +115,7 @@ public static class Cs2Rig {
     }
 
     public static (float Drop, float Insert)? ReloadMilestones(string gun, string alias) {
-        Clip clip = Resolve(Get(gun), alias);
+        Clip clip = Resolve(GetMetadata(gun), alias);
         ClipEvent drop = clip?.Events?.FirstOrDefault(e => e.Name == "WPN_DROP_MAG");
         ClipEvent insert = clip?.Events?.FirstOrDefault(e => e.Name == "WPN_RELOAD_ADD_AMMO");
         if (drop is null || insert is null || drop.At < 0 || insert.At < drop.At || insert.At > clip.Duration) return null;
@@ -123,7 +123,7 @@ public static class Cs2Rig {
     }
 
     public static float GrenadeReleaseTime(string asset, string alias) {
-        Clip clip = Resolve(Get(asset), alias);
+        Clip clip = Resolve(GetMetadata(asset), alias);
         ClipEvent release = clip?.Events?.FirstOrDefault(e => e.Name.EndsWith(".Throw", StringComparison.OrdinalIgnoreCase));
         if (release is null || release.At < 0 || release.At > clip.Duration)
             throw new InvalidDataException($"Missing CS2 throw timing: {asset}/{alias}");
@@ -211,6 +211,23 @@ public static class Cs2Rig {
     };
 
     static readonly ScResourceCache<string, Asset> s_assets = new("animations", 12);
+    static readonly Lazy<Dictionary<string, Asset>> s_metadata = new(() => {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        var assembly = typeof(Cs2Rig).Assembly;
+        using var stream = assembly.GetManifestResourceStream(assembly.GetManifestResourceNames().Single(n => n.EndsWith(".cs2_catalog.json")));
+        var files = JsonSerializer.Deserialize<Dictionary<string, RigFile>>(stream);
+        var result = files.ToDictionary(p => p.Key, p => new Asset {
+            Name = p.Key, File = p.Value,
+            ByAlias = p.Value.Clips.Values.Where(c => !string.IsNullOrEmpty(c.Alias))
+                .GroupBy(c => c.Alias, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal)
+        }, StringComparer.Ordinal);
+        KnifeLog.Information($"[CS_ATTR_0414] clip metadata: {result.Count} assets, {watch.Elapsed.TotalMilliseconds:0.0} ms; no skeletal curves loaded");
+        return result;
+    });
+    // Metadata uses the exact same alias/fallback/event logic as full animation sampling. Its source
+    // is generated from the shipped animations and pack_scmod rejects stale metadata. Do not add
+    // a fallback to Get here: opening a catalogue must never evict the player's live animation rig.
+    static Asset GetMetadata(string gun) => gun is not null && s_metadata.Value.TryGetValue(gun, out var asset) ? asset : null;
 
     /// <summary>
     /// True when a CS2 rig exists for this asset. The three guns are listed in
@@ -238,7 +255,7 @@ public static class Cs2Rig {
     /// controller time a zero-length idle2 while the renderer drew idle.
     /// </summary>
     public static float Duration(string gun, string clipAlias) {
-        Asset asset = Get(gun);
+        Asset asset = GetMetadata(gun);
         Clip clip = ResolveOrIdle(asset, clipAlias);
         return clip?.Duration ?? 0f;
     }
@@ -250,7 +267,7 @@ public static class Cs2Rig {
     /// most second inspects come out as the finished idle pose in 0.17.0.
     /// </summary>
     public static bool HasAlias(string gun, string clipAlias) =>
-        Resolve(Get(gun), clipAlias) is not null;
+        Resolve(GetMetadata(gun), clipAlias) is not null;
 
     /// <summary>
     /// The CS2 clip an alias resolves to, or null. Two aliases that resolve to the
@@ -259,15 +276,15 @@ public static class Cs2Rig {
     /// durations are no test, deploy and deploy2 both run 1.0000 s on six knives.
     /// </summary>
     public static string ResolvedClip(string gun, string clipAlias) =>
-        Resolve(Get(gun), clipAlias)?.SourceName;
+        Resolve(GetMetadata(gun), clipAlias)?.SourceName;
 
     /// <summary>True when the alias resolves to a clip CS2 layers additively (see Clip.Additive).</summary>
     public static bool IsAdditive(string gun, string clipAlias) =>
-        Resolve(Get(gun), clipAlias)?.Additive is not null;
+        Resolve(GetMetadata(gun), clipAlias)?.Additive is not null;
 
     /// <summary>The aliases of this asset's additive clips, for the self-test.</summary>
     public static IEnumerable<string> AdditiveAliases(string gun) {
-        Asset asset = Get(gun);
+        Asset asset = GetMetadata(gun);
         if (asset?.File?.Clips is null) yield break;
         foreach (Clip clip in asset.File.Clips.Values)
             if (clip.Additive is not null && clip.Alias is not null) yield return clip.Alias;

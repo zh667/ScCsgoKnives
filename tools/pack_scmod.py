@@ -26,6 +26,9 @@ def check_catalog():
         data = json.loads(path.read_text(encoding='utf-8'))
         expected[path.name.removesuffix('.cs2.animation.json')] = {
             key: data.get(key) for key in ('Skinned', 'Parts', 'MeshParts')}
+        expected[path.name.removesuffix('.cs2.animation.json')]['Clips'] = {
+            name: {k: clip[k] for k in ('SourceName', 'Alias', 'Duration', 'Events', 'Additive', 'AdditiveBase', 'AdditiveOver') if k in clip}
+            for name, clip in data['Clips'].items()}
     path = root / 'cs2_catalog.json'
     if json.loads(path.read_text(encoding='utf-8')) != expected:
         raise SystemExit('cs2_catalog.json is stale; run tools/generate_cs2_catalog.py and rebuild.')

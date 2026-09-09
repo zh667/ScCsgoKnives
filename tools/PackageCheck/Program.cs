@@ -34,8 +34,10 @@ static string Sha256(string path) {
 string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null, weaponStats = null, stattrakOut = null;
 string published0282 = null, snapshot0282 = null;
 string enchantmentAssembly = null;
+bool attributeBenchmark = false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--attribute-benchmark": attributeBenchmark = true; break;
         case "--enchantment-assembly": enchantmentAssembly = args[++i]; break;
         case "--published-0282": published0282 = args[++i]; break;
         case "--snapshot-0282": snapshot0282 = args[++i]; break;
@@ -96,6 +98,12 @@ knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.S
 
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
 if (weaponStats is not null) { WeaponStatsExport.Write(mod, scmod, weaponStats, digest); return 0; }
+
+if (attributeBenchmark) {
+    Console.WriteLine(JsonSerializer.Serialize(AttributeColdRegression.Run(mod, false)));
+    return 0; // Measurement mode also accepts the historical baseline with eager loads.
+}
+var attributeColdChecks = AttributeColdRegression.Run(mod);
 
 ThirdPersonExport.ProvideObj(mod, scmod); // the self-test bakes the OBJ-piece guns for third person from the package's own files
 // The gun state table a world would own (layout v5): partial magazines and durability live in records, not in the item value.
@@ -164,6 +172,7 @@ FreshRegistry(); FreshRegistry(); foreach(var c in GunSkinRegression.Run(mod,scm
 foreach(var c in CombatRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunHandlingRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunDiagnosticsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in attributeColdChecks) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,published0282,snapshot0282)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
