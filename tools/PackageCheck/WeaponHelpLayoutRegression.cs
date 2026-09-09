@@ -83,9 +83,9 @@ static class WeaponHelpLayoutRegression {
                 Widget Part(string n)=>(Widget)browse.GetType().GetField(n,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(browse);
                 bool Inside(Widget w)=>w.GlobalBounds.Min.X>=browse.GlobalBounds.Min.X-.1f && w.GlobalBounds.Max.X<=browse.GlobalBounds.Max.X+.1f
                     && w.GlobalBounds.Min.Y>=browse.GlobalBounds.Min.Y-.1f && w.GlobalBounds.Max.Y<=browse.GlobalBounds.Max.Y+.1f;
-                bool ok=Inside(Part("m_listHost"))&&(!Part("m_previewHost").IsVisible||Inside(Part("m_previewHost")))&&Inside(Part("m_detailHost"))&&Inside(Part("m_confirm"))&&Part("m_confirm").ActualSize.Y>=48;
+                bool ok=Inside(Part("m_listHost"))&&(!Part("m_previewHost").IsVisible||Inside(Part("m_previewHost")))&&Inside(Part("m_detailHost"))&&Inside(Part("m_cancel"))&&Part("m_cancel").ActualSize.Y>=48&&Inside(Part("m_hint"));
                 var select=browse.GetType().GetMethod("Select",BindingFlags.NonPublic|BindingFlags.Instance);
-                foreach(var item in craftItems){select.Invoke(browse,[item]);browse.Measure(available);browse.Arrange(Vector2.Zero,available);ok &= Inside(Part("m_confirm"))&&Part("m_detailScroll").ActualSize.Y>40;}
+                foreach(var item in craftItems){select.Invoke(browse,[item]);browse.Measure(available);browse.Arrange(Vector2.Zero,available);ok &= Inside(Part("m_cancel"))&&Part("m_detailScroll").ActualSize.Y>40;}
                 Check($"workbench-browse/{creative}/{available}",ok&&choices==0,"all 57 weapon recipes: list, preview, scrollable material area and fixed footer; browsing never commits");
                 browse.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(browse,["步枪"]);
                 Check($"workbench-category/{creative}/{available}",((ListPanelWidget)Part("m_list")).Items.Count==7,"category filters rifles without losing available recipes");
@@ -98,6 +98,48 @@ static class WeaponHelpLayoutRegression {
                     "80-line quote scrolls; confirmation remains visible and cannot be executed by simply selecting a row");
                 ((BevelledButtonWidget)yes).m_clickableWidget.IsClicked=true;confirm.Update();confirm.Update();
                 Check($"workbench-confirm-once/{creative}/{available}",choices==1,"explicit confirmation dispatches the existing transaction callback once, not once per held frame");
+                int notices=0;
+                var notice=(Dialog)mod.GetType("Game.SubsystemScWeaponWorkbench").GetMethod("NoticeDialog",BindingFlags.Static|BindingFlags.NonPublic)
+                    .Invoke(null,["涂装 · 没有可用枪械","背包里没有支持更换涂装的枪械。\n请将支持涂装的枪械放入玩家背包或快捷栏。",(Action)(()=>notices++)]);
+                notice.WidgetsHierarchyInput=new WidgetInput();notice.Measure(available);notice.Arrange(Vector2.Zero,available);notice.Update();
+                var noticeYes=(ButtonWidget)notice.GetType().GetField("m_yes",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(notice);
+                var noticeNo=(ButtonWidget)notice.GetType().GetField("m_no",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(notice);
+                Check($"workbench-visible-refusal/{creative}/{available}",notices==0&&!noticeNo.IsVisible&&noticeYes.Text=="返回"
+                    &&noticeYes.GlobalBounds.Max.Y<=notice.GlobalBounds.Max.Y+.1f&&noticeYes.ActualSize.Y>=48,
+                    "real workshop notice persists until acknowledgment, with a single centered visible Return; not a hidden HUD toast");
+                ((BevelledButtonWidget)noticeYes).m_clickableWidget.IsClicked=true;notice.Update();notice.Update();
+                Check($"workbench-notice-return-once/{creative}/{available}",notices==1,"acknowledgment returns to the appropriate list exactly once");
+            }
+            foreach(bool creative in new[]{false,true}) {
+                Dialog Browse(Action<object> choose) {
+                    var inv=new ComponentInventory(); inv.m_slots.Add(new());
+                    var d=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["功能",new object[]{"维修","涂装","计数器","属性"},56f,
+                        (Func<object,string>)(o=>o.ToString()),choose,inv,creative]);
+                    d.WidgetsHierarchyInput=new WidgetInput(); d.Measure(new(850,479)); d.Arrange(Vector2.Zero,new(850,479)); return d;
+                }
+                foreach(int row in Enumerable.Range(0,4)) {
+                    int opened=0; object chosen=null;
+                    var d=Browse(o=>{opened++;chosen=o;});
+                    var list=(ListPanelWidget)d.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(d);
+                    list.ItemClicked(list.Items[row]); d.Update();
+                    Check($"workbench-first-click-preview/{creative}/{row}",opened==0&&!d.AllChildren.OfType<ButtonWidget>().Any(b=>b.Text=="下一步"),"real ItemClicked previews, including initially selected first row; no Next button");
+                    list.ItemClicked(list.Items[row]); d.Update();d.Update();list.ItemClicked(list.Items[row]);d.Update();
+                    Check($"workbench-double-click-once/{creative}/{row}",opened==1&&ReferenceEquals(chosen,list.Items[row]),"mouse/touch shared click callback opens exactly once; held/triple input cannot repeat it");
+                }
+                int calls=0; var delayed=Browse(_=>calls++);
+                var click=delayed.GetType().GetMethod("ClickItem",BindingFlags.NonPublic|BindingFlags.Instance);
+                var filter=delayed.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance);
+                var delayedList=(ListPanelWidget)delayed.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(delayed);
+                var a=delayedList.Items[0];var b=delayedList.Items[1];
+                click.Invoke(delayed,[a,1d]);click.Invoke(delayed,[a,2d]);delayed.Update();
+                click.Invoke(delayed,[b,2.1d]);delayed.Update();
+                Check($"workbench-timeout-or-different-row/{creative}",calls==0,"slow clicks and different rows are previews, not double-click activation");
+                delayedList.ScrollPosition=20;click.Invoke(delayed,[b,2.2d]);delayed.Update();
+                Check($"workbench-scroll-breaks-double-click/{creative}",calls==0,"scrolling between taps cannot open a row");
+                filter.Invoke(delayed,["全部"]);click.Invoke(delayed,[b,2.3d]);delayed.Update();
+                Check($"workbench-category-breaks-double-click/{creative}",calls==0,"changing category resets the click sequence");
+                click.Invoke(delayed,[b,2.4d]);delayed.Update();delayed.Update();
+                Check($"workbench-fresh-double-click/{creative}",calls==1,"two consecutive clicks in the new category activate once");
             }
             var counterType = mod.GetType("Game.ScGunCounterTemplateBlock");
             var counterBlock = BlocksManager.Blocks[BlocksManager.BlockTypeToIndex[counterType]];

@@ -4,6 +4,9 @@ namespace Game;
 public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     // Both game modes expose the same operations. Creative only changes their costs, not availability.
     internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
+    // A HUD toast is behind the workshop cover. Keep refusals visible until acknowledged.
+    internal static Dialog NoticeDialog(string title, string detail, Action back) =>
+        new ScWorkbenchConfirmDialog(title, detail, "返回", null, _ => back());
     public override int[] HandledBlocks => [BlocksManager.GetBlockIndex<ScWeaponWorkbenchBlock>(true)];
     public override bool OnInteract(TerrainRaycastResult hit, ComponentMiner miner) {
         ComponentPlayer player = miner.ComponentPlayer;
@@ -17,8 +20,17 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         string Level(ScWeaponCrafting.Entry e) => !Creative() && CraftingRecipesManager.EnableLevelRestrictions ? $"  制作等级 {e.Level}" : "";
         string ValueName(int value) => BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(terrain, value);
         string MaterialLines(IReadOnlyDictionary<int, int> materials) => string.Join("\n", materials.Select(m => $"{ValueName(m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
+        void Notice(string title, string detail, Action back) {
+            KnifeLog.Information($"workbench notice: mode={(Creative()?"creative":"survival")} page={title} reason={detail}");
+            DialogsManager.ShowDialog(player.GuiWidget, NoticeDialog(title,detail,back));
+        }
         Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected) =>
-            new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{if(Available())selected(item);},miner.Inventory,Creative());
+            new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{
+                bool available=Available();
+                KnifeLog.Information($"workbench select: mode={(Creative()?"creative":"survival")} page={title} item={label(item)} inventory={miner.Inventory?.GetType().Name} slots={miner.Inventory?.SlotsCount} available={available}");
+                if(available)selected(item);
+                else Notice("装配台暂不可用","你已离装配台太远、装配台已被移除，或角色已无法操作。请靠近有效的装配台后重新打开。",()=>{});
+            },miner.Inventory,Creative());
         void ShowList() {
             if (!Available()) return;
             object[] items = MainMenuItems();
@@ -39,7 +51,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             bool levelOk = Creative() || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= entry.Level;
                             bool crafted = levelOk && ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, Creative() ? new Dictionary<int, int>() : materials);
-                            player.ComponentGui.DisplaySmallMessage(crafted ? "组装完成：" + Name(entry) : levelOk ? "材料不足或没有成品空位，未扣除材料。" : $"制作需要等级 {entry.Level}，未扣除材料。", crafted ? Color.White : Color.Red, true, false);
+                            Notice(crafted ? "组装完成" : "组装未完成", crafted ? "组装完成：" + Name(entry) : levelOk ? "材料不足或没有成品空位，未扣除材料。" : $"制作需要等级 {entry.Level}，未扣除材料。", ShowList);
+                            return;
                         }
                         ShowList();
                     }));
@@ -50,22 +63,23 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         void ShowRepair() {
             if (!Available()) return;
             var candidates = ScWeaponRepair.Candidates(miner.Inventory).ToArray();
-            if (candidates.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有需要维修的枪械。", Color.White, true, false); ShowList(); return; }
+            if (candidates.Length == 0) { Notice("维修 · 没有可用枪械", "背包里没有需要维修的枪械。\n请将受损的 CS 枪械放入玩家背包或快捷栏；满耐久枪不会出现在维修列表中。箱子里的枪不参与此列表。", ShowList); return; }
             DialogsManager.ShowDialog(player.GuiWidget, Selection("武器装配台 · 维修", candidates, 56,
                 (Func<object, string>)(item => { var c = (ScWeaponRepair.Candidate)item; return $"{ValueName(c.Value)} · 耐久 {ScGunDurability.PercentText(c.Durability, c.Full)} · 第 {c.Slot + 1} 格"; }), item => {
                     var c = (ScWeaponRepair.Candidate)item;
                     var entry = ScWeaponCrafting.Find(c.Value);
                     // The quote freezes the record revision, the priced durability and the materials; the click re-checks all of it.
                     var quote = ScWeaponRepair.Prepare(c, entry, Creative(), ScWeaponMaterialBlock.Value);
-                    if (quote is null) { player.ComponentGui.DisplaySmallMessage("这把枪的状态无法读取。", Color.Red, true, false); ShowRepair(); return; }
+                    if (quote is null) { Notice("维修 · 状态不可用", "这把枪的状态无法读取，请重新选择。没有扣除材料。", ShowRepair); return; }
                     string detail = $"当前耐久 {quote.Durability} / {quote.Full}（{ScGunDurability.PercentText(quote.Durability, quote.Full)}）→ 维修后 {quote.Full} / {quote.Full}\n" + (Creative() ? "创造模式：免费" : quote.Cost.Count == 0 ? "无需材料" : MaterialLines(quote.Cost))
                         + "\n只恢复耐久，不改变余弹、消音器和型号。";
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(ValueName(c.Value), detail, "维修", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = ScWeaponRepair.TryRepair(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
                             KnifeLog.Information($"gun repair: {ValueName(c.Value)} slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.Durability}/{quote.Full} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
-                            player.ComponentGui.DisplaySmallMessage(result == ScGunResult.Success ? "维修完成：" + ValueName(c.Value)
-                                : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。", result == ScGunResult.Success ? Color.White : Color.Red, true, false);
+                            Notice(result == ScGunResult.Success ? "维修完成" : "维修未完成", result == ScGunResult.Success ? "维修完成：" + ValueName(c.Value)
+                                : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。", ShowRepair);
+                            return;
                         }
                         ShowRepair();
                     }));
@@ -76,7 +90,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         void ShowSkinGuns() {
             if (!Available()) return;
             var guns = ScWeaponSkinning.Candidates(miner.Inventory).ToArray();
-            if (guns.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有可更换涂装的枪械。", Color.White, true, false); ShowList(); return; }
+            if (guns.Length == 0) { Notice("涂装 · 没有可用枪械", "背包里没有支持更换涂装的枪械。\n请将带有可用涂装的 CS 枪械放入玩家背包或快捷栏。目前只有部分型号有涂装；箱子里的枪不参与此列表。", ShowList); return; }
             DialogsManager.ShowDialog(player.GuiWidget, Selection("更换涂装 · 选择枪械", guns, 56,
                 (Func<object, string>)(item => { var c = (ScWeaponSkinning.Candidate)item; return $"{ValueName(c.Value)} · {ScGunSkinCatalog.NameOf(c.SkinId)} · 第 {c.Slot + 1} 格"; }),
                 item => ShowSkins((ScWeaponSkinning.Candidate)item)));
@@ -90,7 +104,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     : $"{((ScGunSkin)item).Name}{(((ScGunSkin)item).PaintId == gun.SkinId ? "（当前）" : "")}  {((ScGunSkin)item).Tier}"), item => {
                     var skin = item as ScGunSkin;
                     var quote = ScWeaponSkinning.Prepare(miner.Inventory, gun.Slot, skin, Creative(), ScWeaponMaterialBlock.Value);
-                    if (quote is null) { player.ComponentGui.DisplaySmallMessage("这把枪已经是该外观，未扣除材料。", Color.White, true, false); ShowSkins(gun); return; }
+                    if (quote is null) { Notice("涂装 · 无法更换", "这把枪已经是该外观，或背包中的枪械状态已变化。没有扣除材料，请重新选择枪械。", ShowSkinGuns); return; }
                     string state = GunSpec.TryGetSnapshot(Terrain.ExtractData(gun.Value), out var s)
                         ? $"当前 {s.Rounds} 发 · 耐久 {ScGunDurability.PercentText(s.Durability, s.MaxDurability)} · 消音器{(s.SilencerOff ? "已拆" : "在位")}" : "";
                     string detail = $"{ScGunSkinCatalog.NameOf(quote.FromSkinId)} → {(skin?.Name ?? "原厂外观")}\n{state}\n"
@@ -102,9 +116,10 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = ScWeaponSkinning.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
                             KnifeLog.Information($"gun skin: slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.FromSkinId} -> {skin?.PaintId ?? 0} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
-                            player.ComponentGui.DisplaySmallMessage(result == ScGunResult.Success ? "涂装完成：" + (skin?.Name ?? "原厂外观")
+                            Notice(result == ScGunResult.Success ? "涂装完成" : "涂装未完成", result == ScGunResult.Success ? "涂装完成：" + (skin?.Name ?? "原厂外观")
                                 : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
-                                result == ScGunResult.Success ? Color.White : Color.Red, true, false);
+                                ShowSkinGuns);
+                            return;
                         }
                         ShowSkinGuns();
                     }));
@@ -115,8 +130,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             int value = miner.Inventory?.GetSlotValue(miner.Inventory.ActiveSlotIndex) ?? 0;
             if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || !ScGunBlock.IsKnown(value)) {
                 var guns = ScGunCounter.Candidates(miner.Inventory).ToArray();
-                if (guns.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有可查看的枪械。", Color.White, true, false); ShowList(); return; }
-                value = guns[0].Value;
+                // The catalogue is read-only and does not require owning a gun.
+                value = guns.Length > 0 ? guns[0].Value : ScGunAttributes.TemplateValue(0);
             }
             DialogsManager.HideAllDialogs();
             ScreensManager.m_screens["RecipaediaRecipes"] = new ScGunAttributesScreen();
@@ -128,15 +143,15 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         void ShowCounterGuns() {
             if (!Available()) return;
             var registry = ScGunRegistry.Current;
-            if (registry is null || registry.Disabled) { player.ComponentGui.DisplaySmallMessage("本世界的枪械已停用，无法安装计数器。", Color.Red, true, false); ShowList(); return; }
+            if (registry is null || registry.Disabled) { Notice("计数器 · 暂不可用", "本世界的枪械记录不可用或已停用，无法安装计数器。请检查世界加载日志；没有扣除材料。", ShowList); return; }
             var guns = ScGunCounter.Candidates(miner.Inventory).Where(c => !c.Installed).ToArray();
-            if (guns.Length == 0) { player.ComponentGui.DisplaySmallMessage("背包里没有可安装计数器的枪械（已安装的不会重复安装）。", Color.White, true, false); ShowList(); return; }
+            if (guns.Length == 0) { Notice("计数器 · 没有可用枪械", "背包里没有可安装计数器的枪械。\n请将尚未安装计数器的 CS 枪械放入玩家背包或快捷栏；已安装的不会重复安装，箱子里的枪不参与此列表。", ShowList); return; }
             if (registry.GrowthMode == ScGunGrowthMode.Unset) { ChooseGrowthMode(() => ShowCounterGuns()); return; }
             DialogsManager.ShowDialog(player.GuiWidget, Selection("安装击杀计数器 · 选择枪械", guns, 56,
                 (Func<object, string>)(item => { var c = (ScGunCounter.Candidate)item; return $"{ValueName(c.Value)} · 第 {c.Slot + 1} 格"; }), item => {
                     var c = (ScGunCounter.Candidate)item;
                     var quote = ScGunCounter.Prepare(miner.Inventory, c.Slot, Creative());
-                    if (quote is null) { player.ComponentGui.DisplaySmallMessage("这把枪已装有计数器，或状态无法读取。", Color.White, true, false); ShowCounterGuns(); return; }
+                    if (quote is null) { Notice("计数器 · 无法安装", "这把枪已装有计数器、状态无法读取，或没有可用的官方计数器安装位。没有扣除材料，请重新选择。", ShowCounterGuns); return; }
                     bool levelOk = Creative() || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= ScGunGrowth.InstallLevel;
                     string state = GunSpec.TryGetSnapshot(Terrain.ExtractData(c.Value), out var s)
                         ? $"当前 {s.Rounds} 发 · 耐久 {ScGunDurability.PercentText(s.Durability, s.MaxDurability)} · 外观 {ScGunSkinCatalog.NameOf(s.SkinId)}" : "";
@@ -150,10 +165,11 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = levelOk ? ScGunCounter.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot)) : ScGunResult.InsufficientMaterials;
                             KnifeLog.Information($"gun counter install: {ValueName(c.Value)} slot {quote.Slot} record {quote.Id} rev {quote.Revision} -> {result}");
-                            player.ComponentGui.DisplaySmallMessage(result == ScGunResult.Success ? "计数器已安装：" + ValueName(c.Value)
+                            Notice(result == ScGunResult.Success ? "安装完成" : "安装未完成", result == ScGunResult.Success ? "计数器已安装：" + ValueName(c.Value)
                                 : !levelOk ? $"安装需要等级 {ScGunGrowth.InstallLevel}，未扣除材料。"
                                 : result == ScGunResult.StateChanged ? "枪械状态已变化，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
-                                result == ScGunResult.Success ? Color.White : Color.Red, true, false);
+                                ShowCounterGuns);
+                            return;
                         }
                         ShowCounterGuns();
                     }));
