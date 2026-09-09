@@ -38,7 +38,13 @@ public class ScCsgoKnivesModLoader : ModLoader {
     /// every platform. That is the whole mobile settings route: no file to edit, and the entry cannot be hidden
     /// by switching the combat buttons off.</summary>
     public override void OnSettingsScreenCreated(SettingsScreen settingsScreen, out Dictionary<ButtonWidget, Action> buttonsToAdd) {
-        var button = new BevelledButtonWidget { Text = "CS 枪械", Size = new Vector2(220, 60), HorizontalAlignment = WidgetAlignment.Center };
+        // Match the game's own Settings button style/container (310x60). Do not
+        // give this one a bespoke width or it becomes visibly shorter/longer.
+        var button = new BevelledButtonWidget {
+            Text = "CS 枪械", Style = ContentManager.Get<XElement>("Styles/ButtonStyle_310x60"),
+            HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center,
+            Margin = new Vector2(0f, 5f)
+        };
         buttonsToAdd = new Dictionary<ButtonWidget, Action> {
             [button] = () => { EnsureScreens(); ScreensManager.SwitchScreen(ScGunSettingsScreen.ScreenName); },
         };

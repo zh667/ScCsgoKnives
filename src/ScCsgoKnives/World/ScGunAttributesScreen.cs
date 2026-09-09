@@ -64,6 +64,13 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         if (parameters is not { Length: > 0 } || parameters[0] is not int)
             parameters = [m_initialValue != 0 ? m_initialValue : ScGunAttributes.TemplateValue(0)];
         base.Enter(parameters);
+        // RecipaediaRecipesScreen loads its own recipe/list widgets before this
+        // custom card is attached. They must not remain visible underneath it.
+        foreach (Widget child in Children.ToArray()) {
+            if (ReferenceEquals(child, m_root)) continue;
+            if (child.Name == "TopBar") continue;
+            child.IsVisible = false;
+        }
         m_instanceValue = 0;
         int variant = 0;
         if (parameters[0] is int value && Terrain.ExtractContents(value) == BlocksManager.GetBlockIndex<ScGunBlock>(true)) {
@@ -91,6 +98,7 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         m_identity.ParentWidget?.Children.Remove(m_identity);
         m_narrow = narrow; m_built = true;
         m_root.Children.Clear();
+        m_root.Margin = new Vector2(12, 56);
         m_root.Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal;
         if (m_list.Items.Count == 0) for (int v = 0; v < GunSpec.All.Length; v++) m_list.AddItem(v);
 
