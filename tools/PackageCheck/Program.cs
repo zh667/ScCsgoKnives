@@ -34,9 +34,14 @@ static string Sha256(string path) {
 string scmod = null, expected = null, jsonOut = null, vanillaContent = null, framesOut = null, polishOut = null, resourceAudit = null, thirdPersonOut = null, weaponStats = null, stattrakOut = null;
 string published0282 = null, snapshot0282 = null;
 string enchantmentAssembly = null;
+string previousGrowthPackage = null, ghoulAssembly = null;
+string travelSourceSnapshot = null;
 bool attributeBenchmark = false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--travel-source-snapshot": travelSourceSnapshot = args[++i]; break;
+        case "--previous-growth-package": previousGrowthPackage = args[++i]; break;
+        case "--ghoul-assembly": ghoulAssembly = args[++i]; break;
         case "--attribute-benchmark": attributeBenchmark = true; break;
         case "--enchantment-assembly": enchantmentAssembly = args[++i]; break;
         case "--published-0282": published0282 = args[++i]; break;
@@ -175,6 +180,9 @@ foreach(var c in GunDiagnosticsRegression.Run(mod)) checks.Add(new { name=c.Name
 foreach(var c in attributeColdChecks) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in TravelRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in ControlsScopeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in Growth30BoundaryRegression.Run(mod,previousGrowthPackage,ghoulAssembly)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in LiveBackupRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in GenericTravelRegression.Run(mod,travelSourceSnapshot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,published0282,snapshot0282)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });

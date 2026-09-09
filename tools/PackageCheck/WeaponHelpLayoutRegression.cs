@@ -393,18 +393,18 @@ static class WeaponHelpLayoutRegression {
                     var preview = screen.GetType().GetMethod("PreviewLevel", BindingFlags.NonPublic | BindingFlags.Instance);
                     var levelField = screen.GetType().GetField("m_previewLevel", BindingFlags.NonPublic | BindingFlags.Instance);
                     int originalValue = (int)screen.GetType().GetField("m_value", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen);
-                    for (int lv = 0; lv <= 10; lv++) {
+                    for (int lv = 0; lv <= 30; lv++) {
                         preview.Invoke(screen, [lv]); screen.Measure(size); screen.Arrange(Vector2.Zero, size);
                         var down = (ButtonWidget)Field("m_levelDown"); var up = (ButtonWidget)Field("m_levelUp"); var levelButton = (ButtonWidget)Field("m_level");
                         var future = (System.Collections.IList)screen.GetType().GetField("m_futureRows", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen);
-                        Check(tag + $"/preview-{lv}", (int)levelField.GetValue(screen) == lv && down.IsEnabled == (lv > 0) && up.IsEnabled == (lv < 10)
-                            && levelButton.Text.Contains($"Lv{lv} / 10") && (lv == 0 ? future.Count == 0 : future.Count > 0)
+                        Check(tag + $"/preview-{lv}", (int)levelField.GetValue(screen) == lv && down.IsEnabled == (lv > 0) && up.IsEnabled == (lv < 30)
+                            && levelButton.Text.Contains($"Lv{lv} / 30") && (lv == 0 ? future.Count == 0 : future.Count > 0)
                             && up.GlobalBounds.Max.X <= right.GlobalBounds.Max.X + .1f
                             && (int)screen.GetType().GetField("m_value", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen) == originalValue,
                             "read-only level selector, boundary buttons, future highlight targets and narrow layout");
                     }
                     preview.Invoke(screen, [-100]); Check(tag + "/preview-clamp-low", (int)levelField.GetValue(screen) == 0, "Lv0 lower bound");
-                    preview.Invoke(screen, [100]); Check(tag + "/preview-clamp-high", (int)levelField.GetValue(screen) == 10, "Lv10 upper bound");
+                    preview.Invoke(screen, [100]); Check(tag + "/preview-clamp-high", (int)levelField.GetValue(screen) == 30, "Lv30 upper bound");
                     select.Invoke(screen, [0]);
                 }
                 screen.Enter([]); // return with empty parameters after a populated page

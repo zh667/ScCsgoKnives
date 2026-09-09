@@ -80,7 +80,7 @@ public static class ScCreativeCountersSelfTest {
                     if (creative) return Creative(value);
                     var inv = new ComponentInventory(); inv.m_slots.Add(new()); inv.AddSlotItems(0, value, 1); return inv;
                 }
-                T("runtime-growth-99-100-999-1000/" + key, () => {
+                T("runtime-growth-through-3000/" + key, () => {
                     var inv = InventoryFor();
                     if (ScGunCounterTemplateBlock.Materialize(inv, 0, "player") != ScGunResult.Success) return false;
                     var registry = ScGunRegistry.Current; int actual = inv.GetSlotValue(0); int id = GunSpec.GetId(Terrain.ExtractData(actual));
@@ -100,15 +100,22 @@ public static class ScCreativeCountersSelfTest {
                     registry.Kills.Enqueue(id, source.Variant);
                     if (Advance() != 1 || registry.Get(id).AppliedGrowthLevel != 10 || registry.Get(id).KillCount != 1000) return false;
                     if (reports.Count != 3 || reports.Last() != (id, 9, 10) || Advance() != 0) return false;
+                    foreach(int boundary in new[]{1099,1999,2999}) {
+                        if(!SetKills(boundary))return false;
+                        Advance();
+                        if(registry.Get(id).AppliedGrowthLevel!=boundary/100)return false;
+                        registry.Kills.Enqueue(id,source.Variant);
+                        if(Advance()!=1||registry.Get(id).KillCount!=boundary+1||registry.Get(id).AppliedGrowthLevel!=(boundary+1)/100)return false;
+                    }
                     // Leveling never tops up ammo or creates a second gun. Persist applied levels and counts twice.
                     if (registry.Get(id).Rounds != source.Rounds || registry.Count != 1) return false;
                     for (int n = 0; n < 2; n++) {
                         var xml = new XElement("Values"); registry.Save(30).Save(xml);
                         var loaded = new ValuesDictionary(); loaded.ApplyOverrides(XElement.Parse(xml.ToString()));
                         registry = ScGunRegistry.Load(loaded, 30); ScGunRegistry.Current = registry;
-                        if (Advance() != 0 || registry.Get(id).AppliedGrowthLevel != 10 || registry.Get(id).KillCount != 1000) return false;
+                        if (Advance() != 0 || registry.Get(id).AppliedGrowthLevel != 30 || registry.Get(id).KillCount != 3000) return false;
                     }
-                    return reports.Count == 3;
+                    return reports.Count == 8;
                 });
                 T("old-unset-104-catches-up-without-another-kill/" + key, () => {
                     var inv = InventoryFor();

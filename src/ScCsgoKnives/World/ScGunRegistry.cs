@@ -64,14 +64,16 @@ public readonly record struct ScGunSnapshot(int Id, int Variant, int Rounds, boo
 /// saved subtree verbatim and disables guns rather than guessing at it.</summary>
 public sealed class ScGunRegistry {
     /// <summary>Record schema. 1 was seven positional fields; 2 appended the finish's CS2 paint ID; 3 replaces the
-    /// positional row with named fields and adds the kill counter and growth state. A schema this build does not
+    /// positional row with named fields and adds the kill counter and growth state; 4 permits levels 0-30.
+    /// A schema this build does not
     /// know is kept verbatim and disables guns - the item layout stamp (GunSpec.DataLayout) is a separate number
     /// and does not change for a record field.</summary>
-    public const int Schema = 3;
+    public const int Schema = 4;
+    public const int SchemaTenLevels = 3;
     public const int SchemaWithoutSkins = 1;
     public const int SchemaWithoutGrowth = 2;
     /// <summary>Every schema this build reads. Anything else is a format from another version.</summary>
-    public static bool IsKnownSchema(int schema) => schema is Schema or SchemaWithoutGrowth or SchemaWithoutSkins;
+    public static bool IsKnownSchema(int schema) => schema is Schema or SchemaTenLevels or SchemaWithoutGrowth or SchemaWithoutSkins;
     /// <summary>The registry of the world being played; set by SubsystemScGunBlockBehavior.Load, cleared on dispose.
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
@@ -197,7 +199,7 @@ public sealed class ScGunRegistry {
         double remaining = -1;
         bool counter = false; long kills = 0; int applied = 0, pending = ScGunGrowth.NoPending, rules = 0, overflow = 0;
         double cycle = 0;
-        if (schema == Schema) {
+        if (schema is Schema or SchemaTenLevels) {
             var seen = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (string field in raw.Split(',')) {
                 int split = field.IndexOf('=');
@@ -231,8 +233,9 @@ public sealed class ScGunRegistry {
         }
         if (variant < 0 || variant >= GunSpec.All.Length) return false;
         if (sil is not (0 or 1)) return false;
-        if (applied < 0 || applied > ScGunGrowth.MaxLevel) return false;
-        if (pending != ScGunGrowth.NoPending && (pending < 0 || pending > ScGunGrowth.MaxLevel)) return false;
+        int levelLimit = schema == SchemaTenLevels ? 10 : ScGunGrowth.MaxLevel;
+        if (applied < 0 || applied > levelLimit) return false;
+        if (pending != ScGunGrowth.NoPending && (pending < 0 || pending > levelLimit)) return false;
         if (kills < 0 || rules < 0 || overflow < 0 || overflow > 1_000_000) return false;
         if (!counter && (kills != 0 || applied != 0 || rules != 0 || pending != ScGunGrowth.NoPending)) return false;
         if (!double.IsFinite(cycle) || cycle < 0 || cycle > 1e6) return false;
@@ -297,7 +300,7 @@ public sealed class ScGunRegistry {
         // as saved; a missing record is not permission to erase its pending kill history.
         int heldCredits = registry.Kills.Pending.Count(e => !registry.m_records.ContainsKey(e.RecordId));
         if (heldCredits > 0) KnifeLog.Warning($"gun kill queue: {heldCredits} credits retained for missing/quarantined records; not applied until their original identity is recovered");
-        if (schema != Schema) KnifeLog.Information($"gun registry: converted {registry.m_records.Count} record(s) from schema {schema} to {Schema}; finishes, ammunition, durability, silencer and charge preserved, counter and growth start unset");
+        if (schema != Schema) KnifeLog.Information($"gun registry: converted {registry.m_records.Count} record(s) from schema {schema} to {Schema}; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults");
         return registry;
     }
 }

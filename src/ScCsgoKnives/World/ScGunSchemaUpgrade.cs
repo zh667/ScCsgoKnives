@@ -6,7 +6,7 @@ namespace Game;
 
 /// <summary>A verified world backup before this build first rewrites an older record schema.
 ///
-/// Loading a schema 1 or 2 table converts it in memory and the next normal save writes schema 3, which older
+/// Loading a schema 1, 2 or 3 table converts it in memory and the next normal save writes schema 4, which older
 /// builds refuse to open. That is a real format change, so the compatibility policy's rule applies: back the
 /// whole world up, close and reopen the archive to prove it, and only then let the converted world be played.
 /// A backup that cannot be completed refuses the load instead of quietly upgrading without one.

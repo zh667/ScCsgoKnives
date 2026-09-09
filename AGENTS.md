@@ -1,5 +1,16 @@
 # Project conventions
 
+- User-directed 2026-09-10 (0.41.10; 0.41.8/9 were test candidates): extend counter growth to Lv30, still 100 kills/level (3000 total).
+  Lv0-10 stays unchanged, including zero spread/recoil and unlimited loaded-world bullet range from Lv10.
+  Lv11-20 add base damage/capacity/rate +30%/+20%/+10% per level; Lv21-30 +50%/+30%/+15%.
+  Durability stays +5% of base per level. Lv30: damage x10, capacity x6.5 (floor), fire rate x3.5, life x2.5.
+  Skin base multiplier stays x1.5; Zeus remains one charge, 5s/2.5s/1s at Lv10/20/30. Reload clips are not sped up.
+  Record schema 4 expands valid levels; keep schema 1/2/3 readers and verified world backup before conversion.
+  Never bump item layout v5 or change weapon IDs. See docs/growth30-ghoul-test-0418.md.
+  Cross-world gun snapshots are generic for providers retaining player XML: native creative slots omit Count,
+  survival slots require it. Packet v3 supports arbitrary world paths; no guessing missing records or overwriting
+  another holder. New identity seeds use a saved world UUID; keep older gun identities unchanged.
+
 - User-directed 2026-09-09 (0.40.7): damage grows +10% of the applicable base per level, +100% at Lv10.
   A valid skin supplies a separate 1.5x base-damage multiplier (skin Lv10 = 3x factory Lv0). Other growth
   values remain unchanged. Counter installation unlocks leveling and starts counting at zero; no prior kills

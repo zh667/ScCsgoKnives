@@ -225,7 +225,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
                 + (original.CounterInstalled ? $" · 计数 {original.KillCount} · Lv{original.Level}" : "") : "";
         m_currentInstance.IsVisible = m_instanceValue != 0;
         int actualLevel = EffectiveGunStats.LevelOf(m_value);
-        m_level.Text = $"预览 Lv{level} / 10";
+        m_level.Text = $"预览 Lv{level} / {ScGunGrowth.MaxLevel}";
         m_levelDown.IsEnabled = level > 0; m_levelUp.IsEnabled = level < ScGunGrowth.MaxLevel;
         m_previewNotice.Text = ScGunAttributes.CounterUnlockNotice + $"\n实际 Lv{actualLevel} · −/+ 切换，点等级回到实际等级。"
             + (level != actualLevel ? "\n仅预览，不改变枪械等级、弹量或存档。" : "")

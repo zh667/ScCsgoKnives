@@ -167,7 +167,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         + (Creative() || !CraftingRecipesManager.EnableLevelRestrictions ? "" : $"\n制作等级 {ScGunGrowth.InstallLevel}")
                         + "\n弹量、涂装、消音器、耐久与充能保持不变；计数从 0 开始，不补算历史击杀。"
                         + (ScGunStatTrak.ModuleAvailable ? "" : "\n（本版尚未包含 CS2 计数器模块模型，计数显示在属性页与物品说明中，枪身上不显示数字。）")
-                        + (registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? "\n本世界规则：计数 + 成长（每 100 次有效击杀升 1 级，累计 1000 满级）。" : "\n本世界规则：仅计数，不提供成长加成。");
+                        + (registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? "\n本世界规则：计数 + 成长（每 100 次有效击杀升 1 级，累计 3000 满级 Lv30）。" : "\n本世界规则：仅计数，不提供成长加成。");
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(ValueName(c.Value), detail, "安装", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = levelOk ? ScGunCounter.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot)) : ScGunResult.InsufficientMaterials;
@@ -187,7 +187,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         // switching would either take levels back or hand them out retroactively.
         void ChooseGrowthMode(Action then) {
             DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog("击杀计数器 · 本世界规则",
-                "选择本世界的计数器规则。选定后不可在游戏中切换。\n\n计数 + 成长：每 100 次有效击杀升 1 级，累计 1000 次满级；伤害、射程、弹匣、耐久上限与充能随等级提升。\n仅计数：只记录并显示击杀数，不改变任何战斗数值。",
+                "选择本世界的计数器规则。选定后不可在游戏中切换。\n\n计数 + 成长：每 100 次有效击杀升 1 级，累计 3000 次满级 Lv30；伤害、射速、射程、弹匣、耐久上限与充能随等级提升。\n仅计数：只记录并显示击杀数，不改变任何战斗数值。",
                 "计数 + 成长", "仅计数", button => {
                     var mode = button == MessageDialogButton.Button1 ? ScGunGrowthMode.CountAndGrow : ScGunGrowthMode.CountOnly;
                     var registry = ScGunRegistry.Current;

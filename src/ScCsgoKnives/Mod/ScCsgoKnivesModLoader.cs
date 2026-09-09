@@ -14,7 +14,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("ProjectXmlLoad", this);
-        ModsManager.RegisterHook("ProjectXmlSave", this);
+        ModsManager.RegisterHook("OnProjectXmlSaved", this);
         ModsManager.RegisterHook("OnLoadingFinished", this);
         ModsManager.RegisterHook("OnProjectDisposed", this);
         ModsManager.RegisterHook("OnPlayerSpawned", this);
@@ -81,9 +81,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         float zoom = guns?.ScopeMagnification(player) ?? 1f;
         projectionMatrix = ScScopeCamera.ZoomProjection(projectionMatrix, zoom);
     }
-    public override void ProjectXmlSave(XElement project) {
-        if(GameManager.WorldInfo is {} world)ScGunTravel.Capture(project,world.DirectoryName);
-    }
+    // The real engine calls ProjectXmlSave on an EMPTY XElement, before ProjectData.Save.
+    // This later hook receives the complete frozen save and may run off the game thread.
+    public override void OnProjectXmlSaved(XElement project) => ScGunTravel.CaptureSaved(project);
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
     /// around the weapon's CS2 grip points; vanilla's in-hand block draw is replaced by the baked weapon.</summary>

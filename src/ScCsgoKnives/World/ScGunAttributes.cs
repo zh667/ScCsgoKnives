@@ -44,13 +44,15 @@ public static class ScGunAttributes {
         float damage = 0, head = 0, range = 0, rate = 0, capacity = 0, reload = 0, charge = 0, spread = 0, recoil = 0;
         for (int v = 0; v < GunSpec.All.Length; v++) {
             var spec = GunSpec.All[v];
-            var top = EffectiveGunStats.ResolveLevel(spec, TemplateValue(v), false, ScGunGrowth.MaxLevel - 1);
+            var top = EffectiveGunStats.ResolveLevel(spec, TemplateValue(v), false, ScGunGrowth.MaxLevel);
             float maxPower = ScSurvivalBalance.Power(spec.Name) * ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel)
                 * (ScGunSkinCatalog.For(v).Any() ? 1.5f : 1f);
             damage = Math.Max(damage, maxPower);
             head = Math.Max(head, maxPower * top.HeadMultiplier);
-            range = Math.Max(range, top.Range);
-            rate = Math.Max(rate, spec.CycleSeconds > 0 ? 60f / spec.CycleSeconds : 0);
+            // Exclude the unlimited sentinel from the finite-range bar scale.
+            float finiteRange = EffectiveGunStats.ResolveLevel(spec,TemplateValue(v),false,ScGunGrowth.PrecisionLevel-1).Range;
+            range = Math.Max(range, top.UnlimitedRange ? finiteRange : top.Range);
+            rate = Math.Max(rate, top.CycleSeconds > 0 ? 60f / top.CycleSeconds : 0);
             capacity = Math.Max(capacity, ScGunGrowth.Capacity(v, ScGunGrowth.MaxLevel));
             reload = Math.Max(reload, ReloadSeconds(spec, ScGunGrowth.Capacity(v, ScGunGrowth.MaxLevel)));
             charge = Math.Max(charge, spec.RechargeSeconds);
@@ -81,8 +83,8 @@ public static class ScGunAttributes {
             s.UnlimitedRange ? 1f : Fraction(s.Range, r.Range), false, s.UnlimitedRange,
             s.UnlimitedRange ? "* 仅沿射击方向的连续已加载区域，不穿墙、不自动瞄准、不强制加载地形"
                              : $"满伤害至 {Number(FullDamageRange(spec, variant, level), 1)} 格，末端 {Number(EndMultiplier(spec, variant, level) * 100, 0)}%"));
-        rows.Add(new(Kind.RateOfFire, "射速", spec.CycleSeconds > 0 ? Number(60f / spec.CycleSeconds, 0) : "—", "发/分",
-            Fraction(spec.CycleSeconds > 0 ? 60f / spec.CycleSeconds : 0, r.RateOfFire), false, false, null));
+        rows.Add(new(Kind.RateOfFire, "射速", s.CycleSeconds > 0 ? Number(60f / s.CycleSeconds, 0) : "—", "发/分",
+            Fraction(s.CycleSeconds > 0 ? 60f / s.CycleSeconds : 0, r.RateOfFire), false, false, "理论射速；实际受帧率、操作及充能限制"));
         rows.Add(new(Kind.Capacity, zeus ? "充能容量" : "弹匣容量", s.Capacity.ToString(), "发",
             Fraction(s.Capacity, r.Capacity), false, false, zeus ? "电击枪恒为 1 次放电" : null));
         if (zeus) rows.Add(new(Kind.ReloadOrCharge, "充能时间（越低越好）", Number(s.RechargeSeconds, 2), "秒",
@@ -93,9 +95,9 @@ public static class ScGunAttributes {
                 Fraction(reload, r.Reload), true, false, reload > 0 ? null : "本机缺少该枪的换弹动画数据"));
         }
         rows.Add(new(Kind.Spread, "散布（越低越好）", Number(cone, 2), "度", Fraction(cone, r.Spread), true, false,
-            cone <= 0 ? "满级：所有姿态与模式下子弹不再偏离" : "静止、不开镜、首发"));
+            cone <= 0 ? "Lv10 起：所有姿态与模式下子弹不再偏离" : "静止、不开镜、首发"));
         rows.Add(new(Kind.Recoil, "后坐力（越低越好）", Number(kick, 2), "度", Fraction(kick, r.Recoil), true, false,
-            kick <= 0 ? "满级：射击不再产生镜头上跳与横摆" : "每发镜头上跳基准"));
+            kick <= 0 ? "Lv10 起：射击不再产生镜头上跳与横摆" : "每发镜头上跳基准"));
         return rows;
     }
 
@@ -115,10 +117,10 @@ public static class ScGunAttributes {
                 : $"有效击杀 {s.KillCount}，已解锁 Lv{ScGunGrowth.MaxLevel}，当前已应用 Lv{s.Level}；动作结束后应用升级，计数继续累计。";
         long next = ScGunGrowth.ToNextLevel(s.KillCount);
         string pending = s.PendingGrowthLevel != ScGunGrowth.NoPending && s.PendingGrowthLevel > s.AppliedGrowthLevel
-            ? $" 动作结束后升级至 Lv{s.PendingGrowthLevel}。" : "";
-        return $"有效击杀 {s.KillCount}，已应用 Lv{s.Level}，距 Lv{s.EarnedLevel + 1} 还需 {next} 次（每级 100 次，累计 1000 次满级）。{pending}{rule}";
+            ? $" 已解锁 Lv{s.EarnedLevel}，动作结束后升级至 Lv{s.PendingGrowthLevel}。" : "";
+        return $"有效击杀 {s.KillCount}，已应用 Lv{s.Level}，距 Lv{s.EarnedLevel + 1} 还需 {next} 次（每级 {ScGunGrowth.KillsPerLevel} 次，累计 {ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel)} 次满级）。{pending}{rule}";
     }
     /// <summary>What reaching the cap is worth, in the terms the card is allowed to use.</summary>
     public const string CounterUnlockNotice = "安装击杀计数器后才解锁等级机制；从安装时开始计数，安装前的击杀不计入。换肤、去皮和维修保留已有击杀与等级。";
-    public const string MaxLevelSummary = "满级收益：伤害 +100%（皮肤枪先获得基础伤害 +50%，再计算等级加成），弹匣容量 +50%，耐久上限 +50%，电击枪充能 10 秒 → 5 秒；普通子弹枪零散布、无射击后坐力、无距离衰减。";
+    public const string MaxLevelSummary = "Lv30 收益：基础伤害 ×10、弹匣 ×6.5（取整）、射速 ×3.5、耐久上限 ×2.5；皮肤枪先获得基础伤害 ×1.5。电击枪仍为单次充能，10 秒 → 1 秒。Lv10 起普通子弹枪已零散布、无射击后坐力、无距离衰减且无武器自身距离上限。换弹动画不加速。";
 }

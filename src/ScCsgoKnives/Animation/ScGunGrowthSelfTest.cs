@@ -59,6 +59,79 @@ public static class ScGunGrowthSelfTest {
     }
 
     static void Checks(Action<string, Func<bool>> Test) {
+        foreach(var spec in GunSpec.All) {
+            var gun=spec;
+            Test("level30-monotonic-and-milestones/"+gun.Name,()=> {
+                int variant=Variant(gun.Name);
+                for(int l=0;l<=30;l++) {
+                    var effective=EffectiveGunStats.ResolveLevel(gun,Template(variant),false,l);
+                    float damage=1+.1f*Math.Min(l,10)+.3f*Math.Clamp(l-10,0,10)+.5f*Math.Clamp(l-20,0,10);
+                    float rate=1+.1f*Math.Clamp(l-10,0,10)+.15f*Math.Clamp(l-20,0,10);
+                    int capacity=ScGunGrowth.IsTaser(variant)?1:gun.Magazine+(int)((long)gun.Magazine*(Math.Min(l,10)+4*Math.Clamp(l-10,0,10)+6*Math.Clamp(l-20,0,10))/20);
+                    if(Math.Abs(effective.Power-ScSurvivalBalance.Power(gun.Name)*damage)>.001f || effective.Capacity!=capacity
+                        || Math.Abs(effective.CycleSeconds-gun.CycleSeconds/rate)>1e-6f
+                        || ScGunGrowth.MaxDurability(variant,l)!=ScGunGrowth.RoundHalfUp(ScGunDurability.Full(variant)*(1+.05*l))
+                        || effective.AngleScale<0 || effective.AngleScale>1)return false;
+                    if(l>=10 && (!ScGunGrowth.IsTaser(variant)&&!effective.UnlimitedRange || effective.AngleScale!=0))return false;
+                    if(l>10 && (ScGunGrowth.DamageMultiplier(l)<=ScGunGrowth.DamageMultiplier(l-1)
+                        || ScGunGrowth.FireRateMultiplier(l)<=ScGunGrowth.FireRateMultiplier(l-1)))return false;
+                }
+                return ScGunGrowth.DamageMultiplier(20)==5 && ScGunGrowth.DamageMultiplier(30)==10
+                    && ScGunGrowth.FireRateMultiplier(20)==2 && ScGunGrowth.FireRateMultiplier(30)==3.5f;
+            });
+        }
+        Test("level30-charge-milestones-and-clamps",()=> {
+            var zeus=GunSpec.ForAsset("taser");
+            return Math.Abs(ScGunGrowth.RechargeSeconds(zeus,20)-2.5f)<1e-5f && Math.Abs(ScGunGrowth.RechargeSeconds(zeus,30)-1f)<1e-5f
+                && ScGunGrowth.DamageMultiplier(int.MinValue)==1 && ScGunGrowth.DamageMultiplier(int.MaxValue)==10
+                && ScGunGrowth.Capacity(Variant("taser"),30)==1 && ScGunGrowth.RangeScale(Variant("taser"),30)==5;
+        });
+        foreach(int kills in new[]{1099,1100,1999,2000,2999,3000,3100}) {
+            int count=kills;
+            Test($"old-level10-catchup/{count}",()=> {
+                var registry=Fresh();var (inv,id)=Gun(registry,"ak47",rounds:7,durability:750,level:10,kills:count);
+                Apply(registry,id,r=>r.GrowthRulesVersion=1);
+                var source=registry.Save(0);source.SetValue("Schema",3);
+                var xml=new System.Xml.Linq.XElement("Values");source.Save(xml);string original=xml.ToString();
+                var sourceCopy=new ValuesDictionary();sourceCopy.ApplyOverrides(System.Xml.Linq.XElement.Parse(original));
+                registry=ScGunRegistry.Current=ScGunRegistry.Load(sourceCopy,0);
+                var before=Snap(registry,id);if(before.Level!=10||before.Rounds!=7||before.Durability!=750||before.KillCount!=count)return false;
+                int reports=0;var holders=new[]{new ScGunHolders.Holder(id,"test",inv,0)};
+                if(ScGunGrowthService.Advance(registry,holders,0,_=>true,(_,_,_)=>reports++)!=0)return false;
+                int expectedLevel=Math.Min(30,count/100);
+                ScGunGrowthService.Advance(registry,holders,0,_=>false,(_,_,_)=>reports++);
+                var grown=Snap(registry,id);
+                if(grown.Level!=expectedLevel||grown.KillCount!=count||grown.Rounds!=7||grown.Durability!=ScGunGrowth.ScaleDurability(750,2250,grown.MaxDurability))return false;
+                if(reports!=(expectedLevel>10?1:0)||xml.ToString()!=original)return false;
+                for(int round=0;round<2;round++) {
+                    var saved=registry.Save(0);var root=new System.Xml.Linq.XElement("Values");saved.Save(root);
+                    var parsed=new ValuesDictionary();parsed.ApplyOverrides(System.Xml.Linq.XElement.Parse(root.ToString()));
+                    registry=ScGunRegistry.Current=ScGunRegistry.Load(parsed,0);
+                    if(registry.UnknownSchema||registry.QuarantinedCount!=0||Snap(registry,id)!=grown
+                        || ScGunGrowthService.Advance(registry,holders,0,_=>false,(_,_,_)=>reports++)!=0)return false;
+                }
+                return true;
+            });
+        }
+        Test("level30-zeus-upgrade-preserves-charge-fraction",()=> {
+            var registry=Fresh();var (inv,id)=Gun(registry,"taser",rounds:0,durability:75,level:10,kills:3000);
+            Apply(registry,id,r=>{r.RechargeReadyAt=2.5;r.RechargeCycleSeconds=5;});
+            var result=ScGunGrowthService.ApplyPending(inv,0,"test",0,out int from,out int to);
+            var s=Snap(registry,id);
+            return result==ScGunResult.Success&&from==10&&to==30&&s.Rounds==0&&s.Durability==125&&s.MaxDurability==250
+                &&Math.Abs(s.RechargeReadyAt-.5)<1e-6 && Math.Abs(s.RechargeCycleSeconds-1)<1e-6;
+        });
+        Test("schema3-cannot-smuggle-level30",()=> {
+            var registry=Fresh();var (_,id)=Gun(registry,"ak47",level:30,kills:3000);
+            var d=registry.Save(0);d.SetValue("Schema",3);var old=ScGunRegistry.Load(d,0);
+            return old.QuarantinedCount==1&&!old.TryGetSnapshot(id,out _);
+        });
+        Test("level30-duplicate-conserves-rounds-and-wear",()=> {
+            var registry=Fresh();var (_,id)=Gun(registry,"ak47",rounds:180,durability:1875,level:30,kills:3000);
+            int clone=registry.Clone(id);var s=Snap(registry,clone);
+            return s.Level==0&&s.CounterInstalled&&s.KillCount==0&&s.Rounds==30&&s.ReserveOverflowRounds==150
+                &&s.Durability==750&&s.MaxDurability==1500&&Snap(registry,id).Level==30;
+        });
         Test("attribute-growth-text-distinguishes-count-only-and-pending", () => {
             var registry = Fresh(); var (inventory,id) = Gun(registry,"ak47",level:9,kills:1000);
             Apply(registry,id,r => r.PendingGrowthLevel=10);
@@ -183,11 +256,13 @@ public static class ScGunGrowthSelfTest {
             return true;
         });
         // --- thresholds -------------------------------------------------------------------------------------
-        Test("levels-are-100-each-to-1000", () =>
+        Test("levels-are-100-each-to-3000", () =>
             ScGunGrowth.LevelFor(0) == 0 && ScGunGrowth.LevelFor(99) == 0 && ScGunGrowth.LevelFor(100) == 1
             && ScGunGrowth.LevelFor(199) == 1 && ScGunGrowth.LevelFor(200) == 2 && ScGunGrowth.LevelFor(999) == 9
-            && ScGunGrowth.LevelFor(1000) == 10 && ScGunGrowth.LevelFor(50000) == 10
-            && ScGunGrowth.KillsFor(10) == 1000 && ScGunGrowth.ToNextLevel(999) == 1 && ScGunGrowth.ToNextLevel(1000) == 0);
+            && ScGunGrowth.LevelFor(1000) == 10 && ScGunGrowth.LevelFor(50000) == 30
+            && ScGunGrowth.LevelFor(2999)==29 && ScGunGrowth.LevelFor(3000)==30
+            && ScGunGrowth.KillsFor(10) == 1000 && ScGunGrowth.ToNextLevel(999) == 1 && ScGunGrowth.ToNextLevel(1000) == 100
+            && ScGunGrowth.ToNextLevel(3000)==0);
         // --- capacity ---------------------------------------------------------------------------------------
         Test("capacity-table", () => {
             int ak = Variant("ak47"), m4 = Variant("m4a1s"), awp = Variant("awp"), nova = Variant("nova"), negev = Variant("negev"), taser = Variant("taser");
@@ -235,9 +310,9 @@ public static class ScGunGrowthSelfTest {
             && Math.Abs(ScGunGrowth.ScaleRemaining(2.75, 5.5f, 5) - 2.5) < 1e-9
             && ScGunGrowth.ScaleRemaining(0, 10, 5) == 0);
         // --- angles and range -------------------------------------------------------------------------------
-        Test("angles-zero-only-at-max", () => {
-            for (int l = 0; l < ScGunGrowth.MaxLevel; l++) if (Math.Abs(ScGunGrowth.AngleScale(l) - (1f - .1f * l)) > 1e-5f) return false;
-            return ScGunGrowth.AngleScale(ScGunGrowth.MaxLevel) == 0f;
+        Test("angles-zero-from-level-ten", () => {
+            for (int l = 0; l < 10; l++) if (Math.Abs(ScGunGrowth.AngleScale(l) - (1f - .1f * l)) > 1e-5f) return false;
+            return Enumerable.Range(10,21).All(l=>ScGunGrowth.AngleScale(l)==0);
         });
         Test("range-unlimited-only-for-bullet-guns", () => {
             int awp = Variant("awp"), taser = Variant("taser");
@@ -310,7 +385,7 @@ public static class ScGunGrowthSelfTest {
             records.SetValue("3", good + ",zz=1");                                                                // an unknown field
             records.SetValue("4", "v=0,r=99999,s=0,d=10,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0"); // over capacity
             records.SetValue("5", "v=0,r=5,s=0,d=10,m=1500,n=0,c=-1,p=0,ct=0,k=7,gl=0,gp=-1,gv=0,rc=0,ov=0");     // kills without a counter
-            records.SetValue("6", "v=0,r=5,s=0,d=10,m=1500,n=0,c=-1,p=0,ct=1,k=0,gl=11,gp=-1,gv=1,rc=0,ov=0");    // level past the cap
+            records.SetValue("6", "v=0,r=5,s=0,d=10,m=1500,n=0,c=-1,p=0,ct=1,k=0,gl=31,gp=-1,gv=2,rc=0,ov=0");    // level past the cap
             d.SetValue("Records", records);
             var registry = ScGunRegistry.Load(d, 0);
             var written = registry.Save(0).GetValue<ValuesDictionary>("Records", null);
@@ -629,7 +704,7 @@ public static class ScGunGrowthSelfTest {
         });
         Test("counter-panel-saturates-without-truncating-the-record", () =>
             ScGunStatTrak.PanelText(0) == "000000" && ScGunStatTrak.PanelText(1234) == "001234"
-            && ScGunStatTrak.PanelText(1_000_000) == "999999" && ScGunGrowth.LevelFor(long.MaxValue) == 10);
+            && ScGunStatTrak.PanelText(1_000_000) == "999999" && ScGunGrowth.LevelFor(long.MaxValue) == 30);
         // --- attribute page ---------------------------------------------------------------------------------
         Test("attribute-card-has-no-durability-or-materials", () => {
             foreach (var spec in GunSpec.All) {

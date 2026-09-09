@@ -1,22 +1,23 @@
 namespace Game;
 
-/// <summary>Ten-level gun growth (plan §5, user-confirmed 2026-09-08): 100 valid kills a level, 1000 for the
+/// <summary>Thirty-level gun growth: 100 valid kills a level, 3000 for the
 /// last one, no separate experience system. Every number is derived from the gun's *base* value and the applied
 /// level, never from an already-grown value, so re-applying a level can never compound.
 ///
 /// The rules version is stored per gun. It exists so a future rebalance can convert old guns explicitly
 /// instead of silently re-scaling their saved state on every load.</summary>
 public static class ScGunGrowth {
-    public const int MaxLevel = 10;
+    public const int MaxLevel = 30;
+    public const int PrecisionLevel = 10;
     public const int KillsPerLevel = 100;
     /// <summary>The parameter set below. Stored per gun as GrowthRulesVersion; unrelated to the mod version.</summary>
-    public const int RulesVersion = 1;
+    public const int RulesVersion = 2;
     /// <summary>PendingGrowthLevel when nothing is waiting. Level 0 is a real level, so the sentinel is -1.</summary>
     public const int NoPending = -1;
 
-    /// <summary>Cumulative kills needed for a level: 100, 200 … 1000.</summary>
+    /// <summary>Cumulative kills needed for a level: 100, 200 … 3000.</summary>
     public static long KillsFor(int level) => (long)Math.Clamp(level, 0, MaxLevel) * KillsPerLevel;
-    /// <summary>The level this many valid kills unlocks. Counting continues past 1000; the level stops at 10.</summary>
+    /// <summary>The level this many valid kills unlocks. Counting continues past 3000; the level stops at 30.</summary>
     public static int LevelFor(long kills) => kills <= 0 ? 0 : (int)Math.Min(MaxLevel, kills / KillsPerLevel);
     /// <summary>Kills still needed for the next level, or 0 at the cap.</summary>
     public static long ToNextLevel(long kills) {
@@ -26,8 +27,14 @@ public static class ScGunGrowth {
     public static int Clamp(int level) => Math.Clamp(level, 0, MaxLevel);
     public static bool IsTaser(int variant) => variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].RechargeSeconds > 0f;
 
-    /// <summary>Damage: P = P0 × skin × (1 + 0.10L). Damage is derived, never stored or compounded.</summary>
-    public static float DamageMultiplier(int level) => 1f + .10f * Clamp(level);
+    static int First(int level) => Math.Min(Clamp(level),10);
+    static int Second(int level) => Math.Clamp(Clamp(level)-10,0,10);
+    static int Third(int level) => Math.Clamp(Clamp(level)-20,0,10);
+    /// <summary>All gains are additive against base, not compounded: Lv10=2x, Lv20=5x, Lv30=10x.</summary>
+    public static float DamageMultiplier(int level) => 1f + .10f * First(level) + .30f * Second(level) + .50f * Third(level);
+    /// <summary>Lv0-10 unchanged; each following level adds 10% / 15% of base shots per second.</summary>
+    public static float FireRateMultiplier(int level) => 1f + .10f * Second(level) + .15f * Third(level);
+    public static float ShotInterval(float baseSeconds,int level) => baseSeconds > 0 ? baseSeconds / FireRateMultiplier(level) : 0;
     public static float SkinDamageMultiplier(int variant, int skinId) => ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant) ? 1.5f : 1f;
 
     /// <summary>Magazine: C = C0 + floor(C0 × L / 20); the Zeus stays at one charge. Lv10 always gains at
@@ -37,8 +44,10 @@ public static class ScGunGrowth {
         int baseCapacity = GunSpec.All[variant].Magazine;
         if (IsTaser(variant)) return baseCapacity;
         int L = Clamp(level);
-        int grown = baseCapacity + (int)((long)baseCapacity * L / 20);
-        if (L >= MaxLevel && baseCapacity > 1) grown = Math.Max(grown, baseCapacity + 1);
+        // Integer twentieths avoid floor drift at exact capacity boundaries: 1.5x / 3.5x / 6.5x.
+        int twentieths = First(L) + 4 * Second(L) + 6 * Third(L);
+        int grown = baseCapacity + (int)((long)baseCapacity * twentieths / 20);
+        if (L >= PrecisionLevel && baseCapacity > 1) grown = Math.Max(grown, baseCapacity + 1);
         return grown;
     }
     public static int Capacity(GunSpec spec, int level) => Capacity(Array.IndexOf(GunSpec.All, spec), level);
@@ -50,19 +59,19 @@ public static class ScGunGrowth {
     }
     public static int RoundHalfUp(double value) => (int)Math.Floor(value + .5);
 
-    /// <summary>Charge cycle: T = T0 × (1 − 0.05L); ten seconds becomes five and never reaches zero.</summary>
+    /// <summary>Charge cycle: 10 -> 5 -> 2.5 -> 1 seconds, preserves the existing first ten levels.</summary>
     public static float RechargeSeconds(GunSpec spec, int level) =>
-        spec is null || spec.RechargeSeconds <= 0 ? 0 : spec.RechargeSeconds * (1f - .05f * Clamp(level));
+        spec is null || spec.RechargeSeconds <= 0 ? 0 : spec.RechargeSeconds * (float)(1.0 - .05 * First(level) - .025 * Second(level) - .015 * Third(level));
 
     /// <summary>Spread and camera recoil are scaled once, on the final angle: 1 − 0.10L, and exactly zero at Lv10.</summary>
-    public static float AngleScale(int level) { int L = Clamp(level); return L >= MaxLevel ? 0f : 1f - .10f * L; }
+    public static float AngleScale(int level) { int L = Clamp(level); return L >= PrecisionLevel ? 0f : 1f - .10f * L; }
 
     /// <summary>A normal bullet gun at Lv10 has no weapon range limit of its own (continuously loaded world only).
     /// The Zeus keeps its planned close-range exception and grows 5 % a level instead.</summary>
-    public static bool UnlimitedRange(int variant, int level) => Clamp(level) >= MaxLevel && !IsTaser(variant);
+    public static bool UnlimitedRange(int variant, int level) => Clamp(level) >= PrecisionLevel && !IsTaser(variant);
     public static float RangeScale(int variant, int level) {
         int L = Clamp(level);
-        return IsTaser(variant) ? 1f + .05f * L : 1f + .25f * L;
+        return IsTaser(variant) ? 1f + .05f * First(L) + .15f * Second(L) + .20f * Third(L) : 1f + .25f * Math.Min(L,PrecisionLevel);
     }
     /// <summary>How far a shot may actually reach at Lv10: the loaded-world budget, a finite number, never
     /// infinity or NaN, so vectors, serialization and the UI stay well defined.</summary>

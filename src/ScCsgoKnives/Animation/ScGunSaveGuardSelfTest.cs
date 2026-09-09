@@ -176,7 +176,7 @@ public static class ScGunSaveGuardSelfTest {
             try { ScGunSaveGuard.Validate(refusedValues); return false; } catch (InvalidOperationException) { }
             // Names carry the source and target format, a UTC stamp and a unique suffix.
             string name = ScGunSchemaUpgrade.FileName(1, ScGunRegistry.Schema);
-            return name.Contains("-1-to-3-") && name != ScGunSchemaUpgrade.FileName(1, ScGunRegistry.Schema);
+            return name.Contains($"-1-to-{ScGunRegistry.Schema}-") && name != ScGunSchemaUpgrade.FileName(1, ScGunRegistry.Schema);
         });
         T("record-restored-before-refund", () => {
             var registry = new ScGunRegistry(); ScGunRegistry.Current = registry;

@@ -23,6 +23,8 @@ public sealed class ScGunSettingsScreen : Screen {
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     readonly ButtonWidget m_bindings = ScGunUi.Button("键盘绑定（适配触控映射）", 280);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
+    readonly ButtonWidget m_ghoulTest = ScGunUi.Button("测试：尸鬼里世界穿越",280);
+    readonly ScTestEntryGate m_testGate = new();
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
     LabelWidget m_preview, m_status;
     SliderWidget m_red, m_green, m_blue;
@@ -68,6 +70,7 @@ public sealed class ScGunSettingsScreen : Screen {
     }
 
     public override void Enter(object[] parameters) {
+        m_testGate.Reset();
         ScWeaponTouchPanel.SuppressAll(true);
         KnifeLog.Information("[CS_UI_0413] settings enter: isolated background, path=" + ScUiSettings.Path);
         KnifeLog.Information($"[CS_SCOPE_0416] settings enter baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
@@ -80,6 +83,11 @@ public sealed class ScGunSettingsScreen : Screen {
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;
         m_content.Children.Clear(); m_colors.Clear();
+        if(m_testGate.Unlocked) {
+            m_content.Children.Add(ScGunUi.Heading("仅用于世界副本的测试工具"));
+            m_content.Children.Add(m_ghoulTest);
+            m_content.Children.Add(ScGunUi.Note("调用尸鬼自己的穿越流程，跳过祭坛和天数门槛。先保存、核对枪械快照并备份；缺少尸鬼模组时不可用。离开设置后入口再次隐藏。"));
+        }
         m_content.Children.Add(ScGunUi.Heading("视角恢复"));
         m_content.Children.Add(m_recoverView);
         m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
@@ -126,6 +134,19 @@ public sealed class ScGunSettingsScreen : Screen {
     }
 
     public override void Update() {
+        if(Input.Tap is Vector2 tap && tap.X>=m_title.GlobalBounds.Min.X && tap.X<=m_title.GlobalBounds.Max.X
+            && tap.Y>=m_title.GlobalBounds.Min.Y && tap.Y<=m_title.GlobalBounds.Max.Y && !m_testGate.Unlocked && m_testGate.Tap(Time.RealTime)) {
+            m_built=false;m_status.Text="已显示本次会话的测试入口。";
+        }
+        if(m_testGate.Unlocked && m_ghoulTest.IsClicked) {
+            DialogsManager.ShowDialog(this,new MessageDialog("仅在世界副本中测试",
+                "将保存并备份当前世界，调用尸鬼原有流程在主世界与里世界之间切换，可能影响所有玩家。不会给枪升级或修改计数。请确认当前是测试副本；备份或枪械快照核对失败会停止。",
+                "已用副本，开始","取消",answer=> {
+                    if(answer!=MessageDialogButton.Button1)return;
+                    string result=ScGhoulTestBridge.Request();
+                    DialogsManager.ShowDialog(this,new MessageDialog("穿越测试",result,"确定",null,null));
+                }));return;
+        }
         bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
         if(m_recoverView.IsClicked) {
@@ -164,6 +185,7 @@ public sealed class ScGunSettingsScreen : Screen {
 
     static void Leave(Screen back) => ScreensManager.SwitchScreen(back ?? ScreensManager.FindScreen<Screen>("Settings"));
     public override void Leave() {
+        m_testGate.Reset();
         KnifeLog.Information($"[CS_SCOPE_0416] settings leave baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
         base.Leave();
     }

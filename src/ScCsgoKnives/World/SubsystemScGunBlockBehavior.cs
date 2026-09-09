@@ -653,6 +653,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public override void Load(ValuesDictionary valuesDictionary) {
         m_saveReady = false;
+        string identity=valuesDictionary.GetValue<string>(ScGunTravel.WorldIdentity,null);
+        if(identity is not null && !Guid.TryParse(identity,out _))throw new InvalidOperationException("枪械跨世界身份数据损坏，拒绝加载");
+        m_travelWorldIdentity=identity??Guid.NewGuid().ToString("N");
         m_travelIdentities=valuesDictionary.GetValue<ValuesDictionary>(ScGunTravel.Identities,null);
         m_travelBackup=valuesDictionary.GetValue<ValuesDictionary>(ScGunTravel.Backup,null);
         ScGunSaveGuard.Validate(valuesDictionary); // fail even if the XML hook was bypassed
@@ -688,6 +691,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_audio = Project.FindSubsystem<SubsystemAudio>(true);
         m_particles = Project.FindSubsystem<SubsystemParticles>(true);
         m_players = Project.FindSubsystem<SubsystemPlayers>(true);
+        m_travelSource = Project.FindSubsystem<SubsystemGameInfo>(true).DirectoryName;
         m_scopeInput = new ScScopeCamera(this, m_players);
         Project.FindSubsystem<SubsystemUpdate>(true).AddUpdateable(m_scopeInput);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
@@ -700,6 +704,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // Before any output mutation, including base.Save: partial/unknown loads cannot be saved.
         ScGunSaveGuard.ValidateSave(m_saveReady, m_worldLayout, m_registry);
         base.Save(valuesDictionary);
+        if(!string.IsNullOrWhiteSpace(m_travelSource))valuesDictionary.SetValue(ScGunTravel.SourcePath,m_travelSource);
+        if(!string.IsNullOrWhiteSpace(m_travelWorldIdentity))valuesDictionary.SetValue(ScGunTravel.WorldIdentity,m_travelWorldIdentity);
         if(m_travelIdentities is not null)valuesDictionary.SetValue(ScGunTravel.Identities,m_travelIdentities);
         if(m_travelBackup is not null)valuesDictionary.SetValue(ScGunTravel.Backup,m_travelBackup);
         // Zeus charge lives in the gun records now (per instance); the per-player ZeusRechargeAt table is no longer written.
@@ -926,7 +932,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 // one click emptied the magazine. The count is lowered after the shot.
                 Fire(player, state, model, spec, value, data, rounds, input, inBurst: true);
                 state.BurstRemaining--;
-                state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
+                state.BurstNextAt = state.BurstRemaining > 0 ? now + ScGunGrowth.ShotInterval(spec.BurstShotSeconds,EffectiveGunStats.LevelOf(value)) : -1;
                 return;
             }
         }
@@ -937,8 +943,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // m_flCycleTime (0.5 s) is taken as it - assumed, the one number here that is.
             if (spec.CycleSecondsAlternate > 0f && KnifeAnimationController.TriggerPrepare(player)) {
                 state.PrepareStartedAt = now;
-                state.PrepareUntil = now + spec.CycleSeconds;
-                state.NextShot = now + spec.CycleSeconds;
+                state.PrepareUntil = now + ScGunGrowth.ShotInterval(spec.CycleSeconds,EffectiveGunStats.LevelOf(value));
+                state.NextShot = state.PrepareUntil;
                 return;
             }
             Fire(player, state, model, spec, value, data, rounds, input);
@@ -988,18 +994,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // inBurst says this shot is one of those, so it cannot start another.
         bool startingBurst = !inBurst && state.BurstMode && spec.HasBurstMode && state.BurstRemaining == 0;
         if (startingBurst) {
-            state.NextShot = now + spec.BurstCycleSeconds;
+            state.NextShot = now + ScGunGrowth.ShotInterval(spec.BurstCycleSeconds,EffectiveGunStats.LevelOf(value));
             state.BurstRemaining = Math.Max(0, spec.BurstShots - 1);
-            state.BurstNextAt = state.BurstRemaining > 0 ? now + spec.BurstShotSeconds : -1;
+            state.BurstNextAt = state.BurstRemaining > 0 ? now + ScGunGrowth.ShotInterval(spec.BurstShotSeconds,EffectiveGunStats.LevelOf(value)) : -1;
         }
         else if (alternateFire) {
             // The R8's fanned shot: the vdata pair's second cycle time.
-            state.NextShot = now + spec.CycleSecondsAlternate;
+            state.NextShot = now + ScGunGrowth.ShotInterval(spec.CycleSecondsAlternate,EffectiveGunStats.LevelOf(value));
         }
         else if (!inBurst) {
             // The cycle counts from the press: for the R8's cocked shot that is when the
             // hammer started back, not when it fell.
-            state.NextShot = (cycleFrom ?? now) + spec.CycleSeconds;
+            state.NextShot = (cycleFrom ?? now) + ScGunGrowth.ShotInterval(spec.CycleSeconds,EffectiveGunStats.LevelOf(value));
         }
         // A detachable silencer that is on, or an integral one (the MP5-SD): the
         // flash, the muzzle and the kick follow it. Only the detachable kind has a
@@ -1058,7 +1064,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // the bolt cycle and re-zooms to the same level afterwards. The auto-snipers
             // and the AUG / SG 553 have it false and fire with the scope up.
             state.RescopeLevel = state.Zoom;
-            state.RescopeAt = now + spec.CycleSeconds;
+            state.RescopeAt = now + ScGunGrowth.ShotInterval(spec.CycleSeconds,effective.Level);
             LeaveScope(player, state);
         }
         KnifeAnimationController.TriggerShoot(player, silenced, lastRound, scopedShot && !spec.UnzoomsAfterShot, alternateFire,
@@ -1393,6 +1399,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     readonly Dictionary<ComponentPlayer,bool> m_fireButtons=[];
     ValuesDictionary m_travelIdentities,m_travelBackup;
+    string m_travelSource;
+    string m_travelWorldIdentity;
+    public bool ReadyForTravel => m_saveReady && m_registry is not null && !m_registry.Disabled
+        && m_registry.QuarantinedCount==0 && m_registry.Kills.Count==0 && m_registry.Recovery.Count==0
+        && !ScGunMutation.IsCommitting && !m_states.Any(p=>p.Value.Reload is not null || p.Value.BusyUntil>=0
+            || p.Value.BurstRemaining>0 || p.Value.PrepareUntil>=0
+            || KnifeAnimationController.IsBusy(p.Key.Entity?.FindComponent<ComponentFirstPersonModel>()));
     public void SetFireButton(ComponentPlayer player,bool pressed) => m_fireButtons[player]=pressed;
     public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) => false;
 
