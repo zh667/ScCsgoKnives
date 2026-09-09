@@ -14,6 +14,7 @@ public static class KnifeAnimationController {
         public float LastPokePhase;
         /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
         public bool PendingInspect;
+        public bool CzFrontRemoved;
         /// <summary>Aiming down the gun's own scope (AUG, SG 553): idle and shots use the ironsight clips.</summary>
         public bool Scoped;
         /// <summary>A shotgun reload: how many shells the loop section runs for (-1: a one-pass reload).</summary>
@@ -95,6 +96,7 @@ public static class KnifeAnimationController {
             Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
             state.Variant = variant;
             state.PendingInspect = false;
+            state.CzFrontRemoved = false; // presentation only: reset on a new equip, never stored in gun bits
             string deploy = DeployClip(variant, SilencerOn(variant, itemValue));
             if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
@@ -104,6 +106,9 @@ public static class KnifeAnimationController {
 
         // Knife strikes are dispatched by the gameplay subsystem, never inferred from vanilla poke.
         float elapsed = (float)(KnifeClock.Now - state.StartedAt);
+        if(CsmcKnifeRig.GetAssetName(variant)=="cz75a" && state.Action==ActionKind.Reload && state.ClipAlias is "reload" or "reloadEmpty"
+            && elapsed >= (Cs2Rig.ReloadMilestones("cz75a",state.ClipAlias)?.Insert ?? float.PositiveInfinity))
+            state.CzFrontRemoved=true;
         if (state.Action == ActionKind.Idle) {
             // A pistol idles with the slide back while its magazine is empty and
             // drops it the moment a round is chambered. The magazine is written by
@@ -393,7 +398,7 @@ public static class KnifeAnimationController {
 
     public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false, int shells = 0) {
         State state = GunState(player, out int variant);
-        if (state is null || ReloadClip(variant, magazineEmpty) is not string clip) return;
+        if (state is null || ReloadForPlayer(player,variant,magazineEmpty) is not string clip) return;
         Start(state, ActionKind.Reload, clip);
         // A shotgun reload loops its shell section once per shell wanted.
         Cs2Rig.ReloadSections sections = clip == "reload" && Cs2Placement.Active(variant)
@@ -406,6 +411,13 @@ public static class KnifeAnimationController {
         }
         LogActionStart(state, variant);
     }
+    public static string ReloadForPlayer(ComponentPlayer player,int variant,bool empty) {
+        var model=player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        if(CsmcKnifeRig.GetAssetName(variant)=="cz75a" && model is not null && s_states.TryGetValue(model,out var s) && s.CzFrontRemoved)
+            return empty?"reloadFollowupEmpty":"reloadFollowup";
+        return ReloadClip(variant,empty);
+    }
+    public static bool HideCzFront(ComponentFirstPersonModel model)=>s_states.TryGetValue(model,out var s)&&s.CzFrontRemoved;
 
     public static void TriggerSilencer(ComponentPlayer player, bool attach) {
         State state = GunState(player, out int variant);

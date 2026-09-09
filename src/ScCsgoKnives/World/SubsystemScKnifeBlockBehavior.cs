@@ -50,6 +50,9 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
     public void Update(float dt) {
         KnifeQa.Step();
         foreach (var player in m_players.ComponentPlayers) {
+            if(!ScMobileControls.IsMobileDevice && Window.IsActive && CanOperate(player) && player.GameWidget.Input.IsKeyDownOnce(Engine.Input.Key.G)
+                && (HoldingKnife(player) || ScGunBlock.IsKnown(player.ComponentMiner.ActiveBlockValue) && Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue)==BlocksManager.GetBlockIndex<ScGunBlock>(true)))
+                KnifeAnimationController.TriggerInspect(player);
             UpdateButtons(player);
             bool knife = HoldingKnife(player);
             var state = State(player);
@@ -93,11 +96,13 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         string secondary = gun ? SecondaryOf(spec) : null;
         panel.Update(container.ActualSize, enabled, touch, id => id switch {
             ScGunFunctions.Reload => gun,
+            ScGunFunctions.Fire => gun,
             ScGunFunctions.KnifeHeavy => knife,
             ScGunFunctions.ThrowWeak or ScGunFunctions.ThrowStrong => grenade,
             ScGunFunctions.Inspect => knife || gun,
             _ => secondary == id,
         });
+        Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).SetFireButton(player, gun && panel.Pressed(ScGunFunctions.Fire));
         var grenades = Project.FindSubsystem<SubsystemScGrenades>(true);
         grenades.SetThrowButton(player, true, grenade && panel.Pressed(ScGunFunctions.ThrowWeak),
             grenade && panel.Clicked(ScGunFunctions.ThrowWeak), !grenade || panel.Cancelled(ScGunFunctions.ThrowWeak));
@@ -106,7 +111,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         if (knife && panel.Clicked(ScGunFunctions.KnifeHeavy)) RequestAttack(player, true);
         if (gun && panel.Clicked(ScGunFunctions.Reload)) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
         if (gun && secondary is not null && panel.Clicked(secondary)) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestSecondary(player);
-        if ((knife || gun) && panel.Clicked(ScGunFunctions.Inspect)) {
+        if ((knife || gun) && enabled && (panel.Clicked(ScGunFunctions.Inspect) || player.GameWidget.Input.IsKeyDownOnce(Engine.Input.Key.G))) {
             if (knife) State(player).Cancel();
             KnifeAnimationController.TriggerInspect(player);
         }
@@ -116,14 +121,5 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         m_buttons.Clear(); m_strikes.Clear(); base.Dispose();
     }
 
-    public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) {
-        int value = inventory.GetSlotValue(slotIndex);
-        if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return false;
-
-        State(componentPlayer).Cancel();
-
-        if (!KnifeAnimationController.TriggerInspect(componentPlayer)) return true;
-
-        return true;
-    }
+    public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) => false;
 }

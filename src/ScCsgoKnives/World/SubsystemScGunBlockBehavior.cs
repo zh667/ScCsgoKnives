@@ -640,6 +640,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public override void Load(ValuesDictionary valuesDictionary) {
         m_saveReady = false;
+        m_travelIdentities=valuesDictionary.GetValue<ValuesDictionary>(ScGunTravel.Identities,null);
+        m_travelBackup=valuesDictionary.GetValue<ValuesDictionary>(ScGunTravel.Backup,null);
         ScGunSaveGuard.Validate(valuesDictionary); // fail even if the XML hook was bypassed
         base.Load(valuesDictionary);
         string migrationError = valuesDictionary.GetValue<string>(ScGun0282Migration.ErrorKey, null);
@@ -683,6 +685,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // Before any output mutation, including base.Save: partial/unknown loads cannot be saved.
         ScGunSaveGuard.ValidateSave(m_saveReady, m_worldLayout, m_registry);
         base.Save(valuesDictionary);
+        if(m_travelIdentities is not null)valuesDictionary.SetValue(ScGunTravel.Identities,m_travelIdentities);
+        if(m_travelBackup is not null)valuesDictionary.SetValue(ScGunTravel.Backup,m_travelBackup);
         // Zeus charge lives in the gun records now (per instance); the per-player ZeusRechargeAt table is no longer written.
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save(m_time.GameTime));
         if (m_officialMigration is not null) valuesDictionary.SetValue(ScGun0282Migration.Marker, m_officialMigration);
@@ -840,8 +844,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
 
         // Reload: R, or the trigger on an empty magazine.
-        bool wantsFire = spec.Automatic ? input.Dig.HasValue || input.Hit.HasValue : input.Hit.HasValue && !state.FireLatch;
-        state.FireLatch = input.Dig.HasValue || input.Hit.HasValue;
+        bool customFire = m_fireButtons.GetValueOrDefault(player) && !ScWeaponTouchPanel.MenuActive;
+        bool wantsFire = spec.Automatic ? input.Dig.HasValue || input.Hit.HasValue || customFire : (input.Hit.HasValue || customFire) && !state.FireLatch;
+        state.FireLatch = input.Dig.HasValue || input.Hit.HasValue || customFire;
         bool reloadKey = Keyboard.IsKeyDownOnce(Key.R);
         // The Zeus: a fresh charge after its recharge time, announced by CS2's own cue.
         // Only a gun that recharges reads or clears the timer: 0.20.1 let whichever
@@ -1219,10 +1224,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         int variant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
         bool empty = rounds == 0;
-        string clip = KnifeAnimationController.ReloadClip(variant, empty);
+        string clip = KnifeAnimationController.ReloadForPlayer(player, variant, empty);
         bool tube = ScReloadTransaction.IsTube(spec.Name);
         int shells = tube && !creative ? Math.Min(capacity - rounds, available + reserve) : capacity - rounds;
-        float duration = KnifeAnimationController.ReloadSeconds(variant, empty, shells);
+        float duration = clip is "reloadFollowup" or "reloadFollowupEmpty" ? Cs2Rig.Duration(spec.Name,clip) : KnifeAnimationController.ReloadSeconds(variant, empty, shells);
         var milestones = Cs2Rig.ReloadMilestones(spec.Name, clip);
         var sections = tube ? Cs2Rig.GetReloadSections(spec.Name) : null;
         if (duration <= 0 || (tube ? sections is null : milestones is null)) {
@@ -1369,20 +1374,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         return true;
     }
 
-    public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) {
-        int value = inventory.GetSlotValue(slotIndex);
-        if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true)) return false;
-        if (m_states.TryGetValue(componentPlayer, out GunState state)) LeaveScope(componentPlayer, state);
-        if (!KnifeAnimationController.TriggerInspect(componentPlayer)) return true;
-        if (state != null) {
-            state.Scheduled.Clear();
-            // The cues of the inspect the controller actually picked: the Desert Eagle's
-            // second one carries its own nine LookAt sounds, which "inspect" has not got.
-            string clip = KnifeAnimationController.CurrentClip(componentPlayer.Entity.FindComponent<ComponentFirstPersonModel>());
-            Schedule(state, ScGunBlock.SpecOf(value).Name, clip is not null && clip.StartsWith("inspect", StringComparison.Ordinal) ? clip : "inspect", m_time.GameTime);
-        }
-        return true;
-    }
+    readonly Dictionary<ComponentPlayer,bool> m_fireButtons=[];
+    ValuesDictionary m_travelIdentities,m_travelBackup;
+    public void SetFireButton(ComponentPlayer player,bool pressed) => m_fireButtons[player]=pressed;
+    public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) => false;
 
     // ---- scope -------------------------------------------------------------------
 

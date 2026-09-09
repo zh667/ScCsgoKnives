@@ -4,6 +4,7 @@ using Engine.Graphics;
 namespace Game;
 
 public class ScKnifeBlock : ScNoDurabilityBlock {
+    public override bool IsEditable_(int value) => false;
     static readonly int s_count = CsmcKnifeRig.KnifeCount;
     static readonly string[] s_names = Enumerable.Range(0, s_count).Select(CsmcKnifeRig.GetAssetName).ToArray();
     sealed record ItemModel(BlockMesh Mesh, Vector3 Min, Vector3 Max);

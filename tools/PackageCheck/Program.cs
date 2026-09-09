@@ -173,6 +173,7 @@ foreach(var c in CombatRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,o
 foreach(var c in GunHandlingRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunDiagnosticsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in attributeColdChecks) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in TravelRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,published0282,snapshot0282)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });

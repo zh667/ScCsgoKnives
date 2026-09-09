@@ -9,6 +9,7 @@ namespace Game;
 /// Block data also carries the magazine and the M4A1-S silencer state (GunSpec).
 /// </summary>
 public class ScGunBlock : ScNoDurabilityBlock {
+    public override bool IsEditable_(int value) => false;
     static readonly int s_count = GunSpec.All.Length;
     static readonly string[] s_names = GunSpec.All.Select(spec => spec.Name).ToArray();
     readonly ScResourceCache<int, BlockMesh> m_models = new("gun-items", 12, 2000);
@@ -172,8 +173,8 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public static string DurabilityText(int value) {
         if (!IsKnown(value)) return "";
         int data = Terrain.ExtractData(value), durability = GunSpec.GetDurability(data), full = ScGunDurability.FullOf(data);
-        return durability <= 0 ? $"\n耐久：损坏（0 / {full}），请到装配台维修（消耗金属坯件/精密机构）"
-            : $"\n耐久 {durability} / {full}（{ScGunDurability.PercentText(durability, full)}，每发 1 点）";
+            return durability <= 0 ? $"\n耐久：损坏（0 / {full}），枪械不会消失，请到装配台维修（消耗金属坯件/精密机构）"
+              : $"\n耐久 {durability} / {full}（{ScGunDurability.PercentText(durability, full)}，每发 1 点；耗尽只损坏、不消失，可维修）";
     }
     /// <summary>The kill counter line, when this gun carries one. The count itself lives in the record, so it
     /// follows the gun through chests, drops and other players.</summary>

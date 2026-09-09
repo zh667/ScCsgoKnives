@@ -27,6 +27,16 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     double m_lastClickTime = double.NegativeInfinity;
     float m_lastClickScroll;
     bool m_done;
+    public sealed record Navigation(string Category, object Selected, float Scroll);
+    public Navigation CaptureNavigation() => new(m_category,m_selected,m_list.ScrollPosition);
+    public void RestoreNavigation(Navigation state) {
+        if(state is null)return;
+        Filter(m_categories.Any(c=>c.Category==state.Category)?state.Category:"全部");
+        object match=m_list.Items.FirstOrDefault(i=>Equals(i,state.Selected));
+        if(match is not null)Select(match);
+        m_list.ScrollPosition=Math.Max(0,state.Scroll);
+    }
+    public Action BackAction {get;set;}
 
     public ScWorkbenchSelectionDialog(string title, IEnumerable items, float itemHeight, Func<object,string> label,
         Action<object> choose, IInventory inventory, bool creative) {
@@ -130,7 +140,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         if(m_done)return;
         foreach(var p in m_categories)if(p.Button.IsClicked){Filter(p.Category);return;}
         if(m_list.SelectedItem is {} selected && !ReferenceEquals(selected,m_selected))Select(selected);
-        if(Input.Cancel||Input.Back||m_cancel.IsClicked){m_done=true;DialogsManager.HideDialog(this);return;}
+        if(Input.Cancel||Input.Back||m_cancel.IsClicked){m_done=true;DialogsManager.HideDialog(this);BackAction?.Invoke();return;}
         // Defer navigation out of ListPanelWidget.ItemClicked, and dispatch at most once.
         if(m_pendingChoice is {} choice){m_done=true;DialogsManager.HideDialog(this);m_choose(choice);}
     }

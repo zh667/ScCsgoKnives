@@ -14,6 +14,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("ProjectXmlLoad", this);
+        ModsManager.RegisterHook("ProjectXmlSave", this);
         ModsManager.RegisterHook("OnLoadingFinished", this);
         ModsManager.RegisterHook("OnProjectDisposed", this);
         ModsManager.RegisterHook("OnPlayerSpawned", this);
@@ -61,8 +62,18 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
         // Back it up first, and refuse the load rather than upgrade without a way back.
-        try { ScGunSchemaUpgrade.BeforeLoad(project, world); }
-        catch (Exception e) { ScGunSaveGuard.Refuse(project, "记录格式升级前的世界备份失败：" + e.Message); }
+        try { ScGunSchemaUpgrade.BeforeLoad(project, world); ScGunTravel.BeforeLoad(project,world); }
+        catch (Exception e) {
+            // A freshly-created Ghoul subworld has no gun subsystem XML yet; the guard still needs
+            // an error field that Subsystem.Load can see (hook exceptions alone are swallowed).
+            var subs=project.Element("Subsystems");
+            if(subs is not null && !subs.Elements("Values").Any(v=>(string)v.Attribute("Name")=="ScGunBlockBehavior"))
+                subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
+            ScGunSaveGuard.Refuse(project, "枪械备份或跨世界记录校验失败：" + e.Message);
+        }
+    }
+    public override void ProjectXmlSave(XElement project) {
+        if(GameManager.WorldInfo is {} world)ScGunTravel.Capture(project,world.DirectoryName);
     }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed

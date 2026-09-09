@@ -24,13 +24,20 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             KnifeLog.Information($"workbench notice: mode={(Creative()?"creative":"survival")} page={title} reason={detail}");
             DialogsManager.ShowDialog(player.GuiWidget, NoticeDialog(title,detail,back));
         }
-        Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected) =>
-            new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{
+        var navigation = new Dictionary<string,ScWorkbenchSelectionDialog.Navigation>();
+        Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected) {
+            ScWorkbenchSelectionDialog dialog=null;
+            dialog=new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{
+                navigation[title]=dialog.CaptureNavigation();
                 bool available=Available();
                 KnifeLog.Information($"workbench select: mode={(Creative()?"creative":"survival")} page={title} item={label(item)} inventory={miner.Inventory?.GetType().Name} slots={miner.Inventory?.SlotsCount} available={available}");
                 if(available)selected(item);
                 else Notice("装配台暂不可用","你已离装配台太远、装配台已被移除，或角色已无法操作。请靠近有效的装配台后重新打开。",()=>{});
             },miner.Inventory,Creative());
+            dialog.RestoreNavigation(navigation.GetValueOrDefault(title));
+            if(title!= "武器装配台 · 组装 / 维修 / 涂装 / 计数器")dialog.BackAction=title.EndsWith("· 选择涂装",StringComparison.Ordinal)?ShowSkinGuns:ShowList;
+            return dialog;
+        }
         void ShowList() {
             if (!Available()) return;
             object[] items = MainMenuItems();

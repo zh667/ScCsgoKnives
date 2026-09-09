@@ -914,7 +914,7 @@ public static class CsmcFirstPersonRenderer {
         Matrix lensWorld = Matrix.Identity;
         if (rigid is not null) {
             DrawCs2RigidWeapon(rigid, cs2, gun, post, projection, camera, in lighting, variant, hideSilencer,
-                out lens, out lensWorld);
+                out lens, out lensWorld, KnifeAnimationController.HideCzFront(firstPerson));
         }
 
         if (native is not null) foreach (var part in native) {
@@ -1104,7 +1104,7 @@ public static class CsmcFirstPersonRenderer {
     static void DrawCs2RigidWeapon(Cs2RigidMesh mesh, Cs2Rig.Pose pose, string asset,
         Matrix post, Matrix projection, Camera camera,
         in KnifePbrRenderer.Lighting lighting, int variant, bool hideSilencer,
-        out Cs2RigidMesh.Part lens, out Matrix lensWorld) {
+        out Cs2RigidMesh.Part lens, out Matrix lensWorld, bool hideCzFront=false) {
         lens = null;
         lensWorld = Matrix.Identity;
         Texture2D baseColor = ScGunVisualMaterial.Load(asset, SkinId, out string material);
@@ -1116,6 +1116,7 @@ public static class CsmcFirstPersonRenderer {
         }
         foreach (Cs2RigidMesh.Part part in mesh.Parts) {
             if (hideSilencer && mesh.Joints[part.Joint] == "silencer") continue;
+            if(!ScGunPartVisibility.Visible(asset,mesh.Joints[part.Joint],pose.Clip,pose.Time,hideCzFront))continue;
             if (!mesh.TryPartWorld(part, out Matrix bone)) continue;
             // The AUG's and SG 553's scope lens has its own material (shared_scope_lens)
             // and is drawn last, after the arms, by DrawScopeLens; the body texture

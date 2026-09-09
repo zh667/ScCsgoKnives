@@ -38,6 +38,7 @@ public sealed class ScGunLayoutScreen : Screen {
     CheckboxWidget m_enabled;
     SliderWidget m_size, m_background, m_foreground;
     ButtonWidget m_next, m_side, m_collapse, m_resetOne, m_resetAll, m_cancel, m_save;
+    readonly ButtonWidget m_choose=ScGunUi.Button("选择全部武器按键",230);
 
     public ScGunLayoutScreen() {
         Children.Add(new ScGunWorldBackground());
@@ -87,6 +88,7 @@ public sealed class ScGunLayoutScreen : Screen {
         m_next.Margin = new Vector2(2, 0); m_collapse.Margin = new Vector2(2, 0);
         top.Children.Add(m_next); top.Children.Add(m_collapse);
         m_controls.Children.Add(top);
+        m_choose.ParentWidget?.Children.Remove(m_choose);m_controls.Children.Add(m_choose);
         m_enabled = ScGunUi.Toggle("显示此按键", true);
         m_controls.Children.Add(m_enabled);
         m_size = ScGunUi.Slider(.5f, 2f, .05f, 1f, "大小");
@@ -136,10 +138,10 @@ public sealed class ScGunLayoutScreen : Screen {
 
     /// <summary>Buttons that can be on screen at the same time; only these can genuinely overlap.</summary>
     static readonly string[][] Concurrent = [
-        [ScGunFunctions.Reload, ScGunFunctions.Scope, ScGunFunctions.Inspect],
-        [ScGunFunctions.Reload, ScGunFunctions.Silencer, ScGunFunctions.Inspect],
-        [ScGunFunctions.Reload, ScGunFunctions.Burst, ScGunFunctions.Inspect],
-        [ScGunFunctions.Reload, ScGunFunctions.RevolverAlt, ScGunFunctions.Inspect],
+        [ScGunFunctions.Reload, ScGunFunctions.Scope, ScGunFunctions.Inspect, ScGunFunctions.Fire],
+        [ScGunFunctions.Reload, ScGunFunctions.Silencer, ScGunFunctions.Inspect, ScGunFunctions.Fire],
+        [ScGunFunctions.Reload, ScGunFunctions.Burst, ScGunFunctions.Inspect, ScGunFunctions.Fire],
+        [ScGunFunctions.Reload, ScGunFunctions.RevolverAlt, ScGunFunctions.Inspect, ScGunFunctions.Fire],
         [ScGunFunctions.KnifeHeavy, ScGunFunctions.Inspect],
         [ScGunFunctions.ThrowWeak, ScGunFunctions.ThrowStrong],
     ];
@@ -167,6 +169,13 @@ public sealed class ScGunLayoutScreen : Screen {
         layout.Enabled = m_enabled.IsChecked;
         layout.Scale = m_size.Value; layout.Background = m_background.Value; layout.Foreground = m_foreground.Value;
         layout.Normalize();
+        if(m_choose.IsClicked) {
+            m_dragging=null;
+            DialogsManager.ShowDialog(this,new ListSelectionDialog("选择武器按键",ScGunFunctions.All,56,
+                item=>ScGunFunctions.Label((string)item)+(ScUiSettings.Layout(m_working,(string)item,m_leftHanded).Enabled?"":"（已隐藏）"),
+                item=>{m_selected=(string)item;LoadSelected();}));return;
+        }
+        if(DialogsManager.HasDialogs(this)){m_dragging=null;return;}
 
         Vector2 area = m_preview.ActualSize;
         if (area.X > 1 && area.Y > 1) {

@@ -29,12 +29,12 @@ public sealed class ScButtonLayout {
 /// <summary>The mod's touch functions, by stable id. The id is what the layout file stores, so renaming a label or
 /// reordering the list can never move somebody's silencer button onto their grenade.</summary>
 public static class ScGunFunctions {
-    public const string Reload = "reload", Scope = "scope", Silencer = "silencer", Burst = "burst",
+    public const string Fire = "fire", Reload = "reload", Scope = "scope", Silencer = "silencer", Burst = "burst",
                         RevolverAlt = "revolver_alt", Inspect = "inspect", KnifeHeavy = "knife_heavy",
                         ThrowStrong = "throw_strong", ThrowWeak = "throw_weak";
-    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak];
+    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire];
     public static string Label(string id) => id switch {
-        Reload => "换弹", Scope => "开镜", Silencer => "消音器", Burst => "连发", RevolverAlt => "速射",
+        Fire => "开火", Reload => "换弹", Scope => "开镜", Silencer => "消音器", Burst => "连发", RevolverAlt => "速射",
         Inspect => "检视", KnifeHeavy => "重刀", ThrowStrong => "强投", ThrowWeak => "轻投", _ => id,
     };
     /// <summary>Buttons that never appear at the same time share a default row; the rows are what the original
@@ -50,7 +50,8 @@ public static class ScGunFunctions {
         const float width = 850f, height = 850f * 9f / 16f;
         float centreX = leftHanded ? 160f + 52f : width - 160f - 52f;
         float centreY = height - (150f + DefaultRow(id) * 68f) - 30f;
-        return new ScButtonLayout { X = centreX / width, Y = centreY / height };
+        return id == Fire ? new ScButtonLayout { X = leftHanded ? .13f : .87f, Y = .7f, Enabled = false }
+            : new ScButtonLayout { X = centreX / width, Y = centreY / height };
     }
 }
 

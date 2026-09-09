@@ -119,6 +119,11 @@ static class WeaponHelpLayoutRegression {
                 Check($"workbench-browse/{creative}/{available}",ok&&choices==0,"all 57 weapon recipes: list, preview, scrollable material area and fixed footer; browsing never commits");
                 browse.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(browse,["步枪"]);
                 Check($"workbench-category/{creative}/{available}",((ListPanelWidget)Part("m_list")).Items.Count==7,"category filters rifles without losing available recipes");
+                var nav=browse.GetType().GetMethod("CaptureNavigation").Invoke(browse,null);
+                var restored=(Dialog)Activator.CreateInstance(browse.GetType(),["返回",craftItems,56f,(Func<object,string>)(o=>o.GetType().Name),(Action<object>)(_=>{}),inv,creative]);
+                restored.GetType().GetMethod("RestoreNavigation").Invoke(restored,[nav]);
+                var restoredList=(ListPanelWidget)restored.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(restored);
+                Check($"workbench-return-preserves-category/{creative}/{available}",restoredList.Items.Count==7&&Equals(restoredList.SelectedItem,((ListPanelWidget)Part("m_list")).SelectedItem),"recreated page restores rifle tab and selected gun");
                 var confirm=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchConfirmDialog"),["长名称 · 计数器皮肤枪械",string.Join("\n",Enumerable.Repeat("材料需要 6 件，当前持有 12 件；枪械状态保持不变。",80)),"确认组装","返回",(Action<MessageDialogButton>)(_=>choices++)]);
                 confirm.WidgetsHierarchyInput=new WidgetInput();confirm.Measure(available);confirm.Arrange(Vector2.Zero,available);
                 var yes=(ButtonWidget)confirm.GetType().GetField("m_yes",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(confirm);
@@ -234,7 +239,7 @@ static class WeaponHelpLayoutRegression {
                         var canvas = (CanvasWidget)EditorField("m_preview"); var panel = EditorField("m_panel"); var save = EditorField("m_save");
                         var proxies = canvas.Children.Where(w=>w.IsVisible).ToArray();
                         Check($"editor-stable/{size}/{id}/{collapsed}/{results.Count}", stable && canvas.ActualSize==size
-                            && proxies.Length is >=2 and <=3 && proxies.All(w=>!w.IsUpdateEnabled && !w.IsHitTestVisible)
+                            && proxies.Length is >=2 and <=4 && proxies.All(w=>!w.IsUpdateEnabled && !w.IsHitTestVisible)
                             && (collapsed ? !panel.IsVisible : save.GlobalBounds.Max.Y<=panel.GlobalBounds.Max.Y+.1f && save.ActualSize.Y>=48),
                             "12 real Update/Measure/Arrange frames: fixed preview area, no oscillation, only concurrent buttons, footer reachable");
                         if (!collapsed) {
