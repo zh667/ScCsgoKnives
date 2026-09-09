@@ -2,6 +2,8 @@ using Engine;
 namespace Game;
 
 public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
+    // Both game modes expose the same operations. Creative only changes their costs, not availability.
+    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
     public override int[] HandledBlocks => [BlocksManager.GetBlockIndex<ScWeaponWorkbenchBlock>(true)];
     public override bool OnInteract(TerrainRaycastResult hit, ComponentMiner miner) {
         ComponentPlayer player = miner.ComponentPlayer;
@@ -19,9 +21,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{if(Available())selected(item);},miner.Inventory,Creative());
         void ShowList() {
             if (!Available()) return;
-            object[] items = Creative()
-                ? [RepairMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All]
-                : [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
+            object[] items = MainMenuItems();
             DialogsManager.ShowDialog(player.GuiWidget, Selection("武器装配台 · 组装 / 维修 / 涂装 / 计数器", items, 56,
                 (Func<object, string>)(item => item is RepairMenu ? "维修背包中的枪械" : item is SkinMenu ? "更换枪械涂装"
                     : item is CounterMenu ? "安装击杀计数器" : item is AttributesMenu ? "查看武器属性"

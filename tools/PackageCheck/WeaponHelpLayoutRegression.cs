@@ -64,6 +64,17 @@ static class WeaponHelpLayoutRegression {
             }
             int template = (int)mod.GetType("Game.ScGunAttributes").GetMethod("TemplateValue").Invoke(null, [0]);
             var craftItems=((Array)mod.GetType("Game.ScWeaponCrafting").GetField("All").GetValue(null)).Cast<object>().ToArray();
+            foreach(bool creative in new[]{false,true}) {
+                var menu=(object[])mod.GetType("Game.SubsystemScWeaponWorkbench").GetMethod("MainMenuItems",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,null);
+                var inv=new ComponentInventory();inv.m_slots.Add(new());
+                var dialog=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["功能菜单",menu,56f,
+                    (Func<object,string>)(o=>o.GetType().Name),(Action<object>)(_=>{}),inv,creative]);
+                dialog.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(dialog,["功能"]);
+                dialog.Measure(new(850,479));dialog.Arrange(Vector2.Zero,new(850,479));
+                var list=(ListPanelWidget)dialog.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
+                Check($"workbench-all-functions-visible/{creative}",list.Items.Count==4&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")
+                    && menu.Length==craftItems.Length+4,"actual runtime menu -> 功能 filter contains repair, skins, counter and attributes in both modes");
+            }
             foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
                 var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;
                 var browse=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["武器装配台 · 组装 / 维修 / 涂装 / 计数器",craftItems,56f,
