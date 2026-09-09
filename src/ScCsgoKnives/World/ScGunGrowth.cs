@@ -99,8 +99,9 @@ public static class ScGunGrowth {
     public static void StripGrowth(ScGunRecord copy) {
         if (copy is null || !copy.CounterInstalled) return;
         int level = Clamp(copy.AppliedGrowthLevel);
-        copy.CounterInstalled = false; copy.KillCount = 0;
-        copy.AppliedGrowthLevel = 0; copy.PendingGrowthLevel = NoPending; copy.GrowthRulesVersion = 0;
+        // The module is equipment, not earned growth. Copies keep it but start at zero kills/Lv0.
+        copy.KillCount = 0;
+        copy.AppliedGrowthLevel = 0; copy.PendingGrowthLevel = NoPending; copy.GrowthRulesVersion = RulesVersion;
         if (level <= 0) return;
         int newMax = MaxDurability(copy.Variant, 0);
         copy.Durability = ScaleDurability(copy.Durability, copy.MaxDurability, newMax);

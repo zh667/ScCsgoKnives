@@ -546,7 +546,7 @@ public static class ScGunGrowthSelfTest {
                 && original.CounterInstalled && original.KillCount == 1000 && original.AppliedGrowthLevel == 10
                 && original.Rounds == 45 && original.MaxDurability == 2250
                 // the copy keeps identity and appearance but not the growth, and loses nothing it was carrying
-                && !copy.CounterInstalled && copy.KillCount == 0 && copy.AppliedGrowthLevel == 0
+                && copy.CounterInstalled && copy.KillCount == 0 && copy.AppliedGrowthLevel == 0
                 && copy.Variant == original.Variant && copy.SkinId == 180
                 && copy.MaxDurability == 1500 && copy.Durability == 1500
                 && copy.Rounds == 30 && copy.ReserveOverflowRounds == 15
@@ -564,19 +564,34 @@ public static class ScGunGrowthSelfTest {
                 if (mutation is null || mutation.Commit(_ => { }) != ScGunResult.Success) return false;
                 var acting = Snap(registry, mutation.Id);
                 var kept = Snap(registry, id);
-                return mutation.Id != id && !acting.CounterInstalled && acting.KillCount == 0
+                return mutation.Id != id && acting.CounterInstalled && acting.KillCount == 0
                     && acting.Rounds == 5 && acting.ReserveOverflowRounds == 2 && acting.MaxDurability == 200
                     && kept.CounterInstalled && kept.KillCount == 1200 && kept.Rounds == 7;
             } finally { ScGunMutation.HolderLocator = saved; }
         });
         // --- kill rules -------------------------------------------------------------------------------------
-        Test("creative-and-missing-shooter-carry-no-credential", () =>
+        Test("uninstalled-and-template-carry-no-credential", () =>
             ScGunKillCredit.For(0, creative: true, 1) is null && ScGunKillCredit.For(GunSpec.WithId(0, GunSpec.FreshFull), false, 1) is null);
         Test("credential-freezes-the-record", () => {
             var registry = Fresh();
             var (inventory, id) = Gun(registry, "ak47");
             var credit = ScGunKillCredit.For(Terrain.ExtractData(inventory.GetSlotValue(0)), false, 42);
             return credit is not null && credit.RecordId == id && credit.Variant == Variant("ak47") && credit.ShotId == 42;
+        });
+        Test("creative-credential-matches-survival", () => {
+            var registry = Fresh(); var (inventory, id) = Gun(registry, "ak47");
+            int data = Terrain.ExtractData(inventory.GetSlotValue(0));
+            return ScGunKillCredit.For(data, true, 42) is { } credit
+                && credit == ScGunKillCredit.For(data, false, 42) && credit.RecordId == id;
+        });
+        Test("creative-kill-queue-increments-once", () => {
+            var registry = Fresh(); var (inventory, id) = Gun(registry, "nova");
+            var credit = ScGunKillCredit.For(Terrain.ExtractData(inventory.GetSlotValue(0)), true, 42);
+            if (credit is null) return false;
+            registry.Kills.Enqueue(credit.RecordId, credit.Variant);
+            ScGunHolders.Holder[] holders = [new(id, "player", inventory, 0)];
+            return ScGunGrowthService.DrainKills(registry, holders, true) == 1
+                && ScGunGrowthService.DrainKills(registry, holders, true) == 0 && Snap(registry, id).KillCount == 1;
         });
         // --- Zeus -------------------------------------------------------------------------------------------
         Test("zeus-recipe-expands-as-specified", () => {

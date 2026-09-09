@@ -50,6 +50,20 @@ static class WeaponHelpLayoutRegression {
                 BlocksManager.BlockNameToIndex[name] = index++;
             }
             int template = (int)mod.GetType("Game.ScGunAttributes").GetMethod("TemplateValue").Invoke(null, [0]);
+            var counterType = mod.GetType("Game.ScGunCounterTemplateBlock");
+            var counterBlock = BlocksManager.Blocks[BlocksManager.BlockTypeToIndex[counterType]];
+            var inventory = new ComponentInventory(); inventory.m_slots.Add(new());
+            inventory.AddSlotItems(0, counterBlock.GetCreativeValues().First(), 1);
+            object conversion = counterType.GetMethod("Materialize").Invoke(null, [inventory, 0, "layout-name-test"]);
+            int instance = inventory.GetSlotValue(0);
+            var realGun = BlocksManager.Blocks[Terrain.ExtractContents(instance)];
+            string beforeName = realGun.GetDisplayName(null, instance);
+            var chest = new ComponentChest(); chest.m_slots.Add(new());
+            inventory.RemoveSlotItems(0, 1); chest.AddSlotItems(0, instance, 1);
+            string chestName = realGun.GetDisplayName(null, chest.GetSlotValue(0));
+            chest.RemoveSlotItems(0, 1); inventory.AddSlotItems(0, instance, 1);
+            Check("counter-name-survives-chest-roundtrip", conversion.ToString() == "Success" && beforeName.Contains("击杀计数器")
+                && chestName == beforeName && realGun.GetDisplayName(null, inventory.GetSlotValue(0)) == beforeName, "actual GetDisplayName on instance in inventory -> ComponentChest -> inventory");
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);
             var recipe = (Screen)Activator.CreateInstance(mod.GetType("Game.ScAssemblyRecipesScreen"));
             // Includes the user's 1536x825 at the game's 850-unit UI width, maximum UI scale,

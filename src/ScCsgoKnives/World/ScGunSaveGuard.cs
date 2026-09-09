@@ -11,7 +11,7 @@ public static class ScGunSaveGuard {
 
     public static void Validate(ValuesDictionary values) {
         string error = values.GetValue<string>(ErrorKey, null);
-        if (error is not null) throw Refused(error);
+        if (error is not null) throw new InvalidOperationException(error);
         if (values.ContainsKey("GunDataLayout")) {
             int stamp = values.GetValue<int>("GunDataLayout");
             if (stamp != GunSpec.DataLayout && stamp != ScGunRegistry.LegacyStamp)
@@ -20,6 +20,7 @@ public static class ScGunSaveGuard {
         if (values.ContainsKey("GunRegistry")) {
             var registry = values.GetValue<ValuesDictionary>("GunRegistry");
             if (registry is null) throw Refused("GunRegistry is null");
+            if (!registry.ContainsKey("Schema")) throw Refused("GunRegistry 缺少 Schema（记录格式版本）；不能当作 schema 1/2/3 读取，请提供来源版本或原始备份");
             int schema = registry.GetValue<int>("Schema", 0);
             if (!ScGunRegistry.IsKnownSchema(schema)) throw Refused($"GunRegistry.Schema={schema}");
             // A growth mode name this build does not know means a rule set it cannot honour; refuse before play.

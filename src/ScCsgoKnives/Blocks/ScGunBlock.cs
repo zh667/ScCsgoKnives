@@ -151,8 +151,12 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
         if (IsOldFormat(value)) return GunSpec.IsForeign(Terrain.ExtractData(value)) ? "旧版本枪械数据（0.34 及更早，已保留，请新建世界）" : "枪械记录缺失（旧版本数据或损坏存档，已保留）";
         if (!IsKnown(value)) return $"未知枪械（型号 {GetVariant(value)}，保留数据）";
-        if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "DisplayName", out string result)) return result;
-        return base.GetDisplayName(subsystemTerrain, value);
+        string name = LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "DisplayName", out string result)
+            ? result : base.GetDisplayName(subsystemTerrain, value);
+        int skin = SkinOf(value);
+        if (skin != ScGunSkinCatalog.None) name += " · " + ScGunSkinCatalog.NameOf(skin);
+        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += " · 击杀计数器";
+        return name;
     }
 
     /// <summary>The item help entry opens the attribute page with this exact value, so a skinned/counter

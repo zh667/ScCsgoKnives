@@ -144,6 +144,33 @@ public static class ScGunRecoverySelfTest {
                 }
                 finally { if (had) BlocksManager.BlockTypeToIndex[gunType] = old; else BlocksManager.BlockTypeToIndex.Remove(gunType); BlocksManager.Blocks[512] = oldBlock; }
             });
+            Test("dormant-creative-inventory-does-not-split-chest-transfer", () => {
+                var project = Blank<Project>(); project.m_subsystems = []; project.m_entities = [];
+                var scanner = new SubsystemItemsScanner { m_project = project };
+                project.m_subsystems.AddRange([scanner, new SubsystemPickables(), new SubsystemProjectiles(), new SubsystemMovingBlocks()]);
+                var active = new ComponentInventory(); active.m_slots.Add(new());
+                var dormant = new ComponentCreativeInventory { OpenSlotsCount = 1 }; dormant.m_slots.Add(0);
+                var chest = new ComponentInventory(); chest.m_slots.Add(new());
+                var miner = new ComponentMiner { Inventory = active }; var player = new ComponentPlayer { ComponentMiner = miner };
+                var entity = Blank<Entity>(); entity.m_project = project; entity.m_components = [active, dormant, miner, player];
+                foreach (var c in entity.m_components) c.m_entity = entity;
+                var boxEntity = Blank<Entity>(); boxEntity.m_project = project; boxEntity.m_components = [chest]; chest.m_entity = boxEntity;
+                project.m_entities[entity] = true; project.m_entities[boxEntity] = true;
+                int id = ScGunRegistry.Current.Allocate(26, 3, false, 240);
+                ScGunRegistry.Current.Get(id).CounterInstalled = true; ScGunRegistry.Current.Get(id).KillCount = 77;
+                int value = Terrain.MakeBlockValue(512, 0, GunSpec.WithId(26, id));
+                active.m_slots[0].Value = value; active.m_slots[0].Count = 1; dormant.m_slots[0] = value;
+                if (ScGunHolders.Scan(project, 512).Count() != 1) return false;
+                active.m_slots[0].Count = 0; chest.m_slots[0].Value = value; chest.m_slots[0].Count = 1;
+                var holders = ScGunHolders.Scan(project, 512).ToArray();
+                if (holders.Length != 1 || !ReferenceEquals(holders[0].Inventory, chest)) return false;
+                chest.m_slots[0].Count = 0; active.m_slots[0].Count = 1;
+                if (ScGunHolders.Scan(project, 512).Count() != 1) return false;
+                var s = ScGunRegistry.Current.Get(id);
+                if (!s.CounterInstalled || s.KillCount != 77 || s.Durability != 240 || s.Rounds != 3 || ScGunRegistry.Current.Count != 1) return false;
+                miner.Inventory = dormant; // mode changed: creative is now the live inventory
+                return ScGunHolders.Scan(project, 512).Single().Inventory == dormant;
+            });
             Test("holder-identities-independent-of-hash-collision", () => {
                 var byHash = new Dictionary<int, object>(); var keys = new HashSet<string>(); bool sawCollision = false;
                 for (int i = 0; i < 100000; i++) {

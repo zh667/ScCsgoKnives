@@ -85,10 +85,9 @@ public sealed class ScGunKillQueue {
 ///
 /// The record id and model are frozen at the moment the trigger transaction committed, so switching weapons,
 /// dropping the gun or handing it to somebody else between the shot and the death cannot move the kill onto
-/// another gun. A shot fired in creative, or by a gun with no counter, carries no credential at all.</summary>
+/// another gun. Both creative and survival shots count; a gun without a counter carries no credential.</summary>
 public sealed record ScGunKillCredit(int RecordId, int Variant, long ShotId) {
     public static ScGunKillCredit For(int data, bool creative, long shotId) {
-        if (creative) return null;
         if (!GunSpec.TryGetSnapshot(data, out var s) || !s.CounterInstalled) return null;
         if (s.Id < GunSpec.FirstId || s.Id > GunSpec.LastId) return null;
         return new ScGunKillCredit(s.Id, s.Variant, shotId);
@@ -98,15 +97,14 @@ public sealed record ScGunKillCredit(int RecordId, int Variant, long ShotId) {
 /// <summary>What counts as a valid kill (plan §4.3).
 ///
 /// Survivalcraft has no taming system, so "tamed" here means a mount somebody is actually riding. Players are
-/// excluded because the first release deliberately does not let PvP feed weapon growth. Creative shots and
-/// targets explicitly marked as test spawns stay out of survival counting entirely.</summary>
+/// excluded because the first release deliberately does not let PvP feed weapon growth.
+/// Targets explicitly marked as test spawns remain excluded in both game modes.</summary>
 public static class ScGunKillRules {
     /// <summary>Set by headless tests to mark a target as a test spawn. Never set by gameplay.</summary>
     public static Func<ComponentBody, bool> TestTarget;
 
     public static bool Counts(ComponentBody target, ComponentPlayer shooter, bool creative, out string why) {
         why = null;
-        if (creative) { why = "creative"; return false; }
         if (target?.Entity is null) { why = "no entity"; return false; }
         if (shooter is null) { why = "no shooter"; return false; }
         if (ReferenceEquals(target.Entity, shooter.Entity)) { why = "self"; return false; }

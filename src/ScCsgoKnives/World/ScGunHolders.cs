@@ -64,6 +64,7 @@ public static class ScGunHolders {
         if (scanner is not null) {
             foreach (var item in scanner.ScanItems().ToArray()) {
                 if (item.Count <= 0 || Terrain.ExtractContents(item.Value) != gunBlockIndex) continue;
+                if (IsDormantPlayerInventory(item.Container as IInventory)) continue;
                 int id = GunSpec.GetId(Terrain.ExtractData(item.Value));
                 if (id < GunSpec.FirstId || id > GunSpec.LastId) continue;
                 if (item.Container is ComponentCreativeInventory creative && item.IndexInContainer >= creative.OpenSlotsCount) continue; // the catalogue, not a held gun
@@ -93,6 +94,16 @@ public static class ScGunHolders {
             int id = GunSpec.GetId(Terrain.ExtractData(pickable.Value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId && seen.Add(Key(pickable, 0))) yield return new Holder(id, Key(pickable, 0), null, -1);
         }
+    }
+    /// <summary>The API saves both player inventories, but Miner selects only one for the current mode.
+    /// An inactive inventory is not a second live copy during chest transfers after switching mode.
+    /// Other accessible inventories (crafting, Stash, chests) must still participate in duplication checks.</summary>
+    public static bool IsDormantPlayerInventory(IInventory inventory) {
+        if (inventory is not ComponentCreativeInventory && inventory is not ComponentInventory) return false;
+        var component = (GameEntitySystem.Component)inventory;
+        var player = component.Entity?.FindComponent<ComponentPlayer>();
+        var active = player?.ComponentMiner?.Inventory;
+        return active is not null && !ReferenceEquals(active, inventory);
     }
     static IEnumerable<Holder> Of(IInventory inventory, int slot, int gunBlockIndex, HashSet<string> seen) {
         int value = inventory.GetSlotValue(slot);
