@@ -62,7 +62,7 @@ static class WeaponHelpLayoutRegression {
             inventory.RemoveSlotItems(0, 1); chest.AddSlotItems(0, instance, 1);
             string chestName = realGun.GetDisplayName(null, chest.GetSlotValue(0));
             chest.RemoveSlotItems(0, 1); inventory.AddSlotItems(0, instance, 1);
-            Check("counter-name-survives-chest-roundtrip", conversion.ToString() == "Success" && beforeName.Contains("击杀计数器")
+            Check("counter-name-survives-chest-roundtrip", conversion.ToString() == "Success" && beforeName.Contains("击杀计数器 Lv0")
                 && chestName == beforeName && realGun.GetDisplayName(null, inventory.GetSlotValue(0)) == beforeName, "actual GetDisplayName on instance in inventory -> ComponentChest -> inventory");
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);
             var recipe = (Screen)Activator.CreateInstance(mod.GetType("Game.ScAssemblyRecipesScreen"));
@@ -120,6 +120,22 @@ static class WeaponHelpLayoutRegression {
                             && w.GlobalBounds.Min.X >= right.GlobalBounds.Min.X - .1f && w.GlobalBounds.Max.X <= right.GlobalBounds.Max.X + .1f),
                             "real header + eight stat rows, including long names and Zeus charge, stay inside card");
                     }
+                    select.Invoke(screen, [0]);
+                    var preview = screen.GetType().GetMethod("PreviewLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var levelField = screen.GetType().GetField("m_previewLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+                    int originalValue = (int)screen.GetType().GetField("m_value", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen);
+                    for (int lv = 0; lv <= 10; lv++) {
+                        preview.Invoke(screen, [lv]); screen.Measure(size); screen.Arrange(Vector2.Zero, size);
+                        var down = (ButtonWidget)Field("m_levelDown"); var up = (ButtonWidget)Field("m_levelUp"); var levelButton = (ButtonWidget)Field("m_level");
+                        var future = (System.Collections.IList)screen.GetType().GetField("m_futureRows", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen);
+                        Check(tag + $"/preview-{lv}", (int)levelField.GetValue(screen) == lv && down.IsEnabled == (lv > 0) && up.IsEnabled == (lv < 10)
+                            && levelButton.Text.Contains($"Lv{lv} / 10") && (lv == 0 ? future.Count == 0 : future.Count > 0)
+                            && up.GlobalBounds.Max.X <= right.GlobalBounds.Max.X + .1f
+                            && (int)screen.GetType().GetField("m_value", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(screen) == originalValue,
+                            "read-only level selector, boundary buttons, future highlight targets and narrow layout");
+                    }
+                    preview.Invoke(screen, [-100]); Check(tag + "/preview-clamp-low", (int)levelField.GetValue(screen) == 0, "Lv0 lower bound");
+                    preview.Invoke(screen, [100]); Check(tag + "/preview-clamp-high", (int)levelField.GetValue(screen) == 10, "Lv10 upper bound");
                     select.Invoke(screen, [0]);
                 }
                 screen.Enter([]); // return with empty parameters after a populated page

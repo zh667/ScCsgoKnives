@@ -47,7 +47,7 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
     }
     public override string GetDisplayName(SubsystemTerrain terrain, int value) {
         if (!TrySnapshot(value, out var s)) return "未知计数器枪械";
-        return GunSpec.All[s.Variant].Name + (s.SkinId == 0 ? " · 原厂 · 击杀计数器" : $" · {ScGunSkinCatalog.NameOf(s.SkinId)} · 击杀计数器");
+        return GunSpec.All[s.Variant].Name + (s.SkinId == 0 ? " · 原厂 · 击杀计数器 Lv0" : $" · {ScGunSkinCatalog.NameOf(s.SkinId)} · 击杀计数器 Lv0");
     }
     public override string GetDescription(int value) => "创造模式计数器枪械；拿到手中后保留计数器状态，击杀从 0 开始。";
     public override int GetTextureSlotCount(int value) => 1;

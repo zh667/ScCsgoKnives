@@ -625,8 +625,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             KnifeLog.Information($"gun growth: record {id} level {from} -> {to}");
             foreach (var pair in m_states) {
                 var inventory = pair.Key.ComponentMiner?.Inventory;
-                if (inventory is null || GunSpec.GetId(Terrain.ExtractData(inventory.GetSlotValue(inventory.ActiveSlotIndex))) != id) continue;
-                pair.Key.ComponentGui.DisplaySmallMessage($"枪械成长：Lv{from} → Lv{to}（伤害、射程、容量、耐久上限提升）", Color.White, true, false);
+                if (inventory is null || inventory.ActiveSlotIndex < 0) continue;
+                int held = inventory.GetSlotValue(inventory.ActiveSlotIndex);
+                if (Terrain.ExtractContents(held) != BlocksManager.GetBlockIndex<ScGunBlock>(true)
+                    || GunSpec.GetId(Terrain.ExtractData(held)) != id) continue;
+                string name = BlocksManager.Blocks[Terrain.ExtractContents(held)].GetDisplayName(m_terrain, held);
+                pair.Key.ComponentGui.DisplaySmallMessage($"{name}\n升级成功：Lv{from} → Lv{to}！" + (to == ScGunGrowth.MaxLevel ? "已满级。" : ""), new Color(90, 210, 225), true, true);
             }
         });
     }
@@ -1089,7 +1093,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             Vector3 end = start + direction * shotRange;
             long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
             TerrainRaycastResult? terrain = ScGunRange.TraceTerrain((a,b) => m_terrain.Raycast(a, b, false, true,
-                (v, d) => Terrain.ExtractContents(v) != 0 && BlocksManager.Blocks[Terrain.ExtractContents(v)] is not FluidBlock), start, direction, shotRange);
+                (v, d) => ScGunRange.TerrainStopsBullet(v)), start, direction, shotRange);
             ScGunHitTest.Hit? gunHit;
             if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):shotRange,diagnostic?.Trace);
             else {

@@ -9,6 +9,13 @@ namespace Game;
 /// here asks the terrain updater to load anything. Walls and the nearest target still stop the shot first, and
 /// no part of this aims, curves or sees through anything.</summary>
 public static class ScGunRange {
+    /// <summary>Foliage is not ballistic cover. Explicit types preserve walls, trunks,
+    /// glass and the solid dirt cube named GrassBlock; do not confuse transparency with cover.</summary>
+    public static bool StopsBullet(Block block) => block is not null
+        && block is not AirBlock and not FluidBlock and not LeavesBlock and not TallGrassBlock
+            and not FallenLeavesBlock and not IvyBlock;
+    public static bool TerrainStopsBullet(int value) => Terrain.ExtractContents(value) != 0
+        && StopsBullet(BlocksManager.Blocks[Terrain.ExtractContents(value)]);
     static bool Finite(Vector3 v) => float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
     /// <summary>The engine silently truncates each terrain ray to 1000 cells. Segment a long
     /// loaded-world shot into <=512-cell engine calls, retaining global hit distance and ray.

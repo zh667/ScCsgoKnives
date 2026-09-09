@@ -155,7 +155,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
             ? result : base.GetDisplayName(subsystemTerrain, value);
         int skin = SkinOf(value);
         if (skin != ScGunSkinCatalog.None) name += " · " + ScGunSkinCatalog.NameOf(skin);
-        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += " · 击杀计数器";
+        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += $" · 击杀计数器 Lv{s.Level}";
         return name;
     }
 

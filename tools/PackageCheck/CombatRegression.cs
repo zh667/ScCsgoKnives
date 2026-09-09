@@ -38,6 +38,24 @@ static class CombatRegression {
             catch (Exception e) { result.Add(new("combat/" + name, false, e.ToString())); }
         }
         object Call(string type, string method, params object[] args) => mod.GetType("Game." + type).GetMethod(method).Invoke(null, args);
+        foreach (var block in new Block[] { new TallGrassBlock(), new OakLeavesBlock(), new BirchLeavesBlock(), new SpruceLeavesBlock(), new FallenLeavesBlock(), new IvyBlock(), new WaterBlock() })
+            Test("foliage-pass/" + block.GetType().Name, () => !(bool)Call("ScGunRange", "StopsBullet", block));
+        foreach (var block in new Block[] { new GrassBlock(), new DirtBlock(), new GraniteBlock(), new OakWoodBlock(), new GlassBlock() })
+            Test("cover-stops/" + block.GetType().Name, () => (bool)Call("ScGunRange", "StopsBullet", block));
+        Test("real-terrain-ray-passes-grass-leaves-stops-at-trunk", () => {
+            var old = new[] { BlocksManager.Blocks[710], BlocksManager.Blocks[711], BlocksManager.Blocks[712] };
+            using var terrain = new Terrain(); terrain.AllocateChunk(0, 0);
+            try {
+                BlocksManager.Blocks[710] = new TallGrassBlock(); BlocksManager.Blocks[711] = new OakLeavesBlock(); BlocksManager.Blocks[712] = new OakWoodBlock();
+                terrain.SetCellValueFast(2, 10, 1, 710); terrain.SetCellValueFast(3, 10, 1, 711); terrain.SetCellValueFast(5, 10, 1, 712);
+                var start = new Vector3(.5f, 10.5f, 1.5f); var end = new Vector3(9.5f, 10.5f, 1.5f);
+                var original = SubsystemTerrain.Raycast(terrain, start, end, false, true, (v,d) => v != 0);
+                var corrected = SubsystemTerrain.Raycast(terrain, start, end, false, true, (v,d) => (bool)Call("ScGunRange", "TerrainStopsBullet", v));
+                terrain.SetCellValueFast(5, 10, 1, 0);
+                var clear = SubsystemTerrain.Raycast(terrain, start, end, false, true, (v,d) => (bool)Call("ScGunRange", "TerrainStopsBullet", v));
+                return original is { } a && a.CellFace.X < 5 && corrected is { } b && b.CellFace.X == 5 && clear is null;
+            } finally { for (int i = 0; i < 3; i++) BlocksManager.Blocks[710 + i] = old[i]; }
+        });
         Test("held-counter-template-wired-before-gun-routing", () => {
             var calls = Calls(mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Update")).ToArray();
             int counter = Array.FindIndex(calls, c => c.DeclaringType.Name == "ScGunCounterTemplateBlock" && c.Name == "Materialize");

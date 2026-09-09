@@ -15,7 +15,10 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     int m_value;
     int m_variant;
     int m_instanceValue;          // the item the player came from, when they came from one
-    int m_levelMode;              // 0 base, 1 current, 2 next
+    int m_previewLevel = -1;      // -1 follows the real level; never writes to the gun
+    readonly List<Widget> m_futureRows = [];
+    ButtonWidget m_levelDown, m_levelUp;
+    LabelWidget m_previewNotice;
     bool m_built, m_narrow, m_singleBars;
     int m_lastRevision = -1;
     int m_initialValue;
@@ -71,12 +74,13 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
             // Only a real instance record gives a level; a catalogue template is browsed at Lv0.
             if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && !s.Fresh) m_instanceValue = value;
         }
-        m_levelMode = m_instanceValue != 0 ? 1 : 0;
+        m_previewLevel = -1;
         m_built = false;
         Select(Math.Clamp(variant, 0, GunSpec.All.Length - 1));
     }
 
     void Select(int variant) {
+        m_previewLevel = -1;
         m_variant = Math.Clamp(variant, 0, GunSpec.All.Length - 1);
         m_value = m_instanceValue != 0 && ScGunBlock.GetVariant(m_instanceValue) == m_variant ? m_instanceValue : ScGunAttributes.TemplateValue(m_variant);
         if (m_list.SelectedIndex != m_variant) m_list.SelectedIndex = m_variant;
@@ -133,14 +137,19 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_counter = ScGunUi.Label("", .78f, ScGunUi.Accent);
         foreach (var label in new[] { m_name, m_identityText, m_counter }) { label.WordWrap = true; label.HorizontalAlignment = WidgetAlignment.Stretch; }
         m_identity.Children.Add(m_name); m_identity.Children.Add(m_identityText); m_identity.Children.Add(m_counter);
-        m_level = ScGunUi.Button("当前等级", 160);
-        m_level.HorizontalAlignment = WidgetAlignment.Near;
-        m_identity.Children.Add(m_level);
+        var levels = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center };
+        m_levelDown = ScGunUi.Button("−", 48);
+        m_level = ScGunUi.Button("预览 Lv0", 150);
+        m_levelUp = ScGunUi.Button("+", 48);
+        levels.Children.Add(m_levelDown); levels.Children.Add(m_level); levels.Children.Add(m_levelUp);
         var identityHost = new CanvasWidget { Size = new Vector2(float.PositiveInfinity, -1) };
         identityHost.Children.Add(m_identity);
         head.Children.Add(identityHost);
         var details = new StackPanelWidget { Direction = LayoutDirection.Vertical };
         details.Children.Add(head);
+        details.Children.Add(levels);
+        m_previewNotice = ScGunUi.Note("");
+        details.Children.Add(m_previewNotice);
         m_bars.ParentWidget?.Children.Remove(m_bars);
         details.Children.Add(m_bars);
         m_barScroll.Children.Clear(); m_barScroll.Children.Add(details);
@@ -181,11 +190,9 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         return panel;
     }
 
-    int Level() {
-        int applied = EffectiveGunStats.LevelOf(m_value);
-        if (ScGunRegistry.Current?.GrowthMode == ScGunGrowthMode.CountOnly) return applied;
-        return m_levelMode switch { 0 => 0, 2 => Math.Min(ScGunGrowth.MaxLevel, applied + 1), _ => applied };
-    }
+    int Level() => m_previewLevel < 0 ? EffectiveGunStats.LevelOf(m_value) : m_previewLevel;
+
+    void PreviewLevel(int level) { m_previewLevel = Math.Clamp(level, 0, ScGunGrowth.MaxLevel); Refresh(); }
 
     void Refresh() {
         if (!m_built) return;
@@ -204,16 +211,28 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
             ? $"当前物品：{ScGunSkinCatalog.NameOf(ScGunBlock.SkinOf(m_instanceValue))}"
                 + (installed ? $" · 计数 {snap.KillCount} · Lv{snap.Level}" : "") : "";
         m_currentInstance.IsVisible = m_instanceValue != 0;
-        m_level.Text = m_levelMode switch { 0 => "显示：基础 Lv0", 2 => $"显示：下一级 Lv{level}", _ => $"显示：当前 Lv{level}" };
-        m_level.IsEnabled = installed && ScGunRegistry.Current?.GrowthMode != ScGunGrowthMode.CountOnly;
+        int actualLevel = EffectiveGunStats.LevelOf(m_value);
+        m_level.Text = $"预览 Lv{level} / 10";
+        m_levelDown.IsEnabled = level > 0; m_levelUp.IsEnabled = level < ScGunGrowth.MaxLevel;
+        m_previewNotice.Text = $"实际 Lv{actualLevel} · −/+ 切换，点等级回到实际等级。"
+            + (level != actualLevel ? "\n仅预览，不改变枪械等级、弹量或存档。" : "")
+            + (level > actualLevel ? " 超出当前等级的变化项会柔和闪烁。" : "")
+            + (ScGunRegistry.Current?.GrowthMode == ScGunGrowthMode.CountOnly ? "\n本世界仅计数；预览的成长加成不会生效。" : "");
         m_bars.Children.Clear();
+        m_futureRows.Clear();
         var rows = ScGunAttributes.Rows(spec, m_value, level);
-        if (m_singleBars) foreach (var row in rows) m_bars.Children.Add(BarRow(row, true));
+        var actualRows = ScGunAttributes.Rows(spec, m_value, actualLevel);
+        Widget PreviewRow(int index) {
+            Widget widget = BarRow(rows[index], m_singleBars);
+            if (level > actualLevel && (rows[index].Text != actualRows[index].Text || rows[index].Detail != actualRows[index].Detail)) m_futureRows.Add(widget);
+            return widget;
+        }
+        if (m_singleBars) for (int i = 0; i < rows.Count; i++) m_bars.Children.Add(PreviewRow(i));
         else for (int i = 0; i < rows.Count; i += 2) {
             var pair = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch };
             for (int k = i; k < Math.Min(i + 2, rows.Count); k++) {
                 var cell = new CanvasWidget { Size = new Vector2(float.PositiveInfinity, -1), HorizontalAlignment = WidgetAlignment.Stretch };
-                cell.Children.Add(BarRow(rows[k], false));
+                cell.Children.Add(PreviewRow(k));
                 pair.Children.Add(cell);
             }
             m_bars.Children.Add(pair);
@@ -254,7 +273,12 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         if (!m_built) return;
         if (m_list.SelectedIndex is int index && index != m_variant) Select(index);
         if (GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var current) && current.Revision != m_lastRevision) Refresh();
-        if (m_level.IsClicked) { m_levelMode = (m_levelMode + 1) % 3; Refresh(); }
+        if (m_levelDown.IsClicked) PreviewLevel(Level() - 1);
+        if (m_levelUp.IsClicked) PreviewLevel(Level() + 1);
+        if (m_level.IsClicked) { m_previewLevel = -1; Refresh(); }
+        // Slow, shallow alpha pulse: text remains readable at every point, no sharp flashes.
+        int alpha = (int)(210 + 45 * Math.Sin(Time.RealTime * Math.PI));
+        foreach (var row in m_futureRows) row.ColorTransform = new Color(255, 255, 255, alpha);
         if (m_recipe.IsClicked) {
             ScreensManager.m_screens["RecipaediaRecipes"] = new ScAssemblyRecipesScreen();
             ScreensManager.SwitchScreen("RecipaediaRecipes", m_value);
