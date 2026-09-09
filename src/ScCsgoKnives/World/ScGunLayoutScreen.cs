@@ -23,12 +23,14 @@ public sealed class ScGunLayoutScreen : Screen {
     Vector2 m_dragOffset;
 
     /// <summary>Fills the screen: the normalised positions map one to one onto the real controls area.</summary>
-    readonly CanvasWidget m_preview = new() { HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
+    readonly CanvasWidget m_preview = new() { Size = new Vector2(float.PositiveInfinity), ClampToBounds = true };
     readonly Dictionary<string, BevelledButtonWidget> m_proxies = new(StringComparer.Ordinal);
     readonly Dictionary<string, (Color Center, Color Bevel)> m_base = new(StringComparer.Ordinal);
     readonly StackPanelWidget m_controls = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(8, 6) };
     readonly CanvasWidget m_panel = new();
-    readonly CanvasWidget m_panelHost = new();
+    readonly CanvasWidget m_panelHost = new() { Size = new Vector2(float.PositiveInfinity), IsHitTestVisible = false };
+    readonly StackPanelWidget m_panelBody = new() { Direction = LayoutDirection.Vertical };
+    readonly StackPanelWidget m_footer = new() { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center };
     readonly ButtonWidget m_expand = ScGunUi.Button("展开面板", 130);
     readonly ScrollPanelWidget m_panelScroll = new() { Direction = LayoutDirection.Vertical,
         HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
@@ -38,16 +40,20 @@ public sealed class ScGunLayoutScreen : Screen {
     ButtonWidget m_next, m_side, m_collapse, m_resetOne, m_resetAll, m_cancel, m_save;
 
     public ScGunLayoutScreen() {
+        Children.Add(new ScGunWorldBackground());
         Children.Add(m_preview);
         foreach (string id in ScGunFunctions.All) {
-            var proxy = new BevelledButtonWidget { Text = ScGunFunctions.Label(id), IsHitTestVisible = false };
+            var proxy = new BevelledButtonWidget { Text = ScGunFunctions.Label(id), IsHitTestVisible = false, IsUpdateEnabled = false };
+            foreach (var child in proxy.AllChildren) child.IsHitTestVisible = false;
             m_base[id] = (proxy.CenterColor, proxy.BevelColor);
             m_proxies[id] = proxy;
             m_preview.Children.Add(proxy);
         }
         m_panel.Children.Add(ScGunUi.Frame());
         m_panelScroll.Children.Add(m_controls);
-        m_panel.Children.Add(m_panelScroll);
+        m_panelBody.Children.Add(m_panelScroll);
+        m_panelBody.Children.Add(m_footer);
+        m_panel.Children.Add(m_panelBody);
         m_panelHost.Children.Add(m_panel);
         Children.Add(m_panelHost);
         m_expand.HorizontalAlignment = WidgetAlignment.Near;
@@ -64,12 +70,13 @@ public sealed class ScGunLayoutScreen : Screen {
         m_selected = ScGunFunctions.Reload;
         m_dragging = null;
         m_collapsed = false;
+        m_panel.IsVisible = true; m_expand.IsVisible = false;
         m_built = false;
     }
 
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;
-        m_controls.Children.Clear();
+        m_controls.Children.Clear(); m_footer.Children.Clear();
         m_title = ScGunUi.Label("", 1f, ScGunUi.Accent);
         m_title.WordWrap = true;
         m_controls.Children.Add(m_title);
@@ -87,6 +94,8 @@ public sealed class ScGunLayoutScreen : Screen {
         m_warning = ScGunUi.Note("");
         m_controls.Children.Add(m_warning);
         m_controls.Children.Add(ScGunUi.Note("直接在屏幕上拖动按钮摆位；编辑期间不会触发任何战斗动作。面板挡住的按钮可用「下一个按键」选中，或先收起面板。"));
+        m_controls.Children.Add(ScGunUi.Note("仅显示与当前选中按键能同时使用的一组按钮，其他操作用「下一个按键」切换。"));
+        if (GameManager.Project is null) m_controls.Children.Add(ScGunUi.Note("当前未进入世界；进入游戏后再打开本页即可看到真实游戏背景。"));
         var bar = new StackPanelWidget { Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 4) };
         m_side = ScGunUi.Button("面板换边", 120); m_resetOne = ScGunUi.Button("恢复此键", 120); m_resetAll = ScGunUi.Button("全部默认", 120);
         foreach (var b in new[] { m_side, m_resetOne, m_resetAll }) { b.Margin = new Vector2(3, 0); bar.Children.Add(b); }
@@ -94,7 +103,7 @@ public sealed class ScGunLayoutScreen : Screen {
         var bar2 = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 4) };
         m_cancel = ScGunUi.Button("取消", 120); m_save = ScGunUi.Button("保存", 120);
         foreach (var b in new[] { m_cancel, m_save }) { b.Margin = new Vector2(3, 0); bar2.Children.Add(b); }
-        m_controls.Children.Add(bar2);
+        m_footer.Children.Add(bar2);
         // The panel sits opposite the hand the buttons default to, so it starts out covering none of them.
         m_panelHost.HorizontalAlignment = WidgetAlignment.Stretch;
         m_panelHost.VerticalAlignment = WidgetAlignment.Stretch;
@@ -102,10 +111,18 @@ public sealed class ScGunLayoutScreen : Screen {
         m_panel.VerticalAlignment = narrow ? WidgetAlignment.Far : WidgetAlignment.Center;
         // Three 120-unit buttons need 378 units, not the former 320. Scroll vertically
         // on short phone screens so Save/Cancel/Reset remain reachable.
-        m_panel.Size = narrow ? new Vector2(Math.Min(720, Math.Max(420, ActualSize.X * .86f)), Math.Min(320, Math.Max(180, ActualSize.Y * .65f)))
-            : new Vector2(410, Math.Max(180, ActualSize.Y - 24));
         LoadSelected();
     }
+
+    public override void MeasureOverride(Vector2 availableSize) {
+        bool narrow = availableSize.X < 650;
+        if (!m_built || narrow != m_narrow) Build(narrow);
+        m_panel.Size = new Vector2(Math.Min(410, Math.Max(280, availableSize.X - 24)), Math.Max(160, availableSize.Y - 24));
+        m_panelHost.Size = m_preview.Size = new Vector2(float.PositiveInfinity);
+        base.MeasureOverride(availableSize);
+    }
+
+    public bool PreviewVisible(string id) => Concurrent.FirstOrDefault(g => g.Contains(m_selected))?.Contains(id) == true;
 
     ScButtonLayout Selected => ScUiSettings.Layout(m_working, m_selected, m_leftHanded);
     void LoadSelected() {
@@ -141,9 +158,7 @@ public sealed class ScGunLayoutScreen : Screen {
     }
 
     public override void Update() {
-        bool narrow = ActualSize.X > 1 && ActualSize.X < ScGunUi.NarrowWidth;
-        if (!m_built || narrow != m_narrow) Build(narrow);
-        m_controls.IsVisible = !m_collapsed;
+        if (!m_built) return;
         m_panel.IsVisible = !m_collapsed;
         m_expand.IsVisible = m_collapsed;
         var layout = Selected;
@@ -157,7 +172,7 @@ public sealed class ScGunLayoutScreen : Screen {
             foreach (string id in ScGunFunctions.All) {
                 var proxy = m_proxies[id];
                 var l = ScUiSettings.Layout(m_working, id, m_leftHanded);
-                proxy.IsVisible = true;
+                proxy.IsVisible = PreviewVisible(id);
                 var (center, bevel) = m_base[id];
                 ScWeaponTouchPanel.Style(proxy, l, area, center, bevel);
                 // A switched-off button is still drawn here, dimmed, so it can be found and switched back on.
@@ -211,6 +226,7 @@ public sealed class ScGunLayoutScreen : Screen {
         if (m_dragging is null) {
             if (point.X < 0 || point.Y < 0 || point.X > area.X || point.Y > area.Y) return;
             foreach (string id in ScGunFunctions.All.Reverse()) {
+                if (!PreviewVisible(id)) continue;
                 var l = ScUiSettings.Layout(m_working, id, m_leftHanded);
                 Vector2 corner = ScWeaponTouchPanel.CornerOf(l, area), size = ScWeaponTouchPanel.SizeOf(l);
                 if (point.X < corner.X || point.Y < corner.Y || point.X > corner.X + size.X || point.Y > corner.Y + size.Y) continue;

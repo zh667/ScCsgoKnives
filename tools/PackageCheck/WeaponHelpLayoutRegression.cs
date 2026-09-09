@@ -99,6 +99,41 @@ static class WeaponHelpLayoutRegression {
                         "actual subsystem UpdateGrowth -> rule -> transaction -> GetDisplayName -> player ComponentGui callback; first sweep and repeat; both real inventory classes");
                 }
             } finally { registryField.SetValue(null, previousRegistry); }
+            var editorType = mod.GetType("Game.ScGunLayoutScreen");
+            var editor = (Screen)Activator.CreateInstance(editorType);
+            editor.WidgetsHierarchyInput = new WidgetInput(); editor.Enter([]);
+            Widget EditorField(string name) => (Widget)editorType.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(editor);
+            foreach (Vector2 size in new[] { new Vector2(850,479), new Vector2(1187,637), new Vector2(480,850), new Vector2(708,399) }) {
+                foreach (string id in new[] { "reload", "throw_weak", "knife_heavy", "scope" }) {
+                    editor.Measure(size); editor.Arrange(Vector2.Zero, size);
+                    editorType.GetField("m_selected", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(editor,id);
+                    editorType.GetMethod("LoadSelected", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(editor,null);
+                    foreach (bool collapsed in new[] { false, true, false, true }) {
+                        editorType.GetField("m_collapsed", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(editor,collapsed);
+                        string last = null; bool stable = true;
+                        for (int frame = 0; frame < 12; frame++) {
+                            editor.Update(); editor.Measure(size); editor.Arrange(Vector2.Zero,size);
+                            var preview = (CanvasWidget)EditorField("m_preview");
+                            string now = string.Join("|", preview.Children.Where(w=>w.IsVisible).Select(w=>$"{w.ActualSize}:{w.GlobalBounds}"));
+                            if (frame > 1 && last != now) stable = false;
+                            last = now;
+                        }
+                        var canvas = (CanvasWidget)EditorField("m_preview"); var panel = EditorField("m_panel"); var save = EditorField("m_save");
+                        var proxies = canvas.Children.Where(w=>w.IsVisible).ToArray();
+                        Check($"editor-stable/{size}/{id}/{collapsed}/{results.Count}", stable && canvas.ActualSize==size
+                            && proxies.Length is >=2 and <=3 && proxies.All(w=>!w.IsUpdateEnabled && !w.IsHitTestVisible)
+                            && (collapsed ? !panel.IsVisible : save.GlobalBounds.Max.Y<=panel.GlobalBounds.Max.Y+.1f && save.ActualSize.Y>=48),
+                            "12 real Update/Measure/Arrange frames: fixed preview area, no oscillation, only concurrent buttons, footer reachable");
+                        if (!collapsed) {
+                            var scroll = (ScrollPanelWidget)EditorField("m_panelScroll"); scroll.ScrollPosition=Math.Max(0,scroll.CalculateScrollAreaLength()-scroll.ActualSize.Y);
+                            editor.Measure(size); editor.Arrange(Vector2.Zero,size);
+                            Check($"editor-scroll/{size}/{id}/{results.Count}", scroll.ActualSize.Y>100 && EditorField("m_resetAll").GlobalBounds.Max.Y<=scroll.GlobalBounds.Max.Y+.1f,
+                                "settings below sliders can scroll into view without hiding Save/Cancel");
+                            scroll.ScrollPosition=0;
+                        }
+                    }
+                }
+            }
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);
             var recipe = (Screen)Activator.CreateInstance(mod.GetType("Game.ScAssemblyRecipesScreen"));
             // Execute the real screen switcher/history and vanilla catalogue Enter/Back, not only Enter([]).

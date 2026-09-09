@@ -32,6 +32,7 @@ public sealed class ScGunSettingsScreen : Screen {
     }
 
     public ScGunSettingsScreen() {
+        Children.Add(new ScGunWorldBackground());
         var frame = ScGunUi.Frame();
         var root = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(18, 14) };
         root.Children.Add(new LabelWidget { Text = "CS 枪械 · 模组设置", FontScale = 1.25f, Color = ScGunUi.Text, DropShadow = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 6) });

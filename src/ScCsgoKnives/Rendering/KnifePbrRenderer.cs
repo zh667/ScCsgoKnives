@@ -93,6 +93,9 @@ public static class KnifePbrRenderer {
     }
 
     public static float GunEnvFactor(int variant, string material) {
+        // Arms/gloves are the SAME material regardless of the held item. They must not inherit
+        // a weapon-specific gun/knife calibration and jump 4x brighter when switching items.
+        if (material is "cs2_arm" or "cs2_glove") return KnifeTuning.PbrGunEnvIntensity;
         if (!CsmcKnifeRig.IsGun(variant)) return 1f;
         string asset = CsmcKnifeRig.GetAssetName(variant);
         // Factory calibration attenuates environmental lighting to .25. Known M4
@@ -100,6 +103,15 @@ public static class KnifePbrRenderer {
         if (asset == "m4a1s" && ScGunSkinCatalog.All.Any(s => s.Gun == asset && s.Material == material)) return 1f;
         GunSpec spec = GunSpec.ForAsset(asset);
         return KnifeTuning.PbrGunEnvIntensity * (spec?.EnvScale ?? 1f);
+    }
+
+    /// <summary>Keep daytime material calibration, but remove the bright studio-light advantage
+    /// for knives/grenades at night. All light still comes from the sampled scene intensity.</summary>
+    public static float SceneEnvFactor(int variant, string material, float intensity) {
+        float factor = GunEnvFactor(variant, material);
+        if (material is "cs2_arm" or "cs2_glove") return factor;
+        float daylight = Math.Clamp((intensity - .15f) / .55f, 0, 1);
+        return MathUtils.Lerp(Math.Min(factor, KnifeTuning.PbrGunEnvIntensity), factor, daylight);
     }
 
     static readonly Dictionary<string, (Texture2D Orm, Texture2D Normal)> s_namedTextures = new(StringComparer.Ordinal);
@@ -186,7 +198,7 @@ public static class KnifePbrRenderer {
         shader.LightColor2.SetValue(new Vector3(direct));
         shader.Params.SetValue(new Vector4(
             KnifeTuning.PbrEnvRange,
-            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant, material),
+            KnifeTuning.PbrEnvIntensity * lighting.Intensity * SceneEnvFactor(variant, material, lighting.Intensity),
             KnifeTuning.PbrExposure,
             KnifeTuning.PbrNormalFlipY));
         shader.Params2.SetValue(new Vector4(
@@ -256,7 +268,7 @@ public static class KnifePbrRenderer {
         shader.LightColor2.SetValue(new Vector3(direct));
         shader.Params.SetValue(new Vector4(
             KnifeTuning.PbrEnvRange,
-            KnifeTuning.PbrEnvIntensity * lighting.Intensity * GunEnvFactor(variant, material),
+            KnifeTuning.PbrEnvIntensity * lighting.Intensity * SceneEnvFactor(variant, material, lighting.Intensity),
             KnifeTuning.PbrExposure,
             KnifeTuning.PbrNormalFlipY));
         shader.Params2.SetValue(new Vector4(
