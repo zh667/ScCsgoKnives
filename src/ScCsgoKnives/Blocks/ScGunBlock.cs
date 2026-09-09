@@ -155,9 +155,9 @@ public class ScGunBlock : ScNoDurabilityBlock {
         return base.GetDisplayName(subsystemTerrain, value);
     }
 
-    /// <summary>The item help entry opens the attribute page, which carries a button through to the assembly
-    /// recipe. The recipe keeps its material list; the attribute card never shows one.</summary>
-    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen();
+    /// <summary>The item help entry opens the attribute page with this exact value, so a skinned/counter
+    /// instance is not silently replaced by a fresh catalogue template.</summary>
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen(value);
 
     public override string GetDescription(int value) {
         if (!IsKnown(value)) return "本版无法读取这件物品的数据，已原样保留。请在新世界中使用枪械。";

@@ -99,7 +99,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
             if (ScreensManager.CurrentScreen == screen) {
                 // A gun opens on its attribute card, which links to the recipe; a knife goes straight to the recipe.
                 bool gun = Terrain.ExtractContents(m_assemblyClickValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
-                ScreensManager.m_screens["RecipaediaRecipes"] = gun ? new ScGunAttributesScreen() : new ScAssemblyRecipesScreen();
+                ScreensManager.m_screens["RecipaediaRecipes"] = gun ? new ScGunAttributesScreen(m_assemblyClickValue) : new ScAssemblyRecipesScreen();
                 ScreensManager.SwitchScreen("RecipaediaRecipes", m_assemblyClickValue);
             }
         }

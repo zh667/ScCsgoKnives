@@ -18,20 +18,23 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
     int m_levelMode;              // 0 base, 1 current, 2 next
     bool m_built, m_narrow;
     int m_lastRevision = -1;
+    int m_initialValue;
 
     /// <summary>The vertical margin keeps the inherited screen's own top bar - and its Back button - clear.</summary>
     readonly StackPanelWidget m_root = new() { HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(12, 56) };
     readonly ListPanelWidget m_list = new() { Direction = LayoutDirection.Vertical, ItemSize = 46, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     readonly CanvasWidget m_listHost = new();
+    readonly StackPanelWidget m_currentHost = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
     readonly StackPanelWidget m_right = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     readonly BlockIconWidget m_preview = new() { Size = new Vector2(150), HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center };
     readonly StackPanelWidget m_identity = new() { Direction = LayoutDirection.Vertical, VerticalAlignment = WidgetAlignment.Center, HorizontalAlignment = WidgetAlignment.Stretch };
     readonly StackPanelWidget m_bars = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
     readonly ScrollPanelWidget m_barScroll = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
-    LabelWidget m_name, m_identityText, m_counter, m_growth, m_description;
+    LabelWidget m_name, m_identityText, m_counter, m_growth, m_description, m_currentInstance;
     ButtonWidget m_level, m_recipe, m_back;
 
     public ScGunAttributesScreen() {
+        m_initialValue = 0;
         Children.Add(m_root);
         m_list.ItemWidgetFactory = item => {
             int variant = (int)item;
@@ -45,7 +48,11 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         };
         m_list.ItemClicked = item => { if (item is int variant) Select(variant); };
         m_listHost.Children.Add(m_list);
+        m_currentInstance = ScGunUi.Note("");
+        m_currentHost.Children.Add(m_currentInstance);
     }
+
+    public ScGunAttributesScreen(int value) : this() { m_initialValue = value; }
 
     static string DisplayName(int variant) {
         int value = ScGunAttributes.TemplateValue(variant);
@@ -54,7 +61,8 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
 
     public override void Enter(object[] parameters) {
         // The inherited screen reads parameters[0] as a block value; never hand it an empty array.
-        if (parameters is not { Length: > 0 } || parameters[0] is not int) parameters = [ScGunAttributes.TemplateValue(0)];
+        if (parameters is not { Length: > 0 } || parameters[0] is not int)
+            parameters = [m_initialValue != 0 ? m_initialValue : ScGunAttributes.TemplateValue(0)];
         base.Enter(parameters);
         m_instanceValue = 0;
         int variant = 0;
@@ -86,18 +94,20 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         m_root.Direction = narrow ? LayoutDirection.Vertical : LayoutDirection.Horizontal;
         if (m_list.Items.Count == 0) for (int v = 0; v < GunSpec.All.Length; v++) m_list.AddItem(v);
 
-        // Left column: the weapon list plus a short description under it.
+        // Left column: current instance (when opened from an item), then catalogue list.
         var left = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
         m_listHost.HorizontalAlignment = WidgetAlignment.Stretch;
         m_listHost.VerticalAlignment = WidgetAlignment.Stretch;
-        m_listHost.Size = new Vector2(-1, -1);
+        m_listHost.Size = narrow ? new Vector2(-1, 250) : new Vector2(-1, -1);
+        m_currentHost.IsVisible = m_instanceValue != 0;
+        left.Children.Add(m_currentHost);
         left.Children.Add(m_listHost);
         m_description = ScGunUi.Note("");
         left.Children.Add(m_description);
         var leftHost = new CanvasWidget {
             HorizontalAlignment = narrow ? WidgetAlignment.Stretch : WidgetAlignment.Near,
             VerticalAlignment = WidgetAlignment.Stretch,
-            Size = narrow ? new Vector2(-1, 150) : new Vector2(250, -1),
+            Size = narrow ? new Vector2(-1, 310) : new Vector2(250, -1),
         };
         leftHost.Children.Add(left);
         m_root.Children.Add(leftHost);
@@ -173,6 +183,10 @@ public sealed class ScGunAttributesScreen : RecipaediaRecipesScreen {
         bool installed = GunSpec.TryGetSnapshot(Terrain.ExtractData(m_value), out var snap) && snap.CounterInstalled;
         m_lastRevision = snap.Revision;
         m_counter.Text = installed ? $"击杀 {snap.KillCount} · Lv{snap.Level}" : "无击杀计数器";
+        m_currentInstance.Text = m_instanceValue != 0
+            ? $"当前物品：{ScGunSkinCatalog.NameOf(ScGunBlock.SkinOf(m_instanceValue))}"
+                + (installed ? $" · 计数 {snap.KillCount} · Lv{snap.Level}" : "") : "";
+        m_currentInstance.IsVisible = m_instanceValue != 0;
         m_level.Text = m_levelMode switch { 0 => "显示：基础 Lv0", 2 => $"显示：下一级 Lv{level}", _ => $"显示：当前 Lv{level}" };
         m_level.IsEnabled = installed && ScGunRegistry.Current?.GrowthMode != ScGunGrowthMode.CountOnly;
         m_bars.Children.Clear();

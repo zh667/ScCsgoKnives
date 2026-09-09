@@ -11,7 +11,10 @@ public static class ScGunUi {
     /// <summary>Minimum reliable touch target, in logical units.</summary>
     public const float Touch = 48f;
     /// <summary>Below this width the two-column layouts collapse into one.</summary>
-    public const float NarrowWidth = 720f;
+    // 915px is already too narrow for two attribute columns once the game's margins are applied.
+    // UI scaling leaves only about 900 logical pixels on the common 1536x825
+    // window, so keep that layout single-column as well.
+    public const float NarrowWidth = 1600f;
     public static readonly Color Text = new(235, 238, 240);
     public static readonly Color Dim = new(160, 168, 174);
     public static readonly Color Accent = new(90, 210, 225);
