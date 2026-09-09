@@ -21,6 +21,7 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly ScrollPanelWidget m_scroll = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     CheckboxWidget m_buttons, m_killFeed, m_killSound, m_crosshair;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
+    readonly ButtonWidget m_bindings = ScGunUi.Button("键盘绑定（适配触控映射）", 280);
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
     LabelWidget m_preview, m_status;
     SliderWidget m_red, m_green, m_blue;
@@ -68,6 +69,7 @@ public sealed class ScGunSettingsScreen : Screen {
     public override void Enter(object[] parameters) {
         ScWeaponTouchPanel.SuppressAll(true);
         KnifeLog.Information("[CS_UI_0413] settings enter: isolated background, path=" + ScUiSettings.Path);
+        KnifeLog.Information($"[CS_SCOPE_0416] settings enter baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
         if (!m_returningFromLayout) { m_back = ScreensManager.PreviousScreen; m_working = Capture(); }
         m_returningFromLayout = false;
         m_built = false;
@@ -77,6 +79,10 @@ public sealed class ScGunSettingsScreen : Screen {
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;
         m_content.Children.Clear(); m_colors.Clear();
+        m_content.Children.Add(ScGunUi.Heading("武器操作绑定"));
+        m_content.Children.Add(m_bindings);
+        m_content.Children.Add(ScGunUi.Note("设置换弹、开镜、检视、开火等对应的键盘按键；玲兰触控映射相同按键即可。与下面的触屏布局独立。"));
+        m_content.Children.Add(ScGunUi.Note($"原版基础视野：{SettingsManager.ViewAngle*100:0}% 。若旧版已保存了异常缩放，请到原版图形设置调回自己的视野；本页不会覆盖此值。"));
         m_content.Children.Add(ScGunUi.Heading("手机按键"));
         m_buttons = ScGunUi.Toggle("启用模组自定义按键", m_working.Buttons);
         m_content.Children.Add(m_buttons);
@@ -133,6 +139,7 @@ public sealed class ScGunSettingsScreen : Screen {
         m_preview.Color = m_working.Color;
         m_preview.Text = $"预览：＋  RGB {m_working.Color.R}, {m_working.Color.G}, {m_working.Color.B}";
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
+        if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
         if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White); m_built = false; return; }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Leave(m_back); return; }
         if (m_save.IsClicked) {
@@ -145,4 +152,8 @@ public sealed class ScGunSettingsScreen : Screen {
     }
 
     static void Leave(Screen back) => ScreensManager.SwitchScreen(back ?? ScreensManager.FindScreen<Screen>("Settings"));
+    public override void Leave() {
+        KnifeLog.Information($"[CS_SCOPE_0416] settings leave baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
+        base.Leave();
+    }
 }

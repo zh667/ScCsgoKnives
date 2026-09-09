@@ -28,6 +28,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnPlayerInputHit", this);
         ModsManager.RegisterHook("UpdatePlayerInputDig", this);
         ModsManager.RegisterHook("UpdatePlayerInputAim", this);
+        ModsManager.RegisterHook("RecalculateCameraProjection", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
         ModsManager.RegisterHook("OnModelCalculateBones", this); // third person: pose the human's arms around the mod weapon
@@ -53,6 +54,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     /// <summary>Registers the mod's screens once. ScreensManager.AddScreen throws on a duplicate name.</summary>
     static void EnsureScreens() {
+        if (!ScreensManager.m_screens.ContainsKey(ScGunBindingsScreen.ScreenName)) ScreensManager.AddScreen(ScGunBindingsScreen.ScreenName, new ScGunBindingsScreen());
         if (!ScreensManager.m_screens.ContainsKey(ScGunSettingsScreen.ScreenName)) ScreensManager.AddScreen(ScGunSettingsScreen.ScreenName, new ScGunSettingsScreen());
         if (!ScreensManager.m_screens.ContainsKey(ScGunLayoutScreen.ScreenName)) ScreensManager.AddScreen(ScGunLayoutScreen.ScreenName, new ScGunLayoutScreen());
     }
@@ -71,6 +73,13 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
             ScGunSaveGuard.Refuse(project, "枪械备份或跨世界记录校验失败：" + e.Message);
         }
+    }
+
+    public override void RecalculateCameraProjection(Camera camera, ref Matrix projectionMatrix) {
+        var player = camera.GameWidget?.PlayerData?.ComponentPlayer;
+        var guns = player?.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false);
+        float zoom = guns?.ScopeMagnification(player) ?? 1f;
+        projectionMatrix = ScScopeCamera.ZoomProjection(projectionMatrix, zoom);
     }
     public override void ProjectXmlSave(XElement project) {
         if(GameManager.WorldInfo is {} world)ScGunTravel.Capture(project,world.DirectoryName);
@@ -94,6 +103,12 @@ public class ScCsgoKnivesModLoader : ModLoader {
     RecipaediaScreen m_assemblyClickScreen;
     int m_assemblyClickValue;
     public override void BeforeWidgetUpdate(Widget widget) {
+        if (widget is Screen && GameManager.Project is {} project) {
+            var players = project.FindSubsystem<SubsystemPlayers>(false);
+            var guns = project.FindSubsystem<SubsystemScGunBlockBehavior>(false);
+            if (players is not null && guns is not null)
+                foreach (var player in players.ComponentPlayers) if (!ScGunBindings.Available(player)) guns.SuspendScope(player);
+        }
         if (widget is RecipaediaScreen screen) {
             m_assemblyClickScreen = null;
             if (screen.m_recipesButton.IsClicked && screen.m_blocksList.SelectedItem is int value
@@ -197,7 +212,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScWeaponTouchPanel.DisposeAll(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScEnchantmentCompatibility.Initialize();

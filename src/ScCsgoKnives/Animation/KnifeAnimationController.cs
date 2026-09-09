@@ -36,6 +36,10 @@ public static class KnifeAnimationController {
             : Math.Max(0f, elapsed);
 
     static readonly Dictionary<ComponentFirstPersonModel, State> s_states = [];
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ScGunRegistry, HashSet<int>> s_czConsumed = new();
+    static bool CzConsumed(int value) => ScGunRegistry.Current is {} registry && !GunSpec.IsFresh(Terrain.ExtractData(value))
+        && s_czConsumed.GetOrCreateValue(registry).Contains(GunSpec.GetId(Terrain.ExtractData(value)));
+    public static void ClearSession() { s_states.Clear(); s_czConsumed.Clear(); }
     static readonly System.Random s_random = new();
 
     /// <summary>
@@ -96,7 +100,7 @@ public static class KnifeAnimationController {
             Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
             state.Variant = variant;
             state.PendingInspect = false;
-            state.CzFrontRemoved = false; // presentation only: reset on a new equip, never stored in gun bits
+            state.CzFrontRemoved = CsmcKnifeRig.GetAssetName(variant) == "cz75a" && CzConsumed(itemValue);
             string deploy = DeployClip(variant, SilencerOn(variant, itemValue));
             if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
@@ -107,8 +111,12 @@ public static class KnifeAnimationController {
         // Knife strikes are dispatched by the gameplay subsystem, never inferred from vanilla poke.
         float elapsed = (float)(KnifeClock.Now - state.StartedAt);
         if(CsmcKnifeRig.GetAssetName(variant)=="cz75a" && state.Action==ActionKind.Reload && state.ClipAlias is "reload" or "reloadEmpty"
-            && elapsed >= (Cs2Rig.ReloadMilestones("cz75a",state.ClipAlias)?.Insert ?? float.PositiveInfinity))
+            && !state.CzFrontRemoved && elapsed >= Cs2Rig.CzFrontDetachTime(state.ClipAlias)) {
             state.CzFrontRemoved=true;
+            if (ScGunRegistry.Current is {} registry && !GunSpec.IsFresh(Terrain.ExtractData(itemValue)))
+                s_czConsumed.GetOrCreateValue(registry).Add(GunSpec.GetId(Terrain.ExtractData(itemValue)));
+            KnifeLog.Information($"[CZ_RELOAD_0416] front detached at Clipout2={Cs2Rig.CzFrontDetachTime(state.ClipAlias):0.###}s; clip={state.ClipAlias}; instance={GunSpec.GetId(Terrain.ExtractData(itemValue))}");
+        }
         if (state.Action == ActionKind.Idle) {
             // A pistol idles with the slide back while its magazine is empty and
             // drops it the moment a round is chambered. The magazine is written by
@@ -349,7 +357,7 @@ public static class KnifeAnimationController {
 
     /// <summary>The behaviour's zoom state, so the idle and the shot can follow the scope.</summary>
     public static void SetScoped(ComponentPlayer player, bool scoped) {
-        ComponentFirstPersonModel model = player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        ComponentFirstPersonModel model = player?.Entity?.FindComponent<ComponentFirstPersonModel>();
         if (model is null || !s_states.TryGetValue(model, out State state)) return;
         state.Scoped = scoped;
     }
@@ -413,7 +421,7 @@ public static class KnifeAnimationController {
     }
     public static string ReloadForPlayer(ComponentPlayer player,int variant,bool empty) {
         var model=player?.Entity.FindComponent<ComponentFirstPersonModel>();
-        if(CsmcKnifeRig.GetAssetName(variant)=="cz75a" && model is not null && s_states.TryGetValue(model,out var s) && s.CzFrontRemoved)
+        if(CsmcKnifeRig.GetAssetName(variant)=="cz75a" && (CzConsumed(player.ComponentMiner.ActiveBlockValue) || model is not null && s_states.TryGetValue(model,out var s) && s.CzFrontRemoved))
             return empty?"reloadFollowupEmpty":"reloadFollowup";
         return ReloadClip(variant,empty);
     }

@@ -27,7 +27,7 @@ public sealed class ScWeaponTouchPanel : IDisposable {
 
     readonly Dictionary<string, Entry> m_entries = new(StringComparer.Ordinal);
     ContainerWidget m_container;
-    public static bool MenuActive => ScreensManager.CurrentScreen is ScGunSettingsScreen or ScGunLayoutScreen;
+    public static bool MenuActive => ScreensManager.CurrentScreen is ScGunSettingsScreen or ScGunLayoutScreen or ScGunBindingsScreen;
 
     public IReadOnlyDictionary<string, Entry> Entries => m_entries;
     public bool Clicked(string id) => m_entries.TryGetValue(id, out var e) && e.Input.Clicked;

@@ -39,8 +39,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public int Zoom;                       // 0 = hip, 1.. = scope level
         public int RescopeLevel;               // scope level to return to after a shot (CS2: the AWP unscopes for the bolt, then re-zooms)
         public double RescopeAt = -1;
-        public float SavedViewAngle = float.NaN;
-        public float SavedLookSensitivity = float.NaN;
         public float KickPitch, KickYaw;
         public bool FireLatch;
         /// <summary>Right button held last frame (PC): the scope/mode key acts once per press, on the press edge.</summary>
@@ -129,6 +127,19 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     public int[] DrawOrders => [350, 2001];
     /// <summary>Whether this player's gun is scoped right now; the crosshair and the vanilla-crosshair hook read it.</summary>
     public bool IsScoped(ComponentPlayer player) => player is not null && m_states.TryGetValue(player, out var state) && state.Zoom > 0;
+    ScScopeCamera m_scopeInput;
+    public float ScopeMagnification(ComponentPlayer player) {
+        if (player is null || !ScGunBindings.Available(player) || !m_states.TryGetValue(player, out var state) || state.Zoom <= 0) return 1f;
+        int value = player.ComponentMiner.ActiveBlockValue;
+        if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || !ScGunBlock.IsKnown(value)) return 1f;
+        var levels = ScGunBlock.SpecOf(value).ZoomLevels;
+        return state.Zoom <= levels.Length ? levels[state.Zoom-1] : 1f;
+    }
+    public void SuspendScope(ComponentPlayer player) {
+        if (!m_states.TryGetValue(player, out var state)) return;
+        state.RescopeAt = -1;
+        LeaveScope(player, state);
+    }
     readonly PrimitivesRenderer2D m_crosshairRenderer = new();
 
     /// <summary>
@@ -492,6 +503,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public override void Dispose() {
+        if (m_scopeInput is not null) Project.FindSubsystem<SubsystemUpdate>(false)?.RemoveUpdateable(m_scopeInput);
+        foreach (var pair in m_states) LeaveScope(pair.Key, pair.Value);
         m_diagnostics?.Flush("world_dispose");
         CsmcFirstPersonRenderer.ClearFirstPersonEffects();
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
@@ -675,6 +688,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_audio = Project.FindSubsystem<SubsystemAudio>(true);
         m_particles = Project.FindSubsystem<SubsystemParticles>(true);
         m_players = Project.FindSubsystem<SubsystemPlayers>(true);
+        m_scopeInput = new ScScopeCamera(this, m_players);
+        Project.FindSubsystem<SubsystemUpdate>(true).AddUpdateable(m_scopeInput);
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         ScGunplaySettings.Load();
         m_diagnostics = new ScGunDiagnostics(ScGunplaySettings.Diagnostics);
@@ -792,7 +807,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             || !state.Reload.ModeMatches(Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode==GameMode.Creative)
             || player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)))
             CancelReload(player, state);
-        if (player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)) return;
+        if (!ScGunBindings.Available(player)) { SuspendScope(player); return; }
         if (state.Reload is not null) {
             if (state.DropAt >= 0 && now >= state.DropAt) {
                 state.DropAt = -1;
@@ -844,10 +859,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
 
         // Reload: R, or the trigger on an empty magazine.
-        bool customFire = m_fireButtons.GetValueOrDefault(player) && !ScWeaponTouchPanel.MenuActive;
+        bool customFire = (m_fireButtons.GetValueOrDefault(player) || ScGunBindings.Down(player, ScGunFunctions.Fire)) && !ScWeaponTouchPanel.MenuActive;
         bool wantsFire = spec.Automatic ? input.Dig.HasValue || input.Hit.HasValue || customFire : (input.Hit.HasValue || customFire) && !state.FireLatch;
         state.FireLatch = input.Dig.HasValue || input.Hit.HasValue || customFire;
-        bool reloadKey = Keyboard.IsKeyDownOnce(Key.R);
+        bool reloadKey = ScGunBindings.Down(player, ScGunFunctions.Reload, true);
         // The Zeus: a fresh charge after its recharge time, announced by CS2's own cue.
         // Only a gun that recharges reads or clears the timer: 0.20.1 let whichever
         // gun was held at the 30 s mark consume it (and top itself up), so a Zeus put
@@ -1197,6 +1212,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public void RequestReload(ComponentPlayer player) {
+        if (!ScGunBindings.Available(player)) return;
         int value = player.ComponentMiner.ActiveBlockValue;
         if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || player.ComponentHealth.Health <= 0) return;
         if (!m_states.TryGetValue(player, out GunState state)) return;
@@ -1315,6 +1331,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public bool RequestSecondary(ComponentPlayer player) {
+        if (!ScGunBindings.Available(player)) return false;
         var componentMiner = player.ComponentMiner;
         if (player.ComponentHealth.Health <= 0 || player.ComponentGui.ModalPanelWidget is not null
             || DialogsManager.HasDialogs(player.GuiWidget)
@@ -1383,24 +1400,17 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     void SetZoom(ComponentPlayer player, GunState state, GunSpec spec, int level) {
         if (level <= 0) { LeaveScope(player, state); return; }
-        if (float.IsNaN(state.SavedViewAngle)) state.SavedViewAngle = SettingsManager.ViewAngle;
         state.Zoom = level;
         float magnification = spec.ZoomLevels[Math.Clamp(level - 1, 0, spec.ZoomLevels.Length - 1)];
-        // Survivalcraft's camera is 80 degrees x ViewAngle; the scope narrows it by the magnification.
-        SettingsManager.ViewAngle = state.SavedViewAngle / magnification;
-        // CS2 scales look sensitivity with the zoomed FOV (zoom_sensitivity_ratio_mouse 1.0): 1/magnification.
-        if (float.IsNaN(state.SavedLookSensitivity)) state.SavedLookSensitivity = SettingsManager.LookSensitivity;
-        SettingsManager.LookSensitivity = state.SavedLookSensitivity / magnification;
+        // Projection hook and the post-input adapter apply zoom locally, never to SettingsManager.
+        KnifeLog.Information($"[CS_SCOPE_0416] player={player.PlayerData.PlayerIndex} level={level} zoom={magnification} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
         CsmcFirstPersonRenderer.SetScope(true, magnification, spec.ScopeHidesWeapon);
         KnifeAnimationController.SetScoped(player, true);
     }
 
     void LeaveScope(ComponentPlayer player, GunState state) {
-        if (state.Zoom == 0 && float.IsNaN(state.SavedViewAngle)) return;
-        if (!float.IsNaN(state.SavedViewAngle)) SettingsManager.ViewAngle = state.SavedViewAngle;
-        if (!float.IsNaN(state.SavedLookSensitivity)) SettingsManager.LookSensitivity = state.SavedLookSensitivity;
-        state.SavedViewAngle = float.NaN;
-        state.SavedLookSensitivity = float.NaN;
+        if (state.Zoom == 0) return;
+        KnifeLog.Information($"[CS_SCOPE_0416] leave player={player.PlayerData.PlayerIndex} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
         state.Zoom = 0;
         CsmcFirstPersonRenderer.SetScope(false, 1f);
         KnifeAnimationController.SetScoped(player, false);

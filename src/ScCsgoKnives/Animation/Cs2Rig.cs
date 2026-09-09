@@ -122,6 +122,13 @@ public static class Cs2Rig {
         return (drop.At, insert.At);
     }
 
+    /// <summary>Front spare leaves the CZ at Clipout2, NOT when ammunition is credited later.
+    /// The otherwise invisible magazine2 bone continues an authoring/reset trajectory after this.</summary>
+    public static float CzFrontDetachTime(string alias) {
+        Clip clip = Resolve(GetMetadata("cz75a"), alias);
+        return clip?.Events?.FirstOrDefault(e => e.Name == "Weapon_CZ.Clipout2")?.At ?? float.PositiveInfinity;
+    }
+
     public static float GrenadeReleaseTime(string asset, string alias) {
         Clip clip = Resolve(GetMetadata(asset), alias);
         ClipEvent release = clip?.Events?.FirstOrDefault(e => e.Name.EndsWith(".Throw", StringComparison.OrdinalIgnoreCase));

@@ -109,6 +109,28 @@ static class SwitchAnimationRegression {
             }
             for (int gun = 22; gun < 57; gun++) foreach (bool scoped in new[] { false, true }) QuickSwitch(gun, 2, scoped, false);
             for (int knife = 0; knife < 22; knife++) foreach (bool heavy in new[] { false, true }) QuickSwitch(24, knife, true, heavy);
+            Test("cz-detach-persists-across-equip-but-not-another-gun",()=> {
+                var registryType=mod.GetType("Game.ScGunRegistry");var current=registryType.GetField("Current");var old=current.GetValue(null);
+                try {
+                    var registry=Activator.CreateInstance(registryType);current.SetValue(null,registry);
+                    registryType.GetMethod("Allocate").Invoke(registry,[15,4,false,400,1500,0]);
+                    registryType.GetMethod("Allocate").Invoke(registry,[15,4,false,400,1500,0]);
+                    const int variant=22+15;
+                    var (model,state)=Setup(variant,"Reload","reload",false);
+                    int value=Terrain.MakeBlockValue(701,0,(1<<6)|15);
+                    inventory.ActiveSlotIndex=0;inventory.m_slots[0]=value;
+                    object Step(double t,int item) {Time(t);return ctrl.GetMethod("Update").Invoke(null,[model,item]);}
+                    Step(0,value);
+                    float detach=(float)mod.GetType("Game.Cs2Rig").GetMethod("CzFrontDetachTime").Invoke(null,["reload"]);
+                    Step(detach+.002,value);
+                    bool Removed()=>(bool)ctrl.GetMethod("HideCzFront").Invoke(null,[model]);
+                    if(!Removed())return false;
+                    inventory.m_slots[0]=Value(23);Step(1,Value(23));inventory.m_slots[0]=value;Step(2,value);
+                    if(!Removed()||(string)ctrl.GetMethod("ReloadForPlayer").Invoke(null,[player,variant,false])!="reloadFollowup")return false;
+                    value=Terrain.MakeBlockValue(701,0,(2<<6)|15);inventory.m_slots[0]=value;Step(3,value);
+                    return !Removed()&&(string)ctrl.GetMethod("ReloadForPlayer").Invoke(null,[player,variant,false])=="reload";
+                }finally{current.SetValue(null,old);}
+            });
             for (int v = 0; v < 63; v++) {
                 int variant = v;
                 Test($"inspect-after-menu-switch/{variant}", () => {

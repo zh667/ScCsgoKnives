@@ -53,6 +53,14 @@ static class WeaponHelpLayoutRegression {
                 Check("android-settings-root/"+file,android=="android:/Android/data/game/files/"+file&&desktop=="app:/"+file,"Android uses game document root; desktop preserves old filename");
             }
             var preserve=mod.GetType("Game.ScGunWorldBackground").GetMethod("WithPreservedDisplay",BindingFlags.NonPublic|BindingFlags.Static);
+            var opaque=mod.GetType("Game.ScGunWorldBackground").GetMethod("WithOpaquePreview",BindingFlags.NonPublic|BindingFlags.Static);
+            var faded=new CanvasWidget();faded.m_globalColorTransform=new Color(30,30,30,30);
+            foreach(bool fail in new[]{false,true}) {
+                bool white=false;
+                try{opaque.Invoke(null,[faded,(Action)(()=>{white=faded.GlobalColorTransform==Color.White;if(fail)throw new IOException("injected preview failure");})]);}
+                catch(TargetInvocationException e)when(e.InnerException is IOException){}
+                Check("preview-fade-restored/"+fail,white&&faded.GlobalColorTransform==new Color(30,30,30,30),"preview does not inherit outgoing screen fade or change live game layout");
+            }
             var oldVp=Display.Viewport;var oldClip=Display.ScissorRectangle;
             try {
                 Display.Viewport=new Viewport(0,0,2400,1080);Display.ScissorRectangle=new Rectangle(20,30,1500,900);
@@ -218,6 +226,14 @@ static class WeaponHelpLayoutRegression {
                 }
             } finally { registryField.SetValue(null, previousRegistry); }
             var editorType = mod.GetType("Game.ScGunLayoutScreen");
+            var bindingsScreen=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunBindingsScreen"));
+            bindingsScreen.Enter([]);
+            foreach(Vector2 size in new[]{new Vector2(850,383),new Vector2(360,640),new Vector2(480,850)}) {
+                bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);
+                Widget Part(string n)=>(Widget)bindingsScreen.GetType().GetField(n,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(bindingsScreen);
+                var scroll=(ScrollPanelWidget)Part("m_scroll");var save=Part("m_save");
+                Check("bindings-footer/"+size,save.GlobalBounds.Max.X<=size.X&&save.GlobalBounds.Max.Y<=size.Y&&scroll.GlobalBounds.Max.Y<=save.GlobalBounds.Min.Y,"key list scrolls, fixed save/cancel, phone and desktop");
+            }
             var editor = (Screen)Activator.CreateInstance(editorType);
             editor.WidgetsHierarchyInput = new WidgetInput(); editor.Enter([]);
             Widget EditorField(string name) => (Widget)editorType.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(editor);

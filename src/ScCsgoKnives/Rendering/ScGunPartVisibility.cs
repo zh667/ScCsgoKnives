@@ -9,7 +9,8 @@ public static class ScGunPartVisibility {
             var sections=Cs2Rig.GetReloadSections(asset);
             return sections is not null && time>=sections.LoopStart && time<sections.OutroStart;
         }
-        if(asset=="cz75a" && joint=="magazine2")return !frontRemoved;
+        if(asset=="cz75a" && joint=="magazine2")
+            return !frontRemoved && time < Cs2Rig.CzFrontDetachTime(clip);
         return true;
     }
 }

@@ -14,6 +14,13 @@ public sealed class ScGunWorldBackground : Widget {
         try { draw(); }
         finally { if (!ReferenceEquals(Display.RenderTarget, target)) Display.RenderTarget = target; Display.Viewport = viewport; Display.ScissorRectangle = scissor; }
     }
+    internal static void WithOpaquePreview(Widget view, Action draw) {
+        // ScreensManager leaves the outgoing GameScreen's cached global alpha faded.
+        // Correct only the sampled ViewWidget color, without re-arranging the game tree.
+        var color = view.m_globalColorTransform;
+        try { view.m_globalColorTransform = Color.White; draw(); }
+        finally { view.m_globalColorTransform = color; }
+    }
     public ScGunWorldBackground() { IsHitTestVisible = false; }
     public override void MeasureOverride(Vector2 availableSize) { IsDrawRequired = true; }
     public override void Draw(DrawContext dc) {
@@ -23,9 +30,10 @@ public sealed class ScGunWorldBackground : Widget {
             batch.QueueQuad(Vector2.Zero, ActualSize, 0, new Color(28, 36, 42)); batch.TransformTriangles(GlobalTransform, first);
             return;
         }
-        // Retain the real GameWidget/camera and its last viewport. Re-layout for a resized window,
-        // but draw only ViewWidgets: no pause menus, duplicate combat controls, or gameplay Update.
-        var oldLayout = game.LayoutTransform; var oldRender = game.RenderTransform; var oldColor = game.ColorTransform;
+        // Reuse the last GAME layout, never re-arrange the live screen inside another screen.
+        // Its absolute transforms are used by BasePerspectiveCamera. A second UI-scale transform
+        // makes the projection look zoomed and leaves cached child geometry behind on return.
+        float oldView = SettingsManager.ViewAngle, oldSensitivity = SettingsManager.LookSensitivity;
         try {
             dc.PrimitivesRenderer3D.Flush(Matrix.Identity);
             dc.PrimitivesRenderer2D.Flush();
@@ -34,15 +42,17 @@ public sealed class ScGunWorldBackground : Widget {
                 m_worldTarget?.Dispose();
                 m_worldTarget = new RenderTarget2D(width, height, 1, ColorFormat.Rgba8888, DepthFormat.Depth24Stencil8);
             }
-            game.LayoutTransform = GlobalTransform; game.RenderTransform = Matrix.Identity; game.ColorTransform = Color.White;
-            game.Measure(ActualSize); game.Arrange(Vector2.Zero, ActualSize);
             // Never pass the enclosing UI's batches into a nested ViewWidget. World drawing changes
             // viewport/scissor, and may flush batches; later labels must not inherit a tiny world viewport.
             WithPreservedDisplay(() => {
                 Display.RenderTarget = m_worldTarget;
                 Display.ScissorRectangle = new Rectangle(0, 0, width, height);
                 Display.Clear(new Color(28,36,42), 1f, 0);
-                foreach (var view in game.AllChildren.OfType<ViewWidget>()) view.Draw(m_worldContext);
+                foreach (var view in game.AllChildren.OfType<ViewWidget>()) {
+                    var gui = view.GameWidget.GuiWidget; bool drawGui = gui.IsDrawEnabled;
+                    try { WithOpaquePreview(view, () => view.Draw(m_worldContext)); }
+                    finally { gui.IsDrawEnabled = drawGui; }
+                }
                 m_worldContext.PrimitivesRenderer3D.Flush(Matrix.Identity);
                 m_worldContext.PrimitivesRenderer2D.Flush();
             });
@@ -55,7 +65,9 @@ public sealed class ScGunWorldBackground : Widget {
         }
         catch (Exception e) { KnifeDiagnostics.WarnOnce("layout-world-background", "layout world background: " + e.Message); }
         finally {
-            game.LayoutTransform = oldLayout; game.RenderTransform = oldRender; game.ColorTransform = oldColor;
+            // Guard against third-party render hooks as well; invalidate any offscreen projection.
+            SettingsManager.ViewAngle = oldView; SettingsManager.LookSensitivity = oldSensitivity;
+            foreach (var view in game.AllChildren.OfType<ViewWidget>()) view.GameWidget.ActiveCamera.PrepareForDrawing(null);
             m_worldContext.PrimitivesRenderer2D.Clear(); m_worldContext.PrimitivesRenderer3D.Clear();
         }
     }

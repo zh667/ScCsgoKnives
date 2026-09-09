@@ -100,6 +100,7 @@ public static class ScUiSettings {
         foreach (string id in ScGunFunctions.All) set[id] = ScGunFunctions.Default(id, leftHanded);
     }
     public static void ResetAll() {
+        ScGunBindings.Reset();
         ResetHand(false); ResetHand(true);
         CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true;
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
@@ -125,6 +126,7 @@ public static class ScUiSettings {
         public string GunCrosshairColor { get; set; } = "255,255,255";
         public Dictionary<string, ScButtonLayout> Buttons { get; set; } = [];
         public Dictionary<string, ScButtonLayout> ButtonsLeftHanded { get; set; } = [];
+        public Dictionary<string, string> KeyBindings { get; set; } = [];
     }
     static readonly JsonSerializerOptions s_json = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.Never };
 
@@ -149,6 +151,8 @@ public static class ScUiSettings {
             if (file is null) throw new InvalidDataException("empty settings file");
             if (file.Version != Version) throw new InvalidDataException($"Version {file.Version} is not {Version}");
             CustomButtons = file.CustomButtonsEnabled;
+            foreach (var (id, key) in file.KeyBindings ?? [])
+                if (ScGunFunctions.All.Contains(id) && ScGunBindings.Valid(key)) ScGunBindings.Keys[id] = key;
             KillFeed = file.KillFeedEnabled;
             KillSound = file.KillSoundEnabled;
             GunCrosshair = file.GunCrosshairEnabled;
@@ -171,6 +175,7 @@ public static class ScUiSettings {
         if (!Writable) return false;
         try {
             var file = new File {
+                KeyBindings = new(ScGunBindings.Keys),
                 CustomButtonsEnabled = CustomButtons, KillFeedEnabled = KillFeed, KillSoundEnabled = KillSound,
                 GunCrosshairEnabled = GunCrosshair, GunCrosshairStyle = CrosshairStyle, GunCrosshairColor = ColorText(CrosshairColor),
             };
