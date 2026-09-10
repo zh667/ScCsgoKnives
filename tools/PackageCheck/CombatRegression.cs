@@ -8,7 +8,7 @@ using Engine.Graphics;
 using Game;
 
 static class CombatRegression {
-    static IEnumerable<MethodBase> Calls(MethodInfo method) {
+    internal static IEnumerable<MethodBase> Calls(MethodInfo method) {
         var codes = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(f => f.FieldType == typeof(OpCode)).Select(f => (OpCode)f.GetValue(null)).ToDictionary(c => c.Value);
         byte[] il = method.GetMethodBody().GetILAsByteArray();

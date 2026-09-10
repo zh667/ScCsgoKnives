@@ -45,8 +45,13 @@ static class ControlsScopeRegression {
             Check("conflict-groups",Conflict("fire","reload")&&Conflict("throw_strong","throw_weak")&&!Conflict("scope","silencer")&&!Conflict("reload","knife_heavy"));
             foreach(var key in Enum.GetValues<Key>()) {
                 string label=(string)bindings.GetMethod("KeyLabel").Invoke(null,[key.ToString()]);
-                Check("sushi-key/"+key,!string.IsNullOrEmpty(label)&&label!="未知按键",label);
+                Check("chinese-key/"+key,!string.IsNullOrEmpty(label)&&label!="未知按键"&&label.Any(c=>c>='\u4e00'&&c<='\u9fff'),label);
             }
+            var selectable=(string[])bindings.GetMethod("SelectableKeys").Invoke(null,null);
+            var expectedKeys=Enum.GetValues<Key>().Select(k=>k.ToString()).Where(Valid).ToArray();
+            Check("all-supported-keys-selectable",selectable.Length==expectedKeys.Length&&selectable.Distinct().Count()==selectable.Length
+                &&selectable.ToHashSet().SetEquals(expectedKeys)&&selectable[0]=="A"&&selectable[25]=="Z");
+            Check("stable-action-identifiers",keys.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak"}));
             var oldMapping=SettingsManager.KeyboardMappingSettings;
             try {
                 SettingsManager.InitializeKeyboardMappingSettings();
@@ -56,7 +61,7 @@ static class ControlsScopeRegression {
                 foreach(var id in new[]{"fire","throw_strong"})Check("native-left/"+id,Native(id)=="鼠标左键");
                 Check("keyboard-only-actions",Native("reload")==""&&Native("inspect")=="");
                 SettingsManager.KeyboardMappingSettings.SetValue("Aim",Key.K);
-                Check("native-remap-not-hardcoded",Native("scope")=="K");
+                Check("native-remap-not-hardcoded",Native("scope")=="字母 K");
                 string summary=(string)bindings.GetMethod("BindingSummary").Invoke(null,["scope","J"]);
                 Check("native-and-extra-summary",summary.Contains("K")&&summary.Contains("J")&&!summary.Contains("未绑定"));
             }finally{SettingsManager.KeyboardMappingSettings=oldMapping;}

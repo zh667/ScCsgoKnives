@@ -46,6 +46,36 @@ static class WeaponHelpLayoutRegression {
             using (var glyphs = zip.Entries.Single(e => e.FullName.EndsWith("Fonts/Pericles.lst")).Open())
                 LabelWidget.BitmapFont = BitmapFont.Initialize((Texture2D)null, glyphs);
             caches["Fonts/Pericles"] = [LabelWidget.BitmapFont];
+            var captureType=mod.GetType("Game.ScWorldBackgroundCaptureState");
+            var capture=Activator.CreateInstance(captureType,true);
+            var ensure=captureType.GetMethod("Ensure");var reset=captureType.GetMethod("Reset");
+            object projectKey=new();int draws=0;
+            bool Capture(int w,int h,Action draw)=>(bool)ensure.Invoke(capture,[projectKey,w,h,draw]);
+            for(int frame=0;frame<600;frame++)Capture(1920,1080,()=>draws++);
+            Check("frozen-background-600-frames",draws==1,"world draw runs once across 600 paused UI frames");
+            Capture(1080,1920,()=>draws++);
+            Check("background-resize-recapture",draws==2,"rotation captures once at the new dimensions");
+            projectKey=new();Capture(1080,1920,()=>draws++);
+            Check("background-new-world-recapture",draws==3,"old world image never reused for a different Project");
+            reset.Invoke(capture,null);Capture(1080,1920,()=>draws++);
+            Check("background-explicit-recapture",draws==4,"entry/device-reset/view-recovery invalidation");
+            reset.Invoke(capture,null);
+            try{Capture(1080,1920,()=>{draws++;throw new IOException("injected capture failure");});}
+            catch(TargetInvocationException e)when(e.InnerException is IOException){}
+            bool failedStable=true;
+            for(int frame=0;frame<600;frame++)failedStable&=!Capture(1080,1920,()=>draws++);
+            Check("background-failure-no-flicker-loop",failedStable&&draws==5,"failed capture stays fallback; no repeated world draw or warning per frame");
+            reset.Invoke(capture,null);Capture(1080,1920,()=>draws++);
+            Check("background-failure-retry-after-reopen",draws==6,"reopening explicitly retries after failure");
+            foreach(string screenName in new[]{"ScGunSettingsScreen","ScGunBindingsScreen","ScGunLayoutScreen"}) {
+                var type=mod.GetType("Game."+screenName);
+                Check("background-lifecycle-wired/"+screenName,
+                    CombatRegression.Calls(type.GetMethod("Enter")).Any(c=>c.DeclaringType.Name=="ScGunWorldBackground"&&c.Name=="ResetCapture")
+                    &&CombatRegression.Calls(type.GetMethod("Leave",Type.EmptyTypes)).Any(c=>c.DeclaringType.Name=="ScGunWorldBackground"&&c.Name=="ReleaseCapture"),
+                    "actual screen Enter invalidates; Leave releases capture without retaining GPU texture");
+            }
+            Check("ghoul-title-taps-removed",!CombatRegression.Calls(mod.GetType("Game.ScGunSettingsScreen").GetMethod("Update"))
+                .Any(c=>c.DeclaringType.Name is "ScGhoulTestBridge" or "ScTestEntryGate"),"settings Update has no test gate or transfer call");
             var paths=mod.GetType("Game.ScLocalSettings").GetMethod("Resolve",BindingFlags.NonPublic|BindingFlags.Static);
             foreach(string file in new[]{"ScCsgoUi.json","ScCsgoGunplay.json","ScCsgoKnivesTuning.txt","ScreenCapture"}) {
                 string android=(string)paths.Invoke(null,[file,true,"android:/Android/data/game/files"]);
@@ -78,6 +108,9 @@ static class WeaponHelpLayoutRegression {
             foreach(var available in new[]{new Vector2(850,383),new Vector2(850,479),new Vector2(360,640),new Vector2(480,850)}) {
                 var settings=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunSettingsScreen"));settings.Enter([]);
                 settings.Measure(available);settings.Arrange(Vector2.Zero,available);settings.Measure(available);settings.Arrange(Vector2.Zero,available);
+                var texts=settings.AllChildren.OfType<LabelWidget>().Select(w=>w.Text).Where(t=>t is not null).ToArray();
+                Check("settings-no-third-party-or-test-entry/"+available,!texts.Any(t=>t.Contains("触控映射")||t.Contains("玲兰")||t.Contains("铃兰")||t.Contains("尸鬼"))
+                    &&settings.GetType().GetField("m_testGate",BindingFlags.NonPublic|BindingFlags.Instance) is null,"no hidden title tap gate; ordinary binding entry only");
                 Widget Part(string n)=>(Widget)settings.GetType().GetField(n,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(settings);
                 var scroll=(ScrollPanelWidget)Part("m_scroll");var save=Part("m_save");
                 var recovery=Part("m_recoverView");
@@ -87,6 +120,7 @@ static class WeaponHelpLayoutRegression {
                 Check("settings-fixed-footer/"+available,save.GlobalBounds.Max.X<=available.X&&save.GlobalBounds.Max.Y<=available.Y&&scroll.GlobalBounds.Max.Y<=save.GlobalBounds.Min.Y,"scroll region ends above fixed footer, including 20:9 phone");
                 scroll.ScrollPosition=10000;settings.Measure(available);settings.Arrange(Vector2.Zero,available);
                 Check("settings-scroll-retains-footer/"+available,save.GlobalBounds.Max.Y<=available.Y&&Part("m_cancel").GlobalBounds.Min.X>=0,"Save/Cancel remain visible after scrolling");
+                settings.Leave();settings.Dispose();
             }
             if (LabelWidget.BitmapFont is null) throw new Exception("Failed to read native font metrics");
             for (int i = 0; i < BlocksManager.Blocks.Length; i++) BlocksManager.Blocks[i] = new AirBlock { BlockIndex = i };
@@ -232,12 +266,21 @@ static class WeaponHelpLayoutRegression {
             var editorType = mod.GetType("Game.ScGunLayoutScreen");
             var bindingsScreen=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunBindingsScreen"));
             bindingsScreen.Enter([]);
+            var bindingButtons=(Dictionary<string,ButtonWidget>)bindingsScreen.GetType().GetField("m_buttons",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(bindingsScreen);
+            Check("bindings-all-ten-actions",bindingButtons.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak"}),"one row per stable action ID, includes firing and both throw strengths");
+            Check("bindings-no-third-party-caption",!bindingsScreen.AllChildren.OfType<LabelWidget>().Any(w=>w.Text is string t&&(t.Contains("玲兰")||t.Contains("铃兰")||t.Contains("触控映射"))),"standalone keyboard binding page");
             foreach(Vector2 size in new[]{new Vector2(850,383),new Vector2(360,640),new Vector2(480,850)}) {
                 bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);
                 Widget Part(string n)=>(Widget)bindingsScreen.GetType().GetField(n,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(bindingsScreen);
                 var scroll=(ScrollPanelWidget)Part("m_scroll");var save=Part("m_save");
                 Check("bindings-footer/"+size,save.GlobalBounds.Max.X<=size.X&&save.GlobalBounds.Max.Y<=size.Y&&scroll.GlobalBounds.Max.Y<=save.GlobalBounds.Min.Y,"key list scrolls, fixed save/cancel, phone and desktop");
+                scroll.ScrollPosition=Math.Max(0,scroll.CalculateScrollAreaLength()-scroll.ActualSize.Y);
+                bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);
+                Check("bindings-last-action-reachable/"+size,bindingButtons["fire"].GlobalBounds.Max.Y<=scroll.GlobalBounds.Max.Y+.1f
+                    &&bindingButtons["fire"].GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y-.1f,"last action (fire/light knife) scrolls fully into view above footer");
+                scroll.ScrollPosition=0;
             }
+            bindingsScreen.Leave();bindingsScreen.Dispose();
             var editor = (Screen)Activator.CreateInstance(editorType);
             editor.WidgetsHierarchyInput = new WidgetInput(); editor.Enter([]);
             Widget EditorField(string name) => (Widget)editorType.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(editor);

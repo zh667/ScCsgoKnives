@@ -39,9 +39,10 @@ public sealed class ScGunLayoutScreen : Screen {
     SliderWidget m_size, m_background, m_foreground;
     ButtonWidget m_next, m_side, m_collapse, m_resetOne, m_resetAll, m_cancel, m_save;
     readonly ButtonWidget m_choose=ScGunUi.Button("选择全部武器按键",230);
+    readonly ScGunWorldBackground m_worldBackground = new();
 
     public ScGunLayoutScreen() {
-        Children.Add(new ScGunWorldBackground());
+        Children.Add(m_worldBackground);
         Children.Add(m_preview);
         foreach (string id in ScGunFunctions.All) {
             var proxy = new BevelledButtonWidget { Text = ScGunFunctions.Label(id), IsHitTestVisible = false, IsUpdateEnabled = false };
@@ -65,6 +66,7 @@ public sealed class ScGunLayoutScreen : Screen {
     }
 
     public override void Enter(object[] parameters) {
+        m_worldBackground.ResetCapture();
         ScWeaponTouchPanel.SuppressAll(true);
         KnifeLog.Information("[CS_UI_0413] layout enter: isolated background, live touch suppressed");
         m_back = ScreensManager.PreviousScreen;
@@ -76,6 +78,8 @@ public sealed class ScGunLayoutScreen : Screen {
         m_panel.IsVisible = true; m_expand.IsVisible = false;
         m_built = false;
     }
+
+    public override void Leave() { m_worldBackground.ReleaseCapture(); base.Leave(); }
 
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;

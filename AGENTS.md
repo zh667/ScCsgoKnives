@@ -1,5 +1,10 @@
 # Project conventions
 
+- User-directed 2026-09-10 (0.41.12): remove third-party touch-adaptation claims; restore Chinese key captions
+  while preserving stored key IDs and all ten weapon actions. Close the hidden Ghoul test UI (including title taps),
+  but retain generic cross-world compatibility. Settings/bindings/layout use a frozen in-memory game background,
+  not repeated paused-world rendering. Continue Full-only core + unchanged required resource pack 1.0.0.
+
 - User-directed 2026-09-10 (0.41.11): for this release output full-resolution only, no Lite/Mini.
   Split textures/models/audio and large embedded animations/meshes into required resource pack zh667.ScCsgoResources;
   preserve asset paths, paint IDs and save schema. Use pack_scmod.py --edition full --split-resources.

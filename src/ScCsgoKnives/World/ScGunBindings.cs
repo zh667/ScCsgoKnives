@@ -33,22 +33,25 @@ public static class ScGunBindings {
     public static string KeyLabel(string text) {
         if(string.IsNullOrEmpty(text))return "未设置额外键盘键";
         if(!Enum.TryParse<Key>(text,out var key) || !Enum.IsDefined(key))return "未知按键";
-        // Match SushiTouch 2.1 SushiButtonConfigWidget labels, not its abbreviated on-screen button captions.
-        if(key>=Key.A && key<=Key.Z)return key.ToString();
-        if(key>=Key.F1 && key<=Key.F12)return key.ToString();
-        if(key>=Key.Number0 && key<=Key.Number9)return ((int)key-(int)Key.Number0).ToString();
+        // Captions are independent of persistent engine key IDs and third-party mods.
+        if(key>=Key.A && key<=Key.Z)return "字母 "+key;
+        if(key>=Key.F1 && key<=Key.F12)return "功能键 "+key;
+        if(key>=Key.Number0 && key<=Key.Number9)return "数字 "+((int)key-(int)Key.Number0);
         return key switch {
-            Key.Null=>"空",Key.Back=>"Back",Key.Shift=>"Shift",Key.Control=>"Control",Key.Alt=>"Alt",
-            Key.LeftArrow=>"←",Key.RightArrow=>"→",Key.UpArrow=>"↑",Key.DownArrow=>"↓",
-            Key.Enter=>"回车",Key.Escape=>"Esc",Key.Space=>"空格",Key.Tab=>"Tab",Key.BackSpace=>"退格",
-            Key.Insert=>"Insert",Key.Delete=>"Delete",Key.PageUp=>"PageUp",Key.PageDown=>"PageDown",
-            Key.Home=>"Home",Key.End=>"End",Key.CapsLock=>"CapsLock",
-            Key.Tilde=>"~",Key.Minus=>"-",Key.Plus=>"+",
-            Key.LeftBracket=>"{",Key.RightBracket=>"}",Key.Semicolon=>";",
-            Key.Quote=>"\"",Key.Comma=>",",Key.Period=>".",Key.Slash=>"/",Key.BackSlash=>"\\",
+            Key.Null=>"无",Key.Back=>"返回键",Key.Shift=>"上档键",Key.Control=>"控制键",Key.Alt=>"换档键",
+            Key.LeftArrow=>"左方向键 ←",Key.RightArrow=>"右方向键 →",Key.UpArrow=>"上方向键 ↑",Key.DownArrow=>"下方向键 ↓",
+            Key.Enter=>"回车键",Key.Escape=>"退出键",Key.Space=>"空格键",Key.Tab=>"制表键",Key.BackSpace=>"退格键",
+            Key.Insert=>"插入键",Key.Delete=>"删除键",Key.PageUp=>"向上翻页键",Key.PageDown=>"向下翻页键",
+            Key.Home=>"行首键",Key.End=>"行尾键",Key.CapsLock=>"大写锁定键",
+            Key.Tilde=>"反引号／波浪号键 ` ~",Key.Minus=>"减号键 -",Key.Plus=>"等号／加号键 = +",
+            Key.LeftBracket=>"左方括号键 [",Key.RightBracket=>"右方括号键 ]",Key.Semicolon=>"分号键 ;",
+            Key.Quote=>"引号键",Key.Comma=>"逗号键 ,",Key.Period=>"句号键 .",Key.Slash=>"斜杠键 /",Key.BackSlash=>"反斜杠键 \\",
             _=>"未知按键"
         };
     }
+    public static string[] SelectableKeys() => Enum.GetValues<Key>().Where(k=>Valid(k.ToString()))
+        .OrderBy(k => k>=Key.A && k<=Key.Z ? 0 : k>=Key.Number0 && k<=Key.Number9 ? 1 : k>=Key.F1 && k<=Key.F12 ? 2 : 3)
+        .ThenBy(k=>(int)k).Select(k=>k.ToString()).ToArray();
     public static string NativeBinding(string id) {
         if(SettingsManager.KeyboardMappingSettings is null)return ""; // before native settings initialization
         string[] names = id switch {

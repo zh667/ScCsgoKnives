@@ -4,6 +4,11 @@
     <AssemblyName>ScCsgoResources</AssemblyName>
     <RootNamespace>ScCsgoResources</RootNamespace>
     <Version>1.0.0</Version>
+    <!-- Preserve the published 1.0.0 binary. Core-only commits must not rewrite the resource assembly's
+         informational version/MVID. Update this provenance only when publishing a new resource version. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <InformationalVersion>1.0.0+9fd8295b2a7ec12409e6ece75c997afb79159013</InformationalVersion>
+    <SourceRevisionId>9fd8295b2a7ec12409e6ece75c997afb79159013</SourceRevisionId>
     <Deterministic>true</Deterministic>
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
@@ -12,4 +17,9 @@
       <LogicalName>Game.AnimationData.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <Target Name="PreservePublishedResourceSourceLink" AfterTargets="InitializeSourceControlInformation">
+    <ItemGroup>
+      <SourceRoot Update="@(SourceRoot)" RevisionId="$(SourceRevisionId)" />
+    </ItemGroup>
+  </Target>
 </Project>
