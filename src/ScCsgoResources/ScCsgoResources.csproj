@@ -3,11 +3,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>ScCsgoResources</AssemblyName>
     <RootNamespace>ScCsgoResources</RootNamespace>
-    <Version>1.1.2</Version>
-    <!-- Preserve the published 1.0.0 binary. Core-only commits must not rewrite the resource assembly's
+    <Version>1.0.0</Version>
+    <!-- User-authorized formal 1.0.0 replaces the earlier test resource 1.0.0. Core-only commits must not rewrite the resource assembly's
          informational version/MVID. Update this provenance only when publishing a new resource version. -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <InformationalVersion>1.1.2+60875c8</InformationalVersion>
+    <InformationalVersion>1.0.0+formal</InformationalVersion>
     <SourceRevisionId>60875c8115c5d65e3e3f014da20bb8d1e63cf56a</SourceRevisionId>
     <Deterministic>true</Deterministic>
     <GenerateDependencyFile>false</GenerateDependencyFile>

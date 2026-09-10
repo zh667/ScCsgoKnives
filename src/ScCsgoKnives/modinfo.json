@@ -3,7 +3,7 @@
   "Name": "CS武器",
   "Version": "1.0.0",
   "ApiVersion": "1.9.2.1",
-  "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与30级成长、属性查询及手机触控自定义。支持生存与创造模式。需同时安装CS武器资源包1.1.2；非官方模组。",
+  "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与30级成长、属性查询及手机触控自定义。支持生存与创造模式。需同时安装正式版CS武器资源包1.0.0；非官方模组。",
   "ScVersion": "2.4.0.0",
   "LoadOrder": 1010,
   "NonPersistentMod": false,
@@ -11,6 +11,6 @@
   "Link": "https://github.com/zh667/ScCsgoKnives",
   "Author": "zh667",
   "PackageName": "zh667.ScCsgoKnives",
-  "Dependencies": {"zh667.ScCsgoResources": "[1.1.2]"},
+  "Dependencies": {"zh667.ScCsgoResources": "[1.0.0]"},
   "Settings": []
 }

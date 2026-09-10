@@ -2,7 +2,7 @@ using System.Xml.Linq;
 namespace Game;
 
 public static class ScRequiredResources {
-    public const string Version="1.1.2";
+    public const string Version="1.0.0";
     public static void Validate() {
         // Validate before world parsing; do not let missing resources masquerade as missing skins.
         var marker=ContentManager.Get<XElement>("ScCsgoResources");
