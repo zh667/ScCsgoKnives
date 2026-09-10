@@ -74,7 +74,7 @@ static class GunSkinRegression {
                 int variant = (int)mod.GetType("Game.ScGunBlock").GetMethod("AssetIndex").Invoke(null, [Array.IndexOf(names, gun)]);
                 float light = (float)factor.Invoke(null, [variant, material]);
                 float original = (float)factor.Invoke(null, [variant, gun + "_hd"]);
-                Check($"finish-lighting/{key}", gun == "m4a1s" ? light == 1f && original == .25f : light == original,
+                Check($"finish-lighting/{key}", light == original,
                     $"environment factor finish={light}, original={original}; scene light still multiplies both");
                 Check($"assets/{key}", missing.Count == 0 && model && unique && paintId > 0,
                     missing.Count > 0 ? "missing " + string.Join(", ", missing)

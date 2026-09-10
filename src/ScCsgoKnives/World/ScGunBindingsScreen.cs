@@ -17,7 +17,7 @@ public sealed class ScGunBindingsScreen : Screen {
     public ScGunBindingsScreen() {
         Children.Add(new ScGunWorldBackground()); Children.Add(ScGunUi.Frame()); Children.Add(m_root);
         m_root.Children.Add(m_title); m_root.Children.Add(m_scroll); m_scroll.Children.Add(m_list);
-        m_list.Children.Add(ScGunUi.Note("为玲兰触控等键盘映射器选择同一个键即可。手机、电脑都生效，不依赖触屏按钮总开关；原版鼠标和原版按键仍保留。"));
+        m_list.Children.Add(ScGunUi.Note("键名与玲兰触控 2.1 的按键配置页一致，选择同名键即可。手机、电脑都生效，不依赖触屏按钮总开关；原版鼠标和原版按键仍保留。"));
         m_list.Children.Add(ScGunUi.Note("列表同时显示原版已有操作和额外键盘键。点击只修改额外键盘键，不取消鼠标操作；原版操作以游戏当前绑定为准，默认左键开火／轻刀／强投，右键开镜／消音器／连发／速射／重刀／轻投。"));
         m_list.Children.Add(ScGunUi.Note("触屏点击场景不等于鼠标右键；手机可映射额外键盘键。选择原版已用键可能同时触发移动、背包等功能，请避开冲突。"));
         foreach (var id in ScGunFunctions.All) {

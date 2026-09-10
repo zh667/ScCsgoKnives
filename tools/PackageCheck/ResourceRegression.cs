@@ -12,7 +12,8 @@ static class ResourceRegression {
         object Call(string type, string method, params object[] args) => mod.GetType("Game." + type).GetMethod(method).Invoke(null, args);
         void Clear() => Call("ScResourceCaches", "ClearAll");
         Dictionary<string, int> Counts() => (Dictionary<string, int>)Call("ScResourceCaches", "Counts");
-        string[] names = mod.GetManifestResourceNames().Where(n => n.EndsWith(".cs2.animation.json"))
+        var animations=ResourcePackInput.Animations(mod);
+        string[] names = animations.GetManifestResourceNames().Where(n => n.EndsWith(".cs2.animation.json"))
             .Select(n => n.Split("AnimationData.")[1].Replace(".cs2.animation.json", "")).ToArray();
         try {
             Clear();
@@ -23,8 +24,8 @@ static class ResourceRegression {
                 return Counts().Values.All(n => n == 0);
             });
             foreach (string name in names) Test("metadata-only/" + name, () => {
-                string resource = mod.GetManifestResourceNames().Single(n => n.EndsWith("." + name + ".cs2.animation.json"));
-                using var stream = mod.GetManifestResourceStream(resource); using var document = JsonDocument.Parse(stream);
+                string resource = animations.GetManifestResourceNames().Single(n => n.EndsWith("." + name + ".cs2.animation.json"));
+                using var stream = animations.GetManifestResourceStream(resource); using var document = JsonDocument.Parse(stream);
                 var root = document.RootElement;
                 string Value(string key) => root.TryGetProperty(key, out var p) && p.ValueKind != JsonValueKind.Null ? p.GetString() : null;
                 return (bool)Call("Cs2Rig", "Has", name)

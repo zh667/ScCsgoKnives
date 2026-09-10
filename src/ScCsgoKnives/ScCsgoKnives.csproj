@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.2.1" />
+    <ProjectReference Include="../ScCsgoResources/ScCsgoResources.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="modinfo.json"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
@@ -33,15 +34,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
-    <EmbeddedResource Include="AnimationData\*.cs2.animation.json" />
     <EmbeddedResource Include="AnimationData\cs2_sounds.json" />
     <EmbeddedResource Include="AnimationData\cs2_catalog.json" />
     <EmbeddedResource Include="AnimationData\gun_native_meshes.json" />
     <EmbeddedResource Include="AnimationData\gun_handling.json" />
     <EmbeddedResource Include="AnimationData\gun_stattrak.json" />
     <EmbeddedResource Include="AnimationData\stattrak_mesh.json" />
-    <EmbeddedResource Include="AnimationData\*.skin" />
-    <EmbeddedResource Include="AnimationData\*.parts" />
     <EmbeddedResource Include="AnimationData\cs2_effects.json" />
     <EmbeddedResource Include="AnimationData\cs2_taser_effect.json" />
     <EmbeddedResource Include="AnimationData\cs2_weapons.json" />

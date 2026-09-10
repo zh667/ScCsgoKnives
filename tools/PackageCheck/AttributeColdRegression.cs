@@ -28,7 +28,8 @@ static class AttributeColdRegression {
             string resource=mod.GetManifestResourceNames().Single(n=>n.EndsWith(".cs2_catalog.json"));
             using var stream=mod.GetManifestResourceStream(resource);var metadata=JsonNode.Parse(stream).AsObject();
             foreach(var (name,entry) in metadata) {
-                using var source=mod.GetManifestResourceStream(mod.GetManifestResourceNames().Single(n=>n.EndsWith($"AnimationData.{name}.cs2.animation.json")));
+                var animations=ResourcePackInput.Animations(mod);
+                using var source=animations.GetManifestResourceStream(animations.GetManifestResourceNames().Single(n=>n.EndsWith($"AnimationData.{name}.cs2.animation.json")));
                 var full=JsonNode.Parse(source)["Clips"].AsObject();var light=entry["Clips"]?.AsObject();
                 bool same=light?.Count==full.Count;
                 foreach(var (clipName,clip) in full) {

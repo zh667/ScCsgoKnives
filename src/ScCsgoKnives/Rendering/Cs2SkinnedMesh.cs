@@ -123,7 +123,7 @@ public sealed class Cs2SkinnedMesh {
     }
 
     static Cs2SkinnedMesh Load(string resource) {
-        Assembly assembly = typeof(Cs2SkinnedMesh).Assembly;
+        Assembly assembly = ScAnimationResources.Assembly;
         string name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(resource, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Missing embedded {resource}.");
         using Stream stream = assembly.GetManifestResourceStream(name);

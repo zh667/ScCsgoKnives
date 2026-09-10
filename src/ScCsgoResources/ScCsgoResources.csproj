@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ScCsgoResources</AssemblyName>
+    <RootNamespace>ScCsgoResources</RootNamespace>
+    <Version>1.0.0</Version>
+    <Deterministic>true</Deterministic>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../ScCsgoKnives/AnimationData/*.cs2.animation.json;../ScCsgoKnives/AnimationData/*.skin;../ScCsgoKnives/AnimationData/*.parts">
+      <LogicalName>Game.AnimationData.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

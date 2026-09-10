@@ -8,11 +8,28 @@ import json
 import argparse
 import io
 import zipfile
+from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
-from build_gun_skins import TEX, ROOT, load_rgb
-from gun_skin_reproject import lookup
-from gun_skin_preview import gun_mesh, render
+from gun_skin_preview import gun_mesh, render, TEX, ROOT
+
+
+def load_rgb(path):
+    return np.asarray(Image.open(path).convert('RGB'), np.float32)/255
+
+
+def lookup(image, uv, wrap=False):
+    """Bilinear pixel-centre sampling, grid-wrap or edge-clamp; no geometry-baking dependencies."""
+    h, w = image.shape[:2]
+    xy = np.asarray(uv)*[w,h]-.5
+    low = np.floor(xy).astype(int); high = low+1; fraction = xy-low
+    if wrap:
+        low %= [w,h]; high %= [w,h]
+    else:
+        low = np.clip(low,[0,0],[w-1,h-1]); high = np.clip(high,[0,0],[w-1,h-1])
+    fx,fy=fraction[...,0,None],fraction[...,1,None]
+    return ((image[low[...,1],low[...,0]]*(1-fx)+image[low[...,1],high[...,0]]*fx)*(1-fy)
+            +(image[high[...,1],low[...,0]]*(1-fx)+image[high[...,1],high[...,0]]*fx)*fy)
 
 
 def norm(v):
@@ -79,6 +96,7 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--baseline-package",type=str)
     ap.add_argument("--out-stem",default="gun-skins-lighting-0385")
+    ap.add_argument("--remove-studio-boost",action="store_true",help="Compare existing textures with M4 IBL 1 -> .25")
     args=ap.parse_args()
     rows=[]; metrics={}
     mesh=gun_mesh("m4a1s",True,True)
@@ -86,7 +104,8 @@ def main():
         material="m4a1s_hd__"+key
         color=load_rgb(TEX/f"{material}.png")
         pictures=[]
-        for index,factor in enumerate((1,1) if args.baseline_package else (.25,1)):
+        factors=(1,.25) if args.remove_studio_boost else (1,1) if args.baseline_package else (.25,1)
+        for index,factor in enumerate(factors):
             shader=LightingProbe(material,factor)
             if args.baseline_package and index==0:
                 with zipfile.ZipFile(args.baseline_package) as z:
@@ -96,13 +115,13 @@ def main():
         row=Image.new("RGB",(1440,370),"white")
         for i,im in enumerate(pictures): row.paste(im,(720*i,30))
         d=ImageDraw.Draw(row)
-        d.text((8,8),key+(" | BEFORE AO" if args.baseline_package else " | BEFORE env=.25"),fill="black")
-        d.text((728,8),"AFTER "+("runtime AO | same lighting/albedo/rough/metal" if args.baseline_package else "env=1 | same textures")+" | offline face normals",fill="black")
+        d.text((8,8),key+(" | BEFORE env=1" if args.remove_studio_boost else " | BEFORE AO" if args.baseline_package else " | BEFORE env=.25"),fill="black")
+        d.text((728,8),"AFTER "+("env=.25 | same textures" if args.remove_studio_boost else "runtime AO | same lighting/albedo/rough/metal" if args.baseline_package else "env=1 | same textures")+" | offline face normals",fill="black")
         rows.append(row)
         before,after=(np.asarray(im,float)/255 for im in pictures)
         mask=(np.abs(before-.94)>.025).any(-1)
         metrics[key]={"beforeMean":float(before[mask].mean()),"afterMean":float(after[mask].mean())}
-        assert metrics[key]["afterMean"]>metrics[key]["beforeMean"]
+        assert (metrics[key]["afterMean"]<metrics[key]["beforeMean"]) if args.remove_studio_boost else (metrics[key]["afterMean"]>metrics[key]["beforeMean"])
         # A white dielectric remains brighter, not an arbitrary recolored albedo.
     sheet=Image.new("RGB",(1440,370*len(rows)),"white")
     for i,row in enumerate(rows): sheet.paste(row,(0,370*i))

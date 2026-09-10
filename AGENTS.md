@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-10 (0.41.11): for this release output full-resolution only, no Lite/Mini.
+  Split textures/models/audio and large embedded animations/meshes into required resource pack zh667.ScCsgoResources;
+  preserve asset paths, paint IDs and save schema. Use pack_scmod.py --edition full --split-resources.
+  Match key captions to SushiTouch 2.1's SushiButtonConfigWidget, not its HUD abbreviations.
+  M4A1-S skins use the same environment intensity as the factory gun (remove old 4x IBL special case).
+
 - User-directed 2026-09-10 (0.41.10; 0.41.8/9 were test candidates): extend counter growth to Lv30, still 100 kills/level (3000 total).
   Lv0-10 stays unchanged, including zero spread/recoil and unlimited loaded-world bullet range from Lv10.
   Lv11-20 add base damage/capacity/rate +30%/+20%/+10% per level; Lv21-30 +50%/+30%/+15%.

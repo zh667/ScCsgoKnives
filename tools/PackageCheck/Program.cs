@@ -36,9 +36,14 @@ string published0282 = null, snapshot0282 = null;
 string enchantmentAssembly = null;
 string previousGrowthPackage = null, ghoulAssembly = null;
 string travelSourceSnapshot = null;
+string resourcePack = null;
+string resourceBaseline = null, sushiPackage = null;
 bool attributeBenchmark = false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--resource-baseline": resourceBaseline = args[++i]; break;
+        case "--sushi-mod": sushiPackage = args[++i]; break;
+        case "--resource-pack": resourcePack = args[++i]; break;
         case "--travel-source-snapshot": travelSourceSnapshot = args[++i]; break;
         case "--previous-growth-package": previousGrowthPackage = args[++i]; break;
         case "--ghoul-assembly": ghoulAssembly = args[++i]; break;
@@ -74,6 +79,12 @@ if (expected is not null && !string.Equals(digest, expected.Trim().ToLowerInvari
 }
 
 using var testWorkspace = new TestWorkspace();
+string deliveredCore=Path.GetFullPath(scmod);
+long deliveredCoreBytes=new FileInfo(scmod).Length;
+int deliveredCoreEntries;
+using(var archive=ZipFile.OpenRead(scmod))deliveredCoreEntries=archive.Entries.Count;
+try { scmod=ResourcePackInput.Merge(scmod,resourcePack,testWorkspace.DirectoryPath); }
+catch(Exception e){Console.Error.WriteLine("Invalid resource installation: "+e.Message);return 3;}
 string temp = Path.Combine(testWorkspace.DirectoryPath, "packagecheck-" + digest[..16]);
 Directory.CreateDirectory(temp);
 string dllPath, dllDigest;
@@ -94,6 +105,11 @@ using (ZipArchive zip = ZipFile.OpenRead(scmod)) {
 }
 
 var context = new PackageContext("scmod");
+if(resourcePack is not null) {
+    using var resources=ZipFile.OpenRead(resourcePack);
+    using var input=resources.GetEntry("ScCsgoResources.dll").Open();using var bytes=new MemoryStream();input.CopyTo(bytes);bytes.Position=0;
+    context.ResourceAssembly=context.LoadFromStream(bytes);
+}
 // Do not leave Windows holding the extracted DLL open until process exit: tests can
 // release their temporary files deterministically after loading the identical bytes.
 Assembly mod;
@@ -187,6 +203,7 @@ foreach(var c in ControlsScopeRegression.Run(mod)) checks.Add(new { name=c.Name,
 foreach(var c in Growth30BoundaryRegression.Run(mod,previousGrowthPackage,ghoulAssembly)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in LiveBackupRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GenericTravelRegression.Run(mod,travelSourceSnapshot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in SplitResourceRegression.Run(mod,deliveredCore,resourcePack,resourceBaseline,sushiPackage)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,published0282,snapshot0282)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
@@ -194,10 +211,13 @@ foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Nam
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {
-    package = Path.GetFullPath(scmod),
+    package = deliveredCore,
     packageSha256 = digest,
-    packageBytes,
-    entries = entryCount,
+    packageBytes = deliveredCoreBytes,
+    entries = deliveredCoreEntries,
+    resourcePackage = resourcePack is null ? null : Path.GetFullPath(resourcePack),
+    resourcePackageSha256 = resourcePack is null ? null : Sha256(resourcePack),
+    effectiveInstallationEntries = entryCount,
     dllSha256 = dllDigest,
     dllFromPackage = true,
     assemblyVersion = mod.GetName().Version?.ToString(),
@@ -217,5 +237,6 @@ return failed == 0 ? 0 : 1;
 
 /// <summary>Loads the mod from the package; everything else falls through to the host.</summary>
 sealed class PackageContext(string name) : AssemblyLoadContext(name, isCollectible: false) {
-    protected override Assembly Load(AssemblyName assemblyName) => null;
+    internal Assembly ResourceAssembly;
+    protected override Assembly Load(AssemblyName assemblyName) => assemblyName.Name==ResourceAssembly?.GetName().Name ? ResourceAssembly : null;
 }

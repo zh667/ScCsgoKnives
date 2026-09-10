@@ -45,7 +45,7 @@ static class ControlsScopeRegression {
             Check("conflict-groups",Conflict("fire","reload")&&Conflict("throw_strong","throw_weak")&&!Conflict("scope","silencer")&&!Conflict("reload","knife_heavy"));
             foreach(var key in Enum.GetValues<Key>()) {
                 string label=(string)bindings.GetMethod("KeyLabel").Invoke(null,[key.ToString()]);
-                Check("chinese-key/"+key,label.Any(c=>c>='\u4e00'&&c<='\u9fff')&&label!="未知按键",label);
+                Check("sushi-key/"+key,!string.IsNullOrEmpty(label)&&label!="未知按键",label);
             }
             var oldMapping=SettingsManager.KeyboardMappingSettings;
             try {
@@ -56,9 +56,9 @@ static class ControlsScopeRegression {
                 foreach(var id in new[]{"fire","throw_strong"})Check("native-left/"+id,Native(id)=="鼠标左键");
                 Check("keyboard-only-actions",Native("reload")==""&&Native("inspect")=="");
                 SettingsManager.KeyboardMappingSettings.SetValue("Aim",Key.K);
-                Check("native-remap-not-hardcoded",Native("scope")=="字母 K");
+                Check("native-remap-not-hardcoded",Native("scope")=="K");
                 string summary=(string)bindings.GetMethod("BindingSummary").Invoke(null,["scope","J"]);
-                Check("native-and-extra-summary",summary.Contains("字母 K")&&summary.Contains("字母 J")&&!summary.Contains("未绑定"));
+                Check("native-and-extra-summary",summary.Contains("K")&&summary.Contains("J")&&!summary.Contains("未绑定"));
             }finally{SettingsManager.KeyboardMappingSettings=oldMapping;}
             var recovery=mod.GetType("Game.ScViewRecovery");
             SettingsManager.ViewAngle=.44444445f;SettingsManager.LookSensitivity=.22222222f;

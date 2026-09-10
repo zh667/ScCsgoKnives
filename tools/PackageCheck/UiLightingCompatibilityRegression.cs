@@ -17,8 +17,8 @@ static class UiLightingCompatibilityRegression {
             }
             Check("night-studio-factor-bounded", F(0, null, .05f) <= baseFactor && F(count + 35, "grenade_hegrenade_cs2", .05f) <= baseFactor,
                 "knife and grenade no longer get full studio IBL in dark scenes");
-            Check("daytime-calibration-preserved", F(0, null, 1f) == 1 && F(count + 1, "m4a1s_hd__cu_m4a1s_csgo2048", 1f) == 1,
-                "daytime weapon finish brightness is unchanged");
+            Check("daytime-m4-studio-boost-removed", F(0, null, 1f) == 1 && F(count + 1, "m4a1s_hd__cu_m4a1s_csgo2048", 1f) == baseFactor,
+                "M4 skins match factory environmental intensity; knives retain their separate calibration");
             if (enchantmentPath is null) return results;
             // No Harmony PatchAll or mod loader initialization: inspect its actual bit reader/classifier and
             // use its existing exclusion set. The rest of this process must not gain foreign gameplay patches.

@@ -81,7 +81,7 @@ public sealed class Cs2RigidMesh {
     }
 
     static Cs2RigidMesh Load(string resource) {
-        Assembly assembly = typeof(Cs2RigidMesh).Assembly;
+        Assembly assembly = ScAnimationResources.Assembly;
         string name = assembly.GetManifestResourceNames()
             .FirstOrDefault(n => n.EndsWith(resource, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Missing embedded {resource}.");

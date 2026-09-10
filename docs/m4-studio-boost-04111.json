@@ -1,0 +1,18 @@
+{
+  "limits": "Offline environment-factor A/B on the same M4 mesh/maps; not a game screenshot.\n\nUses KnifePbr.psh GGX, RGBM environment, LUT, AO and ACES equations. Orthographic\ncamera and face normals deliberately isolate lighting; this does not validate\ngame animation, tangent normals, user tuning or physical CS2 lighting parity.\n",
+  "baseline": null,
+  "measurements": {
+    "cu_m4a1s_printstream": {
+      "beforeMean": 0.658344717847646,
+      "afterMean": 0.41748276710518595
+    },
+    "cu_m4a1s_csgo2048": {
+      "beforeMean": 0.5300252731303841,
+      "afterMean": 0.31236819896414886
+    },
+    "gs_m4a1s_snakebite_gold": {
+      "beforeMean": 0.4008004475513298,
+      "afterMean": 0.20403225766169414
+    }
+  }
+}

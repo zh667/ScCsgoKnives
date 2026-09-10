@@ -479,7 +479,7 @@ public static class Cs2Rig {
     }
 
     static Asset Load(string gun) {
-        Assembly assembly = typeof(Cs2Rig).Assembly;
+        Assembly assembly = ScAnimationResources.Assembly;
         string suffix = $"AnimationData.{gun}.cs2.animation.json";
         string resource = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Missing embedded {suffix}.");

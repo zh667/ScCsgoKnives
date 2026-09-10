@@ -60,6 +60,13 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
 
     public override void ProjectXmlLoad(XElement project, WorldInfo world, ContainerWidget widget) {
+        try { ScRequiredResources.Validate(); }
+        catch(Exception e) {
+            var subs=project.Element("Subsystems");
+            if(subs is not null && !subs.Elements("Values").Any(v=>(string)v.Attribute("Name")=="ScGunBlockBehavior"))
+                subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
+            ScGunSaveGuard.Refuse(project,"资源前置包缺失或不匹配，拒绝载入："+e.Message);return;
+        }
         if (!ScGunSaveGuard.BeforeLoad(project)) return;
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.

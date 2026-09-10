@@ -98,9 +98,8 @@ public static class KnifePbrRenderer {
         if (material is "cs2_arm" or "cs2_glove") return KnifeTuning.PbrGunEnvIntensity;
         if (!CsmcKnifeRig.IsGun(variant)) return 1f;
         string asset = CsmcKnifeRig.GetAssetName(variant);
-        // Factory calibration attenuates environmental lighting to .25. Known M4
-        // finishes use normal studio illumination; scene light/AO/BRDF still apply.
-        if (asset == "m4a1s" && ScGunSkinCatalog.All.Any(s => s.Gun == asset && s.Material == material)) return 1f;
+        // A finish must not switch the gun to a brighter studio environment. The old M4
+        // override (1 instead of .25) lifted all finishes at noon despite correct albedo/AO.
         GunSpec spec = GunSpec.ForAsset(asset);
         return KnifeTuning.PbrGunEnvIntensity * (spec?.EnvScale ?? 1f);
     }

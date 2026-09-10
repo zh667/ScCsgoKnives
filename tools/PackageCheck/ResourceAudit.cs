@@ -10,7 +10,7 @@ static class ResourceAudit {
         foreach (var cache in caches) cache.GetType().GetMethod("Clear").Invoke(cache, null);
         long before = GC.GetTotalMemory(true);
         var watch = Stopwatch.StartNew();
-        string[] assets = mod.GetManifestResourceNames().Where(n => n.EndsWith(".cs2.animation.json"))
+        string[] assets = ResourcePackInput.Animations(mod).GetManifestResourceNames().Where(n => n.EndsWith(".cs2.animation.json"))
             .Select(n => n.Split("AnimationData.")[1].Replace(".cs2.animation.json", "")).ToArray();
         foreach (string asset in assets) {
             Invoke("Cs2Rig", "Sample", asset, "idle", .125f);

@@ -6,11 +6,71 @@ import json
 import os
 from pathlib import Path
 import zipfile
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'src/ScCsgoKnives'
 BUILD = SOURCE / 'bin/Release/net10.0'
 OUT = ROOT / 'output'
+RESOURCE_SOURCE = ROOT / 'src/ScCsgoResources'
+RESOURCE_DLL = RESOURCE_SOURCE / 'bin/Release/net10.0/ScCsgoResources.dll'
+
+
+def is_resource_asset(name):
+    return name.startswith(('Assets/Textures/', 'Assets/Models/', 'Assets/Audio/'))
+
+
+def write_split(files, info):
+    meta = json.loads((RESOURCE_SOURCE / 'modinfo.json').read_text(encoding='utf-8'))
+    dependency = info.get('Dependencies', {}).get(meta['PackageName'])
+    if dependency != f"[{meta['Version']}]":
+        raise SystemExit('Core dependency does not match resource pack version.')
+    if not RESOURCE_DLL.is_file():
+        raise SystemExit('Missing resource assembly: build the core and its project reference first.')
+    resource_files = [(n, p) for n, p in files if is_resource_asset(n)]
+    core_files = [(n, p) for n, p in files if not is_resource_asset(n)]
+    resources = {n: p.read_bytes() for n, p in resource_files}
+    resources['ScCsgoResources.dll'] = RESOURCE_DLL.read_bytes()
+    resources['modinfo.json'] = (json.dumps(meta, ensure_ascii=False, indent=2)+'\n').encode('utf-8')
+    for n in ('LICENSE', 'THIRD_PARTY_NOTICES.md', 'ASSET_SOURCES.md'):
+        resources[n] = (BUILD / n).read_bytes()
+    marker = ET.Element('Resources', Version=meta['Version'], Format='1', Edition='Full')
+    for n, data in sorted(resources.items()):
+        if is_resource_asset(n):
+            ET.SubElement(marker, 'File', Path=n, Sha256=hashlib.sha256(data).hexdigest())
+    resources['Assets/ScCsgoResources.xml'] = ET.tostring(marker, encoding='utf-8')
+    resource_target = OUT / f"ScCsgoResources-{meta['Version']}.scmod"
+    core_target = OUT / f"ScCsgoKnives-{info['Version']}.scmod"
+
+    def write_zip(path, items):
+        # Fixed timestamps keep unchanged resources byte-identical across code-only rebuilds.
+        with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
+            for name, data in sorted(items.items()):
+                e = zipfile.ZipInfo(name, (2026, 1, 1, 0, 0, 0))
+                e.compress_type = zipfile.ZIP_DEFLATED
+                z.writestr(e, data)
+
+    candidate = OUT / (resource_target.name + '.pending')
+    write_zip(candidate, resources)
+    if resource_target.exists():
+        if hashlib.sha256(resource_target.read_bytes()).digest() != hashlib.sha256(candidate.read_bytes()).digest():
+            candidate.unlink()
+            raise SystemExit('Existing resource pack differs: bump its version and core dependency; never replace the same resource version.')
+        candidate.unlink()
+    else:
+        candidate.replace(resource_target)
+    write_zip(core_target, {n: p.read_bytes() for n, p in core_files})
+    if any(is_resource_asset(n) for n, _ in core_files):
+        raise AssertionError('Resources leaked into core')
+    report = {'version': info['Version'], 'edition': 'Full', 'split': True,
+              'core': {'file': core_target.name, 'bytes': core_target.stat().st_size, 'sha256': hashlib.sha256(core_target.read_bytes()).hexdigest()},
+              'resources': {'file': resource_target.name, 'bytes': resource_target.stat().st_size, 'sha256': hashlib.sha256(resource_target.read_bytes()).hexdigest()},
+              'movedAssets': [n for n, _ in resource_files],
+              'resourceAssemblySha256': hashlib.sha256(resources['ScCsgoResources.dll']).hexdigest()}
+    reports = OUT / 'reports'; reports.mkdir(exist_ok=True)
+    (reports / f"ScCsgoKnives-{info['Version']}.split.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+    print(f'{core_target}: {core_target.stat().st_size/1e6:.2f} MB; requires {resource_target.name}', flush=True)
+    print(f'{resource_target}: {resource_target.stat().st_size/1e6:.2f} MB; {len(resource_files)} full-resolution asset files', flush=True)
 
 
 def newest_source_mtime():
@@ -102,6 +162,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--edition', choices=('full', 'lite', 'mini', 'both', 'all'), default='full',
                         help='both = Full + Lite; all = Full + Lite + Mini')
+    parser.add_argument('--split-resources', action='store_true', help='Core + required complete resource pack (Full only)')
     args = parser.parse_args()
     dll = BUILD / 'ScCsgoKnives.dll'
     if not dll.exists() or dll.stat().st_mtime < newest_source_mtime():
@@ -121,6 +182,13 @@ def main():
         if not path.is_file():
             raise SystemExit(f'missing build file: {name}')
     OUT.mkdir(exist_ok=True)
+    if args.split_resources:
+        if args.edition != 'full':
+            raise SystemExit('Split resource delivery currently supports full resolution only.')
+        write_split(files, info)
+        return
+    if info.get('Dependencies', {}).get('zh667.ScCsgoResources'):
+        raise SystemExit('This core requires --split-resources; do not emit an incomplete standalone package.')
     editions = {'full': ('Full',), 'lite': ('Lite',), 'mini': ('Mini',),
                 'both': ('Full', 'Lite'), 'all': ('Full', 'Lite', 'Mini')}[args.edition]
     for edition in editions:

@@ -1,0 +1,13 @@
+{
+  "Name": "CS 武器完整资源前置包",
+  "Version": "1.0.0",
+  "ApiVersion": "1.9.2.1",
+  "ScVersion": "2.4.0.0",
+  "PackageName": "zh667.ScCsgoResources",
+  "Description": "CS 武器模组的全分辨率纹理、模型、音频及动画资源。与新版主包一起安装，不单独提供武器。",
+  "Author": "zh667",
+  "Link": "https://github.com/zh667/ScCsgoKnives",
+  "LoadOrder": 1009,
+  "NonPersistentMod": true,
+  "Dependencies": []
+}
