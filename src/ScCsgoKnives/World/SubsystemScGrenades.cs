@@ -112,7 +112,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             Timeline=new ScGrenadePreparation(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias)) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
-        KnifeLog.Information($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
+        KnifeLog.Trace($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
     }
     static void Message(ComponentPlayer p,string text) => p.ComponentGui.DisplaySmallMessage(text,Color.White,true,false);
     void Cancel(ComponentPlayer p, Preparation prep) {
@@ -165,7 +165,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 }
                 prep.Released=true;
                 prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
-                KnifeLog.Information($"grenade release: {ScGrenadeBlock.Assets[prep.Kind]} speed {state.Velocity.Length():0.0} (player {p.ComponentBody.Velocity.Length():0.0}) low={prep.Low} at {pos}");
+                KnifeLog.Trace($"grenade release: {ScGrenadeBlock.Assets[prep.Kind]} speed {state.Velocity.Length():0.0} (player {p.ComponentBody.Velocity.Length():0.0}) low={prep.Low} at {pos}");
                 AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
             }
             if (m_time.GameTime>=prep.Timeline.EndAt) {
@@ -176,7 +176,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 // change already cancelled the preparation above, so nothing is switched then.
                 if (prep.Released && inv.ActiveSlotIndex==prep.Slot && (Holding(p)||inv.GetSlotCount(prep.Slot)==0)) {
                     int target=ScGrenadeBallistics.FollowUpSlot(inv.SlotsCount,prep.Slot,prep.ReturnSlot);
-                    KnifeLog.Information($"grenade follow-up: thrown slot {prep.Slot} previous slot {prep.ReturnSlot} -> {(target>=0?"slot "+target:"stay")} holding={Holding(p)}");
+                    KnifeLog.Trace($"grenade follow-up: thrown slot {prep.Slot} previous slot {prep.ReturnSlot} -> {(target>=0?"slot "+target:"stay")} holding={Holding(p)}");
                     if (target>=0) inv.ActiveSlotIndex=target;
                     else if (Holding(p)) KnifeAnimationController.GrenadeAction(p,"deploy");
                 }
@@ -202,7 +202,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                     // F05: a smoke grenade that reaches a live, reachable fire area pops now, once, wherever it is.
                     var fire=m_active.FirstOrDefault(f=>ScFireArea.IsFire(f) && ScFireArea.Heats(f,s) && Clear(f.Position+Vector3.UnitY*.15f,s.Position));
                     if (fire is not null) {
-                        KnifeLog.Information($"grenade smoke heated by fire kind {fire.Kind} at {fire.Position}: pops early at {s.Position} after {s.Age:0.00} s");
+                        KnifeLog.Trace($"grenade smoke heated by fire kind {fire.Kind} at {fire.Position}: pops early at {s.Position} after {s.Age:0.00} s");
                         Detonate(s);continue;
                     }
                 }
@@ -218,7 +218,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                     KnifeLog.Warning($"grenade kind {s.Kind} id {s.Id} never settled within {ScGrenadeBallistics.SettleTimeout:0} s at {s.Position} (grounded={s.Grounded} rested={s.Rested:0.00} v={s.Velocity.Length():0.00}); removed without effect");
                     RemoveEffect(s,false);continue;
                 }
-                if (!s.Effect && s.Kind is 2 or 5) KnifeLog.Information($"grenade kind {s.Kind} pops: age {s.Age:0.00} s rested {s.Rested:0.00} s at {s.Position}");
+                if (!s.Effect && s.Kind is 2 or 5) KnifeLog.Trace($"grenade kind {s.Kind} pops: age {s.Age:0.00} s rested {s.Rested:0.00} s at {s.Position}");
                 if (!s.Effect) Detonate(s); else RemoveEffect(s,false);
             }
         }
@@ -329,7 +329,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 var opening=new ScSmokeDisturbance { Center=blast };
                 foreach (var smoke in reached) opening.SmokeIds.Add(smoke.Id); // a smoke behind a wall is not on this list and stays whole
                 m_disturbances.Add(opening);
-                KnifeLog.Information($"HE at {blast} opens smoke(s) [{string.Join(",",opening.SmokeIds)}]: radius {ScSmokeDisturbance.Radius} m, hold {ScSmokeDisturbance.Hold} s, recovery {ScSmokeDisturbance.Recovery} s");
+                KnifeLog.Trace($"HE at {blast} opens smoke(s) [{string.Join(",",opening.SmokeIds)}]: radius {ScSmokeDisturbance.Radius} m, hold {ScSmokeDisturbance.Hold} s, recovery {ScSmokeDisturbance.Recovery} s");
             }
         }
         s.Effect=true;s.Remaining=s.Kind==0?ScGrenadeVisuals.BlastLifetime:ScGrenadeVisuals.FlashLifetime;s.Age=0;

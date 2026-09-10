@@ -66,7 +66,7 @@ public sealed class Cs2RigidMesh {
         if (!string.IsNullOrEmpty(resource)) {
             try {
                 mesh = Load("AnimationData." + resource);
-                KnifeLog.Information(
+                KnifeLog.Trace(
                     $"[ScCsgoKnives] CS2 gun mesh {asset}: {mesh.Joints.Length} joints, "
                     + $"{mesh.VertexCount} rigid vertices, {mesh.Parts.Length} parts "
                     + $"[{string.Join(',', mesh.Parts.Select(p => mesh.Joints[p.Joint]))}], "

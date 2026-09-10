@@ -444,7 +444,7 @@ public static class CsmcFirstPersonRenderer {
         s_projX = fx;
         s_projY = fy;
         s_handAnchor = ToViewSpace(KnifeTuning.AnchorScreenX, KnifeTuning.AnchorScreenY, KnifeTuning.AnchorDepth);
-        KnifeLog.Information(
+        KnifeLog.Trace(
             $"[ScCsgoKnives] projection changed (fx={fx:0.####}, fy={fy:0.####}, vertical fov={2f * MathF.Atan(1f / fy) * 180f / MathF.PI:0.#}deg); "
             + $"anchor ({KnifeTuning.AnchorScreenX:0.###},{KnifeTuning.AnchorScreenY:0.###}) resolves to {Format(s_handAnchor)}."
         );
@@ -794,22 +794,6 @@ public static class CsmcFirstPersonRenderer {
     }
 
     /// <summary>
-    /// F7 cycles the diagnostic views for the on-device texture investigation: base colour,
-    /// normals, roughness, metalness (the shader's debug outputs), then the guns with a flat
-    /// normal map (the knives' exact path), then back to normal rendering.
-    /// </summary>
-    static int s_diagMode;
-    static readonly string[] s_diagNames = ["正常渲染", "诊断 1/5：底色", "诊断 2/5：法线", "诊断 3/5：粗糙度", "诊断 4/5：金属度", "诊断 5/5：枪用平法线（同刀）"];
-    static void PollDiagnosticKey(ComponentFirstPersonModel firstPerson) {
-        if (!Keyboard.IsKeyDownOnce(Key.F7)) return;
-        s_diagMode = (s_diagMode + 1) % s_diagNames.Length;
-        KnifeTuning.PbrDebug = s_diagMode is >= 1 and <= 4 ? s_diagMode : 0f;
-        KnifePbrRenderer.FlatGunNormal = s_diagMode == 5;
-        firstPerson?.Entity.FindComponent<ComponentPlayer>()?.ComponentGui.DisplaySmallMessage(s_diagNames[s_diagMode], Color.White, true, false);
-        KnifeLog.Information($"[ScCsgoKnives] diagnostic view {s_diagMode}: {s_diagNames[s_diagMode]}");
-    }
-
-    /// <summary>
     /// Which chain draws this variant, decided from the pose and the tables alone so
     /// the self-test can ask without a camera: "cs2", "csmc", or "none:" and why.
     ///
@@ -829,7 +813,6 @@ public static class CsmcFirstPersonRenderer {
         if (pose is null) return false;
         EnsureLoaded();
         KnifeTuning.Poll();
-        PollDiagnosticKey(firstPerson);
         variant = Math.Clamp(variant, 0, s_count - 1);
         AdvanceAim();
         string route = Route(variant, pose);
@@ -956,7 +939,7 @@ public static class CsmcFirstPersonRenderer {
             QueueFirstPersonEffects(camera, new(cs2, gun, post, projection, Display.Viewport, Time.FrameIndex));
 
         if (s_cs2Logged.Add(gun)) {
-            KnifeLog.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] cs2 profile active: gun={gun}, clip={cs2.Clip}@{cs2.Time:0.###}s, "
                 + $"parts=[{string.Join(',', s_cs2Parts[gun].Select(p => p.Binding))}], "
                 + $"viewmodel_fov={KnifeTuning.Cs2ViewmodelFov:0.##} (fovY {Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov):0.###}), "
@@ -1332,7 +1315,7 @@ public static class CsmcFirstPersonRenderer {
             // arms and the log still said "cs2 arms", so the 0.169 ms/frame it showed
             // was not the cost of the two meshes the knives added.
             int weaponVertices = s_cs2WeaponVertices, weaponTris = s_cs2WeaponTriangles;
-            KnifeLog.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] cs2 CPU skinning over {s_cs2SkinFrames} frames: "
                 + $"arms {s_cs2SkinMillis / s_cs2SkinFrames:0.###} ms/frame "
                 + $"({mesh.Skinned.Length} vertices, {mesh.Primitives.Sum(p => p.Indices.Length) / 3} triangles); "
@@ -1346,7 +1329,7 @@ public static class CsmcFirstPersonRenderer {
         }
         if (!s_cs2ArmsLogged) {
             s_cs2ArmsLogged = true;
-            KnifeLog.Information($"[ScCsgoKnives] cs2 arms drawn: {string.Join(", ", mesh.Primitives.Select(p => p.Material))}.");
+            KnifeLog.Trace($"[ScCsgoKnives] cs2 arms drawn: {string.Join(", ", mesh.Primitives.Select(p => p.Material))}.");
         }
     }
 
@@ -1601,6 +1584,7 @@ public static class CsmcFirstPersonRenderer {
     /// static reference, which is exactly what made the first round of photos
     /// impossible to read.
     /// </summary>
+    [System.Diagnostics.Conditional("SC_CSGO_DIAGNOSTICS")]
     static void LogComposition(ComponentFirstPersonModel firstPerson, int variant, KnifeRigPose pose, Matrix placement, Matrix post) {
         if (firstPerson.m_swapAnimationTime > 0f) return;
         if (!pose.ClipAlias.StartsWith("idle", StringComparison.Ordinal)) return;
@@ -1628,7 +1612,7 @@ public static class CsmcFirstPersonRenderer {
             line.Append($"elbow=({elbow.Value.X:0.###},{elbow.Value.Y:0.###}) depth={-arm.Grip.Z:0.###} ");
         }
         line.Append("| MCCS m9 photo: grip=(0.710,0.843) cap=(0.699,0.692) lean=+7.5, left grip=(0.326,0.901) cap=(0.381,0.823) lean=-51.5.");
-        KnifeLog.Information(line.ToString());
+        KnifeLog.Trace(line.ToString());
     }
 
     static void DrawHands(ComponentFirstPersonModel firstPerson, Camera camera, Matrix projection, int variant, KnifeRigPose pose, Matrix placement, Matrix post, float light) {
@@ -2068,7 +2052,7 @@ public static class CsmcFirstPersonRenderer {
             }
             finally { s_measuring = false; }
             if (holds.Count > 0 && !left)
-                KnifeLog.Information($"[ScCsgoKnives] {s_assetNames[variant]} holds: " + string.Join(", ", holds.Select(h => $"{h.Key}={MathUtils.RadToDeg(h.Value):0}deg")));
+                KnifeLog.Trace($"[ScCsgoKnives] {s_assetNames[variant]} holds: " + string.Join(", ", holds.Select(h => $"{h.Key}={MathUtils.RadToDeg(h.Value):0}deg")));
         }
     }
 
@@ -2206,7 +2190,7 @@ public static class CsmcFirstPersonRenderer {
             RasterizerState.CullNoneScissor, applyBoneTransform: false);
         if (!s_handsLogged && !left) {
             s_handsLogged = true;
-            KnifeLog.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] arms attached: grip={Format(arm.Grip)}, cap={Format(arm.Seat)}, elbow={Format(arm.Elbow)}, lean={arm.Lean:0.#}deg, "
                 + $"reach={arm.Reach:0.###}, width={arm.ViewWidth:0.###}, overshoot={arm.Overshoot:0.###}, skin={skin.Width}x{skin.Height}, meshes={model.Meshes.Count}, light={light:0.###}."
             );
@@ -2395,7 +2379,7 @@ public static class CsmcFirstPersonRenderer {
         MeasureHolds(variant);
         FistSpec fist = s_fist[variant];
         (float leftX, float leftY) = LeftTargetFor(variant);
-        KnifeLog.Information(
+        KnifeLog.Trace(
             $"[ScCsgoKnives] placement {asset}: idleGrip={Format(idleGrip)}, anchor={Format(AnchorFor(variant))}, "
             + $"knifeScale={scale:0.###} (x{fist.Scale:0.###}), fist lean={LeanFor(variant, false):0.#} overshoot={OvershootFor(variant, false):0.##}w, "
             + $"leftTarget=({leftX:0.###},{leftY:0.###}) leftLean={LeanFor(variant, true):0.#}, leftHandCorrection={Format(s_leftHandCorrection[variant])}, "

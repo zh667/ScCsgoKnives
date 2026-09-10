@@ -79,7 +79,7 @@ public static class ScStatTrakRenderer {
             Queue(s_body, body, world, new Color(light, light, light), s_firstPerson);
         Queue(s_display, Texture(ScGunStatTrak.DigitAtlas), world, Color.White, s_firstPerson);
         s_firstPerson.Flush(projection);
-        if (s_logged.Add((asset,legacy))) KnifeLog.Information($"CS2 StatTrak draw: {asset}, body={(legacy ? "legacy" : "HD")}, bone={ScGunStatTrak.For(asset,legacy).Bone}, official module 330+48 triangles, count={kills}");
+        if (s_logged.Add((asset,legacy))) KnifeLog.Trace($"CS2 StatTrak draw: {asset}, body={(legacy ? "legacy" : "HD")}, bone={ScGunStatTrak.For(asset,legacy).Bone}, official module 330+48 triangles, count={kills}");
     }
     static void Queue(BlockMesh mesh, Texture2D texture, Matrix matrix, Color color, PrimitivesRenderer3D renderer) {
         var batch = renderer.TexturedBatch(texture, false, 0, DepthStencilState.Default,

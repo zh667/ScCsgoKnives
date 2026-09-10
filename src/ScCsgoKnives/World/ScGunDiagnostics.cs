@@ -86,7 +86,9 @@ public sealed class ScGunDiagnostics {
     int m_bytes;bool m_stopped;
     public bool Active=>m_mode!="off"&&!m_stopped;
     public ScGunDiagnostics(string mode,Action<string> write=null,int byteBudget=DefaultByteBudget) {
-        m_mode=ScGunplaySettings.DiagnosticMode(mode);m_write=write ?? KnifeLog.Information;m_budget=Math.Max(0,byteBudget);
+        // Explicit sinks are for offline diagnostics. Game sessions stay quiet even if
+        // an older settings file or caller still requests sampled/summary logging.
+        m_mode=write is null ? "off" : ScGunplaySettings.DiagnosticMode(mode);m_write=write ?? KnifeLog.Information;m_budget=Math.Max(0,byteBudget);
         if(Active)Emit(new {type="session",session=m_session,version="0.39.1",mode=m_mode,detailInterval=DetailInterval,summaryInterval=SummaryInterval,
             byteBudget=m_budget,scope="local world / gun; all completed shots in summaries; detailed shots are sampled; no world coordinates or player names"});
     }

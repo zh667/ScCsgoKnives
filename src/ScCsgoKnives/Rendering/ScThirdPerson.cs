@@ -275,7 +275,7 @@ public static class ScThirdPerson {
         state.Skin = skin; state.GunTexture = gunTexture; state.Legacy = legacy;
         if (!state.Logged) {
             state.Logged = true;
-            KnifeLog.Information($"third person {asset}: {weapon.Vertices} vertices in {weapon.Groups.Length} group(s); grips R {weapon.GripRight} L {weapon.GripLeft} (left {(weapon.HasLeftGrip ? "used" : "absent")}); right arm {right} left arm {left}; fist {fist}");
+            KnifeLog.Trace($"third person {asset}: {weapon.Vertices} vertices in {weapon.Groups.Length} group(s); grips R {weapon.GripRight} L {weapon.GripLeft} (left {(weapon.HasLeftGrip ? "used" : "absent")}); right arm {right} left arm {left}; fist {fist}");
         }
         return true;
     }

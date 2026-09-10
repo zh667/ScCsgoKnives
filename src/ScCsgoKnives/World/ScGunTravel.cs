@@ -84,7 +84,7 @@ public static class ScGunTravel {
             }catch(Exception e){packet.Add(Field("Error",e.Message));}
             packet.Add(carried,keys);Replace(player,packet);
         }
-        KnifeLog.Information($"[GUN_TRAVEL_04110] saved world={world}; carried records="+project.Element("Entities")?.Elements().Where(Player).Sum(p=>Group(Group(p,Packet),"Records")?.Elements().Count()??0));
+        KnifeLog.Trace($"[GUN_TRAVEL_04110] saved world={world}; carried records="+project.Element("Entities")?.Elements().Where(Player).Sum(p=>Group(Group(p,Packet),"Records")?.Elements().Count()??0));
     }
     public static void ValidateCaptured(XElement project,string world) {
         int block=Index(project);if(block<0)throw new InvalidOperationException("枪械方块映射缺失");

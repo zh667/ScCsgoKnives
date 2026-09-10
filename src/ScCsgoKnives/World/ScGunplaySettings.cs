@@ -8,17 +8,17 @@ namespace Game;
 public static class ScGunplaySettings {
     public static string Path=>ScLocalSettings.PathFor("ScCsgoGunplay.json");
     public static bool Enabled=true;
-    public static string Diagnostics="sampled";
+    public static string Diagnostics="off";
     sealed class Settings {
         public int Version {get;set;}=1;
         public string Preset {get;set;}="survival";
-        public string Diagnostics {get;set;}="sampled";
+        public string Diagnostics {get;set;}="off";
     }
     public static string DiagnosticMode(string value)=>value is "off" or "summary" or "sampled"?value:"off";
     public static void Load() {
         try {
             if(!Storage.FileExists(Path)) {
-                Enabled=true;Diagnostics="sampled";
+                Enabled=true;Diagnostics="off";
                 // A first-run write failure must not silently disable the approved gunplay preset.
                 try {
                     Storage.CreateDirectory(Storage.GetDirectoryName(Path));
@@ -29,11 +29,10 @@ public static class ScGunplaySettings {
                 var settings=JsonSerializer.Deserialize<Settings>(stream);
                 if(settings?.Version!=1 || settings.Preset is not ("survival" or "classic")) throw new InvalidDataException("Expected Version 1 and Preset survival/classic");
                 Enabled=settings.Preset=="survival";
-                Diagnostics=DiagnosticMode(settings.Diagnostics);
-                if(Diagnostics!=settings.Diagnostics) KnifeLog.Warning("Unknown gun Diagnostics value; diagnostics disabled, gameplay preset unchanged, file preserved.");
+                Diagnostics="off"; // Release policy also overrides earlier sampled/summary settings without rewriting player files.
             }
-            KnifeLog.Information("Gunplay preset: "+(Enabled?"survival v1 (approved 35-gun handling)":"classic (prior GunNumbers respected)"));
-            KnifeLog.Information("Gunplay diagnostics: "+Diagnostics+"; sampled details are rate-limited, summaries include every completed shot.");
+            KnifeLog.Trace("Gunplay preset: "+(Enabled?"survival v1 (approved 35-gun handling)":"classic (prior GunNumbers respected)"));
+            KnifeLog.Trace("Gunplay diagnostics: "+Diagnostics+"; sampled details are rate-limited, summaries include every completed shot.");
         } catch(Exception e) {
             Enabled=false;Diagnostics="off";KnifeLog.Warning("Cannot load gunplay settings; file preserved, using classic for this session: "+e.Message);
         }

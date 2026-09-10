@@ -97,7 +97,7 @@ public static class KnifeAnimationController {
             state.Scoped = false;
             // Whether a knife has a second draw is a property of its rig, not
             // of it being the butterfly.
-            Log.Information($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
+            KnifeLog.Trace($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
             state.Variant = variant;
             state.PendingInspect = false;
             state.CzFrontRemoved = CsmcKnifeRig.GetAssetName(variant) == "cz75a" && CzConsumed(itemValue);
@@ -115,7 +115,7 @@ public static class KnifeAnimationController {
             state.CzFrontRemoved=true;
             if (ScGunRegistry.Current is {} registry && !GunSpec.IsFresh(Terrain.ExtractData(itemValue)))
                 s_czConsumed.GetOrCreateValue(registry).Add(GunSpec.GetId(Terrain.ExtractData(itemValue)));
-            KnifeLog.Information($"[CZ_RELOAD_0416] front detached at Clipout2={Cs2Rig.CzFrontDetachTime(state.ClipAlias):0.###}s; clip={state.ClipAlias}; instance={GunSpec.GetId(Terrain.ExtractData(itemValue))}");
+            KnifeLog.Trace($"[CZ_RELOAD_0416] front detached at Clipout2={Cs2Rig.CzFrontDetachTime(state.ClipAlias):0.###}s; clip={state.ClipAlias}; instance={GunSpec.GetId(Terrain.ExtractData(itemValue))}");
         }
         if (state.Action == ActionKind.Idle) {
             // A pistol idles with the slide back while its magazine is empty and
@@ -414,7 +414,7 @@ public static class KnifeAnimationController {
         if (sections is not null && shells > 0) {
             state.Sections = sections;
             state.ReloadLoops = shells;
-            KnifeLog.Information($"[ScCsgoKnives] CS2 reload: asset={CsmcKnifeRig.GetAssetName(variant)} shells={shells} "
+            KnifeLog.Trace($"[ScCsgoKnives] CS2 reload: asset={CsmcKnifeRig.GetAssetName(variant)} shells={shells} "
                 + $"intro {sections.LoopStart:0.###}s + {shells} x {sections.LoopLength:0.###}s + outro {sections.End - sections.OutroStart:0.###}s = {sections.Duration(shells):0.###}s");
         }
         LogActionStart(state, variant);
@@ -481,7 +481,7 @@ public static class KnifeAnimationController {
         // action lines against the rig's clip list by hand.
         if (state.Variant >= 0 && Cs2Placement.Active(state.Variant)) {
             string asset = CsmcKnifeRig.GetAssetName(state.Variant);
-            KnifeLog.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] CS2 action: asset={asset} requested={clipAlias} "
                 + $"resolved={Cs2Rig.ResolvedClip(asset, clipAlias) ?? "(none, drawing idle)"} "
                 + $"duration={Cs2Rig.Duration(asset, clipAlias):0.###}s");
@@ -511,7 +511,7 @@ public static class KnifeAnimationController {
         KnifeRigPose initial = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
         KnifeRigPose middle = CsmcKnifeRig.Sample(variant, state.ClipAlias, duration * 0.5f);
         KnifeRigPose final = CsmcKnifeRig.Sample(variant, state.ClipAlias, duration);
-        Log.Information(
+        KnifeLog.Trace(
             $"[ScCsgoKnives] exact CSMC action={state.Action}, variant={variant}, asset={CsmcKnifeRig.GetAssetName(variant)}, "
             + $"clip={initial.SourceClip}, duration={duration:0.###}s, "
             + $"initialWeapon={KnifeDiagnostics.MatrixSummary(initial.GetBinding("weapon_hand_r"))}, "

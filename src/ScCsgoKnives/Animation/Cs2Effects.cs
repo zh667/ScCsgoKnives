@@ -333,7 +333,7 @@ public static class Cs2Effects {
             }
             foreach ((string gun, Gun g) in file.Guns) loaded[gun] = g;
             LoadError = null;
-            KnifeLog.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] CS2 effects: " + string.Join("; ", loaded.Select(kv =>
                     $"{kv.Key} muzzle0=({kv.Value.MuzzlePos0?[0]:0.###},{kv.Value.MuzzlePos0?[1]:0.###},{kv.Value.MuzzlePos0?[2]:0.###})"
                     + $" flash={kv.Value.Flash?.Count ?? 0}"

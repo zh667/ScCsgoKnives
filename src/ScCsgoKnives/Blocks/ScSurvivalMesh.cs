@@ -76,11 +76,11 @@ public static class ScSurvivalMesh {
             string tex=texture is null ? "null"
                 : $"{texture.Width}x{texture.Height} format={texture.ColorFormat} mips={texture.MipLevelsCount} srgb={texture.IsSrgb} sampler={(texture.SamplerState is null ? "none" : "set")}";
             Color v=mesh.Vertices.Count>0 ? mesh.Vertices[0].Color : Color.Transparent;
-            KnifeLog.Information($"[ScCsgoKnives] supply mesh first draw: texture {Texture} = {tex}; vertex0 colour ({v.R},{v.G},{v.B},{v.A}) emissive={(mesh.Vertices.Count>0 && mesh.Vertices[0].IsEmissive)}; "
+            KnifeLog.Trace($"[ScCsgoKnives] supply mesh first draw: texture {Texture} = {tex}; vertex0 colour ({v.R},{v.G},{v.B},{v.A}) emissive={(mesh.Vertices.Count>0 && mesh.Vertices[0].IsEmissive)}; "
                 + $"colour transform ({color.R},{color.G},{color.B},{color.A}); env light={env?.Light.ToString() ?? "null"} mode={env?.DrawBlockMode.ToString() ?? "null"}; {mesh.Vertices.Count} vertices; "
                 + $"texture created on thread {SurfaceThread} (main thread {MainThread}, dispatched={SurfaceDispatched}, this draw on {Environment.CurrentManagedThreadId}).");
         }
-        catch(Exception e) { KnifeLog.Information($"[ScCsgoKnives] supply mesh first draw: could not describe the inputs: {e.Message}"); }
+        catch(Exception e) { KnifeLog.Trace($"[ScCsgoKnives] supply mesh first draw: could not describe the inputs: {e.Message}"); }
     }
     // Atlas cells: brushed steel, dark steel, brass, red polymer, rubber,
     // blue glass, work mat, painted cabinet. Every face has real thickness.

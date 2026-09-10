@@ -375,7 +375,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_zeus.Add(shot);
         CsmcFirstPersonRenderer.ZeusMuzzle(KnifeClock.Now);
         // Once per shot, so a device log says where the arc started and ended.
-        KnifeLog.Information($"[ScCsgoKnives] Zeus shot: arc from {(muzzleSolved ? "the drawn muzzle" : "the eye (muzzle not solved this frame)")} "
+        KnifeLog.Trace($"[ScCsgoKnives] Zeus shot: arc from {(muzzleSolved ? "the drawn muzzle" : "the eye (muzzle not solved this frame)")} "
             + $"({muzzle.X:0.##},{muzzle.Y:0.##},{muzzle.Z:0.##}) to ({end.X:0.##},{end.Y:0.##},{end.Z:0.##}), "
             + $"{Vector3.Distance(muzzle, end):0.##} m, hit={hit}.");
     }
@@ -539,7 +539,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     void CountKill(ComponentPlayer player, ComponentBody body, ScGunKillCredit credit) {
         if (m_registry is null || m_registry.Disabled) return;
         if (!ScGunKillRules.Counts(body, player, Creative, out string why)) {
-            KnifeLog.Information($"gun kill not counted for record {credit.RecordId}: {why}");
+            KnifeLog.Trace($"gun kill not counted for record {credit.RecordId}: {why}");
             return;
         }
         var health = body.Entity.FindComponent<ComponentHealth>();
@@ -632,7 +632,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     void UpdateGrowth(List<ScGunHolders.Holder> holders) {
         if (m_registry is null || m_registry.Disabled) return;
         ScGunGrowthService.Advance(m_registry, holders, m_time.GameTime, HolderBusy, (id, from, to) => {
-            KnifeLog.Information($"gun growth: record {id} level {from} -> {to}");
+            KnifeLog.Trace($"gun growth: record {id} level {from} -> {to}");
             // The first sweep can run before m_states is populated (e.g. an old 104-kill gun).
             foreach (var player in m_players.ComponentPlayers) {
                 var inventory = player.ComponentMiner?.Inventory;
@@ -748,7 +748,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (result != ScGunResult.Success) Refused(player, result, m_time.GameTime);
                 value = player.ComponentMiner.ActiveBlockValue;
                 if (result == ScGunResult.Success)
-                    KnifeLog.Information($"[GUN_TEMPLATE] player={player.PlayerData.PlayerIndex} slot={inventory.ActiveSlotIndex} counter={counter} gun={ScGunBlock.SpecOf(value).Name} skin={ScGunBlock.SkinOf(value)} instance={GunSpec.GetId(Terrain.ExtractData(value))} result=Success");
+                    KnifeLog.Trace($"[GUN_TEMPLATE] player={player.PlayerData.PlayerIndex} slot={inventory.ActiveSlotIndex} counter={counter} gun={ScGunBlock.SpecOf(value).Name} skin={ScGunBlock.SkinOf(value)} instance={GunSpec.GetId(Terrain.ExtractData(value))} result=Success");
             }
             if (m_migrationNotice && m_migrationTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。原世界已备份。", Color.White, true, false);
@@ -985,8 +985,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         var credit = ScGunKillCredit.For(data, creative, ++m_shotSequence);
         if (!creative) {
             int durability = GunSpec.GetDurability(data), full = GunSpec.GetMaxDurability(data);
-            if (durability <= 0) { player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false); KnifeLog.Information($"gun broken: {spec.Name} record {GunSpec.GetId(data)} after {full} shots"); }
-            else if ((durability + 1) * 5 / Math.Max(1, full) != durability * 5 / Math.Max(1, full)) KnifeLog.Information($"gun wear: {spec.Name} record {GunSpec.GetId(data)} {durability}/{full} ({ScGunDurability.PercentText(durability, full)})");
+            if (durability <= 0) { player.ComponentGui.DisplaySmallMessage("枪械已损坏，请到装配台维修", Color.Red, true, false); KnifeLog.Trace($"gun broken: {spec.Name} record {GunSpec.GetId(data)} after {full} shots"); }
+            else if ((durability + 1) * 5 / Math.Max(1, full) != durability * 5 / Math.Max(1, full)) KnifeLog.Trace($"gun wear: {spec.Name} record {GunSpec.GetId(data)} {durability}/{full} ({ScGunDurability.PercentText(durability, full)})");
         }
         // A burst costs its own cycle time once, not one per round: CS2's Glock-18
         // takes 0.5 s for the burst against 0.15 s for a single shot, the FAMAS 0.55
@@ -1202,11 +1202,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     };
     readonly Dictionary<ComponentPlayer, double> m_pelletLogAt = [];
     /// <summary>Game.log line per confirmed body pellet, throttled to four a second per player except head hits.</summary>
+    [System.Diagnostics.Conditional("SC_CSGO_DIAGNOSTICS")]
     void LogPellet(ComponentPlayer player, GunSpec spec, ComponentBody target, ScHitPart part, float distance, string why, double now) {
         if (part != ScHitPart.Head && m_pelletLogAt.TryGetValue(player, out double last) && now - last < .25) return;
         m_pelletLogAt[player] = now;
         string name = target.Entity.FindComponent<ComponentCreature>()?.DisplayName ?? "body";
-        KnifeLog.Information($"shot {spec.Name}: {name} part={part} at {distance:0.0} m ({why})");
+        KnifeLog.Trace($"shot {spec.Name}: {name} part={part} at {distance:0.0} m ({why})");
     }
 
     void CancelReload(ComponentPlayer player, GunState state, bool cancelAnimation = true) {
@@ -1416,14 +1417,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.Zoom = level;
         float magnification = spec.ZoomLevels[Math.Clamp(level - 1, 0, spec.ZoomLevels.Length - 1)];
         // Projection hook and the post-input adapter apply zoom locally, never to SettingsManager.
-        KnifeLog.Information($"[CS_SCOPE_0416] player={player.PlayerData.PlayerIndex} level={level} zoom={magnification} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
+        KnifeLog.Trace($"[CS_SCOPE_0416] player={player.PlayerData.PlayerIndex} level={level} zoom={magnification} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
         CsmcFirstPersonRenderer.SetScope(true, magnification, spec.ScopeHidesWeapon);
         KnifeAnimationController.SetScoped(player, true);
     }
 
     void LeaveScope(ComponentPlayer player, GunState state) {
         if (state.Zoom == 0) return;
-        KnifeLog.Information($"[CS_SCOPE_0416] leave player={player.PlayerData.PlayerIndex} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
+        KnifeLog.Trace($"[CS_SCOPE_0416] leave player={player.PlayerData.PlayerIndex} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
         state.Zoom = 0;
         CsmcFirstPersonRenderer.SetScope(false, 1f);
         KnifeAnimationController.SetScoped(player, false);
@@ -1508,7 +1509,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         catch (Exception e) {
             s_missingSounds.Add(path);
-            KnifeLog.Information($"[ScCsgoKnives] sound {path} failed ({e.GetType().Name}: {e.Message}); playing nothing.");
+            KnifeDiagnostics.WarnOnce("gun-sound-"+path, $"[ScCsgoKnives] sound {path} failed ({e.GetType().Name}: {e.Message}); playing nothing.");
         }
     }
 }

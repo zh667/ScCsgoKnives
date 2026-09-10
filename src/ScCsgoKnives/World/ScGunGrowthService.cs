@@ -68,7 +68,7 @@ public static class ScGunGrowthService {
             if (result != ScGunResult.Success) continue; // busy/changed: the same credential is retried
             written++;
             if (registry.TryGetSnapshot(entry.RecordId, out var after) && after.KillCount % ScGunGrowth.KillsPerLevel == 0)
-                KnifeLog.Information($"gun counter: record {entry.RecordId} ({GunSpec.All[after.Variant].Name}) reached {after.KillCount} kills, level {after.EarnedLevel}, applied {after.AppliedGrowthLevel}");
+                KnifeLog.Trace($"gun counter: record {entry.RecordId} ({GunSpec.All[after.Variant].Name}) reached {after.KillCount} kills, level {after.EarnedLevel}, applied {after.AppliedGrowthLevel}");
         }
         return written;
     }

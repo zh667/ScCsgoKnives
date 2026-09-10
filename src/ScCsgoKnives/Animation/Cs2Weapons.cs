@@ -195,7 +195,7 @@ public static class Cs2Weapons {
                 KnifeDiagnostics.WarnOnce("cs2-weapons-format", $"{Resource} is not {ExpectedFormat}.");
                 return null;
             }
-            KnifeLog.Information("[ScCsgoKnives] CS2 weapon data: " + string.Join("; ", file.Guns.Select(kv =>
+            KnifeLog.Trace("[ScCsgoKnives] CS2 weapon data: " + string.Join("; ", file.Guns.Select(kv =>
                 $"{kv.Key} dmg={kv.Value.Damage:0.#} falloff={kv.Value.RangeModifier:0.##}/500u "
                 + $"spread={kv.Value.SpreadDegrees:0.###}deg kick={kv.Value.KickPitchDegrees:0.###}deg")));
             LoadError = null;

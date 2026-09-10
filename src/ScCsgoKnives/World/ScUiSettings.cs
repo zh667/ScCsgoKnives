@@ -185,7 +185,7 @@ public static class ScUiSettings {
             }
             Storage.CreateDirectory(Storage.GetDirectoryName(Path));
             WriteAtomic(Storage.GetSystemPath(Path), JsonSerializer.SerializeToUtf8Bytes(file, s_json));
-            KnifeLog.Information("[CS_UI_0413] settings saved and verified: " + Path);
+            KnifeLog.Trace("[CS_UI_0413] settings saved and verified: " + Path);
             return true;
         }
         catch (Exception e) {

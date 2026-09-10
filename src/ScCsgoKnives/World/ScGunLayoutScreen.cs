@@ -68,7 +68,7 @@ public sealed class ScGunLayoutScreen : Screen {
     public override void Enter(object[] parameters) {
         m_worldBackground.ResetCapture();
         ScWeaponTouchPanel.SuppressAll(true);
-        KnifeLog.Information("[CS_UI_0413] layout enter: isolated background, live touch suppressed");
+        KnifeLog.Trace("[CS_UI_0413] layout enter: isolated background, live touch suppressed");
         m_back = ScreensManager.PreviousScreen;
         m_leftHanded = SettingsManager.LeftHandedLayout;
         m_working = ScUiSettings.CopyHand(m_leftHanded);

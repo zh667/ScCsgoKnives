@@ -66,10 +66,10 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !m_firstPersonLogged[variant]) {
             m_firstPersonLogged[variant] = true;
-            Log.Information($"[ScCsgoKnives] block first-person fallback: value={value} (0x{value:X}), data={Terrain.ExtractData(value)}, variant={variant}, name={s_names[variant]}.");
+            KnifeLog.Trace($"[ScCsgoKnives] block first-person fallback: value={value} (0x{value:X}), data={Terrain.ExtractData(value)}, variant={variant}, name={s_names[variant]}.");
             Matrix sizedMatrix = Matrix.CreateScale(size) * matrix;
             (Vector3 viewMin, Vector3 viewMax) = TransformBounds(model.Min, model.Max, sizedMatrix);
-            Log.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] first-person {s_names[variant]}: size={size:0.###}, light={environmentData.Light}, "
                 + $"matrix={KnifeDiagnostics.MatrixSummary(matrix)}, viewBounds={FormatBounds(viewMin, viewMax)}."
             );

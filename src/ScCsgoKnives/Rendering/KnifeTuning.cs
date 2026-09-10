@@ -466,7 +466,7 @@ public static class KnifeTuning {
             // common with this one, so applying it would silently leave every new
             // value at its default. Replace it instead.
             if (ReadVersion(content) != Version) {
-                KnifeLog.Information($"[ScCsgoKnives] tuning file was written by a build with different defaults; rewriting {Path}.");
+                KnifeLog.Trace($"[ScCsgoKnives] tuning file was written by a build with different defaults; rewriting {Path}.");
                 Write();
                 s_lastContent = null;
                 return;
@@ -503,7 +503,7 @@ public static class KnifeTuning {
         CsmcFirstPersonRenderer.InvalidateProjection();
         CsmcFirstPersonRenderer.ResetCompositionLog();
         CsmcFirstPersonRenderer.RebuildPlacements();
-        KnifeLog.Information(
+        KnifeLog.Trace(
             $"[ScCsgoKnives] tuning reloaded ({applied} values): knifeScale={KnifeScale:0.###}, "
             + $"anchor=({AnchorScreenX:0.###},{AnchorScreenY:0.###})@{AnchorDepth:0.##}, "
             + $"lean R={RightArmLean:0.#} L={LeftArmLean:0.#}, near R={RightArmNear:0.###} L={LeftArmNear:0.###}, "
@@ -548,7 +548,7 @@ public static class KnifeTuning {
             case nameof(SquareFullDegrees): SquareFullDegrees = v; return true;
             case nameof(SquareGateByStillness): SquareGateByStillness = v; return true;
             case nameof(SquareEase): SquareEase = v; return true;
-            case nameof(QaCapture): QaCapture = v; return true;
+            case nameof(QaCapture): QaCapture = 0f; return true;
             case nameof(RollSlewDegreesPerSecond): RollSlewDegreesPerSecond = v; return true;
             case nameof(SwapDipScale): SwapDipScale = v; return true;
             case nameof(InspectTravelScale): InspectTravelScale = v; return true;
@@ -605,7 +605,7 @@ public static class KnifeTuning {
             case nameof(Cs2ViewmodelOffsetY): Cs2ViewmodelOffsetY = v; return true;
             case nameof(Cs2ViewmodelOffsetZ): Cs2ViewmodelOffsetZ = v; return true;
             case nameof(GunSoundProfile): GunSoundProfile = v; return true;
-            case nameof(PbrDebug): PbrDebug = v; return true;
+            case nameof(PbrDebug): PbrDebug = 0f; return true; // Old tuning files must not restore a debug shader view.
             default: return false;
         }
     }
@@ -616,7 +616,7 @@ public static class KnifeTuning {
             byte[] bytes = new UTF8Encoding(false).GetBytes(Serialize(Version));
             Storage.CreateDirectory(Storage.GetDirectoryName(Path));
             ScUiSettings.WriteAtomic(Storage.GetSystemPath(Path), bytes);
-            KnifeLog.Information($"[ScCsgoKnives] wrote tuning file {Path}; edit it and it reloads within a second.");
+            KnifeLog.Trace($"[ScCsgoKnives] wrote tuning file {Path}; edit it and it reloads within a second.");
         }
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce("tuning-write", $"Could not write {Path}: {e.Message}");

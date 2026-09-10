@@ -176,7 +176,7 @@ public static class Cs2TaserEffect {
                 return null;
             }
             LoadError = null;
-            KnifeLog.Information($"[ScCsgoKnives] CS2 Zeus effect: arc {file.Arc.Life:0.##} s over {file.Arc.Points:0} points, "
+            KnifeLog.Trace($"[ScCsgoKnives] CS2 Zeus effect: arc {file.Arc.Life:0.##} s over {file.Arc.Points:0} points, "
                 + $"{file.MuzzleGlow?.Count:0} glow + {file.MuzzleFlash?.Count:0} flare + {file.MuzzleSparks?.Count} sparks at the muzzle, "
                 + $"{file.ImpactGlow?.Count:0} glow + {file.ImpactSparks?.Count} sparks at the impact.");
             return file;

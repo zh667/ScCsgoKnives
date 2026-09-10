@@ -32,10 +32,10 @@ public static class KnifeQa {
     static int s_variant, s_width, s_height;
 
     public static bool Active => s_active;
-    public static bool Armed => KnifeTuning.QaCapture > 0.5f;
+    public static bool Armed => false; // Player builds never record screenshots or hijack inspect.
 
     public static bool Begin(ComponentFirstPersonModel model, int variant) {
-        if (s_active) return false;
+        if (!Armed || s_active) return false;
         try {
             string root = ScLocalSettings.PathFor("ScreenCapture");
             if (!Storage.DirectoryExists(root)) Storage.CreateDirectory(root);
@@ -65,7 +65,7 @@ public static class KnifeQa {
         KnifeClock.Reset(1f / Fps);
         KnifeClock.Commit = false;
         KnifeAnimationController.QaDraw(model, variant);
-        KnifeLog.Information($"[ScCsgoKnives] QA: capture run started -> {s_dir} ({s_width}x{s_height} @ {Fps} fps)");
+        KnifeLog.Trace($"[ScCsgoKnives] QA: capture run started -> {s_dir} ({s_width}x{s_height} @ {Fps} fps)");
         return true;
     }
 
@@ -127,7 +127,7 @@ public static class KnifeQa {
     }
 
     static void End(string why) {
-        KnifeLog.Information($"[ScCsgoKnives] QA: capture run ended ({why}) after {s_frame} frames -> {s_dir}");
+        KnifeLog.Trace($"[ScCsgoKnives] QA: capture run ended ({why}) after {s_frame} frames -> {s_dir}");
         Cleanup();
     }
 

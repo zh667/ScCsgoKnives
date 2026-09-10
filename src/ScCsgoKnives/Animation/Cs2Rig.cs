@@ -228,7 +228,7 @@ public static class Cs2Rig {
             ByAlias = p.Value.Clips.Values.Where(c => !string.IsNullOrEmpty(c.Alias))
                 .GroupBy(c => c.Alias, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal)
         }, StringComparer.Ordinal);
-        KnifeLog.Information($"[CS_ATTR_0414] clip metadata: {result.Count} assets, {watch.Elapsed.TotalMilliseconds:0.0} ms; no skeletal curves loaded");
+        KnifeLog.Trace($"[CS_ATTR_0414] clip metadata: {result.Count} assets, {watch.Elapsed.TotalMilliseconds:0.0} ms; no skeletal curves loaded");
         return result;
     });
     // Metadata uses the exact same alias/fallback/event logic as full animation sampling. Its source
@@ -498,7 +498,7 @@ public static class Cs2Rig {
             Normalization = normalization,
             InverseNormalization = Matrix.Invert(normalization)
         };
-        KnifeLog.Information(
+        KnifeLog.Trace(
             $"[ScCsgoKnives] CS2 rig {gun}: bones={file.Skeleton.Count}, clips=[{string.Join(',', file.Clips.Keys)}], "
             + (file.MeshParts is { Length: > 0 }
                 ? $"parts=[{string.Join(',', file.MeshParts)}]"

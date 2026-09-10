@@ -19,6 +19,21 @@ static class GunDiagnosticsRegression {
         void Pellet(object shot,int outcome,float distance=10)=>Call(shot,"Pellet",Vector3.UnitZ,Vector3.UnitZ,outcome,distance,false,true,.1d,outcome<=1?5d:0d);
         List<JsonElement> Records(List<string> lines,string kind)=>lines.Select(l=>JsonDocument.Parse(l["[GUN_DIAG] ".Length..]).RootElement.Clone()).Where(e=>e.GetProperty("type").GetString()==kind).ToList();
         Test("off-is-silent",()=>{var lines=new List<string>();var d=Create("off",lines);return Begin(d,0) is null && lines.Count==0;});
+        Test("release-ignores-old-sampled-and-summary",()=> {
+            foreach(string mode in new[]{"sampled","summary"}) {
+                var d=Activator.CreateInstance(diagType,[mode,null,10000]);
+                if((bool)diagType.GetProperty("Active").GetValue(d)||Begin(d,0) is not null)return false;
+            }
+            return true;
+        });
+        Test("release-has-no-f7-render-toggle",()=>mod.GetType("Game.CsmcFirstPersonRenderer")
+            .GetMethod("PollDiagnosticKey",BindingFlags.NonPublic|BindingFlags.Static) is null);
+        Test("old-debug-settings-cannot-enable-capture-or-shader-view",()=> {
+            var tuning=mod.GetType("Game.KnifeTuning");var change=tuning.GetMethod("Override");
+            change.Invoke(null,["PbrDebug",3f]);change.Invoke(null,["QaCapture",1f]);
+            return (float)tuning.GetField("PbrDebug").GetValue(null)==0f
+                && !(bool)mod.GetType("Game.KnifeQa").GetProperty("Armed").GetValue(null);
+        });
         Test("samples-limited-but-summary-counts-all",()=> {
             var lines=new List<string>();var d=Create("sampled",lines);
             for(int i=0;i<100;i++){var s=Begin(d,i*.01);Pellet(s,i%4);Call(d,"Complete",s);Call(d,"Complete",s);}
@@ -58,10 +73,10 @@ static class GunDiagnosticsRegression {
             for(int i=0;i<100;i++){var s=Begin(d,i);if(s is null)break;Pellet(s,1);Call(d,"Complete",s);}
             return !(bool)diagType.GetProperty("Active").GetValue(d) && Records(lines,"budget_exhausted").Count==1;
         });
-        Test("old-config-defaults-to-sampled-without-rewrite",()=> {
+        Test("old-config-defaults-to-off-without-rewrite",()=> {
             var type=mod.GetType("Game.ScGunplaySettings").GetNestedType("Settings",BindingFlags.NonPublic);
             var settings=JsonSerializer.Deserialize("{\"Version\":1,\"Preset\":\"survival\"}",type);
-            return (string)type.GetProperty("Diagnostics").GetValue(settings)=="sampled";
+            return (string)type.GetProperty("Diagnostics").GetValue(settings)=="off";
         });
         Test("explanation-is-bit-identical-to-original-cone",()=> {
             var handling=mod.GetType("Game.ScGunHandling");var stance=mod.GetType("Game.ScGunStance");var all=(Array)mod.GetType("Game.GunSpec").GetField("All").GetValue(null);

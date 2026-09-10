@@ -71,8 +71,8 @@ public sealed class ScGunSettingsScreen : Screen {
     public override void Enter(object[] parameters) {
         m_background.ResetCapture();
         ScWeaponTouchPanel.SuppressAll(true);
-        KnifeLog.Information("[CS_UI_0413] settings enter: isolated background, path=" + ScUiSettings.Path);
-        KnifeLog.Information($"[CS_SCOPE_0416] settings enter baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
+        KnifeLog.Trace("[CS_UI_0413] settings enter: isolated background, path=" + ScUiSettings.Path);
+        KnifeLog.Trace($"[CS_SCOPE_0416] settings enter baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
         if (!m_returningFromLayout) { m_back = ScreensManager.PreviousScreen; m_working = Capture(); }
         m_returningFromLayout = false;
         m_built = false;
@@ -167,7 +167,7 @@ public sealed class ScGunSettingsScreen : Screen {
     static void Leave(Screen back) => ScreensManager.SwitchScreen(back ?? ScreensManager.FindScreen<Screen>("Settings"));
     public override void Leave() {
         m_background.ReleaseCapture();
-        KnifeLog.Information($"[CS_SCOPE_0416] settings leave baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
+        KnifeLog.Trace($"[CS_SCOPE_0416] settings leave baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity}");
         base.Leave();
     }
 }

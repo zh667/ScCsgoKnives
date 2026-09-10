@@ -232,7 +232,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         int counterIndex = BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
         Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, counterTemplateBlock={counterIndex}, guns={GunSpec.All.Length}.");
-        Log.Information("[GUN_FOLIAGE] bullet pass-through registry: " + string.Join(", ", BlocksManager.Blocks
+        KnifeLog.Trace("[GUN_FOLIAGE] bullet pass-through registry: " + string.Join(", ", BlocksManager.Blocks
             .Where(b => b is not null && b is not AirBlock && b is not FluidBlock && !ScGunRange.StopsBullet(b))
             .Select(b => $"{b.BlockIndex}:{b.GetType().FullName}").Distinct()));
 
@@ -285,7 +285,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         // can be compared against what ScKnifeBlock.DrawBlock sees.
         if (itemValue != s_lastLoggedValue) {
             s_lastLoggedValue = itemValue;
-            Log.Information(
+            KnifeLog.Trace(
                 $"[ScCsgoKnives] hook: value={itemValue} (0x{itemValue:X}), data={Terrain.ExtractData(itemValue)}, "
                 + $"rawVariant={raw}, assetCount={CsmcKnifeRig.KnifeCount}, clamped={variant}, "
                 + $"asset={CsmcKnifeRig.GetAssetName(variant)}, poseNull={pose is null}, "
