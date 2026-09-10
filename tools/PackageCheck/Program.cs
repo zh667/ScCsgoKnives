@@ -73,7 +73,8 @@ if (expected is not null && !string.Equals(digest, expected.Trim().ToLowerInvari
     return 3;
 }
 
-string temp = Path.Combine(Path.GetTempPath(), "packagecheck-" + digest[..16]);
+using var testWorkspace = new TestWorkspace();
+string temp = Path.Combine(testWorkspace.DirectoryPath, "packagecheck-" + digest[..16]);
 Directory.CreateDirectory(temp);
 string dllPath, dllDigest;
 var oggs = new List<string>();
@@ -93,7 +94,10 @@ using (ZipArchive zip = ZipFile.OpenRead(scmod)) {
 }
 
 var context = new PackageContext("scmod");
-Assembly mod = context.LoadFromAssemblyPath(dllPath);
+// Do not leave Windows holding the extracted DLL open until process exit: tests can
+// release their temporary files deterministically after loading the identical bytes.
+Assembly mod;
+using (var dllStream = File.OpenRead(dllPath)) mod = context.LoadFromStream(dllStream);
 Type selfTest = mod.GetType("Game.Cs2SelfTest");
 if (selfTest is null) { Console.Error.WriteLine("the packaged assembly has no Game.Cs2SelfTest"); return 3; }
 

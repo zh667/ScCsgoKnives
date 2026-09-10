@@ -66,6 +66,14 @@
 
 # PackageCheck runs headless
 
+- User-directed 2026-09-10: keep development temporary files off the Windows system drive.
+  Run shell build/test/Python tools through `./tools/dev.ps1 <command> <args>` on Windows.
+  This scopes TEMP/TMP/TMPDIR to the project `.tmp/dev-temp` (E: in this checkout), not the whole OS.
+  PackageCheck also selects this root automatically even when invoked directly, isolates each run,
+  loads the package DLL from a stream and cleans up test fixtures on normal completion.
+  `SC_CSGO_DEV_TEMP` may override the root; `SC_CSGO_KEEP_TEST_TEMP=1` retains a check's fixtures for diagnosis.
+  Never clean the user's global Temp, game worlds or backups as part of this workflow.
+
 `tools/PackageCheck` needs no window or GPU. Its only host requirement was `Engine.Dispatcher.Initialize()`,
 which `Program.cs` calls before loading the package (0.29.0): without it the finalizers of engine objects the
 regressions create through `GetUninitializedObject` post to an uninitialized Dispatcher and kill the process
