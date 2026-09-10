@@ -213,7 +213,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_name.Text = Catalogue[m_entryIndex].Name;
         EffectiveGunStats.TrySnapshotValue(m_value, out var snap);
         int skin = snap.SkinId;
-        string identity = $"型号 {spec.Name} · 外观 {ScGunSkinCatalog.NameOf(skin)}";
+        string identity = $"型号 {ScGunNames.Variant(m_variant)} · 外观 {ScGunSkinCatalog.NameOf(skin)}";
         if (spec.HasSilencer) identity += snap.SilencerOff ? " · 消音器已拆" : " · 消音器在位";
         m_identityText.Text = identity;
         bool installed = snap.CounterInstalled;

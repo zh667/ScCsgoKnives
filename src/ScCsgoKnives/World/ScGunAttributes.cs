@@ -69,10 +69,17 @@ public static class ScGunAttributes {
     /// <summary>The eight rows for one gun at one level. The Zeus swaps its reload row for its charge cycle.</summary>
     public static List<Row> Rows(GunSpec spec, int value, int level) {
         var s = EffectiveGunStats.ResolveLevel(spec, value, false, level);
+        return RowsFromEffective(spec, s);
+    }
+
+    /// <summary>Consumes the final combat snapshot, not a second UI-only level formula.</summary>
+    public static List<Row> RowsFromEffective(GunSpec spec, EffectiveGunStats s) {
+        int level = s.Level;
         var r = Ranges;
         int variant = Array.IndexOf(GunSpec.All, spec);
         bool zeus = spec.RechargeSeconds > 0;
-        float cone = HipCone(spec) * s.AngleScale, kick = HipKick(spec) * s.AngleScale;
+        float cone = (s.Handling?.BaseCone ?? spec.SpreadDegrees) * s.AngleScale,
+              kick = (s.Handling?.KickPitch ?? spec.KickPitchDegrees) * s.AngleScale;
         var rows = new List<Row>();
         string pelletDetail = spec.Pellets > 1 ? $"单次扣扳机 {spec.Pellets} 颗，每颗 {Number(s.Power / spec.Pellets, 1)}" : null;
         rows.Add(new(Kind.Damage, spec.Pellets > 1 ? "单次总伤害" : "普通伤害", Number(s.Power, 1), "攻击力", Fraction(s.Power, r.Damage), false, false, pelletDetail));

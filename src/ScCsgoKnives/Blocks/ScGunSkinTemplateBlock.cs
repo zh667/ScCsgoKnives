@@ -28,8 +28,7 @@ public sealed class ScGunSkinTemplateBlock : ScNoDurabilityBlock {
     }
     public override string GetDisplayName(SubsystemTerrain terrain, int value) {
         if (!TrySnapshot(value, out var s)) return "未知涂装枪械（数据保留）";
-        string name = s.Variant switch { 0 => "AK-47", 1 => "M4A1 消音型", 2 => "AWP", _ => GunSpec.All[s.Variant].Name };
-        return name + " · " + ScGunSkinCatalog.NameOf(s.SkinId);
+        return ScGunNames.Item(s);
     }
     public override string GetDescription(int value) => "创造模式涂装枪械，拿到手中即可使用。满弹、满耐久；生存换肤请使用武器装配台。";
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen(value);

@@ -3,7 +3,7 @@ namespace Game;
 
 public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     // Both game modes expose the same operations. Creative only changes their costs, not availability.
-    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
+    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
     // A HUD toast is behind the workshop cover. Keep refusals visible until acknowledged.
     internal static Dialog NoticeDialog(string title, string detail, Action back) =>
         new ScWorkbenchConfirmDialog(title, detail, "返回", null, _ => back());
@@ -43,11 +43,14 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             object[] items = MainMenuItems();
             DialogsManager.ShowDialog(player.GuiWidget, Selection("武器装配台 · 组装 / 维修 / 涂装 / 计数器", items, 56,
                 (Func<object, string>)(item => item is RepairMenu ? "维修背包中的枪械" : item is SkinMenu ? "更换枪械涂装"
-                    : item is CounterMenu ? "安装击杀计数器" : item is AttributesMenu ? "查看武器属性"
+                    : item is CounterMenu ? "安装击杀计数器" : item is OwnedAttributesMenu ? "查看当前武器属性" : item is AttributesMenu ? "武器图鉴／等级预览"
                     : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
                     if (item is RepairMenu) { ShowRepair(); return; }
                     if (item is SkinMenu) { ShowSkinGuns(); return; }
                     if (item is CounterMenu) { ShowCounterGuns(); return; }
+                    if (item is OwnedAttributesMenu) {
+                        DialogsManager.ShowDialog(player.GuiWidget,new ScOwnedGunAttributesDialog(miner.Inventory,Available,ShowList));return;
+                    }
                     if (item is AttributesMenu) { ShowAttributes(); return; }
                     var entry = (ScWeaponCrafting.Entry)item;
                     var materials = entry.Materials();
@@ -108,7 +111,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             object[] options = [.. ScGunSkinCatalog.For(gun.Variant), FactoryLook.Instance];
             DialogsManager.ShowDialog(player.GuiWidget, Selection($"{ValueName(gun.Value)} · 选择涂装", options, 56,
                 (Func<object, string>)(item => item is FactoryLook ? "原厂外观（拆除涂装）"
-                    : $"{((ScGunSkin)item).Name}{(((ScGunSkin)item).PaintId == gun.SkinId ? "（当前）" : "")}  {((ScGunSkin)item).Tier}"), item => {
+                    : $"{((ScGunSkin)item).Name}{(((ScGunSkin)item).PaintId == gun.SkinId ? "（当前）" : "")}  {ScGunNames.Tier(((ScGunSkin)item).Tier)}"), item => {
                     var skin = item as ScGunSkin;
                     var quote = ScWeaponSkinning.Prepare(miner.Inventory, gun.Slot, skin, Creative(), ScWeaponMaterialBlock.Value);
                     if (quote is null) { Notice("涂装 · 无法更换", "这把枪已经是该外观，或背包中的枪械状态已变化。没有扣除材料，请重新选择枪械。", ShowSkinGuns); return; }
@@ -116,7 +119,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         ? $"当前 {s.Rounds} 发 · 耐久 {ScGunDurability.PercentText(s.Durability, s.MaxDurability)} · 消音器{(s.SilencerOff ? "已拆" : "在位")}" : "";
                     string detail = $"{ScGunSkinCatalog.NameOf(quote.FromSkinId)} → {(skin?.Name ?? "原厂外观")}\n{state}\n"
                         + (Creative() ? "创造模式：免费" : quote.Cost.Count == 0 ? "无需材料" : MaterialLines(quote.Cost))
-                        + (skin is null ? "\n去皮后取消皮肤的基础伤害 +50%。" : "\n皮肤基础伤害比原厂 +50%，等级伤害在此基础上增加，满级再 +100%。")
+                        + (skin is null ? "\n去皮后取消皮肤的基础伤害 +50%。" : $"\n皮肤基础伤害比原厂 +50%；安装计数器后，等级加成在此基础上计算，Lv{ScGunGrowth.MaxLevel}伤害为该基础的{ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel):0.##}倍。")
                         + "\n弹量、耐久、消音器、充能、计数器、击杀与等级保持不变。"
                         + (skin is { Approximate: true } ? "\n注意：该涂装为配色近似，图案位置与 CS2 原版不同。" : "");
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(skin?.Name ?? "原厂外观", detail, "更换", "返回", button => {
@@ -204,5 +207,6 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     sealed class SkinMenu { public static readonly SkinMenu Instance = new(); }
     sealed class CounterMenu { public static readonly CounterMenu Instance = new(); }
     sealed class AttributesMenu { public static readonly AttributesMenu Instance = new(); }
+    sealed class OwnedAttributesMenu { public static readonly OwnedAttributesMenu Instance = new(); }
     sealed class FactoryLook { public static readonly FactoryLook Instance = new(); }
 }

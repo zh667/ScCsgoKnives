@@ -93,6 +93,7 @@ def main():
         for p in paints:
             key=p.get('name',''); tag=p.get('description_tag','').lstrip('#').lower()
             if labels.get(tag)!=name: continue
+            if gun=='glock' and p['id']!='1119': continue # user: Emerald only, no phases
             if (key.lower(),gun) not in associations: continue
             icons=[s for s in index if '/econ/default_generated/' in s and any(s.lower().endswith(f'/weapon_{gun}_{key}_{wear}_png.vtex_c'.lower()) for wear in ('light','medium','heavy'))]
             if not icons: continue

@@ -148,8 +148,8 @@ static class WeaponHelpLayoutRegression {
                 dialog.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(dialog,["功能"]);
                 dialog.Measure(new(850,479));dialog.Arrange(Vector2.Zero,new(850,479));
                 var list=(ListPanelWidget)dialog.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
-                Check($"workbench-all-functions-visible/{creative}",list.Items.Count==4&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")
-                    && menu.Length==craftItems.Length+4,"actual runtime menu -> 功能 filter contains repair, skins, counter and attributes in both modes");
+                Check($"workbench-all-functions-visible/{creative}",list.Items.Count==5&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")&&list.Items.Any(o=>o.GetType().Name=="OwnedAttributesMenu")
+                    && menu.Length==craftItems.Length+5,"actual runtime menu: repair, skins, counter, owned stats and catalogue preview in both modes");
             }
             foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
                 var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;
@@ -263,6 +263,84 @@ static class WeaponHelpLayoutRegression {
                         "actual subsystem UpdateGrowth -> rule -> transaction -> GetDisplayName -> player ComponentGui callback; first sweep and repeat; both real inventory classes");
                 }
             } finally { registryField.SetValue(null, previousRegistry); }
+            // Owned-item stats are read-only, use the final combat snapshot, and do not confuse same-model guns.
+            var owned=mod.GetType("Game.ScOwnedGunAttributes");var ownedDialog=mod.GetType("Game.ScOwnedGunAttributesDialog");
+            var nameType=mod.GetType("Game.ScGunNames");var statsType=mod.GetType("Game.EffectiveGunStats");
+            var specs=(Array)mod.GetType("Game.GunSpec").GetField("All").GetValue(null);
+            var skinBlock=BlocksManager.Blocks[BlocksManager.BlockTypeToIndex[mod.GetType("Game.ScGunSkinTemplateBlock")]];
+            string[] expectedNames=["AK-47","M4A1-S","AWP","沙漠之鹰","格洛克18","USP-S","M4A4","法玛斯","MP9","P90","SSG 08","FN57","P2000","P250","TEC-9","CZ75","MAC-10","MP7","UMP-45","PP-野牛","MP5-SD","加利尔","SCAR-20","G3SG1","AUG","SG 553","新星","XM1014","截短霰弹枪","MAG-7","M249","内格夫","R8 左轮","双持贝瑞塔","电击枪"];
+            for(int v=0;v<expectedNames.Length;v++)Check("canonical-name/"+v,(string)nameType.GetMethod("Variant").Invoke(null,[v])==expectedNames[v],expectedNames[v]);
+            foreach(int value in realGun.GetCreativeValues().Concat(counterBlock.GetCreativeValues()).Concat(skinBlock.GetCreativeValues())) {
+                var block=BlocksManager.Blocks[Terrain.ExtractContents(value)];
+                object[] args=[value,null];bool known=(bool)statsType.GetMethod("TrySnapshotValue").Invoke(null,args);
+                int variant=(int)args[1].GetType().GetProperty("Variant").GetValue(args[1]);
+                string expected=(string)nameType.GetMethod("Variant").Invoke(null,[variant]);
+                string display=block.GetDisplayName(null,value);
+                Check("all-template-names/"+value,known&&expected!="未知枪械"&&display.StartsWith(expected),display);
+            }
+            try {
+                var namesRegistry=Activator.CreateInstance(registryType);registryField.SetValue(null,namesRegistry);
+                foreach(int templateValue in counterBlock.GetCreativeValues()) {
+                    var bag=new ComponentInventory();bag.m_slots.Add(new());bag.AddSlotItems(0,templateValue,1);
+                    string expectedName=counterBlock.GetDisplayName(null,templateValue);
+                    object result=counterType.GetMethod("Materialize").Invoke(null,[bag,0,"name-audit"]);
+                    string actual=realGun.GetDisplayName(null,bag.GetSlotValue(0));
+                    Check("counter-instance-name-parity/"+templateValue,result.ToString()=="Success"&&actual==expectedName,actual);
+                }
+                foreach(bool creative in new[]{false,true}) {
+                    object registry=Activator.CreateInstance(registryType);registryField.SetValue(null,registry);
+                    IInventory inv;
+                    if(creative){var ci=new ComponentCreativeInventory {OpenSlotsCount=3};for(int k=0;k<5;k++)ci.m_slots.Add(0);inv=ci;}
+                    else{var si=new ComponentInventory();for(int k=0;k<4;k++)si.m_slots.Add(new());inv=si;}
+                    int counter=counterBlock.GetCreativeValues().First();
+                    inv.AddSlotItems(0,counter,1);inv.AddSlotItems(1,counter,1);
+                    counterType.GetMethod("Materialize").Invoke(null,[inv,0,"owned-test-0"]);
+                    counterType.GetMethod("Materialize").Invoke(null,[inv,1,"owned-test-1"]);
+                    inv.AddSlotItems(2,skinBlock.GetCreativeValues().First(),1);
+                    if(creative)((ComponentCreativeInventory)inv).m_slots[3]=counter;
+                    int Id(int value)=>(int)mod.GetType("Game.GunSpec").GetMethod("GetId").Invoke(null,[Terrain.ExtractData(value)]);
+                    var record=registryType.GetMethod("Get",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(registry,[Id(inv.GetSlotValue(1))]);
+                    record.GetType().GetField("AppliedGrowthLevel").SetValue(record,10);
+                    record.GetType().GetField("PendingGrowthLevel").SetValue(record,11);
+                    record.GetType().GetField("KillCount").SetValue(record,1100L);
+                    Array Candidates()=>(Array)owned.GetMethod("Candidates").Invoke(null,[inv]);
+                    var candidates=Candidates();int originalCount=(int)registryType.GetProperty("Count").GetValue(registry);
+                    object Resolve(object selected,out bool ok){object[] args=[inv,selected,registry,null,null];ok=(bool)owned.GetMethod("TryResolve").Invoke(null,args);return args[4];}
+                    object first=Resolve(candidates.GetValue(0),out bool firstOk),second=Resolve(candidates.GetValue(1),out bool secondOk);
+                    float Power(object stats)=>(float)statsType.GetProperty("Power").GetValue(stats);
+                    Check("owned-same-model-independent/"+creative,candidates.Length==3&&firstOk&&secondOk&&Math.Abs(Power(second)-2*Power(first))<.001f
+                        &&(int)statsType.GetProperty("Level").GetValue(second)==10,"Lv0 and applied Lv10, pending Lv11 does not inflate current stats; infinite creative slots excluded");
+                    object spec=specs.GetValue(0);
+                    var changed=statsType.GetMethod("Resolve").Invoke(null,[spec,inv.GetSlotValue(1),false]);
+                    statsType.GetProperty("Power").SetValue(changed,777f);
+                    var rows=(System.Collections.IList)mod.GetType("Game.ScGunAttributes").GetMethod("RowsFromEffective").Invoke(null,[spec,changed]);
+                    Check("owned-final-snapshot-no-ui-recalculation/"+creative,rows[0].GetType().GetProperty("Text").GetValue(rows[0]).ToString().StartsWith("777"),"future final-stat changes are not lost by recalculating from the level in UI");
+                    foreach(var size in new[]{new Vector2(1187,637),new Vector2(850,383),new Vector2(360,640),new Vector2(480,850),new Vector2(850,270)}) {
+                        int backs=0;var dialog=(Dialog)Activator.CreateInstance(ownedDialog,[inv,(Func<bool>)(()=>true),(Action)(()=>backs++)]);
+                        dialog.WidgetsHierarchyInput=new WidgetInput();
+                        dialog.Measure(size);dialog.Arrange(Vector2.Zero,size);dialog.Measure(size);dialog.Arrange(Vector2.Zero,size);
+                        Widget Part(string n)=>(Widget)ownedDialog.GetField(n,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
+                        var list=(ListPanelWidget)Part("m_list");var content=(StackPanelWidget)Part("m_content");var scroll=(ScrollPanelWidget)Part("m_scroll");
+                        foreach(var gun in list.Items) {list.ItemClicked(gun);dialog.Measure(size);dialog.Arrange(Vector2.Zero,size);}
+                        bool Inside(Widget w)=>w.GlobalBounds.Min.X>=dialog.GlobalBounds.Min.X-.1f&&w.GlobalBounds.Max.X<=dialog.GlobalBounds.Max.X+.1f
+                            &&w.GlobalBounds.Min.Y>=dialog.GlobalBounds.Min.Y-.1f&&w.GlobalBounds.Max.Y<=dialog.GlobalBounds.Max.Y+.1f;
+                        Check($"owned-layout/{creative}/{size}",Inside(Part("m_listHost"))&&Inside(Part("m_detailHost"))&&Inside(Part("m_backButton"))
+                            &&scroll.ActualSize.Y>0&&content.AllChildren.OfType<ValueBarWidget>().Count()==8
+                            &&!content.AllChildren.OfType<LabelWidget>().Any(l=>l.Text.Contains("最大耐久")||l.Text.Contains("制作材料")||l.Text.Contains("预览 Lv")),"actual dialog layout, eight rows, no level selector or hidden footer");
+                        scroll.ScrollPosition=10000;dialog.Measure(size);dialog.Arrange(Vector2.Zero,size);
+                        Check($"owned-scroll-footer/{creative}/{size}",Inside(Part("m_backButton")),"footer stays fixed while stats scroll");
+                        ((BevelledButtonWidget)Part("m_backButton")).m_clickableWidget.IsClicked=true;dialog.Update();dialog.Update();
+                        Check($"owned-back-once/{creative}/{size}",backs==1,"workbench navigation callback, not recipe-screen switching");dialog.Dispose();
+                    }
+                    Check("owned-no-record-allocation/"+creative,(int)registryType.GetProperty("Count").GetValue(registry)==originalCount,"unmaterialized skin stays a template during inspection");
+                    var selected=candidates.GetValue(0);int original=inv.GetSlotValue(0);
+                    if(creative)((ComponentCreativeInventory)inv).m_slots[0]=inv.GetSlotValue(1);
+                    else{inv.RemoveSlotItems(0,1);inv.AddSlotItems(0,inv.GetSlotValue(1),1);}
+                    Resolve(selected,out bool replacement);Check("owned-replaced-slot-invalid/"+creative,!replacement,"cannot silently show a different gun in the same slot");
+                    registryField.SetValue(null,Activator.CreateInstance(registryType));Resolve(candidates.GetValue(1),out bool world);
+                    Check("owned-other-world-invalid/"+creative,!world,"same numeric IDs in another world must not be read");
+                }
+            }finally{registryField.SetValue(null,previousRegistry);}
             var editorType = mod.GetType("Game.ScGunLayoutScreen");
             var bindingsScreen=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunBindingsScreen"));
             bindingsScreen.Enter([]);

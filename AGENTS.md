@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-10: implement docs/owned-gun-stats-and-skins-plan-2026-09-10.md.
+  Glock Gamma Doppler is EMERALD ONLY (paint 1119), no phases 1-4. Total 33 requested finishes / 66 new
+  ordinary-counter entries. MAC-10 Sakkaku uses its best legal wear 0.21, not Factory New; P250 Whiteout 0.06.
+  Do not silently substitute light icons or approximate clean coats for verified minimum-wear generation.
+  Preserve all 35 weapon IDs and existing skin IDs, names must be shared across every item/template/UI route.
+
 - User-directed 2026-09-10 (0.41.12): remove third-party touch-adaptation claims; restore Chinese key captions
   while preserving stored key IDs and all ten weapon actions. Close the hidden Ghoul test UI (including title taps),
   but retain generic cross-world compatibility. Settings/bindings/layout use a frozen in-memory game background,
