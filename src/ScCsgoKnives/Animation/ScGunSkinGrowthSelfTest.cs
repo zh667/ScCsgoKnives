@@ -54,8 +54,8 @@ public static class ScGunSkinGrowthSelfTest {
                     if (tx.Commit(r => { r.KillCount = 237; r.AppliedGrowthLevel = 2; r.MaxDurability = ScGunGrowth.MaxDurability(variant, 2); r.PendingGrowthLevel = 3; }) != ScGunResult.Success) return false;
                     var earned = Snap(inv);
                     if (!skinFirst && (!Skin(inv, skin) || !SameState(earned, Snap(inv)))) return false;
-                    var painted = Snap(inv); var other = ScGunSkinCatalog.For(variant).First(s => s.PaintId != skin.PaintId);
-                    if (!Skin(inv, other) || !SameState(painted, Snap(inv))) return false;
+                    var painted = Snap(inv); var other = ScGunSkinCatalog.For(variant).FirstOrDefault(s => s.PaintId != skin.PaintId);
+                    if (other is not null && (!Skin(inv, other) || !SameState(painted, Snap(inv)))) return false;
                     var recolored = Snap(inv);
                     if (!Skin(inv, null) || !SameState(recolored, Snap(inv))) return false;
                     if (!Skin(inv, skin) || !SameState(recolored, Snap(inv)) || inv.GetSlotValue(0) != original) return false;

@@ -155,7 +155,7 @@ public static class KnifePbrRenderer {
     /// Returns false when PBR is unavailable so the caller can draw its own way.
     /// </summary>
     public static bool TryDrawPart(Model model, Texture2D baseColor, int variant, Matrix world, Matrix projection,
-        Matrix viewToWorld, in Lighting lighting, bool applyBoneTransform, string material = null) {
+        Matrix viewToWorld, in Lighting lighting, bool applyBoneTransform, string material = null, float scopeAperture = 0f) {
         if (!Enabled || baseColor is null || model is null) return false;
         if (!EnsureShared()) return false;
         Texture2D orm, normal;
@@ -188,7 +188,7 @@ public static class KnifePbrRenderer {
         shader.EnvSampler.SetValue(SamplerState.LinearClamp);
         shader.BrdfSampler.SetValue(SamplerState.LinearClamp);
 
-        shader.ScopeCutout.SetValue(Vector2.Zero);
+        shader.ScopeCutout.SetValue(new Vector2(scopeAperture, projection.M22));
         shader.ViewToWorld.SetValue(viewToWorld);
         shader.LightDir1.SetValue(lighting.Dir1);
         shader.LightDir2.SetValue(lighting.Dir2);

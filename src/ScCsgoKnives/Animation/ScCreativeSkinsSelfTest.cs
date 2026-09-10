@@ -23,9 +23,9 @@ public static class ScCreativeSkinsSelfTest {
         try {
             BlocksManager.BlockTypeToIndex[typeof(ScGunBlock)] = 510; BlocksManager.Blocks[510] = gun;
             BlocksManager.BlockTypeToIndex[typeof(ScGunSkinTemplateBlock)] = 511; BlocksManager.Blocks[511] = template;
-            T("catalogue-11-stable-no-records", () => {
+            T("catalogue-44-stable-no-records", () => {
                 int[] a = template.GetCreativeValues().ToArray(), b = template.GetCreativeValues().ToArray();
-                return a.Length == 11 && a.SequenceEqual(b) && a.Distinct().Count() == 11 && ScGunRegistry.Current.Count == 0
+                return a.Length == 44 && a.SequenceEqual(b) && a.Distinct().Count() == 44 && ScGunRegistry.Current.Count == 0
                     && a.All(v => ScGunSkinTemplateBlock.TrySnapshot(v, out var s) && s.SkinId == Terrain.ExtractData(v) && s.Fresh)
                     && template.GetCategory(a[0]) == "Weapons" && template.GetDisplayOrder(a[0]) > 221 && template.MaxStacking == 1;
             });

@@ -121,7 +121,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         + (Creative() ? "创造模式：免费" : quote.Cost.Count == 0 ? "无需材料" : MaterialLines(quote.Cost))
                         + (skin is null ? "\n去皮后取消皮肤的基础伤害 +50%。" : $"\n皮肤基础伤害比原厂 +50%；安装计数器后，等级加成在此基础上计算，Lv{ScGunGrowth.MaxLevel}伤害为该基础的{ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel):0.##}倍。")
                         + "\n弹量、耐久、消音器、充能、计数器、击杀与等级保持不变。"
-                        + (skin is { Approximate: true } ? "\n注意：该涂装为配色近似，图案位置与 CS2 原版不同。" : "");
+                        + (skin is { Approximate: true } ? "\n说明：官方 light 图标与本地烘焙材质；磨损和珠光效果不保证与 CS2 完全一致。" : "");
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(skin?.Name ?? "原厂外观", detail, "更换", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = ScWeaponSkinning.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));

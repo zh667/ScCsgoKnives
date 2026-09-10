@@ -16,7 +16,7 @@ static class ResourcePackInput {
         using var info=JsonDocument.Parse(infoStream);
         bool required=info.RootElement.TryGetProperty("Dependencies",out var deps)&&deps.ValueKind==JsonValueKind.Object&&deps.TryGetProperty("zh667.ScCsgoResources",out _);
         if(resourcePath is null) {
-            if(required)throw new InvalidDataException("This core requires --resource-pack <ScCsgoResources-1.0.0.scmod>; core alone is not a valid installation.");
+            if(required)throw new InvalidDataException("This core requires --resource-pack <matching ScCsgoResources.scmod>; core alone is not a valid installation.");
             return corePath;
         }
         if(!required)throw new InvalidDataException("Resource pack supplied for a monolithic/unsupported core.");

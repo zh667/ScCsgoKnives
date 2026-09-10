@@ -1,9 +1,13 @@
 # Project conventions
 
+- User-directed continuation: use the existing official light-icon + local skin bake workflow for all33.
+  Workshop Tools and exact Factory New composition are NOT required. Document approximate material/wear
+  behavior honestly; do not call light exact FN or fake Sakkaku wear. Existing skins stay byte-identical.
+
 - User-directed 2026-09-10: implement docs/owned-gun-stats-and-skins-plan-2026-09-10.md.
   Glock Gamma Doppler is EMERALD ONLY (paint 1119), no phases 1-4. Total 33 requested finishes / 66 new
   ordinary-counter entries. MAC-10 Sakkaku uses its best legal wear 0.21, not Factory New; P250 Whiteout 0.06.
-  Do not silently substitute light icons or approximate clean coats for verified minimum-wear generation.
+  The later user instruction above replaces strict minimum-wear generation with the existing light-icon workflow.
   Preserve all 35 weapon IDs and existing skin IDs, names must be shared across every item/template/UI route.
 
 - User-directed 2026-09-10 (0.41.12): remove third-party touch-adaptation claims; restore Chinese key captions

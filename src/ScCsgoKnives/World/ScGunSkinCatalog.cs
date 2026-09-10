@@ -36,7 +36,27 @@ public static class ScGunSkinCatalog {
         new(946,  "cu_m4a1s_csgo2048",         "二号玩家", "m4a1s", ScSkinTier.Standard, true),
         new(1177, "aa_fade_m4a1s",             "渐变之色", "m4a1s", ScSkinTier.Special,  true),
         new(497,  "gs_m4a1s_snakebite_gold",   "金蛇缠绕", "m4a1s", ScSkinTier.Standard, true),
+    .. Additional()
     ];
+
+    sealed class AddedSkin {
+        public int paintId {get;set;}
+        public string key {get;set;}
+        public string name {get;set;}
+        public string gun {get;set;}
+        public string tier {get;set;}
+        public bool legacy {get;set;}
+    }
+    static AddedSkin[] ReadAdded() {
+        using var stream=typeof(ScGunSkinCatalog).Assembly.GetManifestResourceStream("Game.AnimationData.gun_additional_skins.json");
+        return stream is null ? [] : System.Text.Json.JsonSerializer.Deserialize<AddedSkin[]>(stream);
+    }
+    static IEnumerable<ScGunSkin> Additional() => ReadAdded().Select(s=>new ScGunSkin(s.paintId,s.key,s.name,s.gun,Enum.Parse<ScSkinTier>(s.tier),true));
+    public static bool LegacyBody(string asset,string material) {
+        if(asset is "awp" or "m4a1s")return All.Any(s=>s.Gun==asset&&s.PaintId!=1177&&s.Material==material);
+        return AddedLegacy.Contains(material);
+    }
+    static readonly HashSet<string> AddedLegacy=ReadAdded().Where(s=>s.legacy).Select(s=>$"{s.gun}_hd__{s.key}").ToHashSet();
 
     /// <summary>Material cost by tier: blanks, mechanisms, paint. Indexes are ScWeaponMaterialBlock kinds.</summary>
     public static readonly Dictionary<ScSkinTier, (int Blank, int Mechanism, int Paint)> Cost = new() {

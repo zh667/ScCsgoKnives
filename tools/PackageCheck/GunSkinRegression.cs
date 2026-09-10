@@ -26,7 +26,13 @@ static class GunSkinRegression {
             var native = mod.GetType("Game.ScGunNativeMesh");
             Check("world-uv-repeat", ReferenceEquals(native.GetProperty("WorldSampler").GetValue(null), Engine.Graphics.SamplerState.LinearWrap), "native world views use repeat sampling instead of BlocksManager PointClamp");
             var partsMethod = native.GetMethod("Parts");
-            foreach (string asset in new[] { "ak47", "awp", "m4a1s" }) {
+            using var addedStream=mod.GetManifestResourceStream("Game.AnimationData.gun_additional_skins.json");
+            using var added=System.Text.Json.JsonDocument.Parse(addedStream);
+            var expectedLegacy=added.RootElement.EnumerateArray().Where(x=>x.GetProperty("legacy").GetBoolean()).Select(x=>x.GetProperty("gun").GetString()).ToHashSet();
+            var newIds=added.RootElement.EnumerateArray().Select(x=>x.GetProperty("paintId").GetInt32()).ToArray();
+            Check("new33-exact-catalogue",newIds.Length==33&&newIds.Distinct().Count()==33&&newIds.Contains(1119)
+                &&!newIds.Any(x=>x is >=1120 and <=1123),"33 new finishes; Glock Emerald only");
+            foreach (string asset in new[] { "ak47", "awp", "m4a1s" }.Concat(expectedLegacy)) {
                 var parts = (Array)partsMethod.Invoke(null, [asset]);
                 var rig = mod.GetType("Game.Cs2Rig");
                 bool present = parts.Length > 0, bound = true, scope = false;
@@ -45,6 +51,24 @@ static class GunSkinRegression {
                     }
                 }
                 Check("native-model/" + asset, present && bound && (asset != "awp" || scope), $"{parts.Length} native parts, finite deploy/inspect/reload bindings, separate scope material={scope}");
+                var counterRenderer=mod.GetType("Game.ScStatTrakRenderer");
+                object[] frameArgs=[asset,true,null];
+                bool counterFrame=(bool)counterRenderer.GetMethod("ItemMatrix").Invoke(null,frameArgs);
+                Check("native-counter-frame/"+asset,counterFrame,"official legacy attachment resolves in the actual native body frame");
+                foreach(string clip in new[]{"idle","deploy","inspect","reload"}) {
+                    var pose=rig.GetMethod("Sample").Invoke(null,[asset,clip,.4f]);
+                    object[] args=[asset,true,pose,null];
+                    Check("native-counter-pose/"+asset+"/"+clip,(bool)counterRenderer.GetMethod("AttachmentWorld").Invoke(null,args),"official attachment bone exists in animated pose");
+                }
+                if(asset is "aug" or "sg556") {
+                    var materials=parts.Cast<object>().Select(p=>(string)p.GetType().GetProperty("Material").GetValue(p)).ToArray();
+                    Check("native-optical-material/"+asset,materials.Contains("cs2_scope_lens")
+                        &&!materials.Any(x=>x?.EndsWith("_shared_scope_lens")==true),"same dedicated dark lens material as the factory gun");
+                    if(asset=="aug")Check("aug-internal-scope-not-body-atlas",materials.Contains("cs2_legacy_scope"),"internal optical surface has its own material");
+                }
+                if(asset is "ssg08" or "scar20")Check("sniper-independent-scope/"+asset,
+                    parts.Cast<object>().Any(p=>(string)p.GetType().GetProperty("Material").GetValue(p)=="cs2_legacy_scope"),
+                    "scope interior uses official shared optical material, not the skin atlas");
                 var weaponType = mod.GetType("Game.ScThirdPersonWeapon");
                 var weapon = weaponType.GetMethod("For").Invoke(null, [asset, true]);
                 var groups = weapon is null ? Array.Empty<object>() : ((Array)weaponType.GetField("Groups").GetValue(weapon)).Cast<object>().ToArray();
@@ -52,6 +76,14 @@ static class GunSkinRegression {
                     && (asset != "awp" || groups.Any(g => (string)g.GetType().GetProperty("Texture").GetValue(g) == "cs2_legacy_scope")),
                     $"packaged OBJ geometry baked into {groups.Length} independent material/silencer groups");
             }
+            var visibility=mod.GetType("Game.ScGunPartVisibility").GetMethod("Visible");
+            foreach(string clip in new[]{"idle","deploy","draw","draw2","inspect","shoot","reload"}) {
+                bool shown=(bool)visibility.Invoke(null,["revolver","loader_holder",clip,.4f,false]);
+                bool cylinder=(bool)visibility.Invoke(null,["revolver","cylinder",clip,.4f,false]);
+                Check("r8-loader-visibility/"+clip,shown==(clip=="reload")&&cylinder,"reload prop only; actual cylinder remains visible");
+            }
+            var aperture=mod.GetType("Game.KnifePbrRenderer").GetMethod("TryDrawPart").GetParameters().Last();
+            Check("native-optical-aperture-input",aperture.Name=="scopeAperture"&&aperture.IsOptional,"OBJ skin path supports the same ADS cutout as rigid factory geometry");
             var template = (Game.Block)Activator.CreateInstance(mod.GetType("Game.ScGunSkinTemplateBlock"));
             Check("template-icon-scale", Math.Abs(template.DefaultIconViewScale - .8f) < .001f, "same .8 icon view scale as original gun CSV");
             var seenId = new HashSet<int>();
@@ -69,7 +101,8 @@ static class GunSkinRegression {
                 bool model = Array.IndexOf(names, gun) >= 0;
                 bool unique = seenId.Add(paintId) & seenKey.Add(key);
                 bool legacy = (bool)native.GetMethod("UsesLegacy").Invoke(null, [gun, material]);
-                Check($"native-routing/{key}", legacy == (gun != "ak47" && paintId != 1177), legacy ? "body_legacy" : "body_hd");
+                bool expectedBody = newIds.Contains(paintId) ? expectedLegacy.Contains(gun) : gun != "ak47" && paintId != 1177;
+                Check($"native-routing/{key}", legacy == expectedBody, legacy ? "body_legacy" : "body_hd");
                 var factor = mod.GetType("Game.KnifePbrRenderer").GetMethod("GunEnvFactor");
                 int variant = (int)mod.GetType("Game.ScGunBlock").GetMethod("AssetIndex").Invoke(null, [Array.IndexOf(names, gun)]);
                 float light = (float)factor.Invoke(null, [variant, material]);

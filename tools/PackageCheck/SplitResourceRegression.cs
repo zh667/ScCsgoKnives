@@ -63,8 +63,9 @@ static class SplitResourceRegression {
             }finally{if(oldMarker is null)cache.Remove("ScCsgoResources");else cache["ScCsgoResources"]=oldMarker;}
             if(baseline is not null) {
                 using var old=ZipFile.OpenRead(baseline);
-                foreach(var entry in resources.Entries.Where(e=>e.FullName.StartsWith("Assets/Textures/")||e.FullName.StartsWith("Assets/Audio/")||e.FullName.StartsWith("Assets/Models/"))) {
-                    using var now=entry.Open();using var before=(old.GetEntry(entry.FullName)??throw new InvalidDataException("Unexpected resource "+entry.FullName)).Open();
+                foreach(var oldEntry in old.Entries.Where(e=>e.FullName.StartsWith("Assets/Textures/")||e.FullName.StartsWith("Assets/Audio/")||e.FullName.StartsWith("Assets/Models/"))) {
+                    var entry=resources.GetEntry(oldEntry.FullName)??throw new InvalidDataException("Missing prior resource "+oldEntry.FullName);
+                    using var now=entry.Open();using var before=oldEntry.Open();
                     Check("asset-byte-preserved/"+entry.FullName,SHA256.HashData(now).AsSpan().SequenceEqual(SHA256.HashData(before)));
                 }
                 using var oldDll=old.GetEntry("ScCsgoKnives.dll").Open();using var bytes=new MemoryStream();oldDll.CopyTo(bytes);bytes.Position=0;

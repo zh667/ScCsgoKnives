@@ -912,17 +912,20 @@ public static class CsmcFirstPersonRenderer {
         Cs2RigidMesh rigid = Cs2RigidMesh.For(gun);
         Cs2RigidMesh.Part lens = null;
         Matrix lensWorld = Matrix.Identity;
-        if (rigid is not null) {
+        if (rigid is not null && native is null) {
             DrawCs2RigidWeapon(rigid, cs2, gun, post, projection, camera, in lighting, variant, hideSilencer,
                 out lens, out lensWorld, KnifeAnimationController.HideCzFront(firstPerson));
         }
 
         if (native is not null) foreach (var part in native) {
             if (hideSilencer && part.Bone == "silencer") continue;
+            if(!ScGunPartVisibility.Visible(gun,part.Bone,cs2.Clip,cs2.Time,KnifeAnimationController.HideCzFront(firstPerson)))continue;
+            if (part.Material == "cs2_scope_lens" && s_ironsight) continue;
             Matrix world = part.World(cs2) * root;
             var texture = part.Texture ?? baseColor;
             if (!KnifePbrRenderer.TryDrawPart(part.Model, texture, variant, world, projection,
-                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, part.Material ?? gunMaterial))
+                    camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, part.Material ?? gunMaterial,
+                    scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(gun) : 0f))
                 DrawModel(part.Model, texture, world, camera, projection, light,
                     SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
         }

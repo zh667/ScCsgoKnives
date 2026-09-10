@@ -478,7 +478,7 @@ static class WeaponHelpLayoutRegression {
                     Check(tag + "/scroll-bottom", Field("m_growth").GlobalBounds.Max.Y <= scroll.GlobalBounds.Max.Y + .1f, "last description reachable without covering footer");
                     scroll.ScrollPosition = 0;
                     int count = ((ListPanelWidget)Field("m_list")).Items.Count;
-                    Check(tag + "/catalogue-includes-skins", count == 46, "35 factory entries plus all 11 supported finishes");
+                    Check(tag + "/catalogue-includes-skins", count == 79, "35 factory entries plus all 44 supported finishes");
                     int recordCount = (int)registryType.GetProperty("Count").GetValue(registryField.GetValue(null));
                     var select = screen.GetType().GetMethod("Select", BindingFlags.NonPublic | BindingFlags.Instance);
                     for (int v = 0; v < count; v++) {

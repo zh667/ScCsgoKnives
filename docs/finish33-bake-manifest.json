@@ -1,0 +1,497 @@
+{
+ "cu_m4a4_temukau": {
+  "paintId": 1228,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "f9106f1ea4e9b3cf69e857e15d93a280302cca15546718846fc009ba26d7c293",
+  "sourceGlbSha256": "7a25008bd118d48b206900c1e1abd51a2ed1a7fe97f32a0b1dea1e468a904a42",
+  "seamTriangles": 0,
+  "files": {
+   "m4a4_hd__cu_m4a4_temukau.png": "e35d6602c75a5dc71ce9def2da4687465f049689e90502f5dd23179a2c7f495b",
+   "m4a4_hd__cu_m4a4_temukau_orm.png": "8b447f22eec3843c66bb86f7c230232d6a673575ce8b82285dcbe34a836bfe2c",
+   "m4a4_hd__cu_m4a4_temukau_normal.png": "f6055f191fbd29af9cc625197354edcf71e61a2994ceb7f4a7e47cc73fd5ed55"
+  }
+ },
+ "cu_m4a1_howling": {
+  "paintId": 309,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "96d30b570bc7b32b89c5c46eb52b5d2f0d930b213120a0206d5823b57a802c6c",
+  "sourceGlbSha256": "7a25008bd118d48b206900c1e1abd51a2ed1a7fe97f32a0b1dea1e468a904a42",
+  "seamTriangles": 0,
+  "files": {
+   "m4a4_hd__cu_m4a1_howling.png": "07b1dc7203657b343567293d393f01676017d0c494beaea2d5299c74c94fff6d",
+   "m4a4_hd__cu_m4a1_howling_orm.png": "1ac2c15cb1f966b33429e60e8b2d5d17cda2fc2b34c3df6d9d5df8bf76b82511",
+   "m4a4_hd__cu_m4a1_howling_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_usp_printstream": {
+  "paintId": 1142,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "2de3c2c6d3e4a66296ee900549266484442324eaa74198a94392a3bec604cde3",
+  "sourceGlbSha256": "1165e3adbffe02a69eefe58243880003c0cf3703142e06e5fceb5b2edd2beddc",
+  "seamTriangles": 0,
+  "files": {
+   "usp_silencer_hd__cu_usp_printstream.png": "8a77c661c8d1b59158163fd2c5be3cf6b6a06f02286ec6dc64d2886bde7e5352",
+   "usp_silencer_hd__cu_usp_printstream_orm.png": "ada4d67ee75e3ab41f910a1433b3180c6d84493e9fc24ac0dc9144c996d52bad",
+   "usp_silencer_hd__cu_usp_printstream_normal.png": "381a6066d4ce7d761ae82993d6412554ecae310197cd3807e0810bed85a5702a"
+  }
+ },
+ "cu_deag_printstream": {
+  "paintId": 962,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "7ec840f0a71696ebad7eb7566a08a18b9e99a8b66958b90234a008233b15f773",
+  "sourceGlbSha256": "96b31689c8d7f28359e2a65eb8cddeb7aa198b34fe215612851d7f99ef30e604",
+  "seamTriangles": 0,
+  "files": {
+   "deagle_hd__cu_deag_printstream.png": "7b3d8f9b694292144916be96e8342cd3093baeaa78b0bce861aa010d11ee7952",
+   "deagle_hd__cu_deag_printstream_orm.png": "25125b60330ca2094cd33a08dd5920f4db515ff6ee96534f28ff5826829cbcde",
+   "deagle_hd__cu_deag_printstream_normal.png": "a07d73d58e3ae66f09a44f989279efb6404b8e8d738c2aead2973a6b77e68883"
+  }
+ },
+ "so_whiteout": {
+  "paintId": 102,
+  "style": 0,
+  "body": "hd",
+  "sourceMinimumWear": 0.06,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "901da1cac8883fc2d174738f6bd92eb3534748a3d004af908ff2cd2530312c04",
+  "sourceGlbSha256": "21ac788d2814e0ee9e5274f03aec6bfbfac30f4e84b4bed3f59912995605809b",
+  "seamTriangles": 0,
+  "files": {
+   "p250_hd__so_whiteout.png": "eef9a4d44c4c136b205b7d57e8234c8778d94b5676baf1da075b46d610702222",
+   "p250_hd__so_whiteout_orm.png": "7b65c4eded6bec682bdf2ad22c3546e97b070d42933127d8e549b9aa0176f63f",
+   "p250_hd__so_whiteout_normal.png": "a06e4f933decb49cfcffbe24b33f87062f77507509416603ef3ea004a9be6e45"
+  }
+ },
+ "am_emerald_marbleized_glock": {
+  "paintId": 1119,
+  "style": 4,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "9d6c5fed6aa114ce790a2819be103d2e6d288b3f178f4efd14db879dbcd43ba7",
+  "sourceGlbSha256": "d4c5a37c7ff6495c0b22848c9cba2b62f15e565c764ac066bae9c64709264938",
+  "seamTriangles": 0,
+  "files": {
+   "glock18_hd__am_emerald_marbleized_glock.png": "b5a61e0ddddf572d2ed5dd052367b374ddd2c4da668b67761d6a40f66a4dfd26",
+   "glock18_hd__am_emerald_marbleized_glock_orm.png": "82d5fe4269d8c7bcb47fc8a4d82364592d4bf2875fc56483156ae1e083d59f03",
+   "glock18_hd__am_emerald_marbleized_glock_normal.png": "f49115ed5551af8763f1ddb709a717454caa5826a043ad0c4851a914de52a7a0"
+  }
+ },
+ "gs_famas_mecha": {
+  "paintId": 626,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "403a86c84f315cbaf8dd296c5048c807d641ade1515f31a82dffca9462dc52be",
+  "sourceGlbSha256": "ae3824c159f191fcfc7d7265bf89b50798f93bc653d1134dc6c2aa7f7492c7e0",
+  "seamTriangles": 0,
+  "files": {
+   "famas_hd__gs_famas_mecha.png": "69d34ebbca4eb0eacad2cc3106f1e7e4fe6a0c4816e92d2863292376ad950a86",
+   "famas_hd__gs_famas_mecha_orm.png": "e0ac0958227ad6f80d31bbd7d90d8ea83f8fa26ba02060cb79f25db5da35ec2c",
+   "famas_hd__gs_famas_mecha_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "an_red": {
+  "paintId": 33,
+  "style": 3,
+  "body": "hd",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "dcbdcc51061f9ec4e72f047efce86d8ce5a726fbf4eeaa4ae71b1a1e49643f56",
+  "sourceGlbSha256": "605ce7009995733bbbb2b28d11a65868f86f8490754bdc348452f726b3154ed7",
+  "seamTriangles": 0,
+  "files": {
+   "mp9_hd__an_red.png": "98a03f5faee34797081bbd72634862c5f87ba87bbb4ab5c5653f1c623992f542",
+   "mp9_hd__an_red_orm.png": "72fef6c66c648b9e8caf4b2638e62898db39e74ec32c6ef16b1aa17b9ae832f4",
+   "mp9_hd__an_red_normal.png": "2ade4e053f1d51d340a37d2041294ec9ee8be0d58d4f77ecd2425be680685611"
+  }
+ },
+ "cu_p90-asiimov": {
+  "paintId": 359,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "26cd6927504136042313d774f711f356d4d024c1a81ffbb99a9c05eaa7ba83c8",
+  "sourceGlbSha256": "9fcc9a44673b589696fe24dc166df981fc9361980575c9c6f27cbd7c7e35c8c8",
+  "seamTriangles": 0,
+  "files": {
+   "p90_hd__cu_p90-asiimov.png": "594cb0e5d3115fb3238d5ee2a55eeb1cd94b3e48e3b2e614a2ec67bdec315dfb",
+   "p90_hd__cu_p90-asiimov_orm.png": "9bdc1d2fdbc71b3c43bf9840b66323aa923557d413d28b17a0f325b243b2269d",
+   "p90_hd__cu_p90-asiimov_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_ssg08_dragonfire_scope": {
+  "paintId": 624,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "9a885d91802e0b1b8d64cc20c5f0e0f87f3d2d8b6ff46808d1c96df1c681a0f2",
+  "sourceGlbSha256": "d09d48ba1f74c9be21d4d56f109ad18cf2665b102103624b8da84e78d6a1b26c",
+  "seamTriangles": 0,
+  "files": {
+   "ssg08_hd__cu_ssg08_dragonfire_scope.png": "b3770aa2f3e192f56d232113f8af2d9b7c49ee36644b5cef3065ede8c330a62e",
+   "ssg08_hd__cu_ssg08_dragonfire_scope_orm.png": "1caf64681b83631f2853f2db0c431573a76fdcd1aba633a11447b9e995be916d",
+   "ssg08_hd__cu_ssg08_dragonfire_scope_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_fiveseven_hyperbeast": {
+  "paintId": 660,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "7104bf4a13e1ad890a5cb91ae743484dccceda92e5e1b29c76a5169188bbc382",
+  "sourceGlbSha256": "7c0bbc1c4be8ef20988c3976e7072c2727600a89ec89b6044707d5a9f6c84fef",
+  "seamTriangles": 0,
+  "files": {
+   "fiveseven_hd__cu_fiveseven_hyperbeast.png": "fccd4c78ac842d850cff68b377a6b2a39fd70aae17158cc553294c2fe086eb72",
+   "fiveseven_hd__cu_fiveseven_hyperbeast_orm.png": "82a3c9ba17e9abcae8ab11e8466924376f497b88dc8c18f835fe435adcd212d9",
+   "fiveseven_hd__cu_fiveseven_hyperbeast_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "gs_p2000-sport": {
+  "paintId": 635,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "aa437709c7264834a17ffdf94e17d28ebb983cae1c913bd97b676ef4569bcd48",
+  "sourceGlbSha256": "0d358e64855604d0aca881def9ed8de238e2ea081b0243d1ba60672d0c512158",
+  "seamTriangles": 0,
+  "files": {
+   "hkp2000_hd__gs_p2000-sport.png": "b0b759eb969bbb5ea69bb1b363abd7148307295486d9b142a092c5c2beecbf69",
+   "hkp2000_hd__gs_p2000-sport_orm.png": "a37e18e8f1206af55392fb0e70efb6e08fcf2474d2c8ab59123792087b7dea19",
+   "hkp2000_hd__gs_p2000-sport_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "gs_tec9_supercharged": {
+  "paintId": 614,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "0dd30c2458cd3a9890cbad2728389b6af2c18170fee02b2a500845666f34de9b",
+  "sourceGlbSha256": "da28932523342377c749a1aec3ffb2f7f9a72cf59b02cfac07faf19adfbcc333",
+  "seamTriangles": 0,
+  "files": {
+   "tec9_hd__gs_tec9_supercharged.png": "a2623d35f4f852519a08f1d86fa690bc44f79b3b8ce7b222e9cb1202a866199f",
+   "tec9_hd__gs_tec9_supercharged_orm.png": "7fb3e209b2cf52717fc837a9df2a4b1f8b94f75ce56b2cb5a9a2bfa69bcd4385",
+   "tec9_hd__gs_tec9_supercharged_normal.png": "09dd521ddaa73667addaa67a20460317c78b74ce176b794de888bb55d261cb02"
+  }
+ },
+ "cu_cz75_precision": {
+  "paintId": 435,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "48745d15bc10dbd6fa42361dbd1587afb65fb380587a34d266d414a8e2f1f4dc",
+  "sourceGlbSha256": "989db0dcb376d2d9f58901ef1594d7f70833d59eedd2b7c0dc31ebbd596f03ac",
+  "seamTriangles": 0,
+  "files": {
+   "cz75a_hd__cu_cz75_precision.png": "fba76d9df0fb866558ba39ff249b35ff2a457151bb6025b10bed2382e3f16be1",
+   "cz75a_hd__cu_cz75_precision_orm.png": "799c3db5743f3e49bc33fc825ffbc24d9faaa0ecac5393a4e73c21d4be503831",
+   "cz75a_hd__cu_cz75_precision_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_mac10_sakkaku": {
+  "paintId": 1229,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.21,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "b1c281214085d549d76157c6584ad9ae0b1308164f2fd6bc0c8039d359904e98",
+  "sourceGlbSha256": "75d17724b26bf6bf0f67839ec2c7c559135455aa92b18635f8ad838ab2ff649f",
+  "seamTriangles": 28,
+  "files": {
+   "mac10_hd__cu_mac10_sakkaku.png": "6d274e950da20a44bc121808840bf77c890696e8c16fe709b0e6767c987b8e30",
+   "mac10_hd__cu_mac10_sakkaku_orm.png": "62590ce0abc48771f3a2ee111292c3eeda1627a9aa6680304857d594d8bf277a",
+   "mac10_hd__cu_mac10_sakkaku_normal.png": "6755e112c0c5905b29a249c91194c911e9485d0a82133083b09e641f0df9656f"
+  }
+ },
+ "mp7_smoking_kills_v2": {
+  "paintId": 1354,
+  "style": 8,
+  "body": "hd",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "a897a2301c87d0b445cb587d494776628fb4c807a909287d1175a9969503abc9",
+  "sourceGlbSha256": "32de766f63b5226feb6029ec9fa3b255ebebc5df5244103a4b7a9de5d41c4154",
+  "seamTriangles": 0,
+  "files": {
+   "mp7_hd__mp7_smoking_kills_v2.png": "adb6b6e3a9c49a6d3ccdeae66e62d550c3c58cd92e4160922a55080346c3924a",
+   "mp7_hd__mp7_smoking_kills_v2_orm.png": "c00ce158a8e97436832178e82766b97ea17ddf6ad0cc4ac8c663c5047ab7a9e1",
+   "mp7_hd__mp7_smoking_kills_v2_normal.png": "972e16cbc9552073071b0ea9167718b1f157ce8b23372a9bcddc06b5b1228e5c"
+  }
+ },
+ "aa_fade_ump": {
+  "paintId": 879,
+  "style": 5,
+  "body": "hd",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "9258fa8b57979a1b674b1427bfb9dc5207fff4b34aeda51c2ea92eebc0b313e4",
+  "sourceGlbSha256": "d91847ae46ed15efce0a67e70578d97030ddd4a0ca870185e1340fa2870b1da4",
+  "seamTriangles": 0,
+  "files": {
+   "ump45_hd__aa_fade_ump.png": "a68474ada5e1e4db2a1c41cf23ec180a59d319bf918bf01e104b80bc74ba8622",
+   "ump45_hd__aa_fade_ump_orm.png": "79256e903256283f4393927a2916db54ce038d36cd6f0c81530376f753802d78",
+   "ump45_hd__aa_fade_ump_normal.png": "6db47cf262c3be10c6abd4536b33bdd8784f7f0e140de455e88c90489b8a0450"
+  }
+ },
+ "cu_bizon_Curse": {
+  "paintId": 542,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "4cb73e4d228cd9c2b2e357ed6bd8a01d97c5f9cde50a215198e75a1b72c47fcc",
+  "sourceGlbSha256": "a24bb90dcb3b30bbf37419a2fbba686bffaa68f05614e1e11930310a42ced4c4",
+  "seamTriangles": 0,
+  "files": {
+   "bizon_hd__cu_bizon_Curse.png": "90cd96084aed7f261ce5e6d0941f3851a5cac3d21d5997dca148def6bac67462",
+   "bizon_hd__cu_bizon_Curse_orm.png": "7052c5bd0b3288ecb124eef0e7cf6efbca99d16c89f7fb62d6345d68f82128b5",
+   "bizon_hd__cu_bizon_Curse_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_galil_candychaos": {
+  "paintId": 661,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "51467822f1cbbb374ff6b5dba736d019e9a73cc2c7861aa44407b5943bf72df5",
+  "sourceGlbSha256": "9fba808c9fee06ad5a9f194312587be00f2004d50dca710f780d7abcbe35fba9",
+  "seamTriangles": 0,
+  "files": {
+   "galilar_hd__cu_galil_candychaos.png": "9db153297d5d97560dd9671d3196b02712e28c83d4e2adc293524d8e7a162c15",
+   "galilar_hd__cu_galil_candychaos_orm.png": "2c2922f2f9a03722190e8e33c2709eb7760d5d80705b50c7501cacfcddae1c57",
+   "galilar_hd__cu_galil_candychaos_normal.png": "4c4d69af7cafa0d2a9afee44e5babcaca3d4e255c14094694b38da6b3412d34b"
+  }
+ },
+ "gs_mp5_neon_flektarn": {
+  "paintId": 923,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "ee68fdcafc308310f54a527397749bffcb5eab3e01a972029f764dee4192b6b5",
+  "sourceGlbSha256": "e342ee2bd051082783aae40a5bc8d00c5798aa10ab5e5af7ee4716ae8a1fc894",
+  "seamTriangles": 0,
+  "files": {
+   "mp5sd_hd__gs_mp5_neon_flektarn.png": "49fbc58a881d29c03527d4481af8a9e10a901c337f4caa04aae3689d2fe0e7dd",
+   "mp5sd_hd__gs_mp5_neon_flektarn_orm.png": "87806b449b6997ad36916dc0b02fa052ac225f16b0ed234f0794767634a5ff7a",
+   "mp5sd_hd__gs_mp5_neon_flektarn_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_scar20_intervention": {
+  "paintId": 391,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "82281c533b6115218f0c929e8778ecf617e66b366f4d44604660cac6d666afc8",
+  "sourceGlbSha256": "d623b4c34120ee3a7bc25f09d250f2e3352d8062baeb5749f5d1653e316f7d6a",
+  "seamTriangles": 0,
+  "files": {
+   "scar20_hd__cu_scar20_intervention.png": "e0be2b058171af3f7cef8082cfdb6237ab2e03e280c332a5237ce24cb3df2fb2",
+   "scar20_hd__cu_scar20_intervention_orm.png": "a784bb2747d2b0e363bc7c0a28ae823854664435dd71a47b5b126ee8d2005751",
+   "scar20_hd__cu_scar20_intervention_normal.png": "2de849439f3eec200812035951da22fac000b4c593ed57f160c12a241d2d29ce"
+  }
+ },
+ "so_green": {
+  "paintId": 294,
+  "style": 0,
+  "body": "hd",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "c7516c1e78120cd5aea08daae110350b03e32347b0d40fea145ce0178bdee2ec",
+  "sourceGlbSha256": "01993b21a47885fb5153e40c2513a719e47efb053b35d5f1847ab74b6c697e7a",
+  "seamTriangles": 0,
+  "files": {
+   "g3sg1_hd__so_green.png": "fbfeb6f616360c2b33ac063596101db9f926397d7e0e8264998c45b44a8a0d1c",
+   "g3sg1_hd__so_green_orm.png": "db4189e1a6624b73d19dcb2fcba57eed717c7a822a397ae8e5a2e7b998a278c1",
+   "g3sg1_hd__so_green_normal.png": "dff7db89ec1e18f152f7534e3383bce6e76654cd6bcb383628371cb83989b248"
+  }
+ },
+ "cu_anime_aug": {
+  "paintId": 455,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "b212e37de3658e99e9cdc370526350f14c8d1a20e56739fb2d95769543775b29",
+  "sourceGlbSha256": "4d2eb91a6b3a16358bc5974ce72dab3c2d26d930e5a7ba6fa322d3bca876438d",
+  "seamTriangles": 0,
+  "files": {
+   "aug_hd__cu_anime_aug.png": "43ae0f20aff5897dbe0f46086217fccda86642fcef4c34ff163e2dee04eb0985",
+   "aug_hd__cu_anime_aug_orm.png": "e8bcfd5d7d7bcc0a3b751ce8a059b2da29bf9f7a8da6484fdc90dd968138aeb6",
+   "aug_hd__cu_anime_aug_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_sg553_caution": {
+  "paintId": 1084,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "498180c4923723f5facd5422fba48f1dd847c8bc7b21cde827f7c64c20d6d6b8",
+  "sourceGlbSha256": "87e1960573982d00ba2a83f07391305fcae5ae369a9894d0bc611f7e4eb072de",
+  "seamTriangles": 0,
+  "files": {
+   "sg556_hd__cu_sg553_caution.png": "5c6c5d877d69c80c6c28a3b44dab2990c48a183155bf85670448e2f50b3b96b0",
+   "sg556_hd__cu_sg553_caution_orm.png": "ed8c2f621865cac711d4b2de097f21cd77519e9096889a09a5ef271f3a11db48",
+   "sg556_hd__cu_sg553_caution_normal.png": "718c0248d752a159a1fe1544954b5b62d8b107b0400f6372757eef17437b7dce"
+  }
+ },
+ "cu_nova_toy_soldier": {
+  "paintId": 716,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "f65fe8fe60008c2ef4b89a4e72b8784a1dedd1e643cd510b53babb8a395728b7",
+  "sourceGlbSha256": "17fccb8aa95d2894ab2f055e82b0b9a06006b24176f6f799bc1755aaa8903bdf",
+  "seamTriangles": 0,
+  "files": {
+   "nova_hd__cu_nova_toy_soldier.png": "2d713e906559d827c67ab450a533732788f9ca95c42012ff5d10c0c54af54f69",
+   "nova_hd__cu_nova_toy_soldier_orm.png": "ec867ab2877da2f80bc3280b0a4c8141d8573283bea1ad6c8be627e000a64e68",
+   "nova_hd__cu_nova_toy_soldier_normal.png": "62e903e1e56c67dd19d1e0664de4faad3b5b83b373202704fa9df1e0e4b382f4"
+  }
+ },
+ "cu_xm1014_caritas": {
+  "paintId": 393,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "cdc15b22852acc36c2d2cef61a29fe43320d9f5c776e295bc5049c5d3453e500",
+  "sourceGlbSha256": "12a13525f628c8801015fc3e9da9592793f073fcc5c923ec1c5b45bcaea48ba8",
+  "seamTriangles": 0,
+  "files": {
+   "xm1014_hd__cu_xm1014_caritas.png": "379b331737d74e512c68f56c357f3de30e9dfeca7b58226c016862c27600f630",
+   "xm1014_hd__cu_xm1014_caritas_orm.png": "ebec67b374a4f5d955fe793817a3663f7507f1500bc434dcaefb2c7a659c219b",
+   "xm1014_hd__cu_xm1014_caritas_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "cu_sawedoff_kisslove": {
+  "paintId": 1155,
+  "style": 6,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "060f69e261d7fdbaa467ee0e51f1f5332a3fa530dbf165ba3976d23e40ce4682",
+  "sourceGlbSha256": "bc002f19d9b38faf82b65d5438bb9bb15eaf527baa84d65dae442e5d76bc87c0",
+  "seamTriangles": 0,
+  "files": {
+   "sawedoff_hd__cu_sawedoff_kisslove.png": "6b02e02745120325efb3ff64e5b3e34e7b360f7aee20896e19dd1ec7fe9f2935",
+   "sawedoff_hd__cu_sawedoff_kisslove_orm.png": "3605d3c7487ca9bb53bcf7decd248e947160baba4e44a05cc841d0c3859e74be",
+   "sawedoff_hd__cu_sawedoff_kisslove_normal.png": "a435facbd14166e8061e53fa9f293c5172ff054e4ff738f25c9cbd7a5867885c"
+  }
+ },
+ "hy_geometric_steps_green": {
+  "paintId": 462,
+  "style": 1,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "c7b0e78a7419f838d0a201ce932ffd9ebe4b9f24f3665b797e270f579d1a91c7",
+  "sourceGlbSha256": "960a910427e524d6cbd14b8fbdab1d274e90819f974d1a2927d01ddb370dafe5",
+  "seamTriangles": 0,
+  "files": {
+   "mag7_hd__hy_geometric_steps_green.png": "d741ae7b222c2435489de92715f143573b6de3b6e64a9abbc6d0fbeffed99b3d",
+   "mag7_hd__hy_geometric_steps_green_orm.png": "31907b98504d29794045eb269fbe582b0b35ff83b5303d55b5d0b54f91ef8a16",
+   "mag7_hd__hy_geometric_steps_green_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "gs_m249_nebula_crusader": {
+  "paintId": 496,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "1636a65664b7fce4c6339bcef14acfe5e96226567c37bdd58c7eefc26a7545ba",
+  "sourceGlbSha256": "edef51a26069c26e5ba063c5d570f048a6ecb2b6d23153b89b8ef1d64a806fd3",
+  "seamTriangles": 0,
+  "files": {
+   "m249_hd__gs_m249_nebula_crusader.png": "c75166e8abf81b46d2f60d98cc70ef1bb8fa34495d0811d62e76a79051cb706d",
+   "m249_hd__gs_m249_nebula_crusader_orm.png": "c7caa217a77fb17e11c616928a63956d82e4c8f9bff21350cb3830e6b9965cd1",
+   "m249_hd__gs_m249_nebula_crusader_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab"
+  }
+ },
+ "gs_negev_thor": {
+  "paintId": 763,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "86637af6b851f346a90b534c073fa8c0041f1f6aca7acd70b58732d470655557",
+  "sourceGlbSha256": "99a34dec4582389c3ffc3f1e745bb0cc3aef66cb6373bc50eb78625aa5078c78",
+  "seamTriangles": 0,
+  "files": {
+   "negev_hd__gs_negev_thor.png": "238bedad83dca618f8360be32f0ee8383e3a461d80ca159dc0e0aa07ecb9bdac",
+   "negev_hd__gs_negev_thor_orm.png": "a43247a1c6ec8070cbbeb4798d862897b01499b2d00492d46cc801cd62720f90",
+   "negev_hd__gs_negev_thor_normal.png": "79fb07004a26209bbb3a4e0142349551a3019d2a6d4172e4d59e81b3a53559de"
+  }
+ },
+ "gs_revolver_purple_elite": {
+  "paintId": 1145,
+  "style": 8,
+  "body": "legacy",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "3575615000818bdbb5f675ec58c4acb69884b21470a672f05c7e704eb20bb8de",
+  "sourceGlbSha256": "b3b87c3d8bacf6ce62d1f0e3a42bc3e8c5b28d42df417dd647dae199d58c9d0d",
+  "seamTriangles": 0,
+  "files": {
+   "revolver_hd__gs_revolver_purple_elite.png": "44db85cb1b91d49e0dbc17d80f2d9105a0c6999414cdda3f6a9b866f8c2fafbb",
+   "revolver_hd__gs_revolver_purple_elite_orm.png": "7df158f511974e1625980b1301efb15e4c7f409c30d02a0f60516504497be895",
+   "revolver_hd__gs_revolver_purple_elite_normal.png": "333e9637b35a1b17db7a148185705ea4cb1849adf7cb043a544ab8192401072f"
+  }
+ },
+ "sp_dry_wood": {
+  "paintId": 824,
+  "style": 2,
+  "body": "hd",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "66240153bebbe856753ab655fa0f5ec3fdc0ca1e0d80ce46478ac6d97cdaf44b",
+  "sourceGlbSha256": "3ca0ec6c5a8ac8b15ce4f8e9fc42f3169a2c855229ef751ee484ba57cd6a73d2",
+  "seamTriangles": 0,
+  "files": {
+   "elite_hd__sp_dry_wood.png": "b915c6c1734476a11f93e580c8c6a27253749d88893e57add6e27477ef9d4845",
+   "elite_hd__sp_dry_wood_orm.png": "801642299424de5b90de7d363647e7cd6e8e846a60e99c95496e649fbedc2305",
+   "elite_hd__sp_dry_wood_normal.png": "39e676c546915389eb5c8a2e979232356c830f84990aacc4db3af11d73e68e54"
+  }
+ },
+ "zeus_thunder_god": {
+  "paintId": 1172,
+  "style": 8,
+  "body": "hd",
+  "sourceMinimumWear": 0.0,
+  "wearPolicy": "light icon + local clean bake; no exact wear simulation or pearlescence; not Factory New guarantee",
+  "sourceRecipeSha256": "be2416d56b68cd00f33d2ed766faca6f58ef7b7f6e3911fe2ce0e1a99d4f936c",
+  "sourceGlbSha256": "fbaf3d3adbd750ea5f6ffdf9c65d38e22353e2861e8ca0b0dd36dfe87e77bef0",
+  "seamTriangles": 0,
+  "files": {
+   "taser_hd__zeus_thunder_god.png": "26f5f3af3c673773e275e866fa6489a24ff0ad9f85bf3dbf271e60904dc9889a",
+   "taser_hd__zeus_thunder_god_orm.png": "73870f30ffc8f3c730619d9c6a6d06c0c793f7666a0a6685cbd649e950b3c4f2",
+   "taser_hd__zeus_thunder_god_normal.png": "76e5890241f6ab2839cf8b52187acb11f5520cf9a738afcbdc36ba1361dad75f"
+  }
+ }
+}

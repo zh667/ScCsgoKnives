@@ -90,6 +90,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
             });
         }
         foreach (Cs2RigidMesh.Part part in mesh.Parts) {
+            if(!ScGunPartVisibility.Visible(asset,mesh.Joints[part.Joint],"idle",0,false))continue;
             foreach (int index in part.Indices) into.Indices.Add((ushort)index);
         }
     }
@@ -114,6 +115,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
         var native = ScGunNativeMesh.Resolve(s_names[variant], skin, out var texture, out _);
         if (native is not null) {
             foreach (var part in native) {
+                if(!ScGunPartVisibility.Visible(s_names[variant],part.Bone,"idle",0,false))continue;
                 if (part.Bone == "silencer" && Terrain.ExtractContents(value) == BlockIndex && GunSpec.GetSilencerOff(Terrain.ExtractData(value))) continue;
                 if (!m_nativeModels.TryGetValue((variant, part.Name), out var nativeModel)) {
                     nativeModel = new BlockMesh();

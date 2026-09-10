@@ -1,0 +1,266 @@
+[
+ {
+  "paintId": 1228,
+  "key": "cu_m4a4_temukau",
+  "name": "反冲精英",
+  "gun": "m4a4",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 309,
+  "key": "cu_m4a1_howling",
+  "name": "咆哮",
+  "gun": "m4a4",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 1142,
+  "key": "cu_usp_printstream",
+  "name": "印花集",
+  "gun": "usp_silencer",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 962,
+  "key": "cu_deag_printstream",
+  "name": "印花集",
+  "gun": "deagle",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 102,
+  "key": "so_whiteout",
+  "name": "银装素裹",
+  "gun": "p250",
+  "legacy": false,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 1119,
+  "key": "am_emerald_marbleized_glock",
+  "name": "伽玛多普勒·翡翠",
+  "gun": "glock18",
+  "legacy": true,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 626,
+  "key": "gs_famas_mecha",
+  "name": "机械工业",
+  "gun": "famas",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 33,
+  "key": "an_red",
+  "name": "赤红新星",
+  "gun": "mp9",
+  "legacy": false,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 359,
+  "key": "cu_p90-asiimov",
+  "name": "二西莫夫",
+  "gun": "p90",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 624,
+  "key": "cu_ssg08_dragonfire_scope",
+  "name": "炎龙之焰",
+  "gun": "ssg08",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 660,
+  "key": "cu_fiveseven_hyperbeast",
+  "name": "暴怒野兽",
+  "gun": "fiveseven",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 635,
+  "key": "gs_p2000-sport",
+  "name": "草皮",
+  "gun": "hkp2000",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 614,
+  "key": "gs_tec9_supercharged",
+  "name": "燃料喷射器",
+  "gun": "tec9",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 435,
+  "key": "cu_cz75_precision",
+  "name": "先驱",
+  "gun": "cz75a",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 1229,
+  "key": "cu_mac10_sakkaku",
+  "name": "错觉",
+  "gun": "mac10",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 1354,
+  "key": "mp7_smoking_kills_v2",
+  "name": "吸烟有害健康",
+  "gun": "mp7",
+  "legacy": false,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 879,
+  "key": "aa_fade_ump",
+  "name": "渐变之色",
+  "gun": "ump45",
+  "legacy": false,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 542,
+  "key": "cu_bizon_Curse",
+  "name": "阿努比斯之审判",
+  "gun": "bizon",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 661,
+  "key": "cu_galil_candychaos",
+  "name": "~甜甜的~",
+  "gun": "galilar",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 923,
+  "key": "gs_mp5_neon_flektarn",
+  "name": "幻化绿洲",
+  "gun": "mp5sd",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 391,
+  "key": "cu_scar20_intervention",
+  "name": "心脏打击",
+  "gun": "scar20",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 294,
+  "key": "so_green",
+  "name": "绿苹果",
+  "gun": "g3sg1",
+  "legacy": false,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 455,
+  "key": "cu_anime_aug",
+  "name": "秋叶原之选",
+  "gun": "aug",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 1084,
+  "key": "cu_sg553_caution",
+  "name": "玩命职场",
+  "gun": "sg556",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 716,
+  "key": "cu_nova_toy_soldier",
+  "name": "玩具士兵",
+  "gun": "nova",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 393,
+  "key": "cu_xm1014_caritas",
+  "name": "宁静",
+  "gun": "xm1014",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 1155,
+  "key": "cu_sawedoff_kisslove",
+  "name": "么么",
+  "gun": "sawedoff",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 462,
+  "key": "hy_geometric_steps_green",
+  "name": "反梗精英",
+  "gun": "mag7",
+  "legacy": true,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 496,
+  "key": "gs_m249_nebula_crusader",
+  "name": "星云十字军",
+  "gun": "m249",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 763,
+  "key": "gs_negev_thor",
+  "name": "雷神之锤",
+  "gun": "negev",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 1145,
+  "key": "gs_revolver_purple_elite",
+  "name": "疯狂老八",
+  "gun": "revolver",
+  "legacy": true,
+  "tier": "Premium"
+ },
+ {
+  "paintId": 824,
+  "key": "sp_dry_wood",
+  "name": "浮木",
+  "gun": "elite",
+  "legacy": false,
+  "tier": "Standard"
+ },
+ {
+  "paintId": 1172,
+  "key": "zeus_thunder_god",
+  "name": "奥林匹斯",
+  "gun": "taser",
+  "legacy": false,
+  "tier": "Premium"
+ }
+]

@@ -112,6 +112,7 @@ public sealed class ScThirdPersonWeapon {
         var objParts = Cs2Rig.GetMeshParts(asset);
         if (gun && legacy) {
             foreach (var part in ScGunNativeMesh.Parts(asset)) {
+                if(!ScGunPartVisibility.Visible(asset,part.Bone,"idle",0,false))continue;
                 Matrix world = part.World(pose) * placement;
                 string texture = part.Material ?? asset + "_hd";
                 if (ObjProvider is not null) {
@@ -151,6 +152,7 @@ public sealed class ScThirdPersonWeapon {
         else if (gun && Cs2RigidMesh.For(asset) is Cs2RigidMesh rigid && rigid.SetPose(pose, placement)) {
             string texture = asset + "_hd";
             foreach (var part in rigid.Parts) {
+                if(!ScGunPartVisibility.Visible(asset,rigid.Joints[part.Joint],"idle",0,false))continue;
                 if (!rigid.TryPartWorld(part, out Matrix world)) continue;
                 Append(Group(texture, rigid.Joints[part.Joint] == "silencer"), rigid.Vertices, part.Indices, world, ref result.Vertices);
             }

@@ -402,13 +402,13 @@ public static class SurvivalSelfTest {
             return q is null ? ScGunResult.Invalid : ScWeaponSkinning.Apply(i, q, holder);
         }
         Test("skin-catalog-shape", () => {
-            bool ids = ScGunSkinCatalog.All.Length == 11 && ScGunSkinCatalog.All.Select(x => x.PaintId).Distinct().Count() == 11
-                && ScGunSkinCatalog.All.Select(x => x.Key).Distinct().Count() == 11
+            bool ids = ScGunSkinCatalog.All.Length == 44 && ScGunSkinCatalog.All.Select(x => x.PaintId).Distinct().Count() == 44
+                && ScGunSkinCatalog.All.Select(x => x.Key).Distinct().Count() == 44
                 && ScGunSkinCatalog.All.All(x => x.PaintId > 0 && GunSpec.All.Any(g => g.Name == x.Gun));
             bool counts = ScGunSkinCatalog.For(AwpVariant()).Count() == 3
                 && ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "ak47")).Count() == 4
                 && ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "m4a1s")).Count() == 4
-                && !ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "deagle")).Any();
+                && ScGunSkinCatalog.For(Array.FindIndex(GunSpec.All, g => g.Name == "deagle")).Count()==1;
             bool known = ScGunSkinCatalog.IsKnown(ScGunSkinCatalog.None) && ScGunSkinCatalog.IsKnown(51) && !ScGunSkinCatalog.IsKnown(9999)
                 && ScGunSkinCatalog.Find(51).Key == "am_lightning_awp" && ScGunSkinCatalog.Find(9999) is null;
             bool fits = ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), AwpVariant())
