@@ -21,6 +21,7 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly ScrollPanelWidget m_scroll = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     CheckboxWidget m_buttons, m_killFeed, m_killSound, m_crosshair;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
+    ButtonWidget m_copyGroup;
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly ScGunWorldBackground m_background = new();
@@ -125,6 +126,11 @@ public sealed class ScGunSettingsScreen : Screen {
         m_preview = new LabelWidget { Text = "预览：＋", FontScale = 1.4f, Color = m_working.Color, DropShadow = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 4) };
         m_content.Children.Add(m_preview);
         m_content.Children.Add(ScGunUi.Note("只在手持可用枪械且未开镜时显示。空手、刀具、手雷和原版工具不显示；开镜时使用镜内准星，不叠加两层。颜色只影响这一层，不改变镜内十字线、命中反馈或弹道。"));
+
+        m_content.Children.Add(ScGunUi.Heading("玩家交流"));
+        m_copyGroup = ScGunUi.Button("复制群号", 150);
+        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("交流群：1087216872"), m_copyGroup, narrow));
+        m_content.Children.Add(ScGunUi.Note("点击按钮将群号复制到系统剪贴板，手机和电脑均可使用。"));
     }
 
     public override void Update() {
@@ -151,6 +157,16 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         m_preview.Color = m_working.Color;
         m_preview.Text = $"预览：＋  RGB {m_working.Color.R}, {m_working.Color.G}, {m_working.Color.B}";
+        if (m_copyGroup?.IsClicked == true) {
+            try {
+                ClipboardManager.ClipboardString = "1087216872";
+                m_status.Text = "群号已复制：1087216872";
+            }
+            catch (Exception e) {
+                m_status.Text = "无法访问系统剪贴板，请手动输入群号 1087216872";
+                KnifeLog.Warning("[CS_UI] copy group number failed: " + e.Message);
+            }
+        }
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
         if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
         if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White); m_built = false; return; }
