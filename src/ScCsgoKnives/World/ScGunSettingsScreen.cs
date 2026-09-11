@@ -83,6 +83,10 @@ public sealed class ScGunSettingsScreen : Screen {
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;
         m_content.Children.Clear(); m_colors.Clear();
+        m_content.Children.Add(ScGunUi.Heading("玩家交流"));
+        m_copyGroup = ScGunUi.Button("复制群号", 150);
+        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("交流群：1087216872"), m_copyGroup, narrow));
+        m_content.Children.Add(ScGunUi.Note("点击按钮将群号复制到系统剪贴板，手机和电脑均可使用。"));
         m_content.Children.Add(ScGunUi.Heading("视角恢复"));
         m_content.Children.Add(m_recoverView);
         m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
@@ -127,10 +131,6 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(m_preview);
         m_content.Children.Add(ScGunUi.Note("只在手持可用枪械且未开镜时显示。空手、刀具、手雷和原版工具不显示；开镜时使用镜内准星，不叠加两层。颜色只影响这一层，不改变镜内十字线、命中反馈或弹道。"));
 
-        m_content.Children.Add(ScGunUi.Heading("玩家交流"));
-        m_copyGroup = ScGunUi.Button("复制群号", 150);
-        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("交流群：1087216872"), m_copyGroup, narrow));
-        m_content.Children.Add(ScGunUi.Note("点击按钮将群号复制到系统剪贴板，手机和电脑均可使用。"));
     }
 
     public override void Update() {
