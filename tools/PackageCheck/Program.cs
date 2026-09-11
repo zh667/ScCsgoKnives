@@ -110,6 +110,12 @@ if(resourcePack is not null) {
     using var input=resources.GetEntry("ScCsgoResources.dll").Open();using var bytes=new MemoryStream();input.CopyTo(bytes);bytes.Position=0;
     context.ResourceAssembly=context.LoadFromStream(bytes);
 }
+else {
+    // A monolithic release carries the resource assembly beside the core DLL.
+    using var package=ZipFile.OpenRead(scmod);
+    var resource=package.Entries.FirstOrDefault(e=>e.FullName.EndsWith("ScCsgoResources.dll",StringComparison.OrdinalIgnoreCase));
+    if(resource is not null) { using var input=resource.Open(); using var bytes=new MemoryStream(); input.CopyTo(bytes); bytes.Position=0; context.ResourceAssembly=context.LoadFromStream(bytes); }
+}
 // Do not leave Windows holding the extracted DLL open until process exit: tests can
 // release their temporary files deterministically after loading the identical bytes.
 Assembly mod;
