@@ -160,6 +160,12 @@ def obj(name,source):
 
 def texture(name, data):
     image=Image.open(io.BytesIO(data)); image.load(); old=image.size
+    # C4's exported alpha is material data, not opacity: all body render paths
+    # deliberately draw RGB opaque. RGBA resizing premultiplies by that alpha,
+    # and lossy WebP discards RGB in transparent texels. Strip it BEFORE either
+    # operation so the body's brown/green paint is not replaced with black/white.
+    material_alpha=Path(name).name=='c4_cs2.png'
+    if material_alpha:image=image.convert('RGB')
     special=Path(name).name in ('weapon_c4_digits.png','env_specular_rgbm.png','muzzle_fire.png','muzzle_smoke.png')
     if max(old)>512 and not special:
         image=image.resize((round(old[0]*512/max(old)),round(old[1]*512/max(old))),Image.Resampling.LANCZOS)
@@ -173,6 +179,7 @@ def texture(name, data):
     assert decoded.size==image.size
     if 'A' in image.getbands():assert np.array_equal(np.array(decoded.convert('RGBA'))[:,:,3],np.array(image.convert('RGBA'))[:,:,3])
     rows.append(dict(path=name,kind='texture',fromSize=old,toSize=image.size,lossless=special,quality=100 if special else 85,
+        alphaIsMaterialData=material_alpha,
         sourceSha256=sha(data),sha256=sha(result),bytesBefore=len(data),bytesAfter=len(result)))
     return result
 

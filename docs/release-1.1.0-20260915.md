@@ -5,7 +5,7 @@
 ## 安装
 
 - 全量版：`output/[API1.9]CS武器1.1.0-全量版.scmod`，375,776,191 字节（375.78 MB）。
-- 512 轻量版：`output/[API1.9]CS武器1.1.0-512轻量版.scmod`，66,747,511 字节（66.75 MB）。
+- 512 轻量版：`output/[API1.9]CS武器1.1.0-512轻量版.scmod`，66,727,614 字节（66.73 MB），含本页末尾的 C4 颜色修正。
 - 二选一安装，两个版本都包含资源及逻辑。退出游戏后移出旧 CS 武器包；若此前安装过单独的 CS 武器资源前置包，也应移出，避免重复加载。其他模组不需要因此移除。
 - 两版 PackageName 都是 zh667.ScCsgoKnives，版本都是 1.1.0，无资源前置依赖。内部仍有两个 DLL，但玩家只需一个 scmod。
 - 轻量版在没有保存过明确设置时默认启用“简化材质”；已有设置优先。两版可互换，画质差异不会改变枪械编号或击杀计数。
@@ -33,7 +33,7 @@
 
 ```text
 Full scmod   da60f45f2d286c2c51c0685aca10cde483352ff9cf81ad1d6c111eb4ae1cc618
-Lite scmod   569febaebb76b579e1d5f3c8337de67c41b3ea10a8f078a9f33e407837847507
+Lite scmod   852789750c3ee1fa9aa2cf590b88c70c78f5cf76521b42382e9e2811a8848c79
 Gameplay DLL 7e4196500cd41a8d04af80a754486678ba6dac6339f76d2a74088910b8b46799
 ```
 
@@ -50,3 +50,15 @@ Gameplay DLL 7e4196500cd41a8d04af80a754486678ba6dac6339f76d2a74088910b8b46799
 5. `python -X utf8 tools/pack_standalone_editions.py --edition Optimized512`。
 6. 分别对两个包运行 PackageCheck，使用 `--previous-growth-package <公测1.0.0包>`，无需 `--resource-pack`。JSON 分别输出到 full-check.json、lite-check.json。
 7. `python -X utf8 tools/verify_standalone_editions.py --version 1.1.0`。
+
+## C4 轻量贴图修正（同版本替换）
+
+用户确认保持 1.1.0，只替换轻量 scmod。原轻量文件哈希为 `569febaebb76b579e1d5f3c8337de67c41b3ea10a8f078a9f33e407837847507`，新哈希见上。全量 scmod 原字节保持不变。
+
+C4 主体源图的 Alpha 存储材质数据，主体渲染路径始终按不透明 RGB 绘制。轻量工具误按透明 RGBA 缩放和有损 WebP 编码，丢掉 Alpha 为零区域的有效 RGB，造成黑色外壳和大片白色条带。修正为对 `c4_cs2.png` 在缩放之前转换成 RGB，其他透明图标/粒子仍保留 Alpha。无需修改着色器、模型、动画或存档逻辑。
+
+本次包内仅更改 `c4_cs2.webp`、派生资源来源清单和资源哈希清单；玩法 DLL、资源 DLL、所有模型/动画及其他纹理/音频与原 1.1.0 轻量包字节相同。错误版备份保存在项目 .tmp/c4-color-backups 下。
+
+颜色回归以正确 RGB 缩放为参照，旧转换平均绝对通道误差 83.97，修正后 2.30，原 Alpha=0 区域的 RGB 误差为 2.39（通道范围 0–255）。图标透明度检查通过。独立桌面 GPU 使用生产简化着色器和实际轻量 C4 网格重现旧黑白异常，修正后恢复主体颜色；这是离线渲染，不是 Android 游戏截图。结果位于 `output/release-1.1.0/c4-fix/`。
+
+源打包工具已修正，正常重建轻量版会带入正确颜色；现成文件的本次定向替换可通过 `tools/repack_c4_color_hotfix.py` 复核，颜色检查为 `tools/verify_c4_color_conversion.py`。

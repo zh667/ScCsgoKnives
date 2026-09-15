@@ -45,9 +45,15 @@ def main():
                     src = Image.open(io.BytesIO(a.read(name))).convert('RGBA')
                     dst = Image.open(io.BytesIO(b.read(target))).convert('RGBA')
                     check('texture-size/'+name, dst.size == tuple(row['toSize']))
+                    if row.get('alphaIsMaterialData', False):
+                        check('known-opaque-material/'+name, name == 'Assets/Textures/ScCsgoKnives/c4_cs2.png')
+                        src = src.convert('RGB').convert('RGBA')
                     if src.size != dst.size:
                         src = src.resize(dst.size, Image.Resampling.LANCZOS)
                     check('texture-alpha/'+name, np.array_equal(np.array(src)[:,:,3], np.array(dst)[:,:,3]))
+                    if row.get('alphaIsMaterialData', False):
+                        error=np.abs(np.array(src,dtype=np.float32)[:,:,:3]-np.array(dst,dtype=np.float32)[:,:,:3]).mean()
+                        check('opaque-body-rgb-preserved/'+name, error < 10)
                     if row['lossless']:
                         check('special-atlas-exact/'+name, np.array_equal(np.array(src), np.array(dst)))
             elif name not in {'modinfo.json', 'ScCsgoResources.dll', 'Assets/ScCsgoResources.xml', 'Assets/ScCsgoKnivesEdition.xml'}:
