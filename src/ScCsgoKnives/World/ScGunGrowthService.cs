@@ -9,6 +9,26 @@ namespace Game;
 ///
 /// Levelling never refills a magazine, never repairs and never completes a charge.</summary>
 public static class ScGunGrowthService {
+    /// <summary>Creative-only level selector used by the workbench. It resets the
+    /// selected gun to Lv0 using the normal conservation rules, then applies the
+    /// requested level; no catalogue item or second registry record is created.</summary>
+    public static ScGunResult SetCreativeLevel(IInventory inventory, int slot, string holder, int level, double now) {
+        level = ScGunGrowth.Clamp(level);
+        var mutation = ScGunMutation.Prepare(inventory, slot, holder, out var why);
+        if (mutation is null) return why;
+        var result = mutation.Commit(r => {
+            // A creative shortcut can turn a plain gun into a counter gun in
+            // the same atomic write; no material is charged and no new record
+            // or item is created.
+            if (r.CounterInstalled) ScGunGrowth.StripGrowth(r);
+            else { r.CounterInstalled = true; r.GrowthKillCredit = 0; r.AppliedGrowthLevel = 0; }
+            r.KillCount = ScGunGrowth.KillsFor(r.Variant, level);
+            r.PendingGrowthLevel = level > 0 ? level : ScGunGrowth.NoPending;
+            r.GrowthRulesVersion = ScGunGrowth.RulesVersion;
+        });
+        if (result != ScGunResult.Success || level == 0) return result;
+        return ApplyPending(inventory, slot, holder, now, out _, out _);
+    }
     /// <summary>All acquisition routes use this sweep, not just the workbench dialog. Unset is
     /// not an opt-out: a world already carrying counters defaults to growth. Explicit CountOnly stays.</summary>
     public static int Advance(ScGunRegistry registry, IReadOnlyList<ScGunHolders.Holder> holders, double now,
@@ -62,7 +82,7 @@ public static class ScGunGrowthService {
             var result = mutation.Commit(r => {
                 if (r.KillCount < long.MaxValue) r.KillCount++;
                 if (!grow) return;
-                int earned = ScGunGrowth.LevelFor(r.KillCount);
+                int earned = ScGunGrowth.LevelFor(r.Variant, ScGunGrowth.ProgressKills(r.KillCount, r.GrowthKillCredit));
                 if (earned > r.AppliedGrowthLevel && earned > Math.Max(r.PendingGrowthLevel, r.AppliedGrowthLevel)) r.PendingGrowthLevel = earned;
             });
             if (result != ScGunResult.Success) continue; // busy/changed: the same credential is retried

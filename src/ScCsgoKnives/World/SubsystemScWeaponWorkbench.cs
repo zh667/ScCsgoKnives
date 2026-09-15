@@ -3,7 +3,7 @@ namespace Game;
 
 public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     // Both game modes expose the same operations. Creative only changes their costs, not availability.
-    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScWeaponCrafting.All];
+    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScComponentCrafting.All, .. ScWeaponCrafting.All];
     // A HUD toast is behind the workshop cover. Keep refusals visible until acknowledged.
     internal static Dialog NoticeDialog(string title, string detail, Action back) =>
         new ScWorkbenchConfirmDialog(title, detail, "返回", null, _ => back());
@@ -24,6 +24,18 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             KnifeLog.Trace($"workbench notice: mode={(Creative()?"creative":"survival")} page={title} reason={detail}");
             DialogsManager.ShowDialog(player.GuiWidget, NoticeDialog(title,detail,back));
         }
+        void MaterializeCreativeShortcutGuns() {
+            if (!Creative() || miner.Inventory is null) return;
+            int count = Math.Min(10, miner.Inventory.SlotsCount);
+            for (int slot = 0; slot < count; slot++) {
+                int value = miner.Inventory.GetSlotValue(slot);
+                string holder = ScGunHolders.PlayerKey(player, slot);
+                if (ScGunSkinTemplateBlock.IsTemplate(value))
+                    ScGunSkinTemplateBlock.Materialize(miner.Inventory, slot, holder);
+                else if (ScGunCounterTemplateBlock.IsTemplate(value))
+                    ScGunCounterTemplateBlock.Materialize(miner.Inventory, slot, holder);
+            }
+        }
         var navigation = new Dictionary<string,ScWorkbenchSelectionDialog.Navigation>();
         Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected) {
             ScWorkbenchSelectionDialog dialog=null;
@@ -40,14 +52,42 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         }
         void ShowList() {
             if (!Available()) return;
-            object[] items = MainMenuItems();
+            MaterializeCreativeShortcutGuns();
+            object[] main = MainMenuItems();
+            // Keep the creative shortcut in the “全部” page immediately after
+            // the five function entries. It must not be buried below every
+            // material and weapon recipe, where it looked like it was missing.
+            object[] shortcuts = Creative()
+                ? new object[] { CreativeLevelMenu.Instance }
+                    .Concat(ScGunCounter.Candidates(miner.Inventory)
+                        .Where(c => c.Slot < Math.Min(10, miner.Inventory.SlotsCount)).Cast<object>())
+                    .ToArray()
+                : Array.Empty<object>();
+            object[] items = Creative() && main.Length >= 5
+                ? main.Take(5).Concat(shortcuts).Concat(main.Skip(5)).ToArray()
+                : main;
             DialogsManager.ShowDialog(player.GuiWidget, Selection("武器装配台 · 组装 / 维修 / 涂装 / 计数器", items, 56,
                 (Func<object, string>)(item => item is RepairMenu ? "维修背包中的枪械" : item is SkinMenu ? "更换枪械涂装"
-                    : item is CounterMenu ? "安装击杀计数器" : item is OwnedAttributesMenu ? "查看当前武器属性" : item is AttributesMenu ? "武器图鉴／等级预览"
-                    : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+                    : item is CounterMenu ? "安装击杀计数器" : item is CreativeLevelMenu ? "创造模式：设置快捷栏枪械等级"
+                    : item is ScGunCounter.Candidate c ? $"{ValueName(c.Value)} · {(c.Installed ? $"当前 Lv{c.Level}" : "设置等级（自动安装计数器）")} · 第 {c.Slot + 1} 格"
+                    : item is OwnedAttributesMenu ? "查看当前武器属性" : item is AttributesMenu ? "武器图鉴／等级预览"
+                    : item is ScComponentCrafting.Entry component ? component.Name : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+                    if (item is ScComponentCrafting.Entry component) {
+                        var cost = component.Materials();
+                        DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(component.Name,
+                            "产出 1 件\n" + MaterialLines(cost), "制作", "返回", answer => {
+                                if (answer == MessageDialogButton.Button1 && Available()) {
+                                    bool made = ScWeaponCrafting.TryCraft(miner.Inventory, component.Value, Creative() ? new Dictionary<int,int>() : cost);
+                                    Notice(made ? "制作完成" : "制作未完成", made ? component.Name + " ×1" : "材料不足、库存已变化或没有成品空位。", ShowList);
+                                } else ShowList();
+                            }));
+                        return;
+                    }
                     if (item is RepairMenu) { ShowRepair(); return; }
                     if (item is SkinMenu) { ShowSkinGuns(); return; }
                     if (item is CounterMenu) { ShowCounterGuns(); return; }
+                    if (item is CreativeLevelMenu) { ShowCreativeLevels(); return; }
+                    if (item is ScGunCounter.Candidate creativeGun && Creative()) { ShowCreativeLevels(creativeGun); return; }
                     if (item is OwnedAttributesMenu) {
                         DialogsManager.ShowDialog(player.GuiWidget,new ScOwnedGunAttributesDialog(miner.Inventory,Available,ShowList));return;
                     }
@@ -67,6 +107,31 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         ShowList();
                     }));
                 }));
+        }
+        void ShowCreativeLevels(ScGunCounter.Candidate preselected = null) {
+            if (!Creative() || !Available()) return;
+            MaterializeCreativeShortcutGuns();
+            // A player hotbar is the first ten writable slots. Backpack/chest
+            // storage is deliberately excluded from this creative-only shortcut.
+            var guns = ScGunCounter.Candidates(miner.Inventory).Where(c => c.Slot < Math.Min(10, miner.Inventory.SlotsCount)).ToArray();
+            if (guns.Length == 0) { Notice("创造等级 · 没有可用枪械", "请先把已安装击杀计数器的枪械放进快捷栏。背包和箱子里的枪不会被修改。", ShowList); return; }
+            Dialog SelectionLevels(ScGunCounter.Candidate gun) {
+                var levels = Enumerable.Range(0, ScGunGrowth.MaxLevel + 1).Cast<object>();
+                return Selection($"创造等级 · {ValueName(gun.Value)}", levels, 48, item => $"Lv{(int)item} · {ScGunGrowth.KillsFor(ScGunBlock.GetVariant(gun.Value), (int)item)} 击杀", item => {
+                    int level = (int)item;
+                    DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog($"设置 {ValueName(gun.Value)} 为 Lv{level}",
+                        "仅修改快捷栏中的这一把枪；弹药、涂装、消音器和耐久按等级规则保留。不会创建新枪或改变枪械编号。", "应用", "返回", answer => {
+                            if (answer == MessageDialogButton.Button1 && Available()) {
+                                var result = ScGunGrowthService.SetCreativeLevel(miner.Inventory, gun.Slot, ScGunHolders.PlayerKey(player, gun.Slot), level, Project.FindSubsystem<SubsystemTime>(true).GameTime);
+                                Notice(result == ScGunResult.Success ? "等级已设置" : "等级设置失败", result == ScGunResult.Success ? $"{ValueName(gun.Value)} 已设置为 Lv{level}。" : "枪械状态已变化，未修改。", ShowList);
+                            } else DialogsManager.ShowDialog(player.GuiWidget, SelectionLevels(gun));
+                        }));
+                });
+            }
+            if (preselected is not null) { DialogsManager.ShowDialog(player.GuiWidget, SelectionLevels(preselected)); return; }
+            DialogsManager.ShowDialog(player.GuiWidget, Selection("创造等级 · 选择快捷栏枪械", guns, 56,
+                item => $"{ValueName(((ScGunCounter.Candidate)item).Value)} · 当前 Lv{((ScGunCounter.Candidate)item).Level} · 第 {((ScGunCounter.Candidate)item).Slot + 1} 格",
+                item => DialogsManager.ShowDialog(player.GuiWidget, SelectionLevels((ScGunCounter.Candidate)item))));
         }
         // M4 repair: pick the actual gun (slot shown, so two of the same model are told apart), see the exact
         // cost, confirm; the transaction re-checks the target and materials and rolls back on any shortfall.
@@ -125,7 +190,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(skin?.Name ?? "原厂外观", detail, "更换", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = ScWeaponSkinning.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
-                            KnifeLog.Trace($"gun skin: slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.FromSkinId} -> {skin?.PaintId ?? 0} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
+                            KnifeLog.Information($"[GUN_WORKBENCH] skin: slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.FromSkinId} -> {skin?.PaintId ?? 0} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
                             Notice(result == ScGunResult.Success ? "涂装完成" : "涂装未完成", result == ScGunResult.Success ? "涂装完成：" + (skin?.Name ?? "原厂外观")
                                 : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
                                 ShowSkinGuns);
@@ -144,8 +209,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 value = guns.Length > 0 ? guns[0].Value : ScGunAttributes.TemplateValue(0);
             }
             DialogsManager.HideAllDialogs();
-            ScreensManager.m_screens["RecipaediaRecipes"] = new ScGunAttributesScreen();
-            ScreensManager.SwitchScreen("RecipaediaRecipes", value);
+            ScWeaponHelpScreen.Open(true, value);
         }
 
         // Installing a kill counter: pick the actual gun, see the exact components, confirm. The transaction
@@ -170,11 +234,11 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         + (Creative() || !CraftingRecipesManager.EnableLevelRestrictions ? "" : $"\n制作等级 {ScGunGrowth.InstallLevel}")
                         + "\n弹量、涂装、消音器、耐久与充能保持不变；计数从 0 开始，不补算历史击杀。"
                         + (ScGunStatTrak.ModuleAvailable ? "" : "\n（本版尚未包含 CS2 计数器模块模型，计数显示在属性页与物品说明中，枪身上不显示数字。）")
-                        + (registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? "\n本世界规则：计数 + 成长（每 100 次有效击杀升 1 级，累计 3000 满级 Lv30）。" : "\n本世界规则：仅计数，不提供成长加成。");
+                        + (registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? "\n本世界规则：计数 + 成长（等级上限 Lv50，击杀门槛逐级提高；狙击枪 ×0.6、电击枪 ×0.3、机枪 ×1.5）。" : "\n本世界规则：仅计数，不提供成长加成。");
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(ValueName(c.Value), detail, "安装", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = levelOk ? ScGunCounter.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot)) : ScGunResult.InsufficientMaterials;
-                            KnifeLog.Trace($"gun counter install: {ValueName(c.Value)} slot {quote.Slot} record {quote.Id} rev {quote.Revision} -> {result}");
+                            KnifeLog.Information($"[GUN_WORKBENCH] counter install: slot {quote.Slot} record {quote.Id} rev {quote.Revision} -> {result}");
                             Notice(result == ScGunResult.Success ? "安装完成" : "安装未完成", result == ScGunResult.Success ? "计数器已安装：" + ValueName(c.Value)
                                 : !levelOk ? $"安装需要等级 {ScGunGrowth.InstallLevel}，未扣除材料。"
                                 : result == ScGunResult.StateChanged ? "枪械状态已变化，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
@@ -190,7 +254,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         // switching would either take levels back or hand them out retroactively.
         void ChooseGrowthMode(Action then) {
             DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog("击杀计数器 · 本世界规则",
-                "选择本世界的计数器规则。选定后不可在游戏中切换。\n\n计数 + 成长：每 100 次有效击杀升 1 级，累计 3000 次满级 Lv30；伤害、射速、射程、弹匣、耐久上限与充能随等级提升。\n仅计数：只记录并显示击杀数，不改变任何战斗数值。",
+                $"选择本世界的计数器规则。选定后不可在游戏中切换。\n\n计数 + 成长：等级上限 Lv50，击杀门槛逐级提高（满级累计 {ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel)} 杀；狙击枪 ×0.6、电击枪 ×0.3、机枪 ×1.5）；伤害、射速、射程、弹匣、耐久上限与充能随等级提升。\n仅计数：只记录并显示击杀数，不改变任何战斗数值。",
                 "计数 + 成长", "仅计数", button => {
                     var mode = button == MessageDialogButton.Button1 ? ScGunGrowthMode.CountAndGrow : ScGunGrowthMode.CountOnly;
                     var registry = ScGunRegistry.Current;
@@ -206,6 +270,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     sealed class RepairMenu { public static readonly RepairMenu Instance = new(); }
     sealed class SkinMenu { public static readonly SkinMenu Instance = new(); }
     sealed class CounterMenu { public static readonly CounterMenu Instance = new(); }
+    sealed class CreativeLevelMenu { public static readonly CreativeLevelMenu Instance = new(); }
     sealed class AttributesMenu { public static readonly AttributesMenu Instance = new(); }
     sealed class OwnedAttributesMenu { public static readonly OwnedAttributesMenu Instance = new(); }
     sealed class FactoryLook { public static readonly FactoryLook Instance = new(); }

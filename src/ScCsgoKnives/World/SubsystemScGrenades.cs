@@ -13,13 +13,15 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         public ScThrowTransaction Transaction;
         public int Kind, Slot, ReturnSlot = -1, Stage = 0;
         public bool Low, Released, FromButton;
+        public int InputSource, PadMask;
         public long CommittedRevision;
         public ScGrenadePreparation Timeline;
     }
     sealed class Blindness { public double Until, ImmuneUntil; public float Duration; }
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
     readonly Dictionary<ComponentPlayer, ScSlotHistory> m_slots = [];
-    readonly Dictionary<(ComponentPlayer Player, bool Low), bool> m_throwButtons = [];
+    readonly Dictionary<(ComponentPlayer Player, bool Low), int> m_throwSources = [];
+    readonly Dictionary<ComponentPlayer, int> m_padMasks = [];
     readonly Dictionary<ComponentBody, Blindness> m_blind = [];
     readonly Dictionary<int, Blindness> m_savedBlind = [];
     readonly HashSet<int> m_reducedFlash = [];
@@ -47,6 +49,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     public const int EffectsDrawOrder = 310;
     public int[] DrawOrders => [10, EffectsDrawOrder, 1102];
     public static bool Holding(ComponentPlayer player) => Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true);
+    public static Vector3 ReleaseOrigin(Vector3 viewPosition) => viewPosition;
     public int ViewmodelValue(ComponentPlayer p, int value) => m_preparing.TryGetValue(p,out var prep) && prep.Released
         && p.ComponentMiner.Inventory.ActiveSlotIndex==prep.Slot && p.ComponentMiner.ActiveBlockValue==0 && Operable(p) ? ScGrenadeBlock.Value(prep.Kind) : value;
     static bool Operable(ComponentPlayer p) => p.ComponentHealth.Health > 0 && p.ComponentGui.ModalPanelWidget is null && !DialogsManager.HasDialogs(p.GuiWidget);
@@ -89,8 +92,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         values.SetValue("Blindness",flashes);
         // Preparations are intentionally absent: inventory has changed only for released throws.
     }
-    public void SetThrowButton(ComponentPlayer player, bool low, bool pressed, bool clicked, bool cancelled) {
-        m_throwButtons[(player, low)] = pressed;
+    public void SetThrowButton(ComponentPlayer player, bool low, bool pressed, bool clicked, bool cancelled, int sources = 2) {
+        m_throwSources[(player, low)] = pressed || clicked ? sources : 0;
         if (cancelled) {
             if (m_preparing.TryGetValue(player, out var prep) && prep.FromButton && prep.Low == low) Cancel(player, prep);
             return;
@@ -98,7 +101,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (pressed || clicked) RequestThrow(player, low, true);
     }
     public void RequestThrow(ComponentPlayer player, bool low, bool fromButton = false) {
-        if (!Holding(player) || !Operable(player) || m_preparing.ContainsKey(player)) return;
+        int requested = fromButton ? m_throwSources.GetValueOrDefault((player, low)) : 1;
+        if (requested == 0 || !ThrowInputReady(player, requested) || !Holding(player) || !Operable(player) || m_preparing.ContainsKey(player)) return;
+        int source = m_releaseGates[player].AllowedSources & requested;
+        source &= -source; // Keep the initiating source's release independent from other held controls.
         int kind=ScGrenadeBlock.Kind(player.ComponentMiner.ActiveBlockValue);
         if (!ScGrenadeBlock.Enabled(kind)) return;
         if (!ScGrenadeState.CanAdd(m_active,player.PlayerData.PlayerIndex)) { Message(player,"活动投掷物已达上限，未消耗物品。"); return; }
@@ -109,12 +115,31 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         var inv=player.ComponentMiner.Inventory;
         m_preparing[player]=new Preparation { Transaction=new ScThrowTransaction(inv),Kind=kind,Low=low,Slot=inv.ActiveSlotIndex,
             ReturnSlot=m_slots.TryGetValue(player,out var history)?history.Previous:-1, FromButton=fromButton,
+            InputSource=source, PadMask=source == 8 || !fromButton && (player.GameWidget.Input.IsGamepadDown("Dig") || player.GameWidget.Input.IsGamepadDown("Hit") || player.GameWidget.Input.IsGamepadDown("Aim")) ? ScGamepadBindings.ConnectedMask(player) : 0,
             Timeline=new ScGrenadePreparation(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias)) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
         KnifeLog.Trace($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
     }
     static void Message(ComponentPlayer p,string text) => p.ComponentGui.DisplaySmallMessage(text,Color.White,true,false);
+    readonly Dictionary<ComponentPlayer, ScTriggerReleaseGate> m_releaseGates = new();
+    static readonly string[] ThrowActions = [ScGunFunctions.Fire, ScGunFunctions.ThrowStrong, ScGunFunctions.ThrowWeak];
+    bool ThrowInputReady(ComponentPlayer p, int requested = 0) {
+        if (!m_releaseGates.TryGetValue(p, out var gate)) m_releaseGates[p] = gate = new();
+        var inv = p.ComponentMiner.Inventory;
+        var input = p.ComponentInput.PlayerInput;
+        int down = requested | (input.Dig.HasValue || input.Hit.HasValue || input.Aim.HasValue ? 1 : 0)
+            | m_throwSources.GetValueOrDefault((p, false)) | m_throwSources.GetValueOrDefault((p, true));
+        foreach (string action in ThrowActions) {
+            if (ScGunBindings.KeyboardDown(p, action)) down |= 4;
+            if (ScGamepadBindings.Down(p, action, false)) down |= 8;
+        }
+        if (p.Project.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.FireButtonDown(p) == true) down |= 2;
+        int pads = ScGamepadBindings.ConnectedMask(p);
+        bool devicesStable = !m_padMasks.TryGetValue(p, out int previous) || previous == pads;
+        m_padMasks[p] = pads;
+        return gate.ObserveSources(inv, inv?.ActiveSlotIndex ?? -1, p.ComponentMiner.ActiveBlockValue, down, ScGunBindings.Available(p) && devicesStable, requested);
+    }
     void Cancel(ComponentPlayer p, Preparation prep) {
         prep.Transaction.Cancel();m_preparing.Remove(p);
         if (p.ComponentMiner.Inventory.ActiveSlotIndex==prep.Slot && (Holding(p) || p.ComponentMiner.ActiveBlockValue==0)) KnifeAnimationController.CancelAction(p);
@@ -125,16 +150,18 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             foreach (var pair in m_savedBlind.Where(p=>p.Value.ImmuneUntil<=m_time.GameTime).ToArray()) m_savedBlind.Remove(pair.Key);
         }
         foreach (var p in m_players.ComponentPlayers) {
+            ThrowInputReady(p);
             if (!m_slots.TryGetValue(p,out var history)) m_slots[p]=history=new ScSlotHistory();
             history.Observe(p.ComponentMiner.Inventory.ActiveSlotIndex,m_time.GameTime);
         }
         foreach (var pair in m_preparing.ToArray()) {
             var p=pair.Key; var prep=pair.Value;
-            if (!Window.IsActive || !Operable(p) || (!prep.Released && !prep.Transaction.Valid)
+            if (!ScGunBindings.Available(p) || !Operable(p) || (!prep.Released && (prep.PadMask != 0 && prep.PadMask != ScGamepadBindings.ConnectedMask(p) || !prep.Transaction.Valid))
                 || prep.Released && (p.ComponentMiner.Inventory.ActiveSlotIndex!=prep.Slot
                     || ScInventoryTransaction.Revision(p.ComponentMiner.Inventory)!=prep.CommittedRevision)) { Cancel(p,prep); continue; }
             var input=p.ComponentInput.PlayerInput;
-            bool pressed=prep.FromButton?m_throwButtons.GetValueOrDefault((p,prep.Low)):prep.Low?input.Aim.HasValue:input.Dig.HasValue || input.Hit.HasValue;
+            bool pressed=prep.FromButton ? (m_throwSources.GetValueOrDefault((p,prep.Low)) & prep.InputSource) != 0
+                : prep.Low ? input.Aim.HasValue : input.Dig.HasValue || input.Hit.HasValue;
             prep.Timeline.Step(m_time.GameTime,pressed);
             int stage=prep.Timeline.Stage(m_time.GameTime);
             if (stage != prep.Stage) {
@@ -146,17 +173,12 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 var camera=p.GameWidget.ActiveCamera;
                 Vector3 direction=ScGrenadeBallistics.Direction(camera.ViewDirection,prep.Low);
                 Vector3 origin=camera.ViewPosition;
-                // F09: the crosshair ray picks the target; the grenade leaves from the hand (the posed third-person fist when
-                // that model was drawn, else just ahead of the eye) and is then aimed at that target. Walls between the
-                // body and the hand, or the hand and the flight, pull the start point back rather than spawning behind them.
-                Vector3 chest=p.ComponentBody.Position+Vector3.UnitY*p.ComponentBody.BoxSize.Y*.7f;
+                // Spawn at the camera view position so the projectile truly leaves
+                // from the crosshair.  The previous hand-origin solve made throws
+                // appear offset on mobile and could place the grenade behind a wall.
                 Vector3 aimTarget=SolidRay(origin,origin+direction*48)?.HitPoint() ?? origin+direction*48;
-                // The hand is solved here from the body's own position/yaw/crouch and the throw stance - the logic pose,
-                // not whatever the renderer last drew - so first and third person, every camera, get the same point.
-                Vector3 pos=ScThirdPerson.FistFromLogic(p.Entity.FindComponent<ComponentHumanModel>(),p.ComponentBody,ScThirdPersonStance.Grenade,out Vector3 fist) ? fist : origin+direction*.45f;
-                var reach=SolidRay(chest,pos); if (reach.HasValue) pos=Vector3.Lerp(chest,reach.Value.HitPoint(),.8f);
+                Vector3 pos=ReleaseOrigin(origin);
                 Vector3 toTarget=aimTarget-pos; if (toTarget.LengthSquared()>.01f) direction=Vector3.Normalize(toTarget);
-                var wall=SolidRay(pos,pos+direction*.45f); if (wall.HasValue) pos=wall.Value.HitPoint()-direction*.10f; else pos+=direction*.1f;
                 var state=new ScGrenadeState { Kind=prep.Kind,Owner=p.PlayerData.PlayerIndex,Position=pos,
                     Velocity=ScGrenadeBallistics.LaunchVelocity(direction,p.ComponentBody.Velocity,prep.Low),Remaining=ScGrenadeBallistics.Fuse(prep.Kind) };
                 if (!prep.Transaction.Commit(m_info.WorldSettings.GameMode==GameMode.Creative,
@@ -465,6 +487,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
 
     public override void Dispose() {
         if (m_fireLoop is not null) { m_fireLoop.Stop();m_fireLoop.Dispose();Project.FindSubsystem<SubsystemAudio>()?.m_sounds.Remove(m_fireLoop);m_fireLoop=null; }
-        m_preparing.Clear();m_throwButtons.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
+        m_preparing.Clear();m_throwSources.Clear();m_releaseGates.Clear();m_padMasks.Clear();m_slots.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
     }
 }

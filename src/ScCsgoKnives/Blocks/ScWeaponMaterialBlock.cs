@@ -14,17 +14,13 @@ public sealed class ScWeaponMaterialBlock : ScSupplyBlock {
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Names[Math.Clamp(Terrain.ExtractData(value), 0, Names.Length - 1)];
     public override string GetDescription(int value) => Terrain.ExtractData(value) == Paint
         ? "在武器装配台更换 CS2 涂装。皮肤基础伤害比原厂提高 50%，等级加成在此基础上计算；换肤保留弹量、耐久、充能和计数等级。"
-        : "在武器装配台选择型号组装。材料和等级不足时不扣料。";
+        : "在武器装配台的配件制作分类中制作，每次产出1件；也在此组装枪械。材料和等级不足时不扣料。";
     // Meshes 2..5 are the four assembly materials; 7 is the paint tin (6 is the bench).
     protected override int MeshKind(int value) => Terrain.ExtractData(value) == Paint ? 7 : 2 + Math.Clamp(Terrain.ExtractData(value), 0, 3);
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override int GetTextureSlotCount(int value) => 1;
     public override IEnumerable<int> GetCreativeValues() => Enumerable.Range(0, Names.Length).Select(Value);
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
-        yield return ScAmmoBlock.Recipe(Value(0), 1, Names[0], ["ironingot", "ironingot", "ironingot", "ironingot", "coalchunk"]);
-        yield return ScAmmoBlock.Recipe(Value(1), 1, Names[1], ["sccsgomaterial:0", "copperingot", "copperingot", "germaniumchunk"]);
-        yield return ScAmmoBlock.Recipe(Value(2), 1, Names[2], ["leather", "leather", "planks"]);
-        yield return ScAmmoBlock.Recipe(Value(3), 1, Names[3], ["glass", "glass", "copperingot", "germaniumchunk"], 2);
-        yield return ScAmmoBlock.Recipe(Value(Paint), 2, Names[Paint], ["pigment:0", "pigment:0", "canvas", "copperingot"], 2);
+        yield break; // No inexpensive grid recipe may bypass the workbench economy.
     }
 }

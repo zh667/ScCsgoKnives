@@ -1,0 +1,96 @@
+{
+  "version": "1.0.11",
+  "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\13_c4",
+  "previousImportReport": "c4-source-109.json",
+  "vertices": 14368,
+  "triangles": 17945,
+  "optimizedTriangles": 8977,
+  "materials": [
+    "weapon_c4",
+    "weapon_c4_digits"
+  ],
+  "digits": [
+    {
+      "At": 0.0,
+      "Duration": 0.23333333333333334,
+      "Row": 0.0
+    },
+    {
+      "At": 0.23333333333333334,
+      "Duration": 0.43333333333333335,
+      "Row": 1.0
+    },
+    {
+      "At": 0.6666666666666666,
+      "Duration": 0.3,
+      "Row": 2.0
+    },
+    {
+      "At": 0.9666666666666667,
+      "Duration": 0.26666666666666666,
+      "Row": 3.0
+    },
+    {
+      "At": 1.2333333333333334,
+      "Duration": 0.23333333333333334,
+      "Row": 4.0
+    },
+    {
+      "At": 1.4666666666666666,
+      "Duration": 0.2,
+      "Row": 5.0
+    },
+    {
+      "At": 1.6666666666666667,
+      "Duration": 0.3,
+      "Row": 6.0
+    },
+    {
+      "At": 1.9666666666666666,
+      "Duration": 0.2,
+      "Row": 7.0
+    },
+    {
+      "At": 2.1666666666666665,
+      "Duration": 0.3,
+      "Row": 8.0
+    }
+  ],
+  "worldPoses": [
+    "dropped",
+    "planted"
+  ],
+  "soundAdaptation": "Stable PlantSound pitch; matching short version below 10s; cadence is adapted, not a CS2 timer-code reproduction.",
+  "files": [
+    {
+      "path": "glb/weapon_c4.glb",
+      "bytes": 1400816,
+      "sha256": "609942d9f02829b92ae545c344382f768e3c9859ecccdbc22608951f412fd1de"
+    },
+    {
+      "path": "decompiled/weapons/models/c4/materials/weapon_c4_digits.vmat",
+      "bytes": 1625,
+      "sha256": "835363eb4dac5239f5a1f0ec78d62fb5f9a71176928eb2da8b6a5bd6c6f64a44"
+    },
+    {
+      "path": "decompiled/animation/anims/viewmodel/equipment/c4/plant_c4.vnmclip",
+      "bytes": 26563,
+      "sha256": "5d50b27632912ba114098c7be519e11a6234c914b5faee1049e5d78e20ab3e2c"
+    },
+    {
+      "path": "decompiled/soundevents/game_sounds_weapons.vsndevts",
+      "bytes": 908990,
+      "sha256": "bf51619e8d840826edafa7671855e526aeb9abe4e86ffb5c06bd61ef0f57c101"
+    },
+    {
+      "path": "decompiled-extra/arm_bomb.wav",
+      "bytes": 218780,
+      "sha256": "43e17eedff0784ca5754b8ee9412c6791512e5e619f13fc5c732a11c828d45e6"
+    },
+    {
+      "path": "decompiled-extra/nvg_on.wav",
+      "bytes": 155084,
+      "sha256": "a7ebad08a2a33aee0bbbb64aca07d10d776bfa9ed61594d334b1cf7905301004"
+    }
+  ]
+}

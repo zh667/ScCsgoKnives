@@ -10,7 +10,7 @@ namespace Game;
 public sealed class ScGunSettingsScreen : Screen {
     public const string ScreenName = "ScCsgoGunSettings";
 
-    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color);
+    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials);
     Snapshot m_working;
     bool m_returningFromLayout;
     Screen m_back;
@@ -20,6 +20,8 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly StackPanelWidget m_content = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
     readonly ScrollPanelWidget m_scroll = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     CheckboxWidget m_buttons, m_killFeed, m_killSound, m_crosshair;
+    CheckboxWidget m_buttonOnly, m_simpleMaterials;
+    SliderWidget m_width, m_length, m_gap, m_scale, m_dot;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     ButtonWidget m_copyGroup;
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
@@ -27,15 +29,20 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly ScGunWorldBackground m_background = new();
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
     LabelWidget m_preview, m_status;
+    ScCrosshairPreview m_shapePreview;
+    ButtonWidget m_parameterGroup;
+    bool m_shapeControls;
     SliderWidget m_red, m_green, m_blue;
     readonly CanvasWidget m_root = new() { Size = new Vector2(float.PositiveInfinity) };
     readonly LabelWidget m_title = new() { Text = "CS 枪械 · 模组设置", FontScale = 1.1f, TextAnchor = TextAnchor.HorizontalCenter, DropShadow = true };
     readonly StackPanelWidget m_bar = new() { Direction = LayoutDirection.Horizontal };
     static Snapshot Capture() => new(ScUiSettings.CustomButtons, ScUiSettings.KillFeed, ScUiSettings.KillSound,
-        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor);
+        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials);
     static void Apply(Snapshot s) {
         ScUiSettings.CustomButtons = s.Buttons; ScUiSettings.KillFeed = s.KillFeed; ScUiSettings.KillSound = s.KillSound;
         ScUiSettings.GunCrosshair = s.Crosshair; ScUiSettings.CrosshairStyle = s.Style; ScUiSettings.CrosshairColor = s.Color;
+        ScUiSettings.SimpleMaterials = s.SimpleMaterials;
+        ScUiSettings.ButtonOnlyFire = s.ButtonOnly; ScUiSettings.CrosshairShape = s.Shape.Normalize();
     }
 
     public ScGunSettingsScreen() {
@@ -90,12 +97,19 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Heading("视角恢复"));
         m_content.Children.Add(m_recoverView);
         m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
+        m_content.Children.Add(ScGunUi.Heading("武器画质"));
+        m_simpleMaterials = ScGunUi.Toggle("简化材质（适合手机）", m_working.SimpleMaterials);
+        m_content.Children.Add(m_simpleMaterials);
+        m_content.Children.Add(ScGunUi.Note("降低金属反光和表面凹凸效果，保留皮肤颜色、武器动画与场景明暗。保存后生效；关闭可恢复完整材质。"));
         m_content.Children.Add(ScGunUi.Heading("武器操作绑定"));
         m_content.Children.Add(m_bindings);
         m_content.Children.Add(ScGunUi.Note("设置开火／轻刀、换弹、开镜、消音器、连发、速射、检视、重刀、强投和轻投，共 10 项操作。与下面的触屏布局独立。"));
         m_content.Children.Add(ScGunUi.Heading("手机按键"));
         m_buttons = ScGunUi.Toggle("启用模组自定义按键", m_working.Buttons);
         m_content.Children.Add(m_buttons);
+        m_buttonOnly = ScGunUi.Toggle("触屏仅开火按钮射击", m_working.ButtonOnly);
+        m_content.Children.Add(m_buttonOnly);
+        m_content.Children.Add(ScGunUi.Note("仅按钮模式：空白触屏只转动视角，鼠标、键盘和手柄不受影响。请先在布局启用开火键；若关闭开火键或按钮总开关，会回退触屏攻击，避免无法开枪。"));
         m_content.Children.Add(ScGunUi.Note("关闭后模组新增的战斗按钮全部隐藏并释放触摸，布局数据保留；原版移动、视角、开火和本设置入口不受影响。"));
         m_edit = ScGunUi.Button("编辑按键布局", 190);
         m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("位置、大小、透明度、逐键开关"), m_edit, narrow));
@@ -124,11 +138,24 @@ public sealed class ScGunSettingsScreen : Screen {
         m_red = ScGunUi.Slider(0, 255, 1, m_working.Color.R, "红 R");
         m_green = ScGunUi.Slider(0, 255, 1, m_working.Color.G, "绿 G");
         m_blue = ScGunUi.Slider(0, 255, 1, m_working.Color.B, "蓝 B");
-        foreach (var slider in new[] { m_red, m_green, m_blue }) {
-            slider.HorizontalAlignment = WidgetAlignment.Stretch; m_content.Children.Add(slider);
+        m_parameterGroup = ScGunUi.Button(m_shapeControls ? "调整：形状 ▸" : "调整：颜色 ▸", 190);
+        m_content.Children.Add(m_parameterGroup);
+        m_preview = ScGunUi.Note("");
+        m_width = ScGunUi.Slider(.5f, 8, .5f, m_working.Shape.Width, "十字粗细");
+        m_length = ScGunUi.Slider(1, 32, 1, m_working.Shape.Length, "十字线长");
+        m_gap = ScGunUi.Slider(0, 24, 1, m_working.Shape.Gap, "中心间距");
+        m_scale = ScGunUi.Slider(.5f, 3, .1f, m_working.Shape.Scale, "整体大小");
+        m_dot = ScGunUi.Slider(1, 16, .2f, m_working.Shape.Dot, "圆点直径");
+        var editor = new ScCrosshairEditor();
+        m_shapePreview = editor.Preview;
+        m_shapePreview.Shape = m_working.Shape; m_shapePreview.Tint = m_working.Color; m_shapePreview.CrossStyle = m_working.Style;
+        foreach (var slider in new[] { m_red, m_green, m_blue, m_width, m_length, m_gap, m_scale, m_dot }) {
+            slider.IsVisible = m_shapeControls == (slider != m_red && slider != m_green && slider != m_blue);
+            editor.Controls.Children.Add(slider);
         }
-        m_preview = new LabelWidget { Text = "预览：＋", FontScale = 1.4f, Color = m_working.Color, DropShadow = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(0, 4) };
+        m_content.Children.Add(editor);
         m_content.Children.Add(m_preview);
+        m_content.Children.Add(ScGunUi.Note("十字参数仅用于十字样式，圆点直径仅用于圆点；原版图案只调整体大小。"));
         m_content.Children.Add(ScGunUi.Note("只在手持可用枪械且未开镜时显示。空手、刀具、手雷和原版工具不显示；开镜时使用镜内准星，不叠加两层。颜色只影响这一层，不改变镜内十字线、命中反馈或弹道。"));
 
     }
@@ -146,6 +173,7 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         m_working = m_working with { Buttons = m_buttons.IsChecked, KillFeed = m_killFeed.IsChecked,
             KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked,
+            SimpleMaterials = m_simpleMaterials.IsChecked, ButtonOnly = m_buttonOnly.IsChecked, Shape = new ScCrosshairShape(m_width.Value, m_length.Value, m_gap.Value, m_scale.Value, m_dot.Value).Normalize(),
             Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value) };
         if (m_style.IsClicked) {
             int index = Array.IndexOf(ScUiSettings.Styles, m_working.Style);
@@ -155,8 +183,15 @@ public sealed class ScGunSettingsScreen : Screen {
         foreach (var (button, color) in m_colors) if (button.IsClicked) {
             m_working = m_working with { Color = color }; m_red.Value = color.R; m_green.Value = color.G; m_blue.Value = color.B;
         }
+        if (m_parameterGroup.IsClicked) {
+            m_shapeControls = !m_shapeControls;
+            m_parameterGroup.Text = m_shapeControls ? "调整：形状 ▸" : "调整：颜色 ▸";
+            foreach (var slider in new[] { m_red, m_green, m_blue, m_width, m_length, m_gap, m_scale, m_dot })
+                slider.IsVisible = m_shapeControls == (slider != m_red && slider != m_green && slider != m_blue);
+        }
         m_preview.Color = m_working.Color;
-        m_preview.Text = $"预览：＋  RGB {m_working.Color.R}, {m_working.Color.G}, {m_working.Color.B}";
+        m_shapePreview.Shape=m_working.Shape;m_shapePreview.Tint=m_working.Color;m_shapePreview.CrossStyle=m_working.Style;
+        m_preview.Text = $"右侧为等比例缩小预览 · RGB {m_working.Color.R}, {m_working.Color.G}, {m_working.Color.B}";
         if (m_copyGroup?.IsClicked == true) {
             try {
                 ClipboardManager.ClipboardString = "1087216872";
@@ -169,7 +204,7 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
         if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
-        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White); m_built = false; return; }
+        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512"); m_built = false; return; }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Leave(m_back); return; }
         if (m_save.IsClicked) {
             var previous = Capture();

@@ -20,7 +20,7 @@ static class GunSkinRegression {
             var names = guns.Cast<object>().Select(g => (string)spec.GetField("Name").GetValue(g)).ToArray();
             using var zip = ZipFile.OpenRead(package);
             var entries = zip.Entries.Select(e => e.FullName.Replace('\\', '/')).ToHashSet(StringComparer.OrdinalIgnoreCase);
-            bool Has(string texture) => entries.Contains($"Assets/Textures/ScCsgoKnives/{texture}.png");
+            bool Has(string texture) => entries.Contains($"Assets/Textures/ScCsgoKnives/{texture}.png") || entries.Contains($"Assets/Textures/ScCsgoKnives/{texture}.webp");
 
             Check("catalogue-not-empty", skins.Length > 0, $"{skins.Length} finishes");
             var native = mod.GetType("Game.ScGunNativeMesh");
@@ -139,9 +139,9 @@ static class GunSkinRegression {
             foreach (DictionaryEntry e in cost) {
                 var v = e.Value.GetType();
                 int blank = (int)v.GetField("Item1").GetValue(e.Value), mech = (int)v.GetField("Item2").GetValue(e.Value), paint = (int)v.GetField("Item3").GetValue(e.Value);
-                priced &= blank > 0 && mech > 0 && paint > 0;
+                priced &= blank == 0 && mech == 2 && paint == 8;
             }
-            Check("tiers-priced", priced, $"{cost.Count} tiers, every one charging blanks, mechanisms and paint");
+            Check("tiers-priced", priced, $"{cost.Count} tiers, uniform mechanisms2 + paint8, plus diamonds2 checked in economy tests");
 
             // The record schema that carries a finish must be the one the build writes.
             var registry = mod.GetType("Game.ScGunRegistry");
@@ -153,7 +153,7 @@ static class GunSkinRegression {
             var known = registry.GetMethod("IsKnownSchema");
             bool converts = (bool)known.Invoke(null, [noSkins]) && (bool)known.Invoke(null, [noGrowth]) && (bool)known.Invoke(null, [tenLevels]) && (bool)known.Invoke(null, [schema])
                 && !(bool)known.Invoke(null, [schema + 1]) && !(bool)known.Invoke(null, [0]);
-            Check("schema-and-layout", schema == tenLevels + 1 && tenLevels == noGrowth + 1 && noGrowth == noSkins + 1 && layout == 5 && converts,
+            Check("schema-and-layout", schema == 6 && tenLevels == noGrowth + 1 && noGrowth == noSkins + 1 && layout == 5 && converts,
                 $"record schema {schema} (schema {noSkins} had no finish, {noGrowth} no counter); every earlier schema still converts, a later one is refused; item layout stamp {layout} unchanged");
         }
         catch (Exception e) { Check("run", false, e.ToString()); }

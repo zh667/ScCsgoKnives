@@ -9,6 +9,8 @@ namespace Game;
 /// Block data also carries the magazine and the M4A1-S silencer state (GunSpec).
 /// </summary>
 public class ScGunBlock : ScNoDurabilityBlock {
+    public ScGunBlock() { DefaultCategory = "CS武器"; }
+    public override int GetDisplayOrder(int value) => 211;
     public override bool IsEditable_(int value) => false;
     static readonly int s_count = GunSpec.All.Length;
     static readonly string[] s_names = GunSpec.All.Select(spec => spec.Name).ToArray();
@@ -24,6 +26,13 @@ public class ScGunBlock : ScNoDurabilityBlock {
     /// world's items and ids without a record are kept but unusable.</summary>
     public static bool IsKnown(int value) => GunSpec.IsUsable(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
     public static bool IsOldFormat(int value) => !GunSpec.IsUsable(Terrain.ExtractData(value));
+    public static bool HasReliableModel(int value) => ScGunRegistry.Current is { Disabled: false }
+        && !GunSpec.IsForeign(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
+    static string UnavailableReason(int value) {
+        if (!HasReliableModel(value)) return "数据格式或型号无法确认";
+        return ScGunRegistry.Current.TryGetSnapshot(GunSpec.GetId(Terrain.ExtractData(value)), out var record)
+            && record.Variant != GetVariant(value) ? "型号与记录不匹配" : "记录缺失或已隔离";
+    }
     /// <summary>The finish on this item, 0 when it has none or its record cannot be read.</summary>
     public static int SkinOf(int value) => IsKnown(value) ? GunSpec.GetSkinId(Terrain.ExtractData(value)) : ScGunSkinCatalog.None;
     public static GunSpec SpecOf(int value) => IsKnown(value) ? GunSpec.All[GetVariant(value)] : Unknown;
@@ -100,15 +109,15 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) {
         int variant = GetVariant(value);
         if (!IsKnown(value)) {
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, size, ref matrix, ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, false, environmentData);
+            var icon = HasReliableModel(value) ? LoadTexture(s_names[variant] + "_slot") : null;
+            ScInventoryIcon.Draw(primitivesRenderer, value, size, ref matrix, icon ?? ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, environmentData);
             return;
         }
         DrawVisual(primitivesRenderer, value, variant, SkinOf(value), color, size, ref matrix, environmentData);
     }
     internal void DrawVisual(PrimitivesRenderer3D primitivesRenderer, int value, int variant, int skin, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) {
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI) {
-            float iconScale = skin == 0 ? 1.45f : 1.38f; // Generated icons have less transparent edge padding.
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, iconScale * size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], skin)) ?? LoadTexture(s_names[variant] + "_slot"), color, false, environmentData);
+            ScInventoryIcon.Draw(primitivesRenderer, value, size, ref matrix, LoadTexture(ScGunSkinCatalog.Icon(s_names[variant], skin)) ?? LoadTexture(s_names[variant] + "_slot"), color, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !KnifeDiagnostics.IsFinite(matrix)) return;
@@ -152,8 +161,9 @@ public class ScGunBlock : ScNoDurabilityBlock {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
-        if (IsOldFormat(value)) return GunSpec.IsForeign(Terrain.ExtractData(value)) ? "旧版本枪械数据（0.34 及更早，已保留，请新建世界）" : "枪械记录缺失（旧版本数据或损坏存档，已保留）";
-        if (!IsKnown(value)) return $"未知枪械（型号 {GetVariant(value)}，保留数据）";
+        if (!IsKnown(value)) return HasReliableModel(value)
+            ? $"{ScGunNames.Variant(GetVariant(value))} · 状态待恢复（{UnavailableReason(value)}）"
+            : $"枪械数据异常（{UnavailableReason(value)}，已保留）";
         string name = ScGunNames.Variant(GetVariant(value));
         int skin = SkinOf(value);
         if (skin != ScGunSkinCatalog.None) name += " · " + ScGunSkinCatalog.NameOf(skin);
@@ -166,7 +176,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen(value);
 
     public override string GetDescription(int value) {
-        if (!IsKnown(value)) return "本版无法读取这件物品的数据，已原样保留。请在新世界中使用枪械。";
+        if (!IsKnown(value)) return $"{UnavailableReason(value)}，原始物品已保留。需要有效记录或可信备份才能恢复；不会猜测弹药、耐久、涂装或等级。";
         if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value) + DurabilityText(value) + CounterText(value);
         return base.GetDescription(value) + ScWeaponCrafting.Help(value) + DurabilityText(value) + CounterText(value);
     }

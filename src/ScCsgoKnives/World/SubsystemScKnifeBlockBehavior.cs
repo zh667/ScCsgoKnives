@@ -11,6 +11,10 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
     readonly Dictionary<ComponentPlayer, ScWeaponTouchPanel> m_buttons = [];
     readonly Dictionary<int, double> m_savedRecovery = [];
     readonly Dictionary<(ComponentPlayer Player, string Id), bool> m_touchThrows = [];
+    // Inspect is an edge-triggered action. Keep a per-player held latch so a
+    // platform that reports a held key/button as "clicked" cannot restart the
+    // inspect clip every update and leave the weapon inspecting forever.
+    readonly Dictionary<ComponentPlayer, bool> m_inspectHeld = [];
     SubsystemTime m_time;
     SubsystemPlayers m_players;
     public override void Load(ValuesDictionary values) {
@@ -90,6 +94,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         bool knife = HoldingKnife(player);
         bool gun = Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
         bool grenade = SubsystemScGrenades.Holding(player);
+        bool c4 = ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue);
         bool touch = player.ComponentInput.IsControlledByTouch || panel?.AnyCaptured == true;
         if (touch) player.ComponentInput.IsControlledByTouch = true;
         bool enabled = Window.IsActive && CanOperate(player) && container.IsVisible;
@@ -100,11 +105,15 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             ScGunFunctions.Fire => gun,
             ScGunFunctions.KnifeHeavy => knife,
             ScGunFunctions.ThrowWeak or ScGunFunctions.ThrowStrong => grenade,
-            ScGunFunctions.Inspect => knife || gun || grenade,
+            ScGunFunctions.Plant => c4,
+            ScGunFunctions.Inspect => knife || gun || grenade || c4,
             _ => secondary == id,
         });
         bool Pressed(string id) => enabled && (panel?.Pressed(id) == true || ScGunBindings.Down(player, id));
         bool Clicked(string id) => enabled && (panel?.Clicked(id) == true || ScGunBindings.Down(player, id, true));
+        int ThrowSources(string id) => (panel?.Pressed(id) == true || panel?.Clicked(id) == true ? 2 : 0)
+            | (ScGunBindings.KeyboardDown(player, id) || ScGunBindings.KeyboardDown(player, id, true) ? 4 : 0)
+            | (ScGamepadBindings.Down(player, id, false) || ScGamepadBindings.Down(player, id, true) ? 8 : 0);
         bool Cancelled(string id) {
             bool wasTouch = m_touchThrows.GetValueOrDefault((player,id));
             m_touchThrows[(player,id)] = panel?.Pressed(id) == true;
@@ -113,24 +122,34 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             return !enabled || wasTouch && panel?.Cancelled(id) == true && !ScGunBindings.Down(player,id);
         }
         Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).SetFireButton(player, gun && enabled && panel?.Pressed(ScGunFunctions.Fire) == true);
+        Project.FindSubsystem<SubsystemScC4>()?.SetPlantButton(player, c4 && enabled && panel?.Pressed(ScGunFunctions.Plant) == true);
         var grenades = Project.FindSubsystem<SubsystemScGrenades>(true);
         grenades.SetThrowButton(player, true, grenade && Pressed(ScGunFunctions.ThrowWeak),
-            grenade && Clicked(ScGunFunctions.ThrowWeak), !grenade || Cancelled(ScGunFunctions.ThrowWeak));
+            grenade && Clicked(ScGunFunctions.ThrowWeak), !grenade || Cancelled(ScGunFunctions.ThrowWeak), ThrowSources(ScGunFunctions.ThrowWeak));
         grenades.SetThrowButton(player, false, grenade && Pressed(ScGunFunctions.ThrowStrong),
-            grenade && Clicked(ScGunFunctions.ThrowStrong), !grenade || Cancelled(ScGunFunctions.ThrowStrong));
+            grenade && Clicked(ScGunFunctions.ThrowStrong), !grenade || Cancelled(ScGunFunctions.ThrowStrong), ThrowSources(ScGunFunctions.ThrowStrong));
         if (knife && Clicked(ScGunFunctions.KnifeHeavy)) RequestAttack(player, true);
         if (knife && Clicked(ScGunFunctions.Fire)) RequestAttack(player, false);
         // Keyboard R is read by UpdateGun, where it also interrupts safely at the reload boundary.
         if (gun && enabled && panel?.Clicked(ScGunFunctions.Reload) == true) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
         if (gun && secondary is not null && Clicked(secondary)) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestSecondary(player);
-        if ((knife || gun || grenade) && Clicked(ScGunFunctions.Inspect)) {
+        // Inspect must be a real edge from the mapped action. Do not derive it
+        // from a held state: API 1.9.3.1 can leave an input snapshot held while
+        // the player is merely looking/using the weapon, which caused phantom
+        // inspect loops without any inspect press.
+        bool touchInspect = enabled && panel?.Clicked(ScGunFunctions.Inspect) == true;
+        bool keyInspect = enabled && ScGunBindings.Down(player, ScGunFunctions.Inspect, true);
+        bool inspectPressed = touchInspect || keyInspect;
+        m_inspectHeld[player] = false;
+        if ((knife || gun || grenade || c4) && inspectPressed && !(c4 && Project.FindSubsystem<SubsystemScC4>()?.IsPlanting(player) == true)) {
             if (knife) State(player).Cancel();
+            KnifeLog.Information($"[GUN_INPUT] inspect edge player={player.PlayerData.PlayerIndex} kind={(knife ? "knife" : gun ? "gun" : "grenade")} source={(touchInspect ? "touch" : "mapped")}");
             KnifeAnimationController.TriggerInspect(player);
         }
     }
     public override void Dispose() {
         foreach (var panel in m_buttons.Values) panel.Dispose();
-        m_buttons.Clear(); m_strikes.Clear(); m_touchThrows.Clear(); base.Dispose();
+        m_buttons.Clear(); m_strikes.Clear(); m_touchThrows.Clear(); m_inspectHeld.Clear(); base.Dispose();
     }
 
     public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) => false;

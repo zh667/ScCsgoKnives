@@ -1,0 +1,617 @@
+[
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_gamma_p1_slot.png",
+    "Sha256": "CE6AC4A77B8A596E20FD6C8A45748E4FC15E2C5388762EDC1BE39D93BE00AD73",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bayonet_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_gamma_p2_slot.png",
+    "Sha256": "680F064CFC8BC39A1E7CE29D6F749A1E97BDDB93C965F785BBCDCFF6D8887546",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bayonet_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_gamma_p3_slot.png",
+    "Sha256": "11F571BF89BC7BCE2563659D63A13ED0815CA4B5CA0E71ECFCE7B108C03FA860",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bayonet_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_gamma_p3.png",
+    "Sha256": "F13E5023B3BCE462FE15BEC2A3613D5F06A68EC1C2A821133D051F9344D12764",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bayonet_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_gamma_p4_slot.png",
+    "Sha256": "04A0BF67A3D1492E188E2C9F3CD719E86EE4CEF0AB07D318ECB01F9BBFF9E9AE",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bayonet_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_gamma_p4.png",
+    "Sha256": "2789506DFB24F25D04768847A46BD3B4C632E377C513C9F18815E0599F9DB9FF",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bayonet_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_gamma_p1_slot.png",
+    "Sha256": "A07040C4DFCAD5BA9E9CC45A8FDD5CC4E829A3FBF64850D4DAB27C8746A101B4",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bowie_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_gamma_p2_slot.png",
+    "Sha256": "00F5232D3B078DDD9770EEE7BC96307E6939D82730786887FBE072AB5DD139B3",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bowie_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_gamma_p3_slot.png",
+    "Sha256": "44A44A7048D3A670320645106C2A7979AD0BECC1993087C97B29BA4F87F9A5C8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bowie_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_gamma_p4_slot.png",
+    "Sha256": "F2A09316E0137FBE47AF4447D5C8A090533650829CB29AE48DC2E2B3A837F6E6",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bowie_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_gamma_p4.png",
+    "Sha256": "889F4646116D42A14D59AFE94E92C9496E334D3E1E95394F282AF26EA860BBFF",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\bowie_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_gamma_p1_slot.png",
+    "Sha256": "0555CBD9D351A1F78573D95B291E79836FF69223DB9C2E223A397CF90D956FC9",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\butterfly_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_gamma_p2_slot.png",
+    "Sha256": "8D62312600E2692C0E7C1464AE02FF90D649200D3EB69CB4F8E3A3D350DA36F3",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\butterfly_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_gamma_p2.png",
+    "Sha256": "9079782999C7CDB7935C841B79D150CC4E9FCC926542314C499616C3B7BE96F4",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\butterfly_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_gamma_p3_slot.png",
+    "Sha256": "33695A092D6C152503B9EC22AECC6A875A011B053533B4BFB75BE4EDC6DF3610",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\butterfly_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_gamma_p3.png",
+    "Sha256": "01882B3B0C66BA876A3E587460CB48723F162CE39CCF5DD84C9E211CE043723F",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\butterfly_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_gamma_p4_slot.png",
+    "Sha256": "3D83AAB8FACB6F6BE935BB123AB63CC6223609B418A25238C64EE5334F058124",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\butterfly_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_gamma_p1_slot.png",
+    "Sha256": "45C7A9FF235FF060733414755C66A2AF55AFB63B10C0AED85B044E8699347FCA",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\canis_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_gamma_p1.png",
+    "Sha256": "5CAFD220E55B402173886C8BA6721B27DD48F969942B57EB708306288F64062D",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\canis_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_gamma_p2_slot.png",
+    "Sha256": "C74023FBD532E38EB739C7EEC673B9C98C1F00A48636BAE8DF0AF88109D653D9",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\canis_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_gamma_p3_slot.png",
+    "Sha256": "E7B5593030DE127D8D17236F773F35ABE335203DBFE84004EE8600C6B2085E00",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\canis_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_gamma_p4_slot.png",
+    "Sha256": "FB96E3F4CD14A4BB437E7DE24DEDAD44C941B7DC8A6C6FC12A2180F0A154EC75",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\canis_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_gamma_p1_slot.png",
+    "Sha256": "CA830AB487856775297180127489B273B705A56231080A42791A39844FD4A51D",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\cord_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_gamma_p2_slot.png",
+    "Sha256": "52E787702261DF4B9F8877022AB39AAC3DF3F96BE2F1AC0C34E714D00A0C7AAD",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\cord_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_gamma_p2.png",
+    "Sha256": "54C0347CE63609F48C8480FFA4D868F612932F32812DF791010F60209BA9833C",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\cord_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_gamma_p3_slot.png",
+    "Sha256": "6CD1F0680F94B52B3CD8C84D3AFC3BDDBA99F097BB019CCCF283FC4F844A3056",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\cord_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_gamma_p4_slot.png",
+    "Sha256": "7790F0E2001121E65899280564226368AAD4786D4E81831693C665083A6F19E6",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\cord_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_gamma_p1_slot.png",
+    "Sha256": "F6A635863AD549D34B753858E384B5D4ABA2F5AE03F696FADAB0F3790BC5FF79",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\css_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_gamma_p1.png",
+    "Sha256": "7DEE27F388083CFD8D7C88F33D16AC942578FE727BF754B3D0652F0E988AC6BB",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\css_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_gamma_p2_slot.png",
+    "Sha256": "3A4A7FE9A96070EDCBA185ED74D6D5293475A6DF7149D22408A8BC485B550982",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\css_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_gamma_p3_slot.png",
+    "Sha256": "C6B422AD7090BECDD64CDC4E5EE7B72B8CC77B4F9ED7218A58D94AFEF7E1B102",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\css_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_gamma_p3.png",
+    "Sha256": "7BB98CFFB1EE98AA35F8254F72D6FCEA410174535ADB711542105AC5231B6628",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\css_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_gamma_p4_slot.png",
+    "Sha256": "DFAF191716B731982367FA5243DB1EAD201A62747E1A89A22DA2914F71BCD687",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\css_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_ct_gamma_p1_slot.png",
+    "Sha256": "8CE006B83A277D11C6665FB142BA706A47814B6738685325DE7C38739971612D",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_ct_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_ct_gamma_p2_slot.png",
+    "Sha256": "602A792B386502206A10EBEE036DB9B64F8CE6D9F31BEB001995C199AD68F49E",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_ct_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_ct_gamma_p3_slot.png",
+    "Sha256": "00D466F2597D00AA7EF12CB6BA23AE80BBB79A70AD38A8BF114AAA7E89EB26CE",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_ct_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_ct_gamma_p3.png",
+    "Sha256": "6E563BC3A3DA0C38F4C9096DAAFD8BA364FF81552B34D884056F88BBC3916096",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_ct_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_ct_gamma_p4_slot.png",
+    "Sha256": "B78186AE24DCD6452DA28695A9B6E55AC25E39D3FED82AB85DAF1F6DC4009BAE",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_ct_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_ct_gamma_p4.png",
+    "Sha256": "E8C33207586A6346188AAC779941D791C40ED684B82905885B53A4064A896EFD",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_ct_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_t_gamma_p1_slot.png",
+    "Sha256": "FE9317842112F2C0645EDD65D61D39A8FC69DB2CCA3952E16E07EFAD1B8F7B7C",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_t_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_t_gamma_p1.png",
+    "Sha256": "77D487C0AC132EBEF279FEAD9689C355FE32C1A3E250E1B05BACCB09B512F9D8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_t_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_t_gamma_p2_slot.png",
+    "Sha256": "D71C1AFD7B655DBFB50EAAF9CEB6F1787182758F6AED47B8FF6FEB0EC602939A",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_t_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_t_gamma_p3_slot.png",
+    "Sha256": "8E4DD85A3802E05F58883AAC9BC9CFBC05DCE103CCE33DDFA5587A28492C6EF8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_t_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_t_gamma_p4_slot.png",
+    "Sha256": "09C36598FE4F15511D7E6CABCCA845B7DD1E765F0E90CF1654E304775C19E2E5",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_t_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\default_t_gamma_p4.png",
+    "Sha256": "8890B1EFD5A11D9A795341D2EC57BE3DB0A4BA47EBA31BDF2ADC320D64B42E21",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\default_t_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_gamma_p1_slot.png",
+    "Sha256": "C6BACE8D51C367FAE938940DB8E4764934AEAEA0EFB1DF8F06B6EA467F2FA3B0",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\falchion_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_gamma_p2_slot.png",
+    "Sha256": "27F32500E55DC7D626BC4712870AB066BA9EABAE6779FBA71B74BCA9E1560327",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\falchion_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_gamma_p2.png",
+    "Sha256": "4891AEEC8ADB49FA8AFCE93F1923539DFB5A0682D23DEA7910B09498CC9F26D1",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\falchion_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_gamma_p3_slot.png",
+    "Sha256": "A63F0296BE73E904178E32B25B302C74D718451AF702532FC1B0B370BF1361D8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\falchion_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_gamma_p4_slot.png",
+    "Sha256": "C2B4C0F6E76A0555F3AC9D50C5BD38EC3FEC1CE3EFC7AE56C2CBCAA4205906ED",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\falchion_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_gamma_p1_slot.png",
+    "Sha256": "F08638B67DE3E00F2FF44B0D9005F4D296D4A77C83A74418751B5594F02962A3",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\flip_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_gamma_p2_slot.png",
+    "Sha256": "FEC2E5DFC2204B2B06EB1DBA6A6E2819BB06128ACE58F201656D6AAE52118B83",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\flip_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_gamma_p3_slot.png",
+    "Sha256": "7B4F293583704A52B1B014E075C6FB34718975221C07A3B7DE1F48EFB932D233",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\flip_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_gamma_p3.png",
+    "Sha256": "FE73900D0B5AAE2E1162831691DBFE6F2F30730C44E508D962BDC974197C0F39",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\flip_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_gamma_p4_slot.png",
+    "Sha256": "C12E416D61A7F4C2A476C934ED78379C8737569CE8B25B64CDAC7559EFDBABCA",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\flip_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_gamma_p1_slot.png",
+    "Sha256": "3505EF81C9BED5CDD7010D2F687F2EC4A33DB0C9C449B16C48C3575475B63E88",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\gut_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_gamma_p2_slot.png",
+    "Sha256": "E6946E73A0E1F3EBCE9B934B0ABFDE358FDB2DC955570421E2A1DB8545162253",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\gut_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_gamma_p3_slot.png",
+    "Sha256": "8FFDCD3E75BC37370EB6E3987CD7B5061D8ACDC87FA6C04AF7D80EEE853F78A0",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\gut_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_gamma_p4_slot.png",
+    "Sha256": "9FDF199C40E71CE4A8CDB41FBB81CF653BBF12DAD42435DF747CE6C244CFF3CD",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\gut_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_gamma_p4.png",
+    "Sha256": "4B100417E59C7ED0A6B4B116DF7FBFED3E45BA059B770531C2FE8C10452B7D00",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\gut_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_gamma_p1_slot.png",
+    "Sha256": "E7E568EF8B70005D759058F72B05F6D2369AA3B25FAB0548F00CF970DE519D08",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\karambit_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_gamma_p1.png",
+    "Sha256": "E446540100786D453DC4477C33D8A712F0BE7E2DF059F95D1E9951D16B5CE3D1",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\karambit_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_gamma_p2_slot.png",
+    "Sha256": "9428F5EFC537E9F6520FDBF6DCCDEABB46F647826C3978F7FC8F10A47747EE1F",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\karambit_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_gamma_p3_slot.png",
+    "Sha256": "5BF9755DF59804AB694F9A5FBD108D94019C6A8DB037B39D4C5A9E9B9F843BDB",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\karambit_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_gamma_p4_slot.png",
+    "Sha256": "552FC0F8311E3CCAFDAD5D1B7242CE67A520165C28D56958EC605F0254F3EF5D",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\karambit_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_gamma_p4.png",
+    "Sha256": "171D027D8F3B87FBDDB3816F99E134C6F3C7F4B365BFAA39565BE7E57E2A2E04",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\karambit_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_gamma_p1_slot.png",
+    "Sha256": "FBD8CA56210AAD814E0D0C33C0B94BB720E9D545D73BAE93F149B4DBDDF104B2",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\kukri_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_gamma_p1.png",
+    "Sha256": "D9E5E303FEB574FABCBC743BF7A279A67D032D26FD27549EEC3854FD5B52C925",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\kukri_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_gamma_p2_slot.png",
+    "Sha256": "138998A477E7AD88F2BE4AECEAC960AA6863563AF1E51E98230BE5EB62F9C520",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\kukri_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_gamma_p3_slot.png",
+    "Sha256": "4B4F5C447183DB2F6E1F43EF2D5DBBBA7365A4B67BDE59FC1AE06736C3D9E6F8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\kukri_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_gamma_p4_slot.png",
+    "Sha256": "F6EE47B6F9855B29F2452AE4447B0381C0F75C2247BC5D6839302ED7FBB85184",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\kukri_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_gamma_p1_slot.png",
+    "Sha256": "AEF86FC42AFF8DC57E26BC25BC5259CAB4BDBC84C250689E262DA3E57E63E444",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\m9_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_gamma_p1.png",
+    "Sha256": "66BE557423A102732ED7EA69780A32390656672FFAED0FA56BEF3DA5DCDF77E0",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\m9_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_gamma_p2_slot.png",
+    "Sha256": "53356BDA183400781DD1542524C596147B177DAF8415FBFE50A0CF2C85D53985",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\m9_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_gamma_p2.png",
+    "Sha256": "5A8A37202C9025A90BE6E3FF94DBF3607093C1B6678366C76B590EAB119A78DD",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\m9_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_gamma_p3_slot.png",
+    "Sha256": "831F8263A45748F0566346F18610A23BC0E11BD4964B2930909430CD575E16F5",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\m9_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_gamma_p4_slot.png",
+    "Sha256": "BABE9E95AACB7B66F2BA450D51EAED3FC4A42E741D09C5C78C1F086D7FA9EB89",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\m9_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_gamma_p1_slot.png",
+    "Sha256": "34FFA305303B909CE7CA0B26A22985465DCDA96F7E2300A30B6EC4BF62D24385",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\navaja_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_gamma_p2_slot.png",
+    "Sha256": "B6642F829CDFD0BAF9734B26AEC271831861BCC026456951D6793E7E1E22302C",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\navaja_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_gamma_p2.png",
+    "Sha256": "A8B8F22EA22CB059299973EA5A0ECD899AB8E0B05728B46C717F2EE03905AF9C",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\navaja_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_gamma_p3_slot.png",
+    "Sha256": "239996CA1E3A716E270B553F58B442AD227774B8EC48799729B7A46938755955",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\navaja_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_gamma_p4_slot.png",
+    "Sha256": "2A3599E1E87E42933AA07E16B88871188C93B1F5356F2B97B1945D0BEF0396FF",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\navaja_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_gamma_p1_slot.png",
+    "Sha256": "324FD4DF1B1E07A5FC602B0B0FAFEF4940AC0C8E6B956C40605F05564EFD1D3B",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\outdoor_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_gamma_p2_slot.png",
+    "Sha256": "A3AC78C74FBD2F3D45FB0ECEA862D51B2ED566F2B701C0D5D671AA38D40639F5",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\outdoor_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_gamma_p2.png",
+    "Sha256": "83E0054020670E31987094836689C21CA5A0B9B317A946EB376BEE999577EE7F",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\outdoor_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_gamma_p3_slot.png",
+    "Sha256": "897B8AC8303F6FAD4DBD75A9ADB2F9B394386870EB0B373F2DE048BD51BF26D7",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\outdoor_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_gamma_p3.png",
+    "Sha256": "F0CC03005C7FDE03652D405B9E7EB50B457E324F87EB35733D8B9AFC958F95E6",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\outdoor_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_gamma_p4_slot.png",
+    "Sha256": "BE032B62FFE110124B519E335517AFEB82C505A5D3A0847A42C9D4D7C8089296",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\outdoor_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_gamma_p1_slot.png",
+    "Sha256": "18CC817A32E52B8870D8B08EC70B8B7BD12329A095E037D07D34A75BA15BA77B",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\push_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_gamma_p2_slot.png",
+    "Sha256": "87C6B5A3A56B80A1CA154184B909CFDBA62E6FB88CA643BC43B8CDAAB66F2172",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\push_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_gamma_p3_slot.png",
+    "Sha256": "4A7234F56637D59C577EDB423588249D3A356DB21BFC1D02E7AD25E8745948E7",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\push_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_gamma_p3.png",
+    "Sha256": "3FB34623F3E6B9A347B4BD84B2E2931D7D71FE1CC6D9B64ECA2AF97DA71A88CC",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\push_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_gamma_p4_slot.png",
+    "Sha256": "E8884498C8EB5DF07D750FE5CB6B8C43D522918EC39A85160045B697288A889C",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\push_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_gamma_p4.png",
+    "Sha256": "58E8DDA59FAF89940D2B2828D829C5AE54CB90B3BF3D80BD9D3C7457D5955A71",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\push_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_gamma_p1_slot.png",
+    "Sha256": "049539F29D02B24064282177B63E7C8D39ED1B62109D094973F37795AA9AFE23",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\skeleton_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_gamma_p1.png",
+    "Sha256": "EB3D2B27430E8B1B80BBF59FDC9933DA524AAA706BEC324E59A689B7F6100F6D",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\skeleton_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_gamma_p2_slot.png",
+    "Sha256": "1A7C42D95E327B6C8281A9426BD521840DAEB10B66E8976B1D4A9ADDDDE1D5E3",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\skeleton_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_gamma_p3_slot.png",
+    "Sha256": "DFC6B5FB0A5804B4EAEFF867CF7CCBC0692B128B13228A87C33A22B6F444422F",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\skeleton_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_gamma_p3.png",
+    "Sha256": "138F65B6158A03AC5DE35428EC83AF4C26282177263CB0237F4AF78E1EB754F2",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\skeleton_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_gamma_p4_slot.png",
+    "Sha256": "31CA752AC7D8879980D13F881FD410DF687184102C808BFD5F8056040F513D87",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\skeleton_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_gamma_p1_slot.png",
+    "Sha256": "40DA3C0EB3D3C0D1C663B1248A00E64CFBCFC350DBCE04ED867EE7EE1EBDAB0F",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\stiletto_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_gamma_p1.png",
+    "Sha256": "AC53A451A84C13E2FA409EE668EB412BF17D20525979F101D59340C0A8FF1AB2",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\stiletto_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_gamma_p2_slot.png",
+    "Sha256": "CD1B7CA38C26BF570F83DF3988396B4F517ED413257AA22B6392FC87A8C5A65A",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\stiletto_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_gamma_p2.png",
+    "Sha256": "942A6DAB2ECEAEAD6977D066791FD90674EA3F313B53AF90E1ECBAAFDD6A46F8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\stiletto_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_gamma_p3_slot.png",
+    "Sha256": "8C7C76D625D3888F656E3CB3D1104FE9E0881C55D5A844A7A249CC397AE51EAB",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\stiletto_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_gamma_p4_slot.png",
+    "Sha256": "84570F46D14E257E1CDAB18C7978D833891FDDF73291F2BBE9874EA0C60ABDC8",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\stiletto_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_gamma_p1_slot.png",
+    "Sha256": "20C988E90A38E107BEAC5A592B030ED78F66FBE7C206795F8919998C9C5162C6",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\tactical_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_gamma_p2_slot.png",
+    "Sha256": "A0CF66A54D03C291231F7FFAF115CB1CE04E630DFF43E6734BA21B8423ACC007",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\tactical_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_gamma_p3_slot.png",
+    "Sha256": "C7C68E4729C8CDCAAA9602C74D99621C133DF60A893DA583110E1ABE21F5728F",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\tactical_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_gamma_p3.png",
+    "Sha256": "E678C5D46BE86B369E778675C36A163C3EA152A699BD8ED5B046A084B7CCAA86",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\tactical_gamma_p3.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_gamma_p4_slot.png",
+    "Sha256": "388149B643111C0F280B40EC2C46EF8B75BD11E8EAAD1AA156B6FE5C159994FA",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\tactical_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_gamma_p4.png",
+    "Sha256": "6669AC92F9CF2297861D13588908507621BE0E59F1A58069F86BC325AB860696",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\tactical_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_gamma_p1_slot.png",
+    "Sha256": "FF7C9B169C5DED903FBCDEA2462B1866C3583603A893BB6C9EF3E9AE3D88C116",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\talon_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_gamma_p2_slot.png",
+    "Sha256": "CF13696B8B7CB5C5A3C3A13FEAE751FC77724E0E56ECE20F62D3EB942AA1CF68",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\talon_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_gamma_p2.png",
+    "Sha256": "9D346C7534DD00EBE71AD3C77CD0280833325661E64E1E23E1ED3F14C1402D8E",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\talon_gamma_p2.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_gamma_p3_slot.png",
+    "Sha256": "0E816A82BD8944DD4F725B8C1246140F31E8C1855EE9283877ECDDE1244E5956",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\talon_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_gamma_p4_slot.png",
+    "Sha256": "C3E1E1A274F1C44F65F6A9880858130BB25D0310BDF4CCBC69F38BC1B204864D",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\talon_gamma_p4_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_gamma_p4.png",
+    "Sha256": "207D943E2BB0989AE9D79043F1F45DE6DCF98A136DBAB1E4DA9472E2434D8FF7",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\talon_gamma_p4.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_gamma_p1_slot.png",
+    "Sha256": "47EF923F7306FE281B62404217D858DD0251B065CF7D565C9E3BEC5AC6DE7152",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\ursus_gamma_p1_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_gamma_p1.png",
+    "Sha256": "1323943D06AF351C96B3ACAC653C73DD2CD3D76614B46FC9B80EE453C8FB7E78",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\ursus_gamma_p1.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_gamma_p2_slot.png",
+    "Sha256": "D50EB5A92B5A1A626EFBF7BBD7E0064C6EC2EB68F45872BD462B37394F7837B7",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\ursus_gamma_p2_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_gamma_p3_slot.png",
+    "Sha256": "FDC1F33CC9654BB969851B5D2B86DA57E926C3847A2A7FA20B214CC8D63A09FC",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\ursus_gamma_p3_slot.png"
+  },
+  {
+    "Path": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_gamma_p4_slot.png",
+    "Sha256": "20E220B4199B287EB6675D592E23F9D2DEA967977509785F33FD19AD75680F59",
+    "Archive": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\retired-knife-preview-20260913\\ursus_gamma_p4_slot.png"
+  }
+]

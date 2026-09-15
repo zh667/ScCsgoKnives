@@ -19,7 +19,10 @@ public static class ScGunCounter {
     /// <summary>Guns in this inventory that this build can read and that have no counter yet.</summary>
     public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {
         int gun = gunBlockIndex >= 0 ? gunBlockIndex : BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        int slots = inventory is ComponentCreativeInventory creative ? creative.OpenSlotsCount : inventory.SlotsCount;
+        // The game can expose a ten-slot hotbar while OpenSlotsCount still
+        // reports the catalogue's writable page size. The creative shortcut is
+        // explicitly the first ten hotbar slots, so inspect all ten.
+        int slots = inventory is ComponentCreativeInventory ? Math.Min(10, inventory.SlotsCount) : inventory.SlotsCount;
         for (int i = 0; i < slots; i++) {
             int value = inventory.GetSlotValue(i);
             if (inventory.GetSlotCount(i) > 0 && Terrain.ExtractContents(value) == gun && ScGunBlock.IsKnown(value))
@@ -45,10 +48,10 @@ public static class ScGunCounter {
     /// else byte for byte. A gun that was still a stackable factory template gets its instance record here.</summary>
     public static ScGunResult Apply(IInventory inventory, Quote quote, string holder) {
         if (inventory is null || quote is null || quote.Slot < 0 || quote.Slot >= inventory.SlotsCount) return ScGunResult.Invalid;
-        if (inventory.GetSlotValue(quote.Slot) != quote.Value) return ScGunResult.StateChanged;
+        if (inventory.GetSlotValue(quote.Slot) != quote.Value) return ScGunMutation.QuoteChanged("counter", inventory, quote.Slot, quote.Value, quote.Id, quote.Revision, "slot changed after quote");
         var mutation = ScGunMutation.Prepare(inventory, quote.Slot, holder, out ScGunResult why);
         if (mutation is null) return why;
-        if (mutation.Before.Id != quote.Id || mutation.Before.Revision != quote.Revision) return ScGunResult.StateChanged;
+        if (mutation.Before.Id != quote.Id || mutation.Before.Revision != quote.Revision) return ScGunMutation.QuoteChanged("counter", inventory, quote.Slot, quote.Value, quote.Id, quote.Revision, "record changed after quote");
         if (mutation.Before.CounterInstalled) return ScGunResult.Invalid;
         return mutation.Commit(r => {
             r.CounterInstalled = true;

@@ -26,7 +26,7 @@ public static class ScCreativeCountersSelfTest {
             return Terrain.ExtractContents(value) == 510 && ScGunBlock.IsKnown(value)
                 && KnifeAnimationController.ResolveVariant(value) == ScGunBlock.AssetIndex(expected.Variant)
                 && GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && !s.Fresh && s.CounterInstalled
-                && s.SkinId == expected.SkinId && s.Variant == expected.Variant && s.KillCount == 0 && s.Level == 0
+                && s.SkinId == expected.SkinId && s.Variant == expected.Variant && s.KillCount == expected.KillCount && s.Level == expected.Level
                 && s.Rounds == GunSpec.All[s.Variant].Magazine && s.Durability == s.MaxDurability;
         }
         try {
@@ -80,7 +80,7 @@ public static class ScCreativeCountersSelfTest {
                     if (creative) return Creative(value);
                     var inv = new ComponentInventory(); inv.m_slots.Add(new()); inv.AddSlotItems(0, value, 1); return inv;
                 }
-                T("runtime-growth-through-3000/" + key, () => {
+                T("runtime-growth-through-cap/" + key, () => {
                     var inv = InventoryFor();
                     if (ScGunCounterTemplateBlock.Materialize(inv, 0, "player") != ScGunResult.Success) return false;
                     var registry = ScGunRegistry.Current; int actual = inv.GetSlotValue(0); int id = GunSpec.GetId(Terrain.ExtractData(actual));
@@ -88,24 +88,24 @@ public static class ScCreativeCountersSelfTest {
                     var reports = new List<(int Id, int From, int To)>();
                     int Advance(bool busy = false) => ScGunGrowthService.Advance(registry, holders, 30, _ => busy, (i, f, t) => reports.Add((i, f, t)));
                     bool SetKills(long kills) => ScGunMutation.Prepare(inv, 0, "player", out _)?.Commit(r => r.KillCount = kills) == ScGunResult.Success;
-                    if (registry.GrowthMode != ScGunGrowthMode.Unset || !SetKills(99)) return false;
+                    int variant = source.Variant;
+                    if (registry.GrowthMode != ScGunGrowthMode.Unset || !SetKills(0)) return false;
                     if (Advance() != 0 || registry.GrowthMode != ScGunGrowthMode.CountAndGrow || reports.Count != 0) return false;
                     var credit = ScGunKillCredit.For(Terrain.ExtractData(actual), creative, 1);
                     if (credit is null) return false;
                     registry.Kills.Enqueue(credit.RecordId, credit.Variant);
-                    if (Advance(true) != 0 || registry.Get(id).KillCount != 99) return false; // reload/animation defers safely
-                    if (Advance() != 1 || registry.Get(id).AppliedGrowthLevel != 1 || registry.Get(id).KillCount != 100 || reports.Single() != (id, 0, 1)) return false;
-                    if (Advance() != 0 || reports.Count != 1 || inv.GetSlotValue(0) != actual) return false;
-                    if (!SetKills(999) || Advance() != 1 || registry.Get(id).AppliedGrowthLevel != 9) return false;
-                    registry.Kills.Enqueue(id, source.Variant);
-                    if (Advance() != 1 || registry.Get(id).AppliedGrowthLevel != 10 || registry.Get(id).KillCount != 1000) return false;
-                    if (reports.Count != 3 || reports.Last() != (id, 9, 10) || Advance() != 0) return false;
-                    foreach(int boundary in new[]{1099,1999,2999}) {
-                        if(!SetKills(boundary))return false;
-                        Advance();
-                        if(registry.Get(id).AppliedGrowthLevel!=boundary/100)return false;
-                        registry.Kills.Enqueue(id,source.Variant);
-                        if(Advance()!=1||registry.Get(id).KillCount!=boundary+1||registry.Get(id).AppliedGrowthLevel!=(boundary+1)/100)return false;
+                    if (Advance(true) != 0 || registry.Get(id).KillCount != 0) return false; // reload/animation defers safely
+                    if (Advance() != 0 || registry.Get(id).KillCount != 1) return false; // one kill, still below Lv1
+                    if (Advance() != 0 || inv.GetSlotValue(0) != actual) return false;
+                    // Walk the tier boundaries: each level must be reached at its exact threshold.
+                    foreach (int level in new[] { 1, 10, 20, 30, 40, 50 }) {
+                        long boundary = ScGunGrowth.KillsFor(variant, level);
+                        if (!SetKills(boundary - 1)) return false;
+                        Advance(); // settle to the level the kills already earned
+                        if (registry.Get(id).AppliedGrowthLevel != level - 1) return false;
+                        registry.Kills.Enqueue(id, variant);
+                        if (Advance() != 1 || registry.Get(id).KillCount != boundary
+                            || registry.Get(id).AppliedGrowthLevel != level) return false;
                     }
                     // Leveling never tops up ammo or creates a second gun. Persist applied levels and counts twice.
                     if (registry.Get(id).Rounds != source.Rounds || registry.Count != 1) return false;
@@ -113,9 +113,10 @@ public static class ScCreativeCountersSelfTest {
                         var xml = new XElement("Values"); registry.Save(30).Save(xml);
                         var loaded = new ValuesDictionary(); loaded.ApplyOverrides(XElement.Parse(xml.ToString()));
                         registry = ScGunRegistry.Load(loaded, 30); ScGunRegistry.Current = registry;
-                        if (Advance() != 0 || registry.Get(id).AppliedGrowthLevel != 30 || registry.Get(id).KillCount != 3000) return false;
+                        if (Advance() != 0 || registry.Get(id).AppliedGrowthLevel != 50
+                            || registry.Get(id).KillCount != ScGunGrowth.KillsFor(variant, 50)) return false;
                     }
-                    return reports.Count == 8;
+                    return true;
                 });
                 T("old-unset-104-catches-up-without-another-kill/" + key, () => {
                     var inv = InventoryFor();
@@ -123,9 +124,10 @@ public static class ScCreativeCountersSelfTest {
                     var tx = ScGunMutation.Prepare(inv, 0, "player", out _);
                     if (tx.Commit(r => { r.KillCount = 104; r.Durability /= 2; r.Rounds = 0; }) != ScGunResult.Success) return false;
                     int id = tx.Id; var registry = ScGunRegistry.Current; int notices = 0;
-                    int n = ScGunGrowthService.Advance(registry, [new(id, "player", inv, 0)], 30, _ => false, (_, f, t) => { if (f == 0 && t == 1) notices++; });
+                    int expectedLevel = ScGunGrowth.LevelFor(source.Variant, 104);
+                    int n = ScGunGrowthService.Advance(registry, [new(id, "player", inv, 0)], 30, _ => false, (_, f, t) => { if (f == 0 && t > 0) notices++; });
                     var s = registry.Get(id);
-                    return n == 1 && notices == 1 && s.KillCount == 104 && s.AppliedGrowthLevel == 1 && s.Rounds == 0
+                    return n == 1 && notices == 1 && s.KillCount == 104 && s.AppliedGrowthLevel == expectedLevel && s.Rounds == 0
                         && s.Durability > 0 && s.Durability < s.MaxDurability && registry.GrowthMode == ScGunGrowthMode.CountAndGrow;
                 });
                 T("explicit-count-only-stays-count-only/" + key, () => {

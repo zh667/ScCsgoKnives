@@ -11,6 +11,7 @@ public static class KnifeAnimationController {
         public ActionKind Action;
         public string ClipAlias = "idle";
         public double StartedAt;
+        public long ActionSequence;
         public float LastPokePhase;
         /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
         public bool PendingInspect;
@@ -70,6 +71,7 @@ public static class KnifeAnimationController {
         if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return ScKnifeBlock.IsKnown(itemValue) ? ScKnifeBlock.GetVariant(itemValue) : -1;
         if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.IsKnown(itemValue) ? ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue)) : -1; // old-format data draws no gun
         if (contents == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true)) return ScGrenadeBlock.AssetIndex(itemValue);
+        if (ScC4Block.IsValue(itemValue)) return CsmcKnifeRig.C4Index;
         return -1;
     }
 
@@ -92,7 +94,17 @@ public static class KnifeAnimationController {
         // Inventory/dialogs affect gameplay input, not the visual animation clock.
         // Keep sampling real hands every frame, including a switch made in a menu.
         var inventory = model.m_componentPlayer?.ComponentMiner?.Inventory;
-        bool selectionChanged = state.Selection.Observe(inventory, inventory?.ActiveSlotIndex ?? -1, itemValue, CsmcKnifeRig.IsGun(variant));
+        // During vanilla's switch-out, m_value still draws the departing model while the inventory already
+        // points at the destination. Sample the outgoing action, but do not start actions or commit
+        // animation events for an item that is no longer selected.
+        int selected = model.m_componentPlayer?.ComponentMiner?.ActiveBlockValue ?? itemValue;
+        if (selected != itemValue && state.Variant == variant && state.Pose is not null) {
+            state.PendingInspect = false;
+            float departingTime = (float)(KnifeClock.Now - state.StartedAt);
+            state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, ClipTime(state, departingTime), state.Action == ActionKind.Idle);
+            return state.Pose;
+        }
+        bool selectionChanged = selected == itemValue && state.Selection.Observe(inventory, inventory?.ActiveSlotIndex ?? -1, itemValue, CsmcKnifeRig.IsGun(variant));
         if (state.Variant != variant || selectionChanged) {
             state.Scoped = false;
             // Whether a knife has a second draw is a property of its rig, not
@@ -395,6 +407,17 @@ public static class KnifeAnimationController {
         state.PendingInspect = false;
         Start(state, ActionKind.Idle, "idle");
     }
+    public static long ReloadActionSequence(ComponentPlayer player) {
+        var model = player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        return model is not null && s_states.TryGetValue(model, out var state) && state.Action == ActionKind.Reload ? state.ActionSequence : -1;
+    }
+    public static void CancelReloadAction(ComponentPlayer player, long sequence) {
+        var model = player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (sequence < 0 || model is null || !s_states.TryGetValue(model, out var state)
+            || state.Action != ActionKind.Reload || state.ActionSequence != sequence) return;
+        state.PendingInspect = false;
+        Start(state, ActionKind.Idle, "idle");
+    }
 
     public static void GrenadeAction(ComponentPlayer player, string alias, float elapsed = 0) {
         var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
@@ -402,6 +425,22 @@ public static class KnifeAnimationController {
         if (model is null || variant < 0 || !CsmcKnifeRig.IsGrenade(variant)) return;
         var state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
         Start(state, ActionKind.Grenade, alias); state.StartedAt -= elapsed;
+    }
+    public static long C4Action(ComponentPlayer player, string alias) {
+        var model = player.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (model is null || !ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)) return -1;
+        var state = StateFor(model); state.Variant = CsmcKnifeRig.C4Index; state.PendingInspect = false;
+        var inventory=player.ComponentMiner.Inventory;
+        state.Selection.Observe(inventory,inventory.ActiveSlotIndex,player.ComponentMiner.ActiveBlockValue,false);
+        Start(state, ActionKind.Grenade, alias);
+        return state.ActionSequence;
+    }
+    public static void CancelC4Action(ComponentPlayer player, long sequence) {
+        var model = player?.Entity.FindComponent<ComponentFirstPersonModel>();
+        if (sequence < 0 || model is null || !s_states.TryGetValue(model, out var state)
+            || state.Variant != CsmcKnifeRig.C4Index || state.Action != ActionKind.Grenade || state.ActionSequence != sequence) return;
+        state.PendingInspect = false;
+        Start(state, ActionKind.Idle, "idle");
     }
 
     public static void TriggerReload(ComponentPlayer player, bool magazineEmpty = false, int shells = 0) {
@@ -470,6 +509,7 @@ public static class KnifeAnimationController {
     }
 
     static void Start(State state, ActionKind action, string clipAlias) {
+        state.ActionSequence++;
         state.Action = action;
         state.ClipAlias = clipAlias;
         state.StartedAt = KnifeClock.Now;
@@ -493,6 +533,7 @@ public static class KnifeAnimationController {
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";
 
     static void PlayDrawSound(int variant) {
+        if (CsmcKnifeRig.IsC4(variant)) { AudioManager.PlaySound("Audio/ScCsgoKnives/c4_draw", 1, 0, 0); return; }
         if (CsmcKnifeRig.IsGrenade(variant)) {
             if (variant-CsmcKnifeRig.GrenadeOffset < 6) AudioManager.PlaySound("Audio/ScCsgoKnives/"+CsmcKnifeRig.GetAssetName(variant)+"_draw",1,0,0);
             return;

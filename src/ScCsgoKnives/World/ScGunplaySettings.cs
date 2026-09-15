@@ -13,11 +13,13 @@ public static class ScGunplaySettings {
         public int Version {get;set;}=1;
         public string Preset {get;set;}="survival";
         public string Diagnostics {get;set;}="off";
+        public bool SubnauticaProjectileDefense {get;set;}=true;
     }
     public static string DiagnosticMode(string value)=>value is "off" or "summary" or "sampled"?value:"off";
     public static void Load() {
         try {
             if(!Storage.FileExists(Path)) {
+                ScProjectileDefense.Enabled=true;
                 Enabled=true;Diagnostics="off";
                 // A first-run write failure must not silently disable the approved gunplay preset.
                 try {
@@ -29,6 +31,7 @@ public static class ScGunplaySettings {
                 var settings=JsonSerializer.Deserialize<Settings>(stream);
                 if(settings?.Version!=1 || settings.Preset is not ("survival" or "classic")) throw new InvalidDataException("Expected Version 1 and Preset survival/classic");
                 Enabled=settings.Preset=="survival";
+                ScProjectileDefense.Enabled=settings.SubnauticaProjectileDefense;
                 Diagnostics="off"; // Release policy also overrides earlier sampled/summary settings without rewriting player files.
             }
             KnifeLog.Trace("Gunplay preset: "+(Enabled?"survival v1 (approved 35-gun handling)":"classic (prior GunNumbers respected)"));

@@ -27,7 +27,7 @@ public static class ScCreativeSkinsSelfTest {
                 int[] a = template.GetCreativeValues().ToArray(), b = template.GetCreativeValues().ToArray();
                 return a.Length == 44 && a.SequenceEqual(b) && a.Distinct().Count() == 44 && ScGunRegistry.Current.Count == 0
                     && a.All(v => ScGunSkinTemplateBlock.TrySnapshot(v, out var s) && s.SkinId == Terrain.ExtractData(v) && s.Fresh)
-                    && template.GetCategory(a[0]) == "Weapons" && template.GetDisplayOrder(a[0]) > 221 && template.MaxStacking == 1;
+                    && template.GetCategory(a[0]) == "CS武器" && template.GetDisplayOrder(a[0]) > 209 && template.MaxStacking == 1;
             });
             foreach (var skin in ScGunSkinCatalog.All) T("take-" + skin.Key, () => {
                 int value = Source(skin.PaintId); var inv = Inventory(value);

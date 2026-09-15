@@ -156,7 +156,9 @@ public static class KnifePbrRenderer {
     /// </summary>
     public static bool TryDrawPart(Model model, Texture2D baseColor, int variant, Matrix world, Matrix projection,
         Matrix viewToWorld, in Lighting lighting, bool applyBoneTransform, string material = null, float scopeAperture = 0f) {
-        if (!Enabled || baseColor is null || model is null) return false;
+        if (baseColor is null || model is null) return false;
+        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawModel(model, baseColor, world, projection, in lighting, applyBoneTransform, scopeAperture)) return true;
+        if (!Enabled) return false;
         if (!EnsureShared()) return false;
         Texture2D orm, normal;
         if (material is null) { if (!TryGetVariantTextures(variant, out orm, out normal)) return false; }
@@ -233,8 +235,10 @@ public static class KnifePbrRenderer {
     /// </summary>
     public static bool TryDrawSkinned(Cs2SkinnedMesh.Vertex[] vertices, int[] indices,
         Texture2D baseColor, string material, Matrix world, Matrix projection,
-        Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture = 0f) {
-        if (!Enabled || baseColor is null || vertices is null || indices is null || indices.Length == 0) return false;
+        Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture = 0f, bool rigid = false) {
+        if (baseColor is null || vertices is null || indices is null || indices.Length == 0) return false;
+        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawMesh(vertices, indices, baseColor, world, projection, in lighting, scopeAperture, rigid)) return true;
+        if (!Enabled) return false;
         if (!EnsureShared()) return false;
         if (!TryGetNamedTextures(material, out Texture2D orm, out Texture2D normal)) return false;
         if (!KnifeDiagnostics.IsFinite(world)) return false;
@@ -278,7 +282,8 @@ public static class KnifePbrRenderer {
         shader.WorldView.SetValue(world);
         shader.WorldViewProjection.SetValue(world * projection);
 
-        Display.DrawUserIndexed(PrimitiveType.TriangleList, shader, Cs2SkinnedMesh.Declaration,
+        if (rigid) ScRigidBuffers.Draw(shader, vertices, indices);
+        else Display.DrawUserIndexed(PrimitiveType.TriangleList, shader, Cs2SkinnedMesh.Declaration,
             vertices, 0, vertices.Length, indices, 0, indices.Length);
         return true;
     }

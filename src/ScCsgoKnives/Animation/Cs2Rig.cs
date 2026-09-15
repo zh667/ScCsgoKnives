@@ -137,6 +137,9 @@ public static class Cs2Rig {
         return release.At;
     }
 
+    public static IReadOnlyList<ClipEvent> Events(string asset, string alias) =>
+        Resolve(GetMetadata(asset), alias)?.Events ?? (IReadOnlyList<ClipEvent>)Array.Empty<ClipEvent>();
+
     sealed class SkeletonBone {
         public int Index { get; set; }
         public string Name { get; set; }

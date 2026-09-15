@@ -60,13 +60,13 @@ public static class ScGunSkinCatalog {
 
     /// <summary>Material cost by tier: blanks, mechanisms, paint. Indexes are ScWeaponMaterialBlock kinds.</summary>
     public static readonly Dictionary<ScSkinTier, (int Blank, int Mechanism, int Paint)> Cost = new() {
-        [ScSkinTier.Standard] = (2, 1, 1),
-        [ScSkinTier.Premium] = (4, 2, 2),
-        [ScSkinTier.Special] = (6, 3, 3),
+        [ScSkinTier.Standard] = (0, 2, 8),
+        [ScSkinTier.Premium] = (0, 2, 8),
+        [ScSkinTier.Special] = (0, 2, 8),
     };
     /// <summary>Stripping a finish costs half a Standard application, rounded up, whatever the finish was.</summary>
     public static (int Blank, int Mechanism, int Paint) RemovalCost {
-        get { var s = Cost[ScSkinTier.Standard]; return ((s.Blank + 1) / 2, (s.Mechanism + 1) / 2, (s.Paint + 1) / 2); }
+        get { return (0, 0, 2); }
     }
 
     static readonly Dictionary<int, ScGunSkin> s_byId = All.ToDictionary(s => s.PaintId);
@@ -92,6 +92,7 @@ public static class ScGunSkinCatalog {
         if (blank > 0) cost[materialValue(ScWeaponMaterialBlock.Blank)] = blank;
         if (mechanism > 0) cost[materialValue(ScWeaponMaterialBlock.Mechanism)] = mechanism;
         if (paint > 0) cost[materialValue(ScWeaponMaterialBlock.Paint)] = paint;
+        if (skin is not null) cost[ScComponentCrafting.Resolve("diamond")] = 2;
         return cost;
     }
 

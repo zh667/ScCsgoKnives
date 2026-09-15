@@ -1,4 +1,4 @@
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using ZipArchive=System.IO.Compression.ZipArchive;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -38,7 +38,7 @@ static class SurvivalPackageIntegration {
                 Check("database/"+name,behavior?.GetValue<string>("Class")=="Game.ComponentScDecoyBehavior","actual database merge and inherited component values");
             }
             var project=database.Descendants("ProjectTemplate").Single(e=>(string)e.Attribute("Name")=="Project");
-            foreach (string name in new[] {"ScKnifeBlockBehavior","ScGunBlockBehavior","ScWeaponWorkbench","ScGrenades","ScStarterEquipment"})
+            foreach (string name in new[] {"ScKnifeBlockBehavior","ScGunBlockBehavior","ScWeaponWorkbench","ScGrenades","ScStarterEquipment","ScC4"})
                 Check("subsystem/"+name,project.Elements("MemberSubsystemTemplate").Count(e=>(string)e.Attribute("Name")==name)==1,"exactly one registration after engine merge");
             var starter = project.Elements("MemberSubsystemTemplate").Single(e => (string)e.Attribute("Name") == "ScStarterEquipment");
             string starterClass = (string)starter.Elements("Parameter").Single(e => (string)e.Attribute("Name") == "Class").Attribute("Value");
@@ -90,7 +90,7 @@ static class SurvivalPackageIntegration {
                     }
                 }
             }
-            Check("recipe/count",recipes.Count==14,"2 ammo + 5 parts (the fifth is the paint material) + workbench + 6 grenades");
+            Check("recipe/count",recipes.Count==9,"2 ammo + workbench + 6 grenades; five cheap component recipes removed");
             var vanilla=Read(original,"Assets/CraftingRecipes.xml");
             var layouts=new List<(string Name,string[] Ingredients)>();
             foreach (var recipe in vanilla.DescendantsAndSelf("Recipe")) {
@@ -118,11 +118,11 @@ static class SurvivalPackageIntegration {
             foreach (string suffix in new[] {"_draw.wav","_pin.wav","_throw.wav"})
                 Check("grenade-audio/"+kind+suffix,zip.GetEntry("Assets/Audio/ScCsgoKnives/grenade_"+kind+suffix) is not null,"referenced by grenade action controller");
             foreach (string suffix in new[] {".png","_normal.png","_orm.png"})
-                Check("grenade-texture/"+kind+suffix,zip.GetEntry("Assets/Textures/ScCsgoKnives/grenade_"+kind+"_cs2"+suffix) is not null,"base/normal/ORM exists in package");
+                Check("grenade-texture/"+kind+suffix,(zip.GetEntry("Assets/Textures/ScCsgoKnives/grenade_"+kind+"_cs2"+suffix) ?? zip.GetEntry("Assets/Textures/ScCsgoKnives/grenade_"+kind+"_cs2"+suffix.Replace(".png",".webp"))) is not null,"base/normal/ORM exists in package");
         }
         foreach(string name in new[]{"survival_surface","grenade_glow","grenade_fire_atlas","grenade_blast_atlas","grenade_smoke_atlas",
             "grenade_hegrenade_slot","grenade_flashbang_slot","grenade_smokegrenade_slot","grenade_molotov_slot","grenade_incendiary_slot","grenade_decoy_slot"})
-            Check("polish-texture/"+name,zip.GetEntry("Assets/Textures/ScCsgoKnives/"+name+".png") is not null,"new rendering dependency present in final package");
+            Check("polish-texture/"+name,(zip.GetEntry("Assets/Textures/ScCsgoKnives/"+name+".png") ?? zip.GetEntry("Assets/Textures/ScCsgoKnives/"+name+".webp")) is not null,"new rendering dependency present in final package");
         return results;
     }
 }

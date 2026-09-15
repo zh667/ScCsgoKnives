@@ -26,6 +26,15 @@ public static class SurvivalSelfTest {
         public void DropAllItems(Vector3 position) => Array.Clear(Counts);
     }
     public static void Run(Action<string, bool, string> check) {
+        var resolver = ScComponentCrafting.ResolveOverride;
+        var owner = ScWeaponCrafting.RecoveryOwnerOverride;
+        try {
+            ScComponentCrafting.ResolveOverride = id => id == "diamond" ? 959 : throw new InvalidOperationException("Unexpected test ingredient: " + id);
+            ScWeaponCrafting.RecoveryOwnerOverride = _ => "test/craft";
+            RunCore(check);
+        } finally { ScComponentCrafting.ResolveOverride = resolver; ScWeaponCrafting.RecoveryOwnerOverride = owner; }
+    }
+    static void RunCore(Action<string, bool, string> check) {
         ScGunRegistry.Current ??= new ScGunRegistry(); // headless: the gun state table a world would own
         ScGunRecoverySelfTest.Run(check);
         ScGunSaveGuardSelfTest.Run(check);
@@ -45,6 +54,18 @@ public static class SurvivalSelfTest {
         Test("cancel-before-drop", () => { var i = Setup(12, 2); var t = Tx(i); t.Cancel(); return !t.Discard() && !t.InsertMagazine() && R(i) == 12 && i.Counts[1] == 2; });
         Test("cancel-after-drop-preserves-rounds", () => { var i = Setup(12, 2); var t = Tx(i); t.Discard(); t.Cancel(); return !t.InsertMagazine() && R(i) == 12 && i.Counts[1] == 2; });
         Test("insert-once", () => { var i = Setup(12, 2); var t = Tx(i); return t.Discard() && !t.Discard() && t.InsertMagazine() && !t.InsertMagazine() && R(i) == 30 && i.Counts[1] == 1; });
+        Test("insert-event-frame-jump-and-cancel", () => {
+            var i = Setup(12, 2); var t = Tx(i);
+            bool ok = t.Discard() && !t.InsertMagazineAt(1, 1.1) && R(i) == 12
+                && t.InsertMagazineAt(4, 1.1) && t.Valid && R(i) == 30 && i.Counts[1] == 1;
+            t.Cancel();
+            return ok && !t.InsertMagazineAt(5, 1.1) && R(i) == 30 && i.Counts[1] == 1;
+        });
+        Test("insert-invalid-timing-pays-nothing", () => {
+            var i = Setup(12, 2); var t = Tx(i); t.Discard();
+            return !t.InsertMagazineAt(3, double.NaN) && !t.InsertMagazineAt(double.PositiveInfinity, 1)
+                && !t.InsertMagazineAt(3, -1) && !t.InsertMagazineAt(3, double.PositiveInfinity) && R(i) == 12 && i.Counts[1] == 2;
+        });
         Test("unavailable-after-drop", () => { var i = Setup(12, 1); var t = Tx(i); t.Discard(); i.RemoveSlotItems(1, 1); return !t.InsertMagazine() && R(i) == 12 && i.Counts[1] == 0; });
         Test("same-type-swap-epoch", () => { var i = Setup(12, 2); var t = Tx(i); ScInventoryTransaction.Changed(i); return !t.Discard() && R(i) == 12 && i.Counts[1] == 2; });
         Test("slot-switch", () => { var i = Setup(12, 2); var t = Tx(i); i.ActiveSlotIndex = 1; return !t.Discard() && R(i) == 12; });
@@ -64,7 +85,7 @@ public static class SurvivalSelfTest {
         Test("craft-full-inventory-no-charge", () => { var i = Setup(0, 5); for (int n = 2; n < 8; n++) i.AddSlotItems(n, 901, 1); return !ScWeaponCrafting.TryCraft(i, 902, new Dictionary<int,int> { [ammo] = 3 }) && i.Counts[1] == 5; });
         Test("craft-atomic-success", () => { var i = Setup(0, 5); return ScWeaponCrafting.TryCraft(i, 902, new Dictionary<int,int> { [ammo] = 3 }) && i.Counts[1] == 2 && i.Values[2] == 902 && i.Counts[2] == 1; });
         Test("craft-rollback", () => { var i = Setup(0, 5); i.AddSlotItems(2, 901, 1); i.RefuseSlot = 2; return !ScWeaponCrafting.TryCraft(i, 902, new Dictionary<int,int> { [ammo] = 3, [901] = 1 }) && i.Counts[1] == 5 && i.Counts[2] == 1; });
-        Test("craft-all57-low-level", () => ScWeaponCrafting.All.Length == 57 && ScWeaponCrafting.All.All(e => e.Level >= 1 && e.Level <= 6 && e.B > 0 && e.H == 1));
+        Test("craft-all57-new-gates", () => ScWeaponCrafting.All.Length == 57 && ScWeaponCrafting.All.All(e => e.Level >= 1 && e.Level <= 12 && e.B > 0 && e.H == (e.Knife ? 1 : 2)));
         Test("knives-shared-recovery", () => { var k = new ScKnifeStrike(); return k.Start(0, true) && !k.Start(.1, false) && !k.TakeHit(.1) && k.TakeHit(.3) && !k.TakeHit(.3) && !k.Start(.9, false) && k.Start(1, false); });
         Test("knives-cancel-keeps-recovery", () => { var k = new ScKnifeStrike(); k.Start(0, true); k.Cancel(); return !k.TakeHit(.4) && !k.Start(.5, false) && k.Start(1, false); });
         foreach (string knife in CsmcKnifeRig.FrozenKnifeOrder)
@@ -373,7 +394,7 @@ public static class SurvivalSelfTest {
         });
         Test("m4-strict-record-parse", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
-            const string tail = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0";
+            const string tail = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0";
             records.SetValue("1", "v=0,r=30,s=0,d=1500,m=badMax,n=badRevision,c=badCharge,p=0," + tail);
             records.SetValue("2", "v=0,r=30,s=0,d=1500");
             records.SetValue("3", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail + ",extra=1");
@@ -396,6 +417,7 @@ public static class SurvivalSelfTest {
             i.AddSlotItems(2, MatValue(ScWeaponMaterialBlock.Blank), b + 4);
             i.AddSlotItems(3, MatValue(ScWeaponMaterialBlock.Mechanism), m + 4);
             i.AddSlotItems(4, MatValue(ScWeaponMaterialBlock.Paint), paint + 4);
+            i.AddSlotItems(5, ScComponentCrafting.Resolve("diamond"), 4);
         }
         ScGunResult ApplySkin(Inventory i, int slot, ScGunSkin skin, string holder = "player:0:0", bool free = false) {
             var q = ScWeaponSkinning.Prepare(i, slot, skin, free, MatValue);
@@ -413,8 +435,7 @@ public static class SurvivalSelfTest {
                 && ScGunSkinCatalog.Find(51).Key == "am_lightning_awp" && ScGunSkinCatalog.Find(9999) is null;
             bool fits = ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), AwpVariant())
                 && !ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), Array.FindIndex(GunSpec.All, g => g.Name == "ak47"));
-            bool tiers = ScGunSkinCatalog.Cost[ScSkinTier.Standard] == (2, 1, 1) && ScGunSkinCatalog.Cost[ScSkinTier.Premium] == (4, 2, 2)
-                && ScGunSkinCatalog.Cost[ScSkinTier.Special] == (6, 3, 3) && ScGunSkinCatalog.RemovalCost == (1, 1, 1);
+            bool tiers = ScGunSkinCatalog.Cost.Values.All(v => v == (0, 2, 8)) && ScGunSkinCatalog.RemovalCost == (0, 0, 2);
             bool names = ScGunSkinCatalog.Material("awp", 51) == "awp_hd__am_lightning_awp" && ScGunSkinCatalog.Material("awp", ScGunSkinCatalog.None) == "awp_hd"
                 && ScGunSkinCatalog.Material("ak47", 51) == "ak47_hd" && ScGunSkinCatalog.Icon("awp", 51) == "awp_slot__am_lightning_awp"
                 && ScGunSkinCatalog.Material("awp", 9999) == "awp_hd";
@@ -450,12 +471,12 @@ public static class SurvivalSelfTest {
         });
         Test("skin-strip-and-wrong-gun", () => {
             var skin = SkinOf("am_lightning_awp");
-            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(i, skin); i.AddSlotItems(5, MatValue(ScWeaponMaterialBlock.Paint), 4);
+            var i = new Inventory(); i.AddSlotItems(0, Gun(AwpVariant(), 5), 1); Stock(i, skin); i.AddSlotItems(6, MatValue(ScWeaponMaterialBlock.Paint), 4);
             if (ApplySkin(i, 0, skin) != ScGunResult.Success) return false;
             int blanks = i.Counts[2];
             bool wrongGun = ScWeaponSkinning.Prepare(i, 0, SkinOf("cu_fireserpent_ak47_bravo"), false, MatValue) is null; // an AK finish is not offered on an AWP
             var strip = ScWeaponSkinning.Prepare(i, 0, null, false, MatValue);
-            bool stripped = strip is not null && strip.Cost[MatValue(ScWeaponMaterialBlock.Blank)] == ScGunSkinCatalog.RemovalCost.Blank
+            bool stripped = strip is not null && !strip.Cost.ContainsKey(MatValue(ScWeaponMaterialBlock.Blank)) && strip.Cost[MatValue(ScWeaponMaterialBlock.Paint)] == 2
                 && ScWeaponSkinning.Apply(i, strip, "player:0:0") == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None
                 && i.Counts[2] == blanks - ScGunSkinCatalog.RemovalCost.Blank;
             bool free = ApplySkin(i, 0, skin, free: true) == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == skin.PaintId;
@@ -570,7 +591,7 @@ public static class SurvivalSelfTest {
         Test("skin-bad-records-are-quarantined", () => {
             var d = new ValuesDictionary(); d.SetValue("Schema", ScGunRegistry.Schema); d.SetValue("Next", 1);
             var records = new ValuesDictionary();
-            const string skinTail = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0";
+            const string skinTail = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0";
             records.SetValue("1", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=9999," + skinTail);  // a finish this build does not know
             records.SetValue("2", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=51," + skinTail);    // an AWP finish on an AK
             records.SetValue("3", "0,30,0,1500,1500,0,-1");                                    // a schema-1 row inside a schema-3 table
@@ -712,7 +733,7 @@ public static class SurvivalSelfTest {
         });
         Test("m4-t12-bad-records", () => {
             var d = new ScGunRegistry().Save(0); var records = new ValuesDictionary();
-            const string tail12 = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0";
+            const string tail12 = "ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0";
             records.SetValue("1", "v=0,r=30,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail12);
             records.SetValue("2", "v=0,r=99,s=0,d=1500,m=1500,n=0,c=-1,p=0," + tail12);   // over this model's capacity
             records.SetValue("3", "v=63,r=1,s=0,d=10,m=10,n=0,c=-1,p=0," + tail12);       // a model this build does not have
@@ -726,7 +747,7 @@ public static class SurvivalSelfTest {
             try {
                 var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.WithId(0, 2)), 1); i.AddSlotItems(1, Terrain.MakeBlockValue(512, 0, GunSpec.WithId(5, 1)), 1);
                 bool missing = Shoot(i, 0) == ScGunResult.MissingRecord && !ScGunBlock.IsKnown(i.Values[0]);
-                bool mismatch = Shoot(i, 1, "player:0:1") == ScGunResult.MissingRecord && !GunSpec.IsUsable(Data(i, 1)) && r.TryGetSnapshot(1, out var s1) && s1.Rounds == 30; // a record of another model is not this gun's
+                bool mismatch = Shoot(i, 1, "player:0:1") == ScGunResult.ModelMismatch && !GunSpec.IsUsable(Data(i, 1)) && r.TryGetSnapshot(1, out var s1) && s1.Rounds == 30; // a record of another model is not this gun's
                 return kept && verbatim && missing && mismatch;
             } finally { ScGunRegistry.Current = saved; }
         });
@@ -778,11 +799,11 @@ public static class SurvivalSelfTest {
             var m249 = ScWeaponCrafting.All.First(e => e.Name == "m249"); var knife = ScWeaponCrafting.All.First(e => e.Knife);
             int blank = ScWeaponRepair.Blank, mech = ScWeaponRepair.Mechanism;
             var full = ScWeaponRepair.FullCost(ak); var pistol = ScWeaponRepair.FullCost(glock); var mg = ScWeaponRepair.FullCost(m249);
-            bool fullOk = full[blank] == 1 && full[mech] == 1 && full.Count == 2 && pistol[blank] == 1 && !pistol.ContainsKey(mech) && mg[blank] == 2 && mg[mech] == 1
-                && ScWeaponRepair.FullCost(knife).Count == 0 && ScWeaponCrafting.All.Where(e => !e.Knife).All(e => ScWeaponRepair.FullCost(e).Values.Sum() >= 1
-                    && ScWeaponRepair.FullCost(e).Values.Sum() <= Math.Max(1, (e.B + e.M + e.H + e.O) * 3 / 10 + 1));
+            bool fullOk = full[blank] == 3 && full[mech] == 3 && full.Count == 2 && pistol[blank] == 2 && pistol[mech] == 1 && mg[blank] == 5 && mg[mech] == 3
+                && ScWeaponRepair.FullCost(knife).Count == 0 && ScWeaponCrafting.All.Where(e => !e.Knife).All(e =>
+                    ScWeaponRepair.FullCost(e)[blank] == (e.B + 1) / 2 && ScWeaponRepair.FullCost(e)[mech] == (e.M + 1) / 2);
             var none = ScWeaponRepair.Cost(ak, 1500, 1500); var one = ScWeaponRepair.Cost(ak, 1499, 1500); var broken = ScWeaponRepair.Cost(ak, 0, 1500); var half = ScWeaponRepair.Cost(m249, 750, 4000);
-            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 1 && broken[mech] == 1 && half[blank] == 2 && half[mech] == 1;
+            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 3 && broken[mech] == 3 && half[blank] == 5 && half[mech] == 3;
         });
         Test("smoke-opening-bound-to-its-smokes", () => {
             var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
@@ -850,8 +871,9 @@ public static class SurvivalSelfTest {
                 var item=ScGrenadeWorldMesh.Build(mesh,grenade=="grenade_molotov",false);
                 var flight=ScGrenadeWorldMesh.Build(mesh,grenade=="grenade_molotov",true);
                 bool compact=item.Parts.All(p=>p.Indices.All(i=>i>=0 && i<item.Vertices.Length)) && flight.Parts.All(p=>p.Indices.All(i=>i>=0 && i<flight.Vertices.Length));
+                int lighterVertices=Enumerable.Range(0,mesh.Skinned.Length).Count(i=>mesh.VertexUsesJoint(i,n=>n.StartsWith("lighter",StringComparison.Ordinal)));
                 return compact && flight.Vertices.Length>1000 && (grenade=="grenade_molotov"
-                    ? item.Vertices.Length<mesh.Skinned.Length-2000 && flight.Vertices.Length==item.Vertices.Length
+                    ? lighterVertices>0 && item.Vertices.Length<=mesh.Skinned.Length-lighterVertices && flight.Vertices.Length==item.Vertices.Length
                     : flight.Vertices.Length<item.Vertices.Length);
             });
             foreach (string alias in new[] {"deploy","idle","inspect","inspect2","pullpin","holdHigh","holdLow","throwHigh","throwLow"}) {

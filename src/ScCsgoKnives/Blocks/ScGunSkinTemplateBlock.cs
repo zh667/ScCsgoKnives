@@ -7,12 +7,12 @@ namespace Game;
 /// to an ordinary instance gun before use. Templates in containers/drops can persist without an ID.</summary>
 public sealed class ScGunSkinTemplateBlock : ScNoDurabilityBlock {
     public ScGunSkinTemplateBlock() {
-        DefaultDisplayName = "CS2 涂装枪械"; DefaultCategory = "Weapons";
+        DefaultDisplayName = "CS2 涂装枪械"; DefaultCategory = "CS武器";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 1; CraftingId = "sccsgoskintemplate";
         DefaultMeleePower = 0; DefaultProjectilePower = 0;
         DefaultIconViewScale = .8f;
     }
-    public override int GetDisplayOrder(int value) => 222;
+    public override int GetDisplayOrder(int value) => 215;
     public override IEnumerable<int> GetCreativeValues() => ScGunSkinCatalog.All.Select(s => Terrain.MakeBlockValue(BlockIndex, 0, s.PaintId));
     public static bool IsTemplate(int value) => BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunSkinTemplateBlock), out int index) && Terrain.ExtractContents(value) == index;
     public static bool TrySnapshot(int value, out ScGunSnapshot snapshot) {

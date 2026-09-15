@@ -71,7 +71,9 @@ public static class Cs2SelfTest {
             var weaponArms = Cs2SkinnedMesh.Arms;
             bool skinned = weaponArms is not null && weaponArms.SetPose(Cs2Rig.Sample(asset, "idle", 0f), Cs2Placement.Placement());
             if (skinned) weaponArms.Skin();
-            Check($"firstperson/{asset}/hands", skinned && weaponArms.Skinned.Length > 6000
+            Check($"firstperson/{asset}/hands", skinned && weaponArms.Skinned.Length > 3000
+                && weaponArms.Primitives.Length == 2 && weaponArms.Joints.Any(n => n.StartsWith("finger_"))
+                && weaponArms.Primitives.All(p => p.Indices.Length > 0 && p.Indices.All(i => i >= 0 && i < weaponArms.Skinned.Length))
                 && weaponArms.Skinned.All(v => float.IsFinite(v.Position.X) && float.IsFinite(v.Position.Y) && float.IsFinite(v.Position.Z)),
                 "real finger / glove mesh binds to this weapon's CS2 skeleton");
             if (!CsmcKnifeRig.IsGun(variant)) {

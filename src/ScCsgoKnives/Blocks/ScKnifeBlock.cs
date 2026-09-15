@@ -4,6 +4,11 @@ using Engine.Graphics;
 namespace Game;
 
 public class ScKnifeBlock : ScNoDurabilityBlock {
+    public ScKnifeBlock() { DefaultCategory = "CS武器"; }
+    // Vanilla Weapons entries occupy display orders 193–209.  Keep the CS tab
+    // immediately after that tab instead of letting it drift to the end of the
+    // creative catalogue.
+    public override int GetDisplayOrder(int value) => 210;
     public override bool IsEditable_(int value) => false;
     static readonly int s_count = CsmcKnifeRig.KnifeCount;
     static readonly string[] s_names = Enumerable.Range(0, s_count).Select(CsmcKnifeRig.GetAssetName).ToArray();
@@ -37,21 +42,17 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
         int variant = GetVariant(value);
         // Old wear data can contain an out-of-range model. Preserve the item without indexing its assets.
         if (!IsKnown(value)) {
-            BlocksManager.DrawFlatBlock(primitivesRenderer, value, size, ref matrix,
-                ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, false, environmentData);
+            ScInventoryIcon.Draw(primitivesRenderer, value, size, ref matrix,
+                ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.UI && !IsModelPreview(environmentData)) {
-            BlocksManager.DrawFlatBlock(
-                primitivesRenderer,
-                value,
-                1.45f * size,
-                ref matrix,
-                ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[variant]}_slot"),
-                color,
-                false,
-                environmentData
-            );
+            int iconSkin = SkinOf(value);
+            string icon = iconSkin == ScKnifeSkinCatalog.None
+                ? $"{s_names[variant]}_slot"
+                : ScKnifeSkinCatalog.Icon(s_names[variant], iconSkin, variant);
+            ScInventoryIcon.Draw(primitivesRenderer, value, size, ref matrix,
+                ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{icon}"), color, environmentData);
             return;
         }
         if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !KnifeDiagnostics.IsFinite(matrix)) {
@@ -74,7 +75,10 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
                 + $"matrix={KnifeDiagnostics.MatrixSummary(matrix)}, viewBounds={FormatBounds(viewMin, viewMax)}."
             );
         }
-        BlocksManager.DrawMeshBlock(primitivesRenderer, model.Mesh, ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[variant]}_cs2"), color, size, ref matrix, environmentData);
+        int skin = SkinOf(value);
+        string finish = ScKnifeSkinCatalog.Texture(s_names[variant], skin, variant);
+        try { BlocksManager.DrawMeshBlock(primitivesRenderer, model.Mesh, ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{finish}"), color, size, ref matrix, environmentData); }
+        catch { BlocksManager.DrawMeshBlock(primitivesRenderer, model.Mesh, ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{s_names[variant]}_cs2"), color, size, ref matrix, environmentData); }
     }
 
     public override int GetTextureSlotCount(int value) => 1;
@@ -91,13 +95,20 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
 
     public override IEnumerable<int> GetCreativeValues() {
         for (int variant = 0; variant < s_names.Length; variant++)
-            yield return Terrain.MakeBlockValue(BlockIndex, 0, variant);
+        {
+            // Factory knives remain available alongside their finish variants.
+            yield return Terrain.MakeBlockValue(BlockIndex, 0, ScKnifeSkinCatalog.With(variant, ScKnifeSkinCatalog.None));
+            int skin = ScKnifeSkinCatalog.ForVariant(variant);
+            if (skin != ScKnifeSkinCatalog.None)
+                yield return Terrain.MakeBlockValue(BlockIndex, 0, ScKnifeSkinCatalog.With(variant, skin));
+        }
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
         if (!IsKnown(value)) return $"未知刀具（型号 {GetVariant(value)}，保留数据）";
-        if (LanguageControl.TryGetBlock($"{nameof(ScKnifeBlock)}:{GetVariant(value)}", "DisplayName", out string result)) return result;
-        return base.GetDisplayName(subsystemTerrain, value);
+        if (LanguageControl.TryGetBlock($"{nameof(ScKnifeBlock)}:{GetVariant(value)}", "DisplayName", out string result))
+            return result + (SkinOf(value) is var skin && skin != ScKnifeSkinCatalog.None ? " · " + ScKnifeSkinCatalog.Name(skin, GetVariant(value)) : "");
+        return base.GetDisplayName(subsystemTerrain, value) + (SkinOf(value) is var skin2 && skin2 != ScKnifeSkinCatalog.None ? " · " + ScKnifeSkinCatalog.Name(skin2, GetVariant(value)) : "");
     }
 
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
@@ -111,6 +122,7 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
     public static bool IsKnown(int value) => GetVariant(value) < s_count;
 
     public static int GetVariant(int value) => Terrain.ExtractData(value) & 0x1F;
+    public static int SkinOf(int value) => IsKnown(value) ? ScKnifeSkinCatalog.Get(value) : ScKnifeSkinCatalog.None;
 
     public static string GetAssetName(int variant) => s_names[Math.Clamp(variant, 0, s_names.Length - 1)];
 

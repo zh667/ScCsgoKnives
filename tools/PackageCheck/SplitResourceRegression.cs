@@ -1,4 +1,4 @@
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using ZipArchive = System.IO.Compression.ZipArchive;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -46,7 +46,7 @@ static class SplitResourceRegression {
             }finally{ModsManager.ModListAll=savedAll;ModsManager.ModList=savedList;ModsManager.PackageNameToModEntity=savedMap;}
             var assets=ResourcePackInput.Animations(mod);
             Check("resource-assembly-has-no-gameplay",assets.GetTypes().All(t=>!t.IsSubclassOf(typeof(ModLoader))&&!t.IsSubclassOf(typeof(Block))));
-            Check("large-curves-only-in-resource-assembly",assets.GetManifestResourceNames().Count(n=>n.EndsWith(".cs2.animation.json"))==63
+            Check("large-curves-only-in-resource-assembly",assets.GetManifestResourceNames().Count(n=>n.EndsWith(".cs2.animation.json"))==64
                 &&!mod.GetManifestResourceNames().Any(n=>n.EndsWith(".cs2.animation.json")||n.EndsWith(".skin")||n.EndsWith(".parts")));
             var cache=(IDictionary<string,List<object>>)typeof(ContentManager).GetField("Caches",BindingFlags.NonPublic|BindingFlags.Static).GetValue(null);
             cache.TryGetValue("ScCsgoResources",out var oldMarker);

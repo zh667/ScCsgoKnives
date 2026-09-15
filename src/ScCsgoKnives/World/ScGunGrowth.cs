@@ -1,77 +1,134 @@
 namespace Game;
 
-/// <summary>Thirty-level gun growth: 100 valid kills a level, 3000 for the
-/// last one, no separate experience system. Every number is derived from the gun's *base* value and the applied
-/// level, never from an already-grown value, so re-applying a level can never compound.
+/// <summary>Fifty-level gun growth. The total growth is spread across all fifty levels so that reaching Lv50
+/// reproduces exactly what the published public beta reached at Lv30: damage x10, magazine x6.5, maximum life x2.5,
+/// and the Zeus charge 10 s -> 1 s. The normal-gun fire rate is deliberately capped lower (x2 at Lv50) than the
+/// public beta's x3.5, while the four scoped sniper rifles keep their public-beta x3.5.
 ///
-/// The rules version is stored per gun. It exists so a future rebalance can convert old guns explicitly
-/// instead of silently re-scaling their saved state on every load.</summary>
+/// The first ten levels are unchanged from the public beta (damage x2, life x1.5, capacity x1.5, fire rate x1,
+/// Zeus 10 s -> 5 s) so early weapons feel exactly as they did.
+///
+/// Every number is derived from the gun's *base* value and the applied level, never from an already-grown value,
+/// so re-applying a level can never compound.
+///
+/// The rules version is stored per gun. It exists so a rebalance can convert old guns explicitly instead of
+/// silently re-scaling their saved state on every load.</summary>
 public static class ScGunGrowth {
-    public const int MaxLevel = 30;
+    public const int MaxLevel = 50;
     public const int PrecisionLevel = 10;
-    public const int KillsPerLevel = 100;
-    /// <summary>The parameter set below. Stored per gun as GrowthRulesVersion; unrelated to the mod version.</summary>
-    public const int RulesVersion = 2;
+    public const int KillsPerLevel = 25;
+    /// <summary>The parameter set below. Stored per gun as GrowthRulesVersion; unrelated to the mod version.
+    /// 7 keeps the RulesVersion 6 combat curve and only lowers the Lv31–Lv50 kill thresholds.</summary>
+    public const int RulesVersion = 7;
     /// <summary>PendingGrowthLevel when nothing is waiting. Level 0 is a real level, so the sentinel is -1.</summary>
     public const int NoPending = -1;
 
-    /// <summary>Cumulative kills needed for a level: 100, 200 … 3000.</summary>
-    public static long KillsFor(int level) => (long)Math.Clamp(level, 0, MaxLevel) * KillsPerLevel;
-    /// <summary>The level this many valid kills unlocks. Counting continues past 3000; the level stops at 30.</summary>
-    public static int LevelFor(long kills) => kills <= 0 ? 0 : (int)Math.Min(MaxLevel, kills / KillsPerLevel);
+    /// <summary>Cumulative kills: Lv10=250, Lv20=750, Lv30=1750, Lv40=3250, Lv50=5250.
+    /// Per level: 1–10 ×25, 11–20 ×50, 21–30 ×100, 31–40 ×150, 41–50 ×200.</summary>
+    public static long KillsFor(int level) {
+        int l = Clamp(level);
+        return 25L * Math.Min(l, 10) + 50L * Math.Min(Math.Max(l - 10, 0), 10)
+            + 100L * Math.Min(Math.Max(l - 20, 0), 10) + 150L * Math.Min(Math.Max(l - 30, 0), 10)
+            + 200L * Math.Max(l - 40, 0);
+    }
+    /// <summary>The per-weapon kill-requirement multiplier. A scoped sniper needs 40 % fewer kills, the Zeus 70 %
+    /// fewer, and a machine gun 50 % more.</summary>
+    public static float Difficulty(int variant) {
+        if (IsTaser(variant)) return .30f;
+        if (IsSniper(variant)) return .60f;
+        string n = variant >= 0 && variant < GunSpec.All.Length ? GunSpec.All[variant].Name : "";
+        if (n is "m249" or "negev") return 1.50f;
+        return 1f;
+    }
+    public static bool IsSniper(int variant) {
+        string n = variant >= 0 && variant < GunSpec.All.Length ? GunSpec.All[variant].Name : "";
+        return n is "ssg08" or "awp" or "scar20" or "g3sg1";
+    }
+    /// <summary>Exact rational scaling (3/10, 3/5, 3/2) so a float rounding never adds or drops a kill.</summary>
+    public static long KillsFor(int variant, int level) {
+        long kills = KillsFor(level);
+        if (IsTaser(variant)) return (kills * 3 + 9) / 10;
+        if (IsSniper(variant)) return (kills * 3 + 4) / 5;
+        string n = variant >= 0 && variant < GunSpec.All.Length ? GunSpec.All[variant].Name : "";
+        return n is "m249" or "negev" ? (kills * 3 + 1) / 2 : kills;
+    }
+    /// <summary>The level this many valid kills unlocks. Counting continues past the cap; the level stops at 50.</summary>
+    public static int LevelFor(long kills) {
+        long k = Math.Max(0, kills); int level = 0;
+        while (level < MaxLevel && k >= KillsFor(level + 1)) level++;
+        return level;
+    }
+    public static int LevelFor(int variant, long kills) {
+        long k = Math.Max(0, kills); int level = 0;
+        while (level < MaxLevel && k >= KillsFor(variant, level + 1)) level++;
+        return level;
+    }
+    public static long ProgressKills(long kills, long credit) => kills > long.MaxValue - credit ? long.MaxValue : kills + credit;
     /// <summary>Kills still needed for the next level, or 0 at the cap.</summary>
-    public static long ToNextLevel(long kills) {
-        int level = LevelFor(kills);
-        return level >= MaxLevel ? 0 : KillsFor(level + 1) - Math.Max(0, kills);
+    public static long ToNextLevel(long kills) => ToNextLevel(-1, kills);
+    public static long ToNextLevel(int variant, long kills) {
+        int level = variant < 0 ? LevelFor(kills) : LevelFor(variant, kills);
+        return level >= MaxLevel ? 0 : KillsFor(variant, level + 1) - Math.Max(0, kills);
     }
     public static int Clamp(int level) => Math.Clamp(level, 0, MaxLevel);
     public static bool IsTaser(int variant) => variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].RechargeSeconds > 0f;
 
-    static int First(int level) => Math.Min(Clamp(level),10);
-    static int Second(int level) => Math.Clamp(Clamp(level)-10,0,10);
-    static int Third(int level) => Math.Clamp(Clamp(level)-20,0,10);
-    /// <summary>All gains are additive against base, not compounded: Lv10=2x, Lv20=5x, Lv30=10x.</summary>
-    public static float DamageMultiplier(int level) => 1f + .10f * First(level) + .30f * Second(level) + .50f * Third(level);
-    /// <summary>Lv0-10 unchanged; each following level adds 10% / 15% of base shots per second.</summary>
-    public static float FireRateMultiplier(int level) => 1f + .10f * Second(level) + .15f * Third(level);
-    public static float ShotInterval(float baseSeconds,int level) => baseSeconds > 0 ? baseSeconds / FireRateMultiplier(level) : 0;
+    /// <summary>The ten levels of a growth tier, capped so calls above Lv50 stay flat.</summary>
+    static int Tier(int level, int index) => Math.Clamp(Clamp(level) - index * 10, 0, 10);
+    /// <summary>All gains are additive against base, not compounded. Lv10 x2 (unchanged), and the remaining
+    /// growth spread over Lv11-Lv50 so Lv50 = x10, the public beta's Lv30.</summary>
+    public static float DamageMultiplier(int level) =>
+        1f + .10f * Tier(level, 0) + .15f * Tier(level, 1) + .20f * Tier(level, 2) + .20f * Tier(level, 3) + .25f * Tier(level, 4);
+    /// <summary>Lv10 is unchanged (x1). The remaining growth is spread to Lv50: a normal gun reaches x2, a scoped
+    /// sniper keeps the public beta's x3.5.</summary>
+    public static float FireRateMultiplier(int variant, int level) => IsSniper(variant)
+        ? 1f + .05f * Tier(level, 1) + .05f * Tier(level, 2) + .075f * Tier(level, 3) + .075f * Tier(level, 4)
+        : 1f + .02f * Tier(level, 1) + .02f * Tier(level, 2) + .03f * Tier(level, 3) + .03f * Tier(level, 4);
+    /// <summary>A base fire-rate multiplier when the model is not known is treated as a normal gun.</summary>
+    public static float FireRateMultiplier(int level) => FireRateMultiplier(-1, level);
+    public static float ShotInterval(int variant, float baseSeconds, int level) =>
+        baseSeconds > 0 ? baseSeconds / FireRateMultiplier(variant, Clamp(level)) : 0;
     public static float SkinDamageMultiplier(int variant, int skinId) => ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant) ? 1.5f : 1f;
 
-    /// <summary>Magazine: C = C0 + floor(C0 × L / 20); the Zeus stays at one charge. Lv10 always gains at
-    /// least one round when the base holds more than one.</summary>
+    /// <summary>Magazine: Lv10 is unchanged at +50 %, and the remaining growth is spread to Lv50 at x6.5, the
+    /// public beta's Lv30. Integer twentieths avoid floor drift at exact capacity boundaries. The Zeus stays one charge.</summary>
     public static int Capacity(int variant, int level) {
         if (variant < 0 || variant >= GunSpec.All.Length) return 0;
         int baseCapacity = GunSpec.All[variant].Magazine;
         if (IsTaser(variant)) return baseCapacity;
         int L = Clamp(level);
-        // Integer twentieths avoid floor drift at exact capacity boundaries: 1.5x / 3.5x / 6.5x.
-        int twentieths = First(L) + 4 * Second(L) + 6 * Third(L);
+        int twentieths = Tier(L, 0) + Tier(L, 1) + 2 * Tier(L, 2) + 3 * Tier(L, 3) + 4 * Tier(L, 4);
         int grown = baseCapacity + (int)((long)baseCapacity * twentieths / 20);
         if (L >= PrecisionLevel && baseCapacity > 1) grown = Math.Max(grown, baseCapacity + 1);
         return grown;
     }
     public static int Capacity(GunSpec spec, int level) => Capacity(Array.IndexOf(GunSpec.All, spec), level);
 
-    /// <summary>Maximum durability: M = roundHalfUp(M0 × (1 + 0.05L)), M0 being the model's class life.</summary>
+    /// <summary>Maximum durability: Lv10 is unchanged at +50 %, then spread to Lv50 at x2.5, the public beta's Lv30.</summary>
     public static int MaxDurability(int variant, int level) {
         int baseLife = ScGunDurability.Full(variant);
-        return RoundHalfUp(baseLife * (1.0 + .05 * Clamp(level)));
+        float factor = 1f + .05f * Tier(level, 0) + .02f * Tier(level, 1) + .02f * Tier(level, 2) + .03f * Tier(level, 3) + .03f * Tier(level, 4);
+        return RoundHalfUp(baseLife * factor);
     }
     public static int RoundHalfUp(double value) => (int)Math.Floor(value + .5);
 
-    /// <summary>Charge cycle: 10 -> 5 -> 2.5 -> 1 seconds, preserves the existing first ten levels.</summary>
-    public static float RechargeSeconds(GunSpec spec, int level) =>
-        spec is null || spec.RechargeSeconds <= 0 ? 0 : spec.RechargeSeconds * (float)(1.0 - .05 * First(level) - .025 * Second(level) - .015 * Third(level));
+    /// <summary>Charge cycle: Lv10 is unchanged (10 -> 5 s), then spread to Lv50 (10 -> 1 s), the public beta's Lv30.</summary>
+    public static float RechargeSeconds(GunSpec spec, int level) {
+        if (spec is null || spec.RechargeSeconds <= 0) return 0;
+        float factor = 1f - .05f * Tier(level, 0) - .02f * Tier(level, 1) - .01f * Tier(level, 2) - .005f * Tier(level, 3) - .005f * Tier(level, 4);
+        return spec.RechargeSeconds * factor;
+    }
 
-    /// <summary>Spread and camera recoil are scaled once, on the final angle: 1 − 0.10L, and exactly zero at Lv10.</summary>
+    /// <summary>Spread and camera recoil are scaled once, on the final angle: 1 - 0.10L, and exactly zero at Lv10.</summary>
     public static float AngleScale(int level) { int L = Clamp(level); return L >= PrecisionLevel ? 0f : 1f - .10f * L; }
 
     /// <summary>A normal bullet gun at Lv10 has no weapon range limit of its own (continuously loaded world only).
-    /// The Zeus keeps its planned close-range exception and grows 5 % a level instead.</summary>
+    /// The Zeus keeps its planned close-range exception and grows 8 % a level instead.</summary>
     public static bool UnlimitedRange(int variant, int level) => Clamp(level) >= PrecisionLevel && !IsTaser(variant);
     public static float RangeScale(int variant, int level) {
         int L = Clamp(level);
-        return IsTaser(variant) ? 1f + .05f * First(L) + .15f * Second(L) + .20f * Third(L) : 1f + .25f * Math.Min(L,PrecisionLevel);
+        // Lv10 keeps the public beta's +50 %; the rest is spread so Lv50 reaches x5, the public beta's Lv30.
+        return IsTaser(variant) ? 1f + .05f * Tier(L, 0) + .0875f * Math.Clamp(L - 10, 0, 40) : 1f + .25f * Math.Min(L, PrecisionLevel);
     }
     /// <summary>How far a shot may actually reach at Lv10: the loaded-world budget, a finite number, never
     /// infinity or NaN, so vectors, serialization and the UI stay well defined.</summary>
@@ -111,6 +168,7 @@ public static class ScGunGrowth {
         int level = Clamp(copy.AppliedGrowthLevel);
         // The module is equipment, not earned growth. Copies keep it but start at zero kills/Lv0.
         copy.KillCount = 0;
+        copy.GrowthKillCredit = 0;
         copy.AppliedGrowthLevel = 0; copy.PendingGrowthLevel = NoPending; copy.GrowthRulesVersion = RulesVersion;
         if (level <= 0) return;
         int newMax = MaxDurability(copy.Variant, 0);
@@ -128,10 +186,10 @@ public static class ScGunGrowth {
     /// <summary>Headless seam: a host with no registered blocks supplies the item values itself. Never set in game.</summary>
     internal static Func<Dictionary<int, int>> InstallCostOverride;
     public static Dictionary<int, int> InstallCost() => InstallCostOverride?.Invoke() ?? new() {
-        [ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Blank)] = 1,
-        [ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Mechanism)] = 1,
-        [Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<GlassBlock>(true))] = 1,
-        [Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<GermaniumChunkBlock>(true))] = 1,
+        [ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Mechanism)] = 4,
+        [ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Optics)] = 1,
+        [Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<GermaniumChunkBlock>(true))] = 8,
+        [Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<DiamondChunkBlock>(true))] = 2,
     };
 }
 

@@ -49,6 +49,7 @@ public static class ScSurvivalBalance {
         attack.StunTimeAdd = 0;
         attack.AllowImpulseAndStunWhenDamageIsZero = false;
         if (eligible) control.Next = now + (zeus ? 5 : .8);
+        if (!melee) ScProjectileDefense.Apply(body, attack);
         ComponentMiner.AttackBody(attack);
         int outcome = ScCombatFeedback.Outcome(before, health?.Health ?? before);
         // A head pellet that confirmed damage without a kill reports 3 (yellow); a kill stays 2 whatever was hit.

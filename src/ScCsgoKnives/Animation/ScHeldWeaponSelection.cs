@@ -10,6 +10,9 @@ public sealed class ScHeldWeaponSelection {
     public bool Observe(object inventory, int slot, int value, bool gun) {
         int contents = Terrain.ExtractContents(value), data = Terrain.ExtractData(value);
         bool same = ReferenceEquals(inventory, m_inventory) && slot == m_slot && contents == m_contents;
+        // Materializing a fresh template is the same equip. Replacing an owned
+        // instance with another instance must reset per-gun animation state (CZ).
+        // Phantom allocations are prevented by canonical storage identity upstream.
         bool allocated = gun && GunSpec.IsFresh(m_data) && !GunSpec.IsFresh(data) && GunSpec.GetVariant(m_data) == GunSpec.GetVariant(data);
         bool changed = m_observed && (!same || (m_data != data && !allocated));
         m_inventory = inventory; m_slot = slot; m_contents = contents; m_data = data; m_observed = true;

@@ -21,7 +21,7 @@ public sealed class ScAssemblyRecipesScreen : ScWeaponHelpScreen {
         int recipeValue = skinTemplate && EffectiveGunStats.TrySnapshotValue(m_value, out var snapshot)
             ? ScGunAttributes.TemplateValue(snapshot.Variant) : m_value;
         var entry = ScWeaponCrafting.Find(recipeValue);
-        if (entry is null) return;
+        if (entry is null) { m_panel.Children.Add(ScGunUi.Note("无法识别装配配方，请返回后从 CS 武器入口重试。")); return; }
         void Label(string text, float scale = 1) => m_panel.Children.Add(new LabelWidget {
             Text = text, FontScale = scale, WordWrap = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(4, 5) });
         Label(BlocksManager.Blocks[Terrain.ExtractContents(entry.Value)].GetDisplayName(null, entry.Value), 1.25f);
@@ -43,8 +43,7 @@ public sealed class ScAssemblyRecipesScreen : ScWeaponHelpScreen {
     public override void Update() {
         if (BackRequested) { GoBack(); return; }
         if (m_attributes is not null && m_attributes.IsClicked) {
-            ScreensManager.m_screens["RecipaediaRecipes"] = new ScGunAttributesScreen();
-            ScreensManager.SwitchScreen("RecipaediaRecipes", m_value);
+            ScWeaponHelpScreen.Open(true, m_value);
         }
     }
 }

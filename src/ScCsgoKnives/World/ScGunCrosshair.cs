@@ -36,7 +36,7 @@ public static class ScGunCrosshair {
 
     public static void Draw(PrimitivesRenderer2D renderer, Camera camera, Color color, string style) {
         Vector2 size = camera.ViewportSize, centre = size * .5f;
-        float scale = Scale(size);
+        float scale = Scale(size) * ScUiSettings.CrosshairShape.Scale;
         if (style == ScUiSettings.StyleVanilla) {
             // The vanilla artwork, tinted. The subtexture is sampled, never modified, so the shared atlas and
             // every other player's crosshair stay exactly as they were.
@@ -57,7 +57,8 @@ public static class ScGunCrosshair {
 
     static void DrawCross(PrimitivesRenderer2D renderer, Vector2 centre, float scale, Color color, Camera camera) {
         var batch = renderer.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.AlphaBlend);
-        float gap = 3f * scale, length = 8f * scale, half = 1f * scale;
+        var shape = ScUiSettings.CrosshairShape;
+        float gap = shape.Gap * scale, length = shape.Length * scale, half = shape.Width * .5f * scale;
         foreach (Vector2 direction in new[] { new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1) }) {
             Vector2 side = new Vector2(-direction.Y, direction.X) * half;
             Vector2 a = centre + direction * gap, b = centre + direction * (gap + length);
@@ -68,7 +69,7 @@ public static class ScGunCrosshair {
     }
     static void DrawDot(PrimitivesRenderer2D renderer, Vector2 centre, float scale, Color color, Camera camera) {
         var batch = renderer.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.AlphaBlend);
-        float half = 1.6f * scale;
+        float half = ScUiSettings.CrosshairShape.Dot * .5f * scale;
         batch.QueueQuad(centre - new Vector2(half), centre + new Vector2(half, -half), centre + new Vector2(half), centre + new Vector2(-half, half), 0, color);
         batch.TransformTriangles(camera.ViewportMatrix);
         batch.Flush();

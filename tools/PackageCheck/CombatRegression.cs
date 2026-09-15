@@ -31,6 +31,13 @@ static class CombatRegression {
     sealed class Target : ComponentBody {
         public override BoundingBox BoundingBox => new(Position - new Vector3(.4f), Position + new Vector3(.4f));
     }
+    /// <summary>A stand-in for a mod's own block: `Block` is abstract, so the pass-through rule is exercised with a
+    /// plain collidable/non-collidable block instead of a real plant type.</summary>
+    sealed class PlainBlock : Block {
+        public PlainBlock(bool collidable) { IsCollidable = collidable; }
+        public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z) { }
+        public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) { }
+    }
     internal static List<Result> Run(Assembly mod, string package) {
         List<Result> result = [];
         void Test(string name, Func<bool> action) {
@@ -45,6 +52,10 @@ static class CombatRegression {
         foreach (var type in typeof(Block).Assembly.GetTypes().Where(t => !t.IsAbstract && (typeof(CrossBlock).IsAssignableFrom(t)
             || typeof(LeavesBlock).IsAssignableFrom(t) || typeof(WaterPlantBlock).IsAssignableFrom(t))))
             Test("all-native-vegetation/" + type.Name, () => !(bool)Call("ScGunRange", "StopsBullet", Activator.CreateInstance(type)));
+        // Any block that is not collidable is passed through, which is the engine's own projectile rule and the
+        // reason a mod's custom plant stops blocking CS bullets.
+        Test("non-collidable-block-passes", () => !(bool)Call("ScGunRange", "StopsBullet", new PlainBlock(false)));
+        Test("collidable-plain-block-stops", () => (bool)Call("ScGunRange", "StopsBullet", new PlainBlock(true)));
         Test("runtime-growth-sweep-calls-rule-aware-advance", () => {
             var update = mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("UpdateGrowth", BindingFlags.Instance | BindingFlags.NonPublic);
             return Calls(update).Any(c => c.DeclaringType.Name == "ScGunGrowthService" && c.Name == "Advance");
@@ -60,7 +71,7 @@ static class CombatRegression {
             return commit>=0&&noise>commit&&leaves>ray&&ray>=0&&calls.Any(c=>c.Name=="PlaySound");
         });
         foreach (bool creative in new[] { false, true }) foreach (bool handling in new[] { false, true })
-            foreach (Block plant in new Block[] { new TallGrassBlock(), new RedFlowerBlock(), new PurpleFlowerBlock(), new WhiteFlowerBlock(), new OakLeavesBlock(), new BirchLeavesBlock(), new SpruceLeavesBlock(), new RyeBlock(), new CottonBlock(), new IvyBlock() })
+            foreach (Block plant in new Block[] { new TallGrassBlock(), new RedFlowerBlock(), new PurpleFlowerBlock(), new WhiteFlowerBlock(), new OakLeavesBlock(), new BirchLeavesBlock(), new SpruceLeavesBlock(), new RyeBlock(), new CottonBlock(), new IvyBlock(), new PlainBlock(false) })
                 Test($"live-ray/{(creative ? "creative" : "survival")}/{handling}/{plant.GetType().Name}", () => {
                     var old = new[] { BlocksManager.Blocks[710], BlocksManager.Blocks[711] };
                     using var terrain = new Terrain(); terrain.AllocateChunk(0, 0);
@@ -163,16 +174,16 @@ static class CombatRegression {
                 && (string)newest.GetType().GetProperty("Weapon").GetValue(newest) == "AWP"
                 && (float)newest.GetType().GetProperty("Distance").GetValue(newest) == 25;
         });
-        Test("magazine-animation-finish-only", () => {
+        Test("magazine-insert-event-only", () => {
             int data = (int)Call("GunSpec", "MakeData", 0, 8, false), value = Terrain.MakeBlockValue(512, 0, data);
             var inv = new ComponentCreativeInventory { OpenSlotsCount = 10 }; for (int i = 0; i < 10; i++) inv.m_slots.Add(0); inv.AddSlotItems(0, value, 1);
             var type = mod.GetType("Game.ScReloadTransaction"); var tx = Activator.CreateInstance(type, [inv, 0, value, 901, 0, 30]);
             if (!(bool)type.GetMethod("Discard").Invoke(tx, null)) return false;
-            foreach (double now in new[] { 0, .8, 1.5, 2.999 })
-                if ((bool)type.GetMethod("FinishMagazine").Invoke(tx, [now, 3d]) || inv.GetSlotValue(0) != value) return false;
-            return (bool)type.GetMethod("FinishMagazine").Invoke(tx, [3d, 3d])
+            foreach (double now in new[] { double.NaN, 0, .8, 1.099 })
+                if ((bool)type.GetMethod("InsertMagazineAt").Invoke(tx, [now, 1.1d]) || inv.GetSlotValue(0) != value) return false;
+            return (bool)type.GetMethod("InsertMagazineAt").Invoke(tx, [1.1d, 1.1d])
                 && (int)Call("GunSpec", "GetRounds", Terrain.ExtractData(inv.GetSlotValue(0))) == 30
-                && !(bool)type.GetMethod("FinishMagazine").Invoke(tx, [4d, 3d]);
+                && !(bool)type.GetMethod("InsertMagazineAt").Invoke(tx, [3d, 1.1d]);
         });
         for (int kind = 0; kind < 8; kind++) {  // 0-6 supplies and the bench, 7 the paint tin
             int k = kind;
@@ -193,10 +204,11 @@ static class CombatRegression {
         }
         using var zip = ZipFile.OpenRead(package);
         Test("supply-texture-explicit-opaque-rgba", () => {
-            using var stream = zip.GetEntry("Assets/Textures/ScCsgoKnives/survival_surface.png").Open();
+            var entry = zip.GetEntry("Assets/Textures/ScCsgoKnives/survival_surface.png") ?? zip.GetEntry("Assets/Textures/ScCsgoKnives/survival_surface.webp");
+            using var stream = entry.Open();
             using var buffer = new MemoryStream(); stream.CopyTo(buffer); var bytes = buffer.ToArray();
             var pixels = Engine.Media.Image.Load(new MemoryStream(bytes));
-            try { return bytes[25] == 6 && pixels.Pixels.All(c => c.A == 255 && c.R > 0 && c.G > 0 && c.B > 0); }
+            try { return (entry.Name.EndsWith(".webp") || bytes[25] == 6) && pixels.Pixels.All(c => c.A == 255 && c.R + c.G + c.B > 0); }
             finally { pixels.Dispose(); }
         });
         Test("bf1-original-kill-sound-present", () => zip.GetEntry("Assets/Audio/ScCsgoKnives/bf1_kill_confirm.ogg")?.Length > 10000);

@@ -3,15 +3,16 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
-    public const float IconDrawSize = .8f;
+    public const float IconDrawSize = ScInventoryIcon.DrawSize;
     public static readonly string[] Assets = ["grenade_hegrenade", "grenade_flashbang", "grenade_smokegrenade", "grenade_molotov", "grenade_incendiary", "grenade_decoy"];
     public static readonly string[] Names = ["高爆手雷", "闪光弹", "烟雾弹", "燃烧瓶", "燃烧弹", "诱饵弹"];
     public static bool Enabled(int kind) => kind is >= 0 and < 6;
     readonly ScResourceCache<(int Kind, bool Thrown), List<(BlockMesh Mesh, string Material)>> m_models = new("grenade-items", 8, 2000);
     public ScGrenadeBlock() {
-        DefaultDisplayName = "CS2 投掷物"; DefaultCategory = "Weapons"; CraftingId = "sccsgogrenade";
+        DefaultDisplayName = "CS2 投掷物"; DefaultCategory = "CS武器"; CraftingId = "sccsgogrenade";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 4; DefaultTextureSlot = 0;
     }
+    public override int GetDisplayOrder(int value) => 214;
     public override int GetTextureSlotCount(int value) => 1;
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override Vector3 GetIconViewOffset(int value, DrawBlockEnvironmentData env) =>
@@ -36,8 +37,8 @@ public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
     public override void DrawBlock(PrimitivesRenderer3D renderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData env) {
         int kind = Kind(value); if (kind < 0 || kind >= 6) return;
         if (env?.DrawBlockMode == DrawBlockMode.UI && env.GetType().FullName != "Game.ScCsgoBoxModelPreviewEnvironmentData") {
-            BlocksManager.DrawFlatBlock(renderer,value,IconDrawSize*size,ref matrix,
-                ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+Assets[kind]+"_slot"),color,false,env);
+            ScInventoryIcon.Draw(renderer,value,size,ref matrix,
+                ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+Assets[kind]+"_slot"),color,env);
             return;
         }
         foreach (var part in Model(kind, false)) BlocksManager.DrawMeshBlock(renderer, part.Mesh, ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + part.Material), color, .65f * size, ref matrix, env);

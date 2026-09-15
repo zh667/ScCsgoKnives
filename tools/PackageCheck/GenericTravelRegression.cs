@@ -27,6 +27,10 @@ static class GenericTravelRegression {
         try {
             const int block=302;const string main="data:/Worlds/Origin",dimension="data:/OtherMod/Dimensions/Moon";
             string row="v=0,r=7,s=0,d=750,m=2250,n=12,c=-1,p=180,ct=1,k=1234,gl=10,gp=-1,gv=1,rc=0,ov=0";
+            // Old Lv10 (public-beta damage x2) plus 1234 real kills become Lv24 under the fifty-level thresholds;
+            // the displayed kills stay 1234 and the applied level is written directly, so no pending level remains.
+            int rules=(int)mod.GetType("Game.ScGunGrowth").GetField("RulesVersion").GetRawConstantValue();
+            string upgradedRow="v=0,r=7,s=0,d=890,m=2670,n=12,c=-1,p=180,ct=1,k=1234,gl=24,gp=-1,gv="+rules+",rc=0,ov=0,kc=0";
             foreach(bool creative in new[]{false,true}) {
                 int value=Terrain.MakeBlockValue(block,0,64);var data=new ValuesDictionary();
                 if(creative) {var inv=new ComponentCreativeInventory{OpenSlotsCount=1};inv.m_slots.Add(value);inv.Save(data,null);}
@@ -46,11 +50,11 @@ static class GenericTravelRegression {
                 Check("unknown-protocol-not-bypassed-by-world-copy/"+creative,Refused(futureCopy,"data:/Worlds/RestoredCopy"));
                 type.GetMethod("ValidateCaptured").Invoke(null,[source,main]);
                 var target=FreshTarget(source);string before=target.ToString();var imported=Prepared(target,dimension);
-                Check("unrelated-dimension-import/"+creative,imported is not null&&target.ToString()==before&&Text(Group(Table(imported),"Records"),"1")==row);
+                Check("unrelated-dimension-import/"+creative,imported is not null&&target.ToString()==before&&Text(Group(Table(imported),"Records"),"1")==upgradedRow);
                 Capture(imported,dimension);
                 source.Element("Entities").ReplaceNodes(imported.Element("Entities").Elements().Select(e=>new XElement(e)));
                 var returned=Prepared(source,main);
-                Check("return-updates-same-identity/"+creative,Group(Table(returned),"Records").Elements().Count()==1&&Text(Group(Table(returned),"Records"),"1")==row);
+                Check("return-updates-same-identity/"+creative,Group(Table(returned),"Records").Elements().Count()==1&&Text(Group(Table(returned),"Records"),"1")==upgradedRow);
                 for(int i=0;i<2;i++){returned=XElement.Parse(returned.ToString());Capture(returned,main);Check($"reload-idempotent/{creative}/{i}",Plan(returned,main)==null);}
                 var incomplete=new XElement(target);Group(Group(incomplete.Element("Entities").Element("Entity"),"ScGunTravel"),"Records").RemoveNodes();
                 Group(Group(incomplete.Element("Entities").Element("Entity"),"ScGunTravel"),"Identities").RemoveNodes();

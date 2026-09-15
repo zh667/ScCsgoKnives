@@ -20,11 +20,42 @@ def is_resource_asset(name):
     return name.startswith(('Assets/Textures/', 'Assets/Models/', 'Assets/Audio/'))
 
 
+def version_tuple(text):
+    return tuple(int(p) for p in (text or '').split('.') if p.isdigit())
+
+
+def range_accepts(spec, version):
+    """True when a core dependency string admits this resource pack's version.
+
+    Exact `[x]`, the older `x` (minimum) form and NuGet intervals `[lo,hi)` are all
+    accepted, so a cleanup release does not have to be pinned to one exact pack."""
+    spec = (spec or '').strip()
+    have = version_tuple(version)
+    if not spec:
+        return True
+    if spec[0] in '([':
+        inclusive_lo = spec[0] == '['
+        inclusive_hi = spec[-1] == ']'
+        bounds = spec.strip('[]()').split(',')
+        lo = bounds[0].strip()
+        hi = bounds[1].strip() if len(bounds) > 1 else ''
+        if lo:
+            low = version_tuple(lo)
+            if have < low or (have == low and not inclusive_lo):
+                return False
+        if hi:
+            high = version_tuple(hi)
+            if have > high or (have == high and not inclusive_hi):
+                return False
+        return True
+    return have >= version_tuple(spec)
+
+
 def write_split(files, info):
     meta = json.loads((RESOURCE_SOURCE / 'modinfo.json').read_text(encoding='utf-8'))
     dependency = info.get('Dependencies', {}).get(meta['PackageName'])
-    if dependency != f"[{meta['Version']}]":
-        raise SystemExit('Core dependency does not match resource pack version.')
+    if not range_accepts(dependency, meta['Version']):
+        raise SystemExit('Core dependency does not admit the resource pack version.')
     if not RESOURCE_DLL.is_file():
         raise SystemExit('Missing resource assembly: build the core and its project reference first.')
     resource_files = [(n, p) for n, p in files if is_resource_asset(n)]

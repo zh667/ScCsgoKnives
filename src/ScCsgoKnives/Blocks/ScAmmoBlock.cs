@@ -6,10 +6,11 @@ namespace Game;
 public sealed class ScAmmoBlock : ScSupplyBlock {
     public const int Magazine = 0, Shell = 1;
     public ScAmmoBlock() {
-        DefaultDisplayName = "通用弹匣"; DefaultCategory = "Weapons";
+        DefaultDisplayName = "通用弹匣"; DefaultCategory = "CS武器";
         CraftingId = "sccsgoammo"; IsPlaceable = false; IsCollidable = false;
         MaxStacking = 40; DefaultTextureSlot = 0;
     }
+    public override int GetDisplayOrder(int value) => 213;
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScAmmoBlock>(true), 0, kind);
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Terrain.ExtractData(value) == Shell ? "霰弹" : "通用弹匣";
     public override string GetDescription(int value) => Terrain.ExtractData(value) == Shell

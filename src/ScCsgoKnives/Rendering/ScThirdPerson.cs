@@ -84,6 +84,61 @@ public sealed class ScThirdPersonWeapon {
         s_cache[cacheKey] = built;
         return built;
     }
+
+    /// <summary>Grid fraction of the model's longest side for the low-detail dropped-item mesh: vertices closer than
+    /// this merge, and the triangles that collapse are dropped. Kept separate from the held mesh so the device only
+    /// pays for it on the (many, tiny, on-screen) dropped items.</summary>
+    public static float DropMeshGrid = .006f;
+    static readonly ScResourceCache<string, ScThirdPersonWeapon> s_dropCache = new("drop-weapons", 12, 2000);
+    /// <summary>A reduced-precision copy of the assembled weapon for dropped items. The held and third-person
+    /// meshes are untouched; only this copy is decimated, once per model, then cached.</summary>
+    public static ScThirdPersonWeapon ForDrop(string asset, bool legacy = false) {
+        if (asset is null) return null;
+        string cacheKey = asset + (legacy ? "/legacy" : "");
+        if (s_dropCache.TryGetValue(cacheKey, out var hit)) return hit;
+        ScThirdPersonWeapon built = null;
+        try {
+            var full = For(asset, legacy);
+            if (full is not null) {
+                built = new ScThirdPersonWeapon {
+                    Asset = full.Asset, GripRight = full.GripRight, GripLeft = full.GripLeft, Muzzle = full.Muzzle,
+                    HasLeftGrip = full.HasLeftGrip, HasRightGrip = full.HasRightGrip
+                };
+                built.Groups = full.Groups.Select(g => g with { Mesh = Decimate(g.Mesh) }).ToArray();
+                built.Vertices = built.Groups.Sum(g => g.Mesh.Vertices.Count);
+            }
+        }
+        catch (Exception e) { KnifeDiagnostics.WarnOnce("drop-weapon-" + asset, $"drop weapon {asset}: {e.Message}"); }
+        s_dropCache[cacheKey] = built;
+        return built;
+    }
+    /// <summary>Vertex clustering: merge vertices that fall in the same grid cell and drop the triangles that
+    /// collapse. Cheap, allocation-light and applied once per drop model, so a low-end device draws far fewer
+    /// triangles for every loose gun while the silhouette stays recognisable.</summary>
+    static BlockMesh Decimate(BlockMesh source) {
+        if (source is null || source.Vertices.Count == 0 || source.Indices.Count < 3) return source;
+        var box = source.CalculateBoundingBox();
+        var size = box.Max - box.Min;
+        float grid = Math.Max(size.X, Math.Max(size.Y, size.Z)) * DropMeshGrid;
+        if (!(grid > 0f)) return source;
+        var cells = new Dictionary<(int, int, int), int>(source.Vertices.Count);
+        var vertices = new List<BlockMeshVertex>(source.Vertices.Count);
+        var remap = new int[source.Vertices.Count];
+        for (int i = 0; i < source.Vertices.Count; i++) {
+            var p = source.Vertices[i].Position - box.Min;
+            var key = ((int)MathF.Floor(p.X / grid), (int)MathF.Floor(p.Y / grid), (int)MathF.Floor(p.Z / grid));
+            if (!cells.TryGetValue(key, out int mapped)) { mapped = vertices.Count; cells[key] = mapped; vertices.Add(source.Vertices[i]); }
+            remap[i] = mapped;
+        }
+        var mesh = new BlockMesh();
+        foreach (var v in vertices) mesh.Vertices.Add(v);
+        for (int i = 0; i + 2 < source.Indices.Count; i += 3) {
+            int a = remap[source.Indices[i]], b = remap[source.Indices[i + 1]], c = remap[source.Indices[i + 2]];
+            if (a == b || b == c || a == c) continue;
+            mesh.Indices.Add(a); mesh.Indices.Add(b); mesh.Indices.Add(c);
+        }
+        return mesh;
+    }
     /// <summary>Rig space translated so the weapon root is the origin, then inches/axes to engine metres.</summary>
     public static Matrix LocalPlacement(Cs2Rig.Pose pose) {
         foreach (string name in RootBones)
@@ -236,7 +291,7 @@ public static class ScThirdPerson {
         int value = human.m_componentMiner.ActiveBlockValue;
         string asset = AssetFor(value, out var stance);
         if (asset is null) return false;
-        int skin = Terrain.ExtractContents(value) == BlocksManager.GetBlockIndex<ScGunBlock>(true) ? ScGunBlock.SkinOf(value) : 0;
+        int skin = Terrain.ExtractContents(value) == BlocksManager.GetBlockIndex<ScGunBlock>(true) ? ScGunBlock.SkinOf(value) : stance == ScThirdPersonStance.Knife ? ScKnifeBlock.SkinOf(value) : 0;
         Texture2D gunTexture = null;
         bool legacy = stance != ScThirdPersonStance.Knife && stance != ScThirdPersonStance.Grenade
             && ScGunNativeMesh.Resolve(asset, skin, out gunTexture, out _) is not null;
@@ -287,6 +342,10 @@ public static class ScThirdPerson {
 
     /// <summary>OnModelDrawExtra: draw the baked weapon at the world matrix the animate step chose.</summary>
     public static bool Draw(ComponentHumanModel human, Camera camera) {
+        // Other mods can make the local body visible in FPP. Its extra hand item
+        // must still be suppressed because our viewmodel already draws the weapon.
+        if (camera.GameWidget.IsEntityFirstPersonTarget(human.Entity)
+            && human.m_componentMiner is not null && AssetFor(human.m_componentMiner.ActiveBlockValue,out _) is not null) return true;
         if (!s_states.TryGetValue(human, out var state) || !state.Valid || state.Weapon is null) return false;
         if (human.m_componentMiner is null || AssetFor(human.m_componentMiner.ActiveBlockValue, out _) != state.Asset) { state.Valid = false; return false; }
         var terrain = human.m_subsystemTerrain;
@@ -300,14 +359,15 @@ public static class ScThirdPerson {
         Matrix view = state.World * camera.ViewMatrix;
         int held = human.m_componentMiner.ActiveBlockValue, data = Terrain.ExtractData(held);
         bool silencerOff = ScGunBlock.SpecOf(held) is { HasSilencer: true } && GunSpec.GetSilencerOff(data);
-        int skin = Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScGunBlock>(true) ? ScGunBlock.SkinOf(held) : ScGunSkinCatalog.None;
+        int skin = Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScGunBlock>(true) ? ScGunBlock.SkinOf(held) : Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScKnifeBlock>(true) ? ScKnifeBlock.SkinOf(held) : 0;
         if (skin != state.Skin) { state.Valid = false; return false; }
         foreach (var group in state.Weapon.Groups) {
             if (group.Silencer && silencerOff) continue; // the detached silencer is not on the gun in third person either
             // "<gun>_hd" is the factory set; a finish redirects it, and an unreadable finish falls back
             // to the factory texture so the gun is still drawn.
             Texture2D texture = group.Texture == state.Asset + "_hd"
-                ? state.GunTexture : Load(group.Texture);
+                ? state.GunTexture : Load(group.Texture == state.Asset + "_cs2" && Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)
+                    ? ScKnifeSkinCatalog.Texture(state.Asset, skin, ScKnifeBlock.GetVariant(held)) : group.Texture);
             if (texture is null) continue;
             if (state.Legacy) ScGunNativeMesh.DrawWorld(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
             else BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);

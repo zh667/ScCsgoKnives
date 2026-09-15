@@ -11,6 +11,9 @@ public static class ScHeadshotProbe {
     public static bool VanillaHeadClass(ComponentCreatureModel model) => model is ComponentHumanModel or ComponentFourLeggedModel or ComponentBirdModel or ComponentFlightlessBirdModel;
     public static bool HasHeadMesh(Model model, ScHeadRule rule) => model.Meshes.Any(m => m.IsVisible && rule.IsHead(m.ParentBone.Name));
     public static IEnumerable<ScPartBox> Parts(Model model, ScHeadRule rule, Matrix[] absolute) {
+        // These are rigid boxes, not skin-deformed geometry. Do not fabricate
+        // either precise hits or headshots from a skinned mesh's parent bone.
+        if (model.HasSkin) yield break;
         foreach (var mesh in model.Meshes) {
             if (!mesh.IsVisible) continue;
             bool head = rule.IsHead(mesh.ParentBone.Name);
@@ -20,6 +23,7 @@ public static class ScHeadshotProbe {
     public static ScHitPart Resolve(ComponentBody body, Vector3 origin, Vector3 direction, float maxDistance, out float distance, out string reason) {
         distance = -1;
         var model = body?.Entity?.FindComponent<ComponentCreatureModel>();
+        if (model?.Model?.HasSkin == true) { reason = "skinned model: body-only compatibility"; return ScHitPart.Unknown; }
         if (model?.Model is null || model.m_boneTransforms is null || model.m_boneTransforms.Length != model.Model.Bones.Count) { reason = "no creature model"; return ScHitPart.Unknown; }
         var rule = ScHeadRules.For(model.ModelRoute, VanillaHeadClass(model), HasHeadMesh(model.Model, ScHeadRule.Default));
         if (rule is null) { reason = "no head rule for " + (model.ModelRoute ?? model.GetType().Name); return ScHitPart.Unknown; }

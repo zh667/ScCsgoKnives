@@ -1,4 +1,4 @@
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Reflection;
 using Game;
 using TemplatesDatabase;
@@ -12,7 +12,7 @@ static class SurvivalDurabilityRegression {
             try { results.Add(new("survival-runtime/" + name, test(), name)); }
             catch (Exception e) { results.Add(new("survival-runtime/" + name, false, e.ToString())); }
         }
-        string[] names = ["ScKnifeBlock", "ScGunBlock", "ScAmmoBlock", "ScWeaponMaterialBlock", "ScWeaponWorkbenchBlock", "ScGrenadeBlock"];
+        string[] names = ["ScKnifeBlock", "ScGunBlock", "ScAmmoBlock", "ScWeaponMaterialBlock", "ScWeaponWorkbenchBlock", "ScGrenadeBlock", "ScC4Block"];
         var oldTypes = new Dictionary<Type, int>(BlocksManager.BlockTypeToIndex);
         var oldNames = new Dictionary<string, int>(BlocksManager.BlockNameToIndex);
         var previous = Enumerable.Range(700, names.Length).Select(i => BlocksManager.Blocks[i]).ToArray();
@@ -138,6 +138,34 @@ static class SurvivalDurabilityRegression {
                     if (!tube && !Step(t, "Discard")) return false;
                     int expected = inv.GetSlotValue(0);
                     return !Step(t, tube ? "InsertShell" : "InsertMagazine") && inv.GetSlotValue(0) == expected && Same(inv, Reload(inv));
+                });
+                if (!tube) Test("cancel-after-insert-two-saves/" + name, () => {
+                    var inv = Inventory(Partial(), 1, ammo, 10); var t = Transaction(inv);
+                    var timing = Call("Cs2Rig", "ReloadMilestones", name, "reload");
+                    double at = (float)timing.GetType().GetField("Item2").GetValue(timing);
+                    bool Insert(double now) => (bool)t.GetType().GetMethod("InsertMagazineAt").Invoke(t, [now, at]);
+                    if (!Step(t, "Discard") || Insert(at - .001) || !Insert(at) || Insert(at + 3)) return false;
+                    t.GetType().GetMethod("Cancel").Invoke(t, null);
+                    if (Insert(at + 4)) return false;
+                    var current = mod.GetType("Game.ScGunRegistry").GetField("Current");
+                    var original = current.GetValue(null);
+                    try {
+                        var copy = inv;
+                        for (int round = 0; round < 2; round++) {
+                            ValuesDictionary XmlCopy(ValuesDictionary values) {
+                                var xml = new System.Xml.Linq.XElement("Values"); values.Save(xml);
+                                var parsed = new ValuesDictionary(); parsed.ApplyOverrides(System.Xml.Linq.XElement.Parse(xml.ToString())); return parsed;
+                            }
+                            var registry = current.GetValue(null);
+                            var saved = (ValuesDictionary)registry.GetType().GetMethod("Save").Invoke(registry, [0d]);
+                            current.SetValue(null, Call("ScGunRegistry", "Load", XmlCopy(saved), 0d));
+                            var items = new ValuesDictionary(); copy.Save(items, null); items.SetValue("SlotsCount", copy.SlotsCount);
+                            copy = new ComponentInventory(); copy.Load(XmlCopy(items), null);
+                            if (!Same(inv, copy) || copy.GetSlotCount(1) != 10 - cost
+                                || (int)Call("GunSpec", "GetRounds", Terrain.ExtractData(copy.GetSlotValue(0))) != capacity) return false;
+                        }
+                        return true;
+                    } finally { current.SetValue(null, original); }
                 });
             }
             for (int kind = 0; kind < 6; kind++) foreach (bool spawn in new[] { true, false }) {

@@ -1,0 +1,46 @@
+using System.IO.Compression;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text.Json;
+using System.Xml.Linq;
+using TemplatesDatabase;
+using Game;
+Engine.Dispatcher.Initialize();
+Assembly Load(byte[] pack,string tag) {
+ using var z=new System.IO.Compression.ZipArchive(new MemoryStream(pack));
+ using var input=z.GetEntry("ScCsgoKnives.dll").Open(); using var dll=new MemoryStream(); input.CopyTo(dll); dll.Position=0; return new AssemblyLoadContext(tag).LoadFromStream(dll);
+}
+var old=Load(File.ReadAllBytes(@"D:\下载\[API1.9]CS武器1.0.0.scmod"),"old");
+var current=Load(File.ReadAllBytes("output/ScCsgoKnives-1.0.14-preview.scmod"),"current");
+using var delivery=ZipFile.OpenRead("output/CS武器-1.0.14-全量版.zip");
+using var temp=new MemoryStream();delivery.GetEntry("ScCsgoKnives-1.0.14-preview.scmod").Open().CopyTo(temp);
+var bundled=Load(temp.ToArray(),"bundled");
+Type T(Assembly a,string n)=>a.GetType("Game."+n,true);
+object Invoke(Type t,string n,object o,params object[] args)=>t.GetMethod(n,BindingFlags.Static|BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic).Invoke(o,args);
+var oldReg=T(old,"ScGunRegistry");var oldGrowth=T(old,"ScGunGrowth");var oldSpec=T(old,"GunSpec");
+var oldGuns=(Array)oldSpec.GetField("All").GetValue(null);
+int Variant(string n)=>Enumerable.Range(0,oldGuns.Length).Single(i=>(string)oldGuns.GetValue(i).GetType().GetField("Name").GetValue(oldGuns.GetValue(i))==n);
+List<object> cases=[];
+foreach(var dest in new[]{current,bundled}) {
+ var reg=T(dest,"ScGunRegistry");var growth=T(dest,"ScGunGrowth");
+ foreach(var tuple in new[]{("CountAndGrow",true,20,2000L),("CountAndGrow",true,30,3000L),("CountOnly",true,0,3000L),("CountAndGrow",false,0,0L)}) {
+  var (mode,counter,level,kills)=tuple;int variant=Variant("ak47");
+  var state=Activator.CreateInstance(oldReg);
+  oldReg.GetField("GrowthMode").SetValue(state,Enum.Parse(oldReg.GetField("GrowthMode").FieldType,mode));
+  int max=(int)Invoke(oldGrowth,"MaxDurability",null,variant,level);
+  int id=(int)Invoke(oldReg,"Allocate",state,variant,7,true,max/2,max,0);
+  var record=Invoke(oldReg,"Get",state,id);
+  foreach(var (field,value) in new Dictionary<string,object>{{"CounterInstalled",counter},{"KillCount",kills},{"AppliedGrowthLevel",level},{"GrowthRulesVersion",counter?(int)oldGrowth.GetField("RulesVersion").GetRawConstantValue():0}})record.GetType().GetField(field).SetValue(record,value);
+  var saved=(ValuesDictionary)Invoke(oldReg,"Save",state,0d);
+  string before=saved.GetValue<ValuesDictionary>("Records").GetValue<string>("1");
+  var loaded=Invoke(reg,"Load",null,saved,0d);
+  var written=(ValuesDictionary)Invoke(reg,"Save",loaded,0d);
+  string after=written.GetValue<ValuesDictionary>("Records").GetValue<string>("1");
+  var xml=new XElement("Values");written.Save(xml);var read=new ValuesDictionary();read.ApplyOverrides(XElement.Parse(xml.ToString()));
+  var round2=Invoke(reg,"Load",null,read,0d);var again=(ValuesDictionary)Invoke(reg,"Save",round2,0d);
+  cases.Add(new {target=dest.GetName().Name+":"+dest.GetType().Name,context=AssemblyLoadContext.GetLoadContext(dest).Name,maxLevel=growth.GetField("MaxLevel").GetRawConstantValue(),rules=growth.GetField("RulesVersion").GetRawConstantValue(),mode,counter,before,after,afterRound2=again.GetValue<ValuesDictionary>("Records").GetValue<string>("1"),quarantined=reg.GetProperty("QuarantinedCount").GetValue(round2)});
+ }
+}
+Console.WriteLine(JsonSerializer.Serialize(new {oldSchema=oldReg.GetField("Schema").GetRawConstantValue(),oldRules=oldGrowth.GetField("RulesVersion").GetRawConstantValue(),cases},new JsonSerializerOptions{WriteIndented=true}));
+
+

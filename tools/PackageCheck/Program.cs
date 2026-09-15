@@ -38,9 +38,15 @@ string previousGrowthPackage = null, ghoulAssembly = null;
 string travelSourceSnapshot = null;
 string resourcePack = null;
 string resourceBaseline = null, sushiPackage = null;
+string sushiInventoryMods = null;
+string skinnedModel = null;
 bool attributeBenchmark = false;
+bool c4Checkset = false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--c4-checkset": c4Checkset = true; break;
+        case "--skinned-model": skinnedModel = args[++i]; break;
+        case "--sushi-inventory-mods": sushiInventoryMods = args[++i]; break;
         case "--resource-baseline": resourceBaseline = args[++i]; break;
         case "--sushi-mod": sushiPackage = args[++i]; break;
         case "--resource-pack": resourcePack = args[++i]; break;
@@ -141,6 +147,12 @@ ThirdPersonExport.ProvideObj(mod, scmod); // the self-test bakes the OBJ-piece g
 var registryType = mod.GetType("Game.ScGunRegistry");
 void FreshRegistry() => registryType?.GetField("Current").SetValue(null, Activator.CreateInstance(registryType)); // each check set gets an empty table: 1022 records is a world's budget, not the suite's
 FreshRegistry();
+if (c4Checkset) {
+    var cases=C4Regression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToList();
+    if(sushiInventoryMods is not null)cases.AddRange(SushiInventoryRegression.Run(mod,sushiInventoryMods).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}));
+    var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
+    if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
+}
 string runJson;
 try {
     runJson = (string)selfTest.GetMethod("RunJson", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
@@ -193,15 +205,20 @@ if (vanillaContent is not null) {
 }
 FreshRegistry(); foreach(var c in CreativeRuntimeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in InteractionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in DropGeometryRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in OptimizationRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in SwitchAnimationRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in MobileRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in StarterEquipmentRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in SurvivalDurabilityRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in AmmoHudRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in C4Regression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in ResourceRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); FreshRegistry(); foreach(var c in GunSkinRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in CombatRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunHandlingRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in SkinnedMotionRegression.Run(mod, skinnedModel)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in KnifeFinishRegression.Run(mod, scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunDiagnosticsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in attributeColdChecks) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in TravelRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
@@ -210,10 +227,15 @@ foreach(var c in Growth30BoundaryRegression.Run(mod,previousGrowthPackage,ghoulA
 foreach(var c in LiveBackupRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GenericTravelRegression.Run(mod,travelSourceSnapshot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in SplitResourceRegression.Run(mod,deliveredCore,resourcePack,resourceBaseline,sushiPackage)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
-if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+using var thirdPartyDlls = sushiInventoryMods is null ? null : new ThirdPartyDlls(sushiInventoryMods);
+if (thirdPartyDlls is not null) thirdPartyDlls.Load("RecipaediaEX");
+if (vanillaContent is not null) foreach(var c in WeaponHelpLayoutRegression.Run(mod,vanillaContent,thirdPartyDlls,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,published0282,snapshot0282)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in CommunityRepairRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+if (sushiInventoryMods is not null) foreach(var c in SushiInventoryRegression.Run(mod, sushiInventoryMods)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+if (thirdPartyDlls is not null) foreach(var c in PlanDllRegression.Run(mod, thirdPartyDlls)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {

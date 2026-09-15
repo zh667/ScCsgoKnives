@@ -9,25 +9,59 @@ namespace Game;
 /// here asks the terrain updater to load anything. Walls and the nearest target still stop the shot first, and
 /// no part of this aims, curves or sees through anything.</summary>
 public static class ScGunRange {
-    /// <summary>Foliage is not ballistic cover. Explicit types preserve walls, trunks,
-    /// glass and the solid dirt cube named GrassBlock; do not confuse transparency with cover.</summary>
+    /// <summary>Foliage is not ballistic cover. Explicit vanilla types preserve walls, trunks, glass and the solid
+    /// dirt cube named GrassBlock; on top of those, any block that is not collidable is passed through, which is
+    /// exactly the rule the game's own projectiles use (`Block.IsCollidable_`). That is what lets a mod's plant -
+    /// which is not a vanilla `CrossBlock` and so used to stop CS bullets - stop behaving like a wall.
+    ///
+    /// The value-less overload is for the startup diagnostic only; the live trace always uses the value so a
+    /// state-dependent collidability (an open gate, a raised trapdoor) is respected.</summary>
+    /// <summary>The single public predicate the diagnostics and regressions bind to by name. The live trace uses
+    /// <see cref="TerrainStopsBullet"/>, which additionally consults the value's own collidability.</summary>
     public static bool StopsBullet(Block block) => block is not null
         && block is not AirBlock and not FluidBlock and not LeavesBlock and not CrossBlock
-            and not FallenLeavesBlock and not IvyBlock and not WaterPlantBlock;
+            and not FallenLeavesBlock and not IvyBlock and not WaterPlantBlock
+        && block.IsCollidable;
     public static bool TerrainStopsBullet(int value) => Terrain.ExtractContents(value) != 0
-        && StopsBullet(BlocksManager.Blocks[Terrain.ExtractContents(value)]);
+        && StopsBulletFor(BlocksManager.Blocks[Terrain.ExtractContents(value)], value);
+    /// <summary>Same test as <see cref="StopsBullet(Block)"/>, but against the value so a state-dependent
+    /// collidability is respected. Its own name keeps `GetMethod("StopsBullet")` unambiguous.</summary>
+    static bool StopsBulletFor(Block block, int value) => block is not null
+        && block is not AirBlock and not FluidBlock and not LeavesBlock and not CrossBlock
+            and not FallenLeavesBlock and not IvyBlock and not WaterPlantBlock
+        && block.IsCollidable_(value);
 
     /// <summary>Shared by every gun, mode and pellet, using the live subsystem (not its static test overload).</summary>
     public static TerrainRaycastResult? TraceBullet(SubsystemTerrain terrain, Vector3 start, Vector3 direction, float range,
-        BulletTrace observation = null) => TraceTerrain((a, b) => terrain.Raycast(a, b, false, true, (value, distance) => {
+        BulletTrace observation = null) {
+        // A shooter already under the surface must not splash on every cell of the ray; the water impact is only
+        // for a shot entering water from air.
+        bool startInWater = false;
+        var world = terrain?.Terrain;
+        if (world is not null) {
+            int at = world.GetCellValue(Terrain.ToCell(start.X), Terrain.ToCell(start.Y), Terrain.ToCell(start.Z));
+            startInWater = BlocksManager.Blocks[Terrain.ExtractContents(at)] is WaterBlock;
+        }
+        return TraceTerrain((a, b) => terrain.Raycast(a, b, false, true, (value, distance) => {
             bool stops = TerrainStopsBullet(value);
             observation?.Observe(value, stops);
-            if (observation is not null && BlocksManager.Blocks[Terrain.ExtractContents(value)] is LeavesBlock) {
+            Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+            // A transparent block from another assembly that still stops a bullet is the shape of the reported
+            // "mod plant blocks CS bullets" bug. Log each distinct type once so it can be added deliberately.
+            if (stops && block is not null && block.GetType().Assembly != typeof(Block).Assembly && block.IsPlacementTransparent_(value))
+                KnifeDiagnostics.WarnOnce("bullet-blocker/" + block.GetType().FullName,
+                    $"[GUN_FOLIAGE] a transparent mod block stops bullets: {block.GetType().FullName}; treat it as foliage if it is a plant");
+            if (observation is not null && block is LeavesBlock) {
                 Vector3 point = a + Vector3.Normalize(b - a) * (distance + .001f);
                 observation.Leaves.Add(new(new Point3(Terrain.ToCell(point.X), Terrain.ToCell(point.Y), Terrain.ToCell(point.Z)), value, Vector3.Distance(a, start) + distance));
             }
+            if (!startInWater && observation is not null && observation.Fluids.Count == 0 && block is WaterBlock) {
+                Vector3 point = a + Vector3.Normalize(b - a) * distance;
+                observation.Fluids.Add(new(new Point3(Terrain.ToCell(point.X), Terrain.ToCell(point.Y), Terrain.ToCell(point.Z)), value, point));
+            }
             return stops;
         }), start, direction, range);
+    }
 
     /// <summary>Bounded observation of the actual predicate; never changes hit tests or RNG.</summary>
     public sealed class BulletTrace {
@@ -35,6 +69,9 @@ public static class ScGunRange {
         public string LastBlocker;
         public readonly List<string> PassedTypes = [];
         [System.Text.Json.Serialization.JsonIgnore] public readonly List<LeafHit> Leaves = [];
+        /// <summary>The first water surface this shot enters from air, for the splash effect. Water never stops the
+        /// bullet; the entry point is all the effect needs.</summary>
+        [System.Text.Json.Serialization.JsonIgnore] public readonly List<FluidHit> Fluids = [];
         public void Observe(int value, bool stops) {
             var block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
             if (stops) { LastBlocker = block.GetType().FullName; return; }
@@ -45,6 +82,7 @@ public static class ScGunRange {
         }
     }
     public readonly record struct LeafHit(Point3 Cell, int Value, float Distance);
+    public readonly record struct FluidHit(Point3 Cell, int Value, Vector3 Point);
     static bool Finite(Vector3 v) => float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
     /// <summary>The engine silently truncates each terrain ray to 1000 cells. Segment a long
     /// loaded-world shot into <=512-cell engine calls, retaining global hit distance and ray.

@@ -82,10 +82,14 @@ public static class ScGunAttributes {
               kick = (s.Handling?.KickPitch ?? spec.KickPitchDegrees) * s.AngleScale;
         var rows = new List<Row>();
         string pelletDetail = spec.Pellets > 1 ? $"单次扣扳机 {spec.Pellets} 颗，每颗 {Number(s.Power / spec.Pellets, 1)}" : null;
-        rows.Add(new(Kind.Damage, spec.Pellets > 1 ? "单次总伤害" : "普通伤害", Number(s.Power, 1), "攻击力", Fraction(s.Power, r.Damage), false, false, pelletDetail));
-        rows.Add(new(Kind.Headshot, "爆头伤害", Number(s.Power * s.HeadMultiplier, 1), "攻击力",
+        // This is the close-range value actually submitted to Survivalcraft's Attackment.  Calling it
+        // “普通伤害” made it look like a generic melee stat, while CS-style falloff is only described on
+        // the range row below.
+        string damageDetail = pelletDetail ?? "近距离、未计入距离衰减；实际伤害会按射程曲线降低";
+        rows.Add(new(Kind.Damage, spec.Pellets > 1 ? "单次总伤害（近距）" : "近距离伤害", Number(s.Power, 1), "攻击力", Fraction(s.Power, r.Damage), false, false, damageDetail));
+        rows.Add(new(Kind.Headshot, "近距离爆头伤害", Number(s.Power * s.HeadMultiplier, 1), "攻击力",
             Fraction(s.Power * s.HeadMultiplier, r.Headshot), false, false,
-            spec.Pellets > 1 ? "全部弹丸命中头部时的总伤害" : s.HeadMultiplier <= 1 ? "此武器没有额外爆头倍率" : null));
+            spec.Pellets > 1 ? "全部弹丸命中头部时的总伤害，未计入距离衰减" : s.HeadMultiplier <= 1 ? "此武器没有额外爆头倍率" : "近距离值；实际伤害会按射程曲线降低"));
         rows.Add(new(Kind.Range, "射程", s.UnlimitedRange ? "无限*" : Number(s.Range, 1), "格",
             s.UnlimitedRange ? 1f : Fraction(s.Range, r.Range), false, s.UnlimitedRange,
             s.UnlimitedRange ? "* 仅沿射击方向的连续已加载区域，不穿墙、不自动瞄准、不强制加载地形"
@@ -122,12 +126,12 @@ public static class ScGunAttributes {
         if (s.EarnedLevel >= ScGunGrowth.MaxLevel)
             return s.Level >= ScGunGrowth.MaxLevel ? $"有效击杀 {s.KillCount}（已满级 Lv{ScGunGrowth.MaxLevel}，计数继续累计）。"
                 : $"有效击杀 {s.KillCount}，已解锁 Lv{ScGunGrowth.MaxLevel}，当前已应用 Lv{s.Level}；动作结束后应用升级，计数继续累计。";
-        long next = ScGunGrowth.ToNextLevel(s.KillCount);
+        long next = ScGunGrowth.ToNextLevel(s.Variant, s.ProgressKills);
         string pending = s.PendingGrowthLevel != ScGunGrowth.NoPending && s.PendingGrowthLevel > s.AppliedGrowthLevel
             ? $" 已解锁 Lv{s.EarnedLevel}，动作结束后升级至 Lv{s.PendingGrowthLevel}。" : "";
-        return $"有效击杀 {s.KillCount}，已应用 Lv{s.Level}，距 Lv{s.EarnedLevel + 1} 还需 {next} 次（每级 {ScGunGrowth.KillsPerLevel} 次，累计 {ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel)} 次满级）。{pending}{rule}";
+        return $"有效击杀 {s.KillCount}，已应用 Lv{s.Level}，距 Lv{s.EarnedLevel + 1} 还需 {next} 次（门槛随等级递增；满级累计 {ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel)} 次，狙击枪 ×0.6、电击枪 ×0.3、机枪 ×1.5）。{(s.GrowthKillCredit > 0 ? "旧枪升级进度已保留，无需追补历史差额。" : "")}{pending}{rule}";
     }
     /// <summary>What reaching the cap is worth, in the terms the card is allowed to use.</summary>
     public const string CounterUnlockNotice = "安装击杀计数器后才解锁等级机制；从安装时开始计数，安装前的击杀不计入。换肤、去皮和维修保留已有击杀与等级。";
-    public const string MaxLevelSummary = "Lv30 收益：基础伤害 ×10、弹匣 ×6.5（取整）、射速 ×3.5、耐久上限 ×2.5；皮肤枪先获得基础伤害 ×1.5。电击枪仍为单次充能，10 秒 → 1 秒。Lv10 起普通子弹枪已零散布、无射击后坐力、无距离衰减且无武器自身距离上限。换弹动画不加速。";
+    public const string MaxLevelSummary = "Lv50 收益：基础伤害 ×10、弹匣 ×6.5（取整）、耐久上限 ×2.5；普通枪射速 ×2，狙击枪保留 ×3.5；皮肤枪先获得基础伤害 ×1.5。电击枪仍为单次充能，10 秒 → 1 秒。Lv10 起普通子弹枪已零散布、无射击后坐力、无距离衰减且无武器自身距离上限。换弹动画不加速。";
 }

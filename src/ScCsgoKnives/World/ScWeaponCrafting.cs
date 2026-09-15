@@ -1,6 +1,7 @@
 namespace Game;
 
 public static class ScWeaponCrafting {
+    internal static Func<IInventory,string> RecoveryOwnerOverride; // headless transaction fixture
     public sealed record Entry(string Name, bool Knife, int Variant, int Level, int B, int M, int H, int O = 0, int Diamond = 0, int Germanium = 0) {
         public int Value => Knife ? Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScKnifeBlock>(true), 0, Variant)
             : Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true), 0, GunSpec.MakeData(Variant, 0));
@@ -58,32 +59,50 @@ public static class ScWeaponCrafting {
                 "taser" => (6, 6, 6, 0, 2, 4),
                 _ => throw new InvalidOperationException("No survival recipe for " + n)
             };
-            entries.Add(new(n, false, v, level, b, m, 1, o, diamond, germanium));
+            level = ScGunDurability.ClassOf(n) switch {
+                ScGunDurability.Class.Pistol => 4,
+                ScGunDurability.Class.Smg or ScGunDurability.Class.Shotgun => 6,
+                ScGunDurability.Class.Rifle => 8,
+                ScGunDurability.Class.Taser => 12,
+                _ => 10
+            };
+            entries.Add(new(n, false, v, level, (b * 3 + 1) / 2, (m * 3 + 1) / 2, 2, o > 0 ? 2 : 0,
+                n == "taser" ? 6 : diamond, n == "taser" ? 12 : germanium));
         }
         return entries.ToArray();
     }
 
     public static bool TryCraft(IInventory inventory, int result, IReadOnlyDictionary<int, int> materials) {
+        if (inventory is null || materials is null || !ScGunMutation.TryEnter()) return false;
+        var registry = ScGunRegistry.Current;
+        string owner = null;
+        var journal = new ScGunInventoryJournal(inventory);
+        try {
+        owner = RecoveryOwnerOverride?.Invoke(inventory) ?? registry?.RecoveryOwner?.Invoke(inventory);
+        if (registry is null || registry.Disabled || string.IsNullOrWhiteSpace(owner) || registry.Recovery.HasPending(owner)) return false;
         int output = -1;
         for (int i = 0; i < inventory.SlotsCount; i++)
             if (inventory.GetSlotCount(i) == 0 && inventory.GetSlotCapacity(i, result) > 0) { output = i; break; }
         if (output < 0 || materials.Any(p => p.Value <= 0 || ScInventoryTransaction.Count(inventory, p.Key) < p.Value)) return false;
-        var taken = new List<(int Slot, int Value, int Count)>();
         foreach (var material in materials) {
             int needed = material.Value;
             for (int i = 0; i < inventory.SlotsCount && needed > 0; i++) {
                 if (inventory.GetSlotValue(i) != material.Key || inventory.GetSlotCount(i) == 0) continue;
-                int want = Math.Min(needed, inventory.GetSlotCount(i)), got = inventory.RemoveSlotItems(i, want);
-                taken.Add((i, material.Key, got)); needed -= got;
-                if (got != want) break;
+                int want = Math.Min(needed, inventory.GetSlotCount(i));
+                journal.RemoveExact(i, material.Key, want); needed -= want;
             }
             if (needed > 0) {
-                foreach (var item in taken) inventory.AddSlotItems(item.Slot, item.Value, item.Count);
-                return false;
+                throw new InvalidOperationException("Crafting materials changed");
             }
         }
-        inventory.AddSlotItems(output, result, 1);
+        if (inventory is ComponentCreativeInventory) journal.ReplaceCreative(output, inventory.GetSlotValue(output), result);
+        else journal.AddExact(output, result, 1);
         ScInventoryTransaction.Changed(inventory);
         return true;
+        } catch (Exception e) {
+            journal.Rollback(registry.Recovery, owner);
+            KnifeLog.Warning("[GUN_CRAFT] transaction rolled back; undeliverable refunds retained: " + e.Message);
+            return false;
+        } finally { ScGunMutation.Exit(); }
     }
 }

@@ -7,35 +7,37 @@ namespace Game;
 /// creative catalogue entries from sharing an ID or polluting a survival world.</summary>
 public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
     public ScGunCounterTemplateBlock() {
-        DefaultDisplayName = "CS2 击杀计数器枪械"; DefaultCategory = "Weapons";
+        DefaultDisplayName = "CS2 击杀计数器枪械"; DefaultCategory = "CS武器";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 1; CraftingId = "sccsgocountertemplate";
         DefaultMeleePower = 0; DefaultProjectilePower = 0; DefaultIconViewScale = .8f;
     }
-    public override int GetDisplayOrder(int value) => 223;
+    public override int GetDisplayOrder(int value) => 216;
+    const int EntryMask = 1023, LevelShift = 10, LevelMask = 31;
+    static readonly (int Variant, int Skin)[] Entries = Enumerable.Range(0, GunSpec.All.Length)
+        .Select(v => (v, ScGunSkinCatalog.None))
+        .Concat(ScGunSkinCatalog.All.Select(s => (Array.FindIndex(GunSpec.All, g => g.Name == s.Gun), s.PaintId)))
+        .Where(x => x.Item1 >= 0).ToArray();
+    static int Encode(int entry, int level) => (entry & EntryMask) | (ScGunGrowth.Clamp(level) << LevelShift);
     public override IEnumerable<int> GetCreativeValues() {
-        // Factory counter version for every gun.
-        for (int variant = 0; variant < GunSpec.All.Length; variant++)
-            yield return Terrain.MakeBlockValue(BlockIndex, 0, variant);
-        // Every currently supported CS2 finish also gets a counter version.
-        foreach (var skin in ScGunSkinCatalog.All)
-            yield return Terrain.MakeBlockValue(BlockIndex, 0, GunSpec.All.First(g => g.Name == skin.Gun) is { } spec
-                ? GunSpec.All.ToList().IndexOf(spec) + 1000 + skin.PaintId : skin.PaintId);
+        // Keep one entry per gun/finish in the creative tab.  Level selection is
+        // performed at the workbench for a real hotbar instance, avoiding a 31x
+        // catalogue explosion.
+        for (int entry = 0; entry < Entries.Length; entry++)
+            yield return Terrain.MakeBlockValue(BlockIndex, 0, Encode(entry, 0));
     }
-    static bool TrySpec(int data, out int variant, out int skin) {
+    static bool TrySpec(int data, out int variant, out int skin, out int level) {
+        int entry = data & EntryMask; level = (data >> LevelShift) & LevelMask;
         variant = skin = -1;
-        if (data >= 0 && data < GunSpec.All.Length) { variant = data; skin = ScGunSkinCatalog.None; return true; }
-        foreach (var paint in ScGunSkinCatalog.All) {
-            int v = Array.FindIndex(GunSpec.All, g => g.Name == paint.Gun);
-            if (data == v + 1000 + paint.PaintId) { variant = v; skin = paint.PaintId; return true; }
-        }
-        return false;
+        if (entry < 0 || entry >= Entries.Length || level > ScGunGrowth.MaxLevel) return false;
+        (variant, skin) = Entries[entry]; return true;
     }
     public static bool IsTemplate(int value) => BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunCounterTemplateBlock), out int index)
         && Terrain.ExtractContents(value) == index;
     public static bool TrySnapshot(int value, out ScGunSnapshot snapshot) {
         snapshot = default;
-        if (!IsTemplate(value) || !TrySpec(Terrain.ExtractData(value), out int variant, out int skin)) return false;
-        snapshot = ScGunSnapshot.ForFresh(variant, true) with { SkinId = skin, CounterInstalled = true };
+        if (!IsTemplate(value) || !TrySpec(Terrain.ExtractData(value), out int variant, out int skin, out int level)) return false;
+        snapshot = ScGunSnapshot.ForFresh(variant, true) with { SkinId = skin, CounterInstalled = true,
+            KillCount = ScGunGrowth.KillsFor(variant, level), AppliedGrowthLevel = level, GrowthRulesVersion = ScGunGrowth.RulesVersion };
         return true;
     }
     public static ScGunResult Materialize(IInventory inventory, int slot, string holder) {
@@ -49,7 +51,7 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
         if (!TrySnapshot(value, out var s)) return "未知计数器枪械";
         return ScGunNames.Item(s);
     }
-    public override string GetDescription(int value) => "创造模式计数器枪械；拿到手中后保留计数器状态，击杀从 0 开始。";
+    public override string GetDescription(int value) => "创造模式计数器枪械；同一型号按 Lv0-Lv31 分列，拿出后立即带有所选等级。击杀门槛随等级递增。";
     public override int GetTextureSlotCount(int value) => 1;
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override Vector3 GetIconViewOffset(int value, DrawBlockEnvironmentData env) => Vector3.UnitZ;
@@ -69,6 +71,6 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
 static class ScGunCounterTemplateMaterialize {
     public static ScGunResult Commit(ScGunMutation tx, ScGunSnapshot template) => tx.Commit(r => {
         r.SkinId = template.SkinId; r.CounterInstalled = true; r.GrowthRulesVersion = ScGunGrowth.RulesVersion;
-        r.KillCount = 0; r.AppliedGrowthLevel = 0; r.PendingGrowthLevel = ScGunGrowth.NoPending;
+        r.KillCount = template.KillCount; r.AppliedGrowthLevel = template.AppliedGrowthLevel; r.PendingGrowthLevel = ScGunGrowth.NoPending;
     });
 }

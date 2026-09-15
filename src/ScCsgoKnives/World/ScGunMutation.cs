@@ -1,7 +1,7 @@
 using System.Threading;
 namespace Game;
 
-public enum ScGunResult { Success, Foreign, MissingRecord, StateChanged, InsufficientMaterials, RegistryFull, InventoryRejected, Invalid, DuplicateUnresolved, Busy, RecoveryPending }
+public enum ScGunResult { Success, Foreign, MissingRecord, StateChanged, InsufficientMaterials, RegistryFull, InventoryRejected, Invalid, DuplicateUnresolved, Busy, RecoveryPending, ModelMismatch }
 
 /// <summary>World-bound gun transaction with measured receipts, inverse rollback and durable compensation.</summary>
 public sealed class ScGunMutation {
@@ -30,6 +30,7 @@ public sealed class ScGunMutation {
     internal Action AfterRecordWrite;
     // Consumed only after every fallible inventory step, while the save guard is held.
     internal ScGunKillQueue.Entry KillToComplete;
+    internal Func<bool> DuplicateWitness;
 
     ScGunMutation(ScGunRegistry registry, IInventory inventory, int slot, int expected, ScGunSnapshot before, bool fresh, string holder, string owner) {
         m_registry = registry; m_owner = owner;
@@ -61,7 +62,10 @@ public sealed class ScGunMutation {
         bool fresh = GunSpec.IsFresh(data);
         ScGunSnapshot before;
         if (fresh) before = ScGunSnapshot.ForFresh(variant, GunSpec.GetId(data) == GunSpec.FreshFull);
-        else if (!registry.TryGetSnapshot(GunSpec.GetId(data), out before) || before.Variant != variant) { why = ScGunResult.MissingRecord; return null; }
+        else {
+            if (!registry.TryGetSnapshot(GunSpec.GetId(data), out before)) { why = ScGunResult.MissingRecord; return null; }
+            if (before.Variant != variant) { why = ScGunResult.ModelMismatch; return null; }
+        }
         why = ScGunResult.Success;
         return new ScGunMutation(registry, inventory, slot, value, before, fresh, holder, owner);
     }
@@ -75,10 +79,12 @@ public sealed class ScGunMutation {
         && r.KillCount >= 0 && r.AppliedGrowthLevel >= 0 && r.AppliedGrowthLevel <= ScGunGrowth.MaxLevel
         && (r.PendingGrowthLevel == ScGunGrowth.NoPending || (r.PendingGrowthLevel >= 0 && r.PendingGrowthLevel <= ScGunGrowth.MaxLevel))
         && r.GrowthRulesVersion >= 0 && r.ReserveOverflowRounds >= 0 && r.ReserveOverflowRounds <= 1_000_000
+        && r.GrowthKillCredit >= 0 && r.GrowthKillCredit <= ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel) * 4 && (r.CounterInstalled || r.GrowthKillCredit == 0)
         && (r.CounterInstalled || (r.KillCount == 0 && r.AppliedGrowthLevel == 0 && r.GrowthRulesVersion == 0 && r.PendingGrowthLevel == ScGunGrowth.NoPending))
         // A finish must exist in this build's catalogue and belong to this model; nothing else may be written.
         && ScGunSkinCatalog.IsKnown(r.SkinId) && (r.SkinId == ScGunSkinCatalog.None || ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(r.SkinId), r.Variant));
-    bool SlotUnchanged() => Inventory.GetSlotValue(Slot) == Expected && ScInventoryTransaction.Revision(Inventory) == InventoryRevision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot);
+    bool SlotUnchanged() => Inventory.GetSlotValue(Slot) == Expected && ScInventoryTransaction.Revision(Inventory) == InventoryRevision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot)
+        && (m_registry.RecoveryOwner is null || Holder == ScGunHolders.Key(Inventory, Slot));
 
     public ScGunResult Commit(Action<ScGunRecord> change, int ammo = 0, int cost = 0, IReadOnlyDictionary<int, int> materials = null) {
         if (!TryEnter()) return Fail(ScGunResult.Busy, "another gun commit/recovery is in progress");
@@ -95,7 +101,11 @@ public sealed class ScGunMutation {
                 record = m_registry.Get(Id);
                 if (record is null) return Fail(ScGunResult.MissingRecord, "record missing");
                 if (record.Revision != RecordRevision || record.Variant != Variant || RecordRevision == int.MaxValue) return Fail(ScGunResult.StateChanged, "record changed");
-                NeedsClone = HolderLocator is not null && HolderLocator(Id, Holder).Any(); // runtime locator always scans afresh
+                if (DuplicateWitness is not null) {
+                    if (!DuplicateWitness()) return Fail(ScGunResult.StateChanged, "duplicate witness moved or remapped");
+                    NeedsClone = true;
+                }
+                else NeedsClone = HolderLocator is not null && HolderLocator(Id, Holder).Any();
             }
             bool creative = Inventory is ComponentCreativeInventory;
             if (KillToComplete is { } credit && (Fresh || NeedsClone || credit.RecordId != Id || credit.Variant != Variant
@@ -170,14 +180,27 @@ public sealed class ScGunMutation {
         }
         finally { Exit(); }
     }
-    ScGunResult Fail(ScGunResult result, string detail) { Detail = detail; return result; }
+    ScGunResult Fail(ScGunResult result, string detail) {
+        Detail = detail;
+        if (result == ScGunResult.StateChanged)
+            KnifeDiagnostics.WarnOnce("gun-mutation-state-" + detail,
+                $"[GUN_TRANSACTION] {detail}; slot={Slot}, value={Expected}->{Inventory.GetSlotValue(Slot)}, inventoryRev={InventoryRevision}->{ScInventoryTransaction.Revision(Inventory)}, record={Id}, recordRev={RecordRevision}->{m_registry.Get(Id)?.Revision}, holder={Holder}->{ScGunHolders.Key(Inventory, Slot)}");
+        return result;
+    }
+    internal static ScGunResult QuoteChanged(string operation, IInventory inventory, int slot, int value, int id, int revision, string detail) {
+        int actual = inventory.GetSlotValue(slot);
+        bool readable = GunSpec.TryGetSnapshot(Terrain.ExtractData(actual), out var state);
+        KnifeLog.Information($"[GUN_WORKBENCH] {operation}: {detail}; slot={slot}, value={value}->{actual}, record={id}->{(readable ? state.Id : -1)}, revision={revision}->{(readable ? state.Revision : -1)}");
+        return ScGunResult.StateChanged;
+    }
     public static string Explain(ScGunResult result) => result switch {
         ScGunResult.Success => "完成",
         ScGunResult.Foreign => "这把枪的数据来自旧版本或本世界已停用枪械",
-        ScGunResult.MissingRecord => "这把枪的状态记录不存在",
+        ScGunResult.MissingRecord => "这把枪的状态记录缺失或已隔离，状态待恢复",
+        ScGunResult.ModelMismatch => "这把枪的型号与状态记录不匹配，状态待恢复",
         ScGunResult.StateChanged => "枪械或背包状态已变化，请重试",
         ScGunResult.InsufficientMaterials => "材料或弹药不足",
-        ScGunResult.RegistryFull => $"枪械状态表已满（{GunSpec.LastId} 把），新枪无法登记；已有的枪不受影响",
+        ScGunResult.RegistryFull => $"枪械编号空间已耗尽（上限 {GunSpec.LastId}）；需新编号的操作不可用，独立已有枪仍可使用",
         ScGunResult.InventoryRejected => "背包拒绝了这次修改，物品已退回",
         ScGunResult.RecoveryPending => "有物品尚未归还，补偿已保留在本世界，库存可接收时会自动重试",
         ScGunResult.DuplicateUnresolved => "这把枪与另一把共用记录，且状态表已满，无法分离",

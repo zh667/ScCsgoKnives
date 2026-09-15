@@ -1,0 +1,110 @@
+15:10:10.551 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.370 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.370 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.370 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.375 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.377 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.378 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+15:10:11.378 INFO: gun registry: converted 1 record(s) from schema 4 to 6; existing finishes, ammunition, durability, silencer, charge, counter and growth fields preserved; absent historical fields get their original documented defaults
+{
+  "oldSchema": 4,
+  "oldRules": 2,
+  "cases": [
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "current",
+      "maxLevel": 50,
+      "rules": 7,
+      "mode": "CountAndGrow",
+      "counter": true,
+      "before": "v=0,r=7,s=1,d=1500,m=3000,n=0,c=-1,p=0,ct=1,k=2000,gl=20,gp=-1,gv=2,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=1447,m=2895,n=0,c=-1,p=0,ct=1,k=2000,gl=31,gp=-1,gv=7,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=1447,m=2895,n=0,c=-1,p=0,ct=1,k=2000,gl=31,gp=-1,gv=7,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "current",
+      "maxLevel": 50,
+      "rules": 7,
+      "mode": "CountAndGrow",
+      "counter": true,
+      "before": "v=0,r=7,s=1,d=1875,m=3750,n=0,c=-1,p=0,ct=1,k=3000,gl=30,gp=-1,gv=2,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=1875,m=3750,n=0,c=-1,p=0,ct=1,k=3000,gl=50,gp=-1,gv=7,rc=0,ov=0,kc=2250",
+      "afterRound2": "v=0,r=7,s=1,d=1875,m=3750,n=0,c=-1,p=0,ct=1,k=3000,gl=50,gp=-1,gv=7,rc=0,ov=0,kc=2250",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "current",
+      "maxLevel": 50,
+      "rules": 7,
+      "mode": "CountOnly",
+      "counter": true,
+      "before": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=1,k=3000,gl=0,gp=-1,gv=2,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=1605,m=3210,n=0,c=-1,p=0,ct=1,k=3000,gl=38,gp=-1,gv=7,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=1605,m=3210,n=0,c=-1,p=0,ct=1,k=3000,gl=38,gp=-1,gv=7,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "current",
+      "maxLevel": 50,
+      "rules": 7,
+      "mode": "CountAndGrow",
+      "counter": false,
+      "before": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "bundled",
+      "maxLevel": 30,
+      "rules": 4,
+      "mode": "CountAndGrow",
+      "counter": true,
+      "before": "v=0,r=7,s=1,d=1500,m=3000,n=0,c=-1,p=0,ct=1,k=2000,gl=20,gp=-1,gv=2,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=1500,m=3000,n=0,c=-1,p=0,ct=1,k=2000,gl=20,gp=-1,gv=4,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=1500,m=3000,n=0,c=-1,p=0,ct=1,k=2000,gl=20,gp=-1,gv=4,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "bundled",
+      "maxLevel": 30,
+      "rules": 4,
+      "mode": "CountAndGrow",
+      "counter": true,
+      "before": "v=0,r=7,s=1,d=1875,m=3750,n=0,c=-1,p=0,ct=1,k=3000,gl=30,gp=-1,gv=2,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=1875,m=3750,n=0,c=-1,p=0,ct=1,k=3000,gl=30,gp=-1,gv=4,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=1875,m=3750,n=0,c=-1,p=0,ct=1,k=3000,gl=30,gp=-1,gv=4,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "bundled",
+      "maxLevel": 30,
+      "rules": 4,
+      "mode": "CountOnly",
+      "counter": true,
+      "before": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=1,k=3000,gl=0,gp=-1,gv=2,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=1,k=3000,gl=0,gp=-1,gv=4,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=1,k=3000,gl=0,gp=-1,gv=4,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    },
+    {
+      "target": "ScCsgoKnives:RuntimeAssembly",
+      "context": "bundled",
+      "maxLevel": 30,
+      "rules": 4,
+      "mode": "CountAndGrow",
+      "counter": false,
+      "before": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0",
+      "after": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0",
+      "afterRound2": "v=0,r=7,s=1,d=750,m=1500,n=0,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0",
+      "quarantined": 0
+    }
+  ]
+}

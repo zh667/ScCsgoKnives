@@ -809,7 +809,7 @@ public static class CsmcFirstPersonRenderer {
         return "csmc";
     }
 
-    public static bool Draw(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose) {
+    public static bool Draw(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, int itemValue) {
         if (pose is null) return false;
         EnsureLoaded();
         KnifeTuning.Poll();
@@ -823,7 +823,7 @@ public static class CsmcFirstPersonRenderer {
         }
         Matrix post = CreateBodyMotion(firstPerson)
             * Matrix.CreateFromYawPitchRoll(firstPerson.m_lagAngles.X, firstPerson.m_lagAngles.Y, 0f);
-        return DrawCs2(firstPerson, camera, variant, pose, post);
+        return DrawCs2(firstPerson, camera, variant, pose, post, itemValue);
     }
 
     static readonly Dictionary<string, Part[]> s_cs2Parts = new(StringComparer.Ordinal);
@@ -839,7 +839,7 @@ public static class CsmcFirstPersonRenderer {
     ///
     /// The weapon and CS2 skinned arms share the same placement and projection.
     /// </summary>
-    static bool DrawCs2(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, Matrix post) {
+    static bool DrawCs2(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, Matrix post, int itemValue) {
         string gun = CsmcKnifeRig.GetAssetName(variant);
         // The CS:MC pose clamped its time to the CS:MC clip; sampling the CS2 rig with
         // that cut the tail of any clip CS2 makes longer - measured, the M4A1-S draw at
@@ -885,7 +885,7 @@ public static class CsmcFirstPersonRenderer {
         // is nothing to place as a rigid part. The guns keep the part loop below.
         Cs2SkinnedMesh weapon = Cs2SkinnedMesh.Weapon(gun);
         if (weapon is not null) {
-            DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant,
+            DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant, itemValue,
                 KnifeAnimationController.CurrentClip(firstPerson) is "pullpin" or "holdHigh" or "holdLow" or "throwHigh" or "throwLow");
         }
 
@@ -1110,7 +1110,7 @@ public static class CsmcFirstPersonRenderer {
             if (part.Material == ScopeLensMaterial) { lens = part; lensWorld = bone * post; continue; }
             KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, part.Indices, baseColor, material,
                 bone * post, projection, camera.InvertedViewMatrix, in lighting, variant,
-                scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(asset) : 0f);
+                scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(asset) : 0f, rigid: true);
         }
         if (mesh.BlendedTriangleCount > 0) {
             mesh.SkinBlended();
@@ -1229,14 +1229,15 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     static void DrawCs2SkinnedWeapon(Cs2SkinnedMesh mesh, Cs2Rig.Pose pose, string asset,
         Matrix post, Matrix projection, Camera camera,
-        in KnifePbrRenderer.Lighting lighting, int variant, bool litGrenade) {
-        if (!s_cs2WeaponBase.TryGetValue(asset, out Texture2D baseColor)) {
-            try { baseColor = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{asset}_cs2"); }
+        in KnifePbrRenderer.Lighting lighting, int variant, int itemValue, bool litGrenade) {
+        string bodyMaterial = ScKnifeSkinCatalog.MaterialForRender(asset, variant, itemValue);
+        if (!s_cs2WeaponBase.TryGetValue(bodyMaterial, out Texture2D baseColor)) {
+            try { baseColor = ContentManager.Get<Texture2D>($"Textures/ScCsgoKnives/{bodyMaterial}"); }
             catch (Exception e) {
-                KnifeDiagnostics.WarnOnce($"cs2-weapon-texture-{asset}",
-                    $"No CS2 texture for {asset}: {e.Message}");
+                KnifeDiagnostics.WarnOnce($"cs2-weapon-texture-{bodyMaterial}",
+                    $"No CS2 texture for {bodyMaterial}: {e.Message}");
             }
-            s_cs2WeaponBase[asset] = baseColor;
+            s_cs2WeaponBase[bodyMaterial] = baseColor;
         }
         if (baseColor is null) return;
         double started = Time.RealTime;
@@ -1252,7 +1253,13 @@ public static class CsmcFirstPersonRenderer {
         s_cs2WeaponTriangles = mesh.Primitives.Sum(p => p.Indices.Length) / 3;
         foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
             string key = ScGrenadeBlock.MaterialKey(asset, part.Material);
-            Texture2D texture = key == asset + "_cs2" ? baseColor : PartBaseTexture(key);
+            if(asset=="c4" && part.Material=="weapon_c4_digits") {
+                key=part.Material;
+                Vector2 offset=ScC4Visuals.ScreenOffset(pose.Clip,pose.Time);
+                foreach(int i in part.Indices.Distinct())mesh.Skinned[i].TextureCoordinate+=offset;
+            }
+            if (key == asset + "_cs2") key = bodyMaterial;
+            Texture2D texture = key == bodyMaterial ? baseColor : PartBaseTexture(key);
             if (part.Material == "weapon_molotov_flame") {
                 if (litGrenade) DrawGrenadeFlame(mesh,part,texture,post,projection);
                 continue;
@@ -1535,11 +1542,10 @@ public static class CsmcFirstPersonRenderer {
     }
 
     /// <summary>
-    /// The walk bob and the equip dip, copied from vanilla ComponentFirstPersonModel.
-    /// Minecraft applies the same two motions inside the matrix CSMC appends its
-    /// weapon transform to; dropping them is why the knife sat glued to the
-    /// camera while walking and popped in without a swap when switching items.
+    /// Gun and arms share bounded walking motion while retaining the vanilla
+    /// outgoing equip dip. Each player owns a separate temporal blend.
     /// </summary>
+    static readonly ConditionalWeakTable<ComponentFirstPersonModel, ScWeaponWalkMotion> s_walkMotion = new();
     static Matrix CreateBodyMotion(ComponentFirstPersonModel firstPerson) {
         Matrix motion = Matrix.Identity;
         // Vanilla dips the held item by 0.8 while swapping. For a plain SC item that
@@ -1548,19 +1554,20 @@ public static class CsmcFirstPersonRenderer {
         // the screen -- measured, the grip leaves the frame for 53% of the swap.
         // Same reasoning that keeps SC's poke transform out: whoever owns the motion
         // owns it alone. KnifeTuning.SwapDipScale can put some of it back.
-        if (firstPerson.m_swapAnimationTime > 0f && KnifeTuning.SwapDipScale > 0f) {
-            float swap = MathF.Pow(MathF.Sin(firstPerson.m_swapAnimationTime * MathF.PI), 3f) * KnifeTuning.SwapDipScale;
+        float dipScale = firstPerson.m_componentPlayer?.ComponentMiner?.ActiveBlockValue != firstPerson.m_value
+            ? 1f : KnifeTuning.SwapDipScale;
+        if (firstPerson.m_swapAnimationTime > 0f && dipScale > 0f) {
+            float swap = MathF.Pow(MathF.Sin(firstPerson.m_swapAnimationTime * MathF.PI), 3f) * dipScale;
             motion *= Matrix.CreateTranslation(0f, -0.8f * swap, 0.2f * swap);
         }
-        ComponentCreatureModel mount = firstPerson.m_componentRider.Mount?.Entity.FindComponent<ComponentCreatureModel>();
-        if (mount != null) {
-            float phase = mount.MovementAnimationPhase * MathF.PI * 2f + 0.5f;
-            Vector3 sway = new(0f, 0.02f * MathF.Sin(phase), 0.02f * MathF.Sin(phase));
-            return motion * Matrix.CreateRotationX(0.05f * MathF.Sin(phase)) * Matrix.CreateTranslation(sway);
-        }
-        float walk = firstPerson.m_componentPlayer.ComponentCreatureModel.MovementAnimationPhase * MathF.PI * 2f;
-        Vector3 bob = new(0.03f * MathF.Sin(walk), 0.02f * MathF.Sin(walk * 2f), 0.02f * MathF.Sin(walk));
-        return motion * Matrix.CreateRotationZ(bob.X) * Matrix.CreateTranslation(bob);
+        var mount = firstPerson.m_componentRider?.Mount;
+        var body = mount?.ComponentBody ?? firstPerson.m_componentPlayer?.ComponentBody;
+        Vector3 velocity = body?.Velocity ?? Vector3.Zero;
+        if (body is not null) velocity -= body.StandingOnBody?.Velocity ?? body.StandingOnVelocity;
+        float speed = new Vector2(velocity.X, velocity.Z).Length();
+        bool grounded = body is not null && (body.StandingOnValue.HasValue || body.StandingOnBody is not null);
+        double frameTime = KnifeClock.Virtual ? KnifeClock.VirtualNow : Time.FrameStartTime;
+        return motion * s_walkMotion.GetOrCreateValue(firstPerson).Sample(frameTime, speed, grounded, s_scoped || s_ironsight);
     }
 
 

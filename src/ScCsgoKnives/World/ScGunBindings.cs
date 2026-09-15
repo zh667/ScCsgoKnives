@@ -6,7 +6,7 @@ namespace Game;
 /// Independent of the mod's touch-button enable switch; never changes vanilla bindings.</summary>
 public static class ScGunBindings {
     public static readonly Dictionary<string, string> Keys = new(StringComparer.Ordinal);
-    public static string Default(string id) => id switch { ScGunFunctions.Reload => "R", ScGunFunctions.Inspect => "G", _ => "" };
+    public static string Default(string id) => id switch { ScGunFunctions.Reload => "R", ScGunFunctions.Inspect => "G", ScGunFunctions.Plant => "E", _ => "" };
     public static void Reset() { Keys.Clear(); foreach (string id in ScGunFunctions.All) Keys[id] = Default(id); }
     public static string Get(string id) => Keys.GetValueOrDefault(id, Default(id));
     public static bool Valid(string text) => text == "" || Enum.TryParse<Key>(text, out var key) && Enum.IsDefined(key) && key is not (Key.Null or Key.Escape or Key.Back);
@@ -15,11 +15,15 @@ public static class ScGunBindings {
         && !ScreensManager.IsAnimating && p.ComponentHealth.Health > 0 && p.ComponentGui.ModalPanelWidget is null
         && !DialogsManager.HasDialogs(p.GuiWidget) && !DialogsManager.HasDialogs(ScreensManager.RootWidget);
     public static bool Down(ComponentPlayer p, string id, bool once = false) {
-        if (!Available(p) || !Enum.TryParse<Key>(Get(id), out var key) || key == Key.Null) return false;
-        return once ? p.GameWidget.Input.IsKeyDownOnce(key) : p.GameWidget.Input.IsKeyDown(key);
+        if (!Available(p)) return false;
+        return ScGamepadBindings.Down(p, id, once) || KeyboardDown(p, id, once);
     }
+    public static bool KeyboardDown(ComponentPlayer p, string id, bool once = false) => Available(p)
+        && Enum.TryParse<Key>(Get(id), out var key) && key != Key.Null
+        && (once ? p.GameWidget.Input.IsKeyDownOnce(key) : p.GameWidget.Input.IsKeyDown(key));
     // Secondary actions are mutually exclusive across guns. Other shared keys would trigger two actions.
     public static bool Conflict(string a, string b) {
+        if (a == ScGunFunctions.Plant || b == ScGunFunctions.Plant) return a == b || a == ScGunFunctions.Inspect || b == ScGunFunctions.Inspect;
         bool Secondary(string s) => s is ScGunFunctions.Scope or ScGunFunctions.Silencer or ScGunFunctions.Burst or ScGunFunctions.RevolverAlt;
         if (Secondary(a) && Secondary(b)) return false;
         bool KnifeOnly(string s) => s == ScGunFunctions.KnifeHeavy;

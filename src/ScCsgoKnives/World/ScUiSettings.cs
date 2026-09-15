@@ -31,16 +31,16 @@ public sealed class ScButtonLayout {
 public static class ScGunFunctions {
     public const string Fire = "fire", Reload = "reload", Scope = "scope", Silencer = "silencer", Burst = "burst",
                         RevolverAlt = "revolver_alt", Inspect = "inspect", KnifeHeavy = "knife_heavy",
-                        ThrowStrong = "throw_strong", ThrowWeak = "throw_weak";
-    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire];
+                        ThrowStrong = "throw_strong", ThrowWeak = "throw_weak", Plant = "plant_c4";
+    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire, Plant];
     public static string Label(string id) => id switch {
         Fire => "开火", Reload => "换弹", Scope => "开镜", Silencer => "消音器", Burst => "连发", RevolverAlt => "速射",
-        Inspect => "检视", KnifeHeavy => "重刀", ThrowStrong => "强投", ThrowWeak => "轻投", _ => id,
+        Inspect => "检视", KnifeHeavy => "重刀", ThrowStrong => "强投", ThrowWeak => "轻投", Plant => "放置 C4", _ => id,
     };
     /// <summary>Buttons that never appear at the same time share a default row; the rows are what the original
     /// two-button layout used, so an existing player's thumb finds the same places.</summary>
     static int DefaultRow(string id) => id switch {
-        Reload or KnifeHeavy or ThrowWeak => 0,
+        Reload or KnifeHeavy or ThrowWeak or Plant => 0,
         Scope or Silencer or Burst or RevolverAlt or ThrowStrong => 1,
         _ => 2,
     };
@@ -65,12 +65,15 @@ public static class ScUiSettings {
     public static string Path => ScLocalSettings.PathFor("ScCsgoUi.json");
     public const int Version = 1;
 
+    public static bool SimpleMaterials;
     public static bool CustomButtons = true;
+    public static bool ButtonOnlyFire;
     public static bool KillFeed = true;
     public static bool KillSound = true;
     public static bool GunCrosshair = true;
     public static string CrosshairStyle = StyleVanilla;
     public static Color CrosshairColor = Color.White;
+    public static ScCrosshairShape CrosshairShape = new();
     /// <summary>False when the file could not be read: the session runs on defaults and nothing is written back.</summary>
     public static bool Writable { get; private set; } = true;
 
@@ -101,9 +104,13 @@ public static class ScUiSettings {
     }
     public static void ResetAll() {
         ScGunBindings.Reset();
+        ScGamepadBindings.Keys.Clear(); ScGamepadBindings.Threshold = .5f;
         ResetHand(false); ResetHand(true);
+        SimpleMaterials = ScResourcePolicy.Edition == "Optimized512";
         CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true;
+        ButtonOnlyFire = false;
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
+        CrosshairShape = new();
     }
     /// <summary>A deep copy of one hand's layout, for an editor that must not change anything until it is saved.</summary>
     public static Dictionary<string, ScButtonLayout> CopyHand(bool leftHanded) {
@@ -118,15 +125,20 @@ public static class ScUiSettings {
 
     sealed class File {
         public int Version { get; set; } = ScUiSettings.Version;
+        public bool? SimpleMaterials { get; set; }
         public bool CustomButtonsEnabled { get; set; } = true;
+        public bool ButtonOnlyFire { get; set; }
         public bool KillFeedEnabled { get; set; } = true;
         public bool KillSoundEnabled { get; set; } = true;
         public bool GunCrosshairEnabled { get; set; } = true;
         public string GunCrosshairStyle { get; set; } = StyleVanilla;
         public string GunCrosshairColor { get; set; } = "255,255,255";
+        public ScCrosshairShape CrosshairShape { get; set; } = new();
         public Dictionary<string, ScButtonLayout> Buttons { get; set; } = [];
         public Dictionary<string, ScButtonLayout> ButtonsLeftHanded { get; set; } = [];
         public Dictionary<string, string> KeyBindings { get; set; } = [];
+        public Dictionary<string, string> GamepadBindings { get; set; } = [];
+        public float GamepadTriggerThreshold { get; set; } = .5f;
     }
     static readonly JsonSerializerOptions s_json = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.Never };
 
@@ -150,7 +162,12 @@ public static class ScUiSettings {
             using (var stream = Storage.OpenFile(Path, OpenFileMode.Read)) file = JsonSerializer.Deserialize<File>(stream);
             if (file is null) throw new InvalidDataException("empty settings file");
             if (file.Version != Version) throw new InvalidDataException($"Version {file.Version} is not {Version}");
+            SimpleMaterials = file.SimpleMaterials ?? (ScResourcePolicy.Edition == "Optimized512");
             CustomButtons = file.CustomButtonsEnabled;
+            ButtonOnlyFire = file.ButtonOnlyFire;
+            foreach (var (id, key) in file.GamepadBindings ?? [])
+                if (ScGunFunctions.All.Contains(id) && ScGamepadBindings.Valid(key)) ScGamepadBindings.Keys[id] = key;
+            ScGamepadBindings.Threshold = float.IsFinite(file.GamepadTriggerThreshold) ? Math.Clamp(file.GamepadTriggerThreshold, .15f, .9f) : .5f;
             foreach (var (id, key) in file.KeyBindings ?? [])
                 if (ScGunFunctions.All.Contains(id) && ScGunBindings.Valid(key)) ScGunBindings.Keys[id] = key;
             KillFeed = file.KillFeedEnabled;
@@ -158,6 +175,7 @@ public static class ScUiSettings {
             GunCrosshair = file.GunCrosshairEnabled;
             CrosshairStyle = Array.IndexOf(Styles, file.GunCrosshairStyle) >= 0 ? file.GunCrosshairStyle : StyleVanilla;
             if (TryParseColor(file.GunCrosshairColor, out var parsed)) CrosshairColor = parsed;
+            CrosshairShape = (file.CrosshairShape ?? new()).Normalize();
             // A missing button only takes its own default; the rest of the file is never rewritten around it.
             foreach (var (id, layout) in file.Buttons) if (Array.IndexOf(ScGunFunctions.All, id) >= 0 && layout is not null) { layout.Normalize(); s_right[id] = layout; }
             foreach (var (id, layout) in file.ButtonsLeftHanded) if (Array.IndexOf(ScGunFunctions.All, id) >= 0 && layout is not null) { layout.Normalize(); s_left[id] = layout; }
@@ -175,8 +193,12 @@ public static class ScUiSettings {
         if (!Writable) return false;
         try {
             var file = new File {
+                SimpleMaterials = SimpleMaterials,
                 KeyBindings = new(ScGunBindings.Keys),
+                GamepadBindings = new(ScGamepadBindings.Keys), GamepadTriggerThreshold = ScGamepadBindings.Threshold,
                 CustomButtonsEnabled = CustomButtons, KillFeedEnabled = KillFeed, KillSoundEnabled = KillSound,
+                ButtonOnlyFire = ButtonOnlyFire,
+                CrosshairShape = CrosshairShape.Normalize(),
                 GunCrosshairEnabled = GunCrosshair, GunCrosshairStyle = CrosshairStyle, GunCrosshairColor = ColorText(CrosshairColor),
             };
             foreach (string id in ScGunFunctions.All) {

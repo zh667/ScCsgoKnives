@@ -18,13 +18,13 @@ namespace Game;
 public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdateable, IDrawable {
     sealed class GunState {
         public readonly ScGunStance Stance = new();
-        public bool HandlingNotice;
         public float KickRecoveryRate = 9f;
         public readonly ScCombatFeedback Feedback = new();
         public ScAmmoHud AmmoHud;
         public double NextShot;
         public double BusyUntil = -1;          // reload or silencer clip in progress
         public ScReloadTransaction Reload;
+        public long ReloadAnimationSequence = -1;
         public double DropAt = -1, InsertAt = -1;
         public int PendingRounds = -1;         // magazine to write when the reload clip ends
         /// <summary>A shotgun reload: when each shell counts (WPN_RELOAD_ADD_AMMO of each loop).</summary>
@@ -43,6 +43,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public bool FireLatch;
         /// <summary>Right button held last frame (PC): the scope/mode key acts once per press, on the press edge.</summary>
         public bool AimLatch;
+        /// <summary>Set by the OnPlayerInputInteract hook on the press frame: the engine found an interactive
+        /// target (door, chest, lever, or another mod's object) for the shared right button.</summary>
+        public bool WorldInteract;
         /// <summary>Burst mode selected, on the two guns CS2 gives one (Glock-18, FAMAS).</summary>
         public bool BurstMode;
         /// <summary>Shots still owed by the burst in progress, and when the next is due.</summary>
@@ -571,9 +574,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     bool Creative => (m_gameInfo ??= Project.FindSubsystem<SubsystemGameInfo>(true)).WorldSettings.GameMode == GameMode.Creative;
     static string HolderKey(ComponentPlayer player) => ScGunHolders.PlayerKey(player, player.ComponentMiner.Inventory?.ActiveSlotIndex ?? -1);
     double m_recoveryAt = -1;
+    double m_scanReportAt;
+    int m_scanCalls;
+    double m_scanTotalMs, m_scanMaxMs;
     /// <summary>Always a new engine snapshot, including changes made by other mods in this frame.
     /// Pending gun refunds also hold an instance until they have been delivered.</summary>
     List<ScGunHolders.Holder> Holders() {
+        long started = System.Diagnostics.Stopwatch.GetTimestamp();
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         var holders = ScGunHolders.Scan(Project, gunIndex).ToList();
         foreach (var batch in m_registry.Recovery.Batches) foreach (var step in batch.Steps) {
@@ -581,6 +588,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             int id = GunSpec.GetId(Terrain.ExtractData(step.Value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId)
                 holders.Add(new ScGunHolders.Holder(id, $"recovery:{batch.Id}", null, -1));
+        }
+        double elapsed = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+        m_scanCalls++; m_scanTotalMs += elapsed; m_scanMaxMs = Math.Max(m_scanMaxMs, elapsed);
+        if (m_time is not null && m_time.GameTime >= m_scanReportAt) {
+            m_scanReportAt = m_time.GameTime + 30;
+            if (m_scanMaxMs >= 2 || m_registry.Next >= 950)
+                KnifeLog.Information($"[GUN_STORAGE] 30s audit: scans={m_scanCalls}, totalMs={m_scanTotalMs:0.##}, maxMs={m_scanMaxMs:0.##}, holders={holders.Count}, records={m_registry.Count}, next={m_registry.Next}. IDs are never reclaimed.");
+            m_scanCalls = 0; m_scanTotalMs = m_scanMaxMs = 0;
         }
         return holders;
     }
@@ -590,21 +605,47 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (m_brokenNoticeAt.TryGetValue(player, out double last) && now - last < 2) return;
         m_brokenNoticeAt[player] = now;
         player.ComponentGui.DisplaySmallMessage(ScGunMutation.Explain(result), Color.Red, true, false);
-        KnifeLog.Warning($"gun operation refused for player {player.PlayerData.PlayerIndex}: {result}");
+        int value=player.ComponentMiner.ActiveBlockValue;
+        int id=GunSpec.GetId(Terrain.ExtractData(value));
+        KnifeDiagnostics.WarnOnce($"gun-refused-{player.PlayerData.PlayerIndex}-{id}-{result}",
+            $"[GUN_STATE] operation refused: player={player.PlayerData.PlayerIndex}, id={id}, variant={GunSpec.GetVariant(Terrain.ExtractData(value))}, reason={result}, next={m_registry.Next}, quarantined={m_registry.QuarantinedCount}. No state synthesized or cleared.");
     }
     /// <summary>Holder audit (plan §6): a record held in two places at once (creative copy, glitch) is split through the
     /// same transaction every other change uses - Commit sees the other holder and publishes a clone for the acting copy.
     /// The first holder in scan order keeps the id when no one has used it since the split; a dropped item waits for pickup.
     /// Never reclaims ids. First use of a moved gun is guarded by ScGunMutation itself, this is the sweep for the rest.</summary>
     void SplitDuplicates() => SplitDuplicates(Holders());
+    readonly Dictionary<string, (string State, double RetryAt)> m_duplicateRetry = new();
     void SplitDuplicates(List<ScGunHolders.Holder> holders) {
         if (m_registry is null || m_registry.Disabled) return;
+        var liveKeys = holders.Select(h => h.Key).ToHashSet();
+        foreach (var key in m_duplicateRetry.Keys.Where(k => !liveKeys.Contains(k)).ToArray()) m_duplicateRetry.Remove(key);
+        int budget = 4;
         foreach (var group in holders.GroupBy(h => h.Id).Where(g => g.Count() > 1).ToArray()) {
             var keeper = group.First();
+            if (m_registry.PeekNextId() < 0) {
+                KnifeDiagnostics.WarnOnce($"registry-full-duplicate-{group.Key}", $"[GUN_STORAGE] id={group.Key} has {group.Count()} distinct holders; next={m_registry.Next}, no free ID. Audit allocation retries suspended until capacity changes. First={keeper.Key}, type={keeper.Inventory?.GetType().FullName}");
+                continue;
+            }
             foreach (var other in group.Skip(1).Where(h => h.Inventory is not null)) {
+                double now = m_time?.GameTime ?? 0;
+                string state = $"{group.Key}/{m_registry.Next}/{m_registry.Get(group.Key)?.Revision}/{ScInventoryTransaction.Revision(other.Inventory)}/{other.Inventory.GetSlotValue(other.Slot)}/{other.Inventory.GetSlotCount(other.Slot)}/" + string.Join(";", group.Select(h => h.Key).Order());
+                if (m_duplicateRetry.TryGetValue(other.Key, out var retry) && retry.State == state && now < retry.RetryAt) continue;
+                if (--budget < 0) return;
                 var m = ScGunMutation.Prepare(other.Inventory, other.Slot, other.Key, out ScGunResult why);
+                // A live second inventory is sufficient positive evidence; no negative cache can approve use.
+                // Dropped/projectile-only witnesses retain the full fresh scan fallback.
+                var witness = group.FirstOrDefault(h => h.Key != other.Key && h.Inventory is not null);
+                if (m is not null && witness.Inventory is not null)
+                    m.DuplicateWitness = () => ScGunHolders.StillDuplicates(other, witness, BlocksManager.GetBlockIndex<ScGunBlock>(true));
                 var result = m is null ? why : m.Commit(_ => { });
-                KnifeLog.Warning($"gun record {group.Key} held at {keeper.Key} and {other.Key}: split -> {result}{(m is not null && result == ScGunResult.Success ? " record " + m.Id : "")}");
+                if (result == ScGunResult.Success) {
+                    m_duplicateRetry.Remove(other.Key);
+                    KnifeLog.Information($"[GUN_STORAGE] real duplicate {group.Key}: {other.Key} ({other.Inventory.GetType().FullName}) -> {m.Id}; next={m_registry.Next}");
+                } else {
+                    m_duplicateRetry[other.Key] = (state, now + 5);
+                    KnifeDiagnostics.WarnOnce($"duplicate-{group.Key}-{other.Key}-{result}", $"[GUN_STORAGE] record={group.Key}, holder={other.Key}, type={other.Inventory.GetType().FullName}, next={m_registry.Next}: split deferred: {result}");
+                }
             }
         }
     }
@@ -761,7 +802,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             bool holdingGun = Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsKnown(value) && player.ComponentHealth.Health > 0f;
             if (!holdingGun) {
                 state.AmmoHud?.Hide();
-                CancelReload(player, state);
+                CancelReload(player, state, cancelAnimation: false);
                 LeaveScope(player, state);
                 if (!ScGunplaySettings.Enabled) RecoverKick(player, state, dt, 12f);
                 state.BusyUntil = -1;
@@ -771,12 +812,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 state.LastValue = int.MinValue;
                 state.Selection.Reset();
                 continue;
-            }
-            if (!state.HandlingNotice) {
-                state.HandlingNotice = true;
-                player.ComponentGui.DisplaySmallMessage(ScGunplaySettings.Enabled
-                    ? "已启用轻量枪械手感：分枪型射程、姿态散布与连射恢复；原枪弹量和耐久不变。"
-                    : "当前使用旧版枪械手感（classic）。", Color.White, false, false);
             }
             UpdateGun(player, state, value, dt);
             UpdateAmmoHud(player, state);
@@ -820,8 +855,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (!state.Reload.Discard()) CancelReload(player, state);
             }
             if (state.Reload is not null && state.InsertAt >= 0 && now >= state.InsertAt) {
+                double insertAt = state.InsertAt;
                 state.InsertAt = -1;
-                if (!state.Reload.FinishMagazine(now, state.BusyUntil)) { if (state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); }
+                if (!state.Reload.InsertMagazineAt(now, insertAt)) { if (state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); }
             }
             value = player.ComponentMiner.ActiveBlockValue;
             data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
@@ -842,7 +878,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             else { if (state.Reload is not null && state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); break; }
         }
 
-        // A reload or silencer clip that has run its course commits its result.
+        // Inserted rounds are already committed. Only release the firing lock
+        // here; the remaining bolt/hand animation still has to finish.
         if (state.BusyUntil >= 0 && now >= state.BusyUntil) {
             state.BusyUntil = -1;
             state.Reload = null;
@@ -866,8 +903,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
         // Reload: R, or the trigger on an empty magazine.
         bool customFire = (m_fireButtons.GetValueOrDefault(player) || ScGunBindings.Down(player, ScGunFunctions.Fire)) && !ScWeaponTouchPanel.MenuActive;
-        bool wantsFire = spec.Automatic ? input.Dig.HasValue || input.Hit.HasValue || customFire : (input.Hit.HasValue || customFire) && !state.FireLatch;
-        state.FireLatch = input.Dig.HasValue || input.Hit.HasValue || customFire;
+        bool nativeAllowed = ScMobileControls.NativeGunFireAllowed(player);
+        bool nativeDig = nativeAllowed && input.Dig.HasValue, nativeHit = nativeAllowed && input.Hit.HasValue;
+        bool wantsFire = spec.Automatic ? nativeDig || nativeHit || customFire : (nativeHit || customFire) && !state.FireLatch;
+        state.FireLatch = nativeDig || nativeHit || customFire;
         bool reloadKey = ScGunBindings.Down(player, ScGunFunctions.Reload, true);
         // The Zeus: a fresh charge after its recharge time, announced by CS2's own cue.
         // Only a gun that recharges reads or clears the timer: 0.20.1 let whichever
@@ -932,7 +971,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 // one click emptied the magazine. The count is lowered after the shot.
                 Fire(player, state, model, spec, value, data, rounds, input, inBurst: true);
                 state.BurstRemaining--;
-                state.BurstNextAt = state.BurstRemaining > 0 ? now + ScGunGrowth.ShotInterval(spec.BurstShotSeconds,EffectiveGunStats.LevelOf(value)) : -1;
+                state.BurstNextAt = state.BurstRemaining > 0 ? now + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.BurstShotSeconds,EffectiveGunStats.LevelOf(value)) : -1;
                 return;
             }
         }
@@ -943,7 +982,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // m_flCycleTime (0.5 s) is taken as it - assumed, the one number here that is.
             if (spec.CycleSecondsAlternate > 0f && KnifeAnimationController.TriggerPrepare(player)) {
                 state.PrepareStartedAt = now;
-                state.PrepareUntil = now + ScGunGrowth.ShotInterval(spec.CycleSeconds,EffectiveGunStats.LevelOf(value));
+                state.PrepareUntil = now + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.CycleSeconds,EffectiveGunStats.LevelOf(value));
                 state.NextShot = state.PrepareUntil;
                 return;
             }
@@ -994,18 +1033,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // inBurst says this shot is one of those, so it cannot start another.
         bool startingBurst = !inBurst && state.BurstMode && spec.HasBurstMode && state.BurstRemaining == 0;
         if (startingBurst) {
-            state.NextShot = now + ScGunGrowth.ShotInterval(spec.BurstCycleSeconds,EffectiveGunStats.LevelOf(value));
+            state.NextShot = now + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.BurstCycleSeconds,EffectiveGunStats.LevelOf(value));
             state.BurstRemaining = Math.Max(0, spec.BurstShots - 1);
-            state.BurstNextAt = state.BurstRemaining > 0 ? now + ScGunGrowth.ShotInterval(spec.BurstShotSeconds,EffectiveGunStats.LevelOf(value)) : -1;
+            state.BurstNextAt = state.BurstRemaining > 0 ? now + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.BurstShotSeconds,EffectiveGunStats.LevelOf(value)) : -1;
         }
         else if (alternateFire) {
             // The R8's fanned shot: the vdata pair's second cycle time.
-            state.NextShot = now + ScGunGrowth.ShotInterval(spec.CycleSecondsAlternate,EffectiveGunStats.LevelOf(value));
+            state.NextShot = now + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.CycleSecondsAlternate,EffectiveGunStats.LevelOf(value));
         }
         else if (!inBurst) {
             // The cycle counts from the press: for the R8's cocked shot that is when the
             // hammer started back, not when it fell.
-            state.NextShot = (cycleFrom ?? now) + ScGunGrowth.ShotInterval(spec.CycleSeconds,EffectiveGunStats.LevelOf(value));
+            state.NextShot = (cycleFrom ?? now) + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.CycleSeconds,EffectiveGunStats.LevelOf(value));
         }
         // A detachable silencer that is on, or an integral one (the MP5-SD): the
         // flash, the muzzle and the kick follow it. Only the detachable kind has a
@@ -1064,7 +1103,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // the bolt cycle and re-zooms to the same level afterwards. The auto-snipers
             // and the AUG / SG 553 have it false and fire with the scope up.
             state.RescopeLevel = state.Zoom;
-            state.RescopeAt = now + ScGunGrowth.ShotInterval(spec.CycleSeconds,effective.Level);
+            state.RescopeAt = now + ScGunGrowth.ShotInterval(ScGunBlock.GetVariant(value),spec.CycleSeconds,effective.Level);
             LeaveScope(player, state);
         }
         KnifeAnimationController.TriggerShoot(player, silenced, lastRound, scopedShot && !spec.UnzoomsAfterShot, alternateFire,
@@ -1114,13 +1153,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int pellets = Math.Max(1, spec.Pellets);
         var hits = new Dictionary<ComponentBody, (float Power, Vector3 Point, Vector3 Direction, bool Head)>();
         var leafAttempts = new HashSet<Point3>();
+        var waterAttempts = new HashSet<Point3>();
         for (int pellet = 0; pellet < pellets; pellet++) {
             Vector3 direction = Scatter(ray.Direction, spread);
             Vector3 start = ray.Position;
             Vector3 end = start + direction * shotRange;
             long traceStarted = diagnostic is not null ? ScGunDiagnostics.Timestamp() : 0;
             var foliage = diagnostic?.VegetationTrace ?? new ScGunRange.BulletTrace();
-            foliage.Leaves.Clear();
+            foliage.Leaves.Clear(); foliage.Fluids.Clear();
             TerrainRaycastResult? terrain = ScGunRange.TraceBullet(m_terrain, start, direction, shotRange, foliage);
             ScGunHitTest.Hit? gunHit;
             if (ScGunplaySettings.Enabled) gunHit=ScGunHitTest.RaycastObserved(m_bodies.Bodies,player.ComponentBody,start,direction,terrain.HasValue?MathF.BitDecrement(terrain.Value.Distance):shotRange,diagnostic?.Trace);
@@ -1139,6 +1179,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             if (terrain.HasValue) travel = MathUtils.Min(travel, terrain.Value.Distance);
             if (spec.RechargeSeconds <= 0)
                 ScGunWorldEffects.BreakLeaves(m_terrain, foliage.Leaves, travel, leafAttempts, ScGunWorldEffects.LeafSample);
+            // A bullet entering water from air splashes: the same native effect and Splashes audio the game uses
+            // when a projectile or body hits the surface. Water does not stop the bullet, so this is visual only.
+            if (spec.MuzzleEffects && foliage.Fluids.Count > 0) {
+                var water = foliage.Fluids[0];
+                if (waterAttempts.Add(water.Cell)) {
+                    m_particles.AddParticleSystem(new WaterSplashParticleSystem(m_terrain, water.Point, false));
+                    m_audio.PlayRandomSound("Audio/Splashes", .8f, m_random.Float(-.2f, .2f), water.Point, 8f, true);
+                }
+            }
             if (diagnostic is not null) {
                 int outcome = gunHit.HasValue ? (gunHit.Value.Part==ScHitPart.Head?0:1) : terrain.HasValue?2:3;
                 bool fallback = gunHit.HasValue && (gunHit.Value.Reason?.Contains("fallback")==true || gunHit.Value.Part==ScHitPart.Unknown);
@@ -1215,7 +1264,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.Reload.Cancel(); state.Reload = null;
         state.DropAt = state.InsertAt = state.BusyUntil = -1;
         state.ShellTimes.Clear(); state.Scheduled.Clear(); state.FireAfterReload = false;
-        if (cancelAnimation) KnifeAnimationController.CancelAction(player);
+        if (cancelAnimation) KnifeAnimationController.CancelReloadAction(player, state.ReloadAnimationSequence);
+        state.ReloadAnimationSequence = -1;
     }
 
     public void RequestReload(ComponentPlayer player) {
@@ -1259,6 +1309,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         LeaveScope(player, state);
         KnifeAnimationController.TriggerReload(player, empty, shells);
+        state.ReloadAnimationSequence = KnifeAnimationController.ReloadActionSequence(player);
         state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, capacity, ScGunHolders.PlayerKey(player, inventory.ActiveSlotIndex));
         state.Scheduled.Clear(); state.ShellTimes.Clear(); state.FireAfterReload = false;
         double now = m_time.GameTime;
@@ -1270,7 +1321,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         else {
             state.DropAt = now + milestones.Value.Drop;
-            state.InsertAt = state.BusyUntil;
+            state.InsertAt = now + milestones.Value.Insert;
             Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
         }
     }
@@ -1321,7 +1372,54 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     public bool AimPressed(ComponentPlayer player, bool aiming, bool holdingGun) {
         if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
         bool edge = PressEdge(ref state.AimLatch, aiming);
-        return edge && holdingGun && RequestSecondary(player);
+        if (!edge || !holdingGun) return false;
+        // The shared right button drives both the Aim input (the gun's second action) and the separate Interact
+        // input (opening a door, pulling a lever, using a chest, another mod's interactive object...). The world
+        // interaction always wins: the aim the player is pointing at is what they mean to use, not the gun's mode.
+        // The engine's own interact decision is authoritative - NoteWorldInteract records it on the press frame -
+        // and the local raycast is a fallback for the frame the interact hook did not run.
+        bool blocked = state.WorldInteract;
+        state.WorldInteract = false;
+        if (!blocked) {
+            try { blocked = WorldInteractionAhead(player); }
+            catch (Exception e) { KnifeDiagnostics.WarnOnce("gun-interact-probe", "gun right-click interaction probe failed: " + e); }
+        }
+        if (blocked) return false;
+        return RequestSecondary(player);
+    }
+
+    /// <summary>Called from the OnPlayerInputInteract hook (which runs before the Aim hook in the same frame) with
+    /// the engine's own priority decision. When the player holds a mod weapon and the engine found something to
+    /// interact with, the gun's secondary action must not also fire on that press.</summary>
+    public void NoteWorldInteract(ComponentPlayer player, bool interactive) {
+        if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
+        state.WorldInteract = interactive;
+    }
+
+    /// <summary>True when the crosshair points at a block that answers the Interact button (a door, trapdoor,
+    /// lever, button, chest, workbench...). The test is the same one the engine uses to decide priorityInteract.
+    /// Shared with the knife so a heavy attack cannot fire together with a door either.</summary>
+    public static bool WorldInteractionAhead(ComponentPlayer player) {
+        var componentInput = player?.ComponentInput;
+        if (componentInput is null) return false;
+        PlayerInput input = componentInput.PlayerInput;
+        Ray3? ray = input.Interact ?? input.Aim;
+        if (ray is null) return false;
+        var miner = player.ComponentMiner;
+        if (miner is null) return false;
+        var terrain = miner.Raycast<TerrainRaycastResult>(ray.Value, RaycastMode.Interaction, true, false, false);
+        if (terrain is { } hit) {
+            int value = hit.Value;
+            var block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+            if (block is not null && block.GetPriorityInteract(value, miner) > 0) return true;
+        }
+        var moving = miner.Raycast<MovingBlocksRaycastResult>(ray.Value, RaycastMode.Interaction, false, false, true);
+        if (moving is { } blockHit) {
+            int value = blockHit.MovingBlock?.Value ?? 0;
+            var block = value == 0 ? null : BlocksManager.Blocks[Terrain.ExtractContents(value)];
+            if (block is not null && block.GetPriorityInteract(value, miner) > 0) return true;
+        }
+        return false;
     }
 
     public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state) {
@@ -1334,6 +1432,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // false: ComponentPlayer treats a true from InProgress as "aim refused" and cancels
         // the aim on the spot, so Completed never arrives (0.15.0/0.15.1 right-click bug).
         if (state != AimState.Completed) return false;
+        // The world interaction wins on a shared press: a door being opened must not also scope the gun.
+        if (WorldInteractionAhead(player)) return false;
         return RequestSecondary(player);
     }
 
@@ -1408,6 +1508,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             || p.Value.BurstRemaining>0 || p.Value.PrepareUntil>=0
             || KnifeAnimationController.IsBusy(p.Key.Entity?.FindComponent<ComponentFirstPersonModel>()));
     public void SetFireButton(ComponentPlayer player,bool pressed) => m_fireButtons[player]=pressed;
+    public bool FireButtonDown(ComponentPlayer player) => m_fireButtons.GetValueOrDefault(player);
     public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer) => false;
 
     // ---- scope -------------------------------------------------------------------

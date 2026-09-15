@@ -1,9 +1,9 @@
 {
   "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
   "Name": "CS武器",
-  "Version": "1.0.0",
-  "ApiVersion": "1.9.2.1",
-  "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与30级成长、属性查询及手机触控自定义。支持生存与创造模式。需同时安装正式版CS武器资源包1.0.0；非官方模组。",
+  "Version": "1.0.14-preview",
+  "ApiVersion": "1.9.3.1",
+  "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与50级成长、属性查询及手机触控自定义。支持生存与创造模式。需同时安装正式版CS武器资源包1.10.2或更高；非官方模组。 包含无等级 C4（20 秒、中心伤害 5000、半径 32 格）。",
   "ScVersion": "2.4.0.0",
   "LoadOrder": 1010,
   "NonPersistentMod": false,
@@ -11,6 +11,25 @@
   "Link": "https://github.com/zh667/ScCsgoKnives",
   "Author": "zh667",
   "PackageName": "zh667.ScCsgoKnives",
-  "Dependencies": {"zh667.ScCsgoResources": "[1.0.0]"},
-  "Settings": []
+  "Dependencies": {
+    "zh667.ScCsgoResources": "[1.10.2,2.0.0)"
+  },
+  "Settings": [
+    {
+      "Id": "Weapons",
+      "Name": "CS 枪械",
+      "Title": "CS 枪械 · 模组设置",
+      "Description": "准星、操作绑定、触屏布局及击杀反馈。",
+      "Items": [
+        {
+          "Id": "Editor",
+          "Name": "枪械与操作",
+          "Description": "打开完整设置页，修改后点击保存生效。",
+          "Type": "System.Boolean",
+          "Default": false,
+          "Widget": "Game.ScGunModSettingsWidget"
+        }
+      ]
+    }
+  ]
 }

@@ -8,6 +8,22 @@ using Game;
 /// <summary>Validate actual separately shipped archives, then expose their disjoint union to
 /// existing package tests. The union is temporary, not a deliverable and never hides collisions.</summary>
 static class ResourcePackInput {
+    /// <summary>True when the core's dependency admits this resource version: exact `[x]`, bare `x` (minimum) or a
+    /// NuGet interval `[lo,hi)`. Keeps an asset-cleanup release from pinning every player to one exact pack.</summary>
+    static bool DependencyAccepts(string spec, string version) {
+        spec=(spec??"").Trim();
+        var have=ParseVersion(version);
+        if(spec.Length==0)return true;
+        if(spec[0] is '[' or '(') {
+            bool incLo=spec[0]=='[',incHi=spec[^1]==']';
+            var inner=spec.Trim('[',']','(',')').Split(',');
+            if(inner.Length>0&&inner[0].Length>0) { var lo=ParseVersion(inner[0]); if(have<lo||(have==lo&&!incLo))return false; }
+            if(inner.Length>1&&inner[1].Length>0) { var hi=ParseVersion(inner[1]); if(have>hi||(have==hi&&!incHi))return false; }
+            return true;
+        }
+        return have>=ParseVersion(spec);
+    }
+    static System.Version ParseVersion(string text) => System.Version.TryParse(text,out var v) ? v : new System.Version(0,0);
     internal static Assembly Animations(Assembly core) =>
         (Assembly)core.GetType("Game.ScAnimationResources")?.GetProperty("Assembly")?.GetValue(null) ?? core;
     internal static string Merge(string corePath,string resourcePath,string directory) {
@@ -24,14 +40,15 @@ static class ResourcePackInput {
         using var metaStream=resources.GetEntry("modinfo.json").Open();
         using var meta=JsonDocument.Parse(metaStream);
         string version=meta.RootElement.GetProperty("Version").GetString();
-        if(meta.RootElement.GetProperty("PackageName").GetString()!="zh667.ScCsgoResources" || deps.GetProperty("zh667.ScCsgoResources").GetString()!=$"[{version}]")
+        if(meta.RootElement.GetProperty("PackageName").GetString()!="zh667.ScCsgoResources"
+            || !DependencyAccepts(deps.GetProperty("zh667.ScCsgoResources").GetString(), version))
             throw new InvalidDataException("Resource pack version/name mismatch.");
         bool Asset(string n)=>n.StartsWith("Assets/Textures/")||n.StartsWith("Assets/Models/")||n.StartsWith("Assets/Audio/");
         if(core.Entries.Any(e=>Asset(e.FullName)||e.Name=="ScCsgoResources.dll"))throw new InvalidDataException("Core still contains split assets.");
         if(resources.Entries.Any(e=>!Asset(e.FullName)&&e.FullName is not ("modinfo.json" or "ScCsgoResources.dll" or "LICENSE" or "ASSET_SOURCES.md" or "THIRD_PARTY_NOTICES.md" or "Assets/ScCsgoResources.xml")))
             throw new InvalidDataException("Unexpected gameplay/config files in resource-only pack.");
         using var markerStream=resources.GetEntry("Assets/ScCsgoResources.xml").Open();var marker=XElement.Load(markerStream);
-        if((string)marker.Attribute("Version")!=version||(string)marker.Attribute("Edition")!="Full")throw new InvalidDataException("Wrong resource marker.");
+        if((string)marker.Attribute("Version")!=version||((version,(string)marker.Attribute("Edition")) is not ("1.0.0","Full") and not ("1.1.0","Optimized512") and not ("1.2.0","Full") and not ("1.3.0","Optimized512") and not ("1.4.0","Full") and not ("1.5.0","Optimized512") and not ("1.6.0","Full") and not ("1.7.0","Optimized512") and not ("1.8.0","Full") and not ("1.9.0","Optimized512") and not ("1.10.0","Full") and not ("1.10.1","Full") and not ("1.10.2","Full") and not ("1.10.3","Full") and not ("1.10.4","Full")))throw new InvalidDataException("Wrong resource marker.");
         var listed=marker.Elements("File").ToArray();
         if(listed.Length!=resources.Entries.Count(e=>Asset(e.FullName)))throw new InvalidDataException("Resource manifest coverage mismatch.");
         foreach(var f in listed) {

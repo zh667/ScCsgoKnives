@@ -5,9 +5,9 @@ namespace Game;
 /// <summary>Single game-thread transaction. All slot capacities and inputs checked before mutation.</summary>
 public static class ScInventoryTransaction {
     sealed class Epoch { public long Value; }
-    static readonly ConditionalWeakTable<IInventory, Epoch> Epochs = new();
-    public static long Revision(IInventory inventory) => inventory is null ? -1 : Epochs.GetOrCreateValue(inventory).Value;
-    public static void Changed(IInventory inventory) { if (inventory is not null) Epochs.GetOrCreateValue(inventory).Value++; }
+    static readonly ConditionalWeakTable<object, Epoch> Epochs = new();
+    public static long Revision(IInventory inventory) => inventory is null ? -1 : Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value;
+    public static void Changed(IInventory inventory) { if (inventory is not null) Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value++; }
     public static int Count(IInventory inventory, int value) {
         int count = 0;
         if (inventory is not null) for (int i = 0; i < inventory.SlotsCount; i++) if (inventory.GetSlotValue(i) == value) count = (int)Math.Min(int.MaxValue, (long)count + inventory.GetSlotCount(i));
@@ -17,8 +17,8 @@ public static class ScInventoryTransaction {
         if (inventory is null || slot < 0 || slot >= inventory.SlotsCount) return false;
         // Creative slots represent an infinite source, not a stack of guns.
         // Only writable hotbar/backpack slots can hold changing weapon state.
-        return inventory is ComponentCreativeInventory creative
-            ? slot < creative.OpenSlotsCount && inventory.GetSlotCount(slot) > 0
+        return inventory is ComponentCreativeInventory
+            ? slot < Math.Min(10, inventory.SlotsCount) && inventory.GetSlotCount(slot) > 0
             : inventory.GetSlotCount(slot) == 1;
     }
     public static bool ReplaceWithCost(IInventory inventory, int slot, int expected, int replacement, int ammo, int cost) {

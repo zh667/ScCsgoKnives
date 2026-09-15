@@ -1,7 +1,7 @@
 {
   "Name": "CS 武器完整资源前置包",
-  "Version": "1.0.0",
-  "ApiVersion": "1.9.2.1",
+  "Version": "1.10.4",
+  "ApiVersion": "1.9.3.1",
   "ScVersion": "2.4.0.0",
   "PackageName": "zh667.ScCsgoResources",
   "Description": "CS 武器模组的全分辨率纹理、模型、音频及动画资源。与新版主包一起安装，不单独提供武器。",

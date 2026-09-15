@@ -19,6 +19,7 @@ public sealed class ScGunRecord {
     /// back-filled from firing counts, wear or the player's own totals.</summary>
     public bool CounterInstalled;
     public long KillCount;
+    public long GrowthKillCredit;
     /// <summary>The level whose effects this gun is actually carrying, and the one waiting for a safe moment.</summary>
     public int AppliedGrowthLevel;
     public int PendingGrowthLevel = ScGunGrowth.NoPending;
@@ -36,22 +37,24 @@ public sealed class ScGunRecord {
         SilencerOff = source.SilencerOff; RechargeReadyAt = source.RechargeReadyAt; Holder = source.Holder;
         RechargeCycleSeconds = source.RechargeCycleSeconds; CounterInstalled = source.CounterInstalled;
         KillCount = source.KillCount; AppliedGrowthLevel = source.AppliedGrowthLevel;
+        GrowthKillCredit = source.GrowthKillCredit;
         PendingGrowthLevel = source.PendingGrowthLevel; GrowthRulesVersion = source.GrowthRulesVersion;
         ReserveOverflowRounds = source.ReserveOverflowRounds;
     }
     public ScGunSnapshot Snapshot(int id) => new(id, Variant, Rounds, SilencerOff, Durability, MaxDurability, Revision, RechargeReadyAt, SkinId,
-        CounterInstalled, KillCount, AppliedGrowthLevel, PendingGrowthLevel, GrowthRulesVersion, RechargeCycleSeconds, ReserveOverflowRounds);
+        CounterInstalled, KillCount, AppliedGrowthLevel, PendingGrowthLevel, GrowthRulesVersion, RechargeCycleSeconds, ReserveOverflowRounds, GrowthKillCredit);
 }
 
 /// <summary>Read-only view of a record (or of a fresh gun's defaults). Id 0/1023 = fresh, no record.</summary>
 public readonly record struct ScGunSnapshot(int Id, int Variant, int Rounds, bool SilencerOff, int Durability, int MaxDurability, int Revision, double RechargeReadyAt, int SkinId = 0,
                                             bool CounterInstalled = false, long KillCount = 0, int AppliedGrowthLevel = 0, int PendingGrowthLevel = ScGunGrowth.NoPending,
-                                            int GrowthRulesVersion = 0, float RechargeCycleSeconds = 0, int ReserveOverflowRounds = 0) {
+                                            int GrowthRulesVersion = 0, float RechargeCycleSeconds = 0, int ReserveOverflowRounds = 0, long GrowthKillCredit = 0) {
     public bool Fresh => Id is GunSpec.FreshFull or GunSpec.FreshEmpty;
     /// <summary>The level whose numbers are in force right now. A pending level has deliberately not been applied yet.</summary>
     public int Level => CounterInstalled ? ScGunGrowth.Clamp(AppliedGrowthLevel) : 0;
     /// <summary>The level this gun's kills have already earned, whether or not it has been applied.</summary>
-    public int EarnedLevel => CounterInstalled ? ScGunGrowth.LevelFor(KillCount) : 0;
+    public long ProgressKills => ScGunGrowth.ProgressKills(KillCount, GrowthKillCredit);
+    public int EarnedLevel => CounterInstalled ? Math.Max(Level, ScGunGrowth.LevelFor(Variant, ProgressKills)) : 0;
     public int Capacity => ScGunGrowth.Capacity(Variant, Level);
     public static ScGunSnapshot ForFresh(int variant, bool full) {
         int magazine = variant >= 0 && variant < GunSpec.All.Length ? GunSpec.All[variant].Magazine : 0, life = ScGunDurability.Full(variant);
@@ -68,12 +71,14 @@ public sealed class ScGunRegistry {
     /// A schema this build does not
     /// know is kept verbatim and disables guns - the item layout stamp (GunSpec.DataLayout) is a separate number
     /// and does not change for a record field.</summary>
-    public const int Schema = 4;
+    public const int Schema = 6;
+    public const int SchemaStagedKills = 5;
+    public const int SchemaThirtyLevels = 4;
     public const int SchemaTenLevels = 3;
     public const int SchemaWithoutSkins = 1;
     public const int SchemaWithoutGrowth = 2;
     /// <summary>Every schema this build reads. Anything else is a format from another version.</summary>
-    public static bool IsKnownSchema(int schema) => schema is Schema or SchemaTenLevels or SchemaWithoutGrowth or SchemaWithoutSkins;
+    public static bool IsKnownSchema(int schema) => schema is Schema or SchemaStagedKills or SchemaThirtyLevels or SchemaTenLevels or SchemaWithoutGrowth or SchemaWithoutSkins;
     /// <summary>The registry of the world being played; set by SubsystemScGunBlockBehavior.Load, cleared on dispose.
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
@@ -168,7 +173,7 @@ public sealed class ScGunRegistry {
         $"n={r.Revision}", $"c={(r.RechargeReadyAt >= 0 ? Number(Math.Max(0, r.RechargeReadyAt - now)) : "-1")}",
         $"p={r.SkinId}", $"ct={(r.CounterInstalled ? 1 : 0)}", $"k={r.KillCount.ToString(Ci)}",
         $"gl={r.AppliedGrowthLevel}", $"gp={r.PendingGrowthLevel}", $"gv={r.GrowthRulesVersion}",
-        $"rc={Number(r.RechargeCycleSeconds)}", $"ov={r.ReserveOverflowRounds}");
+        $"rc={Number(r.RechargeCycleSeconds)}", $"ov={r.ReserveOverflowRounds}", $"kc={r.GrowthKillCredit}");
 
     /// <summary>The schema 3 field names, all required exactly once and nothing else accepted.</summary>
     static readonly string[] Fields3 = ["v", "r", "s", "d", "m", "n", "c", "p", "ct", "k", "gl", "gp", "gv", "rc", "ov"];
@@ -198,16 +203,18 @@ public sealed class ScGunRegistry {
         int variant = 0, rounds = 0, sil = 0, durability = 0, max = 0, revision = 0, skinId = ScGunSkinCatalog.None;
         double remaining = -1;
         bool counter = false; long kills = 0; int applied = 0, pending = ScGunGrowth.NoPending, rules = 0, overflow = 0;
-        double cycle = 0;
-        if (schema is Schema or SchemaTenLevels) {
+        double cycle = 0; long credit = 0;
+        if (schema is Schema or SchemaStagedKills or SchemaThirtyLevels or SchemaTenLevels) {
             var seen = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (string field in raw.Split(',')) {
                 int split = field.IndexOf('=');
                 if (split <= 0 || split == field.Length - 1) return false;
                 if (!seen.TryAdd(field[..split], field[(split + 1)..])) return false;
             }
-            if (seen.Count != Fields3.Length) return false;
+            if (seen.Count != Fields3.Length + (schema is Schema or SchemaStagedKills ? 1 : 0)) return false;
             foreach (string name in Fields3) if (!seen.ContainsKey(name)) return false;
+            long maxCredit = ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel) * 4;
+            if ((schema is Schema or SchemaStagedKills) && (!seen.TryGetValue("kc",out var rawCredit) || !long.TryParse(rawCredit, ints, Ci, out credit) || credit < 0 || credit > maxCredit)) return false;
             int flag = 0;
             if (!int.TryParse(seen["v"], ints, Ci, out variant) || !int.TryParse(seen["r"], ints, Ci, out rounds)
                 || !int.TryParse(seen["s"], ints, Ci, out sil) || !int.TryParse(seen["d"], ints, Ci, out durability)
@@ -237,10 +244,16 @@ public sealed class ScGunRegistry {
         if (applied < 0 || applied > levelLimit) return false;
         if (pending != ScGunGrowth.NoPending && (pending < 0 || pending > levelLimit)) return false;
         if (kills < 0 || rules < 0 || overflow < 0 || overflow > 1_000_000) return false;
-        if (!counter && (kills != 0 || applied != 0 || rules != 0 || pending != ScGunGrowth.NoPending)) return false;
+        if (!counter && (kills != 0 || applied != 0 || rules != 0 || pending != ScGunGrowth.NoPending || credit != 0)) return false;
         if (!double.IsFinite(cycle) || cycle < 0 || cycle > 1e6) return false;
         // Rounds are bounded by this gun's own capacity at the level it is actually carrying, not by the base magazine.
-        if (rounds < 0 || rounds > ScGunGrowth.Capacity(variant, applied)) return false;
+        // A record written by an older growth rule set (or an older schema) may carry more than the current curve
+        // allows at its saved level - the public beta's Lv30 capacity becomes this curve's Lv50 - so migration
+        // sources are allowed up to the maximum capacity any level can hold; the conversion then clips the surplus
+        // into the gun's own reserve.
+        bool migrating = counter && (schema != Schema || rules != ScGunGrowth.RulesVersion);
+        long maxRounds = migrating ? ScGunGrowth.Capacity(variant, ScGunGrowth.MaxLevel) : ScGunGrowth.Capacity(variant, applied);
+        if (rounds < 0 || rounds > maxRounds) return false;
         if (max < 1 || durability < 0 || durability > max || revision < 0) return false;
         if (!double.IsFinite(remaining) || (remaining < 0 ? remaining != -1 : remaining > 1e6)) return false;
         // A finish this build does not know, or one that belongs to another gun, is not guessed at.
@@ -250,6 +263,7 @@ public sealed class ScGunRegistry {
             Revision = revision, RechargeReadyAt = remaining >= 0 ? now + remaining : -1, SkinId = skinId,
             CounterInstalled = counter, KillCount = kills, AppliedGrowthLevel = applied, PendingGrowthLevel = pending,
             GrowthRulesVersion = rules, RechargeCycleSeconds = (float)cycle, ReserveOverflowRounds = overflow,
+            GrowthKillCredit = credit,
         };
         return true;
     }
@@ -272,7 +286,7 @@ public sealed class ScGunRegistry {
         }
         // Schema 1 and 2 never carried a growth mode or a pending kill; both start from their documented defaults.
         string mode = d.GetValue<string>("GrowthMode", null);
-        if (mode is not null && !Enum.TryParse(mode, out registry.GrowthMode)) {
+        if (mode is not null && (!Enum.TryParse(mode, out registry.GrowthMode) || !Enum.IsDefined(registry.GrowthMode))) {
             registry.UnknownSchema = true; registry.m_preserved = d;
             KnifeLog.Error($"gun growth mode '{mode}' is not one of {string.Join('/', Enum.GetNames<ScGunGrowthMode>())}; table retained, guns disabled");
             return registry;
@@ -291,7 +305,13 @@ public sealed class ScGunRegistry {
             ScGunRecord record = null;
             bool ok = int.TryParse(pair.Key, NumberStyles.Integer, Ci, out int id) && id >= GunSpec.FirstId && id <= GunSpec.LastId
                 && TryParseRecord(schema, raw, now, out record);
-            if (ok) { registry.m_records[id] = record; highest = Math.Max(highest, id); }
+            if (ok) {
+                // A different record schema, or a record that still carries an older growth rule set, is converted
+                // once to the current rules. A record already on this build's rules is left untouched.
+                if (record.CounterInstalled && (schema != Schema || record.GrowthRulesVersion != ScGunGrowth.RulesVersion))
+                    ScGunGrowthMigration.Convert(record, now, registry.GrowthMode != ScGunGrowthMode.CountOnly, schema);
+                registry.m_records[id] = record; highest = Math.Max(highest, id);
+            }
             else { registry.m_quarantined[pair.Key] = raw; if (int.TryParse(pair.Key, out int bad)) highest = Math.Max(highest, bad); }
         }
         if (registry.m_quarantined.Count > 0) KnifeLog.Warning($"gun registry: {registry.m_quarantined.Count} record(s) failed validation and are kept unusable: {string.Join(",", registry.m_quarantined.Keys.Take(8))}");

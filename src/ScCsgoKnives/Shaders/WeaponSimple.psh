@@ -1,0 +1,25 @@
+#version 300 es
+precision highp float;
+// <Sampler Name='u_baseSampler' Texture='u_baseColor' />
+uniform sampler2D u_baseColor;
+uniform vec3 u_lightDir1;
+uniform vec3 u_lightDir2;
+uniform float u_light;
+uniform vec2 u_scopeCutout;
+in vec3 v_viewPos;
+in vec3 v_viewNormal;
+in vec2 v_texcoord;
+out vec4 fragColor;
+void main() {
+    if (u_scopeCutout.x > 0.0 && v_viewPos.z < 0.0 &&
+        length(v_viewPos.xy / -v_viewPos.z) * u_scopeCutout.y < u_scopeCutout.x) discard;
+    vec3 n = normalize(v_viewNormal);
+    if (dot(n, -v_viewPos) < 0.0) n = -n;
+    float light = (0.35 + 0.45 * max(dot(n, u_lightDir1), 0.0)
+        + 0.20 * max(dot(n, u_lightDir2), 0.0)) * u_light;
+    // Color textures are sRGB. Applying linear illumination directly to those bytes
+    // double-darkens paint (especially white Printstream in indirect light).
+    // Decode/light/encode cancels to this single scalar factor for the simple material.
+    float srgbLight = pow(clamp(light, 0.0, 1.0), 1.0 / 2.2);
+    fragColor = vec4(texture(u_baseColor, v_texcoord).rgb * srgbLight, 1.0);
+}

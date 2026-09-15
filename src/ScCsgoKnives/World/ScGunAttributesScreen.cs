@@ -28,6 +28,8 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     ButtonWidget m_levelDown, m_levelUp;
     LabelWidget m_previewNotice;
     bool m_built, m_narrow, m_singleBars;
+    bool m_invalidEntry;
+    readonly LabelWidget m_entryError = ScGunUi.Note("无法识别这次武器属性请求，请返回后从 CS 枪械或装配台重新打开。");
     int m_lastRevision = -1;
     int m_initialValue;
 
@@ -47,6 +49,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     public ScGunAttributesScreen() : base("武器属性") {
         m_initialValue = 0;
         Body.Children.Add(m_root);
+        m_entryError.IsVisible=false;Body.Children.Add(m_entryError);
         m_list.ItemWidgetFactory = item => {
             var entry = Catalogue[(int)item];
             var row = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Stretch, Margin = new Vector2(4, 0) };
@@ -72,9 +75,12 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
 
     public override void Enter(object[] parameters) {
         // The inherited screen reads parameters[0] as a block value; never hand it an empty array.
-        if (parameters is not { Length: > 0 } || parameters[0] is not int)
-            parameters = [m_initialValue != 0 ? m_initialValue : ScGunAttributes.TemplateValue(0)];
+        if (parameters is not { Length: > 0 })
+            parameters = [m_initialValue != 0 ? m_initialValue : LastValue];
         base.Enter(parameters);
+        m_invalidEntry = parameters[0] is not int requested || !EffectiveGunStats.TrySnapshotValue(requested, out _);
+        m_entryError.IsVisible=m_invalidEntry;m_root.IsVisible=!m_invalidEntry;
+        if(m_invalidEntry){KnifeDiagnostics.WarnOnce("attributes-invalid-entry","[GUN_UI] invalid attributes parameter; no fallback weapon selected.");return;}
         m_instanceValue = 0;
         int variant = 0, skin = 0;
         if (parameters[0] is int value && EffectiveGunStats.TrySnapshotValue(value, out var source)) {
@@ -218,7 +224,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_identityText.Text = identity;
         bool installed = snap.CounterInstalled;
         m_lastRevision = snap.Revision;
-        m_counter.Text = installed ? $"击杀 {snap.KillCount} · Lv{snap.Level}" : "无击杀计数器";
+        m_counter.Text = installed ? $"击杀计数器：{snap.KillCount} 次 · Lv{snap.Level}" : "未安装击杀计数器";
         EffectiveGunStats.TrySnapshotValue(m_instanceValue, out var original);
         m_currentInstance.Text = m_instanceValue != 0
             ? $"当前物品：{ScGunSkinCatalog.NameOf(original.SkinId)}"
@@ -274,6 +280,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     }
 
     public override void MeasureOverride(Vector2 availableSize) {
+        if(m_invalidEntry){base.MeasureOverride(availableSize);return;}
         // Layout dimensions are logical units (850 / UIScale), not window pixels.
         float bodyWidth = availableSize.X - 64 - 24;
         bool narrow = bodyWidth < 620;
@@ -284,6 +291,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
 
     public override void Update() {
         if (BackRequested) { GoBack(); return; }
+        if(m_invalidEntry)return;
         if (!m_built) return;
         if (m_list.SelectedIndex is int index && index != m_entryIndex) Select(index);
         if (EffectiveGunStats.TrySnapshotValue(m_value, out var current) && current.Revision != m_lastRevision) Refresh();
@@ -294,8 +302,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         int alpha = (int)(210 + 45 * Math.Sin(Time.RealTime * Math.PI));
         foreach (var row in m_futureRows) row.ColorTransform = new Color(255, 255, 255, alpha);
         if (m_recipe.IsClicked) {
-            ScreensManager.m_screens["RecipaediaRecipes"] = new ScAssemblyRecipesScreen();
-            ScreensManager.SwitchScreen("RecipaediaRecipes", m_value);
+            ScWeaponHelpScreen.Open(false, m_value);
             return;
         }
         if (m_back.IsClicked) GoBack();

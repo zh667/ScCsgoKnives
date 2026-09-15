@@ -22,7 +22,7 @@
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.2.1" />
+    <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
     <ProjectReference Include="../ScCsgoResources/ScCsgoResources.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +48,8 @@
     <EmbeddedResource Include="AnimationData\knives.json" />
     <EmbeddedResource Include="AnimationData\guns.json" />
     <EmbeddedResource Include="AnimationData\grenades.json" />
+    <EmbeddedResource Include="AnimationData\equipment.json" />
+    <EmbeddedResource Include="AnimationData\c4_visuals.json" />
     <EmbeddedResource Include="AnimationData\weapon_table.json" />
     <EmbeddedResource Include="Shaders\*.vsh;Shaders\*.psh" />
   </ItemGroup>

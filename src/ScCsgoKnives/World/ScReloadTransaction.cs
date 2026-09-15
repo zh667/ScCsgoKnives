@@ -1,6 +1,6 @@
 namespace Game;
 
-/// <summary>Magazine replacement is atomic at animation completion; tube shells commit individually. Every write goes
+/// <summary>Magazine replacement is atomic at the insert event; tube shells commit individually. Every write goes
 /// through ScGunMutation, so a refused reload (no ammo, full table, changed record) pays nothing and fills nothing.</summary>
 public sealed class ScReloadTransaction {
     public static string CostMessage(bool creative, bool shells, int count) => creative
@@ -56,8 +56,8 @@ public sealed class ScReloadTransaction {
         if (!Write(Capacity, fromReserve ? 0 : Cost, fromReserve ? gap : reserve > 0 ? -1 : 0)) return false;
         Inserted = true; return true;
     }
-    public bool FinishMagazine(double now, double completeAt) => double.IsFinite(now)
-        && double.IsFinite(completeAt) && now >= completeAt && InsertMagazine();
+    public bool InsertMagazineAt(double now, double insertAt) => double.IsFinite(now)
+        && double.IsFinite(insertAt) && insertAt >= 0 && now >= insertAt && InsertMagazine();
     public bool InsertShell() {
         int rounds = GunSpec.GetRounds(Terrain.ExtractData(Expected));
         if (rounds >= Capacity) return false;

@@ -47,11 +47,11 @@ public static class ScWeaponSkinning {
     /// what stops two finished guns from ever sharing one item value.</summary>
     public static ScGunResult Apply(IInventory inventory, Quote quote, string holder) {
         if (inventory is null || quote is null || quote.Slot < 0 || quote.Slot >= inventory.SlotsCount) return ScGunResult.Invalid;
-        if (inventory.GetSlotValue(quote.Slot) != quote.Value) return ScGunResult.StateChanged;
+        if (inventory.GetSlotValue(quote.Slot) != quote.Value) return ScGunMutation.QuoteChanged("skin", inventory, quote.Slot, quote.Value, quote.Id, quote.Revision, "slot changed after quote");
         var mutation = ScGunMutation.Prepare(inventory, quote.Slot, holder, out ScGunResult why);
         if (mutation is null) return why;
         if (mutation.Before.Id != quote.Id || mutation.Before.Revision != quote.Revision || mutation.Before.SkinId != quote.FromSkinId)
-            return ScGunResult.StateChanged;
+            return ScGunMutation.QuoteChanged("skin", inventory, quote.Slot, quote.Value, quote.Id, quote.Revision, $"record changed after quote; skin={quote.FromSkinId}->{mutation.Before.SkinId}");
         int target = quote.Skin?.PaintId ?? ScGunSkinCatalog.None;
         if (target == mutation.Before.SkinId) return ScGunResult.Invalid;
         return mutation.Commit(r => r.SkinId = target, materials: quote.Cost);

@@ -1,0 +1,10 @@
+<Project>
+  <!-- Explicit local API validation. Never silently fall back to NuGet when a caller selects a game directory. -->
+  <ItemGroup Condition="'$(GameDllDirectory)' != '' And ('$(MSBuildProjectName)' == 'ScCsgoKnives' Or '$(MSBuildProjectName)' == 'PackageCheck')">
+    <PackageReference Remove="SurvivalcraftAPI.Survivalcraft" />
+    <Reference Include="$(GameDllDirectory)/*.dll" Exclude="$(GameDllDirectory)/glfw3.dll;$(GameDllDirectory)/nfd64.dll;$(GameDllDirectory)/openal32.dll;$(GameDllDirectory)/openxr_loader.dll;$(GameDllDirectory)/wrap_oal.dll"><Private>true</Private></Reference>
+  </ItemGroup>
+  <Target Name="ValidateSelectedGameDlls" BeforeTargets="ResolveReferences" Condition="'$(GameDllDirectory)' != ''">
+    <Error Condition="!Exists('$(GameDllDirectory)/Survivalcraft.dll') Or !Exists('$(GameDllDirectory)/Engine.dll') Or !Exists('$(GameDllDirectory)/EntitySystem.dll')" Text="Selected GameDllDirectory does not contain the required API assemblies." />
+  </Target>
+</Project>

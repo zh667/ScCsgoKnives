@@ -13,6 +13,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     string ModVersion => Entity?.modInfo?.Version ?? "unknown";
 
     public override void __ModInitialize() {
+        ModsManager.RegisterHook("UpdateInput", this);
         ModsManager.RegisterHook("ProjectXmlLoad", this);
         ModsManager.RegisterHook("OnProjectXmlSaved", this);
         ModsManager.RegisterHook("OnLoadingFinished", this);
@@ -28,28 +29,36 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnPlayerInputHit", this);
         ModsManager.RegisterHook("UpdatePlayerInputDig", this);
         ModsManager.RegisterHook("UpdatePlayerInputAim", this);
+        ModsManager.RegisterHook("OnPlayerInputInteract", this); // world interaction wins over a gun's right-click mode
         ModsManager.RegisterHook("RecalculateCameraProjection", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
         ModsManager.RegisterHook("OnModelCalculateBones", this); // third person: pose the human's arms around the mod weapon
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
-        ModsManager.RegisterHook("OnSettingsScreenCreated", this); // a mod settings entry a phone can actually reach
+        ModsManager.RegisterHook("OnPickableDraw", this);
+        ModsManager.RegisterHook("OnScreenEntered", this);
+    }
+    public override void OnScreenEntered(Screen screen, object[] parameters) {
+        // The engine appends mod categories lazily; retry when a screen opens so
+        // the creative tab order is correct even when OnLoadingFinished ran
+        // before the category list was finalized.
+        PlaceCreativeCategoryAfterWeapons();
+        // CreativeInventoryWidget takes a private copy of the category list in
+        // its constructor.  Reordering BlocksManager alone therefore has no
+        // effect on the tabs already visible on screen; patch every descendant
+        // widget after the screen has been built.
+        PlaceCreativeWidgets(screen);
+        ScWeaponHelpScreen.AfterEnter(screen);
     }
 
     /// <summary>Adds the mod's settings entry to the game's own Settings screen, which the pause menu opens on
     /// every platform. That is the whole mobile settings route: no file to edit, and the entry cannot be hidden
     /// by switching the combat buttons off.</summary>
-    public override void OnSettingsScreenCreated(SettingsScreen settingsScreen, out Dictionary<ButtonWidget, Action> buttonsToAdd) {
-        // Match the game's own Settings button style/container (310x60). Do not
-        // give this one a bespoke width or it becomes visibly shorter/longer.
-        var button = new BevelledButtonWidget {
-            Text = "CS 枪械", Style = ContentManager.Get<XElement>("Styles/ButtonStyle_310x60"),
-            HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center,
-            Margin = new Vector2(0f, 5f)
-        };
-        buttonsToAdd = new Dictionary<ButtonWidget, Action> {
-            [button] = () => { EnsureScreens(); ScreensManager.SwitchScreen(ScGunSettingsScreen.ScreenName); },
-        };
+    public static void OpenSettings() { EnsureScreens(); ScreensManager.SwitchScreen(ScGunSettingsScreen.ScreenName); }
+
+    public override void OnPickableDraw(Pickable pickable, SubsystemPickables subsystemPickables, Camera camera,
+        int drawOrder, ref bool shouldDrawBlock, ref float drawBlockSize, ref Color drawBlockColor) {
+        if (shouldDrawBlock && ScGunDropRenderer.Draw(pickable, subsystemPickables, drawBlockColor)) shouldDrawBlock = false;
     }
 
     /// <summary>Registers the mod's screens once. ScreensManager.AddScreen throws on a duplicate name.</summary>
@@ -58,6 +67,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (!ScreensManager.m_screens.ContainsKey(ScGunSettingsScreen.ScreenName)) ScreensManager.AddScreen(ScGunSettingsScreen.ScreenName, new ScGunSettingsScreen());
         if (!ScreensManager.m_screens.ContainsKey(ScGunLayoutScreen.ScreenName)) ScreensManager.AddScreen(ScGunLayoutScreen.ScreenName, new ScGunLayoutScreen());
     }
+
+    static void PlaceCreativeCategoryAfterWeapons() => ScCreativeCategoryOrder.Global();
+    static void PlaceCreativeWidgets(Widget root) => ScCreativeCategoryOrder.WidgetTree(root);
 
     public override void ProjectXmlLoad(XElement project, WorldInfo world, ContainerWidget widget) {
         try { ScRequiredResources.Validate(); }
@@ -107,28 +119,34 @@ public class ScCsgoKnivesModLoader : ModLoader {
         catch (Exception e) { KnifeDiagnostics.WarnOnce("third-person-draw", "third person draw: " + e); }
     }
 
-    RecipaediaScreen m_assemblyClickScreen;
+    Screen m_assemblyClickScreen;
     int m_assemblyClickValue;
     public override void BeforeWidgetUpdate(Widget widget) {
+        if (widget is CreativeInventoryPanel panel) ScCreativeCategoryOrder.Inventory(panel.m_creativeInventoryWidget);
+        else if (widget is CreativeInventoryWidget inventory) ScCreativeCategoryOrder.Inventory(inventory);
+        if (widget is Screen) PlaceCreativeCategoryAfterWeapons();
         if (widget is Screen && GameManager.Project is {} project) {
             var players = project.FindSubsystem<SubsystemPlayers>(false);
             var guns = project.FindSubsystem<SubsystemScGunBlockBehavior>(false);
             if (players is not null && guns is not null)
                 foreach (var player in players.ComponentPlayers) if (!ScGunBindings.Available(player)) guns.SuspendScope(player);
         }
-        if (widget is RecipaediaScreen screen) {
+        if (widget is Screen screen && ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) {
             m_assemblyClickScreen = null;
-            if (screen.m_recipesButton.IsClicked && screen.m_blocksList.SelectedItem is int value
+            if (recipes.IsClicked
                 && (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
                 m_assemblyClickScreen = screen; m_assemblyClickValue = value;
+                // Consume this CS-specific click before either browser opens its generic recipe
+                // page. RecipaediaEX's generic page assumes at least one grid recipe exists.
+                foreach (var clickable in recipes.AllChildren.OfType<ClickableWidget>()) clickable.IsClicked = false;
             }
         }
     }
     public override void AfterWidgetUpdate(Widget widget) {
-        if (widget is not RecipaediaScreen screen) return;
-        if (screen.m_blocksList.SelectedItem is int value && (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
-            screen.m_recipesButton.Text = "装配配方";
-            screen.m_recipesButton.IsEnabled = true;
+        if (widget is not Screen screen || !ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) return;
+        if (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
+            recipes.Text = "装配配方";
+            recipes.IsEnabled = true;
         }
         // Vanilla temporarily disables an empty nine-grid recipe button and
         // UpdateCeases clears its click. Capture before that happens; navigate
@@ -139,8 +157,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 // A gun opens on its attribute card, which links to the recipe; a knife goes straight to the recipe.
                 bool gun = Terrain.ExtractContents(m_assemblyClickValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)
                     || ScGunSkinTemplateBlock.IsTemplate(m_assemblyClickValue) || ScGunCounterTemplateBlock.IsTemplate(m_assemblyClickValue);
-                ScreensManager.m_screens["RecipaediaRecipes"] = gun ? new ScGunAttributesScreen(m_assemblyClickValue) : new ScAssemblyRecipesScreen();
-                ScreensManager.SwitchScreen("RecipaediaRecipes", m_assemblyClickValue);
+                ScWeaponHelpScreen.Open(gun, m_assemblyClickValue);
             }
         }
     }
@@ -160,9 +177,20 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void UpdateChaseBehaviorChasing(ComponentChaseBehavior chase) =>
         chase.Project.FindSubsystem<SubsystemScGrenades>()?.ApplyChaseOcclusion(chase);
 
+    public override void UpdateInput(ComponentInput input, WidgetInput widgets) {
+        var player = input.m_componentPlayer;
+        if (player is null || !ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)
+            || !ScGunBindings.KeyboardDown(player, ScGunFunctions.Plant)) return;
+        // Consume only the native keyboard action sharing the planting key.
+        string key = ScGunBindings.Get(ScGunFunctions.Plant);
+        if (SettingsManager.GetKeyboardMapping("ToggleInventory", false)?.ToString() == key) input.m_playerInput.ToggleInventory = false;
+        if (SettingsManager.GetKeyboardMapping("EditItem", false)?.ToString() == key) input.m_playerInput.EditItem = false;
+    }
+
     public override void OnPlayerInputHit(ComponentPlayer player, ref bool operated, ref double interval, ref float range, bool skipped, out bool skipVanilla) {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
-        skipVanilla = knife || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        skipVanilla = knife || ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue) || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)) range = 0f;
         if (SubsystemScGrenades.Holding(player) && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
         }
@@ -173,7 +201,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
     public override void UpdatePlayerInputDig(ComponentPlayer player, bool digging, ref bool operated, ref double interval, bool skipped, out bool skipVanilla) {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
-        skipVanilla = knife || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        skipVanilla = knife || ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue) || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
         if (SubsystemScGrenades.Holding(player) && digging && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
         }
@@ -182,8 +210,19 @@ public class ScCsgoKnivesModLoader : ModLoader {
             operated = true;
         }
     }
+    public override void OnPlayerInputInteract(ComponentPlayer player, ref bool operated, ref double interval, ref int priorityUse, ref int priorityInteract, ref int priorityPlace) {
+        if (player?.ComponentMiner is null) return;
+        bool weapon = Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)
+            || SubsystemScKnifeBlockBehavior.HoldingKnife(player);
+        if (!weapon) return;
+        // priorityInteract is the engine's own decision for the block/object under the crosshair; if it (or the
+        // held item's use/place) is non-zero the engine handles this press, so the gun must stand down.
+        bool interactive = priorityInteract > 0 || priorityUse > 0 || priorityPlace > 0;
+        player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.NoteWorldInteract(player, interactive);
+    }
     public override void UpdatePlayerInputAim(ComponentPlayer player, bool aiming, ref bool operated, ref float interval, bool skipped, out bool skipVanilla) {
         skipVanilla = SubsystemScKnifeBlockBehavior.HoldingKnife(player) || SubsystemScGrenades.Holding(player);
+        if (ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)) { skipVanilla = true; player.m_aim = null; player.m_aimStartTime = null; return; }
         bool holdingGun = Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
         if (!ScMobileControls.UsesTouchInput(player)) {
             // PC guns: the scope / burst / silencer key acts on the press edge, once per press, with no vanilla aim
@@ -204,10 +243,11 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (SubsystemScGrenades.Holding(player) && aiming && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, true); operated = true;
         }
-        if (skipVanilla && aiming && !operated && !skipped) {
+        if (skipVanilla && aiming && !operated && !skipped && !SubsystemScGunBlockBehavior.WorldInteractionAhead(player)) {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, true); operated = true;
         }
     }
+
 
     public override void HandleMoveInventoryItem(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, ref int count, out bool moved) {
         ScInventoryTransaction.Changed(source); ScInventoryTransaction.Changed(target); moved = false;
@@ -219,7 +259,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScEnchantmentCompatibility.Initialize();
@@ -227,10 +267,16 @@ public class ScCsgoKnivesModLoader : ModLoader {
         // Local interface settings: touch buttons, kill feedback and the gun crosshair. Never world data.
         ScUiSettings.Load();
         EnsureScreens();
+        PlaceCreativeCategoryAfterWeapons();
+        // Some API builds finish registering built-in categories one tick
+        // after this callback. Run once more after the loader's deferred work.
+        actions?.Add(PlaceCreativeCategoryAfterWeapons);
         int index = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] values = BlocksManager.Blocks[index].GetCreativeValues().ToArray();
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         int counterIndex = BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
+        int c4Index = BlocksManager.GetBlockIndex<ScC4Block>(true);
+        Log.Information($"[CS_C4] block={c4Index}, creative={BlocksManager.Blocks[c4Index].GetCreativeValues().Count()}, category={BlocksManager.Blocks[c4Index].GetCategory(ScC4Block.Value)}, name={BlocksManager.Blocks[c4Index].GetDisplayName(null, ScC4Block.Value)}");
         Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, counterTemplateBlock={counterIndex}, guns={GunSpec.All.Length}.");
         KnifeLog.Trace("[GUN_FOLIAGE] bullet pass-through registry: " + string.Join(", ", BlocksManager.Blocks
             .Where(b => b is not null && b is not AirBlock && b is not FluidBlock && !ScGunRange.StopsBullet(b))
@@ -272,6 +318,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {
         skip = false;
+        itemValue = componentFirstPersonModel.Project.FindSubsystem<SubsystemScC4>()?.ViewmodelValue(componentFirstPersonModel.m_componentPlayer, itemValue) ?? itemValue;
         itemValue = componentFirstPersonModel.Project.FindSubsystem<SubsystemScGrenades>()?.ViewmodelValue(componentFirstPersonModel.m_componentPlayer,itemValue) ?? itemValue;
         int variant = KnifeAnimationController.ResolveVariant(itemValue);
         if (variant < 0) {
@@ -310,7 +357,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
             // else in the frame can draw a weapon under another weapon's skin.
             CsmcFirstPersonRenderer.SkinId = Terrain.ExtractContents(itemValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)
                 ? ScGunBlock.SkinOf(itemValue) : ScGunSkinCatalog.None;
-            skip = CsmcFirstPersonRenderer.Draw(componentFirstPersonModel, camera, variant, pose);
+            skip = CsmcFirstPersonRenderer.Draw(componentFirstPersonModel, camera, variant, pose, itemValue);
         }
         finally {
             CsmcFirstPersonRenderer.SkinId = ScGunSkinCatalog.None;

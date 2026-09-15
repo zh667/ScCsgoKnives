@@ -1,0 +1,1186 @@
+{
+  "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\13_c4",
+  "joints": [
+    "weapon",
+    "weapon_offset",
+    "detonator_switch",
+    "switch_cover",
+    "ag1_hand_r"
+  ],
+  "primitives": [
+    [
+      "weapon_c4",
+      14356,
+      17935
+    ]
+  ],
+  "plantSounds": [
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 3.0,
+      "DurationFrames": 0.0,
+      "At": 0.1,
+      "Duration": 0.0,
+      "Name": "c4.initiate",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 20.0,
+      "DurationFrames": 0.0,
+      "At": 0.666667,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 29.0,
+      "DurationFrames": 0.0,
+      "At": 0.966667,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 37.0,
+      "DurationFrames": 0.0,
+      "At": 1.233333,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 44.0,
+      "DurationFrames": 0.0,
+      "At": 1.466667,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 50.0,
+      "DurationFrames": 0.0,
+      "At": 1.666667,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 59.0,
+      "DurationFrames": 0.0,
+      "At": 1.966667,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    },
+    {
+      "Class": "CNmClipDocEvent_Sound",
+      "StartFrame": 65.0,
+      "DurationFrames": 0.0,
+      "At": 2.166667,
+      "Duration": 0.0,
+      "Name": "c4.keypressquiet",
+      "SyncID": "",
+      "Relevance": "ClientOnly"
+    }
+  ],
+  "files": [
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\draw_c4.dmx",
+      "bytes": 130817,
+      "sha256": "01214549f88621ce405738ea3308ed95cff751b0cf59b09152c2cde884a61391"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\draw_c4.vnmclip",
+      "bytes": 9590,
+      "sha256": "c42243f1dff1c25d7bf0d98541ee720e6066b77a6ef873e6c84406f626ee5675"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\idle_c4.dmx",
+      "bytes": 115637,
+      "sha256": "b59c289030969c6b6745f28adc60daba86a5bf2afd817b1ed33b54a09ee07ef3"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\idle_c4.vnmclip",
+      "bytes": 6239,
+      "sha256": "28f8965a743a1723b8e082a65677f84b14569c480edb1cf8abe69825b6d59e6a"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\lookat01_c4.dmx",
+      "bytes": 319673,
+      "sha256": "eb4c50de33ce564c51740eca9325085c8dcc718fc9097ad15b6ac92157cffea7"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\lookat01_c4.vnmclip",
+      "bytes": 1483,
+      "sha256": "8a2d48676af222c21f1cdb60b2dfd1dbd8c1f1bc72601a366dce6446aa71e384"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\lookat02_c4.dmx",
+      "bytes": 319673,
+      "sha256": "571fff02b69a71121a0c66a1ef739631a24e862dbeeacc44a2e301bff6b9d35c"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\lookat02_c4.vnmclip",
+      "bytes": 1483,
+      "sha256": "ac03ce8109ca9c883473a5d65e24b1bb01712c21c6c60edc505c8abbb61c583e"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\lookat03_c4.dmx",
+      "bytes": 304301,
+      "sha256": "d6dc81c9a34235ba1bff215b0a635c17097f6bcd9742023d62e4c8c1210dfab1"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\lookat03_c4.vnmclip",
+      "bytes": 1483,
+      "sha256": "73018f703ec36e9a182348102fe454de062e654f571ac6019a9abe78566ac3a0"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\plant_c4.dmx",
+      "bytes": 313085,
+      "sha256": "2cf4ced8c76be8e1f59244ec9ab233d4bf75187c64b689bd48ada894e74fa20c"
+    },
+    {
+      "path": "decompiled\\animation\\anims\\viewmodel\\equipment\\c4\\plant_c4.vnmclip",
+      "bytes": 26563,
+      "sha256": "5d50b27632912ba114098c7be519e11a6234c914b5faee1049e5d78e20ab3e2c"
+    },
+    {
+      "path": "decompiled\\animation\\skeletons\\weapons\\c4.dmx",
+      "bytes": 3892,
+      "sha256": "1d20e30c8017372ceb6a0b11487038415c3eead5a4213a13fa7476ded5fd6812"
+    },
+    {
+      "path": "decompiled\\animation\\skeletons\\weapons\\c4.vnmskel",
+      "bytes": 453,
+      "sha256": "2068212a862ab005779e501a0de1f4291b21cbab42c1627537c90197c4dff2da"
+    },
+    {
+      "path": "decompiled\\soundevents\\game_sounds_weapons.vsndevts",
+      "bytes": 908990,
+      "sha256": "bf51619e8d840826edafa7671855e526aeb9abe4e86ffb5c06bd61ef0f57c101"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_beep2.wav",
+      "bytes": 13396,
+      "sha256": "c136ca6f2e169747cdc811c40eb4e0777bce2196c151a0cd74ea5025286c20e1"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_beep2_10sec.wav",
+      "bytes": 5024,
+      "sha256": "53fa6102ce4bdbda44d2e1a7f668ce75e040997f3fcefae0f9baf77ca2564711"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_beep3.wav",
+      "bytes": 15836,
+      "sha256": "4cc76ce217a3c066a4adbec2984a7dba1b316d87a82dadd6fcc14d8abbbafa45"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_beep3_10sec.wav",
+      "bytes": 6708,
+      "sha256": "8f17591859e0c1703fcfa21933f5f28f5918fd3492edd8bb28f1f23a3020f201"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_click.wav",
+      "bytes": 12536,
+      "sha256": "167a106f113ef10bf21454e258475d433035a208d5d10520c0158886513e0c79"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_disarmfinish.wav",
+      "bytes": 264644,
+      "sha256": "e74fa507e8d322c42f4ba35e07bba5c05377a16661af5b7eab035b70fff8750b"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_disarmstart.wav",
+      "bytes": 220544,
+      "sha256": "ae7ab3970aee1ae2db5daa5044d43dc64af8b7116a40c580a220a41c914be7cd"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw.wav",
+      "bytes": 35984,
+      "sha256": "66ea68f782601cf6979fb37f465b79f7d91dab9aa809d51f3fb12157d5f7bf60"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_01.mp3",
+      "bytes": 10843,
+      "sha256": "8ec343d9edb0853a073c30e0812dc3f3d94f39cd6ddc4963162eb1c1cb3624bd"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_01.vsnd",
+      "bytes": 503,
+      "sha256": "11663e80de8d2f5f8398447530b3730ef5e240cfc8ba0c671f539709e6f8b9f8"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_02.mp3",
+      "bytes": 21260,
+      "sha256": "41a6b11c7f1f31c1913cf22873a8e38872906d9e98bebcbe3ac7d7a915241031"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_02.vsnd",
+      "bytes": 503,
+      "sha256": "ede3707e154d4bb059fa614ebfa4da8b0c141c70290d3cf98d6e43adedfc30d0"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_03.mp3",
+      "bytes": 21260,
+      "sha256": "404fa78cdcfa46955bd791160b1d44bf6de8f3a66e62e212ed4cbd4ad95343ea"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_03.vsnd",
+      "bytes": 503,
+      "sha256": "ede3707e154d4bb059fa614ebfa4da8b0c141c70290d3cf98d6e43adedfc30d0"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_04.mp3",
+      "bytes": 11052,
+      "sha256": "887033bcc618bb04eb8cba44c92f481fc7402d93a18d8cf0cbf6c9249a0c7e70"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_04.vsnd",
+      "bytes": 503,
+      "sha256": "a588f413b6fad15cce3881446af0c3281621c9526f155fa1e2b5d2f4a0ce7db9"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_05.mp3",
+      "bytes": 21782,
+      "sha256": "5e84756e63381eb1edd5a4fc13feb868811611e6f7b6eabf90b94e499f395b69"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_05.vsnd",
+      "bytes": 503,
+      "sha256": "a052066b0973b92da52cd0107800962d76e8104bffabe4b28308d575192dcaa8"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_06.mp3",
+      "bytes": 10844,
+      "sha256": "b5f2455f27ecc2e246929083b04e38d17593c1dacf4e48ee389cd352d6a253fe"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_06.vsnd",
+      "bytes": 503,
+      "sha256": "94fa00b65c569ab949c0ca3f7b6761bcd49d73c3c82e8d7156b3a90dcec7b0af"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_07.mp3",
+      "bytes": 10426,
+      "sha256": "0e48498a56f8ef9d1fc9a6a1e0ed65f72bc06b21896abf144bd62434e14e5796"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_07.vsnd",
+      "bytes": 503,
+      "sha256": "21945dd3da25890f83e6800ae298f1fd24fd1acad2824e7495b30b5a064f9607"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_01.mp3",
+      "bytes": 12085,
+      "sha256": "00e91b87d4660ae146da2093de979a12e20a0896e81fb356e57c96fd3bee7866"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_01.vsnd",
+      "bytes": 503,
+      "sha256": "9e8c85b363386184b8e730745b9a6570a5260e21796103fe367adee7d1a6bad3"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_02.mp3",
+      "bytes": 12085,
+      "sha256": "38113787ebe4c362cc07362fa93c2fa4f2b90ae1f1112c218cd69fc7c4401847"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_02.vsnd",
+      "bytes": 503,
+      "sha256": "9e8c85b363386184b8e730745b9a6570a5260e21796103fe367adee7d1a6bad3"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_03.mp3",
+      "bytes": 11772,
+      "sha256": "93b366d8c5204f1aeac7a262754ad5f807e4456e90e18d695626e10aa9e31d8a"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_03.vsnd",
+      "bytes": 503,
+      "sha256": "c1ba1bf19bcfc897a28cb93bb9cc9ff6218ca26483fafa7c3d8e92046d3d9345"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_04.mp3",
+      "bytes": 10834,
+      "sha256": "b9dd0cb2226cdadc155f45f340f8f5e870ea0f557ad60e44f988cf7dc85e7394"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_draw_grab_04.vsnd",
+      "bytes": 503,
+      "sha256": "a73114f2116d674c24859362eaca481233d126723b7d40a2bb5e0cc8cef7beaa"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_explode1.wav",
+      "bytes": 1054768,
+      "sha256": "d83a02d8c05b1f6dd316b5595f00a74093b0d58cfaf24cd58160e543639b50b5"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_explode_close_01.mp3",
+      "bytes": 99464,
+      "sha256": "4c50ec82b4bf8045a6e3c10b8b9c23a97e06779798ff06c9b2b9a7348039fc18"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_explode_close_01.vsnd",
+      "bytes": 450,
+      "sha256": "1e533d52e27521e0fa2afff6fb82a557068aa55ac072e9850ee48ed9b5626a13"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_exp_deb1.wav",
+      "bytes": 572684,
+      "sha256": "3069629d77873268c39475a7af6eb4ff88d7dae411e32652cba14f121ba54b25"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_exp_deb2.wav",
+      "bytes": 741708,
+      "sha256": "78690eeac9bf0726643511e0857475b474d27a73a736f6ed9ebfab983d808595"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_initiate.wav",
+      "bytes": 337468,
+      "sha256": "404d462bd77cfb6989a7d4226740aa2062decd0f8e54e3602787e18517a2ebe0"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_plant.wav",
+      "bytes": 48110,
+      "sha256": "03eca36e8e6c61e3145a0118c1b38f0601eae8829aebe1e9f8fc95196197f21b"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_plant_quiet.wav",
+      "bytes": 121240,
+      "sha256": "22f8d8aea9d3e702142fdd303f5b1dfdedbe62f9b4cd6b21bc5935fd0c27d47e"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_01.mp3",
+      "bytes": 77984,
+      "sha256": "76737f209dbc829d5a8d603af55f65e686a7752f03d05a85f1843c9c444c2b81"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_01.vsnd",
+      "bytes": 454,
+      "sha256": "e35de939630c4fae532a2f37e2b81f2ca239135ba575c7bb5db813d937cd60c8"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_01.mp3",
+      "bytes": 166634,
+      "sha256": "4f97c44c53204d54854771e5c78fef75436324eb29bf21e892f042a5a4341146"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_01.vsnd",
+      "bytes": 455,
+      "sha256": "f5f8e84c105616b63d1632c5ae046708f85f841c5ef1b0f92c86f0d8bc89bc4d"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_02.mp3",
+      "bytes": 106033,
+      "sha256": "5c80c60b8b40e1a5da7a47ec01aee73438f5a69511304777eb6e20a3090f49f7"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_02.vsnd",
+      "bytes": 455,
+      "sha256": "58a91aab635e31c8e2b086ef708d84a93d15261dd9eb909b63ad7eb4e99388dd"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_03.mp3",
+      "bytes": 103181,
+      "sha256": "05feceddbd3dcad34af4219df4b1181d6e1b008dd8c71764b6a483a28d1af7ae"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_03.vsnd",
+      "bytes": 455,
+      "sha256": "f3e47ae7cad179e3726c635d186350fd84c4387efe16681a8c15807e4951176a"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_04.mp3",
+      "bytes": 156929,
+      "sha256": "ad335125bb903398db1cf196f40f29c5a8749c14ae6d1a3dc9de0c5781afe3da"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_debris_04.vsnd",
+      "bytes": 455,
+      "sha256": "a7e3dedd769ca1bde9fb79f26e3976b07ec68a578142aa3f2c5042644657dee3"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_hit_01.mp3",
+      "bytes": 85386,
+      "sha256": "3bc79b9a5116baf8f12447af3430c8a3c28ba365bb3dcc7fe1498669d0a94b8a"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_hit_01.vsnd",
+      "bytes": 454,
+      "sha256": "07bda3cf907882864114581ee339367ca06f7d781841f5c5794b092314e32ad7"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_hit_02.mp3",
+      "bytes": 99254,
+      "sha256": "75e0f39eefa389089e0b11720cdda815259598fbc254b65abfc055707c462c87"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_hit_02.vsnd",
+      "bytes": 454,
+      "sha256": "ba98efb12c756db8eada9e694ed24898f4e27114a2dfb7e75667ac491a064c49"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_hit_03.mp3",
+      "bytes": 98942,
+      "sha256": "9c9a3e59fa80ef1a7aa6a5e5497bb1f8283fecbecf8f33d922f23fa29f4893c1"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_shockwave_hit_03.vsnd",
+      "bytes": 454,
+      "sha256": "37e43822484a413f69edb7a1ee971df443e5273dc1e14f4db4a7154fbbfeca5c"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_thump_01.mp3",
+      "bytes": 42850,
+      "sha256": "479ec1c4c02544dc84280895e27406eaff590970124630c26a67515158ccac46"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\c4_thump_01.vsnd",
+      "bytes": 453,
+      "sha256": "a45f5f40fd327cf2702f3e75296ec4db2134b47936b31ef86ca0c1cc563f26e1"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press1.mp3",
+      "bytes": 4068,
+      "sha256": "843a71b2a09eb06a9b2a037f880b05269e11ce506a8c94b55e9d8d6e61af0158"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press1.vsnd",
+      "bytes": 501,
+      "sha256": "2c0a887ca3551a1a5aaf1d79dc25578732d05d1bccbfe7e4771499c9f6727cd3"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press2.mp3",
+      "bytes": 5113,
+      "sha256": "08a498e9052658a2810ed982a20391a1f99bd8614369c9185b281fd5e5171c2d"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press2.vsnd",
+      "bytes": 501,
+      "sha256": "b499a2b34ae9129234b44553485c735b56e75698611ddc515cded6087fc40edc"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press3.mp3",
+      "bytes": 4590,
+      "sha256": "bab46167c5234ba995984bb3bcca20f6e9c7393315dd6876446e47765c243bbc"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press3.vsnd",
+      "bytes": 501,
+      "sha256": "f0a990fc629b05aa2019238c677da071540829df7f381c8bc78e1f4d5abe3907"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press4.mp3",
+      "bytes": 6259,
+      "sha256": "1e8577021bddd01513a7bc08ba96c223279f9943d5d74698577829be60228650"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press4.vsnd",
+      "bytes": 502,
+      "sha256": "5549745f6a8aee15465fcbc02d4f76df6cc0a619a97c6263dff5db6c905355e9"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press5.mp3",
+      "bytes": 5111,
+      "sha256": "452122ae41de5bb17c4dac1faab92bf7f50ea3b013f605b70ae7f42b39bf7e7a"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press5.vsnd",
+      "bytes": 502,
+      "sha256": "b6a730045ada15c536c90f5368e8ddefcf81addd3b9a7e57a42dd26ef029cac9"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press6.mp3",
+      "bytes": 5841,
+      "sha256": "f1f9b63a7ca8bfb9e9a903cbd57be6cb7bcc1d04a0c0e3cae0009f163aed6618"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press6.vsnd",
+      "bytes": 498,
+      "sha256": "37b97fab4ce50abd4ba2243a8c3cab24384f8178f3a810c57e877701b4781a8b"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press7.mp3",
+      "bytes": 4485,
+      "sha256": "888e532ad6dd63b6733e0b8ea8ee3777ce5099f5ee9ac9bba3cb477b3185783f"
+    },
+    {
+      "path": "decompiled\\sounds\\weapons\\c4\\key_press7.vsnd",
+      "bytes": 501,
+      "sha256": "5fca06d74a19c42eb6b44c56f9a141da644c2869ec13953bea0eba95cedaf5a7"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\defuse_multimeter.vmdl",
+      "bytes": 8775,
+      "sha256": "7769256bddde7f7a4a77aa8b6827a4b3c1c80c6f00eebd59a76f543249d2b675"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\defuse_multimeter_defuse_multimeter.dmx",
+      "bytes": 126094,
+      "sha256": "d3ddf547508ec5ab5f45eea6dd5246a1fbc56f1cefb778da3bdaaa9189929058"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4.vmdl",
+      "bytes": 7184,
+      "sha256": "ee7d48b479a6bc701ad50e06b7f6ee99e9357649424e283f792d38255ec6e9d1"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_body_hd.dmx",
+      "bytes": 1495417,
+      "sha256": "61889e5a6aedb5cba46893ccbe1381536a3810bffa86f303d225f5e7658890ef"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_c4_screen1.dmx",
+      "bytes": 3526,
+      "sha256": "eb79aebc9ee087eb456c2a281b4b3476278e96709f434935ef46b73f199be5b9"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_dropped.dmx",
+      "bytes": 5267,
+      "sha256": "7043dce0bb69760646772d33d5bb3c3e7dcd77a80fdd243e652250fefb915841"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_hull.dmx",
+      "bytes": 1769,
+      "sha256": "102038c04e45e20fbd0ea5feb86bb5d711429897e0c0e700ba1a5f77bf02b136"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_inventory_icon.dmx",
+      "bytes": 5267,
+      "sha256": "7f7d54ab94061f2efe101662c281794be5a8e11c64efa4194522a9082c8b577a"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_inventory_inspect.dmx",
+      "bytes": 5267,
+      "sha256": "33bd05ac4f303d07aed6f7c9f217d9f5338adff307e1f92a77c87ce5ad8dda72"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\weapon_c4_planted.dmx",
+      "bytes": 5267,
+      "sha256": "ba476731a309dc0cc98c4cd0b6155ccc488ee342760056166e7927a0f6db7cd0"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_53c5f087_metal.png",
+      "bytes": 167814,
+      "sha256": "17c1c7738d3119282b1910782e2cc38cbcaa08e854daae649612dc8fd5f16650"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_ao.png",
+      "bytes": 1007683,
+      "sha256": "d13c0a2c5561b99c9e3522386395935e3b1a48c1f10566a794140e241bd8b9dc"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_ao_tga_bb64a00d.png",
+      "bytes": 1760408,
+      "sha256": "1fa6103b8c5009edf629fde96a3e6595484fe6647d2903c47d9ba450dc26413b"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_color.png",
+      "bytes": 4911210,
+      "sha256": "80ed1e7abde1960493fc20751a977ebff1b70ed02f93d2cb6de94840128bf0cd"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_color_psd_75da6dec.png",
+      "bytes": 4911210,
+      "sha256": "80ed1e7abde1960493fc20751a977ebff1b70ed02f93d2cb6de94840128bf0cd"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_digits.png",
+      "bytes": 82152,
+      "sha256": "791cf284697c0a6405c6fadf500d991ecc92de1e646f1a18d16fc5df1d4d8bf7"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_digits_psd_52746c2d.png",
+      "bytes": 82152,
+      "sha256": "791cf284697c0a6405c6fadf500d991ecc92de1e646f1a18d16fc5df1d4d8bf7"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_led_selfillum.png",
+      "bytes": 1340,
+      "sha256": "0cb98c95360e02f5325df0c40e50d5f9bb4eec2f8a76c220b736e6395a9c9f4b"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_led_selfillum_psd_d8363a2a.png",
+      "bytes": 2751,
+      "sha256": "57aaaefd0ec7dd3b51ead89736669775fe69e8216b40dd32096c959867ecfeaf"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_normal.png",
+      "bytes": 3625238,
+      "sha256": "bed824a91357591c3a0ca1ed4221f87b4d66e12eae9ef93b6011f01813c5e3a1"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_normal_tga_4e48d437.png",
+      "bytes": 4025121,
+      "sha256": "8993795cfdebf37b4ea203670a38fefe9032874627ead49404036ebb63bd057b"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_rough.png",
+      "bytes": 1485440,
+      "sha256": "c72c957f7ea24b8f687a785b50623e2754dde9860854538af4401821785655c6"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\c4_rough_tga_53c5f087.png",
+      "bytes": 2473695,
+      "sha256": "22f7e667b40dd2a671133e045e09a1a1ce11a15eaf71860ee885b56b78ed615f"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter.vmat",
+      "bytes": 1525,
+      "sha256": "51c4b41e57b66cc2c969a995854f1cec7918ec0082eddf71c63f9d92ee919942"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_4ee97d61_metal.png",
+      "bytes": 347,
+      "sha256": "168a41631d7179d1bae3e32c2701fd5ab06b4a3146336cb4522a12466a70a286"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_a.vmat",
+      "bytes": 1609,
+      "sha256": "a01256bd28fb5e69c7d114884bf40c13a351b1cc42d444f2b906ee806edb49d6"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_a_vmat_g_tambientocclusion_9782fd5c.png",
+      "bytes": 86,
+      "sha256": "ebd3c78be259dd40dc054514fbd1fea79ab6ca5b0d0c480e4bf283e1195cdff3"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_a_vmat_g_tmetalness_ee9f4dcf.png",
+      "bytes": 86,
+      "sha256": "a3c21d939196ef47ecca0c4f63c647d827fb95e7443966b6482fa15f543c146a"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_b.vmat",
+      "bytes": 1609,
+      "sha256": "874b93346f615c628d54ae2cf94ec0cb2b2b434e811327ac5494572b6b3dc6d1"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_b_vmat_g_tambientocclusion_9782fd5c.png",
+      "bytes": 86,
+      "sha256": "ebd3c78be259dd40dc054514fbd1fea79ab6ca5b0d0c480e4bf283e1195cdff3"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_b_vmat_g_tmetalness_ee9f4dcf.png",
+      "bytes": 86,
+      "sha256": "a3c21d939196ef47ecca0c4f63c647d827fb95e7443966b6482fa15f543c146a"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_c.vmat",
+      "bytes": 1609,
+      "sha256": "673384b9b4f115761cd129876b9f3453136665c15bd8a303aaa677b3ee1346ec"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_color.png",
+      "bytes": 515,
+      "sha256": "28071fcfa78f26187326e08ef31d704938bb757f97a5b02009358ae7deb56df9"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_color_psd_7c8414d0.png",
+      "bytes": 515,
+      "sha256": "28071fcfa78f26187326e08ef31d704938bb757f97a5b02009358ae7deb56df9"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_c_vmat_g_tambientocclusion_9782fd5c.png",
+      "bytes": 86,
+      "sha256": "ebd3c78be259dd40dc054514fbd1fea79ab6ca5b0d0c480e4bf283e1195cdff3"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_c_vmat_g_tmetalness_ee9f4dcf.png",
+      "bytes": 86,
+      "sha256": "a3c21d939196ef47ecca0c4f63c647d827fb95e7443966b6482fa15f543c146a"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_normal.png",
+      "bytes": 513,
+      "sha256": "3df0bdc12216a6f45bf8d03204f6fb40ab6dd2ae73c345ece555e92ff100b0aa"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_normal_psd_496d1af8.png",
+      "bytes": 564,
+      "sha256": "2b1d92a70b36c5efec6e1295df11d89014383c46ecc2fda872f3b7691b838e2d"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_color.png",
+      "bytes": 322744,
+      "sha256": "bdd66fba30e4293296850f44ff1979ea326bdaf93d2029c93ef53583f8cb01da"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_color_psd_93513db5.png",
+      "bytes": 322744,
+      "sha256": "bdd66fba30e4293296850f44ff1979ea326bdaf93d2029c93ef53583f8cb01da"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_rough.png",
+      "bytes": 114288,
+      "sha256": "4f8f6b75aa0551d9df92efa1f029e19da0367c446ac3ded084dc533c6c9ba68a"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\defuse_multimeter_rough_tga_4ee97d61.png",
+      "bytes": 173517,
+      "sha256": "0a00f9397a6ef4a7b70d6baa677de0d9ba903a6939b4bbbcd19845cdd80d8c99"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\weapon_c4.vmat",
+      "bytes": 1958,
+      "sha256": "c726d3dcf73088241fd5e42404e26061e2c282a00859fdbb426072c474e30f98"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\weapon_c4_digits.vmat",
+      "bytes": 1625,
+      "sha256": "835363eb4dac5239f5a1f0ec78d62fb5f9a71176928eb2da8b6a5bd6c6f64a44"
+    },
+    {
+      "path": "decompiled\\weapons\\models\\c4\\materials\\weapon_c4_digits_vmat_g_tmetalness_5818ca09.png",
+      "bytes": 86,
+      "sha256": "121a76ee76b30ef10e7bbcfa8ed31e215e87aa3a65f4808e2ee3d45d106ce890"
+    },
+    {
+      "path": "glb\\c4_ao_tga_bb64a00d.png",
+      "bytes": 1760408,
+      "sha256": "1fa6103b8c5009edf629fde96a3e6595484fe6647d2903c47d9ba450dc26413b"
+    },
+    {
+      "path": "glb\\c4_color_psd_75da6dec.png",
+      "bytes": 4911210,
+      "sha256": "80ed1e7abde1960493fc20751a977ebff1b70ed02f93d2cb6de94840128bf0cd"
+    },
+    {
+      "path": "glb\\c4_digits_psd_52746c2d.png",
+      "bytes": 82152,
+      "sha256": "791cf284697c0a6405c6fadf500d991ecc92de1e646f1a18d16fc5df1d4d8bf7"
+    },
+    {
+      "path": "glb\\c4_led_selfillum_psd_d8363a2a.png",
+      "bytes": 2751,
+      "sha256": "57aaaefd0ec7dd3b51ead89736669775fe69e8216b40dd32096c959867ecfeaf"
+    },
+    {
+      "path": "glb\\c4_normal_tga_4e48d437.png",
+      "bytes": 4025121,
+      "sha256": "8993795cfdebf37b4ea203670a38fefe9032874627ead49404036ebb63bd057b"
+    },
+    {
+      "path": "glb\\c4_rough_tga_53c5f087.png",
+      "bytes": 2473695,
+      "sha256": "22f7e667b40dd2a671133e045e09a1a1ce11a15eaf71860ee885b56b78ed615f"
+    },
+    {
+      "path": "glb\\default_ao_tga_559f1ac6.png",
+      "bytes": 86,
+      "sha256": "ebd3c78be259dd40dc054514fbd1fea79ab6ca5b0d0c480e4bf283e1195cdff3"
+    },
+    {
+      "path": "glb\\default_normal_tga_4fc2d3dd.png",
+      "bytes": 86,
+      "sha256": "804b5abdfa32839c83d213d650c41422f2890d8b686b7cf5e63b70282037dbf9"
+    },
+    {
+      "path": "glb\\physics_weaponc4.png",
+      "bytes": 3665,
+      "sha256": "89e78afc7cba0f630efce891ad12ddb95bcb54cf771fd9e776008c739c931693"
+    },
+    {
+      "path": "glb\\weapon_c4.glb",
+      "bytes": 1400816,
+      "sha256": "609942d9f02829b92ae545c344382f768e3c9859ecccdbc22608951f412fd1de"
+    },
+    {
+      "path": "glb\\weapon_c4_digits_vmat_g_tmetalness_5818ca09.png",
+      "bytes": 86,
+      "sha256": "121a76ee76b30ef10e7bbcfa8ed31e215e87aa3a65f4808e2ee3d45d106ce890"
+    },
+    {
+      "path": "glb\\weapon_c4_physics.glb",
+      "bytes": 3004,
+      "sha256": "1cdbda05140146ed40b7a904d5e9518923b14f4ccf094c47dbb3901dd31bdf1f"
+    },
+    {
+      "path": "raw\\animation\\anims\\viewmodel\\equipment\\c4\\draw_c4.vnmclip_c",
+      "bytes": 13781,
+      "sha256": "5327eb3f96ffa64ea274b4ed3eac6f86c27bb78e2b0e065efd315fb825e5aa10"
+    },
+    {
+      "path": "raw\\animation\\anims\\viewmodel\\equipment\\c4\\idle_c4.vnmclip_c",
+      "bytes": 5253,
+      "sha256": "3dc1a22603e3ed025bc3e743d0b55e878401829a1eaa5fa6284e4b9f6309a507"
+    },
+    {
+      "path": "raw\\animation\\anims\\viewmodel\\equipment\\c4\\lookat01_c4.vnmclip_c",
+      "bytes": 21744,
+      "sha256": "1b5b355dffad6ee8bbb4f061073ecb6dd6539cb71b7919b02bc3336f7c9ea979"
+    },
+    {
+      "path": "raw\\animation\\anims\\viewmodel\\equipment\\c4\\lookat02_c4.vnmclip_c",
+      "bytes": 27943,
+      "sha256": "e6d62ce66743cff70011bd91a4d8852e35a59fcc006ba6cbeff1a698c293ce08"
+    },
+    {
+      "path": "raw\\animation\\anims\\viewmodel\\equipment\\c4\\lookat03_c4.vnmclip_c",
+      "bytes": 33860,
+      "sha256": "763b75a6557a4a70a46bb83df999e9af39c355c6716e1bcd870b6438bbc127af"
+    },
+    {
+      "path": "raw\\animation\\anims\\viewmodel\\equipment\\c4\\plant_c4.vnmclip_c",
+      "bytes": 32182,
+      "sha256": "c4ce2f4d640d622add0e49ec0c321dfd8ce4eb38c311ae186f56ec8fb4a6e179"
+    },
+    {
+      "path": "raw\\animation\\skeletons\\weapons\\c4.vnmskel_c",
+      "bytes": 1460,
+      "sha256": "0b2b04cc962be5fe32ca90c0b1f14407bb1be31b17ac581fa643b9e1859ee15c"
+    },
+    {
+      "path": "raw\\soundevents\\game_sounds_weapons.vsndevts_c",
+      "bytes": 50652,
+      "sha256": "13d0b92b46cf2902b53842e9b593b9f5eb800e778d985e5afc8dd5ca3fee46bf"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_beep2.vsnd_c",
+      "bytes": 14152,
+      "sha256": "a46f1814fde7d8d535c3a771ec9fa388687d2717d8d790222f6f60089ab0a4b9"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_beep2_10sec.vsnd_c",
+      "bytes": 5796,
+      "sha256": "e2bfbf513205351c3bab593d0ef50eba9ba9c9e212f19247bc8f65cc6f2a2dc5"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_beep3.vsnd_c",
+      "bytes": 16592,
+      "sha256": "a916eb79fff8d89b0fe0911e02e16951004ec661711db1dcfcb9515845935607"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_beep3_10sec.vsnd_c",
+      "bytes": 7480,
+      "sha256": "5d0fcdcee440788e8fd9ea113c7ffbb07d2ce780ab06d016cd00b4f4984aea88"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_click.vsnd_c",
+      "bytes": 13292,
+      "sha256": "f5170ec35320558c053ca8717d22c70719a99478c5cc397daa5dffa67465cdf7"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_disarmfinish.vsnd_c",
+      "bytes": 265400,
+      "sha256": "fc3b60f89f81e757d4b098354d45f55690596b31847416b0d73c26469d94d9da"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_disarmstart.vsnd_c",
+      "bytes": 221300,
+      "sha256": "0a4816987d9862658e3a4f3437455639752c4a5c5c02cccc2fbcd993ef5cd3e0"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw.vsnd_c",
+      "bytes": 36740,
+      "sha256": "e226da64c63cf6457b503ef6a4abd3cb25128a7dcfa19af0f03590c47d331412"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_01.vsnd_c",
+      "bytes": 12173,
+      "sha256": "23f963abd3688298d9ea90af61aa4108c4f5a339ba61346e16e2e1dea12dd212"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_02.vsnd_c",
+      "bytes": 22590,
+      "sha256": "3fb5742b1f4531e7863210d0b0232009adfcbd3df63c9d2c5c4b975ff769f798"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_03.vsnd_c",
+      "bytes": 22590,
+      "sha256": "9d77945dc552e99ba85b98cb6da9415e7ca7293f7c8fd86a26ec18da94c2c463"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_04.vsnd_c",
+      "bytes": 12366,
+      "sha256": "5547bcc12e7e42f52718d8c7f7e25b6fe0b0cec40d46025e399b97634e34fcab"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_05.vsnd_c",
+      "bytes": 23112,
+      "sha256": "02bbdf5f21d2c2c8fa9f548af430fbe7f9752d556334eee6fa40c4f3bad9190f"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_06.vsnd_c",
+      "bytes": 12174,
+      "sha256": "5d04069ec477f6788607b6e290d6fa441363fc92dd20c61d4d40ef6cf8d23b14"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_07.vsnd_c",
+      "bytes": 11756,
+      "sha256": "27261195891df466d398bcd0728d5957db41cc80fe717ad9d05c44ecb841d2da"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_grab_01.vsnd_c",
+      "bytes": 13415,
+      "sha256": "72f5d1fa1f60fb9def19f1db73a95abb6504cb3554e015d3347b21b4c7406723"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_grab_02.vsnd_c",
+      "bytes": 13415,
+      "sha256": "44a3d52cb3c8129ab0dbc5ab1bf470130e789df3e0a97943bb4068f145c89b10"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_grab_03.vsnd_c",
+      "bytes": 13102,
+      "sha256": "e13853c26a85adc52c5f01dc76f08f02b9041619535c28d84e714fef3f9567f7"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_draw_grab_04.vsnd_c",
+      "bytes": 12164,
+      "sha256": "2e202ae03900ab88a3d10a1103b2f24cbdcf27e49873e6d19fb8f217722549b8"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_explode1.vsnd_c",
+      "bytes": 1055524,
+      "sha256": "716afba72d0092794947f1bbaf33434f2971f187cfda9b0e85a3409adf09f1a6"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_explode_close_01.vsnd_c",
+      "bytes": 100766,
+      "sha256": "c9249109195a1b97a198656887cd1523d736b6acbc575db95781d05d3148e5eb"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_exp_deb1.vsnd_c",
+      "bytes": 573440,
+      "sha256": "9f3b0b3ff4097d33d21f872c3cb55076986495fe80ec6a5e5911e8eef6e0dd16"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_exp_deb2.vsnd_c",
+      "bytes": 742464,
+      "sha256": "a449b97267d19515341e3b3446ea4b001f2be4f4ae17bcad7a92ddefaf6247e4"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_initiate.vsnd_c",
+      "bytes": 338224,
+      "sha256": "5e9c6d390c0ea4d4f9718c7c05fbfdbddb4d479e863f906035f0e6c851a06897"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_plant.vsnd_c",
+      "bytes": 48866,
+      "sha256": "862917445e116e587ff2faa31dfa51581f296418ce0ab58c3e40ae1346a32b31"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_plant_quiet.vsnd_c",
+      "bytes": 121996,
+      "sha256": "00a5c4f75146db173fa08d2235ad0af81927c3d4a31beecb0aa4a5aa8cd833a5"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_01.vsnd_c",
+      "bytes": 79286,
+      "sha256": "84b9d0ce9e5c2e8fd3f88678023a54772bc017d6dd0d0310b309188b503f9281"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_debris_01.vsnd_c",
+      "bytes": 167936,
+      "sha256": "72c1ab5512cd8485b132e45ae73c8818d13b08984c30d99ab67a2ed93a61d1c4"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_debris_02.vsnd_c",
+      "bytes": 107335,
+      "sha256": "9dfda4677ee92c66500d3de3ea3d19c88e38cd79f4099a1de50becac14dcd9ea"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_debris_03.vsnd_c",
+      "bytes": 104482,
+      "sha256": "ac0d5f1b71e4e24717beba9f19494e4d49e772f5029dd91dd7c139154c1e78af"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_debris_04.vsnd_c",
+      "bytes": 158229,
+      "sha256": "0653a1adf10dce4a0d793279e8bfbfc8e0b5fd3d3d80349f404ecbddd046eced"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_hit_01.vsnd_c",
+      "bytes": 86688,
+      "sha256": "2e674f91f5feac8be2f404213000fafa9585e960e424fc7bb06bb7a56f403e82"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_hit_02.vsnd_c",
+      "bytes": 100556,
+      "sha256": "58caa82d143ffd6268fae27e899681dd95bdc21c77186fee897d10e0578e5e63"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_shockwave_hit_03.vsnd_c",
+      "bytes": 100244,
+      "sha256": "70d6de6fbe4765d7b203a36641c7ef7ede25c28d5311842efc3e4518b12d5127"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\c4_thump_01.vsnd_c",
+      "bytes": 44135,
+      "sha256": "1403e9d292ec5117eaa4d8accdb38204c72dfb73996e62012cd73003bbf9932f"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press1.vsnd_c",
+      "bytes": 5382,
+      "sha256": "3b251f8ad7bc51a74fed0a094ab29fc60d9f92abe6cfd618df235129eff7a461"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press2.vsnd_c",
+      "bytes": 6428,
+      "sha256": "2f95f0eaa1830c25d5682b2d1496cff8a52770564b02fd6ae44df8fd99eed920"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press3.vsnd_c",
+      "bytes": 5889,
+      "sha256": "6354b2e4362fc1c9450b6398ededd05bc922810af5b226463c0f2622440d8058"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press4.vsnd_c",
+      "bytes": 7574,
+      "sha256": "455cd7a2ed43cba6bbf71b33037bf1ef4f58ebd81923f56c4d907b97a7d32364"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press5.vsnd_c",
+      "bytes": 6426,
+      "sha256": "42b775f3973982df8a2eaee01348acc50c4673f72ecf89e5a90a49335c3b4b10"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press6.vsnd_c",
+      "bytes": 7153,
+      "sha256": "cae8c14e862be5778b361af7523b9e3654ce75bf28b5d22b8c9d4eda30d85d92"
+    },
+    {
+      "path": "raw\\sounds\\weapons\\c4\\key_press7.vsnd_c",
+      "bytes": 5800,
+      "sha256": "c1535b7b19de695bf4037163a5dbf451cd56bd57e46a723037d54b4947b6b63a"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\defuse_multimeter.vmdl_c",
+      "bytes": 37678,
+      "sha256": "9613764086af353e506f34b840c8d4e2e97d61e08fbde3634ebd9cd9ce5f5825"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\weapon_c4.vmdl_c",
+      "bytes": 429100,
+      "sha256": "66abed58f07288a88f098a294b260f3ea35f89569a2b8e01d008afd80901960b"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\c4_ao_tga_bb64a00d.vtex_c",
+      "bytes": 1562328,
+      "sha256": "2ee4d5e97b497324ad947246be40f4543f0a0d3a7812fe5a57a6e90602f4d303"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\c4_color_psd_75da6dec.vtex_c",
+      "bytes": 4287764,
+      "sha256": "b4bb514e58b6dd1920a1acba22d104d2090e8008975103ba375634a7da0182f4"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\c4_digits_psd_52746c2d.vtex_c",
+      "bytes": 77606,
+      "sha256": "6132bda52e0d154328dc05ef49b7ad55b02c0c87a23dd5967e1e54f5b61b8ccf"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\c4_led_selfillum_psd_d8363a2a.vtex_c",
+      "bytes": 46702,
+      "sha256": "4dc789a6d8fe37620ded9f166d99fa082df2bcc435e89d8af66978e6a3d06e57"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\c4_normal_tga_4e48d437.vtex_c",
+      "bytes": 4914548,
+      "sha256": "9cb1e732987251aee3dbc777624530e4b733ba12fcbd93b552716d22a9c8a7f9"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\c4_rough_tga_53c5f087.vtex_c",
+      "bytes": 2614428,
+      "sha256": "8f0ff0581897404ff39d27067b8a18829687cfb77cdfd0d972b24129dcf4b340"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter.vmat_c",
+      "bytes": 3640,
+      "sha256": "4f99cf1c2e0eb42a9d9969f75a591d1323863ca8f42317c2e0bf7050f1e0a28a"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_a.vmat_c",
+      "bytes": 3880,
+      "sha256": "49449d1d8ef19df0cd7367d8870d20ef14a72721349fcf3ba5d87e4fc5a36577"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_a_vmat_g_tambientocclusion_9782fd5c.vtex_c",
+      "bytes": 1944,
+      "sha256": "73d0a762e4096daae5f74e9c81e62423e9eb86b0e0972a78b26978549dd28934"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_a_vmat_g_tmetalness_ee9f4dcf.vtex_c",
+      "bytes": 1984,
+      "sha256": "feab2e197db1456cec11dfc0b604f83149644fd4a9147f403d95b49bd3f59c1b"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_b.vmat_c",
+      "bytes": 3880,
+      "sha256": "1f953fc9afdf9e5e5a6acc4ca1e34b3ed9870b6b1c046f89d5ae187e5988c1a5"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_b_vmat_g_tambientocclusion_9782fd5c.vtex_c",
+      "bytes": 1944,
+      "sha256": "73d0a762e4096daae5f74e9c81e62423e9eb86b0e0972a78b26978549dd28934"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_b_vmat_g_tmetalness_ee9f4dcf.vtex_c",
+      "bytes": 1984,
+      "sha256": "e24946ca42bff678e034be7e88cd78c97feb478bdfbe68cfcceb963030aa808b"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_c.vmat_c",
+      "bytes": 3880,
+      "sha256": "23aadef2046a2ba1349fa8b86a39c67ca5635cab513204a52e6f840b43fee8a8"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_color_psd_7c8414d0.vtex_c",
+      "bytes": 23892,
+      "sha256": "089532360e1f4b411e9e9bbb7dff38016871a7a5bcbe9f074806ed55f7ae7cef"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_c_vmat_g_tambientocclusion_9782fd5c.vtex_c",
+      "bytes": 1944,
+      "sha256": "73d0a762e4096daae5f74e9c81e62423e9eb86b0e0972a78b26978549dd28934"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_c_vmat_g_tmetalness_ee9f4dcf.vtex_c",
+      "bytes": 1984,
+      "sha256": "e24946ca42bff678e034be7e88cd78c97feb478bdfbe68cfcceb963030aa808b"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_cable_normal_psd_496d1af8.vtex_c",
+      "bytes": 23956,
+      "sha256": "348e99a6c219a6bce1ae86590d87e235d12502088273a9868b3a67343a5316b3"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_color_psd_93513db5.vtex_c",
+      "bytes": 304912,
+      "sha256": "29377a334c6bee8ce604ac30b61641ab32002be62cea15758cc149955dade04e"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\defuse_multimeter_rough_tga_4ee97d61.vtex_c",
+      "bytes": 229308,
+      "sha256": "fa72a0fdb4c1a9a14b27210484c5e68d8cfc76e76b418c1f8c8c1cad2f5a8052"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\weapon_c4.vmat_c",
+      "bytes": 4292,
+      "sha256": "d905f193555532d085c97bf468ef805fea9f610c067cb454f2e5950a6349acbc"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\weapon_c4_digits.vmat_c",
+      "bytes": 3956,
+      "sha256": "459c1f71a142b06ae717959a2b30494f99fb51f66ef0934ad4e3d92a7851ac1e"
+    },
+    {
+      "path": "raw\\weapons\\models\\c4\\materials\\weapon_c4_digits_vmat_g_tmetalness_5818ca09.vtex_c",
+      "bytes": 2256,
+      "sha256": "5c3b784d1d2d378d150b1b387e313f324a4bfee89693bcb48ce5f8d238014064"
+    }
+  ]
+}

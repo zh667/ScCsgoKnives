@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Xml.Linq;
 using Game;
 using TemplatesDatabase;
@@ -16,7 +16,7 @@ static class TravelRegression {
         const int block=302;
         XElement World(string row,bool player=true) {
             var records=Group("Records");if(row!=null)records.Add(Value("1",row));
-            var table=Group("GunRegistry",Value("Schema",3),Value("Next",row==null?1:2),Value("GrowthMode","CountAndGrow"),records);
+            var table=Group("GunRegistry",Value("Schema",(int)registryType.GetField("Schema").GetRawConstantValue()),Value("Next",row==null?1:2),Value("GrowthMode","CountAndGrow"),records);
             return new XElement("Project",new XElement("Subsystems",Group("BlocksManager",Value("302","ScGunBlock")),Group("ScGunBlockBehavior",Value("GunDataLayout",5),table)),
                 new XElement("Entities",player?new XElement("Entity",new XAttribute("Name","MalePlayer"),Group("Inventory",Group("Slots",Group("0",Value("Contents",Terrain.MakeBlockValue(block,0,66)),Value("Count",1))))):null));
         }
@@ -28,7 +28,10 @@ static class TravelRegression {
             // Use a real valid current row to avoid hardcoding evolving validator requirements.
             var reg=Activator.CreateInstance(registryType);registryType.GetMethod("Allocate").Invoke(reg,[2,4,false,400,1500,0]);
             var real=(ValuesDictionary)registryType.GetMethod("Save").Invoke(reg,[0d]);string row=real.GetValue<ValuesDictionary>("Records").GetValue<string>("1");
-            row=row.Replace("ct=0,","ct=1,").Replace("k=0,","k=345,").Replace("gl=0,","gl=3,").Replace("gv=0,","gv=1,").Replace("p=0,","p=51,");
+            // Keep the record on this build's growth rules so travel preserves it verbatim; old-rule conversion is
+            // exercised by the growth-boundary fixture.
+            int rules=(int)mod.GetType("Game.ScGunGrowth").GetField("RulesVersion").GetRawConstantValue();
+            row=row.Replace("ct=0,","ct=1,").Replace("k=0,","k=345,").Replace("gl=0,","gl=3,").Replace("gv=0,","gv="+rules+",").Replace("p=0,","p=51,");
             var main=World(row);Capture(main,"data:/Worlds/Test");var child=World(row,false);Transfer(main,child);
             string before=child.ToString();var imported=Prepare(child,"data:/Worlds/Test/Tartareosity");
             Check("preparation-does-not-mutate-source",before==child.ToString());
@@ -49,7 +52,12 @@ static class TravelRegression {
                 var src=World(row);Capture(src,"data:/Worlds/Test");var dst=World(null,false);Transfer(src,dst);
                 if(fault=="unknown-schema")G(G(dst.Element("Subsystems"),"ScGunBlockBehavior"),"GunRegistry").Elements("Value").Single(e=>(string)e.Attribute("Name")=="Schema").SetAttributeValue("Value",99);
                 if(fault=="duplicate-identity")dst.Element("Entities").Add(new XElement(dst.Element("Entities").Element("Entity")));
-                if(fault=="foreign-world")G(dst.Element("Entities").Element("Entity"),"ScGunTravel").Elements("Value").Single(e=>(string)e.Attribute("Name")=="Source").SetAttributeValue("Value","data:/Worlds/Other");
+                if(fault=="foreign-world") {
+                    var legacyPacket=G(dst.Element("Entities").Element("Entity"),"ScGunTravel");
+                    legacyPacket.Elements("Value").Single(e=>(string)e.Attribute("Name")=="Source").SetAttributeValue("Value","data:/Worlds/Other");
+                    // Legacy v2 supports related worlds only; v3 intentionally permits unrelated providers.
+                    legacyPacket.Elements("Value").Single(e=>(string)e.Attribute("Name")=="Version").SetAttributeValue("Value","2");
+                }
                 if(fault=="target-holder"){
                     dst=new XElement(main);dst.Element("Entities").Add(new XElement("Entity",new XAttribute("Name","Chest"),Group("Inventory",Group("Slots",Group("0",Value("Contents",Terrain.MakeBlockValue(block,0,66)),Value("Count",1))))));
                 }
@@ -66,7 +74,7 @@ static class TravelRegression {
             Check("shell-shown-during-reload",(bool)visibility.Invoke(null,["sawedoff","shell","reload_sawedoff",.6f,false]));
             Check("cz-front-hidden-only-after-transfer",!(bool)visibility.Invoke(null,["cz75a","magazine2","idle_cz75a",0f,true])&&(bool)visibility.Invoke(null,["cz75a","magazine","idle_cz75a",0f,true]));
             foreach(string blockName in new[]{"ScGunBlock","ScKnifeBlock"})Check("edit-unbound/"+blockName,!((Block)Activator.CreateInstance(mod.GetType("Game."+blockName))).IsEditable_(0));
-            var functions=mod.GetType("Game.ScGunFunctions");var all=(string[])functions.GetField("All").GetValue(null);Check("all-controls-includes-fire",all.Length==10&&all.Distinct().Count()==10&&all.Contains("fire"));
+            var functions=mod.GetType("Game.ScGunFunctions");var all=(string[])functions.GetField("All").GetValue(null);Check("all-controls-includes-fire",all.Length==11&&all.Distinct().Count()==11&&all.Contains("fire"));
             var fire=functions.GetMethod("Default").Invoke(null,["fire",false]);Check("old-layout-new-fire-default-off",!(bool)fire.GetType().GetProperty("Enabled").GetValue(fire));
         }catch(Exception e){Check("setup",false,e.ToString());}
         finally{current.SetValue(null,previous);}

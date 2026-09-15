@@ -49,6 +49,25 @@ static class SwitchAnimationRegression {
                 inventory.ActiveSlotIndex = 0;
                 return Clip(pose).StartsWith("deploy") && SampleTime(pose) == 0;
             });
+            var gunSpecs = (Array)mod.GetType("Game.GunSpec").GetField("All").GetValue(null);
+            for (int g = 0; g < gunSpecs.Length; g++) foreach (bool empty in new[] { false, true }) {
+                int variant = g + 22;
+                string name = (string)gunSpecs.GetValue(g).GetType().GetField("Name").GetValue(gunSpecs.GetValue(g));
+                if (name is "taser" or "nova" or "xm1014" or "sawedoff") continue;
+                Test($"magazine-credited-before-fire-unlocks/{name}/{empty}", () => {
+                    inventory.ActiveSlotIndex = 0;
+                    var (model, state) = Setup(variant, "Idle", "idle", false);
+                    ctrl.GetMethod("TriggerReload").Invoke(null, [player, empty, 0]);
+                    string alias = (string)state.GetType().GetField("ClipAlias").GetValue(state);
+                    var timing = mod.GetType("Game.Cs2Rig").GetMethod("ReloadMilestones").Invoke(null, [name, alias]);
+                    float at = (float)timing.GetType().GetField("Item2").GetValue(timing);
+                    float duration = Duration(variant, alias);
+                    Time(at + .001); Update(model, variant);
+                    bool locked = (bool)ctrl.GetMethod("IsBusy").Invoke(null, [model]);
+                    Time(duration + .01); Update(model, variant);
+                    return at > 0 && at < duration && locked && !(bool)ctrl.GetMethod("IsBusy").Invoke(null, [model]);
+                });
+            }
             Test("instance-not-ammo-or-light", () => {
                 var type = mod.GetType("Game.ScHeldWeaponSelection"); var observer = Activator.CreateInstance(type);
                 bool Observe(object inv, int slot, int value) => (bool)type.GetMethod("Observe").Invoke(observer, [inv, slot, value, true]);
@@ -73,6 +92,42 @@ static class SwitchAnimationRegression {
                 bool ok=Clip(pose).StartsWith("deploy") && state.GetType().GetField("Action").GetValue(state).ToString()=="Draw"
                     && (bool)txType.GetProperty("Cancelled").GetValue(tx) && inventory.GetSlotValue(0)==Value(23) && inventory.GetSlotValue(1)==Value(23);
                 inventory.ActiveSlotIndex=0; return ok;
+            });
+            foreach (int next in new[] { -1, -2, 1, 23 }) Test("old-knife-render-does-not-redeploy/"+next, () => {
+                inventory.ActiveSlotIndex=0;var (model,state)=Setup(2,"Idle","idle",false);Update(model,2);
+                inventory.m_slots[1]=next==-1?0:next==-2?Terrain.MakeBlockValue(3):Value(next);inventory.ActiveSlotIndex=1;Time(.1);
+                var pose=Update(model,2);bool oldNotDraw=state.GetType().GetField("Action").GetValue(state).ToString()!="Draw";
+                bool nextDraw=true;if(next>=0){pose=Update(model,next);nextDraw=Clip(pose).StartsWith("deploy");}
+                inventory.ActiveSlotIndex=0;return oldNotDraw&&nextDraw;
+            });
+            foreach (int outgoing in new[] { 0, 2, 22, 23, 24, 34, 56 }) Test("departing-deploy-keeps-moving/" + outgoing, () => {
+                inventory.ActiveSlotIndex = 0;
+                var (model, state) = Setup(outgoing, "Draw", "deploy", false);
+                model.m_value = Value(outgoing); Update(model, outgoing);
+                inventory.m_slots[1] = Terrain.MakeBlockValue(3); inventory.ActiveSlotIndex = 1;
+                state.GetType().GetField("PendingInspect").SetValue(state, true);
+                Time(.05); var first = Update(model, outgoing); Time(.15); var second = Update(model, outgoing);
+                bool ok = SampleTime(second) > SampleTime(first) + .09f && Clip(first) == Clip(second)
+                    && !(bool)state.GetType().GetField("PendingInspect").GetValue(state)
+                    && (double)state.GetType().GetField("StartedAt").GetValue(state) == 0;
+                inventory.ActiveSlotIndex = 0; return ok;
+            });
+            foreach(bool drawFirst in new[]{false,true}) foreach(double at in new[]{.01,.4,1.0,2.0}) Test($"reload-to-knife-order/{drawFirst}/{at}",()=>{
+                inventory.ActiveSlotIndex=0;var (model,state)=Setup(23,"Reload","reload",false);Update(model,23);
+                var txType=mod.GetType("Game.ScReloadTransaction");var tx=Activator.CreateInstance(txType,[inventory,0,Value(23),901,0,20]);
+                var behaviorType=mod.GetType("Game.SubsystemScGunBlockBehavior");var gs=Activator.CreateInstance(behaviorType.GetNestedType("GunState",BindingFlags.NonPublic),true);gs.GetType().GetField("Reload").SetValue(gs,tx);
+                gs.GetType().GetField("ReloadAnimationSequence").SetValue(gs,ctrl.GetMethod("ReloadActionSequence").Invoke(null,[player]));
+                inventory.m_slots[1]=Value(2);inventory.ActiveSlotIndex=1;Time(at);if(drawFirst)Update(model,2);
+                behaviorType.GetMethod("CancelReload",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(RuntimeHelpers.GetUninitializedObject(behaviorType),[player,gs,true]);
+                var pose=Update(model,2);bool ok=Clip(pose).StartsWith("deploy")&&state.GetType().GetField("Action").GetValue(state).ToString()=="Draw"&&(bool)txType.GetProperty("Cancelled").GetValue(tx)&&inventory.m_slots[0]==Value(23);
+                Time(at+.1);pose=Update(model,2);ok&=SampleTime(pose)>.05f;inventory.ActiveSlotIndex=0;return ok;
+            });
+            Test("reload-cancel-token-does-not-cancel-later-reload",()=>{
+                inventory.ActiveSlotIndex=0;var (model,state)=Setup(23,"Reload","reload",false);Update(model,23);
+                long sequence=(long)ctrl.GetMethod("ReloadActionSequence").Invoke(null,[player]);
+                ctrl.GetMethod("TriggerReload").Invoke(null,[player,false,0]);
+                ctrl.GetMethod("CancelReloadAction").Invoke(null,[player,sequence]);
+                return state.GetType().GetField("Action").GetValue(state).ToString()=="Reload";
             });
             for (int v = 0; v < 63; v++) foreach (string alias in new[] { "deploy", "inspect" }) {
                 int variant = v; float duration = Duration(v, alias); if (duration <= 0) continue;

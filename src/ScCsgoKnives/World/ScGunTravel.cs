@@ -57,7 +57,7 @@ public static class ScGunTravel {
         world=Canonical(world);
         var gun=Guns(project);if(Text(gun,"GunDataLayout")!="5")return;
         var registry=Group(gun,"GunRegistry");
-        if(!int.TryParse(Text(registry,"Schema"),out int schema)||schema is not (ScGunRegistry.SchemaTenLevels or ScGunRegistry.Schema))return;
+        if(!int.TryParse(Text(registry,"Schema"),out int schema)||schema is not (ScGunRegistry.SchemaTenLevels or ScGunRegistry.SchemaThirtyLevels or ScGunRegistry.SchemaStagedKills or ScGunRegistry.Schema))return;
         var rows=Map(Group(registry,"Records"));var identities=Map(Group(gun,Identities));int block=Index(project);
         if(block<0)return;
         string worldId=Text(gun,WorldIdentity);
@@ -69,7 +69,7 @@ public static class ScGunTravel {
             // v1 packets are the immutable old schema-3 protocol. Version 2 explicitly identifies schema 4,
             // so an old build refuses instead of quarantining Lv11+ guns as if their records were corrupt.
             var packet=Make(Packet);packet.Add(Field("Version",schema==ScGunRegistry.SchemaTenLevels?1:3),Field("Source",world),Field("GrowthMode",Text(registry,"GrowthMode")??"Unset"));
-            if(schema==ScGunRegistry.Schema)packet.Add(Field("Schema",schema),Field("Layout",GunSpec.DataLayout));
+            if(schema!=ScGunRegistry.SchemaTenLevels)packet.Add(Field("Schema",schema),Field("Layout",GunSpec.DataLayout));
             var carried=Make("Records");var keys=Make("Identities");
             try {
                 foreach(var item in Items(player,block).DistinctBy(i=>i.Id)) {
@@ -91,7 +91,7 @@ public static class ScGunTravel {
         foreach(var player in project.Element("Entities")?.Elements().Where(Player)??[]) {
             var packet=Group(player,Packet);var items=Items(player,block).ToArray();
             var rows=Map(Group(packet,"Records"));var identities=Map(Group(packet,"Identities"));
-            if(Text(packet,"Version")!="3"||Text(packet,"Schema")!=ScGunRegistry.Schema.ToString()||Text(packet,"Layout")!=GunSpec.DataLayout.ToString()
+            if(Text(packet,"Version")!="3"||Text(packet,"Schema")!=Text(Group(Guns(project),"GunRegistry"),"Schema")||!SupportedPacket(packet)
                 ||Canonical(Text(packet,"Source"))!=Canonical(world)||Text(packet,"Error") is not null
                 || rows.Count!=items.Length||identities.Count!=rows.Count||items.Select(i=>i.Id).Distinct().Count()!=items.Length
                 ||items.Any(i=>!rows.ContainsKey(i.Id.ToString(CultureInfo.InvariantCulture))||!identities.ContainsKey(i.Id.ToString(CultureInfo.InvariantCulture))))
@@ -99,13 +99,19 @@ public static class ScGunTravel {
         }
     }
     public sealed record Plan(XElement Document,int Guns);
+    static int PacketSchema(XElement packet) => Text(packet,"Version") switch {
+        "1" => ScGunRegistry.SchemaTenLevels, "2" => ScGunRegistry.SchemaThirtyLevels,
+        "3" => int.TryParse(Text(packet,"Schema"),out int schema) ? schema : -1, _ => -1
+    };
+    static bool SupportedPacket(XElement packet) => PacketSchema(packet) is ScGunRegistry.SchemaTenLevels or ScGunRegistry.SchemaThirtyLevels or ScGunRegistry.SchemaStagedKills or ScGunRegistry.Schema
+        && (Text(packet,"Version")!="3" || Text(packet,"Layout")==GunSpec.DataLayout.ToString());
     static bool CompleteWorldCopy(XElement doc,XElement player) {
         // A restored/copied WORLD may keep its old path in both the player packet and the
         // frozen world metadata. Its registry is already local; never treat that as a foreign
         // player-only import. Legacy Ghoul WorldPath supplies the pre-0.41.8 provenance.
         var gun=Guns(doc);var packet=Group(player,Packet);
         string version=Text(packet,"Version");
-        if(version is not ("1" or "2" or "3") || version=="3"&&(Text(packet,"Schema")!=ScGunRegistry.Schema.ToString()||Text(packet,"Layout")!=GunSpec.DataLayout.ToString()))return false;
+        if(!SupportedPacket(packet))return false;
         string stored=Text(gun,SourcePath)??Text(Group(doc.Element("Subsystems"),"Tartareosity"),"WorldPath");
         if(string.IsNullOrWhiteSpace(stored)||Canonical(stored)!=Canonical(Text(packet,"Source")))return false;
         int block=Index(doc);if(block<0)return false;
@@ -148,14 +154,14 @@ public static class ScGunTravel {
             if(version is not ("1" or "2" or "3") || string.IsNullOrWhiteSpace(origin)
                 || version!="3"&&!Related(origin,target) || Text(packet,"Error") is not null)
                 throw new InvalidOperationException("跨世界携带快照不兼容或未就绪："+Text(packet,"Error"));
-            if(version=="3"&&(Text(packet,"Schema")!=ScGunRegistry.Schema.ToString()||Text(packet,"Layout")!=GunSpec.DataLayout.ToString()))
+            if(!SupportedPacket(packet))
                 throw new InvalidOperationException("跨世界快照的数据版本不受支持");
             var rows=Map(Group(packet,"Records"));var keys=Map(Group(packet,"Identities"));
             if(rows.Count!=keys.Count)throw new InvalidOperationException("跨世界记录与身份数量不一致");
             var carriedItems=Items(player,block).ToArray();
             if(rows.Count!=carriedItems.Length)throw new InvalidOperationException("携带物品与快照数量不一致，未导入");
             if(!Enum.TryParse<ScGunGrowthMode>(Text(packet,"GrowthMode"),out var incomingMode)||!Enum.IsDefined(incomingMode))throw new InvalidOperationException("跨世界成长规则无效");
-            var proof=new ValuesDictionary();proof.SetValue("Schema",version=="1"?ScGunRegistry.SchemaTenLevels:ScGunRegistry.Schema);proof.SetValue("Next",1023);
+            var proof=new ValuesDictionary();proof.SetValue("Schema",PacketSchema(packet));proof.SetValue("Next",1023);proof.SetValue("GrowthMode",incomingMode.ToString());
             var proofRows=new ValuesDictionary();foreach(var row in rows)proofRows.SetValue(row.Key,row.Value);proof.SetValue("Records",proofRows);
             var parsed=ScGunRegistry.Load(proof,0);if(parsed.QuarantinedCount>0||parsed.Count!=rows.Count||parsed.Disabled)throw new InvalidOperationException("携带枪械快照损坏");
             foreach(var item in carriedItems) {
@@ -166,7 +172,8 @@ public static class ScGunTravel {
                 if(reverse.TryGetValue(identity,out id)) {
                     if(used.Contains(id)||!registry.TryGetSnapshot(id,out var existing)||existing.Variant!=item.Variant)throw new InvalidOperationException("目标世界同身份枪仍被其他容器持有，拒绝覆盖");
                 } else {if(next>GunSpec.LastId)throw new InvalidOperationException("目标枪械记录表已满，迁移未执行");id=next++;reverse.Add(identity,id);identities[id.ToString(CultureInfo.InvariantCulture)]=identity;}
-                records.SetValue(id.ToString(CultureInfo.InvariantCulture),row);
+                // Old packet rows must be upgraded exactly once before joining the current table.
+                records.SetValue(id.ToString(CultureInfo.InvariantCulture),parsed.Save(0).GetValue<ValuesDictionary>("Records").GetValue<string>(old));
                 int value=int.Parse((string)item.Field.Attribute("Value"),CultureInfo.InvariantCulture);
                 item.Field.SetAttributeValue("Value",Terrain.ReplaceData(value,GunSpec.WithId(item.Variant,id)).ToString(CultureInfo.InvariantCulture));count++;
             }

@@ -43,6 +43,11 @@ public static class ScGunHitTest {
     static ScPartBox[] Pose(ComponentBody body) {
         if(PoseProvider is not null) return PoseProvider(body);
         var model=body.Entity?.FindComponent<ComponentCreatureModel>();
+        // Mesh.BoundingBox is in bind space. Applying its parent-node transform
+        // ignores inverse binds and blended joint weights (Smolder shrinks to
+        // ~0.003 blocks). Until a skinned surface probe is available, use the
+        // live physics body, never a definite miss from that invalid rigid box.
+        if(model?.Model?.HasSkin == true) return null;
         if(model?.Model is null || model.AnimationController is null || model.m_boneTransforms is null) return null;
         var cache=s_cache.GetOrCreateValue(model);
         if(cache.Frame==Time.FrameIndex && cache.Body==body.Matrix && ReferenceEquals(cache.Model,model.Model)) return cache.Parts;
@@ -104,7 +109,9 @@ public static class ScGunHitTest {
             } else {
                 if(trace is not null) trace.FallbackCandidates++;
                 float? d=BoxDistance(new BoundingBox(box.Min-new Vector3(pad),box.Max+new Vector3(pad)),origin,direction,limit);
-                if(d is float distance && distance<=limit && (best is null || distance<best.Value.Distance)) best=new(body,distance,ScHitPart.Body,"unavailable model; narrow body fallback");
+                if(d is float distance && distance<=limit && (best is null || distance<best.Value.Distance)) best=new(body,distance,ScHitPart.Body,
+                    body.Entity?.FindComponent<ComponentCreatureModel>()?.Model?.HasSkin == true
+                        ? "skinned model; physics body fallback" : "unavailable model; narrow body fallback");
             }
         }
         return best;

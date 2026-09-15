@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Install CS2's own hotbar icons: panorama/images/econ/weapons/base_weapons -> <name>_slot.png.
 
-The mod's slot icons are 128x128 RGBA. CS:MC's are CS2's 512 x 384 econ renders
-scaled by a quarter and centred (see SCALE below for the measurement), so that is
-what this does to every one of them, and --check reports how close the result is
-to what ships now.
+The mod's slot icons are 256x192 RGBA 4:3 sheets. CS:MC's were CS2's 512 x 384 econ renders
+scaled by a quarter and centred (see SCALE below). This installer still writes that 128
+intermediate; tools/optimize_slot_icons.py is the display pass that rebuilds 256x192
+from the 512 originals, removes the light rim, and is what the inventory actually ships.
 
 Only weapons the mod ships are installed, by the table below; a CS2 icon with no
 mod counterpart (grenades, C4, gloves) is left alone.
