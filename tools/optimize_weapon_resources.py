@@ -177,14 +177,20 @@ def texture(name, data):
     return result
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--models-only',action='store_true');args=parser.parse_args()
+    global STAGE, REPORT
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--models-only',action='store_true')
+    parser.add_argument('--source-package',type=Path,default=ROOT/'output/ScCsgoResources-1.8.0.scmod')
+    parser.add_argument('--stage',type=Path,default=STAGE)
+    parser.add_argument('--report',type=Path,default=REPORT)
+    args=parser.parse_args();STAGE=args.stage.resolve();REPORT=args.report.resolve()
     (STAGE/'AnimationData').mkdir(parents=True,exist_ok=True);REPORT.mkdir(parents=True,exist_ok=True)
     for p in sorted((ROOT/'src/ScCsgoKnives/AnimationData').iterdir()):
         if p.suffix in ('.skin','.parts'): binary(p)
         elif p.name.endswith('.cs2.animation.json'):
             (STAGE/'AnimationData'/p.name).write_bytes(p.read_bytes())
     print('Binary models done',len(rows),flush=True)
-    with zipfile.ZipFile(ROOT/'output/ScCsgoResources-1.8.0.scmod') as archive:
+    with zipfile.ZipFile(args.source_package) as archive:
         for entry in archive.infolist():
             name=entry.filename
             if name.startswith('Assets/Models/') and name.endswith('.obj'): data=obj(name,archive.read(name))

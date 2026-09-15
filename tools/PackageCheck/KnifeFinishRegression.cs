@@ -31,8 +31,10 @@ static class KnifeFinishRegression {
                 Check(asset + "/factory-remains-factory", (string)Call("ScKnifeSkinCatalog", "MaterialForRender", asset, variant, Terrain.MakeBlockValue(700, 0, variant)) == asset + "_cs2");
                 Check(asset + "/old-preview-value-retained", (string)Call("ScKnifeSkinCatalog", "MaterialForRender", asset, variant, Terrain.MakeBlockValue(700, 0, variant | 32)) == material);
                 foreach (string map in new[] { material, material + "_normal", material + "_orm", icon })
-                    Check(asset + "/map/" + map, zip.GetEntry("Assets/Textures/ScCsgoKnives/" + map + ".png") is not null);
-                using var stream = zip.GetEntry("Assets/Textures/ScCsgoKnives/" + icon + ".png").Open();
+                    Check(asset + "/map/" + map, zip.GetEntry("Assets/Textures/ScCsgoKnives/" + map + ".png") is not null
+                        || zip.GetEntry("Assets/Textures/ScCsgoKnives/" + map + ".webp") is not null);
+                using var stream = (zip.GetEntry("Assets/Textures/ScCsgoKnives/" + icon + ".png")
+                    ?? zip.GetEntry("Assets/Textures/ScCsgoKnives/" + icon + ".webp")).Open();
                 string hash = Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
                 var sources = row.GetProperty("sourceHashes").EnumerateObject().Where(p => p.Name.Contains("default_generated")).ToArray();
                 Check(asset + "/official-icon-source", sources.Length == 1 && sources[0].Value.GetString()?.Length == 64, sources.Length == 0 ? "missing" : sources[0].Value.GetString());

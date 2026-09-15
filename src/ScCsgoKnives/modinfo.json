@@ -1,9 +1,9 @@
 {
   "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
   "Name": "CS武器",
-  "Version": "1.0.14-preview",
+  "Version": "1.1.0",
   "ApiVersion": "1.9.3.1",
-  "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与50级成长、属性查询及手机触控自定义。支持生存与创造模式。需同时安装正式版CS武器资源包1.10.2或更高；非官方模组。 包含无等级 C4（20 秒、中心伤害 5000、半径 32 格）。",
+  "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与50级成长、属性查询及手机触控自定义。支持生存与创造模式。已内置完整资源，安装本文件即可；非官方模组。 包含无等级 C4（20 秒、中心伤害 5000、半径 32 格）。",
   "ScVersion": "2.4.0.0",
   "LoadOrder": 1010,
   "NonPersistentMod": false,
@@ -11,9 +11,7 @@
   "Link": "https://github.com/zh667/ScCsgoKnives",
   "Author": "zh667",
   "PackageName": "zh667.ScCsgoKnives",
-  "Dependencies": {
-    "zh667.ScCsgoResources": "[1.10.2,2.0.0)"
-  },
+  "Dependencies": {},
   "Settings": [
     {
       "Id": "Weapons",

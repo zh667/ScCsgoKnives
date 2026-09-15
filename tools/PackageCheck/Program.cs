@@ -219,6 +219,7 @@ foreach(var c in CombatRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,o
 foreach(var c in GunHandlingRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in SkinnedMotionRegression.Run(mod, skinnedModel)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in KnifeFinishRegression.Run(mod, scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in StandalonePackageRegression.Run(mod, scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunDiagnosticsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in attributeColdChecks) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in TravelRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });

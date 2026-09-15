@@ -1,6 +1,6 @@
 """Independent binary integrity audit for derived meshes; no GPU or gameplay claims."""
 from pathlib import Path
-import struct,hashlib,json
+import struct,hashlib,json,argparse
 ROOT=Path(__file__).resolve().parents[1]
 def read(path):
     b=path.read_bytes();o=12;skin=b[:8]==b'SCK2SKIN'
@@ -25,9 +25,13 @@ def read(path):
     if not skin:sections.append(section(True,False))
     assert o==len(b)
     return header,sections
+parser=argparse.ArgumentParser()
+parser.add_argument('--stage',type=Path,default=ROOT/'.tmp/optimized-resources')
+parser.add_argument('--report',type=Path,default=ROOT/'output/optimization-106/model-integrity.json')
+args=parser.parse_args()
 checks=[]
 for source in sorted((ROOT/'src/ScCsgoKnives/AnimationData').iterdir()):
-    target=ROOT/'.tmp/optimized-resources/AnimationData'/source.name
+    target=args.stage/'AnimationData'/source.name
     if source.name.endswith('.cs2.animation.json'):
         assert source.read_bytes()==target.read_bytes();checks.append(dict(name=source.name,kind='animation',exact=True));continue
     if source.suffix not in ('.skin','.parts'):continue
@@ -40,5 +44,6 @@ for source in sorted((ROOT/'src/ScCsgoKnives/AnimationData').iterdir()):
             # Every retained vertex has its exact original UV, normal, position, joint indices and weights.
     checks.append(dict(name=source.name,kind='mesh',headersExact=True,vertexAttributesExact=True,materialsAndBonesExact=True))
 report=dict(checks=checks,count=len(checks),failed=0)
-(ROOT/'output/optimization-106/model-integrity.json').write_text(json.dumps(report,indent=2))
+args.report.parent.mkdir(parents=True,exist_ok=True)
+args.report.write_text(json.dumps(report,indent=2))
 print('Validated',len(checks),'animations/meshes; zero changed surviving vertex attributes, bone headers or material identities')

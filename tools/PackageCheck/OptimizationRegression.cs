@@ -14,9 +14,12 @@ static class OptimizationRegression {
         bool optimized = (string)XElement.Load(markerStream).Attribute("Name") == "Optimized512";
         if (optimized) {
             var images = zip.Entries.Where(e => e.FullName.StartsWith("Assets/Textures/")).ToArray();
-            // 555 includes the deterministic Gamma Doppler knife finish maps and
-            // the C4 visual set added alongside the mobile resource pass.
-            Check("texture-count-and-format",images.Length==555 && images.All(e=>e.Name.EndsWith(".webp")));
+            using var provenanceStream=zip.GetEntry("Assets/ScCsgoDerivedResources.json").Open();
+            using var provenance=System.Text.Json.JsonDocument.Parse(provenanceStream);
+            var expected=provenance.RootElement.EnumerateArray().Where(r=>r.GetProperty("kind").GetString()=="texture")
+                .Select(r=>r.GetProperty("path").GetString().Replace(".png",".webp")).Order().ToArray();
+            Check("texture-count-and-format",images.Select(e=>e.FullName).Order().SequenceEqual(expected)
+                && images.All(e=>e.Name.EndsWith(".webp")));
             foreach (var entry in images) {
                 try {
                     using var stream=entry.Open(); using var buffer=new MemoryStream(); stream.CopyTo(buffer); buffer.Position=0;

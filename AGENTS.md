@@ -1,5 +1,12 @@
 # Project conventions
 
+- User-directed 2026-09-15: resume public versioning at 1.1.0 after the supplied 1.0.0.
+  Deliver Full and the existing Optimized512 edition as separate self-contained scmods,
+  each bundling gameplay DLL, resource DLL, assets and markers; no separate resource mod
+  dependency. Both editions use the same gameplay DLL. Pause the proposed new mobile
+  performance refactors; use the established derived 512 WebP Q85/model workflow only.
+  This supersedes the earlier Full-only and split-resource delivery instructions.
+
 - User-directed continuation: use the existing official light-icon + local skin bake workflow for all33.
   Workshop Tools and exact Factory New composition are NOT required. Document approximate material/wear
   behavior honestly; do not call light exact FN or fake Sakkaku wear. Existing skins stay byte-identical.
