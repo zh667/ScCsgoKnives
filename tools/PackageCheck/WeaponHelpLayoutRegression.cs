@@ -1,4 +1,4 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
@@ -197,8 +197,8 @@ static class WeaponHelpLayoutRegression {
                         ComponentCheck("components/split-stacks-exact-output/"+name,crafted&&Enumerable.Range(0,16).Sum(i=>componentInventory.GetSlotCount(i))==1&&Enumerable.Range(0,16).Any(i=>componentInventory.GetSlotValue(i)==result&&componentInventory.GetSlotCount(i)==1));
                         string Frozen()=>string.Join(";",componentInventory.m_slots.Select(s=>$"{s.Value}:{s.Count}"));string before=Frozen();
                         ComponentCheck("components/repeated-click-no-second-output/"+name,!(bool)craft.Invoke(null,[componentInventory,result,costs])&&Frozen()==before);
-                        foreach(var s in componentInventory.m_slots){s.Value=result;s.Count=1;}
-                        slot=0;foreach(var cost in costs)componentInventory.m_slots[slot++]=new(){Value=cost.Key,Count=cost.Value};
+                        foreach(var s in componentInventory.m_slots){s.Value=result;s.Count=40;}
+                        slot=0;foreach(var cost in costs)componentInventory.m_slots[slot++]=new(){Value=cost.Key,Count=cost.Value+1};
                         before=Frozen();ComponentCheck("components/full-componentInventory-no-deduction/"+name,!(bool)craft.Invoke(null,[componentInventory,result,costs])&&Frozen()==before);
                     }
                     int pigment=(int)components.GetMethod("Resolve").Invoke(null,["pigment:0"]);
@@ -229,6 +229,13 @@ static class WeaponHelpLayoutRegression {
                 var select=browse.GetType().GetMethod("Select",BindingFlags.NonPublic|BindingFlags.Instance);
                 foreach(var item in craftItems){select.Invoke(browse,[item]);browse.Measure(available);browse.Arrange(Vector2.Zero,available);ok &= Inside(Part("m_cancel"))&&Part("m_detailScroll").ActualSize.Y>40;}
                 Check($"workbench-browse/{creative}/{available}",ok&&choices==0,"all 57 weapon recipes: list, preview, scrollable material area and fixed footer; browsing never commits");
+                Check($"workbench-batch-footer/{creative}/{available}",Inside(Part("m_quantity"))&&Inside(Part("m_craft"))
+                    &&Part("m_cancel").GlobalBounds.Max.X<=Part("m_quantity").GlobalBounds.Min.X
+                    &&Part("m_quantity").GlobalBounds.Max.X<=Part("m_craft").GlobalBounds.Min.X
+                    &&Part("m_detailHost").GlobalBounds.Max.Y<=Part("m_craft").GlobalBounds.Min.Y,"quantity and explicit craft stay separated and visible");
+                var clickCraft=browse.GetType().GetMethod("ClickItem",BindingFlags.NonPublic|BindingFlags.Instance);
+                clickCraft.Invoke(browse,[craftItems[0],1d]);clickCraft.Invoke(browse,[craftItems[0],1.1d]);browse.Update();
+                Check($"workbench-recipe-doubleclick-no-navigation/{creative}/{available}",choices==0,"only explicit craft spends materials");
                 browse.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(browse,["步枪"]);
                 Check($"workbench-category/{creative}/{available}",((ListPanelWidget)Part("m_list")).Items.Count==7,"category filters rifles without losing available recipes");
                 var nav=browse.GetType().GetMethod("CaptureNavigation").Invoke(browse,null);
@@ -304,7 +311,7 @@ static class WeaponHelpLayoutRegression {
                 && chestName == beforeName && realGun.GetDisplayName(null, inventory.GetSlotValue(0)) == beforeName, "actual GetDisplayName on instance in inventory -> ComponentChest -> inventory");
             var registryType = mod.GetType("Game.ScGunRegistry"); var registryField = registryType.GetField("Current"); var previousRegistry = registryField.GetValue(null);
             try {
-                foreach (bool creative in new[] { false, true }) foreach (int initialKills in new[] { 99, 104 }) {
+                foreach (bool creative in new[] { false, true }) foreach (int initialKills in new[] { 24, 29 }) {
                     object registry = Activator.CreateInstance(registryType); registryField.SetValue(null, registry);
                     IInventory inv;
                     if (creative) { var ci = new ComponentCreativeInventory { OpenSlotsCount = 10 }; for (int i = 0; i < 10; i++) ci.m_slots.Add(0); inv = ci; }
@@ -314,7 +321,7 @@ static class WeaponHelpLayoutRegression {
                     int held = inv.GetSlotValue(0);
                     var specType = mod.GetType("Game.GunSpec"); int id = (int)specType.GetMethod("GetId").Invoke(null, [Terrain.ExtractData(held)]);
                     object record = registryType.GetMethod("Get", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(registry, [id]); record.GetType().GetField("KillCount").SetValue(record, (long)initialKills);
-                    if (initialKills == 99) { object queue = registryType.GetField("Kills").GetValue(registry); queue.GetType().GetMethod("Enqueue").Invoke(queue, [id, 0]); }
+                    if (initialKills == 24) { object queue = registryType.GetField("Kills").GetValue(registry); queue.GetType().GetMethod("Enqueue").Invoke(queue, [id, 0]); }
                     var gui = new NoticeGui(); var player = new ComponentPlayer { ComponentMiner = new ComponentMiner { Inventory = inv }, ComponentGui = gui };
                     var players = new SubsystemPlayers(); players.m_componentPlayers.Add(player);
                     var behaviorType = mod.GetType("Game.SubsystemScGunBlockBehavior"); var behavior = Activator.CreateInstance(behaviorType);
@@ -325,7 +332,7 @@ static class WeaponHelpLayoutRegression {
                     var update = behaviorType.GetMethod("UpdateGrowth", BindingFlags.Instance | BindingFlags.NonPublic);
                     update.Invoke(behavior, [holderList]); update.Invoke(behavior, [holderList]);
                     Check($"runtime-notification/{creative}/{initialKills}", gui.Messages.Count == 1 && gui.Messages[0].Contains("Lv0 → Lv1") && gui.PlayedSound
-                        && realGun.GetDisplayName(null, held).Contains("Lv1") && (long)record.GetType().GetField("KillCount").GetValue(record) == Math.Max(initialKills, 100),
+                        && realGun.GetDisplayName(null, held).Contains("Lv1") && (long)record.GetType().GetField("KillCount").GetValue(record) == Math.Max(initialKills, 25),
                         "actual subsystem UpdateGrowth -> rule -> transaction -> GetDisplayName -> player ComponentGui callback; first sweep and repeat; both real inventory classes");
                 }
             } finally { registryField.SetValue(null, previousRegistry); }
@@ -411,7 +418,7 @@ static class WeaponHelpLayoutRegression {
             var bindingsScreen=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunBindingsScreen"));
             bindingsScreen.Enter([]);
             var bindingButtons=(Dictionary<string,ButtonWidget>)bindingsScreen.GetType().GetField("m_buttons",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(bindingsScreen);
-            Check("bindings-eleven-actions-old-ten-preserved",bindingButtons.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4"}),"one row per stable action ID, includes firing and both throw strengths");
+            Check("bindings-c4-timer-appended-old-actions-preserved",bindingButtons.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4","c4_timer"}),"one row per stable action ID, includes firing and both throw strengths");
             Check("bindings-no-third-party-caption",!bindingsScreen.AllChildren.OfType<LabelWidget>().Any(w=>w.Text is string t&&(t.Contains("玲兰")||t.Contains("铃兰")||t.Contains("触控映射"))),"standalone keyboard binding page");
             foreach(Vector2 size in new[]{new Vector2(850,383),new Vector2(360,640),new Vector2(480,850)}) {
                 bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);
@@ -492,8 +499,8 @@ static class WeaponHelpLayoutRegression {
                         foreach(var c in navigation.AllChildren.OfType<ClickableWidget>())c.IsClicked=true;
                         native.Update();
                         var openWidget=native.AllChildren.Single(w=>w.GetType()==mod.GetType("Game.ScGunModSettingsWidget"));
-                        var openButton=((ContainerWidget)openWidget).AllChildren.OfType<BevelledButtonWidget>().Single();
-                        foreach(var c in openButton.AllChildren.OfType<ClickableWidget>())c.IsClicked=true;
+                        Check("native-settings-no-second-button",!((ContainerWidget)openWidget).AllChildren.OfType<BevelledButtonWidget>().Any(),"native CS page navigates without another click");
+
                         openWidget.Update();Finish();
                         var settingsEditor=ScreensManager.CurrentScreen;
                         Check("native-mod-settings-opens-settingsEditor",settingsEditor.GetType()==mod.GetType("Game.ScGunSettingsScreen"),"real root page > CS page > custom entry > settingsEditor");
@@ -502,6 +509,8 @@ static class WeaponHelpLayoutRegression {
                         foreach(var c in cancel.AllChildren.OfType<ClickableWidget>())c.IsClicked=true;
                         settingsEditor.Update();Finish();
                         Check("native-mod-settings-cancel-returns",ReferenceEquals(ScreensManager.CurrentScreen,native),"cancel returns to API Mod Settings without saving settings");
+                        native.Update();Finish();
+                        Check("native-settings-back-does-not-reopen",ReferenceEquals(ScreensManager.CurrentScreen,native)&&!native.AllChildren.Any(w=>w.GetType()==mod.GetType("Game.ScGunModSettingsWidget")),"back returns to native root without redirect loop");
                         Switch(game);
                     } finally {
                         native.Leave();native.Dispose();
@@ -511,6 +520,20 @@ static class WeaponHelpLayoutRegression {
                 }
                 ScreensManager.HistoryStack.Clear();
                 Switch(game);
+                var materialBlock=BlocksManager.Blocks[BlocksManager.BlockTypeToIndex[mod.GetType("Game.ScWeaponMaterialBlock")]];
+                var materialValues=materialBlock.GetCreativeValues().ToArray();
+                foreach(int materialValue in materialValues) {
+                    Switch(catalogue);
+                    catalogue.m_blocksList.ClearItems();catalogue.m_blocksList.AddItem(materialValue);catalogue.m_blocksList.SelectedItem=materialValue;
+                    var materialLoader=(ModLoader)Activator.CreateInstance(mod.GetType("Game.ScCsgoKnivesModLoader"));
+                    materialLoader.AfterWidgetUpdate(catalogue);
+                    foreach(var clickable in catalogue.m_recipesButton.AllChildren.OfType<ClickableWidget>())clickable.IsClicked=true;
+                    materialLoader.BeforeWidgetUpdate(catalogue);materialLoader.AfterWidgetUpdate(catalogue);Finish();
+                    var materialPage=ScreensManager.CurrentScreen;
+                    Check("material-native-recipe/"+materialValue,materialPage.GetType()==recipe.GetType()
+                        &&materialPage.AllChildren.OfType<LabelWidget>().Any(l=>l.Text.Contains("配件制作")),"actual native browser hook to component recipe");
+                    Back(materialPage);Switch(game);
+                }
                 for (int cycle = 0; cycle < 4; cycle++) {
                     Switch(help); Switch(catalogue);
                     var foreign = new Screen(); ScreensManager.m_screens["RecipaediaRecipes"] = foreign;
@@ -561,6 +584,16 @@ static class WeaponHelpLayoutRegression {
                         Check("recipaedia-dll/own-page-and-child-contract/" + cycle, child.GetType() == attributes.GetType() && childContract && ScreensManager.m_screens["RecipaediaRecipes"] == exRecipe, thirdPartyDlls.Hash("RecipaediaEX"));
                         mod.GetType("Game.ScWeaponHelpScreen").GetMethod("Open").Invoke(null, [false, template]); Finish(); Back(ScreensManager.CurrentScreen); Back(child);
                         Check("recipaedia-dll/return-owner/" + cycle, ScreensManager.CurrentScreen == browser && ReferenceEquals(browserType.GetField("m_previousScreen").GetValue(browser), game), "real EX.Enter keeps original owner after attributes/assembly roundtrip");
+                    }
+                    foreach(int materialValue in materialValues) {
+                        list.ClearItems();var materialItem=Activator.CreateInstance(ex.GetType("RecipaediaEX.Implementation.BlockItem"),[materialBlock,0,materialValue]);
+                        list.AddItem(materialItem);list.SelectedItem=materialItem;Switch(browser);loader.AfterWidgetUpdate(browser);
+                        foreach(var clickable in button.AllChildren.OfType<ClickableWidget>())clickable.IsClicked=true;
+                        loader.BeforeWidgetUpdate(browser);browser.Update();loader.AfterWidgetUpdate(browser);Finish();
+                        var materialPage=ScreensManager.CurrentScreen;
+                        Check("material-ex-recipe/"+materialValue,materialPage.GetType()==recipe.GetType()
+                            &&materialPage.AllChildren.OfType<LabelWidget>().Any(l=>l.Text.Contains("配件制作")),"real EX update + component recipe, no shared page replacement");
+                        Back(materialPage);Switch(game);
                     }
                     attributes.Enter([template]); attributes.Enter([new object()]);
                     Check("recipaedia-dll/unknown-parameter-no-stale-gun", (bool)attributes.GetType().GetField("m_invalidEntry", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(attributes), "unknown nonempty parameter explicitly rejected even after a valid gun");

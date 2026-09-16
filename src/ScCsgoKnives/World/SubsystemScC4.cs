@@ -14,6 +14,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         public long AnimationSequence;
         public bool Placed;
         public float PreviousCrouch;
+        public int Fuse;
     }
     sealed class BombAttack(ComponentBody body, GameEntitySystem.Entity owner, Vector3 point, Vector3 direction, float power)
         : ProjectileAttackment(body, owner, point, direction, power, null) {
@@ -50,6 +51,17 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
     public int[] DrawOrders => [10];
     public void SetPlantButton(ComponentPlayer player, bool pressed) => buttons[player] = pressed;
     public bool IsPlanting(ComponentPlayer player) => preparations.ContainsKey(player);
+    public void ConfigureTimer(ComponentPlayer player) {
+        if(!ScGunBindings.Available(player)||!ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)||IsPlanting(player))return;
+        int index=player.PlayerData.PlayerIndex;
+        DialogsManager.ShowDialog(player.GuiWidget,new TextBoxDialog("C4 引爆时间（5～300 秒，仅下次安装）",ScUiSettings.C4Fuse(index).ToString(),3,text=>{
+            if(text is null)return;
+            if(!int.TryParse(text,out int seconds)||seconds<5||seconds>300){player.ComponentGui.DisplaySmallMessage("请输入 5～300 的整数秒数。",Color.White,false,false);return;}
+            bool existed=ScUiSettings.C4Fuses.TryGetValue(index,out int prior);ScUiSettings.C4Fuses[index]=seconds;
+            if(!ScUiSettings.Save()){if(existed)ScUiSettings.C4Fuses[index]=prior;else ScUiSettings.C4Fuses.Remove(index);player.ComponentGui.DisplaySmallMessage("设时未保存，请检查存储空间。",Color.White,false,false);return;}
+            player.ComponentGui.DisplaySmallMessage($"下次 C4：{seconds} 秒",Color.White,false,false);
+        }));
+    }
     public int ViewmodelValue(ComponentPlayer player, int value) => player is not null && preparations.TryGetValue(player, out var p)
         && p.Placed && value == 0 && ReferenceEquals(player.ComponentMiner.Inventory, p.Inventory) && player.ComponentMiner.Inventory.ActiveSlotIndex == p.Slot ? ScC4Block.Value : value;
     public override void Load(ValuesDictionary values) {
@@ -141,20 +153,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         blasts.RemoveAll(b=>time.GameTime-b.Started>ScC4Blast.Lifetime);
         foreach (var c in charges.ToArray()) {
             if (c.Remaining <= 0 || c.Tick(elapsed)) { charges.Remove(c); Detonate(c); continue; }
-            if(c.Remaining<=1.5f&&!c.WarningPlayed){c.WarningPlayed=true;Sound("c4_warning",c.Position,.8f);}
-            if(c.Remaining<=.1f&&!c.TriggerPlayed){c.TriggerPlayed=true;Sound("c4_trigger_trip",c.Position);}
-            if (c.BeepLeft <= 0) {
-                c.BeepLeft = .1f + .9f * c.Remaining / c.Fuse;
-                if(c.Remaining>1.5f) {
-                    // PlantSoundB is a separate source event, not evidence for
-                    // alternating every beep. Keep the standard timbre/pitch.
-                    // Keep one timbre for the whole fuse.  The old _10sec source is a
-                    // separately mastered, muffled sample and made the beep suddenly
-                    // sound dull at the ten second mark.  Cadence still accelerates
-                    // from Remaining/Fuse above, so the warning remains audible.
-                    Sound("c4_beep2",c.Position,.9f,0);
-                }
-            }
+            if(c.NextCue() is string cue) Sound(cue,c.Position,cue=="c4_warning"?.8f:.9f,0);
         }
         foreach (var p in players.ComponentPlayers) {
             bool down = Down(p), was = held.GetValueOrDefault(p); held[p] = down;
@@ -164,7 +163,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
                     || KnifeAnimationController.IsBusy(p.Entity.FindComponent<ComponentFirstPersonModel>()) || !Floor(p, out var place)) continue;
                 if (charges.Count >= 16) { p.ComponentGui.DisplaySmallMessage("活动 C4 已达 16 个，未消耗物品。", Color.White, false, false); continue; }
                 prep = new Preparation { Transaction = new ScThrowTransaction(p.ComponentMiner.Inventory), Inventory = p.ComponentMiner.Inventory, PlayerStart = p.ComponentBody.Position,
-                    Position = VisiblePlantPosition(place), Started = time.GameTime, Slot = p.ComponentMiner.Inventory.ActiveSlotIndex };
+                    Position = VisiblePlantPosition(place), Started = time.GameTime, Slot = p.ComponentMiner.Inventory.ActiveSlotIndex, Fuse=ScUiSettings.C4Fuse(p.PlayerData.PlayerIndex) };
                 prep.PreviousCrouch=p.ComponentBody.TargetCrouchFactor;p.ComponentBody.TargetCrouchFactor=1;
                 preparations[p] = prep; prep.AnimationSequence = KnifeAnimationController.C4Action(p, "plant");
             }
@@ -185,7 +184,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
                 else if (e.Name == "c4.keypressquiet") Sound("c4_key_press" + (1 + prep.SoundIndex % 7), prep.Position, .3f);
             }
             if (age < ScC4Charge.PlantSeconds) continue;
-            var charge = new ScC4Charge { Owner = p.PlayerData.PlayerIndex, Position = prep.Position, Yaw = MathF.Atan2(p.ComponentBody.Matrix.Forward.X, p.ComponentBody.Matrix.Forward.Z) };
+            var charge = new ScC4Charge { Owner = p.PlayerData.PlayerIndex, Position = prep.Position, Fuse=prep.Fuse,Remaining=prep.Fuse, Yaw = MathF.Atan2(p.ComponentBody.Matrix.Forward.X, p.ComponentBody.Matrix.Forward.Z) };
             bool planted = prep.Transaction.Commit(info.WorldSettings.GameMode == GameMode.Creative, () => charges.Count < 16, () => { charges.Add(charge); return true; });
             if (!planted) { Cancel(p, prep); continue; }
             prep.Placed = true; label.IsVisible = false; Sound("c4_plant", prep.Position);

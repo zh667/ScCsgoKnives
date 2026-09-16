@@ -11,19 +11,32 @@ public static class ScGunDropRenderer {
         world.Translation = item.Position + new Vector3(0, .25f * MathUtils.Saturate(3 * age) + .04f * MathF.Sin(3 * age), 0);
         return world;
     }
-    sealed class Centers { public readonly Dictionary<bool, Vector3> Values = []; }
+    sealed class Centers { public readonly Dictionary<bool, (Vector3 Center,Vector3 Span)> Values = []; }
     static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ScThirdPersonWeapon, Centers> s_centers = new();
     sealed class DropState { public string Asset; public bool Legacy; public ScThirdPersonWeapon Weapon; }
     static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Pickable, DropState> s_drops = new();
-    public static Vector3 Center(ScThirdPersonWeapon weapon, bool silencerOff) {
+    static (Vector3 Center,Vector3 Span) Bounds(ScThirdPersonWeapon weapon, bool silencerOff) {
         var cache = s_centers.GetOrCreateValue(weapon).Values;
         if (cache.TryGetValue(silencerOff, out var center)) return center;
         Vector3 min = new(float.MaxValue), max = new(float.MinValue);
         foreach (var group in weapon.Groups) {
             if (group.Silencer && silencerOff) continue;
-            foreach (var v in group.Mesh.Vertices) { min = Vector3.Min(min, v.Position); max = Vector3.Max(max, v.Position); }
+            foreach (int i in group.Mesh.Indices) {var v=group.Mesh.Vertices[i]; min = Vector3.Min(min, v.Position); max = Vector3.Max(max, v.Position); }
         }
-        return cache[silencerOff] = (min + max) * .5f;
+        return cache[silencerOff] = ((min + max) * .5f,max-min);
+    }
+    public static Vector3 Center(ScThirdPersonWeapon weapon,bool silencerOff) => Bounds(weapon,silencerOff).Center;
+    public static Vector3 Span(ScThirdPersonWeapon weapon,bool silencerOff) => Bounds(weapon,silencerOff).Span;
+    public static float ScaleFor(Vector3 span) {
+        float extent=Math.Max(span.X,Math.Max(span.Y,span.Z));
+        return float.IsFinite(extent)&&extent>0?Math.Clamp(.44f/extent,1,3):1;
+    }
+    public static float OtherSize(int value,float original) {
+        int c=Terrain.ExtractContents(value);
+        if(c==BlocksManager.GetBlockIndex<ScKnifeBlock>(true))return Math.Max(original,.45f);
+        if(c==BlocksManager.GetBlockIndex<ScGrenadeBlock>(true))return Math.Max(original,.3f/.65f);
+        if(c==BlocksManager.GetBlockIndex<ScC4Block>(true))return Math.Max(original,1f);
+        return original;
     }
     public static bool Draw(Pickable item, SubsystemPickables subsystem, Color color) {
         if (Terrain.ExtractContents(item.Value) != BlocksManager.GetBlockIndex<ScGunBlock>(true) || !ScGunBlock.IsKnown(item.Value)) return false;
@@ -38,7 +51,10 @@ public static class ScGunDropRenderer {
         var weapon = state.Weapon;
         if (weapon is null) return false;
         bool silencerOff = GunSpec.GetSilencerOff(Terrain.ExtractData(item.Value));
-        Matrix world = Matrix.CreateTranslation(-Center(weapon, silencerOff)) * Frame(item, subsystem.m_subsystemGameInfo.TotalElapsedGameTime);
+        var bounds=Bounds(weapon,silencerOff);float scale=ScaleFor(bounds.Span);
+        Matrix frame=Frame(item, subsystem.m_subsystemGameInfo.TotalElapsedGameTime);
+        if(item.StuckMatrix is null)frame.Translation+=Vector3.UnitY*Math.Max(0,bounds.Span.Y*scale*.5f-.20f);
+        Matrix world = Matrix.CreateTranslation(-bounds.Center) * Matrix.CreateScale(scale) * frame;
         var source = item.DrawBlockEnvironmentData();
         var env = new DrawBlockEnvironmentData { DrawBlockMode = DrawBlockMode.World,
             SubsystemTerrain = source.SubsystemTerrain, Light = source.Light, Humidity = source.Humidity,

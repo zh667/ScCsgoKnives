@@ -181,4 +181,7 @@ internal sealed class ScGunInventoryJournal(IInventory inventory) {
         m_undo.Clear();
         ScInventoryTransaction.Changed(inventory);
     }
+    public void DeferRollback(ScGunRecovery recovery,string owner) {
+        m_undo.Reverse();recovery.Enqueue(owner,m_undo);m_undo.Clear();
+    }
 }

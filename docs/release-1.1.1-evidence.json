@@ -1,0 +1,310 @@
+{
+  "version": "1.1.1",
+  "package": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\[API1.9]CS武器1.1.1-全量版.scmod",
+  "packageSha256": "f846982e383dee46b127c18d97550a69e861f93b1b6bfa3fbc88cca4d5939b32",
+  "packageBytes": 375782424,
+  "dllSha256": "d8dbaebc205c4c153836affbb03e65c64acb110a515daa3fe474bb891af4f485",
+  "dllFromPackage": true,
+  "checks": 21608,
+  "failed": 0,
+  "groups": [
+    {
+      "name": "ammo-hud",
+      "checks": 535,
+      "failed": 0
+    },
+    {
+      "name": "animation-switch",
+      "checks": 454,
+      "failed": 0
+    },
+    {
+      "name": "arms",
+      "checks": 2,
+      "failed": 0
+    },
+    {
+      "name": "attributes-cold",
+      "checks": 65,
+      "failed": 0
+    },
+    {
+      "name": "c4",
+      "checks": 56,
+      "failed": 0
+    },
+    {
+      "name": "combat",
+      "checks": 136,
+      "failed": 0
+    },
+    {
+      "name": "community-repair",
+      "checks": 25,
+      "failed": 0
+    },
+    {
+      "name": "controls-scope-0416",
+      "checks": 130,
+      "failed": 0
+    },
+    {
+      "name": "creative-counters",
+      "checks": 374,
+      "failed": 0
+    },
+    {
+      "name": "creative-skins",
+      "checks": 51,
+      "failed": 0
+    },
+    {
+      "name": "effects",
+      "checks": 691,
+      "failed": 0
+    },
+    {
+      "name": "firstperson",
+      "checks": 168,
+      "failed": 0
+    },
+    {
+      "name": "generic-travel",
+      "checks": 19,
+      "failed": 0
+    },
+    {
+      "name": "growth",
+      "checks": 118,
+      "failed": 0
+    },
+    {
+      "name": "growth30-boundary",
+      "checks": 10310,
+      "failed": 0
+    },
+    {
+      "name": "gun",
+      "checks": 1092,
+      "failed": 0
+    },
+    {
+      "name": "gun-diagnostics",
+      "checks": 14,
+      "failed": 0
+    },
+    {
+      "name": "gun-drop",
+      "checks": 381,
+      "failed": 0
+    },
+    {
+      "name": "gun-format",
+      "checks": 17,
+      "failed": 0
+    },
+    {
+      "name": "gun-handling",
+      "checks": 187,
+      "failed": 0
+    },
+    {
+      "name": "gun-skin",
+      "checks": 349,
+      "failed": 0
+    },
+    {
+      "name": "gunspec",
+      "checks": 3,
+      "failed": 0
+    },
+    {
+      "name": "headshot",
+      "checks": 34,
+      "failed": 0
+    },
+    {
+      "name": "hit-motion",
+      "checks": 19,
+      "failed": 0
+    },
+    {
+      "name": "integration",
+      "checks": 268,
+      "failed": 0
+    },
+    {
+      "name": "interaction",
+      "checks": 101,
+      "failed": 0
+    },
+    {
+      "name": "knife",
+      "checks": 154,
+      "failed": 0
+    },
+    {
+      "name": "knife-finish",
+      "checks": 200,
+      "failed": 0
+    },
+    {
+      "name": "knives",
+      "checks": 1,
+      "failed": 0
+    },
+    {
+      "name": "live-backup",
+      "checks": 6,
+      "failed": 0
+    },
+    {
+      "name": "load",
+      "checks": 4,
+      "failed": 0
+    },
+    {
+      "name": "m4-recovery",
+      "checks": 14,
+      "failed": 0
+    },
+    {
+      "name": "migration-0282",
+      "checks": 10,
+      "failed": 0
+    },
+    {
+      "name": "mobile",
+      "checks": 33,
+      "failed": 0
+    },
+    {
+      "name": "optimization",
+      "checks": 5,
+      "failed": 0
+    },
+    {
+      "name": "plan-dll",
+      "checks": 339,
+      "failed": 0
+    },
+    {
+      "name": "player-feedback",
+      "checks": 30,
+      "failed": 0
+    },
+    {
+      "name": "polish",
+      "checks": 17,
+      "failed": 0
+    },
+    {
+      "name": "resources",
+      "checks": 203,
+      "failed": 0
+    },
+    {
+      "name": "rig",
+      "checks": 205,
+      "failed": 0
+    },
+    {
+      "name": "runtime-regression",
+      "checks": 83,
+      "failed": 0
+    },
+    {
+      "name": "skin-growth",
+      "checks": 299,
+      "failed": 0
+    },
+    {
+      "name": "sound",
+      "checks": 1,
+      "failed": 0
+    },
+    {
+      "name": "sounds",
+      "checks": 2,
+      "failed": 0
+    },
+    {
+      "name": "starter",
+      "checks": 71,
+      "failed": 0
+    },
+    {
+      "name": "survival",
+      "checks": 421,
+      "failed": 0
+    },
+    {
+      "name": "survival-runtime",
+      "checks": 1551,
+      "failed": 0
+    },
+    {
+      "name": "sushi-inventory",
+      "checks": 18,
+      "failed": 0
+    },
+    {
+      "name": "tracer",
+      "checks": 102,
+      "failed": 0
+    },
+    {
+      "name": "travel",
+      "checks": 22,
+      "failed": 0
+    },
+    {
+      "name": "ui-light-compat",
+      "checks": 12,
+      "failed": 0
+    },
+    {
+      "name": "variant",
+      "checks": 18,
+      "failed": 0
+    },
+    {
+      "name": "weapon-help-layout",
+      "checks": 1972,
+      "failed": 0
+    },
+    {
+      "name": "weapons",
+      "checks": 208,
+      "failed": 0
+    },
+    {
+      "name": "world-effects",
+      "checks": 8,
+      "failed": 0
+    }
+  ],
+  "reportSha256": "262445d3e7a394e44db8ab31f7a0c2ed7e0b4fb5b3c0d73b6da823fac99d9279",
+  "externalDlls": [
+    {
+      "name": "growth30-boundary/actual-old-package-supported-schema",
+      "ok": true,
+      "detail": "schema=4; package=D:\\下载\\[API1.9]CS武器1.0.0.scmod; SHA256=9C700BC8133942CA4FE0CE7E9604296E7ACD1533F684AAA5DD4BFDA252E84424"
+    },
+    {
+      "name": "sushi-inventory/actual-dlls",
+      "ok": true,
+      "detail": "SushiTool.dll SHA256=78C6984F244AB304C5320156FB74580DA0ADCBA006F429CDE2CBD9C502CFCEC8; SushiBase.dll SHA256=55D1A7C388BC9D4E96B6BC534428041700CC49418A854C979040D967C35E8355"
+    },
+    {
+      "name": "plan-dll/logistics/actual-dll",
+      "ok": true,
+      "detail": "b8ab56720c90da072a265e42273f86ae4a40e25170ed45a15ed08666a9188df9"
+    },
+    {
+      "name": "plan-dll/subnautica/actual-dll",
+      "ok": true,
+      "detail": "5fe09f657d9652e44f61425e117e514e0aee2d8f7e644bbe124804aa18fcfc65"
+    }
+  ]
+}

@@ -39,6 +39,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         var navigation = new Dictionary<string,ScWorkbenchSelectionDialog.Navigation>();
         Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected) {
             ScWorkbenchSelectionDialog dialog=null;
+            var selectedInventory=miner.Inventory;bool selectedCreative=Creative();
             dialog=new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{
                 navigation[title]=dialog.CaptureNavigation();
                 bool available=Available();
@@ -46,6 +47,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 if(available)selected(item);
                 else Notice("装配台暂不可用","你已离装配台太远、装配台已被移除，或角色已无法操作。请靠近有效的装配台后重新打开。",()=>{});
             },miner.Inventory,Creative());
+            dialog.CraftPermission=item=>!ReferenceEquals(selectedInventory,miner.Inventory)||selectedCreative!=Creative()?"背包或模式已切换，请重新打开装配台。":!Available()?"装配台暂不可用，请靠近后操作。":item is ScWeaponCrafting.Entry e && !Creative()
+                && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<e.Level?$"需要制作等级 {e.Level}。":"";
             dialog.RestoreNavigation(navigation.GetValueOrDefault(title));
             if(title!= "武器装配台 · 组装 / 维修 / 涂装 / 计数器")dialog.BackAction=title.EndsWith("· 选择涂装",StringComparison.Ordinal)?ShowSkinGuns:ShowList;
             return dialog;

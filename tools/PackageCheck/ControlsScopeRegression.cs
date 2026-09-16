@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Engine;
@@ -38,10 +38,11 @@ static class ControlsScopeRegression {
                     &&SettingsManager.ViewAngle==1.2f&&SettingsManager.LookSensitivity==.63f,"shared boundary helper clears scope/re-scope; global settings untouched (not actual device transition)");
             }
             bindings.GetMethod("Reset").Invoke(null,null);
-            Check("defaults",keys.Count==11&&keys["reload"]=="R"&&keys["inspect"]=="G"&&keys["fire"]=="");
+            Check("defaults",keys.Count==12&&keys["reload"]=="R"&&keys["c4_timer"]=="R"&&keys["inspect"]=="G"&&keys["fire"]=="");
             bool Valid(string k)=>(bool)bindings.GetMethod("Valid").Invoke(null,[k]);
             Check("key-validation",Valid("R")&&Valid("F8")&&Valid("")&&!Valid("Escape")&&!Valid("Null")&&!Valid("no-such-key"));
             bool Conflict(string a,string b)=>(bool)bindings.GetMethod("Conflict").Invoke(null,[a,b]);
+            Check("c4-timer-binding-conflicts",Conflict("c4_timer","plant_c4")&&Conflict("inspect","c4_timer")&&!Conflict("c4_timer","reload"));
             Check("conflict-groups",Conflict("fire","reload")&&Conflict("throw_strong","throw_weak")&&!Conflict("scope","silencer")&&!Conflict("reload","knife_heavy"));
             foreach(var key in Enum.GetValues<Key>()) {
                 string label=(string)bindings.GetMethod("KeyLabel").Invoke(null,[key.ToString()]);
@@ -51,7 +52,7 @@ static class ControlsScopeRegression {
             var expectedKeys=Enum.GetValues<Key>().Select(k=>k.ToString()).Where(Valid).ToArray();
             Check("all-supported-keys-selectable",selectable.Length==expectedKeys.Length&&selectable.Distinct().Count()==selectable.Length
                 &&selectable.ToHashSet().SetEquals(expectedKeys)&&selectable[0]=="A"&&selectable[25]=="Z");
-            Check("stable-action-identifiers",keys.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4"}));
+            Check("stable-action-identifiers",keys.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4","c4_timer"}));
             var oldMapping=SettingsManager.KeyboardMappingSettings;
             try {
                 SettingsManager.InitializeKeyboardMappingSettings();
@@ -93,17 +94,21 @@ static class ControlsScopeRegression {
                 Check("old-key-unbound",!Down(false));
                 down[(int)Key.J]=true;once[(int)Key.J]=true;settings.GetField("CustomButtons").SetValue(null,false);
                 Check("mapped-key-independent-of-touch-toggle",Down(false)&&Down(true));
+                keys["c4_timer"]="J";
+                Check("c4-timer-mapped-edge-with-touch-buttons-off",(bool)bindings.GetMethod("Down").Invoke(null,[player,"c4_timer",true]));
                 once[(int)Key.J]=false;Check("held-vs-press-edge",Down(false)&&!Down(true));
                 player.ComponentGui.m_modalPanelContainerWidget.Children.Add(new CanvasWidget());Check("inventory-blocks-binding",!Down(false));
                 player.ComponentGui.m_modalPanelContainerWidget.Children.Clear();
                 windowState.SetValue(null,Enum.Parse(windowState.FieldType,"Inactive"));Check("background-blocks-binding",!Down(false));
                 // Real serialized settings DTO preserves the optional extension; old files still default R/G.
                 var fileType=settings.GetNestedType("File",BindingFlags.NonPublic);
-                object file=System.Text.Json.JsonSerializer.Deserialize("{\"Version\":1,\"KeyBindings\":{\"reload\":\"J\",\"inspect\":\"\"}}",fileType);
+                object file=System.Text.Json.JsonSerializer.Deserialize("{\"Version\":1,\"KeyBindings\":{\"reload\":\"J\",\"inspect\":\"\",\"c4_timer\":\"K\"},\"C4Fuses\":{\"0\":60,\"1\":5}}",fileType);
                 var json=System.Text.Json.JsonSerializer.Serialize(file,fileType);
                 var again=System.Text.Json.JsonSerializer.Deserialize(json,fileType);
                 var restored=(Dictionary<string,string>)fileType.GetProperty("KeyBindings").GetValue(again);
                 Check("bindings-json-roundtrip",restored["reload"]=="J"&&restored["inspect"]=="");
+                var fuses=(Dictionary<int,int>)fileType.GetProperty("C4Fuses").GetValue(again);
+                Check("c4-settings-roundtrip",restored["c4_timer"]=="K"&&fuses[0]==60&&fuses[1]==5);
             }finally {
                 windowState.SetValue(null,oldWindow);ScreensManager.CurrentScreen=oldScreen;ScreensManager.m_animationData=oldAnimation;ScreensManager.RootWidget=oldRoot;
                 down[(int)Key.R]=oldR;down[(int)Key.J]=oldJ;once[(int)Key.J]=oldJOnce;settings.GetField("CustomButtons").SetValue(null,oldButtons);

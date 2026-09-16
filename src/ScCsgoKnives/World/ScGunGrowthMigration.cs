@@ -18,6 +18,8 @@ public static class ScGunGrowthMigration {
     public static void Convert(ScGunRecord r, double now, bool grows, int sourceSchema) {
         if (r is null) return;
         if (!r.CounterInstalled) { r.GrowthRulesVersion = ScGunGrowth.RulesVersion; return; }
+        // Counting-only worlds must not gain levels or a different durability maximum from kills.
+        if (!grows) {r.GrowthRulesVersion=ScGunGrowth.RulesVersion;return;}
         int oldRules = r.GrowthRulesVersion;
         // A record with no stored rules came from a build that had no growth rules at all.
         int oldLevel = Math.Max(r.AppliedGrowthLevel, r.PendingGrowthLevel);

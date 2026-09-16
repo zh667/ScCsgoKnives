@@ -1,5 +1,10 @@
 # Project conventions
 
+- User-directed 2026-09-16: implement docs/player-feedback-analysis-2026-09-16.md,
+  verify new features and regressions, and deliver Full only for this iteration.
+  C4 timer supports both a mobile button and configurable keyboard input (including touch key mappers).
+  Preserve gun item layout/schema and installed-source-world backups; no automatic downgrade or backup deletion.
+
 - User-directed 2026-09-15: resume public versioning at 1.1.0 after the supplied 1.0.0.
   Deliver Full and the existing Optimized512 edition as separate self-contained scmods,
   each bundling gameplay DLL, resource DLL, assets and markers; no separate resource mod

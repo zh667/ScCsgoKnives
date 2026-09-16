@@ -24,14 +24,17 @@ static class DropGeometryRegression {
                     Check("drop-decimated/"+asset+"/"+legacy,drop is not null&&dropTriangles>0&&dropTriangles<=heldTriangles,
                         $"held {heldTriangles} triangles -> drop {dropTriangles}");
                     foreach(bool silencerOff in new[]{false,true}) {
-                        var center=(Vector3)type.GetMethod("Center").Invoke(null,[weapon,silencerOff]);
+                        var center=(Vector3)type.GetMethod("Center").Invoke(null,[drop,silencerOff]);
                         Vector3 min=new(float.MaxValue),max=new(float.MinValue);int triangles=0;
-                        foreach(var group in (IEnumerable)weaponType.GetField("Groups").GetValue(weapon)) {
+                        foreach(var group in (IEnumerable)weaponType.GetField("Groups").GetValue(drop)) {
                             if(silencerOff&&(bool)group.GetType().GetProperty("Silencer").GetValue(group))continue;
                             var mesh=(BlockMesh)group.GetType().GetProperty("Mesh").GetValue(group);triangles+=mesh.Indices.Count/3;
-                            foreach(var v in mesh.Vertices){min=Vector3.Min(min,v.Position);max=Vector3.Max(max,v.Position);}
+                            foreach(int index in mesh.Indices){var v=mesh.Vertices[index];min=Vector3.Min(min,v.Position);max=Vector3.Max(max,v.Position);}
                         }
                         Vector3 span=max-min;
+                        float scale=(float)type.GetMethod("ScaleFor").Invoke(null,[span]);
+                        float longest=Math.Max(span.X,Math.Max(span.Y,span.Z));
+                        Check($"readable-drop/{asset}/{legacy}/{silencerOff}",longest*scale>=.439f && (longest>=.44f?scale==1:scale>1),$"visible indexed drop span={span}, scale={scale}");
                         Check($"solid-centred-metres/{asset}/{legacy}/{silencerOff}",triangles>100&&span.X>.002f&&span.Y>.002f&&span.Z>.002f
                             &&Math.Max(span.X,Math.Max(span.Y,span.Z)) is > .1f and < 2f && (center-(min+max)*.5f).Length()<1e-5f,
                             $"dimensions in metres={span}; triangles={triangles}; same unscaled mesh as held third-person gun");

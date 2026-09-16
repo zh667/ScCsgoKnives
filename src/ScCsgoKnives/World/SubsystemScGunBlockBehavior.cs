@@ -774,6 +774,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             UpdateGrowth(holders);
         }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
+            if(m_schemaUpgrade is not null && !m_schemaUpgrade.GetValue("NoticeShown",false) && ScGunBindings.Available(player)) {
+                m_schemaUpgrade.SetValue("NoticeShown",true);
+                DialogsManager.ShowDialog(player.GuiWidget,new MessageDialog("旧版世界已备份",
+                    "枪械数据已读取并准备升级。完整旧档备份位于：\n"+m_schemaUpgrade.GetValue<string>("Backup","见游戏日志")+
+                    "\n\n世界列表大小包含备份，可能因此增加。保留此备份；若要回到 1.0，请用旧模组配升级前完整备份恢复为另一份世界，新版期间的进度不能直接带回旧版。",
+                    "知道了",null,null));
+            }
             if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
             var physical = player.ComponentBody;
             bool grounded = physical.StandingOnValue.HasValue || physical.StandingOnBody is not null;

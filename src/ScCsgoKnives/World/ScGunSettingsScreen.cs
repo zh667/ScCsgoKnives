@@ -28,7 +28,7 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly ScGunWorldBackground m_background = new();
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
-    LabelWidget m_preview, m_status;
+    LabelWidget m_preview, m_status, m_fireStatus;
     ScCrosshairPreview m_shapePreview;
     ButtonWidget m_parameterGroup;
     bool m_shapeControls;
@@ -107,8 +107,9 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Heading("手机按键"));
         m_buttons = ScGunUi.Toggle("启用模组自定义按键", m_working.Buttons);
         m_content.Children.Add(m_buttons);
-        m_buttonOnly = ScGunUi.Toggle("触屏仅开火按钮射击", m_working.ButtonOnly);
+        m_buttonOnly = ScGunUi.Toggle("仅开火按钮（关闭为全屏操作）", m_working.ButtonOnly);
         m_content.Children.Add(m_buttonOnly);
+        m_fireStatus=ScGunUi.Note("");m_content.Children.Add(m_fireStatus);
         m_content.Children.Add(ScGunUi.Note("仅按钮模式：空白触屏只转动视角，鼠标、键盘和手柄不受影响。请先在布局启用开火键；若关闭开火键或按钮总开关，会回退触屏攻击，避免无法开枪。"));
         m_content.Children.Add(ScGunUi.Note("关闭后模组新增的战斗按钮全部隐藏并释放触摸，布局数据保留；原版移动、视角、开火和本设置入口不受影响。"));
         m_edit = ScGunUi.Button("编辑按键布局", 190);
@@ -175,6 +176,8 @@ public sealed class ScGunSettingsScreen : Screen {
             KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked,
             SimpleMaterials = m_simpleMaterials.IsChecked, ButtonOnly = m_buttonOnly.IsChecked, Shape = new ScCrosshairShape(m_width.Value, m_length.Value, m_gap.Value, m_scale.Value, m_dot.Value).Normalize(),
             Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value) };
+        m_fireStatus.Text=!m_working.ButtonOnly?"当前选择：原版触屏开火（全屏操作）。":!m_working.Buttons||!ScUiSettings.Layout(ScGunFunctions.Fire).Enabled
+            ?"当前未生效：请启用自定义按键，并在布局中启用开火键；目前会回退原版触屏开火。":"当前选择：仅开火按钮；空白触屏只转动视角。";
         if (m_style.IsClicked) {
             int index = Array.IndexOf(ScUiSettings.Styles, m_working.Style);
             m_working = m_working with { Style = ScUiSettings.Styles[(Math.Max(0, index) + 1) % ScUiSettings.Styles.Length] };

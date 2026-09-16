@@ -106,6 +106,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             ScGunFunctions.KnifeHeavy => knife,
             ScGunFunctions.ThrowWeak or ScGunFunctions.ThrowStrong => grenade,
             ScGunFunctions.Plant => c4,
+            ScGunFunctions.C4Timer => c4,
             ScGunFunctions.Inspect => knife || gun || grenade || c4,
             _ => secondary == id,
         });
@@ -123,6 +124,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         }
         Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).SetFireButton(player, gun && enabled && panel?.Pressed(ScGunFunctions.Fire) == true);
         Project.FindSubsystem<SubsystemScC4>()?.SetPlantButton(player, c4 && enabled && panel?.Pressed(ScGunFunctions.Plant) == true);
+        if(c4 && Clicked(ScGunFunctions.C4Timer)) {Project.FindSubsystem<SubsystemScC4>()?.ConfigureTimer(player);return;}
         var grenades = Project.FindSubsystem<SubsystemScGrenades>(true);
         grenades.SetThrowButton(player, true, grenade && Pressed(ScGunFunctions.ThrowWeak),
             grenade && Clicked(ScGunFunctions.ThrowWeak), !grenade || Cancelled(ScGunFunctions.ThrowWeak), ThrowSources(ScGunFunctions.ThrowWeak));

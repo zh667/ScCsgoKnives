@@ -2,6 +2,8 @@ namespace Game;
 
 /// <summary>Large-count component recipes belong to the workbench, not the nine-cell crafting grid.</summary>
 public static class ScComponentCrafting {
+    public static Entry Find(int value) => Terrain.ExtractContents(value)==BlocksManager.GetBlockIndex<ScWeaponMaterialBlock>(true)
+        ? All.FirstOrDefault(e=>e.Kind==Terrain.ExtractData(value)) : null;
     internal static Func<string,int> ResolveOverride; // headless fixture, never assigned by gameplay
     public sealed record Entry(int Kind, (string Id, int Count)[] Ingredients) {
         public int Value => ScWeaponMaterialBlock.Value(Kind);

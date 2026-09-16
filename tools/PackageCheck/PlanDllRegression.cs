@@ -102,9 +102,9 @@ static class PlanDllRegression {
             // Public-beta Lv10/19/20/29/30 (rules 2, schema 4) converted to the fifty-level curve: the displayed
             // kills survive, the applied level is the power-equivalent one, and a half charge keeps its fraction.
             foreach (var (level, kills, gl, d, m, c, rc) in new[] {
-                (10, 1050L, 38, 64, 214, 0.8, 1.6),
-                (19, 1950L, 49, 74, 247, 0.525, 1.05),
-                (20, 2000L, 49, 74, 247, 0.525, 1.05),
+                (10, 1050L, 41, 66, 223, 0.725, 1.45),
+                (19, 1950L, 50, 75, 250, 0.5, 1.0),
+                (20, 2000L, 50, 75, 250, 0.5, 1.0),
                 (29, 2950L, 50, 75, 250, 0.5, 1.0),
                 (30, 3000L, 50, 75, 250, 0.5, 1.0) }) {
                 var rows = new ValuesDictionary();
@@ -136,9 +136,9 @@ static class PlanDllRegression {
             var rt=mod.GetType("Game.ScGunRegistry");
             // Schema 5 (rules 3) rows: real kills, the old credit and the half charge all survive the conversion.
             foreach(var (kills,oldCredit,level,gl,d,m,c,rc) in new[]{
-                (1050L,25L,10,38,64,214,0.8,1.6),
-                (1000L,1500L,20,37,63,211,0.825,1.65),
-                (1050L,1450L,20,38,64,214,0.8,1.6),
+                (1050L,25L,10,41,66,223,0.725,1.45),
+                (1000L,1500L,20,40,66,220,0.75,1.5),
+                (1050L,1450L,20,41,66,223,0.725,1.45),
                 (3000L,1500L,30,50,75,250,0.5,1.0)}) {
                 var source=new ValuesDictionary();source.SetValue("Schema",5);source.SetValue("GrowthMode","CountAndGrow");source.SetValue("Next",2);
                 var rows=new ValuesDictionary();rows.SetValue("1",$"v=34,r=0,s=0,d=75,m=250,n=7,c=1,p=0,ct=1,k={kills},gl={level},gp=-1,gv=3,rc=2,ov=0,kc={oldCredit}");source.SetValue("Records",rows);
@@ -194,7 +194,8 @@ static class PlanDllRegression {
                 var body = Blank<ComponentBody>(); body.m_entity = entity; var health = Blank<ComponentHealth>(); health.m_entity = entity;
                 var ext = (Component)RuntimeHelpers.GetUninitializedObject(healthType); ext.m_entity = entity;
                 var immune = (Component)RuntimeHelpers.GetUninitializedObject(immunityType); immune.m_entity = entity;
-                entity.m_components = [body, health, ext, immune]; var time = new SubsystemTime { m_gameTime = 10 };
+                var motion=new ComponentLocomotion();motion.m_entity=entity;
+                entity.m_components = [body, health, ext, immune,motion]; var time = new SubsystemTime { m_gameTime = 10 };
                 Set(ext, "m_subsystemTime", time); Set(ext, "ProjectileInjureInterval", interval); Set(ext, "m_lastProjectileTime", 0d);
                 Attackment Hit(float power = 100) { var hit = new ProjectileAttackment(body, null, Vector3.Zero, Vector3.UnitX, power, null); apply.Invoke(null, [body, hit]); return hit; }
                 Check("subnautica/reduction/" + name, Math.Abs(Hit().AttackPower - 100 * multiplier) < .001f);
@@ -205,6 +206,11 @@ static class PlanDllRegression {
                 // Invoke the original generic injury hook, independently of our interval adapter.
                 var injury = Blank<Injury>(); injury.ComponentHealth = health; injury.Amount = .9f; loader.CalculateCreatureInjuryAmount(injury);
                 Check("subnautica/original-generic-cap/" + name, Math.Abs(injury.Amount - Math.Min(.9f, cap)) < .00001f);
+                mod.GetType("Game.ScElectricStun").GetMethod("Clear").Invoke(null,null);
+                var electric=mod.GetType("Game.ScElectricStun").GetMethod("ApplyAttack");
+                health.Health=1;
+                Check("subnautica/electric-confirmed-injury/"+name,(bool)electric.Invoke(null,[body,1f,.99f,10d,2.5f])&&motion.StunTime==2.5f,"actual mod components, confirmed-injury control stage; not full combat simulation");
+                Check("subnautica/electric-cooldown/"+name,!(bool)electric.Invoke(null,[body,.99f,.98f,11d,2.5f]));
                 if (name == "GiantTurtle") { Set(immune, "m_immunityTimer", 2f); time.m_gameTime += 1; Check("subnautica/turtle-immunity", Hit().AttackPower == 0); }
                 if (name == "Kraken") { time.m_gameTime += 1; Check("subnautica/kraken-low-power-rule", Hit(5).AttackPower == 1); }
             }

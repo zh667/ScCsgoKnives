@@ -17,9 +17,17 @@ public sealed class ScC4Charge {
         Remaining = Math.Max(0, Remaining - dt); BeepLeft -= dt;
         return Remaining == 0;
     }
+    public string NextCue() {
+        if(Remaining<=0)return null;
+        if(Remaining<=.1f) {if(TriggerPlayed)return null;TriggerPlayed=WarningPlayed=true;return "c4_trigger_trip";}
+        if(Remaining<=1.5f) {if(WarningPlayed)return null;WarningPlayed=true;return "c4_warning";}
+        if(BeepLeft>0)return null;
+        BeepLeft=.1f+.9f*Remaining/Fuse;return "c4_beep2";
+    }
     public ValuesDictionary Save() {
         var d = new ValuesDictionary(); d.SetValue("Owner", Owner); d.SetValue("Position", Position); d.SetValue("Yaw", Yaw);
-        d.SetValue("Remaining", Remaining); d.SetValue("Fuse", Fuse); d.SetValue("Power", Power); d.SetValue("Radius", Radius); return d;
+        d.SetValue("Remaining", Remaining); d.SetValue("Fuse", Fuse); d.SetValue("Power", Power); d.SetValue("Radius", Radius);
+        d.SetValue("WarningPlayed",WarningPlayed);d.SetValue("TriggerPlayed",TriggerPlayed);d.SetValue("BeepLeft",BeepLeft);return d;
     }
     public static ScC4Charge Load(ValuesDictionary d) {
         var c = new ScC4Charge { Owner = d.GetValue<int>("Owner"), Position = d.GetValue<Vector3>("Position"), Yaw = d.GetValue<float>("Yaw"),
@@ -27,6 +35,10 @@ public sealed class ScC4Charge {
         if (!float.IsFinite(c.Position.X + c.Position.Y + c.Position.Z + c.Yaw + c.Remaining + c.Fuse + c.Power + c.Radius)
             || c.Fuse < 1 || c.Fuse > 300 || c.Remaining < 0 || c.Remaining > c.Fuse || c.Power < 1 || c.Power > 10000 || c.Radius < 1 || c.Radius > 64)
             throw new InvalidOperationException("Invalid saved C4 state; refusing to reset its fuse.");
+        // Old saves have no audio phase. Do not replay the full final warning on resuming mid-warning.
+        c.WarningPlayed=d.GetValue("WarningPlayed",c.Remaining<=1.5f);
+        c.TriggerPlayed=d.GetValue("TriggerPlayed",c.Remaining<=.1f);
+        float beep=d.GetValue("BeepLeft",0f);c.BeepLeft=float.IsFinite(beep)?Math.Clamp(beep,0,1):0;
         return c;
     }
 }

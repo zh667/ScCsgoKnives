@@ -31,17 +31,17 @@ public sealed class ScButtonLayout {
 public static class ScGunFunctions {
     public const string Fire = "fire", Reload = "reload", Scope = "scope", Silencer = "silencer", Burst = "burst",
                         RevolverAlt = "revolver_alt", Inspect = "inspect", KnifeHeavy = "knife_heavy",
-                        ThrowStrong = "throw_strong", ThrowWeak = "throw_weak", Plant = "plant_c4";
-    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire, Plant];
+                        ThrowStrong = "throw_strong", ThrowWeak = "throw_weak", Plant = "plant_c4", C4Timer = "c4_timer";
+    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire, Plant, C4Timer];
     public static string Label(string id) => id switch {
         Fire => "开火", Reload => "换弹", Scope => "开镜", Silencer => "消音器", Burst => "连发", RevolverAlt => "速射",
-        Inspect => "检视", KnifeHeavy => "重刀", ThrowStrong => "强投", ThrowWeak => "轻投", Plant => "放置 C4", _ => id,
+        Inspect => "检视", KnifeHeavy => "重刀", ThrowStrong => "强投", ThrowWeak => "轻投", Plant => "放置 C4", C4Timer => "C4 设时", _ => id,
     };
     /// <summary>Buttons that never appear at the same time share a default row; the rows are what the original
     /// two-button layout used, so an existing player's thumb finds the same places.</summary>
     static int DefaultRow(string id) => id switch {
         Reload or KnifeHeavy or ThrowWeak or Plant => 0,
-        Scope or Silencer or Burst or RevolverAlt or ThrowStrong => 1,
+        Scope or Silencer or Burst or RevolverAlt or ThrowStrong or C4Timer => 1,
         _ => 2,
     };
     /// <summary>The original layout expressed in the normalised space: 160 units in from the side and
@@ -68,6 +68,8 @@ public static class ScUiSettings {
     public static bool SimpleMaterials;
     public static bool CustomButtons = true;
     public static bool ButtonOnlyFire;
+    public static readonly Dictionary<int,int> C4Fuses=[];
+    public static int C4Fuse(int player) => Math.Clamp(C4Fuses.GetValueOrDefault(player,20),5,300);
     public static bool KillFeed = true;
     public static bool KillSound = true;
     public static bool GunCrosshair = true;
@@ -109,6 +111,7 @@ public static class ScUiSettings {
         SimpleMaterials = ScResourcePolicy.Edition == "Optimized512";
         CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true;
         ButtonOnlyFire = false;
+        C4Fuses.Clear();
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
         CrosshairShape = new();
     }
@@ -128,6 +131,7 @@ public static class ScUiSettings {
         public bool? SimpleMaterials { get; set; }
         public bool CustomButtonsEnabled { get; set; } = true;
         public bool ButtonOnlyFire { get; set; }
+        public Dictionary<int,int> C4Fuses {get;set;}=[];
         public bool KillFeedEnabled { get; set; } = true;
         public bool KillSoundEnabled { get; set; } = true;
         public bool GunCrosshairEnabled { get; set; } = true;
@@ -165,6 +169,7 @@ public static class ScUiSettings {
             SimpleMaterials = file.SimpleMaterials ?? (ScResourcePolicy.Edition == "Optimized512");
             CustomButtons = file.CustomButtonsEnabled;
             ButtonOnlyFire = file.ButtonOnlyFire;
+            foreach(var p in file.C4Fuses??[])if(p.Key>=0)C4Fuses[p.Key]=Math.Clamp(p.Value,5,300);
             foreach (var (id, key) in file.GamepadBindings ?? [])
                 if (ScGunFunctions.All.Contains(id) && ScGamepadBindings.Valid(key)) ScGamepadBindings.Keys[id] = key;
             ScGamepadBindings.Threshold = float.IsFinite(file.GamepadTriggerThreshold) ? Math.Clamp(file.GamepadTriggerThreshold, .15f, .9f) : .5f;
@@ -198,6 +203,7 @@ public static class ScUiSettings {
                 GamepadBindings = new(ScGamepadBindings.Keys), GamepadTriggerThreshold = ScGamepadBindings.Threshold,
                 CustomButtonsEnabled = CustomButtons, KillFeedEnabled = KillFeed, KillSoundEnabled = KillSound,
                 ButtonOnlyFire = ButtonOnlyFire,
+                C4Fuses = new(C4Fuses),
                 CrosshairShape = CrosshairShape.Normalize(),
                 GunCrosshairEnabled = GunCrosshair, GunCrosshairStyle = CrosshairStyle, GunCrosshairColor = ColorText(CrosshairColor),
             };

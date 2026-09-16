@@ -21,21 +21,23 @@ public sealed class ScAssemblyRecipesScreen : ScWeaponHelpScreen {
         int recipeValue = skinTemplate && EffectiveGunStats.TrySnapshotValue(m_value, out var snapshot)
             ? ScGunAttributes.TemplateValue(snapshot.Variant) : m_value;
         var entry = ScWeaponCrafting.Find(recipeValue);
-        if (entry is null) { m_panel.Children.Add(ScGunUi.Note("无法识别装配配方，请返回后从 CS 武器入口重试。")); return; }
+        var component = ScComponentCrafting.Find(recipeValue);
+        if (entry is null && component is null) { m_panel.Children.Add(ScGunUi.Note("无法识别装配配方，请返回后从 CS 武器入口重试。")); return; }
         void Label(string text, float scale = 1) => m_panel.Children.Add(new LabelWidget {
             Text = text, FontScale = scale, WordWrap = true, HorizontalAlignment = WidgetAlignment.Center, Margin = new Vector2(4, 5) });
-        Label(BlocksManager.Blocks[Terrain.ExtractContents(entry.Value)].GetDisplayName(null, entry.Value), 1.25f);
-        Label($"武器装配台  ·  等级 {entry.Level}  ·  产出 1 件");
-        foreach (var material in entry.Materials()) {
+        int output=entry?.Value??component.Value;
+        Label(BlocksManager.Blocks[Terrain.ExtractContents(output)].GetDisplayName(null, output), 1.25f);
+        Label(entry is null?"武器装配台 · 配件制作 · 产出 1 件":$"武器装配台  ·  等级 {entry.Level}  ·  产出 1 件");
+        foreach (var material in entry?.Materials()??component.Materials()) {
             var row = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Center };
             row.Children.Add(new BlockIconWidget { Value = material.Key, Size = new Vector2(44), Margin = new Vector2(6, 2) });
             row.Children.Add(new LabelWidget { Text = $"{BlocksManager.Blocks[Terrain.ExtractContents(material.Key)].GetDisplayName(null, material.Key)} ×{material.Value}", VerticalAlignment = WidgetAlignment.Center });
             m_panel.Children.Add(row);
         }
         Label("将材料放入背包，交互装配台并选择此型号。", .8f);
-        Label(entry.Knife ? "确认后扣料；左键轻刀，右键重刀。" : "确认后扣料，交付空枪；弹药另行制作。", .8f);
+        Label(entry is null?"在装配台选择数量后制作，材料可自动堆叠。":entry.Knife ? "左键轻刀，右键重刀。" : "交付空枪；弹药另行制作。", .8f);
         // The attribute card is the other half of this entry, and the one place that never lists materials.
-        if (!entry.Knife) {
+        if (entry is { Knife:false }) {
             m_attributes = ScGunUi.Button("武器属性", 160);
             m_panel.Children.Add(m_attributes);
         }

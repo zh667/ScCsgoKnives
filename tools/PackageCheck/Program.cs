@@ -235,6 +235,7 @@ if (published0282 is not null) foreach(var c in Published0282Regression.Run(mod,
 foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in CommunityRepairRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in PlayerFeedbackRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (sushiInventoryMods is not null) foreach(var c in SushiInventoryRegression.Run(mod, sushiInventoryMods)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (thirdPartyDlls is not null) foreach(var c in PlanDllRegression.Run(mod, thirdPartyDlls)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));

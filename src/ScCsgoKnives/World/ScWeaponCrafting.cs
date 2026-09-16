@@ -72,37 +72,6 @@ public static class ScWeaponCrafting {
         return entries.ToArray();
     }
 
-    public static bool TryCraft(IInventory inventory, int result, IReadOnlyDictionary<int, int> materials) {
-        if (inventory is null || materials is null || !ScGunMutation.TryEnter()) return false;
-        var registry = ScGunRegistry.Current;
-        string owner = null;
-        var journal = new ScGunInventoryJournal(inventory);
-        try {
-        owner = RecoveryOwnerOverride?.Invoke(inventory) ?? registry?.RecoveryOwner?.Invoke(inventory);
-        if (registry is null || registry.Disabled || string.IsNullOrWhiteSpace(owner) || registry.Recovery.HasPending(owner)) return false;
-        int output = -1;
-        for (int i = 0; i < inventory.SlotsCount; i++)
-            if (inventory.GetSlotCount(i) == 0 && inventory.GetSlotCapacity(i, result) > 0) { output = i; break; }
-        if (output < 0 || materials.Any(p => p.Value <= 0 || ScInventoryTransaction.Count(inventory, p.Key) < p.Value)) return false;
-        foreach (var material in materials) {
-            int needed = material.Value;
-            for (int i = 0; i < inventory.SlotsCount && needed > 0; i++) {
-                if (inventory.GetSlotValue(i) != material.Key || inventory.GetSlotCount(i) == 0) continue;
-                int want = Math.Min(needed, inventory.GetSlotCount(i));
-                journal.RemoveExact(i, material.Key, want); needed -= want;
-            }
-            if (needed > 0) {
-                throw new InvalidOperationException("Crafting materials changed");
-            }
-        }
-        if (inventory is ComponentCreativeInventory) journal.ReplaceCreative(output, inventory.GetSlotValue(output), result);
-        else journal.AddExact(output, result, 1);
-        ScInventoryTransaction.Changed(inventory);
-        return true;
-        } catch (Exception e) {
-            journal.Rollback(registry.Recovery, owner);
-            KnifeLog.Warning("[GUN_CRAFT] transaction rolled back; undeliverable refunds retained: " + e.Message);
-            return false;
-        } finally { ScGunMutation.Exit(); }
-    }
+    public static bool TryCraft(IInventory inventory, int result, IReadOnlyDictionary<int, int> materials) =>
+        ScCraftBatch.TryCraft(inventory,result,materials,1);
 }

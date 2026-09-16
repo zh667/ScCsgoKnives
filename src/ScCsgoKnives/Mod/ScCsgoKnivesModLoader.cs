@@ -37,6 +37,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
         ModsManager.RegisterHook("OnPickableDraw", this);
         ModsManager.RegisterHook("OnScreenEntered", this);
+        ModsManager.RegisterHook("ProcessAttackment", this);
+        ModsManager.RegisterHook("OnChaseBehaviorAttacked", this);
     }
     public override void OnScreenEntered(Screen screen, object[] parameters) {
         // The engine appends mod categories lazily; retry when a screen opens so
@@ -59,6 +61,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void OnPickableDraw(Pickable pickable, SubsystemPickables subsystemPickables, Camera camera,
         int drawOrder, ref bool shouldDrawBlock, ref float drawBlockSize, ref Color drawBlockColor) {
         if (shouldDrawBlock && ScGunDropRenderer.Draw(pickable, subsystemPickables, drawBlockColor)) shouldDrawBlock = false;
+        else if(shouldDrawBlock)drawBlockSize=ScGunDropRenderer.OtherSize(pickable.Value,drawBlockSize);
     }
 
     /// <summary>Registers the mod's screens once. ScreensManager.AddScreen throws on a duplicate name.</summary>
@@ -134,7 +137,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (widget is Screen screen && ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) {
             m_assemblyClickScreen = null;
             if (recipes.IsClicked
-                && (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
+                && (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
                 m_assemblyClickScreen = screen; m_assemblyClickValue = value;
                 // Consume this CS-specific click before either browser opens its generic recipe
                 // page. RecipaediaEX's generic page assumes at least one grid recipe exists.
@@ -144,7 +147,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
     public override void AfterWidgetUpdate(Widget widget) {
         if (widget is not Screen screen || !ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) return;
-        if (ScWeaponCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
+        if (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
             recipes.Text = "装配配方";
             recipes.IsEnabled = true;
         }
@@ -247,6 +250,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, true); operated = true;
         }
     }
+    public override void ProcessAttackment(Attackment attackment) => ScElectricStun.FilterAttack(attackment);
+    public override void OnChaseBehaviorAttacked(ComponentChaseBehavior behavior,float before,ref float chaseTime,ref bool hitBody,ref bool playAttackSound) {
+        if(ScElectricStun.Active(behavior.Entity)){hitBody=false;playAttackSound=false;}
+    }
 
 
     public override void HandleMoveInventoryItem(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, ref int count, out bool moved) {
@@ -259,7 +266,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScEnchantmentCompatibility.Initialize();

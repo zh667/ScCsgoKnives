@@ -72,6 +72,19 @@ static class Growth30BoundaryRegression {
             var maxDurability=newGrowth.GetMethod("MaxDurability");
             var scaleDurability=newGrowth.GetMethod("ScaleDurability");
             var capacityAt=newGrowth.GetMethod("Capacity",[typeof(int),typeof(int)]);
+            // Reproduce the reported 3000-kill/Lv0 count-only migration with the actual published serializer.
+            var counting=Activator.CreateInstance(oldRegistry);
+            oldRegistry.GetField("GrowthMode").SetValue(counting,Enum.Parse(oldRegistry.GetField("GrowthMode").FieldType,"CountOnly"));
+            oldRegistry.GetMethod("Allocate").Invoke(counting,[0,7,true,750,1500,0]);
+            var counted=oldRegistry.GetMethod("Get",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(counting,[1]);
+            counted.GetType().GetField("CounterInstalled").SetValue(counted,true);counted.GetType().GetField("KillCount").SetValue(counted,3000L);
+            var countingData=(ValuesDictionary)oldRegistry.GetMethod("Save").Invoke(counting,[0d]);
+            for(int round=0;round<2;round++) {
+                var countingXml=new XElement("Values");countingData.Save(countingXml);var countingRead=new ValuesDictionary();countingRead.ApplyOverrides(XElement.Parse(countingXml.ToString()));
+                var loadedCounting=registry.GetMethod("Load").Invoke(null,[countingRead,0d]);countingData=(ValuesDictionary)registry.GetMethod("Save").Invoke(loadedCounting,[0d]);
+                var f=Fields(countingData.GetValue<ValuesDictionary>("Records").GetValue<string>("1"));
+                Check("supplied-dll-count-only/"+round,f["k"]=="3000"&&f["gl"]=="0"&&f["d"]=="750"&&f["m"]=="1500"&&f["r"]=="7"&&f["s"]=="1",string.Join(",",f.Select(p=>$"{p.Key}={p.Value}")));
+            }
             bool Adapted(Dictionary<string,string> before,Dictionary<string,string> after,int variant) {
                 if(before["v"]!=after["v"]||before["s"]!=after["s"]||before["p"]!=after["p"]||before["ct"]!=after["ct"]||before["k"]!=after["k"]||before["n"]!=after["n"]) return false;
                 int oldLevel=int.Parse(before["gl"]);int newLevel=int.Parse(after["gl"]);long kills=long.Parse(before["k"]);

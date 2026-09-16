@@ -3,6 +3,12 @@ using System.Runtime.CompilerServices;
 namespace Game;
 
 public static class ScSurvivalBalance {
+    // Defer electric control until injury is confirmed; preserve the public stun parameter
+    // so another mod can explicitly deny control without forcing us to enable knockback.
+    sealed class ElectricAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
+        : ProjectileAttackment(body,owner,point,direction,power,null) {
+        public override void StunTarget() { }
+    }
     sealed class Control { public double Next; }
     static readonly ConditionalWeakTable<ComponentBody, Control> Controls = new();
     /// <summary>F13 (community plan 2026-09-07): every gun's survival power is 1.5 × the 0.28.x table.
@@ -41,16 +47,18 @@ public static class ScSurvivalBalance {
             ? Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true), 0, GunSpec.WithId(credit.Variant, GunSpec.FreshFull))
             : player.ComponentMiner.ActiveBlockValue;
         Attackment attack = melee ? new MeleeAttackment(body, player.Entity, point, direction, power)
+            : zeus ? new ElectricAttack(body,player.Entity,point,direction,power)
             : new ProjectileAttackment(body, player.Entity, point, direction, power, null);
         Control control = Controls.GetOrCreateValue(body);
-        bool eligible = now >= control.Next;
+        bool eligible = zeus || now >= control.Next;
         attack.ImpulseFactor = eligible ? (melee ? 1.5f : .6f) : 0;
-        attack.StunTimeSet = eligible ? (zeus ? (body.Mass >= 200 ? .3f : 1f) : .1f) : 0;
+        attack.StunTimeSet = zeus?ScElectricStun.Duration:eligible ? .1f : 0;
         attack.StunTimeAdd = 0;
         attack.AllowImpulseAndStunWhenDamageIsZero = false;
-        if (eligible) control.Next = now + (zeus ? 5 : .8);
+        if (eligible && !zeus) control.Next = now + .8;
         if (!melee) ScProjectileDefense.Apply(body, attack);
         ComponentMiner.AttackBody(attack);
+        if(zeus)ScElectricStun.ApplyAttack(body,before,health?.Health??before,now,attack.StunTimeSet??0);
         int outcome = ScCombatFeedback.Outcome(before, health?.Health ?? before);
         // A head pellet that confirmed damage without a kill reports 3 (yellow); a kill stays 2 whatever was hit.
         if (outcome == 1 && headshot) outcome = ScCombatFeedback.HeadshotOutcome;

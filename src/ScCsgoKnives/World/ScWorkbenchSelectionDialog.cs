@@ -3,7 +3,7 @@ using Engine;
 namespace Game;
 
 /// <summary>Native responsive workshop: category tabs, list, preview, materials and fixed footer.
-/// Single click previews; double click/tap opens the next page. Material spending still requires a quote confirmation.</summary>
+/// Recipes use an explicit batch craft button; other operations open their quote on double click/tap.</summary>
 public sealed class ScWorkbenchSelectionDialog : Dialog {
     readonly object[] m_items;
     readonly Func<object, string> m_label;
@@ -27,6 +27,29 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     double m_lastClickTime = double.NegativeInfinity;
     float m_lastClickScroll;
     bool m_done;
+    readonly ButtonWidget m_quantity=ScGunUi.Button("数量 1",108),m_craft=ScGunUi.Button("制作 1 件",150);
+    readonly List<(int Count,ButtonWidget Button)> m_quick=[];
+    readonly List<(int Value,int Need,LabelWidget Label)> m_materialLabels=[];
+    int m_count=1;
+    double m_refreshAt,m_craftAfter;
+    public Func<object,string> CraftPermission {get;set;}
+    bool Craftable => m_selected is ScComponentCrafting.Entry or ScWeaponCrafting.Entry;
+    Dictionary<int,int> UnitCost() => m_selected switch {ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
+    string CraftReason() => CraftPermission?.Invoke(m_selected) is {Length:>0} reason?reason:
+        ScCraftBatch.Unavailable(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count);
+    void RefreshQuote() {
+        m_quantity.Text=$"数量 {m_count}";m_craft.Text=$"制作 {m_count} 件";
+        m_quantity.IsVisible=m_craft.IsVisible=Craftable;
+        foreach(var p in m_quick)p.Button.IsVisible=Craftable && ActualSize.X>=620;
+        if(!Craftable)return;
+        foreach(var p in m_materialLabels) {
+            int owned=ScInventoryTransaction.Count(m_inventory,p.Value);
+            p.Label.Text=$"{BlocksManager.Blocks[Terrain.ExtractContents(p.Value)].GetDisplayName(null,p.Value)}\n{p.Need} / {owned}";
+            p.Label.Color=owned>=p.Need||m_creative?ScGunUi.Text:new Color(240,150,110);
+        }
+        string reason=CraftReason();m_craft.IsEnabled=reason.Length==0 && Time.RealTime>=m_craftAfter;
+        if(reason.Length>0)m_hint.Text=reason;
+    }
     public sealed record Navigation(string Category, object Selected, float Scroll);
     public Navigation CaptureNavigation() => new(m_category,m_selected,m_list.ScrollPosition);
     public void RestoreNavigation(Navigation state) {
@@ -61,6 +84,8 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         m_detailHost.Children.Add(ScGunUi.Frame()); m_detailScroll.Children.Add(m_details); m_detailHost.Children.Add(m_detailScroll); Children.Add(m_detailHost);
         m_name=ScGunUi.Label("",.9f,ScGunUi.Accent); m_name.WordWrap=true;
         m_hint.WordWrap=true; Children.Add(m_hint); Children.Add(m_cancel);
+        Children.Add(m_quantity);Children.Add(m_craft);
+        foreach(int n in new[]{1,10,100}){var b=ScGunUi.Button(n.ToString(),52);m_quick.Add((n,b));Children.Add(b);}
         Filter("全部");
     }
     static string CategoryOf(object item) => item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
@@ -81,6 +106,8 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     }
     void Select(object item) {
         m_selected=item; m_list.SelectedItem=item;
+        m_materialLabels.Clear();
+        m_hint.Text=Craftable?"选择数量后制作 · 材料自动堆叠":"单击预览 · 双击 / 双点进入";
         m_details.Children.Clear(); m_name.Text=item is null?"没有可用项目":m_label(item); m_details.Children.Add(m_name);
         int value=ValueOf(item); m_icon.IsVisible=value!=0; if(value!=0)m_icon.Value=value;
         var materials = item switch {
@@ -89,26 +116,32 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             ScGunSkin s=>ScGunSkinCatalog.CostOf(s,ScWeaponMaterialBlock.Value),
             _=>new Dictionary<int,int>()
         };
+        if(Craftable)materials=ScCraftBatch.Cost(materials,m_count);
         if(item is ScWeaponCrafting.Entry entry) {
-            m_details.Children.Add(ScGunUi.Note($"制作等级 {entry.Level} · 产出 1 件"));
-            m_details.Children.Add(ScGunUi.Note(entry.Knife?"组装刀具；双击进入报价，确认后才扣料。":"空枪交付，弹药另行制作；双击进入报价，确认后才扣料。"));
+            m_details.Children.Add(ScGunUi.Note($"制作等级 {entry.Level} · 产出 {m_count} 件"));
+            m_details.Children.Add(ScGunUi.Note(entry.Knife?"选择数量后点击制作。":"空枪交付，弹药另行制作。"));
         }
         else if(value!=0 && EffectiveGunStats.TrySnapshotValue(value,out var s))
             m_details.Children.Add(ScGunUi.Note($"弹量 {s.Rounds} · {(s.CounterInstalled?$"计数 {s.KillCount} / Lv{s.Level}":"未安装计数器")}\n双击 / 双点此项查看本次操作的精确报价。"));
-        else m_details.Children.Add(ScGunUi.Note("双击 / 双点此项进入。单击仅预览，不会执行操作。"));
+        else m_details.Children.Add(ScGunUi.Note(Craftable?$"产出 {m_count} 件 · 点击下方制作":"双击 / 双点此项进入。单击仅预览，不会执行操作。"));
         if(m_creative)m_details.Children.Add(ScGunUi.Note("创造模式：不消耗材料。"));
         if(materials.Count>0) {
             m_details.Children.Add(ScGunUi.Heading("材料 · 需要 / 持有"));
+            var materialScroll=new ScrollPanelWidget {Direction=LayoutDirection.Horizontal,DesiredSize=new Vector2(float.PositiveInfinity,118)};
+            var columns=new StackPanelWidget {Direction=LayoutDirection.Horizontal};materialScroll.Children.Add(columns);m_details.Children.Add(materialScroll);
+            StackPanelWidget column=null;int index=0;
             foreach(var p in materials) {
                 int owned=ScInventoryTransaction.Count(m_inventory,p.Key);
                 var row=new StackPanelWidget { Direction=LayoutDirection.Horizontal, Margin=new Vector2(0,3) };
                 row.Children.Add(new BlockIconWidget { Value=p.Key,Size=new Vector2(36) });
-                row.Children.Add(new LabelWidget { Text=$"{BlocksManager.Blocks[Terrain.ExtractContents(p.Key)].GetDisplayName(null,p.Key)}\n{p.Value} / {owned}",FontScale=.65f,WordWrap=true,
-                    Color=owned>=p.Value||m_creative?ScGunUi.Text:new Color(240,150,110),VerticalAlignment=WidgetAlignment.Center });
-                m_details.Children.Add(row);
+                var label=new LabelWidget { Text=$"{BlocksManager.Blocks[Terrain.ExtractContents(p.Key)].GetDisplayName(null,p.Key)}\n{p.Value} / {owned}",FontScale=.65f,WordWrap=true,Size=new Vector2(135,48),
+                    Color=owned>=p.Value||m_creative?ScGunUi.Text:new Color(240,150,110),VerticalAlignment=WidgetAlignment.Center };
+                row.Children.Add(label);m_materialLabels.Add((p.Key,p.Value,label));
+                if(index++%2==0){column=new StackPanelWidget{Direction=LayoutDirection.Vertical,Margin=new Vector2(6,0)};columns.Children.Add(column);}column.Children.Add(row);
             }
         }
         m_detailScroll.ScrollPosition=0;
+        RefreshQuote();
     }
     void ClickItem(object item, double time) {
         if(m_done || m_pendingChoice is not null || item is null || !m_list.Items.Contains(item))return;
@@ -116,7 +149,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             && Math.Abs(m_list.ScrollPosition-m_lastClickScroll)<2;
         Select(item);
         m_lastClicked=item; m_lastClickTime=time; m_lastClickScroll=m_list.ScrollPosition;
-        if(activate)m_pendingChoice=item;
+        if(activate && !Craftable)m_pendingChoice=item;
     }
     void Place(Widget widget,float x,float y,float width,float height) {
         SetWidgetPosition(widget,new Vector2(x,y));
@@ -127,18 +160,38 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     public override void MeasureOverride(Vector2 available) {
         float w=Math.Min(1100,Math.Max(280,available.X-24)),h=Math.Min(650,Math.Max(220,available.Y-24));
         Size=new Vector2(w,h); Place(m_title,12,8,w-24,32); Place(m_tabsScroll,12,48,w-24,52);
-        float bodyH=h-172;
-        m_previewHost.IsVisible=h>=380;
-        if(h<380){float lw=Math.Min(220,w*.42f);Place(m_listHost,12,110,lw,bodyH);Place(m_detailHost,20+lw,110,w-lw-32,bodyH);}
+        m_hint.IsVisible=h>=360;
+        float bodyH=Math.Max(20,h-(h<360?172:230));
+        m_previewHost.IsVisible=h>=480;
+        if(h<480){float lw=Math.Min(220,w*.42f);Place(m_listHost,12,110,lw,bodyH);Place(m_detailHost,20+lw,110,w-lw-32,bodyH);}
         else if(w>=900){Place(m_previewHost,12,110,210,bodyH);Place(m_listHost,230,110,280,bodyH);Place(m_detailHost,518,110,w-530,bodyH);}
         else if(w>=620){Place(m_listHost,12,110,210,bodyH);Place(m_previewHost,230,110,w-242,100);Place(m_detailHost,230,218,w-242,bodyH-108);}
         else{Place(m_listHost,12,110,Math.Max(130,w*.42f),bodyH);float x=20+Math.Max(130,w*.42f);Place(m_previewHost,x,110,w-x-12,80);Place(m_detailHost,x,198,w-x-12,bodyH-88);}
         m_icon.Size=new Vector2(w>=900?160:76);
-        Place(m_hint,134,h-56,w-146,48);Place(m_cancel,12,h-56,110,48);
+        Place(m_hint,12,h-116,w-24,48);Place(m_cancel,12,h-56,80,48);
+        Place(m_quantity,w-274,h-56,108,48);Place(m_craft,w-158,h-56,146,48);
+        if(w<380){Place(m_cancel,12,h-56,64,48);Place(m_quantity,80,h-56,84,48);Place(m_craft,168,h-56,w-180,48);}
+        int k=0;foreach(var p in m_quick){p.Button.IsVisible=Craftable&&w>=620;Place(p.Button,104+56*k++,h-56,52,48);}
         base.MeasureOverride(available);
     }
     public override void Update() {
         if(m_done)return;
+        if(Time.RealTime>=m_refreshAt){m_refreshAt=Time.RealTime+.25;RefreshQuote();}
+        if(Craftable) {
+            foreach(var p in m_quick)if(p.Button.IsClicked){m_count=p.Count;Select(m_selected);return;}
+            if(m_quantity.IsClicked){DialogsManager.ShowDialog(ParentWidget,new TextBoxDialog("制作数量（1～100）",m_count.ToString(),3,text=>{
+                if(m_done||text is null)return;
+                if(int.TryParse(text,out int n)&&n>=1&&n<=ScCraftBatch.Maximum){m_count=n;Select(m_selected);}
+                else m_hint.Text="请输入 1～100 的整数。";
+            }));return;}
+            if(m_craft.IsClicked && Time.RealTime>=m_craftAfter) {
+                m_craftAfter=Time.RealTime+.35;
+                string reason=CraftReason();
+                bool made=reason.Length==0&&ScCraftBatch.TryCraft(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count);
+                RefreshQuote();m_hint.Text=made?$"已制作 {m_count} 件":reason.Length>0?reason:"制作未完成；已尝试退款，未退回部分将自动重试。";
+                return;
+            }
+        }
         foreach(var p in m_categories)if(p.Button.IsClicked){Filter(p.Category);return;}
         if(m_list.SelectedItem is {} selected && !ReferenceEquals(selected,m_selected))Select(selected);
         if(Input.Cancel||Input.Back||m_cancel.IsClicked){m_done=true;DialogsManager.HideDialog(this);BackAction?.Invoke();return;}
