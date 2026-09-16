@@ -54,5 +54,203 @@
   "unresolved": [
     "No affected player world directory or before/after file listing supplied for this incident.",
     "Screenshot omits the final format detail; schema6 downgrade is consistent with known version behavior, not extracted from the screenshot."
-  ]
+  ],
+  "additionalFeedback": {
+    "date": "2026-09-16",
+    "topics": [
+      "taser stun",
+      "configurable planted C4 fuse",
+      "dropped item visual scale"
+    ],
+    "sourceCommit": "7bd3aed09d9665184c2adfb0777141f5dc036124",
+    "gameDllSha256": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+    "actualGameDllDecompilation": {
+      "PickableDrawScale": "\t\tbool shouldDrawBlock = true;\n\t\tfloat drawBlockSize = 0.3f;\n\t\tColor drawBlockColor = Color.MultiplyNotSaturated(Color.White, num7);\n\t\tif (SubsystemPickables != null)\n\t\t{\n\t\t\tModsManager.HookAction(\"OnPickableDraw\", delegate(ModLoader loader)\n\t\t\t{\n\t\t\t\tloader.OnPickableDraw(this, SubsystemPickables, camera, drawOrder, ref shouldDrawBlock, ref drawBlockSize, ref drawBlockColor);\n\t\t\t\treturn false;\n\t\t\t});\n\t\t}\n\t\tif (shouldDrawBlock)\n\t\t{\n\t\t\tblock.DrawBlock(PrimitivesRenderer(), Value, drawBlockColor, drawBlockSize, ref matrix, DrawBlockEnvironmentData());\n\t\t}",
+      "StunTarget": "\tpublic virtual void StunTarget()\n\t{\n\t\tif (ImpulseFactor <= 0f)\n\t\t{\n\t\t\treturn;\n\t\t}\n\t\tComponentLocomotion componentLocomotion = Target.FindComponent<ComponentLocomotion>();\n\t\tif (componentLocomotion != null)\n\t\t{\n\t\t\tif (StunTimeSet.HasValue)\n\t\t\t{\n\t\t\t\tcomponentLocomotion.StunTime = MathUtils.Max(componentLocomotion.StunTime, StunTimeSet.Value);\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tcomponentLocomotion.StunTime += StunTimeAdd;\n\t\t\t}\n\t\t}\n\t}"
+    },
+    "existingDimensionChecks": [
+      {
+        "name": "gun-drop/solid-centred-metres/ak47/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.072067216,0.27118507,0.9482518; triangles=13694; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/m4a1s/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.07929948,0.29970556,1.1772093; triangles=23684; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/awp/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.11085749,0.26669595,1.3627245; triangles=21522; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/deagle/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.044074252,0.16972119,0.29393953; triangles=9343; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/glock18/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.030566214,0.13131426,0.20188066; triangles=7659; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/usp_silencer/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.045992274,0.172984,0.4291832; triangles=9458; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/m4a4/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.092481755,0.29299966,0.89680505; triangles=22706; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/famas/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.08237478,0.3286966,0.87573653; triangles=16432; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/mp9/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.052336417,0.26530927,0.5633079; triangles=15508; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/p90/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.057884943,0.22115096,0.51788306; triangles=12516; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/ssg08/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.12518896,0.31895065,1.2989873; triangles=24612; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/fiveseven/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.032152444,0.13810161,0.2043201; triangles=12593; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/hkp2000/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.03726438,0.14252979,0.18880272; triangles=8865; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/p250/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.03574562,0.14012308,0.20269828; triangles=8220; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/tec9/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.060181104,0.25713378,0.33946627; triangles=10902; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/cz75a/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.035022393,0.16819686,0.260578; triangles=11197; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/mac10/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.06315742,0.31021106,0.33030063; triangles=12854; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/mp7/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.058248088,0.29059732,0.40469334; triangles=14842; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/ump45/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.06622845,0.34433195,0.728153; triangles=16393; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/bizon/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.08609586,0.22318593,0.80082583; triangles=13454; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/mp5sd/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.06703515,0.30241004,0.71382797; triangles=18898; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/galilar/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.07127027,0.27472788,0.7825737; triangles=20592; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/scar20/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.07426719,0.27605695,1.0808091; triangles=27532; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/g3sg1/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.06114269,0.28220737,1.0881283; triangles=23842; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/aug/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.094084635,0.3453745,0.76912576; triangles=19999; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/sg556/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.075549975,0.31449986,0.8910953; triangles=26205; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/nova/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.053244308,0.20759082,1.0206239; triangles=12978; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/xm1014/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.056336693,0.17489554,0.8976408; triangles=14987; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/sawedoff/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.04941193,0.1349498,0.6671816; triangles=6537; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/mag7/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.06693596,0.25878334,0.64818347; triangles=9982; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/m249/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.2189566,0.29407772,1.2144654; triangles=29666; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/negev/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.2260857,0.3020283,1.0076454; triangles=29177; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/revolver/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.050122313,0.18177494,0.30429018; triangles=11334; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/elite/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.25666836,0.17375045,0.2681743; triangles=20978; same unscaled mesh as held third-person gun"
+      },
+      {
+        "name": "gun-drop/solid-centred-metres/taser/False/False",
+        "ok": true,
+        "detail": "dimensions in metres=0.047797326,0.1763312,0.2483527; triangles=4198; same unscaled mesh as held third-person gun"
+      }
+    ],
+    "dimensionCoverage": "35 assembled For meshes, standard route, silencer present. Existing regression separately checks ForDrop triangle counts; it does not measure the visible indexed bounds of every reduced mesh. Not a new runtime test.",
+    "modCreatureReference": ".tmp/monster-audit-20260912/16/decompiled/Subnautica/ComponentKrakenVortex.cs; existing local decompilation, not newly tested live",
+    "pending": [
+      "Android/gameplay stun and attack suppression acceptance",
+      "Actual C4 timing/audio playback acceptance",
+      "Dropped appearance at fixed distances and across all variants/editions"
+    ]
+  }
 }
