@@ -1,0 +1,58 @@
+{
+  "date": "2026-09-16",
+  "baselineCommit": "712a10ff818776b73b0b43ee36426cdbd6c550dd",
+  "scope": "Read-only analysis; historical DLL tests inspected, not rerun. No player world or Android runtime tested.",
+  "gameDll": {
+    "snapshotPathExcerpt": "\tpublic static string MakeSnapshotFilename(string directoryName, string snapshotName)\n\t{\n\t\treturn Storage.CombinePaths(directoryName, snapshotName + \".snapshot\");\n\t}\n",
+    "sha256": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+    "path": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Survivalcraft.dll",
+    "evidence": "ilspycmd 10.1 decompilation of the actual local API DLL",
+    "sizeMethodExcerpt": "\tpublic static WorldInfo GetWorldInfo(string directoryName)\n\t{\n\t\tWorldInfo worldInfo = new WorldInfo\n\t\t{\n\t\t\tDirectoryName = directoryName,\n\t\t\tLastSaveTime = DateTime.MinValue\n\t\t};\n\t\tList<string> list = new List<string>();\n\t\tRecursiveEnumerateDirectory(directoryName, list, null, null);\n\t\tif (list.Count > 0)\n\t\t{\n\t\t\tforeach (string item in list)\n\t\t\t{\n\t\t\t\tDateTime fileLastWriteTime = Storage.GetFileLastWriteTime(item);\n\t\t\t\tif (fileLastWriteTime > worldInfo.LastSaveTime)\n\t\t\t\t{\n\t\t\t\t\tworldInfo.LastSaveTime = fileLastWriteTime;\n\t\t\t\t}\n\t\t\t\ttry\n\t\t\t\t{\n\t\t\t\t\tworldInfo.Size += Storage.GetFileSize(item);\n\t\t\t\t}\n\t\t\t\tcatch (Exception e)\n\t\t\t\t{\n\t\t\t\t\tLog.Error(ExceptionManager.MakeFullErrorMessage(\"Error getting size of file \\\"\" + item + \"\\\".\", e));\n\t\t\t\t}"
+  },
+  "currentLite": {
+    "matchesExistingReport": true,
+    "sha256": "852789750c3ee1fa9aa2cf590b88c70c78f5cf76521b42382e9e2811a8848c79",
+    "path": "output/[API1.9]CS武器1.1.0-轻量版.scmod",
+    "dllSha256": "7e4196500cd41a8d04af80a754486678ba6dac6339f76d2a74088910b8b46799",
+    "note": "Filename now omits 512; bytes still match the previous 512 Lite test report."
+  },
+  "oldPublicPackage": {
+    "sha256": "9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424",
+    "path": "D:\\下载\\[API1.9]CS武器1.0.0.scmod"
+  },
+  "historicalReport": {
+    "failed": 0,
+    "selectedChecks": [
+      {
+        "name": "growth30-boundary/actual-old-dll-refuses-schema6",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "growth30-boundary/old-preload-guard-refuses",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "growth30-boundary/actual-old-schema-full-world-backup",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "path": "output/release-1.1.0/lite-check.json"
+  },
+  "blockStacking": [
+    {
+      "Class Name": "ScKnifeBlock",
+      "MaxStacking": "1"
+    },
+    {
+      "Class Name": "ScGunBlock",
+      "MaxStacking": "1"
+    }
+  ],
+  "unresolved": [
+    "No affected player world directory or before/after file listing supplied for this incident.",
+    "Screenshot omits the final format detail; schema6 downgrade is consistent with known version behavior, not extracted from the screenshot."
+  ]
+}
