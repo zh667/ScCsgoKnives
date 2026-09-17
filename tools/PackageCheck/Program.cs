@@ -40,6 +40,8 @@ string resourcePack = null;
 string resourceBaseline = null, sushiPackage = null;
 string sushiInventoryMods = null;
 string creatureExtractedRoot = null;
+string linGunPackage = null;
+bool linCompatibilityOnly = false;
 string skinnedModel = null;
 bool attributeBenchmark = false;
 bool c4Checkset = false;
@@ -47,6 +49,8 @@ bool creatureAuditOnly=false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--creature-audit-only": creatureAuditOnly=true;break;
+        case "--lin-gun-package": linGunPackage=args[++i];break;
+        case "--lin-compat-only": linCompatibilityOnly=true;break;
         case "--creature-extracted-root": creatureExtractedRoot=args[++i];break;
         case "--c4-checkset": c4Checkset = true; break;
         case "--skinned-model": skinnedModel = args[++i]; break;
@@ -139,6 +143,7 @@ Type knifeLog = mod.GetType("Game.KnifeLog");
 knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, true);
 
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
+if(linCompatibilityOnly) {var r=LinFirstPersonRegression.Run(mod,linGunPackage,vanillaContent);Console.WriteLine(JsonSerializer.Serialize(r));return r.Any(c=>!c.Ok)?1:0;}
 if (weaponStats is not null) { WeaponStatsExport.Write(mod, scmod, weaponStats, digest); return 0; }
 
 if (attributeBenchmark) {
@@ -242,6 +247,7 @@ foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Nam
 foreach(var c in CommunityRepairRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in PlayerFeedbackRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in DecoyRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+if(linGunPackage is not null)foreach(var c in LinFirstPersonRegression.Run(mod,linGunPackage,vanillaContent))checks.Add(new{name=c.Name,ok=c.Ok,detail=c.Detail});
 if (sushiInventoryMods is not null) foreach(var c in SushiInventoryRegression.Run(mod, sushiInventoryMods)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (thirdPartyDlls is not null) foreach(var c in PlanDllRegression.Run(mod, thirdPartyDlls)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if(sushiInventoryMods is not null && vanillaContent is not null) foreach(var c in CreatureTemplateAudit.Run(sushiInventoryMods,vanillaContent,creatureExtractedRoot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});

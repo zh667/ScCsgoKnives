@@ -1,0 +1,439 @@
+{
+  "package": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\[API1.9]CS武器1.1.3-全量版.scmod",
+  "packageSha256": "8050f218e00b960834bfe319fbfb8aa9d9ddcafee99e5a7078a4cdecbfa6866f",
+  "packageBytes": 375784677,
+  "dllSha256": "3a2081fc2c94c5bb273856fc893e08335c5ed6819190b28c2ab4ad1b0b298f06",
+  "dllFromPackage": true,
+  "failed": 0,
+  "version": "1.1.3",
+  "checks": 21831,
+  "regressionChecks": 21685,
+  "informationalAuditRows": 146,
+  "groups": [
+    {
+      "name": "ammo-hud",
+      "checks": 535,
+      "failed": 0
+    },
+    {
+      "name": "animation-switch",
+      "checks": 454,
+      "failed": 0
+    },
+    {
+      "name": "arms",
+      "checks": 2,
+      "failed": 0
+    },
+    {
+      "name": "attributes-cold",
+      "checks": 65,
+      "failed": 0
+    },
+    {
+      "name": "c4",
+      "checks": 56,
+      "failed": 0
+    },
+    {
+      "name": "combat",
+      "checks": 136,
+      "failed": 0
+    },
+    {
+      "name": "community-repair",
+      "checks": 25,
+      "failed": 0
+    },
+    {
+      "name": "controls-scope-0416",
+      "checks": 130,
+      "failed": 0
+    },
+    {
+      "name": "creative-counters",
+      "checks": 374,
+      "failed": 0
+    },
+    {
+      "name": "creative-skins",
+      "checks": 51,
+      "failed": 0
+    },
+    {
+      "name": "creature-audit",
+      "checks": 125,
+      "failed": 0
+    },
+    {
+      "name": "creature-source",
+      "checks": 21,
+      "failed": 0
+    },
+    {
+      "name": "decoy-mod-engine-inheritance",
+      "checks": 4,
+      "failed": 0
+    },
+    {
+      "name": "decoy-v112",
+      "checks": 48,
+      "failed": 0
+    },
+    {
+      "name": "effects",
+      "checks": 691,
+      "failed": 0
+    },
+    {
+      "name": "firstperson",
+      "checks": 168,
+      "failed": 0
+    },
+    {
+      "name": "generic-travel",
+      "checks": 19,
+      "failed": 0
+    },
+    {
+      "name": "growth",
+      "checks": 118,
+      "failed": 0
+    },
+    {
+      "name": "growth30-boundary",
+      "checks": 10310,
+      "failed": 0
+    },
+    {
+      "name": "gun",
+      "checks": 1092,
+      "failed": 0
+    },
+    {
+      "name": "gun-diagnostics",
+      "checks": 14,
+      "failed": 0
+    },
+    {
+      "name": "gun-drop",
+      "checks": 381,
+      "failed": 0
+    },
+    {
+      "name": "gun-format",
+      "checks": 17,
+      "failed": 0
+    },
+    {
+      "name": "gun-handling",
+      "checks": 187,
+      "failed": 0
+    },
+    {
+      "name": "gun-skin",
+      "checks": 349,
+      "failed": 0
+    },
+    {
+      "name": "gunspec",
+      "checks": 3,
+      "failed": 0
+    },
+    {
+      "name": "headshot",
+      "checks": 34,
+      "failed": 0
+    },
+    {
+      "name": "hit-motion",
+      "checks": 19,
+      "failed": 0
+    },
+    {
+      "name": "integration",
+      "checks": 270,
+      "failed": 0
+    },
+    {
+      "name": "interaction",
+      "checks": 101,
+      "failed": 0
+    },
+    {
+      "name": "knife",
+      "checks": 154,
+      "failed": 0
+    },
+    {
+      "name": "knife-finish",
+      "checks": 200,
+      "failed": 0
+    },
+    {
+      "name": "knives",
+      "checks": 1,
+      "failed": 0
+    },
+    {
+      "name": "lin-first-person",
+      "checks": 22,
+      "failed": 0
+    },
+    {
+      "name": "live-backup",
+      "checks": 6,
+      "failed": 0
+    },
+    {
+      "name": "load",
+      "checks": 4,
+      "failed": 0
+    },
+    {
+      "name": "m4-recovery",
+      "checks": 14,
+      "failed": 0
+    },
+    {
+      "name": "migration-0282",
+      "checks": 10,
+      "failed": 0
+    },
+    {
+      "name": "mobile",
+      "checks": 33,
+      "failed": 0
+    },
+    {
+      "name": "optimization",
+      "checks": 5,
+      "failed": 0
+    },
+    {
+      "name": "plan-dll",
+      "checks": 339,
+      "failed": 0
+    },
+    {
+      "name": "player-feedback",
+      "checks": 30,
+      "failed": 0
+    },
+    {
+      "name": "polish",
+      "checks": 17,
+      "failed": 0
+    },
+    {
+      "name": "resources",
+      "checks": 203,
+      "failed": 0
+    },
+    {
+      "name": "rig",
+      "checks": 205,
+      "failed": 0
+    },
+    {
+      "name": "runtime-regression",
+      "checks": 83,
+      "failed": 0
+    },
+    {
+      "name": "skin-growth",
+      "checks": 299,
+      "failed": 0
+    },
+    {
+      "name": "sound",
+      "checks": 1,
+      "failed": 0
+    },
+    {
+      "name": "sounds",
+      "checks": 2,
+      "failed": 0
+    },
+    {
+      "name": "starter",
+      "checks": 71,
+      "failed": 0
+    },
+    {
+      "name": "survival",
+      "checks": 421,
+      "failed": 0
+    },
+    {
+      "name": "survival-runtime",
+      "checks": 1551,
+      "failed": 0
+    },
+    {
+      "name": "sushi-inventory",
+      "checks": 18,
+      "failed": 0
+    },
+    {
+      "name": "tracer",
+      "checks": 102,
+      "failed": 0
+    },
+    {
+      "name": "travel",
+      "checks": 22,
+      "failed": 0
+    },
+    {
+      "name": "ui-light-compat",
+      "checks": 12,
+      "failed": 0
+    },
+    {
+      "name": "variant",
+      "checks": 18,
+      "failed": 0
+    },
+    {
+      "name": "weapon-help-layout",
+      "checks": 1973,
+      "failed": 0
+    },
+    {
+      "name": "weapons",
+      "checks": 208,
+      "failed": 0
+    },
+    {
+      "name": "world-effects",
+      "checks": 8,
+      "failed": 0
+    }
+  ],
+  "linPackage": "D:\\下载\\[1.9.3.1] lin的简易枪械v0.4 .scmod",
+  "linSha256": "73ce311311254626eea1041168afe7956f4e2cf7af732b43e0fbde3bd6976b68",
+  "linFilenameVersion": "0.4",
+  "linMetadataVersion": "0.3",
+  "linChecks": [
+    {
+      "name": "lin-first-person/actual-dll-bypasses-api-hook",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/actual-xdb-registers-player-component-substitution",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/honor-other-mod-ownership",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/native-component-untouched",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/engine-registers-one-adapter",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/bound-delegates-use-distinct-real-slots",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/repeated-register-does-not-double-draw",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScGunBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScKnifeBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScGrenadeBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScC4Block",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScAmmoBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScWeaponMaterialBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScGunSkinTemplateBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/cs-item-routes-to-api/ScGunCounterTemplateBlock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/non-cs-item-retains-lin/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/non-cs-item-retains-lin/710",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/non-cs-item-retains-lin/711",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/switch-in-and-out-keeps-outgoing-route",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/entity-removal-cleans-adapter",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/same-entity-readded-and-two-players",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lin-first-person/world-dispose-removes-all-adapters",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "changedEntriesFrom112": [
+    "ScCsgoKnives.dll",
+    "modinfo.json"
+  ],
+  "limits": [
+    "No game screenshot or GPU render acceptance for this release.",
+    "Real Gun.dll interface targets and native drawing registration were exercised. Final GPU delegates were replaced by counters for route assertions.",
+    "146 source/template audit rows are informational, not gameplay assertions."
+  ]
+}

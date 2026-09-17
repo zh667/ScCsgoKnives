@@ -32,6 +32,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnPlayerInputInteract", this); // world interaction wins over a gun's right-click mode
         ModsManager.RegisterHook("RecalculateCameraProjection", this);
         ModsManager.RegisterHook("OnFirstPersonModelDrawing", this);
+        ModsManager.RegisterHook("OnIDrawableAdded", this);
         ModsManager.RegisterHook("IsCrosshairVisible", this);   // hooks only fire for loaders that registered them (0.15.9 forgot this)
         ModsManager.RegisterHook("OnModelCalculateBones", this); // third person: pose the human's arms around the mod weapon
         ModsManager.RegisterHook("OnModelDrawExtra", this);     // third person: draw the real-scale weapon instead of vanilla's block
@@ -266,7 +267,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScEnchantmentCompatibility.Initialize();
@@ -322,6 +323,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (guns is null) return;
         isVisible = false;
     }
+
+    public override void OnIDrawableAdded(SubsystemDrawing subsystemDrawing, IDrawable drawable, bool skippedByOtherMods, out bool skip) =>
+        skip=ScLinFirstPersonCompatibility.Register(subsystemDrawing,drawable,skippedByOtherMods);
 
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel componentFirstPersonModel, Camera camera, int itemValue, ref Matrix matrix, out bool skip) {
         skip = false;
