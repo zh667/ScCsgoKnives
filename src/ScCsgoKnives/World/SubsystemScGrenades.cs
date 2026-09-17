@@ -359,7 +359,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     void DecoyPulse(ScGrenadeState s) {
         Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/ak47_fire_1",.6f,0,s.Position,5,true);
-        foreach (var body in m_bodies.Bodies) if (Vector3.DistanceSquared(body.Position,s.Position)<=18*18 && Clear(s.Position+Vector3.UnitY*.2f,Eye(body)))
+        foreach (var body in m_bodies.Bodies) if (Vector3.DistanceSquared(body.Position,s.Position)<=ScDecoyResponse.Radius*ScDecoyResponse.Radius && Clear(s.Position+Vector3.UnitY*.2f,Eye(body)))
             body.Entity.FindComponent<ComponentScDecoyBehavior>()?.HearDecoy(s.Position);
     }
     void RemoveEffect(ScGrenadeState s,bool extinguished) {

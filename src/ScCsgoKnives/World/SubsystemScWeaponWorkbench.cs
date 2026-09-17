@@ -120,7 +120,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             if (guns.Length == 0) { Notice("创造等级 · 没有可用枪械", "请先把已安装击杀计数器的枪械放进快捷栏。背包和箱子里的枪不会被修改。", ShowList); return; }
             Dialog SelectionLevels(ScGunCounter.Candidate gun) {
                 var levels = Enumerable.Range(0, ScGunGrowth.MaxLevel + 1).Cast<object>();
-                return Selection($"创造等级 · {ValueName(gun.Value)}", levels, 48, item => $"Lv{(int)item} · {ScGunGrowth.KillsFor(ScGunBlock.GetVariant(gun.Value), (int)item)} 击杀", item => {
+                return Selection($"创造等级 · {ValueName(gun.Value)}", levels, 48, item => $"Lv{(int)item}（{ScGunGrowth.KillsFor(ScGunBlock.GetVariant(gun.Value), (int)item)} 击杀）", item => {
                     int level = (int)item;
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog($"设置 {ValueName(gun.Value)} 为 Lv{level}",
                         "仅修改快捷栏中的这一把枪；弹药、涂装、消音器和耐久按等级规则保留。不会创建新枪或改变枪械编号。", "应用", "返回", answer => {

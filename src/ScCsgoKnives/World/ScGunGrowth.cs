@@ -2,11 +2,10 @@ namespace Game;
 
 /// <summary>Fifty-level gun growth. The total growth is spread across all fifty levels so that reaching Lv50
 /// reproduces exactly what the published public beta reached at Lv30: damage x10, magazine x6.5, maximum life x2.5,
-/// and the Zeus charge 10 s -> 1 s. The normal-gun fire rate is deliberately capped lower (x2 at Lv50) than the
+/// and the Zeus charge 10 s -> 1 s. The normal-gun fire rate is deliberately capped lower (x1.5 at Lv50) than the
 /// public beta's x3.5, while the four scoped sniper rifles keep their public-beta x3.5.
 ///
-/// The first ten levels are unchanged from the public beta (damage x2, life x1.5, capacity x1.5, fire rate x1,
-/// Zeus 10 s -> 5 s) so early weapons feel exactly as they did.
+/// Lv10 retains damage x2, life x1.5, capacity x1.5 and Zeus 10 s -> 5 s. Ordinary fire rate is now x1.1.
 ///
 /// Every number is derived from the gun's *base* value and the applied level, never from an already-grown value,
 /// so re-applying a level can never compound.
@@ -18,7 +17,7 @@ public static class ScGunGrowth {
     public const int PrecisionLevel = 10;
     public const int KillsPerLevel = 25;
     /// <summary>The parameter set below. Stored per gun as GrowthRulesVersion; unrelated to the mod version.
-    /// 7 keeps the RulesVersion 6 combat curve and only lowers the Lv31–Lv50 kill thresholds.</summary>
+    /// 7 lowers the Lv31–Lv50 kill thresholds. Runtime-only fire-rate balance does not convert saved fields.</summary>
     public const int RulesVersion = 7;
     /// <summary>PendingGrowthLevel when nothing is waiting. Level 0 is a real level, so the sentinel is -1.</summary>
     public const int NoPending = -1;
@@ -79,11 +78,11 @@ public static class ScGunGrowth {
     /// growth spread over Lv11-Lv50 so Lv50 = x10, the public beta's Lv30.</summary>
     public static float DamageMultiplier(int level) =>
         1f + .10f * Tier(level, 0) + .15f * Tier(level, 1) + .20f * Tier(level, 2) + .20f * Tier(level, 3) + .25f * Tier(level, 4);
-    /// <summary>Lv10 is unchanged (x1). The remaining growth is spread to Lv50: a normal gun reaches x2, a scoped
-    /// sniper keeps the public beta's x3.5.</summary>
+    /// <summary>Sniper Lv10 stays x1. The remaining growth is spread to Lv50: a scoped
+    /// sniper keeps the public beta's x3.5. Ordinary guns now gain 1% of base per level to x1.5.</summary>
     public static float FireRateMultiplier(int variant, int level) => IsSniper(variant)
         ? 1f + .05f * Tier(level, 1) + .05f * Tier(level, 2) + .075f * Tier(level, 3) + .075f * Tier(level, 4)
-        : 1f + .02f * Tier(level, 1) + .02f * Tier(level, 2) + .03f * Tier(level, 3) + .03f * Tier(level, 4);
+        : 1f + .01f * Clamp(level);
     /// <summary>A base fire-rate multiplier when the model is not known is treated as a normal gun.</summary>
     public static float FireRateMultiplier(int level) => FireRateMultiplier(-1, level);
     public static float ShotInterval(int variant, float baseSeconds, int level) =>

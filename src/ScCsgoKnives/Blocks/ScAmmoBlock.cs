@@ -9,6 +9,7 @@ public sealed class ScAmmoBlock : ScSupplyBlock {
         DefaultDisplayName = "通用弹匣"; DefaultCategory = "CS武器";
         CraftingId = "sccsgoammo"; IsPlaceable = false; IsCollidable = false;
         MaxStacking = 40; DefaultTextureSlot = 0;
+        FirstPersonOffset = new(.32f, -.48f, -.62f);
     }
     public override int GetDisplayOrder(int value) => 213;
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScAmmoBlock>(true), 0, kind);

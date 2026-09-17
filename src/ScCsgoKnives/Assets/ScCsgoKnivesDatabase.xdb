@@ -19,7 +19,7 @@
       <Parameter Name="Class" Guid="e7dde55c-3916-4b0f-a8ca-4e116e68bab8" Value="Game.SubsystemScStarterEquipment" Type="string" />
     </MemberSubsystemTemplate>
   </ProjectTemplate>
-  <EntityTemplate Name="LandAnimal" Guid="e4275171-a39f-413f-8888-4c472868364d">
+  <EntityTemplate Name="AICreature" Guid="3f077159-f492-419b-859a-bb051de6339f">
     <MemberComponentTemplate Name="ScDecoyBehavior" Guid="185134db-5aeb-4b96-9181-6dc726728f52" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
       <Parameter Name="Class" Guid="b0f79124-33e3-4b5d-8f38-a4e42d9f2bbd" Value="Game.ComponentScDecoyBehavior" Type="string" />
     </MemberComponentTemplate>

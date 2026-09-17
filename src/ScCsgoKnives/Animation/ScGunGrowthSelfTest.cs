@@ -73,14 +73,13 @@ public static class ScGunGrowthSelfTest {
                         || effective.MaxDurability!=ScGunGrowth.MaxDurability(variant,l)
                         || effective.AngleScale<0 || effective.AngleScale>1)return false;
                     if(l>=10 && (!ScGunGrowth.IsTaser(variant)&&!effective.UnlimitedRange || effective.AngleScale!=0))return false;
-                    // Damage and capacity always rise; the fire rate is deliberately flat through Lv10 and
-                    // non-decreasing afterwards.
+                    // Damage and capacity rise; fire rate never falls with an additional level.
                     if(l>0 && (ScGunGrowth.DamageMultiplier(l)<=ScGunGrowth.DamageMultiplier(l-1)
                         || ScGunGrowth.FireRateMultiplier(variant,l)<ScGunGrowth.FireRateMultiplier(variant,l-1)
                         || capacity<ScGunGrowth.Capacity(variant,l-1)))return false;
                 }
                 return Math.Abs(ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel)-10f)<1e-4f
-                    && Math.Abs(ScGunGrowth.FireRateMultiplier(variant,ScGunGrowth.MaxLevel)-(ScGunGrowth.IsSniper(variant)?3.5f:2f))<1e-4f;
+                    && Math.Abs(ScGunGrowth.FireRateMultiplier(variant,ScGunGrowth.MaxLevel)-(ScGunGrowth.IsSniper(variant)?3.5f:1.5f))<1e-4f;
             });
         }
         Test("level50-charge-and-range-milestones",()=> {

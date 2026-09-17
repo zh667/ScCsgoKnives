@@ -1,0 +1,1200 @@
+{
+  "package": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\[API1.9]CS武器1.1.2-全量版.scmod",
+  "packageSha256": "b5a17637be135f65bc81b03c6fe975982ad5633dc5e475c1a2398ec21f8c3307",
+  "packageBytes": 375783541,
+  "dllSha256": "285ffb547601f858182dd013555b998bd0d336af721ad094163003482a2a2740",
+  "dllFromPackage": true,
+  "failed": 0,
+  "version": "1.1.2",
+  "checks": 21809,
+  "regressionChecks": 21663,
+  "groups": [
+    {
+      "name": "ammo-hud",
+      "checks": 535,
+      "failed": 0
+    },
+    {
+      "name": "animation-switch",
+      "checks": 454,
+      "failed": 0
+    },
+    {
+      "name": "arms",
+      "checks": 2,
+      "failed": 0
+    },
+    {
+      "name": "attributes-cold",
+      "checks": 65,
+      "failed": 0
+    },
+    {
+      "name": "c4",
+      "checks": 56,
+      "failed": 0
+    },
+    {
+      "name": "combat",
+      "checks": 136,
+      "failed": 0
+    },
+    {
+      "name": "community-repair",
+      "checks": 25,
+      "failed": 0
+    },
+    {
+      "name": "controls-scope-0416",
+      "checks": 130,
+      "failed": 0
+    },
+    {
+      "name": "creative-counters",
+      "checks": 374,
+      "failed": 0
+    },
+    {
+      "name": "creative-skins",
+      "checks": 51,
+      "failed": 0
+    },
+    {
+      "name": "creature-audit",
+      "checks": 125,
+      "failed": 0
+    },
+    {
+      "name": "creature-source",
+      "checks": 21,
+      "failed": 0
+    },
+    {
+      "name": "decoy-mod-engine-inheritance",
+      "checks": 4,
+      "failed": 0
+    },
+    {
+      "name": "decoy-v112",
+      "checks": 48,
+      "failed": 0
+    },
+    {
+      "name": "effects",
+      "checks": 691,
+      "failed": 0
+    },
+    {
+      "name": "firstperson",
+      "checks": 168,
+      "failed": 0
+    },
+    {
+      "name": "generic-travel",
+      "checks": 19,
+      "failed": 0
+    },
+    {
+      "name": "growth",
+      "checks": 118,
+      "failed": 0
+    },
+    {
+      "name": "growth30-boundary",
+      "checks": 10310,
+      "failed": 0
+    },
+    {
+      "name": "gun",
+      "checks": 1092,
+      "failed": 0
+    },
+    {
+      "name": "gun-diagnostics",
+      "checks": 14,
+      "failed": 0
+    },
+    {
+      "name": "gun-drop",
+      "checks": 381,
+      "failed": 0
+    },
+    {
+      "name": "gun-format",
+      "checks": 17,
+      "failed": 0
+    },
+    {
+      "name": "gun-handling",
+      "checks": 187,
+      "failed": 0
+    },
+    {
+      "name": "gun-skin",
+      "checks": 349,
+      "failed": 0
+    },
+    {
+      "name": "gunspec",
+      "checks": 3,
+      "failed": 0
+    },
+    {
+      "name": "headshot",
+      "checks": 34,
+      "failed": 0
+    },
+    {
+      "name": "hit-motion",
+      "checks": 19,
+      "failed": 0
+    },
+    {
+      "name": "integration",
+      "checks": 270,
+      "failed": 0
+    },
+    {
+      "name": "interaction",
+      "checks": 101,
+      "failed": 0
+    },
+    {
+      "name": "knife",
+      "checks": 154,
+      "failed": 0
+    },
+    {
+      "name": "knife-finish",
+      "checks": 200,
+      "failed": 0
+    },
+    {
+      "name": "knives",
+      "checks": 1,
+      "failed": 0
+    },
+    {
+      "name": "live-backup",
+      "checks": 6,
+      "failed": 0
+    },
+    {
+      "name": "load",
+      "checks": 4,
+      "failed": 0
+    },
+    {
+      "name": "m4-recovery",
+      "checks": 14,
+      "failed": 0
+    },
+    {
+      "name": "migration-0282",
+      "checks": 10,
+      "failed": 0
+    },
+    {
+      "name": "mobile",
+      "checks": 33,
+      "failed": 0
+    },
+    {
+      "name": "optimization",
+      "checks": 5,
+      "failed": 0
+    },
+    {
+      "name": "plan-dll",
+      "checks": 339,
+      "failed": 0
+    },
+    {
+      "name": "player-feedback",
+      "checks": 30,
+      "failed": 0
+    },
+    {
+      "name": "polish",
+      "checks": 17,
+      "failed": 0
+    },
+    {
+      "name": "resources",
+      "checks": 203,
+      "failed": 0
+    },
+    {
+      "name": "rig",
+      "checks": 205,
+      "failed": 0
+    },
+    {
+      "name": "runtime-regression",
+      "checks": 83,
+      "failed": 0
+    },
+    {
+      "name": "skin-growth",
+      "checks": 299,
+      "failed": 0
+    },
+    {
+      "name": "sound",
+      "checks": 1,
+      "failed": 0
+    },
+    {
+      "name": "sounds",
+      "checks": 2,
+      "failed": 0
+    },
+    {
+      "name": "starter",
+      "checks": 71,
+      "failed": 0
+    },
+    {
+      "name": "survival",
+      "checks": 421,
+      "failed": 0
+    },
+    {
+      "name": "survival-runtime",
+      "checks": 1551,
+      "failed": 0
+    },
+    {
+      "name": "sushi-inventory",
+      "checks": 18,
+      "failed": 0
+    },
+    {
+      "name": "tracer",
+      "checks": 102,
+      "failed": 0
+    },
+    {
+      "name": "travel",
+      "checks": 22,
+      "failed": 0
+    },
+    {
+      "name": "ui-light-compat",
+      "checks": 12,
+      "failed": 0
+    },
+    {
+      "name": "variant",
+      "checks": 18,
+      "failed": 0
+    },
+    {
+      "name": "weapon-help-layout",
+      "checks": 1973,
+      "failed": 0
+    },
+    {
+      "name": "weapons",
+      "checks": 208,
+      "failed": 0
+    },
+    {
+      "name": "world-effects",
+      "checks": 8,
+      "failed": 0
+    }
+  ],
+  "decoyChecks": [
+    {
+      "name": "decoy-v112/native-selector-and-path/LandPredator",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/native-selector-and-path/LandOther",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/native-selector-and-path/Bird",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/invalid-attempt-does-not-spend-cooldown",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/bird-category-navigation/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/bird-category-navigation/8",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/injury-releases-control",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/distant-chase-diverted-close-chase-kept",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/water-target-does-not-walk-onto-dry-land",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/aquatic-target-stays-at-swimming-depth",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/yield-does-not-delete-another-ai-destination",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/missing-custom-ai-path-is-inert",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/saved-cooldown-two-xml-rounds",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/4",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/5",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/6",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/7",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/8",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/9",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/10",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/11",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/12",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/13",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/14",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/15",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/16",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/17",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/18",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/19",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/20",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/21",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/22",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/23",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/24",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/25",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/26",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/27",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/28",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/29",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/30",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/31",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/32",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/33",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-v112/linear-rate/34",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "decoy-mod-engine-inheritance/SAGhoul_Weak_01",
+      "ok": true,
+      "detail": "actual engine XDB merge and resolved component inheritance; no spawned creature"
+    },
+    {
+      "name": "decoy-mod-engine-inheritance/BlueWhale",
+      "ok": true,
+      "detail": "actual engine XDB merge and resolved component inheritance; no spawned creature"
+    },
+    {
+      "name": "decoy-mod-engine-inheritance/GiantTurtle",
+      "ok": true,
+      "detail": "actual engine XDB merge and resolved component inheritance; no spawned creature"
+    },
+    {
+      "name": "decoy-mod-engine-inheritance/Kraken",
+      "ok": true,
+      "detail": "actual engine XDB merge and resolved component inheritance; no spawned creature"
+    }
+  ],
+  "creatureAudit": [
+    {
+      "name": "creature-audit/[1工业时代2-1.0.0.2.scmod/Robot",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[1工业时代2-1.0.0.2.scmod/T-100",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[1工业时代2-1.0.0.2.scmod/T-200",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=10; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[1工业时代2-1.0.0.2.scmod/Creature",
+      "detail": "AICreature=False; category=0; flySpeed=6; nativePath=False; nativeSelector=False"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGLandAnimal",
+      "detail": "AICreature=True; category=0; flySpeed=6; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_01",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_02",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_03",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_04",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_05",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_06",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Weak_07",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_01",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_02",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_03",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_04",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_05",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_06",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fast_07",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_01",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_02",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_03",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_04",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_05",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_06",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_07",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Strong_08",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Dog",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Wolf",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Boar",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Bear",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Bird",
+      "detail": "AICreature=True; category=Bird; flySpeed=12; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Ray",
+      "detail": "AICreature=True; category=Bird; flySpeed=3; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_NecroDrift",
+      "detail": "AICreature=True; category=Bird; flySpeed=3; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Monster",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Fatt",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAGhoul_Dark",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/SAG_CorpsificeHead",
+      "detail": "AICreature=True; category=Bird; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.2.1]Ghoul尸鬼-v2.0.scmod/Aquagaze",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Donkey",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bear",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Cow",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bull",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Horse",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Tiger",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Wolf",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Alpaca",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Lion",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Leopard",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Jaguar",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Hyena",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bison",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Gnu",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Moose",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Reindeer",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Rhino",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Giraffe",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Wildboar",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Zebra",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Camel",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Werewolf",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Ostrich",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Cassowary",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Ray",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Shark",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bass_Freshwater",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bass_Sea",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Barracuda",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Piranha",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Beluga",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Orca",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Hippopotamus",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Pig",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Moonjellyfish",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_BunnyGirl",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Chicken",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Simmental",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_SteppeWolf",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_FlyingHorse",
+      "detail": "AICreature=True; category=LandOther; flySpeed=8; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_FrozenHorse",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_FlyingHorse_Saddled",
+      "detail": "AICreature=True; category=LandOther; flySpeed=8; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_FrozenHorse_Saddled",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Atlantic",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_AfricanStoneBass",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_CopperbandButterflyfish",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Rabbit",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Mosasaurus",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Pawl",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_BlackCockroach",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_GiantRoach",
+      "detail": "AICreature=True; category=LandOther; flySpeed=8; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_GiantRoach_Saddled",
+      "detail": "AICreature=True; category=LandOther; flySpeed=8; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Griffon",
+      "detail": "AICreature=True; category=Bird; flySpeed=14; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_Griffon_Saddled",
+      "detail": "AICreature=True; category=Bird; flySpeed=14; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_TRex",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_CarnivorousPlant",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_CarnivorousPlant_White",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_CarnivorousPlant_Yellow",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_GoldenEagle",
+      "detail": "AICreature=True; category=Bird; flySpeed=12; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/HC_WereBear",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bear_Brown",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod/Bear_Black",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/Player",
+      "detail": "AICreature=False; category=LandOther; flySpeed=0; nativePath=False; nativeSelector=False"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/AICreature",
+      "detail": "AICreature=True; category=0; flySpeed=6; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/NewFlightlessBird",
+      "detail": "AICreature=True; category=LandOther; flySpeed=6; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/HumanFish",
+      "detail": "AICreature=True; category=0; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/GeneralFish",
+      "detail": "AICreature=True; category=0; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/Penguin",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/Clownfish",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/Anglerfish",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/Eel",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/FemaleHumanFish",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/FemaleHumanFish_Saddled",
+      "detail": "AICreature=True; category=WaterOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/BlueWhale",
+      "detail": "AICreature=True; category=WaterPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/GiantTurtle",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[API1.9.3]深海迷航V1.2.2.scmod/Kraken",
+      "detail": "AICreature=True; category=LandOther; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/Wolf_Gray",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/SirenHeadDisguise",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=6; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/SirenHead",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/DonkeyRancor",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/DonkeyMan",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/Fenrir",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/CartoonCat1",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/CartoonCat2",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/CartoonCat3",
+      "detail": "AICreature=True; category=LandPredator; flySpeed=0; nativePath=True; nativeSelector=True"
+    },
+    {
+      "name": "creature-audit/[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod/Smolder",
+      "detail": "AICreature=True; category=Bird; flySpeed=15; nativePath=True; nativeSelector=True"
+    }
+  ],
+  "sources": [
+    {
+      "file": "11111.scmod",
+      "sha256": "a445c3bdc7bbfab2cec0ca8b880ac8e811379bf15a33cefcbf23c3046bf5632d"
+    },
+    {
+      "file": "[1SlowerCreatureSpawnsMod.scmod",
+      "sha256": "101886580c11f5e7167c975765a0b0318da7b42b9ba63a4abeb788cae5c2965b"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "sha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a"
+    },
+    {
+      "file": "[API1.8.1.3]命令方块4.1.7.scmod",
+      "sha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a"
+    },
+    {
+      "file": "[API1.8.2.3]循环电路板v1.02.scmod",
+      "sha256": "a5cc0532d7f5a5f95a058f4e465aa8808fda0c7a36813ea97707fff10c9df4c2"
+    },
+    {
+      "file": "[API1.8]主角身体属性提升1.21.scmod",
+      "sha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a"
+    },
+    {
+      "file": "[API1.8]生存开透视角.scmod",
+      "sha256": "dc2984daaa8fe21f9608343a18b33516474db925e22207390b3c7a493ce372d4"
+    },
+    {
+      "file": "[API1.9+]ScbbsPlus社区扩展v1.4.3.scmod",
+      "sha256": "2960b313e3a444a7dcd20e7a6b9d5fb681a9b0d3a6b2fa7bab879e07d4fde74e"
+    },
+    {
+      "file": "[API1.9.1.3]HDR天幕v1.0.2公测版.scmod",
+      "sha256": "7c83391726a9d736d85ee283cf9cfd8f3f8ff78f233a46a694495f4ed8ad3698"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c"
+    },
+    {
+      "file": "[API1.9.2.1]Neorxna-v1.4 (2).scmod",
+      "sha256": "1efefcb5b9cff41a68cb39580908cdf524db5cfd0ffbc0d41a90aad65a3317c6"
+    },
+    {
+      "file": "[API1.9.2]工业时代2x泰拉工作台 v1.0.scmod",
+      "sha256": "2ed04ff9480ecce73bd99957a04fa68a4b21f47e1c73d336db88768a07e939f7"
+    },
+    {
+      "file": "[API1.9.2]泰拉工作台 Terraria Crafting Table  v1.1.1.scmod",
+      "sha256": "54f50ca6cf1a6eb86a253f8ddb2b235d1aba76633ce18831c5a0e0abb05bedbb"
+    },
+    {
+      "file": "[API1.9.3]工业时代2：Neorxna信息显示增强v1.2.scmod",
+      "sha256": "d41c1bcb6c062776711e3f964cc11ee209a030f7c1dd04d3733ba966e185c90a"
+    },
+    {
+      "file": "[API1.9.3]工业时代2：筛子_v1.1 内测.scmod",
+      "sha256": "540541303aac96b8d6f4f3d38696f2afa8b0dec05edfba0687fa5e625f4c37f4"
+    },
+    {
+      "file": "[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod",
+      "sha256": "6785c2865728ee47472d46e07417c91bd98234375172ee1206d6a5f055f21543"
+    },
+    {
+      "file": "[API1.9.3]深海迷航V1.2.2.scmod",
+      "sha256": "6484157cfd4cae63a764c7c18d0b52cdf0df93dc875fa4f7199d48a17eed8551"
+    },
+    {
+      "file": "[API1.9]CS武器1.1.1-全量版.scmod",
+      "sha256": "f846982e383dee46b127c18d97550a69e861f93b1b6bfa3fbc88cca4d5939b32"
+    },
+    {
+      "file": "[API1.9]服饰配件V1.2.1.scmod",
+      "sha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18"
+    },
+    {
+      "file": "[API1.9]构千形V1.2.1.scmod",
+      "sha256": "d67d0bd29fd3cf479512f0c70ecbd10eaee31e402471247939545950af09bfaf"
+    },
+    {
+      "file": "[API1.9]玲兰科技v3.0.4(需玲兰辅助).scmod",
+      "sha256": "a2eda34cdb6e15d42c594c83e2bdbc1668bec06b39450d89ddb8727664b2dfd6"
+    },
+    {
+      "file": "[API1.9]玲兰辅助v3.0.3.scmod",
+      "sha256": "40ea58b5d6ff453065f290c250af19cac98ad4cd7313944ec370fc69b0df7a24"
+    },
+    {
+      "file": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "sha256": "336de65c0a70a4731e1a93902d3caee358871ec4add933d0ef3c0d1c0a59dbc5"
+    },
+    {
+      "file": "[工业时代附属]物流-1.0.0.1.scmod",
+      "sha256": "f64e951bb2e98f104c8c6ed4c7ed7655a2ab3f9d6f1535fc7ad632ae39b00e57"
+    },
+    {
+      "file": "BattlefieldM5A3-0.1.4.scmod",
+      "sha256": "f39761d6fe9f177804e83ffbd16e7d93998d2505e4452676343c80689a648215"
+    },
+    {
+      "file": "mod.scmod",
+      "sha256": "52756ff4d9f29db8a80226bdc9fdc73ae80ab16ec04863f6c82bdcf55e132788"
+    },
+    {
+      "file": "NoAutoWakeUpMod.scmod",
+      "sha256": "a79a858d28cdecbd830a3ec26b70bf9c65a8e19f4a384888cb84f6042fff2fd3"
+    },
+    {
+      "file": "RecipaediaEX-2.0.0.1.scmod",
+      "sha256": "9279123c11167a77ac430f0b402431b9c44773efe22c5ba574f3e2529104365d"
+    },
+    {
+      "file": "SneakPlaceMod.scmod",
+      "sha256": "63eb9f279827a47c9e8e3f0901f6643c2c29cfdcfbf1f51ea35199822c17ea76"
+    },
+    {
+      "file": "化肥.scmod",
+      "sha256": "e0155235c77a155ff4c871c013095691bf9210b7490538dc2e0d9b854bb436d7"
+    }
+  ],
+  "limits": [
+    "No in-game all-mod combat run.",
+    "Native component dispatch and actual engine XDB merge were checked separately from static template audit.",
+    "First-person supplies were repositioned; device/FOV appearance still needs user acceptance.",
+    "146 source/template rows are informational audit records, not combat assertions."
+  ]
+}

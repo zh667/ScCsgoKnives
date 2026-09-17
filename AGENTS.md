@@ -1,5 +1,10 @@
 # Project conventions
 
+- User-directed 2026-09-17: ordinary-gun fire-rate growth is linear from x1 at Lv0 to x1.5 at Lv50;
+  scoped snipers retain the existing x3.5 curve and Zeus recharge is unchanged. Ignore the earlier 35% suggestion.
+  Improve decoy attraction using actual installed mod creature data, emphasize workbench levels with parenthesized
+  kills, and lower first-person assembly supplies/ammunition. Preserve IDs, records and other combat growth.
+
 - User-directed 2026-09-16: implement docs/player-feedback-analysis-2026-09-16.md,
   verify new features and regressions, and deliver Full only for this iteration.
   C4 timer supports both a mobile button and configurable keyboard input (including touch key mappers).

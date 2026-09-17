@@ -32,7 +32,7 @@ static class SurvivalPackageIntegration {
             using var xdb=zip.GetEntry("Assets/ScCsgoKnivesDatabase.xdb").Open();
             ModsManager.CombineDataBase(database,xdb,"zh667.ScCsgoKnives");
             DatabaseManager.LoadDataBaseFromXml(database);
-            foreach (string name in new[] {"Wolf_Gray","Bear_Brown","Wildboar","Bull_Brown","Rhino"}) {
+            foreach (string name in new[] {"Wolf_Gray","Bear_Brown","Wildboar","Bull_Brown","Rhino","AICreature","Bird"}) {
                 var entity=DatabaseManager.FindEntityValuesDictionary(name,true);
                 var behavior=entity.GetValue<ValuesDictionary>("ScDecoyBehavior",null);
                 Check("database/"+name,behavior?.GetValue<string>("Class")=="Game.ComponentScDecoyBehavior","actual database merge and inherited component values");

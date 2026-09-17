@@ -863,7 +863,7 @@ public static class SurvivalSelfTest {
             bool near=ScFireArea.SmokeTouches(fire,smoke);smoke.Position=Vector3.UnitX*20;return near && !ScFireArea.SmokeTouches(fire,smoke);
         });
         Test("decoy-anti-chain",()=> {var d=new ScDecoyResponse();return d.TryStart(0) && !d.TryStart(10) && !d.TryStart(17.9) && d.TryStart(18);});
-        Test("decoy-animal-policy",()=>ScDecoyResponse.Investigates(CreatureCategory.LandPredator) && !ScDecoyResponse.Investigates(CreatureCategory.LandOther) && !ScDecoyResponse.Investigates(CreatureCategory.Bird));
+        Test("decoy-animal-policy",()=>Enum.GetValues<CreatureCategory>().All(ScDecoyResponse.Investigates) && !ScDecoyResponse.Investigates((CreatureCategory)0));
         Test("grenade-all-six-enabled-frozen",()=> Enumerable.Range(0,6).All(ScGrenadeBlock.Enabled) && string.Join(",",ScGrenadeBlock.Assets)=="grenade_hegrenade,grenade_flashbang,grenade_smokegrenade,grenade_molotov,grenade_incendiary,grenade_decoy");
         foreach (string grenade in ScGrenadeBlock.Assets) {
             Test("grenade-world-accessories/"+grenade,()=> {

@@ -53,7 +53,8 @@ public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
     public override string GetDescription(int value) => (ScMobileControls.IsMobileDevice
         ? "按住“强投”或“轻投”按钮准备，松开投出；屏幕长按为强投。"
         : "按住左键准备强投，按住右键准备近抛；松开才投出。")
-        + "出手后计时并消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。";
+        + "出手后计时并消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。"
+        + (Kind(value)==5?"诱饵声吸引24格内可听见的标准AI生物调查10秒；受伤、骑乘、逃生或近身交战时不受牵引，同一目标18秒内不重复吸引。":"");
     public override IEnumerable<int> GetCreativeValues() { for (int i = 0; i < 6; i++) if (Enabled(i)) yield return Value(i); }
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
         string b = "sccsgomaterial:0";

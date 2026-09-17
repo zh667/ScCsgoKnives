@@ -264,6 +264,15 @@ static class WeaponHelpLayoutRegression {
                 ((BevelledButtonWidget)noticeYes).m_clickableWidget.IsClicked=true;notice.Update();notice.Update();
                 Check($"workbench-notice-return-once/{creative}/{available}",notices==1,"acknowledgment returns to the appropriate list exactly once");
             }
+            {
+                var levelDialog=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["创造等级",Enumerable.Range(0,51).Cast<object>().ToArray(),48f,
+                    (Func<object,string>)(o=>$"Lv{o}（5250 击杀）"),(Action<object>)(_=>{}),new ComponentInventory(),true]);
+                var levelList=(ListPanelWidget)levelDialog.GetType().GetField("m_list",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(levelDialog);
+                var row=(ContainerWidget)levelList.ItemWidgetFactory(50);row.Measure(new Vector2(180,52));row.Arrange(Vector2.Zero,new Vector2(180,52));
+                var labels=row.AllChildren.OfType<LabelWidget>().ToArray();
+                Check("level-row-emphasizes-level",labels.Length==2&&labels[0].Text=="Lv50"&&labels[1].Text=="（5250 击杀）"&&labels[0].FontScale>labels[1].FontScale
+                    &&labels.All(l=>l.GlobalBounds.Max.Y<=52.1f),"larger separate level; parenthesized kills below, fits existing row");
+            }
             foreach(bool creative in new[]{false,true}) {
                 Dialog Browse(Action<object> choose) {
                     var inv=new ComponentInventory(); inv.m_slots.Add(new());

@@ -76,7 +76,13 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             var row = new StackPanelWidget { Direction=LayoutDirection.Horizontal, Margin=new Vector2(4,2) };
             int value=ValueOf(item);
             if(value!=0) row.Children.Add(new BlockIconWidget { Value=value,Size=new Vector2(40) });
-            row.Children.Add(new LabelWidget { Text=m_label(item),FontScale=.66f,WordWrap=true,MaxLines=2,Ellipsis=true,VerticalAlignment=WidgetAlignment.Center });
+            if(item is int level) {
+                var text=new StackPanelWidget{Direction=LayoutDirection.Vertical,VerticalAlignment=WidgetAlignment.Center};
+                text.Children.Add(new LabelWidget{Text=$"Lv{level}",FontScale=.9f,Color=ScGunUi.Accent});
+                string label=m_label(item);int start=label.IndexOf('（');
+                text.Children.Add(new LabelWidget{Text=start>=0?label[start..]:label,FontScale=.58f,Color=ScGunUi.Dim});
+                row.Children.Add(text);
+            } else row.Children.Add(new LabelWidget { Text=m_label(item),FontScale=.66f,WordWrap=true,MaxLines=2,Ellipsis=true,VerticalAlignment=WidgetAlignment.Center });
             return row;
         };
         m_list.ItemClicked=item=>ClickItem(item, Time.RealTime);

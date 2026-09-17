@@ -39,11 +39,15 @@ string travelSourceSnapshot = null;
 string resourcePack = null;
 string resourceBaseline = null, sushiPackage = null;
 string sushiInventoryMods = null;
+string creatureExtractedRoot = null;
 string skinnedModel = null;
 bool attributeBenchmark = false;
 bool c4Checkset = false;
+bool creatureAuditOnly=false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--creature-audit-only": creatureAuditOnly=true;break;
+        case "--creature-extracted-root": creatureExtractedRoot=args[++i];break;
         case "--c4-checkset": c4Checkset = true; break;
         case "--skinned-model": skinnedModel = args[++i]; break;
         case "--sushi-inventory-mods": sushiInventoryMods = args[++i]; break;
@@ -70,6 +74,7 @@ for (int i = 0; i < args.Length; i++) {
         default: Console.Error.WriteLine($"unknown argument '{args[i]}'"); return 2;
     }
 }
+if(creatureAuditOnly){Console.WriteLine(JsonSerializer.Serialize(CreatureTemplateAudit.Run(sushiInventoryMods,vanillaContent,creatureExtractedRoot)));return 0;}
 if (scmod is null) { Console.Error.WriteLine("usage: PackageCheck --scmod <path> [--sha256 <hex>] [--json <out>]"); return 2; }
 // Headless hosts (the VPS) have no game window, so nothing ever calls Engine.Dispatcher.Initialize().
 // Engine objects the regressions create through GetUninitializedObject still run GraphicsResource's
@@ -236,8 +241,11 @@ foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly))
 foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in CommunityRepairRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in PlayerFeedbackRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in DecoyRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (sushiInventoryMods is not null) foreach(var c in SushiInventoryRegression.Run(mod, sushiInventoryMods)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if (thirdPartyDlls is not null) foreach(var c in PlanDllRegression.Run(mod, thirdPartyDlls)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+if(sushiInventoryMods is not null && vanillaContent is not null) foreach(var c in CreatureTemplateAudit.Run(sushiInventoryMods,vanillaContent,creatureExtractedRoot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+if(creatureExtractedRoot is not null && vanillaContent is not null) foreach(var c in CreatureTemplateAudit.CheckEngineInheritance(vanillaContent,creatureExtractedRoot,scmod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 int failed = checks.Count(c => !(bool)c.GetType().GetProperty("ok").GetValue(c));
 
 string output = JsonSerializer.Serialize(new {

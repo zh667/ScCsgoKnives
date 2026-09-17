@@ -9,6 +9,7 @@ public sealed class ScWeaponMaterialBlock : ScSupplyBlock {
     public ScWeaponMaterialBlock() {
         DefaultDisplayName = Names[0]; DefaultCategory = "Items"; CraftingId = "sccsgomaterial";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 40;
+        FirstPersonOffset = new(.32f, -.48f, -.62f);
     }
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScWeaponMaterialBlock>(true), 0, kind);
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Names[Math.Clamp(Terrain.ExtractData(value), 0, Names.Length - 1)];
