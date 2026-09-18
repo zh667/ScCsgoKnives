@@ -54,8 +54,8 @@ public static class ScPolishSelfTest {
                     smoke.Age=t;smoke.Remaining=Math.Max(0,15-t);
                     fire.Age=t;fire.Remaining=Math.Max(0,7-t);
                     if(!Valid(ScGrenadeVisuals.Burst(Vector3.Zero,t,false,false,distance),32)
-                        || !Valid(ScGrenadeVisuals.Burst(Vector3.Zero,t,true,false,distance),2)
-                        || !Valid(ScGrenadeVisuals.Smoke(smoke,distance),48)
+                        || !Valid(ScGrenadeVisuals.Burst(Vector3.Zero,t,true,false,distance),3)
+                        || !Valid(ScGrenadeVisuals.Smoke(smoke,distance),64)
                         || !Valid(ScGrenadeVisuals.Fire(fire,points,distance),120))return false;
                 }
                 return true;
@@ -66,6 +66,6 @@ public static class ScPolishSelfTest {
         Test("blast-expires",()=>ScGrenadeVisuals.Burst(Vector3.Zero,ScGrenadeVisuals.BlastLifetime+.01f,false,false,0).Count==0);
         Test("smoke-boundary-fade",()=>ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=0,Remaining=15},0).Count==0
             && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=15,Remaining=0},0).Count==0);
-        Test("smoke-distance-budget",()=>ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},50).Count==24 && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count==48);
+        Test("smoke-distance-budget",()=>ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},50).Count==32 && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count==64);
     }
 }

@@ -443,7 +443,9 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             float smoke=m_active.Where(s=>s.Effect && s.Kind==2 && Clear(s.Position+Vector3.UnitY*.1f,camera.ViewPosition)).Select(s=>ScSmokeVolume.Density(s,camera.ViewPosition,m_disturbances)).DefaultIfEmpty(0).Max();
             if (smoke>0) Overlay(camera,ScGrenadeVisuals.SmokeInside(smoke));
             if (player is null || !m_blind.TryGetValue(player.ComponentBody,out var blind)) return;
-            float fade=Math.Clamp((float)(blind.Until-m_time.GameTime)/Math.Max(.01f,blind.Duration),0,1); if (fade<=0) return;
+            float remaining=Math.Clamp((float)(blind.Until-m_time.GameTime)/Math.Max(.01f,blind.Duration),0,1);
+            // Smooth the recovery tail so the white overlay does not disappear at a frame boundary.
+            float fade=remaining*remaining*(3-2*remaining); if (fade<=0) return;
             bool reduced=m_reducedFlash.Contains(player.PlayerData.PlayerIndex);
             Color color=reduced?new Color(70,75,85,(int)(110*fade)):new Color(255,255,255,(int)(245*fade));
             Overlay(camera,color);

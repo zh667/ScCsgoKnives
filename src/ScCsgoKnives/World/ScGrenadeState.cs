@@ -16,7 +16,8 @@ public sealed class ScGrenadeState {
     public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => states.Count() < 16 && states.Count(s => s.Owner == owner) < 4;
     public const float HeRadius=6, HeDamage=48;
     public static float HePower(float distance) => HeDamage * Math.Clamp(1 - distance / HeRadius, 0, 1);
-    public static float FlashDuration(float distance, float facing) => 2 * Math.Clamp(1 - distance / 16, 0, 1) * (.15f + .85f * Math.Clamp((facing + .2f) / 1.2f, 0, 1));
+    // The original flash has a strong white peak and a several-second recovery tail.
+    public static float FlashDuration(float distance, float facing) => 2.8f * Math.Clamp(1 - distance / 16, 0, 1) * (.12f + .88f * Math.Clamp((facing + .2f) / 1.2f, 0, 1));
     public ValuesDictionary Save() {
         var d = new ValuesDictionary(); d.SetValue("Kind", Kind); d.SetValue("Owner", Owner); d.SetValue("Id", Id); d.SetValue("Position", Position);
         d.SetValue("Velocity", Velocity); d.SetValue("Remaining", Remaining); d.SetValue("Age", Age);

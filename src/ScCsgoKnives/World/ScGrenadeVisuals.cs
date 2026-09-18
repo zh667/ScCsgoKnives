@@ -5,7 +5,9 @@ namespace Game;
 /// <summary>Bounded, deterministic sprite animation, separate from damage and saved state.</summary>
 public static class ScGrenadeVisuals {
     public static readonly string[] Textures = ["grenade_smoke_atlas", "grenade_fire_atlas", "grenade_blast_atlas", "grenade_glow"];
-    public const float BlastLifetime = 2.2f, FlashLifetime = .32f;
+    // CS2's flash has a short white core followed by a visible after-flash; the burst sprite
+    // must outlive the core or it looks as if the effect is cut off on the next frame.
+    public const float BlastLifetime = 2.2f, FlashLifetime = 1.15f;
     // ContentReader loads straight RGBA. AlphaBlend expects premultiplied RGB and leaves a bright
     // cloud even when only vertex alpha is faded to zero (including HE openings).
     public static BlendState SpriteBlend(bool additive) => additive?BlendState.Additive:BlendState.NonPremultiplied;
@@ -17,9 +19,11 @@ public static class ScGrenadeVisuals {
         List<Sprite> list=[];
         if(age<0 || age> (flash?FlashLifetime:BlastLifetime)) return list;
         if(flash) {
-            float fade=1-age/FlashLifetime, strength=reduced?.18f:1;
-            list.Add(new(origin,.65f+age*2,.65f+age*2,Tint(255,250,230,fade*strength),3,0,Additive:true));
-            list.Add(new(origin,1.8f+age*3,1.8f+age*3,Tint(195,218,255,fade*.45f*strength),3,0,Additive:true));
+            float flashT=Math.Clamp(age/FlashLifetime,0,1), strength=reduced?.18f:1;
+            float core=Math.Clamp(1-age/.16f,0,1), tail=1-flashT*flashT*(3-2*flashT);
+            list.Add(new(origin,.65f+age*2,.65f+age*2,Tint(255,250,230,Math.Max(core,tail*.28f)*strength),3,0,Additive:true));
+            list.Add(new(origin,1.8f+age*3,1.8f+age*3,Tint(195,218,255,tail*.52f*strength),3,0,Additive:true));
+            if(age>.12f) list.Add(new(origin,2.8f+age*2.2f,2.8f+age*2.2f,Tint(235,240,255,tail*.18f*strength),3,0,Additive:true));
             return list;
         }
         float t=age/BlastLifetime;
@@ -50,19 +54,21 @@ public static class ScGrenadeVisuals {
     public static Color SmokeInside(float smoke) => new(106,106,106,(int)(255*Math.Clamp(smoke,0,1)));
     public static List<Sprite> Smoke(ScGrenadeState s,float distance) {
         List<Sprite> list=[];
-        float radius=ScSmokeVolume.CurrentRadius(s);if(radius<.01f) return list;
+        float radius=ScSmokeVolume.CurrentRadius(s);if(radius<.01f || ScSmokeVolume.Dissipation(s)<=.001f) return list;
         int count=ScSmokeVolume.SpriteCount(distance)*(ScResourcePolicy.Lite?1:2);
-        float fade=Math.Clamp(s.Age/.25f,0,1)*Math.Clamp(s.Remaining/1.5f,0,1);
+        float fade=Math.Clamp(s.Age/.20f,0,1)*ScSmokeVolume.Dissipation(s);
         for(int i=0;i<count;i++) {
             float y=1-2*(i+.5f)/count,ring=MathF.Sqrt(1-y*y),a=i*2.399963f+s.Age*(i%2==0?.055f:-.04f);
-            float shell=i%3==0?.25f:.58f;
-            Vector3 offset=new Vector3(MathF.Cos(a)*ring,y,MathF.Sin(a)*ring)*radius*shell;
-            float pulse=1+.045f*MathF.Sin(s.Age*1.2f+i),size=radius*.49f*pulse;
+            // Three staggered shells create billows without making the whole cloud breathe in and out.
+            float shell=i%4 switch { 0=>.26f, 1=>.48f, 2=>.68f, _=>.82f };
+            float pulse=1+.035f*MathF.Sin(s.Age*.9f+i*1.7f),size=radius*(.47f+.08f*Hash(i))*pulse;
+            float vertical=y*radius*.72f + MathF.Sin(s.Age*.7f+i)*.045f;
+            Vector3 offset=new Vector3(MathF.Cos(a)*ring*radius*shell,vertical,MathF.Sin(a)*ring*radius*shell);
             // F01: neutral grey with the shading kept in the value, never in a hue offset (atlas RGB is white).
-            int light=(int)(124+y*16+Hash(i)*12);
+            int light=(int)(102+y*18+Hash(i)*14);
             // Ping-pong frame selection avoids a hard last-to-first atlas jump.
             float phase=(s.Age*.16f+Hash(i))%2;phase=phase>1?2-phase:phase;
-            list.Add(new(ScSmokeVolume.Center(s)+offset,size,size,Tint(light,light,light,fade*(ScResourcePolicy.Lite?.93f:.82f)),0,Frame(phase),a*.3f));
+            list.Add(new(ScSmokeVolume.Center(s)+offset,size,size,Tint(light,light,light,fade*(ScResourcePolicy.Lite?.98f:.96f)),0,Frame(phase),a*.3f));
         }
         return list;
     }

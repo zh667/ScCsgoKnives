@@ -2,9 +2,21 @@ using Engine;
 namespace Game;
 
 public static class ScSmokeVolume {
-    public const float Radius=3, Lifetime=15;
+    // CS2's smoke reaches its working volume quickly, holds that volume, then fades as a
+    // turbulent cloud. It does not visibly collapse into a small ball during dissipation.
+    public const float Radius=3.4f, Lifetime=18, GrowthSeconds=.72f, DissipationSeconds=1.25f;
     public static Vector3 Center(ScGrenadeState s) => s.Position+Vector3.UnitY*1.5f;
-    public static float CurrentRadius(ScGrenadeState s) => Radius*Math.Clamp(s.Age/.6f,0,1)*Math.Clamp(s.Remaining/1.5f,0,1);
+    public static float Growth(ScGrenadeState s) {
+        float t=Math.Clamp(s.Age/GrowthSeconds,0,1);
+        // Ease-out expansion: fast initial bloom, with a soft settle instead of a linear pop.
+        return 1-MathF.Pow(1-t,2.4f);
+    }
+    public static float Dissipation(ScGrenadeState s) {
+        float t=Math.Clamp(s.Remaining/DissipationSeconds,0,1);
+        // Smooth fade in the final second; the radius remains almost full while it fades.
+        return t*t*(3-2*t);
+    }
+    public static float CurrentRadius(ScGrenadeState s) => Radius*Growth(s)*(.93f+.07f*Dissipation(s));
     /// <summary>Length of the finite eye-target segment inside the sphere, not an infinite ray.</summary>
     public static float InsideLength(Vector3 start,Vector3 end,Vector3 center,float radius) {
         Vector3 delta=end-start;float length=delta.Length();if (length<.001f || radius<=0) return 0;
@@ -19,7 +31,7 @@ public static class ScSmokeVolume {
         if (!s.Effect || s.Kind!=2 || s.Remaining<=0) return 0;
         float radius=CurrentRadius(s); if (radius<=0) return 0;
         float inside=Math.Clamp((radius-Vector3.Distance(point,Center(s)))/.5f,0,1);
-        return inside*(1-ScSmokeDisturbance.Clearing(disturbances,point,s));
+        return inside*Dissipation(s)*(1-ScSmokeDisturbance.Clearing(disturbances,point,s));
     }
     /// <summary>Smoke-filled length of the segment: the same Density the overlay and the sprites use, integrated every
     /// 0.25 m, so the AI's sight edge is the soft edge the player sees and an HE opening reads the same for both.</summary>
@@ -39,5 +51,5 @@ public static class ScSmokeVolume {
         });
     }
     /// <summary>Per-shell sprite count by distance (×2 shells). Far counts rose in 0.32.0 so a distant sphere still overlaps enough to occlude.</summary>
-    public static int SpriteCount(float distance) => distance<18?24:distance<40?16:12;
+    public static int SpriteCount(float distance) => distance<18?32:distance<40?24:16;
 }
