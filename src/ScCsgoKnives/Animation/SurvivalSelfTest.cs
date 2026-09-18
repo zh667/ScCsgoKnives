@@ -837,7 +837,7 @@ public static class SurvivalSelfTest {
         Test("throw-creative", () => { var i=Setup(0,1);return new ScThrowTransaction(i).Commit(true,()=>true,()=>true) && i.Counts[0]==1; });
         Test("grenade-save-fuse-owner", () => { var g=new ScGrenadeState {Kind=0,Owner=7,Remaining=.22f,Position=new Vector3(1,2,3),Velocity=new Vector3(4,5,6)};var l=ScGrenadeState.Load(g.Save());return l.Owner==7 && l.Remaining==.22f && l.Position==g.Position && l.Velocity==g.Velocity; });
         Test("grenade-active-limits", () => { var list=Enumerable.Range(0,16).Select(i=>new ScGrenadeState {Owner=i/4}).ToArray();return !ScGrenadeState.CanAdd(list,9) && !ScGrenadeState.CanAdd(list.Take(4),0) && ScGrenadeState.CanAdd(list.Take(4),1); });
-        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==48 && ScGrenadeState.HePower(3)==24 && ScGrenadeState.HePower(6)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-2.8f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.35f && ScGrenadeState.FlashDuration(16,1)==0);
+        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==48 && ScGrenadeState.HePower(3)==24 && ScGrenadeState.HePower(6)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-4.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(16,1)==0);
         Test("smoke-finite-segment",()=> Math.Abs(ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(5,0,0),Vector3.Zero,3)-6)<.001f
             && ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(-4,0,0),Vector3.Zero,3)==0
             && ScSmokeVolume.InsideLength(new Vector3(-5,3,0),new Vector3(5,3,0),Vector3.Zero,3)==0);

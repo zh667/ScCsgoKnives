@@ -71,7 +71,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (flashes is not null) foreach (var pair in flashes) if (int.TryParse(pair.Key,out int id) && pair.Value is ValuesDictionary d) {
             float left=d.GetValue<float>("Left",0),immune=d.GetValue<float>("Immune",0),duration=d.GetValue<float>("Duration",0);
             if (float.IsFinite(left) && float.IsFinite(immune) && float.IsFinite(duration))
-                m_savedBlind[id]=new Blindness {Until=m_time.GameTime+Math.Clamp(left,0,2),ImmuneUntil=m_time.GameTime+Math.Clamp(immune,0,5),Duration=Math.Clamp(duration,.01f,2)};
+                m_savedBlind[id]=new Blindness {Until=m_time.GameTime+Math.Clamp(left,0,5),ImmuneUntil=m_time.GameTime+Math.Clamp(immune,0,8),Duration=Math.Clamp(duration,.01f,5)};
         }
     }
     public override void Save(ValuesDictionary values) {
@@ -447,7 +447,9 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             // Smooth the recovery tail so the white overlay does not disappear at a frame boundary.
             float fade=remaining*remaining*(3-2*remaining); if (fade<=0) return;
             bool reduced=m_reducedFlash.Contains(player.PlayerData.PlayerIndex);
-            Color color=reduced?new Color(70,75,85,(int)(110*fade)):new Color(255,255,255,(int)(245*fade));
+            // A normal CS2 flash clips the view to white at its peak. Reduced-flash accessibility
+            // mode remains intentionally dimmer, but the default must reach opaque white.
+            Color color=reduced?new Color(70,75,85,(int)(110*fade)):new Color(255,255,255,(int)(255*fade));
             Overlay(camera,color);
         }
     }
