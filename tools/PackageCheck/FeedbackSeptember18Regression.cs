@@ -80,12 +80,12 @@ static class FeedbackSeptember18Regression {
                     var b=d.GetValue<ValuesDictionary>("Blindness").GetValue<ValuesDictionary>("987");if(b.GetValue<float>("Left")!=5.5f||b.GetValue<float>("Immune")!=8.5f)return false;}return true;});
             Test("smoke-ellipsoid-extents-and-core",()=>{var s=Activator.CreateInstance(T("ScGrenadeState"));Set(s,"Kind",2);Set(s,"Effect",true);Set(s,"Age",2f);Set(s,"Remaining",12f);
                 float D(Vector3 p)=>(float)Call("ScSmokeVolume","Density",s,p,null);
-                return D(new(0,1.75f,0))==1&&D(new(2,1.75f,0))==1&&D(new(2.75f,1.75f,0))==0&&D(new(0,3.5f,0))==0&&D(new(0,0,0))==0&&D(new(0,3,0))>0;
+                return D(new(0,.7f,0))==1&&D(new(3,.2f,0))==1&&D(new(3.75f,.7f,0))==0&&D(new(0,3.5f,0))==0&&D(new(0,0,0))==1&&D(new(0,-.2f,0))==0&&D(new(0,3,0))>0;
             });
             foreach(bool lite in new[]{false,true})foreach(float pitch in new[]{0f,.7f,MathF.PI/2})Test($"smoke-billboard-bounds/{lite}/{pitch}",()=>{
                 var policy=T("ScResourcePolicy");string edition=(string)policy.GetProperty("Edition").GetValue(null);var configure=policy.GetMethod("ConfigureEdition",BindingFlags.Static|BindingFlags.NonPublic);
                 try{configure.Invoke(null,[lite?"Optimized512":"Full"]);var s=Activator.CreateInstance(T("ScGrenadeState"));Set(s,"Kind",2);Set(s,"Effect",true);Set(s,"Age",2f);Set(s,"Remaining",12f);var sprites=((IEnumerable)Call("ScGrenadeVisuals","Smoke",s,5f)).Cast<object>().ToArray();if(sprites.Length!=(lite?32:64))return false;
-                    foreach(var sp in sprites){var axes=((Vector3,Vector3))Call("ScGrenadeVisuals","SmokeAxes",sp,s,Vector3.UnitX,new Vector3(0,MathF.Cos(pitch),MathF.Sin(pitch)));Vector3 p=(Vector3)sp.GetType().GetProperty("Position").GetValue(sp);if(axes.Item1.Length()<.1||axes.Item2.Length()<.1)return false;foreach(int a in new[]{-1,1})foreach(int b in new[]{-1,1}){var corner=p+axes.Item1*a+axes.Item2*b;if(Math.Abs(corner.X)>2.751||Math.Abs(corner.Z)>2.751||corner.Y<-.001||corner.Y>3.501)return false;}}return true;
+                    foreach(var sp in sprites){var axes=((Vector3,Vector3))Call("ScGrenadeVisuals","SmokeAxes",sp,s,Vector3.UnitX,new Vector3(0,MathF.Cos(pitch),MathF.Sin(pitch)));Vector3 p=(Vector3)sp.GetType().GetProperty("Position").GetValue(sp);if(axes.Item1.Length()<.1||axes.Item2.Length()<.1)return false;for(int step=0;step<32;step++){float angle=step*MathF.Tau/32;var corner=p+axes.Item1*MathF.Cos(angle)+axes.Item2*MathF.Sin(angle);if(Math.Abs(corner.X)>5.358||Math.Abs(corner.Z)>5.358||corner.Y<-.801||corner.Y>4.201)return false;}}return true;
                 }finally{configure.Invoke(null,[edition]);}
             });
             Test("presentation-clock-paused-and-stale-cues",()=>{clock.GetField("Virtual").SetValue(null,true);SettingsManager.SoundsVolume=0;clock.GetField("VirtualNow").SetValue(null,10d);

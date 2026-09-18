@@ -8,7 +8,7 @@ from build_knife_finishes import ROOT,TEX,EXPORT
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8')
-    rows=json.loads((ROOT/'docs/knife-finishes-source-20260913.json').read_text('utf-8'))['rows']
+    rows=json.loads((ROOT/'docs/knife-finishes-source-20260918.json').read_text('utf-8'))['rows']
     canvas=Image.new('RGB',(1200,5*330),(239,239,239));draw=ImageDraw.Draw(canvas)
     font=ImageFont.truetype('C:/Windows/Fonts/msyh.ttc',15)
     for i,row in enumerate(rows):
@@ -28,6 +28,6 @@ def main():
         draw.text((x+8,y+3),asset+' / '+label,font=font,fill='black')
         draw.text((x+8,y+168),'上：CS2 原图   下：本地材质 UV 检查',font=font,fill='black')
         print(asset,flush=True)
-    canvas.save(ROOT/'docs/knife-finishes-uv-check-20260913.jpg',quality=92)
+    canvas.save(ROOT/'docs/knife-finishes-uv-check-20260918.jpg',quality=92)
 
 if __name__=='__main__':main()

@@ -1,0 +1,22 @@
+{
+  "changed": [
+    "Assets/ScCsgoResources.xml",
+    "Assets/Textures/ScCsgoKnives/bayonet_finish__am_ruby_marbleized.png",
+    "Assets/Textures/ScCsgoKnives/canis_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/cord_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/css_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/grenade_smoke_atlas.png",
+    "Assets/Textures/ScCsgoKnives/kukri_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/navaja_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/outdoor_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/skeleton_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/stiletto_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/talon_finish__aa_fade.png",
+    "Assets/Textures/ScCsgoKnives/ursus_finish__aa_fade.png",
+    "ScCsgoKnives.dll",
+    "modinfo.json"
+  ],
+  "entrySetsUnchanged": true,
+  "allOtherAssetsByteIdentical": true,
+  "factoryIconsGunTexturesOrmNormalAndIdsUnchanged": true
+}

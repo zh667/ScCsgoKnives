@@ -162,15 +162,15 @@ public static class SurvivalSelfTest {
             return hold && refilling && gone && saved && ScSmokeDisturbance.Total == 3.5f && ScSmokeDisturbance.Clearing(null, Vector3.Zero, null) == 0;
         });
         Test("smoke-opening-opens-sight", () => {
-            var smoke = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.75f };
+            var smoke = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * ScSmokeVolume.GroundCenter };
             Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
             var opening = new ScSmokeDisturbance { Center = Vector3.Zero }; opening.SmokeIds.Add(1);
             float intact = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, null), open = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]);
-            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 5.15f) < .3f; // 5.5 m diameter minus two triangular 0.35 m density edges
+            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 7.15f) < .3f; // 7.5 m diameter minus two triangular 0.35 m density edges
             bool openNow = open <= .5f + 1e-3f /* only the 0.5 m soft rim on each side is left */ && !ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && ScSmokeVolume.Density(smoke, Vector3.Zero, [opening]) == 0 && ScSmokeVolume.Density(smoke, Vector3.Zero) == 1;
             var side = new ScSmokeDisturbance { Center = new Vector3(0, 0, 4) }; side.SmokeIds.Add(1); // opening beside the path: sight still blocked
             bool sideBlocked = ScSmokeVolume.Blocks([smoke], a, b, null, [side]);
-            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 5.15f) < .3f;
+            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 7.15f) < .3f;
             return blockedBefore && openNow && sideBlocked && refilled;
         });
         Test("scope-key-press-edge", () => {
@@ -806,7 +806,7 @@ public static class SurvivalSelfTest {
             return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 3 && broken[mech] == 3 && half[blank] == 5 && half[mech] == 3;
         });
         Test("smoke-opening-bound-to-its-smokes", () => {
-            var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.75f };
+            var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * ScSmokeVolume.GroundCenter };
             var behindWall = new ScGrenadeState { Kind = 2, Id = 2, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.75f + Vector3.UnitZ * 2 };
             var opening = new ScSmokeDisturbance { Center = Vector3.Zero }; opening.SmokeIds.Add(1);
             Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
@@ -814,7 +814,7 @@ public static class SurvivalSelfTest {
             bool otherWhole = ScSmokeVolume.Density(behindWall, Vector3.Zero, [opening]) == 1 && ScSmokeVolume.Blocks([behindWall], a, b, null, [opening]);
             var l = ScSmokeDisturbance.Load(opening.Save());
             bool saved = l is not null && l.SmokeIds.SequenceEqual([1]) && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Center = Vector3.Zero }.Save()) is null; // an opening naming no smoke is dropped
-            bool sameDensity = Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, near, null) - 5.15f) < .3f; // the same soft-edged density the overlay uses, integrated
+            bool sameDensity = Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, near, null) - 7.15f) < .3f; // the same soft-edged density the overlay uses, integrated
             return nearOpened && otherWhole && saved && sameDensity;
         });
         Test("third-person-body-fist", () => {

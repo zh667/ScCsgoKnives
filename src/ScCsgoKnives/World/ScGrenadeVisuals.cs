@@ -58,33 +58,46 @@ public static class ScGrenadeVisuals {
         int count=ScSmokeVolume.SpriteCount(distance)*(ScResourcePolicy.Lite?1:2);
         float fade=Math.Clamp(s.Age/.20f,0,1)*ScSmokeVolume.Dissipation(s);
         for(int i=0;i<count;i++) {
-            float y=1-2*(i+.5f)/count,ring=MathF.Sqrt(1-y*y),a=i*2.399963f+s.Age*(i%2==0?.055f:-.04f);
-            // Three staggered shells create billows without making the whole cloud breathe in and out.
-            float shell=i%4 switch { 0=>.12f, 1=>.30f, 2=>.46f, _=>.60f };
+            float y=(i+.5f)/count,ring=MathF.Sqrt(1-y*y),a=i*2.399963f+s.Age*(i%2==0?.035f:-.025f);
+            // Broad lower billows plus a dome. Half remain at ground level.
+            float shell=(i%4) switch { 0=>.12f, 1=>.35f, 2=>.55f, _=>.72f };
             float pulse=1+.02f*MathF.Sin(s.Age*.9f+i*1.7f);
-            float vertical=y*ScSmokeVolume.CurrentHeight(s)*.58f;
+            float vertical=i<count/2?-.25f:y*ScSmokeVolume.CurrentHeight(s)*.58f;
             Vector3 offset=new Vector3(MathF.Cos(a)*ring*radius*shell,vertical,MathF.Sin(a)*ring*radius*shell);
             // Width/Height are half-extents. Fit the whole billboard inside the cloud bounds,
             // using overlapping broad cores in both editions instead of sparse outer balls.
-            float width=Math.Min(radius*(.57f+.04f*Hash(i))*pulse,radius-new Vector2(offset.X,offset.Z).Length());
-            float height=Math.Min(ScSmokeVolume.CurrentHeight(s)*.57f*pulse,ScSmokeVolume.CurrentHeight(s)-Math.Abs(vertical));
+            float width=radius*(.80f+.04f*Hash(i))*pulse;
+            float height=i<count/2?1.4f*ScSmokeVolume.Growth(s):ScSmokeVolume.CurrentHeight(s)*.60f*pulse;
+            int cores=ScResourcePolicy.Lite?4:8;
+            if(i<cores){offset=new Vector3(0,.75f,0);width=radius/ .80f;height=1.95f*ScSmokeVolume.Growth(s);}
             // F01: neutral grey with the shading kept in the value, never in a hue offset (atlas RGB is white).
             int light=(int)(102+y*18+Hash(i)*14);
             // Ping-pong frame selection avoids a hard last-to-first atlas jump.
             float phase=(s.Age*.16f+Hash(i))%2;phase=phase>1?2-phase:phase;
-            list.Add(new(ScSmokeVolume.Center(s)+offset,width,height,Tint(light,light,light,fade),0,Frame(phase)));
+            float rotation=i<cores?i*MathF.Tau/cores:Hash(i+71)*MathF.Tau;
+            list.Add(new(ScSmokeVolume.Center(s)+offset,width,height,Tint(light,light,light,fade),0,Frame(phase),rotation));
         }
         return list;
     }
-    /// <summary>Camera-facing smoke, including overhead views. All four corners remain inside the requested total bounds.</summary>
+    /// <summary>Camera-facing smoke. Allow the transparent atlas fringe past the density boundary,
+    /// and below the floor, where normal terrain depth clips it instead of squeezing the whole puff.</summary>
     public static (Vector3 Right,Vector3 Up) SmokeAxes(Sprite sprite,ScGrenadeState smoke,Vector3 right,Vector3 up) {
-        float radius=ScSmokeVolume.CurrentRadius(smoke),height=ScSmokeVolume.CurrentHeight(smoke);
-        float verticalRatio=ScSmokeVolume.HalfHeight/ScSmokeVolume.Radius;
-        Vector3 r=right*sprite.Width,u=up*(sprite.Height/MathF.Sqrt(Math.Max(.001f,up.Y*up.Y+verticalRatio*verticalRatio*(up.X*up.X+up.Z*up.Z))));
+        float radius=ScSmokeVolume.CurrentRadius(smoke)/.70f,height=ScSmokeVolume.CurrentHeight(smoke)/.80f;
+        // Looking down sees the horizontal footprint, not the shorter side-view height.
+        float projectedHeight=MathF.Sqrt(sprite.Height*sprite.Height*up.Y*up.Y+sprite.Width*sprite.Width*(up.X*up.X+up.Z*up.Z));
+        Vector3 r=right*sprite.Width,u=up*projectedHeight;
+        float c=MathF.Cos(sprite.Rotation),n=MathF.Sin(sprite.Rotation);
+        (r,u)=(r*c+u*n,u*c-r*n);
         Vector3 offset=sprite.Position-ScSmokeVolume.Center(smoke);
-        float Fit(float p,float a,float b,float bound)=>Math.Clamp((bound-Math.Abs(p))/Math.Max(.0001f,Math.Abs(a)+Math.Abs(b)),0,1);
-        float scale=Math.Min(Fit(offset.X,r.X,u.X,radius),Math.Min(Fit(offset.Y,r.Y,u.Y,height),Fit(offset.Z,r.Z,u.Z,radius)));
-        return (r*scale,u*scale);
+        // Fit the circular puff support, not its transparent square corners. L1 corner fitting
+        // shrank a 45-degree puff by sqrt(2), reopening gaps whenever the texture was rotated.
+        float Fit(float p,float a,float b,float bound)=>Math.Clamp((bound-Math.Abs(p))/Math.Max(.0001f,MathF.Sqrt(a*a+b*b)),0,1);
+        // Fit axes independently: a low vertical bound must not shrink the horizontal footprint.
+        float horizontal=Math.Min(Fit(offset.X,r.X,u.X,radius),Fit(offset.Z,r.Z,u.Z,radius));
+        r*=horizontal;u*=horizontal;
+        float above=height-offset.Y,below=sprite.Position.Y-smoke.Position.Y+.8f;
+        float vertical=Math.Clamp(Math.Min(above,below)/Math.Max(.0001f,MathF.Sqrt(r.Y*r.Y+u.Y*u.Y)),0,1);
+        return (new Vector3(r.X,r.Y*vertical,r.Z),new Vector3(u.X,u.Y*vertical,u.Z));
     }
     public static List<Sprite> Fire(ScGrenadeState s,IReadOnlyList<Vector3> points,float distance) {
         List<Sprite> list=[];

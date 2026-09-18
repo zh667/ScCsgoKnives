@@ -4,8 +4,9 @@ namespace Game;
 public static class ScSmokeVolume {
     // CS2's smoke reaches its working volume quickly, holds that volume, then fades as a
     // turbulent cloud. It does not visibly collapse into a small ball during dissipation.
-    public const float Radius=2.75f, HalfHeight=1.75f, Lifetime=18, GrowthSeconds=.72f, DissipationSeconds=1.25f;
-    public static Vector3 Center(ScGrenadeState s) => s.Position+Vector3.UnitY*HalfHeight;
+    public const float Radius=3.75f, HalfHeight=2.8f, GroundCenter=.7f, Lifetime=18, GrowthSeconds=.72f, DissipationSeconds=1.25f;
+    // A ground-cut dome: wide at foot level rather than a sphere touching the floor at one point.
+    public static Vector3 Center(ScGrenadeState s) => s.Position+Vector3.UnitY*GroundCenter;
     public static float Growth(ScGrenadeState s) {
         float t=Math.Clamp(s.Age/GrowthSeconds,0,1);
         // Ease-out expansion: fast initial bloom, with a soft settle instead of a linear pop.
@@ -31,7 +32,8 @@ public static class ScSmokeVolume {
     public static float Density(ScGrenadeState s,Vector3 point,IEnumerable<ScSmokeDisturbance> disturbances=null) {
         if (!s.Effect || s.Kind!=2 || s.Remaining<=0) return 0;
         float radius=CurrentRadius(s); if (radius<=0) return 0;
-        Vector3 offset=point-Center(s);offset.Y*=Radius/HalfHeight;
+        if(point.Y<s.Position.Y-.12f)return 0;
+        Vector3 offset=point-Center(s);offset.Y=Math.Max(0,offset.Y)*Radius/HalfHeight;
         float inside=Math.Clamp((radius-offset.Length())/.35f,0,1);
         return inside*Dissipation(s)*(1-ScSmokeDisturbance.Clearing(disturbances,point,s));
     }

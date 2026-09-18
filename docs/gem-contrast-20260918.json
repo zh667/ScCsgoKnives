@@ -1,0 +1,12 @@
+{
+  "changedPixels": 359130,
+  "beforeLumaP10P90": [
+    0.2722941176470588,
+    0.2997592156862745
+  ],
+  "afterLumaP10P90": [
+    0.2064337254901961,
+    0.2731921568627451
+  ],
+  "scope": "Final moderate curve .65+.40; texture-space, not game lighting"
+}

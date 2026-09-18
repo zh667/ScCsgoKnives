@@ -1,0 +1,77 @@
+{
+  "package": {
+    "path": "[API1.9]CS武器1.2.2-作者ZH667-全量版.scmod",
+    "version": "1.2.2",
+    "edition": "Full",
+    "bytes": 377893067,
+    "sha256": "af6c666eb81c56ccec31ed0ff20a11c6ceb0d8486150bed43f30a8860570959f",
+    "coreDllSha256": "6a916313efb1cd6bf3f86a75bb3ea7892aa091c88d42672c128171b5e1523bfd",
+    "resourceDllSha256": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+    "entries": 1281,
+    "resourceVersion": "1.10.4"
+  },
+  "dllChecks": 21940,
+  "dllFailed": 0,
+  "deliveryChecks": 1272,
+  "deliveryFailed": 0,
+  "focusedChecks": [
+    {
+      "name": "smoke-visible/False/0.1",
+      "ok": true,
+      "detail": "opaque width=6.90m; central min alpha=0.999"
+    },
+    {
+      "name": "smoke-visible/False/0.5",
+      "ok": true,
+      "detail": "opaque width=7.05m; central min alpha=1.000"
+    },
+    {
+      "name": "smoke-visible/False/1.5",
+      "ok": true,
+      "detail": "opaque width=7.05m; central min alpha=1.000"
+    },
+    {
+      "name": "smoke-visible/True/0",
+      "ok": true,
+      "detail": "opaque width=7.05m; central min alpha=1.000"
+    },
+    {
+      "name": "smoke-visible/True/2",
+      "ok": true,
+      "detail": "opaque width=7.05m; central min alpha=1.000"
+    },
+    {
+      "name": "casings/obj-reader-contract",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "casings/no-added-impact-tink",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "casings/flight-and-ground-keep-identical-size",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "casings/bounded-continuous-perspective-compensation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "casings/floor-rests-horizontal-wall-does-not-freeze",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "casings/source-attachment/m4a1s:shoot1_rifle",
+      "ok": true,
+      "detail": "view attachment metres: 0.21648535,-0.112443075,-0.4289037"
+    }
+  ],
+  "note": "Headless packaged-DLL and atlas coverage checks, not an in-game GPU acceptance.",
+  "menuActionChecks": 83,
+  "menuActionFailed": 0
+}

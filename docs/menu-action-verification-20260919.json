@@ -1,0 +1,442 @@
+{
+  "package": {
+    "path": "[API1.9]CS武器1.2.2-作者ZH667-全量版.scmod",
+    "version": "1.2.2",
+    "edition": "Full",
+    "bytes": 377893067,
+    "sha256": "af6c666eb81c56ccec31ed0ff20a11c6ceb0d8486150bed43f30a8860570959f",
+    "coreDllSha256": "6a916313efb1cd6bf3f86a75bb3ea7892aa091c88d42672c128171b5e1523bfd",
+    "resourceDllSha256": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+    "entries": 1281,
+    "resourceVersion": "1.10.4"
+  },
+  "before": {
+    "version": "1.2.0",
+    "packageSha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
+    "failed": 78,
+    "cancelledOnOpen": 68
+  },
+  "after": {
+    "packageSha256": "af6c666eb81c56ccec31ed0ff20a11c6ceb0d8486150bed43f30a8860570959f",
+    "dllSha256": "6a916313efb1cd6bf3f86a75bb3ea7892aa091c88d42672c128171b5e1523bfd",
+    "failed": 0,
+    "checks": [
+      {
+        "name": "menu-action/reload/ak47/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/ak47/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/m4a1s/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/m4a1s/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/awp/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/awp/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/deagle/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/deagle/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/glock18/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/glock18/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/usp_silencer/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/usp_silencer/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/m4a4/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/m4a4/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/famas/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/famas/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mp9/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mp9/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/p90/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/p90/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/ssg08/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/ssg08/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/fiveseven/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/fiveseven/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/hkp2000/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/hkp2000/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/p250/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/p250/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/tec9/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/tec9/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/cz75a/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/cz75a/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mac10/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mac10/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mp7/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mp7/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/ump45/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/ump45/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/bizon/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/bizon/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mp5sd/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mp5sd/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/galilar/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/galilar/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/scar20/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/scar20/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/g3sg1/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/g3sg1/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/aug/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/aug/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/sg556/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/sg556/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/nova/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/nova/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/xm1014/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/xm1014/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/sawedoff/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/sawedoff/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mag7/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/mag7/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/m249/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/m249/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/negev/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/negev/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/revolver/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/revolver/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/elite/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/reload/elite/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/shortened-reload/nova",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/shortened-reload/xm1014",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/shortened-reload/sawedoff",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/slot/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/slot/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/remove/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/remove/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/inventory/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/inventory/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/ammo/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/ammo/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/mode/False",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/change/mode/True",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/silencer/m4a1s",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      },
+      {
+        "name": "menu-action/silencer/usp_silencer",
+        "ok": true,
+        "detail": "actual UpdateGun, native modal widget, packaged DLL"
+      }
+    ]
+  },
+  "note": "Headless actual packaged UpdateGun and native widget/transaction tests; not audible or GPU acceptance."
+}

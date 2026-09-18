@@ -5,6 +5,7 @@ import io
 import json
 from pathlib import Path
 import zipfile
+import xml.etree.ElementTree as ET
 import numpy as np
 from PIL import Image
 from pack_standalone_editions import OUT, filename
@@ -17,6 +18,7 @@ def sha(b):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--version', default='1.1.0')
+    parser.add_argument('--full-only', action='store_true', help='Validate an explicitly requested Full-only delivery.')
     args = parser.parse_args()
     report = OUT/('release-'+args.version)
     full, lite = filename(args.version, 'Full'), filename(args.version, 'Optimized512')
@@ -25,6 +27,21 @@ def main():
         checks.append(dict(name=name, ok=bool(ok)))
         if not ok:
             raise AssertionError(name)
+    if args.full_only:
+        digest=sha(full.read_bytes())
+        with zipfile.ZipFile(full) as a:
+            meta=json.loads(a.read('modinfo.json'))
+            check('identity', meta['Version']==args.version and meta['PackageName']=='zh667.ScCsgoKnives' and not meta['Dependencies'])
+            check('full-edition',ET.fromstring(a.read('Assets/ScCsgoKnivesEdition.xml')).attrib['Name']=='Full')
+            check('crc',a.testzip() is None)
+            check('no-duplicates',len(a.namelist())==len(set(a.namelist())))
+            for item in ET.fromstring(a.read('Assets/ScCsgoResources.xml')):
+                check('resource/'+item.attrib['Path'],sha(a.read(item.attrib['Path']))==item.attrib['Sha256'])
+            result=json.loads((report/'full-check.json').read_text('utf-8-sig'))
+            check('tested-delivered-bytes',result['packageSha256']==digest and result['dllSha256']==sha(a.read('ScCsgoKnives.dll')) and result['failed']==0)
+        (report/'delivery-verification.json').write_text(json.dumps(dict(fullSha256=digest,checks=checks,failed=0),indent=2)+'\n','utf-8')
+        print('Verified',len(checks),'Full delivery checks; DLL report matches delivered bytes.')
+        return
     with zipfile.ZipFile(full) as a, zipfile.ZipFile(lite) as b:
         full_hash, lite_hash = sha(full.read_bytes()), sha(lite.read_bytes())
         check('same-gameplay-dll', a.read('ScCsgoKnives.dll') == b.read('ScCsgoKnives.dll'))

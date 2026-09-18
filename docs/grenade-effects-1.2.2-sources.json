@@ -1,0 +1,197 @@
+{
+  "imports": [
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 0,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_0.png",
+      "sha256": "6625ef402f0dc9cf905529832bb3f1dd1c2fc44374b6d6c0656fd7630259009d",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 1,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_1.png",
+      "sha256": "cac119c010f3499c28f25e3f25ff85ee0f2238ccf5fcf17a94a69f8219123c03",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 2,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_2.png",
+      "sha256": "faa0f0282fafeec9342ebdd090351c5e9cda6e2f3045f14643bd2e8c159ed404",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 3,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_3.png",
+      "sha256": "3f655fe36c82351d4d7d82114a427933eb6172aa9a018c6e02681d3b16e134ee",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 4,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_4.png",
+      "sha256": "d39ca709a8348248d7d47edf18fc5f29a4d885b423c52bda8f31ebbf3bb93985",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 5,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_5.png",
+      "sha256": "7561bf8d0a94f905351105d67fe3b121c8ba2581971fefffc88e6a0f602a1a27",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 6,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_6.png",
+      "sha256": "2baa9fc84a7e08b613ac992278161848ecfd044965e32bebf4c5397084fea2fc",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 7,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_7.png",
+      "sha256": "9b4b51faa3ce6f506e91036288f8f7a3bab97caf6d2bd7d43d141be8311a3ad7",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 8,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_8.png",
+      "sha256": "b7531c7a6d69422fdf5d01bfab152527fdd613c2f1b89d51f095206d3a4c96f8",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 9,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_9.png",
+      "sha256": "6ce1dbfdea9450c9e96a91976c821701371410fcdca15b9fd50d1ea9faa20869",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 10,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_10.png",
+      "sha256": "d66b687b2d0a957ea2a1faa307e24b43e62b3a969b529771c445c9149c75752b",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 11,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_11.png",
+      "sha256": "d8f986b3aba4691f9a7e08686a0a68c44ba511b297a37e836d84c0f9be7b5743",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 12,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_12.png",
+      "sha256": "84a9292389cd6e4613c0c353b3268e7f2bea20a1a1186ae30ee3b792a4f1d152",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 13,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_13.png",
+      "sha256": "6730987724f3cb8dac70cc56490272f8179de8e30aad5112f54921de8d3e9a46",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 14,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_14.png",
+      "sha256": "88395a48ddf365c1ca6d9f15d8a2faf92396dbbd97fe5f8ba235a9ab5fa44181",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 15,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_15.png",
+      "sha256": "b68898af7e7e91997c982a49f84141a010709b3cd13660ae96f7556c50bc04ea",
+      "sharedAlphaCrop": [
+        0,
+        0,
+        155,
+        167
+      ]
+    }
+  ],
+  "conversion": "4x4 straight-RGBA sheets; preserve source aspect ratio; smoke alpha mask gets white RGB for runtime grey tint; no Source 2 volume simulation"
+}

@@ -22,7 +22,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public readonly ScCombatFeedback Feedback = new();
         public ScAmmoHud AmmoHud;
         public double NextShot;
-        public double BusyUntil = -1;          // reload or silencer clip in progress
+        public double BusyUntil = -1;          // KnifeClock: deploy, reload or silencer clip in progress
         public ScReloadTransaction Reload;
         public long ReloadAnimationSequence = -1;
         public double DropAt = -1, InsertAt = -1;
@@ -53,7 +53,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public double BurstNextAt = -1;
         public int LastValue = int.MinValue;
         public readonly ScHeldWeaponSelection Selection = new();
-        /// <summary>Sounds due at a game time: the magazine, bolt and screw noises inside a clip.</summary>
+        /// <summary>Sounds due on KnifeClock: the magazine, bolt and screw noises inside a clip.</summary>
         public readonly List<(double At, string Name)> Scheduled = [];
         public long InspectSoundToken=-1;
     }
@@ -850,6 +850,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         GunSpec spec = ScGunBlock.SpecOf(value);
         ComponentFirstPersonModel model = player.Entity.FindComponent<ComponentFirstPersonModel>();
         double now = m_time.GameTime;
+        double actionNow = KnifeClock.Now;
         int data = Terrain.ExtractData(value);
         int rounds = GunSpec.GetRounds(data);
         PlayerInput input = player.ComponentInput.PlayerInput;
@@ -860,7 +861,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             LeaveScope(player, state);
             int drawnVariant = ScGunBlock.AssetIndex(ScGunBlock.GetVariant(value));
             string deployClip = KnifeAnimationController.DeployClip(drawnVariant, spec.HasSilencer && !GunSpec.GetSilencerOff(data));
-            state.BusyUntil = now + CsmcKnifeRig.GetProfileDuration(drawnVariant, deployClip);
+            state.BusyUntil = actionNow + CsmcKnifeRig.GetProfileDuration(drawnVariant, deployClip);
             state.PendingRounds = -1;
             state.SilencerPending = false;
             state.Scheduled.Clear();
@@ -875,20 +876,21 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             else if (!Schedule(state, spec.Name, deployClip, now)) ScPresentationSound.Play($"{spec.Name}_draw");
         }
         if (state.Reload is not null && (!state.Reload.Valid
-            || !state.Reload.ModeMatches(Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode==GameMode.Creative)
-            || player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)))
+            || !ReferenceEquals(state.Reload.Inventory, heldInventory)
+            || !state.Reload.ModeMatches(Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode==GameMode.Creative)))
             CancelReload(player, state);
         PlayScheduled(player,state,now);
-        if (!ScGunBindings.Available(player)) { SuspendScope(player); return; }
+        // Menus block new input, not an already accepted reload/attachment. Its ammo
+        // milestones use the same clock as hands and cues, even if world time pauses.
         if (state.Reload is not null) {
-            if (state.DropAt >= 0 && now >= state.DropAt) {
+            if (state.DropAt >= 0 && actionNow >= state.DropAt) {
                 state.DropAt = -1;
                 if (!state.Reload.Discard()) CancelReload(player, state);
             }
-            if (state.Reload is not null && state.InsertAt >= 0 && now >= state.InsertAt) {
+            if (state.Reload is not null && state.InsertAt >= 0 && actionNow >= state.InsertAt) {
                 double insertAt = state.InsertAt;
                 state.InsertAt = -1;
-                if (!state.Reload.InsertMagazineAt(now, insertAt)) { if (state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); }
+                if (!state.Reload.InsertMagazineAt(actionNow, insertAt)) { if (state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); }
             }
             value = player.ComponentMiner.ActiveBlockValue;
             data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
@@ -898,9 +900,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
         state.LastValue = value;
 
-        PlayScheduled(player, state, now);
         // A shotgun's shells count one at a time, at each loop's add-ammo moment.
-        while (state.ShellTimes.Count > 0 && now >= state.ShellTimes[0]) {
+        while (state.ShellTimes.Count > 0 && actionNow >= state.ShellTimes[0]) {
             state.ShellTimes.RemoveAt(0);
             if (state.Reload is not null && state.Reload.InsertShell()) {
                 value = state.Reload.Expected; state.LastValue = value;
@@ -911,7 +912,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
         // Inserted rounds are already committed. Only release the firing lock
         // here; the remaining bolt/hand animation still has to finish.
-        if (state.BusyUntil >= 0 && now >= state.BusyUntil) {
+        if (state.BusyUntil >= 0 && actionNow >= state.BusyUntil) {
             state.BusyUntil = -1;
             state.Reload = null;
             if (state.SilencerPending) {
@@ -922,6 +923,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (outcome == ScGunResult.Success) { value = silencer.Expected; data = Terrain.ExtractData(value); state.LastValue = value; }
                 else Refused(player, outcome, now);
             }
+        }
+        if (!ScGunBindings.Available(player)) {
+            SuspendScope(player);
+            // Do not bank an attack while operating a menu and fire it on closing.
+            state.FireAfterReload = false;
+            state.PrepareUntil = -1;
+            state.BurstRemaining = 0; state.BurstNextAt = -1;
+            return;
         }
         bool busy = state.BusyUntil >= 0 || KnifeAnimationController.IsBusy(model);
         if (state.RescopeAt >= 0 && now >= state.RescopeAt) {
@@ -972,7 +981,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (state.PrepareUntil >= 0) return;
         // Fire during a shell-by-shell reload cuts it short after the shell in hand.
         if (busy && wantsFire && rounds > 0 && state.ShellTimes.Count > 0 && !state.FireAfterReload) {
-            CutReloadShort(player, state, spec, now);
+            CutReloadShort(player, state, spec, actionNow);
             return;
         }
         if (!busy && state.FireAfterReload) {
@@ -1344,7 +1353,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         state.ReloadAnimationSequence = KnifeAnimationController.ReloadActionSequence(player);
         state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, capacity, ScGunHolders.PlayerKey(player, inventory.ActiveSlotIndex));
         state.Scheduled.Clear(); state.ShellTimes.Clear(); state.FireAfterReload = false;
-        double now = m_time.GameTime;
+        double now = KnifeClock.Now;
         state.BusyUntil = now + duration; state.PendingRounds = -1;
         state.DropAt = state.InsertAt = -1;
         if (tube) {
@@ -1354,7 +1363,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         else {
             state.DropAt = now + milestones.Value.Drop;
             state.InsertAt = now + milestones.Value.Insert;
-            Schedule(state, spec.Name, clip, now, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
+            Schedule(state, spec.Name, clip, m_time.GameTime, spec.HasSilencer && !GunSpec.GetSilencerOff(Terrain.ExtractData(value)));
         }
     }
 
@@ -1367,11 +1376,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         string key = $"{spec}:{clip}";
         if (!Cs2Sounds.TryGet(key, out var list)) return;
         foreach ((float at, string name) in list) {
-            if (at < sections.LoopStart) state.Scheduled.Add((SoundTime(startedAt + at), name));
+            if (at < sections.LoopStart) state.Scheduled.Add((startedAt + at, name));
             else if (at < sections.OutroStart)
                 for (int k = 0; k < loops; k++)
-                    state.Scheduled.Add((SoundTime(startedAt + sections.LoopStart + k * sections.LoopLength + (at - sections.LoopStart)), name));
-            else state.Scheduled.Add((SoundTime(startedAt + sections.LoopStart + loops * sections.LoopLength + (at - sections.OutroStart)), name));
+                    state.Scheduled.Add((startedAt + sections.LoopStart + k * sections.LoopLength + (at - sections.LoopStart), name));
+            else state.Scheduled.Add((startedAt + sections.LoopStart + loops * sections.LoopLength + (at - sections.OutroStart), name));
         }
     }
 
@@ -1385,14 +1394,13 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (loaded < 0) return;
         double end = now + remaining;
         state.ShellTimes.RemoveAll(t => t > end);
-        double soundEnd=SoundTime(end);
-        state.Scheduled.RemoveAll(c => c.At > soundEnd);
+        state.Scheduled.RemoveAll(c => c.At > end);
         Cs2Rig.ReloadSections sections = Cs2Rig.GetReloadSections(spec.Name);
         if (sections is not null && Cs2Sounds.TryGet($"{spec.Name}:reload", out var list)) {
             double outroStart = end - (sections.End - sections.OutroStart);
             foreach ((float at, string name) in list)
                 if (at >= sections.OutroStart && outroStart + (at - sections.OutroStart) > now)
-                    state.Scheduled.Add((SoundTime(outroStart + (at - sections.OutroStart)), name));
+                    state.Scheduled.Add((outroStart + (at - sections.OutroStart), name));
         }
         state.BusyUntil = end;
         state.FireAfterReload = true;
@@ -1524,7 +1532,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 KnifeAnimationController.TriggerSilencer(player, off);
                 gun.Scheduled.Clear();
                 Schedule(gun, spec.Name, clip, m_time.GameTime);
-                gun.BusyUntil = m_time.GameTime + duration;
+                gun.BusyUntil = KnifeClock.Now + duration;
                 gun.SilencerPending = true;
                 gun.PendingSilencerOff = !off;
             }

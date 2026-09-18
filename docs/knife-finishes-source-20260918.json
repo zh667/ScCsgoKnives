@@ -1,0 +1,568 @@
+{
+  "sourceManifest": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\source-manifest.json",
+  "sourceManifestSha256": "912a0ae5e8a6d42556cbaba7aafa1e0dc366965371355228f0ac073f562cbde3",
+  "note": "Bake CS2-authored patterns/masks for shipped knife UVs; copy official icons.\n\nLocal material port, not Valve's compositor: fixed pattern placement, unworn\ncoat, no Source 2 pearlescence. Factory artwork and icons are not tinted.\n",
+  "rows": [
+    {
+      "asset": "karambit",
+      "variant": 0,
+      "finish": "am_gamma_doppler_phase4",
+      "paintId": 572,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase4.vcompmat": "e9801d8458a3c8fab4edcf493526ad6a94631bf2dbe0ca69740a647106e0def0",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase4.vmat": "70f35d7303bab5c84bba83a2499039a771709826973f41cc2f5a31a861a1becd",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_karambit\\materials\\composite_inputs\\knife_karambit_composite_inputs.vmat": "8581ad41e01e2d520448d6c61658f4cf2e9c87f06ccdf7b4b7ef1c738c40ab5c",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_karambit\\materials\\composite_inputs\\knife_karam_masks.png": "0258cb92d397b5f1a38337f9e88617ef71320e705c67592af0202f08e59fe481",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_karambit\\weapon_knife_karambit.glb": "a5df19748f05160229c0c69a8714bc1b7873d976a485367cd0e3ac42fc027af9",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_cs2.png": "8dc8dc6c23d0f306ed2e51bd1db8d77c6d35a96e37ebdf214a24e9ff73be9ec4",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_cs2_orm.png": "ddad1fdbd3651a6a780de52c804c6983f6a225e5222befd5d6c3e55997e7827e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\karambit_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_karambit_am_gamma_doppler_phase4_light_png.png": "c488f91f0c2e996840b786d8234dfbbdca6ed4b25fc951a2ba0e11ac861c6a48"
+      },
+      "outputHashes": {
+        "karambit_finish__am_gamma_doppler_phase4.png": "30204bf737f110a135fb3ccbdb085f706dc2557feb054f629e241e20d4c0c9f0",
+        "karambit_finish__am_gamma_doppler_phase4_orm.png": "0ced65ea4f3258a54d828c28203e6282818939ae43abbc73ddd08f3e566d36fa",
+        "karambit_finish__am_gamma_doppler_phase4_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "karambit_slot__am_gamma_doppler_phase4.png": "b5efd9dfe49ef13570c4cb27307a8661944dc77de4b7a456dec9fba06e398b69"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.39977145195007324
+    },
+    {
+      "asset": "m9",
+      "variant": 1,
+      "finish": "am_gamma_doppler_phase1",
+      "paintId": 569,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase1.vcompmat": "44d75ade4bc0f3a7656ca07c07f9d9104743f3deff5b3cc0e2b5f8815807498a",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase1.vmat": "9d0efcf39cdfc82a963e21f1ace17f7abc778b90b85aa4cc444a5c27b8dc64b8",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_m9\\materials\\composite_inputs\\knife_m9_composite_inputs.vmat": "34b09675b291d97bcb8dd9baa206a3a4de4e3d5128df7213224814fcf8532ff4",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_m9\\materials\\composite_inputs\\knife_m9_bay_masks.png": "28f372206431fdb3e6f304aaf317a49336705be2a303c6ff96f1e5858baa77a6",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_m9\\weapon_knife_m9.glb": "8064324936976195508a981c57656f8c4c82c05333f64b5701edb5b51c92e31b",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_cs2.png": "989b95b5dfd343b15a02e40a3804df52872e80b3e0d0f1eb433c55061b064263",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_cs2_orm.png": "489089a9a1afaf7e7f43d7b875cc32ee28dda42e7c990f1d95de8c52b5cb4ad7",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\m9_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_m9_bayonet_am_gamma_doppler_phase1_light_png.png": "51f4c1ffd386dfcd82203fc9281db56f98a44a149606b06ca162c8994662663b"
+      },
+      "outputHashes": {
+        "m9_finish__am_gamma_doppler_phase1.png": "e7bcfa2e0e627ce6361702f46b976e0dd2bfceb814b60864d760791255209b33",
+        "m9_finish__am_gamma_doppler_phase1_orm.png": "4a6a594b6810b843c3167402228e283cfa2c5a8877f6f7ac756e349775bfce84",
+        "m9_finish__am_gamma_doppler_phase1_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "m9_slot__am_gamma_doppler_phase1.png": "29a98d1a82c76e9e28e70479ffdce61b1f7b336506c433148ee242456deb6d56"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.6880891919136047
+    },
+    {
+      "asset": "butterfly",
+      "variant": 2,
+      "finish": "am_gamma_doppler_phase2",
+      "paintId": 570,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase2.vcompmat": "71ee6fa8ae24815d20a558d723bbf80c28bdc8330f0be07865a1338c58bcc134",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase2.vmat": "0353137b746fafb465c416e2485a2ab0354931301a640c663fae3895c80c7624",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_butterfly\\materials\\composite_inputs\\knife_butterfly_composite_inputs.vmat": "2f8fc9451afbdb5c36c84c6734c9b66abba1ce92237aec3c37463e9cb9a24363",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_butterfly\\materials\\composite_inputs\\knife_butterfly_masks.png": "974aff5966b200c4c3ac30b0b536f87b601764ed1ec95e8318a76f6e8f673eac",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_butterfly\\weapon_knife_butterfly.glb": "854ea2fcb424d7b489020c788acd59fe986c8feb2593ed59447f76ef17379445",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_cs2.png": "b7e11bd2cfa06acfbc2ea32ea78f12729325c7eaa9ed46f16cbb761bd3385d6e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_cs2_orm.png": "ffb3a788069a8c8eb441a457bdcd5bac1d7f8eb91aa98af1be13c63beaad58cd",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\butterfly_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_butterfly_am_gamma_doppler_phase2_light_png.png": "d22bbc5402bfd51e4d2d6366d55d820fb080056b61a4e28e72ecc306bf9bf5e3"
+      },
+      "outputHashes": {
+        "butterfly_finish__am_gamma_doppler_phase2.png": "67925d6ef3d9669fc03e647cb13eb5b7bb74e549caae7e55252de594e68f5872",
+        "butterfly_finish__am_gamma_doppler_phase2_orm.png": "465a7e60895aea0d8ecf0edcf269b635c11df14000161b0eed807ef0df6203d5",
+        "butterfly_finish__am_gamma_doppler_phase2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "butterfly_slot__am_gamma_doppler_phase2.png": "d2243513b9a22b3d2643b7869cec2ed5c2bf8c67178e50ed1eb084a9136ace22"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.5446863174438477
+    },
+    {
+      "asset": "bayonet",
+      "variant": 3,
+      "finish": "am_ruby_marbleized",
+      "paintId": 415,
+      "placement": "CS2 pattern RGB masks plus moderate source marble intensity; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_ruby_marbleized.vcompmat": "f30bd1b09bf9fde7290f67c25c134959e0ec1dc590261894a4e3baf62dc170ef",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_ruby_marbleized.vmat": "4128ca235692b9cec046624133ef392174dcc15945ebd2158552651fc14e6dd1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_bayonet\\materials\\composite_inputs\\knife_bayonet_composite_inputs.vmat": "1883da46c86b2be4a31712b5c90f79db9f6a224b26f9692dddb2336e49138c27",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_bayonet\\materials\\composite_inputs\\knife_bayonet_masks.png": "e88b0d3d395f198a68d61f3d7b1ee5eb8182da678e657bb2167727fb6267cc82",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_bayonet\\weapon_knife_bayonet.glb": "d05cbe7c843f1bb292f97abc4444d1bfaa7ba05265b6028edc5c4c2b4631ea22",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_cs2.png": "3005a384eea827dc6dca5ea53c9e666d35d8265676392f5b35d44b24218efafa",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_cs2_orm.png": "1e8f14a109867ac997e45eeaf6f7e14036d5ed144b6f03ba1d183f740e05707e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bayonet_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_bayonet_am_ruby_marbleized_light_png.png": "045e39b9b3e8f2838fb02ca9b8ec344a03d499c0f9fdfd00644b91ab52b819fc"
+      },
+      "outputHashes": {
+        "bayonet_finish__am_ruby_marbleized.png": "c14cf64848b4bb82a6197c653ef76a71fe7f13bbf5cf5ddcc1eeb2cb7a32ff28",
+        "bayonet_finish__am_ruby_marbleized_orm.png": "0a5c0549618efcf2b5ddda5ec2f6432d5fdb58188a3dbe6e8745bc1fb7f72fd8",
+        "bayonet_finish__am_ruby_marbleized_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "bayonet_slot__am_ruby_marbleized.png": "90835067c2f71ad4eb6f74abac371a6496bae222981ac01855d19b1d1a11086c"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.356781005859375
+    },
+    {
+      "asset": "bowie",
+      "variant": 4,
+      "finish": "am_gamma_doppler_phase4",
+      "paintId": 572,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase4.vcompmat": "e9801d8458a3c8fab4edcf493526ad6a94631bf2dbe0ca69740a647106e0def0",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase4.vmat": "70f35d7303bab5c84bba83a2499039a771709826973f41cc2f5a31a861a1becd",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_bowie\\materials\\composite_inputs\\knife_bowie_composite_inputs.vmat": "f3e82ccab73bb3b812e46711e5e7082f72ba2c88610c9808a4652e11f85edc2d",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_bowie\\materials\\composite_inputs\\knife_survival_bowie_masks.png": "ba8280f541f097e9b1c5f61f0e833b5caed3fd28aa1bd3d2b313e40ec2963232",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_bowie\\weapon_knife_bowie.glb": "62b09d873602b9f5aa65e07e65d198cec63e3036c1a4311fa251d884c9508c09",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_cs2.png": "30a0aeb90fb0a6af25c1678cbb2f0da798475c57f591c677b1fd123a0ce6e360",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_cs2_orm.png": "9bf6691fd0cdc2a76a0e1cbf2c40c7e754689cf27b2fba32eb24c18849683399",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\bowie_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_survival_bowie_am_gamma_doppler_phase4_light_png.png": "2b3def1106c8d7933b763e87fb9e75af1edca64e578f30804c632196e2cd2811"
+      },
+      "outputHashes": {
+        "bowie_finish__am_gamma_doppler_phase4.png": "0f23ee426240d39d4611dc50e4bf5017ea4eda4b5235a10b9c3bd2230c2d0367",
+        "bowie_finish__am_gamma_doppler_phase4_orm.png": "0946eb598a07d0e6805fc724d671a95c4cd95a7cf486ac3d66a2a35ddc487572",
+        "bowie_finish__am_gamma_doppler_phase4_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "bowie_slot__am_gamma_doppler_phase4.png": "49e93c2455dff5c9050dcb7bc3341985f6323de7fea07845c5700c816a4d6f95"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.5086599588394165
+    },
+    {
+      "asset": "canis",
+      "variant": 5,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.30..0.88; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_canis\\materials\\composite_inputs\\knife_canis_composite_inputs.vmat": "88f632da31685aced5eea2d26f22e11777804e18a1f407e77301823510f78631",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_canis\\materials\\composite_inputs\\knife_canis_masks.png": "e3da9b414faaf1b41c454177d38f417742ae9c6350a424504d3cab31ef8f0e84",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_canis\\weapon_knife_canis.glb": "fb1044b09bf3a9d1f38a0d9b6c1758b27188c3c8c578a1fa0116f8083a8a90d7",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_cs2.png": "1b49deb11528a59f01b380ea30e7814dec4eb29d814109ba99128eb7e9c07f00",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_cs2_orm.png": "ea5acada3d3da63d3c42c7ee5a7fd3dea7303ffad6d485e3071277c33aa9b2c1",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\canis_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_canis_aa_fade_light_png.png": "0330f004fa72099ab5f7b07d44493223e750fd22dc96203af7134f1e78a8d98a"
+      },
+      "outputHashes": {
+        "canis_finish__aa_fade.png": "30524d12a41a33990a4ce3aac47423f54de1b0fa94829106835f89da4be322ad",
+        "canis_finish__aa_fade_orm.png": "45956642f035d4b46c3e0e4784d804f6933595e4bdf499c8eea4b39f801a0392",
+        "canis_finish__aa_fade_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "canis_slot__aa_fade.png": "dae4a9455c7ae69ea906b7adb31f32bf0224782ae15bd447a34d845f25e9e4ca"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.48154693841934204
+    },
+    {
+      "asset": "cord",
+      "variant": 6,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.06..0.92; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_cord\\materials\\composite_inputs\\knife_cord_composite_inputs.vmat": "175caa2a571fe48283f5b8c19e37932ccfcf0d6983217047d3f4c6bf227ad38a",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_cord\\materials\\composite_inputs\\knife_cord_masks.png": "f696acfcc2f3873b8357ef237522613442427b68a7ea4765b4e1e57aa55697aa",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_cord\\weapon_knife_cord.glb": "9da6c0d2f862f47e5fefeaf9b5edf29de09e52cab0846dbb51817ee9c5dcd88e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_cs2.png": "4e83a81264917aec206bb6f916941c57a16745902468ee18e1e78ea9b3c14c8b",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_cs2_orm.png": "4ee5b3d1608a05d3fd9a43e2dfe7663de82cc210a5215fdbffe2245793e59fd9",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\cord_cs2_normal.png": "13f2b17a8f160187679ae5f5b06f353289394a60d738bcf215f38f7565fc4d35",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_cord_aa_fade_light_png.png": "83e194eec02bf4afcfe3aacdb08cd485eb002535978bb406392e542bd19ba219"
+      },
+      "outputHashes": {
+        "cord_finish__aa_fade.png": "f2f35ad8dae6057f029ddc6b1aee222d2aebd4a55631be8f8d2ae998477f04f4",
+        "cord_finish__aa_fade_orm.png": "c9ba47bd791fd1634720d0bfc27b675706542000d21b0b96c3c717796ae0181b",
+        "cord_finish__aa_fade_normal.png": "13f2b17a8f160187679ae5f5b06f353289394a60d738bcf215f38f7565fc4d35",
+        "cord_slot__aa_fade.png": "93f0ee2b8f02a37bd1f101bef177d2ef6dc4dec0276f24a7bc0ddea6195808f8"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.4434471130371094
+    },
+    {
+      "asset": "css",
+      "variant": 7,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.36..0.90; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_css\\materials\\composite_inputs\\knife_css_composite_inputs.vmat": "4b17d009f348acdf0020f45b93a4e5e244849b4415181bc80b637ba3af8d29ac",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_css\\materials\\composite_inputs\\knife_css_masks.png": "01b9202e49946d6037fa63b9283ad72fb5d59d4fc115f1bb78e7275234e06d6b",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_css\\weapon_knife_css.glb": "b7acc2f6866a446f482c930ba372ec523608f0d2bb323d3424374538112b997c",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_cs2.png": "394d25cc0a78c98116a989f9ef3b3d7279e946428f2384997d9ce6feda9097f1",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_cs2_orm.png": "a538802410157c024a74f67bb77674a8f819ce2e3443492cc2f07a7f29e5aa70",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\css_cs2_normal.png": "d3bb888d329ae48b80ed060f728b2588e363d50b3e44ca2704f74c1fa351a4f1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_css_aa_fade_light_png.png": "3d4a43af424ae0a4f548321655334719f538fd1904cbe4a09bb58dc22d5a3a88"
+      },
+      "outputHashes": {
+        "css_finish__aa_fade.png": "0262c3e2b803c3ddd7ba3ebc2552f5fd157525bf996f8e15c7486762d1507fa8",
+        "css_finish__aa_fade_orm.png": "f5dc212d779f1f7de2e3126e7583eb0fd3297305a7f498ab653b56c158e6aa7f",
+        "css_finish__aa_fade_normal.png": "d3bb888d329ae48b80ed060f728b2588e363d50b3e44ca2704f74c1fa351a4f1",
+        "css_slot__aa_fade.png": "a6636b7d0d1a17b54d2040572d948dee3258c98b6635b2348b12b9bd3dd44719"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.39791154861450195
+    },
+    {
+      "asset": "falchion",
+      "variant": 10,
+      "finish": "am_gamma_doppler_phase2",
+      "paintId": 570,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase2.vcompmat": "71ee6fa8ae24815d20a558d723bbf80c28bdc8330f0be07865a1338c58bcc134",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase2.vmat": "0353137b746fafb465c416e2485a2ab0354931301a640c663fae3895c80c7624",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_falchion\\materials\\composite_inputs\\knife_falchion_composite_inputs.vmat": "53419f4874d12ca3a2d1700eba02529ea6d1ea562342945f6c7a8d1bf16bf07a",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_falchion\\materials\\composite_inputs\\knife_falchion_advanced_masks.png": "a4a0672b55ebeaa753cb0604d85770fc02b1e35d549d47328e1033f511558598",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_falchion\\weapon_knife_falchion.glb": "9a6fc000d5372b7689a4dffed51042d888ce3929f312f200a53d7f2bfcefb75e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_cs2.png": "07bd10203433514678a3b57d03a77e7959640f664c8a2f060fd6c987f323ea42",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_cs2_orm.png": "c4a0a5b57cc0864312b56a2b4b77a864edb7acc4336b397d079a3fdee2579bfe",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\falchion_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_falchion_am_gamma_doppler_phase2_light_png.png": "13d8277c2864f6e9cfb6475bd776fe8242f77f08b437fc3caadf12889b0da98b"
+      },
+      "outputHashes": {
+        "falchion_finish__am_gamma_doppler_phase2.png": "7b6b1869de3b08e1e2229020e1545cc175a015dc23ff37a300b0737581987edf",
+        "falchion_finish__am_gamma_doppler_phase2_orm.png": "82551a95b3fbca2f88bfb33ee2d1e7baba9eb5f66455968b7d5882722a555efb",
+        "falchion_finish__am_gamma_doppler_phase2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "falchion_slot__am_gamma_doppler_phase2.png": "bb853fc04155c054d9ea20df131a3a1f10e94387e8c52e006b7ba11bd233ec17"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.836437463760376
+    },
+    {
+      "asset": "flip",
+      "variant": 11,
+      "finish": "am_gamma_doppler_phase3",
+      "paintId": 571,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase3.vcompmat": "93be3536935719ccd2a31d9b42579f833a3b112bd8c12094a4262384f0e58ba8",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase3.vmat": "304e981656bd32b7960dc94df2b69150e9c7aaf6761ca492b30f4b87b3c63b29",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_flip\\materials\\composite_inputs\\knife_flip_composite_inputs.vmat": "39abd3d24ef9e06b74fcf271666ba957ca5225d3c14bfdf8fdc711f65a159b00",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_flip\\materials\\composite_inputs\\knife_flip_masks.png": "8c90e3c0a8fc902d174fcd202673743a81f629ca1d19216e23b645862704a91e",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_flip\\weapon_knife_flip.glb": "40b7191b763a52c585defb516d2d9e8d8c799660d0a579402066d3db557d6e16",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_cs2.png": "09f7367d313cb4274d3af56d3a6fd0fdc73a2d1dc8b381ef5bab46a365a6196e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_cs2_orm.png": "5933f68b2c4b3b5feacd9544a6161889e73bad8520d484e3aa3173e8fee3d523",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\flip_cs2_normal.png": "1e95fdebb0632c5a16f2beb43cf9f310ad421d40ed1575fd64cf8f418f963646",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_flip_am_gamma_doppler_phase3_light_png.png": "863bbc3766f0bd8ce5b5bec02d4a3e5f70d9713717351a570536d884dee13213"
+      },
+      "outputHashes": {
+        "flip_finish__am_gamma_doppler_phase3.png": "d432201baf3b7ee7ac7049b1b105f48e0b4b578d0d80a1c1a52403a41cb11ce2",
+        "flip_finish__am_gamma_doppler_phase3_orm.png": "338737196bc63b9932168269df5fded25add14d9d0cda1e6983b8cc02aed1f1d",
+        "flip_finish__am_gamma_doppler_phase3_normal.png": "1e95fdebb0632c5a16f2beb43cf9f310ad421d40ed1575fd64cf8f418f963646",
+        "flip_slot__am_gamma_doppler_phase3.png": "763d9a613d2e8c5c91a11aa0e87533dd98caae5636615e53685224f61810b588"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.5434064269065857
+    },
+    {
+      "asset": "gut",
+      "variant": 12,
+      "finish": "am_gamma_doppler_phase4",
+      "paintId": 572,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase4.vcompmat": "e9801d8458a3c8fab4edcf493526ad6a94631bf2dbe0ca69740a647106e0def0",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase4.vmat": "70f35d7303bab5c84bba83a2499039a771709826973f41cc2f5a31a861a1becd",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_gut\\materials\\composite_inputs\\knife_gut_composite_inputs.vmat": "af878aa86baa14eb9285f187bf5914e66dbc326207050a599de30967111a1502",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_gut\\materials\\composite_inputs\\knife_gut_masks.png": "20f8e2ef406b5cf0a94433b8044c700c57b06758ae46b19da50087ad3980754e",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_gut\\weapon_knife_gut.glb": "73519dc83a09650ae65c865a78e23aaf16c813374321620d019a12f15b0251f2",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_cs2.png": "54951fa5da7a62d557f260fef8755ffb66b7e0dfbd2fff47cd130cd247c955f5",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_cs2_orm.png": "04ffde3951de1505d2f15cca50607b2cae55227934e711c2246f6f6a3e36d453",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\gut_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_gut_am_gamma_doppler_phase4_light_png.png": "2bf8f5eb00249d7cc082dedbc07bb57c7d1ba7616f461e4d7e880247c297ff58"
+      },
+      "outputHashes": {
+        "gut_finish__am_gamma_doppler_phase4.png": "077f5b15c813fc44a3901601032c3eefab894f722f4bb42a68a4012d6eabc80c",
+        "gut_finish__am_gamma_doppler_phase4_orm.png": "369611a2c69e810f5fba66b2fa4d148044cdde509a687c0125e75519961f2216",
+        "gut_finish__am_gamma_doppler_phase4_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "gut_slot__am_gamma_doppler_phase4.png": "9fde1c35a350c007915083b435cf73b91423c33e57075217e237f7a8049117b6"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.7648279666900635
+    },
+    {
+      "asset": "kukri",
+      "variant": 13,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.18..0.84; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_kukri\\materials\\composite_inputs\\knife_kukri_composite_inputs.vmat": "8d0a79d97df02c50c4423b26a98ef9edd01e24fe92b0f21079d89f549fd7ec31",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_kukri\\materials\\composite_inputs\\knife_kukri_masks.png": "ebca90a99d3b9ff5e3e10b46d07641c4b8b3020f61080e829e271f485a35dc9e",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_kukri\\weapon_knife_kukri.glb": "5407143e42dbfe340607b2f0452b76f25d76410558fed870644b7cfb3a9b9c96",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_cs2.png": "9313ec7785807399ebe3ab04679dbd8afc2d9e56cb8d2386d5e544b447661a1e",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_cs2_orm.png": "0b7b41196a08982bf9175a6543c327b347bebe64a61f1c8da8c32c788e1085ca",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\kukri_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_kukri_aa_fade_light_png.png": "a5b450bcaad2e214457835fdbeee8a5c331348f793c538c38e399eaed789124a",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_kukri\\materials\\composite_inputs\\knife_kukri_cavity_56d26a3b_nopaint.png": "6c9f3bcd26b32a2481b6ac69efb3bec73a0d2c72fc5a0d51ad234811009a4734"
+      },
+      "outputHashes": {
+        "kukri_finish__aa_fade.png": "cc56279429025413e625b1122aa3838afd3bdfecaee9731843d9d353f786df87",
+        "kukri_finish__aa_fade_orm.png": "de77f96f68361de488d68c78c28af6663dabb656e3dfc23fa421fd236f1289b2",
+        "kukri_finish__aa_fade_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "kukri_slot__aa_fade.png": "81129ad90797ac6493ca730d4d75450eee0b4d02e16d3a34e911f4e5694d73e2"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.3744847774505615
+    },
+    {
+      "asset": "navaja",
+      "variant": 14,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.02..0.94; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_navaja\\materials\\composite_inputs\\knife_navaja_composite_inputs.vmat": "c7747d5de1dc15cbd4d5390ecfcc1a034ac02b54ea450b2a59d15d5d4281e468",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_navaja\\materials\\composite_inputs\\knife_gypsy_jack_masks.png": "e8a7fca1f7487565de06b717c979bc1507261f207a88d3ef4a55dabfed4c0b03",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_navaja\\weapon_knife_navaja.glb": "01b2a03aa3f64a79daeeeb19a5bd18bba447085a44f4748a62213d60c19e5733",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_cs2.png": "8e0445e20c0a8e3f2fd807974d95ea8da019760989839d87af5af44c67328012",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_cs2_orm.png": "bb51ac60c1a2439befaff1be630c08b3a3bcbe8ac6d848a96fd19e019f0c7457",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\navaja_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_gypsy_jackknife_aa_fade_light_png.png": "bc59040a071085c3391f934bac911a0072e6ebb4eb2fc32387677fca4d7ef57b"
+      },
+      "outputHashes": {
+        "navaja_finish__aa_fade.png": "a9aa2fbe0f6f5ddfef5a7f46c72483de14e44adcf5546344245e7bfce26a42e6",
+        "navaja_finish__aa_fade_orm.png": "6c3097962e561727b0e171a18d5b34017886cdf4e754aed81d65bc713b935cfb",
+        "navaja_finish__aa_fade_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "navaja_slot__aa_fade.png": "85879082993778ef30853a2244c76b58c4119ab7fda1bf075353e77153b7503e"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.5642582178115845
+    },
+    {
+      "asset": "outdoor",
+      "variant": 15,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.32..0.89; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_outdoor\\materials\\composite_inputs\\knife_outdoor_composite_inputs.vmat": "3dd10ec00c49c431ddcd758c8fba6888cb99943c322d4c5775e9c4b458131e0d",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_outdoor\\materials\\composite_inputs\\knife_outdoor_masks.png": "d6a5bdd6958a505437c8569a5c98c386d2eb160536888dfc904ff89e75306f32",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_outdoor\\weapon_knife_outdoor.glb": "dd2696983999288c90fc09ff468f86ee28a239c744f563a535dfa825cc9b7f93",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_cs2.png": "30b1886f5fb1490d0a2795133d3d6f2754a589d8a4033d0c9d9f20837bd77efb",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_cs2_orm.png": "d7230c459a4a2909be72820cf5b35d99633d933148e1a4affe45a6059d45f5d3",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\outdoor_cs2_normal.png": "f8db891a712d670b9e4bf940c0bc9d69200a41c88408e53e5c31276765781945",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_outdoor_aa_fade_light_png.png": "1d8e8d3e32f2bdf4b2be0e174081ffc78e651d5b68513762d4dd2140973a2672"
+      },
+      "outputHashes": {
+        "outdoor_finish__aa_fade.png": "e6d6905298897bba9ef3b383497c1342d2b72aaa67246ba87c05ea7013c28012",
+        "outdoor_finish__aa_fade_orm.png": "330646f8cbec5ec361329bc521a404f3703637df4ac27a0f6c422655e9c2360b",
+        "outdoor_finish__aa_fade_normal.png": "f8db891a712d670b9e4bf940c0bc9d69200a41c88408e53e5c31276765781945",
+        "outdoor_slot__aa_fade.png": "8c2f1c595fef8ceebd392c2f83645fcb18212f5664c8007ef23c76fe2eae5a3d"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.4174529016017914
+    },
+    {
+      "asset": "push",
+      "variant": 16,
+      "finish": "am_gamma_doppler_phase4",
+      "paintId": 572,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase4.vcompmat": "e9801d8458a3c8fab4edcf493526ad6a94631bf2dbe0ca69740a647106e0def0",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase4.vmat": "70f35d7303bab5c84bba83a2499039a771709826973f41cc2f5a31a861a1becd",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_push\\materials\\composite_inputs\\knife_push_composite_inputs.vmat": "85e364616c75ca0c8f4b4c67a59db773ad19b68af53459e8276c7d7e3a6e487d",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_push\\materials\\composite_inputs\\knife_push_masks.png": "777facd543c4b7e8dde24ad7b4c2233d4adf6322bbcc47976b6b949f272ca302",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_push\\weapon_knife_push.glb": "d6510eae1204a5d978396b6f64fcc947df182977c808c8af8d995fbf854c4694",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_cs2.png": "803614b2180e831ce8a7dd1546801309a317a664d774b50a7e1fb39e88f0aa16",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_cs2_orm.png": "de55ae9048baffe6c47dbbe0b210dd73adcda8bbb384cba943b3e4701b030f3b",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\push_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_push_am_gamma_doppler_phase4_light_png.png": "7f79052bf57ee68ed32048e95bce381608389539f7457c44fd879cb78e16a5bc"
+      },
+      "outputHashes": {
+        "push_finish__am_gamma_doppler_phase4.png": "f8d0d3c2815e694228d0c01e546763933875cc52321238c4873cf472b3974dff",
+        "push_finish__am_gamma_doppler_phase4_orm.png": "e5cae2581c4a6a93636df469a4b2bd3eb37a4926f74941f054383aad74b0f6a0",
+        "push_finish__am_gamma_doppler_phase4_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "push_slot__am_gamma_doppler_phase4.png": "0bed6f0616b0231ce67a8dcec6119329ec304daa73149c3a9132ab7d6c510976"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.9470127820968628
+    },
+    {
+      "asset": "skeleton",
+      "variant": 17,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.12..0.93; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_skeleton\\materials\\composite_inputs\\knife_skeleton_composite_inputs.vmat": "23a78a2ff7c4e63c93e7253c2e0bd3a896d84c9283ea47643ac31ae9c887f4f2",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_skeleton\\materials\\composite_inputs\\knife_skeleton_masks.png": "be4e3e9995aadf25fd8c0147ab386a97ef39d75dd797b26d7fb5f74874f8381b",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_skeleton\\weapon_knife_skeleton.glb": "d7ac2df7eb77d31c852b0f3b59257cb69ceb0d87ccaccf5e254463d3ed3ff276",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_cs2.png": "66a5f72326e78a0b0972271b8e53ba8914061b589942392aa6cf30818fa58411",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_cs2_orm.png": "443ff116d8078393abeebd736bc671f6cbff1671dda96d51f7d3b8ff3de86592",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\skeleton_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_skeleton_aa_fade_light_png.png": "7694e9247b78c886b6a159414a8ce63f1be51dd050629dde13b8a07a31bd2355"
+      },
+      "outputHashes": {
+        "skeleton_finish__aa_fade.png": "e2d0f9da14eb7d40a59d17afa8a1f227ab6add63fc99114bbe093b17ed0029c0",
+        "skeleton_finish__aa_fade_orm.png": "0ea8ee60736afa5f4babfe322f913457c7f2c10778f8f98a230a8002f14a8d34",
+        "skeleton_finish__aa_fade_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "skeleton_slot__aa_fade.png": "4b9697c631344bcfa1faf11fd92233fa8e5bb64923a5bf09d384957ba32249fe"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.8239059448242188
+    },
+    {
+      "asset": "stiletto",
+      "variant": 18,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.35..0.91; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_stiletto\\materials\\composite_inputs\\knife_stiletto_composite_inputs.vmat": "523e4e8d71d032b94e04e11ccb58bab8c74dd62d2a6a7511f20e4f17ad9fbdcc",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_stiletto\\materials\\composite_inputs\\knife_stiletto_masks.png": "96ac14d4eed29c78c069c3df6f21f44704494305080caf3ace5f0fc8ca5315e5",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_stiletto\\weapon_knife_stiletto.glb": "6b4e02e4fbd23925ecd0413156d33c6ecb33f091ef3be4f6434c60f1bcbda5af",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_cs2.png": "be2ad68224d22107c969e9bacd8a21267923f024a3f9ddd382eacdd6963d3387",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_cs2_orm.png": "2439b95148d66a916a994bf0c50ceaa778a74fcb03631c344656c7d4d20145e0",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\stiletto_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_stiletto_aa_fade_light_png.png": "c1d7cc1daf3a7538b17a2c59d376c83a77286e972a8ba3de874860e5ec66360b"
+      },
+      "outputHashes": {
+        "stiletto_finish__aa_fade.png": "657d9d2b9dcc8100a07d6bf6d8e4a44baf0a9e78bb259bc40c5a63243caef861",
+        "stiletto_finish__aa_fade_orm.png": "ad66e78fd5938ad843ae3fc5a9ceb59bedc515a0c579d0b8f32f055da86378cd",
+        "stiletto_finish__aa_fade_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "stiletto_slot__aa_fade.png": "7609d3ff64526ebb77375c9a014d2bc6334b5d288ed3321b85b22bfa4ff14502"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.6778415441513062
+    },
+    {
+      "asset": "tactical",
+      "variant": 19,
+      "finish": "am_gamma_doppler_phase3",
+      "paintId": 571,
+      "placement": "CS2 pattern RGB masks without added vein darkening; recipe colors/rotation/scale; fixed UV placement; local composition",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\am_gamma_doppler_phase3.vcompmat": "93be3536935719ccd2a31d9b42579f833a3b112bd8c12094a4262384f0e58ba8",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\am_gamma_doppler_phase3.vmat": "304e981656bd32b7960dc94df2b69150e9c7aaf6761ca492b30f4b87b3c63b29",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_multi\\smoke2_psd_cdf5ba83.png": "3181e6956b3bfe755929bcbd27cf155ff6e36d33af46a730a1c7340a802cf4d7",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_tactical\\materials\\composite_inputs\\knife_tactical_composite_inputs.vmat": "6eb948ae5fc55449ebfc4020fcce4b14cb75e95597707feec2b832cd0e16a8e8",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_tactical\\materials\\composite_inputs\\knife_tactical_masks.png": "dd0f3e1f19687db55b39213995280c73d23f99cd5eaeac9bb806bc078d36b91a",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_tactical\\weapon_knife_tactical.glb": "434619b8d77e6e8b7de9b241f0bbc61a643c0c224d92f61c5fee0f484f3dff27",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_cs2.png": "2e358a88614521c838cfe8a03c85636867be5287530a9391c0e080a4a83474d7",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_cs2_orm.png": "56d203c45a1a65cf1c9741fded1c20a1168b14c96d8cd108b4b28ef5ae877f19",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\tactical_cs2_normal.png": "8d0929eb081dd5af03ccef9b1e2960ba0cb7ec941de56b3e0b55a9b5faf693e8",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_tactical_am_gamma_doppler_phase3_light_png.png": "6025c5a95eebf3ea55f98e14a5e853afa7d56595206ab1d78f54bb820f788708"
+      },
+      "outputHashes": {
+        "tactical_finish__am_gamma_doppler_phase3.png": "f94c567dc4da19a8395c84df2cec262051db4a285a75807b0d326f142ab26b5c",
+        "tactical_finish__am_gamma_doppler_phase3_orm.png": "d2555bcd1ac344a3ba6072c8ac2659bd32bbb84032be93da36b4e5cb357b10b1",
+        "tactical_finish__am_gamma_doppler_phase3_normal.png": "8d0929eb081dd5af03ccef9b1e2960ba0cb7ec941de56b3e0b55a9b5faf693e8",
+        "tactical_slot__am_gamma_doppler_phase3.png": "11ea235e84f72a9e5c65684b21a26aede104fdd2c5b7a55a549cb3ba363f3142"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.6114194393157959
+    },
+    {
+      "asset": "talon",
+      "variant": 20,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.00..0.88; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_talon\\materials\\composite_inputs\\knife_talon_composite_inputs.vmat": "e1a7aea8f2f969e79c9289d852cb0ccc4014e5dfbedd4f66c21279d87ca85f92",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_talon\\materials\\composite_inputs\\knife_widowmaker_masks.png": "b883258a4fa8bb401f2e4ae5b450ee5eacd451edead30cab91fea340fec0851f",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_talon\\weapon_knife_talon.glb": "421501d6e039c225a80b3d024412e73f682daf86f96684cad1ed36f904fd4857",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_cs2.png": "1bce2fb6e2d29d57746c19d1b55b4baa2a9dc4c99f59f5e293e46cca7e91d489",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_cs2_orm.png": "5f77e4e2acefdade16e7396cb69f2bdc8c824826a8e41fe83578b1c561a3ab63",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\talon_cs2_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_widowmaker_aa_fade_light_png.png": "8d484d5ee34f01fefe380bfbfcbcfcdec88ef5a6d4062cb8179c1d65730b2b43"
+      },
+      "outputHashes": {
+        "talon_finish__aa_fade.png": "2fcdcbb866c57b7e8c6bf82df8df08ba55a28bb946eef3690031fe4f59153196",
+        "talon_finish__aa_fade_orm.png": "80dfce8fd9605cc2e237049e6d1307157b255e7417063d9179477f1b5ee3917c",
+        "talon_finish__aa_fade_normal.png": "3d873d67af1870e686e3e1b2aa7589f594d94b0c2775f71f2aaa88fe88fc4bab",
+        "talon_slot__aa_fade.png": "c48d1a5b7b91fd1053a8c8cad0ca8a61c7750e1df61391e592d420c8790abbed"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.552706241607666
+    },
+    {
+      "asset": "ursus",
+      "variant": 21,
+      "finish": "aa_fade",
+      "paintId": 38,
+      "placement": "CS2 fade texture and recipe colors, stable blade-space pattern window 0.27..0.90; not Valve seed/fade percent",
+      "finishTone": 0.86,
+      "sourceHashes": {
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\weapons\\paints\\legacy\\aa_fade.vcompmat": "acb3916db561bb23b633909ddc38dcfa1bd6a7d1fbb0d06f9cf6eaa2c23eac71",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\vmats\\aa_fade.vmat": "1ffea86ca785d4dc9e88994f9c6453c097957e39cab3883ea0256db408fbb3c1",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\materials\\models\\weapons\\customization\\paints\\anodized_air\\fade_psd_24407e73.png": "c195c24c415fd1c0f9b1b813f4722d8126cf90fecb7ec8c3caee19235da69e09",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_ursus\\materials\\composite_inputs\\knife_ursus_composite_inputs.vmat": "84a039c2db16960900e20da0cff5b482c2cdacf6515bc51bcf911d111d3f1dee",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\decompiled\\weapons\\models\\knife\\knife_ursus\\materials\\composite_inputs\\knife_ursus_masks.png": "d2a9e308756bbaec0316dc5fd2ef17474d7045bb51325030f95a6dd316fdbea3",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\09_knives\\glb\\weapons\\models\\knife\\knife_ursus\\weapon_knife_ursus.glb": "05d50cdc6cf40aeb5f42d1044c64961fbc105de94fe97d0da06ad1aa6e4b5b60",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_cs2.png": "9cc8b9b2555041c02e671a4eaf912f1149ee6a511445a85bf04f515355b1fbb0",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_cs2_orm.png": "50993d7481da20c49db134d289056bf85d45ef9123c60c1dc4e3978f4ad6377a",
+        "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\ursus_cs2_normal.png": "5a67de193668848c74321965cd66a0da9b515960fc5c23909045b3c3b853171d",
+        "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\knife_finishes_20260913\\decoded\\panorama\\images\\econ\\default_generated\\weapon_knife_ursus_aa_fade_light_png.png": "2f38a7317eee8b080a2c4611553cd684648d1cae781ad0ae983a4624126528ab"
+      },
+      "outputHashes": {
+        "ursus_finish__aa_fade.png": "ba47a110c00f5228e8b39c33f2b592de92c113890959de4e69d57a9d65550e67",
+        "ursus_finish__aa_fade_orm.png": "fb2593964f282f7eb1c5e5a8b12ec0b4ffdd9247f1aec4dd156439442f8a7286",
+        "ursus_finish__aa_fade_normal.png": "5a67de193668848c74321965cd66a0da9b515960fc5c23909045b3c3b853171d",
+        "ursus_slot__aa_fade.png": "a3ac5b4c9ab1e5ca316af019862eb3d62b035e08e16a7c26fe503cff2f5c4cc1"
+      },
+      "officialIconUnchanged": false,
+      "coverage": 0.5175579786300659
+    }
+  ]
+}

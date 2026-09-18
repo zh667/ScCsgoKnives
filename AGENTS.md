@@ -1,9 +1,17 @@
 # Project conventions
 
+- User-directed 2026-09-19: opening inventory cancels reload. Fix the actual UpdateGun modal cancellation
+  and input gate, preserve transaction validity, and keep action milestones on the animation clock.
+  See docs/menu-reload-fix-2026-09-19.md. Include in the same 1.2.2 Full-only delivery;
+  do not claim the independent knife missing-audio report is resolved.
+
 - User-directed 2026-09-18: implement the first/second-priority items in
   docs/player-feedback-analysis-2026-09-18.md, including smoke, flash and authentic CS2 casing effects.
   SCAR-20/G3SG1 now grow linearly to x1.5 fire rate; only AWP/SSG08 retain x3.5.
-  Keep IDs/save formats and verified backups. Knife material rework and penetration remain deferred.
+  Keep IDs/save formats and verified backups. Penetration remains deferred.
+  Later user feedback authorizes visible casing/quiet impact, larger grounded smoke and gem-pattern fixes.
+  Follow-up: finish smoke first, reduce overly strong gem veins, vary Fade coverage by knife and enlarge casing display.
+  Deliver Full only for this correction, preserving previous packages and source extractions.
 
 - User-directed 2026-09-17: ordinary-gun fire-rate growth is linear from x1 at Lv0 to x1.5 at Lv50;
   scoped snipers retain the existing x3.5 curve and Zeus recharge is unchanged. Ignore the earlier 35% suggestion.
