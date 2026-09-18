@@ -167,11 +167,32 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         // and silencer that carry over, and the transaction is what guarantees it.
         void ShowSkinGuns() {
             if (!Available()) return;
-            var guns = ScWeaponSkinning.Candidates(miner.Inventory).ToArray();
-            if (guns.Length == 0) { Notice("涂装 · 没有可用枪械", "背包里没有支持更换涂装的枪械。\n请将带有可用涂装的 CS 枪械放入玩家背包或快捷栏。目前只有部分型号有涂装；箱子里的枪不参与此列表。", ShowList); return; }
-            DialogsManager.ShowDialog(player.GuiWidget, Selection("更换涂装 · 选择枪械", guns, 56,
-                (Func<object, string>)(item => { var c = (ScWeaponSkinning.Candidate)item; return $"{ValueName(c.Value)} · {ScGunSkinCatalog.NameOf(c.SkinId)} · 第 {c.Slot + 1} 格"; }),
-                item => ShowSkins((ScWeaponSkinning.Candidate)item)));
+            object[] weapons=[..ScWeaponSkinning.Candidates(miner.Inventory),..ScKnifeSkinning.Candidates(miner.Inventory)];
+            if (weapons.Length == 0) { Notice("涂装 · 没有可用武器", "请将支持涂装的 CS 枪械或刀具放入玩家背包或快捷栏。箱子和创造物品目录不参与此列表。", ShowList); return; }
+            DialogsManager.ShowDialog(player.GuiWidget, Selection("更换涂装 · 选择武器", weapons, 56,
+                item => item is ScKnifeSkinning.Candidate k ? $"{ValueName(k.Value)} · 第 {k.Slot+1} 格" :
+                    item is ScWeaponSkinning.Candidate c ? $"{ValueName(c.Value)} · {ScGunSkinCatalog.NameOf(c.SkinId)} · 第 {c.Slot+1} 格" : "",
+                item => {if(item is ScKnifeSkinning.Candidate k)ShowKnifeSkins(k);else ShowSkins((ScWeaponSkinning.Candidate)item);}));
+        }
+        void ShowKnifeSkins(ScKnifeSkinning.Candidate knife) {
+            if(!Available())return;
+            var inventory=miner.Inventory;bool free=Creative();
+            var options=new[]{0,ScKnifeSkinCatalog.ForVariant(knife.Variant)}.Distinct().Select(skin=>new ScKnifeSkinning.Finish(knife.Variant,skin,
+                Terrain.ReplaceData(knife.Value,ScKnifeSkinCatalog.With(knife.Variant,skin)))).ToArray();
+            DialogsManager.ShowDialog(player.GuiWidget,Selection($"{ValueName(knife.Value)} · 选择涂装",options,56,
+                item=>{var f=(ScKnifeSkinning.Finish)item;return ScKnifeSkinCatalog.Name(f.Skin,f.Variant)+(f.Skin==knife.Skin?"（当前）":"");},item=>{
+                    var finish=(ScKnifeSkinning.Finish)item;
+                    var quote=ScKnifeSkinning.Prepare(inventory,knife,finish.Skin,free);
+                    if(quote is null){Notice("涂装 · 无法更换","已经是该外观，或刀具已移动。没有扣除材料。",ShowSkinGuns);return;}
+                    string detail=ScKnifeSkinCatalog.Name(knife.Skin,knife.Variant)+" → "+ScKnifeSkinCatalog.Name(finish.Skin,knife.Variant)
+                        +"\n"+(free?"创造模式：免费":MaterialLines(quote.Cost))+"\n仅改变这一把刀的外观，型号与伤害不变。";
+                    DialogsManager.ShowDialog(player.GuiWidget,new ScWorkbenchConfirmDialog("刀具涂装",detail,"更换","返回",button=>{
+                        if(button==MessageDialogButton.Button1 && Available()) {
+                            bool ok=ScKnifeSkinning.Apply(miner.Inventory,quote,Creative());
+                            Notice(ok?"涂装完成":"涂装未完成",ok?"刀具外观已更换。":"材料、背包或模式发生变化；请重新选择。失败交易会回滚，无法放回的物品保留在恢复队列。",ShowSkinGuns);
+                        } else ShowSkinGuns();
+                    }));
+                }));
         }
         void ShowSkins(ScWeaponSkinning.Candidate gun) {
             if (!Available()) return;

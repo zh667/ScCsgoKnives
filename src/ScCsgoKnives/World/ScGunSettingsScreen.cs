@@ -26,6 +26,8 @@ public sealed class ScGunSettingsScreen : Screen {
     ButtonWidget m_copyGroup;
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
+    readonly ButtonWidget m_worldSize = ScGunUi.Button("查看世界占用（只读）", 260);
+    System.Threading.Tasks.Task<string> m_sizeTask;
     readonly ScGunWorldBackground m_background = new();
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
     LabelWidget m_preview, m_status, m_fireStatus;
@@ -97,6 +99,8 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Heading("视角恢复"));
         m_content.Children.Add(m_recoverView);
         m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
+        m_content.Children.Add(ScGunUi.Heading("世界占用诊断"));
+        m_content.Children.Add(m_worldSize);
         m_content.Children.Add(ScGunUi.Heading("武器画质"));
         m_simpleMaterials = ScGunUi.Toggle("简化材质（适合手机）", m_working.SimpleMaterials);
         m_content.Children.Add(m_simpleMaterials);
@@ -164,6 +168,15 @@ public sealed class ScGunSettingsScreen : Screen {
     public override void Update() {
         bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
+        m_worldSize.IsEnabled=m_sizeTask is null && GameManager.Project is not null;
+        if(m_worldSize.IsClicked && m_sizeTask is null && GameManager.Project is {} project) {
+            string directory=project.FindSubsystem<SubsystemGameInfo>(true).DirectoryName;
+            m_sizeTask=System.Threading.Tasks.Task.Run(()=>{try{return ScWorldSizeReport.Read(directory);}catch(Exception e){return "无法完成文件统计："+e.Message+"\n未更改世界文件。";}});
+        }
+        if(m_sizeTask?.IsCompleted==true) {
+            string report=m_sizeTask.GetAwaiter().GetResult();m_sizeTask=null;
+            DialogsManager.ShowDialog(this,new ScWorkbenchConfirmDialog("世界文件占用",report,"关闭",null,_=>{}));
+        }
         if(m_recoverView.IsClicked) {
             DialogsManager.ShowDialog(this,new MessageDialog("恢复正常视角？",
                 "将退出 CS 开镜，恢复原版基础视野 100%（80°）和灵敏度 50%，并立即保存。不会重置其他设置、武器或存档；本页取消不会撤销此次恢复。",

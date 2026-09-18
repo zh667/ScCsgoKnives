@@ -246,6 +246,8 @@ foreach(var c in UiLightingCompatibilityRegression.Run(mod,enchantmentAssembly))
 foreach(var c in GunWorldEffectsRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in CommunityRepairRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in PlayerFeedbackRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in FeedbackSeptember18Regression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in CasingRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in DecoyRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if(linGunPackage is not null)foreach(var c in LinFirstPersonRegression.Run(mod,linGunPackage,vanillaContent))checks.Add(new{name=c.Name,ok=c.Ok,detail=c.Detail});
 if (sushiInventoryMods is not null) foreach(var c in SushiInventoryRegression.Run(mod, sushiInventoryMods)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });

@@ -1,0 +1,1430 @@
+{
+  "Models": {
+    "ak47_casing": {
+      "Model": "casing_ak47_casing",
+      "Texture": "casing_ak47_casing"
+    },
+    "awp_casing": {
+      "Model": "casing_awp_casing",
+      "Texture": "casing_awp_casing"
+    },
+    "deagle_casing": {
+      "Model": "casing_deagle_casing",
+      "Texture": "casing_deagle_casing"
+    },
+    "glock_casing": {
+      "Model": "casing_glock_casing",
+      "Texture": "casing_glock_casing"
+    },
+    "p90_casing": {
+      "Model": "casing_p90_casing",
+      "Texture": "casing_p90_casing"
+    },
+    "mag7_casing": {
+      "Model": "casing_mag7_casing",
+      "Texture": "casing_mag7_casing"
+    },
+    "nova_casing": {
+      "Model": "casing_nova_casing",
+      "Texture": "casing_nova_casing"
+    },
+    "xm1014_casing": {
+      "Model": "casing_xm1014_casing",
+      "Texture": "casing_xm1014_casing"
+    }
+  },
+  "Cues": {
+    "ak47:shoot1_ak": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          3.295863,
+          -0.380632,
+          -0.074079
+        ],
+        "Rotation": [
+          -0.145325,
+          -0.145424,
+          -0.69375,
+          0.690249
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "m4a1s:shoot1_rifle": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          1.794037,
+          -0.732201,
+          0.387933
+        ],
+        "Rotation": [
+          -0.145327,
+          -0.145423,
+          -0.693752,
+          0.690247
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "awp:shoot1_awp": [
+      {
+        "Model": "awp_casing",
+        "At": 0.74,
+        "Bone": "weapon_offset",
+        "Offset": [
+          3.180063,
+          -0.266412,
+          0.253778
+        ],
+        "Rotation": [
+          -0.145327,
+          -0.145423,
+          -0.693752,
+          0.690247
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          180.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "deagle:shoot1_deagle": [
+      {
+        "Model": "deagle_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          2.54994,
+          -0.362972,
+          1.030034
+        ],
+        "Rotation": [
+          -0.145325,
+          -0.145423,
+          -0.693747,
+          0.690252
+        ],
+        "SpeedMin": [
+          250.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          280.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "deagle:shoot_empty_deagle": [
+      {
+        "Model": "deagle_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          2.54994,
+          -0.362972,
+          1.030034
+        ],
+        "Rotation": [
+          -0.145325,
+          -0.145423,
+          -0.693747,
+          0.690252
+        ],
+        "SpeedMin": [
+          250.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          280.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "glock18:shoot1_glock": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          4.007166,
+          -0.260078,
+          0.522313
+        ],
+        "Rotation": [
+          -0.145326,
+          -0.145424,
+          -0.693749,
+          0.69025
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "glock18:shoot_empty_glock": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          4.007166,
+          -0.260078,
+          0.522313
+        ],
+        "Rotation": [
+          -0.145326,
+          -0.145424,
+          -0.693749,
+          0.69025
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "usp_silencer:shoot1_pistol": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          2.927814,
+          -0.391442,
+          0.784858
+        ],
+        "Rotation": [
+          -0.145325,
+          -0.145425,
+          -0.693746,
+          0.690253
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "usp_silencer:shoot_empty_pistol": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          2.927814,
+          -0.391442,
+          0.784858
+        ],
+        "Rotation": [
+          -0.145325,
+          -0.145425,
+          -0.693746,
+          0.690253
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "m4a4:shoot1_m4a4": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          1.794046,
+          -0.73219,
+          0.387947
+        ],
+        "Rotation": [
+          -0.145327,
+          -0.145423,
+          -0.693752,
+          0.690247
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "famas:shoot1_famas": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -9.153134,
+          -0.361867,
+          0.208321
+        ],
+        "Rotation": [
+          -0.14532,
+          -0.145428,
+          -0.693725,
+          0.690274
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "mp9:shoot1_mp9": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -2.695527,
+          -0.392692,
+          -0.84245
+        ],
+        "Rotation": [
+          -0.18017,
+          -0.201714,
+          -0.691246,
+          0.670097
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "p90:shoot1_p90": [
+      {
+        "Model": "p90_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -7.595222,
+          0.171609,
+          -4.759733
+        ],
+        "Rotation": [
+          0.446734,
+          0.548093,
+          -0.546661,
+          0.448537
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "ssg08:shoot1_ssg08": [
+      {
+        "Model": "awp_casing",
+        "At": 0.840016,
+        "Bone": "weapon_offset",
+        "Offset": [
+          3.953207,
+          -0.311836,
+          0.477795
+        ],
+        "Rotation": [
+          -0.112468,
+          -0.113239,
+          -0.697932,
+          0.698154
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          180.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "cz75a:shoot1_cz75a": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          1.383904,
+          -0.207734,
+          -0.009086
+        ],
+        "Rotation": [
+          -0.14532,
+          -0.14543,
+          -0.693721,
+          0.690278
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "cz75a:shoot_empty_cz75a": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          1.383904,
+          -0.207734,
+          -0.009086
+        ],
+        "Rotation": [
+          -0.14532,
+          -0.14543,
+          -0.693721,
+          0.690278
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "elite:shoot_right1_elite": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide_r",
+        "Offset": [
+          3.626597,
+          -0.391318,
+          -0.124888
+        ],
+        "Rotation": [
+          -0.295799,
+          -0.275532,
+          -0.669278,
+          0.62342
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "elite:shoot_left1_elite": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide_l",
+        "Offset": [
+          3.661166,
+          -0.363689,
+          -0.07697
+        ],
+        "Rotation": [
+          -0.261104,
+          -0.245456,
+          -0.68021,
+          0.639445
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject2"
+      }
+    ],
+    "elite:shoot_leftlast_elite": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide_l",
+        "Offset": [
+          3.661166,
+          -0.363689,
+          -0.07697
+        ],
+        "Rotation": [
+          -0.261104,
+          -0.245456,
+          -0.68021,
+          0.639445
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject2"
+      }
+    ],
+    "elite:shoot_rightlast_elite": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide_r",
+        "Offset": [
+          3.626597,
+          -0.391318,
+          -0.124888
+        ],
+        "Rotation": [
+          -0.295799,
+          -0.275532,
+          -0.669278,
+          0.62342
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "fiveseven:shoot1_fiveseven": [
+      {
+        "Model": "p90_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          4.030813,
+          -0.405845,
+          0.299459
+        ],
+        "Rotation": [
+          -0.145323,
+          -0.145428,
+          -0.693732,
+          0.690267
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "fiveseven:shoot_empty_fiveseven": [
+      {
+        "Model": "p90_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          4.030813,
+          -0.405845,
+          0.299459
+        ],
+        "Rotation": [
+          -0.145323,
+          -0.145428,
+          -0.693732,
+          0.690267
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "hkp2000:shoot1_hkp": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          2.845432,
+          -0.304992,
+          0.122088
+        ],
+        "Rotation": [
+          -0.145326,
+          -0.145424,
+          -0.693749,
+          0.69025
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "hkp2000:shoot_empty_hkp": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          2.845432,
+          -0.304992,
+          0.122088
+        ],
+        "Rotation": [
+          -0.145326,
+          -0.145424,
+          -0.693749,
+          0.69025
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "p250:shoot1_p250": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          3.688754,
+          -0.145077,
+          0.181782
+        ],
+        "Rotation": [
+          -0.145323,
+          -0.145427,
+          -0.693732,
+          0.690267
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "p250:shoot_empty_p250": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "slide",
+        "Offset": [
+          3.688754,
+          -0.145077,
+          0.181782
+        ],
+        "Rotation": [
+          -0.145323,
+          -0.145427,
+          -0.693732,
+          0.690267
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "tec9:shoot1_tec9": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.443898,
+          -0.726564,
+          1.665843
+        ],
+        "Rotation": [
+          -0.145322,
+          -0.145428,
+          -0.69373,
+          0.690269
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "tec9:shoot_empty_tec9": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.443898,
+          -0.726564,
+          1.665843
+        ],
+        "Rotation": [
+          -0.145322,
+          -0.145428,
+          -0.69373,
+          0.690269
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "aug:shoot1_aug": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -8.40748,
+          -0.268058,
+          -0.755518
+        ],
+        "Rotation": [
+          -0.145324,
+          -0.145424,
+          -0.693744,
+          0.690255
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "aug:ironsight_shoot_aug": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -8.40748,
+          -0.268058,
+          -0.755518
+        ],
+        "Rotation": [
+          -0.145324,
+          -0.145424,
+          -0.693744,
+          0.690255
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "bizon:shoot1_bizon": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.19424,
+          -0.226519,
+          -0.029175
+        ],
+        "Rotation": [
+          -0.090826,
+          -0.109109,
+          -0.711597,
+          0.688095
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "g3sg1:shoot1_g3sg1": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.073332,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.192223,
+          -0.23883,
+          0.66679
+        ],
+        "Rotation": [
+          -0.075467,
+          -0.072997,
+          -0.705366,
+          0.701025
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "galilar:shoot1_galilar": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.648388,
+          -0.361851,
+          -0.316931
+        ],
+        "Rotation": [
+          -0.14532,
+          -0.145429,
+          -0.693723,
+          0.690276
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "m249:shoot1_m249": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.196753,
+          -0.73411,
+          -0.066699
+        ],
+        "Rotation": [
+          0.739662,
+          -0.5791,
+          0.265473,
+          0.216952
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "mac10:shoot1_mac10": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -2.725834,
+          -0.698665,
+          -0.638438
+        ],
+        "Rotation": [
+          -0.090826,
+          -0.109111,
+          -0.711596,
+          0.688097
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "mag7:shoot1_mag7": [
+      {
+        "Model": "mag7_casing",
+        "At": 0.333333,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -1.330452,
+          -0.778908,
+          0.215142
+        ],
+        "Rotation": [
+          -0.145324,
+          -0.145424,
+          -0.693744,
+          0.690255
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "mp5sd:shoot1_mp5sd": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          1.558864,
+          -0.190661,
+          0.852903
+        ],
+        "Rotation": [
+          -0.090827,
+          -0.10911,
+          -0.711601,
+          0.688091
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "mp7:shoot1_mp7": [
+      {
+        "Model": "glock_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          -1.749763,
+          -0.490959,
+          -0.068466
+        ],
+        "Rotation": [
+          -0.090828,
+          -0.109109,
+          -0.711604,
+          0.688088
+        ],
+        "SpeedMin": [
+          150.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          200.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "negev:shoot1_negev": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.816892,
+          -1.199899,
+          1.045486
+        ],
+        "Rotation": [
+          -0.041715,
+          -0.028825,
+          -0.714163,
+          0.69814
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "negev:shoot_empty_negev": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.816892,
+          -1.199899,
+          1.045486
+        ],
+        "Rotation": [
+          -0.041715,
+          -0.028825,
+          -0.714163,
+          0.69814
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "nova:shoot1_nova": [
+      {
+        "Model": "nova_casing",
+        "At": 0.333333,
+        "Bone": "weapon_offset",
+        "Offset": [
+          4.53588,
+          -0.35668,
+          -0.707991
+        ],
+        "Rotation": [
+          -0.145325,
+          -0.145424,
+          -0.693746,
+          0.690253
+        ],
+        "SpeedMin": [
+          200.0,
+          -15.0,
+          -150.0
+        ],
+        "SpeedMax": [
+          250.0,
+          5.0,
+          -150.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "sawedoff:shoot1_sawedoff": [
+      {
+        "Model": "xm1014_casing",
+        "At": 0.233333,
+        "Bone": "weapon_offset",
+        "Offset": [
+          3.702575,
+          -0.393629,
+          -0.76092
+        ],
+        "Rotation": [
+          -0.145324,
+          -0.145424,
+          -0.693744,
+          0.690255
+        ],
+        "SpeedMin": [
+          200.0,
+          -15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "scar20:shoot1_scar20": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.106664,
+        "Bone": "weapon_offset",
+        "Offset": [
+          1.372168,
+          -0.412451,
+          -0.346776
+        ],
+        "Rotation": [
+          -0.075467,
+          -0.072997,
+          -0.705366,
+          0.701024
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "scar20:shoot_empty_scar20": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.106664,
+        "Bone": "weapon_offset",
+        "Offset": [
+          1.372168,
+          -0.412451,
+          -0.346776
+        ],
+        "Rotation": [
+          -0.075467,
+          -0.072997,
+          -0.705366,
+          0.701024
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "sg556:shoot1_sg556": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.766067,
+          -0.511373,
+          0.277992
+        ],
+        "Rotation": [
+          -0.10985,
+          -0.082354,
+          -0.676489,
+          0.723542
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "sg556:ironsight_shoot_sg556": [
+      {
+        "Model": "ak47_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.766067,
+          -0.511373,
+          0.277992
+        ],
+        "Rotation": [
+          -0.10985,
+          -0.082354,
+          -0.676489,
+          0.723542
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "ump45:shoot1_ump45": [
+      {
+        "Model": "deagle_casing",
+        "At": 0.04,
+        "Bone": "weapon_offset",
+        "Offset": [
+          2.137303,
+          -0.519311,
+          -0.129811
+        ],
+        "Rotation": [
+          -0.090828,
+          -0.10911,
+          -0.711604,
+          0.688088
+        ],
+        "SpeedMin": [
+          200.0,
+          15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          220.0,
+          -5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ],
+    "xm1014:shoot1_xm1014": [
+      {
+        "Model": "xm1014_casing",
+        "At": 0.100004,
+        "Bone": "weapon_offset",
+        "Offset": [
+          3.125891,
+          -0.230113,
+          -0.911385
+        ],
+        "Rotation": [
+          -0.145321,
+          -0.145426,
+          -0.693732,
+          0.690268
+        ],
+        "SpeedMin": [
+          200.0,
+          -15.0,
+          50.0
+        ],
+        "SpeedMax": [
+          250.0,
+          5.0,
+          75.0
+        ],
+        "Attachment": "shell_eject"
+      }
+    ]
+  }
+}

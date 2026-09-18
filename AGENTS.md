@@ -1,5 +1,10 @@
 # Project conventions
 
+- User-directed 2026-09-18: implement the first/second-priority items in
+  docs/player-feedback-analysis-2026-09-18.md, including smoke, flash and authentic CS2 casing effects.
+  SCAR-20/G3SG1 now grow linearly to x1.5 fire rate; only AWP/SSG08 retain x3.5.
+  Keep IDs/save formats and verified backups. Knife material rework and penetration remain deferred.
+
 - User-directed 2026-09-17: ordinary-gun fire-rate growth is linear from x1 at Lv0 to x1.5 at Lv50;
   scoped snipers retain the existing x3.5 curve and Zeus recharge is unchanged. Ignore the earlier 35% suggestion.
   Improve decoy attraction using actual installed mod creature data, emphasize workbench levels with parenthesized

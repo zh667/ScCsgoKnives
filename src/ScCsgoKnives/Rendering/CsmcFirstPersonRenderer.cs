@@ -851,6 +851,7 @@ public static class CsmcFirstPersonRenderer {
             ? pose.RequestedTime - cs2Duration * MathF.Floor(pose.RequestedTime / cs2Duration)
             : MathUtils.Clamp(pose.RequestedTime, 0f, MathF.Max(cs2Duration, 0f));
         Cs2Rig.Pose cs2 = Cs2Rig.Sample(gun, pose.ClipAlias, cs2Time);
+        if(cs2 is not null)cs2=KnifeAnimationController.InspectTransition(firstPerson,cs2);
         if (cs2 is null) {
             KnifeDiagnostics.WarnOnce($"cs2-pose-{gun}", $"No CS2 pose for {gun}/{pose.ClipAlias}; CS2 weapon drawing skipped.");
             return false;
@@ -1033,10 +1034,24 @@ public static class CsmcFirstPersonRenderer {
         s_cs2MuzzleInvView = camera.InvertedViewMatrix;
         s_cs2MuzzleFovRatio = projection.M11 / world;
         s_cs2MuzzleFrame = Time.FrameIndex;
+        var player=camera.GameWidget?.PlayerData?.ComponentPlayer;
+        if(player is not null){var frame=s_casingFrames.GetOrCreateValue(player);frame.Root=root;frame.View=camera.InvertedViewMatrix;frame.Ratio=s_cs2MuzzleFovRatio;frame.Pose=pose;frame.Gun=gun;frame.Frame=Time.FrameIndex;}
         s_cs2MuzzleBones.Clear();
         if (pose is null) return;
         foreach (string name in MuzzleBoneNames)
             if (pose.HasBone(name)) s_cs2MuzzleBones[name] = pose.GetBoneOrigin(name);
+    }
+
+    sealed class CasingFrame {public Matrix Root,View;public float Ratio;public Cs2Rig.Pose Pose;public string Gun;public int Frame;}
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComponentPlayer,CasingFrame> s_casingFrames=new();
+    public static bool TryGetCasingFrame(ComponentPlayer player,string gun,ScCasingEffects.Cue cue,out Matrix transform){
+        transform=Matrix.Identity;
+        if(!s_casingFrames.TryGetValue(player,out var f)||f.Gun!=gun||Time.FrameIndex-f.Frame>2||f.Pose is null||!f.Pose.Bones.TryGetValue(cue.Bone,out Matrix bone))return false;
+        Matrix attachment=Matrix.CreateFromQuaternion(new Quaternion(cue.Rotation[0],cue.Rotation[1],cue.Rotation[2],cue.Rotation[3]))*Matrix.CreateTranslation(new Vector3(cue.Offset[0],cue.Offset[1],cue.Offset[2]));
+        Matrix view=attachment*bone*f.Root;
+        if(view.Translation.Z>=-.02f)return false;
+        Vector3 origin=view.Translation;origin.X*=f.Ratio;origin.Y*=f.Ratio;view.Translation=origin;
+        transform=view*f.View;return ScGrenadeState.Finite(transform.Translation);
     }
 
     /// <summary>

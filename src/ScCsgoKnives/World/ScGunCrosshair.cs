@@ -23,6 +23,7 @@ public static class ScGunCrosshair {
     public static bool Active(ComponentPlayer player, Camera camera, bool scoped) {
         if (!ScUiSettings.GunCrosshair || player is null) return false;
         if (!HoldingGun(player)) return false;
+        if (HideForSniper(player)) return false;
         if (scoped || CsmcFirstPersonRenderer.ScopeOverlayActive) return false;
         if (player.ComponentHealth.Health <= 0) return false;
         if (player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)) return false;
@@ -30,6 +31,9 @@ public static class ScGunCrosshair {
         // Third person and the death camera draw the world from somewhere else; a combat reticle does not belong there.
         return camera is null || (!camera.Eye.HasValue && !camera.UsesMovementControls);
     }
+
+    public static bool HideForSniper(ComponentPlayer player) => HoldingGun(player)
+        && ScGunGrowth.IsSniper(ScGunBlock.GetVariant(player.ComponentMiner.ActiveBlockValue));
 
     /// <summary>Screen-space size in the 960x540 reference the rest of the mod's HUD uses.</summary>
     public static float Scale(Vector2 viewport) => Math.Clamp(Math.Min(viewport.X / 960f, viewport.Y / 540f), .55f, 2.5f);

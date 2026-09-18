@@ -191,10 +191,23 @@ static class SwitchAnimationRegression {
                 Test($"inspect-after-menu-switch/{variant}", () => {
                     var (model, state) = Setup((variant + 1) % 63, "Shoot", "shoot1", true); inventory.m_slots[0] = Value(variant); Time(.03);
                     if (!(bool)ctrl.GetMethod("TriggerInspect").Invoke(null, [player])) return false;
-                    string deploy = (string)state.GetType().GetField("ClipAlias").GetValue(state);
-                    if (!deploy.StartsWith("deploy") || !(bool)state.GetType().GetField("PendingInspect").GetValue(state)) return false;
-                    Time(.03 + Duration(variant, deploy) + .01); var pose = Update(model, variant);
-                    return Clip(pose).StartsWith("inspect");
+                    string inspect = (string)state.GetType().GetField("ClipAlias").GetValue(state);
+                    double ready=(double)state.GetType().GetField("DrawReadyAt").GetValue(state);
+                    if (!inspect.StartsWith("inspect") || (bool)state.GetType().GetField("PendingInspect").GetValue(state)
+                        || !(bool)ctrl.GetMethod("IsBusy").Invoke(null,[model])) return false;
+                    var token=ctrl.GetMethod("ActionToken").Invoke(null,[model]);
+                    ctrl.GetMethod("TriggerInspect").Invoke(null,[player]);
+                    if(!Equals(token,ctrl.GetMethod("ActionToken").Invoke(null,[model])) || (bool)state.GetType().GetField("PendingInspect").GetValue(state))return false;
+                    foreach(float blendTime in new[]{0f,.06f,.13f}){
+                        Time(.03+blendTime);
+                        string asset=(string)rig.GetMethod("GetAssetName").Invoke(null,[variant]);
+                        var target=mod.GetType("Game.Cs2Rig").GetMethod("Sample").Invoke(null,[asset,inspect,blendTime]);
+                        var blended=ctrl.GetMethod("InspectTransition").Invoke(null,[model,target]);
+                        foreach(string matrices in new[]{"Parts","Bones"})foreach(var m in ((Dictionary<string,Matrix>)blended.GetType().GetField(matrices).GetValue(blended)).Values)
+                            if(typeof(Matrix).GetFields().Where(f=>f.FieldType==typeof(float)).Any(f=>!float.IsFinite((float)f.GetValue(m))))return false;
+                    }
+                    Time(ready+.001); Update(model,variant);
+                    return !(bool)ctrl.GetMethod("IsBusy").Invoke(null,[model]);
                 });
             }
         } finally {

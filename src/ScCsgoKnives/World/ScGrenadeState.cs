@@ -17,7 +17,16 @@ public sealed class ScGrenadeState {
     public const float HeRadius=6, HeDamage=48;
     public static float HePower(float distance) => HeDamage * Math.Clamp(1 - distance / HeRadius, 0, 1);
     // CS2's flash has a full white peak and a several-second recovery tail.
-    public static float FlashDuration(float distance, float facing) => 4.5f * Math.Clamp(1 - distance / 16, 0, 1) * (.12f + .88f * Math.Clamp((facing + .2f) / 1.2f, 0, 1));
+    public const float FlashRadius = 20, FlashMaximum = 5.5f, FlashImmunity = 3;
+    public static float FlashDuration(float distance, float facing) => FlashMaximum
+        * Math.Clamp(1 - Math.Max(0, distance - 2) / (FlashRadius - 2), 0, 1)
+        * (.1f + .9f * Math.Clamp((facing + .2f) / 1.2f, 0, 1));
+    public static float FlashOpacity(float left, float duration) {
+        if (left <= 0 || duration <= 0) return 0;
+        float hold = .6f * Math.Clamp(duration / FlashMaximum, 0, 1);
+        float remaining = Math.Clamp(left / Math.Max(.01f, duration - hold), 0, 1);
+        return remaining * remaining * (3 - 2 * remaining);
+    }
     public ValuesDictionary Save() {
         var d = new ValuesDictionary(); d.SetValue("Kind", Kind); d.SetValue("Owner", Owner); d.SetValue("Id", Id); d.SetValue("Position", Position);
         d.SetValue("Velocity", Velocity); d.SetValue("Remaining", Remaining); d.SetValue("Age", Age);

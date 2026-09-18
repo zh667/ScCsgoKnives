@@ -162,15 +162,15 @@ public static class SurvivalSelfTest {
             return hold && refilling && gone && saved && ScSmokeDisturbance.Total == 3.5f && ScSmokeDisturbance.Clearing(null, Vector3.Zero, null) == 0;
         });
         Test("smoke-opening-opens-sight", () => {
-            var smoke = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
+            var smoke = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.75f };
             Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
             var opening = new ScSmokeDisturbance { Center = Vector3.Zero }; opening.SmokeIds.Add(1);
             float intact = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, null), open = ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]);
-            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 6.3f) < .3f; // CS2-sized radius with the 0.5 m soft edge inside it
+            bool blockedBefore = ScSmokeVolume.Blocks([smoke], a, b) && Math.Abs(intact - 5.15f) < .3f; // 5.5 m diameter minus two triangular 0.35 m density edges
             bool openNow = open <= .5f + 1e-3f /* only the 0.5 m soft rim on each side is left */ && !ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && ScSmokeVolume.Density(smoke, Vector3.Zero, [opening]) == 0 && ScSmokeVolume.Density(smoke, Vector3.Zero) == 1;
             var side = new ScSmokeDisturbance { Center = new Vector3(0, 0, 4) }; side.SmokeIds.Add(1); // opening beside the path: sight still blocked
             bool sideBlocked = ScSmokeVolume.Blocks([smoke], a, b, null, [side]);
-            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 6.3f) < .3f;
+            opening.Remaining = 0; bool refilled = ScSmokeVolume.Blocks([smoke], a, b, null, [opening]) && Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, smoke, [opening]) - 5.15f) < .3f;
             return blockedBefore && openNow && sideBlocked && refilled;
         });
         Test("scope-key-press-edge", () => {
@@ -806,15 +806,15 @@ public static class SurvivalSelfTest {
             return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 3 && broken[mech] == 3 && half[blank] == 5 && half[mech] == 3;
         });
         Test("smoke-opening-bound-to-its-smokes", () => {
-            var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f };
-            var behindWall = new ScGrenadeState { Kind = 2, Id = 2, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.5f + Vector3.UnitZ * 2 };
+            var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.75f };
+            var behindWall = new ScGrenadeState { Kind = 2, Id = 2, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * 1.75f + Vector3.UnitZ * 2 };
             var opening = new ScSmokeDisturbance { Center = Vector3.Zero }; opening.SmokeIds.Add(1);
             Vector3 a = new(-5, 0, 0), b = new(5, 0, 0);
             bool nearOpened = ScSmokeVolume.Density(near, Vector3.Zero, [opening]) == 0 && !ScSmokeVolume.Blocks([near], a, b, null, [opening]);
             bool otherWhole = ScSmokeVolume.Density(behindWall, Vector3.Zero, [opening]) == 1 && ScSmokeVolume.Blocks([behindWall], a, b, null, [opening]);
             var l = ScSmokeDisturbance.Load(opening.Save());
             bool saved = l is not null && l.SmokeIds.SequenceEqual([1]) && ScSmokeDisturbance.Load(new ScSmokeDisturbance { Center = Vector3.Zero }.Save()) is null; // an opening naming no smoke is dropped
-            bool sameDensity = Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, near, null) - 6.3f) < .3f; // the same soft-edged density the overlay uses, integrated
+            bool sameDensity = Math.Abs(ScSmokeVolume.EffectiveInsideLength(a, b, near, null) - 5.15f) < .3f; // the same soft-edged density the overlay uses, integrated
             return nearOpened && otherWhole && saved && sameDensity;
         });
         Test("third-person-body-fist", () => {
@@ -837,7 +837,7 @@ public static class SurvivalSelfTest {
         Test("throw-creative", () => { var i=Setup(0,1);return new ScThrowTransaction(i).Commit(true,()=>true,()=>true) && i.Counts[0]==1; });
         Test("grenade-save-fuse-owner", () => { var g=new ScGrenadeState {Kind=0,Owner=7,Remaining=.22f,Position=new Vector3(1,2,3),Velocity=new Vector3(4,5,6)};var l=ScGrenadeState.Load(g.Save());return l.Owner==7 && l.Remaining==.22f && l.Position==g.Position && l.Velocity==g.Velocity; });
         Test("grenade-active-limits", () => { var list=Enumerable.Range(0,16).Select(i=>new ScGrenadeState {Owner=i/4}).ToArray();return !ScGrenadeState.CanAdd(list,9) && !ScGrenadeState.CanAdd(list.Take(4),0) && ScGrenadeState.CanAdd(list.Take(4),1); });
-        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==48 && ScGrenadeState.HePower(3)==24 && ScGrenadeState.HePower(6)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-4.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(16,1)==0);
+        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==48 && ScGrenadeState.HePower(3)==24 && ScGrenadeState.HePower(6)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-5.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(20,1)==0);
         Test("smoke-finite-segment",()=> Math.Abs(ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(5,0,0),Vector3.Zero,3)-6)<.001f
             && ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(-4,0,0),Vector3.Zero,3)==0
             && ScSmokeVolume.InsideLength(new Vector3(-5,3,0),new Vector3(5,3,0),Vector3.Zero,3)==0);

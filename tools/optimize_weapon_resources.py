@@ -4,7 +4,7 @@ Each collapse retains an original vertex (including UV/normal/skin data). Mixed-
 vertices and vertices touching a different bone signature are locked; borders stay locked.
 """
 from pathlib import Path
-import sys, struct, json, io, hashlib, zipfile, argparse
+import sys, struct, json, io, hashlib, zipfile, argparse, shutil
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / '.tmp/optimization-deps'))
 import numpy as np
@@ -190,16 +190,32 @@ def main():
     parser.add_argument('--source-package',type=Path,default=ROOT/'output/ScCsgoResources-1.8.0.scmod')
     parser.add_argument('--stage',type=Path,default=STAGE)
     parser.add_argument('--report',type=Path,default=REPORT)
+    parser.add_argument('--reuse-manifest',type=Path)
+    parser.add_argument('--reuse-stage',type=Path)
     args=parser.parse_args();STAGE=args.stage.resolve();REPORT=args.report.resolve()
+    if bool(args.reuse_manifest)!=bool(args.reuse_stage):parser.error('Supply both --reuse-manifest and --reuse-stage.')
+    cache={r['path']:r for r in json.loads(args.reuse_manifest.read_text('utf-8'))} if args.reuse_manifest else {}
+    def reuse(name,data):
+        row=cache.get(name)
+        if row is None or row['sourceSha256']!=sha(data):return False
+        target=name[:-4]+'.webp' if name.endswith('.png') else name
+        path=args.reuse_stage/target
+        if not path.is_file() or sha(path.read_bytes())!=row['sha256']:return False
+        destination=STAGE/target;destination.parent.mkdir(parents=True,exist_ok=True)
+        if path.resolve()!=destination.resolve():shutil.copyfile(path,destination)
+        rows.append(row);return True
     (STAGE/'AnimationData').mkdir(parents=True,exist_ok=True);REPORT.mkdir(parents=True,exist_ok=True)
     for p in sorted((ROOT/'src/ScCsgoKnives/AnimationData').iterdir()):
-        if p.suffix in ('.skin','.parts'): binary(p)
+        if p.suffix in ('.skin','.parts'):
+            if not reuse('AnimationData/'+p.name,p.read_bytes()):binary(p)
         elif p.name.endswith('.cs2.animation.json'):
             (STAGE/'AnimationData'/p.name).write_bytes(p.read_bytes())
     print('Binary models done',len(rows),flush=True)
     with zipfile.ZipFile(args.source_package) as archive:
         for entry in archive.infolist():
             name=entry.filename
+            eligible=name.startswith('Assets/Models/') and name.endswith('.obj') or name.endswith('.png') and not args.models_only
+            if eligible and reuse(name,archive.read(name)):continue
             if name.startswith('Assets/Models/') and name.endswith('.obj'): data=obj(name,archive.read(name))
             elif name.endswith('.png') and not args.models_only:
                 data=texture(name,archive.read(name));name=name[:-4]+'.webp'

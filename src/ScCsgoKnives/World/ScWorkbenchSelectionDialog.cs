@@ -98,8 +98,9 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         ScGunDurability.Class.Pistol=>"手枪",ScGunDurability.Class.Smg=>"冲锋枪",ScGunDurability.Class.Rifle=>"步枪",
         ScGunDurability.Class.Shotgun=>"霰弹枪",ScGunDurability.Class.BoltSniper or ScGunDurability.Class.AutoSniper=>"狙击枪",
         ScGunDurability.Class.MachineGun=>"机枪",_=>"电击枪"
-    } : item is ScGunSkin ? "涂装" : item is ScWeaponRepair.Candidate or ScWeaponSkinning.Candidate or ScGunCounter.Candidate ? "背包枪械" : "功能";
+    } : item is ScGunSkin or ScKnifeSkinning.Finish ? "涂装" : item is ScKnifeSkinning.Candidate ? "背包刀具" : item is ScWeaponRepair.Candidate or ScWeaponSkinning.Candidate or ScGunCounter.Candidate ? "背包枪械" : "功能";
     static int ValueOf(object item) => item switch {
+        ScKnifeSkinning.Candidate c=>c.Value, ScKnifeSkinning.Finish f=>f.Value,
         ScComponentCrafting.Entry c=>c.Value, ScWeaponCrafting.Entry e=>e.Value, ScWeaponRepair.Candidate c=>c.Value,ScWeaponSkinning.Candidate c=>c.Value,ScGunCounter.Candidate c=>c.Value,
         ScGunSkin s=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunSkinTemplateBlock>(true),0,s.PaintId),_=>0
     };
@@ -120,6 +121,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             ScComponentCrafting.Entry c=>c.Materials(),
             ScWeaponCrafting.Entry e=>e.Materials(),
             ScGunSkin s=>ScGunSkinCatalog.CostOf(s,ScWeaponMaterialBlock.Value),
+            ScKnifeSkinning.Finish f=>ScKnifeSkinning.Cost(f.Skin),
             _=>new Dictionary<int,int>()
         };
         if(Craftable)materials=ScCraftBatch.Cost(materials,m_count);

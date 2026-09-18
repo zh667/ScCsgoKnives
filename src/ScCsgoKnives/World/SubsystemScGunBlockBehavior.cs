@@ -55,6 +55,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public readonly ScHeldWeaponSelection Selection = new();
         /// <summary>Sounds due at a game time: the magazine, bolt and screw noises inside a clip.</summary>
         public readonly List<(double At, string Name)> Scheduled = [];
+        public long InspectSoundToken=-1;
     }
 
     /// <summary>
@@ -85,6 +86,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     /// <summary>Queues the clip's cues; false when neither table has any.</summary>
     bool Schedule(GunState state, string spec, string clip, double startedAt, bool silenced = false) {
+        if(state.InspectSoundToken>=0){state.Scheduled.Clear();state.InspectSoundToken=-1;}
         string key = $"{spec}:{clip}";
         // CS2's own event frames when the profile asks for them, else the bone-timed
         // table. Either way a clip CS2 has no cue for falls back to the old row, and
@@ -96,18 +98,33 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         foreach ((float at, string name) in list) {
             // The M4A1-S bolt sounds differently with the silencer on (m4a1_silencer_bolt*).
             string n = silenced && name is "m4a1s_boltback" or "m4a1s_boltforward" ? name + "_silenced" : name;
-            state.Scheduled.Add((startedAt + at, n));
+            state.Scheduled.Add((SoundTime(startedAt + at), n));
         }
         return list.Length > 0;
     }
 
     void PlayScheduled(ComponentPlayer player, GunState state, double now) {
+        now=KnifeClock.Now;
+        if(state.InspectSoundToken>=0 && KnifeAnimationController.ActionToken(player?.Entity?.FindComponent<ComponentFirstPersonModel>())!=state.InspectSoundToken){state.Scheduled.Clear();state.InspectSoundToken=-1;}
         if (state.Scheduled.Count == 0) return;
         for (int i = state.Scheduled.Count - 1; i >= 0; i--) {
             if (now < state.Scheduled[i].At) continue;
-            PlaySound(player, state.Scheduled[i].Name);
+            // A stalled/background frame must not dump a whole clip's old cues at once.
+            if(now-state.Scheduled[i].At<=.2) ScPresentationSound.Play(state.Scheduled[i].Name);
             state.Scheduled.RemoveAt(i);
         }
+    }
+    double SoundTime(double gameTime) => KnifeClock.Now + gameTime - m_time.GameTime;
+    public void PresentationTick(ComponentPlayer player) {
+        if(!m_states.TryGetValue(player,out var state))return;
+        if(player.ComponentHealth.Health<=0 || player.ComponentMiner.ActiveBlockValue!=state.LastValue) {state.Scheduled.Clear();return;}
+        PlayScheduled(player,state,m_time.GameTime);
+    }
+    public void InspectSound(ComponentPlayer player,string clip) {
+        if(!m_states.TryGetValue(player,out var state))return;
+        state.Scheduled.Clear();
+        var spec=ScGunBlock.SpecOf(player.ComponentMiner.ActiveBlockValue);
+        if(spec is not null){Schedule(state,spec.Name,clip,m_time.GameTime);state.InspectSoundToken=KnifeAnimationController.ActionToken(player.Entity.FindComponent<ComponentFirstPersonModel>());}
     }
 
     SubsystemTerrain m_terrain;
@@ -117,6 +134,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     SubsystemPlayers m_players;
     SubsystemTime m_time;
     readonly Dictionary<ComponentPlayer, GunState> m_states = [];
+    readonly ScCasingEffects m_casings=new();
     readonly Random m_random = new();
     static readonly HashSet<string> s_missingSounds = [];
 
@@ -127,7 +145,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// The AWP scope mask is drawn here, at order 350 (after the sky at 105 and particles at
     /// 300), not in the first-person pass, so nothing paints over it when the player looks up.
     /// </summary>
-    public int[] DrawOrders => [350, 2001];
+    public int[] DrawOrders => [10, 350, 2001];
     /// <summary>Whether this player's gun is scoped right now; the crosshair and the vanilla-crosshair hook read it.</summary>
     public bool IsScoped(ComponentPlayer player) => player is not null && m_states.TryGetValue(player, out var state) && state.Zoom > 0;
     ScScopeCamera m_scopeInput;
@@ -479,6 +497,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         BlendState blend = Display.BlendState;
         DepthStencilState depth = Display.DepthStencilState;
         RasterizerState rasterizer = Display.RasterizerState;
+        if(drawOrder==10){try{m_casings.Draw(camera);}finally{Display.BlendState=blend;Display.DepthStencilState=depth;Display.RasterizerState=rasterizer;}return;}
         if (drawOrder == 2001) {
             // After the vanilla sights pass (2000), so exactly one crosshair is ever on screen.
             try {
@@ -512,6 +531,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         CsmcFirstPersonRenderer.ClearFirstPersonEffects();
         foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
         m_states.Clear();
+        m_casings.Clear();
         m_blooms.Clear();
         Project.FindSubsystem<SubsystemDrawing>(false)?.RemoveDrawable(this);
         if (ScGunRegistry.Current == m_registry) { ScGunRegistry.Current = null; ScGunMutation.HolderLocator = null; }
@@ -758,6 +778,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     public void Update(float dt) {
         KnifeQa.Step();
+        m_casings.Update(dt,m_terrain,m_audio);
         m_diagnostics?.Tick(m_time.GameTime);
         if (m_registry is not null && !m_registry.Disabled && m_time.GameTime >= m_recoveryAt) {
             m_recoveryAt = m_time.GameTime + 1;
@@ -849,12 +870,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.RescopeAt = -1;
             state.BurstRemaining = 0; state.BurstNextAt = -1;
             state.LastValue = value;
-            if (!Schedule(state, spec.Name, deployClip, now)) PlaySound(player, $"{spec.Name}_draw");
+            string visibleClip=KnifeAnimationController.CurrentClip(model);
+            if(KnifeAnimationController.CurrentVariant(model)==drawnVariant && visibleClip?.StartsWith("inspect",StringComparison.Ordinal)==true){Schedule(state,spec.Name,visibleClip,now);state.InspectSoundToken=KnifeAnimationController.ActionToken(model);}
+            else if (!Schedule(state, spec.Name, deployClip, now)) ScPresentationSound.Play($"{spec.Name}_draw");
         }
         if (state.Reload is not null && (!state.Reload.Valid
             || !state.Reload.ModeMatches(Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode==GameMode.Creative)
             || player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)))
             CancelReload(player, state);
+        PlayScheduled(player,state,now);
         if (!ScGunBindings.Available(player)) { SuspendScope(player); return; }
         if (state.Reload is not null) {
             if (state.DropAt >= 0 && now >= state.DropAt) {
@@ -1117,6 +1141,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             spec.LeftMuzzleBone is not null ? roundsBefore : -1);
         // The Dual Berettas flash and trace from the gun that fired.
         string shotClip = KnifeAnimationController.CurrentClip(model);
+        m_casings.Queue(player,model,spec.Name,shotClip);
         string muzzleBone = silenced ? spec.SilencedMuzzleBone
             : spec.LeftMuzzleBone is not null && shotClip is "shootLeft" or "shootLeftLast" ? spec.LeftMuzzleBone
             : spec.MuzzleBone;
@@ -1338,14 +1363,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// it once per shell, those after it once at the end.
     /// </summary>
     void ScheduleLooped(GunState state, string spec, string clip, double startedAt, Cs2Rig.ReloadSections sections, int loops) {
+        if(state.InspectSoundToken>=0){state.Scheduled.Clear();state.InspectSoundToken=-1;}
         string key = $"{spec}:{clip}";
         if (!Cs2Sounds.TryGet(key, out var list)) return;
         foreach ((float at, string name) in list) {
-            if (at < sections.LoopStart) state.Scheduled.Add((startedAt + at, name));
+            if (at < sections.LoopStart) state.Scheduled.Add((SoundTime(startedAt + at), name));
             else if (at < sections.OutroStart)
                 for (int k = 0; k < loops; k++)
-                    state.Scheduled.Add((startedAt + sections.LoopStart + k * sections.LoopLength + (at - sections.LoopStart), name));
-            else state.Scheduled.Add((startedAt + sections.LoopStart + loops * sections.LoopLength + (at - sections.OutroStart), name));
+                    state.Scheduled.Add((SoundTime(startedAt + sections.LoopStart + k * sections.LoopLength + (at - sections.LoopStart)), name));
+            else state.Scheduled.Add((SoundTime(startedAt + sections.LoopStart + loops * sections.LoopLength + (at - sections.OutroStart)), name));
         }
     }
 
@@ -1359,13 +1385,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (loaded < 0) return;
         double end = now + remaining;
         state.ShellTimes.RemoveAll(t => t > end);
-        state.Scheduled.RemoveAll(c => c.At > end);
+        double soundEnd=SoundTime(end);
+        state.Scheduled.RemoveAll(c => c.At > soundEnd);
         Cs2Rig.ReloadSections sections = Cs2Rig.GetReloadSections(spec.Name);
         if (sections is not null && Cs2Sounds.TryGet($"{spec.Name}:reload", out var list)) {
             double outroStart = end - (sections.End - sections.OutroStart);
             foreach ((float at, string name) in list)
                 if (at >= sections.OutroStart && outroStart + (at - sections.OutroStart) > now)
-                    state.Scheduled.Add((outroStart + (at - sections.OutroStart), name));
+                    state.Scheduled.Add((SoundTime(outroStart + (at - sections.OutroStart)), name));
         }
         state.BusyUntil = end;
         state.FireAfterReload = true;

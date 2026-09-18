@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-18",
+  "version": "1.2.1",
+  "baselineCommit": "3a3ea63",
+  "validation": "Headless checks of the actual packaged DLL; no game/GPU/mobile acceptance claimed.",
+  "packages": [
+    {
+      "edition": "Full",
+      "package": "[API1.9]CS武器1.2.1-作者ZH667-全量版.scmod",
+      "bytes": 377822876,
+      "sha256": "043869b9a6856e97df298dc3c4ab56ca5f575e977d5bab14045fe440b9f3a111",
+      "gameplayDllSha256": "00c7390c2e841adb1806aff59a6ee249b7c7875fe5aadd4e7b41b066fcb49504",
+      "checks": 21847,
+      "newFeedbackChecks": 118,
+      "failed": 0,
+      "reportSha256": "1f20d2d689b698527b998fb0bb5c930097df19d5f57f279808a1cd048cc4d4a9"
+    },
+    {
+      "edition": "Optimized512",
+      "package": "[API1.9]CS武器1.2.1-作者ZH667-512轻量版.scmod",
+      "bytes": 66929358,
+      "sha256": "e752f3270e8c48a1d5852c222f00765057bba4c3f1c4881b4cd0f3ebd68f4a84",
+      "gameplayDllSha256": "00c7390c2e841adb1806aff59a6ee249b7c7875fe5aadd4e7b41b066fcb49504",
+      "checks": 22460,
+      "newFeedbackChecks": 118,
+      "failed": 0,
+      "reportSha256": "25b6a9ceeca3bb9c1f37bb805c70f26efc84f78afc3d8d7eed1485a48e000a5a"
+    }
+  ],
+  "deliveryChecks": 2516,
+  "deliveryFailed": 0,
+  "api": "1.9.3.1",
+  "layout": 5,
+  "registrySchema": 6,
+  "growthRules": 7,
+  "originalWorldsModified": false,
+  "installedModsModified": false,
+  "remaining": [
+    "Actual in-game sound, visual and FPS acceptance",
+    "Remote player world-size cause requires their file inventory",
+    "Gem material rework and bullet penetration remain deferred"
+  ]
+}

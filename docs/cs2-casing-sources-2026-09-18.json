@@ -1,0 +1,71 @@
+{
+  "meshes": [
+    {
+      "model": "weapons/models/shared/shells/ak47/ak47_casing.vmdl",
+      "exportSha256": "a11e82a69863f714032fc71c0bfcc6920ebb7116302dd7f0300877981e3f2979",
+      "textureSource": "ak47_bullet_color_psd_20d8d47d.png",
+      "textureSha256": "f7858fca794938f5271189d3fb18ef1b58d836fbf467d9e6934a2684603d5504",
+      "triangles": 652,
+      "objSha256": "1469fe0001d15a98da858ff4aad7409e35060f82c6012e0c83f6fc5628f5f61e"
+    },
+    {
+      "model": "weapons/models/shared/shells/awp/awp_casing.vmdl",
+      "exportSha256": "2a6ed44e92b9c2201836b0d419a38210e6ee9d89d24956e1041526009ef0ff26",
+      "textureSource": "awp_bullet_color_psd_fc225ffd.png",
+      "textureSha256": "8b0af078451a1588cce92a104b2227726fce8646db0b056293198e4386b5b9f3",
+      "triangles": 556,
+      "objSha256": "429db5f0f23683ab490540fb9f06c7ee112f2778730d6e4b0595f39d921347e1"
+    },
+    {
+      "model": "weapons/models/shared/shells/deagle/deagle_casing.vmdl",
+      "exportSha256": "c77f421afbf36b83c1e286241ab2efac93f9149f80129e1b6e4fe537b2e49d13",
+      "textureSource": "deagle_bullet_color_psd_afc55d0d.png",
+      "textureSha256": "a315957de4493df76b5d5d06a23d0f3bc1d63d94a7f615792e988d27a67774e1",
+      "triangles": 508,
+      "objSha256": "51e89fc2dfbf22194e30e1effd355613304c5908bea34c2daa4d7840a783f42a"
+    },
+    {
+      "model": "weapons/models/shared/shells/glock/glock_casing.vmdl",
+      "exportSha256": "11646c72bf239e019d787c068760acecc7ca99739f145cbeefd2e8a6437ce730",
+      "textureSource": "glock_bullet_color_psd_24670c63.png",
+      "textureSha256": "8f825af5acac1d56616ee6df9a1d0a5c48a800c13d0ae0b7e3373c9976eee5ff",
+      "triangles": 572,
+      "objSha256": "8c06cc02529b17bd639023fccec24f77cd9dc96dfe624117353ae588cc65e945"
+    },
+    {
+      "model": "weapons/models/shared/shells/p90/p90_casing.vmdl",
+      "exportSha256": "e17e01a1850a9cd1a5fc10986398a10add59c1921c4317049dc58180cc7808bb",
+      "textureSource": "ak47_bullet_color_psd_20d8d47d.png",
+      "textureSha256": "f7858fca794938f5271189d3fb18ef1b58d836fbf467d9e6934a2684603d5504",
+      "triangles": 652,
+      "objSha256": "4bc08c6cc30becde11b1902d061d20b9d6be0c14f09c619f793ae46f193e3174"
+    },
+    {
+      "model": "weapons/models/shared/shells/shotgun/mag7_casing.vmdl",
+      "exportSha256": "cb351670d47c03f076547b075372a9f53b3eb4558775c200a502d1d7191828ac",
+      "textureSource": "mag7_bullet_color_psd_29ec1a9d.png",
+      "textureSha256": "08d489b8d09167f8b0b9cd3f302debdf1bb3730efef9b090211e825bbce8f395",
+      "triangles": 1116,
+      "objSha256": "cfaacded0941908704d43943d94ea80a2487659d288bb57e9edcbb77cff32b58"
+    },
+    {
+      "model": "weapons/models/shared/shells/shotgun/nova_casing.vmdl",
+      "exportSha256": "69979e5872406425de3f6806448c60986b322f32774741a282747387c921032f",
+      "textureSource": "nova_bullet_color_psd_987eaec3.png",
+      "textureSha256": "cd08e95803b5249219d0da5b194678992c82d818c159a4c8a6f45fab88ee2e75",
+      "triangles": 1116,
+      "objSha256": "f2f8ce721f767ff090bd3f4d23a33f1e8d7d1c9e2c747997e23d9dce3d7f19cc"
+    },
+    {
+      "model": "weapons/models/shared/shells/shotgun/xm1014_casing.vmdl",
+      "exportSha256": "7d8317a2990242666f79b0c2bcd55780ccaeea6d0ef7dfc2d156edd298e3d2e9",
+      "textureSource": "xm1014_bullet_color_psd_b585f5ba.png",
+      "textureSha256": "6566d3848abfb1be04545d8fa0ef1edba6b87e6fd7054d16cefb7aeeb41343f0",
+      "triangles": 1116,
+      "objSha256": "f2f8ce721f767ff090bd3f4d23a33f1e8d7d1c9e2c747997e23d9dce3d7f19cc"
+    }
+  ],
+  "clips": 48,
+  "cues": 48,
+  "notes": "VRF metres; original source attachments and event frames. Runtime bounded debris approximates Source 2 physics."
+}

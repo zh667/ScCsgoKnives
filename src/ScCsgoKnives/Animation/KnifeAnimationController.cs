@@ -11,6 +11,8 @@ public static class KnifeAnimationController {
         public ActionKind Action;
         public string ClipAlias = "idle";
         public double StartedAt;
+        public double DrawReadyAt;
+        public Cs2Rig.Pose InspectFrom;
         public long ActionSequence;
         public float LastPokePhase;
         /// <summary>An inspect asked for while a draw was playing, started when it ends.</summary>
@@ -116,6 +118,7 @@ public static class KnifeAnimationController {
             string deploy = DeployClip(variant, SilencerOn(variant, itemValue));
             if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
+            state.DrawReadyAt=KnifeClock.Now+CsmcKnifeRig.GetProfileDuration(variant,deploy);
             PlayDrawSound(variant);
             LogActionStart(state, variant);
         }
@@ -157,8 +160,9 @@ public static class KnifeAnimationController {
             if (state.PendingInspect && !KnifeQa.Active) {
                 state.PendingInspect = false;
                 Start(state, ActionKind.Inspect, PickInspect(variant));
+                if(CsmcKnifeRig.IsGun(variant)) model.m_componentPlayer?.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.InspectSound(model.m_componentPlayer,state.ClipAlias);
                 LogActionStart(state, variant);
-                if (IsBalisong(variant)) AudioManager.PlaySound("Audio/ScCsgoKnives/butterfly_inspect", 1f, 0f, 0f);
+                if (IsBalisong(variant)) ScPresentationSound.Play("butterfly_inspect");
                 state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
                 return state.Pose;
             }
@@ -183,28 +187,30 @@ public static class KnifeAnimationController {
 
         State state = StateFor(model);
         // Inspect can arrive before the drawing hook observes an inventory switch.
-        // Initialize that weapon's deploy first, then queue the inspect behind it.
+        // Initialize that weapon's deploy and its readiness deadline before interrupting its visuals.
         Update(model, value);
 
-        // Pressed during a draw or a reload: remember it and run it when that ends,
-        // instead of swallowing the key. 0.17.0 returned true here and did nothing,
-        // so inspecting right after a switch looked dead.
-        if (IsBusy(model)) {
-            state.PendingInspect = !KnifeQa.Active && !KnifeQa.Armed;
-            return true;
-        }
         // Already inspecting: keep the clip running. Restarting it reset StartedAt,
         // and a device log showed repeats 0.17 s apart holding the animation at frame 0.
         if (state.Action == ActionKind.Inspect
             && KnifeClock.Now - state.StartedAt < CsmcKnifeRig.GetProfileDuration(variant, state.ClipAlias))
             return true;
+        // Reload and attachment transactions remain locked. Draw visuals can be interrupted.
+        if (state.Action != ActionKind.Draw && IsBusy(model)) {
+            state.PendingInspect = !KnifeQa.Active && !KnifeQa.Armed;
+            return true;
+        }
         // With the capture armed, the inspect key runs the capture instead (KnifeQa).
         if (KnifeQa.Active) return true;
         if (KnifeQa.Armed) return KnifeQa.Begin(model, variant);
         // Some rigs ship two or three lookat clips; pick from whatever the profile has.
+        var transition=state.Action==ActionKind.Draw?Cs2Rig.Sample(CsmcKnifeRig.GetAssetName(variant),state.ClipAlias,(float)(KnifeClock.Now-state.StartedAt)):null;
         Start(state, ActionKind.Inspect, PickInspect(variant));
+        state.InspectFrom=transition;
+        state.PendingInspect=false;
+        if(CsmcKnifeRig.IsGun(variant))player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.InspectSound(player,state.ClipAlias);
         LogActionStart(state, variant);
-        if (IsBalisong(variant)) AudioManager.PlaySound("Audio/ScCsgoKnives/butterfly_inspect", 1f, 0f, 0f);
+        if (IsBalisong(variant)) ScPresentationSound.Play("butterfly_inspect");
         return true;
     }
 
@@ -220,7 +226,7 @@ public static class KnifeAnimationController {
         if (!HasAlias(variant, alias)) return false;
         state.PendingInspect = false;
         Start(state, ActionKind.Slash, alias);
-        AudioManager.PlaySound("Audio/ScCsgoKnives/knife_slash", .85f, heavy ? -.12f : 0f, 0f);
+        ScPresentationSound.Play("knife_slash", .85f, heavy ? -.12f : 0f);
         return true;
     }
     public static void KnifeHitPose(ComponentPlayer player, bool heavy) {
@@ -252,6 +258,7 @@ public static class KnifeAnimationController {
     /// <summary>A reload, silencer or draw clip is playing: the gun cannot fire, scope or inspect until it ends.</summary>
     public static bool IsBusy(ComponentFirstPersonModel model) {
         if (model is null || !s_states.TryGetValue(model, out State state)) return false;
+        if(KnifeClock.Now<state.DrawReadyAt)return true;
         if (state.Action is not (ActionKind.Draw or ActionKind.Reload or ActionKind.Attach or ActionKind.Detach or ActionKind.Grenade)) return false;
         return KnifeClock.Now - state.StartedAt < ActionDuration(state, state.Variant);
     }
@@ -496,6 +503,23 @@ public static class KnifeAnimationController {
     /// <summary>The clip alias the controller is running for this model, or null.</summary>
     public static string CurrentClip(ComponentFirstPersonModel model) =>
         model is not null && s_states.TryGetValue(model, out State state) ? state.ClipAlias : null;
+    public static long ActionToken(ComponentFirstPersonModel model)=>model is not null && s_states.TryGetValue(model,out var state)?state.ActionSequence:-1;
+    public static int CurrentVariant(ComponentFirstPersonModel model)=>model is not null && s_states.TryGetValue(model,out var state)?state.Variant:-1;
+
+    public static Cs2Rig.Pose InspectTransition(ComponentFirstPersonModel model,Cs2Rig.Pose target) {
+        if(model is null || !s_states.TryGetValue(model,out var state) || state.InspectFrom is not {} source || state.Action!=ActionKind.Inspect)return target;
+        float t=Math.Clamp((float)(KnifeClock.Now-state.StartedAt)/.12f,0,1);
+        if(t>=1){state.InspectFrom=null;return target;}
+        t=t*t*(3-2*t);
+        Matrix Blend(Matrix a,Matrix b) {
+            a.Decompose(out Vector3 sa,out Quaternion ra,out Vector3 pa);
+            b.Decompose(out Vector3 sb,out Quaternion rb,out Vector3 pb);
+            return Matrix.CreateScale(Vector3.Lerp(sa,sb,t))*Matrix.CreateFromQuaternion(Quaternion.Slerp(ra,rb,t))*Matrix.CreateTranslation(Vector3.Lerp(pa,pb,t));
+        }
+        return new Cs2Rig.Pose{Gun=target.Gun,Clip=target.Clip,Time=target.Time,
+            Parts=target.Parts.ToDictionary(p=>p.Key,p=>source.Parts.TryGetValue(p.Key,out var old)?Blend(old,p.Value):p.Value),
+            Bones=target.Bones.ToDictionary(p=>p.Key,p=>source.Bones.TryGetValue(p.Key,out var old)?Blend(old,p.Value):p.Value)};
+    }
 
     internal static float QaClipTime(ComponentFirstPersonModel model) =>
         s_states.TryGetValue(model, out State state) ? (float)(KnifeClock.Now - state.StartedAt) : 0f;
@@ -509,6 +533,7 @@ public static class KnifeAnimationController {
     }
 
     static void Start(State state, ActionKind action, string clipAlias) {
+        state.InspectFrom=null;
         state.ActionSequence++;
         state.Action = action;
         state.ClipAlias = clipAlias;
@@ -533,14 +558,13 @@ public static class KnifeAnimationController {
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";
 
     static void PlayDrawSound(int variant) {
-        if (CsmcKnifeRig.IsC4(variant)) { AudioManager.PlaySound("Audio/ScCsgoKnives/c4_draw", 1, 0, 0); return; }
+        if (CsmcKnifeRig.IsC4(variant)) { ScPresentationSound.Play("c4_draw"); return; }
         if (CsmcKnifeRig.IsGrenade(variant)) {
-            if (variant-CsmcKnifeRig.GrenadeOffset < 6) AudioManager.PlaySound("Audio/ScCsgoKnives/"+CsmcKnifeRig.GetAssetName(variant)+"_draw",1,0,0);
+            if (variant-CsmcKnifeRig.GrenadeOffset < 6) ScPresentationSound.Play(CsmcKnifeRig.GetAssetName(variant)+"_draw");
             return;
         }
         if (CsmcKnifeRig.IsGun(variant)) return;          // guns: SubsystemScGunBlockBehavior plays their own files when shipped
-        string sound = IsBalisong(variant) ? "Audio/ScCsgoKnives/butterfly_draw" : "Audio/ScCsgoKnives/knife_deploy";
-        AudioManager.PlaySound(sound, 1f, 0f, 0f);
+        ScPresentationSound.Play(IsBalisong(variant) ? "butterfly_draw" : "knife_deploy");
     }
 
     static void LogActionStart(State state, int variant) {

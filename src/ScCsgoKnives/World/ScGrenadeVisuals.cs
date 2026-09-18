@@ -60,17 +60,31 @@ public static class ScGrenadeVisuals {
         for(int i=0;i<count;i++) {
             float y=1-2*(i+.5f)/count,ring=MathF.Sqrt(1-y*y),a=i*2.399963f+s.Age*(i%2==0?.055f:-.04f);
             // Three staggered shells create billows without making the whole cloud breathe in and out.
-            float shell=i%4 switch { 0=>.26f, 1=>.48f, 2=>.68f, _=>.82f };
-            float pulse=1+.035f*MathF.Sin(s.Age*.9f+i*1.7f),size=radius*(.47f+.08f*Hash(i))*pulse;
-            float vertical=y*radius*.72f + MathF.Sin(s.Age*.7f+i)*.045f;
+            float shell=i%4 switch { 0=>.12f, 1=>.30f, 2=>.46f, _=>.60f };
+            float pulse=1+.02f*MathF.Sin(s.Age*.9f+i*1.7f);
+            float vertical=y*ScSmokeVolume.CurrentHeight(s)*.58f;
             Vector3 offset=new Vector3(MathF.Cos(a)*ring*radius*shell,vertical,MathF.Sin(a)*ring*radius*shell);
+            // Width/Height are half-extents. Fit the whole billboard inside the cloud bounds,
+            // using overlapping broad cores in both editions instead of sparse outer balls.
+            float width=Math.Min(radius*(.57f+.04f*Hash(i))*pulse,radius-new Vector2(offset.X,offset.Z).Length());
+            float height=Math.Min(ScSmokeVolume.CurrentHeight(s)*.57f*pulse,ScSmokeVolume.CurrentHeight(s)-Math.Abs(vertical));
             // F01: neutral grey with the shading kept in the value, never in a hue offset (atlas RGB is white).
             int light=(int)(102+y*18+Hash(i)*14);
             // Ping-pong frame selection avoids a hard last-to-first atlas jump.
             float phase=(s.Age*.16f+Hash(i))%2;phase=phase>1?2-phase:phase;
-            list.Add(new(ScSmokeVolume.Center(s)+offset,size,size,Tint(light,light,light,fade*(ScResourcePolicy.Lite?.98f:.96f)),0,Frame(phase),a*.3f));
+            list.Add(new(ScSmokeVolume.Center(s)+offset,width,height,Tint(light,light,light,fade),0,Frame(phase)));
         }
         return list;
+    }
+    /// <summary>Camera-facing smoke, including overhead views. All four corners remain inside the requested total bounds.</summary>
+    public static (Vector3 Right,Vector3 Up) SmokeAxes(Sprite sprite,ScGrenadeState smoke,Vector3 right,Vector3 up) {
+        float radius=ScSmokeVolume.CurrentRadius(smoke),height=ScSmokeVolume.CurrentHeight(smoke);
+        float verticalRatio=ScSmokeVolume.HalfHeight/ScSmokeVolume.Radius;
+        Vector3 r=right*sprite.Width,u=up*(sprite.Height/MathF.Sqrt(Math.Max(.001f,up.Y*up.Y+verticalRatio*verticalRatio*(up.X*up.X+up.Z*up.Z))));
+        Vector3 offset=sprite.Position-ScSmokeVolume.Center(smoke);
+        float Fit(float p,float a,float b,float bound)=>Math.Clamp((bound-Math.Abs(p))/Math.Max(.0001f,Math.Abs(a)+Math.Abs(b)),0,1);
+        float scale=Math.Min(Fit(offset.X,r.X,u.X,radius),Math.Min(Fit(offset.Y,r.Y,u.Y,height),Fit(offset.Z,r.Z,u.Z,radius)));
+        return (r*scale,u*scale);
     }
     public static List<Sprite> Fire(ScGrenadeState s,IReadOnlyList<Vector3> points,float distance) {
         List<Sprite> list=[];
@@ -97,7 +111,7 @@ public static class ScGrenadeVisuals {
     public static void ApplySmokeOpenings(List<Sprite> sprites,ScGrenadeState smoke,IEnumerable<ScSmokeDisturbance> openings,Vector3 right,Vector3 up) {
         var active=openings.Where(o=>o.Active&&o.Affects(smoke)).ToArray();if(active.Length==0)return;
         for(int i=0;i<sprites.Count;i++) {
-            var sp=sprites[i];Vector3 r=right*sp.Width*.7f,u=up*sp.Height*.7f;
+            var sp=sprites[i];var axes=SmokeAxes(sp,smoke,right,up);Vector3 r=axes.Right*.7f,u=axes.Up*.7f;
             float cleared=ScSmokeDisturbance.Clearing(active,sp.Position,smoke)
                 +ScSmokeDisturbance.Clearing(active,sp.Position+r,smoke)+ScSmokeDisturbance.Clearing(active,sp.Position-r,smoke)
                 +ScSmokeDisturbance.Clearing(active,sp.Position+u,smoke)+ScSmokeDisturbance.Clearing(active,sp.Position-u,smoke);

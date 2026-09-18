@@ -71,7 +71,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (flashes is not null) foreach (var pair in flashes) if (int.TryParse(pair.Key,out int id) && pair.Value is ValuesDictionary d) {
             float left=d.GetValue<float>("Left",0),immune=d.GetValue<float>("Immune",0),duration=d.GetValue<float>("Duration",0);
             if (float.IsFinite(left) && float.IsFinite(immune) && float.IsFinite(duration))
-                m_savedBlind[id]=new Blindness {Until=m_time.GameTime+Math.Clamp(left,0,5),ImmuneUntil=m_time.GameTime+Math.Clamp(immune,0,8),Duration=Math.Clamp(duration,.01f,5)};
+                m_savedBlind[id]=new Blindness {Until=m_time.GameTime+Math.Clamp(left,0,ScGrenadeState.FlashMaximum),ImmuneUntil=m_time.GameTime+Math.Clamp(immune,0,ScGrenadeState.FlashMaximum+ScGrenadeState.FlashImmunity),Duration=Math.Clamp(duration,.01f,ScGrenadeState.FlashMaximum)};
         }
     }
     public override void Save(ValuesDictionary values) {
@@ -339,14 +339,14 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         foreach (var body in m_bodies.Bodies.ToArray()) {
             Vector3 point=Eye(body); float distance=Vector3.Distance(s.Position,point);
-            if (!Friendly(s,body) || distance>(s.Kind==0?ScGrenadeState.HeRadius:16) || !Clear(s.Position,point)) continue;
+            if (!Friendly(s,body) || distance>(s.Kind==0?ScGrenadeState.HeRadius:ScGrenadeState.FlashRadius) || !Clear(s.Position,point)) continue;
             if (s.Kind==0) Damage(s,body,ScGrenadeState.HePower(distance));
             if (s.Kind==1 && (!m_blind.TryGetValue(body,out var old) || m_time.GameTime>=old.ImmuneUntil)) {
                 var p=body.Entity.FindComponent<ComponentPlayer>();
                 Vector3 forward=p?.GameWidget.ActiveCamera.ViewDirection??body.Matrix.Forward;
                 float facing=distance>.01f?Vector3.Dot(forward,(s.Position-point)/distance):1;
                 float duration=ScGrenadeState.FlashDuration(distance,facing);
-                if (duration>.05f) m_blind[body]=new Blindness {Until=m_time.GameTime+duration,Duration=duration,ImmuneUntil=m_time.GameTime+duration+3};
+                if (duration>.05f) m_blind[body]=new Blindness {Until=m_time.GameTime+duration,Duration=duration,ImmuneUntil=m_time.GameTime+duration+ScGrenadeState.FlashImmunity};
             }
         }
         if (s.Kind==0) {
@@ -443,9 +443,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             float smoke=m_active.Where(s=>s.Effect && s.Kind==2 && Clear(s.Position+Vector3.UnitY*.1f,camera.ViewPosition)).Select(s=>ScSmokeVolume.Density(s,camera.ViewPosition,m_disturbances)).DefaultIfEmpty(0).Max();
             if (smoke>0) Overlay(camera,ScGrenadeVisuals.SmokeInside(smoke));
             if (player is null || !m_blind.TryGetValue(player.ComponentBody,out var blind)) return;
-            float remaining=Math.Clamp((float)(blind.Until-m_time.GameTime)/Math.Max(.01f,blind.Duration),0,1);
-            // Smooth the recovery tail so the white overlay does not disappear at a frame boundary.
-            float fade=remaining*remaining*(3-2*remaining); if (fade<=0) return;
+            float fade=ScGrenadeState.FlashOpacity((float)(blind.Until-m_time.GameTime),blind.Duration); if (fade<=0) return;
             bool reduced=m_reducedFlash.Contains(player.PlayerData.PlayerIndex);
             // A normal CS2 flash clips the view to white at its peak. Reduced-flash accessibility
             // mode remains intentionally dimmer, but the default must reach opaque white.
@@ -469,6 +467,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if(sprite.Upright) { right=new Vector3(right.X,0,right.Z);right=right.LengthSquared()>.001f?Vector3.Normalize(right):Vector3.UnitX; }
             float c=MathF.Cos(sprite.Rotation),n=MathF.Sin(sprite.Rotation);
             Vector3 r=(right*c+up*n)*sprite.Width,u=(up*c-right*n)*sprite.Height,p=sprite.Position;
+            if(s.Kind==2 && s.Effect && key==0)(r,u)=ScGrenadeVisuals.SmokeAxes(sprite,s,camera.ViewRight,camera.ViewUp);
             float x=key==3?0:(sprite.Frame%4)*.25f+.004f,y=key==3?0:(sprite.Frame/4)*.25f+.004f,span=key==3?1:.242f;
             batch.QueueQuad(p-r-u,p+r-u,p+r+u,p-r+u,new Vector2(x,y+span),new Vector2(x+span,y+span),new Vector2(x+span,y),new Vector2(x,y),sprite.Color);
         }

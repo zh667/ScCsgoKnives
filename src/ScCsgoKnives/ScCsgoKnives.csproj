@@ -42,6 +42,7 @@
     <EmbeddedResource Include="AnimationData\gun_stattrak.json" />
     <EmbeddedResource Include="AnimationData\stattrak_mesh.json" />
     <EmbeddedResource Include="AnimationData\cs2_effects.json" />
+    <EmbeddedResource Include="AnimationData\cs2_casings.json" />
     <EmbeddedResource Include="AnimationData\cs2_taser_effect.json" />
     <EmbeddedResource Include="AnimationData\cs2_weapons.json" />
     <EmbeddedResource Include="AnimationData\cs2_sound_variants.json" />

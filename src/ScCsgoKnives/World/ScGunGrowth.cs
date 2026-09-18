@@ -3,7 +3,7 @@ namespace Game;
 /// <summary>Fifty-level gun growth. The total growth is spread across all fifty levels so that reaching Lv50
 /// reproduces exactly what the published public beta reached at Lv30: damage x10, magazine x6.5, maximum life x2.5,
 /// and the Zeus charge 10 s -> 1 s. The normal-gun fire rate is deliberately capped lower (x1.5 at Lv50) than the
-/// public beta's x3.5, while the four scoped sniper rifles keep their public-beta x3.5.
+/// public beta's x3.5. SCAR-20/G3SG1 share the x1.5 cap; AWP/SSG08 retain x3.5.
 ///
 /// Lv10 retains damage x2, life x1.5, capacity x1.5 and Zeus 10 s -> 5 s. Ordinary fire rate is now x1.1.
 ///
@@ -78,9 +78,10 @@ public static class ScGunGrowth {
     /// growth spread over Lv11-Lv50 so Lv50 = x10, the public beta's Lv30.</summary>
     public static float DamageMultiplier(int level) =>
         1f + .10f * Tier(level, 0) + .15f * Tier(level, 1) + .20f * Tier(level, 2) + .20f * Tier(level, 3) + .25f * Tier(level, 4);
-    /// <summary>Sniper Lv10 stays x1. The remaining growth is spread to Lv50: a scoped
-    /// sniper keeps the public beta's x3.5. Ordinary guns now gain 1% of base per level to x1.5.</summary>
-    public static float FireRateMultiplier(int variant, int level) => IsSniper(variant)
+    /// <summary>Only bolt-action snipers retain the public beta's fire-rate curve.</summary>
+    public static bool IsBoltSniper(int variant) => variant >= 0 && variant < GunSpec.All.Length
+        && GunSpec.All[variant].Name is "awp" or "ssg08";
+    public static float FireRateMultiplier(int variant, int level) => IsBoltSniper(variant)
         ? 1f + .05f * Tier(level, 1) + .05f * Tier(level, 2) + .075f * Tier(level, 3) + .075f * Tier(level, 4)
         : 1f + .01f * Clamp(level);
     /// <summary>A base fire-rate multiplier when the model is not known is treated as a normal gun.</summary>

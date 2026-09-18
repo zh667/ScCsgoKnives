@@ -4,8 +4,8 @@ namespace Game;
 public static class ScSmokeVolume {
     // CS2's smoke reaches its working volume quickly, holds that volume, then fades as a
     // turbulent cloud. It does not visibly collapse into a small ball during dissipation.
-    public const float Radius=3.4f, Lifetime=18, GrowthSeconds=.72f, DissipationSeconds=1.25f;
-    public static Vector3 Center(ScGrenadeState s) => s.Position+Vector3.UnitY*1.5f;
+    public const float Radius=2.75f, HalfHeight=1.75f, Lifetime=18, GrowthSeconds=.72f, DissipationSeconds=1.25f;
+    public static Vector3 Center(ScGrenadeState s) => s.Position+Vector3.UnitY*HalfHeight;
     public static float Growth(ScGrenadeState s) {
         float t=Math.Clamp(s.Age/GrowthSeconds,0,1);
         // Ease-out expansion: fast initial bloom, with a soft settle instead of a linear pop.
@@ -17,6 +17,7 @@ public static class ScSmokeVolume {
         return t*t*(3-2*t);
     }
     public static float CurrentRadius(ScGrenadeState s) => Radius*Growth(s)*(.93f+.07f*Dissipation(s));
+    public static float CurrentHeight(ScGrenadeState s) => CurrentRadius(s)*HalfHeight/Radius;
     /// <summary>Length of the finite eye-target segment inside the sphere, not an infinite ray.</summary>
     public static float InsideLength(Vector3 start,Vector3 end,Vector3 center,float radius) {
         Vector3 delta=end-start;float length=delta.Length();if (length<.001f || radius<=0) return 0;
@@ -30,7 +31,8 @@ public static class ScSmokeVolume {
     public static float Density(ScGrenadeState s,Vector3 point,IEnumerable<ScSmokeDisturbance> disturbances=null) {
         if (!s.Effect || s.Kind!=2 || s.Remaining<=0) return 0;
         float radius=CurrentRadius(s); if (radius<=0) return 0;
-        float inside=Math.Clamp((radius-Vector3.Distance(point,Center(s)))/.5f,0,1);
+        Vector3 offset=point-Center(s);offset.Y*=Radius/HalfHeight;
+        float inside=Math.Clamp((radius-offset.Length())/.35f,0,1);
         return inside*Dissipation(s)*(1-ScSmokeDisturbance.Clearing(disturbances,point,s));
     }
     /// <summary>Smoke-filled length of the segment: the same Density the overlay and the sprites use, integrated every

@@ -79,7 +79,7 @@ public static class ScGunGrowthSelfTest {
                         || capacity<ScGunGrowth.Capacity(variant,l-1)))return false;
                 }
                 return Math.Abs(ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel)-10f)<1e-4f
-                    && Math.Abs(ScGunGrowth.FireRateMultiplier(variant,ScGunGrowth.MaxLevel)-(ScGunGrowth.IsSniper(variant)?3.5f:1.5f))<1e-4f;
+                    && Math.Abs(ScGunGrowth.FireRateMultiplier(variant,ScGunGrowth.MaxLevel)-(ScGunGrowth.IsBoltSniper(variant)?3.5f:1.5f))<1e-4f;
             });
         }
         Test("level50-charge-and-range-milestones",()=> {

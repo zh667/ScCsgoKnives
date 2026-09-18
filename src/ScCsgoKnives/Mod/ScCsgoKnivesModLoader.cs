@@ -133,7 +133,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
             var players = project.FindSubsystem<SubsystemPlayers>(false);
             var guns = project.FindSubsystem<SubsystemScGunBlockBehavior>(false);
             if (players is not null && guns is not null)
-                foreach (var player in players.ComponentPlayers) if (!ScGunBindings.Available(player)) guns.SuspendScope(player);
+                foreach (var player in players.ComponentPlayers) {
+                    if(widget is GameScreen)guns.PresentationTick(player);
+                    if (!ScGunBindings.Available(player)) guns.SuspendScope(player);
+                }
         }
         if (widget is Screen screen && ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) {
             m_assemblyClickScreen = null;
@@ -317,6 +320,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         // While the mod draws its own gun crosshair, vanilla's is suppressed so there is exactly one layer.
         // With an empty hand, a knife, a grenade or any vanilla tool this hook changes nothing at all.
         var player = componentAimingSights?.m_componentPlayer;
+        if (ScGunCrosshair.HideForSniper(player)) { isVisible = false; return; }
         if (player is null || !ScUiSettings.GunCrosshair || !ScGunCrosshair.HoldingGun(player)) return;
         SubsystemScGunBlockBehavior guns = null;
         try { guns = player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false); } catch (NullReferenceException) { }
