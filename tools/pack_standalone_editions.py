@@ -19,7 +19,9 @@ def sha(data):
 
 def filename(version, edition):
     label = '全量版' if edition == 'Full' else '512轻量版'
-    return OUT / f'[API1.9]CS武器{version}-{label}.scmod'
+    # Keep historical release paths usable by the delivery verifier.
+    author = '-作者ZH667' if tuple(map(int, version.split('.'))) >= (1, 2, 0) else ''
+    return OUT / f'[API1.9]CS武器{version}{author}-{label}.scmod'
 
 
 def main():
@@ -89,7 +91,7 @@ def main():
         entries['ScCsgoResources.dll'] = (args.stage/'bin/Release/net10.0/ScCsgoResources.dll').read_bytes()
         entries['Assets/ScCsgoDerivedResources.json'] = (args.report/'assets.json').read_bytes()
         meta['Name'] = 'CS武器 · 512轻量版'
-        meta['Description'] = '内置全部玩法、动画和音频；512 上限 WebP Q85 纹理、既有模型减面方案，特殊图集保留。与全量版二选一安装，无需资源前置包。'
+        meta['Description'] += ' 本包为512轻量版：512上限 WebP Q85 纹理、既有模型减面方案，特殊图集保留。与全量版二选一安装，无需资源前置包。'
         entries['modinfo.json'] = (json.dumps(meta, ensure_ascii=False, indent=2)+'\n').encode('utf-8')
         assert entries['ScCsgoKnives.dll'] == full_dll
     resource_version = json.loads((ROOT/'src/ScCsgoResources/modinfo.json').read_text('utf-8'))['Version']
