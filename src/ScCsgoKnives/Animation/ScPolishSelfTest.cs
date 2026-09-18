@@ -63,7 +63,7 @@ public static class ScPolishSelfTest {
         }
         Test("flash-accessibility",()=>ScGrenadeVisuals.Burst(Vector3.Zero,.1f,true,true,0).Sum(p=>p.Color.A)
             <ScGrenadeVisuals.Burst(Vector3.Zero,.1f,true,false,0).Sum(p=>p.Color.A)*.2f);
-        Test("blast-expires",()=>ScGrenadeVisuals.Burst(Vector3.Zero,1.26f,false,false,0).Count==0);
+        Test("blast-expires",()=>ScGrenadeVisuals.Burst(Vector3.Zero,ScGrenadeVisuals.BlastLifetime+.01f,false,false,0).Count==0);
         Test("smoke-boundary-fade",()=>ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=0,Remaining=15},0).Count==0
             && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=15,Remaining=0},0).Count==0);
         Test("smoke-distance-budget",()=>ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},50).Count==24 && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count==48);

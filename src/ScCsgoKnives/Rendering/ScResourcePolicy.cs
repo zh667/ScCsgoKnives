@@ -14,6 +14,6 @@ public static class ScResourcePolicy {
     internal static void Configure(bool lite) => ConfigureEdition(lite ? "Lite" : "Full");
     internal static void ConfigureEdition(string edition) {
         Edition = edition;
-        Lite = edition is "Lite" or "Mini";
+        Lite = edition is "Lite" or "Mini" or "Optimized512";
     }
 }

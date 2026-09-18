@@ -151,7 +151,7 @@ public static class SurvivalSelfTest {
         });
         Test("smoke-he-opening", () => {
             var d = new ScSmokeDisturbance { Center = Vector3.Zero };
-            bool hold = d.Clearing(Vector3.Zero) == 1 && d.Clearing(new Vector3(2.4f, 0, 0)) == 1 && Math.Abs(d.Clearing(new Vector3(2.75f, 0, 0)) - .5f) < .001f && d.Clearing(new Vector3(3, 0, 0)) == 0;
+            bool hold = d.Clearing(Vector3.Zero) == 1 && d.Clearing(new Vector3(3.9f, 0, 0)) == 1 && Math.Abs(d.Clearing(new Vector3(4.25f, 0, 0)) - .5f) < .001f && d.Clearing(new Vector3(4.6f, 0, 0)) == 0;
             d.Remaining = 1; bool refilling = Math.Abs(d.Clearing(Vector3.Zero) - .5f) < .001f;
             d.Remaining = 0; bool gone = d.Clearing(Vector3.Zero) == 0 && !d.Active;
             var bound = new ScSmokeDisturbance { Center = new Vector3(1, 2, 3), Remaining = 2.2f }; bound.SmokeIds.Add(7);
@@ -272,7 +272,7 @@ public static class SurvivalSelfTest {
                 && ScCombatFeedback.HeadshotColor is { R: 255, G: 210, B: 50 };
         });
         Test("smoke-neutral-grey", () => ScGrenadeVisuals.Smoke(new() { Kind = 2, Effect = true, Age = 2, Remaining = 13 }, 0).All(sp => sp.Color.R == sp.Color.G && sp.Color.G == sp.Color.B)
-            && ScGrenadeVisuals.SmokeInside(1) is { R: 128, G: 128, B: 128, A: 255 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
+            && ScGrenadeVisuals.SmokeInside(1) is { R: 106, G: 106, B: 106, A: 255 } && ScGrenadeVisuals.SmokeInside(0).A == 0);
         // ---- M4 gun state: every change goes through ScGunMutation; these follow the plan's T01-T12 matrix headlessly ----
         int Gun(int variant, int rounds) => Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(variant, rounds));
         int Data(Inventory i, int slot) => Terrain.ExtractData(i.Values[slot]);
@@ -837,7 +837,7 @@ public static class SurvivalSelfTest {
         Test("throw-creative", () => { var i=Setup(0,1);return new ScThrowTransaction(i).Commit(true,()=>true,()=>true) && i.Counts[0]==1; });
         Test("grenade-save-fuse-owner", () => { var g=new ScGrenadeState {Kind=0,Owner=7,Remaining=.22f,Position=new Vector3(1,2,3),Velocity=new Vector3(4,5,6)};var l=ScGrenadeState.Load(g.Save());return l.Owner==7 && l.Remaining==.22f && l.Position==g.Position && l.Velocity==g.Velocity; });
         Test("grenade-active-limits", () => { var list=Enumerable.Range(0,16).Select(i=>new ScGrenadeState {Owner=i/4}).ToArray();return !ScGrenadeState.CanAdd(list,9) && !ScGrenadeState.CanAdd(list.Take(4),0) && ScGrenadeState.CanAdd(list.Take(4),1); });
-        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==24 && ScGrenadeState.HePower(4)==0 && ScGrenadeState.FlashDuration(0,1)==2 && ScGrenadeState.FlashDuration(0,-1)<.31f && ScGrenadeState.FlashDuration(16,1)==0);
+        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==48 && ScGrenadeState.HePower(3)==24 && ScGrenadeState.HePower(6)==0 && ScGrenadeState.FlashDuration(0,1)==2 && ScGrenadeState.FlashDuration(0,-1)<.31f && ScGrenadeState.FlashDuration(16,1)==0);
         Test("smoke-finite-segment",()=> Math.Abs(ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(5,0,0),Vector3.Zero,3)-6)<.001f
             && ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(-4,0,0),Vector3.Zero,3)==0
             && ScSmokeVolume.InsideLength(new Vector3(-5,3,0),new Vector3(5,3,0),Vector3.Zero,3)==0);

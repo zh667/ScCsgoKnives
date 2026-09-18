@@ -1,0 +1,293 @@
+{
+  "imports": [
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 0,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_0.png",
+      "sha256": "6625ef402f0dc9cf905529832bb3f1dd1c2fc44374b6d6c0656fd7630259009d"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 1,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_1.png",
+      "sha256": "cac119c010f3499c28f25e3f25ff85ee0f2238ccf5fcf17a94a69f8219123c03"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 2,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_2.png",
+      "sha256": "faa0f0282fafeec9342ebdd090351c5e9cda6e2f3045f14643bd2e8c159ed404"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 3,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_3.png",
+      "sha256": "3f655fe36c82351d4d7d82114a427933eb6172aa9a018c6e02681d3b16e134ee"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 4,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_4.png",
+      "sha256": "d39ca709a8348248d7d47edf18fc5f29a4d885b423c52bda8f31ebbf3bb93985"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 5,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_5.png",
+      "sha256": "7561bf8d0a94f905351105d67fe3b121c8ba2581971fefffc88e6a0f602a1a27"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 6,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_6.png",
+      "sha256": "2baa9fc84a7e08b613ac992278161848ecfd044965e32bebf4c5397084fea2fc"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 7,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_7.png",
+      "sha256": "9b4b51faa3ce6f506e91036288f8f7a3bab97caf6d2bd7d43d141be8311a3ad7"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 8,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_8.png",
+      "sha256": "b7531c7a6d69422fdf5d01bfab152527fdd613c2f1b89d51f095206d3a4c96f8"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 9,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_9.png",
+      "sha256": "6ce1dbfdea9450c9e96a91976c821701371410fcdca15b9fd50d1ea9faa20869"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 10,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_10.png",
+      "sha256": "d66b687b2d0a957ea2a1faa307e24b43e62b3a969b529771c445c9149c75752b"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 11,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_11.png",
+      "sha256": "d8f986b3aba4691f9a7e08686a0a68c44ba511b297a37e836d84c0f9be7b5743"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 12,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_12.png",
+      "sha256": "84a9292389cd6e4613c0c353b3268e7f2bea20a1a1186ae30ee3b792a4f1d152"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 13,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_13.png",
+      "sha256": "6730987724f3cb8dac70cc56490272f8179de8e30aad5112f54921de8d3e9a46"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 14,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_14.png",
+      "sha256": "88395a48ddf365c1ca6d9f15d8a2faf92396dbbd97fe5f8ba235a9ab5fa44181"
+    },
+    {
+      "output": "grenade_smoke_atlas.png",
+      "frame": 15,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\vistasmokev1\\vistasmokev1_emods_seq1_15.png",
+      "sha256": "b68898af7e7e91997c982a49f84141a010709b3cd13660ae96f7556c50bc04ea"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 0,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_0.png",
+      "sha256": "ad0a7e0ae8b5ef39d8501c9b8c22cc607d83bc8721eb5863f351ff552bba1ecc"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 1,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_1.png",
+      "sha256": "f95a384f56f3795963757b3ec193276ab07e47f28f8346b238e9cb344c7a04da"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 2,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_2.png",
+      "sha256": "9817018ba4321c13321bfd35f277f3805b2111a0242142a821d17c3974ccd1c1"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 3,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_3.png",
+      "sha256": "7623c2266e53e151b1761eadf0cd45b204b04fd3038d09b3a39b096e689883f9"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 4,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_4.png",
+      "sha256": "b5da4fca921f170a4b4f1c9f5578040f91814e9b259aec246fc8bd7228db7b40"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 5,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_5.png",
+      "sha256": "752fb097ab5312baa66122615a562bdb29854c186c1cb45d3820badb32b28727"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 6,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_6.png",
+      "sha256": "ad11122a76387f9e6e44a4270e32c95c5d0b5134008e51bdd0eb602b15a12e6e"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 7,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_7.png",
+      "sha256": "58b2dfff278bbe77c1a50e21d965211fb21f3d9d90580ecf5b465d0ca2b5a47e"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 8,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_9.png",
+      "sha256": "a6176618f3070d5c52d8984046eab946fb2d24326045a278b96f7e0462d987f4"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 9,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_10.png",
+      "sha256": "f624b3b28bdfbdd97303811f596568f734a907f0c4dbf2d2b5532aeed89c105e"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 10,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_11.png",
+      "sha256": "cdecdf0004274993127d7df1ae42263ecd8178bf626fd9cd8b06ddc298726093"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 11,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_12.png",
+      "sha256": "6a76cfe973ca261af9f708fe74002f3650fbc3d86177585cab6565b431da60ca"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 12,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_13.png",
+      "sha256": "65f553a85f3641ee1322000cc336084c1135441ec8a98596ce53c3d9e28e7034"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 13,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_14.png",
+      "sha256": "90615ccd25d15aa204b447bd65e959b37389bb50d17d335906a2261a0f2a2b2d"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 14,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_15.png",
+      "sha256": "4b5f92bc3e9af7ea1ff196c797b13df778107a9c8a58ed9caa0841a68dba3c6e"
+    },
+    {
+      "output": "grenade_fire_atlas.png",
+      "frame": 15,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\fire_small_sim\\fire_small_sim_a_seq0_16.png",
+      "sha256": "baee4c5d4bc1ef19904c4cdf82d597870baeddc7483e542fdbfb4f1b83ca867c"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 0,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_0.png",
+      "sha256": "f899d2c6ff594153abeebf4e9e6bf93c07c5f4d95e65cead864ef8382453dbb2"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 1,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_2.png",
+      "sha256": "73dfefda3b47dc6c0329fd9c553459d3b8f5b3fc67809542edf0b7dbd7d60c41"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 2,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_4.png",
+      "sha256": "1bb5543039146456d57c9999be959453ae31732fbea013d708e33eedf657b651"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 3,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_6.png",
+      "sha256": "ff7dfd76e637e0c6bfd2bf8808340f42ace7c0d291ec76822cc5264da2c6e726"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 4,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_8.png",
+      "sha256": "e3fd49ce944e3768cec8defe65435f8a24119aec36f50ba65a47877e22464bb3"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 5,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_10.png",
+      "sha256": "5ee94f2cedff5bb900320022f9914e6bf864c3c1a862e0f6e9e9e01d57afb929"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 6,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_12.png",
+      "sha256": "f39edbd2f815036ca7cfc3ad6f0bc712210c918be96e06762b622a1fcb5ddd19"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 7,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_14.png",
+      "sha256": "e45671c7f2effe7ad39d2ab3f8e3ed21da72a3dbd209150e309a6433a6faeeff"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 8,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_17.png",
+      "sha256": "6659284c6b4af9505b360b519ed383df34dc76b886664509996c09276b9f6ea0"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 9,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_19.png",
+      "sha256": "c0d84b6c05a17258ca34bc126b62d7b7732eb4d8eaf17754c8d5b5fcb9b6b51c"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 10,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_21.png",
+      "sha256": "ee4f362b612b3266b2a70521433dcf881c657819b6425cfc1be66e5a8be46d70"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 11,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_23.png",
+      "sha256": "35af35c3b8ec6a41446947039bafddaf8574cc8bbb427640ae62ffb0cee5ee65"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 12,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_25.png",
+      "sha256": "6e607a3e9a0627f1ac9337435494ad63d71a6546718dd1557a889465f84de69c"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 13,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_27.png",
+      "sha256": "5b36c2c00b01d30b802568cc26f21f985e146596ebf7a48e44f51ffeb1c40962"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 14,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_29.png",
+      "sha256": "6779afbddf660b074229e6b9ba8f0b852030ef7bf2917a5dfbdec21b7bb5d5a5"
+    },
+    {
+      "output": "grenade_blast_atlas.png",
+      "frame": 15,
+      "source": "E:\\Obsidian Document\\Document1\\CSMCReverse\\local_cs2_analysis\\all_weapons\\06_particles\\textures\\materials\\particle\\explosion_fireballs\\smoke\\explosion_fireball_large_01_smoke_seq0_31.png",
+      "sha256": "751cffe12dd5050d1187bf5752f79032f6439f33cbeea632bc058edf8c5d039c"
+    }
+  ],
+  "conversion": "4x4 straight-RGBA sheets; preserve source aspect ratio; smoke alpha mask gets white RGB for runtime grey tint; no Source 2 volume simulation"
+}

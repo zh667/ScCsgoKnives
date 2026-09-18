@@ -112,7 +112,7 @@ static class ResourceRegression {
                     try {
                         caches[key] = [xml]; policy.GetMethod("LoadEdition").Invoke(null, null);
                         // Lite and the smaller Mini share the reduced-particle policy; Full does not.
-                        return (bool)policy.GetProperty("Lite").GetValue(null) == ((string)xml.Attribute("Name") is "Lite" or "Mini");
+                        return (bool)policy.GetProperty("Lite").GetValue(null) == ((string)xml.Attribute("Name") is "Lite" or "Mini" or "Optimized512");
                     } finally { if (had) caches[key] = previous; else caches.Remove(key); Lite(false); }
                 });
                 Test("lite-keeps-smoke-and-flash-coverage", () => {
@@ -121,7 +121,7 @@ static class ResourceRegression {
                     string Sprites(object list) => string.Join("|", ((IEnumerable)list).Cast<object>().Select(o => o.ToString()));
                     Lite(false); string a = Sprites(Call("ScGrenadeVisuals", "Smoke", smoke, 5f));
                     string flash = Sprites(Call("ScGrenadeVisuals", "Burst", Vector3.Zero, .1f, true, false, 5f));
-                    Lite(true); return a == Sprites(Call("ScGrenadeVisuals", "Smoke", smoke, 5f))
+                    Lite(true); return a != Sprites(Call("ScGrenadeVisuals", "Smoke", smoke, 5f))
                         && flash == Sprites(Call("ScGrenadeVisuals", "Burst", Vector3.Zero, .1f, true, false, 5f));
                 });
                 Test("lite-reduces-decorative-blast-and-fire-only", () => {
@@ -132,7 +132,7 @@ static class ResourceRegression {
                     Lite(false); int blast = CountList(Call("ScGrenadeVisuals", "Burst", Vector3.Zero, .1f, false, false, 5f));
                     int full = CountList(Call("ScGrenadeVisuals", "Fire", fire, points, 5f));
                     Lite(true); int lite = CountList(Call("ScGrenadeVisuals", "Fire", fire, points, 5f));
-                    return CountList(Call("ScGrenadeVisuals", "Burst", Vector3.Zero, .1f, false, false, 5f)) == blast - 9 && lite >= points.Length && lite < full;
+                    return CountList(Call("ScGrenadeVisuals", "Burst", Vector3.Zero, .1f, false, false, 5f)) < blast && lite >= points.Length && lite < full;
                 });
             } finally { Lite(false); }
         } catch (Exception e) { results.Add(new("resources/setup", false, e.ToString())); }

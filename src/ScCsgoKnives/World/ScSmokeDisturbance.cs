@@ -7,7 +7,7 @@ namespace Game;
 /// smoke sprites, the inside overlay and the AI sight query, so what the player sees is what the AI sees.
 /// Only the HE creates one; flash and decoy never do. Every number below is an estimate (估计).</summary>
 public sealed class ScSmokeDisturbance {
-    public const float Radius = 3f, Hold = 1.5f, Recovery = 2f, Total = Hold + Recovery, Rim = .5f;
+    public const float Radius = 4.5f, Hold = 1.5f, Recovery = 2f, Total = Hold + Recovery, Rim = .5f;
     public const int MaxActive = 16;
     public Vector3 Center;
     public float Remaining = Total;

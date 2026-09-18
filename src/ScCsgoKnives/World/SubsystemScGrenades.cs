@@ -206,7 +206,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         // Order inside one update: fire validity (water/smoke extinguish) -> grenade motion -> heat trigger
         // -> fuse and smoke growth. The order is fixed here, not by list position.
-        UpdateFire(dt);
+        ExtinguishFires();
         foreach (var opening in m_disturbances) opening.Remaining-=ScGrenadeBallistics.Step(dt);
         m_disturbances.RemoveAll(o=>!o.Active);
         foreach (var s in m_active.ToArray()) {
@@ -215,14 +215,18 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             float step=ScGrenadeBallistics.Step(dt);
             s.Age+=step;
             if (!s.Effect) {
-                for (float remaining=step;remaining>0;) { float sub=Math.Min(.02f,remaining);Move(s,sub);remaining-=sub; }
+                for (float remaining=step;remaining>0;) {
+                    float sub=Math.Min(.02f,remaining);Vector3 before=s.Position;Move(s,sub);remaining-=sub;
+                    if(s.Kind==2 && m_active.Any(f=>ScFireArea.HeatedOnPath(f,before,s.Position,Clear))) {Detonate(s);break;}
+                }
+                if(s.Effect)continue;
                 if (s.Kind is 3 or 4) {
                     if (Water(s.Position)) { RemoveEffect(s,true);continue; }
                     if (s.Grounded) { Detonate(s);continue; }
                 }
                 if (s.Kind==2) {
                     // F05: a smoke grenade that reaches a live, reachable fire area pops now, once, wherever it is.
-                    var fire=m_active.FirstOrDefault(f=>ScFireArea.IsFire(f) && ScFireArea.Heats(f,s) && Clear(f.Position+Vector3.UnitY*.15f,s.Position));
+                    var fire=m_active.FirstOrDefault(f=>ScFireArea.HeatedOnPath(f,s.Position,s.Position,Clear));
                     if (fire is not null) {
                         KnifeLog.Trace($"grenade smoke heated by fire kind {fire.Kind} at {fire.Position}: pops early at {s.Position} after {s.Age:0.00} s");
                         Detonate(s);continue;
@@ -244,6 +248,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 if (!s.Effect) Detonate(s); else RemoveEffect(s,false);
             }
         }
+        UpdateFire(ScGrenadeBallistics.Step(dt)); // newly emitted smoke removes fire before this frame's damage
         if (m_active.Any(s=>s.Effect && s.Kind==2)) foreach (var body in m_bodies.Bodies) {
             var chase=body.Entity.FindComponent<ComponentChaseBehavior>();
             if (chase?.m_target is not null) ApplyChaseOcclusion(chase);
@@ -321,18 +326,20 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             s.Position=floor.Value.HitPoint()+Vector3.UnitY*.06f;
             if (Water(s.Position)) { RemoveEffect(s,true);return; }
             s.Effect=true;s.Remaining=ScFireArea.Lifetime(s.Kind);s.Age=0;s.Velocity=Vector3.Zero;
+            if(m_active.Any(smoke=>ScFireArea.SmokeExtinguishes(s,smoke,Clear))) {RemoveEffect(s,true);return;}
             Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,6,true);
             return;
         }
         if (s.Kind==5) { s.Effect=true;s.Remaining=10;s.Age=0;s.Velocity=Vector3.Zero;DecoyPulse(s);return; }
         if (s.Kind==2) {
             s.Effect=true;s.Remaining=ScSmokeVolume.Lifetime;s.Age=0;s.Velocity=Vector3.Zero;
+            ExtinguishFires(); // remove contacted fire immediately, not on the next damage tick
             Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_smokegrenade_emit",.8f,0,s.Position,6,true);
             return;
         }
         foreach (var body in m_bodies.Bodies.ToArray()) {
             Vector3 point=Eye(body); float distance=Vector3.Distance(s.Position,point);
-            if (!Friendly(s,body) || distance>(s.Kind==0?4:16) || !Clear(s.Position,point)) continue;
+            if (!Friendly(s,body) || distance>(s.Kind==0?ScGrenadeState.HeRadius:16) || !Clear(s.Position,point)) continue;
             if (s.Kind==0) Damage(s,body,ScGrenadeState.HePower(distance));
             if (s.Kind==1 && (!m_blind.TryGetValue(body,out var old) || m_time.GameTime>=old.ImmuneUntil)) {
                 var p=body.Entity.FindComponent<ComponentPlayer>();
@@ -367,11 +374,14 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (extinguished) Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_fire_extinguish",.7f,0,s.Position,4,true);
         else if (s.Kind==2 && s.Effect) Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/grenade_smokegrenade_clear",.6f,0,s.Position,4,true);
     }
-    void UpdateFire(float dt) {
+    void ExtinguishFires() {
         foreach (var s in m_active.Where(ScFireArea.IsFire).ToArray()) {
-            bool extinguish=Water(s.Position) || m_active.Any(smoke=>ScFireArea.SmokeTouches(s,smoke) && Clear(s.Position+Vector3.UnitY*.1f,smoke.Position+Vector3.UnitY*.1f));
+            bool extinguish=Water(s.Position) || m_active.Any(smoke=>ScFireArea.SmokeExtinguishes(s,smoke,Clear));
             if (extinguish) RemoveEffect(s,true);
         }
+    }
+    void UpdateFire(float dt) {
+        ExtinguishFires();
         var fires=m_active.Where(ScFireArea.IsFire).ToArray();
         if (fires.Length>0) {
             foreach (var body in m_bodies.Bodies.ToArray()) {
@@ -440,7 +450,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
     }
     void Overlay(Camera camera,Color color) {
-        var batch=m_overlay.FlatBatch(0,DepthStencilState.None,null,BlendState.AlphaBlend);
+        var batch=m_overlay.FlatBatch(0,DepthStencilState.None,null,BlendState.NonPremultiplied);
         Vector2 size=new(camera.ViewportSize.X,camera.ViewportSize.Y);
         batch.QueueQuad(Vector2.Zero,size,0,color);batch.TransformTriangles(camera.ViewportMatrix);batch.Flush();
     }
@@ -450,7 +460,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             int key=sprite.Texture;
             var texture=m_effectTextures[key]??=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+ScGrenadeVisuals.Textures[key]);
             var batch=m_renderer.TexturedBatch(texture,false,sprite.Additive?2:0,DepthStencilState.DepthRead,
-                RasterizerState.CullNoneScissor,sprite.Additive?BlendState.Additive:BlendState.AlphaBlend,SamplerState.LinearClamp);
+                RasterizerState.CullNoneScissor,ScGrenadeVisuals.SpriteBlend(sprite.Additive),SamplerState.LinearClamp);
             Vector3 right=camera.ViewRight,up=sprite.Upright?Vector3.UnitY:camera.ViewUp;
             if(sprite.Upright) { right=new Vector3(right.X,0,right.Z);right=right.LengthSquared()>.001f?Vector3.Normalize(right):Vector3.UnitX; }
             float c=MathF.Cos(sprite.Rotation),n=MathF.Sin(sprite.Rotation);
@@ -461,13 +471,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     void DrawSmoke(Camera camera,ScGrenadeState s) {
         var sprites=ScGrenadeVisuals.Smoke(s,Vector3.Distance(camera.ViewPosition,ScSmokeVolume.Center(s)));
-        if (m_disturbances.Any(o=>o.Affects(s))) // F06: a sprite fades by the clearing over the area it covers (centre and four edges), not its centre alone
-            for (int i=0;i<sprites.Count;i++) {
-                var sp=sprites[i]; Vector3 r=camera.ViewRight*sp.Width*.7f,u=camera.ViewUp*sp.Height*.7f; float cleared=0;
-                foreach (var point in new[] { sp.Position, sp.Position+r, sp.Position-r, sp.Position+u, sp.Position-u }) cleared+=ScSmokeDisturbance.Clearing(m_disturbances,point,s);
-                float keep=1-cleared/5;
-                if (keep<1) sprites[i]=sp with { Color=new Color(sp.Color.R,sp.Color.G,sp.Color.B,(int)(sp.Color.A*keep)) };
-            }
+        ScGrenadeVisuals.ApplySmokeOpenings(sprites,s,m_disturbances,camera.ViewRight,camera.ViewUp);
         DrawSprites(camera,s,sprites);
     }
     void DrawFire(Camera camera,ScGrenadeState s) {

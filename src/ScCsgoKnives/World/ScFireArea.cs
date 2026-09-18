@@ -22,4 +22,20 @@ public static class ScFireArea {
     public static bool Heats(ScGrenadeState fire,ScGrenadeState smoke) => smoke.Kind==2 && !smoke.Effect && Contains(fire,smoke.Position);
     public static bool SmokeTouches(ScGrenadeState fire,ScGrenadeState smoke) => ScFireArea.IsFire(fire) && smoke.Effect && smoke.Kind==2 && smoke.Remaining>0
         && Vector3.Distance(fire.Position,ScSmokeVolume.Center(smoke)) < Radius(fire.Kind)+ScSmokeVolume.CurrentRadius(smoke);
+
+    /// <summary>Use ground footprints and a ray above the floor. Walls and separate floors still block extinguishing.</summary>
+    public static bool SmokeExtinguishes(ScGrenadeState fire,ScGrenadeState smoke,Func<Vector3,Vector3,bool> clear) {
+        if(!IsFire(fire)||!smoke.Effect||smoke.Kind!=2||smoke.Remaining<=0)return false;
+        Vector3 delta=smoke.Position-fire.Position;
+        if(Math.Abs(delta.Y)>1.2f)return false;
+        float horizontal=MathF.Sqrt(delta.X*delta.X+delta.Z*delta.Z);
+        if(horizontal>Radius(fire.Kind)+ScSmokeVolume.CurrentRadius(smoke))return false;
+        return clear(fire.Position+Vector3.UnitY*.4f,smoke.Position+Vector3.UnitY*.4f);
+    }
+    public static bool HeatedOnPath(ScGrenadeState fire,Vector3 from,Vector3 to,Func<Vector3,Vector3,bool> clear) {
+        if(!IsFire(fire))return false;
+        Vector3 segment=to-from;float length=segment.LengthSquared();
+        Vector3 closest=from+segment*(length>1e-6f?Math.Clamp(Vector3.Dot(fire.Position-from,segment)/length,0,1):0);
+        return Contains(fire,closest)&&clear(fire.Position+Vector3.UnitY*.4f,closest+Vector3.UnitY*.2f);
+    }
 }
