@@ -50,9 +50,11 @@ bool visualCheckset=false;
 bool menuCheckset=false;
 bool features130=false;
 bool eggFeedbackOnly=false;
+bool splitChickenOnly=false;
 string hapticsPackage=null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--split-chicken-only": splitChickenOnly=true;break;
         case "--egg-feedback-only": eggFeedbackOnly=true;break;
         case "--haptics-package": hapticsPackage=args[++i];break;
         case "--features130-only": features130=true;break;
@@ -153,6 +155,11 @@ Type knifeLog = mod.GetType("Game.KnifeLog");
 knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, true);
 
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
+if(splitChickenOnly) {
+    var cases=SplitChickenRegression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToArray();
+    var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
+    if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
+}
 if(eggFeedbackOnly) {
     var cases=EggFeedbackRegression.Run(mod,scmod,hapticsPackage).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToArray();
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
@@ -281,6 +288,7 @@ foreach(var c in FeedbackSeptember18Regression.Run(mod)) checks.Add(new { name=c
 foreach(var c in MenuActionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in Features130Regression.Run(mod,scmod,vanillaContent)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in EggFeedbackRegression.Run(mod,scmod,hapticsPackage)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in SplitChickenRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in SmokeCoverageRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in CasingRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in DecoyRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });

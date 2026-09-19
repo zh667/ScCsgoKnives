@@ -572,12 +572,27 @@ public static class CsmcFirstPersonRenderer {
     /// </summary>
     /// <summary>0 = hip, 1 = aimed down the sights; drives the table's hip/aim offset and FOV blend (b$4ap, b$4au).</summary>
     public static float AimProgress;
-    static bool s_scoped;
-    static float s_scopeMagnification = 1f;
-    static double s_flashUntil = -1, s_flashStart = -1, s_smokeUntil = -1;
-    static float s_flashSeconds = 0.06f;
-    static string s_flashBone = "muzzle";
-    static float s_flashRoll;
+    sealed class ScopeState { public bool Scoped,Ironsight;public int Frame=-1; }
+    static readonly ConditionalWeakTable<ComponentPlayer,ScopeState> s_scopes=new();
+    static ScopeState s_drawingScope=new();
+    static bool s_scoped=>s_drawingScope.Scoped;
+    sealed class EffectsState {
+        public double Until=-1,Start=-1,SmokeUntil=-1,ZeusAt=-1;
+        public float Seconds=.06f,Roll;
+        public string Bone="muzzle";
+        public Cs2Effects.Flash Flash;
+        public List<Cs2ZeusParticles.Sprite> Glow,Flare;
+        public List<Cs2ZeusParticles.Spark> Sparks;
+    }
+    static readonly ConditionalWeakTable<ComponentPlayer,EffectsState> s_effectStates=new();
+    static EffectsState s_effect=new();
+    static double s_flashUntil {get=>s_effect.Until;set=>s_effect.Until=value;}
+    static double s_flashStart {get=>s_effect.Start;set=>s_effect.Start=value;}
+    static double s_smokeUntil {get=>s_effect.SmokeUntil;set=>s_effect.SmokeUntil=value;}
+    static float s_flashSeconds {get=>s_effect.Seconds;set=>s_effect.Seconds=value;}
+    static string s_flashBone {get=>s_effect.Bone;set=>s_effect.Bone=value;}
+    static float s_flashRoll {get=>s_effect.Roll;set=>s_effect.Roll=value;}
+    static void SelectEffects(ComponentPlayer player)=>s_effect=player is not null?s_effectStates.GetOrCreateValue(player):new();
     static Texture2D s_fireAtlas, s_smokeAtlas;
     /// <summary>CS:MC's muzzle flash sprites (CSMCTextureResources: particle/muzzle_flash/fire_gas_seq0 and wispy_steam_seq3), 8 columns per atlas.</summary>
     const int FireFrames = 32, SmokeFrames = 26, AtlasColumns = 8, AtlasRows = 4;
@@ -599,18 +614,26 @@ public static class CsmcFirstPersonRenderer {
     /// m_bHideViewModelWhenZoomed false), in which case only the world FOV changes
     /// and the controller runs the ironsight clips; nothing is hidden or overlaid.
     /// </summary>
-    public static void SetScope(bool on, float magnification, bool hideWeapon = true) {
+    public static void SetPlayerScope(ComponentPlayer player,bool on, float magnification, bool hideWeapon = true) {
+        if(player is null)return;
+        var state=s_scopes.GetOrCreateValue(player);
         // Snipers use the HUD mask; AUG / SG 553 keep their actual scope mesh.
-        s_scoped = on && hideWeapon;
-        s_ironsight = on && !hideWeapon;
-        s_scopeMagnification = magnification;
+        state.Scoped = on && hideWeapon;
+        state.Ironsight = on && !hideWeapon;
+        if(!on)state.Frame=-1;
+    }
+    public static void ClearScopes(){s_scopes.Clear();s_drawingScope=new();s_effectStates.Clear();s_effect=new();s_casingFrames.Clear();ClearFirstPersonEffects();}
+    public static bool ScopeActiveFor(ComponentPlayer player)=>player is not null && s_scopes.TryGetValue(player,out var s) && (s.Scoped||s.Ironsight);
+    static void SelectScope(Camera camera) {
+        var player=camera.GameWidget?.PlayerData?.ComponentPlayer;
+        s_drawingScope=player is not null?s_scopes.GetOrCreateValue(player):new();
+        SelectEffects(player);
     }
 
     /// <summary>Zoomed AUG / SG 553: visible 3D scope plus luminous reticle.</summary>
-    static bool s_ironsight;
-    public static bool IronsightScopeActive => s_ironsight && ScopeOverlayActive;
+    static bool s_ironsight=>s_drawingScope.Ironsight;
 
-    static Cs2Effects.Flash s_flashSpec;
+    static Cs2Effects.Flash s_flashSpec {get=>s_effect.Flash;set=>s_effect.Flash=value;}
 
     /// <summary>
     /// Show the muzzle flash at the given bone for a few frames.
@@ -621,7 +644,8 @@ public static class CsmcFirstPersonRenderer {
     /// (216,216,216) at alpha 0.24-0.59 with a 0.015 s fade; the M4A1-S suppressed
     /// puff lives 0.3-0.85 s and is nearly white; the AWP's lives 0.15-0.2 s.
     /// </summary>
-    public static void MuzzleFlash(float seconds, string bone, string gun = null, bool silenced = false) {
+    public static void MuzzleFlash(ComponentPlayer player,float seconds, string bone, string gun = null, bool silenced = false) {
+        SelectEffects(player);
         s_flashSpec = gun is not null && KnifeTuning.GunProfile >= 0.5f ? Cs2Effects.GetFlash(gun, silenced) : null;
         if (s_flashSpec is not null) seconds = s_flashSpec.Seconds;
         s_flashStart = KnifeClock.Now;
@@ -810,6 +834,7 @@ public static class CsmcFirstPersonRenderer {
     }
 
     public static bool Draw(ComponentFirstPersonModel firstPerson, Camera camera, int variant, KnifeRigPose pose, int itemValue) {
+        SelectScope(camera);
         if (pose is null) return false;
         EnsureLoaded();
         KnifeTuning.Poll();
@@ -867,8 +892,7 @@ public static class CsmcFirstPersonRenderer {
         if (s_ironsight) {
             s_overlayFrame = Time.FrameIndex;
             post = Cs2Ironsight.Correction(gun);
-            float aspect = camera.ProjectionMatrix.M22 / camera.ProjectionMatrix.M11;
-            projection = Cs2Ironsight.Projection(aspect);
+            projection = ScCameraViewport.Projection(camera,Cs2Ironsight.Projection(ScCameraViewport.Aspect(camera)));
         }
         Matrix root = Cs2Placement.Placement() * post;
         RecordMuzzleFrame(root, projection, camera, cs2, gun);
@@ -909,7 +933,8 @@ public static class CsmcFirstPersonRenderer {
             var texture = part.Texture ?? baseColor;
             if (!KnifePbrRenderer.TryDrawPart(part.Model, texture, variant, world, projection,
                     camera.InvertedViewMatrix, in lighting, applyBoneTransform: true, part.Material ?? gunMaterial,
-                    scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(gun) : 0f))
+                    scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(gun) : 0f,
+                    scopeProjectionY: Cs2Ironsight.Projection(ScCameraViewport.Aspect(camera)).M22))
                 DrawModel(part.Model, texture, world, camera, projection, light,
                     SamplerState.LinearWrap, RasterizerState.CullNoneScissor, applyBoneTransform: true);
         }
@@ -969,6 +994,7 @@ public static class CsmcFirstPersonRenderer {
 
     public static void DrawFirstPersonEffects(Camera camera) {
         if (!TakeFirstPersonEffects(camera, Time.FrameIndex, out var effects)) return;
+        SelectEffects(camera.GameWidget?.PlayerData?.ComponentPlayer);
         Viewport viewport = Display.Viewport;
         BlendState blend = Display.BlendState;
         DepthStencilState depth = Display.DepthStencilState;
@@ -1075,6 +1101,13 @@ public static class CsmcFirstPersonRenderer {
         world = Vector3.Transform(view, s_cs2MuzzleInvView);
         return true;
     }
+    public static bool TryGetPlayerMuzzleWorld(ComponentPlayer player,string gun,bool silenced,out Vector3 world,string bone=null) {
+        world=default;
+        if(player is null || !s_casingFrames.TryGetValue(player,out var f)||f.Gun!=gun||Time.FrameIndex-f.Frame>4)return false;
+        var rig=MuzzleRigPoint(gun,silenced,f.Pose,bone);if(rig is null)return false;
+        var v=Vector3.Transform(rig.Value,f.Root);if(v.Z>=-.02f)return false;
+        v.X*=f.Ratio;v.Y*=f.Ratio;world=Vector3.Transform(v,f.View);return true;
+    }
 
     /// <summary>The muzzle in engine view space at idle, for the headless tools.</summary>
     public static Vector3 MuzzleViewPoint(string gun, bool silenced, Matrix root) =>
@@ -1125,7 +1158,8 @@ public static class CsmcFirstPersonRenderer {
             if (part.Material == ScopeLensMaterial) { lens = part; lensWorld = bone * post; continue; }
             KnifePbrRenderer.TryDrawSkinned(mesh.Vertices, part.Indices, baseColor, material,
                 bone * post, projection, camera.InvertedViewMatrix, in lighting, variant,
-                scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(asset) : 0f, rigid: true);
+                scopeAperture: s_ironsight ? Cs2Ironsight.Aperture(asset) : 0f, rigid: true,
+                scopeProjectionY: Cs2Ironsight.Projection(ScCameraViewport.Aspect(camera)).M22);
         }
         if (mesh.BlendedTriangleCount > 0) {
             mesh.SkinBlended();
@@ -1177,11 +1211,11 @@ public static class CsmcFirstPersonRenderer {
     public const float ScopeFilterWindowFraction = 0.64f, ScopeFilterBlackFraction = 0.76f;
 
     /// <summary>Only the green reticle overlays the aimed 3D scope; the world stays visible outside.</summary>
-    static void DrawIronsightScope() {
+    static void DrawIronsightScope(Camera camera) {
         if (!s_ironsight) return;
         s_scopeDot ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_dot");
         s_primitives2D ??= new PrimitivesRenderer2D();
-        float w = Display.Viewport.Width, h = Display.Viewport.Height;
+        float w = camera.ViewportSize.X, h = camera.ViewportSize.Y;
         Vector2 center = new(w * 0.5f, h * 0.5f);
         // Green luminous point measured in both recordings; no fullscreen black filter.
         float half = h * (18f / 1056f) * 0.5f;
@@ -1189,14 +1223,15 @@ public static class CsmcFirstPersonRenderer {
             DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Additive, SamplerState.LinearClamp);
         dot.QueueQuad(center - new Vector2(half), center + new Vector2(half), 0f,
             Vector2.Zero, Vector2.One, new Color(80, 255, 110));
-        s_primitives2D.Flush();
+        s_primitives2D.Flush(ScCameraViewport.Overlay(camera));
     }
 
     // ---- the Zeus's muzzle, in the first-person pass ---------------------------------
 
-    static double s_zeusAt = -1;
-    static List<Cs2ZeusParticles.Sprite> s_zeusGlow, s_zeusFlare;
-    static List<Cs2ZeusParticles.Spark> s_zeusSparks;
+    static double s_zeusAt {get=>s_effect.ZeusAt;set=>s_effect.ZeusAt=value;}
+    static List<Cs2ZeusParticles.Sprite> s_zeusGlow {get=>s_effect.Glow;set=>s_effect.Glow=value;}
+    static List<Cs2ZeusParticles.Sprite> s_zeusFlare {get=>s_effect.Flare;set=>s_effect.Flare=value;}
+    static List<Cs2ZeusParticles.Spark> s_zeusSparks {get=>s_effect.Sparks;set=>s_effect.Sparks=value;}
 
     /// <summary>
     /// A Zeus shot: CS2's weapon_muzzle_flash_taser (glow, flare, sparks) is
@@ -1204,7 +1239,8 @@ public static class CsmcFirstPersonRenderer {
     /// viewmodel's own projection - the world pass could only put it behind the
     /// weapon (0.20.1, where the device test saw no "electricity" after the shot).
     /// </summary>
-    public static void ZeusMuzzle(double now) {
+    public static void ZeusMuzzle(ComponentPlayer player,double now) {
+        SelectEffects(player);
         Cs2TaserEffect.File fx = Cs2TaserEffect.Data;
         if (fx is null) return;
         s_zeusAt = now;
@@ -1390,9 +1426,12 @@ public static class CsmcFirstPersonRenderer {
     /// frame height, edge feathered over about 20 px, and a one-pixel crosshair. No scope
     /// texture, no letterbox (0.15.x drew the jar's scope.png in a square instead).
     /// </summary>
-    static int s_overlayFrame = -1;
+    static int s_overlayFrame { get=>s_drawingScope.Frame;set=>s_drawingScope.Frame=value; }
     /// <summary>True while the scoped view (gun hidden, mask due) is active for the frame being drawn.</summary>
-    public static bool ScopeOverlayActive => (s_scoped || s_ironsight) && Time.FrameIndex - s_overlayFrame <= 1;
+    public static bool ScopeOverlayFor(Camera camera) {
+        var player=camera.GameWidget?.PlayerData?.ComponentPlayer;
+        return player is not null && s_scopes.TryGetValue(player,out var s) && (s.Scoped||s.Ironsight) && s.Frame==Time.FrameIndex;
+    }
 
     static Texture2D s_cs2ScopeCircle;
 
@@ -1407,12 +1446,12 @@ public static class CsmcFirstPersonRenderer {
     /// puts its edge at 0.4825 h with a 0.0185 h feather; CS2's is 0.475 h with a
     /// 0.05 h feather, so the two are close but the falloff is three times softer.
     /// </summary>
-    static bool DrawCs2ScopeOverlay() {
+    static bool DrawCs2ScopeOverlay(Camera camera) {
         s_cs2ScopeCircle ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_scope_circle");
         if (s_cs2ScopeCircle is null) return false;
         s_primitives2D ??= new PrimitivesRenderer2D();
-        float w = Display.Viewport.Width, h = Display.Viewport.Height;
-        float half = h * 0.5f;
+        float w = camera.ViewportSize.X, h = camera.ViewportSize.Y;
+        float half = ScCameraViewport.ScopeDiameter(camera.ViewportSize) * 0.5f;
         Vector2 c = new(w * 0.5f, h * 0.5f);
         FlatBatch2D fill = s_primitives2D.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.Opaque);
         // Black everywhere the square does not cover, so a wide window stays masked.
@@ -1423,25 +1462,32 @@ public static class CsmcFirstPersonRenderer {
                 fill.QueueTriangle(new Vector2(x0, 0f), new Vector2(x1, h), new Vector2(x0, h), 0f, Color.Black);
             }
         }
+        else if(h>w) {
+            fill.QueueQuad(Vector2.Zero,new Vector2(w,c.Y-half),0f,Color.Black);
+            fill.QueueQuad(new Vector2(0,c.Y+half),new Vector2(w,h),0f,Color.Black);
+        }
         TexturedBatch2D batch = s_primitives2D.TexturedBatch(s_cs2ScopeCircle, false, 1,
             DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.NonPremultiplied, SamplerState.LinearClamp);
         batch.QueueQuad(new Vector2(c.X - half, c.Y - half), new Vector2(c.X + half, c.Y + half),
             0f, Vector2.Zero, Vector2.One, Color.White);
         QueueScopeCrosshair(c, half, h, s_primitives2D.FlatBatch(2, DepthStencilState.None,
             RasterizerState.CullNoneScissor, BlendState.NonPremultiplied));
-        s_primitives2D.Flush();
+        s_primitives2D.Flush(ScCameraViewport.Overlay(camera));
         return true;
     }
 
-    public static void DrawScopeOverlay() {
+    public static void DrawScopeOverlay(Camera camera) {
+        SelectScope(camera);
+        Rectangle scissor=Display.ScissorRectangle;
         try {
-            if (s_ironsight) { DrawIronsightScope(); return; }
-            if (KnifeTuning.GunProfile >= 0.5f && DrawCs2ScopeOverlay()) return;
+            Display.ScissorRectangle=ScCameraViewport.Clip(camera.ViewportSize,camera.ViewportMatrix,scissor);
+            if (s_ironsight) { DrawIronsightScope(camera); return; }
+            if (KnifeTuning.GunProfile >= 0.5f && DrawCs2ScopeOverlay(camera)) return;
             s_primitives2D ??= new PrimitivesRenderer2D();
-            float w = Display.Viewport.Width, h = Display.Viewport.Height;
+            float w = camera.ViewportSize.X, h = camera.ViewportSize.Y;
             Vector2 c = new(w * 0.5f, h * 0.5f);
-            float radius = 0.4825f * h;
-            float feather = 0.0185f * h;
+            float radius = 0.4825f * ScCameraViewport.ScopeDiameter(camera.ViewportSize);
+            float feather = 0.0185f * ScCameraViewport.ScopeDiameter(camera.ViewportSize);
             const int segments = 128, rings = 6;
             // Cull nothing: the fan and ring triangles below are wound both ways, and with the default
             // back-face culling the mask simply did not appear (0.15.3-0.15.7: scoped view showed only the sky).
@@ -1463,11 +1509,12 @@ public static class CsmcFirstPersonRenderer {
                 }
             }
             QueueScopeCrosshair(c, radius, h, soft);
-            s_primitives2D.Flush();
+            s_primitives2D.Flush(ScCameraViewport.Overlay(camera));
         }
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce("scope-overlay", $"Scope overlay failed: {e.Message}");
         }
+        finally {Display.ScissorRectangle=scissor;}
     }
 
     /// <summary>Reticle cross; thickness from the tuning file, scaled to the frame height.</summary>

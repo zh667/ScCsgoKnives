@@ -15,7 +15,7 @@ public static class ScSimpleWeaponRenderer {
         return reader.ReadToEnd();
     }
     static Shader Prepare(Texture2D texture, Matrix world, Matrix projection,
-        in KnifePbrRenderer.Lighting lighting, float aperture) {
+        in KnifePbrRenderer.Lighting lighting, float aperture,float scopeProjectionY) {
         if (s_failed) return null;
         try { s_shader ??= new Shader(Source("Shaders.KnifePbr.vsh"), Source("Shaders.WeaponSimple.psh")); }
         catch (Exception e) {
@@ -31,15 +31,15 @@ public static class ScSimpleWeaponRenderer {
         s_shader.GetParameter("u_lightDir1", true).SetValue(lighting.Dir1);
         s_shader.GetParameter("u_lightDir2", true).SetValue(lighting.Dir2);
         s_shader.GetParameter("u_light", true).SetValue(lighting.Intensity);
-        s_shader.GetParameter("u_scopeCutout", true).SetValue(new Vector2(aperture, projection.M22));
+        s_shader.GetParameter("u_scopeCutout", true).SetValue(new Vector2(aperture, scopeProjectionY>0?scopeProjectionY:projection.M22));
         s_shader.GetParameter("u_worldViewMatrix", true).SetValue(world);
         s_shader.GetParameter("u_worldViewProjectionMatrix", true).SetValue(world * projection);
         return s_shader;
     }
     public static bool DrawMesh(Cs2SkinnedMesh.Vertex[] vertices, int[] indices, Texture2D texture,
-        Matrix world, Matrix projection, in KnifePbrRenderer.Lighting lighting, float aperture, bool rigid) {
+        Matrix world, Matrix projection, in KnifePbrRenderer.Lighting lighting, float aperture, bool rigid,float scopeProjectionY=0f) {
         if (!KnifeDiagnostics.IsFinite(world)) return false;
-        var shader = Prepare(texture, world, projection, in lighting, aperture);
+        var shader = Prepare(texture, world, projection, in lighting, aperture,scopeProjectionY);
         if (shader is null) return false;
         if (rigid) ScRigidBuffers.Draw(shader, vertices, indices);
         else Display.DrawUserIndexed(PrimitiveType.TriangleList, shader, Cs2SkinnedMesh.Declaration,
@@ -47,10 +47,10 @@ public static class ScSimpleWeaponRenderer {
         return true;
     }
     public static bool DrawModel(Model model, Texture2D texture, Matrix world, Matrix projection,
-        in KnifePbrRenderer.Lighting lighting, bool bones, float aperture) {
+        in KnifePbrRenderer.Lighting lighting, bool bones, float aperture,float scopeProjectionY=0f) {
         foreach (var mesh in model.Meshes) {
             Matrix transform = bones ? BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone) * world : world;
-            var shader = Prepare(texture, transform, projection, in lighting, aperture);
+            var shader = Prepare(texture, transform, projection, in lighting, aperture,scopeProjectionY);
             if (shader is null) return false;
             foreach (var part in mesh.MeshParts)
                 Display.DrawIndexed(PrimitiveType.TriangleList, shader, part.VertexBuffer, part.IndexBuffer, part.StartIndex, part.IndicesCount);

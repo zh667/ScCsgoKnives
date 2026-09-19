@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-19/20: FPS-style controller defaults without stealing vanilla inventory,
+  clothing, crouch or hotbar controls; player-local split-screen weapon projection, scope masks
+  and muzzle effects. Remove CS2 locomotion root travel from derived chicken animations while
+  preserving the source export and skeletal motion. Deliver 1.3.3 Full only, preserving previous
+  packages, IDs and save schema. See docs/release-1.3.3-splitscreen-controls-chicken.md.
+
 - User-directed 2026-09-19 follow-up: CS chicken egg uses native ThrowableBlockBehavior aim/release
   and projectile collision spawning, not short-range OnUse. Optional ControllerHaptics 1.2.0
   player-aware pulses for committed shots, completed reloads, knife body hits and grenade release.

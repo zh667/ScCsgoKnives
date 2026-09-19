@@ -279,7 +279,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         ScControllerFeedback.Initialize();
@@ -327,7 +327,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
         // Zoomed on the AUG / SG 553 the reticle is the scope's own dot, so the
         // vanilla crosshair goes too (it grew with the FOV in 0.20.0's video).
-        if (CsmcFirstPersonRenderer.ScopeOverlayActive) { isVisible = false; return; }
+        if (CsmcFirstPersonRenderer.ScopeActiveFor(componentAimingSights?.m_componentPlayer)) { isVisible = false; return; }
         // While the mod draws its own gun crosshair, vanilla's is suppressed so there is exactly one layer.
         // With an empty hand, a knife, a grenade or any vanilla tool this hook changes nothing at all.
         var player = componentAimingSights?.m_componentPlayer;
@@ -378,11 +378,13 @@ public class ScCsgoKnivesModLoader : ModLoader {
         BlendState blend = Display.BlendState;
         DepthStencilState depth = Display.DepthStencilState;
         RasterizerState rasterizer = Display.RasterizerState;
+        Rectangle scissor=Display.ScissorRectangle;
         try {
             // The finish is read from the held item's record here and cleared straight after, so nothing
             // else in the frame can draw a weapon under another weapon's skin.
             CsmcFirstPersonRenderer.SkinId = Terrain.ExtractContents(itemValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true)
                 ? ScGunBlock.SkinOf(itemValue) : ScGunSkinCatalog.None;
+            Display.ScissorRectangle=ScCameraViewport.Clip(camera.ViewportSize,camera.ViewportMatrix,scissor);
             skip = CsmcFirstPersonRenderer.Draw(componentFirstPersonModel, camera, variant, pose, itemValue);
         }
         finally {
@@ -390,6 +392,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
             Display.BlendState = blend;
             Display.DepthStencilState = depth;
             Display.RasterizerState = rasterizer;
+            Display.ScissorRectangle=scissor;
         }
     }
 }

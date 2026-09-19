@@ -1,0 +1,157 @@
+{
+  "version": "1.3.3",
+  "edition": "Full",
+  "package": "[API1.9]CS武器1.3.3-作者ZH667-全量版.scmod",
+  "packageBytes": 382805781,
+  "packageSha256": "ae34dd0983f5e9d1340375972e296a3ed0be95abe9c7063b32f4afd7101c5d5d",
+  "dllSha256": "66e79774d93f3d286400bcc079163a16b170f603394a8a1c37fba5eb80961ff5",
+  "dllChecks": 22021,
+  "dllFailed": 0,
+  "deliveryChecks": 1325,
+  "deliveryFailed": 0,
+  "chickenAssetComparison": {
+    "previousPackage": "[API1.9]CS武器1.3.2-作者ZH667-全量版.scmod",
+    "package": "[API1.9]CS武器1.3.3-作者ZH667-全量版.scmod",
+    "originalModelSha256": "b6fe4768524abe702b094b21f07f66ddda1c375e48a48a7c4230208a3091aee0",
+    "modelSha256": "db3768317236b1ff5c12e81fe860e06ce3fb4c892326ac5566481b97e7d7576c",
+    "binaryBufferUnchanged": true,
+    "onlyRootTranslationChannelsRemoved": true,
+    "reimportTransformIdempotent": true,
+    "changes": [
+      {
+        "clip": "idle",
+        "translationChannelsRemoved": 1
+      },
+      {
+        "clip": "walk",
+        "translationChannelsRemoved": 1
+      },
+      {
+        "clip": "run",
+        "translationChannelsRemoved": 1
+      }
+    ]
+  },
+  "focusedChecks": [
+    {
+      "name": "split-chicken/projection/1920,1080/1,1/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/2,1/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/2,1/1/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/1,2/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/1,2/0/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/2,2/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/2,2/1/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/2,2/0/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1920,1080/2,2/1/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/1,1/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/2,1/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/2,1/1/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/1,2/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/1,2/0/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/2,2/0/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/2,2/1/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/2,2/0/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/projection/1335,751/2,2/1/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/reduced-render-target/640,720",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/reduced-render-target/960,270",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/per-player-scope-and-muzzle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/native-controller-defaults-chords-isolation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "split-chicken/native-chicken-animation-loops-in-place",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "limits": [
+    "Headless packaged-DLL checks; no actual GPU split-screen or controller hardware session.",
+    "Existing custom bindings are retained. Restore defaults and save to apply the entire new scheme.",
+    "No item ID or save schema changes."
+  ]
+}

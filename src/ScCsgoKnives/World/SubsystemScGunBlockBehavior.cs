@@ -356,6 +356,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// instead: CsmcFirstPersonRenderer.ZeusMuzzle.
     /// </summary>
     sealed class ZeusShot {
+        public ComponentPlayer Owner;
         public Vector3 Muzzle, End, Direction;
         public double At;
         public bool Hit;
@@ -374,11 +375,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>The effect is gone by then (the arc ends at 0.45 s, the longest sparks at 0.4 s).</summary>
     const float ZeusSeconds = 1f;
 
-    void QueueZeus(Vector3 muzzle, bool muzzleSolved, Vector3 end, Vector3 direction, bool hit) {
+    void QueueZeus(ComponentPlayer player,Vector3 muzzle, bool muzzleSolved, Vector3 end, Vector3 direction, bool hit) {
         Cs2TaserEffect.File fx = Cs2TaserEffect.Data;
         if (fx is null || KnifeTuning.GunProfile < 0.5f) return;
         var shot = new ZeusShot {
-            Muzzle = muzzle, End = end, Direction = direction, At = m_time.GameTime, Hit = hit,
+            Owner=player,Muzzle = muzzle, End = end, Direction = direction, At = m_time.GameTime, Hit = hit,
             ArcTint = Cs2ZeusParticles.LerpColor(fx.Arc.ColorMin, fx.Arc.ColorMax, m_random.Float(0f, 1f)),
             ArcScroll = m_random.Float(ArcScrollMin, ArcScrollMax),
             ImpactGlow = Cs2ZeusParticles.Sprites(fx.ImpactGlow),
@@ -394,7 +395,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         if (m_zeus.Count > 8) m_zeus.RemoveAt(0);
         m_zeus.Add(shot);
-        CsmcFirstPersonRenderer.ZeusMuzzle(KnifeClock.Now);
+        CsmcFirstPersonRenderer.ZeusMuzzle(player,KnifeClock.Now);
         // Once per shot, so a device log says where the arc started and ended.
         KnifeLog.Trace($"[ScCsgoKnives] Zeus shot: arc from {(muzzleSolved ? "the drawn muzzle" : "the eye (muzzle not solved this frame)")} "
             + $"({muzzle.X:0.##},{muzzle.Y:0.##},{muzzle.Z:0.##}) to ({end.X:0.##},{end.Y:0.##},{end.Z:0.##}), "
@@ -413,7 +414,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             float age = (float)(now - shot.At);
             if (age > ZeusSeconds) { m_zeus.RemoveAt(i); continue; }
             // The arc's start follows the drawn muzzle while the gun is still the drawn one (C_OP_PositionLock to CP0).
-            Vector3 muzzle = CsmcFirstPersonRenderer.TryGetMuzzleWorld(fx.Gun, false, out Vector3 m) ? m : shot.Muzzle;
+            Vector3 muzzle = ReferenceEquals(shot.Owner,camera.GameWidget?.PlayerData?.ComponentPlayer)
+                && CsmcFirstPersonRenderer.TryGetPlayerMuzzleWorld(shot.Owner,fx.Gun, false, out Vector3 m) ? m : shot.Muzzle;
             DrawZeusArc(shot, fx.Arc, age, muzzle, eye);
             Cs2ZeusParticles.DrawSprites(m_tracerRenderer, shot.ImpactGlow, fx.ImpactGlow, age, shot.End, right, up, DepthStencilState.DepthRead);
             Cs2ZeusParticles.DrawSparks(m_tracerRenderer, shot.ImpactSparks, fx.ImpactSparks, age, eye, Vector3.UnitY, DepthStencilState.DepthRead);
@@ -513,7 +515,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             DrawTracers(camera);
             DrawZeus(camera);
             CsmcFirstPersonRenderer.DrawFirstPersonEffects(camera);
-            if (CsmcFirstPersonRenderer.ScopeOverlayActive) CsmcFirstPersonRenderer.DrawScopeOverlay();
+            if (CsmcFirstPersonRenderer.ScopeOverlayFor(camera)) CsmcFirstPersonRenderer.DrawScopeOverlay(camera);
             var player = camera.GameWidget.PlayerData.ComponentPlayer;
             if (player is not null && m_states.TryGetValue(player, out var state)) state.Feedback.Draw(camera, m_time.GameTime);
         }
@@ -1157,7 +1159,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             : spec.LeftMuzzleBone is not null && shotClip is "shootLeft" or "shootLeftLast" ? spec.LeftMuzzleBone
             : spec.MuzzleBone;
         if (spec.MuzzleEffects)
-            CsmcFirstPersonRenderer.MuzzleFlash(silenced ? 0.03f : 0.06f, muzzleBone, spec.Name, silenced);
+            CsmcFirstPersonRenderer.MuzzleFlash(player,silenced ? 0.03f : 0.06f, muzzleBone, spec.Name, silenced);
         PlaySound(player, spec.HasSilencer && silenced ? $"{spec.Name}_fire_silenced" : $"{spec.Name}_fire");
         // No reload: the Zeus's ten-second recharge was written into its record by the shot transaction above.
         if (!spec.Automatic) Schedule(state, spec.Name, KnifeAnimationController.CurrentClip(model) ?? "shoot1", now);
@@ -1243,7 +1245,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // game camera; without one - no cs2 profile, or the gun not drawn this frame -
             // the shot ray's origin is used, which is what every earlier version did.
             Vector3 impact = start + direction * travel;
-            Vector3 tracerStart = spec.MuzzleEffects && CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, silenced, out Vector3 muzzle, muzzleBone)
+            Vector3 tracerStart = spec.MuzzleEffects && CsmcFirstPersonRenderer.TryGetPlayerMuzzleWorld(player,spec.Name, silenced, out Vector3 muzzle, muzzleBone)
                 ? muzzle : start;
             Vector3 tracerDirection = impact - tracerStart;
             float tracerTravel = tracerDirection.Length();
@@ -1251,8 +1253,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             // The Zeus draws no flash sprite and no ribbon; its own effect runs from the
             // drawn muzzle to wherever the trace ended (CS2's CP1), sparks only on a hit.
             if (Cs2TaserEffect.Applies(spec.Name)) {
-                bool solved = CsmcFirstPersonRenderer.TryGetMuzzleWorld(spec.Name, false, out Vector3 zm);
-                QueueZeus(solved ? zm : start, solved, impact, direction, gunHit.HasValue || terrain.HasValue);
+                bool solved = CsmcFirstPersonRenderer.TryGetPlayerMuzzleWorld(player,spec.Name, false, out Vector3 zm);
+                QueueZeus(player,solved ? zm : start, solved, impact, direction, gunHit.HasValue || terrain.HasValue);
             }
             if (gunHit is { } accepted) {
                 float distance=accepted.Distance;var part=accepted.Part;
@@ -1563,7 +1565,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         float magnification = spec.ZoomLevels[Math.Clamp(level - 1, 0, spec.ZoomLevels.Length - 1)];
         // Projection hook and the post-input adapter apply zoom locally, never to SettingsManager.
         KnifeLog.Trace($"[CS_SCOPE_0416] player={player.PlayerData.PlayerIndex} level={level} zoom={magnification} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
-        CsmcFirstPersonRenderer.SetScope(true, magnification, spec.ScopeHidesWeapon);
+        CsmcFirstPersonRenderer.SetPlayerScope(player,true, magnification, spec.ScopeHidesWeapon);
         KnifeAnimationController.SetScoped(player, true);
     }
 
@@ -1571,7 +1573,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (state.Zoom == 0) return;
         KnifeLog.Trace($"[CS_SCOPE_0416] leave player={player.PlayerData.PlayerIndex} baseView={SettingsManager.ViewAngle} sensitivity={SettingsManager.LookSensitivity} (unchanged)");
         state.Zoom = 0;
-        CsmcFirstPersonRenderer.SetScope(false, 1f);
+        CsmcFirstPersonRenderer.SetPlayerScope(player,false, 1f);
         KnifeAnimationController.SetScoped(player, false);
     }
 

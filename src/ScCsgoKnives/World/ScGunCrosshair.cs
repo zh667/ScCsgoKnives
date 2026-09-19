@@ -24,7 +24,7 @@ public static class ScGunCrosshair {
         if (!ScUiSettings.GunCrosshair || player is null) return false;
         if (!HoldingGun(player)) return false;
         if (HideForSniper(player)) return false;
-        if (scoped || CsmcFirstPersonRenderer.ScopeOverlayActive) return false;
+        if (scoped || CsmcFirstPersonRenderer.ScopeActiveFor(player)) return false;
         if (player.ComponentHealth.Health <= 0) return false;
         if (player.ComponentGui.ModalPanelWidget is not null || DialogsManager.HasDialogs(player.GuiWidget)) return false;
         if (!player.ComponentGui.ControlsContainerWidget.IsVisible) return false;

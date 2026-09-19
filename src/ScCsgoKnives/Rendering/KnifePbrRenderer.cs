@@ -155,9 +155,9 @@ public static class KnifePbrRenderer {
     /// Returns false when PBR is unavailable so the caller can draw its own way.
     /// </summary>
     public static bool TryDrawPart(Model model, Texture2D baseColor, int variant, Matrix world, Matrix projection,
-        Matrix viewToWorld, in Lighting lighting, bool applyBoneTransform, string material = null, float scopeAperture = 0f) {
+        Matrix viewToWorld, in Lighting lighting, bool applyBoneTransform, string material = null, float scopeAperture = 0f, float scopeProjectionY = 0f) {
         if (baseColor is null || model is null) return false;
-        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawModel(model, baseColor, world, projection, in lighting, applyBoneTransform, scopeAperture)) return true;
+        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawModel(model, baseColor, world, projection, in lighting, applyBoneTransform, scopeAperture,scopeProjectionY)) return true;
         if (!Enabled) return false;
         if (!EnsureShared()) return false;
         Texture2D orm, normal;
@@ -190,7 +190,7 @@ public static class KnifePbrRenderer {
         shader.EnvSampler.SetValue(SamplerState.LinearClamp);
         shader.BrdfSampler.SetValue(SamplerState.LinearClamp);
 
-        shader.ScopeCutout.SetValue(new Vector2(scopeAperture, projection.M22));
+        shader.ScopeCutout.SetValue(new Vector2(scopeAperture, scopeProjectionY>0?scopeProjectionY:projection.M22));
         shader.ViewToWorld.SetValue(viewToWorld);
         shader.LightDir1.SetValue(lighting.Dir1);
         shader.LightDir2.SetValue(lighting.Dir2);
@@ -235,9 +235,9 @@ public static class KnifePbrRenderer {
     /// </summary>
     public static bool TryDrawSkinned(Cs2SkinnedMesh.Vertex[] vertices, int[] indices,
         Texture2D baseColor, string material, Matrix world, Matrix projection,
-        Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture = 0f, bool rigid = false) {
+        Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture = 0f, bool rigid = false, float scopeProjectionY = 0f) {
         if (baseColor is null || vertices is null || indices is null || indices.Length == 0) return false;
-        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawMesh(vertices, indices, baseColor, world, projection, in lighting, scopeAperture, rigid)) return true;
+        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawMesh(vertices, indices, baseColor, world, projection, in lighting, scopeAperture, rigid,scopeProjectionY)) return true;
         if (!Enabled) return false;
         if (!EnsureShared()) return false;
         if (!TryGetNamedTextures(material, out Texture2D orm, out Texture2D normal)) return false;
@@ -262,7 +262,7 @@ public static class KnifePbrRenderer {
         shader.NormalSampler.SetValue(SamplerState.LinearWrap);
         shader.EnvSampler.SetValue(SamplerState.LinearClamp);
         shader.BrdfSampler.SetValue(SamplerState.LinearClamp);
-        shader.ScopeCutout.SetValue(new Vector2(scopeAperture, projection.M22));
+        shader.ScopeCutout.SetValue(new Vector2(scopeAperture, scopeProjectionY>0?scopeProjectionY:projection.M22));
         shader.ViewToWorld.SetValue(viewToWorld);
         shader.LightDir1.SetValue(lighting.Dir1);
         shader.LightDir2.SetValue(lighting.Dir2);

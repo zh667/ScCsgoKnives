@@ -112,7 +112,7 @@ static class CommunityRepairRegression {
             Check("crosshair-nonfinite-clamp",(float)shape.GetType().GetProperty("Width").GetValue(shape)==2&&(float)shape.GetType().GetProperty("Length").GetValue(shape)==32);
             var scale=mod.GetType("Game.ScProjectileDefense").GetMethod("Scale");
             Check("defense-interval-and-reduction",(float)scale.Invoke(null,["GiantTurtle",100f,true])==50&&(float)scale.Invoke(null,["Kraken",100f,true])==80&&(float)scale.Invoke(null,["Kraken",5f,true])==1&&(float)scale.Invoke(null,["BlueWhale",100f,false])==0);
-            Check("gamepad-all-ten-actions",((string[])mod.GetType("Game.ScGamepadBindings").GetMethod("Options").Invoke(null,null)).Length==17);
+            Check("gamepad-all-ten-actions",((string[])mod.GetType("Game.ScGamepadBindings").GetMethod("Options").Invoke(null,null)).Length==19);
             var components=(Array)mod.GetType("Game.ScComponentCrafting").GetField("All").GetValue(null);
             var expected=new[]{new[]{("ironingot",12),("coalchunk",4)},new[]{("sccsgomaterial:0",2),("copperingot",8),("germaniumchunk",4)},
                 new[]{("leather",8),("planks",4),("copperingot",2)},new[]{("glass",8),("copperingot",4),("germaniumchunk",4),("diamond",1)},new[]{("pigment:0",8),("canvas",4),("copperingot",4)}};

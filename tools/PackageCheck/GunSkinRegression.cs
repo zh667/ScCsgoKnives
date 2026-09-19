@@ -82,7 +82,7 @@ static class GunSkinRegression {
                 bool cylinder=(bool)visibility.Invoke(null,["revolver","cylinder",clip,.4f,false]);
                 Check("r8-loader-visibility/"+clip,shown==(clip=="reload")&&cylinder,"reload prop only; actual cylinder remains visible");
             }
-            var aperture=mod.GetType("Game.KnifePbrRenderer").GetMethod("TryDrawPart").GetParameters().Last();
+            var aperture=mod.GetType("Game.KnifePbrRenderer").GetMethod("TryDrawPart").GetParameters().Single(p=>p.Name=="scopeAperture");
             Check("native-optical-aperture-input",aperture.Name=="scopeAperture"&&aperture.IsOptional,"OBJ skin path supports the same ADS cutout as rigid factory geometry");
             var template = (Game.Block)Activator.CreateInstance(mod.GetType("Game.ScGunSkinTemplateBlock"));
             Check("template-icon-scale", Math.Abs(template.DefaultIconViewScale - .8f) < .001f, "same .8 icon view scale as original gun CSV");

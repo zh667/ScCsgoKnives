@@ -55,10 +55,9 @@ public static class Cs2Placement {
 
     /// <summary>The viewmodel's own projection: CS2's vertical FOV at the window's aspect.</summary>
     public static Matrix Projection(Camera camera) {
-        float aspect = camera.ProjectionMatrix.M22 / camera.ProjectionMatrix.M11;
-        if (!float.IsFinite(aspect) || aspect <= 0.01f) aspect = 16f / 9f;
-        return Matrix.CreatePerspectiveFieldOfView(
-            MathUtils.DegToRad(FovYDegrees(KnifeTuning.Cs2ViewmodelFov)), aspect, 0.02f, 64f);
+        float aspect = ScCameraViewport.Aspect(camera);
+        return ScCameraViewport.Projection(camera,Matrix.CreatePerspectiveFieldOfView(
+            MathUtils.DegToRad(FovYDegrees(KnifeTuning.Cs2ViewmodelFov)), aspect, 0.02f, 64f));
     }
 
     /// <summary>

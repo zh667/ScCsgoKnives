@@ -24,7 +24,7 @@ public static class ScViewRecovery {
         var guns=project?.FindSubsystem<SubsystemScGunBlockBehavior>(false);
         var players=project?.FindSubsystem<SubsystemPlayers>(false);
         if(players is not null) foreach(var p in players.ComponentPlayers) guns?.SuspendScope(p);
-        CsmcFirstPersonRenderer.SetScope(false,1f);
+        CsmcFirstPersonRenderer.ClearScopes();
         ResetPreferences();
         if(players is not null) foreach(var p in players.ComponentPlayers) p.GameWidget.ActiveCamera.PrepareForDrawing(null);
         KnifeLog.Information($"[CS_VIEW_RECOVERY_0417] explicit reset view={view}->1 sensitivity={sensitivity}->0.5");

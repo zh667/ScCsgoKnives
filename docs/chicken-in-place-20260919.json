@@ -1,0 +1,20 @@
+{
+  "target": "src\\ScCsgoKnives\\Assets\\Models\\ScCsgoKnives\\chicken.glb",
+  "beforeSha256": "b6fe4768524abe702b094b21f07f66ddda1c375e48a48a7c4230208a3091aee0",
+  "afterSha256": "db3768317236b1ff5c12e81fe860e06ce3fb4c892326ac5566481b97e7d7576c",
+  "changes": [
+    {
+      "clip": "idle",
+      "translationChannelsRemoved": 1
+    },
+    {
+      "clip": "walk",
+      "translationChannelsRemoved": 1
+    },
+    {
+      "clip": "run",
+      "translationChannelsRemoved": 1
+    }
+  ],
+  "reason": "CS2 run root_motion travels 2.65034m/loop; native locomotion already moves the body. Remove only root translation channels."
+}

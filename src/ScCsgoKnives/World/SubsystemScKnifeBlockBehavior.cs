@@ -135,7 +135,12 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         if (knife && Clicked(ScGunFunctions.Fire)) RequestAttack(player, false);
         // Keyboard R is read by UpdateGun, where it also interrupts safely at the reload boundary.
         if (gun && enabled && panel?.Clicked(ScGunFunctions.Reload) == true) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestReload(player);
-        if (gun && secondary is not null && Clicked(secondary)) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestSecondary(player);
+        // Native AimPressed already consumes this trigger (including world interaction priority).
+        // Calling RequestSecondary too would cycle zoom twice or start/cancel a silencer action.
+        bool secondaryClick=secondary is not null && enabled && (panel?.Clicked(secondary)==true
+            || ScGunBindings.KeyboardDown(player,secondary,true)
+            || (ScMobileControls.UsesTouchInput(player) || !ScGamepadBindings.NativeAimBinding(secondary)) && ScGamepadBindings.Down(player,secondary,true));
+        if (gun && secondaryClick) Project.FindSubsystem<SubsystemScGunBlockBehavior>(true).RequestSecondary(player);
         // Inspect must be a real edge from the mapped action. Do not derive it
         // from a held state: API 1.9.3.1 can leave an input snapshot held while
         // the player is merely looking/using the weapon, which caused phantom

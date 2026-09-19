@@ -105,11 +105,10 @@ static class SkinnedMotionRegression {
             object oldVirtual = virtualField.GetValue(null), oldNow = nowField.GetValue(null);
             var renderer = mod.GetType("Game.CsmcFirstPersonRenderer");
             var method = renderer.GetMethod("CreateBodyMotion", BindingFlags.NonPublic | BindingFlags.Static);
-            var scoped = renderer.GetField("s_scoped", BindingFlags.NonPublic | BindingFlags.Static);
-            var ironsight = renderer.GetField("s_ironsight", BindingFlags.NonPublic | BindingFlags.Static);
-            object oldScoped = scoped.GetValue(null), oldIronsight = ironsight.GetValue(null);
+            var scope = renderer.GetField("s_drawingScope", BindingFlags.NonPublic | BindingFlags.Static);
+            object oldScope = scope.GetValue(null);
             try {
-                virtualField.SetValue(null, true); scoped.SetValue(null, false); ironsight.SetValue(null, false);
+                virtualField.SetValue(null, true); scope.SetValue(null, Activator.CreateInstance(scope.FieldType,true));
                 var player = Blank<ComponentPlayer>(); player.ComponentBody = new Body { StandingOnValue = 1, Velocity = new Vector3(4.5f, 0, 0) };
                 var fp = Blank<ComponentFirstPersonModel>(); fp.m_componentPlayer = player;
                 var reference = Activator.CreateInstance(motionType);
@@ -133,7 +132,7 @@ static class SkinnedMotionRegression {
                 return true;
             } finally {
                 virtualField.SetValue(null, oldVirtual); nowField.SetValue(null, oldNow);
-                scoped.SetValue(null, oldScoped); ironsight.SetValue(null, oldIronsight);
+                scope.SetValue(null, oldScope);
             }
         });
         return results;

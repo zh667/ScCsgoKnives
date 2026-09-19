@@ -6,6 +6,7 @@ import hashlib,json,struct,io
 import resvg_py,soundfile as sf
 from PIL import Image
 from cs2_glb import Glb
+from chicken_in_place import remove_root_travel
 
 ROOT=Path(__file__).resolve().parent.parent
 SOURCE=ROOT/'.tmp/cs2-chicken-hud-20260919'
@@ -43,6 +44,7 @@ for mesh in j['meshes']:
 keep={'chick_idle01':'idle','chick_walk01':'walk','chick_run01':'run'}
 j['animations']=[a for a in j['animations'] if a['name'].split('/')[-1] in keep]
 for a in j['animations']:a['name']=keep[a['name'].split('/')[-1]]
+remove_root_travel(j)
 js=json.dumps(j,separators=(',',':')).encode();js+=b' '*(-len(js)%4)
 dst=ASSETS/'Models/ScCsgoKnives/chicken.glb';dst.write_bytes(struct.pack('<4sII',b'glTF',2,28+len(js)+len(blob))+struct.pack('<II',len(js),0x4e4f534a)+js+struct.pack('<II',len(blob),0x004e4942)+blob);record(src,dst)
 texture=ASSETS/'Textures/ScCsgoKnives/chicken.png';texture.write_bytes(pixels);record(image,texture)

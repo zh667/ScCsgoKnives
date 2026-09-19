@@ -30,8 +30,8 @@ public sealed class ScGunBindingsScreen : Screen {
             ((BevelledButtonWidget)b).m_labelWidget.WordWrap=true;
             m_buttons[id] = b; m_list.Children.Add(b);
         }
-        m_list.Children.Add(ScGunUi.Heading("手柄：全部十项武器操作"));
-        m_list.Children.Add(ScGunUi.Note("额外手柄键初始留空，避免覆盖现有背包、移动等操作。原版开火/瞄准仍按游戏绑定；请在此为换弹、检视等选择按键。共享按键会提示冲突，原版动作请同时在游戏设置检查。扳机释放阈值比按下低0.1，避免抖动。"));
+        m_list.Children.Add(ScGunUi.Heading("手柄：FPS 默认操作"));
+        m_list.Children.Add(ScGunUi.Note("RT 开火／强投／放置 C4，LT 开镜／副功能／轻投，右摇杆按下重刀。原版 X 是背包，因此换弹与 C4 设时使用 LB＋X，检视使用 LB＋Y；单按 X/Y、移动和方向键切换快捷栏仍按原版。原有自定义绑定保留；恢复默认后保存可应用新方案。"));
         m_list.Children.Add(m_threshold);
         foreach (var id in ScGunFunctions.All) {
             var b = ScGunUi.Button("",280); b.Margin = new Vector2(0,4);
@@ -68,7 +68,8 @@ public sealed class ScGunBindingsScreen : Screen {
                     string key=(string)x;
                     var conflict=m_padWorking.FirstOrDefault(p=>p.Key!=id && key.Length>0 && p.Value==key && ScGunBindings.Conflict(id,p.Key));
                     if(conflict.Key is not null){m_status.Text="未修改：与「"+ScGunBindings.Label(conflict.Key)+"」冲突。";return;}
-                    m_padWorking[id]=key; m_status.Text="尚未保存；请检查是否与原版操作冲突。";Refresh();
+                    if(ScGamepadBindings.HasNativeConflict(key)){m_status.Text="未修改：此键已用于原版操作，请先在原版设置调整或选择其他键。";return;}
+                    m_padWorking[id]=key; m_status.Text="尚未保存";Refresh();
                 }));return;
         }
         foreach (var (id,b) in m_buttons) if(b.IsClicked) {
