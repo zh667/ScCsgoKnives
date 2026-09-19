@@ -1,0 +1,88 @@
+{
+  "template": "Simple",
+  "rootBoneRotation": 180,
+  "modelScale": 1,
+  "animations": {
+    "idle": {
+      "source": "idle",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "walk": {
+      "source": "walk",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "run": {
+      "source": "run",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "aim": {
+      "source": "aim",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "aimwalk": {
+      "source": "aimwalk",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "shield": {
+      "source": "shield",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "shieldwalk": {
+      "source": "shieldwalk",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    }
+  },
+  "states": {
+    "gait": {
+      "layer": "Base",
+      "rules": [
+        {
+          "condition": "IsDead",
+          "animation": null
+        },
+        {
+          "condition": "[Shield] && [SpeedAbs] > 0.15",
+          "animation": "shieldwalk"
+        },
+        {
+          "condition": "Shield",
+          "animation": "shield"
+        },
+        {
+          "condition": "[Armed] && [SpeedAbs] > 0.15",
+          "animation": "aimwalk"
+        },
+        {
+          "condition": "Armed",
+          "animation": "aim"
+        },
+        {
+          "condition": "[SpeedAbs] > 2.8",
+          "animation": "run"
+        },
+        {
+          "condition": "[SpeedAbs] > 0.15",
+          "animation": "walk"
+        },
+        {
+          "condition": "true",
+          "animation": "idle"
+        }
+      ]
+    }
+  }
+}

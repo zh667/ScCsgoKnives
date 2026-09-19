@@ -33,8 +33,8 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     int m_count=1;
     double m_refreshAt,m_craftAfter;
     public Func<object,string> CraftPermission {get;set;}
-    bool Craftable => m_selected is ScComponentCrafting.Entry or ScWeaponCrafting.Entry;
-    Dictionary<int,int> UnitCost() => m_selected switch {ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
+    bool Craftable => m_selected is ScComponentCrafting.Entry or ScWeaponCrafting.Entry or ScWorkbenchRecipe;
+    Dictionary<int,int> UnitCost() => m_selected switch {ScWorkbenchRecipe r=>r.Materials(),ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
     string CraftReason() => CraftPermission?.Invoke(m_selected) is {Length:>0} reason?reason:
         ScCraftBatch.Unavailable(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count);
     void RefreshQuote() {
@@ -94,12 +94,13 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         foreach(int n in new[]{1,10,100}){var b=ScGunUi.Button(n.ToString(),52);m_quick.Add((n,b));Children.Add(b);}
         Filter("全部");
     }
-    static string CategoryOf(object item) => item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
+    static string CategoryOf(object item) => item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
         ScGunDurability.Class.Pistol=>"手枪",ScGunDurability.Class.Smg=>"冲锋枪",ScGunDurability.Class.Rifle=>"步枪",
         ScGunDurability.Class.Shotgun=>"霰弹枪",ScGunDurability.Class.BoltSniper or ScGunDurability.Class.AutoSniper=>"狙击枪",
         ScGunDurability.Class.MachineGun=>"机枪",_=>"电击枪"
     } : item is ScGunSkin or ScKnifeSkinning.Finish ? "涂装" : item is ScKnifeSkinning.Candidate ? "背包刀具" : item is ScWeaponRepair.Candidate or ScWeaponSkinning.Candidate or ScGunCounter.Candidate ? "背包枪械" : "功能";
     static int ValueOf(object item) => item switch {
+        ScWorkbenchRecipe r=>r.Value,
         ScKnifeSkinning.Candidate c=>c.Value, ScKnifeSkinning.Finish f=>f.Value,
         ScComponentCrafting.Entry c=>c.Value, ScWeaponCrafting.Entry e=>e.Value, ScWeaponRepair.Candidate c=>c.Value,ScWeaponSkinning.Candidate c=>c.Value,ScGunCounter.Candidate c=>c.Value,
         ScGunSkin s=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunSkinTemplateBlock>(true),0,s.PaintId),_=>0
@@ -119,6 +120,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         m_details.Children.Clear(); m_name.Text=item is null?"没有可用项目":m_label(item); m_details.Children.Add(m_name);
         int value=ValueOf(item); m_icon.IsVisible=value!=0; if(value!=0)m_icon.Value=value;
         var materials = item switch {
+            ScWorkbenchRecipe r=>r.Materials(),
             ScComponentCrafting.Entry c=>c.Materials(),
             ScWeaponCrafting.Entry e=>e.Materials(),
             ScGunSkin s=>ScGunSkinCatalog.CostOf(s,ScWeaponMaterialBlock.Value),

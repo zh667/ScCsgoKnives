@@ -3,7 +3,7 @@ namespace Game;
 
 public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     // Both game modes expose the same operations. Creative only changes their costs, not availability.
-    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScComponentCrafting.All, .. ScWeaponCrafting.All];
+    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScComponentCrafting.All, .. ScWeaponCrafting.All, .. ScWorkbenchExtension.All];
     // A HUD toast is behind the workshop cover. Keep refusals visible until acknowledged.
     internal static Dialog NoticeDialog(string title, string detail, Action back) =>
         new ScWorkbenchConfirmDialog(title, detail, "返回", null, _ => back());
@@ -47,8 +47,11 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 if(available)selected(item);
                 else Notice("装配台暂不可用","你已离装配台太远、装配台已被移除，或角色已无法操作。请靠近有效的装配台后重新打开。",()=>{});
             },miner.Inventory,Creative());
-            dialog.CraftPermission=item=>!ReferenceEquals(selectedInventory,miner.Inventory)||selectedCreative!=Creative()?"背包或模式已切换，请重新打开装配台。":!Available()?"装配台暂不可用，请靠近后操作。":item is ScWeaponCrafting.Entry e && !Creative()
-                && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<e.Level?$"需要制作等级 {e.Level}。":"";
+            dialog.CraftPermission=item=>{
+                int level=item switch {ScWeaponCrafting.Entry e=>e.Level,ScWorkbenchRecipe r=>r.Level,_=>1};
+                return !ReferenceEquals(selectedInventory,miner.Inventory)||selectedCreative!=Creative()?"背包或模式已切换，请重新打开装配台。":!Available()?"装配台暂不可用，请靠近后操作。":!Creative()
+                    && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<level?$"需要制作等级 {level}。":"";
+            };
             dialog.RestoreNavigation(navigation.GetValueOrDefault(title));
             if(title!= "武器装配台 · 组装 / 维修 / 涂装 / 计数器")dialog.BackAction=title.EndsWith("· 选择涂装",StringComparison.Ordinal)?ShowSkinGuns:ShowList;
             return dialog;
@@ -74,7 +77,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     : item is CounterMenu ? "安装击杀计数器" : item is CreativeLevelMenu ? "创造模式：设置快捷栏枪械等级"
                     : item is ScGunCounter.Candidate c ? $"{ValueName(c.Value)} · {(c.Installed ? $"当前 Lv{c.Level}" : "设置等级（自动安装计数器）")} · 第 {c.Slot + 1} 格"
                     : item is OwnedAttributesMenu ? "查看当前武器属性" : item is AttributesMenu ? "武器图鉴／等级预览"
-                    : item is ScComponentCrafting.Entry component ? component.Name : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+                    : item is ScWorkbenchRecipe extension ? extension.Name : item is ScComponentCrafting.Entry component ? component.Name : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+                    if(item is ScWorkbenchRecipe) return; // extension recipes use the same direct craft button
                     if (item is ScComponentCrafting.Entry component) {
                         var cost = component.Materials();
                         DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(component.Name,

@@ -1,0 +1,14 @@
+{
+  "Name": "CS武器 · 战术同伴拓展",
+  "Version": "1.0.0",
+  "ApiVersion": "1.9.3.1",
+  "ScVersion": "2.4.0.0",
+  "Author": "zh667",
+  "PackageName": "zh667.ScCsgoTactical",
+  "Description": "CS武器可选拓展：适配防爆盾、救援同伴、默认CT/T外观、真实枪械与弹匣装备、跟随和前方掩护。盾体及举盾姿态为自制适配。需同时安装CS武器1.4.0或以上。卸载前请先取回装备并遣散同伴。",
+  "Link": "https://github.com/zh667/ScCsgoKnives",
+  "LoadOrder": 1020,
+  "NonPersistentMod": false,
+  "GameplayImpactLevel": "Turbo",
+  "Dependencies": {"zh667.ScCsgoKnives": "1.4.0"}
+}

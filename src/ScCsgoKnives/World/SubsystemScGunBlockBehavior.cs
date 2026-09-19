@@ -1647,6 +1647,10 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     /// <summary>Plays Audio/ScCsgoKnives/&lt;name&gt; when the mod ships it; nothing (and no placeholder) when it does not.</summary>
+    public static string ExtensionShotSound(GunSpec spec,bool silenced) {
+        string name=spec.HasSilencer&&silenced?$"{spec.Name}_fire_silenced":$"{spec.Name}_fire";
+        return "Audio/ScCsgoKnives/"+(s_variants.ContainsKey(name)?name+"_1":name);
+    }
     void PlaySound(ComponentPlayer player, string name) {
         if (s_variants.TryGetValue(name, out int n)) name = $"{name}_{m_random.Int(1, n)}";
         string path = $"Audio/ScCsgoKnives/{name}";

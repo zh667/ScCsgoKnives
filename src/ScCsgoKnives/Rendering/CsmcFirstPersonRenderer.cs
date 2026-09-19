@@ -1331,6 +1331,13 @@ public static class CsmcFirstPersonRenderer {
 
     static Texture2D s_cs2ArmBase, s_cs2GloveBase;
     static bool s_cs2ArmsLogged;
+    /// <summary>Optional item renderers reuse the real CS2 skinned hands without rendering a base-game weapon.</summary>
+    public static bool DrawExtensionArms(ComponentFirstPersonModel firstPerson,Camera camera,string asset,string clip,Matrix post) {
+        var pose=Cs2Rig.Sample(asset,clip,0);if(pose is null||Cs2SkinnedMesh.Arms is null)return false;
+        float light=LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight,0,15)];
+        var lighting=KnifePbrRenderer.FirstPersonLighting(camera,light);
+        DrawCs2Arms(pose,post,Cs2Placement.Projection(camera),camera,in lighting,0);return true;
+    }
     static double s_cs2SkinMillis;
     static int s_cs2SkinFrames;
     static double s_cs2WeaponSkinMillis;

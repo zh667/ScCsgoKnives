@@ -51,9 +51,10 @@ bool menuCheckset=false;
 bool features130=false;
 bool eggFeedbackOnly=false;
 bool splitChickenOnly=false;
-string hapticsPackage=null;
+string hapticsPackage=null,tacticalPackage=null;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
+        case "--tactical-package":tacticalPackage=args[++i];break;
         case "--split-chicken-only": splitChickenOnly=true;break;
         case "--egg-feedback-only": eggFeedbackOnly=true;break;
         case "--haptics-package": hapticsPackage=args[++i];break;
@@ -149,6 +150,13 @@ Assembly mod;
 using (var dllStream = File.OpenRead(dllPath)) mod = context.LoadFromStream(dllStream);
 Type selfTest = mod.GetType("Game.Cs2SelfTest");
 if (selfTest is null) { Console.Error.WriteLine("the packaged assembly has no Game.Cs2SelfTest"); return 3; }
+if(tacticalPackage is not null){
+    using var zip=ZipFile.OpenRead(tacticalPackage);using var input=zip.GetEntry("ScCsgoTactical.dll").Open();using var bytes=new MemoryStream();input.CopyTo(bytes);bytes.Position=0;
+    var tactical=context.LoadFromStream(bytes);
+    var cases=TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
+    var report=JsonSerializer.Serialize(new{coreSha256=digest,dlcSha256=Sha256(tacticalPackage),failed=cases.Count(c=>!c.Ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
+    if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.Ok)?1:0;
+}
 
 // The mod logs through Engine's Log; send it to stderr so stdout stays one JSON blob.
 Type knifeLog = mod.GetType("Game.KnifeLog");

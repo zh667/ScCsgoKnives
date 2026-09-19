@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed 2026-09-20: implement the optional tactical DLC with adapted shield geometry/poses
+  (no old shield model is available), native CS2 CT/T/hostage companions, actual gun/ammunition
+  inventories, defensive AI and workbench recruitment/repair. Deliver Full core 1.4.0 plus independent
+  DLC 1.0.0; preserve previous packages and gun layout/schema. Keep the base usable without the DLC.
+  Companion GPU skin palettes must fit mobile limits; retain source exports and validate derived poses.
+  Player appearance replacement and armor/helmet remain future features. See
+  docs/release-1.4.0-tactical-expansion.md for implemented protection and compatibility boundaries.
+
 - User-directed 2026-09-19/20: FPS-style controller defaults without stealing vanilla inventory,
   clothing, crouch or hotbar controls; player-local split-screen weapon projection, scope masks
   and muzzle effects. Remove CS2 locomotion root travel from derived chicken animations while

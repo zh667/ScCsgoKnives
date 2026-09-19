@@ -1,0 +1,191 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.IO.Compression;
+using System.Xml.Linq;
+using System.Text.Json.Nodes;
+using Engine;
+using Engine.Graphics;
+using Engine.Media;
+using Engine.Animation;
+using Game;
+using GameEntitySystem;
+using TemplatesDatabase;
+
+static class TacticalRegression {
+    internal record Result(string Name,bool Ok,string Detail);
+    static T Blank<T>()=>(T)RuntimeHelpers.GetUninitializedObject(typeof(T));
+    static Entity Entity(Project p,params Component[] components){var e=Blank<Entity>();e.m_project=p;e.m_isAddedToProject=true;e.m_components=components.ToList();foreach(var c in components)c.m_entity=e;p.m_entities[e]=true;return e;}
+    sealed class Drops:SubsystemPickables {public readonly List<Pickable> Added=[];public override Pickable AddPickable(int value,int count,Vector3 pos,Vector3? velocity,Matrix? stuck,Entity owner){var p=new Pickable{Value=value,Count=count,Position=pos};Added.Add(p);return p;}}
+    sealed class TerrainProbe:SubsystemTerrain {public bool Blocked;public override TerrainRaycastResult? Raycast(Vector3 start,Vector3 end,bool interaction,bool air,Func<int,float,bool> action)=>Blocked?new TerrainRaycastResult{Distance=1}:null;}
+    sealed class AudioProbe:SubsystemAudio {public int Shots;public override void PlaySound(string n,float v,float pitch,Vector3 p,float d,bool delay)=>Shots++;public override void PlayRandomSound(string n,float v,float pitch,Vector3 p,float d,bool delay){}}
+    sealed class HealthProbe:ComponentHealth {public override void Injure(Injury injury){injury.Attackment.EnableHitValueParticleSystem=false;base.Injure(injury);}}
+    static ValuesDictionary Round(ValuesDictionary v){var xml=new XElement("Values");v.Save(xml);var read=new ValuesDictionary();read.ApplyOverrides(XElement.Parse(xml.ToString()));return read;}
+    internal static List<Result> Run(Assembly core,Assembly dlc,string corePath,string dlcPath,string content){
+        List<Result> result=[];
+        void Test(string n,Action f){try{f();result.Add(new(n,true,""));}catch(Exception e){result.Add(new(n,false,e.ToString()));}}
+        void Require(bool v,string message){if(!v)throw new Exception(message);}
+        Type T(string n)=>dlc.GetType("Game."+n,true);Type C(string n)=>core.GetType("Game."+n,true);
+        object Call(string type,string method,params object[] args)=>T(type).GetMethod(method).Invoke(null,args);
+        using var zip=ZipFile.OpenRead(dlcPath);
+        using(var vanilla=ZipFile.OpenRead(content))using(var stream=vanilla.Entries.Single(e=>e.FullName.EndsWith("Simple.template.json",StringComparison.OrdinalIgnoreCase)).Open())AnimationTemplateManager.LoadFromJsonNode(JsonNode.Parse(stream));
+        byte[] Bytes(string path){using var s=zip.GetEntry(path)?.Open()??throw new Exception("Missing "+path);using var m=new MemoryStream();s.CopyTo(m);return m.ToArray();}
+        Test("optional-package-identity-and-no-bundled-engine",()=>{
+            var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
+            var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.0"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.3.3")),"core dependency not enforced by engine");
+            Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
+        });
+        foreach(string name in new[]{"ct","t","hostage","shield"})Test("native-gltf/"+name,()=>{
+            using var stream=new MemoryStream(Bytes("Assets/Models/ScCsgoTactical/"+name+".glb"));var data=GltfLoader.Load(stream);
+            Require(data.Bones.Count>0&&data.Meshes.Count>0,"empty model");
+            if(name=="shield")return;
+            Require(data.Skin is not null&&data.Skin.JointCount<=48,"skin exceeds mobile bone palette");
+            using var model=new Model{ModelData=data,Skin=data.Skin,Animations=data.Animations};
+            foreach(var b in data.Bones)model.m_bones.Add(new ModelBone{Model=model,Index=model.m_bones.Count,Name=b.Name,Transform=b.Transform});
+            for(int i=0;i<data.Bones.Count;i++){int parent=data.Bones[i].ParentBoneIndex;if(parent>=0){model.m_bones[i].ParentBone=model.m_bones[parent];model.m_bones[parent].m_childBones.Add(model.m_bones[i]);}else model.m_rootBone=model.m_bones[i];}
+            Require(data.Animations.Count==7,"missing selected animation");
+            foreach(var animation in data.Animations){Require(!animation.Channels.Any(c=>c.TargetBoneName=="root_motion"&&c.Property==ModelAnimation.AnimationProperty.Translation),"root travel will drift");
+                var player=new AnimationPlayer();player.SetAnimation(model,animation);player.Play(true);
+                for(int i=0;i<=20;i++){var pose=new Matrix?[data.Bones.Count];player.SampleAtTime(animation.Duration*i/20,pose);Require(pose.Where(p=>p.HasValue).All(p=>float.IsFinite(p.Value.M11+p.Value.M22+p.Value.M33+p.Value.M41+p.Value.M42+p.Value.M43)),"invalid animation transform");
+                    var absolute=new Matrix[data.Bones.Count];Matrix Compose(int index){var b=data.Bones[index];return absolute[index]=(pose[index]??b.Transform)*(b.ParentBoneIndex<0?Matrix.Identity:Compose(b.ParentBoneIndex));}
+                    for(int bi=0;bi<absolute.Length;bi++)Compose(bi);
+                    float height=absolute.Max(m=>m.Translation.Y)-absolute.Min(m=>m.Translation.Y);Require(height>1.4f&&height<2.5f,$"{animation.Name}@{animation.Duration*i/20} skeleton height {height}; min {data.Bones[Array.FindIndex(absolute,m=>m.Translation.Y==absolute.Min(t=>t.Translation.Y))].Name}; max {data.Bones[Array.FindIndex(absolute,m=>m.Translation.Y==absolute.Max(t=>t.Translation.Y))].Name}; pelvis {absolute[data.Bones.FindIndex(b=>b.Name=="pelvis")].Translation}");
+                }
+            }
+            var loader=new AnimationConfigLoader();var cfg=loader.LoadFromJsonNode(JsonNode.Parse(Bytes("Assets/Animations/ScTactical.json")));var controller=loader.CreateController(cfg,model);
+            foreach(bool armed in new[]{false,true})foreach(bool shield in new[]{false,true})foreach(float speed in new[]{0f,1f,4f}){controller.Parameters.SetBool("Armed",armed);controller.Parameters.SetBool("Shield",shield);controller.Parameters.SetBool("IsDead",false);controller.Parameters.SetFloat("SpeedAbs",speed);controller.Update(.25f);var matrices=new Matrix?[data.Bones.Count];controller.ComputeBoneTransforms(matrices);Require(matrices.Any(p=>p.HasValue),"no native animation output");}
+        });
+        Test("database-templates-inherit-native-creature",()=>{
+            var old=DatabaseManager.m_gameDatabase;var oldV=new Dictionary<string,ValuesDictionary>(DatabaseManager.m_valueDictionaries);
+            try{using var vanilla=ZipFile.OpenRead(content);using var s=vanilla.Entries.Single(e=>e.FullName.EndsWith("Database.xml")).Open();var root=XElement.Load(s);using var addition=new MemoryStream(Bytes("Assets/ScTactical.xdb"));ModsManager.CombineDataBase(root,addition,"zh667.ScCsgoTactical");DatabaseManager.LoadDataBaseFromXml(root);
+                foreach(string name in new[]{"ScTacticalCT","ScTacticalT","ScTacticalHostage"}){
+                    var v=DatabaseManager.FindEntityValuesDictionary(name,true);foreach(string component in new[]{"Creature","Health","Spawn","Body","Locomotion","Pilot","Pathfinding","BehaviorSelector","TacticalInventory","TacticalCompanion","TacticalModel"})Require(v.ContainsKey(component),"missing "+component);
+                    var iv=v.GetValue<ValuesDictionary>("TacticalInventory");var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(iv,null);Require(inv.SlotsCount==5,"native inventory template fails");
+                    var md=v.GetValue<ValuesDictionary>("TacticalModel");foreach(string key in new[]{"ModelName","PrepareOrder","CastsShadow","BoundingSphereRadius"})Require(md.ContainsKey(key),"missing Model.Load field "+key);
+                    Require(!v.ContainsKey("ChaseBehavior"),"automatic neutral attack added");
+                }
+            }finally{DatabaseManager.m_gameDatabase=old;DatabaseManager.m_valueDictionaries.Clear();foreach(var v in oldV)DatabaseManager.m_valueDictionaries[v.Key]=v.Value;}
+        });
+        Test("shield-front-back-side-height-and-edge",()=>{
+            var pose=Matrix.Identity;
+            foreach(var pair in new[]{(new Vector3(0,0,-3),Vector3.Zero,true),(new Vector3(0,0,3),Vector3.Zero,false),(new Vector3(3,0,0),Vector3.Zero,false),(new Vector3(.47f,0,-3),new Vector3(.47f,0,0),false),(new Vector3(0,-.73f,-3),new Vector3(0,-.73f,0),false),(new Vector3(.45f,.71f,-3),new Vector3(.45f,.71f,1),true)}){
+                object[] a=[pair.Item1,pair.Item2,pose,0f];Require((bool)T("ScShieldProtection").GetMethod("Intersect").Invoke(null,a)==pair.Item3,"incorrect shield intersection "+pair);
+            }
+        });
+        Test("first-person-cs2-arm-resource-and-shield-grip",()=>{
+            var pose=C("Cs2Rig").GetMethod("Sample").Invoke(null,["c4","idle",0f]);Require(pose!=null,"missing C4 base pose");var mesh=C("Cs2SkinnedMesh").GetProperty("Arms").GetValue(null);Require(mesh!=null,"missing actual CS2 arms");
+            Require((float)mesh.GetType().GetMethod("UnresolvedWeight").Invoke(mesh,[pose])<.001f,"unresolved arm weights");
+            var placement=(Matrix)C("Cs2Placement").GetMethod("Placement").Invoke(null,null);
+            foreach(var pair in new[]{("hand_L",-.125f),("hand_R",.125f)}){var p=(Vector3)pose.GetType().GetMethod("GetBoneOrigin").Invoke(pose,[pair.Item1]);p=Vector3.Transform(p,placement)+new Vector3(-.10f,-.22f,-.12f);Require(Math.Abs(p.X-pair.Item2)<.025f&&p.Y>-.66f&&p.Y<-.32f&&p.Z>-.77f&&p.Z<-.66f,"hand misses rear grip "+p);}
+        });
+        var savedIndices=new Dictionary<Type,int>(BlocksManager.BlockTypeToIndex);var oldBlocks=(Block[])BlocksManager.Blocks.Clone();
+        var registryField=C("ScGunRegistry").GetField("Current");var oldRegistry=registryField.GetValue(null);
+        try{
+            foreach(var pair in new[]{(T("ScTacticalShieldBlock"),705),(T("ScTacticalBeaconBlock"),706),(C("ScGunBlock"),701),(C("ScAmmoBlock"),702),(C("ScGunSkinTemplateBlock"),703),(C("ScGunCounterTemplateBlock"),704)}){var b=(Block)Activator.CreateInstance(pair.Item1);b.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=b;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}
+            ComponentInventoryBase Inv(){var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(new ValuesDictionary{{"SlotsCount",5},{"Slots",new ValuesDictionary()}},null);return inv;}
+            Test("five-recipes-vanilla-materials-craft-and-refusal",()=>{
+                using var vanilla=ZipFile.OpenRead(content);using var reader=new StreamReader(vanilla.GetEntry("Assets/BlocksData.txt").Open());var lines=reader.ReadToEnd().Split('\n');int column=Array.IndexOf(lines[0].Trim().Split(';'),"CraftingId"),index=740;
+                var ids=new HashSet<string>{"ironingot","copperingot","glass","leather","germaniumchunk","canvas"};foreach(var line in lines.Skip(1)){var cells=line.Trim().Split(';');if(cells.Length<=column||!ids.Contains(cells[column]))continue;var block=(Block)Activator.CreateInstance(typeof(Block).Assembly.GetType("Game."+cells[0],true));block.BlockIndex=index;block.CraftingId=cells[column];block.MaxStacking=40;BlocksManager.Blocks[index++]=block;}
+                Call("SubsystemScTactical","RegisterRecipes");var recipes=((System.Collections.IEnumerable)C("ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>().ToArray();Require(recipes.Length==5,"missing or duplicate recipes");
+                Require(BlocksManager.Blocks[705].GetCreativeValues().Single()==705&&BlocksManager.Blocks[706].GetCreativeValues().Count()==4,"missing creative equipment");
+                var registry=Activator.CreateInstance(C("ScGunRegistry"));registryField.SetValue(null,registry);C("ScGunRegistry").GetField("RecoveryOwner").SetValue(registry,(Func<IInventory,string>)(_=>"fixture/tactical"));
+                foreach(var recipe in recipes){int output=(int)recipe.GetType().GetProperty("Value").GetValue(recipe);var cost=(Dictionary<int,int>)recipe.GetType().GetMethod("Materials").Invoke(recipe,null);Require(cost.Count>0&&cost.Values.All(n=>n>0),"invalid native material resolution");var inventory=new ComponentInventory();for(int i=0;i<16;i++)inventory.m_slots.Add(new());int slot=0;foreach(var item in cost){inventory.m_slots[slot++]=new(){Value=item.Key,Count=1};inventory.m_slots[slot++]=new(){Value=item.Key,Count=item.Value-1};}
+                    var craft=C("ScCraftBatch").GetMethod("TryCraft");Require((bool)craft.Invoke(null,[inventory,output,cost,1]),"cannot craft "+recipe);Require(inventory.m_slots.Sum(s=>s.Count)==1&&inventory.m_slots.Any(s=>s.Value==output&&s.Count==1),"incorrect craft spend/result");Require(!(bool)craft.Invoke(null,[inventory,output,cost,1])&&inventory.m_slots.Sum(s=>s.Count)==1,"second craft consumed/duplicated");}
+            });
+            (Component Npc,ComponentCreature Creature,ComponentInventoryBase Inventory,ComponentPlayer Owner,ComponentPathfinding Path,SubsystemTime Time,Drops Drops) Npc(){
+                var project=new Project();var time=new SubsystemTime();var players=new SubsystemPlayers();var drops=new Drops();foreach(var s in new Subsystem[]{time,players,drops,new TerrainProbe{Terrain=new Terrain()},new AudioProbe(),new SubsystemBodies()}){s.m_project=project;project.m_subsystems.Add(s);}
+                var owner=Blank<ComponentPlayer>();owner.PlayerData=Blank<PlayerData>();owner.PlayerData.PlayerIndex=3;owner.ComponentBody=new ComponentBody{Position=new Vector3(8,0,0)};owner.ComponentHealth=new ComponentHealth{Health=1};owner.ComponentGui=Blank<ComponentGui>();owner.ComponentGui.m_modalPanelContainerWidget=new CanvasWidget();var ownerInventory=new ComponentInventory();owner.ComponentMiner=new ComponentMiner{Inventory=ownerInventory};Entity(project,owner,owner.ComponentBody,owner.ComponentHealth,owner.ComponentGui,owner.ComponentMiner,ownerInventory);players.m_componentPlayers.Add(owner);
+                var npc=(Component)Activator.CreateInstance(T("ComponentTacticalCompanion"));var inv=Inv();var body=new ComponentBody{BoxSize=new Vector3(.65f,1.8f,.65f)};var health=new ComponentHealth{Health=1};var creature=new ComponentCreature{DisplayName="CT · SAS",ComponentBody=body,ComponentHealth=health,ComponentLocomotion=new ComponentLocomotion()};
+                var pilot=new ComponentPilot{m_componentCreature=creature};var path=new ComponentPathfinding{m_componentPilot=pilot};var selector=new ComponentBehaviorSelector();Entity(project,npc,inv,body,health,creature,pilot,path,selector);npc.Load(new ValuesDictionary{{"OwnerIndex",3}},null);selector.Load(new(),null);selector.Update(.1f);return(npc,creature,inv,owner,path,time,drops);
+            }
+            Test("npc-follow-guard-cover-shield-speed-owner-save",()=>{
+                var f=Npc();((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination==f.Owner.ComponentBody.Position&&f.Path.Speed==.7f,"follow navigation failed");
+                var command=T("ComponentTacticalCompanion").GetMethod("Command");command.Invoke(f.Npc,[Enum.ToObject(T("TacticalOrder"),1)]);f.Time.m_gameTime=1;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null,"guard walks away");
+                f.Inventory.AddSlotItems(0,705,1);command.Invoke(f.Npc,[Enum.ToObject(T("TacticalOrder"),2)]);f.Time.m_gameTime=2;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination==f.Owner.ComponentBody.Position+f.Owner.ComponentBody.Matrix.Forward*2.5f&&f.Path.Speed==.35f,"shield cover speed/position wrong");
+                T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,true);
+                for(int round=0;round<2;round++){var v=new ValuesDictionary();f.Npc.Save(v,null);f.Npc.Load(Round(v),null);Require((int)T("ComponentTacticalCompanion").GetField("OwnerIndex").GetValue(f.Npc)==3&&(bool)T("ComponentTacticalCompanion").GetField("CeaseFire").GetValue(f.Npc),"lost owner/order");}
+                var other=Blank<ComponentPlayer>();other.PlayerData=Blank<PlayerData>();other.PlayerData.PlayerIndex=7;Require(!(bool)T("ComponentTacticalCompanion").GetMethod("OwnedBy").Invoke(f.Npc,[other]),"foreign owner granted");
+                f.Owner.ComponentHealth.Health=0;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null,"owner dead still follows");
+            });
+            Test("npc-death-drops-equipped-gun-and-ammo-once",()=>{
+                var f=Npc();f.Inventory.AddSlotItems(0,701,1);f.Inventory.AddSlotItems(1,702,7);f.Creature.ComponentHealth.Health=0;
+                T("ComponentTacticalCompanion").GetMethod("Died").Invoke(f.Npc,null);T("ComponentTacticalCompanion").GetMethod("Died").Invoke(f.Npc,null);((IUpdateable)f.Npc).Update(.1f);
+                Require(f.Drops.Added.Count==2&&f.Drops.Added.Sum(p=>p.Count)==8&&Enumerable.Range(0,5).All(i=>f.Inventory.GetSlotCount(i)==0),"lost/duplicated death equipment");
+            });
+            Test("npc-native-body-ray-attack-health-wall-friendly-and-ceasefire",()=>{
+                registryField.SetValue(null,Activator.CreateInstance(C("ScGunRegistry")));var f=Npc();var p=f.Npc.Project;var bodies=p.FindSubsystem<SubsystemBodies>(true);var terrain=(TerrainProbe)p.FindSubsystem<SubsystemTerrain>(true);var audio=(AudioProbe)p.FindSubsystem<SubsystemAudio>(true);f.Creature.m_killVerbs=["shot"];
+                var target=new ComponentBody{Position=new Vector3(0,0,-8),BoxSize=new Vector3(.7f,1.8f,.7f),Mass=75};var health=new HealthProbe{Health=1,AttackResilience=1000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health};health.m_componentCreature=creature;Entity(p,target,health,creature);bodies.AddBody(target);
+                int gun=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,20,false]));f.Inventory.AddSlotItems(0,gun,1);
+                void Update(double now){f.Time.m_gameTime=now;((IUpdateable)f.Npc).Update(.1f);}
+                Update(0);Require(audio.Shots==0&&health.Health==1,"unprovoked shooting");
+                T("ComponentTacticalCompanion").GetMethod("Alert").Invoke(f.Npc,[target]);terrain.Blocked=true;Update(1);Require(audio.Shots==0&&f.Inventory.GetSlotValue(0)==gun,"shot through terrain or consumed blocked ammo");
+                terrain.Blocked=false;var ally=new ComponentBody{Position=new Vector3(0,0,-3),BoxSize=new Vector3(.7f,1.8f,.7f)};Entity(p,ally);bodies.AddBody(ally);Update(2);Require(audio.Shots==0,"shot through intervening body");bodies.RemoveBody(ally);
+                T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,true);Update(3);Require(audio.Shots==0,"ceasefire ignored");T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,false);Update(4);
+                Require(audio.Shots==1&&health.Health<1&&health.Health>0,$"native gun damage did not reach health: shots={audio.Shots}, health={health.Health}, status={T("ComponentTacticalCompanion").GetField("Status").GetValue(f.Npc)}, active={((ComponentBehavior)f.Npc).IsActive}, threat={T("ComponentTacticalCompanion").GetField("threat",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(f.Npc)}, ray={bodies.Raycast(new Vector3(0,1.45f,0),target.BoundingBox.Center(),0,(b,d)=>true)?.ComponentBody==target}");int rounds=(int)C("GunSpec").GetMethod("GetRounds").Invoke(null,[Terrain.ExtractData(f.Inventory.GetSlotValue(0))]);Require(rounds==19,"not exactly one round spent");Update(4.01);Require(audio.Shots==1,"cadence gate bypassed");
+            });
+            Test("npc-full-registry-reload-refuses-without-ammo-loss",()=>{
+                var registry=Activator.CreateInstance(C("ScGunRegistry"));registryField.SetValue(null,registry);C("ScGunRegistry").GetProperty("Next").SetValue(registry,1023);var f=Npc();int gun=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,0,false]));f.Inventory.AddSlotItems(0,gun,1);f.Inventory.AddSlotItems(1,702,2);
+                ((IUpdateable)f.Npc).Update(.1f);f.Time.m_gameTime=4;((IUpdateable)f.Npc).Update(.1f);Require(f.Inventory.GetSlotValue(0)==gun&&f.Inventory.GetSlotCount(1)==2&&(int)C("ScGunRegistry").GetProperty("Next").GetValue(registry)==1023,"failed reload consumed or allocated");
+            });
+            Test("npc-reload-real-ammo-cancel-on-equip-change",()=>{
+                registryField.SetValue(null,Activator.CreateInstance(C("ScGunRegistry")));var f=Npc();
+                int empty=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,0,false]));f.Inventory.AddSlotItems(0,empty,1);f.Inventory.AddSlotItems(1,702,2);
+                ((IUpdateable)f.Npc).Update(.1f);Require(f.Inventory.GetSlotCount(1)==2,"charged before reload insert");
+                f.Inventory.RemoveSlotItems(0,1);f.Inventory.AddSlotItems(0,705,1);f.Time.m_gameTime=4;((IUpdateable)f.Npc).Update(.1f);Require(f.Inventory.GetSlotCount(1)==2&&f.Inventory.GetSlotValue(0)==705,"stale reload modified shield");
+                f.Inventory.RemoveSlotItems(0,1);f.Inventory.AddSlotItems(0,empty,1);f.Time.m_gameTime=5;((IUpdateable)f.Npc).Update(.1f);f.Time.m_gameTime=9;((IUpdateable)f.Npc).Update(.1f);
+                Require(f.Inventory.GetSlotCount(1)==1&&(int)C("GunSpec").GetMethod("GetRounds").Invoke(null,[Terrain.ExtractData(f.Inventory.GetSlotValue(0))])>0,"reload failed or wrong magazine cost");
+            });
+            Test("native-panel-all-slots-responsive-and-resume-after-close",()=>{
+                var caches=(IDictionary<string,List<object>>)typeof(ContentManager).GetField("Caches",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null);var oldCaches=caches.ToArray();var atlas=TextureAtlasManager.m_subtextures.ToArray();var font=LabelWidget.m_bitmapFont;
+                try{
+                    using var vanilla=ZipFile.OpenRead(content);var texture=Blank<Texture2D>();
+                    foreach(var e in vanilla.Entries.Where(e=>e.FullName.StartsWith("Assets/")&&e.FullName.Contains('.'))){string key=e.FullName[7..];key=key[..key.LastIndexOf('.')];if(e.FullName.EndsWith(".xml")){using var s=e.Open();var xml=XElement.Load(s);caches[key]=[xml];foreach(var a in xml.DescendantsAndSelf().Attributes().Where(a=>a.Value.StartsWith("{Textures/Atlas/")&&a.Value.EndsWith('}')))TextureAtlasManager.m_subtextures[a.Value[1..^1]]=new Subtexture(texture,Vector2.Zero,Vector2.One);}else if(e.FullName.EndsWith(".png"))caches[key]=[texture];}
+                    using(var glyphs=vanilla.Entries.Single(e=>e.FullName.EndsWith("Fonts/Pericles.lst")).Open())LabelWidget.BitmapFont=BitmapFont.Initialize((Texture2D)null,glyphs);
+                    foreach(string n in new[]{"ProgressBar","InteractiveItemOverlay","EditItemOverlay","FoodItemOverlay"})TextureAtlasManager.m_subtextures["Textures/Atlas/"+n]=new Subtexture(texture,Vector2.Zero,Vector2.One);
+                    caches["Fonts/Pericles"]=[LabelWidget.BitmapFont];BlocksManager.Blocks[0]=new AirBlock();
+                    var f=Npc();var inv=(ComponentInventory)f.Owner.ComponentMiner.Inventory;for(int i=0;i<36;i++)inv.m_slots.Add(new ComponentInventoryBase.Slot());
+                    var panel=(CanvasWidget)Activator.CreateInstance(T("TacticalPanel"),f.Owner,f.Npc);panel.WidgetsHierarchyInput=new WidgetInput();f.Owner.ComponentGui.m_modalPanelContainerWidget.Children.Add(panel);
+                    foreach(var size in new[]{new Vector2(850,480),new Vector2(640,360),new Vector2(420,720),new Vector2(480,540)}){
+                        panel.Measure(size);panel.Arrange(Vector2.Zero,new Vector2(Math.Min(620,size.X),Math.Min(520,size.Y)));panel.Measure(size);panel.Arrange(Vector2.Zero,new Vector2(Math.Min(620,size.X),Math.Min(520,size.Y)));
+                        var slots=panel.AllChildren.OfType<InventorySlotWidget>().ToArray();Require(slots.Length==41,"hidden/missing player slots");Require(slots.All(s=>s.ActualSize.X>=48&&s.GlobalBounds.Min.X>=panel.GlobalBounds.Min.X&&s.GlobalBounds.Max.X<=panel.GlobalBounds.Max.X+.1f),"slots overflow narrow screen");
+                    }
+                    ((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null,"NPC moves while equipping");f.Owner.ComponentGui.m_modalPanelContainerWidget.Children.Clear();f.Time.m_gameTime=3;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination.HasValue,"NPC frozen after native inventory close");
+                }finally{caches.Clear();foreach(var c in oldCaches)caches[c.Key]=c.Value;TextureAtlasManager.m_subtextures.Clear();foreach(var a in atlas)TextureAtlasManager.m_subtextures[a.Key]=a.Value;LabelWidget.m_bitmapFont=font;}
+            });
+            Test("native-inventory-capacity-and-two-xml-rounds",()=>{
+                var inv=Inv();Require(inv.GetSlotCapacity(0,705)==1&&inv.GetSlotCapacity(1,705)==0&&inv.GetSlotCapacity(1,702)==40&&inv.GetSlotCapacity(0,702)==0,"equipment restrictions");
+                inv.AddSlotItems(0,Terrain.MakeBlockValue(705,0,1777),1);inv.AddSlotItems(1,702,23);
+                for(int round=0;round<2;round++){var values=new ValuesDictionary();inv.Save(values,null);values.SetValue("SlotsCount",5);var next=Inv();next.m_slots.Clear();next.Load(Round(values),null);inv=next;Require(inv.GetSlotValue(0)==Terrain.MakeBlockValue(705,0,1777)&&inv.GetSlotCount(1)==23,"saved inventory altered");}
+            });
+            Test("real-attack-filter-protects-body-behind-shield-once",()=>{
+                var project=new Project();var bodies=new SubsystemBodies();bodies.m_project=project;project.m_subsystems.Add(bodies);
+                var inv=Inv();inv.AddSlotItems(0,705,1);var shield=new ComponentBody{Position=Vector3.Zero,BoxSize=new Vector3(.65f,1.8f,.65f)};Entity(project,shield,new ComponentHealth{Health=1},inv);bodies.AddBody(shield);
+                var target=new ComponentBody{Position=new Vector3(0,0,2),BoxSize=new Vector3(.65f,1.8f,.65f)};Entity(project,target,new ComponentHealth{Health=1});bodies.AddBody(target);
+                var attacker=new ComponentBody{Position=new Vector3(0,0,-5)};var ae=Entity(project,attacker);
+                var hit=new ProjectileAttackment(target,ae,new Vector3(0,1,1.7f),Vector3.UnitZ,100,null);
+                Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==0&&Terrain.ExtractData(inv.GetSlotValue(0))==100,"does not protect ally behind shield");
+                Call("ScShieldProtection","Filter",hit);Require(Terrain.ExtractData(inv.GetSlotValue(0))==100,"double wear");
+                inv.m_slots[0].Value=Terrain.MakeBlockValue(705,0,2000);hit=new ProjectileAttackment(target,ae,new Vector3(0,1,1.7f),Vector3.UnitZ,100,null);Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==100,"broken shield blocks");
+            });
+            Test("shield-retained-break-no-nan-mutation",()=>{var inv=Inv();inv.AddSlotItems(0,Terrain.MakeBlockValue(705,0,1999),1);Require(!(bool)Call("ScShieldProtection","Spend",inv,float.NaN),"NaN wear accepted");Require((bool)Call("ScShieldProtection","Spend",inv,10f)&&inv.GetSlotCount(0)==1&&Terrain.ExtractData(inv.GetSlotValue(0))==2000,"break deletes or wraps");Require(!(bool)Call("ScShieldProtection","Spend",inv,1f),"broken shield spends");});
+            Test("companion-real-gun-registry-transaction-and-xml",()=>{
+                var registry=Activator.CreateInstance(C("ScGunRegistry"));registryField.SetValue(null,registry);
+                var specs=(Array)C("GunSpec").GetField("All").GetValue(null);int variant=Enumerable.Range(0,specs.Length).Single(i=>(string)C("GunSpec").GetField("Name").GetValue(specs.GetValue(i))=="m4a1s");
+                var project=new Project();var inv=Inv();var entity=Entity(project,inv);int value=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[variant,20,false]));inv.AddSlotItems(0,value,1);inv.AddSlotItems(1,702,2);
+                string holder=(string)C("ScGunHolders").GetMethod("Key").Invoke(null,[inv,0]);object[] args=[inv,0,holder,Enum.ToObject(C("ScGunResult"),0)];var tx=C("ScGunMutation").GetMethod("Prepare").Invoke(null,args);Require(tx!=null,"NPC transaction refused "+args[3]);
+                var method=tx.GetType().GetMethod("Commit");var arg=System.Linq.Expressions.Expression.Parameter(C("ScGunRecord"));
+                var expected=new Dictionary<string,object>{{"Rounds",17},{"SilencerOff",true},{"SkinId",984},{"CounterInstalled",true},{"KillCount",610L},{"GrowthKillCredit",25L},{"AppliedGrowthLevel",17},{"GrowthRulesVersion",(int)C("ScGunGrowth").GetField("RulesVersion").GetRawConstantValue()},{"ReserveOverflowRounds",7},{"Durability",113}};
+                var change=System.Linq.Expressions.Expression.Lambda(method.GetParameters()[0].ParameterType,System.Linq.Expressions.Expression.Block(expected.Select(p=>(System.Linq.Expressions.Expression)System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.Field(arg,p.Key),System.Linq.Expressions.Expression.Constant(p.Value))).Append(System.Linq.Expressions.Expression.Empty())),arg).Compile();
+                var r=method.Invoke(tx,[change,0,0,null]);Require(r.ToString()=="Success","transaction failed "+r);
+                int recordValue=inv.GetSlotValue(0);var snapshot=C("GunSpec").GetMethod("TryGetSnapshot");object[] snapArgs=[Terrain.ExtractData(recordValue),null];Require((bool)snapshot.Invoke(null,snapArgs),"not a real gun instance");
+                var owner=(string)C("ScGunHolders").GetMethod("RecoveryOwner").Invoke(null,[project,inv]);Require(owner!=null&&ReferenceEquals(C("ScGunHolders").GetMethod("ResolveRecoveryOwner").Invoke(null,[project,owner]),inv),"NPC durable owner missing");
+                for(int i=0;i<2;i++){var v=new ValuesDictionary();inv.Save(v,null);v.SetValue("SlotsCount",5);inv.m_slots.Clear();inv.Load(Round(v),null);
+                    var rv=(ValuesDictionary)C("ScGunRegistry").GetMethod("Save").Invoke(registry,[10d]);registry=C("ScGunRegistry").GetMethod("Load").Invoke(null,[Round(rv),0d]);registryField.SetValue(null,registry);
+                    Require(inv.GetSlotValue(0)==recordValue&&inv.GetSlotCount(1)==2,"inventory loses gun identity");snapArgs=[Terrain.ExtractData(recordValue),null];Require((bool)snapshot.Invoke(null,snapArgs),"registry state not saved");foreach(var field in expected)Require(Equals(snapArgs[1].GetType().GetProperty(field.Key).GetValue(snapArgs[1]),field.Value),"lost saved "+field.Key);}
+                var returned=new ComponentInventory();returned.m_slots.Add(new ComponentInventoryBase.Slot());Entity(project,returned);Require(inv.RemoveSlotItems(0,1)==1,"cannot recover gun");returned.AddSlotItems(0,recordValue,1);Require(returned.GetSlotValue(0)==recordValue&&inv.GetSlotCount(0)==0,"recovering equipment copied or changed identity");
+            });
+            Test("all-35-gun-shot-audio-exists-in-core",()=>{using var coreZip=ZipFile.OpenRead(corePath);foreach(var spec in (Array)C("GunSpec").GetField("All").GetValue(null))foreach(bool silenced in new[]{false,true}){string path=(string)C("SubsystemScGunBlockBehavior").GetMethod("ExtensionShotSound").Invoke(null,[spec,silenced]);Require(coreZip.GetEntry("Assets/"+path+".ogg")!=null,"missing "+path);}});
+        }finally{registryField.SetValue(null,oldRegistry);BlocksManager.BlockTypeToIndex.Clear();foreach(var p in savedIndices)BlocksManager.BlockTypeToIndex[p.Key]=p.Value;Array.Copy(oldBlocks,BlocksManager.Blocks,oldBlocks.Length);}
+        return result;
+    }
+}
