@@ -1,0 +1,256 @@
+{
+  "date": "2026-09-20",
+  "scope": "Resource audit only; no mod implementation or package changes",
+  "vpk": "E:\\SteamLibrary\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo\\pak01_dir.vpk",
+  "vpkDirectorySha256": "ca5aaacf24a78ab3ce61934ad6da83193ee303ca5842b7a86d16537d3b1625fd",
+  "listedMainEntries": 135686,
+  "inventories": [
+    {
+      "path": ".tmp\\cs2-resource-audit-20260920-vpk.txt",
+      "sha256": "47536aa1234caeedf84c50d4ccce4058631650f9dad49d647eddd7c9f117fad3"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\core_pak01_dir.vpk.txt",
+      "sha256": "7b85dd0c7a4b8d8a2cfedfb711858a8da8a027173b5cbb2462154438b75b4ff9"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_community_addons_cs_shelter_cs_shelter_dir.vpk.txt",
+      "sha256": "ead7572f8c5dbddc1bb4413f2e46d90155ecef8961167e1119600f99a39d554c"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_community_addons_de_boulder_de_boulder_dir.vpk.txt",
+      "sha256": "1a3432751f576c9bb53ae0fce35e7c9668ae2dac0dfb0fb9b6c23380fd12e980"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_community_addons_de_debris_de_debris_dir.vpk.txt",
+      "sha256": "2be59ff379dbdc401f984611708f021e9457ec5f0b4211f508561f648b1541ba"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_community_addons_de_eldorado_de_eldorado_dir.vpk.txt",
+      "sha256": "00478b6dc6719e45db36d59847365464c6718d354090b83b471fcf9f3d553028"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_community_addons_de_fachwerk_de_fachwerk_dir.vpk.txt",
+      "sha256": "e8e5e7648fdf7e5787015ef46e78be918a3426f22f2e3c988d3fad5a4f77f186"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_community_addons_de_poseidon_de_poseidon_dir.vpk.txt",
+      "sha256": "f1f107567f01b2fabdca620c4c07f5ffa5e4189ede76cd2af7956787f08da6fe"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_core_pak01_dir.vpk.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_imported_pak01_dir.vpk.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\csgo_lv_pak01_dir.vpk.txt",
+      "sha256": "8494cfa3ce36a45588de86975e299b8d1b5c04e6d7b245ed8d91808a339c606f"
+    }
+  ],
+  "shieldModelOrAnimationNameMatches": [],
+  "relevantMainEntries": [
+    "agents/models/ctm_sas/ctm_sas.vmdl_c",
+    "agents/models/tm_phoenix/tm_phoenix.vmdl_c",
+    "materials/models/weapons/v_models/shield/shield.vmat_c",
+    "materials/models/weapons/v_models/shield/shield_vmat_g_tmetalness_b7e45cfc.vtex_c",
+    "materials/models/weapons/w_models/w_eq_shield/shield.vmat_c",
+    "materials/models/weapons/w_models/w_eq_shield/shield_color_psd_aace8d8e.vtex_c",
+    "materials/models/weapons/w_models/w_eq_shield/shield_damage_detail_psd_b5a79d77.vtex_c",
+    "materials/models/weapons/w_models/w_eq_shield/shield_gibs.vmat_c",
+    "materials/models/weapons/w_models/w_eq_shield/shield_rough_tga_cad55516.vtex_c",
+    "materials/models/weapons/w_models/w_eq_shield/shield_vmat_g_tmetalness_b7e45cfc.vtex_c",
+    "models/hostage/hostage.vmdl_c",
+    "models/hostage/hostage_carry.vmdl_c",
+    "models/hostage/v_hostage_arm.vmdl_c",
+    "models/weapons/w_eq_armor.vmdl_c",
+    "models/weapons/w_eq_armor_helmet.vmdl_c",
+    "models/weapons/w_eq_assault_suit.vmdl_c",
+    "models/weapons/w_eq_helmet.vmdl_c",
+    "sounds/physics/shield/bullet_hit_shield_01.vsnd_c",
+    "sounds/physics/shield/bullet_hit_shield_02.vsnd_c",
+    "sounds/physics/shield/bullet_hit_shield_03.vsnd_c",
+    "sounds/physics/shield/bullet_hit_shield_04.vsnd_c",
+    "sounds/physics/shield/bullet_hit_shield_05.vsnd_c",
+    "sounds/physics/shield/bullet_hit_shield_06.vsnd_c",
+    "sounds/physics/shield/bullet_hit_shield_07.vsnd_c",
+    "sounds/vo/hostage/hpain/hpain1.vsnd_c",
+    "sounds/vo/hostage/hpain/hpain2.vsnd_c",
+    "sounds/vo/hostage/hpain/hpain3.vsnd_c",
+    "sounds/vo/hostage/hpain/hpain4.vsnd_c",
+    "sounds/vo/hostage/hpain/hpain5.vsnd_c",
+    "sounds/vo/hostage/hpain/hpain6.vsnd_c",
+    "sounds/vo/hostage/huse/getouttahere.vsnd_c",
+    "sounds/vo/hostage/huse/hostage_breath.vsnd_c",
+    "sounds/vo/hostage/huse/hostage_cut_free_with_defuser.vsnd_c",
+    "sounds/vo/hostage/huse/hostage_cut_free_without_defuser.vsnd_c",
+    "sounds/vo/hostage/huse/hostage_drop.vsnd_c",
+    "sounds/vo/hostage/huse/hostage_pickup.vsnd_c",
+    "sounds/vo/hostage/huse/illfollow.vsnd_c",
+    "sounds/vo/hostage/huse/letsdoit.vsnd_c",
+    "sounds/vo/hostage/huse/letsgo.vsnd_c",
+    "sounds/vo/hostage/huse/letshurry.vsnd_c",
+    "sounds/vo/hostage/huse/letsmove.vsnd_c",
+    "sounds/vo/hostage/huse/okletsgo.vsnd_c",
+    "sounds/vo/hostage/huse/youlead.vsnd_c"
+  ],
+  "models": [
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\export\\agents\\models\\ctm_sas\\ctm_sas.glb",
+      "bytes": 1096734908,
+      "sha256": "064a9d9f433e76419af7d9c29a30a310c70be8f7c829125ddbde89780797677d",
+      "meshes": 70,
+      "skins": 70,
+      "materials": 9,
+      "images": 36,
+      "missingImages": [],
+      "animationCount": 2062,
+      "animationExamples": [
+        "animation/anims/world/rifle/_default_rifle/idle_rifle",
+        "animation/anims/world/rifle/_default_rifle/run_n_rifle",
+        "animation/anims/world/rifle/_default_rifle/walk_n_rifle",
+        "animation/anims/viewmodel/rifle/_default_rifle/idle_rifle"
+      ],
+      "meshExamples": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "jointCounts": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        18,
+        20,
+        22,
+        39,
+        41,
+        94
+      ]
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\export\\agents\\models\\tm_phoenix\\tm_phoenix.glb",
+      "bytes": 1016134956,
+      "sha256": "abaf23a7a2838101f32708e3fc6687530b4bf808586fcd839b67cfb9c5f5b313",
+      "meshes": 69,
+      "skins": 69,
+      "materials": 6,
+      "images": 26,
+      "missingImages": [],
+      "animationCount": 2062,
+      "animationExamples": [
+        "animation/anims/world/rifle/_default_rifle/idle_rifle",
+        "animation/anims/world/rifle/_default_rifle/run_n_rifle",
+        "animation/anims/world/rifle/_default_rifle/walk_n_rifle",
+        "animation/anims/viewmodel/rifle/_default_rifle/idle_rifle"
+      ],
+      "meshExamples": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "jointCounts": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        18,
+        20,
+        22,
+        39,
+        41,
+        86
+      ]
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\export\\models\\hostage\\hostage.glb",
+      "bytes": 4848452,
+      "sha256": "350637bb3429b78d2165555a0e3382324c9a3b31f5db0711744f3205d2533d22",
+      "meshes": 4,
+      "skins": 4,
+      "materials": 9,
+      "images": 45,
+      "missingImages": [],
+      "animationCount": 0,
+      "animationExamples": [],
+      "meshExamples": [
+        "models\\hostage\\hostage.vmdl_c.hostage_a",
+        "models\\hostage\\hostage.vmdl_c.hostage_b",
+        "models\\hostage\\hostage.vmdl_c.hostage_c",
+        "models\\hostage\\hostage.vmdl_c.hostage_d"
+      ],
+      "jointCounts": [
+        86
+      ]
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\w_eq_armor.glb",
+      "bytes": 295396,
+      "sha256": "b5439375911386066fad601e1092679e5bcba5bb8823f8a0bf31733e42d739af",
+      "meshes": 1,
+      "skins": 1,
+      "materials": 1,
+      "images": 4,
+      "missingImages": [],
+      "animationCount": 0,
+      "animationExamples": [],
+      "meshExamples": [
+        "models\\weapons\\w_eq_armor.vmdl_c.vest"
+      ],
+      "jointCounts": [
+        1
+      ]
+    },
+    {
+      "path": ".tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\w_eq_helmet.glb",
+      "bytes": 370544,
+      "sha256": "8a11fddb3618c691142bfdd65a5f14df497dd30fc96163a4cb40ec18b1a12df5",
+      "meshes": 1,
+      "skins": 1,
+      "materials": 1,
+      "images": 4,
+      "missingImages": [],
+      "animationCount": 2,
+      "animationExamples": [
+        "ref",
+        "@ref_0"
+      ],
+      "meshExamples": [
+        "models\\weapons\\w_eq_helmet.vmdl_c.w_eq_helmet_bg_studio_lod0"
+      ],
+      "jointCounts": [
+        1
+      ]
+    }
+  ],
+  "notes": [
+    "No matching shield geometry/animation path in scanned installed VPK inventories; not a claim about all CS versions.",
+    "Agent all-animation exports include many mesh variants/LODs and are audit sources, not shipping assets.",
+    "Material references and GLB structure checked; no Survivalcraft GPU rendering or skeleton retargeting acceptance."
+  ]
+}
