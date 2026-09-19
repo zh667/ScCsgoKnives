@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-19 follow-up: CS chicken egg uses native ThrowableBlockBehavior aim/release
+  and projectile collision spawning, not short-range OnUse. Optional ControllerHaptics 1.2.0
+  player-aware pulses for committed shots, completed reloads, knife body hits and grenade release.
+  Never require or bundle that provider. Deliver 1.3.2 Full; preserve earlier packages and IDs/save schema.
+  See docs/release-1.3.2-egg-haptics.md for verification and hardware acceptance limits.
+
 - User-directed 2026-09-19 correction: native egg hand scale/offset, chicken model x1.6 with
   matching collision size, lower-right HUD ignores invisible touch pads and uses original CS2
   weapon silhouettes with green/yellow/red ammo thresholds. Include creative skin/counter

@@ -5,18 +5,19 @@ namespace Game;
 
 public sealed class SubsystemScChicken : SubsystemBlockBehavior {
     public override int[] HandledBlocks=>[BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)];
-    public override bool OnUse(Ray3 ray,ComponentMiner miner) {
-        if(Terrain.ExtractContents(miner.ActiveBlockValue)!=HandledBlocks[0])return false;
-        var hit=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false);
-        if(hit is null || hit.Value.Distance>5)return true;
-        Vector3 position=hit.Value.HitPoint()+CellFace.FaceToVector3(hit.Value.CellFace.Face)*.3f+Vector3.UnitY*.06f;
-        var terrain=Project.FindSubsystem<SubsystemTerrain>(true);
-        for(int y=0;y<2;y++) {
-            int value=terrain.Terrain.GetCellValue(Terrain.ToCell(position.X),Terrain.ToCell(position.Y+.2f+y*.35f),Terrain.ToCell(position.Z));
-            if(BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value))return true;
-        }
-        var entity=Project.FindSubsystem<SubsystemCreatureSpawn>(true).SpawnCreature(ComponentScChicken.Template,position,true);
-        if(entity is not null)miner.RemoveActiveTool(1);
+    readonly System.Runtime.CompilerServices.ConditionalWeakTable<WorldItem,Impact> impacts=new();
+    sealed class Impact { public bool Handled; }
+    public override bool OnHitAsProjectile(CellFace? cellFace,ComponentBody body,WorldItem item) {
+        if(item is null || Terrain.ExtractContents(item.Value)!=HandledBlocks[0])return false;
+        var impact=impacts.GetOrCreateValue(item);
+        if(impact.Handled || item.ToRemove)return true;
+        // Consumption belongs to native ThrowableBlockBehavior, once the projectile exists.
+        // A body + terrain contact in one step must not hatch the same egg twice.
+        impact.Handled=true;
+        try {
+            var entity=Project.FindSubsystem<SubsystemCreatureSpawn>(true).SpawnCreature(ComponentScChicken.Template,item.Position,true);
+            if(entity?.FindComponent<ComponentSpawn>() is { } spawn)spawn.SpawnDuration=.25f;
+        } catch(Exception e) { Log.Warning("[CS chicken] Egg spawn failed: "+e.Message); }
         return true;
     }
     public static void RegisterSpawn(GameEntitySystem.Project project) {

@@ -282,6 +282,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void OnProjectDisposed() { ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
+        ScControllerFeedback.Initialize();
+        actions?.Add(ScControllerFeedback.Initialize);
         ScEnchantmentCompatibility.Initialize();
         ScResourcePolicy.LoadEdition();
         // Local interface settings: touch buttons, kill feedback and the gun crosshair. Never world data.

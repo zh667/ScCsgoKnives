@@ -1,0 +1,86 @@
+{
+  "version": "1.3.2",
+  "edition": "Full",
+  "package": "[API1.9]CS武器1.3.2-作者ZH667-全量版.scmod",
+  "packageBytes": 382802100,
+  "packageSha256": "978be6e75650166bb4f64e0ccd0408b46870fd5bc31c04c0cb87a534aa38be01",
+  "dllSha256": "6407f188a0ba4773dda023d88d5e0b3918f132bac13c412889b85f8314d7129a",
+  "dllChecks": 21998,
+  "dllFailed": 0,
+  "deliveryChecks": 1325,
+  "deliveryFailed": 0,
+  "providerPackage": "D:\\下载\\[API1.9]手柄反馈v1.2.0.scmod",
+  "providerSha256": "bb8035ae2f555332b8e632b451d5d6f808f1dc67dec926a8ec0e5f03a76b790e",
+  "focusedChecks": [
+    {
+      "name": "egg-feedback/native-throw-registration-no-click-spawn",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/actual-native-aim-release/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/actual-native-aim-release/True",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/native-projectile-impact-once/False/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/native-projectile-impact-once/False/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/native-projectile-impact-once/False/2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/native-projectile-impact-once/True/0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/native-projectile-impact-once/True/1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/native-projectile-impact-once/True/2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/optional-absent-no-dependency",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/player-device-profiles-and-menu-gates",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/provider-failure-isolated-once",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/packaged-gameplay-event-calls",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "egg-feedback/actual-controller-haptics120-player-api",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

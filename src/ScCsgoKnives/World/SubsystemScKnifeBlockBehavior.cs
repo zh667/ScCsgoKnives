@@ -69,6 +69,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
                 float power = ScKnifeStrike.Power(state.Heavy) * player.ComponentMiner.StrengthFactor;
                 ScSurvivalBalance.Attack(hit.Value.ComponentBody, player, hit.Value.HitPoint(), ray.Direction, power, m_time.GameTime, melee: true);
                 KnifeAnimationController.KnifeHitPose(player, state.Heavy);
+                ScControllerFeedback.KnifeHit(player,state.Heavy);
             }
         }
     }

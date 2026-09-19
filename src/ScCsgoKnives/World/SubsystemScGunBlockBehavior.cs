@@ -914,6 +914,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // here; the remaining bolt/hand animation still has to finish.
         if (state.BusyUntil >= 0 && actionNow >= state.BusyUntil) {
             state.BusyUntil = -1;
+            if (state.Reload is not null) ScControllerFeedback.Reloaded(player);
             state.Reload = null;
             if (state.SilencerPending) {
                 state.SilencerPending = false;
@@ -1059,6 +1060,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             }
         });
         if (result != ScGunResult.Success) { Refused(player, result, now); return; }
+        ScControllerFeedback.Shot(player,spec.Name);
         value = transaction.Expected; data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data); state.LastValue = value;
         // Frozen here, while the record that fired is still known: a kill confirmed later belongs to this gun.
         var credit = ScGunKillCredit.For(data, creative, ++m_shotSequence);

@@ -193,6 +193,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                     Message(p,"投掷取消：物品已移动或活动数量已满，未消耗物品。");Cancel(p,prep);continue;
                 }
                 prep.Released=true;
+                ScControllerFeedback.Thrown(p);
                 prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
                 KnifeLog.Trace($"grenade release: {ScGrenadeBlock.Assets[prep.Kind]} speed {state.Velocity.Length():0.0} (player {p.ComponentBody.Velocity.Length():0.0}) low={prep.Low} at {pos}");
                 AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
