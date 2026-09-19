@@ -1,0 +1,250 @@
+{
+  "vpk": "E:/SteamLibrary/steamapps/common/Counter-Strike Global Offensive/game/csgo/pak01_dir.vpk",
+  "rows": [
+    {
+      "gun": "ak47",
+      "source": "panorama/images/icons/equipment/ak47.svg",
+      "sourceSha256": "d0f98522d69a90d2dae644e29e114e9520ec7186e0cd462f1541ab0ef3289bfe",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_ak47.png",
+      "sha256": "0904d1b2401dea10ea20edab6b8694595c6344826175985acc6669026ba380d9"
+    },
+    {
+      "gun": "m4a1s",
+      "source": "panorama/images/icons/equipment/m4a1_silencer.svg",
+      "sourceSha256": "3565857c155b80c0d2289454c1f63c231994229b3e4b347ab594e67203f65035",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_m4a1s.png",
+      "sha256": "d465a64ca46249b14697a4b95faf2b81acd87d58df8edbb23a43fe9c51dc5256"
+    },
+    {
+      "gun": "awp",
+      "source": "panorama/images/icons/equipment/awp.svg",
+      "sourceSha256": "21e1c6ccbef3a93bc5e984587fa97a0de64417646a48a789864d0e5731a625d6",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_awp.png",
+      "sha256": "d989b833050b0d721d9220570bdeeb5b7161fc0bc55dfa319fbd5d5b80754f12"
+    },
+    {
+      "gun": "deagle",
+      "source": "panorama/images/icons/equipment/deagle.svg",
+      "sourceSha256": "5ab139d7151ceaa530deb352a08146ce625ce5a9f0fcf1b8554c57c42999b950",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_deagle.png",
+      "sha256": "4843b6b78cf58b9afbdf8e0991cf2759108f5fa2d42cad3585a8f744fdcbc47d"
+    },
+    {
+      "gun": "glock18",
+      "source": "panorama/images/icons/equipment/glock.svg",
+      "sourceSha256": "0ca4c81b4888d84e54e699cc4831a69992005e246dc24ffb9aa52cade6133692",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_glock18.png",
+      "sha256": "7c64c5f59596b135869c649a15bedfa65c866fe095e2ae746f368ee35779fbf1"
+    },
+    {
+      "gun": "usp_silencer",
+      "source": "panorama/images/icons/equipment/usp_silencer.svg",
+      "sourceSha256": "6f2693049050b883cbabeac89437fbcb8504520ec779156d4f7877e077ec3d7c",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_usp_silencer.png",
+      "sha256": "e9b0db9e5d3c2b04d33d2bfdd0b2dda4a444dcd26213d38f76d508287f202472"
+    },
+    {
+      "gun": "m4a4",
+      "source": "panorama/images/icons/equipment/m4a1.svg",
+      "sourceSha256": "4e80e247608b65016e4606c00f49d55492a0f1dc34e71a6b7c7ca88d27cdc650",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_m4a4.png",
+      "sha256": "13cb0a30cd46f117f86fb404fe8e69133a1237ea1a4ff3da6a009fa6a8d787d1"
+    },
+    {
+      "gun": "famas",
+      "source": "panorama/images/icons/equipment/famas.svg",
+      "sourceSha256": "ba5d5bed81d8efd6fcd049d8400c5a78a587a9f62f0585910b4cff593d8030ec",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_famas.png",
+      "sha256": "cb1fb17bd315473a7c2df759db8888fcca2c7e5f93d82410ad3b0d31de4822f3"
+    },
+    {
+      "gun": "mp9",
+      "source": "panorama/images/icons/equipment/mp9.svg",
+      "sourceSha256": "6e62964b1ebe9e50c2584a771e24eaa4c6f63fc5204648c3d178fb81a938c799",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_mp9.png",
+      "sha256": "9a6883542e1f8b0b378c506ff0660750b88640bc44a36afd7b48482c5c3218f8"
+    },
+    {
+      "gun": "p90",
+      "source": "panorama/images/icons/equipment/p90.svg",
+      "sourceSha256": "13d3a3fa692b16c280f08cceba7bad8bf89225526a70e9be10a00cd0c64c4057",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_p90.png",
+      "sha256": "96a15e487cfde3176e09b7ffff0ef828b04e76e3cbc0a820bc1fb2f5a795e446"
+    },
+    {
+      "gun": "ssg08",
+      "source": "panorama/images/icons/equipment/ssg08.svg",
+      "sourceSha256": "82bbb1b093f405a26f87c2e85d07909267814f117ce7a9035ef4ee3e23fd2ced",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_ssg08.png",
+      "sha256": "1c8b27022d853052a64456e20e8c4153506ec19de631e8b02cf496f19744ca26"
+    },
+    {
+      "gun": "fiveseven",
+      "source": "panorama/images/icons/equipment/fiveseven.svg",
+      "sourceSha256": "7b9aa3b6fdb84329a43e537dff69275b224d548cbd73e7eb1272fa973322dcda",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_fiveseven.png",
+      "sha256": "06747e554043d1cf00006d49ce4f1f22c14b4f603a31294976cbec55c5c08d07"
+    },
+    {
+      "gun": "hkp2000",
+      "source": "panorama/images/icons/equipment/hkp2000.svg",
+      "sourceSha256": "66fe96c04579615f3491d662770511785d57557c2bcc21ac81dddfc0ba65238a",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_hkp2000.png",
+      "sha256": "e3254f1daf7f1c078da812dad729e393e520d754593831291427df4ad6fc3623"
+    },
+    {
+      "gun": "p250",
+      "source": "panorama/images/icons/equipment/p250.svg",
+      "sourceSha256": "df86b3b3a4f2168610dfcde2796577f9aaa4049ad23f9b7cca60b8d78c4ee0ea",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_p250.png",
+      "sha256": "8e4d3f962958c2474f9acc707ff987d752685373af43d034347866bafc2aadfd"
+    },
+    {
+      "gun": "tec9",
+      "source": "panorama/images/icons/equipment/tec9.svg",
+      "sourceSha256": "dce734f0a08b42aa6ebb7946d1c3653823c4c70da99d05f2b23afa6ba80b27a6",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_tec9.png",
+      "sha256": "a6e141f68b65fe69493b53a1e78079b7d989bc257058ba12615551e25607e8bf"
+    },
+    {
+      "gun": "cz75a",
+      "source": "panorama/images/icons/equipment/cz75a.svg",
+      "sourceSha256": "bc0fdaf5d7806adca94a9d4224d73d4819a6966ec989570682ffa62febcff89b",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_cz75a.png",
+      "sha256": "b0eda84499693b93a58d8956cb4034f458d3b0fb7e78cf76f7fdcb17aab35da3"
+    },
+    {
+      "gun": "mac10",
+      "source": "panorama/images/icons/equipment/mac10.svg",
+      "sourceSha256": "2aafac43011b01bf92f05729bacd09dc939ed492b06e3b6f0a4c33b200d37362",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_mac10.png",
+      "sha256": "0380205512d46aa6117160bfd367c1e22f07c0269b6f7e011e663b3256e84169"
+    },
+    {
+      "gun": "mp7",
+      "source": "panorama/images/icons/equipment/mp7.svg",
+      "sourceSha256": "21d90992afa8a726542e861a4dfb07a154a36a06c875d3096709944a85768813",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_mp7.png",
+      "sha256": "e0bffa31a1f1ec79b59456c4e4cd6e43d23ea68f92348779480a98c4e2dd8cfd"
+    },
+    {
+      "gun": "ump45",
+      "source": "panorama/images/icons/equipment/ump45.svg",
+      "sourceSha256": "db234c16c85e5f7aa81821cdd41303857783673ca96792072c9ba51205108124",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_ump45.png",
+      "sha256": "1790457f33b86a8936f00599affa2bf9d796dc7dfe3d364f40b7d8577431544b"
+    },
+    {
+      "gun": "bizon",
+      "source": "panorama/images/icons/equipment/bizon.svg",
+      "sourceSha256": "ae6259ba48323e132d37a2df13d162101898c35b3a1873e1b8913c8c193f9905",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_bizon.png",
+      "sha256": "643cdc2b76cef7db10192696772b783821ee327de61430537f90a53d693c264b"
+    },
+    {
+      "gun": "mp5sd",
+      "source": "panorama/images/icons/equipment/mp5sd.svg",
+      "sourceSha256": "293459424fa4f707e2633db6e25897f34a12795bee702fc6caaf5e83902593d2",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_mp5sd.png",
+      "sha256": "1d6b953d7bedf4ef47bea3da6d8379636e6375fe3c0bd204ec44869b946a85ae"
+    },
+    {
+      "gun": "galilar",
+      "source": "panorama/images/icons/equipment/galilar.svg",
+      "sourceSha256": "935b679077b5a6ea4264e66541260fb905a058f5b999e82191b79e1d94452c56",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_galilar.png",
+      "sha256": "154027ccc228f6b02b37efd3474477020808b6857ffdcbea257572172fe66acc"
+    },
+    {
+      "gun": "scar20",
+      "source": "panorama/images/icons/equipment/scar20.svg",
+      "sourceSha256": "177b6a4490be9a2d456f9cc933ae7aa14b7ff6d7fb858473fb7cae019a790b0e",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_scar20.png",
+      "sha256": "97b9a2537ef4b20cef09a76b640fbe492077b7b3b1c30ae56d03762b3c935b29"
+    },
+    {
+      "gun": "g3sg1",
+      "source": "panorama/images/icons/equipment/g3sg1.svg",
+      "sourceSha256": "a4806843e5010f9cdf6349b58998a976703ec65d44b0862ddaf78673609d583a",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_g3sg1.png",
+      "sha256": "78ea012c44f45f8d2230481e27c5a4d6c2947990ec0dd277c2cac6d153f86b3c"
+    },
+    {
+      "gun": "aug",
+      "source": "panorama/images/icons/equipment/aug.svg",
+      "sourceSha256": "145aa54e61b616544e86ec895ba303c7a6480a197c6176a07265f5f234b5bc52",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_aug.png",
+      "sha256": "418ec0df3c12ffb23cc043f3525037781a096a219368d696c55e4e5fb6d80278"
+    },
+    {
+      "gun": "sg556",
+      "source": "panorama/images/icons/equipment/sg556.svg",
+      "sourceSha256": "6c0105235017802611d302d11bac4bdf9e83e9edeb6b5d91bbf449052128d3f3",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_sg556.png",
+      "sha256": "61ee38b57eb391ecae88172ced0005bc760ccc865e2cc3c7a0a95eaa3b43054c"
+    },
+    {
+      "gun": "nova",
+      "source": "panorama/images/icons/equipment/nova.svg",
+      "sourceSha256": "9a2d5e7db9dcf0211a588d73f6dbbfbff22d79d0a858bb8cc34b6de5302c6467",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_nova.png",
+      "sha256": "239bb2a300f7c1ac825de1238075a8eef6a2b14e52644d41328f96e9a5d571bd"
+    },
+    {
+      "gun": "xm1014",
+      "source": "panorama/images/icons/equipment/xm1014.svg",
+      "sourceSha256": "ec202a1ccdda27830262f764ac741eba5349211eb72776e4f8e65e78ec0ccea5",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_xm1014.png",
+      "sha256": "c7077b929b582e4f5d88b80f80d0c7a83e28220b5039f8e497ac014f170a73e6"
+    },
+    {
+      "gun": "sawedoff",
+      "source": "panorama/images/icons/equipment/sawedoff.svg",
+      "sourceSha256": "45a3f55fa526d6948033d99a50cd965b7ecfa6c3eb810785f3d74ffb5556b061",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_sawedoff.png",
+      "sha256": "e014545fdc3c05f66ce21d647d4fa0ec62a04634ea74b6c28cb9638f717af4dc"
+    },
+    {
+      "gun": "mag7",
+      "source": "panorama/images/icons/equipment/mag7.svg",
+      "sourceSha256": "6c6324b36f5ba9512ea32334222f4a84e4c8f00efe3e7bd0bcd32aeacd5ea272",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_mag7.png",
+      "sha256": "974286e804422a6316f9665c95917e00b36c4399d4358be12881afc6ea3783f0"
+    },
+    {
+      "gun": "m249",
+      "source": "panorama/images/icons/equipment/m249.svg",
+      "sourceSha256": "7c1b49390f87bdf8ce3f4b1fa0f54ef058b42b52ece09c6e4da92b5cd5f49787",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_m249.png",
+      "sha256": "319db4054bbd643027d95fd52ebb50b792df5e17ddca14a300db1004848e8cc4"
+    },
+    {
+      "gun": "negev",
+      "source": "panorama/images/icons/equipment/negev.svg",
+      "sourceSha256": "743eccc4dace49146e82a68c1dcd333a9b5be30aa08aba3c86db7fca9a360dc0",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_negev.png",
+      "sha256": "6f9941c120fd3abcd04f86e02a8ae5f3afb45d62c7f83a5114c1c30d32844d1e"
+    },
+    {
+      "gun": "revolver",
+      "source": "panorama/images/icons/equipment/revolver.svg",
+      "sourceSha256": "e0c5ba5ba7b0cdad3b775dd345ec7cb34243346fb84645e2e17ea8a39194a855",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_revolver.png",
+      "sha256": "41073e755ca253faecf29e182918bb3e2136a88db3f46f747d400648d5ce9392"
+    },
+    {
+      "gun": "elite",
+      "source": "panorama/images/icons/equipment/elite.svg",
+      "sourceSha256": "f8e43a50d1b21bc30843c61b543bd965d108010d5f4998e6ffa44a9f96b3630f",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_elite.png",
+      "sha256": "603522841adb4448185e2ef3f7ce28d89e47178061238763162fd6640a7f7805"
+    },
+    {
+      "gun": "taser",
+      "source": "panorama/images/icons/equipment/taser.svg",
+      "sourceSha256": "a3e119853a03ebbb0267ff7721246c5ae5132dd6b325ec21d74638dc72a7b7ec",
+      "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_weapon_taser.png",
+      "sha256": "7469fb3353212ac9e33031a8390d87812f6312d88552fab23738f0da4769d65b"
+    }
+  ]
+}

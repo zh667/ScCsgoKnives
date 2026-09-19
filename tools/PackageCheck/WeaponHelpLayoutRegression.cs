@@ -211,6 +211,11 @@ static class WeaponHelpLayoutRegression {
                 var inv=new ComponentInventory();inv.m_slots.Add(new());
                 var dialog=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["功能菜单",menu,56f,
                     (Func<object,string>)(o=>o.GetType().Name),(Action<object>)(_=>{}),inv,creative]);
+                var menuSelect=dialog.GetType().GetMethod("Select",BindingFlags.NonPublic|BindingFlags.Instance);
+                var menuCount=dialog.GetType().GetField("m_count",BindingFlags.NonPublic|BindingFlags.Instance);
+                menuSelect.Invoke(dialog,[menu.First(o=>o.GetType().DeclaringType?.Name=="ScComponentCrafting")]);
+                menuCount.SetValue(dialog,10);menuSelect.Invoke(dialog,[craftItems[0]]);
+                Check($"workbench-components-ten-then-gun-one/{creative}",(int)menuCount.GetValue(dialog)==1,"component batch cannot carry over into a gun recipe");
                 dialog.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(dialog,["功能"]);
                 dialog.Measure(new(850,479));dialog.Arrange(Vector2.Zero,new(850,479));
                 var list=(ListPanelWidget)dialog.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
@@ -234,6 +239,11 @@ static class WeaponHelpLayoutRegression {
                     &&Part("m_quantity").GlobalBounds.Max.X<=Part("m_craft").GlobalBounds.Min.X
                     &&Part("m_detailHost").GlobalBounds.Max.Y<=Part("m_craft").GlobalBounds.Min.Y,"quantity and explicit craft stay separated and visible");
                 var clickCraft=browse.GetType().GetMethod("ClickItem",BindingFlags.NonPublic|BindingFlags.Instance);
+                var countField=browse.GetType().GetField("m_count",BindingFlags.NonPublic|BindingFlags.Instance);
+                select.Invoke(browse,[craftItems[0]]);countField.SetValue(browse,10);select.Invoke(browse,[craftItems[0]]);
+                Check($"workbench-quantity-refresh-keeps-choice/{creative}/{available}",(int)countField.GetValue(browse)==10,"same selection retains deliberately selected batch");
+                select.Invoke(browse,[craftItems[1]]);
+                Check($"workbench-quantity-new-recipe-resets/{creative}/{available}",(int)countField.GetValue(browse)==1&&((ButtonWidget)Part("m_craft")).Text=="制作 1 件","changing recipe resets count and quote");
                 clickCraft.Invoke(browse,[craftItems[0],1d]);clickCraft.Invoke(browse,[craftItems[0],1.1d]);browse.Update();
                 Check($"workbench-recipe-doubleclick-no-navigation/{creative}/{available}",choices==0,"only explicit craft spends materials");
                 browse.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(browse,["步枪"]);

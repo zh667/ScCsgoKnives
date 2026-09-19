@@ -6,7 +6,7 @@
   </ProjectTemplate>
   <EntityTemplate Name="ScCsgoChicken" Guid="30026525-138a-542b-8f18-06006950d40c" InheritanceParent="548cf071-2593-45c2-b1c5-623b7c473612">
     <MemberComponentTemplate Name="Body" Guid="f7061376-2fdf-5fb8-8a49-88fbe024e6e6">
-      <Parameter Name="BoxSize" Guid="3b1413df-f4f4-5b8f-9aaf-03243a166c8d" Value="0.35,0.45,0.35" Type="Vector3" />
+      <Parameter Name="BoxSize" Guid="3b1413df-f4f4-5b8f-9aaf-03243a166c8d" Value="0.48,0.58,0.55" Type="Vector3" />
       <Parameter Name="Mass" Guid="c2da77b2-3aa5-5589-84c4-b8004e9ec20b" Value="2" Type="float" />
       <Parameter Name="Density" Guid="4a4d215b-f946-55e7-a1e9-92ccd6478dbc" Value="0.8" Type="float" />
     </MemberComponentTemplate>
@@ -40,8 +40,8 @@
       <Parameter Name="ModelName" Guid="a701d75d-2b0a-528e-8739-06c08fc2a877" Value="Models/ScCsgoKnives/chicken" Type="string" />
       <Parameter Name="TextureOverride" Guid="b63cf963-f181-5301-a3e5-ac98b04790e3" Value="Textures/ScCsgoKnives/chicken" Type="string" />
       <Parameter Name="AnimationConfigPath" Guid="74d8531b-7683-54fb-90fa-166c5b12c34f" Value="Animations/ScChicken" Type="string" />
-      <Parameter Name="ModelScale" Guid="cc4c2b3e-bc93-5846-89fe-41b5dee9bb7f" Value="1" Type="float" />
-      <Parameter Name="BoundingSphereRadius" Guid="4c396f15-ab1d-5c01-812d-3943cf01a302" Value="0.8" Type="float" />
+      <Parameter Name="ModelScale" Guid="cc4c2b3e-bc93-5846-89fe-41b5dee9bb7f" Value="1.6" Type="float" />
+      <Parameter Name="BoundingSphereRadius" Guid="4c396f15-ab1d-5c01-812d-3943cf01a302" Value="1.28" Type="float" />
       <Parameter Name="WalkBobHeight" Guid="56c179eb-72c1-5f2e-aa80-5d838161a76e" Value="0" Type="float" />
       <Parameter Name="WalkLegsAngle" Guid="da1e0dfb-7267-52c2-86d1-9697a2cb290c" Value="0" Type="float" />
     </MemberComponentTemplate>

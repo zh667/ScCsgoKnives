@@ -15,6 +15,7 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
     public float Fraction { get; init; }
     public string MagazineIcon { get; init; } = "magazine";
     public string ReserveCount { get; init; } = "";
+    public string WeaponIcon { get; init; } = "ak47";
     /// <summary>Pre-0.32.0 shape, kept because tools construct the readout by reflection with five arguments.</summary>
     public ScAmmoReadout(string Main, string Detail, bool Empty, bool Charging, bool Insufficient) : this(Main, Detail, Empty, Charging, Insufficient, "", 0) { }
     /// <summary>M4 durability line: 0 normal, 1 low (orange), 2 broken (red).</summary>
@@ -38,14 +39,14 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
         var (wear, wearState) = WearOf(value, text);
         if (gun.RechargeSeconds > 0) {
             if (rounds > 0) return new(text("Ready"), text("SingleCharge"), false, false, false, wear, wearState) {
-                Compact = true, LoadedText = "1", CapacityText = "/ 1", ReserveText = "", Icon = gun.Name + "_slot", Fraction=1,MagazineIcon="generic_bullet"
+                Compact = true, LoadedText = "1", CapacityText = "/ 1", ReserveText = "", Icon = gun.Name + "_slot", Fraction=1,MagazineIcon="generic_bullet",WeaponIcon=gun.Name
             };
             double remaining = double.IsFinite(rechargeRemaining) && rechargeRemaining >= 0
                 ? Math.Min(rechargeRemaining, cycle) : cycle;
             // Round upwards so 0.01 seconds remaining does not falsely look ready.
             return new(Format("Charging", Math.Ceiling(remaining * 10) / 10), text("AutoCharge"), true, true, false, wear, wearState) {
                 Compact = true, LoadedText = (Math.Ceiling(remaining * 10) / 10).ToString("0.0", CultureInfo.InvariantCulture), CapacityText = "s",
-                ReserveText = "", Status = "充能", Icon = gun.Name + "_slot",Fraction=1-(float)(remaining/cycle),MagazineIcon="generic_bullet"
+                ReserveText = "", Status = "充能", Icon = gun.Name + "_slot",Fraction=1-(float)(remaining/cycle),MagazineIcon="generic_bullet",WeaponIcon=gun.Name
             };
         }
         bool shells = ScReloadTransaction.AmmoKind(gun) == ScAmmoBlock.Shell;
@@ -64,7 +65,7 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
             ReserveText = (shells ? "霰弹 " : "弹匣 ") + (creative ? "∞" : reserve.ToString(CultureInfo.InvariantCulture))
                 + (loaded.ReserveOverflowRounds > 0 ? " · 余弹 " + loaded.ReserveOverflowRounds : ""),
             Status = reloading ? "装填" : "", Icon = gun.Name + "_slot",Fraction=capacity>0?(float)rounds/capacity:0,
-            ReserveCount=creative?"∞":reserve.ToString(CultureInfo.InvariantCulture),
+            ReserveCount=creative?"∞":reserve.ToString(CultureInfo.InvariantCulture),WeaponIcon=gun.Name,
             MagazineIcon=shells?"shotgun_shell":gun.Name switch {"ak47" or "galilar"=>"banana_mag","bizon"=>"bizon_tube","p90"=>"p90","negev" or "m249"=>"box","revolver"=>"revolver_loader",_=>"magazine"}
         };
     }
@@ -90,10 +91,12 @@ public sealed class ScAmmoHud : IDisposable {
     };
     ContainerWidget host;
     public readonly ScMagazineWidget Magazine = new();
-    static IEnumerable<Widget> Obstacles(ContainerWidget container) {
+    public static IEnumerable<Widget> Obstacles(ContainerWidget container) {
         foreach (var w in container.Children) {
             if (!w.IsVisibleGlobal || w.Name == "ScAmmoHud") continue;
-            if (w is ButtonWidget || w.Name is "ShortInventory" or "BottomBarsContainer" or "MoveButtonsContainer" or "MovePadContainer" or "LookPadContainer") yield return w;
+            // Native touch containers stay visible when their painted controls are hidden.
+            // Only the actual visible pad/rose occupies screen space.
+            if (w is ButtonWidget or MoveRoseWidget || w.Name is "ShortInventory" or "BottomBarsContainer" or "MoveRectangle" or "LookRectangle") yield return w;
             else if (w is ContainerWidget c) foreach (var child in Obstacles(c)) yield return child;
         }
     }
@@ -113,7 +116,7 @@ public sealed class ScAmmoHud : IDisposable {
     }
     void Position() {
         if (host is null || host.ActualSize.X <= 1) return;
-        Vector2 size = new(Math.Max(100, Panel.ActualSize.X), Math.Max(92, Panel.ActualSize.Y));
+        Vector2 size = new(Math.Max(116, Panel.ActualSize.X), Math.Max(76, Panel.ActualSize.Y));
         var obstacles = Obstacles(host).Select(w => new BoundingRectangle(host.ScreenToWidget(w.GlobalBounds.Min), host.ScreenToWidget(w.GlobalBounds.Max))).ToArray();
         Vector2 corner = FindCorner(host.ActualSize, size, obstacles);
         Panel.MarginRight = Math.Max(0,host.ActualSize.X-corner.X-size.X); Panel.MarginLeft = 0;
@@ -132,7 +135,7 @@ public sealed class ScAmmoHud : IDisposable {
     }
     public void Show(ScAmmoReadout readout) {
         Main.Text = readout.Compact ? readout.LoadedText+" "+readout.CapacityText : readout.Main;
-        Magazine.Fraction=readout.Fraction;Magazine.Icon=readout.MagazineIcon;Magazine.Count.Text=readout.ReserveCount;Magazine.IsVisible=readout.Compact;
+        Magazine.Fraction=readout.Fraction;Magazine.Icon=readout.WeaponIcon;Magazine.Count.Text=readout.ReserveCount;Magazine.IsVisible=readout.Compact;
         Detail.Text = readout.Compact ? readout.Status ?? "" : readout.Detail;
         Detail.IsVisible = !string.IsNullOrEmpty(Detail.Text);
         Main.Color = readout.Charging ? new Color(255, 210, 120) : readout.Empty ? new Color(255, 120, 110) : Color.White;

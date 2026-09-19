@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-19 correction: native egg hand scale/offset, chicken model x1.6 with
+  matching collision size, lower-right HUD ignores invisible touch pads and uses original CS2
+  weapon silhouettes with green/yellow/red ammo thresholds. Include creative skin/counter
+  templates in read-only inventory wear labels. Reset craft quantity to 1 on recipe change.
+  Deliver 1.3.1 Full only; preserve 1.3.0. See docs/release-1.3.1-feedback.md.
+
 - User-directed 2026-09-19: independent button-only touch fire (Sushi key/mouse injection works with
   the CS touch overlay hidden), bottom-left inventory gun wear, lower-right CS2 magazine HUD,
   all knife damage x3 (21 light / 36 heavy), and passive CS2 chicken with interact-to-follow.

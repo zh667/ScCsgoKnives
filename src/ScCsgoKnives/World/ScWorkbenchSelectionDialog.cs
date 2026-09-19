@@ -112,6 +112,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         foreach(var pair in m_categories) pair.Button.Color=pair.Category==category?ScGunUi.Accent:ScGunUi.Text;
     }
     void Select(object item) {
+        if(!Equals(m_selected,item))m_count=1;
         m_selected=item; m_list.SelectedItem=item;
         m_materialLabels.Clear();
         m_hint.Text=Craftable?"选择数量后制作 · 材料自动堆叠":"单击预览 · 双击 / 双点进入";

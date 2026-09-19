@@ -60,6 +60,12 @@ static class Features130Regression {
             Assert((float)Call("ScMagazineWidget","ClampFraction",float.NaN)==0&&(float)Call("ScMagazineWidget","ClampFraction",2f)==1,"unsafe fraction");
             var green=(Color)Call("ScMagazineWidget","FillColor",1f);var red=(Color)Call("ScMagazineWidget","FillColor",.1f);
             Assert(green.G>green.R&&red.R>red.G,"color thresholds");
+            var yellow=(Color)Call("ScMagazineWidget","FillColor",.4f);
+            Assert(yellow.R>200&&yellow.G>170&&yellow.B<100,"missing yellow ammunition state");
+            foreach(string name in (string[])T("GunSpec").GetField("FrozenOrder").GetValue(null)) {
+                using var s=new MemoryStream(Bytes("Assets/Textures/ScCsgoKnives/hud_weapon_"+name+".png"));var img=Image.Load(s);
+                Assert(img.Width==448&&img.Height==144&&img.Pixels.Any(p=>p.A>0)&&img.Pixels.Any(p=>p.A==0),"missing CS2 silhouette "+name);
+            }
             foreach(string n in new[]{"magazine","banana_mag","bizon_tube","box","generic_bullet","p90","revolver_loader","shotgun_shell"}){
                 using var s=new MemoryStream(Bytes("Assets/Textures/ScCsgoKnives/hud_ammo_"+n+".png"));var img=Image.Load(s);
                 Assert(img.Width==128&&img.Height==128&&img.Pixels.Any(p=>p.A>0)&&img.Pixels.Any(p=>p.A==0),"invalid source icon "+n);
@@ -70,8 +76,10 @@ static class Features130Regression {
         var oldAtlas=TextureAtlasManager.m_subtextures.ToArray();
         try {
             BlocksManager.BlockTypeToIndex[T("ScGunBlock")]=701;BlocksManager.BlockNameToIndex["ScGunBlock"]=701;
+            BlocksManager.BlockTypeToIndex[T("ScGunSkinTemplateBlock")]=702;
+            BlocksManager.BlockTypeToIndex[T("ScGunCounterTemplateBlock")]=703;
             var registry=Activator.CreateInstance(T("ScGunRegistry"));current.SetValue(null,registry);
-            LabelWidget.BitmapFont=Blank<BitmapFont>();
+            using(var native=ZipFile.OpenRead(content))using(var glyphs=native.Entries.Single(e=>e.FullName.EndsWith("Fonts/Pericles.lst")).Open())LabelWidget.BitmapFont=BitmapFont.Initialize((Texture2D)null,glyphs);
             foreach(string n in new[]{"ProgressBar","InteractiveItemOverlay","EditItemOverlay","FoodItemOverlay"})
                 TextureAtlasManager.m_subtextures["Textures/Atlas/"+n]=new Subtexture(Blank<Texture2D>(),Vector2.Zero,Vector2.One);
             Test("inventory-percent-slot-reuse",()=>{
@@ -83,6 +91,20 @@ static class Features130Regression {
                 slot.m_inventory=inv;slot.m_slotIndex=0;slot.m_blockIconWidget.IsVisible=true;
                 Call("ScInventoryWear","Update",slot);var label=slot.Children.OfType<LabelWidget>().Single(w=>w.Name=="ScGunWearPercent");
                 Assert(label.Text=="100%"&&label.IsVisible&&!label.IsHitTestVisible&&label.HorizontalAlignment==WidgetAlignment.Near&&label.VerticalAlignment==WidgetAlignment.Far,"wear placement");
+                int watermark=(int)registry.GetType().GetMethod("PeekNextId").Invoke(registry,null);
+                foreach(var pair in new[]{("ScGunSkinTemplateBlock",702),("ScGunCounterTemplateBlock",703)}) {
+                    var block=(Block)Activator.CreateInstance(T(pair.Item1));block.BlockIndex=pair.Item2;
+                    foreach(int template in block.GetCreativeValues()) {
+                        inv.m_slots[0]=template;Call("ScInventoryWear","Update",slot);
+                        Assert(label.Text=="100%"&&label.IsVisible&&label.Color==Color.White,"template lacks wear "+template);
+                    }
+                }
+                Assert((int)registry.GetType().GetMethod("PeekNextId").Invoke(registry,null)==watermark,"preview allocated gun IDs");
+                var skins=((IEnumerable)T("ScGunSkinCatalog").GetField("All").GetValue(null)).Cast<object>();
+                var names=(string[])T("GunSpec").GetField("FrozenOrder").GetValue(null);
+                foreach(var skin in skins){int variant=Array.IndexOf(names,(string)skin.GetType().GetProperty("Gun").GetValue(skin));int paint=(int)skin.GetType().GetProperty("PaintId").GetValue(skin);
+                    int id=(int)registry.GetType().GetMethod("Allocate").Invoke(registry,[variant,1,false,50,100,paint]);int data=(int)Call("GunSpec","WithId",variant,id);
+                    inv.m_slots[0]=Terrain.MakeBlockValue(701,0,data);Call("ScInventoryWear","Update",slot);Assert(label.IsVisible&&label.Text=="50%","owned skin durability lost");}
                 inv.m_slots[0]=0;Call("ScInventoryWear","Update",slot);Assert(!label.IsVisible,"stale percent on empty slot");
                 inv.m_slots[0]=Terrain.MakeBlockValue(3);Call("ScInventoryWear","Update",slot);Assert(!label.IsVisible,"percent on vanilla item");
             });
@@ -92,6 +114,18 @@ static class Features130Regression {
                 h.GetType().GetMethod("Show").Invoke(h,[read]);var panel=(StackPanelWidget)Field(h,"Panel");var mag=Field(h,"Magazine");
                 Assert(panel.HorizontalAlignment==WidgetAlignment.Far&&((LabelWidget)Field(h,"Main")).Text=="15 / 30","HUD position/text");
                 Assert(((LabelWidget)Field(mag,"Count")).Text=="23"&&(float)Field(mag,"Fraction")==.5f&&!((LabelWidget)Field(h,"Wear")).IsVisible,"magazine count/fill");
+            });
+            Test("hud-hidden-touch-pad-does-not-reserve-space",()=>{
+                foreach(var size in new[]{new Vector2(1187,637),new Vector2(850,478),new Vector2(480,850)})foreach(bool shown in new[]{false,true}) {
+                    var host=new CanvasWidget{Size=size};var pad=new CanvasWidget{Name="LookPadContainer",Size=new(160),HorizontalAlignment=WidgetAlignment.Far,VerticalAlignment=WidgetAlignment.Far,MarginBottom=75};
+                    var rectangle=new RectangleWidget{Name="LookRectangle",IsVisible=shown};pad.Children.Add(rectangle);host.Children.Add(pad);
+                    var h=Activator.CreateInstance(T("ScAmmoHud"));var gui=Blank<ComponentGui>();gui.ControlsContainerWidget=host;h.GetType().GetMethod("Attach").Invoke(h,[gui]);
+                    var read=Activator.CreateInstance(T("ScAmmoReadout"),["30 / 30","",false,false,false,"",0]);read.GetType().GetProperty("Compact").SetValue(read,true);read.GetType().GetProperty("LoadedText").SetValue(read,"30");read.GetType().GetProperty("CapacityText").SetValue(read,"/ 30");
+                    for(int frame=0;frame<4;frame++){h.GetType().GetMethod("Show").Invoke(h,[read]);host.Measure(size);host.Arrange(Vector2.Zero,size);}
+                    var panel=(Widget)Field(h,"Panel");Assert(panel.GlobalBounds.Max.X<=size.X&&panel.GlobalBounds.Min.Y>=0,"HUD outside screen");
+                    if(shown)Assert(panel.GlobalBounds.Max.Y<=rectangle.GlobalBounds.Min.Y-5,"visible touch pad overlap");
+                    else Assert(size.Y-panel.GlobalBounds.Max.Y<20,"hidden touch pad leaves large blank space");
+                }
             });
         } finally {TextureAtlasManager.m_subtextures.Clear();foreach(var p in oldAtlas)TextureAtlasManager.m_subtextures[p.Key]=p.Value;current.SetValue(null,oldRegistry);LabelWidget.BitmapFont=font;BlocksManager.BlockTypeToIndex.Clear();foreach(var p in oldTypes)BlocksManager.BlockTypeToIndex[p.Key]=p.Value;BlocksManager.BlockNameToIndex.Clear();foreach(var p in oldNames)BlocksManager.BlockNameToIndex[p.Key]=p.Value;}
         Test("chicken-native-glb-reader-and-clips",()=>{
@@ -128,7 +162,15 @@ static class Features130Regression {
                 Assert(v.GetValue<ValuesDictionary>("FlightlessBirdModel").GetValue<string>("AnimationConfigPath")=="Animations/ScChicken","animation config disconnected");
                 Assert(v.GetValue<ValuesDictionary>("ScChicken").GetValue<string>("Class")=="Game.ComponentScChicken","behavior disconnected");
                 Assert(v.GetValue<ValuesDictionary>("CreatureEggData").GetValue<int>("EggTypeIndex")==-1,"uses global egg ID");
+                Assert(v.GetValue<ValuesDictionary>("FlightlessBirdModel").GetValue<float>("ModelScale")==1.6f&&v.GetValue<ValuesDictionary>("Body").GetValue<Vector3>("BoxSize").Y==.58f,"chicken size/collision not updated");
             } finally {DatabaseManager.m_gameDatabase=oldDb;DatabaseManager.m_valueDictionaries.Clear();foreach(var p in oldV)DatabaseManager.m_valueDictionaries[p.Key]=p.Value;}
+        });
+        Test("egg-native-first-person-and-hand-placement",()=>{
+            using var vanilla=ZipFile.OpenRead(content);using var s=vanilla.Entries.Single(e=>e.FullName.EndsWith("BlocksData.txt")).Open();using var reader=new StreamReader(s);var lines=reader.ReadToEnd().Split('\n');
+            var headers=lines[0].Trim().Split(';');var values=lines.Single(l=>l.StartsWith("EggBlock;")).Trim().Split(';');
+            var egg=(Block)Activator.CreateInstance(T("ScChickenEggBlock"));
+            foreach(string n in new[]{"FirstPersonScale","InHandScale"})Assert((float)typeof(Block).GetField(n).GetValue(egg)==float.Parse(values[Array.IndexOf(headers,n)],System.Globalization.CultureInfo.InvariantCulture),"egg scale differs from native "+n);
+            Assert(egg.GetFirstPersonOffset(0)==new Vector3(.5f,-.5f,-.6f)&&egg.GetInHandOffset(0)==new Vector3(0,.12f,0),"egg at eye origin");
         });
         Test("chicken-death-classification-no-chain",()=>{
             var projectile=(Attackment)RuntimeHelpers.GetUninitializedObject(typeof(ProjectileAttackment));var melee=(Attackment)RuntimeHelpers.GetUninitializedObject(typeof(MeleeAttackment));

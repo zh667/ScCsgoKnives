@@ -14,12 +14,12 @@ p=E.SubElement(r,'ProjectTemplate',Name='Project',Guid='85023bf8-1c90-4dd1-9442-
 s=node(p,'MemberSubsystemTemplate','ScChicken','fefb9590-4972-4893-b02a-76063611b745');params(s,{'Class':('Game.SubsystemScChicken','string')})
 c=node(r,'EntityTemplate','ScCsgoChicken','548cf071-2593-45c2-b1c5-623b7c473612')
 groups={
- 'Body':{'BoxSize':('0.35,0.45,0.35','Vector3'),'Mass':(2,'float'),'Density':(.8,'float')},
+ 'Body':{'BoxSize':('0.48,0.58,0.55','Vector3'),'Mass':(2,'float'),'Density':(.8,'float')},
  'Creature':{'DisplayName':('CS 小鸡','string'),'Description':('不会主动攻击。按 E／交互键切换跟随。枪杀会爆炸，刀杀正常死亡。','string'),'Category':('LandOther','Game.CreatureCategory'),'KillVerbs':('pecked','string')},
  'Locomotion':{'WalkSpeed':(3,'float'),'FlySpeed':(0,'float'),'SwimSpeed':(.5,'float'),'TurnSpeed':(8,'float'),'JumpSpeed':(4,'float')},
  'Health':{'AttackResilience':(3,'float'),'FireResilience':(3,'float'),'CorpseDuration':(2,'float')},
  'CreatureSounds':{'IdleSound':('Audio/ScCsgoKnives/Chicken/idle','string'),'IdleSoundMinDistance':(3,'float'),'PainSound':('','string'),'MoanSound':('','string'),'AttackSound':('','string'),'RareIdleSound':('','string')},
- 'FlightlessBirdModel':{'ModelName':('Models/ScCsgoKnives/chicken','string'),'TextureOverride':('Textures/ScCsgoKnives/chicken','string'),'AnimationConfigPath':('Animations/ScChicken','string'),'ModelScale':(1,'float'),'BoundingSphereRadius':(.8,'float'),'WalkBobHeight':(0,'float'),'WalkLegsAngle':(0,'float')},
+ 'FlightlessBirdModel':{'ModelName':('Models/ScCsgoKnives/chicken','string'),'TextureOverride':('Textures/ScCsgoKnives/chicken','string'),'AnimationConfigPath':('Animations/ScChicken','string'),'ModelScale':(1.6,'float'),'BoundingSphereRadius':(1.28,'float'),'WalkBobHeight':(0,'float'),'WalkLegsAngle':(0,'float')},
  'LayEggBehavior':{'LayFrequency':(0,'float')},
 }
 for name,values in groups.items():params(node(c,'MemberComponentTemplate',name),values)
