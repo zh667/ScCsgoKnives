@@ -109,7 +109,7 @@ public static class SurvivalSelfTest {
         Test("gun-power-x1.5", () => ScSurvivalBalance.GunPowerMultiplier == 1.5f && ScSurvivalBalance.Power("ak47") == 15 && ScSurvivalBalance.Power("awp") == 57
             && ScSurvivalBalance.Power("taser") == 150 && ScSurvivalBalance.Power("glock18") == 10.5f && ScSurvivalBalance.BasePower("ak47") == 10
             && GunSpec.All.All(g => Math.Abs(ScSurvivalBalance.Power(g.Name) - ScSurvivalBalance.BasePower(g.Name) * 1.5f) < .0001f));
-        Test("knife-range-2.2-1.8", () => ScKnifeStrike.Range(false) == 2.2f && ScKnifeStrike.Range(true) == 1.8f && ScKnifeStrike.Power(false) == 7 && ScKnifeStrike.Power(true) == 12);
+        Test("knife-range-2.2-1.8-power-x3", () => ScKnifeStrike.Range(false) == 2.2f && ScKnifeStrike.Range(true) == 1.8f && ScKnifeStrike.Power(false) == 21 && ScKnifeStrike.Power(true) == 36);
         Test("throw-speed-inherits-velocity", () => {
             Vector3 d = ScGrenadeBallistics.Direction(Vector3.UnitZ, false);
             Vector3 stand = ScGrenadeBallistics.LaunchVelocity(d, Vector3.Zero, false), run = ScGrenadeBallistics.LaunchVelocity(d, Vector3.UnitZ * 4, false), back = ScGrenadeBallistics.LaunchVelocity(d, -Vector3.UnitZ * 4, false);

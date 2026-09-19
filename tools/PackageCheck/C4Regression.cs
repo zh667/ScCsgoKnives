@@ -230,10 +230,10 @@ static class C4Regression {
                 return state.GetType().GetField("Action").GetValue(state).ToString()=="Idle";
             });
         } finally { BlocksManager.Blocks[705]=oldBlock;BlocksManager.BlockTypeToIndex.Clear();foreach(var kv in oldTypes)BlocksManager.BlockTypeToIndex[kv.Key]=kv.Value; }
-        foreach(var size in new[]{new Vector2(850,478),new Vector2(1187,637),new Vector2(480,850)})Test("hud-centred-above-hotbar/"+size,()=>{
+        foreach(var size in new[]{new Vector2(850,478),new Vector2(1187,637),new Vector2(480,850)})Test("hud-right-avoids-controls/"+size,()=>{
             var obstacles=new[]{new BoundingRectangle(new Vector2(size.X/2-150,size.Y-70),new Vector2(size.X/2+150,size.Y)),new BoundingRectangle(new Vector2(size.X-160,size.Y-230),size)};
-            var extent=new Vector2(190,64);var p=(Vector2)Call("ScAmmoHud","FindCenter",size,extent,obstacles);
-            return Math.Abs(p.X-(size.X-extent.X)/2)<.01 && p.Y>=0&&p.X+extent.X<=size.X&&p.Y+extent.Y<=size.Y && obstacles.All(r=>p.X>=r.Max.X||p.X+extent.X<=r.Min.X||p.Y>=r.Max.Y||p.Y+extent.Y<=r.Min.Y);
+            var extent=new Vector2(100,92);var p=(Vector2)Call("ScAmmoHud","FindCorner",size,extent,obstacles);
+            return Math.Abs(p.X-(size.X-extent.X-12))<.01 && p.Y>=0&&p.X+extent.X<=size.X&&p.Y+extent.Y<=size.Y && obstacles.All(r=>p.X>=r.Max.X||p.X+extent.X<=r.Min.X||p.Y>=r.Max.Y||p.Y+extent.Y<=r.Min.Y);
         });
         Test("actual-world-batch-ignores-material-alpha",()=>{
             var renderer=new Engine.Graphics.PrimitivesRenderer3D();
@@ -244,7 +244,7 @@ static class C4Regression {
             return !batch.UseAlphaTest&&ReferenceEquals(batch.BlendState,Engine.Graphics.BlendState.Opaque)
                 && batch.TriangleIndices.Count==mesh.Indices.Count && batch.TriangleVertices.All(v=>v.Color.A==255);
         });
-        Test("mobile-hud-readable-and-normal-wear-visible",()=>{
+        Test("mobile-hud-readable-wear-moved-to-inventory",()=>{
             var font=LabelWidget.m_bitmapFont;
             try {
                 LabelWidget.BitmapFont=(BitmapFont)RuntimeHelpers.GetUninitializedObject(typeof(BitmapFont));
@@ -253,7 +253,7 @@ static class C4Regression {
                 ht.GetMethod("ApplyDeviceScale").Invoke(hud,[true]);
                 var readout=Activator.CreateInstance(mod.GetType("Game.ScAmmoReadout"),["66 / 165 发 · 弹匣 ×2255","",false,false,false,"耐久 100%",0]);
                 ht.GetMethod("Show").Invoke(hud,[readout]);var wear=(LabelWidget)ht.GetField("Wear").GetValue(hud);
-                return main.FontScale<desktop&&main.FontScale>=.55f&&wear.FontScale>=.4f&&wear.IsVisible&&wear.Text=="耐久 100%";
+                return main.FontScale<desktop&&main.FontScale>=.55f&&!wear.IsVisible;
             } finally { LabelWidget.BitmapFont=font; }
         });
         if(Environment.GetEnvironmentVariable("SC_C4_PREVIEW") is {} preview) {

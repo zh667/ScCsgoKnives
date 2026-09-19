@@ -146,3 +146,13 @@ The shipped body maps are a local metallic material port onto the CS2 knife UVs.
 Eight CS2 casing models and their opaque color maps come from the installed `pak01_dir.vpk`, exported with ValveResourceFormat / Source2Viewer CLI 20.0. `tools/import_cs2_casings.py` imports the meshes in metres and reads original `shell_eject` attachments, rotations, particle velocity ranges and clip event timing for 33 guns / 48 clips. The AWP event plus emitter delay is 0.74 seconds; no shot casings are invented for the revolver or Zeus. Landing audio uses `sounds/weapons/fx/tink/bullet_casing_01.wav` and `shotgun_shell1.wav`.
 
 Hashes and triangle counts: `docs/cs2-casing-sources-2026-09-18.json`. Runtime physics is a bounded adaptation: Full 48 / Lite 16 simultaneous casings, 2.5 / 1.2 seconds, at most 2 / 1 terrain contacts; no saved debris. Source 2 collisions, lighting and every physics operator are not reproduced.
+# CS2 chicken and ammunition HUD (1.3.0, 2026-09-19)
+
+The chicken model, Catalan Tan albedo, idle/walk/run skeletal clips, five idle sounds,
+three death sounds and eight reserve-ammunition SVGs were extracted from the local CS2
+`game/csgo/pak01_dir.vpk` with ValveResourceFormat. See
+`docs/chicken-hud-source-20260919.json` for original paths and source/derived SHA-256 hashes.
+`tools/import_cs2_chicken_hud.py` reproduces the import from the retained local extraction.
+The GLB keeps source skeletal animation and embeds the opaque albedo; unused zero-weight
+morph targets are omitted. SVGs become transparent 128 px PNGs; decoded audio becomes PCM16 WAV.
+Chicken behavior and explosive death are authored for Survivalcraft, not imported CS2 gameplay.

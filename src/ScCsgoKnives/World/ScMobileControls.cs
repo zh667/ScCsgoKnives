@@ -3,10 +3,12 @@ namespace Game;
 /// <summary>Device detection is separate from the current input method.</summary>
 public static class ScMobileControls {
     public static bool NativeGunFireAllowed(ComponentPlayer player) {
-        if (!ScUiSettings.ButtonOnlyFire || !UsesTouchInput(player)) return true;
-        // If a player hides the button later, explicitly fall back rather than leave them unable to shoot.
-        if (!ScUiSettings.CustomButtons || !ScUiSettings.Layout(ScGunFunctions.Fire).Enabled) return true;
-        var input = player.GameWidget.Input;
+        return NativeGunFireAllowedFor(UsesTouchInput(player),player.GameWidget.Input);
+    }
+    public static bool NativeGunFireAllowedFor(bool touch,WidgetInput input) {
+        if (!ScUiSettings.ButtonOnlyFire || !touch) return true;
+        // Button visibility is independent of the firing policy. External touch
+        // mappers inject keyboard/mouse input and do not need our overlay enabled.
         // Do not erase the merged PlayerInput: keyboard/touch mappers and gamepads still work on Android.
         return input.IsKeyOrMouseDown("Dig") || input.IsKeyOrMouseDown("Hit")
             || input.IsGamepadDown("Dig") || input.IsGamepadDown("Hit");

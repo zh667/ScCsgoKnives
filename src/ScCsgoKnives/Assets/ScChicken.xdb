@@ -1,0 +1,68 @@
+<Mod>
+  <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ScChicken" Guid="4107f04b-71a5-5eb4-a854-70af177d0158" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="231868de-0cea-5578-b416-9652ab547456" Value="Game.SubsystemScChicken" Type="string" />
+    </MemberSubsystemTemplate>
+  </ProjectTemplate>
+  <EntityTemplate Name="ScCsgoChicken" Guid="30026525-138a-542b-8f18-06006950d40c" InheritanceParent="548cf071-2593-45c2-b1c5-623b7c473612">
+    <MemberComponentTemplate Name="Body" Guid="f7061376-2fdf-5fb8-8a49-88fbe024e6e6">
+      <Parameter Name="BoxSize" Guid="3b1413df-f4f4-5b8f-9aaf-03243a166c8d" Value="0.35,0.45,0.35" Type="Vector3" />
+      <Parameter Name="Mass" Guid="c2da77b2-3aa5-5589-84c4-b8004e9ec20b" Value="2" Type="float" />
+      <Parameter Name="Density" Guid="4a4d215b-f946-55e7-a1e9-92ccd6478dbc" Value="0.8" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="d562eea2-94d5-5261-aaaa-f8d2585b1eaa">
+      <Parameter Name="DisplayName" Guid="41ce23d4-b68b-5352-824e-377f603f0b17" Value="CS 小鸡" Type="string" />
+      <Parameter Name="Description" Guid="c04c683f-5616-5622-aca4-70bcca34711e" Value="不会主动攻击。按 E／交互键切换跟随。枪杀会爆炸，刀杀正常死亡。" Type="string" />
+      <Parameter Name="Category" Guid="52d93cf6-b37b-5658-9ec2-56a9046db5b1" Value="LandOther" Type="Game.CreatureCategory" />
+      <Parameter Name="KillVerbs" Guid="42f278b4-a1b6-57de-9780-89ee15c29f5a" Value="pecked" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Locomotion" Guid="57375937-598d-5999-8099-e1e84fdbde26">
+      <Parameter Name="WalkSpeed" Guid="203a5672-ad10-59e0-9815-555ba445037e" Value="3" Type="float" />
+      <Parameter Name="FlySpeed" Guid="3150d414-7b8a-578e-9734-476f39ce7c2a" Value="0" Type="float" />
+      <Parameter Name="SwimSpeed" Guid="31802db5-ef97-53c8-92f6-f0eb7cbd5286" Value="0.5" Type="float" />
+      <Parameter Name="TurnSpeed" Guid="2201014f-711d-5e64-9071-752e154f666b" Value="8" Type="float" />
+      <Parameter Name="JumpSpeed" Guid="a1d2f1c4-a23f-5272-a2fc-41fc51620b45" Value="4" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="5ff95810-23ab-5523-8a2f-b1d470a7c03e">
+      <Parameter Name="AttackResilience" Guid="3d7f7e28-a6ee-5e24-8ee3-65ee1b236434" Value="3" Type="float" />
+      <Parameter Name="FireResilience" Guid="3b3b9b33-f496-5834-9f37-498839510c43" Value="3" Type="float" />
+      <Parameter Name="CorpseDuration" Guid="3021bc9e-8ed5-50e4-a7e4-d0fd773a6afb" Value="2" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="a9fae02c-6493-54e1-ba4f-a718b44ff861">
+      <Parameter Name="IdleSound" Guid="e0926da2-89da-5f67-868d-bbcdd90343e7" Value="Audio/ScCsgoKnives/Chicken/idle" Type="string" />
+      <Parameter Name="IdleSoundMinDistance" Guid="32b6e5bb-2693-59ee-bfc1-3df7791dbc2b" Value="3" Type="float" />
+      <Parameter Name="PainSound" Guid="f78ccba9-5964-5707-8bc2-ad06252ee339" Value="" Type="string" />
+      <Parameter Name="MoanSound" Guid="5f159acf-9a8c-5dd8-9307-ae7c4bd57fd7" Value="" Type="string" />
+      <Parameter Name="AttackSound" Guid="b6c44f91-6130-5d31-9d7c-4c93c5779808" Value="" Type="string" />
+      <Parameter Name="RareIdleSound" Guid="d022b2c9-1574-5e35-8c95-06d566c6c71b" Value="" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FlightlessBirdModel" Guid="e86c6ba3-d31e-57a0-938f-816e20ca0148">
+      <Parameter Name="ModelName" Guid="a701d75d-2b0a-528e-8739-06c08fc2a877" Value="Models/ScCsgoKnives/chicken" Type="string" />
+      <Parameter Name="TextureOverride" Guid="b63cf963-f181-5301-a3e5-ac98b04790e3" Value="Textures/ScCsgoKnives/chicken" Type="string" />
+      <Parameter Name="AnimationConfigPath" Guid="74d8531b-7683-54fb-90fa-166c5b12c34f" Value="Animations/ScChicken" Type="string" />
+      <Parameter Name="ModelScale" Guid="cc4c2b3e-bc93-5846-89fe-41b5dee9bb7f" Value="1" Type="float" />
+      <Parameter Name="BoundingSphereRadius" Guid="4c396f15-ab1d-5c01-812d-3943cf01a302" Value="0.8" Type="float" />
+      <Parameter Name="WalkBobHeight" Guid="56c179eb-72c1-5f2e-aa80-5d838161a76e" Value="0" Type="float" />
+      <Parameter Name="WalkLegsAngle" Guid="da1e0dfb-7267-52c2-86d1-9697a2cb290c" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="LayEggBehavior" Guid="a0e0aaa7-9e57-58b5-b9ad-f220761b2cf0">
+      <Parameter Name="LayFrequency" Guid="2d098fcf-a4d8-5d93-845b-9ba23356e613" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="7d99e76e-2f12-5d51-aa98-67dfd32e41b3">
+      <Parameter Name="EggTypeIndex" Guid="b0686ac0-3944-558d-9257-f48317f8a9e5" Value="-1" Type="int" />
+      <Parameter Name="ShowEgg" Guid="475d391c-1678-5d9b-8cb9-605527c82d93" Value="False" Type="bool" />
+    </ParameterSet>
+    <MemberComponentTemplate Name="ScChicken" Guid="139bf038-f901-554a-bf3e-8c6c38756d40" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+      <Parameter Name="Class" Guid="4dd0fe15-4c32-523d-8b87-7addfd099d13" Value="Game.ComponentScChicken" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="72482bb4-4814-5343-ace9-e27eebb295ed">
+      <ParameterSet Name="Loot" Guid="0c9d5bbf-1b3e-5439-928d-46cdff81d718">
+        <Parameter Name="1" Guid="447d1aad-9e47-5310-831f-5b1d2a64a605" Value="RawBirdBlock;1;1" Type="string" />
+        <Parameter Name="2" Guid="907d7227-5bd3-5ac3-8a66-76687771512c" Value="FeatherBlock;1;2" Type="string" />
+      </ParameterSet>
+      <ParameterSet Name="LootOnFire" Guid="e5adad82-d1ea-5c3f-83e9-316edf566fb2">
+        <Parameter Name="1" Guid="8d6b7eb9-7ff4-5a34-a1ba-0d80b172db30" Value="CookedBirdBlock;1;1" Type="string" />
+      </ParameterSet>
+    </MemberComponentTemplate>
+  </EntityTemplate>
+</Mod>

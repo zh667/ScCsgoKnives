@@ -16,6 +16,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         public float PreviousCrouch;
         public int Fuse;
     }
+    public static bool IsBombDamage(Attackment attack)=>attack is BombAttack;
     sealed class BombAttack(ComponentBody body, GameEntitySystem.Entity owner, Vector3 point, Vector3 direction, float power)
         : ProjectileAttackment(body, owner, point, direction, power, null) {
         public override bool DisableFriendlyFire() => Attacker != Target && base.DisableFriendlyFire();

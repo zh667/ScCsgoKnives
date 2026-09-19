@@ -3,10 +3,14 @@ using System.Runtime.CompilerServices;
 namespace Game;
 
 public static class ScSurvivalBalance {
+    // An explicit shot origin prevents arrows or unrelated mod explosions from
+    // triggering the chicken's gun-only blast.
+    public class GunAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
+        : ProjectileAttackment(body,owner,point,direction,power,null);
     // Defer electric control until injury is confirmed; preserve the public stun parameter
     // so another mod can explicitly deny control without forcing us to enable knockback.
     sealed class ElectricAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
-        : ProjectileAttackment(body,owner,point,direction,power,null) {
+        : GunAttack(body,owner,point,direction,power) {
         public override void StunTarget() { }
     }
     sealed class Control { public double Next; }
@@ -48,7 +52,7 @@ public static class ScSurvivalBalance {
             : player.ComponentMiner.ActiveBlockValue;
         Attackment attack = melee ? new MeleeAttackment(body, player.Entity, point, direction, power)
             : zeus ? new ElectricAttack(body,player.Entity,point,direction,power)
-            : new ProjectileAttackment(body, player.Entity, point, direction, power, null);
+            : new GunAttack(body, player.Entity, point, direction, power);
         Control control = Controls.GetOrCreateValue(body);
         bool eligible = zeus || now >= control.Next;
         attack.ImpulseFactor = eligible ? (melee ? 1.5f : .6f) : 0;

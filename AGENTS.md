@@ -1,5 +1,12 @@
 # Project conventions
 
+- User-directed 2026-09-19: independent button-only touch fire (Sushi key/mouse injection works with
+  the CS touch overlay hidden), bottom-left inventory gun wear, lower-right CS2 magazine HUD,
+  all knife damage x3 (21 light / 36 heavy), and passive CS2 chicken with interact-to-follow.
+  Chicken killed by CS guns explodes using HE 48 damage / 6 m; melee and explosion collateral do not.
+  Deliver 1.3.0 Full only; keep existing gun IDs, save schema and previous packages unchanged.
+  See docs/release-1.3.0-input-hud-chicken.md for verification and actual-device acceptance limits.
+
 - User-directed 2026-09-19: opening inventory cancels reload. Fix the actual UpdateGun modal cancellation
   and input gate, preserve transaction validity, and keep action milestones on the animation clock.
   See docs/menu-reload-fix-2026-09-19.md. Include in the same 1.2.2 Full-only delivery;

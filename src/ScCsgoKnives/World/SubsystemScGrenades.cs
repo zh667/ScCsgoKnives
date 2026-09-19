@@ -5,6 +5,13 @@ using TemplatesDatabase;
 namespace Game;
 
 public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, IDrawable {
+    public static bool IsAreaDamage(Attackment attack)=>attack is AreaAttack;
+    public void ChickenBlast(Vector3 position,int owner) {
+        var state=new ScGrenadeState{Kind=0,Position=position,Owner=owner};
+        Register(state);
+        Detonate(state); // same damage, walls, friendly-fire and smoke interaction as HE
+        if(m_active.Count<16)m_active.Add(state); // visual budget; never suppress damage
+    }
     sealed class AreaAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
         : ProjectileAttackment(body,owner,point,direction,power,null) {
         public override bool DisableFriendlyFire() => Attacker!=Target && base.DisableFriendlyFire();

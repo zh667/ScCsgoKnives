@@ -1,0 +1,114 @@
+{
+  "vpk": "E:/SteamLibrary/steamapps/common/Counter-Strike Global Offensive/game/csgo/pak01_dir.vpk",
+  "records": [
+    {
+      "source": "panorama/images/hud/ammo_reserve_magazine.svg",
+      "sourceSha256": "922432c975fdc03b5b9b93df9f245fbfe25473218a57562d68171fe5cfd01819",
+      "target": "Textures/ScCsgoKnives/hud_ammo_magazine.png",
+      "sha256": "7cfd7a61449ee7d11de23dd653bdafbb5f3adaaaf3cc696dd067aaa8d543af43"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_banana_mag.svg",
+      "sourceSha256": "585d05b96018e97ac9ec071800a15d8703d4e42a16e209a618412e108131fce4",
+      "target": "Textures/ScCsgoKnives/hud_ammo_banana_mag.png",
+      "sha256": "f17a3b8b4c8908a9628f03d20d6b5e59c9db92f21a1a0b51b068b8eed1724c3d"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_bizon_tube.svg",
+      "sourceSha256": "725b7606f9dca515d2a137c9affe413bcbb9fc83dea043e6e544b217331f0153",
+      "target": "Textures/ScCsgoKnives/hud_ammo_bizon_tube.png",
+      "sha256": "5bac3818e2c46f1857c0550774a4a3d387ff90ea49cef7bfa7281ed25ae76f8f"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_box.svg",
+      "sourceSha256": "362f072b2cff17089906de7ca5515128b3e42675a68a8b1906f2a570c2cab057",
+      "target": "Textures/ScCsgoKnives/hud_ammo_box.png",
+      "sha256": "9f6663be161b6eca8f293fbee8ff60e5da3b254937fffeb6d66bb3d11cca3267"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_generic_bullet.svg",
+      "sourceSha256": "0972572fff214044d860619305433a168116ea1d52f1b81fc11daa33e5a14473",
+      "target": "Textures/ScCsgoKnives/hud_ammo_generic_bullet.png",
+      "sha256": "472590173082b8d32b5e1b3eb2bab66c5818f7968aa3cc0443b59240b6066cd1"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_p90.svg",
+      "sourceSha256": "85c6b7f64c89918942eca682a565e4077b7ce957a553533e769b85826d1287d7",
+      "target": "Textures/ScCsgoKnives/hud_ammo_p90.png",
+      "sha256": "47d6350d24d0c0426c240aa5f5a0c9f07229fd95d06ecf93243ff8fa2f7ac814"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_revolver_loader.svg",
+      "sourceSha256": "999f0112034c5d4880f9aea9bbeb80cd09f75745ce1ed1449e8b0d7a2827e042",
+      "target": "Textures/ScCsgoKnives/hud_ammo_revolver_loader.png",
+      "sha256": "003f81c3524696847de39d5993108e0f554d5908010e9bc2bc6c04fe79d4ed15"
+    },
+    {
+      "source": "panorama/images/hud/ammo_reserve_shotgun_shell.svg",
+      "sourceSha256": "a679323c8f3a998ee09d44ab58d7349b06f6b5c8280fe9fd819f056a596c6555",
+      "target": "Textures/ScCsgoKnives/hud_ammo_shotgun_shell.png",
+      "sha256": "47cb4dac2c1064d7e882c6d9ccd83ef4b77fffc69ce4b5ece6afb806d687b3fc"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_idle_01.mp3",
+      "sourceSha256": "59d81ee059c9e35fdd08fc71d3187e4133d19542752ef94326cdc26b44c18c8f",
+      "target": "Audio/ScCsgoKnives/Chicken/idle/chicken_idle_01.wav",
+      "sha256": "1d82cc0b544925e3a43489d5a9f76cce29c53a0be951a3590f869797f5f60b67"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_idle_02.mp3",
+      "sourceSha256": "cc34f16e639994239e832846a10153e7d6c85f0e3c1e023c88d1fcc404526ba2",
+      "target": "Audio/ScCsgoKnives/Chicken/idle/chicken_idle_02.wav",
+      "sha256": "c5e02d157daa4cb89e4426984741382b54e2d1f3dc2e9bf7814cac716859de1d"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_idle_03.mp3",
+      "sourceSha256": "3cc49b41c0166d9d4b763d44b0f8863058461f64b95534da1d438d322f492695",
+      "target": "Audio/ScCsgoKnives/Chicken/idle/chicken_idle_03.wav",
+      "sha256": "54a7ee99ebab0c2e76130b1b8d4a2a92aea60eb954b4608ed508cbe7a767f6da"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_idle_04.mp3",
+      "sourceSha256": "fc0aee5fcbae1d89c9567187be690019a3abeecb0287acfeb066c35a188cca7e",
+      "target": "Audio/ScCsgoKnives/Chicken/idle/chicken_idle_04.wav",
+      "sha256": "648d6d9ae0720d4371512b09ebfd046e252c09bd9f5852b8db3a80f2f26fd2ea"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_idle_05.mp3",
+      "sourceSha256": "f8677a5930b70cdfc82cbee7ad5196ef1179a16ff89cda7d3044acc0c04d1ea4",
+      "target": "Audio/ScCsgoKnives/Chicken/idle/chicken_idle_05.wav",
+      "sha256": "f372b932f7411887a30a30a1ea4154c6701b6cec25e9cb0d01dff95754bb1587"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_death_01.mp3",
+      "sourceSha256": "acf2906c38eede4276f25a65ffc9909c45a3597fc90b415e03a88d82b6b27301",
+      "target": "Audio/ScCsgoKnives/Chicken/death/chicken_death_01.wav",
+      "sha256": "3a63bf259b3078815e1f7f8ffa350c49061db8e56c65c1d479d1b4dca87c172c"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_death_02.mp3",
+      "sourceSha256": "c515e4e11db89a328e7f85d8feb22d4dc8972247a0824782cb3d2ad00682d14c",
+      "target": "Audio/ScCsgoKnives/Chicken/death/chicken_death_02.wav",
+      "sha256": "9ac44295c66277083ee8fbb7a07ddec46762b5fc30888611e88895106f59750c"
+    },
+    {
+      "source": "sounds/ambient/common/animal/chicken_death_03.mp3",
+      "sourceSha256": "add249686e9ecf60a69eb5b66cb0f8225de0e9e9768da206186ffbdb19c69eac",
+      "target": "Audio/ScCsgoKnives/Chicken/death/chicken_death_03.wav",
+      "sha256": "8faa2016569b460d9fcd2ee46fc4cf336d6832ec376a65bc7b73d64a3558135d"
+    },
+    {
+      "source": "models/chicken/chicken.glb",
+      "sourceSha256": "d06ec797a8f4f8f29e5da0510f58a837aeda23b775d5b2e2bf17a83ea3b7dbc2",
+      "target": "Models/ScCsgoKnives/chicken.glb",
+      "sha256": "b6fe4768524abe702b094b21f07f66ddda1c375e48a48a7c4230208a3091aee0"
+    },
+    {
+      "source": "models/chicken/chicken_catalan_tan_color_psd_37a4e69b.png",
+      "sourceSha256": "486c2ea4a6e176ee531be7ddcb1ba67e31d202aea90f3b6ecfc8dea2810b4039",
+      "target": "Textures/ScCsgoKnives/chicken.png",
+      "sha256": "7d970e4a8bf98d420d1dcdcdbd08af22ec455c56e8089e43992a9a6bc056911d"
+    }
+  ],
+  "notes": "CS2 model/skin/idle-walk-run clips and audio; behavior and explosion are authored for Survivalcraft."
+}

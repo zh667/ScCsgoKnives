@@ -1,0 +1,99 @@
+{
+  "version": "1.3.0",
+  "edition": "Full",
+  "package": "[API1.9]CS武器1.3.0-作者ZH667-全量版.scmod",
+  "packageSha256": "1125fec73401fae651f44184cc8d0d9db32a339e99496bddefd82d4a135e0300",
+  "packageBytes": 382574969,
+  "dllSha256": "b43cb6435cd838f763649315ec0cab98573853451e30f1959fec3017834471c1",
+  "dllChecks": 21956,
+  "dllFailed": 0,
+  "deliveryChecks": 1290,
+  "deliveryFailed": 0,
+  "featureChecks": [
+    {
+      "name": "features130/touch-fire-independent/False/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/touch-fire-independent/False/True",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/touch-fire-independent/True/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/touch-fire-independent/True/True",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/knife-threefold-no-range-or-cadence-change",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/magazine-fractions-colors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/inventory-percent-slot-reuse",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/right-hud-compact-magazine-count",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-native-glb-reader-and-clips",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-native-database-inheritance",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-death-classification-no-chain",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-death-two-xml/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-death-two-xml/True",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-follow-toggle-and-stop",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-real-selector-path-and-follow-xml",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "features130/chicken-pending-blast-dispatch-once-and-save",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "limitations": [
+    "Headless DLL and native API tests, not in-game graphics/audio or Android hardware acceptance.",
+    "Sushi source injection path checked; physical Sushi touch use still needs device acceptance.",
+    "New chicken entities do not establish safe downgrade to older DLLs."
+  ]
+}

@@ -14,6 +14,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ModsManager.RegisterHook("UpdateInput", this);
+        ModsManager.RegisterHook("InventorySlotWidgetMeasureOverride", this);
+        ModsManager.RegisterHook("OnCreatureDied", this);
+        ModsManager.RegisterHook("OnProjectLoaded", this);
         ModsManager.RegisterHook("ProjectXmlLoad", this);
         ModsManager.RegisterHook("OnProjectXmlSaved", this);
         ModsManager.RegisterHook("OnLoadingFinished", this);
@@ -184,7 +187,13 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void UpdateChaseBehaviorChasing(ComponentChaseBehavior chase) =>
         chase.Project.FindSubsystem<SubsystemScGrenades>()?.ApplyChaseOcclusion(chase);
 
+    public override void InventorySlotWidgetMeasureOverride(InventorySlotWidget widget, Vector2 available) => ScInventoryWear.Update(widget);
+    public override void OnProjectLoaded(GameEntitySystem.Project project)=>SubsystemScChicken.RegisterSpawn(project);
+    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experienceOrbDrop,ref bool calculateInKill)
+        =>health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
+
     public override void UpdateInput(ComponentInput input, WidgetInput widgets) {
+        if(SubsystemScChicken.HandleFollow(input,widgets))return;
         var player = input.m_componentPlayer;
         if (player is null || !ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)
             || !ScGunBindings.KeyboardDown(player, ScGunFunctions.Plant)) return;

@@ -6,7 +6,7 @@ public sealed class ScKnifeStrike {
     public int Value, Slot;
     public long Revision;
     public IInventory Inventory;
-    public static float Power(bool heavy) => heavy ? 12 : 7;
+    public static float Power(bool heavy) => heavy ? 36 : 21;
     // F14 (community plan 2026-09-07): light 2.2 blocks, heavy 1.8 blocks; 0.28.x was 1.6 / 1.3.
     // The raycast runs at the strike instant (TakeHit), not at the button press.
     public static float Range(bool heavy) => heavy ? 1.8f : 2.2f;

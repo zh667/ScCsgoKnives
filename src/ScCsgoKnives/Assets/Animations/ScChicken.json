@@ -1,0 +1,54 @@
+{
+  "template": "Simple",
+  "rootBoneRotation": 180,
+  "modelScale": 1,
+  "animations": {
+    "idle": {
+      "source": "idle",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.15
+    },
+    "walk": {
+      "source": "walk",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.15
+    },
+    "run": {
+      "source": "run",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.15
+    }
+  },
+  "states": {
+    "gait": {
+      "layer": "Base",
+      "rules": [
+        {
+          "condition": "IsDead",
+          "animation": null
+        },
+        {
+          "condition": "[SpeedAbs] > 1.8",
+          "animation": {
+            "source": "run"
+          }
+        },
+        {
+          "condition": "[SpeedAbs] > 0.15",
+          "animation": {
+            "source": "walk"
+          }
+        },
+        {
+          "condition": "true",
+          "animation": {
+            "source": "idle"
+          }
+        }
+      ]
+    }
+  }
+}
