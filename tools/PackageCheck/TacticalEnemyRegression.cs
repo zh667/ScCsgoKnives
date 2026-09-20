@@ -20,6 +20,7 @@ static class TacticalEnemyRegression {
     sealed class Ground:SubsystemTerrain {public bool Blocked;public override TerrainRaycastResult? Raycast(Vector3 a,Vector3 b,bool i,bool s,Func<int,float,bool> f)=>Blocked?new TerrainRaycastResult{Distance=.5f}:null;}
     sealed class Drops:SubsystemPickables {public readonly List<Pickable> Items=[];public override Pickable AddPickable(int value,int count,Vector3 p,Vector3? vel,Matrix? m,Entity owner){var item=new Pickable{Value=value,Count=count,Position=p};Items.Add(item);return item;}}
     sealed class Health:ComponentHealth {public override void Injure(Injury i){i.Attackment.EnableHitValueParticleSystem=false;base.Injure(i);}}
+    sealed class HalfBlock:DirtBlock {public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain t,int value)=>[new BoundingBox(Vector3.Zero,new Vector3(1,.5f,1))];}
     sealed class SpawnProject:Project {
         public Func<Entity> Factory;public Action<Entity> Added,Removed;
         public override Entity CreateEntity(ValuesDictionary v,int id=0)=>Factory==null?base.CreateEntity(v,id):Factory();
@@ -53,22 +54,36 @@ static class TacticalEnemyRegression {
             Test("creative-manual-three-five-squad-placement-budget-and-rollback",()=>{
                 var old=DatabaseManager.m_valueDictionaries.GetValueOrDefault("ScTacticalEnemy");DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=new ValuesDictionary();
                 try{
-                    foreach(int count in new[]{3,5}){
+                    foreach(int count in new[]{3,5})foreach(bool snow in new[]{false,true}){
                         var f=World();var p=(SpawnProject)f.P;f.Info.WorldSettings.GameMode=GameMode.Creative;
                         BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};var chunk=f.Terrain.Terrain.AllocateChunk(0,0);chunk.State=TerrainChunkState.Valid;
-                        for(int x=1;x<15;x++)for(int z=1;z<15;z++){f.Terrain.Terrain.SetCellValueFast(x,60,z,2);f.Terrain.Terrain.SetTopHeight(x,z,60);}
+                        BlocksManager.Blocks[61]=new SnowBlock{BlockIndex=61,IsCollidable=false};
+                        for(int x=1;x<15;x++)for(int z=1;z<15;z++){f.Terrain.Terrain.SetCellValueFast(x,60,z,2);if(snow)f.Terrain.Terrain.SetCellValueFast(x,61,z,61);f.Terrain.Terrain.SetTopHeight(x,z,snow?61:60);}
+                        var player=Blank<ComponentPlayer>();player.ComponentBody=new ComponentBody{Position=new Vector3(8.5f,61,8.5f),BoxSize=new Vector3(.65f,1.8f,.65f)};E(p,player,player.ComponentBody);p.FindSubsystem<SubsystemPlayers>(true).m_componentPlayers.Add(player);f.Bodies.AddBody(player.ComponentBody);
                         int created=0;p.Factory=()=>{created++;var e=Enemy(p).Creature.Entity;p.m_entities.Remove(e);e.m_isAddedToProject=false;return e;};
                         p.Added=e=>{f.Director.OnEntityAdded(e);f.Bodies.AddBody(e.FindComponent<ComponentBody>(true));};p.Removed=e=>{f.Director.OnEntityRemoved(e);f.Bodies.RemoveBody(e.FindComponent<ComponentBody>(true));};
-                        Check((int)f.Director.SpawnManual(new Point3(8,60,8),count)==count&&created==count,"manual whole squad not created");
+                        Check((int)f.Director.SpawnManual(new Point3(8,snow?61:60,8),count)==count&&created==count,"manual whole squad not created on snow/near player");
                         var members=((System.Collections.IEnumerable)f.Director.Enemies).Cast<dynamic>().ToArray();Check(members.Length==count&&members.Select(e=>(string)e.State.Squad).Distinct().Count()==1&&members.Select(e=>(int)e.State.Role).Distinct().Count()==count,"wrong shared squad or roles");
                         Check(members.All(e=>Math.Abs((float)e.Creature.ComponentBody.Position.Y-61.1f)<.01f),"manual squad spawns in ground");
-                        f.Director.MaxActive=count;Check((int)f.Director.SpawnManual(new Point3(8,60,8),3)==0&&created==count,"manual cap permits partial allocation");
+                        int oldLimit=SubsystemCreatureSpawn.m_totalLimit;
+                        try{SubsystemCreatureSpawn.m_totalLimit=0;f.Director.MaxActive=count;Check((int)f.Director.SpawnManual(new Point3(8,60,8),3)==3&&created==count+3,"manual spawn still applies population limit");}finally{SubsystemCreatureSpawn.m_totalLimit=oldLimit;}
                         f.Director.MaxActive=10;foreach(var e in p.Entities.ToArray())p.RemoveEntity(e,false);
                         int attempt=0;p.Factory=()=>{if(++attempt==2)throw new Exception("injected entity factory failure");var e=Enemy(p).Creature.Entity;p.m_entities.Remove(e);e.m_isAddedToProject=false;return e;};
                         Check((int)f.Director.SpawnManual(new Point3(8,60,8),count)==0&&p.Entities.Count==0,"failed squad leaked partial members");
                         Check((int)f.Director.SpawnManual(new Point3(8,60,8),4)==0,"unsupported squad size accepted");
                     }
                 }finally{if(old==null)DatabaseManager.m_valueDictionaries.Remove("ScTacticalEnemy");else DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=old;}
+            });
+            Test("manual-floor-under-roof-grass-half-block-and-headroom",()=>{
+                var f=World();var terrain=f.Terrain.Terrain;var chunk=terrain.AllocateChunk(0,0);chunk.State=TerrainChunkState.InvalidLight;
+                BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{IsCollidable=true};BlocksManager.Blocks[62]=new HalfBlock{IsCollidable=true};BlocksManager.Blocks[63]=new AirBlock{IsCollidable=false};
+                var method=T("SubsystemTacticalEnemies").GetMethod("ManualPosition",Fields);
+                Vector3? Position(){object[] args=[8,60,8,Vector3.Zero];return (bool)method.Invoke((object)f.Director,args)?(Vector3)args[3]:null;}
+                terrain.SetCellValueFast(8,60,8,2);terrain.SetCellValueFast(8,61,8,63);terrain.SetCellValueFast(8,70,8,2);terrain.SetTopHeight(8,8,70);
+                Check(Position() is Vector3 floor&&Math.Abs(floor.Y-61.1f)<.01f,"grass/roof/light invalidation incorrectly blocks clicked floor");
+                terrain.SetCellValueFast(8,60,8,62);Check(Position() is Vector3 step&&Math.Abs(step.Y-60.6f)<.01f,"half-block support treated as full block");
+                terrain.SetCellValueFast(8,62,8,2);terrain.SetCellValueFast(8,63,8,2);terrain.SetCellValueFast(8,64,8,2);Check(Position()==null,"spawn intersects low ceiling");
+                Check((int)f.Director.SpawnManual(new Point3(8,60,8),5)==0&&((string)f.Director.ManualFailure).Contains("可站立"),"placement failure hidden behind population warning");
             });
             Test("34-weapon-pool-no-registry-allocation",()=>{
                 var names=new HashSet<string>();var pools=(string[][])T("TacticalEnemyState").GetField("Pools").GetValue(null);

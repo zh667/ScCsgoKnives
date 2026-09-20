@@ -45,6 +45,7 @@ public sealed class TacticalModLoader : ModLoader {
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);
             attack.Target.FindComponent<ComponentTacticalEnemy>()?.Alert(attacker);
             if(attack.Target.FindComponent<ComponentPlayer>() is {} player&&project.FindSubsystem<SubsystemScTactical>(false) is {} tactical)foreach(var c in tactical.Companions)if(c.OwnedBy(player))c.Alert(attacker);
+            if(attack.Attacker?.FindComponent<ComponentPlayer>() is {} owner&&project.FindSubsystem<SubsystemScTactical>(false) is {} squad)foreach(var c in squad.Companions)if(c.OwnedBy(owner))c.Alert(attack.Target.FindComponent<ComponentBody>());
         }
         ScShieldProtection.Filter(attack);
     }

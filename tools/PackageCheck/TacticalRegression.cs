@@ -138,11 +138,11 @@ static class TacticalRegression {
                 }
             });
             ComponentInventoryBase Inv(){var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(new ValuesDictionary{{"SlotsCount",5},{"Slots",new ValuesDictionary()}},null);return inv;}
-            Test("six-recipes-vanilla-materials-craft-and-refusal",()=>{
+            Test("five-recipes-no-hostage-stable-ids-craft-and-refusal",()=>{
                 using var vanilla=ZipFile.OpenRead(content);using var reader=new StreamReader(vanilla.GetEntry("Assets/BlocksData.txt").Open());var lines=reader.ReadToEnd().Split('\n');int column=Array.IndexOf(lines[0].Trim().Split(';'),"CraftingId"),index=740;
                 var ids=new HashSet<string>{"ironingot","copperingot","glass","leather","germaniumchunk","canvas"};foreach(var line in lines.Skip(1)){var cells=line.Trim().Split(';');if(cells.Length<=column||!ids.Contains(cells[column]))continue;var block=(Block)Activator.CreateInstance(typeof(Block).Assembly.GetType("Game."+cells[0],true));block.BlockIndex=index;block.CraftingId=cells[column];block.MaxStacking=40;BlocksManager.Blocks[index++]=block;}
-                Call("SubsystemScTactical","RegisterRecipes");var recipes=((System.Collections.IEnumerable)C("ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>().ToArray();Require(recipes.Length==6,"missing or duplicate recipes");
-                Require(BlocksManager.Blocks[705].GetCreativeValues().Single()==705&&BlocksManager.Blocks[706].GetCreativeValues().Count()==4,"missing creative equipment");
+                Call("SubsystemScTactical","RegisterRecipes");var recipes=((System.Collections.IEnumerable)C("ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>().ToArray();Require(recipes.Length==5&&recipes.All(r=>(int)r.GetType().GetProperty("Value").GetValue(r)!=706),"hostage recipe remains or missing recipe");
+                Require(BlocksManager.Blocks[705].GetCreativeValues().Single()==705&&BlocksManager.Blocks[706].GetCreativeValues().Select(Terrain.ExtractData).SequenceEqual(new[]{1,2,3}),"hostage visible or existing data IDs shifted");
                 var registry=Activator.CreateInstance(C("ScGunRegistry"));registryField.SetValue(null,registry);C("ScGunRegistry").GetField("RecoveryOwner").SetValue(registry,(Func<IInventory,string>)(_=>"fixture/tactical"));
                 foreach(var recipe in recipes){int output=(int)recipe.GetType().GetProperty("Value").GetValue(recipe);var cost=(Dictionary<int,int>)recipe.GetType().GetMethod("Materials").Invoke(recipe,null);Require(cost.Count>0&&cost.Values.All(n=>n>0),"invalid native material resolution");var inventory=new ComponentInventory();for(int i=0;i<16;i++)inventory.m_slots.Add(new());int slot=0;foreach(var item in cost){inventory.m_slots[slot++]=new(){Value=item.Key,Count=1};inventory.m_slots[slot++]=new(){Value=item.Key,Count=item.Value-1};}
                     var craft=C("ScCraftBatch").GetMethod("TryCraft");Require((bool)craft.Invoke(null,[inventory,output,cost,1]),"cannot craft "+recipe);Require(inventory.m_slots.Sum(s=>s.Count)==1&&inventory.m_slots.Any(s=>s.Value==output&&s.Count==1),"incorrect craft spend/result");Require(!(bool)craft.Invoke(null,[inventory,output,cost,1])&&inventory.m_slots.Sum(s=>s.Count)==1,"second craft consumed/duplicated");}
@@ -162,6 +162,12 @@ static class TacticalRegression {
                 var other=Blank<ComponentPlayer>();other.PlayerData=Blank<PlayerData>();other.PlayerData.PlayerIndex=7;Require(!(bool)T("ComponentTacticalCompanion").GetMethod("OwnedBy").Invoke(f.Npc,[other]),"foreign owner granted");
                 f.Owner.ComponentHealth.Health=0;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null,"owner dead still follows");
             });
+            Test("npc-blocked-path-stops-and-retries-without-roaming",()=>{
+                var f=Npc();((IUpdateable)f.Npc).Update(.1f);f.Path.IsStuck=true;f.Path.m_componentPilot.m_turnOrder=Vector2.One;
+                f.Time.m_gameTime=1;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null&&f.Path.m_componentPilot.m_turnOrder==Vector2.Zero,"blocked navigator continues turning");
+                f.Time.m_gameTime=2;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null,"blocked path retries every frame");
+                f.Time.m_gameTime=3;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination==f.Owner.ComponentBody.Position&&!f.Path.UseRandomMovements,"blocked companion never resumes");
+            });
             Test("npc-death-drops-equipped-gun-and-ammo-once",()=>{
                 var f=Npc();f.Inventory.AddSlotItems(0,701,1);f.Inventory.AddSlotItems(1,702,7);f.Creature.ComponentHealth.Health=0;
                 T("ComponentTacticalCompanion").GetMethod("Died").Invoke(f.Npc,null);T("ComponentTacticalCompanion").GetMethod("Died").Invoke(f.Npc,null);((IUpdateable)f.Npc).Update(.1f);
@@ -177,6 +183,39 @@ static class TacticalRegression {
                 terrain.Blocked=false;var ally=new ComponentBody{Position=new Vector3(0,0,-3),BoxSize=new Vector3(.7f,1.8f,.7f)};Entity(p,ally);bodies.AddBody(ally);Update(2);Require(audio.Shots==0,"shot through intervening body");bodies.RemoveBody(ally);
                 T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,true);Update(3);Require(audio.Shots==0,"ceasefire ignored");T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,false);Update(4);
                 Require(audio.Shots==1&&health.Health<1&&health.Health>0,$"native gun damage did not reach health: shots={audio.Shots}, health={health.Health}, status={T("ComponentTacticalCompanion").GetField("Status").GetValue(f.Npc)}, active={((ComponentBehavior)f.Npc).IsActive}, threat={T("ComponentTacticalCompanion").GetField("threat",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(f.Npc)}, ray={bodies.Raycast(new Vector3(0,1.45f,0),target.BoundingBox.Center(),0,(b,d)=>true)?.ComponentBody==target}");int rounds=(int)C("GunSpec").GetMethod("GetRounds").Invoke(null,[Terrain.ExtractData(f.Inventory.GetSlotValue(0))]);Require(rounds==19,"not exactly one round spent");Update(4.01);Require(audio.Shots==1,"cadence gate bypassed");
+            });
+            Test("npc-proactive-hostiles-owner-assist-and-unarmed-attack",()=>{
+                registryField.SetValue(null,Activator.CreateInstance(C("ScGunRegistry")));var f=Npc();var p=f.Npc.Project;var bodies=p.FindSubsystem<SubsystemBodies>(true);var terrain=(TerrainProbe)p.FindSubsystem<SubsystemTerrain>(true);var audio=(AudioProbe)p.FindSubsystem<SubsystemAudio>(true);f.Creature.m_killVerbs=["shot"];f.Creature.ComponentBody.Mass=75;f.Owner.Category=CreatureCategory.LandOther;
+                f.Owner.m_killVerbs=["hit"];f.Owner.ComponentBody.Mass=75;
+                var tactical=(Subsystem)Activator.CreateInstance(T("SubsystemScTactical"));tactical.m_project=p;p.m_subsystems.Add(tactical);tactical.OnEntityAdded(f.Npc.Entity);
+                ComponentCreature Target(Vector3 pos,CreatureCategory category){var b=new ComponentBody{Position=pos,BoxSize=new Vector3(.7f,1.8f,.7f),Mass=75};var h=new HealthProbe{Health=1,AttackResilience=1000,AttackResilienceFactor=1};var c=new ComponentCreature{ComponentBody=b,ComponentHealth=h,Category=category};h.m_componentCreature=c;Entity(p,b,h,c);bodies.AddBody(b);return c;}
+                var neutral=Target(new Vector3(3,0,-5),CreatureCategory.LandOther);var predator=Target(new Vector3(0,0,-8),CreatureCategory.LandPredator);
+                var threat=T("ComponentTacticalCompanion").GetField("threat",BindingFlags.Instance|BindingFlags.NonPublic);
+                void Update(double now){f.Time.m_gameTime=now;((IUpdateable)f.Npc).Update(.1f);}
+                terrain.Blocked=true;Update(0);Require(threat.GetValue(f.Npc)==null,"acquired hostile through wall");terrain.Blocked=false;Update(1);
+                Require(ReferenceEquals(threat.GetValue(f.Npc),predator.ComponentBody)&&f.Path.Destination==predator.ComponentBody.Position,"unarmed companion did not approach nearby hostile");
+                var rotation=f.Creature.ComponentBody.Rotation;Update(2);Require(f.Creature.ComponentBody.Rotation==rotation&&!f.Path.UseRandomMovements&&f.Path.IgnoreHeightDifference,"combat overrides native walk rotation/random roaming remains");
+                var loader=(ModLoader)Activator.CreateInstance(T("TacticalModLoader"));loader.ProcessAttackment(new MeleeAttackment(neutral.ComponentBody,f.Owner.Entity,neutral.ComponentBody.Position,Vector3.UnitZ,2));
+                Require(ReferenceEquals(threat.GetValue(f.Npc),neutral.ComponentBody),"owner attack did not prioritize neutral victim");
+                T("ComponentTacticalCompanion").GetMethod("Alert").Invoke(f.Npc,[f.Owner.ComponentBody]);Require(ReferenceEquals(threat.GetValue(f.Npc),neutral.ComponentBody),"owner/allies accepted as target");
+                neutral.ComponentBody.Position=new Vector3(0,0,-1.4f);bodies.UpdateBody(neutral.ComponentBody);Update(3);
+                Require(neutral.ComponentHealth.Health<1&&f.Path.Destination is null&&f.Inventory.GetSlotCount(0)==0,"unarmed summon cannot attack or generates free weapon");float hp=neutral.ComponentHealth.Health;Update(3.1);Require(neutral.ComponentHealth.Health==hp,"melee cooldown bypassed");
+                T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,true);Update(4);Require(neutral.ComponentHealth.Health==hp,"ceasefire did not stop melee");
+                T("ComponentTacticalCompanion").GetField("CeaseFire").SetValue(f.Npc,false);threat.SetValue(f.Npc,null);predator.ComponentHealth.Health=0;neutral.ComponentBody.Position=new Vector3(3,0,-5);bodies.UpdateBody(neutral.ComponentBody);
+                var modCreature=Target(new Vector3(0,0,-8),CreatureCategory.LandOther);var chase=new ComponentChaseBehavior{m_autoChaseMask=CreatureCategory.LandOther};chase.m_entity=modCreature.Entity;modCreature.Entity.m_components.Add(chase);
+                int gun=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,20,false]));f.Inventory.AddSlotItems(0,gun,1);bodies.RemoveBody(predator.ComponentBody);Update(5);
+                Require(ReferenceEquals(threat.GetValue(f.Npc),modCreature.ComponentBody)&&audio.Shots==1&&modCreature.ComponentHealth.Health<1,"native mod chase hostile not acquired and fired on");
+            });
+            Test("npc-stationary-aim-converges-without-forced-body-rotation",()=>{
+                var f=Npc();var body=f.Creature.ComponentBody;f.Inventory.AddSlotItems(0,705,1);f.Owner.ComponentBody.Position=body.Position;f.Owner.ComponentBody.Rotation=Quaternion.CreateFromAxisAngle(Vector3.UnitY,1.8f);
+                var command=T("ComponentTacticalCompanion").GetMethod("Command");command.Invoke(f.Npc,[Enum.ToObject(T("TacticalOrder"),1)]);
+                f.Path.m_componentPilot.m_turnOrder=new Vector2(1,0);f.Path.m_componentPilot.m_walkOrder=Vector2.One;
+                for(int i=0;i<100;i++){
+                    f.Time.m_gameTime=i*.05;var before=body.Rotation;((IUpdateable)f.Npc).Update(.05f);Require(body.Rotation==before,"AI directly teleports rotation");
+                    // Apply the engine locomotion yaw equation to the order produced by the packaged AI.
+                    float yaw=MathF.Atan2(2*body.Rotation.Y*body.Rotation.W,1-2*body.Rotation.Y*body.Rotation.Y);body.Rotation=Quaternion.CreateFromAxisAngle(Vector3.UnitY,yaw-7*f.Creature.ComponentLocomotion.TurnOrder.X*.05f);f.Creature.ComponentLocomotion.TurnOrder=Vector2.Zero;
+                }
+                Require(Math.Abs(Vector2.Angle(body.Matrix.Forward.XZ,f.Owner.ComponentBody.Matrix.Forward.XZ))<.01f&&f.Path.m_componentPilot.m_turnOrder==Vector2.Zero&&f.Path.m_componentPilot.m_walkOrder is null,"aim circles or cached pilot orders still fight stationary facing");
             });
             Test("npc-full-registry-reload-refuses-without-ammo-loss",()=>{
                 var registry=Activator.CreateInstance(C("ScGunRegistry"));registryField.SetValue(null,registry);C("ScGunRegistry").GetProperty("Next").SetValue(registry,1023);var f=Npc();int gun=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,0,false]));f.Inventory.AddSlotItems(0,gun,1);f.Inventory.AddSlotItems(1,702,2);

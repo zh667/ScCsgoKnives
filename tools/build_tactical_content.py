@@ -50,7 +50,7 @@ def templates():
         c=node(r,'EntityTemplate','ScTactical'+kind,'bc5be211-c1f8-4e50-9ffb-4fde625d2692')
         for name,values in {
             'Body':{'BoxSize':('0.65,1.8,0.65','Vector3'),'Mass':(75,'float')},
-            'Creature':{'DisplayName':(label,'string'),'Description':('自然刷新的敌对小队成员。' if kind=='Enemy' else '装备枪械或盾牌的被动防卫同伴。','string'),'Category':('LandOther','Game.CreatureCategory'),'KillVerbs':('shot','string'),'ConstantSpawn':('False' if kind=='Enemy' else 'True','bool')},
+            'Creature':{'DisplayName':(label,'string'),'Description':('自然刷新的敌对小队成员。' if kind=='Enemy' else '旧版救援同伴，保留装备取回与解散。' if kind=='Hostage' else '主动攻击附近敌对生物，并协助主人攻击目标的战术同伴。','string'),'Category':('LandOther','Game.CreatureCategory'),'KillVerbs':('shot','string'),'ConstantSpawn':('False' if kind=='Enemy' else 'True','bool')},
             'Locomotion':{'WalkSpeed':(4.5,'float'),'FlySpeed':(0,'float'),'SwimSpeed':(1.5,'float'),'TurnSpeed':(7,'float'),'JumpSpeed':(5,'float')},
             'Health':{'AttackResilience':(60,'float'),'FireResilience':(15,'float'),'CorpseDuration':(3,'float')},
             'CreatureSounds':{'IdleSound':('','string'),'PainSound':('','string'),'MoanSound':('','string'),'AttackSound':('','string'),'RareIdleSound':('','string')},

@@ -17,7 +17,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="1d26f87e-38ee-5db0-a0c3-12815181fabe">
       <Parameter Name="DisplayName" Guid="1235b915-0380-53a3-894a-bb2a147c51da" Value="救援同伴" Type="string" />
-      <Parameter Name="Description" Guid="d9f2a7cc-dc45-57a0-bd67-d1d7343ba28e" Value="装备枪械或盾牌的被动防卫同伴。" Type="string" />
+      <Parameter Name="Description" Guid="d9f2a7cc-dc45-57a0-bd67-d1d7343ba28e" Value="旧版救援同伴，保留装备取回与解散。" Type="string" />
       <Parameter Name="Category" Guid="e053caaf-b796-5346-89c0-4af4cdbcede4" Value="LandOther" Type="Game.CreatureCategory" />
       <Parameter Name="KillVerbs" Guid="46fb0df7-6395-5b7c-ba65-b1cdb1f2caaf" Value="shot" Type="string" />
       <Parameter Name="ConstantSpawn" Guid="3478d130-a2c7-5de8-a4e2-116c0469f1c2" Value="True" Type="bool" />
@@ -67,7 +67,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="dec7afc7-b317-53f3-8f75-8c3ebd7b7195">
       <Parameter Name="DisplayName" Guid="a78e5ae6-3d27-5b84-a267-dafb2d4ce36e" Value="CT · SAS" Type="string" />
-      <Parameter Name="Description" Guid="ef23357f-505a-5291-8e83-4e97bb9b7b74" Value="装备枪械或盾牌的被动防卫同伴。" Type="string" />
+      <Parameter Name="Description" Guid="ef23357f-505a-5291-8e83-4e97bb9b7b74" Value="主动攻击附近敌对生物，并协助主人攻击目标的战术同伴。" Type="string" />
       <Parameter Name="Category" Guid="7023d8db-ac55-5a56-9143-8f3d5fa084c0" Value="LandOther" Type="Game.CreatureCategory" />
       <Parameter Name="KillVerbs" Guid="a76dda19-c3e4-5d9b-9bb9-799e3be12342" Value="shot" Type="string" />
       <Parameter Name="ConstantSpawn" Guid="295bb52f-5a6a-5336-862a-ee21b837ae6b" Value="True" Type="bool" />
@@ -117,7 +117,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="8456344d-6940-5d7c-846b-f8718b35f93f">
       <Parameter Name="DisplayName" Guid="c3ff856f-ce13-50cd-aa25-dd63ef893fdd" Value="T · Phoenix" Type="string" />
-      <Parameter Name="Description" Guid="25e9ec5b-103c-5036-a58d-9af6a4b7a68e" Value="装备枪械或盾牌的被动防卫同伴。" Type="string" />
+      <Parameter Name="Description" Guid="25e9ec5b-103c-5036-a58d-9af6a4b7a68e" Value="主动攻击附近敌对生物，并协助主人攻击目标的战术同伴。" Type="string" />
       <Parameter Name="Category" Guid="5b1cf87f-a5e9-557e-a150-92f91d9e1dea" Value="LandOther" Type="Game.CreatureCategory" />
       <Parameter Name="KillVerbs" Guid="665dfdf4-95f5-5381-a243-d9f97d013f6d" Value="shot" Type="string" />
       <Parameter Name="ConstantSpawn" Guid="9b47c6be-6efc-5648-8b70-3021be517919" Value="True" Type="bool" />

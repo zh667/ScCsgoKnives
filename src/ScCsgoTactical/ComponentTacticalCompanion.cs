@@ -4,7 +4,7 @@ using TemplatesDatabase;
 namespace Game;
 
 public enum TacticalOrder { Follow, Guard, Cover }
-/// <summary>Bounded defensive AI. No world-wide target scan and no automatic attack on neutral creatures.</summary>
+/// <summary>Local hostile acquisition and owner assist; neutral creatures require an actual attack.</summary>
 public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     public int OwnerIndex=-1;
     public TacticalOrder Order;
@@ -16,7 +16,7 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     SubsystemTime time;
     SubsystemPlayers players;
     ComponentBody threat;
-    double threatUntil,nextPath,nextShot,reloadAt;
+    double threatUntil,nextPath,nextShot,reloadAt,nextScan;
     ScReloadTransaction reload;
     public string Status="跟随";
     public bool PanelOpen;
@@ -36,26 +36,66 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     public void Command(TacticalOrder order){Order=order;GuardPosition=Creature.ComponentBody.Position;nextPath=0;path.Stop();}
     public bool Friendly(ComponentBody b)=>b==null||b.Entity==Entity||b.Entity.FindComponent<ComponentPlayer>()!=null||b.Entity.FindComponent<ComponentTacticalCompanion>()!=null||b.Entity.FindComponent<ComponentMount>() is {} mount&&b.ChildBodies.Count>0;
     public void Alert(ComponentBody b){if(Friendly(b)||b.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;threat=b;threatUntil=time.GameTime+10;}
+    bool Hostile(ComponentBody b,ComponentPlayer owner){
+        if(Friendly(b)||b.Entity.FindComponent<ComponentCreature>() is not {} creature||creature.ComponentHealth.Health<=0)return false;
+        if(b.Entity.FindComponent<ComponentTacticalEnemy>()!=null||(creature.Category&(CreatureCategory.LandPredator|CreatureCategory.WaterPredator))!=0)return true;
+        // Include mod creatures using the native chase behavior, even if classified LandOther.
+        return b.Entity.FindComponents<ComponentChaseBehavior>().Any(c=>c.Target==owner||c.Target==Creature||(c.m_autoChaseMask&owner.Category)!=0);
+    }
+    bool Visible(ComponentBody target){
+        var start=Creature.ComponentBody.Position+Vector3.UnitY*1.45f;var end=target.BoundingBox.Center();
+        var hit=Project.FindSubsystem<SubsystemBodies>(true).Raycast(start,end,0,(b,d)=>b.Entity!=Entity);
+        var wall=Project.FindSubsystem<SubsystemTerrain>(true).Raycast(start,end,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v));
+        return hit.HasValue&&hit.Value.ComponentBody==target&&(!wall.HasValue||wall.Value.Distance>=hit.Value.Distance);
+    }
+    void Acquire(ComponentPlayer owner,double now){
+        if(now<nextScan)return;nextScan=now+.5;
+        var nearby=new DynamicArray<ComponentBody>();Project.FindSubsystem<SubsystemBodies>(true).FindBodiesAroundPoint(Creature.ComponentBody.Position.XZ,24,nearby);
+        foreach(var b in nearby.Where(b=>Hostile(b,owner)&&Vector3.DistanceSquared(b.Position,Creature.ComponentBody.Position)<=24*24&&Vector3.DistanceSquared(b.Position,owner.ComponentBody.Position)<=32*32).OrderBy(b=>Vector3.DistanceSquared(b.Position,Creature.ComponentBody.Position)))if(Visible(b)){Alert(b);break;}
+    }
+    void StopMoving(){
+        path.Stop();var pilot=path.m_componentPilot;pilot.m_turnOrder=Vector2.Zero;pilot.m_walkOrder=null;pilot.m_swimOrder=null;pilot.m_flyOrder=null;
+        Creature.ComponentLocomotion.TurnOrder=Vector2.Zero;Creature.ComponentLocomotion.WalkOrder=null;
+    }
     public void Died(){if(DeathHandled)return;reload?.Cancel();reload=null;path.Stop();Inventory.DropAllItems(Creature.ComponentBody.BoundingBox.Center());DeathHandled=true;}
     public void Update(float dt){
         if(Creature.ComponentHealth.Health<=0){Died();return;}
-        var owner=Owner;if(!IsActive||owner is null){path.Stop();reload?.Cancel();reload=null;Status="等待主人";return;}
+        var owner=Owner;if(!IsActive||owner is null){StopMoving();reload?.Cancel();reload=null;Status="等待主人";return;}
         PanelOpen=owner.ComponentGui.ModalPanelWidget is TacticalPanel panel&&panel.Companion==this;
-        if(PanelOpen){path.Stop();reload?.Cancel();reload=null;Status="整理装备";return;}
+        if(PanelOpen){StopMoving();reload?.Cancel();reload=null;Status="整理装备";return;}
         double now=time.GameTime;var body=Creature.ComponentBody;
         if(threat is not null&&(!threat.IsAddedToProject||threat.Entity.FindComponent<ComponentHealth>() is not {Health:>0}||now>threatUntil||Vector3.DistanceSquared(body.Position,threat.Position)>32*32))threat=null;
         bool shield=ScShieldProtection.Holding(body,out _);
+        if(!CeaseFire&&threat is null)Acquire(owner,now);
+        bool armed=ScInventoryTransaction.IsWeaponSlot(Inventory,0);float reach=1.7f;
+        if(armed&&EffectiveGunStats.TrySnapshotValue(Inventory.GetSlotValue(0),out var gun))reach=Math.Min(24,EffectiveGunStats.Resolve(GunSpec.All[gun.Variant],Inventory.GetSlotValue(0),false).Range);
+        bool fighting=!CeaseFire&&!shield&&threat!=null&&Vector3.DistanceSquared(body.Position,owner.ComponentBody.Position)<=20*20&&Vector3.DistanceSquared(threat.Position,owner.ComponentBody.Position)<=32*32;
         if(now>=nextPath){nextPath=now+.5;
             Vector3 dest=Order switch{TacticalOrder.Guard=>GuardPosition,TacticalOrder.Cover=>owner.ComponentBody.Position+owner.ComponentBody.Matrix.Forward*2.5f,_=>owner.ComponentBody.Position};
             float radius=Order==TacticalOrder.Follow?1.8f:.6f;
             if(Vector3.DistanceSquared(body.Position,dest)>80*80){path.Stop();Status="距离过远，原地等待";return;}
-            if(Vector3.DistanceSquared(body.Position,dest)>radius*radius)path.SetDestination(dest,shield?.35f:.7f,radius,250,true,false,true,owner.ComponentBody);else path.Stop();
-            if(shield||threat!=null){var forward=threat!=null?threat.Position-body.Position:owner.ComponentBody.Matrix.Forward;forward.Y=0;
-                if(forward.LengthSquared()>.01f)body.Rotation=Quaternion.CreateFromYawPitchRoll(MathF.Atan2(-forward.X,-forward.Z),0,0);}
+            if(fighting){
+                if(Vector3.DistanceSquared(body.Position,threat.Position)<=reach*reach&&Visible(threat))dest=body.Position;
+                else if(Order!=TacticalOrder.Guard){dest=threat.Position;radius=armed?2:1.2f;}
+            }
+            if(Vector2.DistanceSquared(body.Position.XZ,dest.XZ)>radius*radius||Math.Abs(body.Position.Y-dest.Y)>1.5f){
+                // Let native navigation own rotation while walking. Do not continually restart its state machine.
+                if(path.IsStuck){StopMoving();nextPath=now+2;}
+                else if(!path.Destination.HasValue||Vector3.DistanceSquared(path.Destination.Value,dest)>.75f*.75f||path.Speed!=(shield?.35f:.7f))path.SetDestination(dest,shield?.35f:.7f,radius,250,false,true,true,fighting?threat:owner.ComponentBody);
+            }else StopMoving();
+        }
+        if(!path.Destination.HasValue&&(shield||fighting)){
+            var direction=fighting||shield&&threat!=null?threat.Position-body.Position:owner.ComponentBody.Matrix.Forward;
+            if(direction.XZ.LengthSquared()>.01f)Creature.ComponentLocomotion.TurnOrder=new Vector2(Math.Clamp(Vector2.Angle(body.Matrix.Forward.XZ,direction.XZ)*.6f,-.35f,.35f),0);
         }
         Status=shield?"举盾掩护":CeaseFire?"停火":Order switch{TacticalOrder.Guard=>"原地警戒",TacticalOrder.Cover=>"前方掩护",_=>"跟随"};
         if(shield||CeaseFire){reload?.Cancel();reload=null;return;}
-        Shoot(now,owner);
+        if(armed)Shoot(now,owner);else if(fighting)Melee(now);
+    }
+    void Melee(double now){
+        if(now<nextShot||Vector3.DistanceSquared(Creature.ComponentBody.Position,threat.Position)>1.7f*1.7f||!Visible(threat))return;
+        var delta=threat.BoundingBox.Center()-Creature.ComponentBody.BoundingBox.Center();if(delta.LengthSquared()<.001f)return;
+        nextShot=now+.8;ComponentMiner.AttackBody(new MeleeAttackment(threat,Entity,threat.BoundingBox.Center(),Vector3.Normalize(delta),6){AttackSoundVolume=0});Status="近战攻击";
     }
     void Shoot(double now,ComponentPlayer owner){
         if(!ScInventoryTransaction.IsWeaponSlot(Inventory,0))return;
@@ -83,6 +123,6 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
         if(spec.RechargeSeconds>0)ScElectricStun.Apply(threat,before,health.Health,now);
         if(before>0&&health.Health<=0&&credit!=null&&ScGunKillRules.Counts(threat,owner,false,out _))ScGunRegistry.Current.Kills.Enqueue(credit.RecordId,credit.Variant);
         Project.FindSubsystem<SubsystemAudio>(true).PlaySound(SubsystemScGunBlockBehavior.ExtensionShotSound(spec,!state.SilencerOff),.6f,0,start,8,true);
-        Status="还击";
+        Status="攻击";
     }
 }

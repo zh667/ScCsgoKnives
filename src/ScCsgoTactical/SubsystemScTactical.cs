@@ -16,11 +16,12 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
             var target=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,12);
             if(!target.HasValue||target.Value.CellFace.Face!=4){Message(player,"对准 12 格内的开阔地面召唤敌队。");return true;}
             var ground=target.Value.CellFace;int count=Terrain.ExtractData(value)==1?5:3;
-            int made=Project.FindSubsystem<SubsystemTacticalEnemies>(true).SpawnManual(new Point3(ground.X,ground.Y,ground.Z),count);
-            Message(player,made==count?$"已生成 {count} 人敌对 T 小队。":"未生成：地面空间不足、落点太近，或已达到敌队数量上限。");return true;
+            var director=Project.FindSubsystem<SubsystemTacticalEnemies>(true);int made=director.SpawnManual(new Point3(ground.X,ground.Y,ground.Z),count);
+            Message(player,made==count?$"已生成 {count} 人敌对 T 小队。":"未生成："+director.ManualFailure);return true;
         }
         if(Terrain.ExtractContents(value)!=HandledBlocks[0])return false;
         int kind=Terrain.ExtractData(value);if(kind==3){Repair(player);return true;}if(kind<0||kind>2)return true;
+        if(kind==0){Message(player,"救援同伴已移除，此旧信标不再召唤。已有同伴可取回装备后解散。");return true;}
         if(companions.Any(c=>c.OwnerIndex==player.PlayerData.PlayerIndex&&!c.DeathHandled)){Message(player,"已有一名同伴，请先收回装备并解散。");return true;}
         var hit=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,5);
         if(!hit.HasValue||hit.Value.CellFace.Face!=4){Message(player,"请对准 5 格内有足够空间的地面上表面。");return true;}
@@ -63,6 +64,6 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
         static Dictionary<int,int> Cost(params (string id,int count)[] parts)=>parts.ToDictionary(p=>ScComponentCrafting.Resolve(p.id),p=>p.count);
         ScWorkbenchExtension.Register(new("tactical-shield","防爆盾","战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalShieldBlock>(true)),()=>Cost(("ironingot",40),("copperingot",8),("glass",4),("leather",8))));
         ScWorkbenchExtension.Register(new("tactical-defuser","拆弹钳","战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalDefuserBlock>(true)),()=>Cost(("ironingot",4),("copperingot",2))));
-        for(int i=0;i<4;i++){int kind=i;ScWorkbenchExtension.Register(new("tactical-beacon-"+i,ScTacticalBeaconBlock.Names[i],"战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true),0,kind),()=>kind==3?Cost(("ironingot",12),("leather",4)):Cost(("ironingot",20),("copperingot",12),("germaniumchunk",8),("canvas",8))));}
+        for(int i=1;i<4;i++){int kind=i;ScWorkbenchExtension.Register(new("tactical-beacon-"+i,ScTacticalBeaconBlock.Names[i],"战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true),0,kind),()=>kind==3?Cost(("ironingot",12),("leather",4)):Cost(("ironingot",20),("copperingot",12),("germaniumchunk",8),("canvas",8))));}
     }
 }

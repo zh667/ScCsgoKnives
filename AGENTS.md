@@ -1,5 +1,12 @@
 # Project conventions
 
+- User-directed 2026-09-20 correction: DLC 1.1.2 removes manual three/five-member squad
+  population/player-distance gates and handles non-collidable snow over real support. Keep natural
+  spawn budgets. Remove hostage creative/crafting/use routes without reusing data 0 or destroying
+  legacy inventories. CT/T acquire local hostiles, assist owner attacks, and use melee when unarmed.
+  Navigation owns moving-body rotation; stationary aim uses locomotion orders, with bounded stuck
+  retries. Core 1.4.2 and gun layout v5/schema6 remain unchanged. See docs/release-tactical-1.1.2.md.
+
 - User-directed continuation 2026-09-20: fix companion inventory gestures and hostage rendering,
   make tactical supplies real 3D items, put all CS items in CS武器, add creative three/five-member
   hostile squad beacons and improve skeletal death collapse. Deliver core Full 1.4.2 / DLC 1.1.1.

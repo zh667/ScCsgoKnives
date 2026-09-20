@@ -19,7 +19,7 @@ public sealed class ScTacticalShieldBlock : Block {
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env)=>BlocksManager.DrawMeshBlock(r,mesh,texture,(Wear(value)>=Life?new Color(100,100,100):Color.White)*color,size,ref matrix,env);
 }
 public sealed class ScTacticalBeaconBlock : Block {
-    public static readonly string[] Names=["人质救援信标","CT 招募信标","T 招募信标","战术维修包"];
+    public static readonly string[] Names=["已停用的救援信标","CT 招募信标","T 招募信标","战术维修包"];
     public ScTacticalBeaconBlock(){DefaultCategory="CS武器";CraftingId="sctacticalbeacon";IsPlaceable=false;IsCollidable=false;MaxStacking=10;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=2.4f;Behaviors="ScTactical";}
     public override void Initialize(){base.Initialize();TacticalItemMesh.Load("radio");TacticalItemMesh.Load("repair_item");}
     // This is one standalone image, not a tile of the vanilla 16 x 16 atlas.
@@ -27,7 +27,7 @@ public sealed class ScTacticalBeaconBlock : Block {
     public override int GetFaceTextureSlot(int face,int value)=>0;
     public override string GetDisplayName(SubsystemTerrain terrain,int value)=>Names[Math.Clamp(Terrain.ExtractData(value),0,3)];
     public override string GetDescription(int value)=>Terrain.ExtractData(value)==3?"使用后维修快捷栏第一面受损盾牌，恢复 1000 耐久。":"对近处地面使用。每位玩家最多 1 名同伴，召唤后自动跟随；对准同伴按 E／交互键打开装备和指令。";
-    public override IEnumerable<int> GetCreativeValues()=>Enumerable.Range(0,4).Select(i=>Terrain.MakeBlockValue(BlockIndex,0,i));
+    public override IEnumerable<int> GetCreativeValues()=>Enumerable.Range(1,3).Select(i=>Terrain.MakeBlockValue(BlockIndex,0,i));
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int v,int x,int y,int z){}
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){int kind=Terrain.ExtractData(value);TacticalItemMesh.Draw(kind==3?"repair_item":"radio",r,color*(kind==1?new Color(135,190,255):kind==2?new Color(255,150,125):Color.White),size,ref matrix,env);}
 }
@@ -44,7 +44,7 @@ public sealed class ScTacticalSquadBlock : Block {
     public ScTacticalSquadBlock(){DefaultDisplayName="敌队演练信标";DefaultCategory="CS武器";CraftingId="sctacticalsquad";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=2.4f;Behaviors="ScTactical";}
     public override void Initialize(){base.Initialize();TacticalItemMesh.Load("radio");}
     public override string GetDisplayName(SubsystemTerrain terrain,int value)=>Terrain.ExtractData(value)==1?"敌对 T 五人小队 · 演练信标":"敌对 T 三人小队 · 演练信标";
-    public override string GetDescription(int value)=>"仅创造模式：对准 12 格内开阔地面使用。三人为狙击／步枪／近距突击；五人增加机枪与 C4 手枪手。最多 10 名活跃敌队成员。";
+    public override string GetDescription(int value)=>"仅创造模式：对准 12 格内地面使用，在附近可站立位置召唤。三人为狙击／步枪／近距突击；五人增加机枪与 C4 手枪手。手动召唤不受敌队人数、玩家距离及自然刷新冷却限制。";
     public override IEnumerable<int> GetCreativeValues()=>Enumerable.Range(0,2).Select(i=>Terrain.MakeBlockValue(BlockIndex,0,i));
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int v,int x,int y,int z){}
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env)=>TacticalItemMesh.Draw("radio",r,color*new Color(255,105,75),size,ref matrix,env);

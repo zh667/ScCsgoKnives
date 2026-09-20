@@ -74,22 +74,52 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         if(locations.Count!=roles.Length)return 0;
         return CreateSquad(roles,locations);
     }
+    public string ManualFailure {get;private set;}="";
     public int SpawnManual(Point3 ground,int count){
-        if(count is not (3 or 5)||Enemies.Count+count>MaxActive||spawn.CountCreatures(false)+count>SubsystemCreatureSpawn.m_totalLimit)return 0;
+        ManualFailure="";
+        if(count is not (3 or 5)){ManualFailure="信标类型无效。";return 0;}
+        // Manual beacons do not share natural-spawn population, visibility or distance gates.
         var locations=new List<Vector3>();
-        foreach(var offset in new[]{new Point2(0,0),new Point2(3,0),new Point2(-3,0),new Point2(0,3),new Point2(0,-3),new Point2(3,3),new Point2(-3,-3),new Point2(3,-3),new Point2(-3,3)}){
-            int x=ground.X+offset.X,z=ground.Z+offset.Y;if(terrain.Terrain.GetChunkAtCell(x,z) is null)continue;
-            var cell=new Point3(x,terrain.Terrain.GetTopHeight(x,z),z);var pos=new Vector3(x+.5f,cell.Y+1.1f,z+.5f);
-            if(Math.Abs(cell.Y-ground.Y)>3||!SafeFor(cell,pos,false,2))continue;locations.Add(pos);if(locations.Count==count)break;
+        for(int radius=0;radius<=8;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){
+            if(Math.Max(Math.Abs(dx),Math.Abs(dz))!=radius)continue;
+            if(!ManualPosition(ground.X+dx,ground.Y,ground.Z+dz,out var pos))continue;
+            if(locations.Any(p=>Vector3.DistanceSquared(p,pos)<2.25f))continue;
+            locations.Add(pos);
+            if(locations.Count==count)return CreateSquad(Roles(count==5?FiveMemberDay:0,FiveMemberDay),locations);
         }
-        return locations.Count==count?CreateSquad(Roles(count==5?FiveMemberDay:0,FiveMemberDay),locations):0;
+        ManualFailure="附近没有足够的可站立位置，请换一处地面（需要人物高度，不能在实体内生成）。";return 0;
+    }
+    bool ManualPosition(int x,int clickedY,int z,out Vector3 position){
+        position=default;var t=terrain.Terrain;var chunk=t.GetChunkAtCell(x,z);
+        if(chunk is null||chunk.State<TerrainChunkState.InvalidLight)return false;
+        // Search near the clicked floor, not the column's top: roofs and foliage are not floors.
+        for(int y=Math.Min(251,clickedY+3);y>=Math.Max(1,clickedY-4);y--){
+            int value=t.GetCellValue(x,y,z);var block=BlocksManager.Blocks[Terrain.ExtractContents(value)];
+            if(!block.IsCollidable_(value)||block.ShouldAvoid(value))continue;
+            var boxes=block.GetCustomCollisionBoxes(terrain,value);if(boxes.Length==0)continue;
+            float top=boxes.Where(b=>b.Min.X<=.5f&&b.Max.X>=.5f&&b.Min.Z<=.5f&&b.Max.Z>=.5f).Select(b=>b.Max.Y).DefaultIfEmpty(0).Max();
+            if(top<=0)continue;
+            var pos=new Vector3(x+.5f,y+top+.1f,z+.5f);var bounds=new BoundingBox(pos-new Vector3(.325f,0,.325f),pos+new Vector3(.325f,1.8f,.325f));
+            bool blocked=false;
+            for(int cy=y;cy<=Math.Min(255,Terrain.ToCell(bounds.Max.Y));cy++){
+                int v=t.GetCellValue(x,cy,z);var b=BlocksManager.Blocks[Terrain.ExtractContents(v)];
+                if(b is FluidBlock){blocked=true;break;}if(!b.IsCollidable_(v))continue;
+                foreach(var box in b.GetCustomCollisionBoxes(terrain,v))if(bounds.Intersection(new BoundingBox(box.Min+new Vector3(x,cy,z),box.Max+new Vector3(x,cy,z)))){blocked=true;break;}
+                if(blocked)break;
+            }
+            if(blocked)continue;
+            var bodies=new DynamicArray<ComponentBody>();Project.FindSubsystem<SubsystemBodies>(true).FindBodiesAroundPoint(pos.XZ,2,bodies);
+            if(bodies.Any(b=>bounds.Intersection(b.BoundingBox)))continue;
+            position=pos;return true;
+        }
+        return false;
     }
     int CreateSquad(TacticalRole[] roles,List<Vector3> locations){
         string squad=Guid.NewGuid().ToString("N");var made=new List<Entity>();
         try{
             for(int i=0;i<roles.Length;i++){var e=DatabaseManager.CreateEntity(Project,Template,true);made.Add(e);e.FindComponent<ComponentTacticalEnemy>(true).Configure(TacticalEnemyState.Create(roles[i],squad,random),locations[i]);}
             foreach(var e in made)Project.AddEntity(e);spawnCooldown=180;return made.Count;
-        }catch(Exception error){foreach(var e in made){if(e.IsAddedToProject)Project.RemoveEntity(e,true);else e.Dispose();}Log.Warning("[CS Tactical] 小队生成已撤销："+error.Message);return 0;}
+        }catch(Exception error){foreach(var e in made){if(e.IsAddedToProject)Project.RemoveEntity(e,true);else e.Dispose();}ManualFailure="小队实体创建失败，请查看游戏日志。";Log.Warning("[CS Tactical] 小队生成已撤销："+error);return 0;}
     }
     const string Marker="|SCT_ENEMY1:";
     public static void SaveSpawn(ComponentSpawn spawn,SpawnEntityData data){
