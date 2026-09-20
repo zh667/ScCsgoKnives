@@ -44,6 +44,34 @@ static class TacticalRegression {
             foreach(var b in data.Bones)model.m_bones.Add(new ModelBone{Model=model,Index=model.m_bones.Count,Name=b.Name,Transform=b.Transform});
             for(int i=0;i<data.Bones.Count;i++){int parent=data.Bones[i].ParentBoneIndex;if(parent>=0){model.m_bones[i].ParentBone=model.m_bones[parent];model.m_bones[parent].m_childBones.Add(model.m_bones[i]);}else model.m_rootBone=model.m_bones[i];}
             Require(data.Animations.Count==7,"missing selected animation");
+            model.Skin.ResolveJoints(model.m_bones);
+            foreach(var mesh in data.Meshes)model.m_meshes.Add(new ModelMesh{Name=mesh.Name,IsVisible=mesh.IsVisible,ParentBone=model.m_bones[mesh.ParentBoneIndex]});
+            var project=new Project();
+            foreach(var s in new Subsystem[]{new SubsystemSky(),new SubsystemTime(),new SubsystemGameInfo()}){s.m_project=project;project.m_subsystems.Add(s);}
+            var body=new ComponentBody{Position=new Vector3(105,70,-213),BoxSize=new Vector3(.65f,1.8f,.65f)};
+            var creature=new ComponentCreature{ComponentBody=body,ComponentHealth=new ComponentHealth{Health=1},ComponentSpawn=new ComponentSpawn{SpawnDuration=0},ComponentLocomotion=new ComponentLocomotion()};
+            var component=(ComponentCreatureModel)Activator.CreateInstance(T("ComponentTacticalModel"));
+            Entity(project,component,body,creature,creature.ComponentHealth,creature.ComponentSpawn,creature.ComponentLocomotion);
+            var caches=(IDictionary<string,List<object>>)typeof(ContentManager).GetField("Caches",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null);
+            string route="Fixture/Tactical/"+name,configRoute="Fixture/TacticalConfig";
+            caches[route]=[model];caches[configRoute+".json"]=[System.Text.Encoding.UTF8.GetString(Bytes("Assets/Animations/ScTactical.json"))];
+            try{
+                component.Load(new ValuesDictionary{{"ModelName",route},{"CastsShadow",true},{"PrepareOrder",0},{"BoundingSphereRadius",2f},{"AnimationConfigPath",configRoute}},null);
+                // Check the steady animated pose after the initial 0.18 s blend from bind pose.
+                component.AnimationController.Update(.35f);component.Animate();component.ProcessBoneHierarchy(model.RootBone,Matrix.Identity,component.AbsoluteBoneTransformsForCamera);
+                Require(component.Animated&&component.Opacity==1&&component.MeshDrawOrders.Length==data.Meshes.Count&&model.Meshes.All(m=>m.IsVisible),"body disabled/invisible");
+                var joints=new Matrix[48];SubsystemModelsRenderer.CalculateJointMatrices(component,model,Matrix.Identity,joints);
+                Vector3 min=new(float.MaxValue),max=new(float.MinValue);
+                foreach(var buffer in data.Buffers){
+                    var decl=buffer.VertexDeclaration;int p=decl.VertexElements.Single(e=>e.SemanticName=="POSITION").Offset,j=decl.VertexElements.Single(e=>e.SemanticName=="BLENDINDICES").Offset,w=decl.VertexElements.Single(e=>e.SemanticName=="BLENDWEIGHTS").Offset;
+                    for(int offset=0;offset<buffer.Vertices.Length;offset+=decl.VertexStride){
+                        float F(int o)=>BitConverter.ToSingle(buffer.Vertices,offset+o);var v=new Vector3(F(p),F(p+4),F(p+8));Vector3 skinned=Vector3.Zero;
+                        for(int k=0;k<4;k++)skinned+=Vector3.Transform(v,joints[(int)F(j+4*k)])*F(w+4*k);
+                        min=Vector3.Min(min,skinned);max=Vector3.Max(max,skinned);
+                    }
+                }
+                Require((min+max)*.5f is Vector3 center&&Vector3.Distance(center,body.Position+Vector3.UnitY)<2&&max.Y-min.Y>1.3f&&max.Y-min.Y<2.5f,$"native skinned body misplaced: {min} .. {max}, body {body.Position}");
+            }finally{caches.Remove(route);caches.Remove(configRoute+".json");}
             foreach(var animation in data.Animations){Require(!animation.Channels.Any(c=>c.TargetBoneName=="root_motion"&&c.Property==ModelAnimation.AnimationProperty.Translation),"root travel will drift");
                 var player=new AnimationPlayer();player.SetAnimation(model,animation);player.Play(true);
                 for(int i=0;i<=20;i++){var pose=new Matrix?[data.Bones.Count];player.SampleAtTime(animation.Duration*i/20,pose);Require(pose.Where(p=>p.HasValue).All(p=>float.IsFinite(p.Value.M11+p.Value.M22+p.Value.M33+p.Value.M41+p.Value.M42+p.Value.M43)),"invalid animation transform");
@@ -62,6 +90,7 @@ static class TacticalRegression {
                     var v=DatabaseManager.FindEntityValuesDictionary(name,true);foreach(string component in new[]{"Creature","Health","Spawn","Body","Locomotion","Pilot","Pathfinding","BehaviorSelector","TacticalInventory","TacticalCompanion","TacticalModel"})Require(v.ContainsKey(component),"missing "+component);
                     var iv=v.GetValue<ValuesDictionary>("TacticalInventory");var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(iv,null);Require(inv.SlotsCount==5,"native inventory template fails");
                     var md=v.GetValue<ValuesDictionary>("TacticalModel");foreach(string key in new[]{"ModelName","PrepareOrder","CastsShadow","BoundingSphereRadius"})Require(md.ContainsKey(key),"missing Model.Load field "+key);
+                    Require(md.GetValue("Transparent",1f)>0&&!md.GetValue("DisableDrawing",false)&&!md.GetValue("DisableAnimation",false),"inherited model invisible: "+string.Join(";",md.Select(p=>$"{p.Key}={p.Value}")));
                     Require(!v.ContainsKey("ChaseBehavior"),"automatic neutral attack added");
                 }
             }finally{DatabaseManager.m_gameDatabase=old;DatabaseManager.m_valueDictionaries.Clear();foreach(var v in oldV)DatabaseManager.m_valueDictionaries[v.Key]=v.Value;}
@@ -82,6 +111,18 @@ static class TacticalRegression {
         var registryField=C("ScGunRegistry").GetField("Current");var oldRegistry=registryField.GetValue(null);
         try{
             foreach(var pair in new[]{(T("ScTacticalShieldBlock"),705),(T("ScTacticalBeaconBlock"),706),(C("ScGunBlock"),701),(C("ScAmmoBlock"),702),(C("ScGunSkinTemplateBlock"),703),(C("ScGunCounterTemplateBlock"),704)}){var b=(Block)Activator.CreateInstance(pair.Item1);b.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=b;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}
+            Test("beacon-native-draw-full-image-all-variants-and-view-modes",()=>{
+                var block=BlocksManager.Blocks[706];var texture=Blank<Texture2D>();
+                T("ScTacticalBeaconBlock").GetField("icon",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(block,texture);
+                using var png=new MemoryStream(Bytes("Assets/Textures/ScCsgoTactical/beacon.png"));var img=Image.Load(png);
+                Require(img.Pixels.Any(p=>p.A>0),"icon is entirely transparent");
+                foreach(int value in block.GetCreativeValues())foreach(var mode in Enum.GetValues<DrawBlockMode>()){
+                    var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;
+                    block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
+                    var vertices=renderer.TexturedBatches.Single().TriangleVertices.ToArray();
+                    Require(vertices.Length>0&&vertices.Min(v=>v.TexCoord.X)==0&&vertices.Min(v=>v.TexCoord.Y)==0&&vertices.Max(v=>v.TexCoord.X)==1&&vertices.Max(v=>v.TexCoord.Y)==1,$"variant {Terrain.ExtractData(value)} / {mode} crops standalone icon to atlas tile");
+                }
+            });
             ComponentInventoryBase Inv(){var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(new ValuesDictionary{{"SlotsCount",5},{"Slots",new ValuesDictionary()}},null);return inv;}
             Test("five-recipes-vanilla-materials-craft-and-refusal",()=>{
                 using var vanilla=ZipFile.OpenRead(content);using var reader=new StreamReader(vanilla.GetEntry("Assets/BlocksData.txt").Open());var lines=reader.ReadToEnd().Split('\n');int column=Array.IndexOf(lines[0].Trim().Split(';'),"CraftingId"),index=740;

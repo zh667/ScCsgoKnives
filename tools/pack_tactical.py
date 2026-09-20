@@ -17,6 +17,7 @@ path=ROOT/f'output/[API1.9]CS战术同伴拓展{meta["Version"]}-作者ZH667.scm
 with zipfile.ZipFile(path,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
     for name,data in entries.items():z.writestr(name,data)
 report={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size,'entries':{n:hashlib.sha256(b).hexdigest() for n,b in entries.items()}}
-(ROOT/'output/release-1.4.0').mkdir(exist_ok=True)
-(ROOT/'output/release-1.4.0/tactical-package.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
+report_dir=ROOT/f'output/tactical-{meta["Version"]}'
+report_dir.mkdir(exist_ok=True)
+(report_dir/'tactical-package.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
 print(json.dumps({k:v for k,v in report.items() if k!='entries'},ensure_ascii=False))

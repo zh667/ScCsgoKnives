@@ -23,6 +23,9 @@ public sealed class ScTacticalBeaconBlock : Block {
     Texture2D icon;
     public ScTacticalBeaconBlock(){DefaultCategory="CS战术拓展";CraftingId="sctacticalbeacon";IsPlaceable=false;IsCollidable=false;MaxStacking=10;Durability=-1;FirstPersonScale=.3f;FirstPersonOffset=new(.4f,-.4f,-.65f);InHandScale=.3f;Behaviors="ScTactical";}
     public override void Initialize(){base.Initialize();icon=ContentManager.Get<Texture2D>("Textures/ScCsgoTactical/beacon");}
+    // This is one standalone image, not a tile of the vanilla 16 x 16 atlas.
+    public override int GetTextureSlotCount(int value)=>1;
+    public override int GetFaceTextureSlot(int face,int value)=>0;
     public override string GetDisplayName(SubsystemTerrain terrain,int value)=>Names[Math.Clamp(Terrain.ExtractData(value),0,3)];
     public override string GetDescription(int value)=>Terrain.ExtractData(value)==3?"使用后维修快捷栏第一面受损盾牌，恢复 1000 耐久。":"对近处地面使用。每位玩家最多 1 名同伴，召唤后自动跟随；对准同伴按 E／交互键打开装备和指令。";
     public override IEnumerable<int> GetCreativeValues()=>Enumerable.Range(0,4).Select(i=>Terrain.MakeBlockValue(BlockIndex,0,i));
