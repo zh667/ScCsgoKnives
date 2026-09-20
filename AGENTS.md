@@ -1,5 +1,14 @@
 # Project conventions
 
+- User-directed 2026-09-20 follow-up: implement naturally spawning hostile T squads in the optional DLC,
+  independent of existing friendly CT/T/hostage recruitment. Day 1–29 uses sniper/rifle/close roles;
+  day 30 adds machine gun and pistol/C4. Enemy guns have finite ammo and no counters/growth.
+  Enemy C4 is 40 seconds; hold the rebindable C4 action (default E) or independent mobile button
+  to defuse in 10 seconds, or 5 with a crafted carried kit. Preserve native unload equipment/health,
+  cancel defusal on invalid context and require release before restarting. Keep gun layout v5/schema6
+  and previous packages. Deliver Full core 1.4.1 plus DLC 1.1.0; see the corresponding release document
+  for first-build tuning, test evidence and actual game acceptance boundaries.
+
 - User-directed 2026-09-20: implement the optional tactical DLC with adapted shield geometry/poses
   (no old shield model is available), native CS2 CT/T/hostage companions, actual gun/ammunition
   inventories, defensive AI and workbench recruitment/repair. Deliver Full core 1.4.0 plus independent

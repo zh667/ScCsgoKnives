@@ -4,7 +4,11 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class TacticalModLoader : ModLoader {
-    public override void __ModInitialize(){foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones"})ModsManager.RegisterHook(hook,this);}
+    public override void __ModInitialize(){foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
+    public override void OnProjectLoaded(GameEntitySystem.Project project)=>project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();
+    public override void OnSaveSpawnData(ComponentSpawn spawn,SpawnEntityData data)=>SubsystemTacticalEnemies.SaveSpawn(spawn,data);
+    public override void OnReadSpawnData(GameEntitySystem.Entity entity,SpawnEntityData data)=>SubsystemTacticalEnemies.ReadSpawn(entity,data);
+    public override void DeadBeforeDrops(ComponentHealth health,ref KillParticleSystem particles,ref bool dropAll){if(health.Entity.FindComponent<ComponentTacticalEnemy>() is {} enemy){dropAll=false;enemy.Died();}}
     public override void OnModelDrawExtra(ComponentModel model,Camera camera,out bool skip){
         skip=false;if(model is not ComponentHumanModel human||!ScShieldProtection.Holding(human.m_componentCreature.ComponentBody,out var inv))return;
         int value=inv.GetSlotValue(inv.ActiveSlotIndex);var world=ScShieldProtection.Pose(human.m_componentCreature.ComponentBody);var view=world*camera.ViewMatrix;var pos=world.Translation;
@@ -39,13 +43,14 @@ public sealed class TacticalModLoader : ModLoader {
     public override void ProcessAttackment(Attackment attack){
         if(attack?.Target?.Project is {} project&&attack.AttackPower>0){var attacker=attack.Attacker?.FindComponent<ComponentBody>();
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);
+            attack.Target.FindComponent<ComponentTacticalEnemy>()?.Alert(attacker);
             if(attack.Target.FindComponent<ComponentPlayer>() is {} player&&project.FindSubsystem<SubsystemScTactical>(false) is {} tactical)foreach(var c in tactical.Companions)if(c.OwnedBy(player))c.Alert(attacker);
         }
         ScShieldProtection.Filter(attack);
     }
-    public override void UpdateInput(ComponentInput input,WidgetInput widget){if(widget.IsKeyDownOnce(Key.E)&&SubsystemScTactical.Open(input.m_componentPlayer)){input.m_playerInput.ToggleInventory=false;input.m_playerInput.EditItem=false;input.m_playerInput.Interact=null;}}
-    public override void OnPlayerInputInteract(ComponentPlayer p,ref bool operated,ref double interval,ref int use,ref int interact,ref int place){if(SubsystemScTactical.Open(p)){operated=true;use=interact=place=0;}}
-    public override void OnPlayerInputHit(ComponentPlayer p,ref bool operated,ref double interval,ref float range,bool skipped,out bool skipVanilla){skipVanilla=ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla){range=0;operated=true;}}
-    public override void UpdatePlayerInputDig(ComponentPlayer p,bool digging,ref bool operated,ref double interval,bool skipped,out bool skipVanilla){skipVanilla=ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla)operated=true;}
-    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experience,ref bool kills)=>health.Entity.FindComponent<ComponentTacticalCompanion>()?.Died();
+    public override void UpdateInput(ComponentInput input,WidgetInput widget){var bombs=input.Project.FindSubsystem<SubsystemTacticalBombs>(false);bombs?.Input(input);if(ScWeaponActionGate.Blocks(input.m_componentPlayer))return;if(widget.IsKeyDownOnce(Key.E)&&SubsystemScTactical.Open(input.m_componentPlayer)){input.m_playerInput.ToggleInventory=false;input.m_playerInput.EditItem=false;input.m_playerInput.Interact=null;}}
+    public override void OnPlayerInputInteract(ComponentPlayer p,ref bool operated,ref double interval,ref int use,ref int interact,ref int place){if(ScWeaponActionGate.Blocks(p)||SubsystemScTactical.Open(p)){operated=true;use=interact=place=0;}}
+    public override void OnPlayerInputHit(ComponentPlayer p,ref bool operated,ref double interval,ref float range,bool skipped,out bool skipVanilla){skipVanilla=ScWeaponActionGate.Blocks(p)||ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla){range=0;operated=true;}}
+    public override void UpdatePlayerInputDig(ComponentPlayer p,bool digging,ref bool operated,ref double interval,bool skipped,out bool skipVanilla){skipVanilla=ScWeaponActionGate.Blocks(p)||ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla)operated=true;}
+    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experience,ref bool kills){health.Entity.FindComponent<ComponentTacticalCompanion>()?.Died();health.Entity.FindComponent<ComponentTacticalEnemy>()?.Died();}
 }

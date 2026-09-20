@@ -44,11 +44,13 @@ def templates():
         for name,(v,t) in values.items():n=node(parent,'Parameter',name);n.set('Value',str(v));n.set('Type',t)
     r=E.Element('Mod');p=E.SubElement(r,'ProjectTemplate',Name='Project',Guid='85023bf8-1c90-4dd1-9442-e6c13691d078')
     params(node(p,'MemberSubsystemTemplate','ScTactical','fefb9590-4972-4893-b02a-76063611b745'),{'Class':('Game.SubsystemScTactical','string')})
-    for kind,label,asset in [('Hostage','救援同伴','hostage'),('CT','CT · SAS','ct'),('T','T · Phoenix','t')]:
+    for name in ['TacticalEnemies','TacticalBombs']:
+        params(node(p,'MemberSubsystemTemplate',name,'fefb9590-4972-4893-b02a-76063611b745'),{'Class':('Game.Subsystem'+name,'string')})
+    for kind,label,asset in [('Hostage','救援同伴','hostage'),('CT','CT · SAS','ct'),('T','T · Phoenix','t'),('Enemy','T · 敌对小队','t')]:
         c=node(r,'EntityTemplate','ScTactical'+kind,'bc5be211-c1f8-4e50-9ffb-4fde625d2692')
         for name,values in {
             'Body':{'BoxSize':('0.65,1.8,0.65','Vector3'),'Mass':(75,'float')},
-            'Creature':{'DisplayName':(label,'string'),'Description':('装备枪械或盾牌的被动防卫同伴。','string'),'Category':('LandOther','Game.CreatureCategory'),'KillVerbs':('shot','string'),'ConstantSpawn':('True','bool')},
+            'Creature':{'DisplayName':(label,'string'),'Description':('自然刷新的敌对小队成员。' if kind=='Enemy' else '装备枪械或盾牌的被动防卫同伴。','string'),'Category':('LandOther','Game.CreatureCategory'),'KillVerbs':('shot','string'),'ConstantSpawn':('False' if kind=='Enemy' else 'True','bool')},
             'Locomotion':{'WalkSpeed':(4.5,'float'),'FlySpeed':(0,'float'),'SwimSpeed':(1.5,'float'),'TurnSpeed':(7,'float'),'JumpSpeed':(5,'float')},
             'Health':{'AttackResilience':(60,'float'),'FireResilience':(15,'float'),'CorpseDuration':(3,'float')},
             'CreatureSounds':{'IdleSound':('','string'),'PainSound':('','string'),'MoanSound':('','string'),'AttackSound':('','string'),'RareIdleSound':('','string')},
@@ -56,11 +58,21 @@ def templates():
         for name,parent in [('Pilot','53510bee-16d1-4245-9b55-05cf26064cfc'),('Pathfinding','125dc475-9340-4137-b694-e003f740ea2d'),('BehaviorSelector','45cd8302-bb36-4c84-abf0-96fba5c2b9df')]:node(c,'MemberComponentTemplate',name,parent)
         params(node(c,'MemberComponentTemplate','TacticalModel','681a5886-5bff-418a-bf5f-ac84f290a311'),{'Class':('Game.ComponentTacticalModel','string'),'ModelName':('Models/ScCsgoTactical/'+asset,'string'),'AnimationConfigPath':('Animations/ScTactical','string'),'ModelScale':(1,'float'),'BoundingSphereRadius':(2,'float'),'TextureOverride':('','string')})
         params(node(c,'MemberComponentTemplate','TacticalInventory','81a44c6a-c30a-4f53-8d64-0c30aabab8f9'),{'Class':('Game.ComponentTacticalInventory','string'),'SlotsCount':(5,'int')})
-        params(node(c,'MemberComponentTemplate','TacticalCompanion','b05700ed-7e4e-4679-98f5-b597f421496b'),{'Class':('Game.ComponentTacticalCompanion','string')})
+        behavior='TacticalEnemy' if kind=='Enemy' else 'TacticalCompanion'
+        params(node(c,'MemberComponentTemplate',behavior,'b05700ed-7e4e-4679-98f5-b597f421496b'),{'Class':('Game.Component'+behavior,'string')})
+        if kind=='Enemy':
+            params(node(c,'MemberComponentTemplate','Spawn'),{'AutoDespawn':('True','bool')})
     E.indent(r,space='  ');(OUT/'ScTactical.xdb').write_text(E.tostring(r,encoding='unicode')+'\n',encoding='utf8')
 
+def defuser():
+    im=Image.new('RGBA',(128,128));d=ImageDraw.Draw(im)
+    d.polygon([(39,9),(52,9),(62,41),(67,41),(77,9),(89,9),(82,48),(71,64),(100,110),(87,120),(64,78),(41,120),(28,110),(57,64),(46,48)],fill='#91a4ab',outline='#2a343b',width=3)
+    d.line([(58,72),(35,113)],fill='#247785',width=13);d.line([(70,72),(94,113)],fill='#247785',width=13)
+    d.ellipse((55,51,73,69),fill='#45535e',outline='#d0d8db',width=2)
+    im.save(OUT/'Textures/ScCsgoTactical/defuser.png')
+
 if __name__=='__main__':
-    shield();templates()
+    shield();templates();defuser()
     sound=OUT/'Audio/ScCsgoTactical/ShieldHit';sound.mkdir(parents=True,exist_ok=True)
     for i in range(1,8):
         p=ROOT/f'.tmp/cs2-companions-audit-20260920/sounds/sounds/physics/shield/bullet_hit_shield_{i:02}.wav'

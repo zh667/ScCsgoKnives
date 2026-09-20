@@ -3,6 +3,12 @@
     <MemberSubsystemTemplate Name="ScTactical" Guid="cc74fbb5-ae4d-588c-8468-0afa75e0fc58" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="512cff17-65b8-540d-8ac5-7d8d89a80a38" Value="Game.SubsystemScTactical" Type="string" />
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="TacticalEnemies" Guid="04fbb30b-9645-5fb2-8d23-d58c15730f28" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="438e1ae3-d2d5-5832-919e-cde079214722" Value="Game.SubsystemTacticalEnemies" Type="string" />
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="TacticalBombs" Guid="1a6d387a-4a2a-5425-a8bb-71fb7d2ea39e" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="db6bfd08-3d65-5956-a943-314062a63f2d" Value="Game.SubsystemTacticalBombs" Type="string" />
+    </MemberSubsystemTemplate>
   </ProjectTemplate>
   <EntityTemplate Name="ScTacticalHostage" Guid="6bf2f5b3-af56-500c-a9bf-f8ed25c9c2ad" InheritanceParent="bc5be211-c1f8-4e50-9ffb-4fde625d2692">
     <MemberComponentTemplate Name="Body" Guid="40a01fae-9798-5bc7-b307-50f2965e3fb9">
@@ -152,6 +158,59 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TacticalCompanion" Guid="2394ab2e-e1e0-56e1-8f23-f3583cb6c47d" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
       <Parameter Name="Class" Guid="0d050c3b-5b7d-584a-8422-f38ce3132c29" Value="Game.ComponentTacticalCompanion" Type="string" />
+    </MemberComponentTemplate>
+  </EntityTemplate>
+  <EntityTemplate Name="ScTacticalEnemy" Guid="a144cd74-e08b-5dae-b8c7-23ecd43bbe3e" InheritanceParent="bc5be211-c1f8-4e50-9ffb-4fde625d2692">
+    <MemberComponentTemplate Name="Body" Guid="577a4c42-a27c-5453-879f-571f69700002">
+      <Parameter Name="BoxSize" Guid="75f32757-ad21-53f1-bca2-3b4a0c7155eb" Value="0.65,1.8,0.65" Type="Vector3" />
+      <Parameter Name="Mass" Guid="ceadd554-c957-5a45-9b91-94c6dfc940af" Value="75" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="f290d3f9-f88d-583e-a316-17f999bc39ff">
+      <Parameter Name="DisplayName" Guid="60966213-869b-5059-bb6f-aa72ffd755b4" Value="T · 敌对小队" Type="string" />
+      <Parameter Name="Description" Guid="fe1a0ae0-c02b-5b6a-834d-5655cd58b7eb" Value="自然刷新的敌对小队成员。" Type="string" />
+      <Parameter Name="Category" Guid="084443b7-4e5b-577d-8930-e06705dcef8b" Value="LandOther" Type="Game.CreatureCategory" />
+      <Parameter Name="KillVerbs" Guid="02986c22-30da-5b9e-b6cd-793d6848aabf" Value="shot" Type="string" />
+      <Parameter Name="ConstantSpawn" Guid="a4840825-a4b1-575a-885e-19e85fe539b9" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Locomotion" Guid="2f7a3755-dbc7-5c6a-a70d-c3b13a4af9bb">
+      <Parameter Name="WalkSpeed" Guid="e1bdf172-d559-569c-a899-7e65f3a87c1b" Value="4.5" Type="float" />
+      <Parameter Name="FlySpeed" Guid="8123a0be-ae13-532e-96ee-2d29d0af090a" Value="0" Type="float" />
+      <Parameter Name="SwimSpeed" Guid="cc1965c5-e262-5536-88f2-db7fa69f3811" Value="1.5" Type="float" />
+      <Parameter Name="TurnSpeed" Guid="a5d3ecd4-989b-5a0e-b28c-23ce7723185b" Value="7" Type="float" />
+      <Parameter Name="JumpSpeed" Guid="0dbf6624-e5d9-5939-8322-51f9ca52efa2" Value="5" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="244844c4-597c-575e-8f38-5875e0497fb8">
+      <Parameter Name="AttackResilience" Guid="3838d318-dc2e-55ae-92ef-1321393a9eee" Value="60" Type="float" />
+      <Parameter Name="FireResilience" Guid="3a77fc02-f339-5491-b72b-3c9b338f6569" Value="15" Type="float" />
+      <Parameter Name="CorpseDuration" Guid="83aa5fc2-24cd-5400-8b42-8bdb112275c7" Value="3" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="0909b1cd-145e-5b16-93f0-57e9630f064a">
+      <Parameter Name="IdleSound" Guid="1f5c902e-0bfe-5443-ac96-c5dab111688f" Value="" Type="string" />
+      <Parameter Name="PainSound" Guid="76099c3a-d4f7-5401-9ff8-fea05184eae4" Value="" Type="string" />
+      <Parameter Name="MoanSound" Guid="835c21ce-2e5c-5271-acfd-0609b75bdb81" Value="" Type="string" />
+      <Parameter Name="AttackSound" Guid="3282f016-81aa-56a7-9b39-d9d7e6a318c4" Value="" Type="string" />
+      <Parameter Name="RareIdleSound" Guid="0516d9d1-fb24-503e-8c4a-86ad743c70cb" Value="" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Pilot" Guid="4ff7807a-64f2-52b4-91fd-db09449c1b80" InheritanceParent="53510bee-16d1-4245-9b55-05cf26064cfc" />
+    <MemberComponentTemplate Name="Pathfinding" Guid="fb0825a8-eeb8-55be-bdbc-7cab698fa082" InheritanceParent="125dc475-9340-4137-b694-e003f740ea2d" />
+    <MemberComponentTemplate Name="BehaviorSelector" Guid="f8d0d46e-c188-510a-96b4-3b6e7247daa9" InheritanceParent="45cd8302-bb36-4c84-abf0-96fba5c2b9df" />
+    <MemberComponentTemplate Name="TacticalModel" Guid="be2b99ed-5d08-5022-831e-a41ca7b07175" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+      <Parameter Name="Class" Guid="68ca48c7-de58-5b99-9c96-21181693f33e" Value="Game.ComponentTacticalModel" Type="string" />
+      <Parameter Name="ModelName" Guid="b89b717b-4fe9-5a78-badf-f25ca309e71d" Value="Models/ScCsgoTactical/t" Type="string" />
+      <Parameter Name="AnimationConfigPath" Guid="3da3b83b-24c7-5125-8022-582f94b9ffab" Value="Animations/ScTactical" Type="string" />
+      <Parameter Name="ModelScale" Guid="a5117fd1-31f0-51b3-b22c-65838790ddf3" Value="1" Type="float" />
+      <Parameter Name="BoundingSphereRadius" Guid="86d39404-47bb-5062-82d6-053f0676cfc9" Value="2" Type="float" />
+      <Parameter Name="TextureOverride" Guid="760f88f3-0182-50ad-8bd3-4df0a3818014" Value="" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TacticalInventory" Guid="fd417189-f634-5dc6-b14c-a3c566d17b3d" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+      <Parameter Name="Class" Guid="afee39ea-fc24-5d7f-9f9a-3b68da8b3ada" Value="Game.ComponentTacticalInventory" Type="string" />
+      <Parameter Name="SlotsCount" Guid="3e5239e7-5214-5653-a54f-1463283892db" Value="5" Type="int" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TacticalEnemy" Guid="6ffc169f-0b6a-5dff-aa96-b75ed224204e" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+      <Parameter Name="Class" Guid="a8cec82b-db71-555d-ad3e-3388c9ffe73e" Value="Game.ComponentTacticalEnemy" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="9479bc8e-73c6-57b9-a6a4-99335ceb3916">
+      <Parameter Name="AutoDespawn" Guid="02889847-1e64-551b-a932-d2879377be01" Value="True" Type="bool" />
     </MemberComponentTemplate>
   </EntityTemplate>
 </Mod>

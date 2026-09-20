@@ -6,6 +6,7 @@
 - 同伴举盾动作：以 CS2 持枪站立／行走为基础，通过本项目双臂 IK 调整至盾牌握把；不是提取到的原版举盾动作。盾牌中弹声为本机 CS2 `sounds/physics/shield/bullet_hit_shield_01..07`。
 - 三种人物均将 GPU 蒙皮骨骼表缩至 48，完整动作骨架仍保留；小辅助骨骼权重合并到祖先骨骼。每种人物检查七段动作共 35 个采样，最大表面偏移分别约 2.1／2.2／1.2 厘米，99% 的采样顶点偏移小于 0.9 厘米。流程见 `tools/compact_tactical_skin.py`。
 - 信标图标：本项目绘制。原始与派生文件证据见 `docs/tactical-derived-assets.json`、资源审计文档和 `tools/build_companion_assets.py`。
+- 拆弹钳：本项目绘制的 128px 独立图标与平面手持物，生成方法为 `tools/build_tactical_content.py` 的 `defuser()`；不是 CS2 拆弹钳三维模型。敌方复用现有 T Phoenix 身体与持枪动作；安装使用适配蹲姿，没有额外声称移植敌人输密码动画。拆包开始/成功、C4 滴声/警报直接引用本体已提取的 CS2 `c4_disarmstart`、`c4_disarmfinish`、`c4_beep2`、`c4_warning`、`c4_trigger_trip` 音效。
 - Valve、Counter-Strike 及相关资源权利属于各自权利人。本项目为非官方粉丝模组，与 Valve 无隶属关系。
 
 代码授权见随包 LICENSE；该代码授权不重新许可第三方游戏素材。

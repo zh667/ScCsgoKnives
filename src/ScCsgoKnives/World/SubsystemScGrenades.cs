@@ -5,6 +5,12 @@ using TemplatesDatabase;
 namespace Game;
 
 public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, IDrawable {
+    /// <summary>Bounded NPC throw, using the same flight, smoke/fire interaction and effect budgets.</summary>
+    public bool TryThrowHostile(int kind,Vector3 position,Vector3 velocity) {
+        if(kind<0||kind>4||!ScGrenadeState.Finite(position)||!ScGrenadeState.Finite(velocity)||!ScGrenadeState.CanAdd(m_active,-2))return false;
+        var state=new ScGrenadeState{Kind=kind,Owner=-2,Position=position,Velocity=velocity,Remaining=ScGrenadeBallistics.Fuse(kind)};
+        Register(state);m_active.Add(state);m_justReleased.Add(state);return true;
+    }
     public static bool IsAreaDamage(Attackment attack)=>attack is AreaAttack;
     public void ChickenBlast(Vector3 position,int owner) {
         var state=new ScGrenadeState{Kind=0,Position=position,Owner=owner};
@@ -314,7 +320,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     bool Friendly(ScGrenadeState s,ComponentBody body) {
         var target=body.Entity.FindComponent<ComponentPlayer>();
-        return target is null || target.PlayerData.PlayerIndex==s.Owner || m_info.WorldSettings.IsFriendlyFireEnabled;
+        return s.Owner==-2 || target is null || target.PlayerData.PlayerIndex==s.Owner || m_info.WorldSettings.IsFriendlyFireEnabled;
     }
     void Damage(ScGrenadeState s,ComponentBody body,float power,bool fire=false) {
         if (power<=0 || !Friendly(s,body)) return;
@@ -407,6 +413,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (m_blind.TryGetValue(chase.m_componentCreature.ComponentBody,out var blind) && m_time.GameTime<blind.Until) score=0;
         if (target is not null && ScSmokeVolume.Blocks(m_active,Eye(chase.m_componentCreature.ComponentBody),Eye(target.ComponentBody),Clear,m_disturbances)) score=0;
     }
+    public bool IsBodyBlinded(ComponentBody body)=>m_blind.TryGetValue(body,out var blind)&&m_time.GameTime<blind.Until;
+    public bool SmokeBlocksSight(Vector3 from,Vector3 to)=>ScSmokeVolume.Blocks(m_active,from,to,Clear,m_disturbances);
     public void ApplyChaseOcclusion(ComponentChaseBehavior chase) {
         if (chase.m_target is null) return;
         Vector3 eye=Eye(chase.m_componentCreature.ComponentBody),target=Eye(chase.m_target.ComponentBody);

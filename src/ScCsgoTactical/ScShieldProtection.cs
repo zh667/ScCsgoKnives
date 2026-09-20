@@ -34,7 +34,7 @@ public static class ScShieldProtection {
         if(attack?.Target?.Project is not {} project||attack.AttackPower<=0||!float.IsFinite(attack.AttackPower)||attack.DictionaryForOtherMods.ContainsKey("ScTacticalShield"))return;
         bool directional=attack is ProjectileAttackment or MeleeAttackment;
         // Explosion origins and persistent fire are not bullet trajectories. Do not guess a source from the owner.
-        if(!directional||SubsystemScGrenades.IsAreaDamage(attack)||SubsystemScC4.IsBombDamage(attack))return;
+        if(!directional||attack is SubsystemTacticalBombs.BlastAttack||SubsystemScGrenades.IsAreaDamage(attack)||SubsystemScC4.IsBombDamage(attack))return;
         var direction=attack.HitDirection;if(!float.IsFinite(direction.LengthSquared())||direction.LengthSquared()<1e-8f)return;direction=Vector3.Normalize(direction);
         var attacker=attack.Attacker?.FindComponent<ComponentBody>();
         Vector3 end=attack.HitPoint,start=attacker?.BoundingBox.Center()??end-direction*3;

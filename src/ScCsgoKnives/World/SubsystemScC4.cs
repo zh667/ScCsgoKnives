@@ -97,7 +97,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
     // model. Lift the visual/plant position over thin covering blocks using their
     // actual collision-box height. Treating every occupied cell as a full cube
     // was the reason C4 appeared a whole block too high on snow and carpets.
-    Vector3 VisiblePlantPosition(Vector3 floor) {
+    public Vector3 VisiblePlantPosition(Vector3 floor) {
         if (terrain?.Terrain is null) return floor + Vector3.UnitY * .01f;
         int x = Terrain.ToCell(floor.X), z = Terrain.ToCell(floor.Z);
         // Start just above the recorded surface. The old build stored ground+0.01,

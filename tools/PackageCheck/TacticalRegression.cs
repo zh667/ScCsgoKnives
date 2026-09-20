@@ -32,7 +32,7 @@ static class TacticalRegression {
         Test("optional-package-identity-and-no-bundled-engine",()=>{
             var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
             var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
-            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.0"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.3.3")),"core dependency not enforced by engine");
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.1"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.0")),"core dependency not enforced by engine");
             Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
         });
         foreach(string name in new[]{"ct","t","hostage","shield"})Test("native-gltf/"+name,()=>{
@@ -93,6 +93,8 @@ static class TacticalRegression {
                     Require(md.GetValue("Transparent",1f)>0&&!md.GetValue("DisableDrawing",false)&&!md.GetValue("DisableAnimation",false),"inherited model invisible: "+string.Join(";",md.Select(p=>$"{p.Key}={p.Value}")));
                     Require(!v.ContainsKey("ChaseBehavior"),"automatic neutral attack added");
                 }
+                var enemy=DatabaseManager.FindEntityValuesDictionary("ScTacticalEnemy",true);
+                Require(enemy.ContainsKey("TacticalEnemy")&&!enemy.ContainsKey("TacticalCompanion")&&!enemy.GetValue<ValuesDictionary>("Creature").GetValue<bool>("ConstantSpawn")&&enemy.GetValue<ValuesDictionary>("Spawn").GetValue<bool>("AutoDespawn"),"enemy inherits friendly or permanent lifecycle");
             }finally{DatabaseManager.m_gameDatabase=old;DatabaseManager.m_valueDictionaries.Clear();foreach(var v in oldV)DatabaseManager.m_valueDictionaries[v.Key]=v.Value;}
         });
         Test("shield-front-back-side-height-and-edge",()=>{
@@ -110,7 +112,7 @@ static class TacticalRegression {
         var savedIndices=new Dictionary<Type,int>(BlocksManager.BlockTypeToIndex);var oldBlocks=(Block[])BlocksManager.Blocks.Clone();
         var registryField=C("ScGunRegistry").GetField("Current");var oldRegistry=registryField.GetValue(null);
         try{
-            foreach(var pair in new[]{(T("ScTacticalShieldBlock"),705),(T("ScTacticalBeaconBlock"),706),(C("ScGunBlock"),701),(C("ScAmmoBlock"),702),(C("ScGunSkinTemplateBlock"),703),(C("ScGunCounterTemplateBlock"),704)}){var b=(Block)Activator.CreateInstance(pair.Item1);b.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=b;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}
+            foreach(var pair in new[]{(T("ScTacticalShieldBlock"),705),(T("ScTacticalBeaconBlock"),706),(T("ScTacticalDefuserBlock"),707),(C("ScWeaponMaterialBlock"),708),(C("ScGunBlock"),701),(C("ScAmmoBlock"),702),(C("ScGunSkinTemplateBlock"),703),(C("ScGunCounterTemplateBlock"),704)}){var b=(Block)Activator.CreateInstance(pair.Item1);b.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=b;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}
             Test("beacon-native-draw-full-image-all-variants-and-view-modes",()=>{
                 var block=BlocksManager.Blocks[706];var texture=Blank<Texture2D>();
                 T("ScTacticalBeaconBlock").GetField("icon",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(block,texture);
@@ -124,10 +126,10 @@ static class TacticalRegression {
                 }
             });
             ComponentInventoryBase Inv(){var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(new ValuesDictionary{{"SlotsCount",5},{"Slots",new ValuesDictionary()}},null);return inv;}
-            Test("five-recipes-vanilla-materials-craft-and-refusal",()=>{
+            Test("six-recipes-vanilla-materials-craft-and-refusal",()=>{
                 using var vanilla=ZipFile.OpenRead(content);using var reader=new StreamReader(vanilla.GetEntry("Assets/BlocksData.txt").Open());var lines=reader.ReadToEnd().Split('\n');int column=Array.IndexOf(lines[0].Trim().Split(';'),"CraftingId"),index=740;
                 var ids=new HashSet<string>{"ironingot","copperingot","glass","leather","germaniumchunk","canvas"};foreach(var line in lines.Skip(1)){var cells=line.Trim().Split(';');if(cells.Length<=column||!ids.Contains(cells[column]))continue;var block=(Block)Activator.CreateInstance(typeof(Block).Assembly.GetType("Game."+cells[0],true));block.BlockIndex=index;block.CraftingId=cells[column];block.MaxStacking=40;BlocksManager.Blocks[index++]=block;}
-                Call("SubsystemScTactical","RegisterRecipes");var recipes=((System.Collections.IEnumerable)C("ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>().ToArray();Require(recipes.Length==5,"missing or duplicate recipes");
+                Call("SubsystemScTactical","RegisterRecipes");var recipes=((System.Collections.IEnumerable)C("ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>().ToArray();Require(recipes.Length==6,"missing or duplicate recipes");
                 Require(BlocksManager.Blocks[705].GetCreativeValues().Single()==705&&BlocksManager.Blocks[706].GetCreativeValues().Count()==4,"missing creative equipment");
                 var registry=Activator.CreateInstance(C("ScGunRegistry"));registryField.SetValue(null,registry);C("ScGunRegistry").GetField("RecoveryOwner").SetValue(registry,(Func<IInventory,string>)(_=>"fixture/tactical"));
                 foreach(var recipe in recipes){int output=(int)recipe.GetType().GetProperty("Value").GetValue(recipe);var cost=(Dictionary<int,int>)recipe.GetType().GetMethod("Materials").Invoke(recipe,null);Require(cost.Count>0&&cost.Values.All(n=>n>0),"invalid native material resolution");var inventory=new ComponentInventory();for(int i=0;i<16;i++)inventory.m_slots.Add(new());int slot=0;foreach(var item in cost){inventory.m_slots[slot++]=new(){Value=item.Key,Count=1};inventory.m_slots[slot++]=new(){Value=item.Key,Count=item.Value-1};}
@@ -226,6 +228,8 @@ static class TacticalRegression {
                 var returned=new ComponentInventory();returned.m_slots.Add(new ComponentInventoryBase.Slot());Entity(project,returned);Require(inv.RemoveSlotItems(0,1)==1,"cannot recover gun");returned.AddSlotItems(0,recordValue,1);Require(returned.GetSlotValue(0)==recordValue&&inv.GetSlotCount(0)==0,"recovering equipment copied or changed identity");
             });
             Test("all-35-gun-shot-audio-exists-in-core",()=>{using var coreZip=ZipFile.OpenRead(corePath);foreach(var spec in (Array)C("GunSpec").GetField("All").GetValue(null))foreach(bool silenced in new[]{false,true}){string path=(string)C("SubsystemScGunBlockBehavior").GetMethod("ExtensionShotSound").Invoke(null,[spec,silenced]);Require(coreZip.GetEntry("Assets/"+path+".ogg")!=null,"missing "+path);}});
+            result.AddRange(TacticalEnemyRegression.Run(core,dlc,corePath,dlcPath));
+            result.AddRange(TacticalDefuseRegression.Run(core,dlc,content));
         }finally{registryField.SetValue(null,oldRegistry);BlocksManager.BlockTypeToIndex.Clear();foreach(var p in savedIndices)BlocksManager.BlockTypeToIndex[p.Key]=p.Value;Array.Copy(oldBlocks,BlocksManager.Blocks,oldBlocks.Length);}
         return result;
     }

@@ -53,6 +53,7 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
     public static void RegisterRecipes(){
         static Dictionary<int,int> Cost(params (string id,int count)[] parts)=>parts.ToDictionary(p=>ScComponentCrafting.Resolve(p.id),p=>p.count);
         ScWorkbenchExtension.Register(new("tactical-shield","防爆盾","战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalShieldBlock>(true)),()=>Cost(("ironingot",40),("copperingot",8),("glass",4),("leather",8))));
+        ScWorkbenchExtension.Register(new("tactical-defuser","拆弹钳","战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalDefuserBlock>(true)),()=>Cost(("ironingot",4),("copperingot",2))));
         for(int i=0;i<4;i++){int kind=i;ScWorkbenchExtension.Register(new("tactical-beacon-"+i,ScTacticalBeaconBlock.Names[i],"战术拓展",()=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true),0,kind),()=>kind==3?Cost(("ironingot",12),("leather",4)):Cost(("ironingot",20),("copperingot",12),("germaniumchunk",8),("canvas",8))));}
     }
 }

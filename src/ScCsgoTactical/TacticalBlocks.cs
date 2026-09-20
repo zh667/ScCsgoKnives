@@ -32,3 +32,13 @@ public sealed class ScTacticalBeaconBlock : Block {
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int v,int x,int y,int z){}
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env)=>BlocksManager.DrawFlatBlock(r,value,size,ref matrix,icon,color,false,env);
 }
+public sealed class ScTacticalDefuserBlock : Block {
+    Texture2D icon;
+    public ScTacticalDefuserBlock(){DefaultDisplayName="拆弹钳";DefaultCategory="CS战术拓展";CraftingId="sctacticaldefuser";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=-1;FirstPersonScale=.3f;FirstPersonOffset=new(.3f,-.45f,-.65f);InHandScale=.3f;}
+    public override void Initialize(){base.Initialize();icon=ContentManager.Get<Texture2D>("Textures/ScCsgoTactical/defuser");}
+    public override int GetTextureSlotCount(int value)=>1;
+    public override int GetFaceTextureSlot(int face,int value)=>0;
+    public override string GetDescription(int value)=>"在枪械台制作。放在随身背包或快捷栏即可将敌方 C4 拆除时间从 10 秒缩短到 5 秒。按住 C4 操作键（默认 E）或“拆除 C4”按钮；可重复使用。";
+    public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int v,int x,int y,int z){}
+    public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env)=>BlocksManager.DrawFlatBlock(r,value,size,ref matrix,icon,color,false,env);
+}

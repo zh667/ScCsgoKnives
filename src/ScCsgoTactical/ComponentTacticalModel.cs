@@ -11,9 +11,10 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
             m_boneTransforms[Model.RootBone.Index]=root*Matrix.CreateTranslation(-pos)*Matrix.CreateFromAxisAngle(body.Matrix.Right,-MathF.PI*.5f*DeathPhase)*Matrix.CreateTranslation(pos+Vector3.UnitY*.15f);
         }
     }
-    public override void SyncAnimationParameters(){base.SyncAnimationParameters();var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
+    public override void SyncAnimationParameters(){base.SyncAnimationParameters();var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
     public override void DrawExtras(Camera camera){
         base.DrawExtras(camera);if(m_componentCreature.ComponentHealth.Health<=0)return;
+        if(Entity.FindComponent<ComponentTacticalEnemy>()?.State is {} enemy){DrawGun(camera,enemy.DisplayValue);return;}
         var inv=Entity.FindComponent<ComponentTacticalInventory>();if(inv is null||inv.GetSlotCount(0)<=0)return;
         int value=inv.GetSlotValue(0);var block=BlocksManager.Blocks[Terrain.ExtractContents(value)];Matrix world;
         bool isShield=ScTacticalShieldBlock.IsShield(value);

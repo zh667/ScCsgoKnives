@@ -10,7 +10,8 @@ public static class ScGunBindings {
     public static void Reset() { Keys.Clear(); foreach (string id in ScGunFunctions.All) Keys[id] = Default(id); }
     public static string Get(string id) => Keys.GetValueOrDefault(id, Default(id));
     public static bool Valid(string text) => text == "" || Enum.TryParse<Key>(text, out var key) && Enum.IsDefined(key) && key is not (Key.Null or Key.Escape or Key.Back);
-    public static bool Available(ComponentPlayer p) => Window.IsActive && !ScWeaponTouchPanel.MenuActive
+    public static bool Available(ComponentPlayer p) => ContextAvailable(p) && !ScWeaponActionGate.Blocks(p);
+    public static bool ContextAvailable(ComponentPlayer p) => Window.IsActive && !ScWeaponTouchPanel.MenuActive
         && (ScreensManager.CurrentScreen is null || ReferenceEquals(ScreensManager.CurrentScreen, ScreensManager.FindScreen<Screen>("Game")))
         && !ScreensManager.IsAnimating && p.ComponentHealth.Health > 0 && p.ComponentGui.ModalPanelWidget is null
         && !DialogsManager.HasDialogs(p.GuiWidget) && !DialogsManager.HasDialogs(ScreensManager.RootWidget);
