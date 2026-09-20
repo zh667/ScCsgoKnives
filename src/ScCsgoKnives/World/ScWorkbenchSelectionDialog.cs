@@ -132,7 +132,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             m_details.Children.Add(ScGunUi.Note($"制作等级 {entry.Level} · 产出 {m_count} 件"));
             m_details.Children.Add(ScGunUi.Note(entry.Knife?"选择数量后点击制作。":"空枪交付，弹药另行制作。"));
         }
-        else if(value!=0 && EffectiveGunStats.TrySnapshotValue(value,out var s))
+        else if(item is not (ScWorkbenchRecipe or ScComponentCrafting.Entry) && value!=0 && EffectiveGunStats.TrySnapshotValue(value,out var s))
             m_details.Children.Add(ScGunUi.Note($"弹量 {s.Rounds} · {(s.CounterInstalled?$"计数 {s.KillCount} / Lv{s.Level}":"未安装计数器")}\n双击 / 双点此项查看本次操作的精确报价。"));
         else m_details.Children.Add(ScGunUi.Note(Craftable?$"产出 {m_count} 件 · 点击下方制作":"双击 / 双点此项进入。单击仅预览，不会执行操作。"));
         if(m_creative)m_details.Children.Add(ScGunUi.Note("创造模式：不消耗材料。"));

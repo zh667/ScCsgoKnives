@@ -1,0 +1,18 @@
+[
+  {
+    "item": "defuser_item",
+    "source": ".tmp\\tactical-items-cs2\\weapons\\models\\defuser\\defuser.glb",
+    "sourceSha256": "5c912bd60ce58b4679147c0f6e4bf88925ca252c7fd3fcd9d774736feaf64f00",
+    "length": 0.3
+  },
+  {
+    "item": "repair_item",
+    "source": ".tmp\\tactical-items-cs2\\models\\generic\\toolkit_01\\toolbox_01_closed.glb",
+    "sourceSha256": "caf217e48e5e3a89a67b6c11ca20e0946ce5097c846de901442bad9e886c1c6b",
+    "length": 0.4
+  },
+  {
+    "item": "radio",
+    "source": "authored portable radio geometry / existing beacon atlas; not Valve geometry"
+  }
+]

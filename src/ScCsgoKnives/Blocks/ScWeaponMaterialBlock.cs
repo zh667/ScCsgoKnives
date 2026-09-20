@@ -7,7 +7,7 @@ public sealed class ScWeaponMaterialBlock : ScSupplyBlock {
     public const int Blank = 0, Mechanism = 1, Grip = 2, Optics = 3, Paint = 4;
     public static readonly string[] Names = ["金属坯件", "精密机构", "握持组件", "光学组件", "涂装材料"];
     public ScWeaponMaterialBlock() {
-        DefaultDisplayName = Names[0]; DefaultCategory = "Items"; CraftingId = "sccsgomaterial";
+        DefaultDisplayName = Names[0]; DefaultCategory = "CS武器"; CraftingId = "sccsgomaterial";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 40;
         FirstPersonOffset = new(.32f, -.48f, -.62f);
     }

@@ -48,13 +48,14 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         if(sleeping.Any(e=>Vector3.DistanceSquared(e.Position,p)<96*96))return false;
         return Safe(point,p,true);
     }
-    bool Safe(Point3 point,Vector3 p,bool visibility){
+    bool Safe(Point3 point,Vector3 p,bool visibility)=>SafeFor(point,p,visibility,28);
+    bool SafeFor(Point3 point,Vector3 p,bool visibility,float minimumDistance){
         var t=terrain.Terrain;var chunk=t.GetChunkAtCell(point.X,point.Z);if(chunk is null||chunk.State<=TerrainChunkState.InvalidPropagatedLight||point.Y<2||point.Y>250)return false;
         if(point.Y<t.GetTopHeight(point.X,point.Z)-1)return false;
         for(int y=1;y<=2;y++){int v=t.GetCellValue(point.X,point.Y+y,point.Z);if(Terrain.ExtractContents(v)!=0)return false;}
         int ground=t.GetCellValue(point.X,point.Y,point.Z);if(!BlocksManager.Blocks[Terrain.ExtractContents(ground)].IsCollidable_(ground))return false;
         foreach(var player in players.ComponentPlayers){var camera=player.GameWidget.ActiveCamera;float d=Vector3.DistanceSquared(p,player.ComponentBody.Position);
-            if(d<28*28)return false;
+            if(d<minimumDistance*minimumDistance)return false;
             if(visibility&&camera.ViewFrustum.Intersection(new BoundingSphere(p+Vector3.UnitY,1))&&!terrain.Raycast(camera.ViewPosition,p+Vector3.UnitY,false,true,(v,r)=>ScGunRange.TerrainStopsBullet(v)).HasValue)return false;
         }
         var bodies=new DynamicArray<ComponentBody>();Project.FindSubsystem<SubsystemBodies>(true).FindBodiesAroundPoint(p.XZ,1,bodies);return bodies.All(b=>Vector3.DistanceSquared(b.Position,p)>1);
@@ -71,6 +72,19 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
             if(Math.Abs(ground.Y-point.Y)>3||!Safe(ground,p,true))continue;locations.Add(p);if(locations.Count==roles.Length)break;
         }
         if(locations.Count!=roles.Length)return 0;
+        return CreateSquad(roles,locations);
+    }
+    public int SpawnManual(Point3 ground,int count){
+        if(count is not (3 or 5)||Enemies.Count+count>MaxActive||spawn.CountCreatures(false)+count>SubsystemCreatureSpawn.m_totalLimit)return 0;
+        var locations=new List<Vector3>();
+        foreach(var offset in new[]{new Point2(0,0),new Point2(3,0),new Point2(-3,0),new Point2(0,3),new Point2(0,-3),new Point2(3,3),new Point2(-3,-3),new Point2(3,-3),new Point2(-3,3)}){
+            int x=ground.X+offset.X,z=ground.Z+offset.Y;if(terrain.Terrain.GetChunkAtCell(x,z) is null)continue;
+            var cell=new Point3(x,terrain.Terrain.GetTopHeight(x,z),z);var pos=new Vector3(x+.5f,cell.Y+1.1f,z+.5f);
+            if(Math.Abs(cell.Y-ground.Y)>3||!SafeFor(cell,pos,false,2))continue;locations.Add(pos);if(locations.Count==count)break;
+        }
+        return locations.Count==count?CreateSquad(Roles(count==5?FiveMemberDay:0,FiveMemberDay),locations):0;
+    }
+    int CreateSquad(TacticalRole[] roles,List<Vector3> locations){
         string squad=Guid.NewGuid().ToString("N");var made=new List<Entity>();
         try{
             for(int i=0;i<roles.Length;i++){var e=DatabaseManager.CreateEntity(Project,Template,true);made.Add(e);e.FindComponent<ComponentTacticalEnemy>(true).Configure(TacticalEnemyState.Create(roles[i],squad,random),locations[i]);}

@@ -1,5 +1,14 @@
 # Project conventions
 
+- User-directed continuation 2026-09-20: fix companion inventory gestures and hostage rendering,
+  make tactical supplies real 3D items, put all CS items in CS武器, add creative three/five-member
+  hostile squad beacons and improve skeletal death collapse. Deliver core Full 1.4.2 / DLC 1.1.1.
+  Preserve old packages, item data, gun layout v5/schema6 and CS2 source exports. Hostage axis
+  conversion must sit under an identity model root; validate native loaded/skinned vertices above
+  ground, not merely animation height. Run native drag start/move/release both ways, not just layout.
+  Native GPU diagnostics are not full-game or Android/mod-combination acceptance. See
+  docs/release-1.4.2-tactical-fixes.md for evidence and remaining boundaries.
+
 - User-directed 2026-09-20 follow-up: implement naturally spawning hostile T squads in the optional DLC,
   independent of existing friendly CT/T/hostage recruitment. Day 1–29 uses sniper/rifle/close roles;
   day 30 adds machine gun and pistol/C4. Enemy guns have finite ammo and no counters/growth.

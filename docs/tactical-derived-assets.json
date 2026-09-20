@@ -151,8 +151,8 @@
   },
   {
     "name": "hostage",
-    "bytes": 4738904,
-    "nodes": 89,
+    "bytes": 4738936,
+    "nodes": 90,
     "meshes": 1,
     "clips": [
       "idle",
@@ -221,7 +221,8 @@
         "arm_upper_R_TWIST1"
       ]
     },
-    "sha256": "7eb07407e50d17c5b85743767e81c72d1506081a405d1c549f51fe5701918a3f",
-    "source": ".tmp\\cs2-companions-audit-20260920\\export\\models\\hostage\\hostage.glb"
+    "sha256": "42f44c081860534b097114364d978ad3f01c048df2d4d47b10c3b894a93155fa",
+    "source": ".tmp\\cs2-companions-audit-20260920\\export\\models\\hostage\\hostage.glb",
+    "rootFix": "Identity entity root above hostage_axis; original source export unchanged"
   }
 ]

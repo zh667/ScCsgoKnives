@@ -20,6 +20,12 @@ static class TacticalEnemyRegression {
     sealed class Ground:SubsystemTerrain {public bool Blocked;public override TerrainRaycastResult? Raycast(Vector3 a,Vector3 b,bool i,bool s,Func<int,float,bool> f)=>Blocked?new TerrainRaycastResult{Distance=.5f}:null;}
     sealed class Drops:SubsystemPickables {public readonly List<Pickable> Items=[];public override Pickable AddPickable(int value,int count,Vector3 p,Vector3? vel,Matrix? m,Entity owner){var item=new Pickable{Value=value,Count=count,Position=p};Items.Add(item);return item;}}
     sealed class Health:ComponentHealth {public override void Injure(Injury i){i.Attackment.EnableHitValueParticleSystem=false;base.Injure(i);}}
+    sealed class SpawnProject:Project {
+        public Func<Entity> Factory;public Action<Entity> Added,Removed;
+        public override Entity CreateEntity(ValuesDictionary v,int id=0)=>Factory==null?base.CreateEntity(v,id):Factory();
+        public override void AddEntity(Entity e){if(Factory==null){base.AddEntity(e);return;}e.m_isAddedToProject=true;m_entities[e]=true;Added?.Invoke(e);}
+        public override void RemoveEntity(Entity e,bool dispose){if(Factory==null){base.RemoveEntity(e,dispose);return;}e.m_isAddedToProject=false;m_entities.Remove(e);Removed?.Invoke(e);}
+    }
     internal static List<TacticalRegression.Result> Run(Assembly core,Assembly dlc,string corePath,string dlcPath){
         var results=new List<TacticalRegression.Result>();
         void Test(string n,Action a){try{a();results.Add(new("enemy/"+n,true,""));}catch(Exception ex){results.Add(new("enemy/"+n,false,ex.ToString()));}}
@@ -31,7 +37,7 @@ static class TacticalEnemyRegression {
         var rf=C("ScGunRegistry").GetField("Current");var original=rf.GetValue(null);
         void FreshRegistry()=>rf.SetValue(null,Activator.CreateInstance(C("ScGunRegistry")));
         (Project P,dynamic Director,SubsystemTime Time,Ground Terrain,SubsystemBodies Bodies,SubsystemGameInfo Info,SubsystemCreatureSpawn Spawn,SubsystemSpawn Sleeping,Audio Audio,Drops Drops) World(){
-            var p=new Project();var t=new SubsystemTime();var terrain=new Ground{Terrain=new Terrain()};var bodies=new SubsystemBodies();var info=new SubsystemGameInfo{WorldSettings=Blank<WorldSettings>()};
+            var p=new SpawnProject();var t=new SubsystemTime();var terrain=new Ground{Terrain=new Terrain()};var bodies=new SubsystemBodies();var info=new SubsystemGameInfo{WorldSettings=Blank<WorldSettings>()};
             info.WorldSettings.GameMode=GameMode.Survival;info.WorldSettings.EnvironmentBehaviorMode=EnvironmentBehaviorMode.Living;var spawn=new SubsystemCreatureSpawn{m_subsystemTerrain=terrain,m_subsystemBodies=bodies,m_subsystemSky=new SubsystemSky()};var sleeping=new SubsystemSpawn();spawn.m_subsystemSpawn=sleeping;
             var audio=new Audio();var drops=new Drops();dynamic director=New("SubsystemTacticalEnemies");var grenades=(Subsystem)Activator.CreateInstance(C("SubsystemScGrenades"));Set(grenades,"m_time",t);Set(grenades,"m_terrain",terrain);Set(grenades,"m_bodies",bodies);
             foreach(var s in new Subsystem[]{t,terrain,bodies,info,spawn,sleeping,audio,drops,new SubsystemPlayers(),new SubsystemTimeOfDay(),grenades,(Subsystem)director}){s.m_project=p;p.m_subsystems.Add(s);}
@@ -44,6 +50,26 @@ static class TacticalEnemyRegression {
         }
         try{
             FreshRegistry();
+            Test("creative-manual-three-five-squad-placement-budget-and-rollback",()=>{
+                var old=DatabaseManager.m_valueDictionaries.GetValueOrDefault("ScTacticalEnemy");DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=new ValuesDictionary();
+                try{
+                    foreach(int count in new[]{3,5}){
+                        var f=World();var p=(SpawnProject)f.P;f.Info.WorldSettings.GameMode=GameMode.Creative;
+                        BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};var chunk=f.Terrain.Terrain.AllocateChunk(0,0);chunk.State=TerrainChunkState.Valid;
+                        for(int x=1;x<15;x++)for(int z=1;z<15;z++){f.Terrain.Terrain.SetCellValueFast(x,60,z,2);f.Terrain.Terrain.SetTopHeight(x,z,60);}
+                        int created=0;p.Factory=()=>{created++;var e=Enemy(p).Creature.Entity;p.m_entities.Remove(e);e.m_isAddedToProject=false;return e;};
+                        p.Added=e=>{f.Director.OnEntityAdded(e);f.Bodies.AddBody(e.FindComponent<ComponentBody>(true));};p.Removed=e=>{f.Director.OnEntityRemoved(e);f.Bodies.RemoveBody(e.FindComponent<ComponentBody>(true));};
+                        Check((int)f.Director.SpawnManual(new Point3(8,60,8),count)==count&&created==count,"manual whole squad not created");
+                        var members=((System.Collections.IEnumerable)f.Director.Enemies).Cast<dynamic>().ToArray();Check(members.Length==count&&members.Select(e=>(string)e.State.Squad).Distinct().Count()==1&&members.Select(e=>(int)e.State.Role).Distinct().Count()==count,"wrong shared squad or roles");
+                        Check(members.All(e=>Math.Abs((float)e.Creature.ComponentBody.Position.Y-61.1f)<.01f),"manual squad spawns in ground");
+                        f.Director.MaxActive=count;Check((int)f.Director.SpawnManual(new Point3(8,60,8),3)==0&&created==count,"manual cap permits partial allocation");
+                        f.Director.MaxActive=10;foreach(var e in p.Entities.ToArray())p.RemoveEntity(e,false);
+                        int attempt=0;p.Factory=()=>{if(++attempt==2)throw new Exception("injected entity factory failure");var e=Enemy(p).Creature.Entity;p.m_entities.Remove(e);e.m_isAddedToProject=false;return e;};
+                        Check((int)f.Director.SpawnManual(new Point3(8,60,8),count)==0&&p.Entities.Count==0,"failed squad leaked partial members");
+                        Check((int)f.Director.SpawnManual(new Point3(8,60,8),4)==0,"unsupported squad size accepted");
+                    }
+                }finally{if(old==null)DatabaseManager.m_valueDictionaries.Remove("ScTacticalEnemy");else DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=old;}
+            });
             Test("34-weapon-pool-no-registry-allocation",()=>{
                 var names=new HashSet<string>();var pools=(string[][])T("TacticalEnemyState").GetField("Pools").GetValue(null);
                 for(int role=0;role<5;role++)for(int seed=0;seed<160;seed++){dynamic s=State(role,seed);dynamic spec=((Array)C("GunSpec").GetField("All").GetValue(null)).GetValue((int)s.Variant);names.Add((string)spec.Name);Check(pools[role].Contains((string)spec.Name)&&s.Rounds==spec.Magazine&&s.Reserve==spec.Magazine*3&&s.Bomb==(role==4),"role/equipment mismatch");_=(int)s.DisplayValue;Check(!s.Encode().Contains("DisplayValue"),"transient player item value serialized");}
@@ -130,8 +156,8 @@ static class TacticalEnemyRegression {
                 Check(!(bool)C("ScWeaponActionGate").GetMethod("Blocks").Invoke(null,[null]),"disposed DLC leaves action gate subscribed");
             });
             Test("kit-native-item-draw-carry-and-cs2-sounds",()=>{
-                using var zip=ZipFile.OpenRead(dlcPath);using var png=zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser.png").Open();var img=Image.Load(png);Check(img.Pixels.Count(c=>c.A>0)>1000,"empty kit icon");var block=BlocksManager.Blocks[707];Set(block,"icon",Blank<Texture2D>());
-                foreach(var mode in Enum.GetValues<DrawBlockMode>()){var renderer=new PrimitivesRenderer3D();var m=Matrix.Identity;block.DrawBlock(renderer,707,Color.White,1,ref m,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=mode});var v=renderer.TexturedBatches.Single().TriangleVertices.ToArray();Check(v.Min(p=>p.TexCoord.X)==0&&v.Max(p=>p.TexCoord.X)==1,"kit crops to atlas");}
+                using var zip=ZipFile.OpenRead(dlcPath);using var png=zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.png").Open();var img=Image.Load(png);Check(img.Pixels.Count(c=>c.A>0)>1000,"empty kit atlas");var block=BlocksManager.Blocks[707];
+                foreach(var mode in Enum.GetValues<DrawBlockMode>()){var renderer=new PrimitivesRenderer3D();var m=Matrix.Identity;block.DrawBlock(renderer,707,Color.White,1,ref m,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=mode});var v=renderer.TexturedBatches.Single().TriangleVertices.ToArray();Check(v.Length>24&&v.All(p=>p.TexCoord.X>=0&&p.TexCoord.X<=1),"invalid kit mesh/UV");}
                 var p=Blank<ComponentPlayer>();var inv=new ComponentInventory();for(int i=0;i<36;i++)inv.m_slots.Add(new());p.ComponentMiner=new ComponentMiner{Inventory=inv};inv.m_slots[35]=new(){Count=1,Value=707};Check((bool)T("SubsystemTacticalBombs").GetMethod("HasKit").Invoke(null,[p]),"kit only recognizes hotbar");inv.m_slots[35].Count=0;Check(!(bool)T("SubsystemTacticalBombs").GetMethod("HasKit").Invoke(null,[p]),"empty slot grants kit");
                 using var cz=ZipFile.OpenRead(corePath);foreach(string sound in new[]{"c4_beep2","c4_warning","c4_trigger_trip","c4_disarmstart","c4_disarmfinish"})Check(cz.GetEntry("Assets/Audio/ScCsgoKnives/"+sound+".ogg")!=null,"missing CS2 sound "+sound);
             });

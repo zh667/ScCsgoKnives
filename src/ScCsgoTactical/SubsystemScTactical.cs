@@ -7,10 +7,19 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
     public IEnumerable<ComponentTacticalCompanion> Companions=>companions;
     public override void OnEntityAdded(GameEntitySystem.Entity entity){base.OnEntityAdded(entity);if(entity.FindComponent<ComponentTacticalCompanion>() is {} c)companions.Add(c);}
     public override void OnEntityRemoved(GameEntitySystem.Entity entity){if(entity.FindComponent<ComponentTacticalCompanion>() is {} c)companions.Remove(c);base.OnEntityRemoved(entity);}
-    public override int[] HandledBlocks=>[BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true)];
+    public override int[] HandledBlocks=>[BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true),BlocksManager.GetBlockIndex<ScTacticalSquadBlock>(true)];
     public override bool OnUse(Ray3 ray,ComponentMiner miner){
         var player=miner.Entity.FindComponent<ComponentPlayer>();if(player is null)return false;
-        var inv=miner.Inventory;int slot=inv.ActiveSlotIndex,value=inv.GetSlotValue(slot);if(Terrain.ExtractContents(value)!=HandledBlocks[0])return false;
+        var inv=miner.Inventory;int slot=inv.ActiveSlotIndex,value=inv.GetSlotValue(slot);
+        if(Terrain.ExtractContents(value)==HandledBlocks[1]){
+            if(inv is not ComponentCreativeInventory){Message(player,"敌队演练信标仅限创造模式使用。");return true;}
+            var target=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,12);
+            if(!target.HasValue||target.Value.CellFace.Face!=4){Message(player,"对准 12 格内的开阔地面召唤敌队。");return true;}
+            var ground=target.Value.CellFace;int count=Terrain.ExtractData(value)==1?5:3;
+            int made=Project.FindSubsystem<SubsystemTacticalEnemies>(true).SpawnManual(new Point3(ground.X,ground.Y,ground.Z),count);
+            Message(player,made==count?$"已生成 {count} 人敌对 T 小队。":"未生成：地面空间不足、落点太近，或已达到敌队数量上限。");return true;
+        }
+        if(Terrain.ExtractContents(value)!=HandledBlocks[0])return false;
         int kind=Terrain.ExtractData(value);if(kind==3){Repair(player);return true;}if(kind<0||kind>2)return true;
         if(companions.Any(c=>c.OwnerIndex==player.PlayerData.PlayerIndex&&!c.DeathHandled)){Message(player,"已有一名同伴，请先收回装备并解散。");return true;}
         var hit=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,5);

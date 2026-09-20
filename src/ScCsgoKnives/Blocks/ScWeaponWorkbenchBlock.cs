@@ -5,7 +5,7 @@ namespace Game;
 // Independent mesh; do not inherit CraftingTableBlock's static Index field.
 public sealed class ScWeaponWorkbenchBlock : ScNoDurabilityBlock {
     public ScWeaponWorkbenchBlock() {
-        DefaultDisplayName = "武器装配台"; DefaultCategory = "Items"; CraftingId = "sccsgoworkbench";
+        DefaultDisplayName = "武器装配台"; DefaultCategory = "CS武器"; CraftingId = "sccsgoworkbench";
         // Match vanilla workbench presentation; world meshes remain full size.
         FirstPersonScale = .4f; FirstPersonOffset = new(.5f, -.5f, -.6f); FirstPersonRotation = new(0, 40, 0);
         InHandScale = .5f; InHandOffset = new(0, .1f, -.26f); InHandRotation = new(0, 45, 0);

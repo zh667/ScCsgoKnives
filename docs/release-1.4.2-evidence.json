@@ -1,0 +1,144 @@
+{
+  "core": {
+    "file": "[API1.9]CS武器1.4.2-作者ZH667-全量版.scmod",
+    "bytes": 382808689,
+    "sha256": "ffe007a09c48abd7023c6c33f31d1d005bfac90aaabd3258c10380cad3f9e64f",
+    "checks": 11272,
+    "failed": 0
+  },
+  "dlc": {
+    "file": "[API1.9]CS战术同伴拓展1.1.1-作者ZH667.scmod",
+    "bytes": 14578198,
+    "sha256": "0755715872f30b0c277d1a24b9c1efd4840e6a0f11e04594e687aaa250fe64ad",
+    "dllSha256": "27e497cabf9c3a8c427f32521cce8731597f5e0881946ad4b3cba3239dc23516",
+    "entries": 26,
+    "checks": 47,
+    "installedEngineChecks": 47,
+    "failed": 0
+  },
+  "installedEngine": {
+    "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+    "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c"
+  },
+  "nativeGpu": [
+    {
+      "name": "ct",
+      "phase": -1,
+      "pixels": 39126,
+      "bones": 98,
+      "meshes": 5,
+      "min": "-0.424469,-0.0026855469,-0.75242615",
+      "max": "0.37495422,1.8246841,0.4069519"
+    },
+    {
+      "name": "ct",
+      "phase": 0,
+      "pixels": 39126,
+      "bones": 98,
+      "meshes": 5,
+      "min": "-0.424469,-0.0026855469,-0.75242615",
+      "max": "0.37495422,1.8246841,0.4069519"
+    },
+    {
+      "name": "ct",
+      "phase": 0.5,
+      "pixels": 50710,
+      "bones": 98,
+      "meshes": 5,
+      "min": "-0.4826126,-0.069107056,-0.3738861",
+      "max": "0.3982544,1.6317139,1.3087158"
+    },
+    {
+      "name": "ct",
+      "phase": 1,
+      "pixels": 40842,
+      "bones": 98,
+      "meshes": 5,
+      "min": "-0.4889145,0.0230484,-0.0027160645",
+      "max": "0.41710663,0.9773941,1.805542"
+    },
+    {
+      "name": "t",
+      "phase": -1,
+      "pixels": 37679,
+      "bones": 90,
+      "meshes": 5,
+      "min": "-0.38406372,-0.010673523,-0.75190735",
+      "max": "0.37187195,1.8052673,0.41732788"
+    },
+    {
+      "name": "t",
+      "phase": 0,
+      "pixels": 37679,
+      "bones": 90,
+      "meshes": 5,
+      "min": "-0.38406372,-0.010673523,-0.75190735",
+      "max": "0.37187195,1.8052673,0.41732788"
+    },
+    {
+      "name": "t",
+      "phase": 0.5,
+      "pixels": 46626,
+      "bones": 90,
+      "meshes": 5,
+      "min": "-0.42923737,-0.068229675,-0.36390686",
+      "max": "0.38575745,1.6336212,1.200119"
+    },
+    {
+      "name": "t",
+      "phase": 1,
+      "pixels": 33720,
+      "bones": 90,
+      "meshes": 5,
+      "min": "-0.45500946,0.012680054,-0.01071167",
+      "max": "0.3985138,0.9525299,1.7593536"
+    },
+    {
+      "name": "hostage",
+      "phase": -1,
+      "pixels": 37310,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.39164734,-0.015914917,-0.6466675",
+      "max": "0.34516907,1.8095322,0.40496826"
+    },
+    {
+      "name": "hostage",
+      "phase": 0,
+      "pixels": 37310,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.39164734,-0.015914917,-0.6466675",
+      "max": "0.34516907,1.8095322,0.40496826"
+    },
+    {
+      "name": "hostage",
+      "phase": 0.5,
+      "pixels": 42686,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.43746948,-0.025413513,-0.33573914",
+      "max": "0.36709595,1.5814133,1.2500458"
+    },
+    {
+      "name": "hostage",
+      "phase": 1,
+      "pixels": 34644,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.47776794,0.025047302,-0.015945435",
+      "max": "0.36442566,0.8989334,1.7720337"
+    }
+  ],
+  "boundaries": [
+    "Isolated native desktop GPU diagnostic, not a full game screenshot.",
+    "Manual squad test uses prepared entity factories with the real packaged director.",
+    "No Android or all-mods acceptance.",
+    "Death is adapted skeletal collapse, not CS2 ragdoll physics."
+  ],
+  "formats": {
+    "gunLayout": 5,
+    "gunSchema": 6,
+    "migrationRequired": false
+  }
+}

@@ -12,7 +12,7 @@ public sealed class TacticalPanel : CanvasWidget {
     readonly BevelledButtonWidget[] commandButtons;
     public TacticalPanel(ComponentPlayer p,ComponentTacticalCompanion c){
         player=p;companion=c;c.PanelOpen=true;Size=new Vector2(620,520);HorizontalAlignment=WidgetAlignment.Center;VerticalAlignment=WidgetAlignment.Center;
-        Children.Add(ScGunUi.Frame());var scroll=new ScrollPanelWidget{Direction=LayoutDirection.Vertical};Children.Add(scroll);
+        Children.Add(ScGunUi.Frame());var scroll=new TacticalInventoryScroll{Direction=LayoutDirection.Vertical,ScrollPosition=0,ScrollSpeed=0};Children.Add(scroll);
         var body=new StackPanelWidget{Direction=LayoutDirection.Vertical,Margin=new Vector2(12,8)};scroll.Children.Add(body);
         body.Children.Add(ScGunUi.Heading(c.Creature.DisplayName));close=ScGunUi.Button("关闭",160);body.Children.Add(close);status=ScGunUi.Label("",.8f);body.Children.Add(status);
         body.Children.Add(ScGunUi.Note("左格：枪械或盾牌；右侧四格：通用弹匣／霰弹。拖动装备，取回时状态保留。"));
@@ -34,7 +34,7 @@ public sealed class TacticalPanel : CanvasWidget {
         for(int i=0;i<4;i++)commandGrid.SetWidgetCell(commandButtons[i],new Point2(i%buttons,i/buttons));
         base.MeasureOverride(available);
     }
-    static GridPanelWidget Grid(IInventory inv,int first,int count,int columns){var g=new GridPanelWidget{ColumnsCount=columns,RowsCount=(count+columns-1)/columns,HorizontalAlignment=WidgetAlignment.Center};for(int i=0;i<count;i++){var slot=new InventorySlotWidget{Size=new Vector2(64,64)};slot.AssignInventorySlot(inv,first+i);g.Children.Add(slot);g.SetWidgetCell(slot,new Point2(i%columns,i/columns));}return g;}
+    GridPanelWidget Grid(IInventory inv,int first,int count,int columns){var g=new GridPanelWidget{ColumnsCount=columns,RowsCount=(count+columns-1)/columns,HorizontalAlignment=WidgetAlignment.Center};for(int i=0;i<count;i++){var slot=new TacticalInventorySlot(player){Size=new Vector2(64,64)};slot.AssignInventorySlot(inv,first+i);g.Children.Add(slot);g.SetWidgetCell(slot,new Point2(i%columns,i/columns));}return g;}
     public override void Update(){
         if(!companion.IsAddedToProject||companion.DeathHandled||!companion.OwnedBy(player)||player.ComponentHealth.Health<=0||Vector3.DistanceSquared(player.ComponentBody.Position,companion.Creature.ComponentBody.Position)>36||close.IsClicked){Exit();return;}
         companion.PanelOpen=true;status.Text=$"生命 {companion.Creature.ComponentHealth.Health*100:0}%   {companion.Order switch {TacticalOrder.Guard=>"守在这里",TacticalOrder.Cover=>"前方掩护",_=>"跟随"}}   {(companion.CeaseFire?"停火":"允许还击")}";
@@ -44,4 +44,22 @@ public sealed class TacticalPanel : CanvasWidget {
         if(dismiss.IsClicked&&dismiss.IsEnabled){Exit();companion.Project.RemoveEntity(companion.Entity,true);}
     }
     void Exit(){companion.PanelOpen=false;if(player.ComponentGui.ModalPanelWidget==this)player.ComponentGui.ModalPanelWidget=null;}
+}
+
+// A gesture starting on an item belongs to native inventory drag/drop, not to scrolling.
+// Keep the decision until release, even after the pointer leaves the starting slot.
+public sealed class TacticalInventoryScroll : ScrollPanelWidget {
+    bool itemGesture;
+    public override void Update(){
+        if(Input.Tap is Vector2 tap)itemGesture=HitTestGlobal(tap,w=>w is InventorySlotWidget) is InventorySlotWidget;
+        if(Input.Drag is Vector2 drag&&HitTestGlobal(drag,w=>w is InventorySlotWidget) is InventorySlotWidget slot&&slot.DragHostWidget?.IsDragInProgress==true)itemGesture=true;
+        if(itemGesture){m_lastDragPosition=null;ScrollSpeed=0;if(!Input.Press.HasValue&&!Input.Drag.HasValue)itemGesture=false;return;}
+        base.Update();
+    }
+}
+public sealed class TacticalInventorySlot : InventorySlotWidget {
+    readonly ComponentPlayer viewer;
+    public TacticalInventorySlot(ComponentPlayer player){viewer=player;foreach(var child in AllChildren)child.IsHitTestVisible=false;}
+    public override GameWidget GameWidget=>viewer.GameWidget;
+    public override ComponentPlayer GetViewPlayer()=>viewer;
 }

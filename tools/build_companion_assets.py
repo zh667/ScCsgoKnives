@@ -74,7 +74,10 @@ def build(name,src,animation_source):
         # animation transfer alone rotates the entire hostage onto its side.
         old_roots=doc['scenes'][0]['nodes'];root_index=len(doc['nodes'])
         doc['nodes'].append({'name':'hostage_axis','rotation':[-.5,-.5,-.5,.5],'children':old_roots})
-        doc['scenes'][0]['nodes']=[root_index]
+        # ComponentCreatureModel applies world yaw to the model root. Keep that
+        # root neutral, as for the agents' virtual Root, above axis conversion.
+        doc['nodes'].append({'name':'Root','children':[root_index]})
+        doc['scenes'][0]['nodes']=[root_index+1]
     blob.extend(b'\0'*(-len(blob)%4));doc['buffers']=[{'byteLength':len(blob)}];js=json.dumps(doc,separators=(',',':')).encode();js+=b' '*(-len(js)%4)
     target=OUT/f'Models/ScCsgoTactical/{name}.glb';target.parent.mkdir(parents=True,exist_ok=True)
     target.write_bytes(struct.pack('<4sII',b'glTF',2,28+len(js)+len(blob))+struct.pack('<II',len(js),0x4e4f534a)+js+struct.pack('<II',len(blob),0x004e4942)+blob)

@@ -49,7 +49,7 @@ static class CreativeRuntimeRegression {
                 && grenade.GetIconViewOffset(value,new DrawBlockEnvironmentData {DrawBlockMode=DrawBlockMode.UI})==Vector3.UnitZ);
         }
         var bench=(Block)Activator.CreateInstance(mod.GetType("Game.ScWeaponWorkbenchBlock"));
-        Test("workbench-items-category",()=>bench.GetCategory(0)=="Items");
+        Test("workbench-cs-weapons-category",()=>bench.GetCategory(0)=="CS武器");
         var build=mod.GetType("Game.ScSurvivalMesh").GetMethod("Build");
         foreach(var item in new[]{(Type:"ScWeaponWorkbenchBlock",Kind:6),(Type:"ScAmmoBlock",Kind:0),(Type:"ScWeaponMaterialBlock",Kind:2)}) Test("first-person-outside-camera/"+item.Type,()=>{
             var block=(Block)Activator.CreateInstance(mod.GetType("Game."+item.Type));var mesh=(BlockMesh)build.Invoke(null,[item.Kind]);

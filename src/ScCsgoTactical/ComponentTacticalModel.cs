@@ -3,15 +3,40 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class ComponentTacticalModel : ComponentCreatureModel {
+    Matrix?[] lastLivingPose;
     public override void AnimateCreature(){}
     public override void Animate(){
         base.Animate();
         if(m_componentCreature.ComponentHealth.Health<=0&&m_boneTransforms[Model.RootBone.Index] is Matrix root){
+            // Freeze the last living pose so the dead state cannot snap to the bind pose.
+            if(lastLivingPose!=null)for(int i=0;i<m_boneTransforms.Length;i++)if(i!=Model.RootBone.Index)m_boneTransforms[i]=lastLivingPose[i];
+            float t=Math.Clamp(DeathPhase,0,1),ease=t*t*(3-2*t);
+            Bend("spine_1",.08f*ease);Bend("neck_0",.16f*ease);
             var body=m_componentCreature.ComponentBody;var pos=body.Position;
-            m_boneTransforms[Model.RootBone.Index]=root*Matrix.CreateTranslation(-pos)*Matrix.CreateFromAxisAngle(body.Matrix.Right,-MathF.PI*.5f*DeathPhase)*Matrix.CreateTranslation(pos+Vector3.UnitY*.15f);
+            foreach(var side in new[]{("L",-1f),("R",1f)}){
+                RelaxLimb("arm_upper_"+side.Item1,"arm_lower_"+side.Item1,pos+body.Matrix.Right*(side.Item2*.48f)+Vector3.UnitY*1.05f,ease);
+                RelaxLimb("arm_lower_"+side.Item1,"hand_"+side.Item1,pos+body.Matrix.Right*(side.Item2*.40f)+Vector3.UnitY*.75f,ease);
+            }
+            var away=new Vector3(-DeathCauseOffset.X,0,-DeathCauseOffset.Z);
+            if(away.LengthSquared()<.001f)away=-body.Matrix.Forward;else away=Vector3.Normalize(away);
+            var axis=Vector3.Normalize(Vector3.Cross(Vector3.UnitY,away));
+            m_boneTransforms[Model.RootBone.Index]=root*Matrix.CreateTranslation(-pos)*Matrix.CreateFromAxisAngle(axis,MathF.PI*.5f*ease)*Matrix.CreateTranslation(pos+Vector3.UnitY*(.43f*ease));
+        }else{
+            lastLivingPose??=new Matrix?[m_boneTransforms.Length];Array.Copy(m_boneTransforms,lastLivingPose,m_boneTransforms.Length);
         }
     }
-    public override void SyncAnimationParameters(){base.SyncAnimationParameters();var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
+    void Bend(string name,float radians){var bone=Model.FindBone(name,false);if(bone==null)return;var local=m_boneTransforms[bone.Index]??bone.Transform;var position=local.Translation;local.Translation=Vector3.Zero;m_boneTransforms[bone.Index]=Matrix.CreateRotationZ(radians)*local*Matrix.CreateTranslation(position);}
+    void RelaxLimb(string name,string childName,Vector3 goal,float amount){
+        var bone=Model.FindBone(name,false);var child=Model.FindBone(childName,false);if(bone?.ParentBone==null||child==null)return;
+        ProcessBoneHierarchy(Model.RootBone,Matrix.Identity,AbsoluteBoneTransformsForCamera);
+        var world=AbsoluteBoneTransformsForCamera[bone.Index];var parent=AbsoluteBoneTransformsForCamera[bone.ParentBone.Index];
+        var from=Vector3.Normalize(AbsoluteBoneTransformsForCamera[child.Index].Translation-world.Translation);var to=Vector3.Normalize(goal-world.Translation);
+        var axis=Vector3.Cross(from,to);if(axis.LengthSquared()<1e-8f)return;
+        var rotation=Matrix.CreateFromAxisAngle(Vector3.Normalize(axis),MathF.Acos(Math.Clamp(Vector3.Dot(from,to),-1,1))*amount);
+        var local=m_boneTransforms[bone.Index]??bone.Transform;var translation=local.Translation;world.Translation=parent.Translation=Vector3.Zero;
+        local=world*rotation*Matrix.Invert(parent);local.Translation=translation;m_boneTransforms[bone.Index]=local;
+    }
+    public override void SyncAnimationParameters(){base.SyncAnimationParameters();AnimationController?.Parameters.SetFloat("DeathSpeed",1.2f);var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
     public override void DrawExtras(Camera camera){
         base.DrawExtras(camera);if(m_componentCreature.ComponentHealth.Health<=0)return;
         if(Entity.FindComponent<ComponentTacticalEnemy>()?.State is {} enemy){DrawGun(camera,enemy.DisplayValue);return;}

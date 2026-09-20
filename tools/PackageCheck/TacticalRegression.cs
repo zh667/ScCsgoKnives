@@ -70,7 +70,7 @@ static class TacticalRegression {
                         min=Vector3.Min(min,skinned);max=Vector3.Max(max,skinned);
                     }
                 }
-                Require((min+max)*.5f is Vector3 center&&Vector3.Distance(center,body.Position+Vector3.UnitY)<2&&max.Y-min.Y>1.3f&&max.Y-min.Y<2.5f,$"native skinned body misplaced: {min} .. {max}, body {body.Position}");
+                Require((min+max)*.5f is Vector3 center&&Vector3.Distance(center,body.Position+Vector3.UnitY)<.8f&&min.Y-body.Position.Y>-.15f&&max.Y-body.Position.Y>1.5f&&max.Y-min.Y<2.5f,$"native skinned body misplaced: {min} .. {max}, body {body.Position}");
             }finally{caches.Remove(route);caches.Remove(configRoute+".json");}
             foreach(var animation in data.Animations){Require(!animation.Channels.Any(c=>c.TargetBoneName=="root_motion"&&c.Property==ModelAnimation.AnimationProperty.Translation),"root travel will drift");
                 var player=new AnimationPlayer();player.SetAnimation(model,animation);player.Play(true);
@@ -113,16 +113,28 @@ static class TacticalRegression {
         var registryField=C("ScGunRegistry").GetField("Current");var oldRegistry=registryField.GetValue(null);
         try{
             foreach(var pair in new[]{(T("ScTacticalShieldBlock"),705),(T("ScTacticalBeaconBlock"),706),(T("ScTacticalDefuserBlock"),707),(C("ScWeaponMaterialBlock"),708),(C("ScGunBlock"),701),(C("ScAmmoBlock"),702),(C("ScGunSkinTemplateBlock"),703),(C("ScGunCounterTemplateBlock"),704)}){var b=(Block)Activator.CreateInstance(pair.Item1);b.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=b;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}
-            Test("beacon-native-draw-full-image-all-variants-and-view-modes",()=>{
-                var block=BlocksManager.Blocks[706];var texture=Blank<Texture2D>();
-                T("ScTacticalBeaconBlock").GetField("icon",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(block,texture);
-                using var png=new MemoryStream(Bytes("Assets/Textures/ScCsgoTactical/beacon.png"));var img=Image.Load(png);
-                Require(img.Pixels.Any(p=>p.A>0),"icon is entirely transparent");
-                foreach(int value in block.GetCreativeValues())foreach(var mode in Enum.GetValues<DrawBlockMode>()){
-                    var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;
-                    block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
-                    var vertices=renderer.TexturedBatches.Single().TriangleVertices.ToArray();
-                    Require(vertices.Length>0&&vertices.Min(v=>v.TexCoord.X)==0&&vertices.Min(v=>v.TexCoord.Y)==0&&vertices.Max(v=>v.TexCoord.X)==1&&vertices.Max(v=>v.TexCoord.Y)==1,$"variant {Terrain.ExtractData(value)} / {mode} crops standalone icon to atlas tile");
+            Test("static-items-native-mesh-and-draw-all-variants-and-modes",()=>{
+                var items=(System.Collections.IDictionary)T("TacticalItemMesh").GetField("Items").GetValue(null);
+                foreach(string name in new[]{"radio","repair_item","defuser_item"}){
+                    using var stream=new MemoryStream(Bytes("Assets/Models/ScCsgoTactical/"+name+".glb"));var data=GltfLoader.Load(stream);var mesh=new BlockMesh();
+                    foreach(var part in data.Meshes.SelectMany(m=>m.MeshParts)){
+                        var b=data.Buffers[part.BuffersDataIndex];var vb=Blank<VertexBuffer>();vb.VertexDeclaration=b.VertexDeclaration;vb.VerticesCount=b.Vertices.Length/b.VertexDeclaration.VertexStride;vb.Tag=b.Vertices;
+                        var ib=Blank<IndexBuffer>();ib.Tag=b.Indices;ib.IndexFormat=IndexFormat.ThirtyTwoBits;ib.IndicesCount=b.Indices.Length/4;
+                        var mp=new ModelMeshPart{VertexBuffer=vb,IndexBuffer=ib,StartIndex=part.StartIndex,IndicesCount=part.IndicesCount};
+                        mesh.AppendModelMeshPart(mp,Matrix.Identity,false,false,false,false,Color.White);
+                    }
+                    var bounds=mesh.CalculateBoundingBox();var span=bounds.Max-bounds.Min;Require(span.X>.01f&&span.Y>.01f&&span.Z>.01f&&mesh.Indices.Count>30,"flat/empty item "+name);
+                    if(name=="repair_item")Require(mesh.Vertices.Select(v=>v.TextureCoordinates.X).Distinct().Count()>50,"toolbox repeated UV collapsed to a single atlas edge");
+                    using var png=new MemoryStream(Bytes("Assets/Textures/ScCsgoTactical/"+name+".png"));Require(Image.Load(png).Pixels.All(p=>p.A==255),"unexpected transparent item atlas");
+                    items[name]=(mesh,Blank<Texture2D>());
+                }
+                var squad=(Block)Activator.CreateInstance(T("ScTacticalSquadBlock"));squad.BlockIndex=709;BlocksManager.Blocks[709]=squad;BlocksManager.BlockTypeToIndex[squad.GetType()]=709;
+                Require(squad.GetCreativeValues().Count()==2,"missing three/five-member beacons");
+                foreach(var block in new[]{BlocksManager.Blocks[706],BlocksManager.Blocks[707],squad})foreach(int value in block.GetCreativeValues())foreach(var mode in Enum.GetValues<DrawBlockMode>()){
+                    var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
+                    var vertices=renderer.TexturedBatches.SelectMany(b=>b.TriangleVertices).ToArray();
+                    Require(vertices.Length>24&&vertices.All(v=>float.IsFinite(v.Position.X+v.Position.Y+v.Position.Z)&&v.TexCoord.X>=0&&v.TexCoord.X<=1&&v.TexCoord.Y>=0&&v.TexCoord.Y<=1),"invalid 3D item draw");
+                    Require(block.DefaultCategory=="CS武器","wrong creative category");
                 }
             });
             ComponentInventoryBase Inv(){var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(new ValuesDictionary{{"SlotsCount",5},{"Slots",new ValuesDictionary()}},null);return inv;}
@@ -186,12 +198,30 @@ static class TacticalRegression {
                     using(var glyphs=vanilla.Entries.Single(e=>e.FullName.EndsWith("Fonts/Pericles.lst")).Open())LabelWidget.BitmapFont=BitmapFont.Initialize((Texture2D)null,glyphs);
                     foreach(string n in new[]{"ProgressBar","InteractiveItemOverlay","EditItemOverlay","FoodItemOverlay"})TextureAtlasManager.m_subtextures["Textures/Atlas/"+n]=new Subtexture(texture,Vector2.Zero,Vector2.One);
                     caches["Fonts/Pericles"]=[LabelWidget.BitmapFont];BlocksManager.Blocks[0]=new AirBlock();
-                    var f=Npc();var inv=(ComponentInventory)f.Owner.ComponentMiner.Inventory;for(int i=0;i<36;i++)inv.m_slots.Add(new ComponentInventoryBase.Slot());
+                    var f=Npc();f.Owner.ComponentInput=Blank<ComponentInput>();f.Owner.ComponentInput.SplitSourceSlotIndex=-1;var inv=(ComponentInventory)f.Owner.ComponentMiner.Inventory;for(int i=0;i<36;i++)inv.m_slots.Add(new ComponentInventoryBase.Slot());
                     var panel=(CanvasWidget)Activator.CreateInstance(T("TacticalPanel"),f.Owner,f.Npc);panel.WidgetsHierarchyInput=new WidgetInput();f.Owner.ComponentGui.m_modalPanelContainerWidget.Children.Add(panel);
                     foreach(var size in new[]{new Vector2(850,480),new Vector2(640,360),new Vector2(420,720),new Vector2(480,540)}){
                         panel.Measure(size);panel.Arrange(Vector2.Zero,new Vector2(Math.Min(620,size.X),Math.Min(520,size.Y)));panel.Measure(size);panel.Arrange(Vector2.Zero,new Vector2(Math.Min(620,size.X),Math.Min(520,size.Y)));
                         var slots=panel.AllChildren.OfType<InventorySlotWidget>().ToArray();Require(slots.Length==41,"hidden/missing player slots");Require(slots.All(s=>s.ActualSize.X>=48&&s.GlobalBounds.Min.X>=panel.GlobalBounds.Min.X&&s.GlobalBounds.Max.X<=panel.GlobalBounds.Max.X+.1f),"slots overflow narrow screen");
                     }
+                    var equipment=panel.AllChildren.OfType<InventorySlotWidget>().First();
+                    var center=equipment.GlobalBounds.Center();
+                    Require(equipment.HitTestGlobal(center)==equipment,"native slot center intercepted by "+equipment.HitTestGlobal(center)?.GetType().Name);
+                    var input=panel.Input;panel.WidgetsHierarchyInput=null;var host=new DragHostWidget();
+                    var root=new CanvasWidget{WidgetsHierarchyInput=input};f.Owner.ComponentGui.m_modalPanelContainerWidget.Children.Remove(panel);root.Children.Add(panel);root.Children.Add(host);root.Measure(new Vector2(620,720));root.Arrange(Vector2.Zero,new Vector2(620,720));
+                    var slotsNow=panel.AllChildren.OfType<InventorySlotWidget>().ToArray();foreach(var s in slotsNow)s.m_dragHostWidget=host;
+                    f.Owner.ComponentInput=Blank<ComponentInput>();f.Owner.ComponentInput.SplitSourceSlotIndex=-1;
+                    var source=slotsNow[5];var targetSlot=slotsNow[0];inv.m_slots[0]=new(){Value=Terrain.MakeBlockValue(705,0,317),Count=1};
+                    var scroll=panel.AllChildren.OfType<ScrollPanelWidget>().Single();
+                    void Transfer(InventorySlotWidget from,InventorySlotWidget to){
+                        input.Clear();input.Tap=input.Press=from.GlobalBounds.Center();from.Update();scroll.Update();input.Tap=null;input.Drag=input.Press=from.GlobalBounds.Center();input.DragMode=DragMode.AllItems;from.Update();scroll.Update();
+                        Require(host.IsDragInProgress&&input.Drag.HasValue,"slot cannot start native drag or scroll consumed it");
+                        input.Drag=input.Press=to.GlobalBounds.Center();host.Update();scroll.Update();Require(input.Drag.HasValue,"scroll stole moving item");
+                        input.Drag=input.Press=null;host.Update();scroll.Update();Require(!host.IsDragInProgress,"native release failed");
+                    }
+                    Transfer(source,targetSlot);Require(inv.GetSlotCount(0)==0&&f.Inventory.GetSlotValue(0)==Terrain.MakeBlockValue(705,0,317),"drag-in lost shield/wear");
+                    Transfer(targetSlot,source);Require(f.Inventory.GetSlotCount(0)==0&&inv.GetSlotValue(0)==Terrain.MakeBlockValue(705,0,317),"drag-out lost shield/wear");
+                    root.Children.Remove(panel);f.Owner.ComponentGui.m_modalPanelContainerWidget.Children.Add(panel);
                     ((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination is null,"NPC moves while equipping");f.Owner.ComponentGui.m_modalPanelContainerWidget.Children.Clear();f.Time.m_gameTime=3;((IUpdateable)f.Npc).Update(.1f);Require(f.Path.Destination.HasValue,"NPC frozen after native inventory close");
                 }finally{caches.Clear();foreach(var c in oldCaches)caches[c.Key]=c.Value;TextureAtlasManager.m_subtextures.Clear();foreach(var a in atlas)TextureAtlasManager.m_subtextures[a.Key]=a.Value;LabelWidget.m_bitmapFont=font;}
             });
