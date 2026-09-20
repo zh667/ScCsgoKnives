@@ -43,10 +43,11 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
         var human = (ComponentHumanModel)TargetComponent;
         int value = ComponentMiner?.ActiveBlockValue ?? 0;
         bool shield = ScTacticalShieldBlock.IsShield(value);
-        bool armed = ScThirdPerson.AssetFor(value, out _) != null;
+        string asset = ScThirdPerson.AssetFor(value, out _);
+        bool armed = asset != null;
         pose.Sample(Time.FrameIndex, Time.FrameDuration, ComponentBody.Velocity.XZ.Length(), armed, shield,
             ComponentBody.CrouchFactor, Math.Max(human.DeathPhase, human.m_lieDownFactorModel),
-            shield||human.DeathPhase>0?default:KnifeAnimationController.ReadAction(Entity.FindComponent<ComponentFirstPersonModel>()));
+            shield||human.DeathPhase>0?default:KnifeAnimationController.ReadAction(Entity.FindComponent<ComponentFirstPersonModel>()),asset);
         Array.Copy(pose.Local, TargetComponent.m_boneTransforms, pose.Local.Length);
         // NMM retains the original human controller. Cancel only its root correction, which the
         // native creature renderer appends next; never replace its controller or event subscriptions.
@@ -91,7 +92,7 @@ public sealed class CsPlayerPose {
         controller = loader.CreateController(loader.LoadFromJsonNode(System.Text.Json.Nodes.JsonNode.Parse(
             ContentManager.Get<string>("Animations/ScTactical", ".json"))), model);
     }
-    public void Sample(int frameIndex, float dt, float speed, bool armed, bool shield, float crouch, float lie, ScWeaponAction action=default) {
+    public void Sample(int frameIndex, float dt, float speed, bool armed, bool shield, float crouch, float lie, ScWeaponAction action=default,string heldAsset=null) {
         if (frame == frameIndex) return;
         bool first = frame < 0;
         frame = frameIndex;
@@ -103,7 +104,7 @@ public sealed class CsPlayerPose {
         controller.Update(first ? .2f : Math.Clamp(dt, 0, .1f));
         Array.Clear(Local);
         controller.ComputeBoneTransforms(Local);
-        if(lie<=0&&!shield)Actions.Apply(Local,action);
+        if(lie<=0&&!shield)Actions.ApplyHeld(Local,action,heldAsset??action.Asset);
         Matrix root = Local[Model.RootBone.Index] ?? Model.RootBone.Transform;
         root = Matrix.CreateFromQuaternion(controller.EffectiveRootRotation) * root;
         // First edition: a bounded crouch compression and lay-down adaptation, without physics edits.

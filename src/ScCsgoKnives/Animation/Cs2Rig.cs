@@ -255,6 +255,10 @@ public static class Cs2Rig {
 
     public static IReadOnlyList<string> GetMeshParts(string gun) => Cs2Catalog.Get(gun)?.MeshParts ?? [];
 
+    // OBJ bindings can contain geometry normalization in addition to the joint frame.
+    // World props need the canonical joint, while their existing mesh bake stays intact.
+    public static string MeshPartBone(string asset, string part) => Get(asset)?.File.Bindings?.FirstOrDefault(b => b.Name == part)?.Bone;
+
     /// <summary>
     /// Length in seconds of the clip that would actually play for this alias, or 0
     /// when the asset is unknown.

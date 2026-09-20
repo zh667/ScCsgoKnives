@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-20",
+  "authorization": "User authorized removal of superseded releases",
+  "retained": [
+    "core 1.4.6",
+    "tactical 1.2.2",
+    "NekoMeko 1.1",
+    "all installed Mods",
+    "worlds/backups/source exports/compatibility fixtures"
+  ],
+  "files": [
+    {
+      "path": "output/[API1.9]CS武器1.4.5-作者ZH667-全量版.scmod",
+      "bytes": 382813616,
+      "sha256": "369915bc5f0f70ac6d047b181dde1c9c233c1405cfc0adc9919a60d1cfb8620f",
+      "state": "recycled",
+      "recovery": "Windows Recycle Bin"
+    },
+    {
+      "path": "output/[API1.9]CS战术同伴拓展1.2.1-作者ZH667.scmod",
+      "bytes": 22778740,
+      "sha256": "c9873dbe2c54b86176378df5652a372fd6a58841f10e7ef49ce517c43118ce92",
+      "state": "recycled",
+      "recovery": "Windows Recycle Bin"
+    }
+  ],
+  "totalBytes": 405592356.0,
+  "applied": true
+}

@@ -63,12 +63,20 @@ public static class ScThirdPersonMath {
 /// <summary>A mod weapon baked for third person: geometry in weapon-local metres (forward -Z, up +Y) in its idle
 /// pose, and where the CS2 rig puts each hand on it (wpnHand_R / wpnHand_L relative to the weapon root).</summary>
 public sealed class ScThirdPersonWeapon {
-    public sealed record Group(BlockMesh Mesh, string Texture, bool Silencer = false, string Bone = null, Matrix BindInverse = default);
+    public sealed record Group(BlockMesh Mesh, string Texture, bool Silencer = false, string Bone = null, Matrix BindInverse = default) {
+        public string WorldBone;
+        public Matrix WorldInverse;
+        public string[] VertexBones;
+        public Matrix[] VertexInverses;
+        public BlockMesh WorldScratch;
+    }
     public string Asset;
     public Group[] Groups = [];
     public Vector3 GripRight, GripLeft, Muzzle;
     public bool HasLeftGrip, HasRightGrip;
     public int Vertices;
+    // Converts the idle bake back to the source weapon frame for world animation.
+    public Matrix WorldRootInverse {get;private set;}
     Matrix idleRootPlacement;
     static Matrix Root(Cs2Rig.Pose p) {
         foreach(string name in new[]{"weapon","weapon_offset","root_motion"})if(p.Bones.TryGetValue(name,out var m))return m;
@@ -182,6 +190,7 @@ public sealed class ScThirdPersonWeapon {
         Matrix placement = LocalPlacement(pose);
         var result = new ScThirdPersonWeapon { Asset = asset };
         result.idleRootPlacement=Root(pose)*placement;
+        result.WorldRootInverse=Matrix.Invert(result.idleRootPlacement)*Matrix.CreateScale(.0254f);
         result.HasRightGrip = pose.Bones.TryGetValue("wpnHand_R", out Matrix right);
         result.HasLeftGrip = pose.Bones.TryGetValue("wpnHand_L", out Matrix left);
         result.GripRight = result.HasRightGrip ? Vector3.Transform(right.Translation, placement) : Vector3.Zero;
@@ -196,6 +205,9 @@ public sealed class ScThirdPersonWeapon {
         int variant = Array.FindIndex(Enumerable.Range(0, CsmcKnifeRig.AssetCount).ToArray(), v => CsmcKnifeRig.GetAssetName(v) == asset);
         bool gun = variant >= 0 && CsmcKnifeRig.IsGun(variant), grenade = variant >= 0 && CsmcKnifeRig.IsGrenade(variant);
         var groups = new Dictionary<(string Texture, bool Silencer, string Bone), BlockMesh>();
+        var mixedGroups = new List<Group>();
+        string Canonical(string bone) => bone?.StartsWith("@")==true?Cs2Rig.MeshPartBone(asset,bone[1..]):bone??"weapon";
+        Matrix WorldInverse(string bone) => Matrix.Invert(pose.Bones.GetValueOrDefault(bone,Root(pose))*placement)*Matrix.CreateScale(.0254f);
         BlockMesh Group(string texture, bool silencer = false, string bone=null) { if (!groups.TryGetValue((texture, silencer,bone), out var m)) groups[(texture, silencer,bone)] = m = new BlockMesh(); return m; }
         var objParts = Cs2Rig.GetMeshParts(asset);
         if (gun && legacy) {
@@ -259,10 +271,29 @@ public sealed class ScThirdPersonWeapon {
                 var geometry = ScGrenadeWorldMesh.Build(mesh, asset == "grenade_molotov", false);
                 foreach (var part in geometry.Parts) Append(Group(ScGrenadeBlock.MaterialKey(asset, part.Material)), geometry.Vertices, part.Indices, Matrix.Identity, ref result.Vertices);
             }
-            else foreach (var part in mesh.Primitives) Append(Group(gun ? asset + "_hd" : asset + "_cs2"), mesh.Skinned, part.Indices, Matrix.Identity, ref result.Vertices);
+            else if(!gun)foreach(var part in mesh.Primitives){
+                var rigidIndices=new Dictionary<int,List<int>>();var mixed=new List<int>();
+                for(int i=0;i<part.Indices.Length;i+=3){
+                    int joint=mesh.RigidJoint(part.Indices[i]);
+                    if(joint>=0&&joint==mesh.RigidJoint(part.Indices[i+1])&&joint==mesh.RigidJoint(part.Indices[i+2])){
+                        if(!rigidIndices.TryGetValue(joint,out var list))rigidIndices[joint]=list=[];
+                        list.AddRange(part.Indices.AsSpan(i,3));
+                    }else mixed.AddRange(part.Indices.AsSpan(i,3));
+                }
+                foreach(var entry in rigidIndices)Append(Group(asset+"_cs2",false,mesh.Joints[entry.Key]),mesh.Skinned,entry.Value.ToArray(),Matrix.Identity,ref result.Vertices);
+                if(mixed.Count>0){
+                    var target=new BlockMesh();Append(target,mesh.Skinned,mixed.ToArray(),Matrix.Identity,ref result.Vertices);
+                    var bones=mixed.Distinct().Select(i=>mesh.RigidJoint(i)>=0?mesh.Joints[mesh.RigidJoint(i)]:throw new InvalidOperationException("blended knife vertex")).ToArray();
+                    var scratch=new BlockMesh();foreach(var v in target.Vertices)scratch.Vertices.Add(v);foreach(var index in target.Indices)scratch.Indices.Add(index);
+                    mixedGroups.Add(new Group(target,asset+"_cs2"){VertexBones=bones,VertexInverses=bones.Select(WorldInverse).ToArray(),WorldScratch=scratch});
+                }
+            }
+            else foreach(var part in mesh.Primitives)Append(Group(asset+"_hd"),mesh.Skinned,part.Indices,Matrix.Identity,ref result.Vertices);
         }
         result.Groups = groups.Select(g => new Group(g.Value, g.Key.Texture, g.Key.Silencer,g.Key.Bone,
-            g.Key.Bone==null?Matrix.Identity:Matrix.Invert((g.Key.Bone.StartsWith("@")?pose.GetPart(g.Key.Bone[1..]):pose.Bones[g.Key.Bone])*placement))).ToArray();
+            g.Key.Bone==null?Matrix.Identity:Matrix.Invert((g.Key.Bone.StartsWith("@")?pose.GetPart(g.Key.Bone[1..]):pose.Bones[g.Key.Bone])*placement)){
+                WorldBone=Canonical(g.Key.Bone),WorldInverse=WorldInverse(Canonical(g.Key.Bone))
+            }).Concat(mixedGroups).ToArray();
         if (result.Vertices == 0) throw new InvalidOperationException("no geometry");
         return result;
     }

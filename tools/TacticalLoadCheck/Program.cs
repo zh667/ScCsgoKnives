@@ -24,7 +24,8 @@ string Output(string name)=>Path.Combine(root,"output",name);
 using var content=System.IO.Compression.ZipFile.OpenRead(args[1]);
 int failed=0;
 try {
-    var core=Package(Output("[API1.9]CS武器1.4.5-作者ZH667-全量版.scmod"));
+    string coreVersion=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"src/ScCsgoKnives/modinfo.json"))).RootElement.GetProperty("Version").GetString();
+    var core=Package(Output($"[API1.9]CS武器{coreVersion}-作者ZH667-全量版.scmod"));
     var tactical=Package(args[2]);
     var mods=new List<ModEntity>{core,tactical};
     bool complete=mode is "both" or "reversed" or "legacy" or "reload-disabled";

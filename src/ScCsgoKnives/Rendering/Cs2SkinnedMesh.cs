@@ -49,6 +49,17 @@ public sealed class Cs2SkinnedMesh {
     Vertex[] m_skinned;
     Matrix[] m_bone;         // inverseBind * absolute, per joint, rebuilt per frame
 
+    // Knife vertices are rigidly weighted, including the vertices on folding hinges.
+    // Keep cross-joint triangles intact; the third-person bridge transforms each of
+    // their vertices separately instead of assigning the whole triangle to one joint.
+    public int RigidJoint(int vertex) {
+        int joint=-1;
+        for(int k=0;k<4;k++)if(m_weights[vertex*4+k]>1e-6f){
+            int next=m_bones[vertex*4+k];if(joint>=0&&joint!=next)return -1;joint=next;
+        }
+        return joint;
+    }
+
     /// <summary>
     /// CS2's forearm twist bones. weapon_arms.vmdl drives each with an
     /// AnimConstraintTiltTwist: slave arm_lower_&lt;side&gt;_TWIST at weight 0.5 and

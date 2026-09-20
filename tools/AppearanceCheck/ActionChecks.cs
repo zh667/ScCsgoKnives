@@ -63,12 +63,15 @@ static class ActionChecks {
             string file=Path.Combine(assets,route+".png");if(!File.Exists(file))file=Path.Combine(assets,route+".webp");using var s=File.OpenRead(file);var tex=Texture2D.Load(Image.Load(s));caches[route]=[tex];return tex;}
         ScThirdPersonWeapon Weapon(string asset){
             foreach(string file in Directory.GetFiles(Path.Combine(assets,"Models/ScCsgoKnives"),asset+"*cs2*.obj")){using var s=File.OpenRead(file);caches["Models/ScCsgoKnives/"+Path.GetFileNameWithoutExtension(file)]=[ObjModelReader.Load(s)];}
-            Texture(ScGunSkinCatalog.Material(asset,0));foreach(var part in ScGunNativeMesh.Parts(asset))if(part.Material!=null)Texture(part.Material);
-            bool native=ScGunNativeMesh.Resolve(asset,0,out _,out _)!=null;var w=ScThirdPersonWeapon.For(asset,native);if(w==null)throw new Exception("missing weapon "+asset);return w;
+            bool gun=GunSpec.ForAsset(asset)!=null;
+            if(gun){Texture(ScGunSkinCatalog.Material(asset,0));foreach(var part in ScGunNativeMesh.Parts(asset))if(part.Material!=null)Texture(part.Material);}
+            else Texture(asset+"_cs2");
+            bool native=gun&&ScGunNativeMesh.Resolve(asset,0,out _,out _)!=null;var w=ScThirdPersonWeapon.For(asset,native);if(w==null)throw new Exception("missing weapon "+asset);return w;
         }
         int frame=1000;
         foreach(var pair in models){
             var model=pair.Value;human.SetModel(model);var sampler=new ScAgentActions(model);
+            ContactChecks.Run(root,pair.Key,model,human,body,check);
             var npc=new ComponentTacticalModel();var enemy=new ComponentTacticalEnemy{State=TacticalEnemyState.Create(TacticalRole.Rifle,"fixture",new Engine.Random(1))};
             var npcBody=new ComponentBody{Position=body.Position,BoxSize=body.BoxSize};
             var npcCreature=new ComponentCreature{ComponentBody=npcBody,ComponentHealth=new ComponentHealth{Health=1},ComponentSpawn=new ComponentSpawn{SpawnDuration=0},ComponentLocomotion=new ComponentLocomotion()};
@@ -86,9 +89,21 @@ static class ActionChecks {
                     check(pair.Key+" "+spec.Name+" "+kind+" native world clip",sampler.ClipFor(act)!=null);
                 }
             }
-            foreach(string asset in new[]{"ak47","mp9","deagle","nova"}){
-                var weapon=Weapon(asset);
+            var assetsToCheck=Enumerable.Range(0,CsmcKnifeRig.AssetCount).Where(i=>!CsmcKnifeRig.IsGrenade(i)).Select(CsmcKnifeRig.GetAssetName).Distinct().ToArray();
+            foreach(string asset in assetsToCheck){
+                    var weapon=Weapon(asset);
+                check(pair.Key+asset+" weapon-specific hold",model.Animations.Any(a=>a.Name=="hold_"+asset));
+                var held=new Matrix?[model.Bones.Count];sampler.ApplyHeld(held,default,asset);
+                var idle=new Matrix?[model.Bones.Count];sampler.ApplyHeld(idle,new ScWeaponAction(asset,ScWeaponActionKind.Idle,null,0,0,0,0),asset);
+                check(pair.Key+asset+" inactive action retains actual held pose",held.SequenceEqual(idle)&&held.Any(x=>x.HasValue));
+                if(GunSpec.ForAsset(asset)==null){
+                    var rifle=new Matrix?[model.Bones.Count];sampler.ApplyHeld(rifle,default,"ak47");
+                    check(pair.Key+asset+" knife is not rifle pose",held[model.FindBone("arm_upper_R").Index]!=rifle[model.FindBone("arm_upper_R").Index]);
+                }
+                foreach(var group in weapon.Groups)foreach(string bone in group.VertexBones??[group.WorldBone])
+                    check(pair.Key+asset+" canonical prop joint "+bone,bone=="shell"||sampler.HasProp(asset,bone));
                 foreach(var kind in new[]{ScWeaponActionKind.Idle,ScWeaponActionKind.Draw,ScWeaponActionKind.Reload,ScWeaponActionKind.Inspect})foreach(float progress in new[]{.25f,.55f,.8f}){
+                    if(kind==ScWeaponActionKind.Reload&&(GunSpec.ForAsset(asset)==null||asset=="taser"))continue;
                     if(kind==ScWeaponActionKind.Idle&&progress!=.25f)continue;
                     string clip=kind==ScWeaponActionKind.Draw?"deploy":kind==ScWeaponActionKind.Reload?"reload":"inspect";
                     var act=new ScWeaponAction(asset,kind,clip,7,progress*3,3,progress*Cs2Rig.Duration(asset,clip));
@@ -98,17 +113,18 @@ static class ActionChecks {
                     var before=(Matrix?[])pose.Local.Clone();pose.Sample(frame-2,.1f,1.2f,true,false,0,0,act);check("repeat camera keeps exact pose",before.SequenceEqual(pose.Local));
                     Array.Copy(pose.Local,human.m_boneTransforms,pose.Local.Length);human.m_boneTransforms[model.RootBone.Index]*=body.Matrix;
                     human.ProcessBoneHierarchy(model.RootBone,Matrix.Identity,human.AbsoluteBoneTransformsForCamera);
-                    Matrix hand=human.AbsoluteBoneTransformsForCamera[model.FindBone("hand_R").Index];var world=pose.Actions.WeaponWorld(weapon.GripRight,hand);
-                    check("animated grip remains at hand",Vector3.Distance(Vector3.Transform(weapon.GripRight,world),hand.Translation)<.001f);
+                    Matrix hand=human.AbsoluteBoneTransformsForCamera[model.FindBone("hand_R").Index];var world=pose.Actions.RootWorld(weapon,human.AbsoluteBoneTransformsForCamera);
+                    check("weapon socket remains near hands "+asset,Vector3.Distance(world.Translation,hand.Translation)<1.5f);
                     var joints=new Matrix[48];SubsystemModelsRenderer.CalculateJointMatrices(human,model,Matrix.Identity,joints);
-                    var view=Matrix.CreateLookAt(body.Position+new Vector3(2.8f,1.35f,3),body.Position+new Vector3(0,1,0),Vector3.UnitY);
+                    var view=Matrix.CreateLookAt(body.Position+new Vector3(GunSpec.ForAsset(asset)==null?2.8f:-2.8f,1.35f,-3),body.Position+new Vector3(0,1,0),Vector3.UnitY);
                     Display.RenderTarget=target;Display.Viewport=new Viewport(0,0,480,640);Display.Clear(new Color(22,27,34),1,0);
                     Display.BlendState=BlendState.Opaque;Display.DepthStencilState=DepthStencilState.Default;Display.RasterizerState=RasterizerState.CullCounterClockwiseScissor;Display.ScissorRectangle=new Rectangle(0,0,480,640);
                     shader.Transforms.World[0]=view;shader.Transforms.View=Matrix.Identity;var projection=Matrix.CreatePerspectiveFieldOfView(.75f,.75f,.1f,100);shader.Transforms.Projection=projection;
                     shader.InstancesCount=1;shader.JointMatrices=joints;
                     foreach(var mesh in model.Meshes)foreach(var part in mesh.MeshParts){shader.Texture=model.GetTexture(model.GetMaterial(part.MaterialIndex).BaseColorTexture.TextureIndex);Display.DrawIndexed(PrimitiveType.TriangleList,shader,part.VertexBuffer,part.IndexBuffer,part.StartIndex,part.IndicesCount);}
-                    var renderer=new PrimitivesRenderer3D();var weaponPose=weapon.ActionPose(act);Vector3 lo=new(float.MaxValue),hi=new(float.MinValue);
-                    foreach(var group in weapon.Groups){if(!weapon.ShowPart(group,weaponPose,act))continue;var transform=weapon.PartTransform(group,weaponPose)*world;foreach(var v in group.Mesh.Vertices){var q=Vector3.Transform(v.Position,transform);lo=Vector3.Min(lo,q);hi=Vector3.Max(hi,q);}var partView=transform*view;ScGunNativeMesh.DrawWorld(renderer,group.Mesh,Texture(group.Texture),Color.White,1,ref partView,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=DrawBlockMode.ThirdPerson});}
+                    var renderer=new PrimitivesRenderer3D();Vector3 lo=new(float.MaxValue),hi=new(float.MinValue);float handDistance=float.MaxValue;
+                    foreach(var group in weapon.Groups){if(!pose.Actions.ShowWorldPart(weapon,group,act))continue;var part=pose.Actions.WorldPart(weapon,group,human.AbsoluteBoneTransformsForCamera);var transform=part.Transform;foreach(var v in part.Mesh.Vertices){var q=Vector3.Transform(v.Position,transform);lo=Vector3.Min(lo,q);hi=Vector3.Max(hi,q);handDistance=Math.Min(handDistance,Vector3.Distance(q,hand.Translation));}var partView=transform*view;ScGunNativeMesh.DrawWorld(renderer,part.Mesh,Texture(group.Texture),Color.White,1,ref partView,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=DrawBlockMode.ThirdPerson});}
+                    if(kind==ScWeaponActionKind.Idle)check("held geometry reaches palm "+asset+" "+handDistance,handDistance<.14f);
                     check("animated weapon bounded "+asset+kind+progress,float.IsFinite(lo.X)&&(hi-lo).Length()<3&&Vector3.Distance((lo+hi)/2,hand.Translation)<2);
                     renderer.Flush(projection);using var file=File.Create(Path.Combine(output,$"action-{pair.Key}-{asset}-{kind}-{progress:0.00}.png"));RenderTarget2D.Save(target,file,ImageFileFormat.Png,false);
                 }

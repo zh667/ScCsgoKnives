@@ -55,9 +55,9 @@ def build(name,src,animation_source):
             v=source.j['bufferViews'][a['bufferView']]
             return np.ndarray((a['count'],width),dtype='<f4',buffer=source.view(a['bufferView']),offset=a.get('byteOffset',0),strides=(v.get('byteStride',width*4),4)).copy()
         times=array(s['input']).ravel();values=array(s['output']);assert len(times)==len(values)
-        # Preserve endpoints; keep source samples at <= 50ms spacing. Constant channels need
-        # only endpoints. Native interpolation remains LINEAR (quaternion slerp for rotation).
-        indices=np.unique(np.r_[0,np.searchsorted(times,np.arange(times[0],times[-1],.05)),len(times)-1]).clip(0,len(times)-1)
+        # Keep source frames: decimating a fast hand and prop independently breaks
+        # contact even when both samplers use the same normalized action phase.
+        indices=np.arange(len(times))
         if np.max(np.abs(values-values[0]))<1e-7:indices=np.array([0,len(times)-1])
         result=copy.deepcopy(s)
         for prop,data in [('input',times[indices,None]),('output',values[indices])]:
@@ -116,6 +116,9 @@ def build(name,src,animation_source):
                 s=copy.deepcopy(a['samplers'][c['sampler']]);s['input']=accessor(animation_source,s['input']);s['output']=accessor(animation_source,s['output'])
             out['channels'].append({'sampler':len(out['samplers']),'target':{'node':names[target],'path':prop}});out['samplers'].append(s)
         doc['animations'].append(out)
+    if name!='hostage':
+        from derive_world_props import derive
+        derive(animation_source,doc,raw,wanted)
     if name=='hostage':
         # Hostage export lacks the agents' axis-conversion root_motion parent. A same-name
         # animation transfer alone rotates the entire hostage onto its side.
@@ -132,7 +135,7 @@ def build(name,src,animation_source):
     bake(target)
     from compact_tactical_skin import compact
     palette=compact(target)
-    return {'name':name,'bytes':target.stat().st_size,'nodes':len(doc['nodes']),'meshes':len(meshes),'clips':list(wanted),'palette':palette,'sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'source':str(src.path.relative_to(ROOT))}
+    return {'name':name,'bytes':target.stat().st_size,'nodes':len(doc['nodes']),'meshes':len(meshes),'clips':[a['name'] for a in doc['animations']],'palette':palette,'sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'source':str(src.path.relative_to(ROOT))}
 
 def main():
     t=Source(SOURCE/'agents/models/tm_phoenix/tm_phoenix.glb');ct=Source(SOURCE/'agents/models/ctm_sas/ctm_sas.glb');h=Source(SOURCE/'models/hostage/hostage.glb')

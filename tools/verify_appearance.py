@@ -29,7 +29,14 @@ for filename, source, dll in packages:
     with zipfile.ZipFile(path) as archive:
         assert archive.testzip() is None
         assert len(archive.namelist()) == len(set(archive.namelist()))
-        assert archive.read(dll) == (build/dll).read_bytes(), f'Rebuild/repackage {dll}'
+        if dll=='sc-nekomekomodel.dll':
+            # Keep the released, unmodified provider. A local reference rebuild may
+            # have a different build identity; execute the exact existing package.
+            assert sha(path.read_bytes())=='7345a25427dc15bed8dcd49d7d7ad8c241194f68af663d2ca82e1fd015c233f2'
+            assert subprocess.check_output(['git','-C',str(source),'status','--porcelain'],text=True).strip()==''
+            assert subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()=='48c8f4fd8269441eb59add85e9538d17d739f95c'
+        else:
+            assert archive.read(dll) == (build/dll).read_bytes(), f'Rebuild/repackage {dll}'
         assert archive.read('modinfo.json') == (source/'modinfo.json').read_bytes()
         for p in (source/'Assets').rglob('*'):
             if p.is_file(): assert archive.read(p.relative_to(source).as_posix()) == p.read_bytes(), str(p)
@@ -67,5 +74,9 @@ for key,path in [('coreChecks',f'release-{core_version}/full-check.json'),('tact
 loading=json.loads((ROOT/f'output/tactical-{tactical_version}/loading-checks.json').read_text('utf8'))
 assert loading['failed']==0 and loading['tacticalSha256']==evidence['packages'][packages[1][0]]['sha256']
 evidence['optionalLoading']=loading
+preservation=ROOT/f'output/tactical-{tactical_version}/preservation-checks.json'
+if preservation.exists():
+    retained=json.loads(preservation.read_text('utf8'));assert retained['failed']==0
+    evidence['preservationChecks']=len(retained['checks'])
 (ROOT/f'docs/release-tactical-{tactical_version}-evidence.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2)+'\n','utf8')
 print(f"Verified {len(result['checks'])} installed-engine appearance checks and {len(packages)} exact packages.")

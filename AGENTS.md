@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed video feedback 2026-09-20: Full 1.4.6 / tactical 1.2.2 correct T/CT
+  hand/prop contact and weapon-specific holds. Derived world actor and prop tracks share
+  source frames; wpn is attached relative to spine_2, not an inverse spinning knife wrist.
+  Import resolved draw endpoints for holds, never raw additive idle clips. Preserve knife
+  joint partitions and cross-joint triangles, FPP resources, eye textures, 48 GPU joints,
+  per-entity clocks and camera guards. No third-party mod edits. Native contact fixtures,
+  geometry renders and packaged checks are documented in docs/release-thirdperson-1.4.6.md;
+  they are not full-game/Android/network acceptance. Recycle only exact superseded output
+  packages with the manifest; installed Mods and all worlds/fixtures remain untouched.
+
 - User-directed 2026-09-20 installation simplification: tactical 1.2.1 includes the CS player
   appearance adapter and NekoMeko resource descriptors. No separate CS appearance scmod is shipped.
   Keep NekoMeko Model 1.1 / Neorxna 1.4 optional for tactical gameplay; load the adapter's .bin only

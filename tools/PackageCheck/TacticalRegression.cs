@@ -32,7 +32,7 @@ static class TacticalRegression {
         Test("optional-package-identity-and-no-bundled-engine",()=>{
             var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
             var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
-            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.5"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.4")),"core dependency not enforced by engine");
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.6"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.5")),"core dependency not enforced by engine");
             Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
         });
         foreach(string name in new[]{"ct","t","hostage","shield"})Test("native-gltf/"+name,()=>{
@@ -43,7 +43,7 @@ static class TacticalRegression {
             using var model=new Model{ModelData=data,Skin=data.Skin,Animations=data.Animations};
             foreach(var b in data.Bones)model.m_bones.Add(new ModelBone{Model=model,Index=model.m_bones.Count,Name=b.Name,Transform=b.Transform});
             for(int i=0;i<data.Bones.Count;i++){int parent=data.Bones[i].ParentBoneIndex;if(parent>=0){model.m_bones[i].ParentBone=model.m_bones[parent];model.m_bones[parent].m_childBones.Add(model.m_bones[i]);}else model.m_rootBone=model.m_bones[i];}
-            Require(data.Animations.Count==(name=="hostage"?7:109),"missing selected animation");
+            Require(data.Animations.Count==(name=="hostage"?7:170),"missing selected animation");
             model.Skin.ResolveJoints(model.m_bones);
             foreach(var mesh in data.Meshes)model.m_meshes.Add(new ModelMesh{Name=mesh.Name,IsVisible=mesh.IsVisible,ParentBone=model.m_bones[mesh.ParentBoneIndex]});
             var project=new Project();
@@ -77,7 +77,8 @@ static class TacticalRegression {
                 for(int i=0;i<=20;i++){var pose=new Matrix?[data.Bones.Count];player.SampleAtTime(animation.Duration*i/20,pose);Require(pose.Where(p=>p.HasValue).All(p=>float.IsFinite(p.Value.M11+p.Value.M22+p.Value.M33+p.Value.M41+p.Value.M42+p.Value.M43)),"invalid animation transform");
                     var absolute=new Matrix[data.Bones.Count];Matrix Compose(int index){var b=data.Bones[index];return absolute[index]=(pose[index]??b.Transform)*(b.ParentBoneIndex<0?Matrix.Identity:Compose(b.ParentBoneIndex));}
                     for(int bi=0;bi<absolute.Length;bi++)Compose(bi);
-                    float height=absolute.Max(m=>m.Translation.Y)-absolute.Min(m=>m.Translation.Y);Require(height>1.4f&&height<2.5f,$"{animation.Name}@{animation.Duration*i/20} skeleton height {height}; min {data.Bones[Array.FindIndex(absolute,m=>m.Translation.Y==absolute.Min(t=>t.Translation.Y))].Name}; max {data.Bones[Array.FindIndex(absolute,m=>m.Translation.Y==absolute.Max(t=>t.Translation.Y))].Name}; pelvis {absolute[data.Bones.FindIndex(b=>b.Name=="pelvis")].Translation}");
+                    var actor=data.Bones.Select((b,bi)=>(b,bi)).Where(x=>!x.b.Name.StartsWith("cswp_")&&x.b.Name!="cs_weapon_mount").Select(x=>absolute[x.bi]).ToArray();
+                    float height=actor.Max(m=>m.Translation.Y)-actor.Min(m=>m.Translation.Y);Require(height>1.4f&&height<2.5f,$"{animation.Name}@{animation.Duration*i/20} actor skeleton height {height}");
                 }
             }
             var loader=new AnimationConfigLoader();var cfg=loader.LoadFromJsonNode(JsonNode.Parse(Bytes("Assets/Animations/ScTactical.json")));var controller=loader.CreateController(cfg,model);
