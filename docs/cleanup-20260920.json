@@ -1,0 +1,1427 @@
+{
+  "date": "2026-09-20",
+  "authorization": "User requested removing superseded packages and useless small files",
+  "retained": [
+    "release-1.4.4",
+    "tactical-1.1.4",
+    "appearance-1.0.0"
+  ],
+  "files": [
+    {
+      "path": ".tmp\\c4-opt-tests111.log",
+      "bytes": 2783593,
+      "sha256": "e71b2effd8734c7625323623bff02b21acfff1110d4b6f4db82baa2aebc2ec81",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\c4-opt110.log",
+      "bytes": 1039,
+      "sha256": "ce877b9a6f4008bb2e948bd2102003b11ba5a9c9e7558b89b3cda40ae8b80126",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\c4-opt111.log",
+      "bytes": 1039,
+      "sha256": "b08254baad2ee83caee6c7179ef0ebd0e9b539974e8d7f838678b0524e4e5f09",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\c4-optimized-tests.log",
+      "bytes": 2782161,
+      "sha256": "b7b05cdd8e00bec7cee570e5c4c6fadcd56b1f6a373e51b169b481d6a2fafb8d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-first.log",
+      "bytes": 1250977,
+      "sha256": "7b2b855eae5d55f0f120373717093876fa143f9e2b49361fbe54cb7360d407f3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-git-check.log",
+      "bytes": 4710,
+      "sha256": "d19ffc06b9eb7d18ad880a5091646db88b98d8ec73bbc3f9e2857772b0b92f4e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-schema5-final.log",
+      "bytes": 2690799,
+      "sha256": "4f5d92c162f23a7d4dcd0198bb8eeca5bb16b8be4f4e90a7f22c5acb9f879d0a",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-second.log",
+      "bytes": 1279883,
+      "sha256": "08037e360ddc351dc42e56350fbbf08253b0378eb46d87d1d65457235b710b79",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-user100-final.log",
+      "bytes": 2698548,
+      "sha256": "1e117b9bbba70016df129ce87f2455a8a797dbbfb8bf0a0cee48a8276f41b1b8",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-user100-first.log",
+      "bytes": 2666622,
+      "sha256": "58be91aaadd9ce1933e7b83e265fc953821100c97282e334babba3af88735ab8",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-user100-second.log",
+      "bytes": 2666936,
+      "sha256": "f22ae76da07a9b490201cad6c38d4b55d0c63a1ea60ea820d385532f281dc796",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-105-user100-third.log",
+      "bytes": 2696944,
+      "sha256": "fcec7ad31d48194fa86e7eb83105c92d6ee7e0974d27b072effd110bed3b019c",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-build.log",
+      "bytes": 84,
+      "sha256": "a0b6f64e78b075a02f82fa34e038c21fcd01f6c844a5b5344bf27481cf845375",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-check-build.log",
+      "bytes": 84,
+      "sha256": "432944073bfa0c3fa89c97007d73029c93ee5a9de222d4542096f4583a3d3290",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-delivery-verification.log",
+      "bytes": 71,
+      "sha256": "40ee96f5f4af954b62100a5dfe9c5352646d273766035194c3d363f07d0b8d10",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-final-full.log",
+      "bytes": 2884466,
+      "sha256": "d3ce5b07960c221bf4436f7207d3c6ff5975f3f93305893c6e6937a3916d70b7",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-final-lite.log",
+      "bytes": 2967252,
+      "sha256": "70219b97f5509b48f0dd7a43aeee7fd288091c3d52198f5334ef86caf1699b66",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-first-check.log",
+      "bytes": 2778719,
+      "sha256": "ed195335714c499db639cca2e01a7a89720bef84c646ef4876a70caad4a675b1",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-full-check.log",
+      "bytes": 2807953,
+      "sha256": "854215e1ca5bf6cd5b354cb14d4e865a6b269b6fb5d1e2c42f8e0c64dfc50a1f",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-lite-pack.log",
+      "bytes": 535,
+      "sha256": "6f1715a25a02044e64df485b97c2950e2d0b597d52926ba89601c57f9d32eb34",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-optimize.log",
+      "bytes": 148,
+      "sha256": "883e4e038be3e42869ca785961e27023c3a10212817a45b8a835c42c8aaf88e1",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-pack.log",
+      "bytes": 437,
+      "sha256": "f84c8ab5d25eb84d5a0a2546f42fb74772abd08ee1214993f101e22a6cc79389",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-second-check.log",
+      "bytes": 2884359,
+      "sha256": "0b01eeff2a5b8e735af52ee34b8f0d7be98ad2a4a88b12133412b8c3d27d2225",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback-test-build.log",
+      "bytes": 84,
+      "sha256": "743a3158821b6112059820b2034024f488589f50a6190cbac84edbf3b14b187a",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback112-build.log",
+      "bytes": 84,
+      "sha256": "edb629fcdbe62a009471ffd274b01da29ecb7dc5f9d455bbb056e4fe9abe2fef",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback112-full-check.log",
+      "bytes": 2971396,
+      "sha256": "586aa0c311b04abd12f7dd7875452e31c1979adc6bb4dc546440c99124d0e110",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback112-pack.log",
+      "bytes": 408,
+      "sha256": "7f1def19f9460606ca7a6e7e6291e370f295384e35df350a808ef0dbc8d68507",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\feedback112-testbuild.log",
+      "bytes": 84,
+      "sha256": "4e0085bb34870324b0f5dfff76c60ffa5a2529c1a44280c64a7314025fefb5ff",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\final-delivery130.log",
+      "bytes": 2898944,
+      "sha256": "4bc0c7fff523a81b370c9a4d1911568fd987ca8cd39d52a038b393cdcc352ae9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\final-test130.log",
+      "bytes": 2898944,
+      "sha256": "2e00ba25cc8d24db17085955dcb9940281b1697e6baedb5d52fdfeb4d2bfc400",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\final131.log",
+      "bytes": 2902970,
+      "sha256": "8891ef891eec3d1988d550e64c3680266a5da79f07deb351e683defb250dde3b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\full131.log",
+      "bytes": 2902677,
+      "sha256": "87a63f774f0c970e74d4fe1507a6a01b9371ec92e94a4508234d1738ec6ca81c",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\full132.log",
+      "bytes": 2904380,
+      "sha256": "12d47497c389c5de7d0bae21c393a78ad6db271d2f86fef60ab94064ce6bc4de",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\full133.log",
+      "bytes": 2906148,
+      "sha256": "b54713f01205f2536aa4c9bf4312633e4753e66d627a7bddc2d3292b5aa504de",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\full140.log",
+      "bytes": 2906146,
+      "sha256": "d2da60698fe32c3e8cc6aa20ec02c4e28fc1c9f817668729bf9a39759d39a40e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\fullcheck114.log",
+      "bytes": 1456425,
+      "sha256": "9d1f54dbc36eb9905998b252c84432f2e9e43eb24be4365cf2cea579f66fbf90",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\fullcheck116.log",
+      "bytes": 1456425,
+      "sha256": "08d7d189c92729ed74a6e65e08824e884a51120395783f0b75bccaf6f9d2ea7d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\fullcheck117.log",
+      "bytes": 1456425,
+      "sha256": "a9bf89efc0a5cc9ba2b6c7ed37cf3a5fa1305c107dcb34fd20b376107dc1dcd6",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\fullcheck120.log",
+      "bytes": 2875178,
+      "sha256": "857071bd1a877b74dbeb067c63f3eb4b626fc3682987fa383e6a068f555f7bf9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\litecheck116.log",
+      "bytes": 1538156,
+      "sha256": "96c4f5b8928f9547e7c0afbd41498286ab94c2206cbbfd515e0848eba53027be",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\litecheck117.log",
+      "bytes": 1538156,
+      "sha256": "c866e842f4c59a227a527a57009ed39ca2c10e8ce5ab5851d884e6c34d1bfa5e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\litecheck120.log",
+      "bytes": 2956911,
+      "sha256": "23569bb023cb668d6a6d74fdff5c31b2603014a8ca5e6bbbc69af152e9afff49",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\check-1.0.12-final.json",
+      "bytes": 881942,
+      "sha256": "7e18a498f4e67312849c0dbbd8c2c36852bd8438d2e15a755d12eb500415fec4",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\check-1.0.12-final.log",
+      "bytes": 944750,
+      "sha256": "150465480245d4f3e89efb4cd11b02e94329c3f31c1af48ad0157b6d1cc0f1fb",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\check-1.0.13-final.json",
+      "bytes": 896479,
+      "sha256": "bdc1b5785d5a4488a832f4bf8efb8887435a6ff4dc3516346ca57b4304581f38",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\CS武器-1.0.12-全量版.zip",
+      "bytes": 370993837,
+      "sha256": "d1ba387b767f75d46239a65499c711eae6ab0a339d9cdf3190d03fa717c0e9a2",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\CS武器-1.0.12-全量版\\安装与更新说明.txt",
+      "bytes": 687,
+      "sha256": "d387ec78ff5e9643c9a78b6957d8fe581b487610d864e8d93bc2b9ed5af4dac5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\CS武器-1.0.12-全量版\\ScCsgoKnives-1.0.12-preview.scmod",
+      "bytes": 556712,
+      "sha256": "074007627509d9b85ed073d8eb1ccd3e8681c1db18e267d71645d9f7b978281e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\CS武器-1.0.12-全量版\\ScCsgoResources-1.8.0.scmod",
+      "bytes": 369762563,
+      "sha256": "f3f789fce54d1d98e7ba6552d3ace35af73ca3557bf7c4eab7e7195b8c8efd3a",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\CS武器-1.0.13-全量版.zip",
+      "bytes": 375341195,
+      "sha256": "86b2f7fdc7b8edb3478f15ade24e9dfe7981c541b918803e04b7084e812b394b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\ScCsgoKnives-1.0.12-preview.scmod",
+      "bytes": 557183,
+      "sha256": "8bae6c77c079cd20d718f918efb716054be716a0e556088d76e9f7b876d217b3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\ScCsgoKnives-1.0.12-preview.split.json",
+      "bytes": 79144,
+      "sha256": "24a195658cdc97e1921367659019e8414b4114639c9e4d484854a4c9e89707da",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\ScCsgoKnives-1.0.13-preview.scmod",
+      "bytes": 568861,
+      "sha256": "f7d5bb85979fe97bf03bbfc0714ea8beaaded70a9696da0dc214846e64912c5b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\ScCsgoResources-1.10.0.scmod",
+      "bytes": 374770759,
+      "sha256": "b72b9bbe1e156e163cca1afaa05483994a358a8f0be1cacff0820e433946a374",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\retired-output-20260913\\ScCsgoResources-1.8.0.scmod",
+      "bytes": 370436123,
+      "sha256": "6c25a703c6cbfb5437938251b26f983bb128b7eac0931314880c0b3378a99219",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\tactical-incomplete-core-candidate.scmod",
+      "bytes": 341220269,
+      "sha256": "d40ec69b948c1b0d7d46988542f9f697c1964fd1168a207f1dede84e5df92895",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\test-build132.log",
+      "bytes": 2899,
+      "sha256": "851f2ea84336c2f46fe96aa962c6be675cee5a980ad5bf69123d96fde09132a0",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\test122.log",
+      "bytes": 2897650,
+      "sha256": "c1769824dfbc41969d3113d7495405e27c5ca858881afcd1b52e571bad81807c",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": ".tmp\\test130.log",
+      "bytes": 2899569,
+      "sha256": "d60fc56568220cf767e9d1bcb5f9301c3a94af0f7c4a47ac0e82baa997ef7892",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\[API1.9]CS武器1.4.2-作者ZH667-全量版.scmod",
+      "bytes": 382808689,
+      "sha256": "ffe007a09c48abd7023c6c33f31d1d005bfac90aaabd3258c10380cad3f9e64f",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\[API1.9]CS武器1.4.3-作者ZH667-全量版.scmod",
+      "bytes": 382808816,
+      "sha256": "d99ab5185b3f57c7abb896240c09473dad21b9b8610675570500f02c01f06e9a",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\[API1.9]CS战术同伴拓展1.1.2-作者ZH667.scmod",
+      "bytes": 14580832,
+      "sha256": "98eb776f9dda3846fd33859e647b1066eb6a2d657df5ffae1bdd58c568abd949",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\[API1.9]CS战术同伴拓展1.1.3-作者ZH667.scmod",
+      "bytes": 14580838,
+      "sha256": "114b677a40e180e336def4b1e21b29c240f621f00c09aa1f216988fc1486ce44",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\check-1.0.14-final.json",
+      "bytes": 896478,
+      "sha256": "19810a82e1f61110d18b841716a13eb56cbdb3700b7674014c140a419a27aa4d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\安装说明.txt",
+      "bytes": 730,
+      "sha256": "44129a6442cc8ee5011f5fddc76a630e972333cc568d3a472c55b5893339079e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\assets.json",
+      "bytes": 399154,
+      "sha256": "da0ebcc40106146cb51d9e35b7935610831eaa1e49d98fc630922432ff110846",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\c4-fix\\c4-color-regression.json",
+      "bytes": 209,
+      "sha256": "b9274f62ba08c0bbb1e633061c1d9c8b9e2ead60eb34203dbee8203f697c27bd",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\c4-fix\\gpu-info.json",
+      "bytes": 193,
+      "sha256": "4c3bcf614fab19b28784a1f713e8e8722811ae7b38ef4d818f389e11db01df92",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\c4-fix\\replacement.json",
+      "bytes": 531,
+      "sha256": "c0c9f60d7612b09320b63c952f4e5e5be5a68c0ab14d89851a86e3cd079d5c1b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\delivery-verification.json",
+      "bytes": 305845,
+      "sha256": "b1ee87a423a616fe43749de3f090aefac9aacdc9eef32f94890e86935d0603df",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\full-check.json",
+      "bytes": 2435782,
+      "sha256": "9f6d77cb25a7005c30a5af57fd2d9be47e3e3a79b463ecee2a621a215a73c3d3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\Full.json",
+      "bytes": 438,
+      "sha256": "5d77f7e2d077749b753133193d4a98db6fbcd529f0fb795b949b95e00ea2211e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\lite-check.json",
+      "bytes": 2518130,
+      "sha256": "fc9d5fbfb5f35a5fba67f45b9665ed975ace7ca28d1b08126f4018bb0879c7e4",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\model-integrity.json",
+      "bytes": 18048,
+      "sha256": "4dc216d5c321071cf76efdef0bd23e8e41a11519270c8b6a9507bf1fdfa7d4b6",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\Optimized512.json",
+      "bytes": 448,
+      "sha256": "a0b1533ccc80a9d3fb2e66d21b66b417f0af0fb70314c31627b24419fd8879cb",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.0\\summary.json",
+      "bytes": 126,
+      "sha256": "fad02a6b3fe5871fa4c9b24821092df74490c5c95aef498158d2e4149fcad663",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1-feedback\\full-check.json",
+      "bytes": 2716330,
+      "sha256": "262445d3e7a394e44db8ab31f7a0c2ed7e0b4fb5b3c0d73b6da823fac99d9279",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1-feedback\\Full.json",
+      "bytes": 438,
+      "sha256": "10a2770677637a0f6820817ae9c38e8fd5667b3d326cc535d8ce5d0236dbfce5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1\\assets.json",
+      "bytes": 413460,
+      "sha256": "ebae310f8a13a671b520371bb64ae020d751d475ae75890cdb1c87a825cc4fc6",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1\\c4-color-regression.json",
+      "bytes": 209,
+      "sha256": "b9274f62ba08c0bbb1e633061c1d9c8b9e2ead60eb34203dbee8203f697c27bd",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1\\full-check.json",
+      "bytes": 2716881,
+      "sha256": "3abe76e0b92c98308ffca4c7983c78f5a60ccc4603c77932f143acc4e7bb2698",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1\\Full.json",
+      "bytes": 438,
+      "sha256": "10a2770677637a0f6820817ae9c38e8fd5667b3d326cc535d8ce5d0236dbfce5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1\\gpu-info.json",
+      "bytes": 193,
+      "sha256": "4c3bcf614fab19b28784a1f713e8e8722811ae7b38ef4d818f389e11db01df92",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.1\\Optimized512.json",
+      "bytes": 448,
+      "sha256": "5a5561a1e53e07b683750f20abd60a9661ad6488bbf4a780bd583a708c030051",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.2\\full-check.json",
+      "bytes": 2879774,
+      "sha256": "9207378b06748ece13f1d88eb77254b577d22f9f4e945fe3cc0c2aed144dfcf9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.2\\Full.json",
+      "bytes": 438,
+      "sha256": "9ed15948d3513c4fab08458a285a78b0128826f262b677afcf7db9d3582b98f5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.3\\full-check.json",
+      "bytes": 2881645,
+      "sha256": "588603eceb75385e3b93605b7a9e52f2800ba4567faa3bce8f3776dbcc636751",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.3\\Full.json",
+      "bytes": 438,
+      "sha256": "9c68789e219308391ea39adffdf18b6d497189854f67844ced3ab53d2702e051",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.4\\assets.json",
+      "bytes": 434570,
+      "sha256": "f7517cee4afee63594e4d9bcdbf92cdf0454c55fa15c8c0a61623037944f510d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.4\\full-check.json",
+      "bytes": 1390739,
+      "sha256": "ff6e625a427c0dffb58b54e429c908c9cbd60c97466aa8b184bffad7546e6220",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.4\\Full.json",
+      "bytes": 438,
+      "sha256": "557e2b93ac3e6fca7824d461d2607748db68e68f24e101ebf152dc106bdb7e83",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.4\\lite-check.json",
+      "bytes": 1472472,
+      "sha256": "d0b5f2a70df143b644ab6e4ae9f134ac7558a032638bcfcf1e0aff8d8675fd88",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.4\\Optimized512.json",
+      "bytes": 448,
+      "sha256": "de28bbdcf4f651d434632192a2b2e0cda08c6a51d18f6dfd54a4eb908927df55",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.4\\summary.json",
+      "bytes": 126,
+      "sha256": "fad02a6b3fe5871fa4c9b24821092df74490c5c95aef498158d2e4149fcad663",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.6\\assets.json",
+      "bytes": 434570,
+      "sha256": "f7517cee4afee63594e4d9bcdbf92cdf0454c55fa15c8c0a61623037944f510d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.6\\full-check.json",
+      "bytes": 1390739,
+      "sha256": "82d37929346e6a4e40e730ca34c68ec2ae53ab5ef03567c5ffff9b4d3ba7684c",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.6\\Full.json",
+      "bytes": 438,
+      "sha256": "7f935d59b35b0d357e23f353466da0d61a106e1a6cbad8a22629b7408c0bf193",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.6\\lite-check.json",
+      "bytes": 1472471,
+      "sha256": "7fb87dcd3edc3ec9ec196580242d50ff2c20f01f93b0bc67e1bc39f061d9a151",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.6\\Optimized512.json",
+      "bytes": 448,
+      "sha256": "f0ab3907e1ab40e60acae0c0726f496344bad17f803c18b92b2423673329d200",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.7\\assets.json",
+      "bytes": 434570,
+      "sha256": "f7517cee4afee63594e4d9bcdbf92cdf0454c55fa15c8c0a61623037944f510d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.7\\full-check.json",
+      "bytes": 1390739,
+      "sha256": "85d8372cc1bde0ffd1f7529502f56306618dc7970597245912119c09e156f237",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.7\\Full.json",
+      "bytes": 438,
+      "sha256": "049866d88c401378fc5ee8ed980f67e97c58720ca2169a8dcfd18f37a9e716a3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.7\\lite-check.json",
+      "bytes": 1472471,
+      "sha256": "6efbc5b1043da677fdd6a87996f3230349a8af0a764609fdb3dcc6fc47703551",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.1.7\\Optimized512.json",
+      "bytes": 448,
+      "sha256": "3369222014cc8610795f57ea5e9bf461a63a67725a25fc6994d109b2ca4ab853",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\assets.json",
+      "bytes": 434570,
+      "sha256": "f7517cee4afee63594e4d9bcdbf92cdf0454c55fa15c8c0a61623037944f510d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\delivery-verification.json",
+      "bytes": 305953,
+      "sha256": "751faa0c7580efd71a53b5667934fa16deefdf76cd5093b3f3242f6f074c933b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\full-check.json",
+      "bytes": 2783557,
+      "sha256": "8a49001c5db3602b5e94619803c19fe4be96df1b431741391eab70ab49b8afed",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\Full.json",
+      "bytes": 450,
+      "sha256": "1e69b16c701284f64bab0037eed4f9d3901a6efc48a7e9be6652d2e7b55e56aa",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\lite-check.json",
+      "bytes": 2865290,
+      "sha256": "2ae3ff5f50ddd66099309ea92a003a309532bfe7ef53b8fb9fc50feaa33482fa",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\metadata-check.json",
+      "bytes": 3740,
+      "sha256": "45cc2dc250cdb5ff1a9bb239edc9c767a9e051dece699dd623a22b2a156a2323",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.0\\Optimized512.json",
+      "bytes": 460,
+      "sha256": "a7b7d0a191bbdbc1ec05a824ffd91822121485156ad40d50adb3b06f84dbcc32",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\assets.json",
+      "bytes": 442083,
+      "sha256": "93de7fa8baff1c2331e0312d1e93d7caefabdcd92ff62dd1973babf30102f9b4",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\delivery-verification.json",
+      "bytes": 310087,
+      "sha256": "021853cb209f0525f601297ee2ddbd599472c4d2030d54072ceae23902d88cc1",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\full-check.json",
+      "bytes": 2792725,
+      "sha256": "1f20d2d689b698527b998fb0bb5c930097df19d5f57f279808a1cd048cc4d4a9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\Full.json",
+      "bytes": 450,
+      "sha256": "6f5464d2b5ff5a6a110ce6f1da9bc0711916f860b4075de9e33037ebce34304d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\lite-check.json",
+      "bytes": 2875510,
+      "sha256": "25b6a9ceeca3bb9c1f37bb805c70f26efc84f78afc3d8d7eed1485a48e000a5a",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\Optimized512.json",
+      "bytes": 460,
+      "sha256": "c8a4b1f8c53a59ffd88482fab06815f7a4f8a688e2ef10c3aa3a544d596e4933",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.1\\summary.json",
+      "bytes": 126,
+      "sha256": "82ccba622c35ee66138f1848712c86e9cb3e8ac5d2454a704a2c64c04d81fed5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.2\\delivery-verification.json",
+      "bytes": 144744,
+      "sha256": "eebdf325d6b70dbff8be4ad770275c479529e223cdb4a6160423cae461ce66d8",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.2\\full-check.json",
+      "bytes": 2805910,
+      "sha256": "1689d660113fcd8e9937ecda3a53d8a76411071755f54db47bcad85c61572a54",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.2.2\\Full.json",
+      "bytes": 450,
+      "sha256": "367df69cae3333a4837f6f9cb12751f469368d1fab27208c5aa3d0ccf71025d5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.0\\delivery-verification.json",
+      "bytes": 146802,
+      "sha256": "69b01b75defeaffa38bfc8bc24e0f2a30b55425425a95bd3ba7ca365be878a0b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.0\\full-check.json",
+      "bytes": 2807204,
+      "sha256": "ff84976593edba45c5afef857d5c5c607bf8afacd6362093b973f7fc9bd587e9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.0\\Full.json",
+      "bytes": 450,
+      "sha256": "1589286e8d55a2b97a29efd3d3d0263d55303e233eb0c3cfd1b93a051a73ece3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.1\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "4f5451468eec4a9283b2ffec0bfab1bdc073f3ab6bc0afef272b0d05a83fc6a7",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.1\\full-check.json",
+      "bytes": 2811230,
+      "sha256": "7e816235c0282bcb47aa995088795155ac5bdbd0f0f4d6f23f1dfbe529d6d0b0",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.1\\Full.json",
+      "bytes": 450,
+      "sha256": "363eed2eafbf609160c499b823cef662e5f2ce031c01832db0e7401d916e4544",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.2\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "ba47f469d5419f5a880a498ef13251db60c830b6ad1eeef75abd5fb0f135fe1b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.2\\egg-feedback.json",
+      "bytes": 1899,
+      "sha256": "ffda85867659cd327393111a7ca5ba67109badc9ce381148178034c443bf2c6f",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.2\\full-check.json",
+      "bytes": 2812370,
+      "sha256": "1cdef8bd371452f5ec57b70691fea0111d5b19b5ef0d278cf7a8537f47a28894",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.2\\Full.json",
+      "bytes": 450,
+      "sha256": "a1648ec82a9810de18f2f5feea9be423da23cf4b393c9342ca66aca2c50c90f8",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.3\\chicken-source-audit.json",
+      "bytes": 699,
+      "sha256": "d3034d7065f26df444ea36dd5d9b55379aea50b9436a0c03062420e8b83a42f8",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.3\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "5f55af6744cdb3a7ac51bf4119262700b5e29d34a4026bf380a893602c3f74d8",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.3\\full-check.json",
+      "bytes": 2814137,
+      "sha256": "72a02e6d5476943d9cc23f8ddbc27c6ad2458de8e237fb260604f5d49e97c2e1",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.3\\Full.json",
+      "bytes": 450,
+      "sha256": "b858f11d01c01365c7c325ea5b5c464803b1e892f62fee5eba2c2a7be075ff07",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.3.3\\split-chicken-check.json",
+      "bytes": 2874,
+      "sha256": "6f1ab8a232dd82de5f81edb2b869db368d743a0981be6e8828575cdfb3917cad",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "4c47f448d774a8e0870eb342331c059ccca73c180576a35d3076291649228d0f",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\full-check.json",
+      "bytes": 2814136,
+      "sha256": "b27f7e3a1a8945abda7c38f6fdd0f1eca4c03f634cc6d650d26751baa548a636",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\Full.json",
+      "bytes": 450,
+      "sha256": "efd6f921afc517cc8a58c81ca20ba83b1ea6c39c094ee7cab452e2f6cf129197",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\tactical-check.json",
+      "bytes": 2465,
+      "sha256": "f5e93d21442abc66dc1803d6f06c28af3ec79324c23b95079842275a70e69072",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\tactical-model-bounds.json",
+      "bytes": 5160,
+      "sha256": "4b46f78a7cdded8ec6b2db7d409995b1585c55028548a94f45ddb526ad12b66b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\tactical-model-preview.png",
+      "bytes": 451698,
+      "sha256": "e919f0f6292219d01bcb2af55f3be79a53b4e911ecc30b5b291fd2be0b273a3f",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\tactical-package.json",
+      "bytes": 2483,
+      "sha256": "2ba75377c1baa9c4400f875c3ec4a397a1f8fa66896c05f521153d20f08fc106",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.0\\tactical-shield-preview.png",
+      "bytes": 217296,
+      "sha256": "f6224e9d5b9677f6af542885aca0062e0d82f643f62e94376e995dab905144c9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.1\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "72ced555f1874f20fd6766b2faae722aad06854dc7d7f9f6aef08f436a8a3e46",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.1\\full-check.json",
+      "bytes": 1326568,
+      "sha256": "cf014c4539a118c9dba7193e7c5e018204f77de2a9625f296e7d4b6845fd0572",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.1\\Full.json",
+      "bytes": 450,
+      "sha256": "6a6a9e5cc9425972dc06702e6b920c162748d71a3f2959793f6465151f134383",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.2\\check.json",
+      "bytes": 1326576,
+      "sha256": "6d943df1e83d0e48a4ff37600e7e877997502ac6a31583c9b7e6525a0497ab37",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.2\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "8e075cb47f64ad2137ab5aa50ca12332a452e4b3da969b2a81f06dadd633e6fd",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.2\\full-check.json",
+      "bytes": 1326576,
+      "sha256": "6d943df1e83d0e48a4ff37600e7e877997502ac6a31583c9b7e6525a0497ab37",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.2\\Full.json",
+      "bytes": 450,
+      "sha256": "e3f8d3fb3e30b7c1fc89ae95bb8401db4d82f7822c9cee4c2d75f137418df1c2",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.3\\delivery-verification.json",
+      "bytes": 150661,
+      "sha256": "a0d7e046a66f05f30c7b2d9ef8c6add69b1439671ca4b7603f8689954eb44808",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.3\\full-check.json",
+      "bytes": 1327116,
+      "sha256": "26ddadc28a1364819bdca5b6cd99e7778852171ded30f2c60d9c5d4ae297bb26",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\release-1.4.3\\Full.json",
+      "bytes": 450,
+      "sha256": "e003211e3f47d6c06c5b6fec6364142abb4b11cb0e9acc23427f7877d3e11ef9",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.0.1\\installed-engine-check.json",
+      "bytes": 2595,
+      "sha256": "e658eeeb108ef1d3d04ea94a1a989966dadd878d907125d09d162ae608c98016",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.0.1\\tactical-check.json",
+      "bytes": 2595,
+      "sha256": "e658eeeb108ef1d3d04ea94a1a989966dadd878d907125d09d162ae608c98016",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.0.1\\tactical-package.json",
+      "bytes": 2483,
+      "sha256": "a0a55471222a12571ccac3199b86e8c5da843b17f4333851ee6ce84c7cc90f3d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.0\\installed-engine-check.json",
+      "bytes": 6082,
+      "sha256": "35f6f2012db9df1d2aa5c770df40abb47c70ceee1368e1a7f3eb7afa6b79f241",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.0\\installed-engine-identity.json",
+      "bytes": 300,
+      "sha256": "cfeb71e458a4686851bc916e5ef4d420d6b029692484da2c9198c7b39ec03a50",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.0\\tactical-check.json",
+      "bytes": 6082,
+      "sha256": "35f6f2012db9df1d2aa5c770df40abb47c70ceee1368e1a7f3eb7afa6b79f241",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.0\\tactical-package.json",
+      "bytes": 2602,
+      "sha256": "95fb97b652e5a3a4303ac4ef47ce0c7f315311206265c258aad80d4297d8cc40",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\check.json",
+      "bytes": 6222,
+      "sha256": "7d68faa04bb1576cdf76a4b6b07c59a491ec064087a8d4fc4996e1309ed6868e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-check.json",
+      "bytes": 6222,
+      "sha256": "7d68faa04bb1576cdf76a4b6b07c59a491ec064087a8d4fc4996e1309ed6868e",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\ct--1.png",
+      "bytes": 54348,
+      "sha256": "8cc4de23eda17a500300557c5e354ed0b739eea73d26b8b275ca32ffd3b49f50",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\ct-0.5.png",
+      "bytes": 73616,
+      "sha256": "9778d6d722c5d41668a8e84dd91aad96be7894b1b08e1643bcea98978a4ca655",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\ct-0.png",
+      "bytes": 54350,
+      "sha256": "4de33df22bb707f3a30f7925474e0e959e5f409484e91192fb462a9df2d0cbc5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\ct-1.png",
+      "bytes": 60842,
+      "sha256": "7b24d0910ecc8acfa2c70d48fb2959cf4c51a088436564b74fb0e988835b6081",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\defuser_item.png",
+      "bytes": 45306,
+      "sha256": "3fb9bf1ffb91faa8a6a176f7bf5f38321e183c91cc09ebcff65c5aae35968e59",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\gpu.json",
+      "bytes": 2443,
+      "sha256": "9ccd0792f14a5e8a90dbde0bc727430fb799499cd97c7d87367ea77c0ac2835c",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\hostage--1.png",
+      "bytes": 41218,
+      "sha256": "3ed6363236a84c523d66dee8b63ade7da3857f3ae8e57248bd5612cce808e1c2",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\hostage-0.5.png",
+      "bytes": 52654,
+      "sha256": "1d8ef7a7205d5c31fb78e4c7fb82a9d19ddd7be01c887d20504ba0eec26f5ed3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\hostage-0.png",
+      "bytes": 41214,
+      "sha256": "f752a0eaa3f64a0361337665050edc66c19e1871f75a5581d8dbbe7006a754d3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\hostage-1.png",
+      "bytes": 46285,
+      "sha256": "cf06c96112568782918ab5114aaf69ac2f757441bf1358a66a620e15af9e49ee",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\radio.png",
+      "bytes": 17472,
+      "sha256": "970e9ee26f42884e82bcc0ad0b5f7d45a9ca45b6c13593b8a4ab6bb279268ca4",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\repair_item.png",
+      "bytes": 81225,
+      "sha256": "d13a3026eb5eec2dee93e464a4dd87878889d17bbfd86f4b2559d51a27f5d953",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\t--1.png",
+      "bytes": 61360,
+      "sha256": "a57d5662831c34aa59c8f0051aab3226aaeff47f5110f234dea0acc06298c5f2",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\t-0.5.png",
+      "bytes": 83659,
+      "sha256": "ec771bcd3bdf7a46ac5c9d690c05e48093fdfcb62f7421c2268976d0bea96b41",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\t-0.png",
+      "bytes": 61360,
+      "sha256": "764b6fef7f9cd5acd815d1527eb73c4373b9f92f3309a9de56e89dde97bcb157",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\installed-gpu\\t-1.png",
+      "bytes": 65014,
+      "sha256": "a82b129c47ccffea431ff05fb0842a6ce866c6e64540f29d39ade9cdab467331",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\ct--1.png",
+      "bytes": 54348,
+      "sha256": "8cc4de23eda17a500300557c5e354ed0b739eea73d26b8b275ca32ffd3b49f50",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\ct-0.5.png",
+      "bytes": 73616,
+      "sha256": "9778d6d722c5d41668a8e84dd91aad96be7894b1b08e1643bcea98978a4ca655",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\ct-0.png",
+      "bytes": 54350,
+      "sha256": "4de33df22bb707f3a30f7925474e0e959e5f409484e91192fb462a9df2d0cbc5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\ct-1.png",
+      "bytes": 60842,
+      "sha256": "7b24d0910ecc8acfa2c70d48fb2959cf4c51a088436564b74fb0e988835b6081",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\defuser_item.png",
+      "bytes": 45306,
+      "sha256": "3fb9bf1ffb91faa8a6a176f7bf5f38321e183c91cc09ebcff65c5aae35968e59",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\gpu.json",
+      "bytes": 2443,
+      "sha256": "9ccd0792f14a5e8a90dbde0bc727430fb799499cd97c7d87367ea77c0ac2835c",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\hostage--1.png",
+      "bytes": 41218,
+      "sha256": "3ed6363236a84c523d66dee8b63ade7da3857f3ae8e57248bd5612cce808e1c2",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\hostage-0.5.png",
+      "bytes": 52654,
+      "sha256": "1d8ef7a7205d5c31fb78e4c7fb82a9d19ddd7be01c887d20504ba0eec26f5ed3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\hostage-0.png",
+      "bytes": 41214,
+      "sha256": "f752a0eaa3f64a0361337665050edc66c19e1871f75a5581d8dbbe7006a754d3",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\hostage-1.png",
+      "bytes": 46285,
+      "sha256": "cf06c96112568782918ab5114aaf69ac2f757441bf1358a66a620e15af9e49ee",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\radio.png",
+      "bytes": 3302,
+      "sha256": "1b3cd2513274b544a06a8692f4f841fa26f10256c40d54eae2047581d26cc407",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\repair_item.png",
+      "bytes": 34836,
+      "sha256": "f8a61bece70d48fcf5122b07a83a70c55dbb56ed55105b2329fe5ed874877779",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\t--1.png",
+      "bytes": 61360,
+      "sha256": "a57d5662831c34aa59c8f0051aab3226aaeff47f5110f234dea0acc06298c5f2",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\t-0.5.png",
+      "bytes": 83659,
+      "sha256": "ec771bcd3bdf7a46ac5c9d690c05e48093fdfcb62f7421c2268976d0bea96b41",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\t-0.png",
+      "bytes": 61360,
+      "sha256": "764b6fef7f9cd5acd815d1527eb73c4373b9f92f3309a9de56e89dde97bcb157",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\native-gpu\\t-1.png",
+      "bytes": 65014,
+      "sha256": "a82b129c47ccffea431ff05fb0842a6ce866c6e64540f29d39ade9cdab467331",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.1\\tactical-package.json",
+      "bytes": 3324,
+      "sha256": "ed51481131bea0fbb63365407d2f816f49104530c8ad51b8df288a843782e22f",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.2\\check.json",
+      "bytes": 6739,
+      "sha256": "1c3c8af3f100483bdf66eec4ae0e8fce71d987287b4a954c2d94ac81768eeb8b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.2\\installed-check.json",
+      "bytes": 6739,
+      "sha256": "1c3c8af3f100483bdf66eec4ae0e8fce71d987287b4a954c2d94ac81768eeb8b",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.2\\tactical-package.json",
+      "bytes": 3324,
+      "sha256": "d31fabfe7ce6e7ba1ab81b335b6f4f1482f1ba99b7a86160cd65b6ba010350a5",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.3\\check.json",
+      "bytes": 6887,
+      "sha256": "22766848ec2f90a5e4937b40b14671dba7aa51e23fd9a3547d1e3a3fd1e4ebc1",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.3\\installed-check.json",
+      "bytes": 6887,
+      "sha256": "22766848ec2f90a5e4937b40b14671dba7aa51e23fd9a3547d1e3a3fd1e4ebc1",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    },
+    {
+      "path": "output\\tactical-1.1.3\\tactical-package.json",
+      "bytes": 3324,
+      "sha256": "a0a3c149f6b28ba9b0215e6a16d03f99a5869efc46f97aa5d7be981196bfa32d",
+      "recovery": "Windows Recycle Bin",
+      "state": "recycled"
+    }
+  ],
+  "totalBytes": 3146808687.0,
+  "applied": true
+}

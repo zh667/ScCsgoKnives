@@ -38,7 +38,10 @@ def build(name,src,animation_source):
     def material(i):
         if i in materials:return materials[i]
         m=j['materials'][i];tex=m['pbrMetallicRoughness']['baseColorTexture']['index'];image=j['images'][j['textures'][tex]['source']]
-        im=Image.open(src.path.parent/image['uri']).convert('RGB');im.thumbnail((1024,1024),Image.Resampling.LANCZOS)
+        from bake_agent_face_materials import baked_texture
+        im=baked_texture(name,m.get('name',''),src.path.parent)
+        if im is None:im=Image.open(src.path.parent/image['uri']).convert('RGB')
+        im.thumbnail((1024,1024),Image.Resampling.LANCZOS)
         buf=io.BytesIO();im.save(buf,format='PNG');ii=len(doc['images']);doc['images'].append({'bufferView':raw(buf.getvalue()),'mimeType':'image/png'});ti=len(doc['textures']);doc['textures'].append({'source':ii})
         materials[i]=len(doc['materials']);doc['materials'].append({'name':m.get('name',str(i)),'pbrMetallicRoughness':{'baseColorTexture':{'index':ti},'metallicFactor':0,'roughnessFactor':.8},'doubleSided':True});return materials[i]
     for old in ordered:

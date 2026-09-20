@@ -1,0 +1,20 @@
+[
+  {
+    "name": "ct",
+    "materials": [
+      "ctm_sas_lenses"
+    ],
+    "bytes": 5891936,
+    "sha256": "083bf22e9f10d3f28b2f831e30e10b9f13364ad369120194aee750c329dc6606",
+    "geometryAndAnimationsUnchanged": true
+  },
+  {
+    "name": "t",
+    "materials": [
+      "tm_phoenix_v2_balaclava_varianta"
+    ],
+    "bytes": 7955368,
+    "sha256": "078af2666e0bf2b22955f43219c1af48d87674220340a57cfa6eb1e4c84bb76d",
+    "geometryAndAnimationsUnchanged": true
+  }
+]

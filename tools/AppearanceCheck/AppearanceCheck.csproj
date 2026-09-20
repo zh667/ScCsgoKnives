@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><NeorxnaDll Condition="'$(NeorxnaDll)'==''">../../.tmp/creature-audit-20260917/10/neorxna.dll</NeorxnaDll></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/ScCsgoAppearance/ScCsgoAppearance.csproj" /></ItemGroup>
+  <ItemGroup><Reference Include="neorxna"><HintPath>$(NeorxnaDll)</HintPath></Reference></ItemGroup>
+</Project>

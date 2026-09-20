@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework><LangVersion>preview</LangVersion>
+    <AssemblyName>sc-nekomekomodel</AssemblyName><EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NekoSource Condition="'$(NekoSource)'==''">../../.tmp/nmm-player-appearance-audit-20260920</NekoSource>
+    <NeorxnaDll Condition="'$(NeorxnaDll)'==''">../../.tmp/creature-audit-20260917/10/neorxna.dll</NeorxnaDll>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(NekoSource)/**/*.cs" Exclude="$(NekoSource)/obj/**;$(NekoSource)/bin/**" />
+    <Reference Include="neorxna"><HintPath>$(NeorxnaDll)</HintPath></Reference>
+    <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
+  </ItemGroup>
+</Project>

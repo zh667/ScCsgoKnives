@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed 2026-09-20: optional NekoMeko player CT SAS / T Phoenix appearance is implemented
+  as ScCsgoAppearance 1.0.0 with Full core 1.4.4 and tactical 1.1.4. Preserve native NMM selection,
+  per-player saved keys and return to default; keep CS2 weapon first-person arms. CT lenses and T
+  eye shader features are baked into shared derived textures; never edit the original CS2 exports.
+  User now authorizes removing superseded packages and confirmed disposable reports/logs, with an
+  exact manifest and recoverable recycling. This supersedes historical preserve-every-old-package
+  instructions, not world/backup/compatibility-fixture protection. After this first release, implement
+  third-person reload/equip/inspect for summoned CT/T and player third person, keeping action state
+  per entity for future networking. See docs/release-appearance-1.0.0.md.
+
 - User-directed 2026-09-20: CS bullets must not knock players back or add native locomotion
   stun (which locks movement/look). Deliver core Full 1.4.3 plus tactical DLC 1.1.3. Apply at the
   native bullet effect stage for player/companion/enemy fire, preserving damage, armor, non-player

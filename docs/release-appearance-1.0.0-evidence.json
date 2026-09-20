@@ -1,0 +1,292 @@
+{
+  "packages": {
+    "[API1.9]CS武器1.4.4-作者ZH667-全量版.scmod": {
+      "sha256": "7e9b7acbcd90c6ec31455bf6b21a0aa1a699939d2af06581a5f71f50525287d9",
+      "bytes": 382808835,
+      "dllSha256": "bdf51ddb15656ff8b0dd763552b62fd622e46382728a7eaf7a5270aa2058aec9"
+    },
+    "[API1.9]CS战术同伴拓展1.1.4-作者ZH667.scmod": {
+      "sha256": "0816b8152216737e3f742a4e3f1b0a2598f7f3d792d2f5b3cc747cc9cca6e5de",
+      "bytes": 14602858,
+      "dllSha256": "346e523be06138169913482154eb68e51593773205c3c67fd1aa3b6034729541"
+    },
+    "[API1.9]CS玩家T-CT外观1.0.0-作者ZH667.scmod": {
+      "sha256": "ce97be8a6a4ec25e37909ef6114d63ac7da1ae39cf9ddc66e60b6d8b3ff95274",
+      "bytes": 24813,
+      "dllSha256": "bd74497674202d0c8d9c1c2d4d32e19425ff5dfd3ec7362ee68e32386bd7701e"
+    },
+    "[API1.9]NekoMekoModel1.1-源码构建.scmod": {
+      "sha256": "3189487aef4adea6dd9da30b467188f8f32ef2027df119961c37ea260087b1cd",
+      "bytes": 188481,
+      "dllSha256": "498aaaaec94ec1d658e5251a3d28abbb4af00f4bad815b84b14c56f67dff2196"
+    }
+  },
+  "installedEngine": {
+    "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+    "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+    "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+  },
+  "boundaries": "Native diagnostic, not full-game/Android/multiplayer acceptance.",
+  "checks": [
+    {
+      "name": "native serialization initialization",
+      "passed": true
+    },
+    {
+      "name": "database replaces NMM component and preserves load order",
+      "passed": true
+    },
+    {
+      "name": "database replaces direct-call HUD",
+      "passed": true
+    },
+    {
+      "name": "ct mobile joint palette",
+      "passed": true
+    },
+    {
+      "name": "t mobile joint palette",
+      "passed": true
+    },
+    {
+      "name": "selection zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "skin zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "native hook and repeated cameras zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "CS local transforms are populated",
+      "passed": true
+    },
+    {
+      "name": "no incompatible human limb override",
+      "passed": true
+    },
+    {
+      "name": "embedded textures and empty-hand fallback",
+      "passed": true
+    },
+    {
+      "name": "NMM save keys",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 0",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 1",
+      "passed": true
+    },
+    {
+      "name": "selection zh667.cs.t",
+      "passed": true
+    },
+    {
+      "name": "skin zh667.cs.t",
+      "passed": true
+    },
+    {
+      "name": "native hook and repeated cameras zh667.cs.t",
+      "passed": true
+    },
+    {
+      "name": "CS local transforms are populated",
+      "passed": true
+    },
+    {
+      "name": "no incompatible human limb override",
+      "passed": true
+    },
+    {
+      "name": "embedded textures and empty-hand fallback",
+      "passed": true
+    },
+    {
+      "name": "NMM save keys",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.t 0",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.t 1",
+      "passed": true
+    },
+    {
+      "name": "selection fixture.default",
+      "passed": true
+    },
+    {
+      "name": "restore vanilla bone references",
+      "passed": true
+    },
+    {
+      "name": "restore native controller identity",
+      "passed": true
+    },
+    {
+      "name": "selection zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "skin zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "native hook and repeated cameras zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "CS local transforms are populated",
+      "passed": true
+    },
+    {
+      "name": "no incompatible human limb override",
+      "passed": true
+    },
+    {
+      "name": "embedded textures and empty-hand fallback",
+      "passed": true
+    },
+    {
+      "name": "NMM save keys",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 0",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 1",
+      "passed": true
+    },
+    {
+      "name": "respawn cache is per player",
+      "passed": true
+    },
+    {
+      "name": "ct NMM Body preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "ct NMM Bust preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "t NMM Body preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "t NMM Bust preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "ct/idle finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/idle GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/walk finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/walk GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/armed finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/armed GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/shield finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/shield GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/crouch finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/crouch GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/lie finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/lie GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/idle finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/idle GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/walk finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/walk GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/armed finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/armed GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/shield finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/shield GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/crouch finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/crouch GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/lie finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/lie GPU pixels",
+      "passed": true
+    }
+  ],
+  "failed": 0,
+  "coreChecks": 11278,
+  "tacticalChecks": 52,
+  "deliveryChecks": 1325
+}

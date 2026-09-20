@@ -286,6 +286,7 @@ public static class ScThirdPerson {
     /// Once per frame the pose is solved from the animated body bone; every camera's call re-applies the hand bones.
     /// Returns false to leave vanilla untouched.</summary>
     public static bool Pose(ComponentHumanModel human, float dt) {
+        if (human.Model?.HasSkin == true) { s_states.Remove(human); return false; }
         if (human.m_componentMiner is null || human.m_hand1Bone is null || human.m_hand2Bone is null || human.m_bodyBone is null || human.m_boneTransforms is null) return false;
         if (human.m_componentCreature?.ComponentHealth?.Health <= 0 || human.m_lieDownFactorModel > 0) return false;
         int value = human.m_componentMiner.ActiveBlockValue;
@@ -342,6 +343,7 @@ public static class ScThirdPerson {
 
     /// <summary>OnModelDrawExtra: draw the baked weapon at the world matrix the animate step chose.</summary>
     public static bool Draw(ComponentHumanModel human, Camera camera) {
+        if (human.Model?.HasSkin == true) { s_states.Remove(human); return false; }
         // Other mods can make the local body visible in FPP. Its extra hand item
         // must still be suppressed because our viewmodel already draws the weapon.
         if (camera.GameWidget.IsEntityFirstPersonTarget(human.Entity)

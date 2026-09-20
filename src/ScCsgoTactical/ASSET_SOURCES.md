@@ -1,5 +1,7 @@
 # 战术同伴拓展资源来源
 
+- 1.1.4 修复发白眼部：T 从源眼球纹理和双眼遮罩烘焙固定前视虹膜／瞳孔；CT 用源镜片底色与 AO 烘焙深色镜片和静态微弱高光。原 Source 2 专用眼球着色器、动态目光和金属反射并未移植。仅替换派生 GLB 内相应图片，所有几何、UV、蒙皮权重和动画 accessor 保持逐项相等；源导出不变。见 tools/bake_agent_face_materials.py。
+
 - CT SAS、T Phoenix、人质：用户本机正版 CS2 `game/csgo/pak01_dir.vpk` 经 Source2Viewer 导出的模型、骨架和贴图。仅保留第三人称身体与手套，人质保留 hostage_a；贴图派生至最大 1024，原始导出不变。
 - 行走、奔跑、待机、持枪：CS2 world/knife 与 world/rifle 动作。去掉 root_motion 位移，由 Survivalcraft 导航决定世界坐标；人质按同名骨骼适配。并非 CS2 完整 AI、材质或动画系统的移植。
 - 防爆盾：本机没有旧版盾牌模型／举盾动作。盾体为本项目编写的适配几何，使用 CS2 保留的 shield_color 材质；第一人称复用本体 CS2 真实手臂和双手持物基础姿态，调整摆放。不宣称原版盾牌模型或原版举盾动画。
