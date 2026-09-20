@@ -92,7 +92,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(!hit.HasValue||Friendly(hit.Value.ComponentBody)||wall.HasValue&&wall.Value.Distance<hit.Value.Distance)return;
         // AttackPower is the whole shot, not once per pellet. NPCs never apply counter or skin growth.
         float power=spec.AttackPower*(spec.Pellets>1?Math.Clamp(1-hit.Value.Distance/24,.2f,1):1);
-        ComponentMiner.AttackBody(new ProjectileAttackment(hit.Value.ComponentBody,Entity,from+direction*hit.Value.Distance,direction,power,null){AttackSoundVolume=0});
+        ComponentMiner.AttackBody(new ScSurvivalBalance.BulletAttack(hit.Value.ComponentBody,Entity,from+direction*hit.Value.Distance,direction,power){AttackSoundVolume=0});
     }
     void TryGrenade(float distance){
         if(State.Grenades<=0||State.GrenadeLeft>0||distance<9||distance>20||!director.CanThrow(State.Squad))return;

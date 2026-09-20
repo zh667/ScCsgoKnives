@@ -1,0 +1,63 @@
+{
+  "core": {
+    "file": "[API1.9]CS武器1.4.3-作者ZH667-全量版.scmod",
+    "bytes": 382808816,
+    "sha256": "d99ab5185b3f57c7abb896240c09473dad21b9b8610675570500f02c01f06e9a",
+    "checks": 11278
+  },
+  "dlc": {
+    "file": "[API1.9]CS战术同伴拓展1.1.3-作者ZH667.scmod",
+    "bytes": 14580838,
+    "sha256": "114b677a40e180e336def4b1e21b29c240f621f00c09aa1f216988fc1486ce44",
+    "checks": 52,
+    "installedEngineChecks": 52
+  },
+  "deliveryChecks": 1325,
+  "failed": 0,
+  "bulletChecks": [
+    {
+      "name": "player-feedback/bullet-player-control/BulletAttack/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player-feedback/bullet-player-control/BulletAttack/True",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player-feedback/bullet-player-control/GunAttack/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player-feedback/bullet-player-control/GunAttack/True",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player-feedback/bullet-player-control/NativeProjectile/False",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player-feedback/bullet-player-control/NativeProjectile/True",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "installedEngine": {
+    "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+    "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c"
+  },
+  "assetsByteIdenticalToPrevious": true,
+  "formats": {
+    "gunLayout": 5,
+    "gunSchema": 6,
+    "tacticalSchema": 1
+  },
+  "boundaries": [
+    "Packaged DLL/native engine headless checks; no full-game, Android or all-mods acceptance.",
+    "Intentional Zeus electric control is preserved."
+  ]
+}

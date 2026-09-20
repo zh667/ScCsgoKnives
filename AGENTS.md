@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-20: CS bullets must not knock players back or add native locomotion
+  stun (which locks movement/look). Deliver core Full 1.4.3 plus tactical DLC 1.1.3. Apply at the
+  native bullet effect stage for player/companion/enemy fire, preserving damage, armor, non-player
+  control, existing unrelated stun/impulse and intentional Zeus electric control. Keep NPC shots
+  distinct from the chicken-exploding GunAttack marker. See docs/release-1.4.3-player-bullet-control.md.
+
 - User-directed 2026-09-20 correction: DLC 1.1.2 removes manual three/five-member squad
   population/player-distance gates and handles non-collidable snow over real support. Keep natural
   spawn budgets. Remove hostage creative/crafting/use routes without reusing data 0 or destroying

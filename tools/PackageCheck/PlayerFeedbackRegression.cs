@@ -36,6 +36,27 @@ static class PlayerFeedbackRegression {
         bool Craft(Inventory inv,int output,int count,Dictionary<int,int> cost)=> (bool)Call("ScCraftBatch","TryCraft",inv,output,cost,count);
         try {
             current.SetValue(null,Activator.CreateInstance(regType));owner.SetValue(null,(Func<IInventory,string>)(_=>"test/feedback"));
+            foreach(string shot in new[]{"BulletAttack","GunAttack","NativeProjectile"})foreach(bool playerTarget in new[]{false,true})Test("bullet-player-control/"+shot+"/"+playerTarget,()=>{
+                var project=new Project();var entity=(Entity)RuntimeHelpers.GetUninitializedObject(typeof(Entity));entity.m_project=project;
+                var body=new ComponentBody{Mass=75};var motion=new ComponentLocomotion();var health=new ComponentHealth{Health=1,AttackResilience=1000,AttackResilienceFactor=1};
+                var creature=new ComponentCreature{ComponentBody=body,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats()};health.m_componentCreature=creature;
+                entity.m_components=[body,motion,health,creature];
+                if(playerTarget){var player=(ComponentPlayer)RuntimeHelpers.GetUninitializedObject(typeof(ComponentPlayer));player.PlayerData=(PlayerData)RuntimeHelpers.GetUninitializedObject(typeof(PlayerData));entity.m_components.Add(player);}
+                foreach(var c in entity.m_components)c.m_entity=entity;
+                for(int i=0;i<12;i++){
+                    var attack=shot=="NativeProjectile"?new ProjectileAttackment(body,null,Vector3.Zero,Vector3.UnitZ,5f,null):(Attackment)Activator.CreateInstance(mod.GetType("Game.ScSurvivalBalance").GetNestedType(shot),body,null,Vector3.Zero,Vector3.UnitZ,5f);
+                    attack.EnableHitValueParticleSystem=false;attack.AttackSoundName="";ComponentMiner.AttackBody(attack);
+                }
+                if(Math.Abs(health.Health-.94f)>.0001f)return false;
+                if(playerTarget&&shot!="NativeProjectile"){
+                    if(body.m_totalImpulse!=Vector3.Zero||motion.StunTime!=0)return false;
+                    motion.StunTime=.7f;body.m_totalImpulse=Vector3.UnitX;
+                    var attack=(Attackment)Activator.CreateInstance(mod.GetType("Game.ScSurvivalBalance").GetNestedType(shot),body,null,Vector3.Zero,Vector3.UnitZ,5f);
+                    attack.ImpulseFactor=20;attack.StunTimeSet=5;attack.ImpulseTarget();attack.StunTarget();
+                    return motion.StunTime==.7f&&body.m_totalImpulse==Vector3.UnitX;
+                }
+                return body.m_totalImpulse.LengthSquared()>0&&motion.StunTime==.2f;
+            });
             Test("merge-with-no-empty-slot",()=>{var i=new Inventory(2);i.Put(0,200,39);i.Put(1,100,20);return Craft(i,200,1,new(){[100]=2})&&i.Counts[0]==40&&i.Counts[1]==18;});
             Test("post-deduction-space-and-overflow",()=>{var i=new Inventory(2);i.Put(0,200,39);i.Put(1,100,4);return Craft(i,200,2,new(){[100]=2})&&i.Counts[0]==40&&i.Values[1]==200&&i.Counts[1]==1;});
             foreach(int count in new[]{1,10,37,100}) Test("batch-exact/"+count,()=>{

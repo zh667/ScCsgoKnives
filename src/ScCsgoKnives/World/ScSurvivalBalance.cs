@@ -3,14 +3,23 @@ using System.Runtime.CompilerServices;
 namespace Game;
 
 public static class ScSurvivalBalance {
+    // Suppress only bullet control on players at the native effect stage, after mod hooks.
+    // Damage/armor still use the ordinary projectile pipeline; existing stun is not cleared.
+    public class BulletAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
+        : ProjectileAttackment(body,owner,point,direction,power,null) {
+        protected virtual bool SuppressPlayerControl=>Target.FindComponent<ComponentPlayer>() is not null;
+        public override void ImpulseTarget(){if(!SuppressPlayerControl)base.ImpulseTarget();}
+        public override void StunTarget(){if(!SuppressPlayerControl)base.StunTarget();}
+    }
     // An explicit shot origin prevents arrows or unrelated mod explosions from
     // triggering the chicken's gun-only blast.
     public class GunAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
-        : ProjectileAttackment(body,owner,point,direction,power,null);
+        : BulletAttack(body,owner,point,direction,power);
     // Defer electric control until injury is confirmed; preserve the public stun parameter
     // so another mod can explicitly deny control without forcing us to enable knockback.
     sealed class ElectricAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
         : GunAttack(body,owner,point,direction,power) {
+        protected override bool SuppressPlayerControl=>false;
         public override void StunTarget() { }
     }
     sealed class Control { public double Next; }
