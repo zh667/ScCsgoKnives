@@ -4,7 +4,7 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class TacticalModLoader : ModLoader {
-    public override void __ModInitialize(){foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
+    public override void __ModInitialize(){TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
     public override void OnProjectLoaded(GameEntitySystem.Project project)=>project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();
     public override void OnSaveSpawnData(ComponentSpawn spawn,SpawnEntityData data)=>SubsystemTacticalEnemies.SaveSpawn(spawn,data);
     public override void OnReadSpawnData(GameEntitySystem.Entity entity,SpawnEntityData data)=>SubsystemTacticalEnemies.ReadSpawn(entity,data);

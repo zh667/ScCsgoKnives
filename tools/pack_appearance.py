@@ -1,4 +1,4 @@
-"""Package the optional appearance adapter and the pinned, unmodified NMM dependency build."""
+"""Package only the optional pinned NMM dependency. CS appearance ships inside tactical."""
 import hashlib
 import json
 import subprocess
@@ -11,9 +11,7 @@ PIN = '48c8f4fd8269441eb59add85e9538d17d739f95c'
 assert subprocess.check_output(['git', '-C', str(UPSTREAM), 'rev-parse', 'HEAD'], text=True).strip() == PIN
 assert not subprocess.check_output(['git', '-C', str(UPSTREAM), 'status', '--porcelain'], text=True).strip()
 report = {}
-version=json.loads((ROOT/'src/ScCsgoAppearance/modinfo.json').read_text('utf8'))['Version']
 for source, dll, filename in (
-    (ROOT/'src/ScCsgoAppearance', ROOT/'src/ScCsgoAppearance/bin/Release/net10.0/ScCsgoAppearance.dll', f'[API1.9]CS玩家T-CT外观{version}-作者ZH667.scmod'),
     (UPSTREAM, ROOT/'tools/NekoMekoReference/bin/Release/net10.0/sc-nekomekomodel.dll', '[API1.9]NekoMekoModel1.1-源码构建.scmod'),
 ):
     sources = [p for p in source.rglob('*.cs') if not {'obj', 'bin'} & set(p.relative_to(source).parts)]
@@ -36,7 +34,7 @@ for source, dll, filename in (
             for name, data in entries.items(): archive.writestr(name, data)
     with zipfile.ZipFile(path) as archive: assert archive.testzip() is None
     report[filename] = {'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'bytes': path.stat().st_size, 'entries': len(entries)}
-folder = ROOT/f'output/appearance-{version}'
+folder = ROOT/'output/nekomeko-1.1'
 folder.mkdir(exist_ok=True)
 (folder/'packages.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', 'utf8')
 print(json.dumps(report, ensure_ascii=False))

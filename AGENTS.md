@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed 2026-09-20 installation simplification: tactical 1.2.1 includes the CS player
+  appearance adapter and NekoMeko resource descriptors. No separate CS appearance scmod is shipped.
+  Keep NekoMeko Model 1.1 / Neorxna 1.4 optional for tactical gameplay; load the adapter's .bin only
+  when both enabled providers are present. Preserve ScCsgoAppearance assembly/type identity and
+  model/skin save keys. Core Full 1.4.5 is byte-identical. The old standalone coexistence fixture
+  under tools/fixtures is protected validation data, not an installable release. See
+  docs/release-tactical-1.2.1.md and its evidence. Recycle superseded output packages with a manifest.
+
 - User-directed 2026-09-20 follow-up: third-person actions ship in Full 1.4.5 / tactical 1.2.0 /
   appearance 1.1.0. Player action clocks advance outside FPP drawing while retaining grenade/C4
   post-release viewmodel values. Per-entity presentation snapshots never mutate ammo/inventories.

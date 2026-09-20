@@ -13,14 +13,13 @@ stage = ROOT/'.tmp/appearance-installed-check'
 stage.mkdir(exist_ok=True)
 build = ROOT/'tools/AppearanceCheck/bin/Release/net10.0'
 def version(project):return json.loads((ROOT/'src'/project/'modinfo.json').read_text('utf8'))['Version']
-core_version=version('ScCsgoKnives');tactical_version=version('ScCsgoTactical');appearance_version=version('ScCsgoAppearance')
+core_version=version('ScCsgoKnives');tactical_version=version('ScCsgoTactical')
 for p in build.iterdir():
     if p.is_file(): shutil.copy2(p, stage/p.name)
 if (build/'runtimes').exists(): shutil.copytree(build/'runtimes', stage/'runtimes', dirs_exist_ok=True)
 packages = [
     (f'[API1.9]CS武器{core_version}-作者ZH667-全量版.scmod', ROOT/'src/ScCsgoKnives', 'ScCsgoKnives.dll'),
     (f'[API1.9]CS战术同伴拓展{tactical_version}-作者ZH667.scmod', ROOT/'src/ScCsgoTactical', 'ScCsgoTactical.dll'),
-    (f'[API1.9]CS玩家T-CT外观{appearance_version}-作者ZH667.scmod', ROOT/'src/ScCsgoAppearance', 'ScCsgoAppearance.dll'),
     ('[API1.9]NekoMekoModel1.1-源码构建.scmod', ROOT/'.tmp/nmm-player-appearance-audit-20260920', 'sc-nekomekomodel.dll'),
 ]
 def sha(data): return hashlib.sha256(data).hexdigest()
@@ -36,6 +35,14 @@ for filename, source, dll in packages:
             if p.is_file(): assert archive.read(p.relative_to(source).as_posix()) == p.read_bytes(), str(p)
         (stage/dll).write_bytes(archive.read(dll))
         if dll == 'ScCsgoKnives.dll': (stage/'ScCsgoResources.dll').write_bytes(archive.read('ScCsgoResources.dll'))
+        if dll == 'ScCsgoTactical.dll':
+            bridge=archive.read('Integrations/ScCsgoAppearance.bin')
+            assert bridge==(build/'ScCsgoAppearance.dll').read_bytes(),'Rebuild/repackage integrated appearance'
+            (stage/'ScCsgoAppearance.dll').write_bytes(bridge)
+            appearance_source=ROOT/'src/ScCsgoAppearance'
+            for p in (appearance_source/'Assets').rglob('*'):
+                if p.is_file():assert archive.read(p.relative_to(appearance_source).as_posix())==p.read_bytes(),str(p)
+            evidence['integratedAppearanceSha256']=sha(bridge)
         evidence['packages'][filename] = {'sha256': sha(path.read_bytes()), 'bytes': path.stat().st_size, 'dllSha256': sha(archive.read(dll))}
 for dependency in game.glob('*.dll'):
     shutil.copy2(dependency, stage/dependency.name)
@@ -44,7 +51,7 @@ for name in ('Engine.dll', 'Survivalcraft.dll', 'EntitySystem.dll'):
     evidence['installedEngine'][name] = sha((stage/name).read_bytes())
 for name in ('glfw3.dll', 'openal32.dll', 'wrap_oal.dll', 'nfd64.dll'):
     if (game/name).exists(): shutil.copy2(game/name, stage/name)
-report = ROOT/f'output/appearance-{appearance_version}/installed'
+report = ROOT/f'output/tactical-{tactical_version}/appearance-installed'
 subprocess.run(['dotnet', str(stage/'AppearanceCheck.dll'), str(ROOT), str(game/'Content.zip'), str(report)], cwd=ROOT, check=True)
 result = json.loads((report/'checks.json').read_text('utf8'))
 assert result['failed'] == 0
@@ -57,5 +64,8 @@ for key,path in [('coreChecks',f'release-{core_version}/full-check.json'),('tact
         assert checked['coreSha256']==evidence['packages'][packages[0][0]]['sha256']
         assert checked['dlcSha256']==evidence['packages'][packages[1][0]]['sha256']
     if 'packageSha256' in checked:assert checked['packageSha256']==evidence['packages'][packages[0][0]]['sha256']
-(ROOT/f'docs/release-appearance-{appearance_version}-evidence.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2)+'\n','utf8')
+loading=json.loads((ROOT/f'output/tactical-{tactical_version}/loading-checks.json').read_text('utf8'))
+assert loading['failed']==0 and loading['tacticalSha256']==evidence['packages'][packages[1][0]]['sha256']
+evidence['optionalLoading']=loading
+(ROOT/f'docs/release-tactical-{tactical_version}-evidence.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2)+'\n','utf8')
 print(f"Verified {len(result['checks'])} installed-engine appearance checks and {len(packages)} exact packages.")

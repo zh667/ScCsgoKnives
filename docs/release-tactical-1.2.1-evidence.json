@@ -1,0 +1,3037 @@
+{
+  "packages": {
+    "[API1.9]CS武器1.4.5-作者ZH667-全量版.scmod": {
+      "sha256": "369915bc5f0f70ac6d047b181dde1c9c233c1405cfc0adc9919a60d1cfb8620f",
+      "bytes": 382813616,
+      "dllSha256": "6efcab103b9205b53da7d1dd3b7ac23a84ca65268c6b2e15154545052887c409"
+    },
+    "[API1.9]CS战术同伴拓展1.2.1-作者ZH667.scmod": {
+      "sha256": "c9873dbe2c54b86176378df5652a372fd6a58841f10e7ef49ce517c43118ce92",
+      "bytes": 22778740,
+      "dllSha256": "b90025fd7b26038f125e4782e3f64a4762b75e4d5dd7b79c25c1ad8d458547f9"
+    },
+    "[API1.9]NekoMekoModel1.1-源码构建.scmod": {
+      "sha256": "7345a25427dc15bed8dcd49d7d7ad8c241194f68af663d2ca82e1fd015c233f2",
+      "bytes": 188487,
+      "dllSha256": "ed01c11be9db13066f35298869cf63590a4af7c1e7bcceda9eb2be22c7ff8465"
+    }
+  },
+  "installedEngine": {
+    "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+    "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+    "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+  },
+  "boundaries": "Native diagnostic, not full-game/Android/multiplayer acceptance.",
+  "integratedAppearanceSha256": "5e83cfa6527ddd08490833b295c4d65413ce57190183ab64b849fe301ef9d756",
+  "checks": [
+    {
+      "name": "native serialization initialization",
+      "passed": true
+    },
+    {
+      "name": "database replaces NMM component and preserves load order",
+      "passed": true
+    },
+    {
+      "name": "database replaces direct-call HUD",
+      "passed": true
+    },
+    {
+      "name": "ct mobile joint palette",
+      "passed": true
+    },
+    {
+      "name": "t mobile joint palette",
+      "passed": true
+    },
+    {
+      "name": "selection zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "skin zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "native hook and repeated cameras zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "CS local transforms are populated",
+      "passed": true
+    },
+    {
+      "name": "no incompatible human limb override",
+      "passed": true
+    },
+    {
+      "name": "embedded textures and empty-hand fallback",
+      "passed": true
+    },
+    {
+      "name": "NMM save keys",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 0",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 1",
+      "passed": true
+    },
+    {
+      "name": "selection zh667.cs.t",
+      "passed": true
+    },
+    {
+      "name": "skin zh667.cs.t",
+      "passed": true
+    },
+    {
+      "name": "native hook and repeated cameras zh667.cs.t",
+      "passed": true
+    },
+    {
+      "name": "CS local transforms are populated",
+      "passed": true
+    },
+    {
+      "name": "no incompatible human limb override",
+      "passed": true
+    },
+    {
+      "name": "embedded textures and empty-hand fallback",
+      "passed": true
+    },
+    {
+      "name": "NMM save keys",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.t 0",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.t 1",
+      "passed": true
+    },
+    {
+      "name": "selection fixture.default",
+      "passed": true
+    },
+    {
+      "name": "restore vanilla bone references",
+      "passed": true
+    },
+    {
+      "name": "restore native controller identity",
+      "passed": true
+    },
+    {
+      "name": "selection zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "skin zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "native hook and repeated cameras zh667.cs.ct",
+      "passed": true
+    },
+    {
+      "name": "CS local transforms are populated",
+      "passed": true
+    },
+    {
+      "name": "no incompatible human limb override",
+      "passed": true
+    },
+    {
+      "name": "embedded textures and empty-hand fallback",
+      "passed": true
+    },
+    {
+      "name": "NMM save keys",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 0",
+      "passed": true
+    },
+    {
+      "name": "reload zh667.cs.ct 1",
+      "passed": true
+    },
+    {
+      "name": "respawn cache is per player",
+      "passed": true
+    },
+    {
+      "name": "ct NMM Body preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "ct NMM Bust preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "t NMM Body preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "t NMM Bust preview native GPU",
+      "passed": true
+    },
+    {
+      "name": "ct/idle finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/idle GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/walk finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/walk GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/armed finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/armed GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/shield finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/shield GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/crouch finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/crouch GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "ct/lie finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "ct/lie GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/idle finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/idle GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/walk finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/walk GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/armed finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/armed GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/shield finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/shield GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/crouch finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/crouch GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "t/lie finite bounded skin",
+      "passed": true
+    },
+    {
+      "name": "t/lie GPU pixels",
+      "passed": true
+    },
+    {
+      "name": "actions entity isolation and read idempotence",
+      "passed": true
+    },
+    {
+      "name": "actions cancellation independent",
+      "passed": true
+    },
+    {
+      "name": "actions expiration",
+      "passed": true
+    },
+    {
+      "name": "third-person selection starts draw without drawing",
+      "passed": true
+    },
+    {
+      "name": "third-person update completes draw without drawing",
+      "passed": true
+    },
+    {
+      "name": "departing first-person item cannot revert selected action",
+      "passed": true
+    },
+    {
+      "name": "same-model different slot redraw",
+      "passed": true
+    },
+    {
+      "name": "vanilla third-person QaDraw hook",
+      "passed": true
+    },
+    {
+      "name": "vanilla action changes the right arm",
+      "passed": true
+    },
+    {
+      "name": "vanilla repeated camera pose",
+      "passed": true
+    },
+    {
+      "name": "vanilla third-person QaInspect hook",
+      "passed": true
+    },
+    {
+      "name": "vanilla action changes the right arm",
+      "passed": true
+    },
+    {
+      "name": "vanilla repeated camera pose",
+      "passed": true
+    },
+    {
+      "name": "shotgun snapshot follows per-shell loop",
+      "passed": true
+    },
+    {
+      "name": "cancelled reload clears presentation",
+      "passed": true
+    },
+    {
+      "name": "empty hand clears third-person action",
+      "passed": true
+    },
+    {
+      "name": "ct actual NPC reload and repeat cameras",
+      "passed": true
+    },
+    {
+      "name": "ct actual NPC reload completion",
+      "passed": true
+    },
+    {
+      "name": "ct ak47 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct ak47 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct m4a1s Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct m4a1s Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct awp Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct awp Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct deagle Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct deagle Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct glock18 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct glock18 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct usp_silencer Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct usp_silencer Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct m4a4 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct m4a4 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct famas Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct famas Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mp9 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mp9 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct p90 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct p90 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct ssg08 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct ssg08 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct fiveseven Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct fiveseven Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct hkp2000 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct hkp2000 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct p250 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct p250 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct tec9 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct tec9 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct cz75a Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct cz75a Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mac10 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mac10 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mp7 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mp7 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct ump45 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct ump45 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct bizon Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct bizon Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mp5sd Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mp5sd Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct galilar Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct galilar Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct scar20 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct scar20 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct g3sg1 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct g3sg1 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct aug Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct aug Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct sg556 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct sg556 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct nova Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct nova Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct xm1014 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct xm1014 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct sawedoff Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct sawedoff Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mag7 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct mag7 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct m249 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct m249 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct negev Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct negev Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct revolver Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct revolver Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct elite Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct elite Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "ct taser Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "ctak47Idle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Idle0.25",
+      "passed": true
+    },
+    {
+      "name": "ctak47Draw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Draw0.25",
+      "passed": true
+    },
+    {
+      "name": "ctak47Draw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Draw0.55",
+      "passed": true
+    },
+    {
+      "name": "ctak47Draw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Draw0.8",
+      "passed": true
+    },
+    {
+      "name": "ctak47Reload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Reload0.25",
+      "passed": true
+    },
+    {
+      "name": "ctak47Reload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Reload0.55",
+      "passed": true
+    },
+    {
+      "name": "ctak47Reload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Reload0.8",
+      "passed": true
+    },
+    {
+      "name": "ctak47Inspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Inspect0.25",
+      "passed": true
+    },
+    {
+      "name": "ctak47Inspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Inspect0.55",
+      "passed": true
+    },
+    {
+      "name": "ctak47Inspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Inspect0.8",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Idle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Idle0.25",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Draw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Draw0.25",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Draw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Draw0.55",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Draw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Draw0.8",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Reload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Reload0.25",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Reload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Reload0.55",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Reload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Reload0.8",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Inspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Inspect0.25",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Inspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Inspect0.55",
+      "passed": true
+    },
+    {
+      "name": "ctmp9Inspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Inspect0.8",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleIdle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleIdle0.25",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleDraw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleDraw0.25",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleDraw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleDraw0.55",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleDraw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleDraw0.8",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleReload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleReload0.25",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleReload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleReload0.55",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleReload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleReload0.8",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleInspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleInspect0.25",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleInspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleInspect0.55",
+      "passed": true
+    },
+    {
+      "name": "ctdeagleInspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleInspect0.8",
+      "passed": true
+    },
+    {
+      "name": "ctnovaIdle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaIdle0.25",
+      "passed": true
+    },
+    {
+      "name": "ctnovaDraw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaDraw0.25",
+      "passed": true
+    },
+    {
+      "name": "ctnovaDraw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaDraw0.55",
+      "passed": true
+    },
+    {
+      "name": "ctnovaDraw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaDraw0.8",
+      "passed": true
+    },
+    {
+      "name": "ctnovaReload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaReload0.25",
+      "passed": true
+    },
+    {
+      "name": "ctnovaReload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaReload0.55",
+      "passed": true
+    },
+    {
+      "name": "ctnovaReload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaReload0.8",
+      "passed": true
+    },
+    {
+      "name": "ctnovaInspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaInspect0.25",
+      "passed": true
+    },
+    {
+      "name": "ctnovaInspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaInspect0.55",
+      "passed": true
+    },
+    {
+      "name": "ctnovaInspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaInspect0.8",
+      "passed": true
+    },
+    {
+      "name": "t actual NPC reload and repeat cameras",
+      "passed": true
+    },
+    {
+      "name": "t actual NPC reload completion",
+      "passed": true
+    },
+    {
+      "name": "t ak47 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t ak47 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t m4a1s Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t m4a1s Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t awp Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t awp Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t deagle Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t deagle Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t glock18 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t glock18 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t usp_silencer Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t usp_silencer Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t m4a4 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t m4a4 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t famas Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t famas Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mp9 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mp9 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t p90 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t p90 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t ssg08 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t ssg08 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t fiveseven Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t fiveseven Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t hkp2000 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t hkp2000 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t p250 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t p250 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t tec9 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t tec9 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t cz75a Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t cz75a Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mac10 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mac10 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mp7 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mp7 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t ump45 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t ump45 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t bizon Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t bizon Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mp5sd Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mp5sd Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t galilar Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t galilar Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t scar20 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t scar20 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t g3sg1 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t g3sg1 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t aug Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t aug Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t sg556 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t sg556 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t nova Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t nova Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t xm1014 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t xm1014 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t sawedoff Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t sawedoff Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mag7 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t mag7 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t m249 Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t m249 Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t negev Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t negev Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t revolver Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t revolver Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t elite Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "t elite Reload native world clip",
+      "passed": true
+    },
+    {
+      "name": "t taser Draw native world clip",
+      "passed": true
+    },
+    {
+      "name": "tak47Idle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Idle0.25",
+      "passed": true
+    },
+    {
+      "name": "tak47Draw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Draw0.25",
+      "passed": true
+    },
+    {
+      "name": "tak47Draw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Draw0.55",
+      "passed": true
+    },
+    {
+      "name": "tak47Draw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Draw0.8",
+      "passed": true
+    },
+    {
+      "name": "tak47Reload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Reload0.25",
+      "passed": true
+    },
+    {
+      "name": "tak47Reload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Reload0.55",
+      "passed": true
+    },
+    {
+      "name": "tak47Reload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Reload0.8",
+      "passed": true
+    },
+    {
+      "name": "tak47Inspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Inspect0.25",
+      "passed": true
+    },
+    {
+      "name": "tak47Inspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Inspect0.55",
+      "passed": true
+    },
+    {
+      "name": "tak47Inspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded ak47Inspect0.8",
+      "passed": true
+    },
+    {
+      "name": "tmp9Idle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Idle0.25",
+      "passed": true
+    },
+    {
+      "name": "tmp9Draw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Draw0.25",
+      "passed": true
+    },
+    {
+      "name": "tmp9Draw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Draw0.55",
+      "passed": true
+    },
+    {
+      "name": "tmp9Draw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Draw0.8",
+      "passed": true
+    },
+    {
+      "name": "tmp9Reload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Reload0.25",
+      "passed": true
+    },
+    {
+      "name": "tmp9Reload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Reload0.55",
+      "passed": true
+    },
+    {
+      "name": "tmp9Reload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Reload0.8",
+      "passed": true
+    },
+    {
+      "name": "tmp9Inspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Inspect0.25",
+      "passed": true
+    },
+    {
+      "name": "tmp9Inspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Inspect0.55",
+      "passed": true
+    },
+    {
+      "name": "tmp9Inspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded mp9Inspect0.8",
+      "passed": true
+    },
+    {
+      "name": "tdeagleIdle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleIdle0.25",
+      "passed": true
+    },
+    {
+      "name": "tdeagleDraw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleDraw0.25",
+      "passed": true
+    },
+    {
+      "name": "tdeagleDraw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleDraw0.55",
+      "passed": true
+    },
+    {
+      "name": "tdeagleDraw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleDraw0.8",
+      "passed": true
+    },
+    {
+      "name": "tdeagleReload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleReload0.25",
+      "passed": true
+    },
+    {
+      "name": "tdeagleReload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleReload0.55",
+      "passed": true
+    },
+    {
+      "name": "tdeagleReload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleReload0.8",
+      "passed": true
+    },
+    {
+      "name": "tdeagleInspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleInspect0.25",
+      "passed": true
+    },
+    {
+      "name": "tdeagleInspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleInspect0.55",
+      "passed": true
+    },
+    {
+      "name": "tdeagleInspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded deagleInspect0.8",
+      "passed": true
+    },
+    {
+      "name": "tnovaIdle0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaIdle0.25",
+      "passed": true
+    },
+    {
+      "name": "tnovaDraw0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaDraw0.25",
+      "passed": true
+    },
+    {
+      "name": "tnovaDraw0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaDraw0.55",
+      "passed": true
+    },
+    {
+      "name": "tnovaDraw0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaDraw0.8",
+      "passed": true
+    },
+    {
+      "name": "tnovaReload0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaReload0.25",
+      "passed": true
+    },
+    {
+      "name": "tnovaReload0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaReload0.55",
+      "passed": true
+    },
+    {
+      "name": "tnovaReload0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaReload0.8",
+      "passed": true
+    },
+    {
+      "name": "tnovaInspect0.25 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaInspect0.25",
+      "passed": true
+    },
+    {
+      "name": "tnovaInspect0.55 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaInspect0.55",
+      "passed": true
+    },
+    {
+      "name": "tnovaInspect0.8 legs remain locomotion",
+      "passed": true
+    },
+    {
+      "name": "repeat camera keeps exact pose",
+      "passed": true
+    },
+    {
+      "name": "animated grip remains at hand",
+      "passed": true
+    },
+    {
+      "name": "animated weapon bounded novaInspect0.8",
+      "passed": true
+    }
+  ],
+  "failed": 0,
+  "coreChecks": 12156,
+  "tacticalChecks": 52,
+  "installedTacticalChecks": 52,
+  "deliveryChecks": 1325,
+  "optionalLoading": {
+    "tacticalSha256": "c9873dbe2c54b86176378df5652a372fd6a58841f10e7ef49ce517c43118ce92",
+    "failed": 0,
+    "runs": [
+      {
+        "engine": "nuget",
+        "mode": "none",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "nmm-only",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "neo-only",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "disabled",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "outdated",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "both",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "reversed",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "legacy",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "nuget",
+        "mode": "reload-disabled",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "stale assemblies do not enable disabled integration",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "none",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "nmm-only",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "neo-only",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "disabled",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "outdated",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "optional payload not loaded",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "both",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "reversed",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "legacy",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          }
+        ]
+      },
+      {
+        "engine": "installed",
+        "mode": "reload-disabled",
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native scanner sees only tactical root DLL",
+            "ok": true
+          },
+          {
+            "name": "tactical has no framework references",
+            "ok": true
+          },
+          {
+            "name": "native dependency declaration only requires core",
+            "ok": true
+          },
+          {
+            "name": "appearance loader count",
+            "ok": true
+          },
+          {
+            "name": "tactical gameplay loader survives",
+            "ok": true
+          },
+          {
+            "name": "initialization does not duplicate hooks",
+            "ok": true
+          },
+          {
+            "name": "appearance belongs to correct package",
+            "ok": true
+          },
+          {
+            "name": "preview registered exactly once",
+            "ok": true
+          },
+          {
+            "name": "merged resources keep unique saved model keys",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoMekoModel",
+            "ok": true
+          },
+          {
+            "name": "native database replacement NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "native type cache resolves NekoHUD",
+            "ok": true
+          },
+          {
+            "name": "stale assemblies do not enable disabled integration",
+            "ok": true
+          }
+        ]
+      }
+    ]
+  }
+}
