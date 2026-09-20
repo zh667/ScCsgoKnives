@@ -5,7 +5,7 @@ public sealed class TacticalPanel : CanvasWidget {
     readonly ComponentPlayer player;
     readonly ComponentTacticalCompanion companion;
     public ComponentTacticalCompanion Companion=>companion;
-    readonly BevelledButtonWidget follow,guard,cover,cease,dismiss,close;
+    readonly BevelledButtonWidget follow,guard,cover,cease,dismiss,close,inspect;
     readonly LabelWidget status;
     readonly GridPanelWidget inventoryGrid,commandGrid;
     readonly int playerSlots;
@@ -21,6 +21,7 @@ public sealed class TacticalPanel : CanvasWidget {
         follow=ScGunUi.Button("跟随",110);guard=ScGunUi.Button("守在这里",110);cover=ScGunUi.Button("前方掩护",110);cease=ScGunUi.Button("停火",110);
         commandButtons=[follow,guard,cover,cease];for(int i=0;i<4;i++){commandGrid.Children.Add(commandButtons[i]);commandGrid.SetWidgetCell(commandButtons[i],new Point2(i,0));}
         body.Children.Add(ScGunUi.Note("主动攻击附近敌对生物，并协助攻击主人击中的目标。空手近战；持枪需提供弹药。举盾时不开火，脚部和背后不受保护。"));
+        inspect=ScGunUi.Button("检视武器",240);body.Children.Add(inspect);
         body.Children.Add(ScGunUi.Heading("我的物品（含全部快捷栏）"));
         var inventory=p.ComponentMiner.Inventory;int count=inventory is ComponentCreativeInventory?10:inventory.SlotsCount;
         playerSlots=count;inventoryGrid=Grid(inventory,0,count,8);body.Children.Add(inventoryGrid);
@@ -40,6 +41,7 @@ public sealed class TacticalPanel : CanvasWidget {
         companion.PanelOpen=true;status.Text=$"生命 {companion.Creature.ComponentHealth.Health*100:0}%   {companion.Order switch {TacticalOrder.Guard=>"守在这里",TacticalOrder.Cover=>"前方掩护",_=>"跟随"}}   {(companion.CeaseFire?"停火":"主动攻击")}";
         if(follow.IsClicked)companion.Command(TacticalOrder.Follow);if(guard.IsClicked)companion.Command(TacticalOrder.Guard);if(cover.IsClicked)companion.Command(TacticalOrder.Cover);
         if(cease.IsClicked)companion.CeaseFire=!companion.CeaseFire;cease.Text=companion.CeaseFire?"允许攻击":"停火";
+        if(inspect.IsClicked&&companion.InspectWeapon()){Exit();return;}
         dismiss.IsEnabled=Enumerable.Range(0,companion.Inventory.SlotsCount).All(i=>companion.Inventory.GetSlotCount(i)==0);
         if(dismiss.IsClicked&&dismiss.IsEnabled){Exit();companion.Project.RemoveEntity(companion.Entity,true);}
     }

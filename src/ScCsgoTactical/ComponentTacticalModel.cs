@@ -4,8 +4,23 @@ namespace Game;
 
 public sealed class ComponentTacticalModel : ComponentCreatureModel {
     Matrix?[] lastLivingPose;
+    ScAgentActions actions;
+    Model actionModel;
+    Matrix?[] framePose;
+    int animatedFrame=-1;
+    float animatedDeath=-1;
+    bool animatedAlive;
+    Model animatedModel;
+    ScWeaponAction animatedAction;
+    ScAgentActions Actions {get {if(actionModel!=Model){actionModel=Model;actions=new(Model);}return actions;}}
+    public ScWeaponAction VisualAction=>Entity.FindComponent<ComponentTacticalEnemy>()?.VisualAction??Entity.FindComponent<ComponentTacticalCompanion>()?.VisualAction??default;
     public override void AnimateCreature(){}
     public override void Animate(){
+        var action=VisualAction;
+        bool alive=m_componentCreature.ComponentHealth.Health>0;
+        if(animatedFrame==Time.FrameIndex&&animatedDeath==DeathPhase&&animatedAlive==alive&&animatedModel==Model&&animatedAction==action&&framePose!=null){
+            Array.Copy(framePose,m_boneTransforms,framePose.Length);return;
+        }
         base.Animate();
         if(m_componentCreature.ComponentHealth.Health<=0&&m_boneTransforms[Model.RootBone.Index] is Matrix root){
             // Freeze the last living pose so the dead state cannot snap to the bind pose.
@@ -22,8 +37,11 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
             var axis=Vector3.Normalize(Vector3.Cross(Vector3.UnitY,away));
             m_boneTransforms[Model.RootBone.Index]=root*Matrix.CreateTranslation(-pos)*Matrix.CreateFromAxisAngle(axis,MathF.PI*.5f*ease)*Matrix.CreateTranslation(pos+Vector3.UnitY*(.43f*ease));
         }else{
+            Actions.Apply(m_boneTransforms,action);
             lastLivingPose??=new Matrix?[m_boneTransforms.Length];Array.Copy(m_boneTransforms,lastLivingPose,m_boneTransforms.Length);
         }
+        if(framePose?.Length!=m_boneTransforms.Length)framePose=new Matrix?[m_boneTransforms.Length];
+        Array.Copy(m_boneTransforms,framePose,framePose.Length);animatedFrame=Time.FrameIndex;animatedDeath=DeathPhase;animatedAlive=alive;animatedModel=Model;animatedAction=action;
     }
     void Bend(string name,float radians){var bone=Model.FindBone(name,false);if(bone==null)return;var local=m_boneTransforms[bone.Index]??bone.Transform;var position=local.Translation;local.Translation=Vector3.Zero;m_boneTransforms[bone.Index]=Matrix.CreateRotationZ(radians)*local*Matrix.CreateTranslation(position);}
     void RelaxLimb(string name,string childName,Vector3 goal,float amount){
@@ -54,13 +72,15 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         string asset=GunSpec.All[state.Variant].Name;var native=ScGunNativeMesh.Resolve(asset,state.SkinId,out var texture,out _);
         var weapon=ScThirdPersonWeapon.For(asset,native is not null);var hand=Model.FindBone("hand_R",false);
         if(weapon is null||!weapon.HasRightGrip||hand is null)return;
-        var fist=(AbsoluteBoneTransformsForCamera[hand.Index]*camera.InvertedViewMatrix).Translation;
-        var world=ScThirdPersonMath.WeaponWorld(weapon.GripRight,fist,m_componentCreature.ComponentBody.Matrix.Forward,Vector3.UnitY);
+        var handWorld=AbsoluteBoneTransformsForCamera[hand.Index]*camera.InvertedViewMatrix;
+        var world=Actions.WeaponWorld(weapon.GripRight,handWorld);
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var p=world.Translation;
         var env=new DrawBlockEnvironmentData{DrawBlockMode=DrawBlockMode.ThirdPerson,InWorldMatrix=world,Owner=Entity,SubsystemTerrain=terrain,Light=terrain.Terrain.GetCellLight(Terrain.ToCell(p.X),Terrain.ToCell(p.Y),Terrain.ToCell(p.Z))};
         var view=world*camera.ViewMatrix;var renderer=Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer;
-        foreach(var group in weapon.Groups){if(group.Silencer&&state.SilencerOff)continue;var tex=group.Texture==asset+"_hd"?texture:ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+group.Texture);
-            if(native is not null)ScGunNativeMesh.DrawWorld(renderer,group.Mesh,tex,Color.White,1,ref view,env);else BlocksManager.DrawMeshBlock(renderer,group.Mesh,tex,Color.White,1,ref view,env);}
+        var weaponPose=weapon.ActionPose(VisualAction,true);
+        foreach(var group in weapon.Groups){if(group.Silencer&&state.SilencerOff||!weapon.ShowPart(group,weaponPose,VisualAction))continue;var tex=group.Texture==asset+"_hd"?texture:ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+group.Texture);
+            var partView=weapon.PartTransform(group,weaponPose)*view;
+            if(native is not null)ScGunNativeMesh.DrawWorld(renderer,group.Mesh,tex,Color.White,1,ref partView,env);else BlocksManager.DrawMeshBlock(renderer,group.Mesh,tex,Color.White,1,ref partView,env);}
         ScStatTrakRenderer.DrawThirdPerson(value,asset,native is not null,view,renderer,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
     }
 }

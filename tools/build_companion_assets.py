@@ -1,5 +1,6 @@
 """Derive compact NPC meshes/clips from preserved CS2 audit exports. Never edit sources."""
 import copy, hashlib, io, json, struct
+import numpy as np
 from pathlib import Path
 from PIL import Image
 
@@ -44,6 +45,26 @@ def build(name,src,animation_source):
         im.thumbnail((1024,1024),Image.Resampling.LANCZOS)
         buf=io.BytesIO();im.save(buf,format='PNG');ii=len(doc['images']);doc['images'].append({'bufferView':raw(buf.getvalue()),'mimeType':'image/png'});ti=len(doc['textures']);doc['textures'].append({'source':ii})
         materials[i]=len(doc['materials']);doc['materials'].append({'name':m.get('name',str(i)),'pbrMetallicRoughness':{'baseColorTexture':{'index':ti},'metallicFactor':0,'roughnessFactor':.8},'doubleSided':True});return materials[i]
+    action_accessors={}
+    def action_sampler(source,s):
+        key=(s['input'],s['output'])
+        if key in action_accessors:return action_accessors[key]
+        def array(i):
+            a=source.j['accessors'][i];assert a['componentType']==5126
+            width={'SCALAR':1,'VEC3':3,'VEC4':4}[a['type']]
+            v=source.j['bufferViews'][a['bufferView']]
+            return np.ndarray((a['count'],width),dtype='<f4',buffer=source.view(a['bufferView']),offset=a.get('byteOffset',0),strides=(v.get('byteStride',width*4),4)).copy()
+        times=array(s['input']).ravel();values=array(s['output']);assert len(times)==len(values)
+        # Preserve endpoints; keep source samples at <= 50ms spacing. Constant channels need
+        # only endpoints. Native interpolation remains LINEAR (quaternion slerp for rotation).
+        indices=np.unique(np.r_[0,np.searchsorted(times,np.arange(times[0],times[-1],.05)),len(times)-1]).clip(0,len(times)-1)
+        if np.max(np.abs(values-values[0]))<1e-7:indices=np.array([0,len(times)-1])
+        result=copy.deepcopy(s)
+        for prop,data in [('input',times[indices,None]),('output',values[indices])]:
+            a=copy.deepcopy(source.j['accessors'][s[prop]]);a.pop('byteOffset',None);a.pop('min',None);a.pop('max',None)
+            a['bufferView']=raw(data.astype('<f4').tobytes());a['count']=len(data)
+            result[prop]=len(doc['accessors']);doc['accessors'].append(a)
+        action_accessors[key]=result;return result
     for old in ordered:
         n=copy.deepcopy(nodes[old]);n['children']=[remap[c] for c in n.get('children',[]) if c in remap]
         if not n['children']:n.pop('children')
@@ -63,13 +84,36 @@ def build(name,src,animation_source):
             'aimwalk':'animation/anims/world/rifle/_default_rifle/walk_n_rifle',
             'shield':'animation/anims/world/rifle/_default_rifle/idle_rifle',
             'shieldwalk':'animation/anims/world/rifle/_default_rifle/walk_n_rifle'}
+    if name != 'hostage':
+        # World-character clips, not viewmodel arm clips. Import by explicit filename
+        # shape so crouch variants and secondary draws cannot silently replace them.
+        aliases={'ak':'ak47','glock':'glock18','usp':'usp_silencer','hkp':'hkp2000'}
+        for a in animation_source.j['animations']:
+            path=a['name']; leaf=path.split('/')[-1]
+            if '/world/' not in path or 'crouch' in leaf: continue
+            if leaf.startswith(('draw_','reload_')):
+                kind,weapon=leaf.split('_',1)
+                if weapon.startswith('empty_'): kind='reloadEmpty';weapon=weapon[6:]
+                alias=kind+'_'+aliases.get(weapon,weapon)
+                assert alias not in wanted, alias
+                wanted[alias]=path
     for alias,path in wanted.items():
         a=next(a for a in animation_source.j['animations'] if a['name']==path);out={'name':alias,'channels':[],'samplers':[]}
         choices=[(a,c) for c in a['channels']]
         for a,c in choices:
             target=animation_source.j['nodes'][c['target']['node']].get('name');prop=c['target']['path']
             if target not in names or (target=='root_motion' and prop=='translation') or prop=='weights':continue
-            s=copy.deepcopy(a['samplers'][c['sampler']]);s['input']=accessor(animation_source,s['input']);s['output']=accessor(animation_source,s['output'])
+            is_action=alias.startswith(('draw_','reload_','reloadEmpty_'))
+            if is_action:
+                ancestor=names[target]
+                while doc['nodes'][ancestor].get('name') not in ('spine_0','spine_1'):
+                    old=ordered[ancestor]
+                    if old not in parents:break
+                    ancestor=remap[parents[old]]
+                if doc['nodes'][ancestor].get('name') not in ('spine_0','spine_1'):continue
+                s=action_sampler(animation_source,a['samplers'][c['sampler']])
+            else:
+                s=copy.deepcopy(a['samplers'][c['sampler']]);s['input']=accessor(animation_source,s['input']);s['output']=accessor(animation_source,s['output'])
             out['channels'].append({'sampler':len(out['samplers']),'target':{'node':names[target],'path':prop}});out['samplers'].append(s)
         doc['animations'].append(out)
     if name=='hostage':

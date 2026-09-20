@@ -32,7 +32,7 @@ static class TacticalRegression {
         Test("optional-package-identity-and-no-bundled-engine",()=>{
             var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
             var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
-            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.3"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.2")),"core dependency not enforced by engine");
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.5"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.4")),"core dependency not enforced by engine");
             Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
         });
         foreach(string name in new[]{"ct","t","hostage","shield"})Test("native-gltf/"+name,()=>{
@@ -43,7 +43,7 @@ static class TacticalRegression {
             using var model=new Model{ModelData=data,Skin=data.Skin,Animations=data.Animations};
             foreach(var b in data.Bones)model.m_bones.Add(new ModelBone{Model=model,Index=model.m_bones.Count,Name=b.Name,Transform=b.Transform});
             for(int i=0;i<data.Bones.Count;i++){int parent=data.Bones[i].ParentBoneIndex;if(parent>=0){model.m_bones[i].ParentBone=model.m_bones[parent];model.m_bones[parent].m_childBones.Add(model.m_bones[i]);}else model.m_rootBone=model.m_bones[i];}
-            Require(data.Animations.Count==7,"missing selected animation");
+            Require(data.Animations.Count==(name=="hostage"?7:109),"missing selected animation");
             model.Skin.ResolveJoints(model.m_bones);
             foreach(var mesh in data.Meshes)model.m_meshes.Add(new ModelMesh{Name=mesh.Name,IsVisible=mesh.IsVisible,ParentBone=model.m_bones[mesh.ParentBoneIndex]});
             var project=new Project();
@@ -225,9 +225,16 @@ static class TacticalRegression {
                 registryField.SetValue(null,Activator.CreateInstance(C("ScGunRegistry")));var f=Npc();
                 int empty=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,0,false]));f.Inventory.AddSlotItems(0,empty,1);f.Inventory.AddSlotItems(1,702,2);
                 ((IUpdateable)f.Npc).Update(.1f);Require(f.Inventory.GetSlotCount(1)==2,"charged before reload insert");
+                object Action()=>T("ComponentTacticalCompanion").GetProperty("VisualAction").GetValue(f.Npc);
+                string Kind()=>Action().GetType().GetProperty("Kind").GetValue(Action()).ToString();
+                Require(Kind()=="Reload","actual transaction did not start third-person reload");
                 f.Inventory.RemoveSlotItems(0,1);f.Inventory.AddSlotItems(0,705,1);f.Time.m_gameTime=4;((IUpdateable)f.Npc).Update(.1f);Require(f.Inventory.GetSlotCount(1)==2&&f.Inventory.GetSlotValue(0)==705,"stale reload modified shield");
+                Require(Kind()!="Reload","cancelled transaction left stale third-person reload");
                 f.Inventory.RemoveSlotItems(0,1);f.Inventory.AddSlotItems(0,empty,1);f.Time.m_gameTime=5;((IUpdateable)f.Npc).Update(.1f);f.Time.m_gameTime=9;((IUpdateable)f.Npc).Update(.1f);
                 Require(f.Inventory.GetSlotCount(1)==1&&(int)C("GunSpec").GetMethod("GetRounds").Invoke(null,[Terrain.ExtractData(f.Inventory.GetSlotValue(0))])>0,"reload failed or wrong magazine cost");
+                Require(Kind()!="Reload","finished reload remains visible");
+                Require((bool)T("ComponentTacticalCompanion").GetMethod("InspectWeapon").Invoke(f.Npc,null)&&Kind()=="Inspect","companion inspect command did not start");
+                f.Creature.ComponentHealth.Health=0;Require(Kind()=="Idle","dead companion still inspecting");
             });
             Test("native-panel-all-slots-responsive-and-resume-after-close",()=>{
                 var caches=(IDictionary<string,List<object>>)typeof(ContentManager).GetField("Caches",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null);var oldCaches=caches.ToArray();var atlas=TextureAtlasManager.m_subtextures.ToArray();var font=LabelWidget.m_bitmapFont;

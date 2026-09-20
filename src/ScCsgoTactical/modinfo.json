@@ -1,14 +1,14 @@
 {
   "Name": "CS武器 · 战术同伴拓展",
-  "Version": "1.1.4",
+  "Version": "1.2.0",
   "ApiVersion": "1.9.3.1",
   "ScVersion": "2.4.0.0",
   "Author": "zh667",
   "PackageName": "zh667.ScCsgoTactical",
-  "Description": "CS武器可选拓展：防爆盾、可装备同伴、自然刷新的三人/五人敌对T小队、40秒敌方C4与10秒/拆弹钳5秒拆除。盾体及举盾姿态为自制适配。需CS武器1.4.3或以上。含独立实体及存档数据，请保留拓展或恢复安装前备份。",
+  "Description": "CS武器可选拓展：防爆盾、可装备同伴、敌对T小队与拆弹。CT/T显示第三人称换弹、切枪与检视动作。盾体及检视姿态为自制适配。需CS武器1.4.5或以上。含独立实体及存档数据，请保留拓展或恢复安装前备份。",
   "Link": "https://github.com/zh667/ScCsgoKnives",
   "LoadOrder": 1020,
   "NonPersistentMod": false,
   "GameplayImpactLevel": "Turbo",
-  "Dependencies": {"zh667.ScCsgoKnives": "1.4.3"}
+  "Dependencies": {"zh667.ScCsgoKnives": "1.4.5"}
 }

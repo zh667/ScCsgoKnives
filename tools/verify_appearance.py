@@ -12,13 +12,15 @@ game = Path(sys.argv[1])
 stage = ROOT/'.tmp/appearance-installed-check'
 stage.mkdir(exist_ok=True)
 build = ROOT/'tools/AppearanceCheck/bin/Release/net10.0'
+def version(project):return json.loads((ROOT/'src'/project/'modinfo.json').read_text('utf8'))['Version']
+core_version=version('ScCsgoKnives');tactical_version=version('ScCsgoTactical');appearance_version=version('ScCsgoAppearance')
 for p in build.iterdir():
     if p.is_file(): shutil.copy2(p, stage/p.name)
 if (build/'runtimes').exists(): shutil.copytree(build/'runtimes', stage/'runtimes', dirs_exist_ok=True)
 packages = [
-    ('[API1.9]CS武器1.4.4-作者ZH667-全量版.scmod', ROOT/'src/ScCsgoKnives', 'ScCsgoKnives.dll'),
-    ('[API1.9]CS战术同伴拓展1.1.4-作者ZH667.scmod', ROOT/'src/ScCsgoTactical', 'ScCsgoTactical.dll'),
-    ('[API1.9]CS玩家T-CT外观1.0.0-作者ZH667.scmod', ROOT/'src/ScCsgoAppearance', 'ScCsgoAppearance.dll'),
+    (f'[API1.9]CS武器{core_version}-作者ZH667-全量版.scmod', ROOT/'src/ScCsgoKnives', 'ScCsgoKnives.dll'),
+    (f'[API1.9]CS战术同伴拓展{tactical_version}-作者ZH667.scmod', ROOT/'src/ScCsgoTactical', 'ScCsgoTactical.dll'),
+    (f'[API1.9]CS玩家T-CT外观{appearance_version}-作者ZH667.scmod', ROOT/'src/ScCsgoAppearance', 'ScCsgoAppearance.dll'),
     ('[API1.9]NekoMekoModel1.1-源码构建.scmod', ROOT/'.tmp/nmm-player-appearance-audit-20260920', 'sc-nekomekomodel.dll'),
 ]
 def sha(data): return hashlib.sha256(data).hexdigest()
@@ -42,14 +44,18 @@ for name in ('Engine.dll', 'Survivalcraft.dll', 'EntitySystem.dll'):
     evidence['installedEngine'][name] = sha((stage/name).read_bytes())
 for name in ('glfw3.dll', 'openal32.dll', 'wrap_oal.dll', 'nfd64.dll'):
     if (game/name).exists(): shutil.copy2(game/name, stage/name)
-report = ROOT/'output/appearance-1.0.0/installed'
+report = ROOT/f'output/appearance-{appearance_version}/installed'
 subprocess.run(['dotnet', str(stage/'AppearanceCheck.dll'), str(ROOT), str(game/'Content.zip'), str(report)], cwd=ROOT, check=True)
 result = json.loads((report/'checks.json').read_text('utf8'))
 assert result['failed'] == 0
 evidence['checks'] = result['checks']
 evidence['failed'] = 0
-evidence['coreChecks'] = len(json.loads((ROOT/'output/release-1.4.4/full-check.json').read_text('utf-8-sig'))['checks'])
-evidence['tacticalChecks'] = len(json.loads((ROOT/'output/appearance-1.0.0/tactical-check.json').read_text('utf-8-sig'))['checks'])
-evidence['deliveryChecks'] = len(json.loads((ROOT/'output/release-1.4.4/delivery-verification.json').read_text('utf-8-sig'))['checks'])
-(ROOT/'docs/release-appearance-1.0.0-evidence.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2)+'\n','utf8')
+for key,path in [('coreChecks',f'release-{core_version}/full-check.json'),('tacticalChecks',f'tactical-{tactical_version}/tactical-check.json'),('installedTacticalChecks',f'tactical-{tactical_version}/tactical-installed-check.json'),('deliveryChecks',f'release-{core_version}/delivery-verification.json')]:
+    checked=json.loads((ROOT/'output'/path).read_text('utf-8-sig'));assert checked['failed']==0,path
+    evidence[key]=len(checked['checks'])
+    if 'coreSha256' in checked:
+        assert checked['coreSha256']==evidence['packages'][packages[0][0]]['sha256']
+        assert checked['dlcSha256']==evidence['packages'][packages[1][0]]['sha256']
+    if 'packageSha256' in checked:assert checked['packageSha256']==evidence['packages'][packages[0][0]]['sha256']
+(ROOT/f'docs/release-appearance-{appearance_version}-evidence.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2)+'\n','utf8')
 print(f"Verified {len(result['checks'])} installed-engine appearance checks and {len(packages)} exact packages.")

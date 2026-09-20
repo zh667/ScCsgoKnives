@@ -18,6 +18,16 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     ComponentBody threat;
     double threatUntil,nextPath,nextShot,reloadAt,nextScan;
     ScReloadTransaction reload;
+    readonly ScWeaponActionTimeline actions=new();
+    readonly ScHeldWeaponSelection visualSelection=new();
+    string visualAsset;
+    public ScWeaponAction VisualAction {
+        get {var a=actions.Read(time?.GameTime??0);return Creature?.ComponentHealth.Health>0 && (a.Kind!=ScWeaponActionKind.Reload || reload!=null)?a:default;}
+    }
+    public bool InspectWeapon() {
+        if(Creature.ComponentHealth.Health<=0||reload!=null||threat!=null||!ScInventoryTransaction.IsWeaponSlot(Inventory,0)||!EffectiveGunStats.TrySnapshotValue(Inventory.GetSlotValue(0),out var gun))return false;
+        actions.Start(GunSpec.All[gun.Variant].Name,ScWeaponActionKind.Inspect,"inspect",time.GameTime,3.5f);return true;
+    }
     public string Status="跟随";
     public bool PanelOpen;
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
@@ -60,7 +70,11 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     public void Died(){if(DeathHandled)return;reload?.Cancel();reload=null;path.Stop();Inventory.DropAllItems(Creature.ComponentBody.BoundingBox.Center());DeathHandled=true;}
     public void Update(float dt){
         if(Creature.ComponentHealth.Health<=0){Died();return;}
-        var owner=Owner;if(!IsActive||owner is null){StopMoving();reload?.Cancel();reload=null;Status="等待主人";return;}
+        int held=Inventory.GetSlotCount(0)>0?Inventory.GetSlotValue(0):0;
+        string asset=ScInventoryTransaction.IsWeaponSlot(Inventory,0)?ScGunBlock.SpecOf(held).Name:null;
+        bool changed=visualSelection.Observe(Inventory,0,held,ScInventoryTransaction.IsWeaponSlot(Inventory,0));
+        if(changed||visualAsset!=asset){visualAsset=asset;actions.Start(asset,ScWeaponActionKind.Draw,"deploy",time.GameTime,.65f);}
+        var owner=Owner;if(!IsActive||owner is null){StopMoving();reload?.Cancel();reload=null;actions.Clear();Status="等待主人";return;}
         PanelOpen=owner.ComponentGui.ModalPanelWidget is TacticalPanel panel&&panel.Companion==this;
         if(PanelOpen){StopMoving();reload?.Cancel();reload=null;Status="整理装备";return;}
         double now=time.GameTime;var body=Creature.ComponentBody;
@@ -70,6 +84,7 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
         bool armed=ScInventoryTransaction.IsWeaponSlot(Inventory,0);float reach=1.7f;
         if(armed&&EffectiveGunStats.TrySnapshotValue(Inventory.GetSlotValue(0),out var gun))reach=Math.Min(24,EffectiveGunStats.Resolve(GunSpec.All[gun.Variant],Inventory.GetSlotValue(0),false).Range);
         bool fighting=!CeaseFire&&!shield&&threat!=null&&Vector3.DistanceSquared(body.Position,owner.ComponentBody.Position)<=20*20&&Vector3.DistanceSquared(threat.Position,owner.ComponentBody.Position)<=32*32;
+        if(fighting&&VisualAction.Kind==ScWeaponActionKind.Inspect)actions.Clear();
         if(now>=nextPath){nextPath=now+.5;
             Vector3 dest=Order switch{TacticalOrder.Guard=>GuardPosition,TacticalOrder.Cover=>owner.ComponentBody.Position+owner.ComponentBody.Matrix.Forward*2.5f,_=>owner.ComponentBody.Position};
             float radius=Order==TacticalOrder.Follow?1.8f:.6f;
@@ -101,12 +116,13 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
         if(!ScInventoryTransaction.IsWeaponSlot(Inventory,0))return;
         int value=Inventory.GetSlotValue(0);if(!EffectiveGunStats.TrySnapshotValue(value,out var state)||state.Durability<=0){Status="枪械需要维修";return;}
         var spec=GunSpec.All[state.Variant];var stats=EffectiveGunStats.Resolve(spec,value,false);
-        if(reload is not null){Status="换弹中";if(!reload.Valid){reload.Cancel();reload=null;return;}if(now>=reloadAt){if(ScReloadTransaction.IsTube(spec.Name)){if(!reload.InsertShell()||GunSpec.GetRounds(Terrain.ExtractData(reload.Expected))>=stats.Capacity)reload=null;else reloadAt=now+.65;}else{reload.InsertMagazine();reload=null;}nextShot=now+.25;}return;}
+        if(reload is not null){Status="换弹中";if(!reload.Valid){reload.Cancel();reload=null;return;}if(now>=reloadAt){if(ScReloadTransaction.IsTube(spec.Name)){if(!reload.InsertShell()||GunSpec.GetRounds(Terrain.ExtractData(reload.Expected))>=stats.Capacity)reload=null;else {reloadAt=now+.65;actions.Start(spec.Name,ScWeaponActionKind.Reload,"reload",now,.65f);}}else{reload.InsertMagazine();reload=null;}nextShot=now+.25;}return;}
         if(state.Rounds<=0){
             if(spec.RechargeSeconds>0){if(state.RechargeReadyAt>=0&&now>=state.RechargeReadyAt){var tx=ScGunMutation.Prepare(Inventory,0,ScGunHolders.Key(Inventory,0),out _);tx?.Commit(r=>{r.Rounds=1;r.RechargeReadyAt=-1;r.RechargeCycleSeconds=0;});}return;}
             int ammo=ScAmmoBlock.Value(ScReloadTransaction.AmmoKind(spec)),cost=ScReloadTransaction.IsTube(spec.Name)?1:ScReloadTransaction.RequiredFor(spec,stats.Capacity);
             if(ScInventoryTransaction.Count(Inventory,ammo)<cost&&state.ReserveOverflowRounds<=0){Status="弹药不足";return;}
-            reload=new(Inventory,0,value,ammo,cost,stats.Capacity,ScGunHolders.Key(Inventory,0));reload.Discard();reloadAt=now+(ScReloadTransaction.IsTube(spec.Name)?.65:2.8);return;
+            reload=new(Inventory,0,value,ammo,cost,stats.Capacity,ScGunHolders.Key(Inventory,0));reload.Discard();reloadAt=now+(ScReloadTransaction.IsTube(spec.Name)?.65:2.8);
+            actions.Start(spec.Name,ScWeaponActionKind.Reload,"reload",now,(float)(reloadAt-now));return;
         }
         if(threat is null||now<nextShot)return;
         var start=Creature.ComponentBody.Position+Vector3.UnitY*1.45f;var end=threat.BoundingBox.Center();var delta=end-start;float length=delta.Length();if(length<.1f||length>Math.Min(32,stats.Range))return;
@@ -116,6 +132,7 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
         var mutation=ScGunMutation.Prepare(Inventory,0,ScGunHolders.Key(Inventory,0),out _);if(mutation==null)return;
         if(mutation.Commit(r=>{r.Rounds=Math.Max(0,r.Rounds-1);r.Durability=Math.Max(0,r.Durability-1);if(spec.RechargeSeconds>0&&r.Rounds==0){r.RechargeCycleSeconds=stats.RechargeSeconds;r.RechargeReadyAt=now+stats.RechargeSeconds;}})!=ScGunResult.Success)return;
         nextShot=now+Math.Max(.12,stats.CycleSeconds); // companion cap prevents frame-bound bursts on weaker phones
+        actions.Start(spec.Name,ScWeaponActionKind.Shoot,"shoot",now,.16f);
         var credit=ScGunKillCredit.For(Terrain.ExtractData(mutation.Expected),false,0);var health=threat.Entity.FindComponent<ComponentHealth>();float before=health.Health;
         // All pellets are aimed at the visible torso. Keep total power and growth, never multiply shotgun damage by pellet count.
         var attack=new ScSurvivalBalance.GunAttack(threat,Entity,start+Vector3.Normalize(delta)*hit.Value.Distance,Vector3.Normalize(delta),stats.Power*stats.Falloff(spec,length));

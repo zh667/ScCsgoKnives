@@ -799,6 +799,7 @@ public static class Cs2SelfTest {
         Check("arms/primitives", arms is not null && arms.Primitives.Length == 2,
               arms is null ? "null" : $"{arms.Primitives.Length}");
 
+        ScThirdPersonActionSelfTest.Run(Check);
         return JsonSerializer.Serialize(new {
             assembly = typeof(Cs2SelfTest).Assembly.Location,
             version = typeof(Cs2SelfTest).Assembly.GetName().Version?.ToString(),

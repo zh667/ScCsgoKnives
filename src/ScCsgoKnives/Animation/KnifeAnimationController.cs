@@ -100,7 +100,9 @@ public static class KnifeAnimationController {
         // points at the destination. Sample the outgoing action, but do not start actions or commit
         // animation events for an item that is no longer selected.
         int selected = model.m_componentPlayer?.ComponentMiner?.ActiveBlockValue ?? itemValue;
-        if (selected != itemValue && state.Variant == variant && state.Pose is not null) {
+        if (selected != itemValue) {
+            if (state.Variant != variant || state.Pose is null)
+                return CsmcKnifeRig.Sample(variant, "idle", 0, true);
             state.PendingInspect = false;
             float departingTime = (float)(KnifeClock.Now - state.StartedAt);
             state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, ClipTime(state, departingTime), state.Action == ActionKind.Idle);
@@ -504,6 +506,12 @@ public static class KnifeAnimationController {
     public static string CurrentClip(ComponentFirstPersonModel model) =>
         model is not null && s_states.TryGetValue(model, out State state) ? state.ClipAlias : null;
     public static long ActionToken(ComponentFirstPersonModel model)=>model is not null && s_states.TryGetValue(model,out var state)?state.ActionSequence:-1;
+    public static ScWeaponAction ReadAction(ComponentFirstPersonModel model) {
+        if(model is null || !s_states.TryGetValue(model,out var s) || s.Variant<0)return default;
+        float elapsed=Math.Max(0,(float)(KnifeClock.Now-s.StartedAt));
+        return new(CsmcKnifeRig.GetAssetName(s.Variant),(ScWeaponActionKind)s.Action,s.ClipAlias,s.ActionSequence,
+            elapsed,ActionDuration(s,s.Variant),ClipTime(s,elapsed),s.Action==ActionKind.Reload&&s.Sections!=null&&s.ReloadLoops>=0);
+    }
     public static int CurrentVariant(ComponentFirstPersonModel model)=>model is not null && s_states.TryGetValue(model,out var state)?state.Variant:-1;
 
     public static Cs2Rig.Pose InspectTransition(ComponentFirstPersonModel model,Cs2Rig.Pose target) {

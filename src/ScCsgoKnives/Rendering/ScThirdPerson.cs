@@ -63,12 +63,44 @@ public static class ScThirdPersonMath {
 /// <summary>A mod weapon baked for third person: geometry in weapon-local metres (forward -Z, up +Y) in its idle
 /// pose, and where the CS2 rig puts each hand on it (wpnHand_R / wpnHand_L relative to the weapon root).</summary>
 public sealed class ScThirdPersonWeapon {
-    public sealed record Group(BlockMesh Mesh, string Texture, bool Silencer = false);
+    public sealed record Group(BlockMesh Mesh, string Texture, bool Silencer = false, string Bone = null, Matrix BindInverse = default);
     public string Asset;
     public Group[] Groups = [];
     public Vector3 GripRight, GripLeft, Muzzle;
     public bool HasLeftGrip, HasRightGrip;
     public int Vertices;
+    Matrix idleRootPlacement;
+    static Matrix Root(Cs2Rig.Pose p) {
+        foreach(string name in new[]{"weapon","weapon_offset","root_motion"})if(p.Bones.TryGetValue(name,out var m))return m;
+        return Matrix.Identity;
+    }
+    public Cs2Rig.Pose ActionPose(ScWeaponAction action, bool normalized=false) {
+        if(!action.Active||action.Asset!=Asset)return null;
+        // Character and viewmodel clips have separate durations. Player ClipTime is already
+        // remapped for shell loops; NPC actions use their gameplay-normalized phase.
+        string clip=action.Kind==ScWeaponActionKind.Draw?"deploy":action.Clip;
+        if(clip==null||!Cs2Rig.HasAlias(Asset,clip))return null;
+        float seconds=normalized?action.Progress*Cs2Rig.Duration(Asset,clip):action.ClipTime;
+        return Cs2Rig.Sample(Asset,clip,Math.Clamp(seconds,0,Cs2Rig.Duration(Asset,clip)));
+    }
+    public Matrix PartTransform(Group group,Cs2Rig.Pose pose) {
+        if(pose==null||group.Bone==null)return Matrix.Identity;
+        Matrix animated=group.Bone.StartsWith("@")?pose.GetPart(group.Bone[1..]):pose.Bones.GetValueOrDefault(group.Bone,Matrix.Identity);
+        return group.BindInverse*animated*Matrix.Invert(Root(pose))*idleRootPlacement;
+    }
+    public bool ShowPart(Group group,Cs2Rig.Pose pose,ScWeaponAction action) {
+        string bone=group.Bone?.TrimStart('@');
+        if(bone==null)return true;
+        if(!ScGunPartVisibility.Visible(Asset,bone,action.Active?action.Clip:"idle",pose?.Time??0,false))return false;
+        if(bone=="shell") {
+            if(!action.Active||action.Kind!=ScWeaponActionKind.Reload)return false;
+            // Some viewmodel clips hide helper shells by moving them far outside the camera.
+            // A world camera can see that area, so keep only the shell actually near the hands.
+            var center=group.Mesh.CalculateBoundingBox().Center();
+            return Vector3.Distance(Vector3.Transform(center,PartTransform(group,pose)),GripRight)<.8f;
+        }
+        return true;
+    }
     static readonly string[] RootBones = ["weapon_offset", "weapon", "root_motion"];
     /// <summary>Headless hosts (PackageCheck) supply the OBJ pieces here; the game reads them through ContentManager.</summary>
     public static Func<string, string, (float[] Positions, float[] Uvs, int[] Indices)> ObjProvider;
@@ -149,6 +181,7 @@ public sealed class ScThirdPersonWeapon {
         var pose = Cs2Rig.Sample(asset, "idle", 0) ?? throw new InvalidOperationException("no idle pose");
         Matrix placement = LocalPlacement(pose);
         var result = new ScThirdPersonWeapon { Asset = asset };
+        result.idleRootPlacement=Root(pose)*placement;
         result.HasRightGrip = pose.Bones.TryGetValue("wpnHand_R", out Matrix right);
         result.HasLeftGrip = pose.Bones.TryGetValue("wpnHand_L", out Matrix left);
         result.GripRight = result.HasRightGrip ? Vector3.Transform(right.Translation, placement) : Vector3.Zero;
@@ -162,8 +195,8 @@ public sealed class ScThirdPersonWeapon {
         }
         int variant = Array.FindIndex(Enumerable.Range(0, CsmcKnifeRig.AssetCount).ToArray(), v => CsmcKnifeRig.GetAssetName(v) == asset);
         bool gun = variant >= 0 && CsmcKnifeRig.IsGun(variant), grenade = variant >= 0 && CsmcKnifeRig.IsGrenade(variant);
-        var groups = new Dictionary<(string Texture, bool Silencer), BlockMesh>();
-        BlockMesh Group(string texture, bool silencer = false) { if (!groups.TryGetValue((texture, silencer), out var m)) groups[(texture, silencer)] = m = new BlockMesh(); return m; }
+        var groups = new Dictionary<(string Texture, bool Silencer, string Bone), BlockMesh>();
+        BlockMesh Group(string texture, bool silencer = false, string bone=null) { if (!groups.TryGetValue((texture, silencer,bone), out var m)) groups[(texture, silencer,bone)] = m = new BlockMesh(); return m; }
         var objParts = Cs2Rig.GetMeshParts(asset);
         if (gun && legacy) {
             foreach (var part in ScGunNativeMesh.Parts(asset)) {
@@ -175,10 +208,10 @@ public sealed class ScThirdPersonWeapon {
                     var vertices = new Cs2SkinnedMesh.Vertex[positions.Length / 3];
                     for (int i = 0; i < vertices.Length; i++) vertices[i] = new Cs2SkinnedMesh.Vertex {
                         Position = new Vector3(positions[i*3], positions[i*3+1], positions[i*3+2]), TextureCoordinate = new Vector2(uvs[i*2], uvs[i*2+1]) };
-                    Append(Group(texture, part.Bone == "silencer"), vertices, indices, world, ref result.Vertices);
+                    Append(Group(texture, part.Bone == "silencer",part.Bone), vertices, indices, world, ref result.Vertices);
                 }
                 else {
-                    var target = Group(texture, part.Bone == "silencer"); int before = target.Vertices.Count;
+                    var target = Group(texture, part.Bone == "silencer",part.Bone); int before = target.Vertices.Count;
                     foreach (ModelMesh mesh in part.Model.Meshes) foreach (ModelMeshPart piece in mesh.MeshParts)
                         target.AppendModelMeshPart(piece, BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone) * world, false, false, true, false, Color.White);
                     result.Vertices += target.Vertices.Count - before;
@@ -194,11 +227,11 @@ public sealed class ScThirdPersonWeapon {
                     var (positions, uvs, indices) = ObjProvider(asset, part);
                     var vertices = new Cs2SkinnedMesh.Vertex[positions.Length / 3];
                     for (int i = 0; i < vertices.Length; i++) vertices[i] = new Cs2SkinnedMesh.Vertex { Position = new Vector3(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]), TextureCoordinate = new Vector2(uvs[i * 2], uvs[i * 2 + 1]) };
-                    Append(Group(texture, part == "silencer"), vertices, indices, world, ref result.Vertices);
+                    Append(Group(texture, part == "silencer","@"+part), vertices, indices, world, ref result.Vertices);
                     continue;
                 }
                 ObjModel model = ContentManager.Get<ObjModel>($"Models/ScCsgoKnives/{asset}_cs2_{part}");
-                var target = Group(texture, part == "silencer"); int before = target.Vertices.Count;
+                var target = Group(texture, part == "silencer","@"+part); int before = target.Vertices.Count;
                 foreach (ModelMesh mesh in model.Meshes) foreach (ModelMeshPart meshPart in mesh.MeshParts)
                     target.AppendModelMeshPart(meshPart, BlockMesh.GetBoneAbsoluteTransform(mesh.ParentBone) * world, false, false, true, false, Color.White);
                 result.Vertices += target.Vertices.Count - before;
@@ -209,7 +242,9 @@ public sealed class ScThirdPersonWeapon {
             foreach (var part in rigid.Parts) {
                 if(!ScGunPartVisibility.Visible(asset,rigid.Joints[part.Joint],"idle",0,false))continue;
                 if (!rigid.TryPartWorld(part, out Matrix world)) continue;
-                Append(Group(texture, rigid.Joints[part.Joint] == "silencer"), rigid.Vertices, part.Indices, world, ref result.Vertices);
+                string bone=rigid.Joints[part.Joint];
+                if(!pose.Bones.ContainsKey(bone))bone=RootBones.FirstOrDefault(pose.Bones.ContainsKey);
+                Append(Group(texture, rigid.Joints[part.Joint] == "silencer",bone), rigid.Vertices, part.Indices, world, ref result.Vertices);
             }
             if (rigid.BlendedParts is { Length: > 0 }) {
                 rigid.SkinBlended();
@@ -226,7 +261,8 @@ public sealed class ScThirdPersonWeapon {
             }
             else foreach (var part in mesh.Primitives) Append(Group(gun ? asset + "_hd" : asset + "_cs2"), mesh.Skinned, part.Indices, Matrix.Identity, ref result.Vertices);
         }
-        result.Groups = groups.Select(g => new Group(g.Value, g.Key.Texture, g.Key.Silencer)).ToArray();
+        result.Groups = groups.Select(g => new Group(g.Value, g.Key.Texture, g.Key.Silencer,g.Key.Bone,
+            g.Key.Bone==null?Matrix.Identity:Matrix.Invert((g.Key.Bone.StartsWith("@")?pose.GetPart(g.Key.Bone[1..]):pose.Bones[g.Key.Bone])*placement))).ToArray();
         if (result.Vertices == 0) throw new InvalidOperationException("no geometry");
         return result;
     }
@@ -250,7 +286,7 @@ public sealed class ScThirdPersonWeapon {
 /// remember where the weapon is, draw it instead of vanilla's shrunken block. One state per model, computed once
 /// per frame in the animate hook, so several cameras in one frame draw the same thing.</summary>
 public static class ScThirdPerson {
-    sealed class State { public ScThirdPersonWeapon Weapon; public Matrix World; public bool Valid, Legacy; public string Asset; public int Skin; public Texture2D GunTexture; public Vector2 Right, Left; public bool Logged; public Vector3 Fist; public int Frame; }
+    sealed class State { public ScThirdPersonWeapon Weapon; public Matrix World; public bool Valid, Legacy; public string Asset; public int Skin; public Texture2D GunTexture; public Vector2 Right, Left; public bool Logged; public Vector3 Fist; public int Frame; public long ActionSequence; }
     /// <summary>The right fist solved from the body alone (position, yaw, crouch) and a stance: the logic pose, independent
     /// of whether any camera drew this human. Used for the grenade's start point in first and third person alike.</summary>
     public static bool FistFromLogic(ComponentHumanModel human, ComponentBody body, ScThirdPersonStance stance, out Vector3 fist) {
@@ -299,7 +335,9 @@ public static class ScThirdPerson {
         var weapon = ScThirdPersonWeapon.For(asset, legacy);
         if (weapon is null || !weapon.HasRightGrip) return false;
         var state = s_states.GetOrCreateValue(human);
-        if (state.Valid && state.Asset == asset && state.Skin == skin && state.Frame == Time.FrameIndex) {
+        var action=KnifeAnimationController.ReadAction(human.Entity.FindComponent<ComponentFirstPersonModel>());
+        if(action.Asset!=asset)action=default;
+        if (state.Valid && state.Asset == asset && state.Skin == skin && state.Frame == Time.FrameIndex && state.ActionSequence==action.Sequence) {
             human.SetBoneTransform(human.m_hand2Bone.Index, ScThirdPersonMath.HandLocal(state.Right));
             human.SetBoneTransform(human.m_hand1Bone.Index, ScThirdPersonMath.HandLocal(state.Left));
             return true;
@@ -311,17 +349,20 @@ public static class ScThirdPerson {
         var locomotion = human.m_componentCreature.ComponentLocomotion;
         float pitch = stance.PitchFollows && locomotion is not null ? Math.Clamp(PitchSign * locomotion.LookAngles.Y, -1.2f, 1.2f) : 0;
         Vector2 rightTarget = new(stance.RightRaise + pitch, stance.RightSwing);
+        rightTarget+=ScThirdPersonMotion.Right(action);
         Vector2 right = state.Asset == asset ? ScThirdPersonMath.Approach(state.Right, rightTarget, dt) : rightTarget;
         Matrix hand2 = ScThirdPersonMath.HandAbsolute(human.m_hand2Bone.Transform.Translation, right, body);
         Vector3 fist = Vector3.Transform(ScThirdPersonMath.HandEndLocal(true), hand2);
         Vector3 forward = human.m_componentCreature.ComponentBody.Matrix.Forward;
         Vector3 aim = ScThirdPersonMath.AimDirection(forward, pitch);
         Matrix world = ScThirdPersonMath.WeaponWorld(weapon.GripRight, fist, aim, Vector3.UnitY);
+        world=Matrix.CreateTranslation(-weapon.GripRight)*ScThirdPersonMotion.WeaponRotation(action)*Matrix.CreateTranslation(weapon.GripRight)*world;
         Vector2 left = human.m_handAngles1;
         if (stance.TwoHanded && weapon.HasLeftGrip) {
             Vector3 target = Vector3.Transform(weapon.GripLeft, world);
             Vector3 shoulder = Vector3.Transform(human.m_hand1Bone.Transform.Translation, body);
             Vector2 leftTarget = ScThirdPersonMath.AnglesToward(ScThirdPersonMath.BodyDirection(shoulder, target, body));
+            leftTarget+=ScThirdPersonMotion.Left(action);
             left = state.Asset == asset ? ScThirdPersonMath.Approach(state.Left, leftTarget, dt) : leftTarget;
         }
         human.m_handAngles2 = right; human.m_handAngles1 = left;
@@ -329,6 +370,7 @@ public static class ScThirdPerson {
         human.SetBoneTransform(human.m_hand1Bone.Index, ScThirdPersonMath.HandLocal(left));
         state.Weapon = weapon; state.World = world; state.Valid = true; state.Asset = asset; state.Right = right; state.Left = left; state.Fist = fist; state.Frame = Time.FrameIndex;
         state.Skin = skin; state.GunTexture = gunTexture; state.Legacy = legacy;
+        state.ActionSequence=action.Sequence;
         if (!state.Logged) {
             state.Logged = true;
             KnifeLog.Trace($"third person {asset}: {weapon.Vertices} vertices in {weapon.Groups.Length} group(s); grips R {weapon.GripRight} L {weapon.GripLeft} (left {(weapon.HasLeftGrip ? "used" : "absent")}); right arm {right} left arm {left}; fist {fist}");
@@ -344,6 +386,7 @@ public static class ScThirdPerson {
     /// <summary>OnModelDrawExtra: draw the baked weapon at the world matrix the animate step chose.</summary>
     public static bool Draw(ComponentHumanModel human, Camera camera) {
         if (human.Model?.HasSkin == true) { s_states.Remove(human); return false; }
+        if(human.m_componentCreature?.ComponentHealth?.Health<=0){s_states.Remove(human);return false;}
         // Other mods can make the local body visible in FPP. Its extra hand item
         // must still be suppressed because our viewmodel already draws the weapon.
         if (camera.GameWidget.IsEntityFirstPersonTarget(human.Entity)
@@ -363,7 +406,10 @@ public static class ScThirdPerson {
         bool silencerOff = ScGunBlock.SpecOf(held) is { HasSilencer: true } && GunSpec.GetSilencerOff(data);
         int skin = Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScGunBlock>(true) ? ScGunBlock.SkinOf(held) : Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScKnifeBlock>(true) ? ScKnifeBlock.SkinOf(held) : 0;
         if (skin != state.Skin) { state.Valid = false; return false; }
+        var action=KnifeAnimationController.ReadAction(human.Entity.FindComponent<ComponentFirstPersonModel>());
+        var weaponPose=state.Weapon.ActionPose(action);
         foreach (var group in state.Weapon.Groups) {
+            if(!state.Weapon.ShowPart(group,weaponPose,action))continue;
             if (group.Silencer && silencerOff) continue; // the detached silencer is not on the gun in third person either
             // "<gun>_hd" is the factory set; a finish redirects it, and an unreadable finish falls back
             // to the factory texture so the gun is still drawn.
@@ -371,8 +417,9 @@ public static class ScThirdPerson {
                 ? state.GunTexture : Load(group.Texture == state.Asset + "_cs2" && Terrain.ExtractContents(held) == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)
                     ? ScKnifeSkinCatalog.Texture(state.Asset, skin, ScKnifeBlock.GetVariant(held)) : group.Texture);
             if (texture is null) continue;
-            if (state.Legacy) ScGunNativeMesh.DrawWorld(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
-            else BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref view, env);
+            var partView=state.Weapon.PartTransform(group,weaponPose)*view;
+            if (state.Legacy) ScGunNativeMesh.DrawWorld(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref partView, env);
+            else BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref partView, env);
         }
         ScStatTrakRenderer.DrawThirdPerson(held, state.Asset, state.Legacy, view, human.m_subsystemModelsRenderer.PrimitivesRenderer,
             LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);

@@ -1,7 +1,7 @@
-# CS player appearance 1.0.0
+# CS player appearance 1.1.0
 
-Reuses the CT SAS / T Phoenix GLBs and derived seven-clip animation library supplied by
-CS Tactical 1.1.4. See that package's ASSET_SOURCES.md for Valve source and adaptation details.
+Reuses the CT SAS / T Phoenix GLBs and derived locomotion/world action library supplied by
+CS Tactical 1.2.0. See that package's ASSET_SOURCES.md for Valve source and adaptation details.
 No model or texture duplication is included in this adapter.
 
 NekoMeko Model is required separately. The tested upstream commit is
@@ -13,3 +13,5 @@ Neorxna 1.4 is a separate dependency and is not redistributed here.
 This is an appearance change, not a faction, armor or combat-stat change. Crouching and
 lying down are simple port adaptations. CS first-person weapons keep their existing CS2 arms.
 UI dolls display an idle preview. Swim, ladder and mount-specific CS2 clips are not included.
+World reload/draw clips are sampled on the upper body; inspect and supplementary gestures are
+authored adaptations. Weapon parts reuse the existing CS2 viewmodel data, not world prop clips.

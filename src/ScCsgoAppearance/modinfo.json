@@ -1,7 +1,7 @@
 {
-  "Name": "CS武器 · 玩家T/CT外观", "Version": "1.0.0", "ApiVersion": "1.9.3.1", "ScVersion": "2.4.0.0",
+  "Name": "CS武器 · 玩家T/CT外观", "Version": "1.1.0", "ApiVersion": "1.9.3.1", "ScVersion": "2.4.0.0",
   "Author": "zh667", "PackageName": "zh667.ScCsgoAppearance", "LoadOrder": 1100,
   "Description": "在NekoMeko角色选择中使用CS2的CT SAS或T Phoenix。保留CS武器第一人称手臂。外观不改变阵营、血量或装备属性。",
   "Link": "https://github.com/zh667/ScCsgoKnives", "NonPersistentMod": true,
-  "Dependencies": {"zh667.ScCsgoKnives":"1.4.4","zh667.ScCsgoTactical":"1.1.4","ysf.nekomekomodel":"1.1","ysf.neorxna":"1.4"}
+  "Dependencies": {"zh667.ScCsgoKnives":"1.4.5","zh667.ScCsgoTactical":"1.2.0","ysf.nekomekomodel":"1.1","ysf.neorxna":"1.4"}
 }

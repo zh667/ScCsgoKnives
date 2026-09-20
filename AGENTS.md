@@ -1,5 +1,14 @@
 # Project conventions
 
+- User-directed 2026-09-20 follow-up: third-person actions ship in Full 1.4.5 / tactical 1.2.0 /
+  appearance 1.1.0. Player action clocks advance outside FPP drawing while retaining grenade/C4
+  post-release viewmodel values. Per-entity presentation snapshots never mutate ammo/inventories.
+  CT/T use derived world upper-body draw/reload clips with native gait; inspect is authored.
+  Third-person weapon parts reuse CS2 weapon clips, with helper-shell visibility guards and fallback
+  joints preserved. Repeated cameras must not advance NPC/player pose twice. No network transport
+  is implemented; do not claim multiplayer or full-game/Android acceptance from native diagnostics.
+  See docs/release-thirdperson-1.4.5.md. Preserve the baked eye fix when rebuilding agent assets.
+
 - User-directed 2026-09-20: optional NekoMeko player CT SAS / T Phoenix appearance is implemented
   as ScCsgoAppearance 1.0.0 with Full core 1.4.4 and tactical 1.1.4. Preserve native NMM selection,
   per-player saved keys and return to default; keep CS2 weapon first-person arms. CT lenses and T

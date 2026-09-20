@@ -134,6 +134,7 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         var pixels=target.GetData(new Rectangle(0,0,480,640));Check(pair.Key+"/"+state+" GPU pixels",pixels.Pixels.Count(p=>p.R!=22||p.G!=27||p.B!=34)>1000);
         using var file=File.Create(Path.Combine(output,pair.Key+"-"+state+".png"));Image.Save(pixels,file,ImageFileFormat.Png,false);
     }
+    ActionChecks.Run(root,output,models,human,body,shader,target,Check,caches);
     Console.WriteLine($"PASS {results.Count} checks");
 }catch(Exception e){Console.Error.WriteLine(e);results.Add(new{error=e.ToString()});exit=1;}finally{File.WriteAllText(Path.Combine(output,"checks.json"),JsonSerializer.Serialize(new{failed=exit,checks=results},new JsonSerializerOptions{WriteIndented=true}));Display.RenderTarget=null;Window.Close();}};
 Window.Run(480,640,WindowMode.Fixed,"CS player appearance diagnostic");return exit;

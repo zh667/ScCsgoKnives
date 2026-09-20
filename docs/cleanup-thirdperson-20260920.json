@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-20",
+  "authorization": "User requested cleanup of superseded versions",
+  "retained": [
+    "core 1.4.5",
+    "tactical 1.2.0",
+    "appearance 1.1.0",
+    "NekoMeko Model 1.1"
+  ],
+  "files": [
+    {
+      "path": "output/[API1.9]CS武器1.4.4-作者ZH667-全量版.scmod",
+      "bytes": 382808835,
+      "sha256": "7e9b7acbcd90c6ec31455bf6b21a0aa1a699939d2af06581a5f71f50525287d9",
+      "state": "recycled",
+      "recovery": "Windows Recycle Bin"
+    },
+    {
+      "path": "output/[API1.9]CS战术同伴拓展1.1.4-作者ZH667.scmod",
+      "bytes": 14602858,
+      "sha256": "0816b8152216737e3f742a4e3f1b0a2598f7f3d792d2f5b3cc747cc9cca6e5de",
+      "state": "recycled",
+      "recovery": "Windows Recycle Bin"
+    },
+    {
+      "path": "output/[API1.9]CS玩家T-CT外观1.0.0-作者ZH667.scmod",
+      "bytes": 24813,
+      "sha256": "ce97be8a6a4ec25e37909ef6114d63ac7da1ae39cf9ddc66e60b6d8b3ff95274",
+      "state": "recycled",
+      "recovery": "Windows Recycle Bin"
+    }
+  ],
+  "totalBytes": 397436506.0,
+  "applied": true
+}

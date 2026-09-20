@@ -12,6 +12,16 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     readonly Engine.Random random=new();
     float senseLeft,pathLeft,lost,aim,plant,burstPause,retreat,search;int burst;
     bool seen;
+    readonly ScWeaponActionTimeline actions=new();
+    string visualAsset;
+    public ScWeaponAction VisualAction {
+        get {
+            if(State==null||Creature?.ComponentHealth.Health<=0)return default;
+            var a=actions.Read(time?.GameTime??0);
+            if(State.ReloadLeft>0){float duration=State.Role==TacticalRole.Machine?4:2.8f;return new(GunSpec.All[State.Variant].Name,ScWeaponActionKind.Reload,"reload",a.Sequence,Math.Max(0,duration-State.ReloadLeft),duration,Math.Max(0,duration-State.ReloadLeft));}
+            return a.Kind==ScWeaponActionKind.Reload?default:a;
+        }
+    }
     Vector3 lastSeen;
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
     public override float ImportanceLevel=>State is not null&&Creature.ComponentHealth.Health>0?100:0;
@@ -39,6 +49,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     }
     public void Update(float dt){
         if(State is null)return;
+        string asset=GunSpec.All[State.Variant].Name;
+        if(visualAsset!=asset){visualAsset=asset;actions.Start(asset,ScWeaponActionKind.Draw,"deploy",time.GameTime,.65f);}
         if(Creature.ComponentHealth.Health<=0){Died();return;}
         if(Creature.ComponentSpawn.IsDespawning){path.Stop();plant=0;Creature.ComponentBody.TargetCrouchFactor=0;return;}
         if(!IsActive)return;dt=Math.Clamp(dt,0,.5f);var body=Creature.ComponentBody;var spec=GunSpec.All[State.Variant];
@@ -82,7 +94,10 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         Shoot();State.ShotLeft=Math.Max(spec.CycleSeconds,State.Role==TacticalRole.Sniper?.65f:.12f);
         if(++burst>=(State.Role==TacticalRole.Machine?8:State.Role==TacticalRole.Sniper?1:3)){burst=0;burstPause=State.Role==TacticalRole.Sniper?.6f:.75f;}
     }
-    void Play(string kind){if(kind=="shot")Project.FindSubsystem<SubsystemAudio>(true).PlaySound(SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Variant],false),.8f,0,Creature.ComponentBody.Position,20,true);}
+    void Play(string kind){
+        actions.Start(GunSpec.All[State.Variant].Name,kind=="shot"?ScWeaponActionKind.Shoot:ScWeaponActionKind.Reload,kind=="shot"?"shoot":"reload",time.GameTime,kind=="shot"?.16f:State.ReloadLeft);
+        if(kind=="shot")Project.FindSubsystem<SubsystemAudio>(true).PlaySound(SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Variant],false),.8f,0,Creature.ComponentBody.Position,20,true);
+    }
     void Shoot(){
         var spec=GunSpec.All[State.Variant];var body=Creature.ComponentBody;Vector3 from=body.Position+Vector3.UnitY*1.45f;
         float error=State.Role==TacticalRole.Sniper?.15f:.45f;error+=body.Velocity.Length()*.12f;

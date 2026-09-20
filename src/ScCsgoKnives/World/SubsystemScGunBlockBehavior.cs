@@ -810,6 +810,12 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.Stance.Update(m_time.GameTime, grounded, (player.ComponentLocomotion.JumpOrder > 0 || player.ComponentLocomotion.LastJumpOrder > 0) && physical.Velocity.Y > .1f, state.Zoom > 0);
             if (ScGunplaySettings.Enabled) RecoverKick(player,state,dt,state.KickRecoveryRate);
             int value = player.ComponentMiner.ActiveBlockValue;
+            // Actions must advance even when no first-person camera renders this player.
+            if(player.Entity.FindComponent<ComponentFirstPersonModel>() is {} actionModel && !KnifeQa.Active) {
+                int visual=Project.FindSubsystem<SubsystemScC4>(false)?.ViewmodelValue(player,value)??value;
+                visual=Project.FindSubsystem<SubsystemScGrenades>(false)?.ViewmodelValue(player,visual)??visual;
+                KnifeAnimationController.Update(actionModel, player.ComponentHealth.Health>0 ? visual : 0);
+            }
             if ((ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) && player.ComponentHealth.Health > 0) {
                 var inventory = player.ComponentMiner.Inventory;
                 bool counter = ScGunCounterTemplateBlock.IsTemplate(value);
