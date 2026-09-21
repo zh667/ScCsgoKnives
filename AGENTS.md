@@ -1,5 +1,16 @@
 # Project conventions
 
+- User-directed 2026-09-21: Full 1.4.7 / tactical 1.2.3 unifies ammunition,
+  grenade, C4 and tactical recipes with station/help. Three/five enemy squad
+  beacons are survival-craftable, single-use challenges; failed whole-squad
+  creation rolls back both entities and the item. Keep manual spawn independent
+  of natural population gates. Installed SlowerCreatureSpawnsMod caps ordinary
+  creatures at 2, so native whole-squad spawning cannot fit; do not rewrite that
+  mod or global budgets. Base recipe constructor and four-argument craft APIs
+  stay binary-compatible. Batch multipliers apply to survival stacks, creative
+  slots remain infinite sources. Preserve item IDs, v5/schema6 and third-party
+  packages. See docs/release-crafting-1.4.7.md and installed audit evidence.
+
 - User-directed video feedback 2026-09-20: Full 1.4.6 / tactical 1.2.2 correct T/CT
   hand/prop contact and weapon-specific holds. Derived world actor and prop tracks share
   source frames; wpn is attached relative to spine_2, not an inverse spinning knife wrist.

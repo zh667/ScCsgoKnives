@@ -51,24 +51,30 @@ static class TacticalEnemyRegression {
         }
         try{
             FreshRegistry();
-            Test("creative-manual-three-five-squad-placement-budget-and-rollback",()=>{
+            Test("survival-and-creative-three-five-squad-placement-budget-and-rollback",()=>{
                 var old=DatabaseManager.m_valueDictionaries.GetValueOrDefault("ScTacticalEnemy");DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=new ValuesDictionary();
                 try{
-                    foreach(int count in new[]{3,5})foreach(bool snow in new[]{false,true}){
-                        var f=World();var p=(SpawnProject)f.P;f.Info.WorldSettings.GameMode=GameMode.Creative;
+                    foreach(int count in new[]{3,5})foreach(bool snow in new[]{false,true})foreach(bool creative in new[]{false,true}){
+                        var f=World();var p=(SpawnProject)f.P;f.Info.WorldSettings.GameMode=creative?GameMode.Creative:GameMode.Survival;
                         BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};var chunk=f.Terrain.Terrain.AllocateChunk(0,0);chunk.State=TerrainChunkState.Valid;
                         BlocksManager.Blocks[61]=new SnowBlock{BlockIndex=61,IsCollidable=false};
                         for(int x=1;x<15;x++)for(int z=1;z<15;z++){f.Terrain.Terrain.SetCellValueFast(x,60,z,2);if(snow)f.Terrain.Terrain.SetCellValueFast(x,61,z,61);f.Terrain.Terrain.SetTopHeight(x,z,snow?61:60);}
                         var player=Blank<ComponentPlayer>();player.ComponentBody=new ComponentBody{Position=new Vector3(8.5f,61,8.5f),BoxSize=new Vector3(.65f,1.8f,.65f)};E(p,player,player.ComponentBody);p.FindSubsystem<SubsystemPlayers>(true).m_componentPlayers.Add(player);f.Bodies.AddBody(player.ComponentBody);
                         int created=0;p.Factory=()=>{created++;var e=Enemy(p).Creature.Entity;p.m_entities.Remove(e);e.m_isAddedToProject=false;return e;};
                         p.Added=e=>{f.Director.OnEntityAdded(e);f.Bodies.AddBody(e.FindComponent<ComponentBody>(true));};p.Removed=e=>{f.Director.OnEntityRemoved(e);f.Bodies.RemoveBody(e.FindComponent<ComponentBody>(true));};
-                        Check((int)f.Director.SpawnManual(new Point3(8,snow?61:60,8),count)==count&&created==count,"manual whole squad not created on snow/near player");
+                        var beacon=new ComponentInventory();beacon.m_slots.Add(new(){Value=709,Count=1});
+                        C("ScGunRegistry").GetField("RecoveryOwner").SetValue(rf.GetValue(null),(Func<IInventory,string>)(_=>"fixture/squad"));
+                        bool spawned=(bool)C("ScCraftBatch").GetMethod("TryUseItem").Invoke(null,[beacon,0,709,(Func<bool>)(()=> (int)f.Director.SpawnManual(new Point3(8,snow?61:60,8),count)==count)]);
+                        Check(spawned&&created==count&&beacon.GetSlotCount(0)==0,"manual whole squad not created or beacon not consumed on snow/near player");
                         var members=((System.Collections.IEnumerable)f.Director.Enemies).Cast<dynamic>().ToArray();Check(members.Length==count&&members.Select(e=>(string)e.State.Squad).Distinct().Count()==1&&members.Select(e=>(int)e.State.Role).Distinct().Count()==count,"wrong shared squad or roles");
                         Check(members.All(e=>Math.Abs((float)e.Creature.ComponentBody.Position.Y-61.1f)<.01f),"manual squad spawns in ground");
                         int oldLimit=SubsystemCreatureSpawn.m_totalLimit;
                         try{SubsystemCreatureSpawn.m_totalLimit=0;f.Director.MaxActive=count;Check((int)f.Director.SpawnManual(new Point3(8,60,8),3)==3&&created==count+3,"manual spawn still applies population limit");}finally{SubsystemCreatureSpawn.m_totalLimit=oldLimit;}
                         f.Director.MaxActive=10;foreach(var e in p.Entities.ToArray())p.RemoveEntity(e,false);
                         int attempt=0;p.Factory=()=>{if(++attempt==2)throw new Exception("injected entity factory failure");var e=Enemy(p).Creature.Entity;p.m_entities.Remove(e);e.m_isAddedToProject=false;return e;};
+                        beacon.m_slots[0]=new(){Value=709,Count=1};
+                        Check(!(bool)C("ScCraftBatch").GetMethod("TryUseItem").Invoke(null,[beacon,0,709,(Func<bool>)(()=> (int)f.Director.SpawnManual(new Point3(8,60,8),count)==count)])&&beacon.GetSlotCount(0)==1&&p.Entities.Count==0,"failed summon spent beacon or leaked members");
+                        attempt=0;
                         Check((int)f.Director.SpawnManual(new Point3(8,60,8),count)==0&&p.Entities.Count==0,"failed squad leaked partial members");
                         Check((int)f.Director.SpawnManual(new Point3(8,60,8),4)==0,"unsupported squad size accepted");
                     }

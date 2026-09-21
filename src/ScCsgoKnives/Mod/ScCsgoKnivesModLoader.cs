@@ -144,7 +144,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (widget is Screen screen && ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) {
             m_assemblyClickScreen = null;
             if (recipes.IsClicked
-                && (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
+                && (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScWorkbenchExtension.IsRecipe(value) || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value))) {
                 m_assemblyClickScreen = screen; m_assemblyClickValue = value;
                 // Consume this CS-specific click before either browser opens its generic recipe
                 // page. RecipaediaEX's generic page assumes at least one grid recipe exists.
@@ -154,7 +154,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
     public override void AfterWidgetUpdate(Widget widget) {
         if (widget is not Screen screen || !ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) return;
-        if (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
+        if (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScWorkbenchExtension.IsRecipe(value) || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
             recipes.Text = "装配配方";
             recipes.IsEnabled = true;
         }
@@ -282,6 +282,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void OnProjectDisposed() { CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
+        // Register all base CS supplies in the same workshop catalogue used by
+        // the optional tactical extension. This is deferred until blocks have
+        // their world indices, so help pages and material values are stable.
+        actions?.Add(ScWorkbenchExtension.RegisterBaseRecipes);
         ScControllerFeedback.Initialize();
         actions?.Add(ScControllerFeedback.Initialize);
         ScEnchantmentCompatibility.Initialize();

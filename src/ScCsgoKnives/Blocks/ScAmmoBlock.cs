@@ -12,6 +12,8 @@ public sealed class ScAmmoBlock : ScSupplyBlock {
         FirstPersonOffset = new(.32f, -.48f, -.62f);
     }
     public override int GetDisplayOrder(int value) => 213;
+    public override string GetCategory(int value) => "CS武器";
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScAmmoBlock>(true), 0, kind);
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Terrain.ExtractData(value) == Shell ? "霰弹" : "通用弹匣";
     public override string GetDescription(int value) => Terrain.ExtractData(value) == Shell
@@ -21,10 +23,7 @@ public sealed class ScAmmoBlock : ScSupplyBlock {
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override int GetTextureSlotCount(int value) => 1;
     public override IEnumerable<int> GetCreativeValues() { yield return Value(Magazine); yield return Value(Shell); }
-    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
-        yield return Recipe(Value(Magazine), 2, "通用弹匣 ×2", ["ironingot", "copperingot", "copperingot", "gunpowder", "gunpowder", "gunpowder"]);
-        yield return Recipe(Value(Shell), 8, "霰弹 ×8", ["ironingot", "copperingot", "gunpowder", "gunpowder", "canvas"]);
-    }
+    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() { yield break; }
     internal static CraftingRecipe Recipe(int result, int count, string description, string[] materials, int level = 1) {
         var recipe = new CraftingRecipe { ResultValue = result, ResultCount = count, RequiredPlayerLevel = level, Description = description };
         Array.Copy(materials, recipe.Ingredients, materials.Length);

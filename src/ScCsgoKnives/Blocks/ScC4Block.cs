@@ -4,6 +4,7 @@ namespace Game;
 
 /// <summary>Separate equipment block: never a gun variant or a registry record.</summary>
 public sealed class ScC4Block : ScNoDurabilityBlock {
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     Texture2D icon;
     public ScC4Block() {
         DefaultDisplayName = "C4"; DefaultCategory = "CS武器"; CraftingId = "sccsgoc4";
@@ -20,9 +21,7 @@ public sealed class ScC4Block : ScNoDurabilityBlock {
     public override Vector3 GetIconViewOffset(int value, DrawBlockEnvironmentData environmentData) => Vector3.UnitZ;
     public override string GetDescription(int value) => "按住 E 或“放置 C4”3.2 秒安装，松手、移动或切换物品取消。安装后 20 秒引爆，中心伤害 5000，半径 32 格；没有等级。";
     public override IEnumerable<int> GetCreativeValues() { yield return Value; }
-    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
-        yield return ScAmmoBlock.Recipe(Value, 1, "C4", ["gunpowder","gunpowder","gunpowder","gunpowder","gunpowder","gunpowder","copperingot","copperingot","sccsgomaterial:0"], 3);
-    }
+    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() { yield break; }
     public override int GetTextureSlotCount(int value) => 1;
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override bool IsSwapAnimationNeeded(int oldValue, int newValue) => false;

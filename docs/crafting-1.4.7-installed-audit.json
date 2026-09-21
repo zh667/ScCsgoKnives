@@ -1,0 +1,918 @@
+{
+  "scope": "Static installed-package metadata and explicit entity parameters; no runtime combat guarantee",
+  "mods": [
+    {
+      "file": "11111.scmod",
+      "sha256": "a445c3bdc7bbfab2cec0ca8b880ac8e811379bf15a33cefcbf23c3046bf5632d",
+      "entities": []
+    },
+    {
+      "file": "[1SlowerCreatureSpawnsMod.scmod",
+      "sha256": "101886580c11f5e7167c975765a0b0318da7b42b9ba63a4abeb788cae5c2965b",
+      "entities": []
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "sha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a",
+      "entities": [
+        {
+          "name": "Mobile",
+          "explicitOverrides": {
+            "AttackResilience": "500"
+          }
+        },
+        {
+          "name": "Airship",
+          "explicitOverrides": {
+            "AttackResilience": "200"
+          }
+        },
+        {
+          "name": "Car",
+          "explicitOverrides": {
+            "AttackResilience": "300"
+          }
+        },
+        {
+          "name": "Tractor",
+          "explicitOverrides": {
+            "AttackResilience": "300"
+          }
+        },
+        {
+          "name": "Train",
+          "explicitOverrides": {
+            "AttackResilience": "100"
+          }
+        },
+        {
+          "name": "Carriage",
+          "explicitOverrides": {
+            "AttackResilience": "90"
+          }
+        },
+        {
+          "name": "Robot",
+          "explicitOverrides": {
+            "AttackResilience": "2500",
+            "WalkSpeed": "4",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "T-200",
+          "explicitOverrides": {
+            "WalkSpeed": "4"
+          }
+        },
+        {
+          "name": "QuarryDrillerMobile",
+          "explicitOverrides": {
+            "AttackResilience": "Infinity"
+          }
+        },
+        {
+          "name": "PortableRadar",
+          "explicitOverrides": {
+            "AttackResilience": "Infinity"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.8.1.3]命令方块4.1.7.scmod",
+      "sha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a",
+      "entities": []
+    },
+    {
+      "file": "[API1.8.2.3]循环电路板v1.02.scmod",
+      "sha256": "a5cc0532d7f5a5f95a058f4e465aa8808fda0c7a36813ea97707fff10c9df4c2",
+      "entities": []
+    },
+    {
+      "file": "[API1.8]主角身体属性提升1.21.scmod",
+      "sha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a",
+      "entities": []
+    },
+    {
+      "file": "[API1.8]生存开透视角.scmod",
+      "sha256": "dc2984daaa8fe21f9608343a18b33516474db925e22207390b3c7a493ce372d4",
+      "entities": []
+    },
+    {
+      "file": "[API1.9+]ScbbsPlus社区扩展v1.4.3.scmod",
+      "sha256": "2960b313e3a444a7dcd20e7a6b9d5fb681a9b0d3a6b2fa7bab879e07d4fde74e",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.1.3]HDR天幕v1.0.2公测版.scmod",
+      "sha256": "7c83391726a9d736d85ee283cf9cfd8f3f8ff78f233a46a694495f4ed8ad3698",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c",
+      "entities": [
+        {
+          "name": "SAGhoul_Weak_01",
+          "explicitOverrides": {
+            "AttackResilience": "35",
+            "AttackPower": "1",
+            "WalkSpeed": "3"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_03",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackResilience": "35",
+            "ExplosionResilience": "8",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_04",
+          "explicitOverrides": {
+            "WalkSpeed": "3.3",
+            "AttackResilience": "50",
+            "ExplosionResilience": "8",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_05",
+          "explicitOverrides": {
+            "WalkSpeed": "3.3",
+            "AttackResilience": "50",
+            "ExplosionResilience": "16",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_06",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "70",
+            "ExplosionResilience": "16",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_07",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "70",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_01",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_03",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "8",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_04",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "40",
+            "ExplosionResilience": "8",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_05",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "40",
+            "ExplosionResilience": "16",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_06",
+          "explicitOverrides": {
+            "WalkSpeed": "5.5",
+            "AttackResilience": "45",
+            "ExplosionResilience": "16",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_07",
+          "explicitOverrides": {
+            "WalkSpeed": "5.5",
+            "AttackResilience": "55",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_01",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "6",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_02",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "8",
+            "AttackPower": "0.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_03",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "24",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_04",
+          "explicitOverrides": {
+            "WalkSpeed": "2.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "20",
+            "AttackPower": "0.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_05",
+          "explicitOverrides": {
+            "WalkSpeed": "2.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "20",
+            "AttackPower": "0.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_06",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "55",
+            "ExplosionResilience": "32",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_07",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "50",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_08",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Dog",
+          "explicitOverrides": {
+            "AttackPower": "2",
+            "AttackResilience": "30",
+            "ExplosionResilience": "1",
+            "WalkSpeed": "4"
+          }
+        },
+        {
+          "name": "SAGhoul_Wolf",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "100",
+            "ExplosionResilience": "8",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Boar",
+          "explicitOverrides": {
+            "AttackResilience": "270",
+            "ExplosionResilience": "200",
+            "AttackPower": "4",
+            "WalkSpeed": "3.8"
+          }
+        },
+        {
+          "name": "SAGhoul_Bear",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackPower": "5",
+            "AttackResilience": "360",
+            "ExplosionResilience": "999999999"
+          }
+        },
+        {
+          "name": "SAGhoul_Bird",
+          "explicitOverrides": {
+            "AttackResilience": "5",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Ray",
+          "explicitOverrides": {
+            "AttackResilience": "100",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_NecroDrift",
+          "explicitOverrides": {
+            "AttackResilience": "50000",
+            "ExplosionResilience": "999999999"
+          }
+        },
+        {
+          "name": "SAGhoul_Monster",
+          "explicitOverrides": {
+            "AttackResilience": "260",
+            "ExplosionResilience": "200",
+            "AttackPower": "4",
+            "WalkSpeed": "4.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fatt",
+          "explicitOverrides": {
+            "WalkSpeed": "2.5",
+            "AttackResilience": "260",
+            "ExplosionResilience": "5",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Dark",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "1000",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "5"
+          }
+        },
+        {
+          "name": "SAG_CorpsificeHead",
+          "explicitOverrides": {
+            "AttackResilience": "30000",
+            "ExplosionResilience": "999999999",
+            "WalkSpeed": "0"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9.2.1]Neorxna-v1.4 (2).scmod",
+      "sha256": "1efefcb5b9cff41a68cb39580908cdf524db5cfd0ffbc0d41a90aad65a3317c6",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.2]工业时代2x泰拉工作台 v1.0.scmod",
+      "sha256": "2ed04ff9480ecce73bd99957a04fa68a4b21f47e1c73d336db88768a07e939f7",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.2]泰拉工作台 Terraria Crafting Table  v1.1.1.scmod",
+      "sha256": "54f50ca6cf1a6eb86a253f8ddb2b235d1aba76633ce18831c5a0e0abb05bedbb",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.3]工业时代2：Neorxna信息显示增强v1.2.scmod",
+      "sha256": "d41c1bcb6c062776711e3f964cc11ee209a030f7c1dd04d3733ba966e185c90a",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.3]工业时代2：筛子_v1.1 内测.scmod",
+      "sha256": "540541303aac96b8d6f4f3d38696f2afa8b0dec05edfba0687fa5e625f4c37f4",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod",
+      "sha256": "6785c2865728ee47472d46e07417c91bd98234375172ee1206d6a5f055f21543",
+      "entities": [
+        {
+          "name": "HC_Hippopotamus",
+          "explicitOverrides": {
+            "AttackResilience": "120",
+            "WalkSpeed": "5",
+            "AttackPower": "4"
+          }
+        },
+        {
+          "name": "HC_Pig",
+          "explicitOverrides": {
+            "AttackResilience": "20",
+            "WalkSpeed": "3.5",
+            "AttackPower": "0"
+          }
+        },
+        {
+          "name": "HC_Moonjellyfish",
+          "explicitOverrides": {
+            "AttackResilience": "5"
+          }
+        },
+        {
+          "name": "HC_BunnyGirl",
+          "explicitOverrides": {
+            "AttackResilience": "60",
+            "WalkSpeed": "3.5",
+            "AttackPower": "3"
+          }
+        },
+        {
+          "name": "HC_Chicken",
+          "explicitOverrides": {
+            "AttackResilience": "5",
+            "WalkSpeed": "2"
+          }
+        },
+        {
+          "name": "HC_Simmental",
+          "explicitOverrides": {
+            "AttackResilience": "35",
+            "WalkSpeed": "4",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "HC_SteppeWolf",
+          "explicitOverrides": {
+            "AttackResilience": "20",
+            "WalkSpeed": "4.5",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "HC_FlyingHorse",
+          "explicitOverrides": {
+            "WalkSpeed": "6.7",
+            "AttackResilience": "30",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "HC_FrozenHorse",
+          "explicitOverrides": {
+            "WalkSpeed": "13.4",
+            "AttackResilience": "120",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "HC_Atlantic",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "HC_AfricanStoneBass",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "HC_CopperbandButterflyfish",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "HC_Rabbit",
+          "explicitOverrides": {
+            "AttackResilience": "5",
+            "WalkSpeed": "4"
+          }
+        },
+        {
+          "name": "HC_Mosasaurus",
+          "explicitOverrides": {
+            "AttackResilience": "800",
+            "AttackPower": "25"
+          }
+        },
+        {
+          "name": "HC_Pawl",
+          "explicitOverrides": {
+            "AttackResilience": "300",
+            "WalkSpeed": "5",
+            "AttackPower": "6"
+          }
+        },
+        {
+          "name": "HC_BlackCockroach",
+          "explicitOverrides": {
+            "AttackResilience": "1",
+            "WalkSpeed": "3",
+            "AttackPower": "0"
+          }
+        },
+        {
+          "name": "HC_GiantRoach",
+          "explicitOverrides": {
+            "AttackResilience": "80",
+            "WalkSpeed": "8",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "HC_Griffon",
+          "explicitOverrides": {
+            "WalkSpeed": "8",
+            "AttackResilience": "400",
+            "AttackPower": "4"
+          }
+        },
+        {
+          "name": "HC_TRex",
+          "explicitOverrides": {
+            "AttackResilience": "1000",
+            "WalkSpeed": "8",
+            "AttackPower": "30"
+          }
+        },
+        {
+          "name": "HC_CarnivorousPlant",
+          "explicitOverrides": {
+            "AttackResilience": "80",
+            "WalkSpeed": "2.5",
+            "AttackPower": "3"
+          }
+        },
+        {
+          "name": "HC_GoldenEagle",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "20",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "HC_WereBear",
+          "explicitOverrides": {
+            "AttackResilience": "160",
+            "WalkSpeed": "4.5",
+            "AttackPower": "6"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9.3]深海迷航V1.2.2.scmod",
+      "sha256": "6484157cfd4cae63a764c7c18d0b52cdf0df93dc875fa4f7199d48a17eed8551",
+      "entities": [
+        {
+          "name": "HumanFish",
+          "explicitOverrides": {
+            "AttackResilience": "100",
+            "ExplosionResilience": "16",
+            "WalkSpeed": "0.5"
+          }
+        },
+        {
+          "name": "GeneralFish",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "Penguin",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackResilience": "80",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "Clownfish",
+          "explicitOverrides": {
+            "AttackPower": "1",
+            "AttackResilience": "32"
+          }
+        },
+        {
+          "name": "Anglerfish",
+          "explicitOverrides": {
+            "AttackPower": "4",
+            "AttackResilience": "128",
+            "ExplosionResilience": "8"
+          }
+        },
+        {
+          "name": "Eel",
+          "explicitOverrides": {
+            "AttackPower": "4",
+            "AttackResilience": "100",
+            "ExplosionResilience": "8"
+          }
+        },
+        {
+          "name": "FemaleHumanFish",
+          "explicitOverrides": {
+            "AttackResilience": "120",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "BlueWhale",
+          "explicitOverrides": {
+            "AttackResilience": "1600",
+            "ExplosionResilience": "64",
+            "AttackPower": "32",
+            "WalkSpeed": "3"
+          }
+        },
+        {
+          "name": "GiantTurtle",
+          "explicitOverrides": {
+            "AttackResilience": "2048",
+            "ExplosionResilience": "9999",
+            "WalkSpeed": "4",
+            "AttackPower": "32"
+          }
+        },
+        {
+          "name": "Kraken",
+          "explicitOverrides": {
+            "WalkSpeed": "5.5",
+            "AttackResilience": "4096",
+            "ExplosionResilience": "999",
+            "AttackPower": "64"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]CS战术同伴拓展1.2.2-作者ZH667.scmod",
+      "sha256": "34a12fe08262c4f580e287d697e01607e0f863aa992348de327b1f4b979cf778",
+      "entities": [
+        {
+          "name": "ScTacticalHostage",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        },
+        {
+          "name": "ScTacticalCT",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        },
+        {
+          "name": "ScTacticalT",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        },
+        {
+          "name": "ScTacticalEnemy",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]CS武器1.4.6-作者ZH667-全量版.scmod",
+      "sha256": "8bd32438862d5911f99f6fea057023d17c8aa258f3e17e3c02a51b07db071aa9",
+      "entities": [
+        {
+          "name": "ScCsgoChicken",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackResilience": "3"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]NekoMekoModel1.1-源码构建.scmod",
+      "sha256": "7345a25427dc15bed8dcd49d7d7ad8c241194f68af663d2ca82e1fd015c233f2",
+      "entities": []
+    },
+    {
+      "file": "[API1.9]服饰配件V1.2.1.scmod",
+      "sha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18",
+      "entities": []
+    },
+    {
+      "file": "[API1.9]构千形V1.2.1.scmod",
+      "sha256": "d67d0bd29fd3cf479512f0c70ecbd10eaee31e402471247939545950af09bfaf",
+      "entities": []
+    },
+    {
+      "file": "[API1.9]玲兰科技v3.0.4(需玲兰辅助).scmod",
+      "sha256": "a2eda34cdb6e15d42c594c83e2bdbc1668bec06b39450d89ddb8727664b2dfd6",
+      "entities": [
+        {
+          "name": "SushiTrain",
+          "explicitOverrides": {
+            "AttackResilience": "100"
+          }
+        },
+        {
+          "name": "SushiMarkII",
+          "explicitOverrides": {
+            "AttackResilience": "100"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]玲兰辅助v3.0.3.scmod",
+      "sha256": "40ea58b5d6ff453065f290c250af19cac98ad4cd7313944ec370fc69b0df7a24",
+      "entities": []
+    },
+    {
+      "file": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "sha256": "336de65c0a70a4731e1a93902d3caee358871ec4add933d0ef3c0d1c0a59dbc5",
+      "entities": [
+        {
+          "name": "SirenHeadDisguise",
+          "explicitOverrides": {
+            "AttackResilience": "1024",
+            "ExplosionResilience": "100"
+          }
+        },
+        {
+          "name": "SirenHead",
+          "explicitOverrides": {
+            "WalkSpeed": "10",
+            "AttackResilience": "1024",
+            "ExplosionResilience": "100",
+            "AttackPower": "20"
+          }
+        },
+        {
+          "name": "DonkeyRancor",
+          "explicitOverrides": {
+            "AttackResilience": "91"
+          }
+        },
+        {
+          "name": "DonkeyMan",
+          "explicitOverrides": {
+            "WalkSpeed": "5",
+            "AttackPower": "6",
+            "AttackResilience": "91",
+            "ExplosionResilience": "100"
+          }
+        },
+        {
+          "name": "Fenrir",
+          "explicitOverrides": {
+            "WalkSpeed": "7",
+            "AttackPower": "16",
+            "AttackResilience": "1600",
+            "ExplosionResilience": "200"
+          }
+        },
+        {
+          "name": "CartoonCat1",
+          "explicitOverrides": {
+            "WalkSpeed": "6",
+            "AttackPower": "5",
+            "AttackResilience": "200",
+            "ExplosionResilience": "150"
+          }
+        },
+        {
+          "name": "CartoonCat2",
+          "explicitOverrides": {
+            "WalkSpeed": "8",
+            "AttackPower": "10",
+            "AttackResilience": "400",
+            "ExplosionResilience": "300"
+          }
+        },
+        {
+          "name": "CartoonCat3",
+          "explicitOverrides": {
+            "WalkSpeed": "10",
+            "AttackPower": "20",
+            "AttackResilience": "800",
+            "ExplosionResilience": "400"
+          }
+        },
+        {
+          "name": "Smolder",
+          "explicitOverrides": {
+            "WalkSpeed": "6",
+            "AttackPower": "48",
+            "AttackResilience": "3200",
+            "ExplosionResilience": "400"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[工业时代附属]物流-1.0.0.1.scmod",
+      "sha256": "f64e951bb2e98f104c8c6ed4c7ed7655a2ab3f9d6f1535fc7ad632ae39b00e57",
+      "entities": []
+    },
+    {
+      "file": "BF2042-airwater-0.4.1.scmod",
+      "sha256": "ff919334132364db06afb5587146216a966fcbbd25b2385db785d2ccc6748601",
+      "entities": []
+    },
+    {
+      "file": "BF2042-core-0.4.1.scmod",
+      "sha256": "7e0d5e0a1b13facf0e8d8d69ed1c42929cad3096a19ed6008ef1933cd9f704bb",
+      "entities": [
+        {
+          "name": "BFUSNRHIB",
+          "explicitOverrides": {
+            "AttackResilience": "650"
+          }
+        },
+        {
+          "name": "EMKV90TOR",
+          "explicitOverrides": {
+            "AttackResilience": "2000"
+          }
+        },
+        {
+          "name": "EBLCRAM",
+          "explicitOverrides": {
+            "AttackResilience": "1200"
+          }
+        },
+        {
+          "name": "BFMD540",
+          "explicitOverrides": {
+            "AttackResilience": "900"
+          }
+        },
+        {
+          "name": "BFRHIB",
+          "explicitOverrides": {
+            "AttackResilience": "650"
+          }
+        }
+      ]
+    },
+    {
+      "file": "BF2042-ground-0.4.1.scmod",
+      "sha256": "c6e9856b6328a58bd163000da0af7d2af305a8a65e7c0d30b320f6b06a6a1784",
+      "entities": []
+    },
+    {
+      "file": "BF2042-weapons-0.4.1.scmod",
+      "sha256": "74107374103651c2961f6beaaa4b14e160b2dc52b5bbb851f0034eb1c8349114",
+      "entities": []
+    },
+    {
+      "file": "mod.scmod",
+      "sha256": "52756ff4d9f29db8a80226bdc9fdc73ae80ab16ec04863f6c82bdcf55e132788",
+      "entities": []
+    },
+    {
+      "file": "NoAutoWakeUpMod.scmod",
+      "sha256": "a79a858d28cdecbd830a3ec26b70bf9c65a8e19f4a384888cb84f6042fff2fd3",
+      "entities": []
+    },
+    {
+      "file": "RecipaediaEX-2.0.0.1.scmod",
+      "sha256": "9279123c11167a77ac430f0b402431b9c44773efe22c5ba574f3e2529104365d",
+      "entities": []
+    },
+    {
+      "file": "SneakPlaceMod.scmod",
+      "sha256": "63eb9f279827a47c9e8e3f0901f6643c2c29cfdcfbf1f51ea35199822c17ea76",
+      "entities": []
+    },
+    {
+      "file": "化肥.scmod",
+      "sha256": "e0155235c77a155ff4c871c013095691bf9210b7490538dc2e0d9b854bb436d7",
+      "entities": []
+    }
+  ]
+}

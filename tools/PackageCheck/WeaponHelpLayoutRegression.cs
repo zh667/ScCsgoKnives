@@ -161,7 +161,7 @@ static class WeaponHelpLayoutRegression {
                 material.BlockIndex = materialIndex; BlocksManager.Blocks[materialIndex] = material;
                 BlocksManager.BlockTypeToIndex[material.GetType()] = materialIndex; BlocksManager.BlockNameToIndex[material.GetType().Name] = materialIndex;
             }
-            foreach (string name in new[] { "ScGunBlock", "ScKnifeBlock", "ScWeaponMaterialBlock", "ScAmmoBlock", "ScWeaponWorkbenchBlock", "ScGunSkinTemplateBlock", "ScGunCounterTemplateBlock" }) {
+            foreach (string name in new[] { "ScGunBlock", "ScKnifeBlock", "ScWeaponMaterialBlock", "ScAmmoBlock", "ScWeaponWorkbenchBlock", "ScGunSkinTemplateBlock", "ScGunCounterTemplateBlock", "ScGrenadeBlock", "ScC4Block", "ScChickenEggBlock" }) {
                 var type = mod.GetType("Game." + name, true);
                 var block = (Block)Activator.CreateInstance(type);
                 block.BlockIndex = index;
@@ -169,6 +169,7 @@ static class WeaponHelpLayoutRegression {
                 BlocksManager.BlockTypeToIndex[type] = index;
                 BlocksManager.BlockNameToIndex[name] = index++;
             }
+            mod.GetType("Game.ScWorkbenchExtension").GetMethod("RegisterBaseRecipes").Invoke(null,null);
             int template = (int)mod.GetType("Game.ScGunAttributes").GetMethod("TemplateValue").Invoke(null, [0]);
             void ComponentCheck(string name, bool ok) => Check(name, ok, "real API blocks, vanilla data and inventory transaction");
             // Resolve ingredient IDs against the user's actual vanilla data and engine block classes.
@@ -176,6 +177,7 @@ static class WeaponHelpLayoutRegression {
                 string[] lines=dataReader.ReadToEnd().Split('\n');int craftingColumn=Array.IndexOf(lines[0].Trim().Split(';'),"CraftingId");
                 var components=mod.GetType("Game.ScComponentCrafting");var entries=((Array)components.GetField("All").GetValue(null)).Cast<object>().ToArray();
                 var ids=entries.SelectMany(e=>((ValueTuple<string,int>[])e.GetType().GetProperty("Ingredients").GetValue(e)).Select(p=>p.Item1.Split(':')[0])).Where(id=>id!="sccsgomaterial").ToHashSet();
+                ids.Add("gunpowder");
                 int materialIndex=740;
                 foreach(string line in lines.Skip(1)) {
                     string[] cells=line.Trim().Split(';');if(cells.Length<=craftingColumn||!ids.Contains(cells[craftingColumn]))continue;
@@ -220,7 +222,7 @@ static class WeaponHelpLayoutRegression {
                 dialog.Measure(new(850,479));dialog.Arrange(Vector2.Zero,new(850,479));
                 var list=(ListPanelWidget)dialog.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
                 Check($"workbench-all-functions-visible/{creative}",list.Items.Count==5&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")&&list.Items.Any(o=>o.GetType().Name=="OwnedAttributesMenu")
-                    && menu.Length==craftItems.Length+10,"actual runtime menu: five operations + five components, plus gun/knife assembly");
+                    && menu.Length==craftItems.Length+20,"actual runtime menu: five operations + five components + ten supplies, plus gun/knife assembly");
             }
             foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
                 var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;
@@ -488,6 +490,20 @@ static class WeaponHelpLayoutRegression {
             }
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);
             var recipe = (Screen)Activator.CreateInstance(mod.GetType("Game.ScAssemblyRecipesScreen"));
+            foreach(var supply in ((System.Collections.IEnumerable)mod.GetType("Game.ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>()) {
+                int v=(int)supply.GetType().GetProperty("Value").GetValue(supply);
+                int count=(int)supply.GetType().GetProperty("ResultCount").GetValue(supply);
+                bool creativeOnly=(bool)supply.GetType().GetProperty("CreativeOnly").GetValue(supply);
+                var help=BlocksManager.Blocks[Terrain.ExtractContents(v)].GetBlockRecipeScreen(v);help.Enter([v]);
+                string text=string.Join("\n",help.AllChildren.OfType<LabelWidget>().Select(l=>l.Text));
+                Check("supply-help-screen/"+v,help.GetType()==recipe.GetType()&&text.Contains(creativeOnly?"仅创造模式":$"每批产出 {count} 件"),text);
+                var inv=new ComponentInventory();inv.m_slots.Add(new());
+                var dialog=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScWorkbenchSelectionDialog"),["补给制作",new[]{supply},56f,(Func<object,string>)(_=>"补给"),(Action<object>)(_=>{}),inv,false]);
+                foreach(var size in new[]{new Vector2(360,640),new Vector2(850,479)}){dialog.Measure(size);dialog.Arrange(Vector2.Zero,size);}
+                string reason=(string)dialog.GetType().GetMethod("CraftReason",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(dialog,null);
+                Check("supply-recipe-refusal/"+v,reason.Contains(creativeOnly?"仅创造模式":"材料不足"),reason);
+                help.Leave();help.Dispose();dialog.Dispose();
+            }
             // Execute the real screen switcher/history and vanilla catalogue Enter/Back, not only Enter([]).
             var savedRoot = ScreensManager.RootWidget; var savedCurrent = ScreensManager.CurrentScreen; var savedPrevious = ScreensManager.PreviousScreen;
             var savedHistory = ScreensManager.HistoryStack.ToArray(); var savedScreens = ScreensManager.m_screens.ToArray(); var savedAnimation = ScreensManager.m_animationData;
@@ -540,7 +556,8 @@ static class WeaponHelpLayoutRegression {
                 ScreensManager.HistoryStack.Clear();
                 Switch(game);
                 var materialBlock=BlocksManager.Blocks[BlocksManager.BlockTypeToIndex[mod.GetType("Game.ScWeaponMaterialBlock")]];
-                var materialValues=materialBlock.GetCreativeValues().ToArray();
+                var materialValues=materialBlock.GetCreativeValues().Concat(((System.Collections.IEnumerable)mod.GetType("Game.ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>().Select(r=>(int)r.GetType().GetProperty("Value").GetValue(r))).ToArray();
+                bool RecognizedRecipe(Screen page,int value)=>page.GetType()==recipe.GetType()&&page.AllChildren.OfType<LabelWidget>().Any(l=>l.Text.Contains("每批产出")||l.Text.Contains("仅创造模式"))&&page.AllChildren.OfType<LabelWidget>().Any(l=>l.Text==BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(null,value));
                 foreach(int materialValue in materialValues) {
                     Switch(catalogue);
                     catalogue.m_blocksList.ClearItems();catalogue.m_blocksList.AddItem(materialValue);catalogue.m_blocksList.SelectedItem=materialValue;
@@ -549,8 +566,7 @@ static class WeaponHelpLayoutRegression {
                     foreach(var clickable in catalogue.m_recipesButton.AllChildren.OfType<ClickableWidget>())clickable.IsClicked=true;
                     materialLoader.BeforeWidgetUpdate(catalogue);materialLoader.AfterWidgetUpdate(catalogue);Finish();
                     var materialPage=ScreensManager.CurrentScreen;
-                    Check("material-native-recipe/"+materialValue,materialPage.GetType()==recipe.GetType()
-                        &&materialPage.AllChildren.OfType<LabelWidget>().Any(l=>l.Text.Contains("配件制作")),"actual native browser hook to component recipe");
+                    Check("material-native-recipe/"+materialValue,RecognizedRecipe(materialPage,materialValue),"actual native browser hook to component/supply recipe");
                     Back(materialPage);Switch(game);
                 }
                 for (int cycle = 0; cycle < 4; cycle++) {
@@ -605,13 +621,12 @@ static class WeaponHelpLayoutRegression {
                         Check("recipaedia-dll/return-owner/" + cycle, ScreensManager.CurrentScreen == browser && ReferenceEquals(browserType.GetField("m_previousScreen").GetValue(browser), game), "real EX.Enter keeps original owner after attributes/assembly roundtrip");
                     }
                     foreach(int materialValue in materialValues) {
-                        list.ClearItems();var materialItem=Activator.CreateInstance(ex.GetType("RecipaediaEX.Implementation.BlockItem"),[materialBlock,0,materialValue]);
+                        list.ClearItems();var materialItem=Activator.CreateInstance(ex.GetType("RecipaediaEX.Implementation.BlockItem"),[BlocksManager.Blocks[Terrain.ExtractContents(materialValue)],0,materialValue]);
                         list.AddItem(materialItem);list.SelectedItem=materialItem;Switch(browser);loader.AfterWidgetUpdate(browser);
                         foreach(var clickable in button.AllChildren.OfType<ClickableWidget>())clickable.IsClicked=true;
                         loader.BeforeWidgetUpdate(browser);browser.Update();loader.AfterWidgetUpdate(browser);Finish();
                         var materialPage=ScreensManager.CurrentScreen;
-                        Check("material-ex-recipe/"+materialValue,materialPage.GetType()==recipe.GetType()
-                            &&materialPage.AllChildren.OfType<LabelWidget>().Any(l=>l.Text.Contains("配件制作")),"real EX update + component recipe, no shared page replacement");
+                        Check("material-ex-recipe/"+materialValue,RecognizedRecipe(materialPage,materialValue),"real EX update + component/supply recipe, no shared page replacement");
                         Back(materialPage);Switch(game);
                     }
                     attributes.Enter([template]); attributes.Enter([new object()]);

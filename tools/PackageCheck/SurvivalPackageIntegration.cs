@@ -45,11 +45,12 @@ static class SurvivalPackageIntegration {
             Check("subsystem/starter-class", starterClass == "Game.SubsystemScStarterEquipment"
                 && mod.GetType(starterClass)?.IsSubclassOf(typeof(GameEntitySystem.Subsystem)) == true, "registered starter subsystem resolves from the packaged DLL");
         } catch (Exception e) {Check("database/load",false,e.ToString());}
-        string[] types=["ScKnifeBlock","ScGunBlock","ScAmmoBlock","ScWeaponMaterialBlock","ScWeaponWorkbenchBlock","ScGrenadeBlock","ScGunSkinTemplateBlock"];
+        string[] types=["ScKnifeBlock","ScGunBlock","ScAmmoBlock","ScWeaponMaterialBlock","ScWeaponWorkbenchBlock","ScGrenadeBlock","ScGunSkinTemplateBlock","ScC4Block","ScChickenEggBlock"];
         var blocks=types.Select(name=>(Block)Activator.CreateInstance(mod.GetType("Game."+name,true))).ToArray();
         var namesSnapshot=new Dictionary<string,int>(BlocksManager.BlockNameToIndex);
         var typesSnapshot=new Dictionary<Type,int>(BlocksManager.BlockTypeToIndex);
         try {
+            mod.GetType("Game.ScWorkbenchExtension").GetMethod("RegisterBaseRecipes").Invoke(null,null);
             List<(string Name,CraftingRecipe Recipe)> recipes=[];
             for (int pass=0;pass<2;pass++) {
                 for (int i=0;i<blocks.Length;i++) {
@@ -59,6 +60,12 @@ static class SurvivalPackageIntegration {
                 foreach (var b in blocks) {
                     int[] values=b.GetCreativeValues().ToArray();
                     Check($"dynamic-index/{b.GetType().Name}/{pass}",b.IsIndexDynamic && values.All(v=>Terrain.ExtractContents(v)==b.BlockIndex),"two simulated mod loading orders; no fixed runtime contents");
+                    Check($"category/{b.GetType().Name}/{pass}",values.All(v=>b.GetCategory(v)=="CS武器"),"all CS variants belong to CS武器");
+                    if(b.GetType().Name is "ScAmmoBlock" or "ScGrenadeBlock" or "ScC4Block" or "ScChickenEggBlock") {
+                        var find=mod.GetType("Game.ScWorkbenchExtension").GetMethod("Find");
+                        foreach(int v in values)Check($"supply-help/{b.GetType().Name}/{Terrain.ExtractData(v)}/{pass}",find.Invoke(null,[v]) is not null&&find.Invoke(null,[Terrain.ReplaceLight(v,15)]) is not null,"station recipe resolves every variant and ignores light");
+                        Check($"supply-no-grid/{b.GetType().Name}/{pass}",!b.GetProceduralCraftingRecipes().Any(),"no obsolete nine-grid bypass");
+                    }
                     if (b.GetType().Name is "ScKnifeBlock" or "ScGunBlock") {
                         var catalog=mod.GetType("Game.ScWeaponCrafting");
                         var find=catalog.GetMethod("Find");
@@ -90,7 +97,7 @@ static class SurvivalPackageIntegration {
                     }
                 }
             }
-            Check("recipe/count",recipes.Count==9,"2 ammo + workbench + 6 grenades; five cheap component recipes removed");
+            Check("recipe/count",recipes.Count==1,"only the bootstrap workbench remains in the nine-grid");
             var vanilla=Read(original,"Assets/CraftingRecipes.xml");
             var layouts=new List<(string Name,string[] Ingredients)>();
             foreach (var recipe in vanilla.DescendantsAndSelf("Recipe")) {

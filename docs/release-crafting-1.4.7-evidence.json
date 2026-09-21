@@ -1,0 +1,33 @@
+{
+  "packages": {
+    "[API1.9]CS武器1.4.7-作者ZH667-全量版.scmod": {
+      "sha256": "0115685dbdac7e8d6de9a89b329e02b72412989b8b99bd1f9ee01f80ceae0523",
+      "bytes": 382817568,
+      "preservedResources": 1331,
+      "dlls": {
+        "ScCsgoKnives.dll": "248bf58e527d7c27f96048aa70970897b15dd25b4b7af1a935de52b07733030f",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2"
+      }
+    },
+    "[API1.9]CS战术同伴拓展1.2.3-作者ZH667.scmod": {
+      "sha256": "a83da6752ed66c5d87fa873663f5aa5313dc5f186ff9a9ae5e2410d815396331",
+      "bytes": 28119641,
+      "preservedResources": 27,
+      "dlls": {
+        "ScCsgoTactical.dll": "b124260e090d2d20644fb6fb5160fea623a15aa30e6e8ac0f64a98fcedcf2949",
+        "Integrations/ScCsgoAppearance.bin": "1dcbe84988536c4032a0bec8465aad20f0369a499e01bfaa0874d6128d819e5b"
+      }
+    }
+  },
+  "checks": {
+    "core": {
+      "count": 12689,
+      "failed": 0
+    },
+    "tactical": {
+      "count": 52,
+      "failed": 0
+    }
+  },
+  "boundaries": "Packaged DLL/native UI fixtures and static installed-mod audit, not full-game/Android/multiplayer acceptance."
+}

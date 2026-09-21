@@ -3,6 +3,7 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     public const float IconDrawSize = ScInventoryIcon.DrawSize;
     public static readonly string[] Assets = ["grenade_hegrenade", "grenade_flashbang", "grenade_smokegrenade", "grenade_molotov", "grenade_incendiary", "grenade_decoy"];
     public static readonly string[] Names = ["高爆手雷", "闪光弹", "烟雾弹", "燃烧瓶", "燃烧弹", "诱饵弹"];
@@ -56,11 +57,5 @@ public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
         + "出手后计时并消耗。每人最多 4 个活动投掷物或效果，全场最多 16 个。编辑/检视可调整闪光显示。"
         + (Kind(value)==5?"诱饵声吸引24格内可听见的标准AI生物调查10秒；受伤、骑乘、逃生或近身交战时不受牵引，同一目标18秒内不重复吸引。":"");
     public override IEnumerable<int> GetCreativeValues() { for (int i = 0; i < 6; i++) if (Enabled(i)) yield return Value(i); }
-    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
-        string b = "sccsgomaterial:0";
-        string[][] recipes = [[b,"ironingot","gunpowder","gunpowder","gunpowder"], [b,"glass","gunpowder"],
-            [b,"coalchunk","coalchunk","gunpowder"], ["glass","glass","coalchunk","canvas","gunpowder"],
-            [b,"copperingot","gunpowder","gunpowder","coalchunk"], [b,"copperingot","gunpowder"]];
-        for (int i = 0; i < 6; i++) if (Enabled(i)) yield return ScAmmoBlock.Recipe(Value(i), 1, Names[i], recipes[i], i is 0 or 2 or 4 ? 3 : 2);
-    }
+    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() { yield break; }
 }

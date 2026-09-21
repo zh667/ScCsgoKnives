@@ -4,6 +4,7 @@ namespace Game;
 
 /// <summary>Own block identity avoids competing for other mods' vanilla egg data IDs.</summary>
 public sealed class ScChickenEggBlock : ScNoDurabilityBlock {
+    public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     public ScChickenEggBlock(){DefaultDisplayName="CS 小鸡生成蛋";DefaultCategory="CS武器";CraftingId="sccsgochickenegg";
         IsPlaceable=false;IsCollidable=false;MaxStacking=40;DefaultMeleePower=0;DefaultProjectilePower=0;
         Behaviors="ThrowableBlockBehavior";IsAimable=true;

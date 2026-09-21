@@ -34,11 +34,12 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     double m_refreshAt,m_craftAfter;
     public Func<object,string> CraftPermission {get;set;}
     bool Craftable => m_selected is ScComponentCrafting.Entry or ScWeaponCrafting.Entry or ScWorkbenchRecipe;
+    int ResultCount() => !m_creative && m_selected is ScWorkbenchRecipe r ? Math.Max(1, r.ResultCount) : 1;
     Dictionary<int,int> UnitCost() => m_selected switch {ScWorkbenchRecipe r=>r.Materials(),ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
-    string CraftReason() => CraftPermission?.Invoke(m_selected) is {Length:>0} reason?reason:
-        ScCraftBatch.Unavailable(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count);
+    string CraftReason() => !m_creative && m_selected is ScWorkbenchRecipe {CreativeOnly:true} ? "仅创造模式领取，无生存制作配方。" : CraftPermission?.Invoke(m_selected) is {Length:>0} reason?reason:
+        ScCraftBatch.UnavailableBatch(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count,ResultCount());
     void RefreshQuote() {
-        m_quantity.Text=$"数量 {m_count}";m_craft.Text=$"制作 {m_count} 件";
+        m_quantity.Text=$"{(ResultCount()>1?"批数":"数量")} {m_count}";m_craft.Text=ResultCount()>1?$"制作 {m_count} 批":$"制作 {m_count} 件";
         m_quantity.IsVisible=m_craft.IsVisible=Craftable;
         foreach(var p in m_quick)p.Button.IsVisible=Craftable && ActualSize.X>=620;
         if(!Craftable)return;
@@ -132,10 +133,12 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             m_details.Children.Add(ScGunUi.Note($"制作等级 {entry.Level} · 产出 {m_count} 件"));
             m_details.Children.Add(ScGunUi.Note(entry.Knife?"选择数量后点击制作。":"空枪交付，弹药另行制作。"));
         }
-        else if(item is not (ScWorkbenchRecipe or ScComponentCrafting.Entry) && value!=0 && EffectiveGunStats.TrySnapshotValue(value,out var s))
+        else if(item is ScWorkbenchRecipe recipe)
+            m_details.Children.Add(ScGunUi.Note(recipe.CreativeOnly?"仅创造模式领取 · 无生存配方":$"制作等级 {recipe.Level} · 每批 {recipe.ResultCount} 件 · 本次产出 {m_count * ResultCount()} 件"));
+        else if(item is not ScComponentCrafting.Entry && value!=0 && EffectiveGunStats.TrySnapshotValue(value,out var s))
             m_details.Children.Add(ScGunUi.Note($"弹量 {s.Rounds} · {(s.CounterInstalled?$"计数 {s.KillCount} / Lv{s.Level}":"未安装计数器")}\n双击 / 双点此项查看本次操作的精确报价。"));
-        else m_details.Children.Add(ScGunUi.Note(Craftable?$"产出 {m_count} 件 · 点击下方制作":"双击 / 双点此项进入。单击仅预览，不会执行操作。"));
-        if(m_creative)m_details.Children.Add(ScGunUi.Note("创造模式：不消耗材料。"));
+        else m_details.Children.Add(ScGunUi.Note(Craftable?$"产出 {m_count * ResultCount()} 件 · 点击下方制作":"双击 / 双点此项进入。单击仅预览，不会执行操作。"));
+        if(m_creative)m_details.Children.Add(ScGunUi.Note("创造模式：不消耗材料，每件占一个快捷栏无限来源格。"));
         if(materials.Count>0) {
             m_details.Children.Add(ScGunUi.Heading("材料 · 需要 / 持有"));
             var materialScroll=new ScrollPanelWidget {Direction=LayoutDirection.Horizontal,DesiredSize=new Vector2(float.PositiveInfinity,118)};
@@ -190,7 +193,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         if(Time.RealTime>=m_refreshAt){m_refreshAt=Time.RealTime+.25;RefreshQuote();}
         if(Craftable) {
             foreach(var p in m_quick)if(p.Button.IsClicked){m_count=p.Count;Select(m_selected);return;}
-            if(m_quantity.IsClicked){DialogsManager.ShowDialog(ParentWidget,new TextBoxDialog("制作数量（1～100）",m_count.ToString(),3,text=>{
+            if(m_quantity.IsClicked){DialogsManager.ShowDialog(ParentWidget,new TextBoxDialog(ResultCount()>1?"制作批数（1～100）":"制作数量（1～100）",m_count.ToString(),3,text=>{
                 if(m_done||text is null)return;
                 if(int.TryParse(text,out int n)&&n>=1&&n<=ScCraftBatch.Maximum){m_count=n;Select(m_selected);}
                 else m_hint.Text="请输入 1～100 的整数。";
@@ -198,8 +201,8 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             if(m_craft.IsClicked && Time.RealTime>=m_craftAfter) {
                 m_craftAfter=Time.RealTime+.35;
                 string reason=CraftReason();
-                bool made=reason.Length==0&&ScCraftBatch.TryCraft(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count);
-                RefreshQuote();m_hint.Text=made?$"已制作 {m_count} 件":reason.Length>0?reason:"制作未完成；已尝试退款，未退回部分将自动重试。";
+                bool made=reason.Length==0&&ScCraftBatch.TryCraftBatch(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count,ResultCount());
+                RefreshQuote();m_hint.Text=made?$"已制作 {m_count * ResultCount()} 件":reason.Length>0?reason:"制作未完成；已尝试退款，未退回部分将自动重试。";
                 return;
             }
         }

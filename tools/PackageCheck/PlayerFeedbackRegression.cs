@@ -58,6 +58,20 @@ static class PlayerFeedbackRegression {
                 return body.m_totalImpulse.LengthSquared()>0&&motion.StunTime==.2f;
             });
             Test("merge-with-no-empty-slot",()=>{var i=new Inventory(2);i.Put(0,200,39);i.Put(1,100,20);return Craft(i,200,1,new(){[100]=2})&&i.Counts[0]==40&&i.Counts[1]==18;});
+            foreach(int size in new[]{2,8})foreach(int count in new[]{1,10,100})Test($"ammo-batches/{size}/{count}",()=>{
+                var i=new Inventory(25);i.Put(0,100,count);
+                return (bool)Call("ScCraftBatch","TryCraftBatch",i,200,new Dictionary<int,int>{{100,1}},count,size)
+                    &&i.Counts.Sum()==size*count&&i.Counts.Max()<=40&&i.Values.Where((v,s)=>i.Counts[s]>0).All(v=>v==200);
+            });
+            Test("ammo-batch-full-inventory-no-spend",()=>{var i=new Inventory(2);i.Put(0,200,39);i.Put(1,100,40);var before=i.Snapshot();return !(bool)Call("ScCraftBatch","TryCraftBatch",i,200,new Dictionary<int,int>{{100,1}},1,8)&&i.Snapshot()==before;});
+            Test("ammo-batch-partial-output-rollback",()=>{var i=new Inventory(3);i.Put(0,200,39);i.Put(1,100,1);i.FailAdd=1;var before=i.Snapshot();return !(bool)Call("ScCraftBatch","TryCraftBatch",i,200,new Dictionary<int,int>{{100,1}},1,8)&&i.Snapshot()==before;});
+            foreach(bool success in new[]{false,true})Test("summon-item-commit-or-restore/"+success,()=>{
+                var i=new Inventory();i.Put(0,200,1);int calls=0;
+                bool used=(bool)Call("ScCraftBatch","TryUseItem",i,0,200,(Func<bool>)(()=>{calls++;return success;}));
+                return used==success&&calls==1&&i.Counts[0]==(success?0:1)&&i.Values[0]==200;
+            });
+            Test("summon-item-exception-and-stale-item",()=>{var i=new Inventory();i.Put(0,200,1);var before=i.Snapshot();return !(bool)Call("ScCraftBatch","TryUseItem",i,0,200,(Func<bool>)(()=>throw new Exception("fixture summon failure")))&&i.Snapshot()==before&&!(bool)Call("ScCraftBatch","TryUseItem",i,0,201,(Func<bool>)(()=>throw new Exception("stale item must not run")))&&i.Snapshot()==before;});
+            Test("creative-ammo-batch-one-infinite-source",()=>{var i=new ComponentCreativeInventory{OpenSlotsCount=10,VisibleSlotsCount=10};for(int s=0;s<10;s++)i.m_slots.Add(s==0?0:100);return (bool)Call("ScCraftBatch","TryCraftBatch",i,200,new Dictionary<int,int>(),1,8)&&i.m_slots[0]==200&&i.m_slots.Skip(1).All(v=>v==100);});
             Test("post-deduction-space-and-overflow",()=>{var i=new Inventory(2);i.Put(0,200,39);i.Put(1,100,4);return Craft(i,200,2,new(){[100]=2})&&i.Counts[0]==40&&i.Values[1]==200&&i.Counts[1]==1;});
             foreach(int count in new[]{1,10,37,100}) Test("batch-exact/"+count,()=>{
                 var i=new Inventory(12);int left=count*2;for(int s=0;left>0;s++){int n=Math.Min(40,left);i.Put(s,100,n);left-=n;}
