@@ -1,5 +1,7 @@
 # 战术同伴拓展资源来源
 
+- 1.3.1 第三人称手套直接取 sporty／specialist／slick 的 CS2 `worldmodel`，保留自身逆绑定矩阵，按完整同名手指骨架在当前玩家姿态下蒙皮；没有把第一人称裸臂覆盖到全身模型上。只调整当前玩家的 MeshDrawOrders，原始角色模型、同伴、眼部贴图与 48 骨骼身体蒙皮均保持不变。列表缩略图为上述资源的原生渲染，默认手套缩略图为已有第一人称网格的派生渲染；来源记录见 `docs/world-gloves-assets.json`。本文件说明素材来源，不代表取得 Valve 的跨游戏公开分发许可；风险评估见 `docs/legal-assessment-2026-09-21.md`。
+
 - 1.3.0 第一人称：CT SAS / T Phoenix 的 `firstperson_default_gloves_arms` 与 `firstperson_sleeves`，以及 sporty / specialist / slick 的 viewmodel 网格，均来自 CS2。每套保留自己的同名骨骼、逆绑定矩阵和权重；未覆盖本体旧手臂。五款手套 paint 10038 / 10037 / 10033 / 10048 / 10016 统一采用合法最低磨损 0.06。使用本机 CS2 `csgo_core/shaders_vulkan_dir.vpk` 的 `csgo_customglove` SPIR-V 经 Source2Viewer 20 反射到 GLSL 后离线合成，保留材质层、图案、磨损及细节。仅适配 Vulkan 绑定、输出编码与 UV 左右手；ORM 和法线取原着色器最终结果。纹理为 1024；固定图案偏移 (0,0) 和配方旋转，不声称对应经济系统某个编号种子。袖子／角色默认手套粗糙度为 0.7 的适配估值。记录与重建工具：`docs/firstperson-gloves-assets.json`、`tools/build_appearance_assets.py`。
 
 - 1.2.2 将人物与武器部件统一为同一 CS2 world 片段，保留原始关键帧。通过人物 wpn／spine_2 的相对变换接入独立武器骨架，去掉重复轴转换；61 种静态握姿取完整拔枪片段末帧，避免把 additive idle 当成绝对姿态。每个 CT/T 共 170 段。武器骨骼不加入 GPU 蒙皮表，仍为 48；本轮 850 个采样的最大蒙皮压缩误差 CT 3.981 cm、T 3.571 cm，99% 顶点误差分别小于 0.644／0.724 cm。折叠刀和双刀按原关节分组，跨关节三角形逐顶点变换。第三人称检视仍为适配动作，通过共有上身骨骼保持双手接触。上一版混用第一人称机件的限制被本轮替代，未修改第一人称源资源或任何第三方模组。

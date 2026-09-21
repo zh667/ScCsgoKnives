@@ -1,5 +1,6 @@
 using System.Collections;
 using Engine;
+using Engine.Graphics;
 namespace Game;
 
 /// <summary>Native responsive workshop: category tabs, list, preview, materials and fixed footer.
@@ -13,6 +14,8 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     readonly ListPanelWidget m_list = new() { ItemSize = 52, Direction = LayoutDirection.Vertical };
     readonly CanvasWidget m_listHost = new(), m_previewHost = new(), m_detailHost = new();
     readonly BlockIconWidget m_icon = new() { Size = new Vector2(160), HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center };
+    readonly RectangleWidget m_picture = new() { FillColor=Color.White,OutlineThickness=0,HorizontalAlignment=WidgetAlignment.Center,VerticalAlignment=WidgetAlignment.Center,IsVisible=false };
+    readonly ButtonWidget m_apply=ScGunUi.Button("应用手套",146);
     readonly LabelWidget m_title, m_name;
     readonly StackPanelWidget m_details = new() { Direction = LayoutDirection.Vertical, Margin = new Vector2(10,6) };
     readonly ScrollPanelWidget m_detailScroll = new() { Direction = LayoutDirection.Vertical };
@@ -77,6 +80,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             var row = new StackPanelWidget { Direction=LayoutDirection.Horizontal, Margin=new Vector2(4,2) };
             int value=ValueOf(item);
             if(value!=0) row.Children.Add(new BlockIconWidget { Value=value,Size=new Vector2(40) });
+            if(item is ScWorkbenchAppearance appearance)row.Children.Add(new RectangleWidget { Subtexture=Picture(appearance),Size=new Vector2(64,48),FillColor=Color.White,OutlineThickness=0,VerticalAlignment=WidgetAlignment.Center });
             if(item is int level) {
                 var text=new StackPanelWidget{Direction=LayoutDirection.Vertical,VerticalAlignment=WidgetAlignment.Center};
                 text.Children.Add(new LabelWidget{Text=$"Lv{level}",FontScale=.9f,Color=ScGunUi.Accent});
@@ -87,15 +91,17 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             return row;
         };
         m_list.ItemClicked=item=>ClickItem(item, Time.RealTime);
-        m_previewHost.Children.Add(ScGunUi.Frame()); m_previewHost.Children.Add(m_icon); Children.Add(m_previewHost);
+        m_previewHost.Children.Add(ScGunUi.Frame()); m_previewHost.Children.Add(m_icon);m_previewHost.Children.Add(m_picture); Children.Add(m_previewHost);
         m_detailHost.Children.Add(ScGunUi.Frame()); m_detailScroll.Children.Add(m_details); m_detailHost.Children.Add(m_detailScroll); Children.Add(m_detailHost);
         m_name=ScGunUi.Label("",.9f,ScGunUi.Accent); m_name.WordWrap=true;
         m_hint.WordWrap=true; Children.Add(m_hint); Children.Add(m_cancel);
         Children.Add(m_quantity);Children.Add(m_craft);
+        Children.Add(m_apply);
         foreach(int n in new[]{1,10,100}){var b=ScGunUi.Button(n.ToString(),52);m_quick.Add((n,b));Children.Add(b);}
         Filter("全部");
     }
-    static string CategoryOf(object item) => item is ScWorkbenchAction action ? action.Category : item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
+    static Subtexture Picture(ScWorkbenchAppearance item)=>new(ContentManager.Get<Texture2D>(item.Preview),Vector2.Zero,Vector2.One);
+    static string CategoryOf(object item) => item is ScWorkbenchAppearance ? "手套" : item is ScWorkbenchAction action ? action.Category : item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
         ScGunDurability.Class.Pistol=>"手枪",ScGunDurability.Class.Smg=>"冲锋枪",ScGunDurability.Class.Rifle=>"步枪",
         ScGunDurability.Class.Shotgun=>"霰弹枪",ScGunDurability.Class.BoltSniper or ScGunDurability.Class.AutoSniper=>"狙击枪",
         ScGunDurability.Class.MachineGun=>"机枪",_=>"电击枪"
@@ -120,6 +126,12 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         m_hint.Text=Craftable?"选择数量后制作 · 材料自动堆叠":"单击预览 · 双击 / 双点进入";
         m_details.Children.Clear(); m_name.Text=item is null?"没有可用项目":m_label(item); m_details.Children.Add(m_name);
         int value=ValueOf(item); m_icon.IsVisible=value!=0; if(value!=0)m_icon.Value=value;
+        m_picture.IsVisible=m_apply.IsVisible=item is ScWorkbenchAppearance;
+        if(item is ScWorkbenchAppearance appearance){
+            m_picture.Subtexture=Picture(appearance);m_details.Children.Add(ScGunUi.Note(appearance.Description));
+            m_hint.Text="单击预览 · 点击应用手套，或双击 / 双点应用";
+            m_detailScroll.ScrollPosition=0;RefreshQuote();return;
+        }
         var materials = item switch {
             ScWorkbenchRecipe r=>r.Materials(),
             ScComponentCrafting.Entry c=>c.Materials(),
@@ -182,8 +194,11 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         else if(w>=620){Place(m_listHost,12,110,210,bodyH);Place(m_previewHost,230,110,w-242,100);Place(m_detailHost,230,218,w-242,bodyH-108);}
         else{Place(m_listHost,12,110,Math.Max(130,w*.42f),bodyH);float x=20+Math.Max(130,w*.42f);Place(m_previewHost,x,110,w-x-12,80);Place(m_detailHost,x,198,w-x-12,bodyH-88);}
         m_icon.Size=new Vector2(w>=900?160:76);
+        float pictureWidth=Math.Min(m_previewHost.Size.X-16,(m_previewHost.Size.Y-16)*4/3);
+        m_picture.Size=new Vector2(Math.Max(1,pictureWidth),Math.Max(1,pictureWidth)*.75f);
         Place(m_hint,12,h-116,w-24,48);Place(m_cancel,12,h-56,80,48);
         Place(m_quantity,w-274,h-56,108,48);Place(m_craft,w-158,h-56,146,48);
+        Place(m_apply,w-158,h-56,146,48);
         if(w<380){Place(m_cancel,12,h-56,64,48);Place(m_quantity,80,h-56,84,48);Place(m_craft,168,h-56,w-180,48);}
         int k=0;foreach(var p in m_quick){p.Button.IsVisible=Craftable&&w>=620;Place(p.Button,104+56*k++,h-56,52,48);}
         base.MeasureOverride(available);
@@ -209,6 +224,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         foreach(var p in m_categories)if(p.Button.IsClicked){Filter(p.Category);return;}
         if(m_list.SelectedItem is {} selected && !ReferenceEquals(selected,m_selected))Select(selected);
         if(Input.Cancel||Input.Back||m_cancel.IsClicked){m_done=true;DialogsManager.HideDialog(this);BackAction?.Invoke();return;}
+        if(m_apply.IsClicked&&m_selected is ScWorkbenchAppearance)m_pendingChoice=m_selected;
         // Defer navigation out of ListPanelWidget.ItemClicked, and dispatch at most once.
         if(m_pendingChoice is {} choice){m_done=true;DialogsManager.HideDialog(this);m_choose(choice);}
     }

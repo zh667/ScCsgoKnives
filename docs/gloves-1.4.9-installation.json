@@ -1,0 +1,171 @@
+{
+  "Installed": [
+    {
+      "Sha256": "becbe33bb6a8a575dded4ba130d65d40045939bc4e0ca29368baed6890b8c8fa",
+      "Path": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Mods\\[API1.9]CS武器1.4.9-作者ZH667-全量版.scmod",
+      "Action": "Verified already present"
+    },
+    {
+      "Sha256": "25db07ab4d68be479ef53e2911e3680232f865050bb229cc146370f24183162c",
+      "Path": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Mods\\[API1.9]CS战术同伴拓展1.3.2-作者ZH667.scmod",
+      "Action": "Installed"
+    }
+  ],
+  "Unchanged": [
+    {
+      "Sha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a",
+      "Name": "[1工业时代2-1.0.0.2.scmod"
+    },
+    {
+      "Sha256": "101886580c11f5e7167c975765a0b0318da7b42b9ba63a4abeb788cae5c2965b",
+      "Name": "[1SlowerCreatureSpawnsMod.scmod"
+    },
+    {
+      "Sha256": "f64e951bb2e98f104c8c6ed4c7ed7655a2ab3f9d6f1535fc7ad632ae39b00e57",
+      "Name": "[工业时代附属]物流-1.0.0.1.scmod"
+    },
+    {
+      "Sha256": "336de65c0a70a4731e1a93902d3caee358871ec4add933d0ef3c0d1c0a59dbc5",
+      "Name": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod"
+    },
+    {
+      "Sha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a",
+      "Name": "[API1.8.1.3]命令方块4.1.7.scmod"
+    },
+    {
+      "Sha256": "a5cc0532d7f5a5f95a058f4e465aa8808fda0c7a36813ea97707fff10c9df4c2",
+      "Name": "[API1.8.2.3]循环电路板v1.02.scmod"
+    },
+    {
+      "Sha256": "dc2984daaa8fe21f9608343a18b33516474db925e22207390b3c7a493ce372d4",
+      "Name": "[API1.8]生存开透视角.scmod"
+    },
+    {
+      "Sha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a",
+      "Name": "[API1.8]主角身体属性提升1.21.scmod"
+    },
+    {
+      "Sha256": "7c83391726a9d736d85ee283cf9cfd8f3f8ff78f233a46a694495f4ed8ad3698",
+      "Name": "[API1.9.1.3]HDR天幕v1.0.2公测版.scmod"
+    },
+    {
+      "Sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c",
+      "Name": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod"
+    },
+    {
+      "Sha256": "1efefcb5b9cff41a68cb39580908cdf524db5cfd0ffbc0d41a90aad65a3317c6",
+      "Name": "[API1.9.2.1]Neorxna-v1.4 (2).scmod"
+    },
+    {
+      "Sha256": "2ed04ff9480ecce73bd99957a04fa68a4b21f47e1c73d336db88768a07e939f7",
+      "Name": "[API1.9.2]工业时代2x泰拉工作台 v1.0.scmod"
+    },
+    {
+      "Sha256": "54f50ca6cf1a6eb86a253f8ddb2b235d1aba76633ce18831c5a0e0abb05bedbb",
+      "Name": "[API1.9.2]泰拉工作台 Terraria Crafting Table  v1.1.1.scmod"
+    },
+    {
+      "Sha256": "540541303aac96b8d6f4f3d38696f2afa8b0dec05edfba0687fa5e625f4c37f4",
+      "Name": "[API1.9.3]工业时代2：筛子_v1.1 内测.scmod"
+    },
+    {
+      "Sha256": "d41c1bcb6c062776711e3f964cc11ee209a030f7c1dd04d3733ba966e185c90a",
+      "Name": "[API1.9.3]工业时代2：Neorxna信息显示增强v1.2.scmod"
+    },
+    {
+      "Sha256": "6484157cfd4cae63a764c7c18d0b52cdf0df93dc875fa4f7199d48a17eed8551",
+      "Name": "[API1.9.3]深海迷航V1.2.2.scmod"
+    },
+    {
+      "Sha256": "6785c2865728ee47472d46e07417c91bd98234375172ee1206d6a5f055f21543",
+      "Name": "[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod"
+    },
+    {
+      "Sha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18",
+      "Name": "[API1.9]服饰配件V1.2.1.scmod"
+    },
+    {
+      "Sha256": "d67d0bd29fd3cf479512f0c70ecbd10eaee31e402471247939545950af09bfaf",
+      "Name": "[API1.9]构千形V1.2.1.scmod"
+    },
+    {
+      "Sha256": "40ea58b5d6ff453065f290c250af19cac98ad4cd7313944ec370fc69b0df7a24",
+      "Name": "[API1.9]玲兰辅助v3.0.3.scmod"
+    },
+    {
+      "Sha256": "a2eda34cdb6e15d42c594c83e2bdbc1668bec06b39450d89ddb8727664b2dfd6",
+      "Name": "[API1.9]玲兰科技v3.0.4(需玲兰辅助).scmod"
+    },
+    {
+      "Sha256": "7345a25427dc15bed8dcd49d7d7ad8c241194f68af663d2ca82e1fd015c233f2",
+      "Name": "[API1.9]NekoMekoModel1.1-源码构建.scmod"
+    },
+    {
+      "Sha256": "2960b313e3a444a7dcd20e7a6b9d5fb681a9b0d3a6b2fa7bab879e07d4fde74e",
+      "Name": "[API1.9+]ScbbsPlus社区扩展v1.4.3.scmod"
+    },
+    {
+      "Sha256": "a445c3bdc7bbfab2cec0ca8b880ac8e811379bf15a33cefcbf23c3046bf5632d",
+      "Name": "11111.scmod"
+    },
+    {
+      "Sha256": "e0155235c77a155ff4c871c013095691bf9210b7490538dc2e0d9b854bb436d7",
+      "Name": "化肥.scmod"
+    },
+    {
+      "Sha256": "ff919334132364db06afb5587146216a966fcbbd25b2385db785d2ccc6748601",
+      "Name": "BF2042-airwater-0.4.1.scmod"
+    },
+    {
+      "Sha256": "7e0d5e0a1b13facf0e8d8d69ed1c42929cad3096a19ed6008ef1933cd9f704bb",
+      "Name": "BF2042-core-0.4.1.scmod"
+    },
+    {
+      "Sha256": "c6e9856b6328a58bd163000da0af7d2af305a8a65e7c0d30b320f6b06a6a1784",
+      "Name": "BF2042-ground-0.4.1.scmod"
+    },
+    {
+      "Sha256": "74107374103651c2961f6beaaa4b14e160b2dc52b5bbb851f0034eb1c8349114",
+      "Name": "BF2042-weapons-0.4.1.scmod"
+    },
+    {
+      "Sha256": "52756ff4d9f29db8a80226bdc9fdc73ae80ab16ec04863f6c82bdcf55e132788",
+      "Name": "mod.scmod"
+    },
+    {
+      "Sha256": "a79a858d28cdecbd830a3ec26b70bf9c65a8e19f4a384888cb84f6042fff2fd3",
+      "Name": "NoAutoWakeUpMod.scmod"
+    },
+    {
+      "Sha256": "9279123c11167a77ac430f0b402431b9c44773efe22c5ba574f3e2529104365d",
+      "Name": "RecipaediaEX-2.0.0.1.scmod"
+    },
+    {
+      "Sha256": "63eb9f279827a47c9e8e3f0901f6643c2c29cfdcfbf1f51ea35199822c17ea76",
+      "Name": "SneakPlaceMod.scmod"
+    }
+  ],
+  "Recovery": "Old packages archived, not deleted. No worlds or unrelated mods modified. Mods already contained verified core 1.4.9 and tactical 1.3.1 before this installation.",
+  "Archived": [
+    {
+      "Sha256": "07e8495399622ba30415e548312b2aefc059ce6d8b6773834b35f81c153e5763",
+      "Original": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Mods\\[API1.9]CS战术同伴拓展1.3.1-作者ZH667.scmod",
+      "Archived": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\retired-gloves-1.4.9-20260921-222924\\installed\\[API1.9]CS战术同伴拓展1.3.1-作者ZH667.scmod"
+    },
+    {
+      "Sha256": "07e8495399622ba30415e548312b2aefc059ce6d8b6773834b35f81c153e5763",
+      "Original": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\[API1.9]CS战术同伴拓展1.3.1-作者ZH667.scmod",
+      "Archived": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\retired-gloves-1.4.9-20260921-222924\\output\\[API1.9]CS战术同伴拓展1.3.1-作者ZH667.scmod"
+    },
+    {
+      "Sha256": "247d0b5ffe1931ebe734dd78e0e0254f395a1a297c59b0a5c57a87f029881351",
+      "Original": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\[API1.9]CS武器1.4.8-作者ZH667-全量版.scmod",
+      "Archived": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\retired-gloves-1.4.9-20260921-222924\\output\\[API1.9]CS武器1.4.8-作者ZH667-全量版.scmod"
+    },
+    {
+      "Sha256": "6f3176fbf049801db3d82dafad25ee9180481d874c5217b774ea7ded791f47bc",
+      "Original": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\[API1.9]CS战术同伴拓展1.3.0-作者ZH667.scmod",
+      "Archived": "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\output\\retired-gloves-1.4.9-20260921-222924\\output\\[API1.9]CS战术同伴拓展1.3.0-作者ZH667.scmod"
+    }
+  ]
+}

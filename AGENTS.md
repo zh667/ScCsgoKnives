@@ -1,5 +1,19 @@
 # Project conventions
 
+- User-directed 2026-09-21: Full 1.4.9 / tactical 1.3.2 adds player CT/T third-person
+  gloves and moves appearance to workbench 功能 → 人物外观／更换手套. Use transparent
+  thumbnails, large preview and explicit apply; preview/cancel must not mutate saved choice.
+  Use CS2 worldmodel gloves with their own inverse binds and full finger hierarchy, and
+  per-component mesh orders, never shared Model.IsVisible. Retain repeated-role reset guards.
+  World gloves must reuse the native model's cached smooth lighting, not the root/foot cell:
+  the latter causes the reported black hands and flicker along terrain boundaries.
+  Keep all prior assets, IDs, v5/schema6 and other mods unchanged. NMM HUD/model-selection
+  previews and NPC gloves remain original; no new network transport or full-game claim.
+  Free public release without paid content is the stated publishing scenario. See
+  docs/legal-assessment-2026-09-21.md; it is a risk assessment, not clearance or permission
+  to remove resources, rewrite Git history or contact rights holders. Release evidence and
+  recoverable installation are documented in docs/release-gloves-1.4.9.md.
+
 - User-directed 2026-09-21: Full 1.4.8 / tactical 1.3.0 adds CT SAS / T Phoenix
   first-person arms and five optional glove finishes at minimum legal wear 0.06.
   This supersedes the older keep-default-arms instruction when a CS role is selected.
@@ -8,7 +22,7 @@
   Ship resources/menu/adapter inside tactical, not a separate glove or appearance mod.
   Keep NMM/Neorxna optional, third-party packages untouched, item IDs and v5/schema6
   unchanged. Glove replacement currently covers first-person CS items and empty hands;
-  third-person gloves stay original. Preserve mesh-specific inverse binds, sleeve twist
+  third-person gloves stayed original in 1.4.8 (superseded above). Preserve mesh-specific inverse binds, sleeve twist
   synthesis and released grenade/C4 viewmodel guards. Source GLSL composition uses fixed
   pattern offsets, not an asserted economy seed. See docs/release-firstperson-1.4.8.md
   for diagnostic evidence, installation manifest and actual-game acceptance limits.

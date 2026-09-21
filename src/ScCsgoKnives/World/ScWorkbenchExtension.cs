@@ -9,6 +9,8 @@ public sealed record ScWorkbenchRecipe(string Key,string Name,string Category,Fu
     public Dictionary<int,int> Materials()=>Cost();
 }
 public sealed record ScWorkbenchAction(string Key,string Name,string Category,Action<ComponentPlayer,Action> Open);
+// Cosmetic entries have no inventory value or crafting transaction.
+public sealed record ScWorkbenchAppearance(string Key,string Name,string Description,string Preview);
 public static class ScWorkbenchExtension {
     public const int ApiVersion=1;
     static readonly Dictionary<string,ScWorkbenchRecipe> Recipes=new(StringComparer.Ordinal);

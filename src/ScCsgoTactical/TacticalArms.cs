@@ -53,15 +53,20 @@ public static class TacticalArms {
     public static void Clear(){sets.Clear();meshes.Clear();materials=null;}
     public static void Register(){
         ScFirstPersonAppearance.Resolve=Resolve;
-        ScWorkbenchExtension.RegisterAction(new("tactical-gloves","更换第一人称手套","人物外观",Open));
+        ScWorkbenchExtension.RegisterAction(new("tactical-gloves","人物外观／更换手套","功能",Open));
     }
     static void Open(ComponentPlayer player,Action back){
         var subsystem=player.Project.FindSubsystem<SubsystemScTactical>(true);
         string selected=subsystem.GloveFor(player.PlayerData.PlayerIndex);
-        object[] items=["",..Gloves.Select(g=>(object)g.Key)];
-        DialogsManager.ShowDialog(player.GuiWidget,new ListSelectionDialog("第一人称手套 · 崭新出厂 0.06",items,64,
-            item=>((string)item==selected?"✓ ":"")+((string)item==""?"跟随角色默认手套":Gloves.First(g=>g.Key==(string)item).Name),
-            item=>{if(player.ComponentHealth.Health>0){subsystem.SetGlove(player.PlayerData.PlayerIndex,(string)item);
-                player.ComponentGui.DisplaySmallMessage("手套已更换。袖子随 CT／T 角色选择；未选角色使用原手臂。",Color.White,false,false);}back();}));
+        string role=Role(player.Entity.FindComponent<ComponentFirstPersonModel>());
+        string scope=role is "ct" or "t"?"第一人称与当前 CT／T 的第三人称同步更换。":"第一人称生效；选择 CT／T 角色后，第三人称也会同步。";
+        ScWorkbenchAppearance[] items=[new("","跟随角色默认手套","恢复角色原装手套。未选 CT／T 时恢复原第一人称手臂。\n免费外观，不消耗材料。","Textures/ScCsgoTactical/Gloves/default_"+(role is "ct" or "t"?role:"arms")),
+            ..Gloves.Select(g=>new ScWorkbenchAppearance(g.Key,g.Name,"崭新出厂 · 磨损 0.06\n"+scope+"\n袖子跟随角色；按玩家独立保存。\n免费外观，不消耗材料。","Textures/ScCsgoTactical/Gloves/"+g.Key))];
+        var dialog=new ScWorkbenchSelectionDialog("人物外观 · 更换手套",items,64,
+            item=>(((ScWorkbenchAppearance)item).Key==selected?"✓ 已装备 · ":"")+((ScWorkbenchAppearance)item).Name,
+            item=>{if(player.ComponentHealth.Health>0){subsystem.SetGlove(player.PlayerData.PlayerIndex,((ScWorkbenchAppearance)item).Key);
+                player.ComponentGui.DisplaySmallMessage("手套已更换。CT／T 的第一、第三人称将同步显示。",Color.White,false,false);}back();},player.ComponentMiner.Inventory,false){BackAction=back};
+        dialog.RestoreNavigation(new("全部",items.FirstOrDefault(i=>i.Key==selected)??items[0],0));
+        DialogsManager.ShowDialog(player.GuiWidget,dialog);
     }
 }

@@ -32,7 +32,7 @@ static class TacticalRegression {
         Test("optional-package-identity-and-no-bundled-engine",()=>{
             var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
             var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
-            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.8"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.7")),"core dependency not enforced by engine");
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.9"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.8")),"core dependency not enforced by engine");
             Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
         });
         Test("glove-selection-player-isolation-and-xml",()=>{
@@ -47,6 +47,17 @@ static class TacticalRegression {
             set.Invoke(sub,[0,""]);Require((string)get.Invoke(sub,[0])==""&&(string)get.Invoke(sub,[1])=="slick_red","reset affects another player");
         });
         Test("glove-optional-default-is-original",()=>Require(Call("TacticalArms","ResolveSet",null,"")==null,"default replaced without selected role or gloves"));
+        Test("glove-gallery-assets-and-function-entry",()=>{
+            Call("TacticalArms","Register");
+            var actions=((System.Collections.IEnumerable)C("ScWorkbenchExtension").GetProperty("Actions").GetValue(null)).Cast<object>();
+            var item=actions.Single(a=>(string)a.GetType().GetProperty("Key").GetValue(a)=="tactical-gloves");
+            Require((string)item.GetType().GetProperty("Category").GetValue(item)=="功能","appearance is still a separate category");
+            foreach(string key in new[]{"default_ct","default_t","default_arms","sporty_green","sporty_purple","specialist_kimono_diamonds_red","sporty_blue_pink","slick_red"}){
+                using var png=new MemoryStream(Bytes("Assets/Textures/ScCsgoTactical/Gloves/"+key+".png"));var image=Engine.Media.Image.Load(png);
+                Require(image.Width==512&&image.Height==384,"wrong preview dimensions");
+                Require(image.Pixels.Any(p=>p.A==0)&&image.Pixels.Any(p=>p.A>0),"preview missing transparent background or glove");
+            }
+        });
         Test("glove-original-cs2-assets-and-pbr-maps",()=>{
             foreach(string key in new[]{"sporty_green","sporty_purple","specialist_kimono_diamonds_red","sporty_blue_pink","slick_red"})
                 foreach(string side in new[]{"left","right"})foreach(string suffix in new[]{"","_normal","_orm"})
@@ -92,6 +103,18 @@ static class TacticalRegression {
                     }
                 }
                 Require((min+max)*.5f is Vector3 center&&Vector3.Distance(center,body.Position+Vector3.UnitY)<.8f&&min.Y-body.Position.Y>-.15f&&max.Y-body.Position.Y>1.5f&&max.Y-min.Y<2.5f,$"native skinned body misplaced: {min} .. {max}, body {body.Position}");
+                if(name is "ct" or "t")foreach(var glove in (Array)T("TacticalArms").GetField("Gloves").GetValue(null)){
+                    string key=(string)glove.GetType().GetProperty("Key").GetValue(glove);
+                    string[] textureKeys=new[]{"left","right"}.Select(side=>"Textures/ScCsgoKnives/tactical_arm_"+key+"_"+side).ToArray();
+                    try{
+                        foreach(string tk in textureKeys)caches[tk]=[Blank<Texture2D>()];
+                        var binding=Activator.CreateInstance(T("TacticalWorldGloves"),model,glove);var type=binding.GetType();
+                        Require(((int[])type.GetProperty("BodyMeshOrders").GetValue(binding)).Length==model.Meshes.Count-1&&model.Meshes.All(m=>m.IsVisible),"shared model changed");
+                        type.GetMethod("Sample").Invoke(binding,[component.AbsoluteBoneTransformsForCamera]);
+                        var mesh=type.GetProperty("Mesh").GetValue(binding);var vertices=(Array)mesh.GetType().GetProperty("Skinned").GetValue(mesh);
+                        foreach(var v in vertices){var p=(Vector3)v.GetType().GetField("Position").GetValue(v);Require(float.IsFinite(p.X+p.Y+p.Z)&&Vector3.Distance(p,body.Position)<3,"packaged world glove escaped the player");}
+                    }finally{foreach(string tk in textureKeys)caches.Remove(tk);}
+                }
             }finally{caches.Remove(route);caches.Remove(configRoute+".json");}
             foreach(var animation in data.Animations){Require(!animation.Channels.Any(c=>c.TargetBoneName=="root_motion"&&c.Property==ModelAnimation.AnimationProperty.Translation),"root travel will drift");
                 var player=new AnimationPlayer();player.SetAnimation(model,animation);player.Play(true);

@@ -18,7 +18,7 @@ using Neorxna.Components;
 using Neorxna.NeoModel;
 using TemplatesDatabase;
 
-if (args.Length != 3) throw new ArgumentException("AppearanceCheck <repo> <Content.zip> <output>");
+if (args.Length is not (3 or 4)) throw new ArgumentException("AppearanceCheck <repo> <Content.zip> <output> [--ui-only]");
 System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context,name) => {
     string file=Path.Combine(AppContext.BaseDirectory,name.Name+".dll");
     return File.Exists(file)?context.LoadFromAssemblyPath(file):null;
@@ -43,6 +43,11 @@ foreach(var file in Directory.GetFiles(Path.Combine(source,"Assets/NekoMekoRes/N
 bool done=false;int exit=0;
 Window.Frame+=()=>{if(done)return;done=true;try{
     LightingManager.Initialize();
+    if(args.Length==4&&args[3]=="--ui-only"){
+        BlocksManager.Blocks[0]=new AirBlock();
+        GloveChecks.Run(root,output,[],null,null,null,Check,caches,true);
+        GloveUiChecks.Run(root,output,content,Check,caches);Console.WriteLine($"PASS {results.Count} UI/icon checks");return;
+    }
     foreach(var pair in new[]{(typeof(AirBlock),0),(typeof(ScKnifeBlock),700),(typeof(ScGunBlock),701),(typeof(ScGrenadeBlock),702),(typeof(ScTacticalShieldBlock),705)}){var block=(Block)Activator.CreateInstance(pair.Item1);block.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=block;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}
     using var target=new RenderTarget2D(480,640,1,ColorFormat.Rgba8888,DepthFormat.Depth24Stencil8);
     using var shader=new ModelShader(Read("Shaders/Model.vsh"),Read("Shaders/Model.psh"),false,1,48);
@@ -135,6 +140,26 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         var pixels=target.GetData(new Rectangle(0,0,480,640));Check(pair.Key+"/"+state+" GPU pixels",pixels.Pixels.Count(p=>p.R!=22||p.G!=27||p.B!=34)>1000);
         using var file=File.Create(Path.Combine(output,pair.Key+"-"+state+".png"));Image.Save(pixels,file,ImageFileFormat.Png,false);
     }
+    GloveChecks.Run(root,output,models,human,body,shader,Check,caches);
+    {
+        var tactical=new SubsystemScTactical{m_project=project};tactical.Load(new());project.m_subsystems.Add(tactical);
+        var actualPlayer=(ComponentPlayer)RuntimeHelpers.GetUninitializedObject(typeof(ComponentPlayer));actualPlayer.PlayerData=(PlayerData)RuntimeHelpers.GetUninitializedObject(typeof(PlayerData));actualPlayer.PlayerData.PlayerIndex=0;
+        actualPlayer.m_entity=human.Entity;human.Entity.m_components.Add(actualPlayer);adapter.Load(new(),null);
+        foreach(string role in new[]{"ct","t"}){
+            adapter.SetResModel("zh667.cs."+role);tactical.SetGlove(0,"");((INeoModel)adapter).Animate();var original=human.MeshDrawOrders.ToArray();
+            foreach(string glove in TacticalArms.Gloves.Select(g=>g.Key)){
+                tactical.SetGlove(0,glove);((INeoModel)adapter).Animate();
+                Check("live adapter hides own original glove "+role+glove,human.MeshDrawOrders.Length==original.Length-1&&human.Model.Meshes.All(m=>m.IsVisible));
+                ((INeoModel)adapter).Animate();Check("repeated animate keeps selection "+role+glove,human.MeshDrawOrders.Length==original.Length-1);
+                adapter.SetResModel("zh667.cs."+role);((INeoModel)adapter).Animate();Check("same role reselected keeps glove replacement "+role+glove,human.MeshDrawOrders.Length==original.Length-1);
+            }
+            tactical.SetGlove(0,"");((INeoModel)adapter).Animate();Check("live adapter reset restores original meshes "+role,human.MeshDrawOrders.SequenceEqual(original));
+        }
+        tactical.SetGlove(0,"sporty_green");adapter.SetResModel("fixture.default");((INeoModel)adapter).Animate();Check("non-CS role unchanged by gloves",human.Model==caches["Fixture/Default"][0]);
+        adapter.SetResModel("zh667.cs.ct");((INeoModel)adapter).Animate();Check("role switch reapplies saved glove",human.MeshDrawOrders.Length==human.Model.Meshes.Count-1);
+        tactical.SetGlove(0,"");((INeoModel)adapter).Animate();
+    }
+    GloveUiChecks.Run(root,output,content,Check,caches);
     ActionChecks.Run(root,output,models,human,body,shader,target,Check,caches);
     Console.WriteLine($"PASS {results.Count} checks");
 }catch(Exception e){Console.Error.WriteLine(e);results.Add(new{error=e.ToString()});exit=1;}finally{File.WriteAllText(Path.Combine(output,"checks.json"),JsonSerializer.Serialize(new{failed=exit,checks=results},new JsonSerializerOptions{WriteIndented=true}));Display.RenderTarget=null;Window.Close();}};

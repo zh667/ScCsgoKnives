@@ -13,6 +13,9 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
     Model previousModel;
     bool active;
     CsPlayerPose pose;
+    TacticalWorldGloves gloves;
+    string gloveKey;
+    int[] originalMeshOrders;
     public static bool OwnsKey(string key) => key is "zh667.cs.ct" or "zh667.cs.t";
     public bool IsCs => OwnsKey(ModelKey);
     public string FirstPersonRole => ModelKey == "zh667.cs.ct" ? "ct" : ModelKey == "zh667.cs.t" ? "t" : null;
@@ -26,9 +29,10 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
         }
         if (ReferenceEquals(Model, previousModel) && active == IsCs) return;
         previousModel = Model;
+        gloves=null;gloveKey=null;originalMeshOrders=null;
         if (IsCs) {
             pose = new CsPlayerPose(Model);
-            // Empty hands use the game's ordinary empty-hand path; CS held weapons still own FPP.
+            // Tactical owns role-aware empty hands and CS held weapons own their FPP path.
             BoneTransforms.Clear();
         } else if (active) {
             pose = null;
@@ -41,6 +45,7 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
     bool INeoModel.Animate() {
         RefreshModel();
         if (!IsCs) return base.Animate();
+        RefreshGloves();
         var human = (ComponentHumanModel)TargetComponent;
         int value = ComponentMiner?.ActiveBlockValue ?? 0;
         bool shield = ScTacticalShieldBlock.IsShield(value);
@@ -70,6 +75,7 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
             bool coreOwnsItem = !Model.HasSkin && human.m_bodyBone != null && human.m_hand1Bone != null && human.m_hand2Bone != null && ScThirdPerson.AssetFor(held, out _) != null;
             return coreOwnsItem || ScTacticalShieldBlock.IsShield(held) || base.DrawExtras(camera);
         }
+        gloves?.Draw((ComponentHumanModel)TargetComponent,camera);
         if (ComponentCreature.ComponentHealth.Health <= 0 || camera.GameWidget.IsEntityFirstPersonTarget(Entity)) return true;
         int value = ComponentMiner?.ActiveBlockValue ?? 0;
         if (value == 0 || ScTacticalShieldBlock.IsShield(value)) return true; // DLC owns the shield mesh.
@@ -77,6 +83,17 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
         return true;
     }
     bool INeoModel.Render(SubsystemModelsRenderer.ModelData data, ModelShader shader, Camera camera) => !IsCs && base.Render(data, shader, camera);
+    void RefreshGloves(){
+        string selected=ComponentPlayer==null?"":Project.FindSubsystem<SubsystemScTactical>(false)?.GloveFor(ComponentPlayer.PlayerData.PlayerIndex)??"";
+        // NMM may reapply the same shared model and reset draw orders without changing its identity.
+        if(gloveKey==selected){if(gloves!=null)TargetComponent.MeshDrawOrders=gloves.BodyMeshOrders;return;}
+        originalMeshOrders??=TargetComponent.MeshDrawOrders.ToArray();
+        gloves=null;TargetComponent.MeshDrawOrders=originalMeshOrders;
+        var glove=TacticalArms.Gloves.FirstOrDefault(g=>g.Key==selected);
+        if(glove!=null)try{gloves=new(Model,glove);TargetComponent.MeshDrawOrders=gloves.BodyMeshOrders;}
+        catch(Exception e){KnifeDiagnostics.WarnOnce("world-glove-"+selected,e.Message);}
+        gloveKey=selected;
+    }
 }
 
 public sealed class CsPlayerPose {

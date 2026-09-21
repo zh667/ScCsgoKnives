@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>preview</LangVersion><Version>1.2.0</Version><AssemblyVersion>1.1.0.0</AssemblyVersion><NeorxnaDll Condition="'$(NeorxnaDll)'==''">../../.tmp/creature-audit-20260917/10/neorxna.dll</NeorxnaDll></PropertyGroup>
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>preview</LangVersion><Version>1.2.1</Version><AssemblyVersion>1.1.0.0</AssemblyVersion><NeorxnaDll Condition="'$(NeorxnaDll)'==''">../../.tmp/creature-audit-20260917/10/neorxna.dll</NeorxnaDll></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../ScCsgoTactical/ScCsgoTactical.csproj" />
     <ProjectReference Include="../../tools/NekoMekoReference/NekoMekoReference.csproj" />

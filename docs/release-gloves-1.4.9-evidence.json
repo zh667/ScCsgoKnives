@@ -1,0 +1,74 @@
+{
+  "packages": {
+    "[API1.9]CS武器1.4.9-作者ZH667-全量版.scmod": {
+      "sha256": "becbe33bb6a8a575dded4ba130d65d40045939bc4e0ca29368baed6890b8c8fa",
+      "bytes": 382819830,
+      "preservedResources": 1331,
+      "dlls": {
+        "ScCsgoKnives.dll": "f17c1064e449cce4301ca235f421bf9492b8082464cdbe348f397198681b363c",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2"
+      }
+    },
+    "[API1.9]CS战术同伴拓展1.3.2-作者ZH667.scmod": {
+      "sha256": "25db07ab4d68be479ef53e2911e3680232f865050bb229cc146370f24183162c",
+      "bytes": 108316635,
+      "preservedResources": 77,
+      "dlls": {
+        "ScCsgoTactical.dll": "9d9ce7b5f7593d34b25220f2a8a5a15d403a8edd42cac47403032fb42c53b7df",
+        "Integrations/ScCsgoAppearance.bin": "b998da57acd6cfdcbc5f349a2172ba03c5949bbd9ba20f7a164537182b5877e5"
+      }
+    }
+  },
+  "checks": {
+    "core": {
+      "count": 12689,
+      "failed": 0
+    },
+    "tactical": {
+      "count": 56,
+      "failed": 0
+    },
+    "appearanceNative": {
+      "count": 7892,
+      "failed": 0
+    },
+    "gloveUi": {
+      "count": 50,
+      "failed": 0
+    },
+    "optionalLoading": {
+      "runs": 18,
+      "failed": 0
+    },
+    "lightingRegression": {
+      "oldVersionFails": true,
+      "fixedVersionPasses": true,
+      "coverage": "Actual Draw across alternating foot-cell light, shared body light, real darkness and first-person suppression; CT/T and all five gloves."
+    }
+  },
+  "icons": {
+    "default_arms.png": "63308eb9371715f6c65f1d3b5cdaf97d20052626820ab9c414a0a4e6a88a6696",
+    "default_ct.png": "a0a5ffa1ddae9247219b2909f18a02312dcb333e3880e64988448adc9bcae696",
+    "default_t.png": "d0cef02ab75d26411431a6ca4e22957a6609e3eb68734c6d06d742c3d67545d6",
+    "slick_red.png": "2d34c23878be34e5cfe6e5099c1a085afdfd77809a171dc59a1f8ae92554600e",
+    "specialist_kimono_diamonds_red.png": "edee5b1a493d1725dc4f8e9546b88522a59c131ff59304151411d3d2d784e093",
+    "sporty_blue_pink.png": "9e8f7da4de5895858f85d4dd273ec9ddd51717667564d72263396b58e5089bbf",
+    "sporty_green.png": "5eacda55a1b0b8a3a2bb73b07f4b2a4e83fbb42a5a4f0266c478eec3f7d8ae5c",
+    "sporty_purple.png": "d3ffbfb02040580aecc0f08569b111fcb32c2afe10e2f1b232a63a4dfd7a4848"
+  },
+  "worldMeshes": {
+    "sporty": {
+      "sha256": "06a1ca63b1207a3e7f7e059303bf82c37fd66850125c2e3dbdf54e12035bf49a",
+      "sourceSha256": "920d71c87039e4682e2018510fee372db507da336ac4a3b2c008f3f8ac22553a"
+    },
+    "specialist": {
+      "sha256": "b6f22ec4ce8afd81babb2587fa32c74f5c6b933ace4667228fa5583f22c91f6e",
+      "sourceSha256": "bb86e75bddedc2cd6d15fe50d5605af36db6e475ebaeebf86d99e83f34172e92"
+    },
+    "slick": {
+      "sha256": "d36b7a608cce26eb335041ce59dca9ce5f03fe6ea84ff049797f244725858252",
+      "sourceSha256": "19141e651a15f8cb2110dad3be9273fb6d7c381bc2bf57bde1cddc4f5cc0aa2a"
+    }
+  },
+  "boundaries": "Packaged DLL checks and native GPU diagnostics; not full-game, Android or network acceptance."
+}
