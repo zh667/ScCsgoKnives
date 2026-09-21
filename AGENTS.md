@@ -1,5 +1,18 @@
 # Project conventions
 
+- User-directed 2026-09-21: Full 1.4.8 / tactical 1.3.0 adds CT SAS / T Phoenix
+  first-person arms and five optional glove finishes at minimum legal wear 0.06.
+  This supersedes the older keep-default-arms instruction when a CS role is selected.
+  No role and no glove override retain the old core arms. Resolve the actual drawing
+  player's native NMM role and saved per-player glove choice; no global selected role.
+  Ship resources/menu/adapter inside tactical, not a separate glove or appearance mod.
+  Keep NMM/Neorxna optional, third-party packages untouched, item IDs and v5/schema6
+  unchanged. Glove replacement currently covers first-person CS items and empty hands;
+  third-person gloves stay original. Preserve mesh-specific inverse binds, sleeve twist
+  synthesis and released grenade/C4 viewmodel guards. Source GLSL composition uses fixed
+  pattern offsets, not an asserted economy seed. See docs/release-firstperson-1.4.8.md
+  for diagnostic evidence, installation manifest and actual-game acceptance limits.
+
 - User-directed 2026-09-21: Full 1.4.7 / tactical 1.2.3 unifies ammunition,
   grenade, C4 and tactical recipes with station/help. Three/five enemy squad
   beacons are survival-craftable, single-use challenges; failed whole-squad

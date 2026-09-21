@@ -9,12 +9,13 @@ namespace Game;
 // Reimplement the interface, preserving NMM's concrete component type and its selection/save APIs.
 // In particular, SetResModel calls the nonvirtual NMM SetModel; observe model identity on every
 // update/animate instead of relying on interception of that call.
-public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoModel, IUpdateable {
+public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoModel, IUpdateable, IScFirstPersonAppearance {
     Model previousModel;
     bool active;
     CsPlayerPose pose;
     public static bool OwnsKey(string key) => key is "zh667.cs.ct" or "zh667.cs.t";
     public bool IsCs => OwnsKey(ModelKey);
+    public string FirstPersonRole => ModelKey == "zh667.cs.ct" ? "ct" : ModelKey == "zh667.cs.t" ? "t" : null;
     public CsPlayerPose Pose => pose;
 
     void IUpdateable.Update(float dt) { base.Update(dt); RefreshModel(); }

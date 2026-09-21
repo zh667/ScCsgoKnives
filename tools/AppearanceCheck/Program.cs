@@ -76,6 +76,7 @@ Window.Frame+=()=>{if(done)return;done=true;try{
     var controllerBefore=human.AnimationController;
     foreach(string key in new[]{"zh667.cs.ct","zh667.cs.t","fixture.default","zh667.cs.ct"}){
         Check("selection "+key,adapter.SetResModel(key));
+        Check("selected FPP role "+key,((IScFirstPersonAppearance)adapter).FirstPersonRole==(key=="zh667.cs.ct"?"ct":key=="zh667.cs.t"?"t":null));
         if(key=="fixture.default"){
             ((INeoModel)adapter).Animate();
             Check("restore vanilla bone references",human.m_bodyBone!=null&&human.m_hand1Bone!=null&&human.m_hand2Bone!=null);

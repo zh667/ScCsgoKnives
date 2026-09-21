@@ -75,6 +75,10 @@ public sealed class Cs2SkinnedMesh {
         ("arm_lower_L_TWIST1", "arm_lower_L", "hand_L", 1.0f),
         ("arm_lower_R_TWIST", "arm_lower_R", "hand_R", 0.5f),
         ("arm_lower_R_TWIST1", "arm_lower_R", "hand_R", 1.0f),
+        ("arm_upper_L_TWIST", "arm_upper_L", "arm_lower_L", 0.5f),
+        ("arm_upper_L_TWIST1", "arm_upper_L", "arm_lower_L", 1.0f),
+        ("arm_upper_R_TWIST", "arm_upper_R", "arm_lower_R", 0.5f),
+        ("arm_upper_R_TWIST1", "arm_upper_R", "arm_lower_R", 1.0f),
     ];
 
     const string Resource = "AnimationData.cs2_arms.skin";
@@ -138,7 +142,12 @@ public sealed class Cs2SkinnedMesh {
         string name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(resource, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Missing embedded {resource}.");
         using Stream stream = assembly.GetManifestResourceStream(name);
-        using BinaryReader reader = new(stream);
+        return ReadMesh(stream);
+    }
+
+    /// <summary>Load an optional DLC mesh without changing the built-in arms resource.</summary>
+    public static Cs2SkinnedMesh ReadMesh(Stream stream) {
+        using BinaryReader reader = new(stream, System.Text.Encoding.UTF8, leaveOpen:true);
         if (new string(reader.ReadChars(8)) != "SCK2SKIN") throw new InvalidDataException("bad magic");
         if (reader.ReadUInt32() != 2u) throw new InvalidDataException("unsupported version");
 
@@ -219,13 +228,13 @@ public sealed class Cs2SkinnedMesh {
         return false;
     }
 
-    static bool TryBone(Cs2Rig.Pose pose, string name, out Matrix absolute) {
+    bool TryBone(Cs2Rig.Pose pose, string name, out Matrix absolute) {
         if (pose.Bones.TryGetValue(name, out absolute)) return true;
         foreach ((string bone, string parent, string input, float weight) in Twist) {
             if (bone != name) continue;
             if (!pose.Bones.TryGetValue(parent, out Matrix parentAbsolute)
                 || !pose.Bones.TryGetValue(input, out Matrix inputAbsolute)) break;
-            Cs2SkinnedMesh mesh = s_arms;
+            Cs2SkinnedMesh mesh = this;
             int index = mesh is null ? -1 : Array.IndexOf(mesh.Joints, bone);
             int parentIndex = mesh is null ? -1 : Array.IndexOf(mesh.Joints, parent);
             if (index < 0 || parentIndex < 0) break;

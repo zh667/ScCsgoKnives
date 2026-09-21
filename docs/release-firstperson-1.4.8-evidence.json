@@ -1,0 +1,47 @@
+{
+  "packages": {
+    "[API1.9]CS武器1.4.8-作者ZH667-全量版.scmod": {
+      "sha256": "247d0b5ffe1931ebe734dd78e0e0254f395a1a297c59b0a5c57a87f029881351",
+      "bytes": 382819198,
+      "preservedResources": 1331,
+      "dlls": {
+        "ScCsgoKnives.dll": "c3fc51348780bd4a82700b138f042fdc762bf785441889aa36e0368a09125a36",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2"
+      }
+    },
+    "[API1.9]CS战术同伴拓展1.3.0-作者ZH667.scmod": {
+      "sha256": "6f3176fbf049801db3d82dafad25ee9180481d874c5217b774ea7ded791f47bc",
+      "bytes": 106830911,
+      "preservedResources": 27,
+      "dlls": {
+        "ScCsgoTactical.dll": "af45523b70e246fb324ff1477d284795f06daf6a82ed460d9afcbdcc8ec97768",
+        "Integrations/ScCsgoAppearance.bin": "aebf8e445905b5fd820f60c7d46a32bdcb39117891a0941dea94bd5521f79bf3"
+      }
+    }
+  },
+  "checks": {
+    "core": {
+      "count": 12689,
+      "failed": 0
+    },
+    "tactical": {
+      "count": 55,
+      "failed": 0
+    },
+    "armsNative": {
+      "passed": true,
+      "checks": 26527,
+      "samples": 1750,
+      "maxRadius": 1.2145653
+    },
+    "appearanceNative": {
+      "count": 7498,
+      "failed": 0
+    },
+    "optionalLoading": {
+      "runs": 18,
+      "failed": 0
+    }
+  },
+  "boundaries": "Packaged DLL checks and native GPU diagnostic; not full-game, Android or network acceptance."
+}

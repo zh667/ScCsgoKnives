@@ -95,7 +95,7 @@ public static class KnifePbrRenderer {
     public static float GunEnvFactor(int variant, string material) {
         // Arms/gloves are the SAME material regardless of the held item. They must not inherit
         // a weapon-specific gun/knife calibration and jump 4x brighter when switching items.
-        if (material is "cs2_arm" or "cs2_glove") return KnifeTuning.PbrGunEnvIntensity;
+        if (material is "cs2_arm" or "cs2_glove" || material?.StartsWith("tactical_arm_", StringComparison.Ordinal)==true) return KnifeTuning.PbrGunEnvIntensity;
         if (!CsmcKnifeRig.IsGun(variant)) return 1f;
         string asset = CsmcKnifeRig.GetAssetName(variant);
         // A finish must not switch the gun to a brighter studio environment. The old M4
@@ -108,7 +108,7 @@ public static class KnifePbrRenderer {
     /// for knives/grenades at night. All light still comes from the sampled scene intensity.</summary>
     public static float SceneEnvFactor(int variant, string material, float intensity) {
         float factor = GunEnvFactor(variant, material);
-        if (material is "cs2_arm" or "cs2_glove") return factor;
+        if (material is "cs2_arm" or "cs2_glove" || material?.StartsWith("tactical_arm_", StringComparison.Ordinal)==true) return factor;
         float daylight = Math.Clamp((intensity - .15f) / .55f, 0, 1);
         return MathUtils.Lerp(Math.Min(factor, KnifeTuning.PbrGunEnvIntensity), factor, daylight);
     }

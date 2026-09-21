@@ -8,9 +8,13 @@ public sealed record ScWorkbenchRecipe(string Key,string Name,string Category,Fu
     public int Value=>Output();
     public Dictionary<int,int> Materials()=>Cost();
 }
+public sealed record ScWorkbenchAction(string Key,string Name,string Category,Action<ComponentPlayer,Action> Open);
 public static class ScWorkbenchExtension {
     public const int ApiVersion=1;
     static readonly Dictionary<string,ScWorkbenchRecipe> Recipes=new(StringComparer.Ordinal);
+    static readonly Dictionary<string,ScWorkbenchAction> MenuActions=new(StringComparer.Ordinal);
+    public static IEnumerable<ScWorkbenchAction> Actions=>MenuActions.Values;
+    public static void RegisterAction(ScWorkbenchAction action)=>MenuActions[action.Key]=action;
     public static IEnumerable<ScWorkbenchRecipe> All=>Recipes.Values;
     public static void Register(ScWorkbenchRecipe recipe)=>Recipes[recipe.Key]=recipe;
     public static ScWorkbenchRecipe Find(int value) => Recipes.Values.FirstOrDefault(r => r.Matches?.Invoke(value) ?? Terrain.ReplaceLight(r.Value,0) == Terrain.ReplaceLight(value,0));

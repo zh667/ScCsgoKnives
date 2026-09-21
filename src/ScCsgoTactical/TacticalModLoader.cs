@@ -4,7 +4,7 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class TacticalModLoader : ModLoader {
-    public override void __ModInitialize(){TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
+    public override void __ModInitialize(){TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
     public override void OnProjectLoaded(GameEntitySystem.Project project)=>project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();
     public override void OnSaveSpawnData(ComponentSpawn spawn,SpawnEntityData data)=>SubsystemTacticalEnemies.SaveSpawn(spawn,data);
     public override void OnReadSpawnData(GameEntitySystem.Entity entity,SpawnEntityData data)=>SubsystemTacticalEnemies.ReadSpawn(entity,data);
@@ -24,7 +24,19 @@ public sealed class TacticalModLoader : ModLoader {
         }
     }
     public override void OnFirstPersonModelDrawing(ComponentFirstPersonModel first,Camera camera,int value,ref Matrix unused,out bool skip){
-        skip=false;if(!ScTacticalShieldBlock.IsShield(value))return;
+        skip=false;
+        // The core retains a released grenade/C4 until its viewmodel action ends.
+        // Do not draw empty hands over that still-visible action after the slot empties.
+        int presented=first.Project.FindSubsystem<SubsystemScC4>(false)?.ViewmodelValue(first.m_componentPlayer,value)??value;
+        presented=first.Project.FindSubsystem<SubsystemScGrenades>(false)?.ViewmodelValue(first.m_componentPlayer,presented)??presented;
+        if(presented==0&&TacticalArms.Resolve(first) is {Count:>0}){
+            var oldBlend=Display.BlendState;var oldDepth=Display.DepthStencilState;var oldRaster=Display.RasterizerState;var oldScissor=Display.ScissorRectangle;
+            try{Display.ScissorRectangle=ScCameraViewport.Clip(camera.ViewportSize,camera.ViewportMatrix,oldScissor);
+                skip=CsmcFirstPersonRenderer.DrawExtensionArms(first,camera,"default_t","idle",Matrix.CreateTranslation(0,-.08f,0)*unused);
+            }finally{Display.BlendState=oldBlend;Display.DepthStencilState=oldDepth;Display.RasterizerState=oldRaster;Display.ScissorRectangle=oldScissor;}
+            return;
+        }
+        if(!ScTacticalShieldBlock.IsShield(value))return;
         var blend=Display.BlendState;var depth=Display.DepthStencilState;var raster=Display.RasterizerState;var scissor=Display.ScissorRectangle;
         try{
             Display.ScissorRectangle=ScCameraViewport.Clip(camera.ViewportSize,camera.ViewportMatrix,scissor);
@@ -39,7 +51,8 @@ public sealed class TacticalModLoader : ModLoader {
             skip=true;
         }finally{Display.BlendState=blend;Display.DepthStencilState=depth;Display.RasterizerState=raster;Display.ScissorRectangle=scissor;}
     }
-    public override void OnLoadingFinished(List<Action> actions)=>actions.Add(SubsystemScTactical.RegisterRecipes);
+    public override void OnLoadingFinished(List<Action> actions)=>actions.Add(()=>{SubsystemScTactical.RegisterRecipes();TacticalArms.Register();});
+    public override void OnProjectDisposed()=>TacticalArms.Clear();
     public override void ProcessAttackment(Attackment attack){
         if(attack?.Target?.Project is {} project&&attack.AttackPower>0){var attacker=attack.Attacker?.FindComponent<ComponentBody>();
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);

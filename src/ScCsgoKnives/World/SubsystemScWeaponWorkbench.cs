@@ -3,7 +3,7 @@ namespace Game;
 
 public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     // Both game modes expose the same operations. Creative only changes their costs, not availability.
-    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScComponentCrafting.All, .. ScWeaponCrafting.All, .. ScWorkbenchExtension.All];
+    internal static object[] MainMenuItems() => [RepairMenu.Instance, SkinMenu.Instance, CounterMenu.Instance, OwnedAttributesMenu.Instance, AttributesMenu.Instance, .. ScWorkbenchExtension.Actions, .. ScComponentCrafting.All, .. ScWeaponCrafting.All, .. ScWorkbenchExtension.All];
     // A HUD toast is behind the workshop cover. Keep refusals visible until acknowledged.
     internal static Dialog NoticeDialog(string title, string detail, Action back) =>
         new ScWorkbenchConfirmDialog(title, detail, "返回", null, _ => back());
@@ -77,7 +77,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     : item is CounterMenu ? "安装击杀计数器" : item is CreativeLevelMenu ? "创造模式：设置快捷栏枪械等级"
                     : item is ScGunCounter.Candidate c ? $"{ValueName(c.Value)} · {(c.Installed ? $"当前 Lv{c.Level}" : "设置等级（自动安装计数器）")} · 第 {c.Slot + 1} 格"
                     : item is OwnedAttributesMenu ? "查看当前武器属性" : item is AttributesMenu ? "武器图鉴／等级预览"
-                    : item is ScWorkbenchRecipe extension ? extension.Name : item is ScComponentCrafting.Entry component ? component.Name : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+                    : item is ScWorkbenchAction action ? action.Name : item is ScWorkbenchRecipe extension ? extension.Name : item is ScComponentCrafting.Entry component ? component.Name : Name((ScWeaponCrafting.Entry)item) + Level((ScWeaponCrafting.Entry)item)), item => {
+                    if(item is ScWorkbenchAction action){action.Open(player,ShowList);return;}
                     if(item is ScWorkbenchRecipe) return; // extension recipes use the same direct craft button
                     if (item is ScComponentCrafting.Entry component) {
                         var cost = component.Materials();

@@ -32,8 +32,29 @@ static class TacticalRegression {
         Test("optional-package-identity-and-no-bundled-engine",()=>{
             var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
             var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
-            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.7"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.6")),"core dependency not enforced by engine");
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.8"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.7")),"core dependency not enforced by engine");
             Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
+        });
+        Test("glove-selection-player-isolation-and-xml",()=>{
+            var project=new Project();var terrain=new SubsystemTerrain{m_project=project};project.m_subsystems.Add(terrain);
+            var sub=(Subsystem)Activator.CreateInstance(T("SubsystemScTactical"));sub.m_project=project;sub.Load(new());
+            var set=T("SubsystemScTactical").GetMethod("SetGlove");var get=T("SubsystemScTactical").GetMethod("GloveFor");
+            set.Invoke(sub,[0,"sporty_green"]);set.Invoke(sub,[1,"slick_red"]);set.Invoke(sub,[0,"unknown"]);
+            for(int i=0;i<2;i++){
+                var data=new ValuesDictionary();sub.Save(data);sub=(Subsystem)Activator.CreateInstance(T("SubsystemScTactical"));sub.m_project=project;sub.Load(Round(data));
+                Require((string)get.Invoke(sub,[0])=="sporty_green"&&(string)get.Invoke(sub,[1])=="slick_red"&&(string)get.Invoke(sub,[2])=="","player selection leaked or lost");
+            }
+            set.Invoke(sub,[0,""]);Require((string)get.Invoke(sub,[0])==""&&(string)get.Invoke(sub,[1])=="slick_red","reset affects another player");
+        });
+        Test("glove-optional-default-is-original",()=>Require(Call("TacticalArms","ResolveSet",null,"")==null,"default replaced without selected role or gloves"));
+        Test("glove-original-cs2-assets-and-pbr-maps",()=>{
+            foreach(string key in new[]{"sporty_green","sporty_purple","specialist_kimono_diamonds_red","sporty_blue_pink","slick_red"})
+                foreach(string side in new[]{"left","right"})foreach(string suffix in new[]{"","_normal","_orm"})
+                    Require(Bytes($"Assets/Textures/ScCsgoKnives/tactical_arm_{key}_{side}{suffix}.png").Length>100,"missing glove map");
+            foreach(string name in new[]{"ct_default","t_default","ct_sleeves","t_sleeves","glove_sporty","glove_specialist","glove_slick"}){
+                var mesh=Call("TacticalArms","Mesh",name);var pose=C("Cs2Rig").GetMethod("Sample").Invoke(null,["ak47","reload",1.2f]);
+                Require((float)mesh.GetType().GetMethod("UnresolvedWeight").Invoke(mesh,[pose])<.001f,"weighted sleeve/glove bone missing: "+name);
+            }
         });
         foreach(string name in new[]{"ct","t","hostage","shield"})Test("native-gltf/"+name,()=>{
             using var stream=new MemoryStream(Bytes("Assets/Models/ScCsgoTactical/"+name+".glb"));var data=GltfLoader.Load(stream);

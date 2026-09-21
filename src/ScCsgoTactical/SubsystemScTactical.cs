@@ -3,6 +3,19 @@ using Engine.Input;
 namespace Game;
 
 public sealed class SubsystemScTactical : SubsystemBlockBehavior {
+    readonly Dictionary<int,string> gloves=[];
+    public string GloveFor(int player)=>gloves.GetValueOrDefault(player,"");
+    public void SetGlove(int player,string key){if(TacticalArms.ValidGlove(key))gloves[player]=key;}
+    public override void Load(TemplatesDatabase.ValuesDictionary values){
+        base.Load(values);
+        foreach(var pair in values.GetValue<TemplatesDatabase.ValuesDictionary>("PlayerGloves",new()))
+            if(int.TryParse(pair.Key,out int index)&&pair.Value is string key)gloves[index]=key;
+    }
+    public override void Save(TemplatesDatabase.ValuesDictionary values){
+        base.Save(values);var saved=new TemplatesDatabase.ValuesDictionary();
+        foreach(var p in gloves)saved.SetValue(p.Key.ToString(System.Globalization.CultureInfo.InvariantCulture),p.Value);
+        values.SetValue("PlayerGloves",saved);
+    }
     readonly HashSet<ComponentTacticalCompanion> companions=[];
     public IEnumerable<ComponentTacticalCompanion> Companions=>companions;
     public override void OnEntityAdded(GameEntitySystem.Entity entity){base.OnEntityAdded(entity);if(entity.FindComponent<ComponentTacticalCompanion>() is {} c)companions.Add(c);}

@@ -954,7 +954,7 @@ public static class CsmcFirstPersonRenderer {
             ScStatTrakRenderer.DrawFirstPerson(held, gun, native is not null, cs2, root,
                 projection, camera, variant, in lighting, light);
         }
-        DrawCs2Arms(cs2, post, projection, camera, in lighting, variant);
+        DrawCs2Arms(cs2, post, projection, camera, in lighting, variant, firstPerson);
 
         // Translucent, so after everything opaque it can sit in front of.
         if (lens is not null) DrawScopeLens(rigid, lens, lensWorld, projection, camera, in lighting, variant);
@@ -1334,9 +1334,9 @@ public static class CsmcFirstPersonRenderer {
     /// <summary>Optional item renderers reuse the real CS2 skinned hands without rendering a base-game weapon.</summary>
     public static bool DrawExtensionArms(ComponentFirstPersonModel firstPerson,Camera camera,string asset,string clip,Matrix post) {
         var pose=Cs2Rig.Sample(asset,clip,0);if(pose is null||Cs2SkinnedMesh.Arms is null)return false;
-        float light=LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight,0,15)];
+        float light=firstPerson.m_value==0?firstPerson.m_handLight:LightingManager.LightIntensityByLightValue[Math.Clamp(firstPerson.m_itemLight,0,15)];
         var lighting=KnifePbrRenderer.FirstPersonLighting(camera,light);
-        DrawCs2Arms(pose,post,Cs2Placement.Projection(camera),camera,in lighting,0);return true;
+        DrawCs2Arms(pose,post,Cs2Placement.Projection(camera),camera,in lighting,0,firstPerson);return true;
     }
     static double s_cs2SkinMillis;
     static int s_cs2SkinFrames;
@@ -1354,8 +1354,22 @@ public static class CsmcFirstPersonRenderer {
     /// rather than guessed.
     /// </summary>
     static void DrawCs2Arms(Cs2Rig.Pose pose, Matrix post, Matrix projection, Camera camera,
-        in KnifePbrRenderer.Lighting lighting, int variant) {
+        in KnifePbrRenderer.Lighting lighting, int variant, ComponentFirstPersonModel firstPerson) {
         if (KnifeTuning.Cs2Arms < 0.5f) return;
+        var custom = ScFirstPersonAppearance.Resolve?.Invoke(firstPerson);
+        if (custom is { Count: > 0 }) {
+            foreach (var layer in custom) {
+                if (!layer.Mesh.SetPose(pose, Cs2Placement.Placement())) continue;
+                layer.Mesh.Skin();
+                for (int i=0;i<layer.Mesh.Primitives.Length;i++) {
+                    if (layer.Textures[i] is null) continue;
+                    if(!KnifePbrRenderer.TryDrawSkinned(layer.Mesh.Skinned,layer.Mesh.Primitives[i].Indices,
+                        layer.Textures[i],layer.Materials[i],post,projection,camera.InvertedViewMatrix,in lighting,variant))
+                        ScSimpleWeaponRenderer.DrawMesh(layer.Mesh.Skinned,layer.Mesh.Primitives[i].Indices,layer.Textures[i],post,projection,in lighting,0,false);
+                }
+            }
+            return;
+        }
         Cs2SkinnedMesh mesh = Cs2SkinnedMesh.Arms;
         if (mesh is null) return;
         s_cs2ArmBase ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_arm");

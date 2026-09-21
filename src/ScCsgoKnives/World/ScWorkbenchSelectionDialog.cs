@@ -95,7 +95,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         foreach(int n in new[]{1,10,100}){var b=ScGunUi.Button(n.ToString(),52);m_quick.Add((n,b));Children.Add(b);}
         Filter("全部");
     }
-    static string CategoryOf(object item) => item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
+    static string CategoryOf(object item) => item is ScWorkbenchAction action ? action.Category : item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
         ScGunDurability.Class.Pistol=>"手枪",ScGunDurability.Class.Smg=>"冲锋枪",ScGunDurability.Class.Rifle=>"步枪",
         ScGunDurability.Class.Shotgun=>"霰弹枪",ScGunDurability.Class.BoltSniper or ScGunDurability.Class.AutoSniper=>"狙击枪",
         ScGunDurability.Class.MachineGun=>"机枪",_=>"电击枪"
