@@ -1,5 +1,14 @@
 # Project conventions
 
+- User-directed 2026-09-24 follow-up supersedes the ZIP delivery shape: deliver
+  Full/Lite as one directly importable scmod each. Bundle metadata is 1.5.1;
+  core/tactical gameplay stays at verified 1.5.0/1.4.0 bytes. ScCsgoBundle is a small
+  identity adapter: register an archive-free tactical identity only after native
+  loading, preserve UsedMods and refuse a duplicate standalone tactical mod.
+  Do not inject aliases during assembly enumeration or duplicate hooks/resources.
+  Lite additionally uses lossless standard Deflate recompression, no extra quality loss.
+  See docs/release-single-1.5.1.md; no installation or world edits are authorized.
+
 - User-directed 2026-09-24 release: package Full and Lite comprehensive ZIP bundles,
   each containing current core and tactical scmods (including built-in appearance).
   Packaging is now authorized; installation is not. Preserve both PackageNames,

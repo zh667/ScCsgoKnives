@@ -18,6 +18,11 @@ static class OptimizationRegression {
             using var provenance=System.Text.Json.JsonDocument.Parse(provenanceStream);
             var expected=provenance.RootElement.EnumerateArray().Where(r=>r.GetProperty("kind").GetString()=="texture")
                 .Select(r=>r.GetProperty("path").GetString().Replace(".png",".webp")).Order().ToArray();
+            if(zip.GetEntry("Assets/ScCsgoTacticalDerivedResources.json") is {} tacticalEntry){
+                using var tacticalStream=tacticalEntry.Open();using var tactical=System.Text.Json.JsonDocument.Parse(tacticalStream);
+                expected=expected.Concat(tactical.RootElement.EnumerateArray().Where(r=>r.GetProperty("kind").GetString()=="texture")
+                    .Select(r=>r.GetProperty("path").GetString().Replace(".png",".webp"))).Order().ToArray();
+            }
             Check("texture-count-and-format",images.Select(e=>e.FullName).Order().SequenceEqual(expected)
                 && images.All(e=>e.Name.EndsWith(".webp")));
             foreach (var entry in images) {

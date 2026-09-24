@@ -1,0 +1,219 @@
+{
+  "packages": {
+    "Full": {
+      "path": "[API1.9]CS武器1.5.1-作者ZH667-全量总包.scmod",
+      "bytes": 491121202,
+      "sha256": "64b9bb79518424a8ebf02bc5b9c9ca94e8ab69503a5c04d26ee284ac711ca762",
+      "entries": 1422,
+      "membership": {
+        "version": "1.5.1",
+        "core": "1.5.0",
+        "tactical": "1.4.0",
+        "edition": "Full",
+        "sourcePackages": [
+          {
+            "path": "[API1.9]CS武器1.5.0-作者ZH667-全量版.scmod",
+            "sha256": "95c339e2aa68b4df2cf4f9068b8bbf5d45143971c7d58f758447c43d39cb5107"
+          },
+          {
+            "path": "[API1.9]CS战术同伴拓展1.4.0-作者ZH667.scmod",
+            "sha256": "d51915401082c1d32541d45e1a56866d4b2d2a8d989faa239d96b3c25142bec7"
+          }
+        ]
+      },
+      "compressionSources": [
+        "[API1.9]CS武器1.5.0-作者ZH667-全量版.scmod",
+        "[API1.9]CS战术同伴拓展1.4.0-作者ZH667.scmod"
+      ],
+      "gameplayDlls": {
+        "ScCsgoKnives.dll": "89d2964dc136ad46ddf27cfd057dcfc6ad1dca69234b07f9cedeb44db87203b4",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553",
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43"
+      }
+    },
+    "Lite": {
+      "path": "[API1.9]CS武器1.5.1-作者ZH667-512轻量总包.scmod",
+      "bytes": 88433760,
+      "sha256": "eff0cb4df8e00d9b69b33710a0e17a4c055581c15a6e55fc8b66c1a303fe82f0",
+      "entries": 1424,
+      "membership": {
+        "version": "1.5.1",
+        "core": "1.5.0",
+        "tactical": "1.4.0",
+        "edition": "Lite",
+        "sourcePackages": [
+          {
+            "path": "[API1.9]CS武器1.5.0-作者ZH667-512轻量版.scmod",
+            "sha256": "5d798f301819071674c59c0dd735ecbc409eaf5c57b8814b07b0b2c9ceacafeb"
+          },
+          {
+            "path": "[API1.9]CS战术同伴拓展1.4.0-作者ZH667-512轻量版.scmod",
+            "sha256": "730e81f85916b57898aa8c151f0b0513b6d784ef9470862f495d692b19ab15b6"
+          }
+        ]
+      },
+      "compressionSources": [
+        "[API1.9]CS武器1.5.0-作者ZH667-512轻量版.scmod",
+        "[API1.9]CS战术同伴拓展1.4.0-作者ZH667-512轻量版.scmod"
+      ],
+      "gameplayDlls": {
+        "ScCsgoKnives.dll": "89d2964dc136ad46ddf27cfd057dcfc6ad1dca69234b07f9cedeb44db87203b4",
+        "ScCsgoResources.dll": "1a0fdc9759428ed8a4cf635c0b7a316b3d29f47cea96ef04433c1c1a958352d4",
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43"
+      }
+    }
+  },
+  "checks": {
+    "nativeArchiveFull": {
+      "count": 1422,
+      "failed": 0,
+      "nativeReader": "Game.ZipArchive"
+    },
+    "nativeArchiveLite": {
+      "count": 1424,
+      "failed": 0,
+      "nativeReader": "Game.ZipArchive"
+    },
+    "core-full": {
+      "count": 12224,
+      "failed": 0,
+      "reportSha256": "1ea7f096d1bbb026fbeff007538c3d5728f442949541d39040b27e91708007a1"
+    },
+    "core-lite": {
+      "count": 12937,
+      "failed": 0,
+      "reportSha256": "98cb4fd28c13338745f1407a558075cfa2ad6bb808506824004d85c884277eed"
+    },
+    "tactical-full": {
+      "count": 56,
+      "failed": 0,
+      "reportSha256": "1f1249b3691f77552f1b3936a6b6a61465e178faf696ae969a56774a5c03b77c"
+    },
+    "tactical-lite": {
+      "count": 56,
+      "failed": 0,
+      "reportSha256": "6ee5b61f32093d309a91bf78aff1bf8809da7eafc89131c13dbf52572b9224ac"
+    },
+    "nativeLoading": [
+      {
+        "report": "load-Full-both.json",
+        "count": 20,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-disabled.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-legacy.json",
+        "count": 20,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-neo-only.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-nmm-only.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-none.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-outdated.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-reload-disabled.json",
+        "count": 21,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-reversed.json",
+        "count": 20,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-both.json",
+        "count": 20,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-disabled.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-legacy.json",
+        "count": 20,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-neo-only.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-nmm-only.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-none.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-outdated.json",
+        "count": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-reload-disabled.json",
+        "count": 21,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-reversed.json",
+        "count": 20,
+        "failed": 0
+      }
+    ]
+  },
+  "compression": {
+    "bytesBefore": 94259944,
+    "bytesAfter": 88480466,
+    "packages": [
+      {
+        "path": "[API1.9]CS武器1.5.0-作者ZH667-512轻量版.scmod",
+        "bytesBefore": 70818796,
+        "bytesAfter": 65909846,
+        "sha256": "2c9fce037affee05dfaf9344e86b6896dbb1d417626d06cdf83cefd6fc4b5123",
+        "identicalPayloadFiles": 1337
+      },
+      {
+        "path": "[API1.9]CS战术同伴拓展1.4.0-作者ZH667-512轻量版.scmod",
+        "bytesBefore": 23441148,
+        "bytesAfter": 22570620,
+        "sha256": "dfcb2f8d10fa867025dcd2e5185f02f9edbfb4ff969697c65789b47fcc31c512",
+        "identicalPayloadFiles": 84
+      }
+    ],
+    "algorithm": "standard ZIP Deflate; 7-Zip mx9/fb258/pass15; all uncompressed member bytes identical"
+  },
+  "previousZipBytes": 94263117,
+  "savedBytes": 5829357,
+  "previousMigrationEvidence": "release-bundle-1.5.0-evidence.json; identical core DLL, 28627 previous checks (not rerun here)",
+  "boundaries": "Native archive/load/UsedMods serialization and packaged-DLL regressions; no actual world edits, installation, complete game, Android or network acceptance."
+}
