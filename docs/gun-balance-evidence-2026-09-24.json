@@ -1,7 +1,8 @@
 {
   "date": "2026-09-24",
+  "planning_revision": 2,
   "source_commit": "c8ed78925a3fcf13e05b93d65f79e9933be73c62",
-  "scope": "Planning model derived from source, not executed gameplay; rate factor 0.65; linear repair tiers; Zeus assumes recharge also divided by 0.65",
+  "scope": "Unimplemented proposal v2: rate factor 0.65, auto-snipers additionally x0.75 with base power 24; shotgun additive early bonus tapers to zero at Lv20; linear repair tiers; Zeus recharge divided by 0.65; DPS assumes all pellets at close range",
   "sources": {
     "src\\ScCsgoKnives\\Rendering\\GunSpec.cs": "05bf7e0a5239aa9436badbbe579237cc092e14cf943b8547f3aba003d1d9072d",
     "src\\ScCsgoKnives\\World\\ScGunGrowth.cs": "9d73f47aa4268d3eafb5892a20fdd21a5023dff967225349e2b650dd9f2d7272",
@@ -9,7 +10,13 @@
     "src\\ScCsgoKnives\\World\\ScWeaponCrafting.cs": "0e8fa02d46ac5179430f2811a3e106629032d3ddc2d72853ac548b14687f4970",
     "src\\ScCsgoKnives\\World\\ScWeaponRepair.cs": "024883d61b4bee27d66e63a16d7cdb3c22f18b291f9e4a561c7e14a6aac69159",
     "src\\ScCsgoKnives\\World\\ScComponentCrafting.cs": "bf8406035e51c7809a30e4625afc2cd132cad50fda55cf759647cf1a3055f4c3",
-    "src\\ScCsgoKnives\\World\\ScGunSkinCatalog.cs": "f43dba9e35f9b53765ee278969b0599546a7043ff14c06235af26a7506cb923b"
+    "src\\ScCsgoKnives\\World\\ScGunSkinCatalog.cs": "f43dba9e35f9b53765ee278969b0599546a7043ff14c06235af26a7506cb923b",
+    "src\\ScCsgoKnives\\AnimationData\\gun_handling.json": "c3e8e9abbbd64e145ce66d1ab4eb9c332b4cdb2a2f24b92980d4d56318137098",
+    "src\\ScCsgoKnives\\World\\SubsystemScGunBlockBehavior.cs": "374a807767948103cc13864bc6c4967d9f4eabad0439780e80de3eda22466b50",
+    "src\\ScCsgoKnives\\World\\ScGrenadeState.cs": "4a9d4a700de5be794da25089ac180349d4b11451b2383a614216425c11d366f5",
+    "src\\ScCsgoKnives\\World\\ScFireArea.cs": "314c17ea250b542865e5eac7a4dea7a906d072f56a886d5d86fc8248a7c0e571",
+    "src\\ScCsgoKnives\\World\\SubsystemScGrenades.cs": "ed9c72fec7db248e70fe63539ee3358682128d161eb6e111ccd833451c343152",
+    "src\\ScCsgoKnives\\World\\ScWorkbenchExtension.cs": "25085d3427ac9b54bdfe956a19978fc2d93215f77e485200ac1deb0ebfbecfbc"
   },
   "mods": [
     {
@@ -1144,6 +1151,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.1,
       "base_power": 15.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 1500,
       "current_assembly": [
@@ -1196,6 +1205,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 15.0,
           "power": 15.0,
           "skin_power": 22.5,
           "capacity": 30,
@@ -1211,6 +1221,7 @@
           "old_rpm": 660.0,
           "new_rpm": 429.0,
           "new_interval": 0.13986013986013987,
+          "old_power": 30.0,
           "power": 30.0,
           "skin_power": 45.0,
           "capacity": 45,
@@ -1226,6 +1237,7 @@
           "old_rpm": 720.0,
           "new_rpm": 468.0,
           "new_interval": 0.1282051282051282,
+          "old_power": 52.5,
           "power": 52.5,
           "skin_power": 78.75,
           "capacity": 60,
@@ -1241,6 +1253,7 @@
           "old_rpm": 780.0,
           "new_rpm": 507.0,
           "new_interval": 0.11834319526627218,
+          "old_power": 82.5,
           "power": 82.5,
           "skin_power": 123.75,
           "capacity": 90,
@@ -1256,6 +1269,7 @@
           "old_rpm": 840.0,
           "new_rpm": 546.0,
           "new_interval": 0.10989010989010989,
+          "old_power": 112.5,
           "power": 112.5,
           "skin_power": 168.75,
           "capacity": 135,
@@ -1271,6 +1285,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 150.0,
           "power": 150.0,
           "skin_power": 225.0,
           "capacity": 195,
@@ -1288,6 +1303,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.1,
       "base_power": 15.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 20,
       "base_durability": 1500,
       "current_assembly": [
@@ -1340,6 +1357,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 15.0,
           "power": 15.0,
           "skin_power": 22.5,
           "capacity": 20,
@@ -1355,6 +1373,7 @@
           "old_rpm": 660.0,
           "new_rpm": 429.0,
           "new_interval": 0.13986013986013987,
+          "old_power": 30.0,
           "power": 30.0,
           "skin_power": 45.0,
           "capacity": 30,
@@ -1370,6 +1389,7 @@
           "old_rpm": 720.0,
           "new_rpm": 468.0,
           "new_interval": 0.1282051282051282,
+          "old_power": 52.5,
           "power": 52.5,
           "skin_power": 78.75,
           "capacity": 40,
@@ -1385,6 +1405,7 @@
           "old_rpm": 780.0,
           "new_rpm": 507.0,
           "new_interval": 0.11834319526627218,
+          "old_power": 82.5,
           "power": 82.5,
           "skin_power": 123.75,
           "capacity": 60,
@@ -1400,6 +1421,7 @@
           "old_rpm": 840.0,
           "new_rpm": 546.0,
           "new_interval": 0.10989010989010989,
+          "old_power": 112.5,
           "power": 112.5,
           "skin_power": 168.75,
           "capacity": 90,
@@ -1415,6 +1437,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 150.0,
           "power": 150.0,
           "skin_power": 225.0,
           "capacity": 130,
@@ -1432,6 +1455,8 @@
       "weapon_class": "BoltSniper",
       "base_cycle_seconds": 1.455,
       "base_power": 57.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 5,
       "base_durability": 200,
       "current_assembly": [
@@ -1484,6 +1509,7 @@
           "old_rpm": 41.23711340206185,
           "new_rpm": 26.804123711340203,
           "new_interval": 2.2384615384615385,
+          "old_power": 57.0,
           "power": 57.0,
           "skin_power": 85.5,
           "capacity": 5,
@@ -1499,6 +1525,7 @@
           "old_rpm": 41.23711340206185,
           "new_rpm": 26.804123711340203,
           "new_interval": 2.2384615384615385,
+          "old_power": 114.0,
           "power": 114.0,
           "skin_power": 171.0,
           "capacity": 7,
@@ -1514,6 +1541,7 @@
           "old_rpm": 61.85567010309278,
           "new_rpm": 40.20618556701031,
           "new_interval": 1.4923076923076923,
+          "old_power": 199.5,
           "power": 199.5,
           "skin_power": 299.25,
           "capacity": 10,
@@ -1529,6 +1557,7 @@
           "old_rpm": 82.4742268041237,
           "new_rpm": 53.60824742268041,
           "new_interval": 1.1192307692307693,
+          "old_power": 313.5,
           "power": 313.5,
           "skin_power": 470.25,
           "capacity": 15,
@@ -1544,6 +1573,7 @@
           "old_rpm": 113.4020618556701,
           "new_rpm": 73.71134020618557,
           "new_interval": 0.813986013986014,
+          "old_power": 427.5,
           "power": 427.5,
           "skin_power": 641.25,
           "capacity": 22,
@@ -1559,6 +1589,7 @@
           "old_rpm": 144.3298969072165,
           "new_rpm": 93.81443298969073,
           "new_interval": 0.6395604395604395,
+          "old_power": 570.0,
           "power": 570.0,
           "skin_power": 855.0,
           "capacity": 32,
@@ -1576,6 +1607,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.225,
       "base_power": 21.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 7,
       "base_durability": 1200,
       "current_assembly": [
@@ -1628,6 +1661,7 @@
           "old_rpm": 266.6666666666667,
           "new_rpm": 173.33333333333334,
           "new_interval": 0.34615384615384615,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 7,
@@ -1643,6 +1677,7 @@
           "old_rpm": 293.33333333333337,
           "new_rpm": 190.66666666666669,
           "new_interval": 0.31468531468531463,
+          "old_power": 42.0,
           "power": 42.0,
           "skin_power": 63.0,
           "capacity": 10,
@@ -1658,6 +1693,7 @@
           "old_rpm": 320.0,
           "new_rpm": 208.0,
           "new_interval": 0.28846153846153844,
+          "old_power": 73.5,
           "power": 73.5,
           "skin_power": 110.25,
           "capacity": 14,
@@ -1673,6 +1709,7 @@
           "old_rpm": 346.6666666666667,
           "new_rpm": 225.33333333333334,
           "new_interval": 0.2662721893491124,
+          "old_power": 115.5,
           "power": 115.5,
           "skin_power": 173.25,
           "capacity": 21,
@@ -1688,6 +1725,7 @@
           "old_rpm": 373.3333333333333,
           "new_rpm": 242.66666666666666,
           "new_interval": 0.24725274725274726,
+          "old_power": 157.5,
           "power": 157.5,
           "skin_power": 236.25,
           "capacity": 31,
@@ -1703,6 +1741,7 @@
           "old_rpm": 400.0,
           "new_rpm": 260.0,
           "new_interval": 0.23076923076923078,
+          "old_power": 210.0,
           "power": 210.0,
           "skin_power": 315.0,
           "capacity": 45,
@@ -1720,6 +1759,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.15,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 20,
       "base_durability": 1200,
       "current_assembly": [
@@ -1772,6 +1813,7 @@
           "old_rpm": 400.0,
           "new_rpm": 260.0,
           "new_interval": 0.23076923076923078,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 20,
@@ -1787,6 +1829,7 @@
           "old_rpm": 440.00000000000006,
           "new_rpm": 286.00000000000006,
           "new_interval": 0.20979020979020974,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 30,
@@ -1802,6 +1845,7 @@
           "old_rpm": 480.0,
           "new_rpm": 312.0,
           "new_interval": 0.19230769230769232,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 40,
@@ -1817,6 +1861,7 @@
           "old_rpm": 520.0,
           "new_rpm": 338.0,
           "new_interval": 0.17751479289940827,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 60,
@@ -1832,6 +1877,7 @@
           "old_rpm": 560.0,
           "new_rpm": 364.0,
           "new_interval": 0.16483516483516483,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 90,
@@ -1847,6 +1893,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 130,
@@ -1864,6 +1911,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.17,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 12,
       "base_durability": 1200,
       "current_assembly": [
@@ -1916,6 +1965,7 @@
           "old_rpm": 352.94117647058823,
           "new_rpm": 229.41176470588235,
           "new_interval": 0.26153846153846155,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 12,
@@ -1931,6 +1981,7 @@
           "old_rpm": 388.2352941176471,
           "new_rpm": 252.3529411764706,
           "new_interval": 0.23776223776223773,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 18,
@@ -1946,6 +1997,7 @@
           "old_rpm": 423.52941176470586,
           "new_rpm": 275.29411764705884,
           "new_interval": 0.21794871794871792,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 24,
@@ -1961,6 +2013,7 @@
           "old_rpm": 458.8235294117647,
           "new_rpm": 298.2352941176471,
           "new_interval": 0.20118343195266272,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 36,
@@ -1976,6 +2029,7 @@
           "old_rpm": 494.1176470588235,
           "new_rpm": 321.17647058823525,
           "new_interval": 0.18681318681318684,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 54,
@@ -1991,6 +2045,7 @@
           "old_rpm": 529.4117647058823,
           "new_rpm": 344.11764705882354,
           "new_interval": 0.17435897435897435,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 78,
@@ -2008,6 +2063,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.09,
       "base_power": 15.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 1500,
       "current_assembly": [
@@ -2060,6 +2117,7 @@
           "old_rpm": 666.6666666666667,
           "new_rpm": 433.33333333333337,
           "new_interval": 0.13846153846153844,
+          "old_power": 15.0,
           "power": 15.0,
           "skin_power": 22.5,
           "capacity": 30,
@@ -2075,6 +2133,7 @@
           "old_rpm": 733.3333333333335,
           "new_rpm": 476.6666666666668,
           "new_interval": 0.12587412587412583,
+          "old_power": 30.0,
           "power": 30.0,
           "skin_power": 45.0,
           "capacity": 45,
@@ -2090,6 +2149,7 @@
           "old_rpm": 800.0000000000001,
           "new_rpm": 520.0000000000001,
           "new_interval": 0.11538461538461536,
+          "old_power": 52.5,
           "power": 52.5,
           "skin_power": 78.75,
           "capacity": 60,
@@ -2105,6 +2165,7 @@
           "old_rpm": 866.6666666666667,
           "new_rpm": 563.3333333333334,
           "new_interval": 0.10650887573964496,
+          "old_power": 82.5,
           "power": 82.5,
           "skin_power": 123.75,
           "capacity": 90,
@@ -2120,6 +2181,7 @@
           "old_rpm": 933.3333333333334,
           "new_rpm": 606.6666666666667,
           "new_interval": 0.09890109890109888,
+          "old_power": 112.5,
           "power": 112.5,
           "skin_power": 168.75,
           "capacity": 135,
@@ -2135,6 +2197,7 @@
           "old_rpm": 1000.0000000000001,
           "new_rpm": 650.0000000000001,
           "new_interval": 0.09230769230769229,
+          "old_power": 150.0,
           "power": 150.0,
           "skin_power": 225.0,
           "capacity": 195,
@@ -2152,6 +2215,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.09,
       "base_power": 13.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 25,
       "base_durability": 1500,
       "current_assembly": [
@@ -2204,6 +2269,7 @@
           "old_rpm": 666.6666666666667,
           "new_rpm": 433.33333333333337,
           "new_interval": 0.13846153846153844,
+          "old_power": 13.5,
           "power": 13.5,
           "skin_power": 20.25,
           "capacity": 25,
@@ -2219,6 +2285,7 @@
           "old_rpm": 733.3333333333335,
           "new_rpm": 476.6666666666668,
           "new_interval": 0.12587412587412583,
+          "old_power": 27.0,
           "power": 27.0,
           "skin_power": 40.5,
           "capacity": 37,
@@ -2234,6 +2301,7 @@
           "old_rpm": 800.0000000000001,
           "new_rpm": 520.0000000000001,
           "new_interval": 0.11538461538461536,
+          "old_power": 47.25,
           "power": 47.25,
           "skin_power": 70.875,
           "capacity": 50,
@@ -2249,6 +2317,7 @@
           "old_rpm": 866.6666666666667,
           "new_rpm": 563.3333333333334,
           "new_interval": 0.10650887573964496,
+          "old_power": 74.25,
           "power": 74.25,
           "skin_power": 111.375,
           "capacity": 75,
@@ -2264,6 +2333,7 @@
           "old_rpm": 933.3333333333334,
           "new_rpm": 606.6666666666667,
           "new_interval": 0.09890109890109888,
+          "old_power": 101.25,
           "power": 101.25,
           "skin_power": 151.875,
           "capacity": 112,
@@ -2279,6 +2349,7 @@
           "old_rpm": 1000.0000000000001,
           "new_rpm": 650.0000000000001,
           "new_interval": 0.09230769230769229,
+          "old_power": 135.0,
           "power": 135.0,
           "skin_power": 202.5,
           "capacity": 162,
@@ -2296,6 +2367,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.07,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 2000,
       "current_assembly": [
@@ -2348,6 +2421,7 @@
           "old_rpm": 857.1428571428571,
           "new_rpm": 557.1428571428571,
           "new_interval": 0.1076923076923077,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 30,
@@ -2363,6 +2437,7 @@
           "old_rpm": 942.8571428571429,
           "new_rpm": 612.8571428571429,
           "new_interval": 0.0979020979020979,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 45,
@@ -2378,6 +2453,7 @@
           "old_rpm": 1028.5714285714284,
           "new_rpm": 668.5714285714286,
           "new_interval": 0.08974358974358974,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 60,
@@ -2393,6 +2469,7 @@
           "old_rpm": 1114.2857142857142,
           "new_rpm": 724.2857142857142,
           "new_interval": 0.08284023668639054,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 90,
@@ -2408,6 +2485,7 @@
           "old_rpm": 1199.9999999999998,
           "new_rpm": 779.9999999999999,
           "new_interval": 0.07692307692307694,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 135,
@@ -2423,6 +2501,7 @@
           "old_rpm": 1285.7142857142858,
           "new_rpm": 835.7142857142858,
           "new_interval": 0.07179487179487179,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 195,
@@ -2440,6 +2519,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.07,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 50,
       "base_durability": 2000,
       "current_assembly": [
@@ -2492,6 +2573,7 @@
           "old_rpm": 857.1428571428571,
           "new_rpm": 557.1428571428571,
           "new_interval": 0.1076923076923077,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 50,
@@ -2507,6 +2589,7 @@
           "old_rpm": 942.8571428571429,
           "new_rpm": 612.8571428571429,
           "new_interval": 0.0979020979020979,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 75,
@@ -2522,6 +2605,7 @@
           "old_rpm": 1028.5714285714284,
           "new_rpm": 668.5714285714286,
           "new_interval": 0.08974358974358974,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 100,
@@ -2537,6 +2621,7 @@
           "old_rpm": 1114.2857142857142,
           "new_rpm": 724.2857142857142,
           "new_interval": 0.08284023668639054,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 150,
@@ -2552,6 +2637,7 @@
           "old_rpm": 1199.9999999999998,
           "new_rpm": 779.9999999999999,
           "new_interval": 0.07692307692307694,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 225,
@@ -2567,6 +2653,7 @@
           "old_rpm": 1285.7142857142858,
           "new_rpm": 835.7142857142858,
           "new_interval": 0.07179487179487179,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 325,
@@ -2584,6 +2671,8 @@
       "weapon_class": "BoltSniper",
       "base_cycle_seconds": 1.25,
       "base_power": 39.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 10,
       "base_durability": 200,
       "current_assembly": [
@@ -2636,6 +2725,7 @@
           "old_rpm": 48.0,
           "new_rpm": 31.200000000000003,
           "new_interval": 1.923076923076923,
+          "old_power": 39.0,
           "power": 39.0,
           "skin_power": 58.5,
           "capacity": 10,
@@ -2651,6 +2741,7 @@
           "old_rpm": 48.0,
           "new_rpm": 31.200000000000003,
           "new_interval": 1.923076923076923,
+          "old_power": 78.0,
           "power": 78.0,
           "skin_power": 117.0,
           "capacity": 15,
@@ -2666,6 +2757,7 @@
           "old_rpm": 72.0,
           "new_rpm": 46.800000000000004,
           "new_interval": 1.282051282051282,
+          "old_power": 136.5,
           "power": 136.5,
           "skin_power": 204.75,
           "capacity": 20,
@@ -2681,6 +2773,7 @@
           "old_rpm": 96.0,
           "new_rpm": 62.400000000000006,
           "new_interval": 0.9615384615384615,
+          "old_power": 214.5,
           "power": 214.5,
           "skin_power": 321.75,
           "capacity": 30,
@@ -2696,6 +2789,7 @@
           "old_rpm": 132.0,
           "new_rpm": 85.8,
           "new_interval": 0.6993006993006993,
+          "old_power": 292.5,
           "power": 292.5,
           "skin_power": 438.75,
           "capacity": 45,
@@ -2711,6 +2805,7 @@
           "old_rpm": 168.0,
           "new_rpm": 109.2,
           "new_interval": 0.5494505494505494,
+          "old_power": 390.0,
           "power": 390.0,
           "skin_power": 585.0,
           "capacity": 65,
@@ -2728,6 +2823,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.15,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 20,
       "base_durability": 1200,
       "current_assembly": [
@@ -2780,6 +2877,7 @@
           "old_rpm": 400.0,
           "new_rpm": 260.0,
           "new_interval": 0.23076923076923078,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 20,
@@ -2795,6 +2893,7 @@
           "old_rpm": 440.00000000000006,
           "new_rpm": 286.00000000000006,
           "new_interval": 0.20979020979020974,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 30,
@@ -2810,6 +2909,7 @@
           "old_rpm": 480.0,
           "new_rpm": 312.0,
           "new_interval": 0.19230769230769232,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 40,
@@ -2825,6 +2925,7 @@
           "old_rpm": 520.0,
           "new_rpm": 338.0,
           "new_interval": 0.17751479289940827,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 60,
@@ -2840,6 +2941,7 @@
           "old_rpm": 560.0,
           "new_rpm": 364.0,
           "new_interval": 0.16483516483516483,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 90,
@@ -2855,6 +2957,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 130,
@@ -2872,6 +2975,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.17,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 13,
       "base_durability": 1200,
       "current_assembly": [
@@ -2924,6 +3029,7 @@
           "old_rpm": 352.94117647058823,
           "new_rpm": 229.41176470588235,
           "new_interval": 0.26153846153846155,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 13,
@@ -2939,6 +3045,7 @@
           "old_rpm": 388.2352941176471,
           "new_rpm": 252.3529411764706,
           "new_interval": 0.23776223776223773,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 19,
@@ -2954,6 +3061,7 @@
           "old_rpm": 423.52941176470586,
           "new_rpm": 275.29411764705884,
           "new_interval": 0.21794871794871792,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 26,
@@ -2969,6 +3077,7 @@
           "old_rpm": 458.8235294117647,
           "new_rpm": 298.2352941176471,
           "new_interval": 0.20118343195266272,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 39,
@@ -2984,6 +3093,7 @@
           "old_rpm": 494.1176470588235,
           "new_rpm": 321.17647058823525,
           "new_interval": 0.18681318681318684,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 58,
@@ -2999,6 +3109,7 @@
           "old_rpm": 529.4117647058823,
           "new_rpm": 344.11764705882354,
           "new_interval": 0.17435897435897435,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 84,
@@ -3016,6 +3127,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.15,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 13,
       "base_durability": 1200,
       "current_assembly": [
@@ -3068,6 +3181,7 @@
           "old_rpm": 400.0,
           "new_rpm": 260.0,
           "new_interval": 0.23076923076923078,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 13,
@@ -3083,6 +3197,7 @@
           "old_rpm": 440.00000000000006,
           "new_rpm": 286.00000000000006,
           "new_interval": 0.20979020979020974,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 19,
@@ -3098,6 +3213,7 @@
           "old_rpm": 480.0,
           "new_rpm": 312.0,
           "new_interval": 0.19230769230769232,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 26,
@@ -3113,6 +3229,7 @@
           "old_rpm": 520.0,
           "new_rpm": 338.0,
           "new_interval": 0.17751479289940827,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 39,
@@ -3128,6 +3245,7 @@
           "old_rpm": 560.0,
           "new_rpm": 364.0,
           "new_interval": 0.16483516483516483,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 58,
@@ -3143,6 +3261,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 84,
@@ -3160,6 +3279,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.12,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 18,
       "base_durability": 1200,
       "current_assembly": [
@@ -3212,6 +3333,7 @@
           "old_rpm": 500.0,
           "new_rpm": 325.0,
           "new_interval": 0.18461538461538463,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 18,
@@ -3227,6 +3349,7 @@
           "old_rpm": 550.0,
           "new_rpm": 357.5,
           "new_interval": 0.16783216783216784,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 27,
@@ -3242,6 +3365,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 36,
@@ -3257,6 +3381,7 @@
           "old_rpm": 650.0,
           "new_rpm": 422.5,
           "new_interval": 0.14201183431952663,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 54,
@@ -3272,6 +3397,7 @@
           "old_rpm": 700.0,
           "new_rpm": 455.0,
           "new_interval": 0.13186813186813187,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 81,
@@ -3287,6 +3413,7 @@
           "old_rpm": 750.0,
           "new_rpm": 487.5,
           "new_interval": 0.12307692307692308,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 117,
@@ -3304,6 +3431,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.1,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 12,
       "base_durability": 1200,
       "current_assembly": [
@@ -3356,6 +3485,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 12,
@@ -3371,6 +3501,7 @@
           "old_rpm": 660.0,
           "new_rpm": 429.0,
           "new_interval": 0.13986013986013987,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 18,
@@ -3386,6 +3517,7 @@
           "old_rpm": 720.0,
           "new_rpm": 468.0,
           "new_interval": 0.1282051282051282,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 24,
@@ -3401,6 +3533,7 @@
           "old_rpm": 780.0,
           "new_rpm": 507.0,
           "new_interval": 0.11834319526627218,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 36,
@@ -3416,6 +3549,7 @@
           "old_rpm": 840.0,
           "new_rpm": 546.0,
           "new_interval": 0.10989010989010989,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 54,
@@ -3431,6 +3565,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 78,
@@ -3448,6 +3583,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.075,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 2000,
       "current_assembly": [
@@ -3500,6 +3637,7 @@
           "old_rpm": 800.0,
           "new_rpm": 520.0,
           "new_interval": 0.11538461538461539,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 30,
@@ -3515,6 +3653,7 @@
           "old_rpm": 880.0000000000001,
           "new_rpm": 572.0000000000001,
           "new_interval": 0.10489510489510487,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 45,
@@ -3530,6 +3669,7 @@
           "old_rpm": 960.0,
           "new_rpm": 624.0,
           "new_interval": 0.09615384615384616,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 60,
@@ -3545,6 +3685,7 @@
           "old_rpm": 1040.0,
           "new_rpm": 676.0,
           "new_interval": 0.08875739644970414,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 90,
@@ -3560,6 +3701,7 @@
           "old_rpm": 1120.0,
           "new_rpm": 728.0,
           "new_interval": 0.08241758241758242,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 135,
@@ -3575,6 +3717,7 @@
           "old_rpm": 1200.0,
           "new_rpm": 780.0,
           "new_interval": 0.07692307692307693,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 195,
@@ -3592,6 +3735,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.08,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 2000,
       "current_assembly": [
@@ -3644,6 +3789,7 @@
           "old_rpm": 750.0,
           "new_rpm": 487.5,
           "new_interval": 0.12307692307692308,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 30,
@@ -3659,6 +3805,7 @@
           "old_rpm": 825.0000000000001,
           "new_rpm": 536.2500000000001,
           "new_interval": 0.11188811188811186,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 45,
@@ -3674,6 +3821,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 60,
@@ -3689,6 +3837,7 @@
           "old_rpm": 975.0,
           "new_rpm": 633.75,
           "new_interval": 0.09467455621301775,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 90,
@@ -3704,6 +3853,7 @@
           "old_rpm": 1050.0,
           "new_rpm": 682.5,
           "new_interval": 0.08791208791208792,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 135,
@@ -3719,6 +3869,7 @@
           "old_rpm": 1125.0,
           "new_rpm": 731.25,
           "new_interval": 0.08205128205128205,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 195,
@@ -3736,6 +3887,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.09,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 25,
       "base_durability": 2000,
       "current_assembly": [
@@ -3788,6 +3941,7 @@
           "old_rpm": 666.6666666666667,
           "new_rpm": 433.33333333333337,
           "new_interval": 0.13846153846153844,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 25,
@@ -3803,6 +3957,7 @@
           "old_rpm": 733.3333333333335,
           "new_rpm": 476.6666666666668,
           "new_interval": 0.12587412587412583,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 37,
@@ -3818,6 +3973,7 @@
           "old_rpm": 800.0000000000001,
           "new_rpm": 520.0000000000001,
           "new_interval": 0.11538461538461536,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 50,
@@ -3833,6 +3989,7 @@
           "old_rpm": 866.6666666666667,
           "new_rpm": 563.3333333333334,
           "new_interval": 0.10650887573964496,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 75,
@@ -3848,6 +4005,7 @@
           "old_rpm": 933.3333333333334,
           "new_rpm": 606.6666666666667,
           "new_interval": 0.09890109890109888,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 112,
@@ -3863,6 +4021,7 @@
           "old_rpm": 1000.0000000000001,
           "new_rpm": 650.0000000000001,
           "new_interval": 0.09230769230769229,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 162,
@@ -3880,6 +4039,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.08,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 64,
       "base_durability": 2000,
       "current_assembly": [
@@ -3932,6 +4093,7 @@
           "old_rpm": 750.0,
           "new_rpm": 487.5,
           "new_interval": 0.12307692307692308,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 64,
@@ -3947,6 +4109,7 @@
           "old_rpm": 825.0000000000001,
           "new_rpm": 536.2500000000001,
           "new_interval": 0.11188811188811186,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 96,
@@ -3962,6 +4125,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 128,
@@ -3977,6 +4141,7 @@
           "old_rpm": 975.0,
           "new_rpm": 633.75,
           "new_interval": 0.09467455621301775,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 192,
@@ -3992,6 +4157,7 @@
           "old_rpm": 1050.0,
           "new_rpm": 682.5,
           "new_interval": 0.08791208791208792,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 288,
@@ -4007,6 +4173,7 @@
           "old_rpm": 1125.0,
           "new_rpm": 731.25,
           "new_interval": 0.08205128205128205,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 416,
@@ -4024,6 +4191,8 @@
       "weapon_class": "Smg",
       "base_cycle_seconds": 0.08,
       "base_power": 9.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 2000,
       "current_assembly": [
@@ -4076,6 +4245,7 @@
           "old_rpm": 750.0,
           "new_rpm": 487.5,
           "new_interval": 0.12307692307692308,
+          "old_power": 9.0,
           "power": 9.0,
           "skin_power": 13.5,
           "capacity": 30,
@@ -4091,6 +4261,7 @@
           "old_rpm": 825.0000000000001,
           "new_rpm": 536.2500000000001,
           "new_interval": 0.11188811188811186,
+          "old_power": 18.0,
           "power": 18.0,
           "skin_power": 27.0,
           "capacity": 45,
@@ -4106,6 +4277,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 31.5,
           "power": 31.5,
           "skin_power": 47.25,
           "capacity": 60,
@@ -4121,6 +4293,7 @@
           "old_rpm": 975.0,
           "new_rpm": 633.75,
           "new_interval": 0.09467455621301775,
+          "old_power": 49.5,
           "power": 49.5,
           "skin_power": 74.25,
           "capacity": 90,
@@ -4136,6 +4309,7 @@
           "old_rpm": 1050.0,
           "new_rpm": 682.5,
           "new_interval": 0.08791208791208792,
+          "old_power": 67.5,
           "power": 67.5,
           "skin_power": 101.25,
           "capacity": 135,
@@ -4151,6 +4325,7 @@
           "old_rpm": 1125.0,
           "new_rpm": 731.25,
           "new_interval": 0.08205128205128205,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 195,
@@ -4168,6 +4343,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.09,
       "base_power": 13.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 35,
       "base_durability": 1500,
       "current_assembly": [
@@ -4220,6 +4397,7 @@
           "old_rpm": 666.6666666666667,
           "new_rpm": 433.33333333333337,
           "new_interval": 0.13846153846153844,
+          "old_power": 13.5,
           "power": 13.5,
           "skin_power": 20.25,
           "capacity": 35,
@@ -4235,6 +4413,7 @@
           "old_rpm": 733.3333333333335,
           "new_rpm": 476.6666666666668,
           "new_interval": 0.12587412587412583,
+          "old_power": 27.0,
           "power": 27.0,
           "skin_power": 40.5,
           "capacity": 52,
@@ -4250,6 +4429,7 @@
           "old_rpm": 800.0000000000001,
           "new_rpm": 520.0000000000001,
           "new_interval": 0.11538461538461536,
+          "old_power": 47.25,
           "power": 47.25,
           "skin_power": 70.875,
           "capacity": 70,
@@ -4265,6 +4445,7 @@
           "old_rpm": 866.6666666666667,
           "new_rpm": 563.3333333333334,
           "new_interval": 0.10650887573964496,
+          "old_power": 74.25,
           "power": 74.25,
           "skin_power": 111.375,
           "capacity": 105,
@@ -4280,6 +4461,7 @@
           "old_rpm": 933.3333333333334,
           "new_rpm": 606.6666666666667,
           "new_interval": 0.09890109890109888,
+          "old_power": 101.25,
           "power": 101.25,
           "skin_power": 151.875,
           "capacity": 157,
@@ -4295,6 +4477,7 @@
           "old_rpm": 1000.0000000000001,
           "new_rpm": 650.0000000000001,
           "new_interval": 0.09230769230769229,
+          "old_power": 135.0,
           "power": 135.0,
           "skin_power": 202.5,
           "capacity": 227,
@@ -4312,6 +4495,8 @@
       "weapon_class": "AutoSniper",
       "base_cycle_seconds": 0.25,
       "base_power": 27.0,
+      "proposed_rate_factor": 0.4875,
+      "shotgun_early_bonus": 0,
       "base_capacity": 20,
       "base_durability": 500,
       "current_assembly": [
@@ -4362,13 +4547,14 @@
         {
           "level": 0,
           "old_rpm": 240.0,
-          "new_rpm": 156.0,
-          "new_interval": 0.38461538461538464,
-          "power": 27.0,
-          "skin_power": 40.5,
+          "new_rpm": 117.0,
+          "new_interval": 0.5128205128205128,
+          "old_power": 27.0,
+          "power": 24.0,
+          "skin_power": 36.0,
           "capacity": 20,
           "max_durability": 500,
-          "new_dps": 70.2,
+          "new_dps": 46.8,
           "proposed_full_repair": [
             4,
             3
@@ -4377,13 +4563,14 @@
         {
           "level": 10,
           "old_rpm": 264.0,
-          "new_rpm": 171.6,
-          "new_interval": 0.34965034965034963,
-          "power": 54.0,
-          "skin_power": 81.0,
+          "new_rpm": 128.7,
+          "new_interval": 0.46620046620046623,
+          "old_power": 54.0,
+          "power": 48.0,
+          "skin_power": 72.0,
           "capacity": 30,
           "max_durability": 750,
-          "new_dps": 154.44,
+          "new_dps": 102.96,
           "proposed_full_repair": [
             5,
             4
@@ -4392,13 +4579,14 @@
         {
           "level": 20,
           "old_rpm": 288.0,
-          "new_rpm": 187.20000000000002,
-          "new_interval": 0.3205128205128205,
-          "power": 94.5,
-          "skin_power": 141.75,
+          "new_rpm": 140.4,
+          "new_interval": 0.42735042735042733,
+          "old_power": 94.5,
+          "power": 84.0,
+          "skin_power": 126.0,
           "capacity": 40,
           "max_durability": 850,
-          "new_dps": 294.84000000000003,
+          "new_dps": 196.56,
           "proposed_full_repair": [
             6,
             5
@@ -4407,13 +4595,14 @@
         {
           "level": 30,
           "old_rpm": 312.0,
-          "new_rpm": 202.8,
-          "new_interval": 0.29585798816568043,
-          "power": 148.5,
-          "skin_power": 222.75,
+          "new_rpm": 152.1,
+          "new_interval": 0.39447731755424065,
+          "old_power": 148.5,
+          "power": 132.0,
+          "skin_power": 198.0,
           "capacity": 60,
           "max_durability": 950,
-          "new_dps": 501.93,
+          "new_dps": 334.62,
           "proposed_full_repair": [
             7,
             5
@@ -4422,13 +4611,14 @@
         {
           "level": 40,
           "old_rpm": 336.0,
-          "new_rpm": 218.4,
-          "new_interval": 0.2747252747252747,
-          "power": 202.5,
-          "skin_power": 303.75,
+          "new_rpm": 163.79999999999998,
+          "new_interval": 0.36630036630036633,
+          "old_power": 202.5,
+          "power": 180.0,
+          "skin_power": 270.0,
           "capacity": 90,
           "max_durability": 1100,
-          "new_dps": 737.1,
+          "new_dps": 491.4,
           "proposed_full_repair": [
             8,
             6
@@ -4437,13 +4627,14 @@
         {
           "level": 50,
           "old_rpm": 360.0,
-          "new_rpm": 234.0,
-          "new_interval": 0.2564102564102564,
-          "power": 270.0,
-          "skin_power": 405.0,
+          "new_rpm": 175.5,
+          "new_interval": 0.3418803418803419,
+          "old_power": 270.0,
+          "power": 240.0,
+          "skin_power": 360.0,
           "capacity": 130,
           "max_durability": 1250,
-          "new_dps": 1053.0,
+          "new_dps": 702.0,
           "proposed_full_repair": [
             8,
             6
@@ -4456,6 +4647,8 @@
       "weapon_class": "AutoSniper",
       "base_cycle_seconds": 0.25,
       "base_power": 27.0,
+      "proposed_rate_factor": 0.4875,
+      "shotgun_early_bonus": 0,
       "base_capacity": 20,
       "base_durability": 500,
       "current_assembly": [
@@ -4506,13 +4699,14 @@
         {
           "level": 0,
           "old_rpm": 240.0,
-          "new_rpm": 156.0,
-          "new_interval": 0.38461538461538464,
-          "power": 27.0,
-          "skin_power": 40.5,
+          "new_rpm": 117.0,
+          "new_interval": 0.5128205128205128,
+          "old_power": 27.0,
+          "power": 24.0,
+          "skin_power": 36.0,
           "capacity": 20,
           "max_durability": 500,
-          "new_dps": 70.2,
+          "new_dps": 46.8,
           "proposed_full_repair": [
             4,
             3
@@ -4521,13 +4715,14 @@
         {
           "level": 10,
           "old_rpm": 264.0,
-          "new_rpm": 171.6,
-          "new_interval": 0.34965034965034963,
-          "power": 54.0,
-          "skin_power": 81.0,
+          "new_rpm": 128.7,
+          "new_interval": 0.46620046620046623,
+          "old_power": 54.0,
+          "power": 48.0,
+          "skin_power": 72.0,
           "capacity": 30,
           "max_durability": 750,
-          "new_dps": 154.44,
+          "new_dps": 102.96,
           "proposed_full_repair": [
             5,
             4
@@ -4536,13 +4731,14 @@
         {
           "level": 20,
           "old_rpm": 288.0,
-          "new_rpm": 187.20000000000002,
-          "new_interval": 0.3205128205128205,
-          "power": 94.5,
-          "skin_power": 141.75,
+          "new_rpm": 140.4,
+          "new_interval": 0.42735042735042733,
+          "old_power": 94.5,
+          "power": 84.0,
+          "skin_power": 126.0,
           "capacity": 40,
           "max_durability": 850,
-          "new_dps": 294.84000000000003,
+          "new_dps": 196.56,
           "proposed_full_repair": [
             6,
             5
@@ -4551,13 +4747,14 @@
         {
           "level": 30,
           "old_rpm": 312.0,
-          "new_rpm": 202.8,
-          "new_interval": 0.29585798816568043,
-          "power": 148.5,
-          "skin_power": 222.75,
+          "new_rpm": 152.1,
+          "new_interval": 0.39447731755424065,
+          "old_power": 148.5,
+          "power": 132.0,
+          "skin_power": 198.0,
           "capacity": 60,
           "max_durability": 950,
-          "new_dps": 501.93,
+          "new_dps": 334.62,
           "proposed_full_repair": [
             7,
             5
@@ -4566,13 +4763,14 @@
         {
           "level": 40,
           "old_rpm": 336.0,
-          "new_rpm": 218.4,
-          "new_interval": 0.2747252747252747,
-          "power": 202.5,
-          "skin_power": 303.75,
+          "new_rpm": 163.79999999999998,
+          "new_interval": 0.36630036630036633,
+          "old_power": 202.5,
+          "power": 180.0,
+          "skin_power": 270.0,
           "capacity": 90,
           "max_durability": 1100,
-          "new_dps": 737.1,
+          "new_dps": 491.4,
           "proposed_full_repair": [
             8,
             6
@@ -4581,13 +4779,14 @@
         {
           "level": 50,
           "old_rpm": 360.0,
-          "new_rpm": 234.0,
-          "new_interval": 0.2564102564102564,
-          "power": 270.0,
-          "skin_power": 405.0,
+          "new_rpm": 175.5,
+          "new_interval": 0.3418803418803419,
+          "old_power": 270.0,
+          "power": 240.0,
+          "skin_power": 360.0,
           "capacity": 130,
           "max_durability": 1250,
-          "new_dps": 1053.0,
+          "new_dps": 702.0,
           "proposed_full_repair": [
             8,
             6
@@ -4600,6 +4799,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.1,
       "base_power": 15.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 1500,
       "current_assembly": [
@@ -4652,6 +4853,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 15.0,
           "power": 15.0,
           "skin_power": 22.5,
           "capacity": 30,
@@ -4667,6 +4869,7 @@
           "old_rpm": 660.0,
           "new_rpm": 429.0,
           "new_interval": 0.13986013986013987,
+          "old_power": 30.0,
           "power": 30.0,
           "skin_power": 45.0,
           "capacity": 45,
@@ -4682,6 +4885,7 @@
           "old_rpm": 720.0,
           "new_rpm": 468.0,
           "new_interval": 0.1282051282051282,
+          "old_power": 52.5,
           "power": 52.5,
           "skin_power": 78.75,
           "capacity": 60,
@@ -4697,6 +4901,7 @@
           "old_rpm": 780.0,
           "new_rpm": 507.0,
           "new_interval": 0.11834319526627218,
+          "old_power": 82.5,
           "power": 82.5,
           "skin_power": 123.75,
           "capacity": 90,
@@ -4712,6 +4917,7 @@
           "old_rpm": 840.0,
           "new_rpm": 546.0,
           "new_interval": 0.10989010989010989,
+          "old_power": 112.5,
           "power": 112.5,
           "skin_power": 168.75,
           "capacity": 135,
@@ -4727,6 +4933,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 150.0,
           "power": 150.0,
           "skin_power": 225.0,
           "capacity": 195,
@@ -4744,6 +4951,8 @@
       "weapon_class": "Rifle",
       "base_cycle_seconds": 0.11,
       "base_power": 15.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 1500,
       "current_assembly": [
@@ -4796,6 +5005,7 @@
           "old_rpm": 545.4545454545455,
           "new_rpm": 354.54545454545456,
           "new_interval": 0.1692307692307692,
+          "old_power": 15.0,
           "power": 15.0,
           "skin_power": 22.5,
           "capacity": 30,
@@ -4811,6 +5021,7 @@
           "old_rpm": 600.0000000000001,
           "new_rpm": 390.0000000000001,
           "new_interval": 0.1538461538461538,
+          "old_power": 30.0,
           "power": 30.0,
           "skin_power": 45.0,
           "capacity": 45,
@@ -4826,6 +5037,7 @@
           "old_rpm": 654.5454545454546,
           "new_rpm": 425.4545454545455,
           "new_interval": 0.14102564102564102,
+          "old_power": 52.5,
           "power": 52.5,
           "skin_power": 78.75,
           "capacity": 60,
@@ -4841,6 +5053,7 @@
           "old_rpm": 709.0909090909091,
           "new_rpm": 460.90909090909093,
           "new_interval": 0.1301775147928994,
+          "old_power": 82.5,
           "power": 82.5,
           "skin_power": 123.75,
           "capacity": 90,
@@ -4856,6 +5069,7 @@
           "old_rpm": 763.6363636363636,
           "new_rpm": 496.3636363636364,
           "new_interval": 0.12087912087912088,
+          "old_power": 112.5,
           "power": 112.5,
           "skin_power": 168.75,
           "capacity": 135,
@@ -4871,6 +5085,7 @@
           "old_rpm": 818.1818181818182,
           "new_rpm": 531.8181818181819,
           "new_interval": 0.11282051282051281,
+          "old_power": 150.0,
           "power": 150.0,
           "skin_power": 225.0,
           "capacity": 195,
@@ -4888,6 +5103,8 @@
       "weapon_class": "Shotgun",
       "base_cycle_seconds": 0.88,
       "base_power": 33.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 21,
       "base_capacity": 8,
       "base_durability": 300,
       "current_assembly": [
@@ -4940,11 +5157,12 @@
           "old_rpm": 68.18181818181819,
           "new_rpm": 44.31818181818182,
           "new_interval": 1.3538461538461537,
-          "power": 33.0,
-          "skin_power": 49.5,
+          "old_power": 33.0,
+          "power": 54.0,
+          "skin_power": 81.0,
           "capacity": 8,
           "max_durability": 300,
-          "new_dps": 24.375,
+          "new_dps": 39.88636363636364,
           "proposed_full_repair": [
             2,
             1
@@ -4955,11 +5173,12 @@
           "old_rpm": 75.00000000000001,
           "new_rpm": 48.750000000000014,
           "new_interval": 1.2307692307692304,
-          "power": 66.0,
-          "skin_power": 99.0,
+          "old_power": 66.0,
+          "power": 87.0,
+          "skin_power": 130.5,
           "capacity": 12,
           "max_durability": 450,
-          "new_dps": 53.625000000000014,
+          "new_dps": 70.68750000000001,
           "proposed_full_repair": [
             3,
             2
@@ -4970,6 +5189,7 @@
           "old_rpm": 81.81818181818183,
           "new_rpm": 53.18181818181819,
           "new_interval": 1.1282051282051282,
+          "old_power": 115.5,
           "power": 115.5,
           "skin_power": 173.25,
           "capacity": 16,
@@ -4985,6 +5205,7 @@
           "old_rpm": 88.63636363636364,
           "new_rpm": 57.61363636363637,
           "new_interval": 1.0414201183431953,
+          "old_power": 181.5,
           "power": 181.5,
           "skin_power": 272.25,
           "capacity": 24,
@@ -5000,6 +5221,7 @@
           "old_rpm": 95.45454545454545,
           "new_rpm": 62.04545454545455,
           "new_interval": 0.967032967032967,
+          "old_power": 247.5,
           "power": 247.5,
           "skin_power": 371.25,
           "capacity": 36,
@@ -5015,6 +5237,7 @@
           "old_rpm": 102.27272727272728,
           "new_rpm": 66.47727272727273,
           "new_interval": 0.9025641025641025,
+          "old_power": 330.0,
           "power": 330.0,
           "skin_power": 495.0,
           "capacity": 52,
@@ -5032,6 +5255,8 @@
       "weapon_class": "Shotgun",
       "base_cycle_seconds": 0.35,
       "base_power": 24.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 12,
       "base_capacity": 7,
       "base_durability": 300,
       "current_assembly": [
@@ -5084,11 +5309,12 @@
           "old_rpm": 171.42857142857144,
           "new_rpm": 111.42857142857144,
           "new_interval": 0.5384615384615384,
-          "power": 24.0,
-          "skin_power": 36.0,
+          "old_power": 24.0,
+          "power": 36.0,
+          "skin_power": 54.0,
           "capacity": 7,
           "max_durability": 300,
-          "new_dps": 44.57142857142858,
+          "new_dps": 66.85714285714288,
           "proposed_full_repair": [
             2,
             1
@@ -5099,11 +5325,12 @@
           "old_rpm": 188.5714285714286,
           "new_rpm": 122.5714285714286,
           "new_interval": 0.4895104895104894,
-          "power": 48.0,
-          "skin_power": 72.0,
+          "old_power": 48.0,
+          "power": 60.0,
+          "skin_power": 90.0,
           "capacity": 10,
           "max_durability": 450,
-          "new_dps": 98.05714285714288,
+          "new_dps": 122.57142857142861,
           "proposed_full_repair": [
             3,
             2
@@ -5114,6 +5341,7 @@
           "old_rpm": 205.71428571428572,
           "new_rpm": 133.71428571428572,
           "new_interval": 0.4487179487179487,
+          "old_power": 84.0,
           "power": 84.0,
           "skin_power": 126.0,
           "capacity": 14,
@@ -5129,6 +5357,7 @@
           "old_rpm": 222.8571428571429,
           "new_rpm": 144.8571428571429,
           "new_interval": 0.41420118343195256,
+          "old_power": 132.0,
           "power": 132.0,
           "skin_power": 198.0,
           "capacity": 21,
@@ -5144,6 +5373,7 @@
           "old_rpm": 240.0,
           "new_rpm": 156.0,
           "new_interval": 0.38461538461538464,
+          "old_power": 180.0,
           "power": 180.0,
           "skin_power": 270.0,
           "capacity": 31,
@@ -5159,6 +5389,7 @@
           "old_rpm": 257.14285714285717,
           "new_rpm": 167.14285714285717,
           "new_interval": 0.3589743589743589,
+          "old_power": 240.0,
           "power": 240.0,
           "skin_power": 360.0,
           "capacity": 45,
@@ -5176,6 +5407,8 @@
       "weapon_class": "Shotgun",
       "base_cycle_seconds": 0.85,
       "base_power": 36.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 24,
       "base_capacity": 7,
       "base_durability": 300,
       "current_assembly": [
@@ -5228,11 +5461,12 @@
           "old_rpm": 70.58823529411765,
           "new_rpm": 45.88235294117648,
           "new_interval": 1.3076923076923075,
-          "power": 36.0,
-          "skin_power": 54.0,
+          "old_power": 36.0,
+          "power": 60.0,
+          "skin_power": 90.0,
           "capacity": 7,
           "max_durability": 300,
-          "new_dps": 27.529411764705888,
+          "new_dps": 45.88235294117648,
           "proposed_full_repair": [
             2,
             1
@@ -5243,11 +5477,12 @@
           "old_rpm": 77.64705882352942,
           "new_rpm": 50.47058823529412,
           "new_interval": 1.1888111888111887,
-          "power": 72.0,
-          "skin_power": 108.0,
+          "old_power": 72.0,
+          "power": 96.0,
+          "skin_power": 144.0,
           "capacity": 10,
           "max_durability": 450,
-          "new_dps": 60.56470588235295,
+          "new_dps": 80.7529411764706,
           "proposed_full_repair": [
             3,
             2
@@ -5258,6 +5493,7 @@
           "old_rpm": 84.70588235294117,
           "new_rpm": 55.05882352941177,
           "new_interval": 1.0897435897435896,
+          "old_power": 126.0,
           "power": 126.0,
           "skin_power": 189.0,
           "capacity": 14,
@@ -5273,6 +5509,7 @@
           "old_rpm": 91.76470588235296,
           "new_rpm": 59.64705882352942,
           "new_interval": 1.0059171597633134,
+          "old_power": 198.0,
           "power": 198.0,
           "skin_power": 297.0,
           "capacity": 21,
@@ -5288,6 +5525,7 @@
           "old_rpm": 98.82352941176471,
           "new_rpm": 64.23529411764706,
           "new_interval": 0.9340659340659341,
+          "old_power": 270.0,
           "power": 270.0,
           "skin_power": 405.0,
           "capacity": 31,
@@ -5303,6 +5541,7 @@
           "old_rpm": 105.88235294117648,
           "new_rpm": 68.82352941176471,
           "new_interval": 0.8717948717948717,
+          "old_power": 360.0,
           "power": 360.0,
           "skin_power": 540.0,
           "capacity": 45,
@@ -5320,6 +5559,8 @@
       "weapon_class": "Shotgun",
       "base_cycle_seconds": 0.85,
       "base_power": 36.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 18,
       "base_capacity": 5,
       "base_durability": 300,
       "current_assembly": [
@@ -5372,11 +5613,12 @@
           "old_rpm": 70.58823529411765,
           "new_rpm": 45.88235294117648,
           "new_interval": 1.3076923076923075,
-          "power": 36.0,
-          "skin_power": 54.0,
+          "old_power": 36.0,
+          "power": 54.0,
+          "skin_power": 81.0,
           "capacity": 5,
           "max_durability": 300,
-          "new_dps": 27.529411764705888,
+          "new_dps": 41.294117647058826,
           "proposed_full_repair": [
             2,
             1
@@ -5387,11 +5629,12 @@
           "old_rpm": 77.64705882352942,
           "new_rpm": 50.47058823529412,
           "new_interval": 1.1888111888111887,
-          "power": 72.0,
-          "skin_power": 108.0,
+          "old_power": 72.0,
+          "power": 90.0,
+          "skin_power": 135.0,
           "capacity": 7,
           "max_durability": 450,
-          "new_dps": 60.56470588235295,
+          "new_dps": 75.70588235294119,
           "proposed_full_repair": [
             3,
             2
@@ -5402,6 +5645,7 @@
           "old_rpm": 84.70588235294117,
           "new_rpm": 55.05882352941177,
           "new_interval": 1.0897435897435896,
+          "old_power": 126.0,
           "power": 126.0,
           "skin_power": 189.0,
           "capacity": 10,
@@ -5417,6 +5661,7 @@
           "old_rpm": 91.76470588235296,
           "new_rpm": 59.64705882352942,
           "new_interval": 1.0059171597633134,
+          "old_power": 198.0,
           "power": 198.0,
           "skin_power": 297.0,
           "capacity": 15,
@@ -5432,6 +5677,7 @@
           "old_rpm": 98.82352941176471,
           "new_rpm": 64.23529411764706,
           "new_interval": 0.9340659340659341,
+          "old_power": 270.0,
           "power": 270.0,
           "skin_power": 405.0,
           "capacity": 22,
@@ -5447,6 +5693,7 @@
           "old_rpm": 105.88235294117648,
           "new_rpm": 68.82352941176471,
           "new_interval": 0.8717948717948717,
+          "old_power": 360.0,
           "power": 360.0,
           "skin_power": 540.0,
           "capacity": 32,
@@ -5464,6 +5711,8 @@
       "weapon_class": "MachineGun",
       "base_cycle_seconds": 0.08,
       "base_power": 12.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 100,
       "base_durability": 4000,
       "current_assembly": [
@@ -5516,6 +5765,7 @@
           "old_rpm": 750.0,
           "new_rpm": 487.5,
           "new_interval": 0.12307692307692308,
+          "old_power": 12.0,
           "power": 12.0,
           "skin_power": 18.0,
           "capacity": 100,
@@ -5531,6 +5781,7 @@
           "old_rpm": 825.0000000000001,
           "new_rpm": 536.2500000000001,
           "new_interval": 0.11188811188811186,
+          "old_power": 24.0,
           "power": 24.0,
           "skin_power": 36.0,
           "capacity": 150,
@@ -5546,6 +5797,7 @@
           "old_rpm": 900.0,
           "new_rpm": 585.0,
           "new_interval": 0.10256410256410256,
+          "old_power": 42.0,
           "power": 42.0,
           "skin_power": 63.0,
           "capacity": 200,
@@ -5561,6 +5813,7 @@
           "old_rpm": 975.0,
           "new_rpm": 633.75,
           "new_interval": 0.09467455621301775,
+          "old_power": 66.0,
           "power": 66.0,
           "skin_power": 99.0,
           "capacity": 300,
@@ -5576,6 +5829,7 @@
           "old_rpm": 1050.0,
           "new_rpm": 682.5,
           "new_interval": 0.08791208791208792,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 450,
@@ -5591,6 +5845,7 @@
           "old_rpm": 1125.0,
           "new_rpm": 731.25,
           "new_interval": 0.08205128205128205,
+          "old_power": 120.0,
           "power": 120.0,
           "skin_power": 180.0,
           "capacity": 650,
@@ -5608,6 +5863,8 @@
       "weapon_class": "MachineGun",
       "base_cycle_seconds": 0.075,
       "base_power": 12.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 150,
       "base_durability": 4000,
       "current_assembly": [
@@ -5660,6 +5917,7 @@
           "old_rpm": 800.0,
           "new_rpm": 520.0,
           "new_interval": 0.11538461538461539,
+          "old_power": 12.0,
           "power": 12.0,
           "skin_power": 18.0,
           "capacity": 150,
@@ -5675,6 +5933,7 @@
           "old_rpm": 880.0000000000001,
           "new_rpm": 572.0000000000001,
           "new_interval": 0.10489510489510487,
+          "old_power": 24.0,
           "power": 24.0,
           "skin_power": 36.0,
           "capacity": 225,
@@ -5690,6 +5949,7 @@
           "old_rpm": 960.0,
           "new_rpm": 624.0,
           "new_interval": 0.09615384615384616,
+          "old_power": 42.0,
           "power": 42.0,
           "skin_power": 63.0,
           "capacity": 300,
@@ -5705,6 +5965,7 @@
           "old_rpm": 1040.0,
           "new_rpm": 676.0,
           "new_interval": 0.08875739644970414,
+          "old_power": 66.0,
           "power": 66.0,
           "skin_power": 99.0,
           "capacity": 450,
@@ -5720,6 +5981,7 @@
           "old_rpm": 1120.0,
           "new_rpm": 728.0,
           "new_interval": 0.08241758241758242,
+          "old_power": 90.0,
           "power": 90.0,
           "skin_power": 135.0,
           "capacity": 675,
@@ -5735,6 +5997,7 @@
           "old_rpm": 1200.0,
           "new_rpm": 780.0,
           "new_interval": 0.07692307692307693,
+          "old_power": 120.0,
           "power": 120.0,
           "skin_power": 180.0,
           "capacity": 975,
@@ -5752,6 +6015,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.5,
       "base_power": 27.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 8,
       "base_durability": 1200,
       "current_assembly": [
@@ -5804,6 +6069,7 @@
           "old_rpm": 120.0,
           "new_rpm": 78.0,
           "new_interval": 0.7692307692307693,
+          "old_power": 27.0,
           "power": 27.0,
           "skin_power": 40.5,
           "capacity": 8,
@@ -5819,6 +6085,7 @@
           "old_rpm": 132.0,
           "new_rpm": 85.8,
           "new_interval": 0.6993006993006993,
+          "old_power": 54.0,
           "power": 54.0,
           "skin_power": 81.0,
           "capacity": 12,
@@ -5834,6 +6101,7 @@
           "old_rpm": 144.0,
           "new_rpm": 93.60000000000001,
           "new_interval": 0.641025641025641,
+          "old_power": 94.5,
           "power": 94.5,
           "skin_power": 141.75,
           "capacity": 16,
@@ -5849,6 +6117,7 @@
           "old_rpm": 156.0,
           "new_rpm": 101.4,
           "new_interval": 0.5917159763313609,
+          "old_power": 148.5,
           "power": 148.5,
           "skin_power": 222.75,
           "capacity": 24,
@@ -5864,6 +6133,7 @@
           "old_rpm": 168.0,
           "new_rpm": 109.2,
           "new_interval": 0.5494505494505494,
+          "old_power": 202.5,
           "power": 202.5,
           "skin_power": 303.75,
           "capacity": 36,
@@ -5879,6 +6149,7 @@
           "old_rpm": 180.0,
           "new_rpm": 117.0,
           "new_interval": 0.5128205128205128,
+          "old_power": 270.0,
           "power": 270.0,
           "skin_power": 405.0,
           "capacity": 52,
@@ -5896,6 +6167,8 @@
       "weapon_class": "Pistol",
       "base_cycle_seconds": 0.12,
       "base_power": 10.5,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 30,
       "base_durability": 1200,
       "current_assembly": [
@@ -5948,6 +6221,7 @@
           "old_rpm": 500.0,
           "new_rpm": 325.0,
           "new_interval": 0.18461538461538463,
+          "old_power": 10.5,
           "power": 10.5,
           "skin_power": 15.75,
           "capacity": 30,
@@ -5963,6 +6237,7 @@
           "old_rpm": 550.0,
           "new_rpm": 357.5,
           "new_interval": 0.16783216783216784,
+          "old_power": 21.0,
           "power": 21.0,
           "skin_power": 31.5,
           "capacity": 45,
@@ -5978,6 +6253,7 @@
           "old_rpm": 600.0,
           "new_rpm": 390.0,
           "new_interval": 0.15384615384615385,
+          "old_power": 36.75,
           "power": 36.75,
           "skin_power": 55.125,
           "capacity": 60,
@@ -5993,6 +6269,7 @@
           "old_rpm": 650.0,
           "new_rpm": 422.5,
           "new_interval": 0.14201183431952663,
+          "old_power": 57.75,
           "power": 57.75,
           "skin_power": 86.625,
           "capacity": 90,
@@ -6008,6 +6285,7 @@
           "old_rpm": 700.0,
           "new_rpm": 455.0,
           "new_interval": 0.13186813186813187,
+          "old_power": 78.75,
           "power": 78.75,
           "skin_power": 118.125,
           "capacity": 135,
@@ -6023,6 +6301,7 @@
           "old_rpm": 750.0,
           "new_rpm": 487.5,
           "new_interval": 0.12307692307692308,
+          "old_power": 105.0,
           "power": 105.0,
           "skin_power": 157.5,
           "capacity": 195,
@@ -6040,6 +6319,8 @@
       "weapon_class": "Taser",
       "base_cycle_seconds": 0.15,
       "base_power": 150.0,
+      "proposed_rate_factor": 0.65,
+      "shotgun_early_bonus": 0,
       "base_capacity": 1,
       "base_durability": 100,
       "current_assembly": [
@@ -6092,6 +6373,7 @@
           "old_rpm": 6.0,
           "new_rpm": 3.9000000000000004,
           "new_interval": 15.384615384615383,
+          "old_power": 150.0,
           "power": 150.0,
           "skin_power": 225.0,
           "capacity": 1,
@@ -6107,6 +6389,7 @@
           "old_rpm": 12.0,
           "new_rpm": 7.800000000000001,
           "new_interval": 7.692307692307692,
+          "old_power": 300.0,
           "power": 300.0,
           "skin_power": 450.0,
           "capacity": 1,
@@ -6122,6 +6405,7 @@
           "old_rpm": 19.999999999999996,
           "new_rpm": 12.999999999999998,
           "new_interval": 4.615384615384616,
+          "old_power": 525.0,
           "power": 525.0,
           "skin_power": 787.5,
           "capacity": 1,
@@ -6137,6 +6421,7 @@
           "old_rpm": 29.999999999999986,
           "new_rpm": 19.499999999999993,
           "new_interval": 3.076923076923078,
+          "old_power": 825.0,
           "power": 825.0,
           "skin_power": 1237.5,
           "capacity": 1,
@@ -6152,6 +6437,7 @@
           "old_rpm": 39.99999999999999,
           "new_rpm": 25.999999999999996,
           "new_interval": 2.307692307692308,
+          "old_power": 1125.0,
           "power": 1125.0,
           "skin_power": 1687.5,
           "capacity": 1,
@@ -6167,6 +6453,7 @@
           "old_rpm": 60.000000000000014,
           "new_rpm": 39.00000000000001,
           "new_interval": 1.538461538461538,
+          "old_power": 1500.0,
           "power": 1500.0,
           "skin_power": 2250.0,
           "capacity": 1,
@@ -6179,5 +6466,1763 @@
         }
       ]
     }
-  ]
+  ],
+  "repair_quotes": [
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 50,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 75,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 100,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 75,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 100,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 100,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 100,
+      "blank": 4,
+      "mechanism": 2,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 100,
+      "blank": 4,
+      "mechanism": 2,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "手枪／霰弹枪",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 100,
+      "blank": 4,
+      "mechanism": 2,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 100,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 100,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 75,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 100,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 75,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 100,
+      "blank": 5,
+      "mechanism": 4,
+      "raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 75,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 100,
+      "blank": 6,
+      "mechanism": 4,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 75,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "冲锋枪／步枪／栓狙",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 100,
+      "blank": 6,
+      "mechanism": 4,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 25,
+      "blank": 1,
+      "mechanism": 1,
+      "raw": {
+        "iron": 16,
+        "coal": 6,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 50,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 75,
+      "blank": 3,
+      "mechanism": 3,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 100,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 75,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 100,
+      "blank": 5,
+      "mechanism": 4,
+      "raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 3,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 75,
+      "blank": 5,
+      "mechanism": 4,
+      "raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 100,
+      "blank": 6,
+      "mechanism": 5,
+      "raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 75,
+      "blank": 5,
+      "mechanism": 4,
+      "raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 100,
+      "blank": 7,
+      "mechanism": 5,
+      "raw": {
+        "iron": 96,
+        "coal": 36,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 75,
+      "blank": 6,
+      "mechanism": 5,
+      "raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 100,
+      "blank": 8,
+      "mechanism": 6,
+      "raw": {
+        "iron": 112,
+        "coal": 42,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 75,
+      "blank": 6,
+      "mechanism": 5,
+      "raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "连狙（SCAR-20／G3SG1）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 100,
+      "blank": 8,
+      "mechanism": 6,
+      "raw": {
+        "iron": 112,
+        "coal": 42,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 75,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 100,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 1,
+      "raw": {
+        "iron": 24,
+        "coal": 9,
+        "copper": 6,
+        "germanium": 2
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 75,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 100,
+      "blank": 6,
+      "mechanism": 4,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 75,
+      "blank": 6,
+      "mechanism": 4,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 100,
+      "blank": 7,
+      "mechanism": 5,
+      "raw": {
+        "iron": 96,
+        "coal": 36,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 3,
+      "raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 75,
+      "blank": 6,
+      "mechanism": 4,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 100,
+      "blank": 8,
+      "mechanism": 5,
+      "raw": {
+        "iron": 104,
+        "coal": 39,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 25,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 50,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 75,
+      "blank": 7,
+      "mechanism": 5,
+      "raw": {
+        "iron": 96,
+        "coal": 36,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 100,
+      "blank": 9,
+      "mechanism": 6,
+      "raw": {
+        "iron": 120,
+        "coal": 45,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 25,
+      "blank": 3,
+      "mechanism": 2,
+      "raw": {
+        "iron": 40,
+        "coal": 15,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 50,
+      "blank": 5,
+      "mechanism": 3,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 75,
+      "blank": 8,
+      "mechanism": 5,
+      "raw": {
+        "iron": 104,
+        "coal": 39,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "机枪（M249／Negev）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 100,
+      "blank": 10,
+      "mechanism": 6,
+      "raw": {
+        "iron": 128,
+        "coal": 48,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 3,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 75,
+      "blank": 4,
+      "mechanism": 4,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 0,
+      "level_max": 9,
+      "missing_percent": 100,
+      "blank": 5,
+      "mechanism": 5,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 50,
+      "blank": 3,
+      "mechanism": 3,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 75,
+      "blank": 5,
+      "mechanism": 5,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 10,
+      "level_max": 19,
+      "missing_percent": 100,
+      "blank": 6,
+      "mechanism": 6,
+      "raw": {
+        "iron": 96,
+        "coal": 36,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 4,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 75,
+      "blank": 6,
+      "mechanism": 6,
+      "raw": {
+        "iron": 96,
+        "coal": 36,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 20,
+      "level_max": 29,
+      "missing_percent": 100,
+      "blank": 7,
+      "mechanism": 7,
+      "raw": {
+        "iron": 112,
+        "coal": 42,
+        "copper": 42,
+        "germanium": 14
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 25,
+      "blank": 2,
+      "mechanism": 2,
+      "raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 12,
+        "germanium": 4
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 50,
+      "blank": 4,
+      "mechanism": 4,
+      "raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 24,
+        "germanium": 8
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 75,
+      "blank": 6,
+      "mechanism": 6,
+      "raw": {
+        "iron": 96,
+        "coal": 36,
+        "copper": 36,
+        "germanium": 12
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 30,
+      "level_max": 39,
+      "missing_percent": 100,
+      "blank": 8,
+      "mechanism": 8,
+      "raw": {
+        "iron": 128,
+        "coal": 48,
+        "copper": 48,
+        "germanium": 16
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 25,
+      "blank": 3,
+      "mechanism": 3,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 50,
+      "blank": 5,
+      "mechanism": 5,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 75,
+      "blank": 7,
+      "mechanism": 7,
+      "raw": {
+        "iron": 112,
+        "coal": 42,
+        "copper": 42,
+        "germanium": 14
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 40,
+      "level_max": 49,
+      "missing_percent": 100,
+      "blank": 9,
+      "mechanism": 9,
+      "raw": {
+        "iron": 144,
+        "coal": 54,
+        "copper": 54,
+        "germanium": 18
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 25,
+      "blank": 3,
+      "mechanism": 3,
+      "raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 18,
+        "germanium": 6
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 50,
+      "blank": 5,
+      "mechanism": 5,
+      "raw": {
+        "iron": 80,
+        "coal": 30,
+        "copper": 30,
+        "germanium": 10
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 75,
+      "blank": 8,
+      "mechanism": 8,
+      "raw": {
+        "iron": 128,
+        "coal": 48,
+        "copper": 48,
+        "germanium": 16
+      }
+    },
+    {
+      "group": "电击枪（Zeus）",
+      "level_min": 50,
+      "level_max": 50,
+      "missing_percent": 100,
+      "blank": 10,
+      "mechanism": 10,
+      "raw": {
+        "iron": 160,
+        "coal": 60,
+        "copper": 60,
+        "germanium": 20
+      }
+    }
+  ],
+  "grenade_proposal": {
+    "radius_interpretation": "multiply radius, not area",
+    "he": {
+      "old_radius": 6,
+      "new_radius": 7.8,
+      "old_peak_power": 48,
+      "new_peak_power": 96,
+      "distance_samples": [
+        {
+          "distance": 0,
+          "old_power": 48.0,
+          "new_power": 96.0
+        },
+        {
+          "distance": 1,
+          "old_power": 40.0,
+          "new_power": 83.6923076923077
+        },
+        {
+          "distance": 2,
+          "old_power": 32.0,
+          "new_power": 71.38461538461539
+        },
+        {
+          "distance": 3,
+          "old_power": 24.0,
+          "new_power": 59.07692307692308
+        },
+        {
+          "distance": 4,
+          "old_power": 16.0,
+          "new_power": 46.76923076923076
+        },
+        {
+          "distance": 5,
+          "old_power": 7.999999999999998,
+          "new_power": 34.46153846153845
+        },
+        {
+          "distance": 6,
+          "old_power": 0,
+          "new_power": 22.15384615384615
+        },
+        {
+          "distance": 7,
+          "old_power": 0,
+          "new_power": 9.846153846153843
+        },
+        {
+          "distance": 7.8,
+          "old_power": 0,
+          "new_power": 0
+        }
+      ]
+    },
+    "molotov": {
+      "old_radius": 2.5,
+      "new_radius": 3,
+      "lifetime": 6,
+      "old_power_per_second": 4,
+      "new_power_per_second": 6
+    },
+    "incendiary": {
+      "old_radius": 3,
+      "new_radius": 3.6,
+      "lifetime": 7,
+      "old_power_per_second": 4,
+      "new_power_per_second": 6
+    },
+    "area_multiplier_he": 1.6900000000000002,
+    "area_multiplier_fire": 1.44,
+    "he_uniform_flat_ground_integrated_power_multiplier": 3.3800000000000003,
+    "ignite_creatures": false,
+    "after_exit_damage": 0,
+    "user_scope": "User cancelled creature ignition; retain HE and ground fire radius/power proposals only."
+  }
 }
