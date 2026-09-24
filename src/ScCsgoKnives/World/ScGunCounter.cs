@@ -18,6 +18,8 @@ public static class ScGunCounter {
 
     /// <summary>Guns in this inventory that this build can read and that have no counter yet.</summary>
     public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
+        if (inventory is null) yield break;
         int gun = gunBlockIndex >= 0 ? gunBlockIndex : BlocksManager.GetBlockIndex<ScGunBlock>(true);
         // The game can expose a ten-slot hotbar while OpenSlotsCount still
         // reports the catalogue's writable page size. The creative shortcut is

@@ -42,6 +42,8 @@ public static class ScWeaponRepair {
         return cost;
     }
     public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
+        if (inventory is null) yield break;
         int gun = gunBlockIndex >= 0 ? gunBlockIndex : BlocksManager.GetBlockIndex<ScGunBlock>(true);
         int slots = inventory is ComponentCreativeInventory creative ? creative.OpenSlotsCount : inventory.SlotsCount;
         for (int i = 0; i < slots; i++) {

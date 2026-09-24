@@ -12,6 +12,7 @@ public sealed class ScGunMutation {
     internal static void Exit() => Volatile.Write(ref s_committing, 0);
     readonly ScGunRegistry m_registry;
     readonly string m_owner;
+    readonly IInventory m_source;
     public IInventory Inventory { get; }
     public int Slot { get; }
     public int Expected { get; private set; }
@@ -34,13 +35,13 @@ public sealed class ScGunMutation {
 
     ScGunMutation(ScGunRegistry registry, IInventory inventory, int slot, int expected, ScGunSnapshot before, bool fresh, string holder, string owner) {
         m_registry = registry; m_owner = owner;
-        Inventory = inventory; Slot = slot; Expected = expected; Before = before; Variant = before.Variant; Id = before.Id; Fresh = fresh;
+        m_source = inventory; Inventory = ScInventoryIdentity.Inventory(inventory); Slot = slot; Expected = expected; Before = before; Variant = before.Variant; Id = before.Id; Fresh = fresh;
         InventoryRevision = ScInventoryTransaction.Revision(inventory); RecordRevision = before.Revision; Holder = holder;
     }
     public static ScGunMutation Prepare(IInventory inventory, int slot, string holder, out ScGunResult why) {
         var registry = ScGunRegistry.Current;
         why = ScGunResult.Invalid;
-        if (registry is null || inventory is null || slot < 0 || slot >= inventory.SlotsCount || !ScInventoryTransaction.IsWeaponSlot(inventory, slot)) return null;
+        if (registry is null || ScInventoryIdentity.Inventory(inventory) is null || slot < 0 || slot >= inventory.SlotsCount || !ScInventoryTransaction.IsWeaponSlot(inventory, slot)) return null;
         int value = inventory.GetSlotValue(slot), data = Terrain.ExtractData(value);
         if (ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
             if (registry.Disabled) { why = ScGunResult.Foreign; return null; }
@@ -83,7 +84,9 @@ public sealed class ScGunMutation {
         && (r.CounterInstalled || (r.KillCount == 0 && r.AppliedGrowthLevel == 0 && r.GrowthRulesVersion == 0 && r.PendingGrowthLevel == ScGunGrowth.NoPending))
         // A finish must exist in this build's catalogue and belong to this model; nothing else may be written.
         && ScGunSkinCatalog.IsKnown(r.SkinId) && (r.SkinId == ScGunSkinCatalog.None || ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(r.SkinId), r.Variant));
-    bool SlotUnchanged() => Inventory.GetSlotValue(Slot) == Expected && ScInventoryTransaction.Revision(Inventory) == InventoryRevision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot)
+    bool StorageUnchanged() => ReferenceEquals(Inventory, ScInventoryIdentity.Inventory(m_source))
+        && (m_registry.RecoveryOwner is null || m_registry.RecoveryOwner(Inventory) == m_owner);
+    bool SlotUnchanged() => StorageUnchanged() && Inventory.GetSlotValue(Slot) == Expected && ScInventoryTransaction.Revision(Inventory) == InventoryRevision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot)
         && (m_registry.RecoveryOwner is null || Holder == ScGunHolders.Key(Inventory, Slot));
 
     public ScGunResult Commit(Action<ScGunRecord> change, int ammo = 0, int cost = 0, IReadOnlyDictionary<int, int> materials = null) {
@@ -150,7 +153,7 @@ public sealed class ScGunMutation {
                 else { journal.RemoveExact(Slot, Expected, 1); journal.AddExact(Slot, replacement, 1); }
             }
             // Existing records update in place: no gratuitous removal and re-addition of the gun each shot.
-            if (Inventory.GetSlotValue(Slot) != replacement || !ScInventoryTransaction.IsWeaponSlot(Inventory, Slot) || !ReferenceEquals(ScGunRegistry.Current, m_registry))
+            if (!StorageUnchanged() || Inventory.GetSlotValue(Slot) != replacement || !ScInventoryTransaction.IsWeaponSlot(Inventory, Slot) || !ReferenceEquals(ScGunRegistry.Current, m_registry))
                 throw new InvalidOperationException("Inventory/world changed during replacement");
             if (needsId) {
                 published = m_registry.Publish(draft);
@@ -165,6 +168,7 @@ public sealed class ScGunMutation {
             if (needsId) Id = published;
             Expected = replacement;
             AfterRecordWrite?.Invoke();
+            if (!StorageUnchanged()) throw new InvalidOperationException("Inventory storage changed during commit");
             ScInventoryTransaction.Changed(Inventory);
             if (KillToComplete is not null) m_registry.Kills.Complete(KillToComplete.EventId);
             return ScGunResult.Success;
@@ -174,7 +178,11 @@ public sealed class ScGunMutation {
             if (updated is not null) updated.CopyFrom(original);
             Id = originalId; Expected = originalExpected;
             if (published > 0) m_registry.Abandon(published, "inventory commit failed");
-            journal.Rollback(m_registry.Recovery, m_owner);
+            // A box may retune while the original storage remains live (safe pinned refund),
+            // or the channel/player destination may disappear entirely (durable claim only).
+            if (m_registry.RecoveryOwner is null || m_registry.RecoveryOwner(Inventory) == m_owner)
+                journal.Rollback(m_registry.Recovery, m_owner);
+            else journal.DeferRollback(m_registry.Recovery, m_owner);
             KnifeLog.Error("gun mutation rejected: " + e.Message);
             return Fail(m_registry.Recovery.HasPending(m_owner) ? ScGunResult.RecoveryPending : ScGunResult.InventoryRejected, e.Message);
         }
@@ -202,7 +210,7 @@ public sealed class ScGunMutation {
         ScGunResult.InsufficientMaterials => "材料或弹药不足",
         ScGunResult.RegistryFull => $"枪械编号空间已耗尽（上限 {GunSpec.LastId}）；需新编号的操作不可用，独立已有枪仍可使用",
         ScGunResult.InventoryRejected => "背包拒绝了这次修改，物品已退回",
-        ScGunResult.RecoveryPending => "有物品尚未归还，补偿已保留在本世界，库存可接收时会自动重试",
+        ScGunResult.RecoveryPending => "有物品尚未归还，补偿已保留；确认原库存后重试，无法确认时需核验恢复",
         ScGunResult.DuplicateUnresolved => "这把枪与另一把共用记录，且状态表已满，无法分离",
         ScGunResult.Busy => "正在处理另一次枪械操作",
         _ => "无效操作"

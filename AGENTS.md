@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed 2026-09-24: audit/fix Sushi inventory compatibility in source only; do not
+  package or install yet. Build with `-p:SkipScmodPackaging=true`. Actual Sushi sync channels
+  are a Dictionary, not IList; scan unselected channels and normalize creative person-box
+  proxies to their real inventories. Keep v5/schema6, records and third-party packages.
+  Never refund to a retuned/recreated channel by number alone: Sushi has no persistent
+  channel UUID. Retain ambiguous compensation for verified recovery. See
+  docs/sushi-inventory-fixes-2026-09-24.md for the actual-DLL regressions and boundaries.
+
 - User-directed 2026-09-21: Full 1.4.9 / tactical 1.3.2 adds player CT/T third-person
   gloves and moves appearance to workbench 功能 → 人物外观／更换手套. Use transparent
   thumbnails, large preview and explicit apply; preview/cancel must not mutate saved choice.

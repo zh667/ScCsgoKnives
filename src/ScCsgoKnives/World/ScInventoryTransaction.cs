@@ -9,11 +9,13 @@ public static class ScInventoryTransaction {
     public static long Revision(IInventory inventory) => inventory is null ? -1 : Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value;
     public static void Changed(IInventory inventory) { if (inventory is not null) Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value++; }
     public static int Count(IInventory inventory, int value) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
         int count = 0;
         if (inventory is not null) for (int i = 0; i < inventory.SlotsCount; i++) if (inventory.GetSlotValue(i) == value) count = (int)Math.Min(int.MaxValue, (long)count + inventory.GetSlotCount(i));
         return count;
     }
     public static bool IsWeaponSlot(IInventory inventory, int slot) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
         if (inventory is null || slot < 0 || slot >= inventory.SlotsCount) return false;
         // Creative slots represent an infinite source, not a stack of guns.
         // Only writable hotbar/backpack slots can hold changing weapon state.
@@ -22,6 +24,7 @@ public static class ScInventoryTransaction {
             : inventory.GetSlotCount(slot) == 1;
     }
     public static bool ReplaceWithCost(IInventory inventory, int slot, int expected, int replacement, int ammo, int cost) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
         if (!IsWeaponSlot(inventory, slot) || cost < 0
             || inventory.GetSlotValue(slot) != expected || inventory.GetSlotCapacity(slot, replacement) < 1) return false;
         if (inventory is ComponentCreativeInventory creative) {

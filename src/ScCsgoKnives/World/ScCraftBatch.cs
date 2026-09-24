@@ -24,7 +24,7 @@ public static class ScCraftBatch {
             ScInventoryTransaction.Changed(inventory);return true;
         } catch(Exception e) {
             if(journal is not null&&owner is not null) {
-                if(ReferenceEquals(storage,ScInventoryIdentity.Storage(inventory)))journal.Rollback(registry.Recovery,owner);
+                if(ReferenceEquals(storage,ScInventoryIdentity.Storage(inventory)) && (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))==owner)journal.Rollback(registry.Recovery,owner);
                 else journal.DeferRollback(registry.Recovery,owner);
             }
             KnifeLog.Warning("[CS_ITEM_USE] refused/rolled back: "+e.Message);return false;
@@ -42,6 +42,7 @@ public static class ScCraftBatch {
         return unit.ToDictionary(p=>p.Key,p=>p.Value>0?checked(p.Value*quantity):throw new ArgumentOutOfRangeException(nameof(unit)));
     }
     static Plan Prepare(IInventory inventory,int result,IReadOnlyDictionary<int,int> unit,int quantity,out string reason,int resultCount=1) {
+        inventory=ScInventoryIdentity.Inventory(inventory);
         reason="";
         if(inventory is null || quantity<1 || quantity>Maximum || result==0 || unit is null || resultCount<1) {reason="数量须为 1～100。";return null;}
         var plan=new Plan { Creative=inventory is ComponentCreativeInventory, Storage=ScInventoryIdentity.Storage(inventory) };
@@ -90,7 +91,8 @@ public static class ScCraftBatch {
             if(string.IsNullOrWhiteSpace(owner)||registry.Recovery.HasPending(owner))return false;
             var plan=Prepare(inventory,result,unit,quantity,out _,resultCount);if(plan is null)return false;
             void Stable() {
-                if(!ReferenceEquals(plan.Storage,ScInventoryIdentity.Storage(inventory)) || !ReferenceEquals(registry,ScGunRegistry.Current))
+                if(!ReferenceEquals(plan.Storage,ScInventoryIdentity.Storage(inventory)) || !ReferenceEquals(registry,ScGunRegistry.Current)
+                    || (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))!=owner)
                     throw new InvalidOperationException("Inventory storage changed during crafting");
             }
             Stable();
@@ -100,7 +102,7 @@ public static class ScCraftBatch {
             Stable();ScInventoryTransaction.Changed(inventory);return true;
         } catch(Exception e) {
             if(registry is not null && owner is not null && journal is not null) {
-                if(ReferenceEquals(originalStorage,ScInventoryIdentity.Storage(inventory)))journal.Rollback(registry.Recovery,owner);
+                if(ReferenceEquals(originalStorage,ScInventoryIdentity.Storage(inventory)) && (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))==owner)journal.Rollback(registry.Recovery,owner);
                 else journal.DeferRollback(registry.Recovery,owner);
             }
             KnifeLog.Warning("[GUN_CRAFT] batch refused/rolled back: "+e.Message);return false;

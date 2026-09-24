@@ -51,6 +51,7 @@ static class SushiInventoryRegression {
             Assembly Load(string name) { using var bytes = new MemoryStream(dlls[name]); return AssemblyLoadContext.Default.LoadFromStream(bytes); }
             var sushiBase = Load("SushiBase.dll"); var sushiTool = Load("SushiTool.dll");
             Check("actual-dlls", true, string.Join("; ", dlls.Select(d => d.Key + " SHA256=" + Convert.ToHexString(SHA256.HashData(d.Value)))));
+            results.AddRange(SushiSyncInventoryRegression.Run(mod, sushiBase, sushiTool));
             var total = RuntimeHelpers.GetUninitializedObject(sushiBase.GetType("Sushi.SubsystemSushiTotal", true));
             var miner = (ComponentMiner)RuntimeHelpers.GetUninitializedObject(typeof(ComponentMiner));
             var inventory = new Inventory(); miner.Inventory = inventory;

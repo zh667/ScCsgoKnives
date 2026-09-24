@@ -25,6 +25,9 @@ public static class ScGunHolders {
         string vault = ScInventoryIdentity.DurableVault(inventory);
         if (vault is not null) return vault;
         object storage = ScInventoryIdentity.Storage(inventory);
+        string sync = ScSushiInventory.RecoveryOwner(project, storage as IInventory);
+        if (sync is not null) return sync;
+        if (ScInventoryIdentity.Inventory(inventory) is null) return null;
         var players = project.FindSubsystem<SubsystemPlayers>(false);
         if (players is not null) foreach (var p in players.ComponentPlayers)
             if (ReferenceEquals(p.ComponentMiner?.Inventory, storage)) return $"player/{p.PlayerData.PlayerIndex}";
@@ -44,6 +47,10 @@ public static class ScGunHolders {
     }
     public static IInventory ResolveRecoveryOwner(Project project, string owner) {
         if (project is null || owner is null) return null;
+        if (ScSushiInventory.IsOwner(owner)) return ScSushiInventory.Resolve(project, owner);
+        // Old mutable-proxy receipts lack the original player/channel. Do not refund into
+        // whichever destination that box happens to select now; keep the saved claim intact.
+        if (ScSushiInventory.IsLegacyProxyOwner(owner)) return null;
         if (owner.StartsWith("logistics-vault/", StringComparison.Ordinal))
             return project.Entities.SelectMany(e => e.Components.OfType<IInventory>()).FirstOrDefault(i => ScInventoryIdentity.DurableVault(i) == owner);
         var players = project.FindSubsystem<SubsystemPlayers>(false);
@@ -68,8 +75,11 @@ public static class ScGunHolders {
         // Same coverage as API 1.9.3.1 SubsystemItemsScanner, without allocating every unrelated item
         // or enumerating a shared 20k-slot vault seven times. Only proven storage aliases are skipped.
         var storageSeen = new HashSet<object>(ReferenceEqualityComparer.Instance);
-        var inventories = project.Subsystems.OfType<IInventory>().Concat(project.Entities.SelectMany(e => e.Components.OfType<IInventory>()));
-        foreach (var inventory in inventories) {
+        var inventories = project.Subsystems.OfType<IInventory>().Concat(project.Entities.SelectMany(e => e.Components.OfType<IInventory>()))
+            .Concat(ScSushiInventory.Stored(project).Select(e => e.Inventory));
+        foreach (var source in inventories) {
+            var inventory = ScInventoryIdentity.Inventory(source);
+            if (inventory is null) continue;
             if (IsDormantPlayerInventory(inventory) || !storageSeen.Add(ScInventoryIdentity.Storage(inventory))) continue;
             int slots = inventory is ComponentCreativeInventory creative ? creative.OpenSlotsCount : inventory.SlotsCount;
             for (int slot = 0; slot < slots; slot++) foreach (var h in Of(inventory, slot, gunBlockIndex, seen)) yield return h;

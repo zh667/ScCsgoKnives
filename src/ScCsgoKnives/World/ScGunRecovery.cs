@@ -23,7 +23,7 @@ public sealed class ScGunRecovery {
     long m_next = 1;
     public int Count => m_batches.Count;
     public IEnumerable<Batch> Batches => m_batches;
-    public bool HasPending(string owner) => m_batches.Any(b => b.Owner == owner);
+    public bool HasPending(string owner) => m_batches.Any(b => b.Owner == owner || ScSushiInventory.Blocks(b.Owner, owner));
     public void Enqueue(string owner, IEnumerable<ScGunUndo> remaining) {
         var batch = new Batch { Id = m_next++, Owner = owner };
         batch.Steps.AddRange(remaining.Where(s => s.Count != 0).Select(s => s.Copy()));
@@ -91,7 +91,12 @@ public sealed class ScGunRecovery {
         try {
             foreach (var batch in m_batches.ToArray()) {
                 var inventory = resolve(batch.Owner);
-                if (inventory is null) continue; // player absent / container unloaded: keep the durable claim
+                if (inventory is null) {
+                    if (ScSushiInventory.IsOwner(batch.Owner) || ScSushiInventory.IsLegacyProxyOwner(batch.Owner))
+                        KnifeDiagnostics.WarnOnce("sushi-recovery-unresolved-" + batch.Owner,
+                            "[GUN_RECOVERY] Sushi refund retained: original backing inventory cannot be proven after reload/removal or from a legacy proxy receipt. Requires verified recovery; no refund sent to a guessed player/channel.");
+                    continue; // absent/ambiguous destination: keep the durable claim
+                }
                 bool done = Apply(inventory, batch.Steps);
                 ScInventoryTransaction.Changed(inventory);
                 if (!done) continue;

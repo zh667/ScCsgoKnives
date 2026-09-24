@@ -3,6 +3,13 @@ namespace Game;
 
 /// <summary>Verified proxy adapters only. Equal item contents or a GUID alone never imply aliasing.</summary>
 public static class ScInventoryIdentity {
+    /// <summary>Pin verified forwarding inventories, including their creative-slot semantics.
+    /// An unresolved known proxy is not safe to scan or mutate as an independent container.</summary>
+    public static IInventory Inventory(IInventory inventory) {
+        object storage = Storage(inventory);
+        if (ReferenceEquals(storage, inventory) && inventory?.GetType().FullName is "Sushi.ComponentSushiPersonBox" or "Sushi.ComponentSushiSyncBox") return null;
+        return storage as IInventory ?? inventory;
+    }
     public static string DurableVault(object inventory) {
         if (inventory?.GetType().FullName != "Logistics.ComponentStorageUnit" || ReferenceEquals(Storage(inventory), inventory)) return null;
         return inventory.GetType().GetProperty("VaultGuid")?.GetValue(inventory) is Guid id && id != Guid.Empty ? "logistics-vault/" + id.ToString("N") : null;
@@ -28,9 +35,12 @@ public static class ScInventoryIdentity {
         if (type.FullName is "Sushi.ComponentSushiSyncBox") {
             try {
                 object sync = type.GetField("m_subsystemSushiSyncBox", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(inventory);
-                int channel = (int)(type.GetField("channelIndex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(inventory) ?? 0);
-                object list = sync?.GetType().GetField("SushiSyncInventories", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(sync);
-                if (list is System.Collections.IList inventories && channel >= 0 && channel < inventories.Count && inventories[channel] is not null) return inventories[channel];
+                object channel = type.GetField("channelIndex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(inventory);
+                // Verified SushiTool DLL uses Dictionary<int,SushiSyncInventory>, not IList.
+                // Channel keys can be sparse; never substitute channel zero or bound by Count.
+                if (channel is int key && ScSushiInventory.Channels(sync) is { } channels
+                    && channels.Contains(key) && channels[key] is IInventory real) return real;
+                KnifeDiagnostics.WarnOnce("inventory-alias-sushi-sync-unresolved", "[GUN_STORAGE] Sushi sync-box channel unavailable or member contract changed; no guessed alias");
             } catch (Exception e) { KnifeDiagnostics.WarnOnce("inventory-alias-sushi-sync-error", "[GUN_STORAGE] Sushi sync-box mapping failed: " + e.GetBaseException().Message); }
         }
         if (!Resolvers.TryGetValue(type, out var resolve)) {

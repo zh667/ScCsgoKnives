@@ -6,6 +6,7 @@ public static class ScOwnedGunAttributes {
         public string Name => ScGunNames.Item(Snapshot) + $" · 第 {Slot + 1} 格";
     }
     public static bool TryRead(IInventory inventory, int slot, out Candidate gun) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
         gun = null;
         if (inventory is null || slot < 0 || slot >= inventory.SlotsCount || inventory.GetSlotCount(slot)<=0
             || inventory is ComponentCreativeInventory creative && slot >= creative.OpenSlotsCount) return false;
@@ -17,6 +18,7 @@ public static class ScOwnedGunAttributes {
         gun=new(slot,value,snapshot);return true;
     }
     public static Candidate[] Candidates(IInventory inventory) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
         if(inventory is null)return [];
         int count=inventory is ComponentCreativeInventory c ? Math.Min(c.OpenSlotsCount,c.SlotsCount) : inventory.SlotsCount;
         var guns=new List<Candidate>();

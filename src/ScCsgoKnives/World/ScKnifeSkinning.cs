@@ -10,6 +10,7 @@ public static class ScKnifeSkinning {
     public sealed record Quote(IInventory Inventory, object Storage, int Slot, int Value, int Replacement,
         bool Free, IReadOnlyDictionary<int,int> Cost);
     public static IEnumerable<Candidate> Candidates(IInventory inventory) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
         if(inventory is null)yield break;
         int slots=inventory is ComponentCreativeInventory?Math.Min(10,inventory.SlotsCount):inventory.SlotsCount;
         for(int i=0;i<slots;i++) {
@@ -57,7 +58,7 @@ public static class ScKnifeSkinning {
             else {journal.RemoveExact(quote.Slot,quote.Value,1);Stable();journal.AddExact(quote.Slot,quote.Replacement,1);}
             Stable();ScInventoryTransaction.Changed(inventory);return true;
         } catch(Exception e) {
-            if(journal is not null){if(ReferenceEquals(quote.Storage,ScInventoryIdentity.Storage(inventory)))journal.Rollback(registry.Recovery,owner);else journal.DeferRollback(registry.Recovery,owner);}
+            if(journal is not null){if(ReferenceEquals(quote.Storage,ScInventoryIdentity.Storage(inventory)) && registry.RecoveryOwner?.Invoke(inventory)==owner)journal.Rollback(registry.Recovery,owner);else journal.DeferRollback(registry.Recovery,owner);}
             KnifeLog.Warning("[KNIFE_SKIN] rolled back: "+e.Message);return false;
         } finally {ScGunMutation.Exit();}
     }
