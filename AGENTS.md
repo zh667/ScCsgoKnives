@@ -1,5 +1,11 @@
 # Project conventions
 
+- User-directed 2026-09-24 release: package Full and Lite comprehensive ZIP bundles,
+  each containing current core and tactical scmods (including built-in appearance).
+  Packaging is now authorized; installation is not. Preserve both PackageNames,
+  v5/schema6/rules7 and original assets. Target Lite below 100,000,000 bytes through
+  derived 512 textures/model optimization; keep gameplay DLLs identical across editions.
+
 - User-directed 2026-09-24: implement the gun balance/material plan in source only;
   do not package or install yet. Keep v5/schema6/rules7 and frozen IDs. Runtime rate
   x0.65, auto-snipers additionally x0.75, early shotgun compensation, independent

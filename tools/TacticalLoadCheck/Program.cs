@@ -9,7 +9,7 @@ using TemplatesDatabase;
 
 // Exercise the native archive scanner, loader registration and database type resolution.
 // Each mode runs in its own process, without compile-time references to any tested mod.
-if (args.Length != 5) throw new ArgumentException("TacticalLoadCheck <repo> <Content.zip> <tactical.scmod> <mode> <report>");
+if (args.Length is not (5 or 6)) throw new ArgumentException("TacticalLoadCheck <repo> <Content.zip> <tactical.scmod> <mode> <report> [core.scmod]");
 string root=Path.GetFullPath(args[0]), mode=args[3];
 Dispatcher.Initialize();
 AssemblyLoadContext.Default.Resolving += (context,name) => {
@@ -25,7 +25,7 @@ using var content=System.IO.Compression.ZipFile.OpenRead(args[1]);
 int failed=0;
 try {
     string coreVersion=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"src/ScCsgoKnives/modinfo.json"))).RootElement.GetProperty("Version").GetString();
-    var core=Package(Output($"[API1.9]CS武器{coreVersion}-作者ZH667-全量版.scmod"));
+    var core=Package(args.Length==6?args[5]:Output($"[API1.9]CS武器{coreVersion}-作者ZH667-全量版.scmod"));
     var tactical=Package(args[2]);
     var mods=new List<ModEntity>{core,tactical};
     bool complete=mode is "both" or "reversed" or "legacy" or "reload-disabled";

@@ -1,14 +1,14 @@
 {
   "Name": "CS武器 · 战术同伴拓展",
-  "Version": "1.3.2",
+  "Version": "1.4.0",
   "ApiVersion": "1.9.3.1",
   "ScVersion": "2.4.0.0",
   "Author": "zh667",
   "PackageName": "zh667.ScCsgoTactical",
-  "Description": "CS武器可选拓展：防爆盾、可装备同伴、敌对T小队与拆弹，支持第三人称换弹、切枪与检视。装备与挑战信标可在枪械台制作。五款CS2手套（磨损0.06）在枪械台→功能→人物外观／更换手套中预览选择，玩家CT/T第一、第三人称同步。已内置玩家T/CT外观；另装NekoMeko Model 1.1和Neorxna 1.4即可选择角色，未装不影响第一人称手套及同伴玩法。需CS武器1.4.9或以上。含独立实体及存档数据，请保留拓展或恢复安装前备份。",
+  "Description": "CS武器可选拓展：防爆盾、可装备同伴、敌对T小队与拆弹，支持第三人称换弹、切枪与检视。装备与挑战信标可在枪械台制作。五款CS2手套（磨损0.06）在枪械台→功能→人物外观／更换手套中预览选择，玩家CT/T第一、第三人称同步。已内置玩家T/CT外观；另装NekoMeko Model 1.1和Neorxna 1.4即可选择角色，未装不影响第一人称手套及同伴玩法。需CS武器1.5.0或以上。含独立实体及存档数据，请保留拓展或恢复安装前备份。",
   "Link": "https://github.com/zh667/ScCsgoKnives",
   "LoadOrder": 1020,
   "NonPersistentMod": false,
   "GameplayImpactLevel": "Turbo",
-  "Dependencies": {"zh667.ScCsgoKnives": "1.4.9"}
+  "Dependencies": {"zh667.ScCsgoKnives": "1.5.0"}
 }

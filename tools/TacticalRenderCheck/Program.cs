@@ -11,7 +11,7 @@ using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
-if(args.Length!=3)throw new ArgumentException("TacticalRenderCheck <Assets folder> <Content.zip> <output folder>");
+if(args.Length is not (3 or 4)||args.Length==4&&args[3]!="--actors-only")throw new ArgumentException("TacticalRenderCheck <Assets folder> <Content.zip> <output folder> [--actors-only]");
 string assets=Path.GetFullPath(args[0]),output=Path.GetFullPath(args[2]);Directory.CreateDirectory(output);
 using var content=ZipFile.OpenRead(args[1]);
 string Read(string suffix){using var r=new StreamReader(content.Entries.Single(e=>e.FullName.EndsWith(suffix)).Open());return r.ReadToEnd();}
@@ -57,7 +57,7 @@ Window.Frame+=()=>{if(done)return;done=true;try{
             if(phase<0&&(lo.Y<body.Position.Y-.15f||hi.Y<body.Position.Y+1.5f))throw new Exception(name+" is not standing above the ground");
         }
     }
-    foreach(string name in new[]{"radio","repair_item","defuser_item"}){
+    foreach(string name in args.Length==4?Array.Empty<string>():new[]{"radio","repair_item","defuser_item"}){
         using var stream=File.OpenRead(Path.Combine(assets,"Models/ScCsgoTactical/"+name+".glb"));using var model=Model.Load(GltfLoader.Load(stream),true);
         using var png=File.OpenRead(Path.Combine(assets,"Textures/ScCsgoTactical/"+name+".png"));using var texture=Texture2D.Load(Image.Load(png));
         caches["Models/ScCsgoTactical/"+name]=[model];caches["Textures/ScCsgoTactical/"+name]=[texture];TacticalItemMesh.Load(name);

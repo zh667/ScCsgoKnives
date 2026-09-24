@@ -1,0 +1,353 @@
+{
+  "bundles": [
+    {
+      "path": "[API1.9]CS武器1.5.0-含战术同伴1.4.0-全量总包.zip",
+      "bytes": 491129067,
+      "MB": 491.129,
+      "MiB": 468.377,
+      "sha256": "3e65ce7c45fe2d020cf6a05905a08414612b93a917d2e64da62faac2b3f37db0",
+      "members": {
+        "[API1.9]CS武器1.5.0-作者ZH667-全量版.scmod": {
+          "bytes": 382808551,
+          "sha256": "95c339e2aa68b4df2cf4f9068b8bbf5d45143971c7d58f758447c43d39cb5107"
+        },
+        "[API1.9]CS战术同伴拓展1.4.0-作者ZH667.scmod": {
+          "bytes": 108317391,
+          "sha256": "d51915401082c1d32541d45e1a56866d4b2d2a8d989faa239d96b3c25142bec7"
+        }
+      }
+    },
+    {
+      "path": "[API1.9]CS武器1.5.0-含战术同伴1.4.0-512轻量总包.zip",
+      "bytes": 94263117,
+      "MB": 94.263,
+      "MiB": 89.896,
+      "sha256": "7f7530d5eb9e38688a6cfd94988eace8a87bce2bd6fce82dae52845421ffc715",
+      "members": {
+        "[API1.9]CS武器1.5.0-作者ZH667-512轻量版.scmod": {
+          "bytes": 70818796,
+          "sha256": "5d798f301819071674c59c0dd735ecbc409eaf5c57b8814b07b0b2c9ceacafeb"
+        },
+        "[API1.9]CS战术同伴拓展1.4.0-作者ZH667-512轻量版.scmod": {
+          "bytes": 23441148,
+          "sha256": "730e81f85916b57898aa8c151f0b0513b6d784ef9470862f495d692b19ab15b6"
+        }
+      }
+    }
+  ],
+  "liteUnder100MB": true,
+  "comparisons": [
+    {
+      "full": "[API1.9]CS武器1.5.0-作者ZH667-全量版.scmod",
+      "lite": "[API1.9]CS武器1.5.0-作者ZH667-512轻量版.scmod",
+      "gameplayDlls": {
+        "ScCsgoKnives.dll": "89d2964dc136ad46ddf27cfd057dcfc6ad1dca69234b07f9cedeb44db87203b4"
+      },
+      "changedResources": 888,
+      "unchangedGlbBufferViews": 0
+    },
+    {
+      "full": "[API1.9]CS战术同伴拓展1.4.0-作者ZH667.scmod",
+      "lite": "[API1.9]CS战术同伴拓展1.4.0-作者ZH667-512轻量版.scmod",
+      "gameplayDlls": {
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553",
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a"
+      },
+      "changedResources": 59,
+      "unchangedGlbBufferViews": 167332
+    }
+  ],
+  "preservedTactical132Assets": 77,
+  "checks": {
+    "core-full": {
+      "count": 12224,
+      "failed": 0,
+      "reportSha256": "8c8131dfb0d90c4be920b47feb8d302100a9487d8d190324b95c0211f051c3ae"
+    },
+    "core-lite": {
+      "count": 12881,
+      "failed": 0,
+      "reportSha256": "49578db280d144ca0058a5316c8bf6276279b00b0c500a508e978f1bf68127ab"
+    },
+    "tactical-full": {
+      "count": 56,
+      "failed": 0,
+      "reportSha256": "e8551815d7293f128ab0ca7dd55770ba382a3c95b952412cb79cc30393abfa70"
+    },
+    "tactical-lite": {
+      "count": 56,
+      "failed": 0,
+      "reportSha256": "117fde2afc3fd292fa9376fdc75f681ffa6f9a807b033b0805e01de1281a337f"
+    },
+    "optionalLoading": [
+      {
+        "report": "load-Full-both.json",
+        "checks": 13,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-disabled.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-legacy.json",
+        "checks": 13,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-neo-only.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-nmm-only.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-none.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-outdated.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-reload-disabled.json",
+        "checks": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Full-reversed.json",
+        "checks": 13,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-both.json",
+        "checks": 13,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-disabled.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-legacy.json",
+        "checks": 13,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-neo-only.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-nmm-only.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-none.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-outdated.json",
+        "checks": 7,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-reload-disabled.json",
+        "checks": 14,
+        "failed": 0
+      },
+      {
+        "report": "load-Lite-reversed.json",
+        "checks": 13,
+        "failed": 0
+      }
+    ],
+    "balanceMigration": {
+      "count": 28627,
+      "failed": 0,
+      "testedCoreSha256": "89d2964dc136ad46ddf27cfd057dcfc6ad1dca69234b07f9cedeb44db87203b4",
+      "reportSha256": "90c40af92e85535991d57ec86c54579890de41b11de3aea7aecd86205c085dc5",
+      "baselines": [
+        {
+          "dll": "ScCsgoKnives.dll",
+          "metadata": {
+            "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
+            "Name": "CS武器",
+            "Version": "1.2.0",
+            "ApiVersion": "1.9.3.1",
+            "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台批量制作涂装维修、击杀计数器与50级成长、属性查询及手机触控自定义。支持生存与创造模式。已内置完整资源，安装本文件即可；非官方模组。无等级 C4 可设时5～300秒（默认20秒、中心伤害5000、半径32格），电击枪有效命中后可短暂眩晕目标。",
+            "ScVersion": "2.4.0.0",
+            "LoadOrder": 1010,
+            "NonPersistentMod": false,
+            "GameplayImpactLevel": "Turbo",
+            "Link": "https://github.com/zh667/ScCsgoKnives",
+            "Author": "zh667",
+            "PackageName": "zh667.ScCsgoKnives",
+            "Dependencies": {},
+            "Settings": [
+              {
+                "Id": "Weapons",
+                "Name": "CS 枪械",
+                "Title": "CS 枪械 · 模组设置",
+                "Description": "准星、操作绑定、触屏布局及击杀反馈。",
+                "Items": [
+                  {
+                    "Id": "Editor",
+                    "Name": "枪械与操作",
+                    "Description": "直接进入完整设置，修改后点击保存生效。",
+                    "Type": "System.Boolean",
+                    "Default": false,
+                    "Widget": "Game.ScGunModSettingsWidget"
+                  }
+                ]
+              }
+            ]
+          },
+          "file": "[API1.9]CS武器1.2.0-全量版.scmod",
+          "sha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95"
+        },
+        {
+          "dll": "ScCsgoKnives.dll",
+          "metadata": {
+            "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
+            "Name": "CS武器",
+            "Version": "1.0.0",
+            "ApiVersion": "1.9.2.1",
+            "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台制作涂装维修、击杀计数器与30级成长、属性查询及手机触控自定义。支持生存与创造模式。已包含完整资源；非官方模组。",
+            "ScVersion": "2.4.0.0",
+            "LoadOrder": 1010,
+            "NonPersistentMod": false,
+            "GameplayImpactLevel": "Turbo",
+            "Link": "https://github.com/zh667/ScCsgoKnives",
+            "Author": "zh667",
+            "PackageName": "zh667.ScCsgoKnives",
+            "Dependencies": {},
+            "Settings": []
+          },
+          "file": "[API1.9]CS武器1.0- 作者ZH667.scmod",
+          "sha256": "9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424"
+        }
+      ]
+    },
+    "liteNativeActorRender": [
+      {
+        "name": "ct",
+        "phase": -1,
+        "pixels": 39136,
+        "bones": 580,
+        "meshes": 5,
+        "min": "-0.424469,-0.0026855469,-0.75242615",
+        "max": "0.37830353,1.8246841,0.4069519"
+      },
+      {
+        "name": "ct",
+        "phase": 0,
+        "pixels": 39136,
+        "bones": 580,
+        "meshes": 5,
+        "min": "-0.424469,-0.0026855469,-0.75242615",
+        "max": "0.37830353,1.8246841,0.4069519"
+      },
+      {
+        "name": "ct",
+        "phase": 0.5,
+        "pixels": 50684,
+        "bones": 580,
+        "meshes": 5,
+        "min": "-0.4826126,-0.069107056,-0.3738861",
+        "max": "0.3982544,1.6317139,1.3087158"
+      },
+      {
+        "name": "ct",
+        "phase": 1,
+        "pixels": 40818,
+        "bones": 580,
+        "meshes": 5,
+        "min": "-0.4889145,0.0230484,-0.0027160645",
+        "max": "0.41710663,0.9773941,1.805542"
+      },
+      {
+        "name": "t",
+        "phase": -1,
+        "pixels": 37696,
+        "bones": 572,
+        "meshes": 5,
+        "min": "-0.38406372,-0.011390686,-0.75190735",
+        "max": "0.3745346,1.8052673,0.41732788"
+      },
+      {
+        "name": "t",
+        "phase": 0,
+        "pixels": 37696,
+        "bones": 572,
+        "meshes": 5,
+        "min": "-0.38406372,-0.011390686,-0.75190735",
+        "max": "0.3745346,1.8052673,0.41732788"
+      },
+      {
+        "name": "t",
+        "phase": 0.5,
+        "pixels": 46637,
+        "bones": 572,
+        "meshes": 5,
+        "min": "-0.42923737,-0.068229675,-0.3639984",
+        "max": "0.38898468,1.6336212,1.200119"
+      },
+      {
+        "name": "t",
+        "phase": 1,
+        "pixels": 33733,
+        "bones": 572,
+        "meshes": 5,
+        "min": "-0.45500946,0.012680054,-0.011398315",
+        "max": "0.39847565,0.95256805,1.7593536"
+      },
+      {
+        "name": "hostage",
+        "phase": -1,
+        "pixels": 37310,
+        "bones": 90,
+        "meshes": 3,
+        "min": "-0.39164734,-0.015914917,-0.6466675",
+        "max": "0.34516907,1.8095322,0.40496826"
+      },
+      {
+        "name": "hostage",
+        "phase": 0,
+        "pixels": 37310,
+        "bones": 90,
+        "meshes": 3,
+        "min": "-0.39164734,-0.015914917,-0.6466675",
+        "max": "0.34516907,1.8095322,0.40496826"
+      },
+      {
+        "name": "hostage",
+        "phase": 0.5,
+        "pixels": 42686,
+        "bones": 90,
+        "meshes": 3,
+        "min": "-0.43746948,-0.025413513,-0.33573914",
+        "max": "0.36709595,1.5814133,1.2500458"
+      },
+      {
+        "name": "hostage",
+        "phase": 1,
+        "pixels": 34644,
+        "bones": 90,
+        "meshes": 3,
+        "min": "-0.47776794,0.025047302,-0.015945435",
+        "max": "0.36442566,0.8989334,1.7720337"
+      }
+    ]
+  },
+  "boundaries": "Packaged-DLL and native GPU diagnostics only; no installation, player-world modification, actual game, Android, network or complete mod-combination acceptance."
+}

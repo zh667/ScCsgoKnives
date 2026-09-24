@@ -139,9 +139,9 @@ static class GunSkinRegression {
             foreach (DictionaryEntry e in cost) {
                 var v = e.Value.GetType();
                 int blank = (int)v.GetField("Item1").GetValue(e.Value), mech = (int)v.GetField("Item2").GetValue(e.Value), paint = (int)v.GetField("Item3").GetValue(e.Value);
-                priced &= blank == 0 && mech == 2 && paint == 8;
+                priced &= blank == 0 && mech == 2 && paint == 4;
             }
-            Check("tiers-priced", priced, $"{cost.Count} tiers, uniform mechanisms2 + paint8, plus diamonds2 checked in economy tests");
+            Check("tiers-priced", priced, $"{cost.Count} tiers, uniform mechanisms2 + paint4, plus diamond1 checked in economy tests");
 
             // The record schema that carries a finish must be the one the build writes.
             var registry = mod.GetType("Game.ScGunRegistry");

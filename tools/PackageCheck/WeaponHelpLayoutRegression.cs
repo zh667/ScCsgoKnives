@@ -709,11 +709,12 @@ static class WeaponHelpLayoutRegression {
                                 levelPreview.Invoke(screen, [level]);
                                 var damageLabels = bars.AllChildren.OfType<LabelWidget>().Where(l => l.Text.EndsWith(" 攻击力")).ToArray();
                                 float shown = float.Parse(damageLabels.First().Text.Split(' ')[0], System.Globalization.CultureInfo.InvariantCulture);
-                                correct &= Math.Abs(shown - basePower * (level == 0 ? 1.5f : 3f)) < .051f;
+                                float bonus = asset switch { "nova"=>21, "xm1014"=>12, "sawedoff"=>24, "mag7"=>18, _=>0 };
+                                correct &= Math.Abs(shown - (basePower+bonus*(1-level/20f)) * (level == 0 ? 1.5f : 3f)) < .051f;
                             }
                             recipe.Enter([selectedValue]); // skin catalogue -> recipe uses correct factory model and keeps source value
                             Check(tag + $"/skin-preview-{paint}", correct && (int)registryType.GetProperty("Count").GetValue(registryField.GetValue(null)) == recordCount,
-                                "skin icon/name/1.5x Lv0 and 3x Lv10; recipe reachable; no registry allocations while browsing");
+                                "skin icon/name/effective shotgun bonus with 1.5x Lv0 and 3x Lv10; recipe reachable; no registry allocations while browsing");
                         }
                     }
                     select.Invoke(screen, [0]);

@@ -28,11 +28,13 @@ static class TacticalRegression {
         object Call(string type,string method,params object[] args)=>T(type).GetMethod(method).Invoke(null,args);
         using var zip=ZipFile.OpenRead(dlcPath);
         using(var vanilla=ZipFile.OpenRead(content))using(var stream=vanilla.Entries.Single(e=>e.FullName.EndsWith("Simple.template.json",StringComparison.OrdinalIgnoreCase)).Open())AnimationTemplateManager.LoadFromJsonNode(JsonNode.Parse(stream));
-        byte[] Bytes(string path){using var s=zip.GetEntry(path)?.Open()??throw new Exception("Missing "+path);using var m=new MemoryStream();s.CopyTo(m);return m.ToArray();}
+        byte[] Bytes(string path){var entry=zip.GetEntry(path)??(path.EndsWith(".png")?zip.GetEntry(path[..^4]+".webp"):null);using var s=entry?.Open()??throw new Exception("Missing "+path);using var m=new MemoryStream();s.CopyTo(m);return m.ToArray();}
         Test("optional-package-identity-and-no-bundled-engine",()=>{
             var meta=JsonNode.Parse(Bytes("modinfo.json"));Require((string)meta["PackageName"]=="zh667.ScCsgoTactical","wrong package identity");
             var native=ModsManager.DeserializeJson(System.Text.Encoding.UTF8.GetString(Bytes("modinfo.json")));
-            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.9"))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.8")),"core dependency not enforced by engine");
+            using var coreZip=ZipFile.OpenRead(corePath);using var coreStream=coreZip.GetEntry("modinfo.json").Open();
+            string coreVersion=(string)JsonNode.Parse(coreStream)["Version"];
+            Require(!native.NonPersistentMod&&native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var dependency)&&dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse(coreVersion))&&!dependency.Satisfies(NuGet.Versioning.NuGetVersion.Parse("1.4.9")),"paired core version not enforced by engine");
             Require(zip.Entries.Where(e=>e.FullName.EndsWith(".dll")).Select(e=>e.FullName).SequenceEqual(new[]{"ScCsgoTactical.dll"}),"bundled dependency overwrites engine/core");
         });
         Test("glove-selection-player-isolation-and-xml",()=>{
