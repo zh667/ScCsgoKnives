@@ -117,7 +117,11 @@ The body already carries its attached pin/ring/handle; detached shared pin/spoon
 
 BF1 normal kill confirmation is extracted from the user-provided installation, `Sound/UI/UI_KillMessage_Wave`, chunk `28a7c346-7512-c4af-22b0-cedf75129c6e`. See `docs/bf1-feedback-source.json` and `tools/extract_bf1_feedback.py`. The full 2.521-second stereo sound is preserved and converted to Ogg.
 
-The supply atlas is encoded as RGBA with alpha 255; all decoded color pixels and its 256×128 size are identical to 0.27.0. Original weapon texture quality is unchanged.
+The supply atlas is encoded as RGBA with alpha 255; all decoded color pixels and its 256×128 size are identical to 0.27.0 in that release. The authored 2026-09-24 source revision below supersedes this atlas. Original weapon texture quality is unchanged.
+
+### 2026-09-24 authored supply models (source revision)
+
+`ScSupplyGeometry.cs` authors eight supply meshes and five radio visual variants. `tools/build_supply_surface.py` generates their shared opaque 512×256 atlas with 25 padded material/marking cells using deterministic drawing primitives. Geometry, icons and marks are authored here; no TaCZ models or artwork are imported. Active radios now reuse the core procedural mesh/atlas instead of the historical radio GLB; the old GLB/PNG remain preserved. CS2-imported repair kits, defusers and weapon assets are unchanged. See `docs/supply-models-2026-09-24.md` and its evidence JSON for source hashes, offline views and validation limits. No release package is claimed by this source revision.
 
 ### 0.28.1 clear kill chime
 

@@ -1,0 +1,503 @@
+{
+  "baselineCommit": "bb93e50",
+  "status": "source implementation; not installed or gameplay acceptance",
+  "before": [
+    {
+      "kind": 0,
+      "vertices": 648,
+      "triangles": 648,
+      "degenerate": 64,
+      "min": [
+        -0.2,
+        -0.45749998,
+        -0.125
+      ],
+      "max": [
+        0.26999998,
+        0.458,
+        0.125
+      ]
+    },
+    {
+      "kind": 1,
+      "vertices": 1152,
+      "triangles": 1152,
+      "degenerate": 320,
+      "min": [
+        -0.185,
+        -0.4005,
+        -0.185
+      ],
+      "max": [
+        0.185,
+        0.36150002,
+        0.185
+      ]
+    },
+    {
+      "kind": 2,
+      "vertices": 552,
+      "triangles": 552,
+      "degenerate": 128,
+      "min": [
+        -0.43,
+        -0.185,
+        -0.21
+      ],
+      "max": [
+        0.43,
+        0.20750001,
+        0.21
+      ]
+    },
+    {
+      "kind": 3,
+      "vertices": 936,
+      "triangles": 936,
+      "degenerate": 128,
+      "min": [
+        -0.41,
+        -0.21000001,
+        -0.235
+      ],
+      "max": [
+        0.39,
+        0.1225,
+        0.235
+      ]
+    },
+    {
+      "kind": 4,
+      "vertices": 384,
+      "triangles": 384,
+      "degenerate": 64,
+      "min": [
+        -0.17,
+        -0.41500002,
+        -0.12
+      ],
+      "max": [
+        0.17,
+        0.445,
+        0.1375
+      ]
+    },
+    {
+      "kind": 5,
+      "vertices": 1200,
+      "triangles": 1200,
+      "degenerate": 384,
+      "min": [
+        -0.25,
+        -0.3,
+        -0.25
+      ],
+      "max": [
+        0.315,
+        0.384,
+        0.32000002
+      ]
+    },
+    {
+      "kind": 6,
+      "vertices": 480,
+      "triangles": 480,
+      "degenerate": 0,
+      "min": [
+        -0.49,
+        -0.5,
+        -0.43
+      ],
+      "max": [
+        0.49,
+        0.505,
+        0.43
+      ]
+    },
+    {
+      "kind": 7,
+      "vertices": 624,
+      "triangles": 624,
+      "degenerate": 192,
+      "min": [
+        -0.315,
+        -0.31,
+        -0.315
+      ],
+      "max": [
+        0.315,
+        0.33,
+        0.335
+      ]
+    }
+  ],
+  "after": [
+    {
+      "kind": 0,
+      "vertices": 912,
+      "triangles": 608,
+      "degenerate": 0,
+      "min": [
+        -0.235,
+        -0.466,
+        -0.1225
+      ],
+      "max": [
+        0.23,
+        0.46,
+        0.1225
+      ]
+    },
+    {
+      "kind": 1,
+      "vertices": 1848,
+      "triangles": 1232,
+      "degenerate": 0,
+      "min": [
+        -0.179,
+        -0.373,
+        -0.179
+      ],
+      "max": [
+        0.179,
+        0.316,
+        0.179
+      ]
+    },
+    {
+      "kind": 2,
+      "vertices": 1944,
+      "triangles": 1296,
+      "degenerate": 0,
+      "min": [
+        -0.425,
+        -0.17,
+        -0.218
+      ],
+      "max": [
+        0.425,
+        0.1805,
+        0.22
+      ]
+    },
+    {
+      "kind": 3,
+      "vertices": 3276,
+      "triangles": 2184,
+      "degenerate": 0,
+      "min": [
+        -0.39,
+        -0.19999999,
+        -0.22
+      ],
+      "max": [
+        0.39,
+        0.12,
+        0.22
+      ]
+    },
+    {
+      "kind": 4,
+      "vertices": 1596,
+      "triangles": 1064,
+      "degenerate": 0,
+      "min": [
+        -0.185,
+        -0.3775,
+        -0.1415
+      ],
+      "max": [
+        0.2,
+        0.4495,
+        0.1415
+      ]
+    },
+    {
+      "kind": 5,
+      "vertices": 3552,
+      "triangles": 2368,
+      "degenerate": 0,
+      "min": [
+        -0.216,
+        -0.272,
+        -0.3
+      ],
+      "max": [
+        0.258,
+        0.285,
+        0.333
+      ]
+    },
+    {
+      "kind": 6,
+      "vertices": 3072,
+      "triangles": 2048,
+      "degenerate": 0,
+      "min": [
+        -0.49,
+        -0.5,
+        -0.43
+      ],
+      "max": [
+        0.49,
+        0.49449998,
+        0.438
+      ]
+    },
+    {
+      "kind": 7,
+      "vertices": 2892,
+      "triangles": 1928,
+      "degenerate": 0,
+      "min": [
+        -0.29266346,
+        -0.30249998,
+        -0.281
+      ],
+      "max": [
+        0.29266348,
+        0.38549998,
+        0.281
+      ]
+    },
+    {
+      "kind": 8,
+      "vertices": 2772,
+      "triangles": 1848,
+      "degenerate": 0,
+      "min": [
+        -0.10657499,
+        -0.16624999,
+        -0.05845
+      ],
+      "max": [
+        0.098,
+        0.22574998,
+        0.05705
+      ]
+    },
+    {
+      "kind": 9,
+      "vertices": 2772,
+      "triangles": 1848,
+      "degenerate": 0,
+      "min": [
+        -0.10657499,
+        -0.16624999,
+        -0.05845
+      ],
+      "max": [
+        0.098,
+        0.22574998,
+        0.05705
+      ]
+    },
+    {
+      "kind": 10,
+      "vertices": 2772,
+      "triangles": 1848,
+      "degenerate": 0,
+      "min": [
+        -0.10657499,
+        -0.16624999,
+        -0.05845
+      ],
+      "max": [
+        0.098,
+        0.22574998,
+        0.05705
+      ]
+    },
+    {
+      "kind": 11,
+      "vertices": 2772,
+      "triangles": 1848,
+      "degenerate": 0,
+      "min": [
+        -0.10657499,
+        -0.16624999,
+        -0.05845
+      ],
+      "max": [
+        0.098,
+        0.22574998,
+        0.05705
+      ]
+    },
+    {
+      "kind": 12,
+      "vertices": 2772,
+      "triangles": 1848,
+      "degenerate": 0,
+      "min": [
+        -0.10657499,
+        -0.16624999,
+        -0.05845
+      ],
+      "max": [
+        0.098,
+        0.22574998,
+        0.05705
+      ]
+    }
+  ],
+  "nativeCpuDrawing": {
+    "nativeDraws": 52,
+    "radioMappings": true,
+    "distinctSquadLabels": true,
+    "zeroLightUi": true,
+    "scope": "native CPU batching; no GPU upload, game world or installed package"
+  },
+  "renderer": {
+    "renderer": "NVIDIA GeForce RTX 3060 Laptop GPU/PCIe/SSE2",
+    "source": "actual runtime C# mesh export; authored atlas",
+    "caveat": "offline orthographic rendering; not game, device or hand-contact acceptance",
+    "kinds": [
+      9,
+      10,
+      11,
+      12,
+      2,
+      3,
+      4,
+      5,
+      7,
+      6,
+      0,
+      1
+    ]
+  },
+  "atlas": {
+    "size": [
+      512,
+      256
+    ],
+    "format": "RGBA",
+    "alpha": 255,
+    "deterministicRegeneration": true,
+    "sha256": "f90245f25b7ebd39fc68e6a0ab56a3d86a9de4077e646ab010df845dd4a76eed"
+  },
+  "sourceHashes": {
+    "src/ScCsgoKnives/Blocks/ScSupplyGeometry.cs": "2d0670ecb53af173dec5067d4d19dda94b4e31acad4bd0bb34ea6e9ae5a0a7bc",
+    "src/ScCsgoKnives/Blocks/ScSurvivalMesh.cs": "832e3803df02f66e7990ade867c206ea86061fddec63cc5daed1bcd16617ce8f",
+    "src/ScCsgoTactical/TacticalBlocks.cs": "526a964b26cd9bc103b5009285ffc821ff89a80b7b505ad2ee98f60084c5e4cd",
+    "tools/build_supply_surface.py": "8d8a047c6dd79961329dd3e1810dce2cf0632b9c73d67b8a1d5835850b6f9f3b",
+    "tools/build_survival_polish_assets.py": "d14bff44ed754395d9ee694e1728f7363b530af963bdada0de63e4d89abaa013",
+    "tools/render_supply_review.py": "3229061d42b4d50553ed090547e5b73763828778c8283273662e33fa4aef8e49",
+    "tools/SupplyModelCheck/Program.cs": "1fdede3ea8bd781cda7592726275e2f77e79659b7db29898f5ddb6b0580aa6f6",
+    "src\\ScCsgoKnives\\Assets\\Textures\\ScCsgoKnives\\survival_surface.png": "f90245f25b7ebd39fc68e6a0ab56a3d86a9de4077e646ab010df845dd4a76eed",
+    "tools/SupplyModelCheck/SupplyModelCheck.csproj": "ac72b6f5b07ce0387ad09a5ba4fe5f06aeafa8cb8f11daded855c81518869b49",
+    "tools/PackageCheck/TacticalRegression.cs": "c290becbd47173134a9ccf502a5211e961428fcba206f941b3dd80d74a63beac"
+  },
+  "protectedFilesIdenticalToBaseline": {
+    "src/ScCsgoTactical/Assets/Models/ScCsgoTactical/radio.glb": "8a1be3802039724da348c64c72f322009b50d043eb43dab57ac76b620020317f",
+    "src/ScCsgoTactical/Assets/Textures/ScCsgoTactical/radio.png": "c438db31488738cbe0432b15f17e508bcb8a8ed9e3dee794ab0fe2da89a6d4d4",
+    "src/ScCsgoTactical/Assets/Models/ScCsgoTactical/defuser_item.glb": "e076baec7f0ad64d402698c0f5818f944f5683a7c5e36f3d41abb13e10612a9a",
+    "src/ScCsgoTactical/Assets/Textures/ScCsgoTactical/defuser_item.png": "cc5a6d105beaec04bb8c64333310326ba450dd00870665fd1453b171b898340e",
+    "src/ScCsgoTactical/Assets/Models/ScCsgoTactical/repair_item.glb": "297d0b0b1a766a220298341596dc05646e5a633d44d7b6762ead9ded18cb3c52",
+    "src/ScCsgoTactical/Assets/Textures/ScCsgoTactical/repair_item.png": "b9d7705eb41a929946c12705a8fb680c863f9364d61900cde3caff036c17c521",
+    "src/ScCsgoKnives/Blocks/ScWeaponWorkbenchBlock.cs": "8cf1a0eeaa5a5dd0de77eec60c169dd33186e52b314a7d1e138821a782fbe90b",
+    "src/ScCsgoKnives/Blocks/ScWeaponMaterialBlock.cs": "26b7b868c3271655f2a8962e5545eec4ebed385a0f23e839ff630d9d540eb99d"
+  },
+  "builtAssemblies": {
+    "src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll": "485cc77b990e652efcd0da43258e837ede47b374d6ddccc508f1953ffbfa91f0",
+    "src/ScCsgoTactical/bin/Release/net10.0/ScCsgoTactical.dll": "7a11f24b966cba9abd28ce08436d1cd6617310baaeecc7f4dcfa7141af430be8"
+  },
+  "beforeExportHashes": {
+    "item0.json": "20fcd67920e72c10a995c1d85b25cddf193801a5ba50e82d60f18767a0b6b957",
+    "item1.json": "abeefda3dd4267c360f2caa7684a3037565199f78acf4325278487e106f8a110",
+    "item2.json": "963d1992ee735f7b8d60164feef32b9b1d6915d06cbe9ffc90dc99c49e2abb7d",
+    "item3.json": "327f92859b03767b21afdac1a0cafcdda569237c0980119d168ad518225860af",
+    "item4.json": "5d506ad64c6a2a0cde7beff3dc526e3167849b14085cc2237cc51a7ae5bc9124",
+    "item5.json": "03763bf4a92c752fd3fc8e3063a10f6fdf2fd261f5757f7352150ae84b84f295",
+    "item6.json": "2ba2530cb55c106b1589a5b7591246ff639c8914fdace23bda3a152ef25d41ba",
+    "item7.json": "518688f818fcd4106f889ea9bda1cda6b78965a459d2b87903b2a77338608b5a"
+  },
+  "existingPolishChecks": [
+    {
+      "name": "polish/muzzle-deferred-camera-frame",
+      "ok": true,
+      "detail": "muzzle-deferred-camera-frame"
+    },
+    {
+      "name": "polish/creative-cost/False",
+      "ok": true,
+      "detail": "creative-cost/False"
+    },
+    {
+      "name": "polish/creative-cost/True",
+      "ok": true,
+      "detail": "creative-cost/True"
+    },
+    {
+      "name": "polish/closed-volume/0",
+      "ok": true,
+      "detail": "closed-volume/0"
+    },
+    {
+      "name": "polish/closed-volume/1",
+      "ok": true,
+      "detail": "closed-volume/1"
+    },
+    {
+      "name": "polish/closed-volume/2",
+      "ok": true,
+      "detail": "closed-volume/2"
+    },
+    {
+      "name": "polish/closed-volume/3",
+      "ok": true,
+      "detail": "closed-volume/3"
+    },
+    {
+      "name": "polish/closed-volume/4",
+      "ok": true,
+      "detail": "closed-volume/4"
+    },
+    {
+      "name": "polish/closed-volume/5",
+      "ok": true,
+      "detail": "closed-volume/5"
+    },
+    {
+      "name": "polish/closed-volume/6",
+      "ok": true,
+      "detail": "closed-volume/6"
+    },
+    {
+      "name": "polish/effect-budget/0",
+      "ok": true,
+      "detail": "effect-budget/0"
+    },
+    {
+      "name": "polish/effect-budget/22",
+      "ok": true,
+      "detail": "effect-budget/22"
+    },
+    {
+      "name": "polish/effect-budget/45",
+      "ok": true,
+      "detail": "effect-budget/45"
+    },
+    {
+      "name": "polish/flash-accessibility",
+      "ok": true,
+      "detail": "flash-accessibility"
+    },
+    {
+      "name": "polish/blast-expires",
+      "ok": true,
+      "detail": "blast-expires"
+    },
+    {
+      "name": "polish/smoke-boundary-fade",
+      "ok": true,
+      "detail": "smoke-boundary-fade"
+    },
+    {
+      "name": "polish/smoke-distance-budget",
+      "ok": true,
+      "detail": "smoke-distance-budget"
+    }
+  ]
+}

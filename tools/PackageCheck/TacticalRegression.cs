@@ -173,14 +173,22 @@ static class TacticalRegression {
                     using var png=new MemoryStream(Bytes("Assets/Textures/ScCsgoTactical/"+name+".png"));Require(Image.Load(png).Pixels.All(p=>p.A==255),"unexpected transparent item atlas");
                     items[name]=(mesh,Blank<Texture2D>());
                 }
-                var squad=(Block)Activator.CreateInstance(T("ScTacticalSquadBlock"));squad.BlockIndex=709;BlocksManager.Blocks[709]=squad;BlocksManager.BlockTypeToIndex[squad.GetType()]=709;
-                Require(squad.GetCreativeValues().Count()==2,"missing three/five-member beacons");
-                foreach(var block in new[]{BlocksManager.Blocks[706],BlocksManager.Blocks[707],squad})foreach(int value in block.GetCreativeValues())foreach(var mode in Enum.GetValues<DrawBlockMode>()){
-                    var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
-                    var vertices=renderer.TexturedBatches.SelectMany(b=>b.TriangleVertices).ToArray();
-                    Require(vertices.Length>24&&vertices.All(v=>float.IsFinite(v.Position.X+v.Position.Y+v.Position.Z)&&v.TexCoord.X>=0&&v.TexCoord.X<=1&&v.TexCoord.Y>=0&&v.TexCoord.Y<=1),"invalid 3D item draw");
-                    Require(block.DefaultCategory=="CS武器","wrong creative category");
-                }
+                // New authored radios share the core atlas; retain legacy GLB checks above
+                // and initialize the active radio cache without uploading a GPU texture.
+                var surfaceField=C("ScSurvivalMesh").GetField("s_surface",BindingFlags.NonPublic|BindingFlags.Static);
+                var previousSurface=surfaceField.GetValue(null);
+                try {
+                    var loadRadios=T("TacticalItemMesh").GetMethod("LoadRadios");
+                    if(loadRadios!=null){surfaceField.SetValue(null,Blank<Texture2D>());loadRadios.Invoke(null,null);}
+                    var squad=(Block)Activator.CreateInstance(T("ScTacticalSquadBlock"));squad.BlockIndex=709;BlocksManager.Blocks[709]=squad;BlocksManager.BlockTypeToIndex[squad.GetType()]=709;
+                    Require(squad.GetCreativeValues().Count()==2,"missing three/five-member beacons");
+                    foreach(var block in new[]{BlocksManager.Blocks[706],BlocksManager.Blocks[707],squad})foreach(int value in block.GetCreativeValues())foreach(var mode in Enum.GetValues<DrawBlockMode>()){
+                        var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
+                        var vertices=renderer.TexturedBatches.SelectMany(b=>b.TriangleVertices).ToArray();
+                        Require(vertices.Length>24&&vertices.All(v=>float.IsFinite(v.Position.X+v.Position.Y+v.Position.Z)&&v.TexCoord.X>=0&&v.TexCoord.X<=1&&v.TexCoord.Y>=0&&v.TexCoord.Y<=1),"invalid 3D item draw");
+                        Require(block.DefaultCategory=="CS武器","wrong creative category");
+                    }
+                    } finally {surfaceField.SetValue(null,previousSurface);}
             });
             ComponentInventoryBase Inv(){var inv=(ComponentInventoryBase)Activator.CreateInstance(T("ComponentTacticalInventory"));inv.Load(new ValuesDictionary{{"SlotsCount",5},{"Slots",new ValuesDictionary()}},null);return inv;}
             Test("seven-recipes-no-hostage-stable-ids-craft-and-refusal",()=>{

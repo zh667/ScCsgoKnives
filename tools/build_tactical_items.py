@@ -1,6 +1,9 @@
 """Bake CS2 defuser/toolbox into static inventory meshes; author a portable beacon radio.
 
 Source exports remain untouched. Textures are atlased, opaque and resolved at Block.Initialize.
+The radio GLB is retained for historical diagnostics. Active radios now use
+ScSupplyGeometry and build_supply_surface.py; rebuilding this legacy GLB does not
+change the active procedural radio.
 """
 from pathlib import Path
 import io,json,struct,hashlib
