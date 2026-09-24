@@ -36,8 +36,8 @@ public static class ScWorkbenchExtension {
 
         Add("ammo-magazine", "通用弹匣 ×2", "弹药", () => ScAmmoBlock.Value(ScAmmoBlock.Magazine), 1,
             [("ironingot",1),("copperingot",2),("gunpowder",3)], 2);
-        Add("ammo-shell", "霰弹 ×8", "弹药", () => ScAmmoBlock.Value(ScAmmoBlock.Shell), 1,
-            [("ironingot",1),("copperingot",1),("gunpowder",2),("canvas",1)], 8);
+        Add("ammo-shell", "霰弹 ×12", "弹药", () => ScAmmoBlock.Value(ScAmmoBlock.Shell), 1,
+            [("ironingot",1),("copperingot",1),("gunpowder",2),("canvas",1)], 12);
         Add("c4", "C4", "装备", () => ScC4Block.Value, 4,
             [("gunpowder",24),("copperingot",4),("sccsgomaterial:0",2),("sccsgomaterial:1",1)]);
 

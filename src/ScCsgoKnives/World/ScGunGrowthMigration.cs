@@ -12,8 +12,8 @@ namespace Game;
 /// without pretending kills happened.
 ///
 /// The conversion is applied once, at load, and marks the record with the current RulesVersion so it never runs
-/// twice. Ammunition, durability, silencer, finish and an in-progress charge are all conserved by the same rules a
-/// normal level change uses.</summary>
+/// twice. Ammunition, durability, silencer, finish and an in-progress charge are conserved; a version upgrade preserves charge seconds while an ordinary level
+/// change preserves the remaining fraction.</summary>
 public static class ScGunGrowthMigration {
     public static void Convert(ScGunRecord r, double now, bool grows, int sourceSchema) {
         if (r is null) return;
@@ -69,13 +69,11 @@ public static class ScGunGrowthMigration {
         r.MaxDurability = newMax;
         int capacity = ScGunGrowth.Capacity(r.Variant, level);
         if (r.Rounds > capacity) { r.ReserveOverflowRounds += r.Rounds - capacity; r.Rounds = capacity; }
-        if (r.RechargeReadyAt >= 0) {
-            float oldCycle = r.RechargeCycleSeconds > 0 ? r.RechargeCycleSeconds : LegacyCycle(spec, r.AppliedGrowthLevel, oldRules);
-            float newCycle = ScGunGrowth.RechargeSeconds(spec, level);
-            r.RechargeReadyAt = now + ScGunGrowth.ScaleRemaining(Math.Max(0, r.RechargeReadyAt - now), oldCycle, newCycle);
-            r.RechargeCycleSeconds = newCycle;
-        }
-        else if (r.RechargeCycleSeconds > 0) r.RechargeCycleSeconds = ScGunGrowth.RechargeSeconds(spec, level);
+        // Upgrading preserves the seconds still owed by an already-running charge, including
+        // its saved cycle. Only a subsequent shot starts the newly balanced cycle. This also
+        // applies when a thirty-level gun receives its equivalent fifty-level growth level.
+        if (r.RechargeReadyAt >= 0 && r.RechargeCycleSeconds <= 0)
+            r.RechargeCycleSeconds = LegacyCycle(spec, r.AppliedGrowthLevel, oldRules);
         r.AppliedGrowthLevel = level;
         r.PendingGrowthLevel = ScGunGrowth.NoPending;
     }
@@ -83,7 +81,11 @@ public static class ScGunGrowthMigration {
     /// <summary>The charge cycle an older rule set used, for a gun whose stored cycle is absent.</summary>
     public static float LegacyCycle(GunSpec spec, int level, int rules) {
         if (spec is null || spec.RechargeSeconds <= 0) return 0;
-        if (rules >= 6) return ScGunGrowth.RechargeSeconds(spec, ScGunGrowth.Clamp(level));
+        if (rules >= 6) {
+            int l = ScGunGrowth.Clamp(level);
+            return spec.RechargeSeconds * (1f - .05f * Math.Min(l,10) - .02f * Math.Clamp(l-10,0,10)
+                - .01f * Math.Clamp(l-20,0,10) - .005f * Math.Clamp(l-30,0,10) - .005f * Math.Clamp(l-40,0,10));
+        }
         double factor = rules == 5
             ? 1 - .05 * Math.Min(level, 10) - .02 * Math.Clamp(level - 10, 0, 10) - .01 * Math.Clamp(level - 20, 0, 10)
             : 1 - .05 * Math.Min(level, 10) - .025 * Math.Clamp(level - 10, 0, 10) - .015 * Math.Clamp(level - 20, 0, 10);

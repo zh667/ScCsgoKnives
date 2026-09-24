@@ -25,7 +25,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
     int m_instanceValue;          // the item the player came from, when they came from one
     int m_previewLevel = -1;      // -1 follows the real level; never writes to the gun
     readonly List<Widget> m_futureRows = [];
-    ButtonWidget m_levelDown, m_levelUp;
+    ButtonWidget m_levelDown, m_levelUp, m_levelDown10, m_levelUp10;
     LabelWidget m_previewNotice;
     bool m_built, m_narrow, m_singleBars;
     bool m_invalidEntry;
@@ -158,13 +158,18 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_levelDown = ScGunUi.Button("−", 48);
         m_level = ScGunUi.Button("预览 Lv0", 150);
         m_levelUp = ScGunUi.Button("+", 48);
+        m_levelDown10 = ScGunUi.Button("−10", 68);
+        m_levelUp10 = ScGunUi.Button("+10", 68);
+        if(!narrow)levels.Children.Add(m_levelDown10);
         levels.Children.Add(m_levelDown); levels.Children.Add(m_level); levels.Children.Add(m_levelUp);
+        if(!narrow)levels.Children.Add(m_levelUp10);
         var identityHost = new CanvasWidget { Size = new Vector2(float.PositiveInfinity, -1) };
         identityHost.Children.Add(m_identity);
         head.Children.Add(identityHost);
         var details = new StackPanelWidget { Direction = LayoutDirection.Vertical };
         details.Children.Add(head);
         details.Children.Add(levels);
+        if(narrow){var quick=new StackPanelWidget{Direction=LayoutDirection.Horizontal,HorizontalAlignment=WidgetAlignment.Center};quick.Children.Add(m_levelDown10);quick.Children.Add(m_levelUp10);details.Children.Add(quick);}
         m_previewNotice = ScGunUi.Note("");
         details.Children.Add(m_previewNotice);
         m_bars.ParentWidget?.Children.Remove(m_bars);
@@ -233,6 +238,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         int actualLevel = EffectiveGunStats.LevelOf(m_value);
         m_level.Text = $"预览 Lv{level} / {ScGunGrowth.MaxLevel}";
         m_levelDown.IsEnabled = level > 0; m_levelUp.IsEnabled = level < ScGunGrowth.MaxLevel;
+        m_levelDown10.IsEnabled = level > 0; m_levelUp10.IsEnabled = level < ScGunGrowth.MaxLevel;
         m_previewNotice.Text = ScGunAttributes.CounterUnlockNotice + $"\n实际 Lv{actualLevel} · −/+ 切换，点等级回到实际等级。"
             + (level != actualLevel ? "\n仅预览，不改变枪械等级、弹量或存档。" : "")
             + (level > actualLevel ? " 超出当前等级的变化项会柔和闪烁。" : "")
@@ -297,6 +303,8 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         if (EffectiveGunStats.TrySnapshotValue(m_value, out var current) && current.Revision != m_lastRevision) Refresh();
         if (m_levelDown.IsClicked) PreviewLevel(Level() - 1);
         if (m_levelUp.IsClicked) PreviewLevel(Level() + 1);
+        if (m_levelDown10.IsClicked) PreviewLevel(Level() - 10);
+        if (m_levelUp10.IsClicked) PreviewLevel(Level() + 10);
         if (m_level.IsClicked) { m_previewLevel = -1; Refresh(); }
         // Slow, shallow alpha pulse: text remains readable at every point, no sharp flashes.
         int alpha = (int)(210 + 45 * Math.Sin(Time.RealTime * Math.PI));

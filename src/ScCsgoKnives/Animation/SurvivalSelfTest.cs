@@ -85,7 +85,7 @@ public static class SurvivalSelfTest {
         Test("craft-full-inventory-no-charge", () => { var i = Setup(0, 5); for (int n = 2; n < 8; n++) i.AddSlotItems(n, 901, 1); return !ScWeaponCrafting.TryCraft(i, 902, new Dictionary<int,int> { [ammo] = 3 }) && i.Counts[1] == 5; });
         Test("craft-atomic-success", () => { var i = Setup(0, 5); return ScWeaponCrafting.TryCraft(i, 902, new Dictionary<int,int> { [ammo] = 3 }) && i.Counts[1] == 2 && i.Values[2] == 902 && i.Counts[2] == 1; });
         Test("craft-rollback", () => { var i = Setup(0, 5); i.AddSlotItems(2, 901, 1); i.RefuseSlot = 2; return !ScWeaponCrafting.TryCraft(i, 902, new Dictionary<int,int> { [ammo] = 3, [901] = 1 }) && i.Counts[1] == 5 && i.Counts[2] == 1; });
-        Test("craft-all57-new-gates", () => ScWeaponCrafting.All.Length == 57 && ScWeaponCrafting.All.All(e => e.Level >= 1 && e.Level <= 12 && e.B > 0 && e.H == (e.Knife ? 1 : 2)));
+        Test("craft-all57-new-gates", () => ScWeaponCrafting.All.Length == 57 && ScWeaponCrafting.All.All(e => e.Level >= 1 && e.Level <= 12 && e.B > 0 && e.H == (e.Knife || e.Name is "glock18" or "hkp2000" or "p250" or "usp_silencer" ? 1 : 2)));
         Test("knives-shared-recovery", () => { var k = new ScKnifeStrike(); return k.Start(0, true) && !k.Start(.1, false) && !k.TakeHit(.1) && k.TakeHit(.3) && !k.TakeHit(.3) && !k.Start(.9, false) && k.Start(1, false); });
         Test("knives-cancel-keeps-recovery", () => { var k = new ScKnifeStrike(); k.Start(0, true); k.Cancel(); return !k.TakeHit(.4) && !k.Start(.5, false) && k.Start(1, false); });
         foreach (string knife in CsmcKnifeRig.FrozenKnifeOrder)
@@ -435,7 +435,7 @@ public static class SurvivalSelfTest {
                 && ScGunSkinCatalog.Find(51).Key == "am_lightning_awp" && ScGunSkinCatalog.Find(9999) is null;
             bool fits = ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), AwpVariant())
                 && !ScGunSkinCatalog.Fits(SkinOf("am_lightning_awp"), Array.FindIndex(GunSpec.All, g => g.Name == "ak47"));
-            bool tiers = ScGunSkinCatalog.Cost.Values.All(v => v == (0, 2, 8)) && ScGunSkinCatalog.RemovalCost == (0, 0, 2);
+            bool tiers = ScGunSkinCatalog.Cost.Values.All(v => v == (0, 2, 4)) && ScGunSkinCatalog.RemovalCost == (0, 0, 1);
             bool names = ScGunSkinCatalog.Material("awp", 51) == "awp_hd__am_lightning_awp" && ScGunSkinCatalog.Material("awp", ScGunSkinCatalog.None) == "awp_hd"
                 && ScGunSkinCatalog.Material("ak47", 51) == "ak47_hd" && ScGunSkinCatalog.Icon("awp", 51) == "awp_slot__am_lightning_awp"
                 && ScGunSkinCatalog.Material("awp", 9999) == "awp_hd";
@@ -476,7 +476,7 @@ public static class SurvivalSelfTest {
             int blanks = i.Counts[2];
             bool wrongGun = ScWeaponSkinning.Prepare(i, 0, SkinOf("cu_fireserpent_ak47_bravo"), false, MatValue) is null; // an AK finish is not offered on an AWP
             var strip = ScWeaponSkinning.Prepare(i, 0, null, false, MatValue);
-            bool stripped = strip is not null && !strip.Cost.ContainsKey(MatValue(ScWeaponMaterialBlock.Blank)) && strip.Cost[MatValue(ScWeaponMaterialBlock.Paint)] == 2
+            bool stripped = strip is not null && !strip.Cost.ContainsKey(MatValue(ScWeaponMaterialBlock.Blank)) && strip.Cost[MatValue(ScWeaponMaterialBlock.Paint)] == 1
                 && ScWeaponSkinning.Apply(i, strip, "player:0:0") == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == ScGunSkinCatalog.None
                 && i.Counts[2] == blanks - ScGunSkinCatalog.RemovalCost.Blank;
             bool free = ApplySkin(i, 0, skin, free: true) == ScGunResult.Success && GunSpec.GetSkinId(Data(i, 0)) == skin.PaintId;
@@ -799,11 +799,11 @@ public static class SurvivalSelfTest {
             var m249 = ScWeaponCrafting.All.First(e => e.Name == "m249"); var knife = ScWeaponCrafting.All.First(e => e.Knife);
             int blank = ScWeaponRepair.Blank, mech = ScWeaponRepair.Mechanism;
             var full = ScWeaponRepair.FullCost(ak); var pistol = ScWeaponRepair.FullCost(glock); var mg = ScWeaponRepair.FullCost(m249);
-            bool fullOk = full[blank] == 3 && full[mech] == 3 && full.Count == 2 && pistol[blank] == 2 && pistol[mech] == 1 && mg[blank] == 5 && mg[mech] == 3
+            bool fullOk = full[blank] == 3 && full[mech] == 2 && full.Count == 2 && pistol[blank] == 2 && pistol[mech] == 1 && mg[blank] == 5 && mg[mech] == 3
                 && ScWeaponRepair.FullCost(knife).Count == 0 && ScWeaponCrafting.All.Where(e => !e.Knife).All(e =>
-                    ScWeaponRepair.FullCost(e)[blank] == (e.B + 1) / 2 && ScWeaponRepair.FullCost(e)[mech] == (e.M + 1) / 2);
+                    ScWeaponRepair.FullCost(e)[blank] > 0 && ScWeaponRepair.FullCost(e)[mech] > 0);
             var none = ScWeaponRepair.Cost(ak, 1500, 1500); var one = ScWeaponRepair.Cost(ak, 1499, 1500); var broken = ScWeaponRepair.Cost(ak, 0, 1500); var half = ScWeaponRepair.Cost(m249, 750, 4000);
-            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 3 && broken[mech] == 3 && half[blank] == 5 && half[mech] == 3;
+            return fullOk && none.Count == 0 && one[blank] == 1 && one[mech] == 1 && broken[blank] == 3 && broken[mech] == 2 && half[blank] == 5 && half[mech] == 3;
         });
         Test("smoke-opening-bound-to-its-smokes", () => {
             var near = new ScGrenadeState { Kind = 2, Id = 1, Effect = true, Age = 2, Remaining = 12, Position = -Vector3.UnitY * ScSmokeVolume.GroundCenter };
@@ -837,7 +837,7 @@ public static class SurvivalSelfTest {
         Test("throw-creative", () => { var i=Setup(0,1);return new ScThrowTransaction(i).Commit(true,()=>true,()=>true) && i.Counts[0]==1; });
         Test("grenade-save-fuse-owner", () => { var g=new ScGrenadeState {Kind=0,Owner=7,Remaining=.22f,Position=new Vector3(1,2,3),Velocity=new Vector3(4,5,6)};var l=ScGrenadeState.Load(g.Save());return l.Owner==7 && l.Remaining==.22f && l.Position==g.Position && l.Velocity==g.Velocity; });
         Test("grenade-active-limits", () => { var list=Enumerable.Range(0,16).Select(i=>new ScGrenadeState {Owner=i/4}).ToArray();return !ScGrenadeState.CanAdd(list,9) && !ScGrenadeState.CanAdd(list.Take(4),0) && ScGrenadeState.CanAdd(list.Take(4),1); });
-        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==48 && ScGrenadeState.HePower(3)==24 && ScGrenadeState.HePower(6)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-5.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(20,1)==0);
+        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==96 && ScGrenadeState.HePower(3.9f)==48 && ScGrenadeState.HePower(7.8f)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-5.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(20,1)==0);
         Test("smoke-finite-segment",()=> Math.Abs(ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(5,0,0),Vector3.Zero,3)-6)<.001f
             && ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(-4,0,0),Vector3.Zero,3)==0
             && ScSmokeVolume.InsideLength(new Vector3(-5,3,0),new Vector3(5,3,0),Vector3.Zero,3)==0);
@@ -851,13 +851,13 @@ public static class SurvivalSelfTest {
         Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==32 && ScSmokeVolume.SpriteCount(20)==24 && ScSmokeVolume.SpriteCount(50)==16 && 12*ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count<=768);
         Test("fire-overlap-budget",()=> {
             var a=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var b=new ScGrenadeState {Kind=4,Effect=true,Remaining=7};
-            return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==4 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1;
+            return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==6 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1.5f;
         });
         Test("fire-wall-and-height",()=> {
             var s=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};
-            return ScFireArea.Exposure([s],Vector3.Zero,1,_=>false).Power==0 && !ScFireArea.Contains(s,Vector3.UnitY*3) && !ScFireArea.Contains(s,Vector3.UnitX*3);
+            return ScFireArea.Exposure([s],Vector3.Zero,1,_=>false).Power==0 && !ScFireArea.Contains(s,Vector3.UnitY*3) && !ScFireArea.Contains(s,Vector3.UnitX*3.01f);
         });
-        Test("fire-expiry-budget",()=> {var s=new ScGrenadeState {Kind=4,Effect=true,Remaining=.1f};return Math.Abs(ScFireArea.Exposure([s],Vector3.Zero,1,_=>true).Power-.4f)<.001f;});
+        Test("fire-expiry-budget",()=> {var s=new ScGrenadeState {Kind=4,Effect=true,Remaining=.1f};return Math.Abs(ScFireArea.Exposure([s],Vector3.Zero,1,_=>true).Power-.6f)<.001f;});
         Test("smoke-extinguishes-fire",()=> {
             var fire=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var smoke=new ScGrenadeState {Kind=2,Effect=true,Remaining=15,Age=1};
             bool near=ScFireArea.SmokeTouches(fire,smoke);smoke.Position=Vector3.UnitX*20;return near && !ScFireArea.SmokeTouches(fire,smoke);

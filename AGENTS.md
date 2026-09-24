@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed 2026-09-24: implement the gun balance/material plan in source only;
+  do not package or install yet. Keep v5/schema6/rules7 and frozen IDs. Runtime rate
+  x0.65, auto-snipers additionally x0.75, early shotgun compensation, independent
+  repair bases and one final ceiling are implemented. HE/fire buffs exclude creature
+  ignition and preserve chicken explosions. Actual user 1.0.0/schema4 and
+  1.2.0/schema6 packages are mandatory upgrade baselines, superseding old assumptions
+  that only 0.28.2 was public. Version conversion keeps ongoing charge seconds;
+  gameplay level-ups keep the remaining fraction. See docs/gun-balance-implementation-2026-09-24.md
+  and tools/BalanceCheck. Never overwrite immutable historical fixtures to make tests pass.
+
 - User-directed 2026-09-24: audit/fix Sushi inventory compatibility in source only; do not
   package or install yet. Build with `-p:SkipScmodPackaging=true`. Actual Sushi sync channels
   are a Dictionary, not IList; scan unselected channels and normalize creative person-box

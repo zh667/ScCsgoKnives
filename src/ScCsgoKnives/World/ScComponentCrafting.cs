@@ -11,14 +11,12 @@ public static class ScComponentCrafting {
         public Dictionary<int, int> Materials() => Ingredients.ToDictionary(p => Resolve(p.Id), p => p.Count);
     }
     public static readonly Entry[] All = [
-        new(0, [("ironingot",12),("coalchunk",4)]),
-        new(1, [("sccsgomaterial:0",2),("copperingot",8),("germaniumchunk",4)]),
-        new(2, [("leather",8),("planks",4),("copperingot",2)]),
-        // SurvivalCraft's vanilla diamond item uses crafting id "diamond";
-        // "diamondchunk" is not registered and would crash when the workbench
-        // tries to resolve this recipe for display.
-        new(3, [("glass",8),("copperingot",4),("germaniumchunk",4),("diamond",1)]),
-        new(4, [("pigment:0",8),("canvas",4),("copperingot",4)])
+        new(0, [("ironingot",8),("coalchunk",3)]),
+        new(1, [("sccsgomaterial:0",1),("copperingot",6),("germaniumchunk",2)]),
+        new(2, [("leather",4),("planks",2),("copperingot",1)]),
+        // Optics no longer consume diamonds; first-time skin application still does.
+        new(3, [("glass",4),("copperingot",2),("germaniumchunk",2)]),
+        new(4, [("pigment:0",4),("canvas",2),("copperingot",2)])
     ];
     public static int Resolve(string ingredient) {
         if (ResolveOverride is not null) return ResolveOverride(ingredient);

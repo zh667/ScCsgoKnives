@@ -17,7 +17,7 @@ public sealed class ScAmmoBlock : ScSupplyBlock {
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScAmmoBlock>(true), 0, kind);
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Terrain.ExtractData(value) == Shell ? "霰弹" : "通用弹匣";
     public override string GetDescription(int value) => Terrain.ExtractData(value) == Shell
-        ? "管式霰弹枪每次插入消耗 1 颗；MAG-7 每次换匣消耗 5 颗，丢弃旧匣余弹。"
+        ? "管式霰弹枪每次插入消耗 1 颗；MAG-7 每次换匣按实际弹匣容量消耗霰弹，丢弃旧匣余弹。"
         : "容量 35 发以内每次换弹消耗 1 个；P90/野牛 2 个，M249 3 个，内格夫 5 个。旧匣余弹作废。";
     protected override int MeshKind(int value) => Terrain.ExtractData(value) == Shell ? 1 : 0;
     public override int GetFaceTextureSlot(int face, int value) => 0;

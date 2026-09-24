@@ -91,7 +91,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(State.ShotLeft>0||burstPause>0||aim<(State.Role==TacticalRole.Sniper?1.4f:.55f))return;
         if(State.Role==TacticalRole.Close&&distance>18)return;
         if(!Visible(TargetBody)){seen=false;aim=0;return;}
-        Shoot();State.ShotLeft=Math.Max(spec.CycleSeconds,State.Role==TacticalRole.Sniper?.65f:.12f);
+        Shoot();State.ShotLeft=Math.Max(ScGunGrowth.ShotInterval(State.Variant,spec.CycleSeconds,0),State.Role==TacticalRole.Sniper?.65f:.12f);
         if(++burst>=(State.Role==TacticalRole.Machine?8:State.Role==TacticalRole.Sniper?1:3)){burst=0;burstPause=State.Role==TacticalRole.Sniper?.6f:.75f;}
     }
     void Play(string kind){
@@ -105,8 +105,9 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         var direction=Vector3.Normalize(point-from);float range=State.Role==TacticalRole.Sniper?64:State.Role==TacticalRole.Close?18:40;
         State.Rounds--;Play("shot");var hit=bodies.Raycast(from,from+direction*range,0,(b,d)=>b.Entity!=Entity);var wall=terrain.Raycast(from,from+direction*range,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v));
         if(!hit.HasValue||Friendly(hit.Value.ComponentBody)||wall.HasValue&&wall.Value.Distance<hit.Value.Distance)return;
-        // AttackPower is the whole shot, not once per pellet. NPCs never apply counter or skin growth.
-        float power=spec.AttackPower*(spec.Pellets>1?Math.Clamp(1-hit.Value.Distance/24,.2f,1):1);
+        // Use the balanced Lv0 whole-shot budget. Enemy templates have neither skin nor counter growth.
+        var stats=EffectiveGunStats.ResolveLevel(spec,State.DisplayValue,false,0);
+        float power=stats.Power*stats.Falloff(spec,hit.Value.Distance);
         ComponentMiner.AttackBody(new ScSurvivalBalance.BulletAttack(hit.Value.ComponentBody,Entity,from+direction*hit.Value.Distance,direction,power){AttackSoundVolume=0});
     }
     void TryGrenade(float distance){

@@ -47,6 +47,9 @@ public static class ScGunHandling {
     public static bool Alternate(GunSpec spec,bool scoped,bool silenced,bool burst,bool alternateFire)=>
         spec.ZoomLevels.Length>0 ? scoped : spec.HasSilencer ? silenced : spec.HasBurstMode ? burst : spec.CycleSecondsAlternate>0 && alternateFire;
     public static Mode ForMode(string asset,bool alternate)=>For(asset)?.Modes[alternate && For(asset).Alternate is not null?"1":"0"];
+    public static float LegacyCone(GunSpec spec) => spec.SpreadDegrees * (spec.Name switch {
+        "nova" or "mag7" => 2.10f/2.42f, "xm1014" => 2.05f/2.32f, "sawedoff" => 3.20f/3.55f, _ => 1f
+    });
     public static float MoveFactor(float horizontalSpeed)=>float.IsFinite(horizontalSpeed)?Math.Clamp((horizontalSpeed-.5f)/4,0,1):1;
     public static float Falloff(Gun gun,float distance) {
         if(!float.IsFinite(distance) || distance>gun.Range) return 0;
@@ -101,7 +104,7 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         bool known=TrySnapshotValue(value,out var s);
         int maxDurability=known && s.Level==L ? s.MaxDurability : ScGunGrowth.MaxDurability(variant,L);
         float skinMultiplier = known && s.Variant == variant ? ScGunGrowth.SkinDamageMultiplier(variant,s.SkinId) : 1f;
-        return new(ScSurvivalBalance.Power(spec.Name)*skinMultiplier*ScGunGrowth.DamageMultiplier(L),
+        return new(ScSurvivalBalance.PowerAtLevel(spec.Name,L)*skinMultiplier,
             ScGunGrowth.Range(variant,L,baseRange),
             ScGunGrowth.Capacity(variant,L),maxDurability,ScGunGrowth.ShotInterval(variant,spec.CycleSeconds,L),spec.Pellets,ScHeadshot.MultiplierFor(spec),
             ScGunplaySettings.Enabled?ScGunHandling.ForMode(spec.Name,alternate):null,

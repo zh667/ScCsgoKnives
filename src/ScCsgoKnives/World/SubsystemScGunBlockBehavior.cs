@@ -1107,7 +1107,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         bool scopedShot = state.Zoom > 0;
         // Capture before automatic unzoom, animation callbacks or recoil can change aim state.
         var shot = ScShotAim.Capture(spec.Name, ScMobileControls.UsesTouchInput(player), scopedShot, silenced,
-            alternateFire, input.Dig, input.Hit, LookRay(player), player.ComponentBody.Velocity.Length(), spec.SpreadDegrees);
+            alternateFire, input.Dig, input.Hit, LookRay(player), player.ComponentBody.Velocity.Length(), ScGunHandling.LegacyCone(spec));
         bool handlingAlternate = ScGunHandling.Alternate(spec,scopedShot,silenced,state.BurstMode,alternateFire);
         var effective = EffectiveGunStats.Resolve(spec,value,handlingAlternate);
         ScGunBloom bloom = null;

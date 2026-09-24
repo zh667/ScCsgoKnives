@@ -54,8 +54,7 @@ public static class ScWeaponCrafting {
                 "awp" => (5, 5, 3, 1, 1, 0),
                 "scar20" or "g3sg1" => (6, 5, 4, 1, 1, 0),
                 "m249" or "negev" => (6, 6, 4, 0, 1, 0),
-                // Zeus x27 (user-directed 2026-09-08): level 6, 6 blanks + 6 mechanisms + 1 grip + 4 extra germanium
-                // + 2 diamonds. Expanded that is 48 iron, 12 coal, 12 copper, 10 germanium, 2 leather, 1 plank, 2 diamond.
+                // The component/gate scaling below keeps Zeus an expensive late-game weapon.
                 "taser" => (6, 6, 6, 0, 2, 4),
                 _ => throw new InvalidOperationException("No survival recipe for " + n)
             };
@@ -66,7 +65,8 @@ public static class ScWeaponCrafting {
                 ScGunDurability.Class.Taser => 12,
                 _ => 10
             };
-            entries.Add(new(n, false, v, level, (b * 3 + 1) / 2, (m * 3 + 1) / 2, 2, o > 0 ? 2 : 0,
+            bool starter=n is "glock18" or "hkp2000" or "p250" or "usp_silencer";
+            entries.Add(new(n, false, v, level, starter?3:(b * 3 + 1) / 2, starter?1:(m * 3 + 1) / 2, starter?1:2, o > 0 ? 2 : 0,
                 n == "taser" ? 6 : diamond, n == "taser" ? 12 : germanium));
         }
         return entries.ToArray();

@@ -37,7 +37,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             }
         }
         var navigation = new Dictionary<string,ScWorkbenchSelectionDialog.Navigation>();
-        Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected) {
+        Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected,Func<object,Dictionary<int,int>> materialQuote=null) {
             ScWorkbenchSelectionDialog dialog=null;
             var selectedInventory=miner.Inventory;bool selectedCreative=Creative();
             dialog=new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{
@@ -52,6 +52,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 return !ReferenceEquals(selectedInventory,miner.Inventory)||selectedCreative!=Creative()?"背包或模式已切换，请重新打开装配台。":!Available()?"装配台暂不可用，请靠近后操作。":!Creative()
                     && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<level?$"需要制作等级 {level}。":"";
             };
+            if(materialQuote is not null)dialog.SetMaterialQuote(materialQuote);
             dialog.RestoreNavigation(navigation.GetValueOrDefault(title));
             if(title!= "武器装配台 · 组装 / 维修 / 涂装 / 计数器")dialog.BackAction=title.EndsWith("· 选择涂装",StringComparison.Ordinal)?ShowSkinGuns:ShowList;
             return dialog;
@@ -103,7 +104,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     var entry = (ScWeaponCrafting.Entry)item;
                     var materials = entry.Materials();
                     string detail = string.Join("\n", materials.Select(m => $"{BlocksManager.Blocks[Terrain.ExtractContents(m.Key)].GetDisplayName(terrain, m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
-                    detail += entry.Knife ? "\n左键轻刀 7 / 右键重刀 12" : $"\n空枪交付 · 容量 {GunSpec.All[entry.Variant].Magazine} · {(GunSpec.All[entry.Variant].Pellets > 1 ? "每发总" : "单发")}攻击力 {ScSurvivalBalance.Power(entry.Name)}";
+                    detail += entry.Knife ? "\n左键轻刀 7 / 右键重刀 12" : $"\n空枪交付 · 容量 {GunSpec.All[entry.Variant].Magazine} · {(GunSpec.All[entry.Variant].Pellets > 1 ? "每发总" : "单发")}攻击力 {ScSurvivalBalance.PowerAtLevel(entry.Name,0)}";
                     detail += Level(entry);
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(Name(entry), detail, "组装", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
@@ -155,7 +156,8 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     var quote = ScWeaponRepair.Prepare(c, entry, Creative(), ScWeaponMaterialBlock.Value);
                     if (quote is null) { Notice("维修 · 状态不可用", "这把枪的状态无法读取，请重新选择。没有扣除材料。", ShowRepair); return; }
                     string detail = $"当前耐久 {quote.Durability} / {quote.Full}（{ScGunDurability.PercentText(quote.Durability, quote.Full)}）→ 维修后 {quote.Full} / {quote.Full}\n" + (Creative() ? "创造模式：免费" : quote.Cost.Count == 0 ? "无需材料" : MaterialLines(quote.Cost))
-                        + "\n只恢复耐久，不改变余弹、消音器和型号。";
+                        + $"\n实际 Lv{quote.Level} · 维修倍率 ×{ScWeaponRepair.LevelMultiplier(quote.Level):0.0} · 缺损 {100.0*(quote.Full-quote.Durability)/quote.Full:0.#}%"
+                        + "\n按实际缺损计算，最后一次向上取整；轻微磨损建议积攒后再修。\n只恢复耐久，不改变余弹、消音器和型号。";
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(ValueName(c.Value), detail, "维修", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             var result = ScWeaponRepair.TryRepair(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
@@ -201,12 +203,18 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         }
         void ShowSkins(ScWeaponSkinning.Candidate gun) {
             if (!Available()) return;
+            Dictionary<int,int> SkinPrice(object item){
+                if(Creative())return [];
+                if(miner.Inventory.GetSlotValue(gun.Slot)!=gun.Value || !GunSpec.TryGetSnapshot(Terrain.ExtractData(gun.Value),out var current))return [];
+                return ScGunSkinCatalog.CostForChange(current.Variant,current.SkinId,item as ScGunSkin,ScWeaponMaterialBlock.Value);
+            }
             // The factory look is offered as an entry of its own so a finish can be stripped.
             object[] options = [.. ScGunSkinCatalog.For(gun.Variant), FactoryLook.Instance];
             DialogsManager.ShowDialog(player.GuiWidget, Selection($"{ValueName(gun.Value)} · 选择涂装", options, 56,
                 (Func<object, string>)(item => item is FactoryLook ? "原厂外观（拆除涂装）"
                     : $"{((ScGunSkin)item).Name}{(((ScGunSkin)item).PaintId == gun.SkinId ? "（当前）" : "")}  {ScGunNames.Tier(((ScGunSkin)item).Tier)}"), item => {
                     var skin = item as ScGunSkin;
+                    if(miner.Inventory.GetSlotValue(gun.Slot)!=gun.Value){Notice("涂装 · 枪械已移动","请重新选择背包中的枪械。没有扣除材料。",ShowSkinGuns);return;}
                     var quote = ScWeaponSkinning.Prepare(miner.Inventory, gun.Slot, skin, Creative(), ScWeaponMaterialBlock.Value);
                     if (quote is null) { Notice("涂装 · 无法更换", "这把枪已经是该外观，或背包中的枪械状态已变化。没有扣除材料，请重新选择枪械。", ShowSkinGuns); return; }
                     string state = GunSpec.TryGetSnapshot(Terrain.ExtractData(gun.Value), out var s)
@@ -227,7 +235,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         }
                         ShowSkinGuns();
                     }));
-                }));
+                },SkinPrice));
         }
         // The attribute page is the same reusable view the item help opens, with the gun in hand selected.
         void ShowAttributes() {

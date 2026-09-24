@@ -1,0 +1,276 @@
+{
+  "date": "2026-09-24",
+  "implementation_base": "079b42f",
+  "scope": "Source build only; no new scmod, installation or player-world access",
+  "layout": 5,
+  "schema": 6,
+  "rules": 7,
+  "plan_sha256": "09deb8ab5354cc7142fbf19d6643c4a5a010faa146894941958db1e92a78290a",
+  "baseline_packages": [
+    {
+      "package_file": "[API1.9]CS武器1.2.0-全量版.scmod",
+      "package_sha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
+      "version": "1.2.0",
+      "api": "1.9.3.1",
+      "package_name": "zh667.ScCsgoKnives",
+      "schema": 6,
+      "rules": 7,
+      "dll_sha256": "e3fce07af8835371ff2ac5cef7ba7576c8ac3c509b6f761c145c6a9fdafcb585",
+      "fixture": "tools/fixtures/balance-20260924/1.2.0.xml.gz",
+      "fixture_sha256": "562334e1251d774d08b45fc7f6d23ad050097ccaaa769c184a856afd17e4d7dd"
+    },
+    {
+      "package_file": "[API1.9]CS武器1.0- 作者ZH667.scmod",
+      "package_sha256": "9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424",
+      "version": "1.0.0",
+      "api": "1.9.2.1",
+      "package_name": "zh667.ScCsgoKnives",
+      "schema": 4,
+      "rules": 2,
+      "dll_sha256": "31c737bb4b86a8f8d77dbaa3be89a3d47ae17aa8e515c07c05d9051b97e121d3",
+      "fixture": "tools/fixtures/balance-20260924/1.0.0.xml.gz",
+      "fixture_sha256": "4c6dbf7d31d6b023284d0c55a9bbcd433f8ccfdf4eeb16d0f39609d940340b2c"
+    }
+  ],
+  "reports": {
+    "balance": {
+      "count": 28627,
+      "passed": 28627,
+      "failed": 0,
+      "groups": {
+        "firstperson": {
+          "count": 168,
+          "passed": 168
+        },
+        "gunspec": {
+          "count": 3,
+          "passed": 3
+        },
+        "load": {
+          "count": 4,
+          "passed": 4
+        },
+        "effects": {
+          "count": 691,
+          "passed": 691
+        },
+        "weapons": {
+          "count": 208,
+          "passed": 208
+        },
+        "rig": {
+          "count": 205,
+          "passed": 205
+        },
+        "tracer": {
+          "count": 102,
+          "passed": 102
+        },
+        "knife": {
+          "count": 154,
+          "passed": 154
+        },
+        "variant": {
+          "count": 18,
+          "passed": 18
+        },
+        "m4-recovery": {
+          "count": 14,
+          "passed": 14
+        },
+        "gun-format": {
+          "count": 17,
+          "passed": 17
+        },
+        "creative-skins": {
+          "count": 51,
+          "passed": 51
+        },
+        "creative-counters": {
+          "count": 374,
+          "passed": 374
+        },
+        "skin-growth": {
+          "count": 299,
+          "passed": 299
+        },
+        "migration-0282": {
+          "count": 10,
+          "passed": 10
+        },
+        "polish": {
+          "count": 17,
+          "passed": 17
+        },
+        "growth": {
+          "count": 118,
+          "passed": 118
+        },
+        "survival": {
+          "count": 421,
+          "passed": 421
+        },
+        "knives": {
+          "count": 1,
+          "passed": 1
+        },
+        "gun": {
+          "count": 1092,
+          "passed": 1092
+        },
+        "sounds": {
+          "count": 2,
+          "passed": 2
+        },
+        "arms": {
+          "count": 2,
+          "passed": 2
+        },
+        "third-actions": {
+          "count": 878,
+          "passed": 878
+        },
+        "1.2.0": {
+          "count": 12851,
+          "passed": 12851
+        },
+        "1.0.0": {
+          "count": 10333,
+          "passed": 10333
+        },
+        "balance": {
+          "count": 594,
+          "passed": 594
+        }
+      },
+      "failures": [],
+      "full_report_sha256": "90c40af92e85535991d57ec86c54579890de41b11de3aea7aecd86205c085dc5"
+    },
+    "native_ui": {
+      "count": 28,
+      "passed": 28,
+      "failed": 0,
+      "groups": {
+        "quick-buttons-visible": {
+          "count": 4,
+          "passed": 4
+        },
+        "five-clicks-to-50": {
+          "count": 4,
+          "passed": 4
+        },
+        "49-clamps-to-50": {
+          "count": 4,
+          "passed": 4
+        },
+        "five-clicks-to-zero": {
+          "count": 4,
+          "passed": 4
+        },
+        "1-clamps-to-zero": {
+          "count": 4,
+          "passed": 4
+        },
+        "reset-to-actual": {
+          "count": 4,
+          "passed": 4
+        },
+        "preview-read-only": {
+          "count": 4,
+          "passed": 4
+        }
+      },
+      "failures": [],
+      "full_report_sha256": "f6cd2b346619b7a8e2977ac5b80d6b134746480fe77b0e335daba643754416ec"
+    },
+    "inventory": {
+      "count": 2248,
+      "passed": 2248,
+      "failed": 0,
+      "groups": {
+        "sushi-inventory": {
+          "count": 18,
+          "passed": 18
+        },
+        "sushi-sync": {
+          "count": 26,
+          "passed": 26
+        },
+        "m4-recovery": {
+          "count": 28,
+          "passed": 28
+        },
+        "gun-format": {
+          "count": 34,
+          "passed": 34
+        },
+        "creative-skins": {
+          "count": 102,
+          "passed": 102
+        },
+        "creative-counters": {
+          "count": 748,
+          "passed": 748
+        },
+        "skin-growth": {
+          "count": 598,
+          "passed": 598
+        },
+        "migration-0282": {
+          "count": 20,
+          "passed": 20
+        },
+        "polish": {
+          "count": 17,
+          "passed": 17
+        },
+        "growth": {
+          "count": 236,
+          "passed": 236
+        },
+        "survival": {
+          "count": 421,
+          "passed": 421
+        }
+      },
+      "failures": [],
+      "full_report_sha256": "e8122d2912149e14565e7da969856607901308e19ba7eaf8cfd31a01a72f0ade"
+    }
+  },
+  "built_dlls": {
+    "src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll": "89d2964dc136ad46ddf27cfd057dcfc6ad1dca69234b07f9cedeb44db87203b4",
+    "src/ScCsgoTactical/bin/Release/net10.0/ScCsgoTactical.dll": "6589cb74fff1ac685fdbf4afc3d5a101f3afdd7c671e1d63d3b99b3f693636ee"
+  },
+  "changed_source_sha256": {
+    "src/ScCsgoKnives/Animation/ScGunGrowthSelfTest.cs": "845db25d33199b56e8268c8b23cfb642e73ae092b0cdc7f8f848c4ed77d8610a",
+    "src/ScCsgoKnives/Animation/ScGunSkinGrowthSelfTest.cs": "4ebb86518dd7755e6e8e2ab12392561cbf3078c023842c62af08a0ddbd336d37",
+    "src/ScCsgoKnives/Animation/SurvivalSelfTest.cs": "9090eef4278e3c34c5ab3a8d0d6391545cbf0f26988da78085ea045575bcc83b",
+    "src/ScCsgoKnives/AnimationData/gun_handling.json": "fcf2efae28c4a576f58cdb0b8d2c3f9caa3f62cfe7a393856e497be61137c585",
+    "src/ScCsgoKnives/Blocks/ScAmmoBlock.cs": "f21f08940d6f50dffd80eba1b8dbbfc3c544010782bffa3807d614414d8f6ae5",
+    "src/ScCsgoKnives/World/ScComponentCrafting.cs": "69578655c8022d4a78a79bf3b66a1d82aab53ef33257f62ad97a2b5780dfcdc1",
+    "src/ScCsgoKnives/World/ScFireArea.cs": "ccd264fe6641d88fa9b33d927ac58df35db263fe731e23f2c4b9f5a0f24d55fb",
+    "src/ScCsgoKnives/World/ScGrenadeState.cs": "fc1eeb330ab02f02daf9d0519f6dfc7df4a5f8e7f9af2cd082e36e6ba9fb9a3c",
+    "src/ScCsgoKnives/World/ScGunAttributes.cs": "31bd7160acace12f92086703f2c6d54c031a962a848229d83a5d58ad71b551d5",
+    "src/ScCsgoKnives/World/ScGunAttributesScreen.cs": "1fcb2290e5a9330b924d272345aea3a55f78d1437686c50d400ff1653259fd48",
+    "src/ScCsgoKnives/World/ScGunGrowth.cs": "3e484f19a57380b3f105806fe86107d1038db8a0449f4e30b8a2122cfc55dadc",
+    "src/ScCsgoKnives/World/ScGunGrowthMigration.cs": "727a0a2f10b1aac9fbdcd1efc7f7f8c7b13addb527409b58a0eab682213adc61",
+    "src/ScCsgoKnives/World/ScGunHandling.cs": "c4b861947dad76d8202a9c9f0a7daebb96893ea1636a1be7ffb3e5adc8c18cf4",
+    "src/ScCsgoKnives/World/ScGunSkinCatalog.cs": "215b9c57ca983c7436f48c816fc55c31268aed3c4012d981d409bca3fc753262",
+    "src/ScCsgoKnives/World/ScSurvivalBalance.cs": "671d9dae1481203992e1b89fa4f3672cc5f1048b4ebf67bb1d98fe737a745cfc",
+    "src/ScCsgoKnives/World/ScWeaponCrafting.cs": "b0440278f26ca2aa252e41c042d7fbb84c8f5f00a095a3b1b7ac4da22783a75b",
+    "src/ScCsgoKnives/World/ScWeaponRepair.cs": "10b4ed82f39210c15c6f2a71dadd36143d91c49d00842ef85b8f33855ea3b133",
+    "src/ScCsgoKnives/World/ScWeaponSkinning.cs": "c0d80459816d511cefb3c520de60102013135ead4675221d3dd60490a4b9ae89",
+    "src/ScCsgoKnives/World/ScWorkbenchExtension.cs": "a6e5f049ea42ae8c0d3cb6ace35dc507e4393339bdf44f4346697564a9b15a4d",
+    "src/ScCsgoKnives/World/ScWorkbenchSelectionDialog.cs": "ff0d29284248b6718e2ffe70326a34e59a4521814e96c276437685db49476cf6",
+    "src/ScCsgoKnives/World/SubsystemScGrenades.cs": "0eb13cd1c8088bfa6058943aaf12a78d13f4c79179e2e7b35b5da1e1f9e882dc",
+    "src/ScCsgoKnives/World/SubsystemScGunBlockBehavior.cs": "2611de6d278c3800a5c4346f110c45306776b5f992dd16b7c643608a9eb8db25",
+    "src/ScCsgoKnives/World/SubsystemScWeaponWorkbench.cs": "881d6db7b78a50938e55d4f293f803fed53658856c8f8152048be47207faab33",
+    "src/ScCsgoTactical/ComponentTacticalEnemy.cs": "290159e1806c1300782753d4c36d464c763934ec046691c324bc975482526ba7"
+  },
+  "limits": [
+    "Synthetic records generated by the actual historical serializers, not player saves",
+    "Windows API 1.9.3.1 host; no Android/full-game acceptance",
+    "No claim of engine power-loss write safety or arbitrary third-party container compatibility",
+    "1.2.0 same-schema update does not trigger automatic schema backup; retain full world and matching old package before installing"
+  ]
+}

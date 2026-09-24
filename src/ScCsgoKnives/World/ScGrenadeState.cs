@@ -14,7 +14,9 @@ public sealed class ScGrenadeState {
     public float NextBounceSound;
     public bool Effect, Grounded;
     public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => states.Count() < 16 && states.Count(s => s.Owner == owner) < 4;
-    public const float HeRadius=6, HeDamage=48;
+    public const float HeRadius=7.8f, HeDamage=96;
+    public const float ChickenRadius=6, ChickenDamage=48;
+    public static float ChickenPower(float distance) => ChickenDamage * Math.Clamp(1-distance/ChickenRadius,0,1);
     public static float HePower(float distance) => HeDamage * Math.Clamp(1 - distance / HeRadius, 0, 1);
     // CS2's flash has a full white peak and a several-second recovery tail.
     public const float FlashRadius = 20, FlashMaximum = 5.5f, FlashImmunity = 3;

@@ -36,6 +36,8 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     int m_count=1;
     double m_refreshAt,m_craftAfter;
     public Func<object,string> CraftPermission {get;set;}
+    Func<object,Dictionary<int,int>> m_materialQuote;
+    public void SetMaterialQuote(Func<object,Dictionary<int,int>> quote){m_materialQuote=quote;if(m_selected is not null)Select(m_selected);}
     bool Craftable => m_selected is ScComponentCrafting.Entry or ScWeaponCrafting.Entry or ScWorkbenchRecipe;
     int ResultCount() => !m_creative && m_selected is ScWorkbenchRecipe r ? Math.Max(1, r.ResultCount) : 1;
     Dictionary<int,int> UnitCost() => m_selected switch {ScWorkbenchRecipe r=>r.Materials(),ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
@@ -132,14 +134,14 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             m_hint.Text="单击预览 · 点击应用手套，或双击 / 双点应用";
             m_detailScroll.ScrollPosition=0;RefreshQuote();return;
         }
-        var materials = item switch {
+        var materials = m_materialQuote?.Invoke(item) ?? (item switch {
             ScWorkbenchRecipe r=>r.Materials(),
             ScComponentCrafting.Entry c=>c.Materials(),
             ScWeaponCrafting.Entry e=>e.Materials(),
             ScGunSkin s=>ScGunSkinCatalog.CostOf(s,ScWeaponMaterialBlock.Value),
             ScKnifeSkinning.Finish f=>ScKnifeSkinning.Cost(f.Skin),
             _=>new Dictionary<int,int>()
-        };
+        });
         if(Craftable)materials=ScCraftBatch.Cost(materials,m_count);
         if(item is ScWeaponCrafting.Entry entry) {
             m_details.Children.Add(ScGunUi.Note($"制作等级 {entry.Level} · 产出 {m_count} 件"));

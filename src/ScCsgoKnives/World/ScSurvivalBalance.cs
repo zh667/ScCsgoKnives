@@ -28,6 +28,11 @@ public static class ScSurvivalBalance {
     /// Applied exactly once, here; distance falloff, pellet split and any later headshot work build on the result.</summary>
     public const float GunPowerMultiplier = 1.5f;
     public static float Power(string gun) => BasePower(gun) * GunPowerMultiplier;
+    public static float PowerAtLevel(string gun,int level) {
+        int l=ScGunGrowth.Clamp(level);
+        float bonus=gun switch { "nova"=>21, "xm1014"=>12, "sawedoff"=>24, "mag7"=>18, _=>0 };
+        return (Power(gun)+bonus*Math.Max(0,1-l/20f))*ScGunGrowth.DamageMultiplier(l);
+    }
     /// <summary>0.28.x per-gun table, kept unscaled so the multiplier is the only place the 1.5 lives.</summary>
     public static float BasePower(string gun) => gun switch {
         "deagle" => 14, "revolver" => 18,
@@ -35,7 +40,7 @@ public static class ScSurvivalBalance {
         "galilar" or "famas" => 9,
         "ak47" or "m4a4" or "m4a1s" or "aug" or "sg556" => 10,
         "m249" or "negev" => 8,
-        "ssg08" => 26, "awp" => 38, "scar20" or "g3sg1" => 18,
+        "ssg08" => 26, "awp" => 38, "scar20" or "g3sg1" => 16,
         // Zeus x27 (user-directed 2026-09-08): a high-cost, single-charge, close-range burst weapon. 100 × 1.5 = 150
         // at Lv0, 300 at Lv10 under the current +100% damage rule. Headshot multiplier remains 1.
         "taser" => 100,

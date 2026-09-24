@@ -60,13 +60,13 @@ public static class ScGunSkinCatalog {
 
     /// <summary>Material cost by tier: blanks, mechanisms, paint. Indexes are ScWeaponMaterialBlock kinds.</summary>
     public static readonly Dictionary<ScSkinTier, (int Blank, int Mechanism, int Paint)> Cost = new() {
-        [ScSkinTier.Standard] = (0, 2, 8),
-        [ScSkinTier.Premium] = (0, 2, 8),
-        [ScSkinTier.Special] = (0, 2, 8),
+        [ScSkinTier.Standard] = (0, 2, 4),
+        [ScSkinTier.Premium] = (0, 2, 4),
+        [ScSkinTier.Special] = (0, 2, 4),
     };
-    /// <summary>Stripping a finish costs half a Standard application, rounded up, whatever the finish was.</summary>
+    /// <summary>Stripping a finish costs one paint, whatever the finish was.</summary>
     public static (int Blank, int Mechanism, int Paint) RemovalCost {
-        get { return (0, 0, 2); }
+        get { return (0, 0, 1); }
     }
 
     static readonly Dictionary<int, ScGunSkin> s_byId = All.ToDictionary(s => s.PaintId);
@@ -92,8 +92,13 @@ public static class ScGunSkinCatalog {
         if (blank > 0) cost[materialValue(ScWeaponMaterialBlock.Blank)] = blank;
         if (mechanism > 0) cost[materialValue(ScWeaponMaterialBlock.Mechanism)] = mechanism;
         if (paint > 0) cost[materialValue(ScWeaponMaterialBlock.Paint)] = paint;
-        if (skin is not null) cost[ScComponentCrafting.Resolve("diamond")] = 2;
+        if (skin is not null) cost[ScComponentCrafting.Resolve("diamond")] = 1;
         return cost;
+    }
+    public static Dictionary<int,int> CostForChange(int variant,int fromSkinId,ScGunSkin skin,Func<int,int> materialValue) {
+        if((skin?.PaintId??None)==fromSkinId)return [];
+        if(skin is not null && Fits(Find(fromSkinId),variant))return new(){{materialValue(ScWeaponMaterialBlock.Paint),2}};
+        return CostOf(skin,materialValue);
     }
 
     /// <summary>The colour/ORM/normal stem a draw call should sample for this gun and finish, and the icon.

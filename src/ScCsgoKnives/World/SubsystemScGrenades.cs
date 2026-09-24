@@ -15,7 +15,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     public void ChickenBlast(Vector3 position,int owner) {
         var state=new ScGrenadeState{Kind=0,Position=position,Owner=owner};
         Register(state);
-        Detonate(state); // same damage, walls, friendly-fire and smoke interaction as HE
+        DetonateWithBudget(state, true); // retain the chicken blast budget; same walls/friendly-fire/smoke rules
         if(m_active.Count<16)m_active.Add(state); // visual budget; never suppress damage
     }
     sealed class AreaAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
@@ -331,7 +331,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             EnableHitValueParticleSystem=!fire,AttackSoundVolume=fire?0:1 };
         ComponentMiner.AttackBody(attack);
     }
-    void Detonate(ScGrenadeState s) {
+    void Detonate(ScGrenadeState s) => DetonateWithBudget(s, false);
+    void DetonateWithBudget(ScGrenadeState s,bool chicken) {
         if (s.Kind is 3 or 4) {
             // A bounded airborne timeout may ignite a reachable floor below it,
             // never an unsupported sphere of fire in mid-air.
@@ -353,8 +354,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         foreach (var body in m_bodies.Bodies.ToArray()) {
             Vector3 point=Eye(body); float distance=Vector3.Distance(s.Position,point);
-            if (!Friendly(s,body) || distance>(s.Kind==0?ScGrenadeState.HeRadius:ScGrenadeState.FlashRadius) || !Clear(s.Position,point)) continue;
-            if (s.Kind==0) Damage(s,body,ScGrenadeState.HePower(distance));
+            if (!Friendly(s,body) || distance>(s.Kind==0?(chicken?ScGrenadeState.ChickenRadius:ScGrenadeState.HeRadius):ScGrenadeState.FlashRadius) || !Clear(s.Position,point)) continue;
+            if (s.Kind==0) Damage(s,body,chicken?ScGrenadeState.ChickenPower(distance):ScGrenadeState.HePower(distance));
             if (s.Kind==1 && (!m_blind.TryGetValue(body,out var old) || m_time.GameTime>=old.ImmuneUntil)) {
                 var p=body.Entity.FindComponent<ComponentPlayer>();
                 Vector3 forward=p?.GameWidget.ActiveCamera.ViewDirection??body.Matrix.Forward;

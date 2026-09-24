@@ -12,6 +12,7 @@ AssemblyLoadContext.Default.Resolving += (context, name) => {
     return File.Exists(dependency) ? context.LoadFromAssemblyPath(dependency) : null;
 };
 var mod = AssemblyLoadContext.Default.LoadFromAssemblyPath(dll);
+SourceObj.Install(mod);
 var cases = SushiInventoryRegression.Run(mod, Path.GetFullPath(args[1]));
 foreach (string name in new[] { "ScGunRecoverySelfTest", "SurvivalSelfTest", "ScCreativeCountersSelfTest", "ScCreativeSkinsSelfTest", "ScGunGrowthSelfTest", "ScGunSkinGrowthSelfTest", "ScGunSaveGuardSelfTest", "ScGun0282MigrationSelfTest" }) {
     try {

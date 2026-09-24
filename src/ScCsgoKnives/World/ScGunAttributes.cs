@@ -22,7 +22,7 @@ public static class ScGunAttributes {
     }
 
     static float HipCone(GunSpec spec) =>
-        ScGunplaySettings.Enabled && ScGunHandling.ForMode(spec.Name, false) is { } mode ? mode.BaseCone : spec.SpreadDegrees;
+        ScGunplaySettings.Enabled && ScGunHandling.ForMode(spec.Name, false) is { } mode ? mode.BaseCone : ScGunHandling.LegacyCone(spec);
     static float HipKick(GunSpec spec) =>
         ScGunplaySettings.Enabled && ScGunHandling.ForMode(spec.Name, false) is { } mode ? mode.KickPitch : spec.KickPitchDegrees;
     /// <summary>An empty-magazine reload, or 0 when the animation data cannot be read on this host.</summary>
@@ -52,10 +52,10 @@ public static class ScGunAttributes {
             // Exclude the unlimited sentinel from the finite-range bar scale.
             float finiteRange = EffectiveGunStats.ResolveLevel(spec,TemplateValue(v),false,ScGunGrowth.PrecisionLevel-1).Range;
             range = Math.Max(range, top.UnlimitedRange ? finiteRange : top.Range);
-            rate = Math.Max(rate, top.CycleSeconds > 0 ? 60f / top.CycleSeconds : 0);
+            rate = Math.Max(rate, EffectiveRpm(top));
             capacity = Math.Max(capacity, ScGunGrowth.Capacity(v, ScGunGrowth.MaxLevel));
             reload = Math.Max(reload, ReloadSeconds(spec, ScGunGrowth.Capacity(v, ScGunGrowth.MaxLevel)));
-            charge = Math.Max(charge, spec.RechargeSeconds);
+            charge = Math.Max(charge, ScGunGrowth.RechargeSeconds(spec,0));
             spread = Math.Max(spread, HipCone(spec));
             recoil = Math.Max(recoil, HipKick(spec));
         }
@@ -63,6 +63,7 @@ public static class ScGunAttributes {
                           Math.Max(1, capacity), Math.Max(.5f, reload), Math.Max(.5f, charge), Math.Max(.01f, spread), Math.Max(.01f, recoil));
     }
 
+    public static float EffectiveRpm(EffectiveGunStats stats) { float cycle=stats.RechargeSeconds>0?Math.Max(stats.CycleSeconds,stats.RechargeSeconds):stats.CycleSeconds; return cycle>0?60f/cycle:0; }
     static string Number(float value, int decimals) => value.ToString("0." + new string('#', Math.Max(0, decimals)), System.Globalization.CultureInfo.InvariantCulture);
     static float Fraction(float value, float scale) => scale > 0 ? Math.Clamp(value / scale, 0, 1) : 0;
 
@@ -78,7 +79,7 @@ public static class ScGunAttributes {
         var r = Ranges;
         int variant = Array.IndexOf(GunSpec.All, spec);
         bool zeus = spec.RechargeSeconds > 0;
-        float cone = (s.Handling?.BaseCone ?? spec.SpreadDegrees) * s.AngleScale,
+        float cone = (s.Handling?.BaseCone ?? ScGunHandling.LegacyCone(spec)) * s.AngleScale,
               kick = (s.Handling?.KickPitch ?? spec.KickPitchDegrees) * s.AngleScale;
         var rows = new List<Row>();
         string pelletDetail = spec.Pellets > 1 ? $"单次扣扳机 {spec.Pellets} 颗，每颗 {Number(s.Power / spec.Pellets, 1)}" : null;
@@ -94,8 +95,8 @@ public static class ScGunAttributes {
             s.UnlimitedRange ? 1f : Fraction(s.Range, r.Range), false, s.UnlimitedRange,
             s.UnlimitedRange ? "* 仅沿射击方向的连续已加载区域，不穿墙、不自动瞄准、不强制加载地形"
                              : $"满伤害至 {Number(FullDamageRange(spec, variant, level), 1)} 格，末端 {Number(EndMultiplier(spec, variant, level) * 100, 0)}%"));
-        rows.Add(new(Kind.RateOfFire, "射速", s.CycleSeconds > 0 ? Number(60f / s.CycleSeconds, 0) : "—", "发/分",
-            Fraction(s.CycleSeconds > 0 ? 60f / s.CycleSeconds : 0, r.RateOfFire), false, false, "理论射速；实际受帧率、操作及充能限制"));
+        rows.Add(new(Kind.RateOfFire, "射速", EffectiveRpm(s)>0 ? Number(EffectiveRpm(s), 1) : "—", "发/分",
+            Fraction(EffectiveRpm(s), r.RateOfFire), false, false, "理论射速；实际受帧率、操作及充能限制"));
         rows.Add(new(Kind.Capacity, zeus ? "充能容量" : "弹匣容量", s.Capacity.ToString(), "发",
             Fraction(s.Capacity, r.Capacity), false, false, zeus ? "电击枪恒为 1 次放电" : null));
         if (zeus) rows.Add(new(Kind.ReloadOrCharge, "充能时间（越低越好）", Number(s.RechargeSeconds, 2), "秒",
@@ -133,5 +134,5 @@ public static class ScGunAttributes {
     }
     /// <summary>What reaching the cap is worth, in the terms the card is allowed to use.</summary>
     public const string CounterUnlockNotice = "安装击杀计数器后才解锁等级机制；从安装时开始计数，安装前的击杀不计入。换肤、去皮和维修保留已有击杀与等级。";
-    public const string MaxLevelSummary = "Lv50 收益：基础伤害 ×10、弹匣 ×6.5（取整）、耐久上限 ×2.5；普通枪射速 ×2，狙击枪保留 ×3.5；皮肤枪先获得基础伤害 ×1.5。电击枪仍为单次充能，10 秒 → 1 秒。Lv10 起普通子弹枪已零散布、无射击后坐力、无距离衰减且无武器自身距离上限。换弹动画不加速。";
+    public const string MaxLevelSummary = "Lv50 收益：基础伤害 ×10、弹匣 ×6.5（取整）、耐久上限 ×2.5；相对新版基础，普通枪及连狙射速 ×1.5，AWP／SSG08 ×3.5；全枪基础射速 ×0.65，连狙额外 ×0.75；皮肤枪先获得基础伤害 ×1.5。电击枪仍为单次充能，约15.38 秒 → 1.54 秒；霰弹低级补偿在Lv20归零。Lv10 起普通子弹枪已零散布、无射击后坐力、无距离衰减且无武器自身距离上限。换弹动画不加速。";
 }

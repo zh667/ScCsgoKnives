@@ -40,7 +40,7 @@ public static class ScWeaponSkinning {
         if (skin is not null && !ScGunSkinCatalog.Fits(skin, s.Variant)) return null;
         int target = skin?.PaintId ?? ScGunSkinCatalog.None;
         if (target == s.SkinId) return null;
-        var cost = free ? new Dictionary<int, int>() : ScGunSkinCatalog.CostOf(skin, materialValue);
+        var cost = free ? new Dictionary<int, int>() : ScGunSkinCatalog.CostForChange(s.Variant,s.SkinId,skin,materialValue);
         return new Quote(slot, value, s.Id, s.Revision, s.SkinId, skin, cost, s.Fresh);
     }
 

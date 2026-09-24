@@ -142,8 +142,9 @@ static class Growth30BoundaryRegression {
                         double newRemaining=double.Parse(afterFields["c"],System.Globalization.CultureInfo.InvariantCulture);
                         double oldCycle=double.Parse(beforeFields["rc"],System.Globalization.CultureInfo.InvariantCulture);
                         double newCycle=double.Parse(afterFields["rc"],System.Globalization.CultureInfo.InvariantCulture);
-                        bool charge=oldRemaining<0?newRemaining==-1:oldSchema==5?Math.Abs(newRemaining-oldRemaining)<1e-5:
-                            oldCycle>0&&newCycle>0&&Math.Abs(newRemaining/newCycle-oldRemaining/oldCycle)<1e-5;
+                        // Version migration keeps seconds and the stored cycle. Only a normal gameplay
+                        // level-up scales the remaining fraction; a new shot starts the balanced cycle.
+                        bool charge=Math.Abs(newRemaining-oldRemaining)<1e-5&&Math.Abs(newCycle-oldCycle)<1e-5;
                         Check($"supplied-dll-state/{asset}/{pair.Key}/{round}",same&&charge,$"paint={beforeFields["p"]}; level={beforeFields["gl"]}; rounds={beforeFields["r"]}; wear={beforeFields["d"]}/{beforeFields["m"]}; charge={newRemaining}");
                     }
                     Check($"supplied-dll-count-watermark/{asset}/{round}",rows.Count==expectedRows.Count&&written.GetValue<int>("Next")==oldMatrix.GetValue<int>("Next")

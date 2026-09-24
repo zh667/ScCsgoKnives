@@ -2,10 +2,10 @@ namespace Game;
 
 /// <summary>Fifty-level gun growth. The total growth is spread across all fifty levels so that reaching Lv50
 /// reproduces exactly what the published public beta reached at Lv30: damage x10, magazine x6.5, maximum life x2.5,
-/// and the Zeus charge 10 s -> 1 s. The normal-gun fire rate is deliberately capped lower (x1.5 at Lv50) than the
+/// with the same charge growth ratio. The 2026-09 balance scales new Zeus cycles by 1/0.65. The normal-gun fire rate is deliberately capped lower (x1.5 at Lv50) than the
 /// public beta's x3.5. SCAR-20/G3SG1 share the x1.5 cap; AWP/SSG08 retain x3.5.
 ///
-/// Lv10 retains damage x2, life x1.5, capacity x1.5 and Zeus 10 s -> 5 s. Ordinary fire rate is now x1.1.
+/// Lv10 retains damage x2, life x1.5, capacity x1.5 and the Zeus charge growth ratio 1 -> 0.5. Ordinary fire rate is now x1.1.
 ///
 /// Every number is derived from the gun's *base* value and the applied level, never from an already-grown value,
 /// so re-applying a level can never compound.
@@ -86,8 +86,11 @@ public static class ScGunGrowth {
         : 1f + .01f * Clamp(level);
     /// <summary>A base fire-rate multiplier when the model is not known is treated as a normal gun.</summary>
     public static float FireRateMultiplier(int level) => FireRateMultiplier(-1, level);
+    public const float BaseFireRateScale = .65f;
+    public static float BalanceFireRateScale(int variant) => BaseFireRateScale *
+        (variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].Name is "scar20" or "g3sg1" ? .75f : 1f);
     public static float ShotInterval(int variant, float baseSeconds, int level) =>
-        baseSeconds > 0 ? baseSeconds / FireRateMultiplier(variant, Clamp(level)) : 0;
+        baseSeconds > 0 ? baseSeconds / (BalanceFireRateScale(variant) * FireRateMultiplier(variant, Clamp(level))) : 0;
     public static float SkinDamageMultiplier(int variant, int skinId) => ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant) ? 1.5f : 1f;
 
     /// <summary>Magazine: Lv10 is unchanged at +50 %, and the remaining growth is spread to Lv50 at x6.5, the
@@ -112,11 +115,12 @@ public static class ScGunGrowth {
     }
     public static int RoundHalfUp(double value) => (int)Math.Floor(value + .5);
 
-    /// <summary>Charge cycle: Lv10 is unchanged (10 -> 5 s), then spread to Lv50 (10 -> 1 s), the public beta's Lv30.</summary>
+    /// <summary>New charge cycle: 15.3846 s at Lv0, 7.6923 s at Lv10, 1.53846 s at Lv50. Saved cycles retain their remaining seconds.</summary>
     public static float RechargeSeconds(GunSpec spec, int level) {
         if (spec is null || spec.RechargeSeconds <= 0) return 0;
         float factor = 1f - .05f * Tier(level, 0) - .02f * Tier(level, 1) - .01f * Tier(level, 2) - .005f * Tier(level, 3) - .005f * Tier(level, 4);
-        return spec.RechargeSeconds * factor;
+        // Only new cycles use this scale. Saved RechargeReadyAt/RechargeCycleSeconds are untouched.
+        return spec.RechargeSeconds * factor / BaseFireRateScale;
     }
 
     /// <summary>Spread and camera recoil are scaled once, on the final angle: 1 - 0.10L, and exactly zero at Lv10.</summary>

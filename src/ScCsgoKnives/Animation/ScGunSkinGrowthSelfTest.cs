@@ -33,10 +33,10 @@ public static class ScGunSkinGrowthSelfTest {
                     if (!Skin(inv, skin)) return false;
                     var painted = Snap(inv);
                     if (!SameState(before, painted) || painted.CounterInstalled || ScGunKillCredit.For(Terrain.ExtractData(value), creative, 1) is not null) return false;
-                    if (Math.Abs(EffectiveGunStats.Resolve(spec, value, false).Power - ScSurvivalBalance.Power(spec.Name) * 1.5f) > .001f) return false;
+                    if (Math.Abs(EffectiveGunStats.Resolve(spec, value, false).Power - ScSurvivalBalance.PowerAtLevel(spec.Name,0) * 1.5f) > .001f) return false;
                     for (int level = 0; level <= ScGunGrowth.MaxLevel; level++) {
                         var stats = EffectiveGunStats.ResolveLevel(spec, value, false, level);
-                        float expected = ScSurvivalBalance.Power(spec.Name) * 1.5f * ScGunGrowth.DamageMultiplier(level);
+                        float expected = ScSurvivalBalance.PowerAtLevel(spec.Name,level) * 1.5f;
                         if (Math.Abs(stats.Power - expected) > .001f || Math.Abs(stats.PelletPower(spec, 0) * spec.Pellets - expected) > .001f) return false;
                         var damage = ScGunAttributes.Rows(spec, value, level).First(r => r.Kind == ScGunAttributes.Kind.Damage);
                         if (Math.Abs(float.Parse(damage.Text, System.Globalization.CultureInfo.InvariantCulture) - expected) > .051f) return false;
@@ -95,7 +95,7 @@ public static class ScGunSkinGrowthSelfTest {
                 int v = Array.IndexOf(GunSpec.All, spec); var inv = InventoryFor(v, false); int value = inv.GetSlotValue(0);
                 for (int level = 0; level <= ScGunGrowth.MaxLevel; level++) {
                     var s = EffectiveGunStats.ResolveLevel(spec, value, false, level);
-                    if (Math.Abs(s.Power - ScSurvivalBalance.Power(spec.Name) * ScGunGrowth.DamageMultiplier(level)) > .001f
+                    if (Math.Abs(s.Power - ScSurvivalBalance.PowerAtLevel(spec.Name,level)) > .001f
                         || s.Capacity != ScGunGrowth.Capacity(v, level) || s.RechargeSeconds != ScGunGrowth.RechargeSeconds(spec, level)) return false;
                 }
                 return EffectiveGunStats.LevelOf(value) == 0 && !Snap(inv).CounterInstalled;
