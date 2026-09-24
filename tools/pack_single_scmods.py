@@ -103,7 +103,9 @@ CT/T玩家角色仍需另装NekoMeko Model1.1及Neorxna1.4，第三方Mod不包�
     marker=ET.Element('Resources',Version='1.10.4',Format='1',Edition='Optimized512' if lite else 'Full')
     for name,digest in sorted(hashes.items()):
         if name.startswith(('Assets/Textures/','Assets/Models/','Assets/Audio/')):ET.SubElement(marker,'File',Path=name,Sha256=digest)
-    add('Assets/ScCsgoResources.xml',ET.tostring(marker,encoding='utf8'))
+    # Survivalcraft's native XmlReader accepts the standard IANA name "utf-8";
+    # Python's shorthand "utf8" is rejected by the game when it loads a world.
+    add('Assets/ScCsgoResources.xml',ET.tostring(marker,encoding='utf-8',xml_declaration=True))
     target=OUT/f'[API1.9]CS武器1.5.1-作者ZH667-{"512轻量" if lite else "全量"}总包.scmod'
     pending=target.with_suffix('.pending');write_archive(pending,entries)
     with zipfile.ZipFile(pending) as z:

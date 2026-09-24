@@ -9,6 +9,41 @@ using TemplatesDatabase;
 
 // Exercise the native archive scanner, loader registration and database type resolution.
 // Each mode runs in its own process, without compile-time references to any tested mod.
+if(args.Length==3&&args[0]=="--world-resource-gate"){
+    Dispatcher.Initialize();
+    var gateChecks=new List<object>();int gateFailed=0;
+    try{
+        using var archive=Game.ZipArchive.Open(File.OpenRead(args[1]));
+        var entries=archive.ReadCentralDir();
+        Assembly core=null;
+        // Load only the two assemblies needed by the world's resource gate.
+        foreach(string name in new[]{"ScCsgoResources.dll","ScCsgoKnives.dll"}){
+            using var data=new MemoryStream();archive.ExtractFile(entries.Single(e=>e.FilenameInZip==name),data);
+            var assembly=Assembly.Load(data.ToArray());ModsManager.Dlls[assembly.FullName]=assembly;
+            if(name=="ScCsgoKnives.dll")core=assembly;
+        }
+        AppDomain.CurrentDomain.AssemblyResolve+=(_,a)=>ModsManager.Dlls.GetValueOrDefault(a.Name);
+        ContentManager.AddContentReader(new Game.IContentReader.XmlReader());
+        var marker=new MemoryStream();archive.ExtractFile(entries.Single(e=>e.FilenameInZip=="Assets/ScCsgoResources.xml"),marker);
+        var gateContent=new ContentInfo("ScCsgoResources.xml");gateContent.SetContentStream(marker);ContentManager.Add(gateContent);
+        // Reproduce the cold ContentManager -> native XML reader path used by
+        // ProjectXmlLoad, then run the save guard on a detached valid subsystem.
+        var project=XElement.Parse("<Project><Subsystems><Values Name='ScGunBlockBehavior'><Value Name='GunDataLayout' Type='int' Value='5'/><Values Name='GunRegistry'><Value Name='Schema' Type='int' Value='6'/></Values></Values></Subsystems></Project>");
+        var original=new XElement(project);
+        core.GetType("Game.ScRequiredResources").GetMethod("Validate").Invoke(null,null);
+        var values=new ValuesDictionary();values.ApplyOverrides(project.Element("Subsystems").Element("Values"));
+        core.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[values]);
+        gateChecks.Add(new{name="cold-native-resource-and-world-save-guard",ok=true});
+        if(!XNode.DeepEquals(project,original))throw new Exception("Fixture XML changed unexpectedly");
+        gateChecks.Add(new{name="world-fixture-unchanged",ok=true});
+        foreach(var entry in entries.Where(e=>e.FilenameInZip.StartsWith("Assets/")&&(e.FilenameInZip.EndsWith(".xml")||e.FilenameInZip.EndsWith(".xdb")))){
+            using var data=new MemoryStream();archive.ExtractFile(entry,data);data.Position=0;
+            XElement.Load(data);gateChecks.Add(new{name="raw-xml/"+entry.FilenameInZip,ok=true});
+        }
+    }catch(Exception e){gateFailed=1;gateChecks.Add(new{error=e.ToString()});Console.Error.WriteLine(e.Message);}
+    File.WriteAllText(args[2],JsonSerializer.Serialize(new{failed=gateFailed,checks=gateChecks},new JsonSerializerOptions{WriteIndented=true}));
+    Console.WriteLine($"World resource gate: {gateChecks.Count} gateChecks, {gateFailed} failures");return gateFailed;
+}
 if(args.Length==4&&args[0]=="--archive-identical"){
     // Verify every recompressed member using the game's own ZIP implementation,
     // against the previously accepted package, not merely a second desktop unzip.

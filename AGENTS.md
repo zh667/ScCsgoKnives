@@ -9,6 +9,12 @@
   Lite additionally uses lossless standard Deflate recompression, no extra quality loss.
   See docs/release-single-1.5.1.md; no installation or world edits are authorized.
 
+- Release correction 2026-09-24: the first 1.5.1 single-scmod builds wrote the resource
+  marker XML declaration as `encoding='utf8'`, which the native Survivalcraft XML reader
+  rejects on world entry although desktop parsing accepts it. Current replacement builds
+  use standard `utf-8`; run the cold native resource/world gate and both packaged checks
+  before delivery. The old hashes are invalid release artifacts.
+
 - User-directed 2026-09-24 release: package Full and Lite comprehensive ZIP bundles,
   each containing current core and tactical scmods (including built-in appearance).
   Packaging is now authorized; installation is not. Preserve both PackageNames,

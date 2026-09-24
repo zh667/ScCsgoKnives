@@ -12,12 +12,16 @@ static class StandalonePackageRegression {
         using var zip = ZipFile.OpenRead(path);
         using var metaReader = new StreamReader(zip.GetEntry("modinfo.json").Open());
         var info = ModsManager.DeserializeJson(metaReader.ReadToEnd());
-        if (info.DependencyRanges.Count != 0 || info.Version != "1.1.0") return checks;
+        // All self-contained releases need this check, not only the first 1.1.0.
+        if (info.PackageName != "zh667.ScCsgoKnives" || info.DependencyRanges.Count != 0) return checks;
         try {
             Check("resource-assembly-bundled", zip.GetEntry("ScCsgoResources.dll") is not null
                 && ResourcePackInput.Animations(mod).GetManifestResourceNames().Any(n => n.EndsWith("c4.cs2.animation.json")));
             using var input = zip.GetEntry("Assets/ScCsgoResources.xml").Open();
-            var marker = XElement.Load(input);
+            using var bytes = new MemoryStream(); input.CopyTo(bytes); bytes.Position = 0;
+            var content = new ContentInfo("ScCsgoResources.xml"); content.SetContentStream(bytes);
+            // Keep the raw byte stream: parsing a decoded string ignores encoding declarations.
+            var marker = (XElement)new Game.IContentReader.XmlReader().Get([content]);
             var validate = mod.GetType("Game.ScRequiredResources").GetMethod("ValidateMarker");
             validate.Invoke(null, [marker]);
             Check("bundled-marker-accepted", true, marker.Attribute("Edition")?.Value);
