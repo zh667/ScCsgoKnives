@@ -1,0 +1,6183 @@
+{
+  "date": "2026-09-24",
+  "source_commit": "c8ed78925a3fcf13e05b93d65f79e9933be73c62",
+  "scope": "Planning model derived from source, not executed gameplay; rate factor 0.65; linear repair tiers; Zeus assumes recharge also divided by 0.65",
+  "sources": {
+    "src\\ScCsgoKnives\\Rendering\\GunSpec.cs": "05bf7e0a5239aa9436badbbe579237cc092e14cf943b8547f3aba003d1d9072d",
+    "src\\ScCsgoKnives\\World\\ScGunGrowth.cs": "9d73f47aa4268d3eafb5892a20fdd21a5023dff967225349e2b650dd9f2d7272",
+    "src\\ScCsgoKnives\\World\\ScSurvivalBalance.cs": "c16f71672aecf41130775d22b3b8b706980eb10fc6072bd606cc0d49a7a15ba9",
+    "src\\ScCsgoKnives\\World\\ScWeaponCrafting.cs": "0e8fa02d46ac5179430f2811a3e106629032d3ddc2d72853ac548b14687f4970",
+    "src\\ScCsgoKnives\\World\\ScWeaponRepair.cs": "024883d61b4bee27d66e63a16d7cdb3c22f18b291f9e4a561c7e14a6aac69159",
+    "src\\ScCsgoKnives\\World\\ScComponentCrafting.cs": "bf8406035e51c7809a30e4625afc2cd132cad50fda55cf759647cf1a3055f4c3",
+    "src\\ScCsgoKnives\\World\\ScGunSkinCatalog.cs": "f43dba9e35f9b53765ee278969b0599546a7043ff14c06235af26a7506cb923b"
+  },
+  "mods": [
+    {
+      "file": "11111.scmod",
+      "sha256": "a445c3bdc7bbfab2cec0ca8b880ac8e811379bf15a33cefcbf23c3046bf5632d",
+      "version": "1.0.0",
+      "package": "ChoulAddon"
+    },
+    {
+      "file": "[1SlowerCreatureSpawnsMod.scmod",
+      "sha256": "101886580c11f5e7167c975765a0b0318da7b42b9ba63a4abeb788cae5c2965b",
+      "version": "1.0.0",
+      "package": "SlowerCreatureSpawnsMod"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "sha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a",
+      "version": "1.0.0.2",
+      "package": "com.IndustrialEra2"
+    },
+    {
+      "file": "[API1.8.1.3]命令方块4.1.7.scmod",
+      "sha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a",
+      "version": "4.1.5",
+      "package": "zh.command"
+    },
+    {
+      "file": "[API1.8.2.3]循环电路板v1.02.scmod",
+      "sha256": "a5cc0532d7f5a5f95a058f4e465aa8808fda0c7a36813ea97707fff10c9df4c2",
+      "version": "1.0.0",
+      "package": "AlternatingSignalMod"
+    },
+    {
+      "file": "[API1.8]主角身体属性提升1.21.scmod",
+      "sha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a",
+      "version": "1.0",
+      "package": "yjfbfs"
+    },
+    {
+      "file": "[API1.8]生存开透视角.scmod",
+      "sha256": "dc2984daaa8fe21f9608343a18b33516474db925e22207390b3c7a493ce372d4",
+      "version": "2",
+      "package": "[API1.8.1.2]生存模式开透视视角"
+    },
+    {
+      "file": "[API1.9+]ScbbsPlus社区扩展v1.4.3.scmod",
+      "sha256": "2960b313e3a444a7dcd20e7a6b9d5fb681a9b0d3a6b2fa7bab879e07d4fde74e",
+      "version": "1.4.3",
+      "package": "scbbsplus"
+    },
+    {
+      "file": "[API1.9.1.3]HDR天幕v1.0.2公测版.scmod",
+      "sha256": "7c83391726a9d736d85ee283cf9cfd8f3f8ff78f233a46a694495f4ed8ad3698",
+      "version": "1.0.2",
+      "package": "ywl.hdr"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c",
+      "version": "2.0",
+      "package": "saghoulsmod"
+    },
+    {
+      "file": "[API1.9.2.1]Neorxna-v1.4 (2).scmod",
+      "sha256": "1efefcb5b9cff41a68cb39580908cdf524db5cfd0ffbc0d41a90aad65a3317c6",
+      "version": "1.4",
+      "package": "ysf.neorxna"
+    },
+    {
+      "file": "[API1.9.2]工业时代2x泰拉工作台 v1.0.scmod",
+      "sha256": "2ed04ff9480ecce73bd99957a04fa68a4b21f47e1c73d336db88768a07e939f7",
+      "version": "1.0",
+      "package": "xfdz.IndustrialEra2xTerrariaCraftingTableForSC"
+    },
+    {
+      "file": "[API1.9.2]泰拉工作台 Terraria Crafting Table  v1.1.1.scmod",
+      "sha256": "54f50ca6cf1a6eb86a253f8ddb2b235d1aba76633ce18831c5a0e0abb05bedbb",
+      "version": "1.1.1",
+      "package": "xfdz.TerrariaCraftingTableForSC"
+    },
+    {
+      "file": "[API1.9.3]工业时代2：Neorxna信息显示增强v1.2.scmod",
+      "sha256": "d41c1bcb6c062776711e3f964cc11ee209a030f7c1dd04d3733ba966e185c90a",
+      "version": "1.2",
+      "package": "ninemangos.neorxnaie2addon"
+    },
+    {
+      "file": "[API1.9.3]工业时代2：筛子_v1.1 内测.scmod",
+      "sha256": "540541303aac96b8d6f4f3d38696f2afa8b0dec05edfba0687fa5e625f4c37f4",
+      "version": "1.0",
+      "package": "Sieve"
+    },
+    {
+      "file": "[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod",
+      "sha256": "6785c2865728ee47472d46e07417c91bd98234375172ee1206d6a5f055f21543",
+      "version": "v1.2.0-beta.3",
+      "package": "HybridCraft.mod"
+    },
+    {
+      "file": "[API1.9.3]深海迷航V1.2.2.scmod",
+      "sha256": "6484157cfd4cae63a764c7c18d0b52cdf0df93dc875fa4f7199d48a17eed8551",
+      "version": "1.2.2",
+      "package": "Tp.Subnautica"
+    },
+    {
+      "file": "[API1.9]CS战术同伴拓展1.3.2-作者ZH667.scmod",
+      "sha256": "25db07ab4d68be479ef53e2911e3680232f865050bb229cc146370f24183162c",
+      "version": "1.3.2",
+      "package": "zh667.ScCsgoTactical"
+    },
+    {
+      "file": "[API1.9]CS武器1.4.9-作者ZH667-全量版.scmod",
+      "sha256": "becbe33bb6a8a575dded4ba130d65d40045939bc4e0ca29368baed6890b8c8fa",
+      "version": "1.4.9",
+      "package": "zh667.ScCsgoKnives"
+    },
+    {
+      "file": "[API1.9]NekoMekoModel1.1-源码构建.scmod",
+      "sha256": "7345a25427dc15bed8dcd49d7d7ad8c241194f68af663d2ca82e1fd015c233f2",
+      "version": "1.1",
+      "package": "ysf.nekomekomodel"
+    },
+    {
+      "file": "[API1.9]服饰配件V1.2.1.scmod",
+      "sha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18",
+      "version": "1.2.1",
+      "package": "Tp.Accessory"
+    },
+    {
+      "file": "[API1.9]构千形V1.2.1.scmod",
+      "sha256": "d67d0bd29fd3cf479512f0c70ecbd10eaee31e402471247939545950af09bfaf",
+      "version": "1.2.1",
+      "package": "Tp.BuildingGeneration"
+    },
+    {
+      "file": "[API1.9]玲兰科技v3.0.4(需玲兰辅助).scmod",
+      "sha256": "a2eda34cdb6e15d42c594c83e2bdbc1668bec06b39450d89ddb8727664b2dfd6",
+      "version": "3.0",
+      "package": "SushiTool"
+    },
+    {
+      "file": "[API1.9]玲兰辅助v3.0.3.scmod",
+      "sha256": "40ea58b5d6ff453065f290c250af19cac98ad4cd7313944ec370fc69b0df7a24",
+      "version": "3.0",
+      "package": "SushiBase"
+    },
+    {
+      "file": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "sha256": "336de65c0a70a4731e1a93902d3caee358871ec4add933d0ef3c0d1c0a59dbc5",
+      "version": "2.1.0",
+      "package": "Tp.SirenHead"
+    },
+    {
+      "file": "[工业时代附属]物流-1.0.0.1.scmod",
+      "sha256": "f64e951bb2e98f104c8c6ed4c7ed7655a2ab3f9d6f1535fc7ad632ae39b00e57",
+      "version": "1.0.0.1",
+      "package": "com.ie2.logistics"
+    },
+    {
+      "file": "BF2042-airwater-0.4.1.scmod",
+      "sha256": "ff919334132364db06afb5587146216a966fcbbd25b2385db785d2ccc6748601",
+      "version": "0.4.1",
+      "package": "local.bf2042.airwater"
+    },
+    {
+      "file": "BF2042-core-0.4.1.scmod",
+      "sha256": "7e0d5e0a1b13facf0e8d8d69ed1c42929cad3096a19ed6008ef1933cd9f704bb",
+      "version": "0.4.1",
+      "package": "local.bf2042.m5a3"
+    },
+    {
+      "file": "BF2042-ground-0.4.1.scmod",
+      "sha256": "c6e9856b6328a58bd163000da0af7d2af305a8a65e7c0d30b320f6b06a6a1784",
+      "version": "0.4.1",
+      "package": "local.bf2042.ground"
+    },
+    {
+      "file": "BF2042-weapons-0.4.1.scmod",
+      "sha256": "74107374103651c2961f6beaaa4b14e160b2dc52b5bbb851f0034eb1c8349114",
+      "version": "0.4.1",
+      "package": "local.bf2042.weapons"
+    },
+    {
+      "file": "mod.scmod",
+      "sha256": "52756ff4d9f29db8a80226bdc9fdc73ae80ab16ec04863f6c82bdcf55e132788",
+      "version": "1.0",
+      "package": "YJSTill"
+    },
+    {
+      "file": "NoAutoWakeUpMod.scmod",
+      "sha256": "a79a858d28cdecbd830a3ec26b70bf9c65a8e19f4a384888cb84f6042fff2fd3",
+      "version": "1.0",
+      "package": "game.noautowakeupmod"
+    },
+    {
+      "file": "RecipaediaEX-2.0.0.1.scmod",
+      "sha256": "9279123c11167a77ac430f0b402431b9c44773efe22c5ba574f3e2529104365d",
+      "version": "2.0.0.1",
+      "package": "com.recipaediaex"
+    },
+    {
+      "file": "SneakPlaceMod.scmod",
+      "sha256": "63eb9f279827a47c9e8e3f0901f6643c2c29cfdcfbf1f51ea35199822c17ea76",
+      "version": "1.0.0",
+      "package": "SneakPlaceMod"
+    },
+    {
+      "file": "化肥.scmod",
+      "sha256": "e0155235c77a155ff4c871c013095691bf9210b7490538dc2e0d9b854bb436d7",
+      "version": "1.0",
+      "package": "huafei"
+    }
+  ],
+  "entity_overrides": [
+    {
+      "file": "11111.scmod",
+      "sha256": "a445c3bdc7bbfab2cec0ca8b880ac8e811379bf15a33cefcbf23c3046bf5632d",
+      "entities": []
+    },
+    {
+      "file": "[1SlowerCreatureSpawnsMod.scmod",
+      "sha256": "101886580c11f5e7167c975765a0b0318da7b42b9ba63a4abeb788cae5c2965b",
+      "entities": []
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "sha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a",
+      "entities": [
+        {
+          "name": "Mobile",
+          "explicitOverrides": {
+            "AttackResilience": "500"
+          }
+        },
+        {
+          "name": "Airship",
+          "explicitOverrides": {
+            "AttackResilience": "200"
+          }
+        },
+        {
+          "name": "Car",
+          "explicitOverrides": {
+            "AttackResilience": "300"
+          }
+        },
+        {
+          "name": "Tractor",
+          "explicitOverrides": {
+            "AttackResilience": "300"
+          }
+        },
+        {
+          "name": "Train",
+          "explicitOverrides": {
+            "AttackResilience": "100"
+          }
+        },
+        {
+          "name": "Carriage",
+          "explicitOverrides": {
+            "AttackResilience": "90"
+          }
+        },
+        {
+          "name": "Robot",
+          "explicitOverrides": {
+            "AttackResilience": "2500",
+            "WalkSpeed": "4",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "T-200",
+          "explicitOverrides": {
+            "WalkSpeed": "4"
+          }
+        },
+        {
+          "name": "QuarryDrillerMobile",
+          "explicitOverrides": {
+            "AttackResilience": "Infinity"
+          }
+        },
+        {
+          "name": "PortableRadar",
+          "explicitOverrides": {
+            "AttackResilience": "Infinity"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.8.1.3]命令方块4.1.7.scmod",
+      "sha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a",
+      "entities": []
+    },
+    {
+      "file": "[API1.8.2.3]循环电路板v1.02.scmod",
+      "sha256": "a5cc0532d7f5a5f95a058f4e465aa8808fda0c7a36813ea97707fff10c9df4c2",
+      "entities": []
+    },
+    {
+      "file": "[API1.8]主角身体属性提升1.21.scmod",
+      "sha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a",
+      "entities": []
+    },
+    {
+      "file": "[API1.8]生存开透视角.scmod",
+      "sha256": "dc2984daaa8fe21f9608343a18b33516474db925e22207390b3c7a493ce372d4",
+      "entities": []
+    },
+    {
+      "file": "[API1.9+]ScbbsPlus社区扩展v1.4.3.scmod",
+      "sha256": "2960b313e3a444a7dcd20e7a6b9d5fb681a9b0d3a6b2fa7bab879e07d4fde74e",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.1.3]HDR天幕v1.0.2公测版.scmod",
+      "sha256": "7c83391726a9d736d85ee283cf9cfd8f3f8ff78f233a46a694495f4ed8ad3698",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c",
+      "entities": [
+        {
+          "name": "SAGhoul_Weak_01",
+          "explicitOverrides": {
+            "AttackResilience": "35",
+            "AttackPower": "1",
+            "WalkSpeed": "3"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_03",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackResilience": "35",
+            "ExplosionResilience": "8",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_04",
+          "explicitOverrides": {
+            "WalkSpeed": "3.3",
+            "AttackResilience": "50",
+            "ExplosionResilience": "8",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_05",
+          "explicitOverrides": {
+            "WalkSpeed": "3.3",
+            "AttackResilience": "50",
+            "ExplosionResilience": "16",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_06",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "70",
+            "ExplosionResilience": "16",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Weak_07",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "70",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_01",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_03",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "8",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_04",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "40",
+            "ExplosionResilience": "8",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_05",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "40",
+            "ExplosionResilience": "16",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_06",
+          "explicitOverrides": {
+            "WalkSpeed": "5.5",
+            "AttackResilience": "45",
+            "ExplosionResilience": "16",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Fast_07",
+          "explicitOverrides": {
+            "WalkSpeed": "5.5",
+            "AttackResilience": "55",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_01",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "6",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_02",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "8",
+            "AttackPower": "0.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_03",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "24",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_04",
+          "explicitOverrides": {
+            "WalkSpeed": "2.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "20",
+            "AttackPower": "0.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_05",
+          "explicitOverrides": {
+            "WalkSpeed": "2.5",
+            "AttackResilience": "25",
+            "ExplosionResilience": "20",
+            "AttackPower": "0.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_06",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "55",
+            "ExplosionResilience": "32",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_07",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "50",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Strong_08",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "70",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Dog",
+          "explicitOverrides": {
+            "AttackPower": "2",
+            "AttackResilience": "30",
+            "ExplosionResilience": "1",
+            "WalkSpeed": "4"
+          }
+        },
+        {
+          "name": "SAGhoul_Wolf",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "100",
+            "ExplosionResilience": "8",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Boar",
+          "explicitOverrides": {
+            "AttackResilience": "270",
+            "ExplosionResilience": "200",
+            "AttackPower": "4",
+            "WalkSpeed": "3.8"
+          }
+        },
+        {
+          "name": "SAGhoul_Bear",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackPower": "5",
+            "AttackResilience": "360",
+            "ExplosionResilience": "999999999"
+          }
+        },
+        {
+          "name": "SAGhoul_Bird",
+          "explicitOverrides": {
+            "AttackResilience": "5",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_Ray",
+          "explicitOverrides": {
+            "AttackResilience": "100",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "SAGhoul_NecroDrift",
+          "explicitOverrides": {
+            "AttackResilience": "50000",
+            "ExplosionResilience": "999999999"
+          }
+        },
+        {
+          "name": "SAGhoul_Monster",
+          "explicitOverrides": {
+            "AttackResilience": "260",
+            "ExplosionResilience": "200",
+            "AttackPower": "4",
+            "WalkSpeed": "4.5"
+          }
+        },
+        {
+          "name": "SAGhoul_Fatt",
+          "explicitOverrides": {
+            "WalkSpeed": "2.5",
+            "AttackResilience": "260",
+            "ExplosionResilience": "5",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "SAGhoul_Dark",
+          "explicitOverrides": {
+            "WalkSpeed": "3.5",
+            "AttackResilience": "1000",
+            "ExplosionResilience": "999999999",
+            "AttackPower": "5"
+          }
+        },
+        {
+          "name": "SAG_CorpsificeHead",
+          "explicitOverrides": {
+            "AttackResilience": "30000",
+            "ExplosionResilience": "999999999",
+            "WalkSpeed": "0"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9.2.1]Neorxna-v1.4 (2).scmod",
+      "sha256": "1efefcb5b9cff41a68cb39580908cdf524db5cfd0ffbc0d41a90aad65a3317c6",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.2]工业时代2x泰拉工作台 v1.0.scmod",
+      "sha256": "2ed04ff9480ecce73bd99957a04fa68a4b21f47e1c73d336db88768a07e939f7",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.2]泰拉工作台 Terraria Crafting Table  v1.1.1.scmod",
+      "sha256": "54f50ca6cf1a6eb86a253f8ddb2b235d1aba76633ce18831c5a0e0abb05bedbb",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.3]工业时代2：Neorxna信息显示增强v1.2.scmod",
+      "sha256": "d41c1bcb6c062776711e3f964cc11ee209a030f7c1dd04d3733ba966e185c90a",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.3]工业时代2：筛子_v1.1 内测.scmod",
+      "sha256": "540541303aac96b8d6f4f3d38696f2afa8b0dec05edfba0687fa5e625f4c37f4",
+      "entities": []
+    },
+    {
+      "file": "[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod",
+      "sha256": "6785c2865728ee47472d46e07417c91bd98234375172ee1206d6a5f055f21543",
+      "entities": [
+        {
+          "name": "HC_Hippopotamus",
+          "explicitOverrides": {
+            "AttackResilience": "120",
+            "WalkSpeed": "5",
+            "AttackPower": "4"
+          }
+        },
+        {
+          "name": "HC_Pig",
+          "explicitOverrides": {
+            "AttackResilience": "20",
+            "WalkSpeed": "3.5",
+            "AttackPower": "0"
+          }
+        },
+        {
+          "name": "HC_Moonjellyfish",
+          "explicitOverrides": {
+            "AttackResilience": "5"
+          }
+        },
+        {
+          "name": "HC_BunnyGirl",
+          "explicitOverrides": {
+            "AttackResilience": "60",
+            "WalkSpeed": "3.5",
+            "AttackPower": "3"
+          }
+        },
+        {
+          "name": "HC_Chicken",
+          "explicitOverrides": {
+            "AttackResilience": "5",
+            "WalkSpeed": "2"
+          }
+        },
+        {
+          "name": "HC_Simmental",
+          "explicitOverrides": {
+            "AttackResilience": "35",
+            "WalkSpeed": "4",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "HC_SteppeWolf",
+          "explicitOverrides": {
+            "AttackResilience": "20",
+            "WalkSpeed": "4.5",
+            "AttackPower": "1.5"
+          }
+        },
+        {
+          "name": "HC_FlyingHorse",
+          "explicitOverrides": {
+            "WalkSpeed": "6.7",
+            "AttackResilience": "30",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "HC_FrozenHorse",
+          "explicitOverrides": {
+            "WalkSpeed": "13.4",
+            "AttackResilience": "120",
+            "AttackPower": "1"
+          }
+        },
+        {
+          "name": "HC_Atlantic",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "HC_AfricanStoneBass",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "HC_CopperbandButterflyfish",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "HC_Rabbit",
+          "explicitOverrides": {
+            "AttackResilience": "5",
+            "WalkSpeed": "4"
+          }
+        },
+        {
+          "name": "HC_Mosasaurus",
+          "explicitOverrides": {
+            "AttackResilience": "800",
+            "AttackPower": "25"
+          }
+        },
+        {
+          "name": "HC_Pawl",
+          "explicitOverrides": {
+            "AttackResilience": "300",
+            "WalkSpeed": "5",
+            "AttackPower": "6"
+          }
+        },
+        {
+          "name": "HC_BlackCockroach",
+          "explicitOverrides": {
+            "AttackResilience": "1",
+            "WalkSpeed": "3",
+            "AttackPower": "0"
+          }
+        },
+        {
+          "name": "HC_GiantRoach",
+          "explicitOverrides": {
+            "AttackResilience": "80",
+            "WalkSpeed": "8",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "HC_Griffon",
+          "explicitOverrides": {
+            "WalkSpeed": "8",
+            "AttackResilience": "400",
+            "AttackPower": "4"
+          }
+        },
+        {
+          "name": "HC_TRex",
+          "explicitOverrides": {
+            "AttackResilience": "1000",
+            "WalkSpeed": "8",
+            "AttackPower": "30"
+          }
+        },
+        {
+          "name": "HC_CarnivorousPlant",
+          "explicitOverrides": {
+            "AttackResilience": "80",
+            "WalkSpeed": "2.5",
+            "AttackPower": "3"
+          }
+        },
+        {
+          "name": "HC_GoldenEagle",
+          "explicitOverrides": {
+            "WalkSpeed": "4",
+            "AttackResilience": "20",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "HC_WereBear",
+          "explicitOverrides": {
+            "AttackResilience": "160",
+            "WalkSpeed": "4.5",
+            "AttackPower": "6"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9.3]深海迷航V1.2.2.scmod",
+      "sha256": "6484157cfd4cae63a764c7c18d0b52cdf0df93dc875fa4f7199d48a17eed8551",
+      "entities": [
+        {
+          "name": "HumanFish",
+          "explicitOverrides": {
+            "AttackResilience": "100",
+            "ExplosionResilience": "16",
+            "WalkSpeed": "0.5"
+          }
+        },
+        {
+          "name": "GeneralFish",
+          "explicitOverrides": {
+            "WalkSpeed": "0.7"
+          }
+        },
+        {
+          "name": "Penguin",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackResilience": "80",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "Clownfish",
+          "explicitOverrides": {
+            "AttackPower": "1",
+            "AttackResilience": "32"
+          }
+        },
+        {
+          "name": "Anglerfish",
+          "explicitOverrides": {
+            "AttackPower": "4",
+            "AttackResilience": "128",
+            "ExplosionResilience": "8"
+          }
+        },
+        {
+          "name": "Eel",
+          "explicitOverrides": {
+            "AttackPower": "4",
+            "AttackResilience": "100",
+            "ExplosionResilience": "8"
+          }
+        },
+        {
+          "name": "FemaleHumanFish",
+          "explicitOverrides": {
+            "AttackResilience": "120",
+            "AttackPower": "2"
+          }
+        },
+        {
+          "name": "BlueWhale",
+          "explicitOverrides": {
+            "AttackResilience": "1600",
+            "ExplosionResilience": "64",
+            "AttackPower": "32",
+            "WalkSpeed": "3"
+          }
+        },
+        {
+          "name": "GiantTurtle",
+          "explicitOverrides": {
+            "AttackResilience": "2048",
+            "ExplosionResilience": "9999",
+            "WalkSpeed": "4",
+            "AttackPower": "32"
+          }
+        },
+        {
+          "name": "Kraken",
+          "explicitOverrides": {
+            "WalkSpeed": "5.5",
+            "AttackResilience": "4096",
+            "ExplosionResilience": "999",
+            "AttackPower": "64"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]CS战术同伴拓展1.3.2-作者ZH667.scmod",
+      "sha256": "25db07ab4d68be479ef53e2911e3680232f865050bb229cc146370f24183162c",
+      "entities": [
+        {
+          "name": "ScTacticalHostage",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        },
+        {
+          "name": "ScTacticalCT",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        },
+        {
+          "name": "ScTacticalT",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        },
+        {
+          "name": "ScTacticalEnemy",
+          "explicitOverrides": {
+            "WalkSpeed": "4.5",
+            "AttackResilience": "60"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]CS武器1.4.9-作者ZH667-全量版.scmod",
+      "sha256": "becbe33bb6a8a575dded4ba130d65d40045939bc4e0ca29368baed6890b8c8fa",
+      "entities": [
+        {
+          "name": "ScCsgoChicken",
+          "explicitOverrides": {
+            "WalkSpeed": "3",
+            "AttackResilience": "3"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]NekoMekoModel1.1-源码构建.scmod",
+      "sha256": "7345a25427dc15bed8dcd49d7d7ad8c241194f68af663d2ca82e1fd015c233f2",
+      "entities": []
+    },
+    {
+      "file": "[API1.9]服饰配件V1.2.1.scmod",
+      "sha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18",
+      "entities": []
+    },
+    {
+      "file": "[API1.9]构千形V1.2.1.scmod",
+      "sha256": "d67d0bd29fd3cf479512f0c70ecbd10eaee31e402471247939545950af09bfaf",
+      "entities": []
+    },
+    {
+      "file": "[API1.9]玲兰科技v3.0.4(需玲兰辅助).scmod",
+      "sha256": "a2eda34cdb6e15d42c594c83e2bdbc1668bec06b39450d89ddb8727664b2dfd6",
+      "entities": [
+        {
+          "name": "SushiTrain",
+          "explicitOverrides": {
+            "AttackResilience": "100"
+          }
+        },
+        {
+          "name": "SushiMarkII",
+          "explicitOverrides": {
+            "AttackResilience": "100"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[API1.9]玲兰辅助v3.0.3.scmod",
+      "sha256": "40ea58b5d6ff453065f290c250af19cac98ad4cd7313944ec370fc69b0df7a24",
+      "entities": []
+    },
+    {
+      "file": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "sha256": "336de65c0a70a4731e1a93902d3caee358871ec4add933d0ef3c0d1c0a59dbc5",
+      "entities": [
+        {
+          "name": "SirenHeadDisguise",
+          "explicitOverrides": {
+            "AttackResilience": "1024",
+            "ExplosionResilience": "100"
+          }
+        },
+        {
+          "name": "SirenHead",
+          "explicitOverrides": {
+            "WalkSpeed": "10",
+            "AttackResilience": "1024",
+            "ExplosionResilience": "100",
+            "AttackPower": "20"
+          }
+        },
+        {
+          "name": "DonkeyRancor",
+          "explicitOverrides": {
+            "AttackResilience": "91"
+          }
+        },
+        {
+          "name": "DonkeyMan",
+          "explicitOverrides": {
+            "WalkSpeed": "5",
+            "AttackPower": "6",
+            "AttackResilience": "91",
+            "ExplosionResilience": "100"
+          }
+        },
+        {
+          "name": "Fenrir",
+          "explicitOverrides": {
+            "WalkSpeed": "7",
+            "AttackPower": "16",
+            "AttackResilience": "1600",
+            "ExplosionResilience": "200"
+          }
+        },
+        {
+          "name": "CartoonCat1",
+          "explicitOverrides": {
+            "WalkSpeed": "6",
+            "AttackPower": "5",
+            "AttackResilience": "200",
+            "ExplosionResilience": "150"
+          }
+        },
+        {
+          "name": "CartoonCat2",
+          "explicitOverrides": {
+            "WalkSpeed": "8",
+            "AttackPower": "10",
+            "AttackResilience": "400",
+            "ExplosionResilience": "300"
+          }
+        },
+        {
+          "name": "CartoonCat3",
+          "explicitOverrides": {
+            "WalkSpeed": "10",
+            "AttackPower": "20",
+            "AttackResilience": "800",
+            "ExplosionResilience": "400"
+          }
+        },
+        {
+          "name": "Smolder",
+          "explicitOverrides": {
+            "WalkSpeed": "6",
+            "AttackPower": "48",
+            "AttackResilience": "3200",
+            "ExplosionResilience": "400"
+          }
+        }
+      ]
+    },
+    {
+      "file": "[工业时代附属]物流-1.0.0.1.scmod",
+      "sha256": "f64e951bb2e98f104c8c6ed4c7ed7655a2ab3f9d6f1535fc7ad632ae39b00e57",
+      "entities": []
+    },
+    {
+      "file": "BF2042-airwater-0.4.1.scmod",
+      "sha256": "ff919334132364db06afb5587146216a966fcbbd25b2385db785d2ccc6748601",
+      "entities": []
+    },
+    {
+      "file": "BF2042-core-0.4.1.scmod",
+      "sha256": "7e0d5e0a1b13facf0e8d8d69ed1c42929cad3096a19ed6008ef1933cd9f704bb",
+      "entities": [
+        {
+          "name": "BFUSNRHIB",
+          "explicitOverrides": {
+            "AttackResilience": "650"
+          }
+        },
+        {
+          "name": "EMKV90TOR",
+          "explicitOverrides": {
+            "AttackResilience": "2000"
+          }
+        },
+        {
+          "name": "EBLCRAM",
+          "explicitOverrides": {
+            "AttackResilience": "1200"
+          }
+        },
+        {
+          "name": "BFMD540",
+          "explicitOverrides": {
+            "AttackResilience": "900"
+          }
+        },
+        {
+          "name": "BFRHIB",
+          "explicitOverrides": {
+            "AttackResilience": "650"
+          }
+        }
+      ]
+    },
+    {
+      "file": "BF2042-ground-0.4.1.scmod",
+      "sha256": "c6e9856b6328a58bd163000da0af7d2af305a8a65e7c0d30b320f6b06a6a1784",
+      "entities": []
+    },
+    {
+      "file": "BF2042-weapons-0.4.1.scmod",
+      "sha256": "74107374103651c2961f6beaaa4b14e160b2dc52b5bbb851f0034eb1c8349114",
+      "entities": []
+    },
+    {
+      "file": "mod.scmod",
+      "sha256": "52756ff4d9f29db8a80226bdc9fdc73ae80ab16ec04863f6c82bdcf55e132788",
+      "entities": []
+    },
+    {
+      "file": "NoAutoWakeUpMod.scmod",
+      "sha256": "a79a858d28cdecbd830a3ec26b70bf9c65a8e19f4a384888cb84f6042fff2fd3",
+      "entities": []
+    },
+    {
+      "file": "RecipaediaEX-2.0.0.1.scmod",
+      "sha256": "9279123c11167a77ac430f0b402431b9c44773efe22c5ba574f3e2529104365d",
+      "entities": []
+    },
+    {
+      "file": "SneakPlaceMod.scmod",
+      "sha256": "63eb9f279827a47c9e8e3f0901f6643c2c29cfdcfbf1f51ea35199822c17ea76",
+      "entities": []
+    },
+    {
+      "file": "化肥.scmod",
+      "sha256": "e0155235c77a155ff4c871c013095691bf9210b7490538dc2e0d9b854bb436d7",
+      "entities": []
+    }
+  ],
+  "guns": [
+    {
+      "name": "ak47",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.1,
+      "base_power": 15.0,
+      "base_capacity": 30,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        5,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        5,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 192,
+        "coal": 64,
+        "copper": 44,
+        "germanium": 20,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 32,
+        "germanium": 10,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        3
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 15.0,
+          "skin_power": 22.5,
+          "capacity": 30,
+          "max_durability": 1500,
+          "new_dps": 97.5,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 660.0,
+          "new_rpm": 429.0,
+          "new_interval": 0.13986013986013987,
+          "power": 30.0,
+          "skin_power": 45.0,
+          "capacity": 45,
+          "max_durability": 2250,
+          "new_dps": 214.5,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 720.0,
+          "new_rpm": 468.0,
+          "new_interval": 0.1282051282051282,
+          "power": 52.5,
+          "skin_power": 78.75,
+          "capacity": 60,
+          "max_durability": 2550,
+          "new_dps": 409.5,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 780.0,
+          "new_rpm": 507.0,
+          "new_interval": 0.11834319526627218,
+          "power": 82.5,
+          "skin_power": 123.75,
+          "capacity": 90,
+          "max_durability": 2850,
+          "new_dps": 697.125,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 840.0,
+          "new_rpm": 546.0,
+          "new_interval": 0.10989010989010989,
+          "power": 112.5,
+          "skin_power": 168.75,
+          "capacity": 135,
+          "max_durability": 3300,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 150.0,
+          "skin_power": 225.0,
+          "capacity": 195,
+          "max_durability": 3750,
+          "new_dps": 1462.5,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "m4a1s",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.1,
+      "base_power": 15.0,
+      "base_capacity": 20,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        5,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        5,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 192,
+        "coal": 64,
+        "copper": 44,
+        "germanium": 20,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 32,
+        "germanium": 10,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        3
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 15.0,
+          "skin_power": 22.5,
+          "capacity": 20,
+          "max_durability": 1500,
+          "new_dps": 97.5,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 660.0,
+          "new_rpm": 429.0,
+          "new_interval": 0.13986013986013987,
+          "power": 30.0,
+          "skin_power": 45.0,
+          "capacity": 30,
+          "max_durability": 2250,
+          "new_dps": 214.5,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 720.0,
+          "new_rpm": 468.0,
+          "new_interval": 0.1282051282051282,
+          "power": 52.5,
+          "skin_power": 78.75,
+          "capacity": 40,
+          "max_durability": 2550,
+          "new_dps": 409.5,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 780.0,
+          "new_rpm": 507.0,
+          "new_interval": 0.11834319526627218,
+          "power": 82.5,
+          "skin_power": 123.75,
+          "capacity": 60,
+          "max_durability": 2850,
+          "new_dps": 697.125,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 840.0,
+          "new_rpm": 546.0,
+          "new_interval": 0.10989010989010989,
+          "power": 112.5,
+          "skin_power": 168.75,
+          "capacity": 90,
+          "max_durability": 3300,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 150.0,
+          "skin_power": 225.0,
+          "capacity": 130,
+          "max_durability": 3750,
+          "new_dps": 1462.5,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "awp",
+      "weapon_class": "BoltSniper",
+      "base_cycle_seconds": 1.455,
+      "base_power": 57.0,
+      "base_capacity": 5,
+      "base_durability": 200,
+      "current_assembly": [
+        8,
+        5,
+        2,
+        2,
+        1,
+        0
+      ],
+      "proposed_assembly": [
+        8,
+        5,
+        2,
+        2,
+        1,
+        0
+      ],
+      "current_raw": {
+        "iron": 216,
+        "coal": 72,
+        "copper": 52,
+        "germanium": 28,
+        "leather": 16,
+        "planks": 8,
+        "glass": 16,
+        "diamond": 3
+      },
+      "proposed_raw": {
+        "iron": 104,
+        "coal": 39,
+        "copper": 36,
+        "germanium": 14,
+        "leather": 8,
+        "planks": 4,
+        "glass": 8,
+        "diamond": 1
+      },
+      "current_full_repair": [
+        4,
+        3
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 41.23711340206185,
+          "new_rpm": 26.804123711340203,
+          "new_interval": 2.2384615384615385,
+          "power": 57.0,
+          "skin_power": 85.5,
+          "capacity": 5,
+          "max_durability": 200,
+          "new_dps": 25.463917525773194,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 41.23711340206185,
+          "new_rpm": 26.804123711340203,
+          "new_interval": 2.2384615384615385,
+          "power": 114.0,
+          "skin_power": 171.0,
+          "capacity": 7,
+          "max_durability": 300,
+          "new_dps": 50.92783505154639,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 61.85567010309278,
+          "new_rpm": 40.20618556701031,
+          "new_interval": 1.4923076923076923,
+          "power": 199.5,
+          "skin_power": 299.25,
+          "capacity": 10,
+          "max_durability": 340,
+          "new_dps": 133.68556701030926,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 82.4742268041237,
+          "new_rpm": 53.60824742268041,
+          "new_interval": 1.1192307692307693,
+          "power": 313.5,
+          "skin_power": 470.25,
+          "capacity": 15,
+          "max_durability": 380,
+          "new_dps": 280.10309278350513,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 113.4020618556701,
+          "new_rpm": 73.71134020618557,
+          "new_interval": 0.813986013986014,
+          "power": 427.5,
+          "skin_power": 641.25,
+          "capacity": 22,
+          "max_durability": 440,
+          "new_dps": 525.1932989690721,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 144.3298969072165,
+          "new_rpm": 93.81443298969073,
+          "new_interval": 0.6395604395604395,
+          "power": 570.0,
+          "skin_power": 855.0,
+          "capacity": 32,
+          "max_durability": 500,
+          "new_dps": 891.2371134020618,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "deagle",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.225,
+      "base_power": 21.0,
+      "base_capacity": 7,
+      "base_durability": 1200,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 266.6666666666667,
+          "new_rpm": 173.33333333333334,
+          "new_interval": 0.34615384615384615,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 7,
+          "max_durability": 1200,
+          "new_dps": 60.666666666666664,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 293.33333333333337,
+          "new_rpm": 190.66666666666669,
+          "new_interval": 0.31468531468531463,
+          "power": 42.0,
+          "skin_power": 63.0,
+          "capacity": 10,
+          "max_durability": 1800,
+          "new_dps": 133.4666666666667,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 320.0,
+          "new_rpm": 208.0,
+          "new_interval": 0.28846153846153844,
+          "power": 73.5,
+          "skin_power": 110.25,
+          "capacity": 14,
+          "max_durability": 2040,
+          "new_dps": 254.8,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 346.6666666666667,
+          "new_rpm": 225.33333333333334,
+          "new_interval": 0.2662721893491124,
+          "power": 115.5,
+          "skin_power": 173.25,
+          "capacity": 21,
+          "max_durability": 2280,
+          "new_dps": 433.76666666666665,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 373.3333333333333,
+          "new_rpm": 242.66666666666666,
+          "new_interval": 0.24725274725274726,
+          "power": 157.5,
+          "skin_power": 236.25,
+          "capacity": 31,
+          "max_durability": 2640,
+          "new_dps": 637.0,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 400.0,
+          "new_rpm": 260.0,
+          "new_interval": 0.23076923076923078,
+          "power": 210.0,
+          "skin_power": 315.0,
+          "capacity": 45,
+          "max_durability": 3000,
+          "new_dps": 910.0,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "glock18",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.15,
+      "base_power": 10.5,
+      "base_capacity": 20,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 84,
+        "coal": 28,
+        "copper": 20,
+        "germanium": 8,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 7,
+        "germanium": 2,
+        "leather": 4,
+        "planks": 2,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        1
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 400.0,
+          "new_rpm": 260.0,
+          "new_interval": 0.23076923076923078,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 20,
+          "max_durability": 1200,
+          "new_dps": 45.5,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 440.00000000000006,
+          "new_rpm": 286.00000000000006,
+          "new_interval": 0.20979020979020974,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 30,
+          "max_durability": 1800,
+          "new_dps": 100.10000000000004,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 480.0,
+          "new_rpm": 312.0,
+          "new_interval": 0.19230769230769232,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 40,
+          "max_durability": 2040,
+          "new_dps": 191.1,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 520.0,
+          "new_rpm": 338.0,
+          "new_interval": 0.17751479289940827,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 60,
+          "max_durability": 2280,
+          "new_dps": 325.325,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 560.0,
+          "new_rpm": 364.0,
+          "new_interval": 0.16483516483516483,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 90,
+          "max_durability": 2640,
+          "new_dps": 477.75,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 130,
+          "max_durability": 3000,
+          "new_dps": 682.5,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "usp_silencer",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.17,
+      "base_power": 10.5,
+      "base_capacity": 12,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 84,
+        "coal": 28,
+        "copper": 20,
+        "germanium": 8,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 7,
+        "germanium": 2,
+        "leather": 4,
+        "planks": 2,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        1
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 352.94117647058823,
+          "new_rpm": 229.41176470588235,
+          "new_interval": 0.26153846153846155,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 12,
+          "max_durability": 1200,
+          "new_dps": 40.14705882352941,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 388.2352941176471,
+          "new_rpm": 252.3529411764706,
+          "new_interval": 0.23776223776223773,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 18,
+          "max_durability": 1800,
+          "new_dps": 88.32352941176471,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 423.52941176470586,
+          "new_rpm": 275.29411764705884,
+          "new_interval": 0.21794871794871792,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 24,
+          "max_durability": 2040,
+          "new_dps": 168.6176470588235,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 458.8235294117647,
+          "new_rpm": 298.2352941176471,
+          "new_interval": 0.20118343195266272,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 36,
+          "max_durability": 2280,
+          "new_dps": 287.0514705882353,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 494.1176470588235,
+          "new_rpm": 321.17647058823525,
+          "new_interval": 0.18681318681318684,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 54,
+          "max_durability": 2640,
+          "new_dps": 421.5441176470588,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 529.4117647058823,
+          "new_rpm": 344.11764705882354,
+          "new_interval": 0.17435897435897435,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 78,
+          "max_durability": 3000,
+          "new_dps": 602.2058823529411,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "m4a4",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.09,
+      "base_power": 15.0,
+      "base_capacity": 30,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        5,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        5,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 192,
+        "coal": 64,
+        "copper": 44,
+        "germanium": 20,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 32,
+        "germanium": 10,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        3
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 666.6666666666667,
+          "new_rpm": 433.33333333333337,
+          "new_interval": 0.13846153846153844,
+          "power": 15.0,
+          "skin_power": 22.5,
+          "capacity": 30,
+          "max_durability": 1500,
+          "new_dps": 108.33333333333336,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 733.3333333333335,
+          "new_rpm": 476.6666666666668,
+          "new_interval": 0.12587412587412583,
+          "power": 30.0,
+          "skin_power": 45.0,
+          "capacity": 45,
+          "max_durability": 2250,
+          "new_dps": 238.3333333333334,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 800.0000000000001,
+          "new_rpm": 520.0000000000001,
+          "new_interval": 0.11538461538461536,
+          "power": 52.5,
+          "skin_power": 78.75,
+          "capacity": 60,
+          "max_durability": 2550,
+          "new_dps": 455.0000000000001,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 866.6666666666667,
+          "new_rpm": 563.3333333333334,
+          "new_interval": 0.10650887573964496,
+          "power": 82.5,
+          "skin_power": 123.75,
+          "capacity": 90,
+          "max_durability": 2850,
+          "new_dps": 774.5833333333334,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 933.3333333333334,
+          "new_rpm": 606.6666666666667,
+          "new_interval": 0.09890109890109888,
+          "power": 112.5,
+          "skin_power": 168.75,
+          "capacity": 135,
+          "max_durability": 3300,
+          "new_dps": 1137.5,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1000.0000000000001,
+          "new_rpm": 650.0000000000001,
+          "new_interval": 0.09230769230769229,
+          "power": 150.0,
+          "skin_power": 225.0,
+          "capacity": 195,
+          "max_durability": 3750,
+          "new_dps": 1625.0000000000005,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "famas",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.09,
+      "base_power": 13.5,
+      "base_capacity": 25,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 144,
+        "coal": 48,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 666.6666666666667,
+          "new_rpm": 433.33333333333337,
+          "new_interval": 0.13846153846153844,
+          "power": 13.5,
+          "skin_power": 20.25,
+          "capacity": 25,
+          "max_durability": 1500,
+          "new_dps": 97.50000000000003,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 733.3333333333335,
+          "new_rpm": 476.6666666666668,
+          "new_interval": 0.12587412587412583,
+          "power": 27.0,
+          "skin_power": 40.5,
+          "capacity": 37,
+          "max_durability": 2250,
+          "new_dps": 214.50000000000006,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 800.0000000000001,
+          "new_rpm": 520.0000000000001,
+          "new_interval": 0.11538461538461536,
+          "power": 47.25,
+          "skin_power": 70.875,
+          "capacity": 50,
+          "max_durability": 2550,
+          "new_dps": 409.5000000000001,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 866.6666666666667,
+          "new_rpm": 563.3333333333334,
+          "new_interval": 0.10650887573964496,
+          "power": 74.25,
+          "skin_power": 111.375,
+          "capacity": 75,
+          "max_durability": 2850,
+          "new_dps": 697.1250000000001,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 933.3333333333334,
+          "new_rpm": 606.6666666666667,
+          "new_interval": 0.09890109890109888,
+          "power": 101.25,
+          "skin_power": 151.875,
+          "capacity": 112,
+          "max_durability": 3300,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1000.0000000000001,
+          "new_rpm": 650.0000000000001,
+          "new_interval": 0.09230769230769229,
+          "power": 135.0,
+          "skin_power": 202.5,
+          "capacity": 162,
+          "max_durability": 3750,
+          "new_dps": 1462.5000000000005,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mp9",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.07,
+      "base_power": 9.0,
+      "base_capacity": 30,
+      "base_durability": 2000,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 857.1428571428571,
+          "new_rpm": 557.1428571428571,
+          "new_interval": 0.1076923076923077,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 30,
+          "max_durability": 2000,
+          "new_dps": 83.57142857142857,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 942.8571428571429,
+          "new_rpm": 612.8571428571429,
+          "new_interval": 0.0979020979020979,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 45,
+          "max_durability": 3000,
+          "new_dps": 183.85714285714286,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 1028.5714285714284,
+          "new_rpm": 668.5714285714286,
+          "new_interval": 0.08974358974358974,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 60,
+          "max_durability": 3400,
+          "new_dps": 351.0,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 1114.2857142857142,
+          "new_rpm": 724.2857142857142,
+          "new_interval": 0.08284023668639054,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 90,
+          "max_durability": 3800,
+          "new_dps": 597.5357142857142,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1199.9999999999998,
+          "new_rpm": 779.9999999999999,
+          "new_interval": 0.07692307692307694,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 135,
+          "max_durability": 4400,
+          "new_dps": 877.4999999999999,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1285.7142857142858,
+          "new_rpm": 835.7142857142858,
+          "new_interval": 0.07179487179487179,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 195,
+          "max_durability": 5000,
+          "new_dps": 1253.5714285714287,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p90",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.07,
+      "base_power": 9.0,
+      "base_capacity": 50,
+      "base_durability": 2000,
+      "current_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 144,
+        "coal": 48,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 857.1428571428571,
+          "new_rpm": 557.1428571428571,
+          "new_interval": 0.1076923076923077,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 50,
+          "max_durability": 2000,
+          "new_dps": 83.57142857142857,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 942.8571428571429,
+          "new_rpm": 612.8571428571429,
+          "new_interval": 0.0979020979020979,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 75,
+          "max_durability": 3000,
+          "new_dps": 183.85714285714286,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 1028.5714285714284,
+          "new_rpm": 668.5714285714286,
+          "new_interval": 0.08974358974358974,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 100,
+          "max_durability": 3400,
+          "new_dps": 351.0,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 1114.2857142857142,
+          "new_rpm": 724.2857142857142,
+          "new_interval": 0.08284023668639054,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 150,
+          "max_durability": 3800,
+          "new_dps": 597.5357142857142,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1199.9999999999998,
+          "new_rpm": 779.9999999999999,
+          "new_interval": 0.07692307692307694,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 225,
+          "max_durability": 4400,
+          "new_dps": 877.4999999999999,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1285.7142857142858,
+          "new_rpm": 835.7142857142858,
+          "new_interval": 0.07179487179487179,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 325,
+          "max_durability": 5000,
+          "new_dps": 1253.5714285714287,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ssg08",
+      "weapon_class": "BoltSniper",
+      "base_cycle_seconds": 1.25,
+      "base_power": 39.0,
+      "base_capacity": 10,
+      "base_durability": 200,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        2,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        2,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 36,
+        "germanium": 20,
+        "leather": 16,
+        "planks": 8,
+        "glass": 16,
+        "diamond": 2
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 24,
+        "germanium": 10,
+        "leather": 8,
+        "planks": 4,
+        "glass": 8,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 48.0,
+          "new_rpm": 31.200000000000003,
+          "new_interval": 1.923076923076923,
+          "power": 39.0,
+          "skin_power": 58.5,
+          "capacity": 10,
+          "max_durability": 200,
+          "new_dps": 20.279999999999998,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 48.0,
+          "new_rpm": 31.200000000000003,
+          "new_interval": 1.923076923076923,
+          "power": 78.0,
+          "skin_power": 117.0,
+          "capacity": 15,
+          "max_durability": 300,
+          "new_dps": 40.559999999999995,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 72.0,
+          "new_rpm": 46.800000000000004,
+          "new_interval": 1.282051282051282,
+          "power": 136.5,
+          "skin_power": 204.75,
+          "capacity": 20,
+          "max_durability": 340,
+          "new_dps": 106.47,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 96.0,
+          "new_rpm": 62.400000000000006,
+          "new_interval": 0.9615384615384615,
+          "power": 214.5,
+          "skin_power": 321.75,
+          "capacity": 30,
+          "max_durability": 380,
+          "new_dps": 223.08,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 132.0,
+          "new_rpm": 85.8,
+          "new_interval": 0.6993006993006993,
+          "power": 292.5,
+          "skin_power": 438.75,
+          "capacity": 45,
+          "max_durability": 440,
+          "new_dps": 418.275,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 168.0,
+          "new_rpm": 109.2,
+          "new_interval": 0.5494505494505494,
+          "power": 390.0,
+          "skin_power": 585.0,
+          "capacity": 65,
+          "max_durability": 500,
+          "new_dps": 709.8,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fiveseven",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.15,
+      "base_power": 10.5,
+      "base_capacity": 20,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 108,
+        "coal": 36,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 400.0,
+          "new_rpm": 260.0,
+          "new_interval": 0.23076923076923078,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 20,
+          "max_durability": 1200,
+          "new_dps": 45.5,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 440.00000000000006,
+          "new_rpm": 286.00000000000006,
+          "new_interval": 0.20979020979020974,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 30,
+          "max_durability": 1800,
+          "new_dps": 100.10000000000004,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 480.0,
+          "new_rpm": 312.0,
+          "new_interval": 0.19230769230769232,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 40,
+          "max_durability": 2040,
+          "new_dps": 191.1,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 520.0,
+          "new_rpm": 338.0,
+          "new_interval": 0.17751479289940827,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 60,
+          "max_durability": 2280,
+          "new_dps": 325.325,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 560.0,
+          "new_rpm": 364.0,
+          "new_interval": 0.16483516483516483,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 90,
+          "max_durability": 2640,
+          "new_dps": 477.75,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 130,
+          "max_durability": 3000,
+          "new_dps": 682.5,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hkp2000",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.17,
+      "base_power": 10.5,
+      "base_capacity": 13,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 84,
+        "coal": 28,
+        "copper": 20,
+        "germanium": 8,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 7,
+        "germanium": 2,
+        "leather": 4,
+        "planks": 2,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        1
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 352.94117647058823,
+          "new_rpm": 229.41176470588235,
+          "new_interval": 0.26153846153846155,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 13,
+          "max_durability": 1200,
+          "new_dps": 40.14705882352941,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 388.2352941176471,
+          "new_rpm": 252.3529411764706,
+          "new_interval": 0.23776223776223773,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 19,
+          "max_durability": 1800,
+          "new_dps": 88.32352941176471,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 423.52941176470586,
+          "new_rpm": 275.29411764705884,
+          "new_interval": 0.21794871794871792,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 26,
+          "max_durability": 2040,
+          "new_dps": 168.6176470588235,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 458.8235294117647,
+          "new_rpm": 298.2352941176471,
+          "new_interval": 0.20118343195266272,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 39,
+          "max_durability": 2280,
+          "new_dps": 287.0514705882353,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 494.1176470588235,
+          "new_rpm": 321.17647058823525,
+          "new_interval": 0.18681318681318684,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 58,
+          "max_durability": 2640,
+          "new_dps": 421.5441176470588,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 529.4117647058823,
+          "new_rpm": 344.11764705882354,
+          "new_interval": 0.17435897435897435,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 84,
+          "max_durability": 3000,
+          "new_dps": 602.2058823529411,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p250",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.15,
+      "base_power": 10.5,
+      "base_capacity": 13,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 84,
+        "coal": 28,
+        "copper": 20,
+        "germanium": 8,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 32,
+        "coal": 12,
+        "copper": 7,
+        "germanium": 2,
+        "leather": 4,
+        "planks": 2,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        1
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 400.0,
+          "new_rpm": 260.0,
+          "new_interval": 0.23076923076923078,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 13,
+          "max_durability": 1200,
+          "new_dps": 45.5,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 440.00000000000006,
+          "new_rpm": 286.00000000000006,
+          "new_interval": 0.20979020979020974,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 19,
+          "max_durability": 1800,
+          "new_dps": 100.10000000000004,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 480.0,
+          "new_rpm": 312.0,
+          "new_interval": 0.19230769230769232,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 26,
+          "max_durability": 2040,
+          "new_dps": 191.1,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 520.0,
+          "new_rpm": 338.0,
+          "new_interval": 0.17751479289940827,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 39,
+          "max_durability": 2280,
+          "new_dps": 325.325,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 560.0,
+          "new_rpm": 364.0,
+          "new_interval": 0.16483516483516483,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 58,
+          "max_durability": 2640,
+          "new_dps": 477.75,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 84,
+          "max_durability": 3000,
+          "new_dps": 682.5,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tec9",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.12,
+      "base_power": 10.5,
+      "base_capacity": 18,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 108,
+        "coal": 36,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 500.0,
+          "new_rpm": 325.0,
+          "new_interval": 0.18461538461538463,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 18,
+          "max_durability": 1200,
+          "new_dps": 56.875,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 550.0,
+          "new_rpm": 357.5,
+          "new_interval": 0.16783216783216784,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 27,
+          "max_durability": 1800,
+          "new_dps": 125.125,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 36,
+          "max_durability": 2040,
+          "new_dps": 238.875,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 650.0,
+          "new_rpm": 422.5,
+          "new_interval": 0.14201183431952663,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 54,
+          "max_durability": 2280,
+          "new_dps": 406.65625,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 700.0,
+          "new_rpm": 455.0,
+          "new_interval": 0.13186813186813187,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 81,
+          "max_durability": 2640,
+          "new_dps": 597.1875,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 750.0,
+          "new_rpm": 487.5,
+          "new_interval": 0.12307692307692308,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 117,
+          "max_durability": 3000,
+          "new_dps": 853.125,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cz75a",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.1,
+      "base_power": 10.5,
+      "base_capacity": 12,
+      "base_durability": 1200,
+      "current_assembly": [
+        3,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        3,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 108,
+        "coal": 36,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 48,
+        "coal": 18,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        2,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 12,
+          "max_durability": 1200,
+          "new_dps": 68.25,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 660.0,
+          "new_rpm": 429.0,
+          "new_interval": 0.13986013986013987,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 18,
+          "max_durability": 1800,
+          "new_dps": 150.15,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 720.0,
+          "new_rpm": 468.0,
+          "new_interval": 0.1282051282051282,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 24,
+          "max_durability": 2040,
+          "new_dps": 286.65,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 780.0,
+          "new_rpm": 507.0,
+          "new_interval": 0.11834319526627218,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 36,
+          "max_durability": 2280,
+          "new_dps": 487.9875,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 840.0,
+          "new_rpm": 546.0,
+          "new_interval": 0.10989010989010989,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 54,
+          "max_durability": 2640,
+          "new_dps": 716.625,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 78,
+          "max_durability": 3000,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mac10",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.075,
+      "base_power": 9.0,
+      "base_capacity": 30,
+      "base_durability": 2000,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 800.0,
+          "new_rpm": 520.0,
+          "new_interval": 0.11538461538461539,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 30,
+          "max_durability": 2000,
+          "new_dps": 78.0,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 880.0000000000001,
+          "new_rpm": 572.0000000000001,
+          "new_interval": 0.10489510489510487,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 45,
+          "max_durability": 3000,
+          "new_dps": 171.60000000000002,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 960.0,
+          "new_rpm": 624.0,
+          "new_interval": 0.09615384615384616,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 60,
+          "max_durability": 3400,
+          "new_dps": 327.6,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 1040.0,
+          "new_rpm": 676.0,
+          "new_interval": 0.08875739644970414,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 90,
+          "max_durability": 3800,
+          "new_dps": 557.7,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1120.0,
+          "new_rpm": 728.0,
+          "new_interval": 0.08241758241758242,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 135,
+          "max_durability": 4400,
+          "new_dps": 819.0,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1200.0,
+          "new_rpm": 780.0,
+          "new_interval": 0.07692307692307693,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 195,
+          "max_durability": 5000,
+          "new_dps": 1170.0,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mp7",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.08,
+      "base_power": 9.0,
+      "base_capacity": 30,
+      "base_durability": 2000,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 750.0,
+          "new_rpm": 487.5,
+          "new_interval": 0.12307692307692308,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 30,
+          "max_durability": 2000,
+          "new_dps": 73.125,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 825.0000000000001,
+          "new_rpm": 536.2500000000001,
+          "new_interval": 0.11188811188811186,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 45,
+          "max_durability": 3000,
+          "new_dps": 160.87500000000003,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 60,
+          "max_durability": 3400,
+          "new_dps": 307.125,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 975.0,
+          "new_rpm": 633.75,
+          "new_interval": 0.09467455621301775,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 90,
+          "max_durability": 3800,
+          "new_dps": 522.84375,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1050.0,
+          "new_rpm": 682.5,
+          "new_interval": 0.08791208791208792,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 135,
+          "max_durability": 4400,
+          "new_dps": 767.8125,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1125.0,
+          "new_rpm": 731.25,
+          "new_interval": 0.08205128205128205,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 195,
+          "max_durability": 5000,
+          "new_dps": 1096.875,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ump45",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.09,
+      "base_power": 9.0,
+      "base_capacity": 25,
+      "base_durability": 2000,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 666.6666666666667,
+          "new_rpm": 433.33333333333337,
+          "new_interval": 0.13846153846153844,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 25,
+          "max_durability": 2000,
+          "new_dps": 65.00000000000001,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 733.3333333333335,
+          "new_rpm": 476.6666666666668,
+          "new_interval": 0.12587412587412583,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 37,
+          "max_durability": 3000,
+          "new_dps": 143.00000000000003,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 800.0000000000001,
+          "new_rpm": 520.0000000000001,
+          "new_interval": 0.11538461538461536,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 50,
+          "max_durability": 3400,
+          "new_dps": 273.00000000000006,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 866.6666666666667,
+          "new_rpm": 563.3333333333334,
+          "new_interval": 0.10650887573964496,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 75,
+          "max_durability": 3800,
+          "new_dps": 464.7500000000001,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 933.3333333333334,
+          "new_rpm": 606.6666666666667,
+          "new_interval": 0.09890109890109888,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 112,
+          "max_durability": 4400,
+          "new_dps": 682.5,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1000.0000000000001,
+          "new_rpm": 650.0000000000001,
+          "new_interval": 0.09230769230769229,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 162,
+          "max_durability": 5000,
+          "new_dps": 975.0000000000002,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bizon",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.08,
+      "base_power": 9.0,
+      "base_capacity": 64,
+      "base_durability": 2000,
+      "current_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 144,
+        "coal": 48,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 750.0,
+          "new_rpm": 487.5,
+          "new_interval": 0.12307692307692308,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 64,
+          "max_durability": 2000,
+          "new_dps": 73.125,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 825.0000000000001,
+          "new_rpm": 536.2500000000001,
+          "new_interval": 0.11188811188811186,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 96,
+          "max_durability": 3000,
+          "new_dps": 160.87500000000003,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 128,
+          "max_durability": 3400,
+          "new_dps": 307.125,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 975.0,
+          "new_rpm": 633.75,
+          "new_interval": 0.09467455621301775,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 192,
+          "max_durability": 3800,
+          "new_dps": 522.84375,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1050.0,
+          "new_rpm": 682.5,
+          "new_interval": 0.08791208791208792,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 288,
+          "max_durability": 4400,
+          "new_dps": 767.8125,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1125.0,
+          "new_rpm": 731.25,
+          "new_interval": 0.08205128205128205,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 416,
+          "max_durability": 5000,
+          "new_dps": 1096.875,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mp5sd",
+      "weapon_class": "Smg",
+      "base_cycle_seconds": 0.08,
+      "base_power": 9.0,
+      "base_capacity": 30,
+      "base_durability": 2000,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 750.0,
+          "new_rpm": 487.5,
+          "new_interval": 0.12307692307692308,
+          "power": 9.0,
+          "skin_power": 13.5,
+          "capacity": 30,
+          "max_durability": 2000,
+          "new_dps": 73.125,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 825.0000000000001,
+          "new_rpm": 536.2500000000001,
+          "new_interval": 0.11188811188811186,
+          "power": 18.0,
+          "skin_power": 27.0,
+          "capacity": 45,
+          "max_durability": 3000,
+          "new_dps": 160.87500000000003,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 31.5,
+          "skin_power": 47.25,
+          "capacity": 60,
+          "max_durability": 3400,
+          "new_dps": 307.125,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 975.0,
+          "new_rpm": 633.75,
+          "new_interval": 0.09467455621301775,
+          "power": 49.5,
+          "skin_power": 74.25,
+          "capacity": 90,
+          "max_durability": 3800,
+          "new_dps": 522.84375,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1050.0,
+          "new_rpm": 682.5,
+          "new_interval": 0.08791208791208792,
+          "power": 67.5,
+          "skin_power": 101.25,
+          "capacity": 135,
+          "max_durability": 4400,
+          "new_dps": 767.8125,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1125.0,
+          "new_rpm": 731.25,
+          "new_interval": 0.08205128205128205,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 195,
+          "max_durability": 5000,
+          "new_dps": 1096.875,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "galilar",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.09,
+      "base_power": 13.5,
+      "base_capacity": 35,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 144,
+        "coal": 48,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 72,
+        "coal": 27,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 666.6666666666667,
+          "new_rpm": 433.33333333333337,
+          "new_interval": 0.13846153846153844,
+          "power": 13.5,
+          "skin_power": 20.25,
+          "capacity": 35,
+          "max_durability": 1500,
+          "new_dps": 97.50000000000003,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 733.3333333333335,
+          "new_rpm": 476.6666666666668,
+          "new_interval": 0.12587412587412583,
+          "power": 27.0,
+          "skin_power": 40.5,
+          "capacity": 52,
+          "max_durability": 2250,
+          "new_dps": 214.50000000000006,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 800.0000000000001,
+          "new_rpm": 520.0000000000001,
+          "new_interval": 0.11538461538461536,
+          "power": 47.25,
+          "skin_power": 70.875,
+          "capacity": 70,
+          "max_durability": 2550,
+          "new_dps": 409.5000000000001,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 866.6666666666667,
+          "new_rpm": 563.3333333333334,
+          "new_interval": 0.10650887573964496,
+          "power": 74.25,
+          "skin_power": 111.375,
+          "capacity": 105,
+          "max_durability": 2850,
+          "new_dps": 697.1250000000001,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 933.3333333333334,
+          "new_rpm": 606.6666666666667,
+          "new_interval": 0.09890109890109888,
+          "power": 101.25,
+          "skin_power": 151.875,
+          "capacity": 157,
+          "max_durability": 3300,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1000.0000000000001,
+          "new_rpm": 650.0000000000001,
+          "new_interval": 0.09230769230769229,
+          "power": 135.0,
+          "skin_power": 202.5,
+          "capacity": 227,
+          "max_durability": 3750,
+          "new_dps": 1462.5000000000005,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "scar20",
+      "weapon_class": "AutoSniper",
+      "base_cycle_seconds": 0.25,
+      "base_power": 27.0,
+      "base_capacity": 20,
+      "base_durability": 500,
+      "current_assembly": [
+        8,
+        6,
+        2,
+        2,
+        1,
+        0
+      ],
+      "proposed_assembly": [
+        8,
+        6,
+        2,
+        2,
+        1,
+        0
+      ],
+      "current_raw": {
+        "iron": 240,
+        "coal": 80,
+        "copper": 60,
+        "germanium": 32,
+        "leather": 16,
+        "planks": 8,
+        "glass": 16,
+        "diamond": 3
+      },
+      "proposed_raw": {
+        "iron": 112,
+        "coal": 42,
+        "copper": 42,
+        "germanium": 16,
+        "leather": 8,
+        "planks": 4,
+        "glass": 8,
+        "diamond": 1
+      },
+      "current_full_repair": [
+        4,
+        3
+      ],
+      "proposed_base_repair": [
+        4,
+        3
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 240.0,
+          "new_rpm": 156.0,
+          "new_interval": 0.38461538461538464,
+          "power": 27.0,
+          "skin_power": 40.5,
+          "capacity": 20,
+          "max_durability": 500,
+          "new_dps": 70.2,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 264.0,
+          "new_rpm": 171.6,
+          "new_interval": 0.34965034965034963,
+          "power": 54.0,
+          "skin_power": 81.0,
+          "capacity": 30,
+          "max_durability": 750,
+          "new_dps": 154.44,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 288.0,
+          "new_rpm": 187.20000000000002,
+          "new_interval": 0.3205128205128205,
+          "power": 94.5,
+          "skin_power": 141.75,
+          "capacity": 40,
+          "max_durability": 850,
+          "new_dps": 294.84000000000003,
+          "proposed_full_repair": [
+            6,
+            5
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 312.0,
+          "new_rpm": 202.8,
+          "new_interval": 0.29585798816568043,
+          "power": 148.5,
+          "skin_power": 222.75,
+          "capacity": 60,
+          "max_durability": 950,
+          "new_dps": 501.93,
+          "proposed_full_repair": [
+            7,
+            5
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 336.0,
+          "new_rpm": 218.4,
+          "new_interval": 0.2747252747252747,
+          "power": 202.5,
+          "skin_power": 303.75,
+          "capacity": 90,
+          "max_durability": 1100,
+          "new_dps": 737.1,
+          "proposed_full_repair": [
+            8,
+            6
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 360.0,
+          "new_rpm": 234.0,
+          "new_interval": 0.2564102564102564,
+          "power": 270.0,
+          "skin_power": 405.0,
+          "capacity": 130,
+          "max_durability": 1250,
+          "new_dps": 1053.0,
+          "proposed_full_repair": [
+            8,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "name": "g3sg1",
+      "weapon_class": "AutoSniper",
+      "base_cycle_seconds": 0.25,
+      "base_power": 27.0,
+      "base_capacity": 20,
+      "base_durability": 500,
+      "current_assembly": [
+        8,
+        6,
+        2,
+        2,
+        1,
+        0
+      ],
+      "proposed_assembly": [
+        8,
+        6,
+        2,
+        2,
+        1,
+        0
+      ],
+      "current_raw": {
+        "iron": 240,
+        "coal": 80,
+        "copper": 60,
+        "germanium": 32,
+        "leather": 16,
+        "planks": 8,
+        "glass": 16,
+        "diamond": 3
+      },
+      "proposed_raw": {
+        "iron": 112,
+        "coal": 42,
+        "copper": 42,
+        "germanium": 16,
+        "leather": 8,
+        "planks": 4,
+        "glass": 8,
+        "diamond": 1
+      },
+      "current_full_repair": [
+        4,
+        3
+      ],
+      "proposed_base_repair": [
+        4,
+        3
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 240.0,
+          "new_rpm": 156.0,
+          "new_interval": 0.38461538461538464,
+          "power": 27.0,
+          "skin_power": 40.5,
+          "capacity": 20,
+          "max_durability": 500,
+          "new_dps": 70.2,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 264.0,
+          "new_rpm": 171.6,
+          "new_interval": 0.34965034965034963,
+          "power": 54.0,
+          "skin_power": 81.0,
+          "capacity": 30,
+          "max_durability": 750,
+          "new_dps": 154.44,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 288.0,
+          "new_rpm": 187.20000000000002,
+          "new_interval": 0.3205128205128205,
+          "power": 94.5,
+          "skin_power": 141.75,
+          "capacity": 40,
+          "max_durability": 850,
+          "new_dps": 294.84000000000003,
+          "proposed_full_repair": [
+            6,
+            5
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 312.0,
+          "new_rpm": 202.8,
+          "new_interval": 0.29585798816568043,
+          "power": 148.5,
+          "skin_power": 222.75,
+          "capacity": 60,
+          "max_durability": 950,
+          "new_dps": 501.93,
+          "proposed_full_repair": [
+            7,
+            5
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 336.0,
+          "new_rpm": 218.4,
+          "new_interval": 0.2747252747252747,
+          "power": 202.5,
+          "skin_power": 303.75,
+          "capacity": 90,
+          "max_durability": 1100,
+          "new_dps": 737.1,
+          "proposed_full_repair": [
+            8,
+            6
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 360.0,
+          "new_rpm": 234.0,
+          "new_interval": 0.2564102564102564,
+          "power": 270.0,
+          "skin_power": 405.0,
+          "capacity": 130,
+          "max_durability": 1250,
+          "new_dps": 1053.0,
+          "proposed_full_repair": [
+            8,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "name": "aug",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.1,
+      "base_power": 15.0,
+      "base_capacity": 30,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        5,
+        2,
+        2,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        5,
+        2,
+        2,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 192,
+        "coal": 64,
+        "copper": 52,
+        "germanium": 28,
+        "leather": 16,
+        "planks": 8,
+        "glass": 16,
+        "diamond": 2
+      },
+      "proposed_raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 36,
+        "germanium": 14,
+        "leather": 8,
+        "planks": 4,
+        "glass": 8,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        3
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 15.0,
+          "skin_power": 22.5,
+          "capacity": 30,
+          "max_durability": 1500,
+          "new_dps": 97.5,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 660.0,
+          "new_rpm": 429.0,
+          "new_interval": 0.13986013986013987,
+          "power": 30.0,
+          "skin_power": 45.0,
+          "capacity": 45,
+          "max_durability": 2250,
+          "new_dps": 214.5,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 720.0,
+          "new_rpm": 468.0,
+          "new_interval": 0.1282051282051282,
+          "power": 52.5,
+          "skin_power": 78.75,
+          "capacity": 60,
+          "max_durability": 2550,
+          "new_dps": 409.5,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 780.0,
+          "new_rpm": 507.0,
+          "new_interval": 0.11834319526627218,
+          "power": 82.5,
+          "skin_power": 123.75,
+          "capacity": 90,
+          "max_durability": 2850,
+          "new_dps": 697.125,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 840.0,
+          "new_rpm": 546.0,
+          "new_interval": 0.10989010989010989,
+          "power": 112.5,
+          "skin_power": 168.75,
+          "capacity": 135,
+          "max_durability": 3300,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 150.0,
+          "skin_power": 225.0,
+          "capacity": 195,
+          "max_durability": 3750,
+          "new_dps": 1462.5,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sg556",
+      "weapon_class": "Rifle",
+      "base_cycle_seconds": 0.11,
+      "base_power": 15.0,
+      "base_capacity": 30,
+      "base_durability": 1500,
+      "current_assembly": [
+        6,
+        5,
+        2,
+        2,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        6,
+        5,
+        2,
+        2,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 192,
+        "coal": 64,
+        "copper": 52,
+        "germanium": 28,
+        "leather": 16,
+        "planks": 8,
+        "glass": 16,
+        "diamond": 2
+      },
+      "proposed_raw": {
+        "iron": 88,
+        "coal": 33,
+        "copper": 36,
+        "germanium": 14,
+        "leather": 8,
+        "planks": 4,
+        "glass": 8,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        3
+      ],
+      "proposed_base_repair": [
+        3,
+        2
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 545.4545454545455,
+          "new_rpm": 354.54545454545456,
+          "new_interval": 0.1692307692307692,
+          "power": 15.0,
+          "skin_power": 22.5,
+          "capacity": 30,
+          "max_durability": 1500,
+          "new_dps": 88.63636363636364,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 600.0000000000001,
+          "new_rpm": 390.0000000000001,
+          "new_interval": 0.1538461538461538,
+          "power": 30.0,
+          "skin_power": 45.0,
+          "capacity": 45,
+          "max_durability": 2250,
+          "new_dps": 195.00000000000006,
+          "proposed_full_repair": [
+            4,
+            3
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 654.5454545454546,
+          "new_rpm": 425.4545454545455,
+          "new_interval": 0.14102564102564102,
+          "power": 52.5,
+          "skin_power": 78.75,
+          "capacity": 60,
+          "max_durability": 2550,
+          "new_dps": 372.2727272727273,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 709.0909090909091,
+          "new_rpm": 460.90909090909093,
+          "new_interval": 0.1301775147928994,
+          "power": 82.5,
+          "skin_power": 123.75,
+          "capacity": 90,
+          "max_durability": 2850,
+          "new_dps": 633.75,
+          "proposed_full_repair": [
+            5,
+            4
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 763.6363636363636,
+          "new_rpm": 496.3636363636364,
+          "new_interval": 0.12087912087912088,
+          "power": 112.5,
+          "skin_power": 168.75,
+          "capacity": 135,
+          "max_durability": 3300,
+          "new_dps": 930.6818181818182,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 818.1818181818182,
+          "new_rpm": 531.8181818181819,
+          "new_interval": 0.11282051282051281,
+          "power": 150.0,
+          "skin_power": 225.0,
+          "capacity": 195,
+          "max_durability": 3750,
+          "new_dps": 1329.5454545454547,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nova",
+      "weapon_class": "Shotgun",
+      "base_cycle_seconds": 0.88,
+      "base_power": 33.0,
+      "base_capacity": 8,
+      "base_durability": 300,
+      "current_assembly": [
+        5,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 108,
+        "coal": 36,
+        "copper": 20,
+        "germanium": 8,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 14,
+        "germanium": 4,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        1
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 68.18181818181819,
+          "new_rpm": 44.31818181818182,
+          "new_interval": 1.3538461538461537,
+          "power": 33.0,
+          "skin_power": 49.5,
+          "capacity": 8,
+          "max_durability": 300,
+          "new_dps": 24.375,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 75.00000000000001,
+          "new_rpm": 48.750000000000014,
+          "new_interval": 1.2307692307692304,
+          "power": 66.0,
+          "skin_power": 99.0,
+          "capacity": 12,
+          "max_durability": 450,
+          "new_dps": 53.625000000000014,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 81.81818181818183,
+          "new_rpm": 53.18181818181819,
+          "new_interval": 1.1282051282051282,
+          "power": 115.5,
+          "skin_power": 173.25,
+          "capacity": 16,
+          "max_durability": 510,
+          "new_dps": 102.37500000000003,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 88.63636363636364,
+          "new_rpm": 57.61363636363637,
+          "new_interval": 1.0414201183431953,
+          "power": 181.5,
+          "skin_power": 272.25,
+          "capacity": 24,
+          "max_durability": 570,
+          "new_dps": 174.28125,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 95.45454545454545,
+          "new_rpm": 62.04545454545455,
+          "new_interval": 0.967032967032967,
+          "power": 247.5,
+          "skin_power": 371.25,
+          "capacity": 36,
+          "max_durability": 660,
+          "new_dps": 255.9375,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 102.27272727272728,
+          "new_rpm": 66.47727272727273,
+          "new_interval": 0.9025641025641025,
+          "power": 330.0,
+          "skin_power": 495.0,
+          "capacity": 52,
+          "max_durability": 750,
+          "new_dps": 365.625,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xm1014",
+      "weapon_class": "Shotgun",
+      "base_cycle_seconds": 0.35,
+      "base_power": 24.0,
+      "base_capacity": 7,
+      "base_durability": 300,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 171.42857142857144,
+          "new_rpm": 111.42857142857144,
+          "new_interval": 0.5384615384615384,
+          "power": 24.0,
+          "skin_power": 36.0,
+          "capacity": 7,
+          "max_durability": 300,
+          "new_dps": 44.57142857142858,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 188.5714285714286,
+          "new_rpm": 122.5714285714286,
+          "new_interval": 0.4895104895104894,
+          "power": 48.0,
+          "skin_power": 72.0,
+          "capacity": 10,
+          "max_durability": 450,
+          "new_dps": 98.05714285714288,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 205.71428571428572,
+          "new_rpm": 133.71428571428572,
+          "new_interval": 0.4487179487179487,
+          "power": 84.0,
+          "skin_power": 126.0,
+          "capacity": 14,
+          "max_durability": 510,
+          "new_dps": 187.2,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 222.8571428571429,
+          "new_rpm": 144.8571428571429,
+          "new_interval": 0.41420118343195256,
+          "power": 132.0,
+          "skin_power": 198.0,
+          "capacity": 21,
+          "max_durability": 570,
+          "new_dps": 318.68571428571437,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 240.0,
+          "new_rpm": 156.0,
+          "new_interval": 0.38461538461538464,
+          "power": 180.0,
+          "skin_power": 270.0,
+          "capacity": 31,
+          "max_durability": 660,
+          "new_dps": 468.0,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 257.14285714285717,
+          "new_rpm": 167.14285714285717,
+          "new_interval": 0.3589743589743589,
+          "power": 240.0,
+          "skin_power": 360.0,
+          "capacity": 45,
+          "max_durability": 750,
+          "new_dps": 668.5714285714287,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sawedoff",
+      "weapon_class": "Shotgun",
+      "base_cycle_seconds": 0.85,
+      "base_power": 36.0,
+      "base_capacity": 7,
+      "base_durability": 300,
+      "current_assembly": [
+        5,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 108,
+        "coal": 36,
+        "copper": 20,
+        "germanium": 8,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 56,
+        "coal": 21,
+        "copper": 14,
+        "germanium": 4,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        1
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 70.58823529411765,
+          "new_rpm": 45.88235294117648,
+          "new_interval": 1.3076923076923075,
+          "power": 36.0,
+          "skin_power": 54.0,
+          "capacity": 7,
+          "max_durability": 300,
+          "new_dps": 27.529411764705888,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 77.64705882352942,
+          "new_rpm": 50.47058823529412,
+          "new_interval": 1.1888111888111887,
+          "power": 72.0,
+          "skin_power": 108.0,
+          "capacity": 10,
+          "max_durability": 450,
+          "new_dps": 60.56470588235295,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 84.70588235294117,
+          "new_rpm": 55.05882352941177,
+          "new_interval": 1.0897435897435896,
+          "power": 126.0,
+          "skin_power": 189.0,
+          "capacity": 14,
+          "max_durability": 510,
+          "new_dps": 115.6235294117647,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 91.76470588235296,
+          "new_rpm": 59.64705882352942,
+          "new_interval": 1.0059171597633134,
+          "power": 198.0,
+          "skin_power": 297.0,
+          "capacity": 21,
+          "max_durability": 570,
+          "new_dps": 196.8352941176471,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 98.82352941176471,
+          "new_rpm": 64.23529411764706,
+          "new_interval": 0.9340659340659341,
+          "power": 270.0,
+          "skin_power": 405.0,
+          "capacity": 31,
+          "max_durability": 660,
+          "new_dps": 289.05882352941177,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 105.88235294117648,
+          "new_rpm": 68.82352941176471,
+          "new_interval": 0.8717948717948717,
+          "power": 360.0,
+          "skin_power": 540.0,
+          "capacity": 45,
+          "max_durability": 750,
+          "new_dps": 412.9411764705883,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mag7",
+      "weapon_class": "Shotgun",
+      "base_cycle_seconds": 0.85,
+      "base_power": 36.0,
+      "base_capacity": 5,
+      "base_durability": 300,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 70.58823529411765,
+          "new_rpm": 45.88235294117648,
+          "new_interval": 1.3076923076923075,
+          "power": 36.0,
+          "skin_power": 54.0,
+          "capacity": 5,
+          "max_durability": 300,
+          "new_dps": 27.529411764705888,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 77.64705882352942,
+          "new_rpm": 50.47058823529412,
+          "new_interval": 1.1888111888111887,
+          "power": 72.0,
+          "skin_power": 108.0,
+          "capacity": 7,
+          "max_durability": 450,
+          "new_dps": 60.56470588235295,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 84.70588235294117,
+          "new_rpm": 55.05882352941177,
+          "new_interval": 1.0897435897435896,
+          "power": 126.0,
+          "skin_power": 189.0,
+          "capacity": 10,
+          "max_durability": 510,
+          "new_dps": 115.6235294117647,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 91.76470588235296,
+          "new_rpm": 59.64705882352942,
+          "new_interval": 1.0059171597633134,
+          "power": 198.0,
+          "skin_power": 297.0,
+          "capacity": 15,
+          "max_durability": 570,
+          "new_dps": 196.8352941176471,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 98.82352941176471,
+          "new_rpm": 64.23529411764706,
+          "new_interval": 0.9340659340659341,
+          "power": 270.0,
+          "skin_power": 405.0,
+          "capacity": 22,
+          "max_durability": 660,
+          "new_dps": 289.05882352941177,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 105.88235294117648,
+          "new_rpm": 68.82352941176471,
+          "new_interval": 0.8717948717948717,
+          "power": 360.0,
+          "skin_power": 540.0,
+          "capacity": 32,
+          "max_durability": 750,
+          "new_dps": 412.9411764705883,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "m249",
+      "weapon_class": "MachineGun",
+      "base_cycle_seconds": 0.08,
+      "base_power": 12.0,
+      "base_capacity": 100,
+      "base_durability": 4000,
+      "current_assembly": [
+        9,
+        6,
+        2,
+        0,
+        1,
+        0
+      ],
+      "proposed_assembly": [
+        9,
+        6,
+        2,
+        0,
+        1,
+        0
+      ],
+      "current_raw": {
+        "iron": 252,
+        "coal": 84,
+        "copper": 52,
+        "germanium": 24,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 1
+      },
+      "proposed_raw": {
+        "iron": 120,
+        "coal": 45,
+        "copper": 38,
+        "germanium": 12,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 1
+      },
+      "current_full_repair": [
+        5,
+        3
+      ],
+      "proposed_base_repair": [
+        5,
+        3
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 750.0,
+          "new_rpm": 487.5,
+          "new_interval": 0.12307692307692308,
+          "power": 12.0,
+          "skin_power": 18.0,
+          "capacity": 100,
+          "max_durability": 4000,
+          "new_dps": 97.5,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 825.0000000000001,
+          "new_rpm": 536.2500000000001,
+          "new_interval": 0.11188811188811186,
+          "power": 24.0,
+          "skin_power": 36.0,
+          "capacity": 150,
+          "max_durability": 6000,
+          "new_dps": 214.50000000000006,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 900.0,
+          "new_rpm": 585.0,
+          "new_interval": 0.10256410256410256,
+          "power": 42.0,
+          "skin_power": 63.0,
+          "capacity": 200,
+          "max_durability": 6800,
+          "new_dps": 409.5,
+          "proposed_full_repair": [
+            7,
+            5
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 975.0,
+          "new_rpm": 633.75,
+          "new_interval": 0.09467455621301775,
+          "power": 66.0,
+          "skin_power": 99.0,
+          "capacity": 300,
+          "max_durability": 7600,
+          "new_dps": 697.125,
+          "proposed_full_repair": [
+            8,
+            5
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1050.0,
+          "new_rpm": 682.5,
+          "new_interval": 0.08791208791208792,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 450,
+          "max_durability": 8800,
+          "new_dps": 1023.75,
+          "proposed_full_repair": [
+            9,
+            6
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1125.0,
+          "new_rpm": 731.25,
+          "new_interval": 0.08205128205128205,
+          "power": 120.0,
+          "skin_power": 180.0,
+          "capacity": 650,
+          "max_durability": 10000,
+          "new_dps": 1462.5,
+          "proposed_full_repair": [
+            10,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "name": "negev",
+      "weapon_class": "MachineGun",
+      "base_cycle_seconds": 0.075,
+      "base_power": 12.0,
+      "base_capacity": 150,
+      "base_durability": 4000,
+      "current_assembly": [
+        9,
+        6,
+        2,
+        0,
+        1,
+        0
+      ],
+      "proposed_assembly": [
+        9,
+        6,
+        2,
+        0,
+        1,
+        0
+      ],
+      "current_raw": {
+        "iron": 252,
+        "coal": 84,
+        "copper": 52,
+        "germanium": 24,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 1
+      },
+      "proposed_raw": {
+        "iron": 120,
+        "coal": 45,
+        "copper": 38,
+        "germanium": 12,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 1
+      },
+      "current_full_repair": [
+        5,
+        3
+      ],
+      "proposed_base_repair": [
+        5,
+        3
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 800.0,
+          "new_rpm": 520.0,
+          "new_interval": 0.11538461538461539,
+          "power": 12.0,
+          "skin_power": 18.0,
+          "capacity": 150,
+          "max_durability": 4000,
+          "new_dps": 104.0,
+          "proposed_full_repair": [
+            5,
+            3
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 880.0000000000001,
+          "new_rpm": 572.0000000000001,
+          "new_interval": 0.10489510489510487,
+          "power": 24.0,
+          "skin_power": 36.0,
+          "capacity": 225,
+          "max_durability": 6000,
+          "new_dps": 228.80000000000007,
+          "proposed_full_repair": [
+            6,
+            4
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 960.0,
+          "new_rpm": 624.0,
+          "new_interval": 0.09615384615384616,
+          "power": 42.0,
+          "skin_power": 63.0,
+          "capacity": 300,
+          "max_durability": 6800,
+          "new_dps": 436.8,
+          "proposed_full_repair": [
+            7,
+            5
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 1040.0,
+          "new_rpm": 676.0,
+          "new_interval": 0.08875739644970414,
+          "power": 66.0,
+          "skin_power": 99.0,
+          "capacity": 450,
+          "max_durability": 7600,
+          "new_dps": 743.6,
+          "proposed_full_repair": [
+            8,
+            5
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 1120.0,
+          "new_rpm": 728.0,
+          "new_interval": 0.08241758241758242,
+          "power": 90.0,
+          "skin_power": 135.0,
+          "capacity": 675,
+          "max_durability": 8800,
+          "new_dps": 1092.0,
+          "proposed_full_repair": [
+            9,
+            6
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 1200.0,
+          "new_rpm": 780.0,
+          "new_interval": 0.07692307692307693,
+          "power": 120.0,
+          "skin_power": 180.0,
+          "capacity": 975,
+          "max_durability": 10000,
+          "new_dps": 1560.0,
+          "proposed_full_repair": [
+            10,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "name": "revolver",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.5,
+      "base_power": 27.0,
+      "base_capacity": 8,
+      "base_durability": 1200,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 120.0,
+          "new_rpm": 78.0,
+          "new_interval": 0.7692307692307693,
+          "power": 27.0,
+          "skin_power": 40.5,
+          "capacity": 8,
+          "max_durability": 1200,
+          "new_dps": 35.1,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 132.0,
+          "new_rpm": 85.8,
+          "new_interval": 0.6993006993006993,
+          "power": 54.0,
+          "skin_power": 81.0,
+          "capacity": 12,
+          "max_durability": 1800,
+          "new_dps": 77.22,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 144.0,
+          "new_rpm": 93.60000000000001,
+          "new_interval": 0.641025641025641,
+          "power": 94.5,
+          "skin_power": 141.75,
+          "capacity": 16,
+          "max_durability": 2040,
+          "new_dps": 147.42000000000002,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 156.0,
+          "new_rpm": 101.4,
+          "new_interval": 0.5917159763313609,
+          "power": 148.5,
+          "skin_power": 222.75,
+          "capacity": 24,
+          "max_durability": 2280,
+          "new_dps": 250.965,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 168.0,
+          "new_rpm": 109.2,
+          "new_interval": 0.5494505494505494,
+          "power": 202.5,
+          "skin_power": 303.75,
+          "capacity": 36,
+          "max_durability": 2640,
+          "new_dps": 368.55,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 180.0,
+          "new_rpm": 117.0,
+          "new_interval": 0.5128205128205128,
+          "power": 270.0,
+          "skin_power": 405.0,
+          "capacity": 52,
+          "max_durability": 3000,
+          "new_dps": 526.5,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elite",
+      "weapon_class": "Pistol",
+      "base_cycle_seconds": 0.12,
+      "base_power": 10.5,
+      "base_capacity": 30,
+      "base_durability": 1200,
+      "current_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "proposed_assembly": [
+        5,
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "current_raw": {
+        "iron": 132,
+        "coal": 44,
+        "copper": 28,
+        "germanium": 12,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 0
+      },
+      "proposed_raw": {
+        "iron": 64,
+        "coal": 24,
+        "copper": 20,
+        "germanium": 6,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 0
+      },
+      "current_full_repair": [
+        3,
+        2
+      ],
+      "proposed_base_repair": [
+        2,
+        1
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 500.0,
+          "new_rpm": 325.0,
+          "new_interval": 0.18461538461538463,
+          "power": 10.5,
+          "skin_power": 15.75,
+          "capacity": 30,
+          "max_durability": 1200,
+          "new_dps": 56.875,
+          "proposed_full_repair": [
+            2,
+            1
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 550.0,
+          "new_rpm": 357.5,
+          "new_interval": 0.16783216783216784,
+          "power": 21.0,
+          "skin_power": 31.5,
+          "capacity": 45,
+          "max_durability": 1800,
+          "new_dps": 125.125,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 600.0,
+          "new_rpm": 390.0,
+          "new_interval": 0.15384615384615385,
+          "power": 36.75,
+          "skin_power": 55.125,
+          "capacity": 60,
+          "max_durability": 2040,
+          "new_dps": 238.875,
+          "proposed_full_repair": [
+            3,
+            2
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 650.0,
+          "new_rpm": 422.5,
+          "new_interval": 0.14201183431952663,
+          "power": 57.75,
+          "skin_power": 86.625,
+          "capacity": 90,
+          "max_durability": 2280,
+          "new_dps": 406.65625,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 700.0,
+          "new_rpm": 455.0,
+          "new_interval": 0.13186813186813187,
+          "power": 78.75,
+          "skin_power": 118.125,
+          "capacity": 135,
+          "max_durability": 2640,
+          "new_dps": 597.1875,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 750.0,
+          "new_rpm": 487.5,
+          "new_interval": 0.12307692307692308,
+          "power": 105.0,
+          "skin_power": 157.5,
+          "capacity": 195,
+          "max_durability": 3000,
+          "new_dps": 853.125,
+          "proposed_full_repair": [
+            4,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "taser",
+      "weapon_class": "Taser",
+      "base_cycle_seconds": 0.15,
+      "base_power": 150.0,
+      "base_capacity": 1,
+      "base_durability": 100,
+      "current_assembly": [
+        9,
+        9,
+        2,
+        0,
+        6,
+        12
+      ],
+      "proposed_assembly": [
+        9,
+        9,
+        2,
+        0,
+        6,
+        12
+      ],
+      "current_raw": {
+        "iron": 324,
+        "coal": 108,
+        "copper": 76,
+        "germanium": 48,
+        "leather": 16,
+        "planks": 8,
+        "glass": 0,
+        "diamond": 6
+      },
+      "proposed_raw": {
+        "iron": 144,
+        "coal": 54,
+        "copper": 56,
+        "germanium": 30,
+        "leather": 8,
+        "planks": 4,
+        "glass": 0,
+        "diamond": 6
+      },
+      "current_full_repair": [
+        5,
+        5
+      ],
+      "proposed_base_repair": [
+        5,
+        5
+      ],
+      "levels": [
+        {
+          "level": 0,
+          "old_rpm": 6.0,
+          "new_rpm": 3.9000000000000004,
+          "new_interval": 15.384615384615383,
+          "power": 150.0,
+          "skin_power": 225.0,
+          "capacity": 1,
+          "max_durability": 100,
+          "new_dps": 9.75,
+          "proposed_full_repair": [
+            5,
+            5
+          ]
+        },
+        {
+          "level": 10,
+          "old_rpm": 12.0,
+          "new_rpm": 7.800000000000001,
+          "new_interval": 7.692307692307692,
+          "power": 300.0,
+          "skin_power": 450.0,
+          "capacity": 1,
+          "max_durability": 150,
+          "new_dps": 39.0,
+          "proposed_full_repair": [
+            6,
+            6
+          ]
+        },
+        {
+          "level": 20,
+          "old_rpm": 19.999999999999996,
+          "new_rpm": 12.999999999999998,
+          "new_interval": 4.615384615384616,
+          "power": 525.0,
+          "skin_power": 787.5,
+          "capacity": 1,
+          "max_durability": 170,
+          "new_dps": 113.74999999999999,
+          "proposed_full_repair": [
+            7,
+            7
+          ]
+        },
+        {
+          "level": 30,
+          "old_rpm": 29.999999999999986,
+          "new_rpm": 19.499999999999993,
+          "new_interval": 3.076923076923078,
+          "power": 825.0,
+          "skin_power": 1237.5,
+          "capacity": 1,
+          "max_durability": 190,
+          "new_dps": 268.1249999999999,
+          "proposed_full_repair": [
+            8,
+            8
+          ]
+        },
+        {
+          "level": 40,
+          "old_rpm": 39.99999999999999,
+          "new_rpm": 25.999999999999996,
+          "new_interval": 2.307692307692308,
+          "power": 1125.0,
+          "skin_power": 1687.5,
+          "capacity": 1,
+          "max_durability": 220,
+          "new_dps": 487.49999999999994,
+          "proposed_full_repair": [
+            9,
+            9
+          ]
+        },
+        {
+          "level": 50,
+          "old_rpm": 60.000000000000014,
+          "new_rpm": 39.00000000000001,
+          "new_interval": 1.538461538461538,
+          "power": 1500.0,
+          "skin_power": 2250.0,
+          "capacity": 1,
+          "max_durability": 250,
+          "new_dps": 975.0000000000002,
+          "proposed_full_repair": [
+            10,
+            10
+          ]
+        }
+      ]
+    }
+  ]
+}
