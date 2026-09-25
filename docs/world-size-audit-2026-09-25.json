@@ -1,0 +1,439 @@
+{
+  "date": "2026-09-25T16:06:35.064098",
+  "source": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\doc\\Worlds",
+  "read_only": true,
+  "worlds": [
+    {
+      "directory": "World",
+      "project": {
+        "bytes": 3137403,
+        "sha256": "054e9b6a913635219b041a240dbb171352b3387e1b7fe86ffd6a8b962b59cb52",
+        "name": "工业s6",
+        "cs_version": "1.0.8-preview",
+        "compat_build": null,
+        "records": 1022,
+        "entities": 3589,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 254755
+      },
+      "bytes": {
+        "total": 1272970180,
+        "snapshots": 590830666,
+        "regions": 675575061,
+        "project": 3287038,
+        "bak": 3277391,
+        "other": 24,
+        "without_snapshots": 682139514
+      },
+      "snapshots": [
+        {
+          "path": "ScCsgoKnives-gunschema-5-to-6-20260912-135533-0477d5af.snapshot",
+          "bytes": 590830666,
+          "modified": "2026-09-12T21:55:39.428375"
+        }
+      ]
+    },
+    {
+      "directory": "World1",
+      "project": {
+        "bytes": 81792,
+        "sha256": "efc4e9294adef0f2e8db522cdd733cbbfbd0052fbdb7536b451fa52911fc6465",
+        "name": "Jinalilipbia",
+        "cs_version": "1.0.6-optimized-preview",
+        "compat_build": null,
+        "records": 10,
+        "entities": 2,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 3919
+      },
+      "bytes": {
+        "total": 3064560,
+        "snapshots": 1568257,
+        "regions": 1335189,
+        "project": 81792,
+        "bak": 79310,
+        "other": 12,
+        "without_snapshots": 1496303
+      },
+      "snapshots": [
+        {
+          "path": "ScCsgoKnives-gunschema-4-to-5-20260912-114759-2771279c.snapshot",
+          "bytes": 532977,
+          "modified": "2026-09-12T19:47:59.054889"
+        },
+        {
+          "path": "ScCsgoKnives-gunschema-5-to-6-20260912-125530-86310153.snapshot",
+          "bytes": 1035280,
+          "modified": "2026-09-12T20:55:30.636931"
+        }
+      ]
+    },
+    {
+      "directory": "World2",
+      "project": {
+        "bytes": 84393,
+        "sha256": "c6a6b0919daf3fd748d1aaa2fbeadd2451b679d77b64a59a57aeac318fb8cbca",
+        "name": "Reguamnea",
+        "cs_version": "1.0.10-preview",
+        "compat_build": null,
+        "records": 6,
+        "entities": 2,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 2495
+      },
+      "bytes": {
+        "total": 2445433,
+        "snapshots": 0,
+        "regions": 2267272,
+        "project": 84393,
+        "bak": 93756,
+        "other": 12,
+        "without_snapshots": 2445433
+      },
+      "snapshots": []
+    },
+    {
+      "directory": "World3",
+      "project": {
+        "bytes": 199025,
+        "sha256": "af29ec9ca9a552c34ef929baf6a24f7c6a0d16cf846291bb7d4c9438cbb6bd5b",
+        "name": "Ngoqua Nionvo",
+        "cs_version": "1.0.14-preview",
+        "compat_build": null,
+        "records": 23,
+        "entities": 4,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 6788
+      },
+      "bytes": {
+        "total": 8477489,
+        "snapshots": 0,
+        "regions": 8080057,
+        "project": 199025,
+        "bak": 198395,
+        "other": 12,
+        "without_snapshots": 8477489
+      },
+      "snapshots": []
+    },
+    {
+      "directory": "World4",
+      "project": {
+        "bytes": 276741,
+        "sha256": "1fca7f539ed773b72713c6776805e02d319168d667a7739cd2e2208caf9a8aec",
+        "name": "Wansouthiludo",
+        "cs_version": "1.2.0",
+        "compat_build": null,
+        "records": 10,
+        "entities": 4,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 3998
+      },
+      "bytes": {
+        "total": 9835134,
+        "snapshots": 541484,
+        "regions": 8683501,
+        "project": 276741,
+        "bak": 333396,
+        "other": 12,
+        "without_snapshots": 9293650
+      },
+      "snapshots": [
+        {
+          "path": "ScCsgoKnives-gunschema-4-to-6-20260914-095827-8cd7571e.snapshot",
+          "bytes": 541484,
+          "modified": "2026-09-14T17:58:27.971741"
+        }
+      ]
+    },
+    {
+      "directory": "World5",
+      "project": {
+        "bytes": 57076,
+        "sha256": "9ca4c875966d48331536c97e4128ea7d0c2b177bc2877ddf7e05aa7cb0d206dc",
+        "name": "Xizetan",
+        "cs_version": "1.4.0",
+        "compat_build": null,
+        "records": 1,
+        "entities": 2,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 1249
+      },
+      "bytes": {
+        "total": 457486,
+        "snapshots": 0,
+        "regions": 343915,
+        "project": 57076,
+        "bak": 56483,
+        "other": 12,
+        "without_snapshots": 457486
+      },
+      "snapshots": []
+    },
+    {
+      "directory": "World6",
+      "project": {
+        "bytes": 445434,
+        "sha256": "a8d27ba2744bfdc43aefe8d7cd5ddf1e1192388f1d8d8268f3c81702cff2b189",
+        "name": "Righa Porblic",
+        "cs_version": "1.2.0-compat.1",
+        "compat_build": "1.2.0-compat.1",
+        "records": 17,
+        "entities": 2,
+        "capsule_utf8_bytes": 10683,
+        "gun_subtree_xml_bytes": 5567
+      },
+      "bytes": {
+        "total": 133712179,
+        "snapshots": 103160469,
+        "regions": 29667588,
+        "project": 445434,
+        "bak": 438446,
+        "other": 242,
+        "without_snapshots": 30551710
+      },
+      "snapshots": [
+        {
+          "path": "ScCsgoKnives-before-1.5.3-20260925-064223-979bb80b.snapshot",
+          "bytes": 25777849,
+          "modified": "2026-09-25T14:42:24.038465"
+        },
+        {
+          "path": "ScCsgoKnives-before-switch-20260925-080038-10ee7226.snapshot",
+          "bytes": 25782106,
+          "modified": "2026-09-25T16:00:38.489908"
+        },
+        {
+          "path": "ScCsgoKnives-before-switch-20260925-080152-3bb78a6d.snapshot",
+          "bytes": 25784214,
+          "modified": "2026-09-25T16:01:52.560910"
+        },
+        {
+          "path": "ScCsgoKnives-before-switch-20260925-080253-69cf6ec7.snapshot",
+          "bytes": 25816300,
+          "modified": "2026-09-25T16:02:54.101815"
+        }
+      ]
+    },
+    {
+      "directory": "World7",
+      "project": {
+        "bytes": 436498,
+        "sha256": "f78fe7f24120e8204364c6ed6c575862e31875e8756ec502e4935d637f7d26da",
+        "name": "Sniablic",
+        "cs_version": "1.5.3",
+        "compat_build": null,
+        "records": 10,
+        "entities": 3,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 4478
+      },
+      "bytes": {
+        "total": 55512673,
+        "snapshots": 25279074,
+        "regions": 29365517,
+        "project": 436498,
+        "bak": 431572,
+        "other": 12,
+        "without_snapshots": 30233599
+      },
+      "snapshots": [
+        {
+          "path": "ScCsgoKnives-before-integrity-20260925-064121-2c2beca6.snapshot",
+          "bytes": 25279074,
+          "modified": "2026-09-25T14:41:22.220701"
+        }
+      ]
+    }
+  ],
+  "detail_world": "World6",
+  "timeline": [
+    {
+      "path": "ScCsgoKnives-before-1.5.3-20260925-064223-979bb80b.snapshot",
+      "bytes": 25777849,
+      "modified": "2026-09-25T14:42:24.038465",
+      "uncompressed_bytes": 30486558,
+      "entries": 45,
+      "nested_snapshots": [],
+      "project": {
+        "bytes": 444293,
+        "sha256": "6e27d084b2932c5902ca479e082747cb1fe341830d64a902a7d204b58077a1f1",
+        "name": "Righa Porblic",
+        "cs_version": "1.4.1",
+        "compat_build": null,
+        "records": 13,
+        "entities": 11,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 4249
+      },
+      "region_bytes": 29597730,
+      "identical_to_current_files": 40,
+      "changed_from_current": [
+        {
+          "path": "Project.bak",
+          "backup_bytes": 444293,
+          "current_bytes": 438446
+        },
+        {
+          "path": "Project.xml",
+          "backup_bytes": 444293,
+          "current_bytes": 445434
+        },
+        {
+          "path": "Regions/Region 1,2.dat",
+          "backup_bytes": 1269919,
+          "current_bytes": 1269919
+        },
+        {
+          "path": "Regions/Region 1,3.dat",
+          "backup_bytes": 1325783,
+          "current_bytes": 1390408
+        },
+        {
+          "path": "Regions/Region 2,3.dat",
+          "backup_bytes": 1506451,
+          "current_bytes": 1511684
+        }
+      ]
+    },
+    {
+      "path": "ScCsgoKnives-before-switch-20260925-080038-10ee7226.snapshot",
+      "bytes": 25782106,
+      "modified": "2026-09-25T16:00:38.489908",
+      "uncompressed_bytes": 30491417,
+      "entries": 45,
+      "nested_snapshots": [],
+      "project": {
+        "bytes": 443919,
+        "sha256": "b426678f69c411b95a62e65c98c852a304d13f315b610795150404d5243d396b",
+        "name": "Righa Porblic",
+        "cs_version": "1.5.3",
+        "compat_build": null,
+        "records": 13,
+        "entities": 12,
+        "capsule_utf8_bytes": 0,
+        "gun_subtree_xml_bytes": 4568
+      },
+      "region_bytes": 29602963,
+      "identical_to_current_files": 40,
+      "changed_from_current": [
+        {
+          "path": "Project.bak",
+          "backup_bytes": 444293,
+          "current_bytes": 438446
+        },
+        {
+          "path": "Project.xml",
+          "backup_bytes": 443919,
+          "current_bytes": 445434
+        },
+        {
+          "path": "Regions/Region 1,2.dat",
+          "backup_bytes": 1269919,
+          "current_bytes": 1269919
+        },
+        {
+          "path": "Regions/Region 1,3.dat",
+          "backup_bytes": 1325783,
+          "current_bytes": 1390408
+        },
+        {
+          "path": "Regions/Region 2,3.dat",
+          "backup_bytes": 1511684,
+          "current_bytes": 1511684
+        }
+      ]
+    },
+    {
+      "path": "ScCsgoKnives-before-switch-20260925-080152-3bb78a6d.snapshot",
+      "bytes": 25784214,
+      "modified": "2026-09-25T16:01:52.560910",
+      "uncompressed_bytes": 30499509,
+      "entries": 45,
+      "nested_snapshots": [],
+      "project": {
+        "bytes": 452385,
+        "sha256": "b38de924a401e93309ffec822b5b5cd0598fcd29802f8955b143302fffd10cdd",
+        "name": "Righa Porblic",
+        "cs_version": "1.0.0-compat.1",
+        "compat_build": "1.0.0-compat.1",
+        "records": 16,
+        "entities": 11,
+        "capsule_utf8_bytes": 10003,
+        "gun_subtree_xml_bytes": 5320
+      },
+      "region_bytes": 29602963,
+      "identical_to_current_files": 40,
+      "changed_from_current": [
+        {
+          "path": "Project.bak",
+          "backup_bytes": 443919,
+          "current_bytes": 438446
+        },
+        {
+          "path": "Project.xml",
+          "backup_bytes": 452385,
+          "current_bytes": 445434
+        },
+        {
+          "path": "Regions/Region 1,2.dat",
+          "backup_bytes": 1269919,
+          "current_bytes": 1269919
+        },
+        {
+          "path": "Regions/Region 1,3.dat",
+          "backup_bytes": 1325783,
+          "current_bytes": 1390408
+        },
+        {
+          "path": "Regions/Region 2,3.dat",
+          "backup_bytes": 1511684,
+          "current_bytes": 1511684
+        }
+      ]
+    },
+    {
+      "path": "ScCsgoKnives-before-switch-20260925-080253-69cf6ec7.snapshot",
+      "bytes": 25816300,
+      "modified": "2026-09-25T16:02:54.101815",
+      "uncompressed_bytes": 30529949,
+      "entries": 45,
+      "nested_snapshots": [],
+      "project": {
+        "bytes": 438446,
+        "sha256": "efb081d060b8909060b0e0156c3849e3850151fe7afa180606e5227e7480fda8",
+        "name": "Righa Porblic",
+        "cs_version": "1.6.0",
+        "compat_build": "1.6.0",
+        "records": 17,
+        "entities": 3,
+        "capsule_utf8_bytes": 11375,
+        "gun_subtree_xml_bytes": 5567
+      },
+      "region_bytes": 29638876,
+      "identical_to_current_files": 41,
+      "changed_from_current": [
+        {
+          "path": "Project.bak",
+          "backup_bytes": 452385,
+          "current_bytes": 438446
+        },
+        {
+          "path": "Project.xml",
+          "backup_bytes": 438446,
+          "current_bytes": 445434
+        },
+        {
+          "path": "Regions/Region 1,2.dat",
+          "backup_bytes": 1269919,
+          "current_bytes": 1269919
+        },
+        {
+          "path": "Regions/Region 1,3.dat",
+          "backup_bytes": 1361696,
+          "current_bytes": 1390408
+        }
+      ]
+    }
+  ]
+}

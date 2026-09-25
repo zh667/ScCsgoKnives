@@ -1,5 +1,13 @@
 # Project conventions
 
+- Read-only world-size audit 2026-09-25: World6's displayed 128 MB is
+  133,712,179 bytes, of which four CS snapshots occupy 103,160,469 bytes (77.15%).
+  Live files are only 30,551,710 bytes. Native GetWorldInfo and ordinary ExportWorld
+  include snapshots; CS snapshot creation excludes existing snapshots (no nested
+  backup growth found). See docs/world-size-audit-2026-09-25.md. Do not delete/move
+  player backups or change retention without authorization; distinguish backup disk
+  growth from gameplay/terrain growth in future diagnostics.
+
 - Standing user requirement, accepted 2026-09-25: implement the 1.0 / 1.2.0 /
   latest COMPATIBILITY REVISIONS, and require bidirectional replacement for every
   future formal release in this compatibility family. This supersedes the old
