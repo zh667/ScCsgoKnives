@@ -79,12 +79,12 @@ public static class ScGunGrowthSelfTest {
                         || capacity<ScGunGrowth.Capacity(variant,l-1)))return false;
                 }
                 return Math.Abs(ScGunGrowth.DamageMultiplier(ScGunGrowth.MaxLevel)-10f)<1e-4f
-                    && Math.Abs(ScGunGrowth.FireRateMultiplier(variant,ScGunGrowth.MaxLevel)-(ScGunGrowth.IsBoltSniper(variant)?3.5f:1.5f))<1e-4f;
+                    && Math.Abs(ScGunGrowth.FireRateMultiplier(variant,ScGunGrowth.MaxLevel)-(ScGunGrowth.IsBoltSniper(variant)?2.625f:ScGunGrowth.IsAutoSniper(variant)?1.2f:1.325f))<1e-4f;
             });
         }
         Test("level50-charge-and-range-milestones",()=> {
             var zeus=GunSpec.ForAsset("taser");
-            return Math.Abs(ScGunGrowth.RechargeSeconds(zeus,10)-5f/.65f)<1e-5f && Math.Abs(ScGunGrowth.RechargeSeconds(zeus,50)-1f/.65f)<1e-5f
+            return Math.Abs(ScGunGrowth.RechargeSeconds(zeus,10)-30f/1.65f)<1e-5f && Math.Abs(ScGunGrowth.RechargeSeconds(zeus,50)-30f/6.85f)<1e-5f
                 && ScGunGrowth.DamageMultiplier(int.MinValue)==1 && Math.Abs(ScGunGrowth.DamageMultiplier(int.MaxValue)-10f)<1e-4f
                 && ScGunGrowth.Capacity(Variant("taser"),50)==1 && Math.Abs(ScGunGrowth.RangeScale(Variant("taser"),10)-1.5f)<1e-4f
                 && Math.Abs(ScGunGrowth.RangeScale(Variant("taser"),50)-5f)<1e-4f;
@@ -147,7 +147,7 @@ public static class ScGunGrowthSelfTest {
             var result=ScGunGrowthService.ApplyPending(inv,0,"test",0,out int from,out int to);
             var s=Snap(registry,id);
             return result==ScGunResult.Success&&from==10&&to==50&&s.Rounds==0&&s.Durability==125&&s.MaxDurability==250
-                &&Math.Abs(s.RechargeReadyAt-.5/.65)<1e-6 && Math.Abs(s.RechargeCycleSeconds-1/.65f)<1e-6;
+                &&Math.Abs(s.RechargeReadyAt-15/6.85)<1e-5 && Math.Abs(s.RechargeCycleSeconds-30/6.85)<1e-5;
         });
         Test("schema3-cannot-smuggle-level30",()=> {
             var registry=Fresh();var (_,id)=Gun(registry,"ak47",level:30,kills:3000);
@@ -336,11 +336,11 @@ public static class ScGunGrowthSelfTest {
             return Math.Abs(ak - 15f) < .001f && Math.Abs(ak * ScGunGrowth.DamageMultiplier(10) - 30f) < .001f
                 && Math.Abs(ScGunGrowth.DamageMultiplier(5) - 1.5f) < .0001f;
         });
-        Test("charge-10-to-5", () => {
+        Test("charge-cs2-base-reduced-growth", () => {
             var zeus = GunSpec.ForAsset("taser");
-            return Math.Abs(ScGunGrowth.RechargeSeconds(zeus, 0) - 10f/.65f) < .001f
-                && Math.Abs(ScGunGrowth.RechargeSeconds(zeus, 1) - 9.5f/.65f) < .001f
-                && Math.Abs(ScGunGrowth.RechargeSeconds(zeus, 10) - 5f/.65f) < .001f
+            return Math.Abs(ScGunGrowth.RechargeSeconds(zeus, 0) - 30f) < .001f
+                && Math.Abs(ScGunGrowth.RechargeSeconds(zeus, 1) - 30f/(1+.65f/19)) < .001f
+                && Math.Abs(ScGunGrowth.RechargeSeconds(zeus, 10) - 30f/1.65f) < .001f
                 && ScGunGrowth.RechargeSeconds(GunSpec.ForAsset("ak47"), 10) == 0;
         });
         Test("charge-keeps-remaining-ratio", () =>
@@ -568,7 +568,7 @@ public static class ScGunGrowthSelfTest {
             Apply(registry, id, r => { r.RechargeReadyAt = 105; r.RechargeCycleSeconds = 10; r.PendingGrowthLevel = 10; });
             ScGunGrowthService.ApplyPending(inventory, 0, "test", 100, out _, out _);
             var s = Snap(registry, id);
-            return Math.Abs(s.RechargeReadyAt - (100+2.5/.65)) < .001 && Math.Abs(s.RechargeCycleSeconds - 5f/.65f) < .001f && s.Rounds == 0;
+            return Math.Abs(s.RechargeReadyAt - (100+15/1.65)) < .001 && Math.Abs(s.RechargeCycleSeconds - 30f/1.65f) < .001f && s.Rounds == 0;
         });
         Test("capacity-shrink-keeps-live-rounds", () => {
             var registry = Fresh();
@@ -776,7 +776,7 @@ public static class ScGunGrowthSelfTest {
             var charge = rows.First(r => r.Kind == ScGunAttributes.Kind.ReloadOrCharge);
             var damage = rows.First(r => r.Kind == ScGunAttributes.Kind.Damage);
             var capacity = rows.First(r => r.Kind == ScGunAttributes.Kind.Capacity);
-            return charge.Label.Contains("充能") && charge.LowerIsBetter && charge.Text == "7.69"
+            return charge.Label.Contains("充能") && charge.LowerIsBetter && charge.Text == "18.18"
                 && damage.Text == "300" && capacity.Text == "1";
         });
         Test("bar-scales-are-fixed-not-per-selection", () => {

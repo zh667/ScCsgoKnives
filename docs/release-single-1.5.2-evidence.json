@@ -1,0 +1,787 @@
+{
+  "date": "2026-09-25",
+  "base_commit": "928280d",
+  "layout": 5,
+  "schema": 6,
+  "rules": 7,
+  "packages": {
+    "Full": {
+      "path": "[API1.9]CS武器1.5.2-作者ZH667-全量总包.scmod",
+      "bytes": 491117234,
+      "sha256": "1e0245d4b623ec7449a6b7eb2353c51269d652ffb49a0863dfba310d2c406123",
+      "gameplayDlls": {
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "6eae1f873c26df2b3049dccf45436646495cecd384a502d24068b2613d006e65",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553"
+      }
+    },
+    "Lite": {
+      "path": "[API1.9]CS武器1.5.2-作者ZH667-512轻量总包.scmod",
+      "bytes": 88467356,
+      "sha256": "13bd8746c9dcf2e0aa5c2c1eb37d5154ece26723fc47f8525fcb95c3fb174bf2",
+      "gameplayDlls": {
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "6eae1f873c26df2b3049dccf45436646495cecd384a502d24068b2613d006e65",
+        "ScCsgoResources.dll": "1a0fdc9759428ed8a4cf635c0b7a316b3d29f47cea96ef04433c1c1a958352d4",
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553"
+      }
+    }
+  },
+  "reports": {
+    "balance": {
+      "coreSha256": "6eae1f873c26df2b3049dccf45436646495cecd384a502d24068b2613d006e65",
+      "count": 28686,
+      "passed": 28686,
+      "failed": 0
+    },
+    "core-Full": {
+      "count": 13621,
+      "failed": 0,
+      "report_sha256": "f0455d3ed86fc9fa83bb0593c5e0a48681cea43d1f7c927cae788ac80f2a0867"
+    },
+    "tactical-Full": {
+      "count": 56,
+      "failed": 0,
+      "report_sha256": "b4216044c3c3442cbb1a24566ca223b0dce51b48d7628469bbae6a96c6bb602f"
+    },
+    "gate-Full": {
+      "count": 8,
+      "failed": 0,
+      "report_sha256": "dfb507650102ded695ee4363a45fe959e7f7957d1eeb10ef6d520653563b7995"
+    },
+    "core-Lite": {
+      "count": 14334,
+      "failed": 0,
+      "report_sha256": "1803eb0e077d58f17058b9dd95f46965dce3ddc89d4194428285c0a9490f03b2"
+    },
+    "tactical-Lite": {
+      "count": 56,
+      "failed": 0,
+      "report_sha256": "775767ae4b5dba913611630c530533bb37ce0327a10d2909ce1eb911e3f91c2c"
+    },
+    "gate-Lite": {
+      "count": 8,
+      "failed": 0,
+      "report_sha256": "dfb507650102ded695ee4363a45fe959e7f7957d1eeb10ef6d520653563b7995"
+    }
+  },
+  "rates": [
+    {
+      "name": "ak47",
+      "base_cycle_seconds": 0.1,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        600.0,
+        639.0,
+        678.0,
+        717.0,
+        756.0,
+        795.0
+      ]
+    },
+    {
+      "name": "m4a1s",
+      "base_cycle_seconds": 0.1,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        600.0,
+        639.0,
+        678.0,
+        717.0,
+        756.0,
+        795.0
+      ]
+    },
+    {
+      "name": "awp",
+      "base_cycle_seconds": 1.455,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        41.237,
+        41.237,
+        54.639,
+        68.041,
+        88.144,
+        108.247
+      ]
+    },
+    {
+      "name": "deagle",
+      "base_cycle_seconds": 0.225,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        266.667,
+        284.0,
+        301.333,
+        318.667,
+        336.0,
+        353.333
+      ]
+    },
+    {
+      "name": "glock18",
+      "base_cycle_seconds": 0.15,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        400.0,
+        426.0,
+        452.0,
+        478.0,
+        504.0,
+        530.0
+      ]
+    },
+    {
+      "name": "usp_silencer",
+      "base_cycle_seconds": 0.17,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        352.941,
+        375.882,
+        398.824,
+        421.765,
+        444.706,
+        467.647
+      ]
+    },
+    {
+      "name": "m4a4",
+      "base_cycle_seconds": 0.09,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        666.667,
+        710.0,
+        753.333,
+        796.667,
+        840.0,
+        883.333
+      ]
+    },
+    {
+      "name": "famas",
+      "base_cycle_seconds": 0.09,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        666.667,
+        710.0,
+        753.333,
+        796.667,
+        840.0,
+        883.333
+      ]
+    },
+    {
+      "name": "mp9",
+      "base_cycle_seconds": 0.07,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        857.143,
+        912.857,
+        968.571,
+        1024.286,
+        1080.0,
+        1135.714
+      ]
+    },
+    {
+      "name": "p90",
+      "base_cycle_seconds": 0.07,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        857.143,
+        912.857,
+        968.571,
+        1024.286,
+        1080.0,
+        1135.714
+      ]
+    },
+    {
+      "name": "ssg08",
+      "base_cycle_seconds": 1.25,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        48.0,
+        48.0,
+        63.6,
+        79.2,
+        102.6,
+        126.0
+      ]
+    },
+    {
+      "name": "fiveseven",
+      "base_cycle_seconds": 0.15,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        400.0,
+        426.0,
+        452.0,
+        478.0,
+        504.0,
+        530.0
+      ]
+    },
+    {
+      "name": "hkp2000",
+      "base_cycle_seconds": 0.17,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        352.941,
+        375.882,
+        398.824,
+        421.765,
+        444.706,
+        467.647
+      ]
+    },
+    {
+      "name": "p250",
+      "base_cycle_seconds": 0.15,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        400.0,
+        426.0,
+        452.0,
+        478.0,
+        504.0,
+        530.0
+      ]
+    },
+    {
+      "name": "tec9",
+      "base_cycle_seconds": 0.12,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        500.0,
+        532.5,
+        565.0,
+        597.5,
+        630.0,
+        662.5
+      ]
+    },
+    {
+      "name": "cz75a",
+      "base_cycle_seconds": 0.1,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        600.0,
+        639.0,
+        678.0,
+        717.0,
+        756.0,
+        795.0
+      ]
+    },
+    {
+      "name": "mac10",
+      "base_cycle_seconds": 0.075,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        800.0,
+        852.0,
+        904.0,
+        956.0,
+        1008.0,
+        1060.0
+      ]
+    },
+    {
+      "name": "mp7",
+      "base_cycle_seconds": 0.08,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        750.0,
+        798.75,
+        847.5,
+        896.25,
+        945.0,
+        993.75
+      ]
+    },
+    {
+      "name": "ump45",
+      "base_cycle_seconds": 0.09,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        666.667,
+        710.0,
+        753.333,
+        796.667,
+        840.0,
+        883.333
+      ]
+    },
+    {
+      "name": "bizon",
+      "base_cycle_seconds": 0.08,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        750.0,
+        798.75,
+        847.5,
+        896.25,
+        945.0,
+        993.75
+      ]
+    },
+    {
+      "name": "mp5sd",
+      "base_cycle_seconds": 0.08,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        750.0,
+        798.75,
+        847.5,
+        896.25,
+        945.0,
+        993.75
+      ]
+    },
+    {
+      "name": "galilar",
+      "base_cycle_seconds": 0.09,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        666.667,
+        710.0,
+        753.333,
+        796.667,
+        840.0,
+        883.333
+      ]
+    },
+    {
+      "name": "scar20",
+      "base_cycle_seconds": 0.25,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        240.0,
+        249.6,
+        259.2,
+        268.8,
+        278.4,
+        288.0
+      ]
+    },
+    {
+      "name": "g3sg1",
+      "base_cycle_seconds": 0.25,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        240.0,
+        249.6,
+        259.2,
+        268.8,
+        278.4,
+        288.0
+      ]
+    },
+    {
+      "name": "aug",
+      "base_cycle_seconds": 0.1,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        600.0,
+        639.0,
+        678.0,
+        717.0,
+        756.0,
+        795.0
+      ]
+    },
+    {
+      "name": "sg556",
+      "base_cycle_seconds": 0.11,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        545.455,
+        580.909,
+        616.364,
+        651.818,
+        687.273,
+        722.727
+      ]
+    },
+    {
+      "name": "nova",
+      "base_cycle_seconds": 0.88,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        68.182,
+        72.614,
+        77.045,
+        81.477,
+        85.909,
+        90.341
+      ]
+    },
+    {
+      "name": "xm1014",
+      "base_cycle_seconds": 0.35,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        171.429,
+        182.571,
+        193.714,
+        204.857,
+        216.0,
+        227.143
+      ]
+    },
+    {
+      "name": "sawedoff",
+      "base_cycle_seconds": 0.85,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        70.588,
+        75.176,
+        79.765,
+        84.353,
+        88.941,
+        93.529
+      ]
+    },
+    {
+      "name": "mag7",
+      "base_cycle_seconds": 0.85,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        70.588,
+        75.176,
+        79.765,
+        84.353,
+        88.941,
+        93.529
+      ]
+    },
+    {
+      "name": "m249",
+      "base_cycle_seconds": 0.08,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        750.0,
+        798.75,
+        847.5,
+        896.25,
+        945.0,
+        993.75
+      ]
+    },
+    {
+      "name": "negev",
+      "base_cycle_seconds": 0.075,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        800.0,
+        852.0,
+        904.0,
+        956.0,
+        1008.0,
+        1060.0
+      ]
+    },
+    {
+      "name": "revolver",
+      "base_cycle_seconds": 0.5,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        120.0,
+        127.8,
+        135.6,
+        143.4,
+        151.2,
+        159.0
+      ]
+    },
+    {
+      "name": "elite",
+      "base_cycle_seconds": 0.12,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        500.0,
+        532.5,
+        565.0,
+        597.5,
+        630.0,
+        662.5
+      ]
+    },
+    {
+      "name": "taser",
+      "base_cycle_seconds": 0.15,
+      "levels": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "rpm": [
+        2.0,
+        3.3,
+        5.033,
+        7.2,
+        9.367,
+        13.7
+      ]
+    }
+  ],
+  "actual_world_copy_sha256": "adf5b71849252d6fa61113f176fe60ee5c69913552e0ea23fd0dde725ced4ce1",
+  "actual_world_missing_record_ids": [
+    7,
+    8,
+    12,
+    3,
+    4
+  ],
+  "recovered_missing_records": false,
+  "limits": [
+    "Read-only player world audit; no installation or player-world modification",
+    "Missing original records still require a verified pre-loss backup",
+    "Offline DLL, packaged regressions and native hook checks, not full-game/Android acceptance"
+  ]
+}

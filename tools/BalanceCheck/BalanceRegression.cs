@@ -7,6 +7,14 @@ static class BalanceRegression {
         void Test(string name,Func<bool> test) {try{check("balance/"+name,test(),name);}catch(Exception e){check("balance/"+name,false,e.ToString());}}
         using var plan=JsonDocument.Parse(File.ReadAllText("docs/gun-balance-evidence-2026-09-24.json"));
         bool Near(double x,double y)=>Math.Abs(x-y)<.002;
+        // Current user correction supersedes the historical plan's RPM only. Keep that evidence immutable.
+        double ExpectedRpm(string name, float cycle, int l) {
+            int Tier(int i)=>Math.Clamp(l-i*10,0,10);
+            if(name=="taser")return 2*(1+.65*(1/(1-.05*Tier(0)-.02*Tier(1)-.01*Tier(2)-.005*Tier(3)-.005*Tier(4))-1));
+            double multiplier=name is "awp" or "ssg08" ? 1+.65*(.05*Tier(1)+.05*Tier(2)+.075*Tier(3)+.075*Tier(4))
+                : 1+(name is "scar20" or "g3sg1" ? .004 : .0065)*l;
+            return 60/cycle*multiplier;
+        }
         var registry=ScGunRegistry.Current; bool enabled=ScGunplaySettings.Enabled;
         var resolver=typeof(ScComponentCrafting).GetField("ResolveOverride",BindingFlags.NonPublic|BindingFlags.Static);
         var owner=typeof(ScWeaponCrafting).GetField("RecoveryOwnerOverride",BindingFlags.NonPublic|BindingFlags.Static);
@@ -24,7 +32,7 @@ static class BalanceRegression {
                         ScGunplaySettings.Enabled=handling;
                         var stats=EffectiveGunStats.ResolveLevel(spec,Terrain.MakeBlockValue(512,0,GunSpec.WithId(variant,GunSpec.FreshFull)),false,lv);
                         var repair=ScWeaponRepair.FullCostAtLevel(entry,lv);
-                        return Near(stats.Power,level.GetProperty("power").GetDouble())&&Near(ScGunAttributes.EffectiveRpm(stats),level.GetProperty("new_rpm").GetDouble())
+                        return Near(stats.Power,level.GetProperty("power").GetDouble())&&Near(ScGunAttributes.EffectiveRpm(stats),ExpectedRpm(name, spec.CycleSeconds, lv))
                             &&stats.Capacity==level.GetProperty("capacity").GetInt32()&&Near(stats.PelletPower(spec,0)*spec.Pellets,stats.Power)
                             &&repair.Values.SequenceEqual(level.GetProperty("proposed_full_repair").EnumerateArray().Select(x=>x.GetInt32()));
                     });

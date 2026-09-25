@@ -69,7 +69,8 @@ static class DecoyRegression {
         var growth=mod.GetType("Game.ScGunGrowth");var guns=(Array)mod.GetType("Game.GunSpec").GetField("All").GetValue(null);
         for(int variant=0;variant<guns.Length;variant++){int v=variant;Test("linear-rate/"+v,()=>{
             bool sniper=(bool)growth.GetMethod("IsBoltSniper").Invoke(null,[v]);
-            for(int l=0;l<=50;l++) {float expected=sniper?1f+.05f*Math.Clamp(l-10,0,10)+.05f*Math.Clamp(l-20,0,10)+.075f*Math.Clamp(l-30,0,10)+.075f*Math.Clamp(l-40,0,10):1+l*.01f;
+            string name=(string)guns.GetValue(v).GetType().GetField("Name").GetValue(guns.GetValue(v));
+            for(int l=0;l<=50;l++) {float expected=sniper?1f+.65f*(.05f*Math.Clamp(l-10,0,10)+.05f*Math.Clamp(l-20,0,10)+.075f*Math.Clamp(l-30,0,10)+.075f*Math.Clamp(l-40,0,10)):1+l*(name is "scar20" or "g3sg1"?.004f:.0065f);
                 float actual=(float)growth.GetMethod("FireRateMultiplier",[typeof(int),typeof(int)]).Invoke(null,[v,l]);if(Math.Abs(actual-expected)>.00001f)return false;}
             return true;
         });}

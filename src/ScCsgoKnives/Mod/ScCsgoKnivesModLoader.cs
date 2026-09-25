@@ -90,7 +90,12 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
         // Back it up first, and refuse the load rather than upgrade without a way back.
-        try { ScGunSchemaUpgrade.BeforeLoad(project, world); ScGunTravel.BeforeLoad(project,world); }
+        try {
+            string schemaBackup = ScGunSchemaUpgrade.BeforeLoad(project, world);
+            ScGunTravel.BeforeLoad(project,world);
+            ScGunLoadIntegrity.ValidateReferences(project);
+            ScGunSchemaUpgrade.BeforeReleaseLoad(project, world, schemaBackup);
+        }
         catch (Exception e) {
             // A freshly-created Ghoul subworld has no gun subsystem XML yet; the guard still needs
             // an error field that Subsystem.Load can see (hook exceptions alone are swallowed).

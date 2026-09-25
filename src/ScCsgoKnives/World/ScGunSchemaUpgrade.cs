@@ -18,6 +18,7 @@ namespace Game;
 /// is deliberately a separate copy so a change here cannot disturb that verified path.</summary>
 public static class ScGunSchemaUpgrade {
     public const string Marker = "GunSchemaUpgrade";
+    public const string ReleaseMarker = "GunReleaseBackup", Release = "1.5.2";
     static readonly CultureInfo CI = CultureInfo.InvariantCulture;
 
     static XElement Subsystem(XElement project) => project.Element("Subsystems")?.Elements("Values")
@@ -107,6 +108,24 @@ public static class ScGunSchemaUpgrade {
         if (string.IsNullOrWhiteSpace(backup)) throw new InvalidOperationException("世界备份没有成功完成，记录格式升级取消");
         Mark(project, from, backup);
         KnifeLog.Information($"gun record schema {from} -> {ScGunRegistry.Schema}: world backed up to {backup} before the first save in the new format");
+        return backup;
+    }
+
+    /// <summary>Same-schema balance upgrades also need a recoverable source world.
+    /// The marker is committed with the registry; an unsaved attempt can safely back up again.</summary>
+    public static string BeforeReleaseLoad(XElement project, WorldInfo world, string verifiedBackup = null) {
+        var gun = Subsystem(project);
+        if (world is null || gun is null || SavedSchema(project) == 0) return null;
+        string Read(XElement node, string key) => (string)node?.Elements("Value").SingleOrDefault(e => (string)e.Attribute("Name") == key)?.Attribute("Value");
+        if (Read(Group(gun, ReleaseMarker), "Release") == Release) return null;
+        // A new world has no prior CS version. Do not snapshot every newly created world.
+        string sourceVersion = ScGun0282Migration.SavedVersion(project);
+        if (string.IsNullOrWhiteSpace(sourceVersion) || sourceVersion == Release) return null;
+        string backup = verifiedBackup ?? Snapshot(world.DirectoryName, "ScCsgoKnives-before-" + Release + "-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CI) + "-" + Guid.NewGuid().ToString("N")[..8]);
+        Group(gun, ReleaseMarker)?.Remove();
+        gun.Add(new XElement("Values", new XAttribute("Name", ReleaseMarker), Value("Release", "string", Release),
+            Value("SourceVersion", "string", sourceVersion), Value("Path", "string", backup)));
+        KnifeLog.Information($"gun release {sourceVersion} -> {Release}: verified full-world backup at {backup}");
         return backup;
     }
 }

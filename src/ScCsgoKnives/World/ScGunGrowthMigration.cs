@@ -83,12 +83,13 @@ public static class ScGunGrowthMigration {
         if (spec is null || spec.RechargeSeconds <= 0) return 0;
         if (rules >= 6) {
             int l = ScGunGrowth.Clamp(level);
-            return spec.RechargeSeconds * (1f - .05f * Math.Min(l,10) - .02f * Math.Clamp(l-10,0,10)
+            return 10f * (1f - .05f * Math.Min(l,10) - .02f * Math.Clamp(l-10,0,10)
                 - .01f * Math.Clamp(l-20,0,10) - .005f * Math.Clamp(l-30,0,10) - .005f * Math.Clamp(l-40,0,10));
         }
         double factor = rules == 5
             ? 1 - .05 * Math.Min(level, 10) - .02 * Math.Clamp(level - 10, 0, 10) - .01 * Math.Clamp(level - 20, 0, 10)
             : 1 - .05 * Math.Min(level, 10) - .025 * Math.Clamp(level - 10, 0, 10) - .015 * Math.Clamp(level - 20, 0, 10);
-        return (float)(spec.RechargeSeconds * factor);
+        // Published historical rules used a 10-second base. Never infer it from today's CS2 base.
+        return (float)(10f * factor);
     }
 }

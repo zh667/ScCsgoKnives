@@ -36,6 +36,20 @@ if(args.Length==3&&args[0]=="--world-resource-gate"){
         gateChecks.Add(new{name="cold-native-resource-and-world-save-guard",ok=true});
         if(!XNode.DeepEquals(project,original))throw new Exception("Fixture XML changed unexpectedly");
         gateChecks.Add(new{name="world-fixture-unchanged",ok=true});
+        // The actual XML hook must propagate a missing-record refusal into Subsystem.Load's guard.
+        // Use an uninitialized WorldInfo: its normal ctor needs unrelated game UI settings.
+        var broken=XElement.Parse("<Project><Subsystems><Values Name='BlocksManager'><Value Name='315' Type='string' Value='ScGunBlock'/></Values></Subsystems><Entities><Entity Name='MalePlayer'><Values Name='CreativeInventory'><Values Name='Slots'><Values Name='Slot0'><Value Name='Contents' Type='int' Value='7340347'/></Values></Values></Values></Entity></Entities></Project>");
+        broken.Descendants("Value").Single(v=>(string)v.Attribute("Name")=="Contents").SetAttributeValue("Value",Terrain.MakeBlockValue(315,0,448));
+        var brokenBefore=new XElement(broken);
+        var world=(WorldInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(WorldInfo));world.DirectoryName="data:/Worlds/integrity-probe";
+        var loader=Activator.CreateInstance(core.GetType("Game.ScCsgoKnivesModLoader"));
+        core.GetType("Game.ScCsgoKnivesModLoader").GetMethod("ProjectXmlLoad",[typeof(XElement),typeof(WorldInfo),typeof(ContainerWidget)]).Invoke(loader,[broken,world,null]);
+        var blockedGroup=broken.Element("Subsystems").Elements("Values").Single(v=>(string)v.Attribute("Name")=="ScGunBlockBehavior");
+        var blocked=new ValuesDictionary();blocked.ApplyOverrides(blockedGroup);
+        bool refused=false;try{core.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[blocked]);}catch(TargetInvocationException e)when(e.InnerException is InvalidOperationException){refused=true;}
+        if(!refused)throw new Exception("Actual XML hook failed to block missing gun registry");
+        blockedGroup.Remove();if(!XNode.DeepEquals(broken,brokenBefore))throw new Exception("Guard changed source item fields");
+        gateChecks.Add(new{name="actual-project-xml-hook-refuses-missing-record-without-source-edits",ok=true});
         foreach(var entry in entries.Where(e=>e.FilenameInZip.StartsWith("Assets/")&&(e.FilenameInZip.EndsWith(".xml")||e.FilenameInZip.EndsWith(".xdb")))){
             using var data=new MemoryStream();archive.ExtractFile(entry,data);data.Position=0;
             XElement.Load(data);gateChecks.Add(new{name="raw-xml/"+entry.FilenameInZip,ok=true});

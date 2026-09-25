@@ -1,5 +1,20 @@
 # Project conventions
 
+- User correction 2026-09-25 supersedes the global base RPM reduction: every Lv0 gun
+  uses extracted CS2 cadence, including burst and R8 alternate timings. Zeus base
+  recharge is 30 seconds. Reduce earned speed bonuses only: ordinary Lv50 x1.325,
+  auto-snipers x1.2, bolt actions x2.625; Zeus frequency retains 65% of its old bonus.
+  Saved charge seconds/cycles remain unchanged; freeze historical LegacyCycle at 10s.
+  Release 1.5.2 keeps v5/schema6/rules7 and all IDs. Before gameplay validate saved
+  item references using the saved block map, after authorized travel conversion;
+  missing records must never initialize a replacement gun or allow ID reuse.
+  Same-schema supported upgrades now create verified full-world backups, recorded
+  in GunReleaseBackup. Preserve actual player XML/log audit copies locally.
+  World7's missing records followed a session with an invalid nested ZIP renamed
+  scmod (mod disabled); no verified source for those lost records was found.
+  See docs/release-single-1.5.2.md. Deliver Full/Lite single scmods including tactical;
+  use unchanged compressed resource streams, do not install or edit player worlds.
+
 - User-directed 2026-09-24 follow-up supersedes the ZIP delivery shape: deliver
   Full/Lite as one directly importable scmod each. Bundle metadata is 1.5.1;
   core/tactical gameplay stays at verified 1.5.0/1.4.0 bytes. ScCsgoBundle is a small

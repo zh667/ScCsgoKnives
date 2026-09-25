@@ -580,6 +580,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// <summary>M4 (0.35.0): the world's gun state table. Every gun's rounds, silencer and exact durability live in its
     /// record; the item value carries only the model and the record id, so state follows the item everywhere.</summary>
     ScGunRegistry m_registry;
+    ValuesDictionary m_releaseBackup;
     bool m_saveReady;
     const string RegistryKey = "GunRegistry";
     const string LayoutKey = "GunDataLayout";
@@ -728,6 +729,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_officialMigration = valuesDictionary.GetValue<ValuesDictionary>(ScGun0282Migration.Marker, null);
         // Where this world's pre-upgrade backup went, kept with the world so the player can always find it.
         m_schemaUpgrade = valuesDictionary.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.Marker, null);
+        m_releaseBackup = valuesDictionary.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.ReleaseMarker, null);
         if (m_schemaUpgrade is not null)
             KnifeLog.Information($"gun record schema upgraded from {m_schemaUpgrade.GetValue<int>("From", 0)}; world backup at {m_schemaUpgrade.GetValue<string>("Backup", "?")}");
         m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
@@ -775,6 +777,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (m_registry is not null) valuesDictionary.SetValue(RegistryKey, m_registry.Save(m_time.GameTime));
         if (m_officialMigration is not null) valuesDictionary.SetValue(ScGun0282Migration.Marker, m_officialMigration);
         if (m_schemaUpgrade is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.Marker, m_schemaUpgrade);
+        if (m_releaseBackup is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.ReleaseMarker, m_releaseBackup);
         valuesDictionary.SetValue(LayoutKey, ScGunRegistry.StampFor(m_registry?.LegacyWorld == true)); // a legacy world stays marked legacy
     }
 

@@ -47,8 +47,8 @@ static class AmmoHudRegression {
                         foreach (bool creative in new[] { false, true }) foreach (double seconds in new[] { 10, 9.91, .01, 0, -1, double.NaN, 100 }) {
                             Test($"{lang}/taser-countdown/{creative}/{seconds}", () => {
                                 var r = Read(gun, Inventory(Value(gun, 0), 700, 3), creative, seconds);
-                                // Lv0 cycle is 10 / .65 seconds; valid existing countdowns retain their seconds.
-                                string expected = seconds is >= 100 or < 0 || double.IsNaN(seconds) ? "15.4" : seconds > 9 ? "10.0" : seconds > 0 ? "0.1" : "0.0";
+                                // Lv0 is CS2's 30 seconds; valid existing countdowns retain their seconds.
+                                string expected = seconds is >= 100 or < 0 || double.IsNaN(seconds) ? "30.0" : seconds > 9 ? "10.0" : seconds > 0 ? "0.1" : "0.0";
                                 return Text(r, "Main").Contains(expected) && Flag(r, "Charging") && !Flag(r, "Insufficient")
                                     && Text(r, "Detail") == localize("AutoCharge") && !Text(r, "Main").Contains('∞');
                             });

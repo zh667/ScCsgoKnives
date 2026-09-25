@@ -706,7 +706,7 @@ public static class SurvivalSelfTest {
             var c = new Inventory(); c.AddSlotItems(0, Gun(0, 30), 1);
             bool creative = Shoot(c, 0, creative: true) == ScGunResult.Success && Dur(c, 0) == 1500 && GunSpec.GetRounds(Data(c, 0)) == 29;
             var z = new Inventory(); z.AddSlotItems(0, Gun(taser, 1), 1);
-            bool zeus = Shoot(z, 0) == ScGunResult.Success && GunSpec.GetRounds(Data(z, 0)) == 0 && Dur(z, 0) == 99 && GunSpec.TryGetSnapshot(Data(z, 0), out var zs) && Math.Abs(zs.RechargeReadyAt - 110) < 1e-6;
+            bool zeus = Shoot(z, 0) == ScGunResult.Success && GunSpec.GetRounds(Data(z, 0)) == 0 && Dur(z, 0) == 99 && GunSpec.TryGetSnapshot(Data(z, 0), out var zs) && Math.Abs(zs.RechargeReadyAt - 130) < 1e-6;
             return lastPoint && creative && zeus;
         });
         Test("m4-t10-zeus-per-instance", () => {

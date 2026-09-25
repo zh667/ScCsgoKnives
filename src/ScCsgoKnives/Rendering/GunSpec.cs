@@ -280,8 +280,8 @@ public sealed class GunSpec {
             KickPitchDegrees = 0.000f, KickYawDegrees = 0.000f, KickRecoverPerSecond = 0.00f,
             SpreadDegrees = 0.0000f,
             // m_flRange 120 in, i.e. 3.05 m; the rifles' 4096 stay on the default.
-            // One charge; the requested gameplay cooldown is ten seconds.
-            MuzzleEffects = false, RangeBlocks = 3.05f, RechargeSeconds = 10f,
+            // One charge; CS2's 30-second recharge, restored with the all-gun Lv0 cadence correction.
+            MuzzleEffects = false, RangeBlocks = 3.05f, RechargeSeconds = 30f,
         },
     ];
 

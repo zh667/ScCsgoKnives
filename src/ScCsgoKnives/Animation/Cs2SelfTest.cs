@@ -88,7 +88,7 @@ public static class Cs2SelfTest {
                     "inventory / dropped knife uses the CS2 mesh");
             }
         }
-        Check("gunspec/zeus-ten-seconds", GunSpec.ForAsset("taser").RechargeSeconds == 10f, "requested ten-second cooldown");
+        Check("gunspec/zeus-cs2-charge", GunSpec.ForAsset("taser").RechargeSeconds == 30f, "CS2 base recharge, all-gun Lv0 correction");
         foreach (string asset in new[] { "aug", "sg556" }) {
             Vector3 eyeView = Vector3.Transform(Cs2Ironsight.Eye(asset), Cs2Placement.Placement() * Cs2Ironsight.Correction(asset));
             Check($"firstperson/{asset}/eye", eyeView.Length() < 0.00001f, "viewmodel offsets cancel at the optical eye");

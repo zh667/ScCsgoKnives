@@ -42,7 +42,7 @@ static class FeedbackSeptember18Regression {
             int Index(string n)=>Array.FindIndex(specs.Cast<object>().ToArray(),s=>(string)F(s,"Name")==n);
             var rate=T("ScGunGrowth").GetMethod("FireRateMultiplier",[typeof(int),typeof(int)]);
             foreach(string n in new[]{"scar20","g3sg1","awp","ssg08","ak47"})Test("rate/"+n,()=>{
-                int v=Index(n);for(int l=0;l<=50;l++) {float actual=(float)rate.Invoke(null,[v,l]);if(n is "scar20" or "g3sg1" or "ak47") {if(Math.Abs(actual-(1+.01f*l))>1e-5)return false;}else if(l==50&&actual!=3.5f)return false;}
+                int v=Index(n);for(int l=0;l<=50;l++) {float actual=(float)rate.Invoke(null,[v,l]);if(n is "scar20" or "g3sg1" or "ak47") {if(Math.Abs(actual-(1+(n=="ak47"?.0065f:.004f)*l))>1e-5)return false;}else if(l==50&&actual!=2.625f)return false;}
                 return n is "ak47" || (float)Call("ScGunGrowth","Difficulty",v)==.6f;
             });
             var player=Blank<ComponentPlayer>();player.ComponentMiner=Blank<ComponentMiner>();var inv=new Inventory();player.ComponentMiner.Inventory=inv;

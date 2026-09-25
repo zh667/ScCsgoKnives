@@ -2,10 +2,10 @@ namespace Game;
 
 /// <summary>Fifty-level gun growth. The total growth is spread across all fifty levels so that reaching Lv50
 /// reproduces exactly what the published public beta reached at Lv30: damage x10, magazine x6.5, maximum life x2.5,
-/// with the same charge growth ratio. The 2026-09 balance scales new Zeus cycles by 1/0.65. The normal-gun fire rate is deliberately capped lower (x1.5 at Lv50) than the
-/// public beta's x3.5. SCAR-20/G3SG1 share the x1.5 cap; AWP/SSG08 retain x3.5.
+/// with the same charge growth ratio. Lv0 bullet cadence matches the extracted CS2 data.
+/// Only level bonuses are reduced: ordinary guns x1.325, auto-snipers x1.2, bolt actions x2.625 at Lv50.
 ///
-/// Lv10 retains damage x2, life x1.5, capacity x1.5 and the Zeus charge growth ratio 1 -> 0.5. Ordinary fire rate is now x1.1.
+/// Lv10 retains damage x2, life x1.5 and capacity x1.5. Ordinary fire rate is x1.065.
 ///
 /// Every number is derived from the gun's *base* value and the applied level, never from an already-grown value,
 /// so re-applying a level can never compound.
@@ -78,17 +78,18 @@ public static class ScGunGrowth {
     /// growth spread over Lv11-Lv50 so Lv50 = x10, the public beta's Lv30.</summary>
     public static float DamageMultiplier(int level) =>
         1f + .10f * Tier(level, 0) + .15f * Tier(level, 1) + .20f * Tier(level, 2) + .20f * Tier(level, 3) + .25f * Tier(level, 4);
-    /// <summary>Only bolt-action snipers retain the public beta's fire-rate curve.</summary>
+    /// <summary>Bolt actions retain their tier shape, with 35% less bonus, never a slower Lv0.</summary>
     public static bool IsBoltSniper(int variant) => variant >= 0 && variant < GunSpec.All.Length
         && GunSpec.All[variant].Name is "awp" or "ssg08";
     public static float FireRateMultiplier(int variant, int level) => IsBoltSniper(variant)
-        ? 1f + .05f * Tier(level, 1) + .05f * Tier(level, 2) + .075f * Tier(level, 3) + .075f * Tier(level, 4)
-        : 1f + .01f * Clamp(level);
+        ? 1f + .65f * (.05f * Tier(level, 1) + .05f * Tier(level, 2) + .075f * Tier(level, 3) + .075f * Tier(level, 4))
+        : 1f + (IsAutoSniper(variant) ? .004f : .0065f) * Clamp(level);
+    public static bool IsAutoSniper(int variant) => variant >= 0 && variant < GunSpec.All.Length
+        && GunSpec.All[variant].Name is "scar20" or "g3sg1";
     /// <summary>A base fire-rate multiplier when the model is not known is treated as a normal gun.</summary>
     public static float FireRateMultiplier(int level) => FireRateMultiplier(-1, level);
-    public const float BaseFireRateScale = .65f;
-    public static float BalanceFireRateScale(int variant) => BaseFireRateScale *
-        (variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].Name is "scar20" or "g3sg1" ? .75f : 1f);
+    public const float BaseFireRateScale = 1f;
+    public static float BalanceFireRateScale(int variant) => BaseFireRateScale;
     public static float ShotInterval(int variant, float baseSeconds, int level) =>
         baseSeconds > 0 ? baseSeconds / (BalanceFireRateScale(variant) * FireRateMultiplier(variant, Clamp(level))) : 0;
     public static float SkinDamageMultiplier(int variant, int skinId) => ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant) ? 1.5f : 1f;
@@ -115,12 +116,13 @@ public static class ScGunGrowth {
     }
     public static int RoundHalfUp(double value) => (int)Math.Floor(value + .5);
 
-    /// <summary>New charge cycle: 15.3846 s at Lv0, 7.6923 s at Lv10, 1.53846 s at Lv50. Saved cycles retain their remaining seconds.</summary>
+    /// <summary>Zeus starts at CS2's 30 seconds. Only 65% of the old frequency bonus is retained:
+    /// Lv10 18.1818 s, Lv50 4.37956 s. Saved cycles keep their remaining seconds.</summary>
     public static float RechargeSeconds(GunSpec spec, int level) {
         if (spec is null || spec.RechargeSeconds <= 0) return 0;
         float factor = 1f - .05f * Tier(level, 0) - .02f * Tier(level, 1) - .01f * Tier(level, 2) - .005f * Tier(level, 3) - .005f * Tier(level, 4);
         // Only new cycles use this scale. Saved RechargeReadyAt/RechargeCycleSeconds are untouched.
-        return spec.RechargeSeconds * factor / BaseFireRateScale;
+        return spec.RechargeSeconds / (1f + .65f * (1f / factor - 1f));
     }
 
     /// <summary>Spread and camera recoil are scaled once, on the final angle: 1 - 0.10L, and exactly zero at Lv10.</summary>
