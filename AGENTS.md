@@ -1,5 +1,16 @@
 # Project conventions
 
+- User override 2026-09-25: NO AUTOMATIC BACKUPS in CS packages, including the
+  existing 1.0/1.2 compatibility revisions and latest Full/Lite. Users manage backups.
+  This supersedes all earlier backup-before-load/switch/migration requirements below.
+  Keep detached validation, state conservation, corruption handling and the bidirectional
+  compatibility contract. Runtime version/schema/0.28.2/travel/integrity/hidden-test
+  paths must create no snapshot or restore-point files and must not require old backup
+  paths to exist. Retain existing user backups; never delete or move them. Rebuild and
+  replace the four current delivery files under their existing names/versions, record
+  changed hashes and manual-backup build revision. Do not overwrite immutable original
+  downloaded archives or install to Mods without explicit installation authorization.
+
 - Read-only world-size audit 2026-09-25: World6's displayed 128 MB is
   133,712,179 bytes, of which four CS snapshots occupy 103,160,469 bytes (77.15%).
   Live files are only 30,551,710 bytes. Native GetWorldInfo and ordinary ExportWorld

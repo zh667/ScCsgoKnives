@@ -214,11 +214,6 @@ public static class ScGunTravel {
     }
     public static void BeforeLoad(XElement source,WorldInfo world) {
         var plan=Prepare(source,world.DirectoryName);if(plan is null)return;
-        var gun=Guns(plan.Document);
-        if(Group(gun,Backup) is null) {
-            string snapshot=ScGunSchemaUpgrade.Snapshot(world.DirectoryName,"ScCsgoKnives-before-travel-"+DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")+"-"+Guid.NewGuid().ToString("N")[..8]);
-            var backup=Make(Backup);backup.Add(Field("Path",snapshot));gun.Add(backup);
-        }
         source.ReplaceNodes(plan.Document.Nodes());KnifeLog.Information($"[GUN_TRAVEL] imported {plan.Guns} carried guns; layout 5, schema {ScGunRegistry.Schema}, all carried state preserved");
     }
 }

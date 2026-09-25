@@ -37,19 +37,19 @@ static class LoadIntegrityCheck {
         });
         T("missing-table-with-layout",()=>{var d=Fixture(0);d.Element("Subsystems").Elements().Last().Add(V("GunDataLayout",5));Refused(d);});
         T("mismatched-model",()=>{var d=Fixture(7,true);d.Descendants("Value").Single(e=>(string)e.Attribute("Name")=="Contents").SetAttributeValue("Value",Terrain.MakeBlockValue(315,0,GunSpec.WithId(1,7)));Refused(d);});
-        foreach(string version in new[]{"1.0.0","1.2.0","1.5.1"})T("release-backup/"+version,()=>{
+        foreach(string version in new[]{"1.0.0","1.2.0","1.5.1"})T("release-manual-backup/"+version,()=>{
             var doc=Fixture(7,true);doc.Element("Subsystems").Add(G("UsedMods",G("Mods",G("0",V("PackageName",ScGun0282Migration.Package),V("Version",version)))));
             var dir=Directory.CreateTempSubdirectory("release-backup-");string path=Path.Combine(dir.FullName,"Project.xml");doc.Save(path);
             File.WriteAllBytes(Path.Combine(dir.FullName,"Chunks.dat"),[1,2,3]);Directory.CreateDirectory(Path.Combine(dir.FullName,"OtherMod"));File.WriteAllText(Path.Combine(dir.FullName,"OtherMod/state"),"keep");
             byte[] before=File.ReadAllBytes(path);
             var world=(WorldInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(WorldInfo));world.DirectoryName=dir.FullName;
-            var broken=new XElement(doc);world.DirectoryName=Path.Combine(dir.FullName,"missing");bool refused=false;
-            try{ScGunSchemaUpgrade.BeforeReleaseLoad(broken,world);}catch{refused=true;}
-            Require(refused&&XNode.DeepEquals(doc,broken));world.DirectoryName=dir.FullName;
-            string backup=ScGunSchemaUpgrade.BeforeReleaseLoad(doc,world);using var zip=ZipFile.OpenRead(backup);
-            Require(zip.GetEntry("OtherMod/state")!=null&&zip.GetEntry("Chunks.dat")!=null&&before.SequenceEqual(File.ReadAllBytes(path)));
-            Require(ScGunSchemaUpgrade.BeforeReleaseLoad(doc,world)==null);
-            string retry=ScGunSchemaUpgrade.BeforeReleaseLoad(XElement.Load(path),world);Require(retry!=backup&&File.Exists(backup));
+            File.WriteAllText(Path.Combine(dir.FullName,"existing.snapshot"),"keep existing backup");
+            string original=doc.ToString();
+            for(int i=0;i<2;i++)Require(ScGunSchemaUpgrade.BeforeReleaseLoad(doc,world)==null&&doc.ToString()==original);
+            Require(before.SequenceEqual(File.ReadAllBytes(path))&&Directory.GetFiles(dir.FullName,"*.snapshot").Length==1);
+            Require(File.ReadAllText(Path.Combine(dir.FullName,"existing.snapshot"))=="keep existing backup");
+            world.DirectoryName=Path.Combine(dir.FullName,"missing");
+            Require(ScGunSchemaUpgrade.BeforeReleaseLoad(doc,world)==null&&!Directory.Exists(world.DirectoryName));
         });
         using var cs2=JsonDocument.Parse(File.ReadAllText("src/ScCsgoKnives/AnimationData/cs2_weapons.json"));
         foreach(var spec in GunSpec.All)T("cs2-lv0/"+spec.Name,()=>{

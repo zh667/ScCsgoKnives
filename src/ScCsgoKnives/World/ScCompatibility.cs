@@ -111,28 +111,20 @@ public static class ScCompatibility {
         var definitions=new XElement(Manifest);
         definitions.SetAttributeValue("AppearanceAvailable",ModsManager.Dlls.Values.Any(a=>a.GetType("Game.ComponentCsPlayerAppearance") is not null));
         var staged=Prepare(source,ActiveBuild,definitions,id=>DatabaseManager.GameDatabase.Database.FindDatabaseObject(id,DatabaseManager.GameDatabase.EntityTemplateType,false) is not null);
-        string from=ScGun0282Migration.SavedVersion(source);
-        // Any switch or first import of CS data gets one verified full-world backup before activation.
-        if(staged.Switching&&(!string.IsNullOrEmpty(from)||Group(source.Element("Subsystems"),"ScGunBlockBehavior") is not null)) {
-            VerifiedBackup=ScGunSchemaUpgrade.Snapshot(world.DirectoryName,"ScCsgoKnives-before-switch-"+DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")+"-"+Guid.NewGuid().ToString("N")[..8]);
-            Set(Group(staged.Document.Element("Subsystems"),Key),"Backup",VerifiedBackup);
-        }
+        // User policy: backups are manual. Switching never creates files or requires an old backup path.
         // Reserve references in the FULL entity XML before any unavailable inventories become opaque strings.
         if(ScGunSchemaUpgrade.SavedSchema(source)>0) {
             var protectedDoc=new XElement(source);
             // Full data of already dormant inventories must participate in reservation too.
             foreach(var entity in protectedDoc.Element("Entities")?.Elements("Entity").ToArray()??[])
                 if(Group(entity,DormantComponent) is {} archive)entity.ReplaceWith(XElement.Parse(Text(archive,"Payload")));
-            string protection=ScGunLoadIntegrity.BeforeLoad(protectedDoc,world,VerifiedBackup);
-            if(protection is not null) {
-                VerifiedBackup??=protection;
-                var gun=Group(staged.Document.Element("Subsystems"),"ScGunBlockBehavior");
-                gun?.ReplaceWith(new XElement(Group(protectedDoc.Element("Subsystems"),"ScGunBlockBehavior")));
-            }
+            ScGunLoadIntegrity.BeforeLoad(protectedDoc,world,null);
+            var gun=Group(staged.Document.Element("Subsystems"),"ScGunBlockBehavior");
+            gun?.ReplaceWith(new XElement(Group(protectedDoc.Element("Subsystems"),"ScGunBlockBehavior")));
         }
         source.ReplaceNodes(staged.Document.Nodes());
         if(staged.Switching||staged.Dormant>0||staged.Restored>0)
-            KnifeLog.Information($"[CS_COMPAT] build={ActiveBuild}; dormant={staged.Dormant}; restored={staged.Restored}; backup={VerifiedBackup??"existing"}");
+            KnifeLog.Information($"[CS_COMPAT] build={ActiveBuild}; dormant={staged.Dormant}; restored={staged.Restored}; backups=manual");
     }
 }
 

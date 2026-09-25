@@ -181,8 +181,11 @@ public static class ScGun0282Migration {
     }
     public static void BeforeLoad(XElement project, WorldInfo world) {
         try {
-            var plan = Execute(project, () => BackupWorld(world.DirectoryName));
-            if (plan is not null) KnifeLog.Information($"0.28.2 gun migration prepared: {plan.Guns} guns, {plan.Records} records, full durability; original world snapshot kept");
+            var plan = Prepare(project);
+            if (plan is not null) {
+                project.ReplaceNodes(plan.Document.Nodes().Select(n => n is XElement element ? new XElement(element) : n));
+                KnifeLog.Information($"0.28.2 gun migration prepared: {plan.Guns} guns, {plan.Records} records, full durability; backups=manual");
+            }
         }
         catch (Exception e) {
             // Hook exceptions are swallowed by ModsManager.TryInvoke. Set an ephemeral error so the

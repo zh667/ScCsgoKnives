@@ -804,13 +804,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             UpdateGrowth(holders);
         }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) {
-            if(m_schemaUpgrade is not null && !m_schemaUpgrade.GetValue("NoticeShown",false) && ScGunBindings.Available(player)) {
-                m_schemaUpgrade.SetValue("NoticeShown",true);
-                DialogsManager.ShowDialog(player.GuiWidget,new MessageDialog("旧版世界已备份",
-                    "枪械数据已读取并准备升级。完整旧档备份位于：\n"+m_schemaUpgrade.GetValue<string>("Backup","见游戏日志")+
-                    "\n\n世界列表大小包含备份，可能因此增加。保留此备份；若要回到 1.0，请用旧模组配升级前完整备份恢复为另一份世界，新版期间的进度不能直接带回旧版。",
-                    "知道了",null,null));
-            }
             if (!m_states.TryGetValue(player, out GunState state)) m_states[player] = state = new GunState();
             var physical = player.ComponentBody;
             bool grounded = physical.StandingOnValue.HasValue || physical.StandingOnBody is not null;
@@ -835,9 +828,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                     KnifeLog.Trace($"[GUN_TEMPLATE] player={player.PlayerData.PlayerIndex} slot={inventory.ActiveSlotIndex} counter={counter} gun={ScGunBlock.SpecOf(value).Name} skin={ScGunBlock.SkinOf(value)} instance={GunSpec.GetId(Terrain.ExtractData(value))} result=Success");
             }
             if (m_integrityProtection?.GetValue<int>("Count", 0) > 0 && m_integrityTold.Add(player))
-                player.ComponentGui.DisplaySmallMessage("旧世界已备份：正常枪械可继续使用，部分枪械记录异常，已原样保留并暂停使用，需原始备份恢复。", Color.Yellow, true, false);
+                player.ComponentGui.DisplaySmallMessage("正常枪械可继续使用；部分枪械记录异常，已原样保留并暂停使用，需原始备份恢复。备份由玩家自行管理。", Color.Yellow, true, false);
             if (m_migrationNotice && m_migrationTold.Add(player))
-                player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。原世界已备份。", Color.White, true, false);
+                player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。备份由玩家自行管理。", Color.White, true, false);
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage("此世界由 0.34 及更早版本保存，本版的枪械在这里全部停用（物品保留原样）。请新建世界。", Color.Red, true, false);
             if (Terrain.ExtractContents(value) == gunIndex && ScGunBlock.IsOldFormat(value) && m_oldFormatTold.Add(player)) {

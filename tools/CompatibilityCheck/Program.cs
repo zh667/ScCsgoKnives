@@ -98,6 +98,34 @@ foreach(var source in modules)foreach(var target in modules.Where(m=>m!=source))
     });
 }
 foreach(var mod in modules){
+    T(mod.Name+"/manual-backup-all-runtime-migration-paths",()=>{
+        var dir=Directory.CreateTempSubdirectory("no-auto-backup-");
+        var info=(WorldInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(WorldInfo));
+        info.DirectoryName=dir.FullName;
+        string oldPath=Path.Combine(dir.FullName,"existing.snapshot");File.WriteAllText(oldPath,"user-owned");
+        var fixture=XElement.Load("tools/fixtures/migration-120-20260925/world7-guns.xml");
+        foreach(int schema in new[]{4,6}) {
+            var doc=new XElement(fixture);
+            doc.Descendants("Values").Single(e=>(string)e.Attribute("Name")=="GunRegistry").Elements("Value").Single(e=>(string)e.Attribute("Name")=="Schema").SetAttributeValue("Value",schema);
+            for(int round=0;round<2;round++) {
+                Require(mod.Call("ScGunSchemaUpgrade",null,"BeforeLoad",doc,info)==null);
+                Require(mod.Call("ScGunSchemaUpgrade",null,"BeforeReleaseLoad",doc,info,null)==null);
+            }
+        }
+        for(int round=0;round<2;round++)Require(mod.Call("ScGunLoadIntegrity",null,"BeforeLoad",fixture,info,null)==null);
+        var old=(XElement)mod.Call("ScGun0282MigrationSelfTest",null,"Fixture");
+        mod.Call("ScGun0282Migration",null,"BeforeLoad",old,info);
+        Require(old.Descendants("Values").Any(e=>(string)e.Attribute("Name")=="Official0282Migration"));
+        var travel=(XElement)mod.Call("ScGun0282MigrationSelfTest",null,"Fixture");
+        // Use a valid schema6 carried gun for an actual player-only cross-world import.
+        var source=new XElement(fixture);var slots=source.Descendants("Values").Single(e=>(string)e.Attribute("Name")=="Slots");
+        slots.Elements().Where(e=>(string)e.Attribute("Name") is "Slot10" or "Slot11").Remove();
+        mod.Call("ScGunTravel",null,"Capture",source,"data:/Source");
+        var target=new XElement(source);target.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior").Remove();
+        mod.Call("ScGunTravel",null,"BeforeLoad",target,info);
+        Require(target.Descendants("Values").Any(e=>(string)e.Attribute("Name")=="GunRegistry"));
+        Require(Directory.GetFiles(dir.FullName,"*",SearchOption.AllDirectories).Length==1&&File.ReadAllText(oldPath)=="user-owned","unexpected file creation/deletion");
+    });
     T(mod.Name+"/preserves-all-later-item-type-identities",()=>{
         foreach(string name in new[]{"ScC4Block","ScChickenEggBlock","ScTacticalShieldBlock","ScTacticalBeaconBlock","ScTacticalDefuserBlock","ScTacticalSquadBlock"}){
             if(mod==latest&&name.StartsWith("ScTactical"))continue; // supplied by the bundled tactical assembly

@@ -140,6 +140,13 @@ public static class ScGunLoadIntegrity {
         KnifeLog.Warning($"[GUN_INTEGRITY] 保留 {Text(notice, "Count")} 处异常枪械，正常枪可继续使用；next={Text(notice, "Next")}，原数据备份={path}；{Text(notice, "Details")}");
         return path;
     }
-    public static string BeforeLoad(XElement project, WorldInfo world, string verifiedBackup) => ApplyProtected(project,
-        () => verifiedBackup ?? ScGunSchemaUpgrade.Snapshot(world.DirectoryName, "ScCsgoKnives-before-integrity-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + "-" + Guid.NewGuid().ToString("N")[..8]), Storage.FileExists);
+    public static string BeforeLoad(XElement project, WorldInfo world, string verifiedBackup) {
+        var staged = Prepare(project);
+        if (staged is null) return null;
+        var notice = Group(Group(staged.Element("Subsystems"), "ScGunBlockBehavior"), ProtectionKey);
+        // Keep any historical backup reference as provenance, without checking or recreating that file.
+        project.ReplaceNodes(staged.Nodes());
+        KnifeLog.Warning($"[GUN_INTEGRITY] 保留 {Text(notice, "Count")} 处异常枪械，正常枪可继续使用；next={Text(notice, "Next")}；备份由玩家自行管理；{Text(notice, "Details")}");
+        return null;
+    }
 }

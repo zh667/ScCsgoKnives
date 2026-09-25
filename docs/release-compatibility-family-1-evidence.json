@@ -4,16 +4,18 @@
   "layout": 5,
   "schema": 6,
   "rules": 7,
-  "base_commit": "6688492",
+  "base_commit": "6aade7b",
+  "backup_policy": "manual",
+  "build_revision": "2026-09-25-manual-backup",
   "packages": [
     {
       "path": "[API1.9]CS武器1.0.0-双向兼容修订1-作者ZH667.scmod",
       "version": "1.0.0-compat.1",
       "profile": "1.0.0",
       "edition": "Full",
-      "bytes": 330113731,
-      "sha256": "673650b921b4fc8667ed37b7c3958934ef8d3aed05c2be88a4106c9d36b36113",
-      "coreSha256": "816250d88dd1b15b5c757cfee9e95f5b3dd56ef1988afefdcd052d90b056163e",
+      "bytes": 330113306,
+      "sha256": "b0ea6fe417abaa175fe22687fbc49472d6e8261c3699cfcde7119952746c902e",
+      "coreSha256": "9a373b5f1db6b9e2dfb3eed91f8fe29272f077a6a48d062faf0d6a5c5197d5b6",
       "sourceSha256": "9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424",
       "entries": 1131
     },
@@ -22,9 +24,9 @@
       "version": "1.2.0-compat.1",
       "profile": "1.2.0",
       "edition": "Full",
-      "bytes": 376589665,
-      "sha256": "afd99facaed009cbc1094da4405546efe2c7709d55b2df7d4dc8772d9a6eaa4e",
-      "coreSha256": "075dd41435da3d033d3110deea88cb08a948a99b77b5e9e1a2917356b78b025e",
+      "bytes": 376588894,
+      "sha256": "bef9f363b2917d9d67be901b63ac34fc5138434f7da2d6fef1d6e3d32ec72a20",
+      "coreSha256": "166073263c689563385130a3ea4527f7c5ea1ee8867a4ca90d28b7f487d64e24",
       "sourceSha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
       "entries": 1267
     },
@@ -33,10 +35,10 @@
       "version": "1.6.0",
       "profile": "latest",
       "edition": "Full",
-      "bytes": 491127647,
-      "sha256": "840e0e40cb9e3f8f9ada69167f2def5a814a2b4f9c40ae076d2be10799cab8bb",
-      "coreSha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a",
-      "sourceSha256": "2bcfd2e046798ccbaecfa53c61ed9c2ae818ba590cf0beae8e741ded47621505",
+      "bytes": 491126789,
+      "sha256": "5beeaf7f0628fd6dcfbdeeeb4dbd0d7b0d97f1fa76ca22acc98f8763bd128c1d",
+      "coreSha256": "eac57c3dd1651891e902f22099ab41d17e799fc4f5bd34a6209b41afb6c9e368",
+      "sourceSha256": "840e0e40cb9e3f8f9ada69167f2def5a814a2b4f9c40ae076d2be10799cab8bb",
       "entries": 1425
     },
     {
@@ -44,30 +46,30 @@
       "version": "1.6.0",
       "profile": "latest",
       "edition": "Lite",
-      "bytes": 88477780,
-      "sha256": "2e5a34ca1b61552b3383bf9c42953aac5c480581f7750ab4c9f1921d64b03739",
-      "coreSha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a",
-      "sourceSha256": "49f63697ab198e5086c301b5143ce9acc485798e1c3ae356d493bfa77f0739c3",
+      "bytes": 88476923,
+      "sha256": "dcfb3fb4b79dc6032e586859b555ccb7d29824e14502208197fb81f266d16a7b",
+      "coreSha256": "eac57c3dd1651891e902f22099ab41d17e799fc4f5bd34a6209b41afb6c9e368",
+      "sourceSha256": "2e5a34ca1b61552b3383bf9c42953aac5c480581f7750ab4c9f1921d64b03739",
       "entries": 1427
     }
   ],
   "reports": {
     "matrix": {
-      "count": 240,
-      "passed": 240,
+      "count": 243,
+      "passed": 243,
       "failed": 0,
       "modules": [
         {
           "Name": "0",
-          "sha256": "816250d88dd1b15b5c757cfee9e95f5b3dd56ef1988afefdcd052d90b056163e"
+          "sha256": "9a373b5f1db6b9e2dfb3eed91f8fe29272f077a6a48d062faf0d6a5c5197d5b6"
         },
         {
           "Name": "1",
-          "sha256": "075dd41435da3d033d3110deea88cb08a948a99b77b5e9e1a2917356b78b025e"
+          "sha256": "166073263c689563385130a3ea4527f7c5ea1ee8867a4ca90d28b7f487d64e24"
         },
         {
           "Name": "2",
-          "sha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a"
+          "sha256": "eac57c3dd1651891e902f22099ab41d17e799fc4f5bd34a6209b41afb6c9e368"
         }
       ]
     },
@@ -75,29 +77,33 @@
       "count": 28699,
       "passed": 28699,
       "failed": 0,
-      "coreSha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a"
+      "coreSha256": "eac57c3dd1651891e902f22099ab41d17e799fc4f5bd34a6209b41afb6c9e368"
     },
     "native_100": {
-      "count": 5,
+      "count": 6,
       "failed": 0
     },
     "native_120": {
-      "count": 5,
+      "count": 6,
       "failed": 0
     },
     "native_160": {
-      "count": 5,
+      "count": 6,
+      "failed": 0
+    },
+    "native_160-lite": {
+      "count": 6,
       "failed": 0
     },
     "packaged_full": {
       "count": 13621,
       "failed": 0,
-      "packageSha256": "840e0e40cb9e3f8f9ada69167f2def5a814a2b4f9c40ae076d2be10799cab8bb"
+      "packageSha256": "5beeaf7f0628fd6dcfbdeeeb4dbd0d7b0d97f1fa76ca22acc98f8763bd128c1d"
     },
     "packaged_lite": {
       "count": 14334,
       "failed": 0,
-      "packageSha256": "2e5a34ca1b61552b3383bf9c42953aac5c480581f7750ab4c9f1921d64b03739"
+      "packageSha256": "dcfb3fb4b79dc6032e586859b555ccb7d29824e14502208197fb81f266d16a7b"
     }
   },
   "limitations": [

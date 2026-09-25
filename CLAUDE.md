@@ -1,5 +1,10 @@
 # Repository instructions
 
+Latest user override (2026-09-25): CS mods must never create automatic backups;
+players back up manually. Applies to all compatibility revisions and future releases,
+superseding historical backup-first rules. Preserve data checks and bidirectional
+compatibility. Retain existing snapshots without deleting/moving them.
+
 Standing user requirement (2026-09-25): 1.0/1.2.0/latest compatibility revisions
 are authorized. ALL future formal releases in that family must support safe
 bidirectional replacement, with original state and newer unsupported content

@@ -114,11 +114,9 @@ static class MigrationCheck {
         byte[] original=File.ReadAllBytes(Path.Combine(dir,"Project.xml"));
         var info=(WorldInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(WorldInfo));info.DirectoryName=dir;
         string backup=ScGunSchemaUpgrade.BeforeLoad(project,info);
-        if(schema==6) check(label+"/no-schema-conversion",backup==null,"same schema, no conversion or automatic schema backup");
-        else {using var zip=ZipFile.OpenRead(backup);check(label+"/full-world-backup",zip.GetEntry("Project.xml")!=null&&zip.GetEntry("Chunks.dat")!=null&&zip.GetEntry("ThirdParty/state.txt")!=null,"verified schema4-to6 archive incl third-party sidecar");
-            var retry=new XElement("Project",new XElement("Subsystems",Group("ScGunBlockBehavior",Value("GunDataLayout",5),new XElement(table))));
-            string again=ScGunSchemaUpgrade.BeforeLoad(retry,info);check(label+"/retry-backup",again!=backup&&File.Exists(backup),"retry creates separate snapshot, first backup retained");
-            info.DirectoryName=Path.Combine(dir,"missing");bool refused=false;try{ScGunSchemaUpgrade.BeforeLoad(retry,info);}catch{refused=true;}check(label+"/backup-failure",refused,"cannot activate upgrade without backup");}
+        check(label+"/schema-upgrade-no-automatic-backup",backup==null&&Directory.GetFiles(dir,"*.snapshot").Length==0,"manual backup policy; old schema still accepted");
+        info.DirectoryName=Path.Combine(dir,"missing");
+        check(label+"/no-backup-directory-required",ScGunSchemaUpgrade.BeforeLoad(project,info)==null&&!Directory.Exists(info.DirectoryName),"no filesystem writes or backup prerequisite");
         check(label+"/disk-source-untouched",original.SequenceEqual(File.ReadAllBytes(Path.Combine(dir,"Project.xml"))),"generated world only; never player worlds");
     }
     sealed class LegacyContext(string name):AssemblyLoadContext(name) {protected override Assembly Load(AssemblyName name)=>null;}

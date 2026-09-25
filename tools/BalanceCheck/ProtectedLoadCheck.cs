@@ -39,20 +39,21 @@ static class ProtectedLoadCheck {
             var doc=Fixture();string originalRows=G(G(Gun(doc),"GunRegistry"),"Records").ToString(),originalSlots=Slots(doc).ToString();
             var dir=Directory.CreateTempSubdirectory("actual120-upgrade-");string path=Path.Combine(dir.FullName,"Project.xml");doc.Save(path);byte[] original=File.ReadAllBytes(path);
             Directory.CreateDirectory(Path.Combine(dir.FullName,"OtherMod"));File.WriteAllText(Path.Combine(dir.FullName,"OtherMod/state"),"preserve");File.WriteAllBytes(Path.Combine(dir.FullName,"terrain.dat"),[1,2,3]);
-            string backup=ScGunLoadIntegrity.BeforeLoad(doc,newWorld(dir.FullName),null);using(var zip=ZipFile.OpenRead(backup))Require(zip.GetEntry("OtherMod/state")!=null&&zip.GetEntry("terrain.dat")!=null);
+            string backup=ScGunLoadIntegrity.BeforeLoad(doc,newWorld(dir.FullName),null);Require(backup==null&&Directory.GetFiles(dir.FullName,"*.snapshot").Length==0);
             Require(File.ReadAllBytes(path).SequenceEqual(original)&&Slots(doc).ToString()==originalSlots&&G(G(Gun(doc),"GunRegistry"),"Records").ToString()==originalRows);
             Require(ScGunSchemaUpgrade.BeforeReleaseLoad(doc,newWorld(dir.FullName),backup)==backup);
             for(int round=0;round<2;round++){
                 var data=Read(Gun(doc));var registry=ScGunRegistry.Current=ScGunRegistry.Load(data.GetValue<ValuesDictionary>("GunRegistry"),0);
                 var subsystem=new SubsystemScGunBlockBehavior();void Set(string n,object v)=>typeof(SubsystemScGunBlockBehavior).GetField(n,BindingFlags.NonPublic|BindingFlags.Instance).SetValue(subsystem,v);
                 Set("m_saveReady",true);Set("m_worldLayout",5);Set("m_registry",registry);Set("m_time",new SubsystemTime());
-                Set("m_integrityProtection",data.GetValue<ValuesDictionary>(ScGunLoadIntegrity.ProtectionKey));Set("m_releaseBackup",data.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.ReleaseMarker));
+                Set("m_integrityProtection",data.GetValue<ValuesDictionary>(ScGunLoadIntegrity.ProtectionKey));Set("m_releaseBackup",data.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.ReleaseMarker,null));
                 Set("m_travelSource",data.GetValue<string>(ScGunTravel.SourcePath));Set("m_travelWorldIdentity",data.GetValue<string>(ScGunTravel.WorldIdentity));Set("m_travelIdentities",data.GetValue<ValuesDictionary>(ScGunTravel.Identities));
                 var saved=new ValuesDictionary();subsystem.Save(saved);Gun(doc).ReplaceWith(Serialize(saved,"ScGunBlockBehavior"));
                 doc=XElement.Parse(doc.ToString());
                 Require(Slots(doc).ToString()==originalSlots&&G(G(Gun(doc),"GunRegistry"),"Records").ToString()==originalRows);
                 Require(ScGunLoadIntegrity.Inspect(doc).Issues.Length==2&&saved.ContainsKey(ScGunLoadIntegrity.ProtectionKey));
-                ScGunLoadIntegrity.ApplyProtected(doc,()=>throw new Exception("unexpected second backup"),File.Exists);
+                ScGunLoadIntegrity.BeforeLoad(doc,newWorld(dir.FullName),null);
+                Require(Directory.GetFiles(dir.FullName,"*.snapshot").Length==0);
                 Require(ScGunSchemaUpgrade.BeforeReleaseLoad(doc,newWorld(dir.FullName)) is null);
                 foreach(var slot in Slots(doc).Elements()){
                     int value=(int)slot.Element("Value").Attribute("Value");var inv=new ComponentCreativeInventory{OpenSlotsCount=1};inv.m_slots.Add(value);

@@ -35,7 +35,13 @@ if(args.Length==4&&args[0]=="--compat-native") {
         foreach(var hook in hooks)hook.ProjectXmlLoad(doc,info,null);
         var gun=doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior");var values=new ValuesDictionary();values.ApplyOverrides(gun);
         coreAssembly.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[values]);
-        CheckCompat("real-source-120-hook-allowed-after-backup",Directory.GetFiles(dir.FullName,"*.snapshot").Length>=1&&before.SequenceEqual(File.ReadAllBytes(path)));
+        CheckCompat("real-source-120-hook-no-automatic-backup",Directory.GetFiles(dir.FullName,"*.snapshot").Length==0&&Directory.GetFiles(dir.FullName).Length==1&&before.SequenceEqual(File.ReadAllBytes(path)));
+        // A missing old backup is not a load prerequisite; reloading/switching writes no files.
+        info.DirectoryName=Path.Combine(dir.FullName,"nonexistent-world-directory");
+        foreach(var hook in hooks)hook.ProjectXmlLoad(doc,info,null);
+        var reloadedValues=new ValuesDictionary();reloadedValues.ApplyOverrides(doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior"));
+        coreAssembly.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[reloadedValues]);
+        CheckCompat("second-load-without-backup-directory",!Directory.Exists(info.DirectoryName));
         var proxy=XElement.Parse("<Entity Id='42' Guid='7807c7ed-ce6a-4fdf-aad7-782480bf5e83' Name='ScCompatibilityDormant'><Values Name='ScCompatibilityArchive'><Value Name='Payload' Type='string' Value='&lt;Entity Id=&quot;42&quot; Name=&quot;Preserved&quot; /&gt;'/></Values></Entity>");
         var data=new GameEntitySystem.EntityData(DatabaseManager.GameDatabase,proxy);var round=new XElement("Entity");data.Save(round);
         CheckCompat("native-entity-serialization-keeps-id-and-payload",(string)round.Attribute("Id")=="42"&&round.Descendants("Value").Any(e=>(string)e.Attribute("Name")=="Payload"));
@@ -105,18 +111,14 @@ if(args.Length==3&&args[0]=="--world-resource-gate"){
             var loadedValues=new ValuesDictionary();loadedValues.ApplyOverrides(gun);
             core.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[loadedValues]);
             var notice=loadedValues.GetValue<ValuesDictionary>("GunIntegrityProtection");
-            if(notice.GetValue<int>("Count")!=2||!File.Exists(notice.GetValue<string>("Backup")))throw new Exception("Local conflicts were not backed up and preserved");
+            if(notice.GetValue<int>("Count")!=2)throw new Exception("Local conflicts were not preserved");
             if(!XNode.DeepEquals(legacyFixture.Element("Entities"),localCopy.Element("Entities")))throw new Exception("Player gun XML was changed by the compatibility hook");
             localCopy=XElement.Parse(localCopy.ToString());
         }
         if(!originalDisk.SequenceEqual(File.ReadAllBytes(projectPath)))throw new Exception("Source world was overwritten by load hook");
-        var snapshots=Directory.GetFiles(auditDir.FullName,"*.snapshot");if(snapshots.Length!=1)throw new Exception("Expected one shared integrity/release backup");
-        using(var preserved=System.IO.Compression.ZipFile.OpenRead(snapshots[0])){
-            if(preserved.GetEntry("other-mod-state")==null)throw new Exception("Full-world backup omitted another mod's state");
-            using var stream=preserved.GetEntry("Project.xml").Open();using var data=new MemoryStream();stream.CopyTo(data);
-            if(!data.ToArray().SequenceEqual(originalDisk))throw new Exception("Backup differs from source world");
-        }
-        gateChecks.Add(new{name="actual-120-native-hook-two-loads-keep-items-backup-and-allow-local-conflicts",ok=true});
+        if(Directory.GetFiles(auditDir.FullName,"*.snapshot").Length!=0||Directory.GetFiles(auditDir.FullName).Length!=2)throw new Exception("Load created unexpected files");
+        if(File.ReadAllText(Path.Combine(auditDir.FullName,"other-mod-state"))!="preserved")throw new Exception("Other mod state changed");
+        gateChecks.Add(new{name="actual-120-native-hook-two-loads-preserve-items-without-automatic-backups",ok=true});
         foreach(var entry in entries.Where(e=>e.FilenameInZip.StartsWith("Assets/")&&(e.FilenameInZip.EndsWith(".xml")||e.FilenameInZip.EndsWith(".xdb")))){
             using var data=new MemoryStream();archive.ExtractFile(entry,data);data.Position=0;
             XElement.Load(data);gateChecks.Add(new{name="raw-xml/"+entry.FilenameInZip,ok=true});

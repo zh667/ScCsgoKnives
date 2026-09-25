@@ -7,7 +7,7 @@ SOURCES={
  '1.2.0':('0f78a1b',Path(r'D:\下载\[API1.9]CS武器1.2.0-全量版.scmod'),'b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95')}
 SHARED=['ScGunRegistry','ScGunGrowth','ScGunGrowthMigration','ScGunGrowthService','ScGunSaveGuard','ScGunSchemaUpgrade',
         'ScGunLoadIntegrity','ScGunTravel','ScGunHolders','ScGunMutation','ScInventoryIdentity','ScSushiInventory',
-        'ScInventoryTransaction','ScGunRecovery','ScCompatibility']
+        'ScInventoryTransaction','ScGunRecovery','ScCompatibility','ScGun0282Migration','ScGhoulTestBridge']
 def main():
     p=argparse.ArgumentParser();p.add_argument('version',choices=SOURCES);a=p.parse_args()
     ref,package,digest=SOURCES[a.version];assert hashlib.sha256(package.read_bytes()).hexdigest()==digest
@@ -59,6 +59,7 @@ def main():
         s=s.replace('ScGunRegistry m_registry;','ScGunRegistry m_registry;\n    ValuesDictionary m_compatProtection, m_compatRelease;')
         s=s.replace('ScGunSaveGuard.Validate(valuesDictionary);','m_compatProtection=valuesDictionary.GetValue<ValuesDictionary>(ScGunLoadIntegrity.ProtectionKey,null);\n        m_compatRelease=valuesDictionary.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.ReleaseMarker,null);\n        ScGunSaveGuard.Validate(valuesDictionary);')
         s=s.replace('base.Save(valuesDictionary);','base.Save(valuesDictionary);\n        if(m_compatProtection is not null) valuesDictionary.SetValue(ScGunLoadIntegrity.ProtectionKey,m_compatProtection);\n        if(m_compatRelease is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.ReleaseMarker,m_compatRelease);')
+    s=s.replace('原世界已备份。','备份由玩家自行管理。')
     subsystem.write_text(s,'utf8')
     csproj=src/'ScCsgoKnives.csproj';s=csproj.read_text('utf8').replace('Version="1.9.2.1"','Version="1.9.3.1"')
     s=s.replace('<ProjectReference Include="../ScCsgoResources/ScCsgoResources.csproj" />','<Reference Include="ScCsgoResources"><HintPath>../../refs/ScCsgoResources.dll</HintPath></Reference>')

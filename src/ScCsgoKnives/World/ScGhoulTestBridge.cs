@@ -45,17 +45,16 @@ public static class ScGhoulTestBridge {
             GameManager.SaveProject(true,true);
             using(var stream=Storage.OpenFile(Storage.CombinePaths(world,"Project.xml"),OpenFileMode.Read))
                 VerifyCheckpoint(XElement.Load(stream),expected,world);
-            string backup=ScLiveWorldBackup.Snapshot(project.FindSubsystem<SubsystemTerrain>(true),world,"ScCsgoKnives-before-ghoul-test-"+DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")+"-"+Guid.NewGuid().ToString("N")[..8],ScGunRegistry.Schema);
-            KnifeLog.Information("[GHOUL_TEST_0419] verified backup="+backup+"; invoking original TransPortal");
+            KnifeLog.Information("[GHOUL_TEST_0419] verified saved checkpoint; backups=manual; invoking original TransPortal");
             dispatched=true;
             TransferMethod(target.GetType()).Invoke(target,null);
             return "已调用尸鬼穿越流程；未切换时请查看日志。";
         } catch(Exception e) {
             Exception reason=e is TargetInvocationException {InnerException:{} inner}?inner:e;
-            KnifeLog.Warning("[GHOUL_TEST_0419] stage="+(dispatched?"original-transfer":"preflight/backup")+" "+reason);
+            KnifeLog.Warning("[GHOUL_TEST_0419] stage="+(dispatched?"original-transfer":"preflight")+" "+reason);
             if(dispatched)return "已调用尸鬼，但穿越未完成。请查看游戏日志中的 GHOUL_TEST_0419。";
-            if(reason is System.IO.IOException)return "备份失败：世界文件被占用或无法读取。未开始穿越，详情见日志。";
-            return "未开始穿越。"+(reason.Message.Length<=65?reason.Message:"预检或备份失败，详情见游戏日志。");
+            if(reason is System.IO.IOException)return "存档校验失败：世界文件被占用或无法读取。未开始穿越，详情见日志。";
+            return "未开始穿越。"+(reason.Message.Length<=65?reason.Message:"预检失败，详情见游戏日志。");
         }finally{s_busy=false;}
     }
 }
