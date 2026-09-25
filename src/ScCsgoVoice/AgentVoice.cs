@@ -49,6 +49,7 @@ public sealed class AgentVoiceModLoader:ModLoader {
         // The in-world voice key is handled by the subsystem HUD. Keeping the callback
         // here avoids opening a modal list dialog from a gameplay input edge.
         ScAgentVoice.OpenMenu=p=>p?.Project?.FindSubsystem<SubsystemScAgentVoice>(false)?.OpenMenu(p);
+        ScAgentVoice.FilterInput=input=>input?.m_componentPlayer?.Project?.FindSubsystem<SubsystemScAgentVoice>(false)?.FilterInput(input);
         ScWorkbenchExtension.RegisterAction(new("agent-voice","探员语音设置","功能",(p,back)=>AgentVoiceMenus.Settings(p.GuiWidget)));
     }
 }
@@ -104,17 +105,17 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
     public override void Load(ValuesDictionary values){time=Project.FindSubsystem<SubsystemTime>(true);players=Project.FindSubsystem<SubsystemPlayers>(true);audio=Project.FindSubsystem<SubsystemAudio>(true);enabled=AgentVoiceModLoader.Supported;if(enabled)Subscribe();revision=AgentVoiceOptions.Revision;}
     [MethodImpl(MethodImplOptions.NoInlining)] void Subscribe()=>ScAgentVoice.Event+=Receive;
-    Speaker State(Entity entity){if(!speakers.TryGetValue(entity,out var s))speakers[entity]=s=new(){Health=entity.FindComponent<ComponentHealth>()?.Health??1,Ambient=time.GameTime+random.Float(40,75)};return s;}
+    Speaker State(Entity entity){if(!speakers.TryGetValue(entity,out var s))speakers[entity]=s=new(){Health=entity.FindComponent<ComponentHealth>()?.Health??1,Ambient=time.GameTime+random.Float(18,32)};return s;}
     static string Role(Entity e)=>e.ValuesDictionary?.DatabaseObject?.Name switch {"ScTacticalCT"=>"ct","ScTacticalT" or "ScTacticalEnemy"=>"t",_=>null};
     static bool Alive(Entity e)=>e.IsAddedToProject&&e.FindComponent<ComponentHealth>() is {Health:>0};
     static string Map(string action)=>action switch {"spawn"=>"radio.letsgo","spotted"=>"radio.enemyspotted","hurt"=>"radio.takingfire","kill"=>"enemydown","follow"=>"followingfriend","wait"=>"waitinghere","idle"=>"inposition","grenade_hegrenade"=>"grenade","grenade_flashbang"=>"flashbang","grenade_smokegrenade"=>"smoke","grenade_decoy"=>"decoy","grenade_molotov" or "grenade_incendiary"=>"molotov",_=>action};
-    public static float Probability(string action)=>action switch{"spawn"=>.7f,"spotted"=>.6f,"hurt"=>.25f,"kill"=>.45f,"follow" or "wait"=>.8f,"idle"=>.25f,_=>.6f};
+    public static float Probability(string action)=>action switch{"spawn"=>.95f,"spotted"=>.9f,"hurt"=>.45f,"kill"=>.8f,"follow" or "wait"=>.95f,"idle"=>.55f,_=>.85f};
     void Receive(Entity entity,string role,string action){
         if(entity.Project!=Project||!AgentVoiceOptions.Current.NpcEnabled||role is not("ct" or "t"))return;
         if(pending.Count>=24||random.Float(0,1)>Probability(action))return;
         var s=State(entity);double now=time.GameTime;
         if(now<s.Next||pending.Any(p=>ReferenceEquals(p.Entity,entity)))return;
-        string key=Map(action);if(s.Last.TryGetValue("event:"+key,out var prior)&&now-prior<(action=="spotted"?20:8))return;
+        string key=Map(action);if(s.Last.TryGetValue("event:"+key,out var prior)&&now-prior<(action=="spotted"?6:3))return;
         s.Last["event:"+key]=now;
         double delay=action=="spawn"?random.Float(.5f,1.5f):0;
         pending.Add(new(entity,role,key,now+delay,now+delay+2));
@@ -124,7 +125,7 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
         if(!Alive(player.Entity)||ScAgentVoice.PlayerRole(player)!=clip.Role){reason="请先选择对应的CT/T角色";return false;}
         var s=State(player.Entity);double now=time.GameTime;
         if(now<s.Next){reason="语音冷却中";return false;}
-        if(s.Last.TryGetValue(clip.Id,out var last)&&now-last<15){reason="这句刚说过，请换一句";return false;}
+        if(s.Last.TryGetValue(clip.Id,out var last)&&now-last<5){reason="这句刚说过，请换一句";return false;}
         pending.RemoveAll(p=>ReferenceEquals(p.Entity,player.Entity));pending.Add(new(player.Entity,clip.Role,clip.Event,now,now+2,clip,true));return true;
     }
     public bool ManualRandom(ComponentPlayer player, int command, out string reason) {
@@ -140,6 +141,19 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
     public void OpenMenu(ComponentPlayer player) {
         if(!enabled||player is null||!AgentVoiceOptions.Current.PlayerEnabled||ScAgentVoice.PlayerRole(player) is not("ct" or "t"))return;
         Hud(player).Show(ScAgentVoice.PlayerRole(player),AgentVoiceOptions.Current.Language,Commands.Select(c=>c.Label).ToArray());
+    }
+    /// <summary>While the HUD is open, consume numeric hotbar selection without consuming the key edge used by the HUD.</summary>
+    public void FilterInput(ComponentInput input) {
+        var player=input?.m_componentPlayer;if(player is null||!huds.TryGetValue(player,out var hud)||!hud.Visible)return;
+        object controls=input.m_playerInput;var flags=BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic;
+        foreach(var field in controls.GetType().GetFields(flags)){
+            string name=field.Name.ToLowerInvariant();if(!name.Contains("slot")&&!name.Contains("select")&&!name.Contains("hotbar"))continue;
+            try{
+                if(field.FieldType==typeof(bool))field.SetValue(controls,false);
+                else if(Nullable.GetUnderlyingType(field.FieldType) is not null)field.SetValue(controls,null);
+                else if(field.FieldType==typeof(int))field.SetValue(controls,-1);
+            }catch{ }
+        }
     }
     [MethodImpl(MethodImplOptions.NoInlining)] void Unsubscribe()=>ScAgentVoice.Event-=Receive;
     public override void Dispose(){if(enabled)Unsubscribe();foreach(var h in huds.Values)h.Dispose();huds.Clear();pending.Clear();speakers.Clear();playing.Clear();base.Dispose();}
@@ -163,7 +177,7 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
             foreach(var e in Project.Entities){string role=Role(e);if(role is null||!Alive(e))continue;var s=State(e);float health=e.FindComponent<ComponentHealth>().Health;
                 if(health<s.Health-.0001f)Receive(e,role,"hurt");s.Health=health;
                 bool combat=e.Components.Any(c=>c.GetType().Name=="ComponentTacticalEnemy"&&c.GetType().GetField("TargetBody")?.GetValue(c)!=null||c.GetType().Name=="ComponentTacticalCompanion"&&c.GetType().GetField("threat",BindingFlags.NonPublic|BindingFlags.Instance)?.GetValue(c)!=null);
-                if(now>=s.Ambient){s.Ambient=now+random.Float(40,75);if(!combat)Receive(e,role,"idle");}
+                if(now>=s.Ambient){s.Ambient=now+random.Float(18,32);if(!combat)Receive(e,role,"idle");}
             }
             foreach(var e in speakers.Keys.Where(e=>!e.IsAddedToProject).ToArray())speakers.Remove(e);
         }
@@ -180,7 +194,7 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
             var clip=p.Exact is { } exact&&exact.Language==options.Language?exact:candidates.Length>0?candidates[random.Int(0,candidates.Length-1)]:null;
             pending.Remove(p);if(clip is null)continue;
             try{audio.PlaySound(clip.Resource,options.Volume,0,pos,3,false);
-                s.Next=now+(p.Manual?3:8);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,p.Manual));
+                s.Next=now+(p.Manual?1.2:3);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,p.Manual));
                 if(options.Captions)foreach(var listener in players.ComponentPlayers.Where(x=>Vector3.DistanceSquared(x.ComponentBody.Position,pos)<max*max))listener.ComponentGui.DisplaySmallMessage((p.Role=="ct"?"CT":"T")+" · "+clip.Label.Split('·')[0].Trim(),Color.White,false,false);
             }catch(Exception ex){KnifeDiagnostics.WarnOnce("agent-voice-"+clip.Resource,ex.Message);}
         }

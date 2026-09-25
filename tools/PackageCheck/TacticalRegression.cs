@@ -292,7 +292,7 @@ static class TacticalRegression {
                 f.Inventory.RemoveSlotItems(0,1);f.Inventory.AddSlotItems(0,empty,1);f.Time.m_gameTime=5;((IUpdateable)f.Npc).Update(.1f);f.Time.m_gameTime=9;((IUpdateable)f.Npc).Update(.1f);
                 Require(f.Inventory.GetSlotCount(1)==1&&(int)C("GunSpec").GetMethod("GetRounds").Invoke(null,[Terrain.ExtractData(f.Inventory.GetSlotValue(0))])>0,"reload failed or wrong magazine cost");
                 Require(Kind()!="Reload","finished reload remains visible");
-                Require((bool)T("ComponentTacticalCompanion").GetMethod("InspectWeapon").Invoke(f.Npc,null)&&Kind()=="Inspect","companion inspect command did not start");
+                Require(T("ComponentTacticalCompanion").GetMethod("InspectWeapon") is null,"companion inspect command remains exposed");
                 f.Creature.ComponentHealth.Health=0;Require(Kind()=="Idle","dead companion still inspecting");
             });
             Test("native-panel-all-slots-responsive-and-resume-after-close",()=>{

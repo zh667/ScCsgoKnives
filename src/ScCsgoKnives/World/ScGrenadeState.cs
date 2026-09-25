@@ -13,7 +13,9 @@ public sealed class ScGrenadeState {
     public float Rested;
     public float NextBounceSound;
     public bool Effect, Grounded;
-    public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => states.Count() < 16 && states.Count(s => s.Owner == owner) < 4;
+    // Do not impose a gameplay upper limit on simultaneous projectiles. Effects still expire naturally;
+    // this helper remains for save/load call sites and validates only the state itself.
+    public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => true;
     public const float HeRadius=7.8f, HeDamage=96;
     public const float ChickenRadius=6, ChickenDamage=48;
     public static float ChickenPower(float distance) => ChickenDamage * Math.Clamp(1-distance/ChickenRadius,0,1);

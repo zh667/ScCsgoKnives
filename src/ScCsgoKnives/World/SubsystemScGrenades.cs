@@ -16,7 +16,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         var state=new ScGrenadeState{Kind=0,Position=position,Owner=owner};
         Register(state);
         DetonateWithBudget(state, true); // retain the chicken blast budget; same walls/friendly-fire/smoke rules
-        if(m_active.Count<16)m_active.Add(state); // visual budget; never suppress damage
+        m_active.Add(state);
     }
     sealed class AreaAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
         : ProjectileAttackment(body,owner,point,direction,power,null) {
@@ -121,10 +121,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         source &= -source; // Keep the initiating source's release independent from other held controls.
         int kind=ScGrenadeBlock.Kind(player.ComponentMiner.ActiveBlockValue);
         if (!ScGrenadeBlock.Enabled(kind)) return;
-        if (!ScGrenadeState.CanAdd(m_active,player.PlayerData.PlayerIndex)) { Message(player,"活动投掷物已达上限，未消耗物品。"); return; }
         var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
-        bool quick=ScGrenadeOptions.Quick,drawing=KnifeAnimationController.IsGrenadeDrawing(model);
-        if (KnifeAnimationController.IsBusy(model)&&!(quick&&drawing)) return;
+        if (KnifeAnimationController.IsBusy(model)) return;
         string asset=ScGrenadeBlock.Assets[kind], alias=low?"throwLow":"throwHigh";
         float pull=Cs2Rig.Duration(asset,"pullpin");
         var inv=player.ComponentMiner.Inventory;
@@ -132,7 +130,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             ReturnSlot=m_slots.TryGetValue(player,out var history)?history.Previous:-1, FromButton=fromButton,
             InputSource=source, PadMask=source == 8 || !fromButton && (player.GameWidget.Input.IsGamepadDown("Dig") || player.GameWidget.Input.IsGamepadDown("Hit") || player.GameWidget.Input.IsGamepadDown("Aim")) ? ScGamepadBindings.ConnectedMask(player) : 0,
             OriginalPull=pull,OriginalRelease=Cs2Rig.GrenadeReleaseTime(asset,alias),OriginalThrow=Cs2Rig.Duration(asset,alias),
-            Timeline=ScGrenadePreparation.Create(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias),quick,kind==3,quick&&drawing?.15:0) };
+            Timeline=ScGrenadePreparation.Create(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias),false,kind==3) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
         KnifeLog.Trace($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");

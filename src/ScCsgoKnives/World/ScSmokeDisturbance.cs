@@ -8,7 +8,6 @@ namespace Game;
 /// Only the HE creates one; flash and decoy never do. Every number below is an estimate (估计).</summary>
 public sealed class ScSmokeDisturbance {
     public const float Radius = 4.5f, Hold = 1.5f, Recovery = 2f, Total = Hold + Recovery, Rim = .5f;
-    public const int MaxActive = 16;
     public Vector3 Center;
     public float Remaining = Total;
     /// <summary>Ids of the smokes the blast could actually reach (line of sight checked at detonation); no other smoke is touched.</summary>
@@ -29,7 +28,7 @@ public sealed class ScSmokeDisturbance {
         if (list is not null) foreach (var d in list) if (d.Affects(smoke)) best = Math.Max(best, d.Clearing(point));
         return best;
     }
-    public static bool CanAdd(IEnumerable<ScSmokeDisturbance> list) => list.Count() < MaxActive;
+    public static bool CanAdd(IEnumerable<ScSmokeDisturbance> list) => true;
     public ValuesDictionary Save() { var d = new ValuesDictionary(); d.SetValue("Center", Center); d.SetValue("Remaining", Remaining); d.SetValue("Smokes", string.Join(",", SmokeIds)); return d; }
     public static ScSmokeDisturbance Load(ValuesDictionary d) {
         var s = new ScSmokeDisturbance { Center = d.GetValue<Vector3>("Center"), Remaining = d.GetValue<float>("Remaining", 0) };

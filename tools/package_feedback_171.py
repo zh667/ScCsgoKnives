@@ -21,17 +21,20 @@ def main():
         add('ASSET_SOURCES.md','Audio derived from user-supplied 中文语音包(2).zip and CSGO AGENT VOICE.zip. Original Counter-Strike characters/audio belong to their respective rights holders. Original archives untouched. Each source path/hash and derived hash is in Assets/ScAgentVoices.json.\n'.encode('utf8'))
         target=OUT/'[API1.9]CS探员语音1.1.0-中英精选-作者ZH667.scmod'
     else:
-        sourceReport=json.loads((OUT/'release-compatibility-1'/f'latest-{a.edition}.json').read_text('utf8'));source=OUT/sourceReport['path'];assert sha(source.read_bytes())==sourceReport['sha256']
+        reportPath=REPORT/f'{a.edition}.json'
+        if reportPath.exists(): sourceReport=json.loads(reportPath.read_text('utf8'))
+        else: sourceReport=json.loads((OUT/'release-compatibility-1'/f'latest-{a.edition}.json').read_text('utf8'))
+        source=OUT/sourceReport['path'];assert sha(source.read_bytes())==sourceReport['sha256']
         with zipfile.ZipFile(source) as z:
             for i in z.infolist():entries[i.filename]=(i.compress_type,i.CRC,i.file_size,raw_member(z,i));hashes[i.filename]=sha(z.read(i))
-            meta=json.loads(z.read('modinfo.json'));meta['Version']='1.7.1';meta['Description']='制作等级按前期手枪/霰弹/冲锋、后期步枪/狙击重排；快捷投掷保持完整准备动画并在动画结束后立即释放；修复CT重刀内层手臂穿袖；支持独立CS探员中英语音附属。兼容系列1双向替换，不自动备份。'
+            meta=json.loads(z.read('modinfo.json'));meta['Version']='1.7.1';meta['Description']='制作等级按前期手枪/霰弹/冲锋、后期步枪/狙击重排；投掷物按按住左键准备、松开左键投掷；修复CT重刀内层手臂穿袖；支持独立CS探员中英语音附属。兼容系列1双向替换，不自动备份。'
             add('modinfo.json',json.dumps(meta,ensure_ascii=False,indent=2).encode('utf8'))
             core=json.loads(z.read('Integrations/ScCsgoKnives.modinfo.json'));core['Version']='1.7.1';add('Integrations/ScCsgoKnives.modinfo.json',json.dumps(core,ensure_ascii=False).encode('utf8'))
             tactical=json.loads((ROOT/'src/ScCsgoTactical/modinfo.json').read_text('utf8'));add('Integrations/ScCsgoTactical.modinfo.json',json.dumps(tactical,ensure_ascii=False).encode('utf8'))
             bundle=json.loads(z.read('Integrations/ScCsgoBundle.json'));bundle.update(version='1.7.1',core='1.7.1',tactical='1.5.1',coreSha256=test['dlls']['ScCsgoKnives']);add('Integrations/ScCsgoBundle.json',json.dumps(bundle,ensure_ascii=False).encode('utf8'))
             family=json.loads(z.read('Integrations/CompatibilityFamily.json'));family.update(version='1.7.1',core_sha256=test['dlls']['ScCsgoKnives'],build_revision='2026-09-25-voice-hud');add('Integrations/CompatibilityFamily.json',json.dumps(family,indent=2).encode('utf8'))
         dll('ScCsgoKnives');dll('ScCsgoTactical')
-        add('INSTALL.txt','CS武器1.7.1总包（含战术1.5.1）：退出世界后替换CS主包，只启用一个全量/轻量总包，不另装独立战术包。\n兼容系列1，原枪状态保持，不自动备份，由玩家手动备份。\n制作门槛是人物等级；已有枪不锁使用。快捷投掷保持完整准备动画，动画结束后自动立即释放。\nCT长袖使用遮蔽派生网格，T露肤保持。\n语音为独立可选scmod，本总包不含音频，安装CS探员语音1.1.0后，模组设置选中文/英文；CT/T玩家按Z打开左下角数字HUD，按1～5快速选句。\n诊断为离线与原生加载/渲染，不等于所有设备实机验收。\n'.encode('utf-8-sig'))
+        add('INSTALL.txt','CS武器1.7.1总包（含战术1.5.1）：退出世界后替换CS主包，只启用一个全量/轻量总包，不另装独立战术包。\n兼容系列1，原枪状态保持，不自动备份，由玩家手动备份。\n投掷物按原版操作：按住左键进入准备动作，松开左键投掷；不设置投掷物同时存在上限。\nCT长袖使用遮蔽派生网格，T露肤保持；召唤同伴不限制数量。\n语音为独立可选scmod，本总包不含音频，安装CS探员语音1.1.0后，模组设置选中文/英文；CT/T玩家按Z打开左下角数字HUD，按1～5快速选句。\n诊断为离线与原生加载/渲染，不等于所有设备实机验收。\n'.encode('utf-8-sig'))
         target=OUT/f'[API1.9]CS武器1.7.1-作者ZH667-{"512轻量" if a.edition=="Lite" else "全量"}总包.scmod'
     pending=target.with_suffix('.pending');write_archive(pending,entries)
     with zipfile.ZipFile(pending) as z:

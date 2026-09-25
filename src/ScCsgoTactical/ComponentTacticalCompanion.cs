@@ -26,10 +26,6 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     public ScWeaponAction VisualAction {
         get {var a=actions.Read(time?.GameTime??0);return Creature?.ComponentHealth.Health>0 && (a.Kind!=ScWeaponActionKind.Reload || reload!=null)?a:default;}
     }
-    public bool InspectWeapon() {
-        if(Creature.ComponentHealth.Health<=0||reload!=null||threat!=null||!ScInventoryTransaction.IsWeaponSlot(Inventory,0)||!EffectiveGunStats.TrySnapshotValue(Inventory.GetSlotValue(0),out var gun))return false;
-        actions.Start(GunSpec.All[gun.Variant].Name,ScWeaponActionKind.Inspect,"inspect",time.GameTime,3.5f);return true;
-    }
     public string Status="跟随";
     public bool PanelOpen;
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;

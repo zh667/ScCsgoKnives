@@ -199,6 +199,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         =>health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
 
     public override void UpdateInput(ComponentInput input, WidgetInput widgets) {
+        ScAgentVoice.FilterInput?.Invoke(input);
         if(SubsystemScChicken.HandleFollow(input,widgets))return;
         var player = input.m_componentPlayer;
         if (player is null || !ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)

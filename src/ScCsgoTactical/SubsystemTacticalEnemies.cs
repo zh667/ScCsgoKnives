@@ -20,7 +20,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
     }
     public override void Save(ValuesDictionary values){base.Save(values);values.SetValue("Schema",1);values.SetValue("FiveMemberDay",FiveMemberDay);values.SetValue("MaxActive",MaxActive);values.SetValue("SpawnCooldown",spawnCooldown);}
     public void Register(){if(spawn.m_creatureTypes.Any(c=>c.Name==Template))return;
-        spawn.m_creatureTypes.Add(new(Template,SpawnLocationType.Surface,true,false){SpawnSuitabilityFunction=(_,p)=>Suitable(p)? .12f:0,SpawnFunction=(_,p)=>SpawnSquad(p)});
+        spawn.m_creatureTypes.Add(new(Template,SpawnLocationType.Surface,true,false){SpawnSuitabilityFunction=(_,p)=>Suitable(p)? .35f:0,SpawnFunction=(_,p)=>SpawnSquad(p)});
     }
     public override void OnEntityAdded(Entity e){if(e.FindComponent<ComponentTacticalEnemy>() is {} enemy)Enemies.Add(enemy);}
     public override void OnEntityRemoved(Entity e){if(e.FindComponent<ComponentTacticalEnemy>() is {} enemy){
@@ -118,7 +118,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         string squad=Guid.NewGuid().ToString("N");var made=new List<Entity>();
         try{
             for(int i=0;i<roles.Length;i++){var e=DatabaseManager.CreateEntity(Project,Template,true);made.Add(e);e.FindComponent<ComponentTacticalEnemy>(true).Configure(TacticalEnemyState.Create(roles[i],squad,random),locations[i]);}
-            foreach(var e in made)Project.AddEntity(e);spawnCooldown=180;return made.Count;
+            foreach(var e in made)Project.AddEntity(e);spawnCooldown=60;return made.Count;
         }catch(Exception error){foreach(var e in made){if(e.IsAddedToProject)Project.RemoveEntity(e,true);else e.Dispose();}ManualFailure="小队实体创建失败，请查看游戏日志。";Log.Warning("[CS Tactical] 小队生成已撤销："+error);return 0;}
     }
     const string Marker="|SCT_ENEMY1:";

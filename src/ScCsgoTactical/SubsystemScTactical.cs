@@ -35,7 +35,6 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
         if(Terrain.ExtractContents(value)!=HandledBlocks[0])return false;
         int kind=Terrain.ExtractData(value);if(kind==3){Repair(player);return true;}if(kind<0||kind>2)return true;
         if(kind==0){Message(player,"救援同伴已移除，此旧信标不再召唤。已有同伴可取回装备后解散。");return true;}
-        if(companions.Any(c=>c.OwnerIndex==player.PlayerData.PlayerIndex&&!c.DeathHandled)){Message(player,"已有一名同伴，请先收回装备并解散。");return true;}
         var hit=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,5);
         if(!hit.HasValue||hit.Value.CellFace.Face!=4){Message(player,"请对准 5 格内有足够空间的地面上表面。");return true;}
         var cell=hit.Value.CellFace;var pos=new Vector3(cell.X+.5f,cell.Y+1.05f,cell.Z+.5f);

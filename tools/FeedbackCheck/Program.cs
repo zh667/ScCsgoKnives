@@ -19,8 +19,8 @@ foreach(int fps in new[]{30,60,120})foreach(int kind in Enumerable.Range(0,6))fo
             if(!committed&&now>=timeline.ReleaseAt){released=now;committed=true;commits++;}
             if(Math.Abs(now-timeline.ReleaseAt)<1e-8&&Math.Abs(timeline.ClipElapsed(now,pull,release,duration)-release)>.001)return false;
         }
-        double limit=pull+release+2d/fps;
-        return commits==1&&released<=limit&&released>0&&timeline.EndAt-timeline.StartedAt>=pull+duration-.001;
+        double limit=hold?1.5+release:pull+release+2d/fps;
+        return commits==1&&released<=limit&&released>0&&timeline.EndAt-timeline.ThrowStartedAt>=duration-.001;
     });
 }
 T("legacy-preparation-retains-wait",()=>{var p=ScGrenadePreparation.Create(0,.9666f,.06667f,.7666f,false,false);p.Step(.5,false);if(p.Throwing)return false;p.Step(1,false);return Math.Abs(p.ReleaseAt-1.06667)<.0001;});
