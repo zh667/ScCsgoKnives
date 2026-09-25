@@ -6,7 +6,7 @@ namespace Game;
 /// Independent of the mod's touch-button enable switch; never changes vanilla bindings.</summary>
 public static class ScGunBindings {
     public static readonly Dictionary<string, string> Keys = new(StringComparer.Ordinal);
-    public static string Default(string id) => id switch { ScGunFunctions.Reload or ScGunFunctions.C4Timer => "R", ScGunFunctions.Inspect => "G", ScGunFunctions.Plant => "E", _ => "" };
+    public static string Default(string id) => id switch { ScGunFunctions.Voice=>"Z", ScGunFunctions.Reload or ScGunFunctions.C4Timer => "R", ScGunFunctions.Inspect => "G", ScGunFunctions.Plant => "E", _ => "" };
     public static void Reset() { Keys.Clear(); foreach (string id in ScGunFunctions.All) Keys[id] = Default(id); }
     public static string Get(string id) => Keys.GetValueOrDefault(id, Default(id));
     public static bool Valid(string text) => text == "" || Enum.TryParse<Key>(text, out var key) && Enum.IsDefined(key) && key is not (Key.Null or Key.Escape or Key.Back);
@@ -24,6 +24,7 @@ public static class ScGunBindings {
         && (once ? p.GameWidget.Input.IsKeyDownOnce(key) : p.GameWidget.Input.IsKeyDown(key));
     // Secondary actions are mutually exclusive across guns. Other shared keys would trigger two actions.
     public static bool Conflict(string a, string b) {
+        if(a==ScGunFunctions.Voice||b==ScGunFunctions.Voice)return true;
         if(a==ScGunFunctions.C4Timer||b==ScGunFunctions.C4Timer)return a==b||a is ScGunFunctions.Inspect or ScGunFunctions.Plant||b is ScGunFunctions.Inspect or ScGunFunctions.Plant;
         if (a == ScGunFunctions.Plant || b == ScGunFunctions.Plant) return a == b || a == ScGunFunctions.Inspect || b == ScGunFunctions.Inspect;
         bool Secondary(string s) => s is ScGunFunctions.Scope or ScGunFunctions.Silencer or ScGunFunctions.Burst or ScGunFunctions.RevolverAlt;

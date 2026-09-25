@@ -74,7 +74,7 @@ static class TravelRegression {
             Check("shell-shown-during-reload",(bool)visibility.Invoke(null,["sawedoff","shell","reload_sawedoff",.6f,false]));
             Check("cz-front-hidden-only-after-transfer",!(bool)visibility.Invoke(null,["cz75a","magazine2","idle_cz75a",0f,true])&&(bool)visibility.Invoke(null,["cz75a","magazine","idle_cz75a",0f,true]));
             foreach(string blockName in new[]{"ScGunBlock","ScKnifeBlock"})Check("edit-unbound/"+blockName,!((Block)Activator.CreateInstance(mod.GetType("Game."+blockName))).IsEditable_(0));
-            var functions=mod.GetType("Game.ScGunFunctions");var all=(string[])functions.GetField("All").GetValue(null);Check("all-controls-includes-fire",all.Length==12&&all.Distinct().Count()==12&&all.Contains("fire")&&all.Contains("c4_timer"));
+            var functions=mod.GetType("Game.ScGunFunctions");var all=(string[])functions.GetField("All").GetValue(null);Check("all-controls-includes-fire",all.Length==13&&all.Distinct().Count()==13&&all.Contains("fire")&&all.Contains("c4_timer")&&all.Contains("agent_voice"));
             var fire=functions.GetMethod("Default").Invoke(null,["fire",false]);Check("old-layout-new-fire-default-off",!(bool)fire.GetType().GetProperty("Enabled").GetValue(fire));
         }catch(Exception e){Check("setup",false,e.ToString());}
         finally{current.SetValue(null,previous);}

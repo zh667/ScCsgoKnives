@@ -31,10 +31,10 @@ public sealed class ScButtonLayout {
 public static class ScGunFunctions {
     public const string Fire = "fire", Reload = "reload", Scope = "scope", Silencer = "silencer", Burst = "burst",
                         RevolverAlt = "revolver_alt", Inspect = "inspect", KnifeHeavy = "knife_heavy",
-                        ThrowStrong = "throw_strong", ThrowWeak = "throw_weak", Plant = "plant_c4", C4Timer = "c4_timer";
-    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire, Plant, C4Timer];
+                        ThrowStrong = "throw_strong", ThrowWeak = "throw_weak", Plant = "plant_c4", C4Timer = "c4_timer", Voice="agent_voice";
+    public static readonly string[] All = [Reload, Scope, Silencer, Burst, RevolverAlt, Inspect, KnifeHeavy, ThrowStrong, ThrowWeak, Fire, Plant, C4Timer, Voice];
     public static string Label(string id) => id switch {
-        Fire => "开火", Reload => "换弹", Scope => "开镜", Silencer => "消音器", Burst => "连发", RevolverAlt => "速射",
+        Voice=>"语音", Fire => "开火", Reload => "换弹", Scope => "开镜", Silencer => "消音器", Burst => "连发", RevolverAlt => "速射",
         Inspect => "检视", KnifeHeavy => "重刀", ThrowStrong => "强投", ThrowWeak => "轻投", Plant => "放置 C4", C4Timer => "C4 设时", _ => id,
     };
     /// <summary>Buttons that never appear at the same time share a default row; the rows are what the original
@@ -50,7 +50,7 @@ public static class ScGunFunctions {
         const float width = 850f, height = 850f * 9f / 16f;
         float centreX = leftHanded ? 160f + 52f : width - 160f - 52f;
         float centreY = height - (150f + DefaultRow(id) * 68f) - 30f;
-        return id == Fire ? new ScButtonLayout { X = leftHanded ? .13f : .87f, Y = .7f, Enabled = false }
+        return id==Voice?new ScButtonLayout{X=leftHanded?.15f:.85f,Y=.18f,Scale=.8f}:id == Fire ? new ScButtonLayout { X = leftHanded ? .13f : .87f, Y = .7f, Enabled = false }
             : new ScButtonLayout { X = centreX / width, Y = centreY / height };
     }
 }
@@ -212,7 +212,7 @@ public static class ScUiSettings {
                 file.ButtonsLeftHanded[id] = Layout(s_left, id, true);
             }
             Storage.CreateDirectory(Storage.GetDirectoryName(Path));
-            WriteAtomic(Storage.GetSystemPath(Path), JsonSerializer.SerializeToUtf8Bytes(file, s_json));
+            WriteAtomic(Storage.GetSystemPath(Path), ScCompatibility.PreserveUiSettings(JsonSerializer.SerializeToUtf8Bytes(file, s_json),Storage.GetSystemPath(Path),ScGunFunctions.All));
             KnifeLog.Trace("[CS_UI_0413] settings saved and verified: " + Path);
             return true;
         }

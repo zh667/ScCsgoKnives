@@ -712,7 +712,7 @@ public static class ScGunGrowthSelfTest {
             // Blanks are 4 iron + 1 coal; a mechanism is 1 blank + 2 copper + 1 germanium; a grip is 2 leather + 1 plank.
             int blanks = zeus.B + 2 * zeus.M;
             int iron = blanks * 12, coal = blanks * 4, copper = zeus.M * 8 + zeus.H * 2, germanium = zeus.M * 4 + zeus.Germanium;
-            return zeus.Level == 12 && zeus.B == 9 && zeus.M == 9 && zeus.H == 2 && zeus.O == 0 && zeus.Diamond == 6 && zeus.Germanium == 12
+            return zeus.Level == 20 && zeus.B == 9 && zeus.M == 9 && zeus.H == 2 && zeus.O == 0 && zeus.Diamond == 6 && zeus.Germanium == 12
                 && iron == 324 && coal == 108 && copper == 76 && germanium == 48 && zeus.H * 8 == 16;
         });
         Test("independent-class-repair-basis", () => {

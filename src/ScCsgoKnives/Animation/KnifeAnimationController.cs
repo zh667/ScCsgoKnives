@@ -265,6 +265,12 @@ public static class KnifeAnimationController {
         return KnifeClock.Now - state.StartedAt < ActionDuration(state, state.Variant);
     }
 
+    public static bool IsGrenadeDrawing(ComponentFirstPersonModel model)=>model is not null&&s_states.TryGetValue(model,out var s)
+        &&CsmcKnifeRig.IsGrenade(s.Variant)&&(s.Action==ActionKind.Draw||KnifeClock.Now<s.DrawReadyAt);
+    public static void ScrubGrenade(ComponentPlayer player,string alias,float elapsed) {
+        var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
+        if(model is not null&&s_states.TryGetValue(model,out var s)&&s.Action==ActionKind.Grenade&&s.ClipAlias==alias)s.StartedAt=KnifeClock.Now-elapsed;
+    }
     /// <summary>How long a reload of this many shells runs: the looped sum where the rig loops, else the clip.</summary>
     public static float ReloadSeconds(int variant, bool magazineEmpty, int shells) {
         string clip = ReloadClip(variant, magazineEmpty);

@@ -1,0 +1,5 @@
+<Mod><ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+ <MemberSubsystemTemplate Name="ScAgentVoice" Guid="13917e94-9243-4430-9e6d-b85542136ad4" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="80c9d634-f799-461b-a631-c1f7fa9337a2" Type="string" Value="Game.SubsystemScAgentVoice"/>
+ </MemberSubsystemTemplate>
+</ProjectTemplate></Mod>

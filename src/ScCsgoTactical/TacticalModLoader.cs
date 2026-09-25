@@ -66,5 +66,10 @@ public sealed class TacticalModLoader : ModLoader {
     public override void OnPlayerInputInteract(ComponentPlayer p,ref bool operated,ref double interval,ref int use,ref int interact,ref int place){if(ScWeaponActionGate.Blocks(p)||SubsystemScTactical.Open(p)){operated=true;use=interact=place=0;}}
     public override void OnPlayerInputHit(ComponentPlayer p,ref bool operated,ref double interval,ref float range,bool skipped,out bool skipVanilla){skipVanilla=ScWeaponActionGate.Blocks(p)||ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla){range=0;operated=true;}}
     public override void UpdatePlayerInputDig(ComponentPlayer p,bool digging,ref bool operated,ref double interval,bool skipped,out bool skipVanilla){skipVanilla=ScWeaponActionGate.Blocks(p)||ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla)operated=true;}
-    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experience,ref bool kills){health.Entity.FindComponent<ComponentTacticalCompanion>()?.Died();health.Entity.FindComponent<ComponentTacticalEnemy>()?.Died();}
+    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experience,ref bool kills){
+        if(injury?.Attackment?.Attacker is {} attacker&&attacker!=health.Entity){
+            if(attacker.FindComponent<ComponentTacticalEnemy>()!=null)ScAgentVoice.Emit(attacker,"t","kill");
+            else if(attacker.FindComponent<ComponentTacticalCompanion>()!=null)ScAgentVoice.Emit(attacker,attacker.ValuesDictionary?.DatabaseObject?.Name switch{"ScTacticalCT"=>"ct","ScTacticalT"=>"t",_=>null},"kill");
+        }
+        health.Entity.FindComponent<ComponentTacticalCompanion>()?.Died();health.Entity.FindComponent<ComponentTacticalEnemy>()?.Died();}
 }

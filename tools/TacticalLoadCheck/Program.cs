@@ -7,6 +7,33 @@ using Engine.Serialization;
 using Game;
 using TemplatesDatabase;
 
+if(args.Length==5&&args[0]=="--voice-native"){
+    Dispatcher.Initialize();int voiceFailures=0;var voiceChecks=new List<object>();
+    void RequireVoice(string name,bool ok){voiceChecks.Add(new{name,ok});if(!ok)throw new Exception(name);}
+    try{
+        ModEntity Load(string path){var m=new HeadlessMod{ModArchive=Game.ZipArchive.Open(File.OpenRead(path))};m.InitResources();ModsManager.ModList.Add(m);var aa=m.GetAssemblies();foreach(var a in aa)ModsManager.Dlls[a.FullName]=a;foreach(var a in aa)m.HandleAssembly(a);return m;}
+        AppDomain.CurrentDomain.AssemblyResolve+=(_,e)=>ModsManager.Dlls.GetValueOrDefault(e.Name);
+        var core=Load(args[1]);var voice=Load(args[2]);
+        var coreAssembly=ModsManager.Dlls.Values.Single(a=>a.GetName().Name=="ScCsgoKnives");
+        var voiceAssembly=ModsManager.Dlls.Values.Single(a=>a.GetName().Name=="ScCsgoVoice");
+        bool expected=coreAssembly.GetType("Game.ScAgentVoice")!=null;
+        var actions=new List<Action>();foreach(var l in voice.Loaders)l.OnLoadingFinished(actions);foreach(var action in actions)action();
+        RequireVoice("optional-interface-detection",(bool)voiceAssembly.GetType("Game.AgentVoiceModLoader").GetField("Supported").GetValue(null)==expected);
+        RequireVoice("optional-pack-is-nonpersistent",voice.modInfo.NonPersistentMod);
+        using var voiceContent=System.IO.Compression.ZipFile.OpenRead(args[3]);using var stream=voiceContent.Entries.Single(e=>e.FullName.EndsWith("Database.xml")).Open();var db=XElement.Load(stream);
+        core.LoadXdb(ref db);voice.LoadXdb(ref db);DatabaseManager.LoadDataBaseFromXml(db);
+        RequireVoice("voice-database-loads-with-old-and-new-core",db.Descendants("MemberSubsystemTemplate").Any(e=>(string)e.Attribute("Name")=="ScAgentVoice"));
+        var sub=(GameEntitySystem.Subsystem)Activator.CreateInstance(voiceAssembly.GetType("Game.SubsystemScAgentVoice"));
+        var project=(GameEntitySystem.Project)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(GameEntitySystem.Project));project.m_subsystems=[new SubsystemTime(),new SubsystemPlayers(),new SubsystemAudio()];sub.m_project=project;
+        sub.Load(new ValuesDictionary());var saved=new ValuesDictionary();sub.Save(saved);sub.Dispose();
+        RequireVoice("load-dispose-no-world-payload",saved.Count==0);
+        using var zip=System.IO.Compression.ZipFile.OpenRead(args[2]);int decoded=0;
+        foreach(var entry in zip.Entries.Where(e=>e.FullName.EndsWith(".ogg"))){using var input=entry.Open();using var audio=new MemoryStream();input.CopyTo(audio);audio.Position=0;var data=Engine.Media.SoundData.Load(audio);if(data.ChannelsCount!=1||data.SamplingFrequency!=32000)throw new Exception("bad audio format");decoded++;}
+        RequireVoice("native-decodes-all-204-clips",decoded==204);
+    }catch(Exception e){voiceFailures=1;voiceChecks.Add(new{error=e.ToString()});Console.Error.WriteLine(e);}
+    File.WriteAllText(args[4],JsonSerializer.Serialize(new{failed=voiceFailures,checks=voiceChecks},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine($"voice-native {voiceChecks.Count}, failed={voiceFailures}");return voiceFailures;
+}
+
 if(args.Length==4&&args[0]=="--compat-native") {
     Dispatcher.Initialize();var cases=new List<object>();int failure=0;
     void CheckCompat(string name,bool ok){cases.Add(new{name,ok});if(!ok)throw new Exception(name);}

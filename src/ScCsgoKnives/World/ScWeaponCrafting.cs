@@ -25,7 +25,7 @@ public static class ScWeaponCrafting {
     public static string Help(int value) {
         var e = Find(value);
         if (e is null) return "";
-        string text = $"\n武器装配台 · 等级 {e.Level}\n金属坯件 ×{e.B}";
+        string text = $"\n武器装配台 · 人物等级 {e.Level}\n金属坯件 ×{e.B}";
         if (e.M > 0) text += $"，精密机构 ×{e.M}";
         text += $"，握持组件 ×{e.H}";
         if (e.O > 0) text += $"，光学组件 ×{e.O}";
@@ -58,19 +58,28 @@ public static class ScWeaponCrafting {
                 "taser" => (6, 6, 6, 0, 2, 4),
                 _ => throw new InvalidOperationException("No survival recipe for " + n)
             };
-            level = ScGunDurability.ClassOf(n) switch {
-                ScGunDurability.Class.Pistol => 4,
-                ScGunDurability.Class.Smg or ScGunDurability.Class.Shotgun => 6,
-                ScGunDurability.Class.Rifle => 8,
-                ScGunDurability.Class.Taser => 12,
-                _ => 10
-            };
+            level = RequiredPlayerLevel(n);
             bool starter=n is "glock18" or "hkp2000" or "p250" or "usp_silencer";
-            entries.Add(new(n, false, v, level, starter?3:(b * 3 + 1) / 2, starter?1:(m * 3 + 1) / 2, starter?1:2, o > 0 ? 2 : 0,
+            bool pump=n is "nova" or "sawedoff", earlySmg=n is "mac10" or "ump45";
+            entries.Add(new(n, false, v, level, starter?3:(b * 3 + 1) / 2, starter||pump?1:earlySmg?2:(m * 3 + 1) / 2, starter||pump||earlySmg?1:2, o > 0 ? 2 : 0,
                 n == "taser" ? 6 : diamond, n == "taser" ? 12 : germanium));
         }
         return entries.ToArray();
     }
+    public static int RequiredPlayerLevel(string gun) => gun switch {
+        "glock18" or "hkp2000" or "p250" or "usp_silencer" => 2,
+        "nova" or "sawedoff" or "elite" => 3,
+        "mac10" or "ump45" => 4,
+        "fiveseven" or "tec9" or "cz75a" or "deagle" or "revolver" => 5,
+        "mp9" or "mp7" or "mp5sd" or "bizon" or "mag7" => 6,
+        "p90" or "xm1014" => 8,
+        "galilar" or "famas" => 12,
+        "ak47" or "m4a4" or "m4a1s" => 14,
+        "aug" or "sg556" or "ssg08" => 16,
+        "awp" or "m249" or "negev" => 18,
+        "scar20" or "g3sg1" or "taser" => 20,
+        _ => throw new ArgumentException("Unknown weapon",nameof(gun))
+    };
 
     public static bool TryCraft(IInventory inventory, int result, IReadOnlyDictionary<int, int> materials) =>
         ScCraftBatch.TryCraft(inventory,result,materials,1);

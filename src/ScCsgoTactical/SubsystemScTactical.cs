@@ -51,6 +51,7 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
             Project.AddEntity(entity);
             if(inv is not ComponentCreativeInventory&&inv.RemoveSlotItems(slot,1)!=1){Project.RemoveEntity(entity,true);Message(player,"信标状态已变化，请重试。");return true;}
         }catch(Exception e){if(entity?.IsAddedToProject==true)Project.RemoveEntity(entity,true);Log.Error("[CS Tactical] summon failed: "+e);Message(player,"召唤失败，信标未消耗。请检查日志。");return true;}
+        ScAgentVoice.Emit(entity,kind==1?"ct":"t","spawn");
         ScInventoryTransaction.Changed(inv);Message(player,"同伴已加入。对准它按 E／交互键管理装备和指令。");
         return true;
     }

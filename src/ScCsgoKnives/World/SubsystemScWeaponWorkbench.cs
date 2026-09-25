@@ -17,7 +17,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             && Terrain.ExtractContents(terrain.Terrain.GetCellValue(position.X, position.Y, position.Z)) == HandledBlocks[0];
         bool Creative() => Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
         string Name(ScWeaponCrafting.Entry e) => BlocksManager.Blocks[Terrain.ExtractContents(e.Value)].GetDisplayName(terrain, e.Value);
-        string Level(ScWeaponCrafting.Entry e) => !Creative() && CraftingRecipesManager.EnableLevelRestrictions ? $"  制作等级 {e.Level}" : "";
+        string Level(ScWeaponCrafting.Entry e) => !Creative() && CraftingRecipesManager.EnableLevelRestrictions ? $"  人物等级 {e.Level}" : "";
         string ValueName(int value) => BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(terrain, value);
         string MaterialLines(IReadOnlyDictionary<int, int> materials) => string.Join("\n", materials.Select(m => $"{ValueName(m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
         void Notice(string title, string detail, Action back) {
@@ -50,7 +50,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             dialog.CraftPermission=item=>{
                 int level=item switch {ScWeaponCrafting.Entry e=>e.Level,ScWorkbenchRecipe r=>r.Level,_=>1};
                 return !ReferenceEquals(selectedInventory,miner.Inventory)||selectedCreative!=Creative()?"背包或模式已切换，请重新打开装配台。":!Available()?"装配台暂不可用，请靠近后操作。":!Creative()
-                    && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<level?$"需要制作等级 {level}。":"";
+                    && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<level?$"需要人物等级 {level}。":"";
             };
             if(materialQuote is not null)dialog.SetMaterialQuote(materialQuote);
             dialog.RestoreNavigation(navigation.GetValueOrDefault(title));

@@ -1,6 +1,6 @@
 {
   "Name": "CS武器 · 战术同伴拓展",
-  "Version": "1.4.0",
+  "Version": "1.5.0",
   "ApiVersion": "1.9.3.1",
   "ScVersion": "2.4.0.0",
   "Author": "zh667",
@@ -10,5 +10,5 @@
   "LoadOrder": 1020,
   "NonPersistentMod": false,
   "GameplayImpactLevel": "Turbo",
-  "Dependencies": {"zh667.ScCsgoKnives": "1.5.0"}
+  "Dependencies": {"zh667.ScCsgoKnives": "1.7.0"}
 }

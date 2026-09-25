@@ -16,6 +16,8 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     SubsystemTime time;
     SubsystemPlayers players;
     ComponentBody threat;
+    ComponentBody lastVoiceTarget;
+    TacticalOrder? lastVoiceOrder;
     double threatUntil,nextPath,nextShot,reloadAt,nextScan;
     ScReloadTransaction reload;
     readonly ScWeaponActionTimeline actions=new();
@@ -78,12 +80,17 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
         PanelOpen=owner.ComponentGui.ModalPanelWidget is TacticalPanel panel&&panel.Companion==this;
         if(PanelOpen){StopMoving();reload?.Cancel();reload=null;Status="整理装备";return;}
         double now=time.GameTime;var body=Creature.ComponentBody;
+        string voiceRole=Entity.ValuesDictionary?.DatabaseObject?.Name switch{"ScTacticalCT"=>"ct","ScTacticalT"=>"t",_=>null};
+        if(lastVoiceOrder.HasValue&&lastVoiceOrder.Value!=Order)ScAgentVoice.Emit(Entity,voiceRole,Order==TacticalOrder.Follow?"follow":"wait");
+        lastVoiceOrder=Order;
         if(threat is not null&&(!threat.IsAddedToProject||threat.Entity.FindComponent<ComponentHealth>() is not {Health:>0}||now>threatUntil||Vector3.DistanceSquared(body.Position,threat.Position)>32*32))threat=null;
         bool shield=ScShieldProtection.Holding(body,out _);
         if(!CeaseFire&&threat is null)Acquire(owner,now);
         bool armed=ScInventoryTransaction.IsWeaponSlot(Inventory,0);float reach=1.7f;
         if(armed&&EffectiveGunStats.TrySnapshotValue(Inventory.GetSlotValue(0),out var gun))reach=Math.Min(24,EffectiveGunStats.Resolve(GunSpec.All[gun.Variant],Inventory.GetSlotValue(0),false).Range);
         bool fighting=!CeaseFire&&!shield&&threat!=null&&Vector3.DistanceSquared(body.Position,owner.ComponentBody.Position)<=20*20&&Vector3.DistanceSquared(threat.Position,owner.ComponentBody.Position)<=32*32;
+        if(fighting&&threat!=lastVoiceTarget&&Visible(threat)){lastVoiceTarget=threat;ScAgentVoice.Emit(Entity,voiceRole,"spotted");}
+        if(threat==null)lastVoiceTarget=null;
         if(fighting&&VisualAction.Kind==ScWeaponActionKind.Inspect)actions.Clear();
         if(now>=nextPath){nextPath=now+.5;
             Vector3 dest=Order switch{TacticalOrder.Guard=>GuardPosition,TacticalOrder.Cover=>owner.ComponentBody.Position+owner.ComponentBody.Matrix.Forward*2.5f,_=>owner.ComponentBody.Position};

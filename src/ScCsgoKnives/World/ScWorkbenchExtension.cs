@@ -17,6 +17,7 @@ public static class ScWorkbenchExtension {
     static readonly Dictionary<string,ScWorkbenchAction> MenuActions=new(StringComparer.Ordinal);
     public static IEnumerable<ScWorkbenchAction> Actions=>MenuActions.Values;
     public static void RegisterAction(ScWorkbenchAction action)=>MenuActions[action.Key]=action;
+    public static void UnregisterAction(string key)=>MenuActions.Remove(key);
     public static IEnumerable<ScWorkbenchRecipe> All=>Recipes.Values;
     public static void Register(ScWorkbenchRecipe recipe)=>Recipes[recipe.Key]=recipe;
     public static ScWorkbenchRecipe Find(int value) => Recipes.Values.FirstOrDefault(r => r.Matches?.Invoke(value) ?? Terrain.ReplaceLight(r.Value,0) == Terrain.ReplaceLight(value,0));

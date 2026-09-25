@@ -12,6 +12,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     readonly Engine.Random random=new();
     float senseLeft,pathLeft,lost,aim,plant,burstPause,retreat,search;int burst;
     bool seen;
+    ComponentBody lastVoiceTarget;
     readonly ScWeaponActionTimeline actions=new();
     string visualAsset;
     public ScWeaponAction VisualAction {
@@ -33,7 +34,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     public string Capture(){State.Health=Creature.ComponentHealth.Health;return State.Encode();}
     public void Restore(string json){State=TacticalEnemyState.Decode(json);Creature.ComponentHealth.Health=State.Health;}
     public override void Save(ValuesDictionary values,EntityToIdMap map){if(State is null)throw new InvalidOperationException("敌方装备尚未初始化。");values.SetValue("EnemyState",Capture());values.SetValue("PatrolHome",Home);}
-    public void Configure(TacticalEnemyState state,Vector3 position){State=state;Home=position;Creature.ComponentBody.Position=position;Creature.ConstantSpawn=false;}
+    public void Configure(TacticalEnemyState state,Vector3 position){State=state;Home=position;Creature.ComponentBody.Position=position;Creature.ConstantSpawn=false;ScAgentVoice.Emit(Entity,"t","spawn");}
     bool Friendly(ComponentBody body)=>body is null||body.Entity==Entity||body.Entity.FindComponent<ComponentTacticalEnemy>() is not null;
     public void Alert(ComponentBody attacker){if(Friendly(attacker)||attacker.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;TargetBody=attacker;lastSeen=attacker.Position;lost=6;aim=plant=0;Creature.ComponentBody.TargetCrouchFactor=0;}
     public void HearNoise(ComponentBody source,Vector3 position,float loudness){
@@ -72,6 +73,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
             if(seen){lastSeen=TargetBody.Position;lost=6;}else{lost-=.5f;if(lost<=0){TargetBody=null;aim=0;}}
         }
         bool clear=TargetBody!=null&&seen;float distance=TargetBody is null?float.MaxValue:Vector3.Distance(body.Position,TargetBody.Position);
+        if(clear&&TargetBody!=lastVoiceTarget){lastVoiceTarget=TargetBody;ScAgentVoice.Emit(Entity,"t","spotted");}
+        if(TargetBody==null)lastVoiceTarget=null;
         if(!clear||State.Role==TacticalRole.Sniper&&body.Velocity.XZ.LengthSquared()>.09f)aim=0;else aim+=dt;
         if(pathLeft<=0){pathLeft=.65f;
             if(TargetBody is null){if(search>0)path.SetDestination(lastSeen,.45f,3,160,true,false,true,null);else if(Vector3.DistanceSquared(body.Position,Home)>16)path.SetDestination(Home,.45f,2,160,true,false,true,null);else path.Stop();}
@@ -116,7 +119,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(director.Enemies.Any(e=>e!=this&&Vector3.DistanceSquared(e.Creature.ComponentBody.Position,target)<64))return;
         const float flight=1.1f;Vector3 velocity=(target-start)/flight+Vector3.UnitY*(10*flight/2);Vector3 prior=start;
         for(int i=1;i<=8;i++){float t=flight*i/8;Vector3 next=start+velocity*t-Vector3.UnitY*(5*t*t);if(terrain.Raycast(prior,next,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v)).HasValue)return;prior=next;}
-        if(Project.FindSubsystem<SubsystemScGrenades>(true).TryThrowHostile(State.Grenade,start,velocity)){State.Grenades--;State.GrenadeLeft=18;director.Threw(State.Squad);}
+        if(Project.FindSubsystem<SubsystemScGrenades>(true).TryThrowHostile(State.Grenade,start,velocity)){State.Grenades--;State.GrenadeLeft=18;director.Threw(State.Squad);ScAgentVoice.Emit(Entity,"t",ScGrenadeBlock.Assets[State.Grenade]);}
     }
     public void Died(){
         if(State is null||State.LootDone)return;State.LootDone=true;path.Stop();

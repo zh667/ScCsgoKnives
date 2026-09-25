@@ -3,6 +3,8 @@ using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
+using System.Text.Json.Nodes;
+using System.Text.Json;
 namespace Game;
 
 /// <summary>Stable compatibility family 1. The capsule contains opaque XML, not guessed defaults.
@@ -14,6 +16,18 @@ public static class ScCompatibility {
     public static string ActiveBuild = "1.6.0";
     public static string VerifiedBackup;
     public static XElement Manifest = new("Compatibility", new XAttribute("Protocol", Protocol));
+    /// <summary>Historical UI writers retain newer action bindings/layouts and unknown root settings.</summary>
+    public static byte[] PreserveUiSettings(byte[] data,string path,IEnumerable<string> knownActions) {
+        if(!System.IO.File.Exists(path))return data;
+        var old=JsonNode.Parse(System.IO.File.ReadAllBytes(path)) as JsonObject;
+        var next=JsonNode.Parse(data) as JsonObject;if(old is null||next is null)return data;
+        foreach(var pair in old)if(!next.ContainsKey(pair.Key))next[pair.Key]=pair.Value?.DeepClone();
+        var known=knownActions.ToHashSet(StringComparer.Ordinal);
+        foreach(string name in new[]{"Buttons","ButtonsLeftHanded","KeyBindings","GamepadBindings"})
+            if(old[name] is JsonObject previous&&next[name] is JsonObject current)
+                foreach(var pair in previous)if(!known.Contains(pair.Key)&&!current.ContainsKey(pair.Key))current[pair.Key]=pair.Value?.DeepClone();
+        return JsonSerializer.SerializeToUtf8Bytes(next,new JsonSerializerOptions{WriteIndented=true});
+    }
     internal static XElement Group(XElement p,string name)=>p?.Elements("Values").SingleOrDefault(e=>(string)e.Attribute("Name")==name);
     internal static string Text(XElement p,string name)=>(string)p?.Elements("Value").SingleOrDefault(e=>(string)e.Attribute("Name")==name)?.Attribute("Value");
     internal static XElement Field(string name,object value)=>new("Value",new XAttribute("Name",name),new XAttribute("Type",value is int?"int":"string"),new XAttribute("Value",value));

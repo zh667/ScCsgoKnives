@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>preview</LangVersion><AssemblyName>ScCsgoVoice</AssemblyName><Version>1.0.0</Version></PropertyGroup>
+ <ItemGroup><ProjectReference Include="../ScCsgoKnives/ScCsgoKnives.csproj" AdditionalProperties="SkipScmodPackaging=true"/><PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1"/></ItemGroup>
+</Project>

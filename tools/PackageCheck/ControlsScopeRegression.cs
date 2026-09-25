@@ -38,7 +38,7 @@ static class ControlsScopeRegression {
                     &&SettingsManager.ViewAngle==1.2f&&SettingsManager.LookSensitivity==.63f,"shared boundary helper clears scope/re-scope; global settings untouched (not actual device transition)");
             }
             bindings.GetMethod("Reset").Invoke(null,null);
-            Check("defaults",keys.Count==12&&keys["reload"]=="R"&&keys["c4_timer"]=="R"&&keys["inspect"]=="G"&&keys["fire"]=="");
+            Check("defaults",keys.Count==13&&keys["reload"]=="R"&&keys["c4_timer"]=="R"&&keys["inspect"]=="G"&&keys["fire"]==""&&keys["agent_voice"]=="Z");
             bool Valid(string k)=>(bool)bindings.GetMethod("Valid").Invoke(null,[k]);
             Check("key-validation",Valid("R")&&Valid("F8")&&Valid("")&&!Valid("Escape")&&!Valid("Null")&&!Valid("no-such-key"));
             bool Conflict(string a,string b)=>(bool)bindings.GetMethod("Conflict").Invoke(null,[a,b]);
@@ -52,7 +52,7 @@ static class ControlsScopeRegression {
             var expectedKeys=Enum.GetValues<Key>().Select(k=>k.ToString()).Where(Valid).ToArray();
             Check("all-supported-keys-selectable",selectable.Length==expectedKeys.Length&&selectable.Distinct().Count()==selectable.Length
                 &&selectable.ToHashSet().SetEquals(expectedKeys)&&selectable[0]=="A"&&selectable[25]=="Z");
-            Check("stable-action-identifiers",keys.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4","c4_timer"}));
+            Check("stable-action-identifiers",keys.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4","c4_timer","agent_voice"}));
             var oldMapping=SettingsManager.KeyboardMappingSettings;
             try {
                 SettingsManager.InitializeKeyboardMappingSettings();

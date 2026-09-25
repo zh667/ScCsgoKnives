@@ -31,12 +31,13 @@ Check("entity-local role",TacticalArms.Role(firstA)=="ct"&&TacticalArms.Role(fir
 roleA.FirstPersonRole=null;Check("default role isolated",TacticalArms.Role(firstA)==null&&TacticalArms.Role(firstB)=="t");
 Check("default without glove uses original arms",TacticalArms.ResolveSet(null,"")==null);
 using var catalog=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"src/ScCsgoKnives/AnimationData/cs2_catalog.json")));
-string[] meshNames=["ct_default","t_default","ct_sleeves","t_sleeves","glove_sporty","glove_specialist","glove_slick"];
+string[] meshNames=["ct_default","t_default","ct_sleeves","t_sleeves","glove_sporty","glove_specialist","glove_slick","ct_covered_ct_default","ct_covered_glove_sporty","ct_covered_glove_specialist","ct_covered_glove_slick"];
 int samples=0;float maxRadius=0;
 foreach(var asset in catalog.RootElement.EnumerateObject()){
     foreach(var clip in asset.Value.GetProperty("Clips").EnumerateObject()){
         string alias=clip.Value.TryGetProperty("Alias",out var a)?a.GetString():clip.Name;
-        if(!new[]{"idle","deploy","draw","reload","inspect","lookat","throw","plant","shoot1"}.Any(s=>alias.StartsWith(s)))continue;
+        if(args.Contains("--feedback")&&!new[]{"stab","stabHit","slash1","slash2"}.Contains(alias))continue;
+        if(!new[]{"idle","deploy","draw","reload","inspect","lookat","throw","plant","shoot1","stab","slash"}.Any(s=>alias.StartsWith(s)))continue;
         float duration=clip.Value.GetProperty("Duration").GetSingle();
         foreach(float phase in new[]{0f,.25f,.5f,.75f,1f}){
             var pose=Cs2Rig.Sample(asset.Name,alias,Math.Max(0,duration*phase-.0001f));Check(asset.Name+"/"+alias+" pose",pose!=null);
@@ -67,14 +68,22 @@ Window.Frame+=()=>{if(done)return;done=true;try{
     var projection=Matrix.CreatePerspectiveFieldOfView(MathUtils.DegToRad(Cs2Placement.FovYDegrees(68)),960f/540,.02f,64);
     foreach(string role in new[]{"ct","t",""})foreach(string key in new[]{""}.Concat(TacticalArms.Gloves.Select(g=>g.Key))){
         var layers=TacticalArms.ResolveSet(role,key);if(layers==null)continue;
-        foreach(var shot in new[]{("ak47","reload",.45f),("butterfly","inspect",.35f),("default_t","idle",0f),("c4","idle",0f)}){
+        foreach(var shot in new[]{("ak47","reload",.45f),("butterfly","inspect",.35f),("default_t","idle",0f),("c4","idle",0f),("bayonet","stab",.0f),("bayonet","stab",.2f),("bayonet","stab",.4f),("bayonet","stab",.6f),("bayonet","stab",.8f)}){
             var pose=Cs2Rig.Sample(shot.Item1,shot.Item2,Cs2Rig.Duration(shot.Item1,shot.Item2)*shot.Item3);
             Display.RenderTarget=target;Display.Viewport=new Viewport(0,0,960,540);Display.ScissorRectangle=new Rectangle(0,0,960,540);Display.Clear(new Color(35,43,54),1,0);
             foreach(var layer in layers){
                 layer.Mesh.SetPose(pose,Cs2Placement.Placement());layer.Mesh.Skin();
                 for(int i=0;i<layer.Materials.Length;i++)Check("native PBR "+layer.Materials[i],KnifePbrRenderer.TryDrawSkinned(layer.Mesh.Skinned,layer.Mesh.Primitives[i].Indices,layer.Textures[i],layer.Materials[i],Matrix.Identity,projection,Matrix.Identity,in light,0));
             }
-            using var file=File.Create(Path.Combine(output,$"{(role==""?"default":role)}-{(key==""?"original":key)}-{shot.Item1}-{shot.Item2}.png"));RenderTarget2D.Save(target,file,ImageFileFormat.Png,false);
+            using var file=File.Create(Path.Combine(output,$"{(role==""?"default":role)}-{(key==""?"original":key)}-{shot.Item1}-{shot.Item2}-{shot.Item3:0.0}.png"));RenderTarget2D.Save(target,file,ImageFileFormat.Png,false);
+            if(role=="ct")Check("CT no inner skin "+key,!layers[0].Mesh.Primitives.Any(p=>p.Material=="bare_arm_133"));
+            if(role=="t"||role=="")Check("exposed arms remain "+role+key,layers[0].Mesh.Primitives.Any(p=>p.Material=="bare_arm_133"));
+            if(role=="ct"&&key==""&&shot.Item1=="bayonet"&&shot.Item2=="stab"){
+                var old=TacticalArms.Mesh("ct_default");old.SetPose(pose,Cs2Placement.Placement());old.Skin();
+                var bare=old.Primitives.Single(p=>p.Material=="bare_arm_133");
+                KnifePbrRenderer.TryDrawSkinned(old.Skinned,bare.Indices,ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_arm"),"cs2_arm",Matrix.Identity,projection,Matrix.Identity,in light,0);
+                using var before=File.Create(Path.Combine(output,$"ct-before-bayonet-stab-{shot.Item3:0.0}.png"));RenderTarget2D.Save(target,before,ImageFileFormat.Png,false);
+            }
         }
     }
     var setA=TacticalArms.ResolveSet("ct","sporty_green");var setB=TacticalArms.ResolveSet("t","slick_red");

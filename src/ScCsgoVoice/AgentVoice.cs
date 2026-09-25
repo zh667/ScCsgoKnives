@@ -1,0 +1,164 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Engine;
+using GameEntitySystem;
+using TemplatesDatabase;
+namespace Game;
+
+public sealed class AgentVoiceOptions {
+    public int Version {get;set;}=1;
+    public string Language {get;set;}="zh";
+    public float Volume {get;set;}=.7f;
+    public bool PlayerEnabled {get;set;}=true;
+    public bool NpcEnabled {get;set;}=true;
+    public bool Captions {get;set;}=true;
+    public List<string> Favorites {get;set;}=[];
+    [JsonExtensionData] public Dictionary<string,JsonElement> Unknown {get;set;}
+    public static AgentVoiceOptions Current=new();
+    public static int Revision;
+    static bool writable=true;
+    static string Path=>ScLocalSettings.PathFor("ScCsgoAgentVoice.json");
+    public static void Load(){try{if(!Storage.FileExists(Path))return;using var s=Storage.OpenFile(Path,OpenFileMode.Read);var read=JsonSerializer.Deserialize<AgentVoiceOptions>(s);if(read.Version!=1||read.Language is not("zh" or "en")||!float.IsFinite(read.Volume))throw new InvalidDataException();read.Volume=Math.Clamp(read.Volume,0,1);read.Favorites??=[];Current=read;}catch{writable=false;}}
+    public static bool Change(Action<AgentVoiceOptions> change){
+        if(!writable)return false;var next=JsonSerializer.Deserialize<AgentVoiceOptions>(JsonSerializer.Serialize(Current));change(next);
+        try{string path=Storage.GetSystemPath(Path),temp=path+".pending";var bytes=JsonSerializer.SerializeToUtf8Bytes(next,new JsonSerializerOptions{WriteIndented=true});
+            using(var file=new FileStream(temp,FileMode.Create,FileAccess.Write,FileShare.None)){file.Write(bytes);file.Flush(true);}if(!File.ReadAllBytes(temp).SequenceEqual(bytes))throw new IOException("settings verification failed");File.Move(temp,path,true);Current=next;Revision++;return true;}catch{return false;}
+    }
+}
+public sealed class AgentVoiceClip {
+    public string Id {get;set;} public string Role {get;set;} public string Language {get;set;}
+    public string Event {get;set;} public string Category {get;set;} public string Label {get;set;}
+    public string Resource {get;set;} public float Duration {get;set;}
+}
+public sealed class AgentVoiceModLoader:ModLoader {
+    public static bool Supported;
+    public static AgentVoiceClip[] Clips=[];
+    public override void __ModInitialize(){
+        ModsManager.RegisterHook("OnLoadingFinished",this);
+        Entity.GetFile("Assets/ScAgentVoices.json",s=>Clips=JsonSerializer.Deserialize<AgentVoiceClip[]>(s));
+    }
+    public override void OnLoadingFinished(List<Action> actions)=>actions.Add(()=>{
+        var core=ModsManager.Dlls.Values.FirstOrDefault(a=>a.GetName().Name=="ScCsgoKnives");
+        Supported=core?.GetType("Game.ScAgentVoice")?.GetField("ApiVersion")?.GetRawConstantValue() is int version&&version==1;
+        if(Supported)Connect();else Log.Information("[CS Voice] 当前主包没有语音接口，语音附属已保持停用，不修改世界。");
+    });
+    [MethodImpl(MethodImplOptions.NoInlining)] static void Connect(){
+        AgentVoiceOptions.Load();ScAgentVoice.OpenSettings=AgentVoiceMenus.Settings;
+        ScAgentVoice.OpenMenu=p=>AgentVoiceMenus.Menu(p);
+        ScWorkbenchExtension.RegisterAction(new("agent-voice","探员语音设置","功能",(p,back)=>AgentVoiceMenus.Settings(p.GuiWidget)));
+    }
+}
+/// <summary>One scheduler per world; no voice queue or random clocks are written to saves.</summary>
+public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
+    sealed class Speaker {public double Next,Ambient;public float Health;public readonly Queue<string> Recent=[];public readonly Dictionary<string,double> Last=[];}
+    sealed record Pending(Entity Entity,string Role,string Action,double At,double Expires,AgentVoiceClip Exact=null,bool Manual=false);
+    readonly Dictionary<Entity,Speaker> speakers=new(ReferenceEqualityComparer.Instance);
+    readonly Dictionary<ComponentPlayer,BevelledButtonWidget> buttons=[];
+    readonly List<Pending> pending=[];
+    readonly List<(Vector3 Position,double Until,bool Manual)> playing=[];
+    readonly Engine.Random random=new();
+    SubsystemTime time;SubsystemPlayers players;SubsystemAudio audio;
+    double nextScan;int revision;bool enabled;
+    public UpdateOrder UpdateOrder=>UpdateOrder.Default;
+    public override void Load(ValuesDictionary values){time=Project.FindSubsystem<SubsystemTime>(true);players=Project.FindSubsystem<SubsystemPlayers>(true);audio=Project.FindSubsystem<SubsystemAudio>(true);enabled=AgentVoiceModLoader.Supported;if(enabled)Subscribe();revision=AgentVoiceOptions.Revision;}
+    [MethodImpl(MethodImplOptions.NoInlining)] void Subscribe()=>ScAgentVoice.Event+=Receive;
+    Speaker State(Entity entity){if(!speakers.TryGetValue(entity,out var s))speakers[entity]=s=new(){Health=entity.FindComponent<ComponentHealth>()?.Health??1,Ambient=time.GameTime+random.Float(40,75)};return s;}
+    static string Role(Entity e)=>e.ValuesDictionary?.DatabaseObject?.Name switch {"ScTacticalCT"=>"ct","ScTacticalT" or "ScTacticalEnemy"=>"t",_=>null};
+    static bool Alive(Entity e)=>e.IsAddedToProject&&e.FindComponent<ComponentHealth>() is {Health:>0};
+    static string Map(string action)=>action switch {"spawn"=>"radio.letsgo","spotted"=>"radio.enemyspotted","hurt"=>"radio.takingfire","kill"=>"enemydown","follow"=>"followingfriend","wait"=>"waitinghere","idle"=>"inposition","grenade_hegrenade"=>"grenade","grenade_flashbang"=>"flashbang","grenade_smokegrenade"=>"smoke","grenade_decoy"=>"decoy","grenade_molotov" or "grenade_incendiary"=>"molotov",_=>action};
+    public static float Probability(string action)=>action switch{"spawn"=>.7f,"spotted"=>.6f,"hurt"=>.25f,"kill"=>.45f,"follow" or "wait"=>.8f,"idle"=>.25f,_=>.6f};
+    void Receive(Entity entity,string role,string action){
+        if(entity.Project!=Project||!AgentVoiceOptions.Current.NpcEnabled||role is not("ct" or "t"))return;
+        if(pending.Count>=24||random.Float(0,1)>Probability(action))return;
+        var s=State(entity);double now=time.GameTime;
+        if(now<s.Next||pending.Any(p=>ReferenceEquals(p.Entity,entity)))return;
+        string key=Map(action);if(s.Last.TryGetValue("event:"+key,out var prior)&&now-prior<(action=="spotted"?20:8))return;
+        s.Last["event:"+key]=now;
+        double delay=action=="spawn"?random.Float(.5f,1.5f):0;
+        pending.Add(new(entity,role,key,now+delay,now+delay+2));
+    }
+    public bool Manual(ComponentPlayer player,AgentVoiceClip clip,out string reason){
+        reason="";if(!enabled||!AgentVoiceOptions.Current.PlayerEnabled){reason="玩家语音已关闭";return false;}
+        if(!Alive(player.Entity)||ScAgentVoice.PlayerRole(player)!=clip.Role){reason="请先选择对应的CT/T角色";return false;}
+        var s=State(player.Entity);double now=time.GameTime;
+        if(now<s.Next){reason="语音冷却中";return false;}
+        if(s.Last.TryGetValue(clip.Id,out var last)&&now-last<15){reason="这句刚说过，请换一句";return false;}
+        pending.RemoveAll(p=>ReferenceEquals(p.Entity,player.Entity));pending.Add(new(player.Entity,clip.Role,clip.Event,now,now+2,clip,true));return true;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)] void Unsubscribe()=>ScAgentVoice.Event-=Receive;
+    public override void Dispose(){if(enabled)Unsubscribe();foreach(var b in buttons.Values)b.ParentWidget?.Children.Remove(b);buttons.Clear();pending.Clear();speakers.Clear();playing.Clear();base.Dispose();}
+    public void Update(float dt){if(enabled)Tick();}
+    [MethodImpl(MethodImplOptions.NoInlining)] void Tick(){
+        double now=time.GameTime;var options=AgentVoiceOptions.Current;
+        if(revision!=AgentVoiceOptions.Revision){revision=AgentVoiceOptions.Revision;pending.Clear();}
+        playing.RemoveAll(p=>p.Until<=now);
+        foreach(var player in players.ComponentPlayers){
+            if(!buttons.TryGetValue(player,out var b)){b=ScGunUi.Button("语音",90);buttons[player]=b;player.ComponentGui.ControlsContainerWidget.Children.Add(b);}
+            bool active=ScGunBindings.Available(player)&&ScAgentVoice.PlayerRole(player) is "ct" or "t"&&options.PlayerEnabled;
+            var layout=ScUiSettings.Layout(ScGunFunctions.Voice);b.IsVisible=active&&ScUiSettings.CustomButtons&&layout.Enabled&&player.ComponentGui.ControlsContainerWidget.IsVisible;
+            if(b.IsVisible)ScWeaponTouchPanel.Style(b,layout,player.ComponentGui.ControlsContainerWidget.ActualSize,new Color(80,80,80,255),new Color(180,180,180,255));
+            if(active&&(b.IsClicked||ScGunBindings.Down(player,ScGunFunctions.Voice,true)))AgentVoiceMenus.Menu(player);
+        }
+        foreach(var p in buttons.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){buttons[p].ParentWidget?.Children.Remove(buttons[p]);buttons.Remove(p);}
+        if(now>=nextScan){nextScan=now+.5;
+            foreach(var e in Project.Entities){string role=Role(e);if(role is null||!Alive(e))continue;var s=State(e);float health=e.FindComponent<ComponentHealth>().Health;
+                if(health<s.Health-.0001f)Receive(e,role,"hurt");s.Health=health;
+                bool combat=e.Components.Any(c=>c.GetType().Name=="ComponentTacticalEnemy"&&c.GetType().GetField("TargetBody")?.GetValue(c)!=null||c.GetType().Name=="ComponentTacticalCompanion"&&c.GetType().GetField("threat",BindingFlags.NonPublic|BindingFlags.Instance)?.GetValue(c)!=null);
+                if(now>=s.Ambient){s.Ambient=now+random.Float(40,75);if(!combat)Receive(e,role,"idle");}
+            }
+            foreach(var e in speakers.Keys.Where(e=>!e.IsAddedToProject).ToArray())speakers.Remove(e);
+        }
+        foreach(var p in pending.OrderByDescending(p=>p.Manual).ToArray()){
+            if(now<p.At)continue;
+            if(now>p.Expires||!Alive(p.Entity)||p.Manual&&!options.PlayerEnabled||!p.Manual&&!options.NpcEnabled){pending.Remove(p);continue;}
+            if(p.Manual&&p.Entity.FindComponent<ComponentPlayer>() is {} owner&&!ScGunBindings.Available(owner))continue;
+            var body=p.Entity.FindComponent<ComponentBody>();if(body is null){pending.Remove(p);continue;}var pos=body.Position+Vector3.UnitY*1.5f;float max=p.Manual?24:32;
+            if(!players.ComponentPlayers.Any(x=>Vector3.DistanceSquared(x.ComponentBody.Position,pos)<=max*max)||options.Volume<=0){pending.Remove(p);continue;}
+            if(playing.Count>=2||!p.Manual&&playing.Any(s=>Vector3.DistanceSquared(s.Position,pos)<30*30)){pending.Remove(p);continue;}
+            var s=State(p.Entity);if(now<s.Next){pending.Remove(p);continue;}
+            AgentVoiceClip[] candidates=AgentVoiceModLoader.Clips.Where(c=>c.Language==options.Language&&c.Role==p.Role&&c.Event==p.Action&&!s.Recent.Contains(c.Id)&&(!s.Last.TryGetValue(c.Id,out var last)||now-last>=15)).ToArray();
+            if(candidates.Length==0&&s.Recent.Count>0)candidates=AgentVoiceModLoader.Clips.Where(c=>c.Language==options.Language&&c.Role==p.Role&&c.Event==p.Action&&c.Id!=s.Recent.Last()&&(!s.Last.TryGetValue(c.Id,out var last)||now-last>=15)).ToArray();
+            var clip=p.Exact is { } exact&&exact.Language==options.Language?exact:candidates.Length>0?candidates[random.Int(0,candidates.Length-1)]:null;
+            pending.Remove(p);if(clip is null)continue;
+            try{audio.PlaySound(clip.Resource,options.Volume,0,pos,3,false);
+                s.Next=now+(p.Manual?3:8);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,p.Manual));
+                if(options.Captions)foreach(var listener in players.ComponentPlayers.Where(x=>Vector3.DistanceSquared(x.ComponentBody.Position,pos)<max*max))listener.ComponentGui.DisplaySmallMessage((p.Role=="ct"?"CT":"T")+" · "+clip.Label.Split('·')[0].Trim(),Color.White,false,false);
+            }catch(Exception ex){KnifeDiagnostics.WarnOnce("agent-voice-"+clip.Resource,ex.Message);}
+        }
+    }
+}
+
+public static class AgentVoiceMenus {
+    static void Select(ContainerWidget parent,string title,IEnumerable<object> rows,Func<object,string> label,Action<object> selected)=>DialogsManager.ShowDialog(parent,new ListSelectionDialog(title,rows,56,label,selected));
+    static void Notice(ContainerWidget parent,string text)=>DialogsManager.ShowDialog(parent,new MessageDialog("探员语音",text,"知道了",null,null));
+    public static void Settings(ContainerWidget parent){
+        var o=AgentVoiceOptions.Current;
+        Select(parent,"探员语音 · 设置即时保存",new object[]{"language","volume","player","npc","captions","preview"},x=>(string)x switch{
+            "language"=>"语言："+(o.Language=="zh"?"中文":"英文"),"volume"=>$"音量：{o.Volume:P0}","player"=>"玩家主动语音："+(o.PlayerEnabled?"开":"关"),"npc"=>"NPC自动语音："+(o.NpcEnabled?"开":"关"),"captions"=>"语义提示："+(o.Captions?"开":"关"),_=>"本地试听（不在世界中喊话）"},x=>{
+            string key=(string)x;
+            if(key=="preview"){Select(parent,"选择试听声线",new object[]{"ct","t"},x=>(string)x=="ct"?"CT · SAS":"T · Phoenix",r=>Categories(parent,(string)r,null,true));return;}
+            bool saved=AgentVoiceOptions.Change(v=>{switch(key){case "language":v.Language=v.Language=="zh"?"en":"zh";break;case "volume":v.Volume=v.Volume>=.99f?0:Math.Min(1,v.Volume+.1f);break;case "player":v.PlayerEnabled=!v.PlayerEnabled;break;case "npc":v.NpcEnabled=!v.NpcEnabled;break;case "captions":v.Captions=!v.Captions;break;}});
+            if(saved)Settings(parent);else Notice(parent,"设置无法保存，原配置已保留。");
+        });
+    }
+    public static void Menu(ComponentPlayer player){string role=ScAgentVoice.PlayerRole(player);if(role is not("ct" or "t")){Notice(player.GuiWidget,"请先选择CT或T人物。");return;}Categories(player.GuiWidget,role,player,false);}
+    static void Categories(ContainerWidget parent,string role,ComponentPlayer player,bool preview)=>Select(parent,(role=="ct"?"CT · SAS":"T · Phoenix")+" · "+(AgentVoiceOptions.Current.Language=="zh"?"中文":"英文"),
+        new object[]{"收藏","战术","回应","投掷","情绪","设置"},x=>(string)x,x=>{
+            string category=(string)x;if(category=="设置"){Settings(parent);return;}
+            var clips=AgentVoiceModLoader.Clips.Where(c=>c.Role==role&&c.Language==AgentVoiceOptions.Current.Language&&(category=="收藏"?AgentVoiceOptions.Current.Favorites.Contains(c.Id):c.Category==category)).ToArray();
+            if(clips.Length==0){Notice(parent,"还没有收藏；在具体语句页面选择收藏。");return;}
+            Select(parent,category+" · 选择语义",clips.Select(c=>c.Event).Distinct().Cast<object>(),e=>clips.First(c=>c.Event==(string)e).Label.Split('·')[0],e=>
+                Select(parent,"选择具体语句",clips.Where(c=>c.Event==(string)e).Cast<object>(),c=>((AgentVoiceClip)c).Label,c=>Actions(parent,(AgentVoiceClip)c,player,preview)));
+        });
+    static double nextPreview;
+    static void Actions(ContainerWidget parent,AgentVoiceClip clip,ComponentPlayer player,bool preview)=>Select(parent,clip.Label,new object[]{preview?"试听":"说出","收藏／取消收藏","返回"},x=>(string)x,x=>{
+        switch((string)x){
+            case "试听":if(Time.RealTime>=nextPreview){AudioManager.PlaySound(clip.Resource,AgentVoiceOptions.Current.Volume,0,0);nextPreview=Time.RealTime+clip.Duration+.2;}break;
+            case "说出":var voice=player.Project.FindSubsystem<SubsystemScAgentVoice>(false);if(voice==null){Notice(parent,"语音系统未就绪");break;}if(!voice.Manual(player,clip,out var reason))Notice(parent,reason);break;
+            case "收藏／取消收藏":if(!AgentVoiceOptions.Change(o=>{if(!o.Favorites.Remove(clip.Id))o.Favorites.Add(clip.Id);}))Notice(parent,"收藏保存失败");else Actions(parent,clip,player,preview);break;
+            default:Categories(parent,clip.Role,player,preview);break;
+        }
+    });
+}

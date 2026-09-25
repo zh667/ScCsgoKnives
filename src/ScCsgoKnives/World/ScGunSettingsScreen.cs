@@ -27,6 +27,8 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly ButtonWidget m_worldSize = ScGunUi.Button("查看世界占用（只读）", 260);
+    readonly ButtonWidget m_quickThrow = ScGunUi.Button("快速投掷",260);
+    readonly ButtonWidget m_agentVoice = ScGunUi.Button("探员语音设置",260);
     System.Threading.Tasks.Task<string> m_sizeTask;
     readonly ScGunWorldBackground m_background = new();
     readonly List<(ButtonWidget Button, Color Color)> m_colors = [];
@@ -98,6 +100,8 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Note("点击按钮将群号复制到系统剪贴板，手机和电脑均可使用。"));
         m_content.Children.Add(ScGunUi.Heading("视角恢复"));
         m_content.Children.Add(m_recoverView);
+        m_content.Children.Add(m_quickThrow);m_content.Children.Add(m_agentVoice);
+        m_content.Children.Add(ScGunUi.Note("投掷模式和探员语音设置独立即时保存。"));
         m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
         m_content.Children.Add(ScGunUi.Heading("世界占用诊断"));
         m_content.Children.Add(m_worldSize);
@@ -166,6 +170,9 @@ public sealed class ScGunSettingsScreen : Screen {
     }
 
     public override void Update() {
+        m_quickThrow.Text="投掷模式："+(ScGrenadeOptions.Quick?"快速投掷":"完整准备动作");
+        if(m_quickThrow.IsClicked){bool old=ScGrenadeOptions.Quick;ScGrenadeOptions.Quick=!old;if(!ScGrenadeOptions.Save()){ScGrenadeOptions.Quick=old;m_status.Text="投掷设置未保存";}}
+        if(m_agentVoice.IsClicked){if(ScAgentVoice.OpenSettings is {} settings)settings(this);else DialogsManager.ShowDialog(this,new MessageDialog("探员语音","安装独立的CS探员语音附属包后可选择中文／英文。","知道了",null,null));}
         bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
         m_worldSize.IsEnabled=m_sizeTask is null && GameManager.Project is not null;

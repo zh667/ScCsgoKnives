@@ -29,6 +29,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         public int InputSource, PadMask;
         public long CommittedRevision;
         public ScGrenadePreparation Timeline;
+        public float OriginalPull,OriginalRelease,OriginalThrow;
     }
     sealed class Blindness { public double Until, ImmuneUntil; public float Duration; }
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
@@ -122,14 +123,16 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         if (!ScGrenadeBlock.Enabled(kind)) return;
         if (!ScGrenadeState.CanAdd(m_active,player.PlayerData.PlayerIndex)) { Message(player,"活动投掷物已达上限，未消耗物品。"); return; }
         var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
-        if (KnifeAnimationController.IsBusy(model)) return;
+        bool quick=ScGrenadeOptions.Quick,drawing=KnifeAnimationController.IsGrenadeDrawing(model);
+        if (KnifeAnimationController.IsBusy(model)&&!(quick&&drawing)) return;
         string asset=ScGrenadeBlock.Assets[kind], alias=low?"throwLow":"throwHigh";
         float pull=Cs2Rig.Duration(asset,"pullpin");
         var inv=player.ComponentMiner.Inventory;
         m_preparing[player]=new Preparation { Transaction=new ScThrowTransaction(inv),Kind=kind,Low=low,Slot=inv.ActiveSlotIndex,
             ReturnSlot=m_slots.TryGetValue(player,out var history)?history.Previous:-1, FromButton=fromButton,
             InputSource=source, PadMask=source == 8 || !fromButton && (player.GameWidget.Input.IsGamepadDown("Dig") || player.GameWidget.Input.IsGamepadDown("Hit") || player.GameWidget.Input.IsGamepadDown("Aim")) ? ScGamepadBindings.ConnectedMask(player) : 0,
-            Timeline=new ScGrenadePreparation(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias)) };
+            OriginalPull=pull,OriginalRelease=Cs2Rig.GrenadeReleaseTime(asset,alias),OriginalThrow=Cs2Rig.Duration(asset,alias),
+            Timeline=ScGrenadePreparation.Create(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias),quick,kind==3,quick&&drawing?.15:0) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
         AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
         KnifeLog.Trace($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
@@ -180,8 +183,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (stage != prep.Stage) {
                 prep.Stage=stage;
                 KnifeAnimationController.GrenadeAction(p,stage==0?"pullpin":stage==1?(prep.Low?"holdLow":"holdHigh"):(prep.Low?"throwLow":"throwHigh"),
-                    prep.Timeline.Elapsed(m_time.GameTime));
+                    prep.Timeline.ClipElapsed(m_time.GameTime,prep.OriginalPull,prep.OriginalRelease,prep.OriginalThrow));
             }
+            KnifeAnimationController.ScrubGrenade(p,stage==0?"pullpin":stage==1?(prep.Low?"holdLow":"holdHigh"):(prep.Low?"throwLow":"throwHigh"),
+                prep.Timeline.ClipElapsed(m_time.GameTime,prep.OriginalPull,prep.OriginalRelease,prep.OriginalThrow));
             if (!prep.Released && m_time.GameTime>=prep.Timeline.ReleaseAt) {
                 var camera=p.GameWidget.ActiveCamera;
                 Vector3 direction=ScGrenadeBallistics.Direction(camera.ViewDirection,prep.Low);

@@ -61,6 +61,10 @@ def main():
         s=s.replace('base.Save(valuesDictionary);','base.Save(valuesDictionary);\n        if(m_compatProtection is not null) valuesDictionary.SetValue(ScGunLoadIntegrity.ProtectionKey,m_compatProtection);\n        if(m_compatRelease is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.ReleaseMarker,m_compatRelease);')
     s=s.replace('原世界已备份。','备份由玩家自行管理。')
     subsystem.write_text(s,'utf8')
+    ui=src/'World/ScUiSettings.cs';s=ui.read_text('utf8')
+    original='WriteAtomic(Storage.GetSystemPath(Path), JsonSerializer.SerializeToUtf8Bytes(file, s_json));'
+    s=s.replace(original,'WriteAtomic(Storage.GetSystemPath(Path), ScCompatibility.PreserveUiSettings(JsonSerializer.SerializeToUtf8Bytes(file, s_json),Storage.GetSystemPath(Path),ScGunFunctions.All));')
+    ui.write_text(s,'utf8')
     csproj=src/'ScCsgoKnives.csproj';s=csproj.read_text('utf8').replace('Version="1.9.2.1"','Version="1.9.3.1"')
     s=s.replace('<ProjectReference Include="../ScCsgoResources/ScCsgoResources.csproj" />','<Reference Include="ScCsgoResources"><HintPath>../../refs/ScCsgoResources.dll</HintPath></Reference>')
     s=s.replace('<Target Name="PostBuild" AfterTargets="PostBuildEvent">','<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="\'$(SkipScmodPackaging)\' != \'true\'">')

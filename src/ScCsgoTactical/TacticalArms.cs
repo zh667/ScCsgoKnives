@@ -37,7 +37,9 @@ public static class TacticalArms {
         if(materials==null){using var s=Resource("materials.json");materials=JsonSerializer.Deserialize<Dictionary<string,string>>(s);}
         var layers=new List<ScFirstPersonArmPart>();
         void Add(string name){
-            var mesh=Mesh(name);var names=new string[mesh.Primitives.Length];var textures=new Texture2D[names.Length];
+            // SAS has closed long sleeves. The generic bare arm extends beyond their proximal opening
+            // during heavy stabs. Select the CT glove-only bodygroup; Phoenix/default exposed skin remains.
+            var mesh=Mesh(role=="ct"&&name!="ct_sleeves"?"ct_covered_"+name:name);var names=new string[mesh.Primitives.Length];var textures=new Texture2D[names.Length];
             for(int i=0;i<names.Length;i++){
                 string mat=mesh.Primitives[i].Material;
                 names[i]=mat=="bare_arm_133"?"cs2_arm":glove!=null&&mat.StartsWith("glove_"+glove.Mesh+"_")

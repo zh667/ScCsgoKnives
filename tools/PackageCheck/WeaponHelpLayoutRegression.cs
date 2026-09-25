@@ -439,7 +439,7 @@ static class WeaponHelpLayoutRegression {
             var bindingsScreen=(Screen)Activator.CreateInstance(mod.GetType("Game.ScGunBindingsScreen"));
             bindingsScreen.Enter([]);
             var bindingButtons=(Dictionary<string,ButtonWidget>)bindingsScreen.GetType().GetField("m_buttons",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(bindingsScreen);
-            Check("bindings-c4-timer-appended-old-actions-preserved",bindingButtons.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4","c4_timer"}),"one row per stable action ID, includes firing and both throw strengths");
+            Check("bindings-c4-timer-appended-old-actions-preserved",bindingButtons.Keys.ToHashSet().SetEquals(new[]{"fire","reload","scope","silencer","burst","revolver_alt","inspect","knife_heavy","throw_strong","throw_weak","plant_c4","c4_timer","agent_voice"}),"one row per stable action ID, adds voice without renaming old controls");
             Check("bindings-no-third-party-caption",!bindingsScreen.AllChildren.OfType<LabelWidget>().Any(w=>w.Text is string t&&(t.Contains("玲兰")||t.Contains("铃兰")||t.Contains("触控映射"))),"standalone keyboard binding page");
             foreach(Vector2 size in new[]{new Vector2(850,383),new Vector2(360,640),new Vector2(480,850)}) {
                 bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);
@@ -449,8 +449,8 @@ static class WeaponHelpLayoutRegression {
                 scroll.ScrollPosition=Math.Max(0,scroll.CalculateScrollAreaLength()-scroll.ActualSize.Y);
                 bindingsScreen.Measure(size);bindingsScreen.Arrange(Vector2.Zero,size);
                 var padButtons=(System.Collections.Generic.Dictionary<string,ButtonWidget>)bindingsScreen.GetType().GetField("m_padButtons",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(bindingsScreen);
-                Check("bindings-last-action-reachable/"+size,padButtons["fire"].GlobalBounds.Max.Y<=scroll.GlobalBounds.Max.Y+.1f
-                    &&padButtons["fire"].GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y-.1f,"last gamepad action scrolls fully into view above footer");
+                Check("bindings-last-action-reachable/"+size,padButtons["agent_voice"].GlobalBounds.Max.Y<=scroll.GlobalBounds.Max.Y+.1f
+                    &&padButtons["agent_voice"].GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y-.1f,"last gamepad action scrolls fully into view above footer");
                 scroll.ScrollPosition=0;
             }
             bindingsScreen.Leave();bindingsScreen.Dispose();

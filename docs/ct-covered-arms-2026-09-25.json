@@ -1,0 +1,49 @@
+[
+  {
+    "source": "ct_default.skin",
+    "source_sha256": "1998dd8c2ab76856e4f4bf3c3abfb588f5afefc99fe3d20486d89049e71d4c5e",
+    "derived": "ct_covered_ct_default.skin",
+    "sha256": "e1089788c1f4f174366266a7cbee785c21eba7b368fef8ce6e219da8709dfc28",
+    "removed_triangles": 1216,
+    "kept_materials": [
+      "glove_hardknuckle_black"
+    ],
+    "vertex_and_bind_bytes_unchanged": true
+  },
+  {
+    "source": "glove_sporty.skin",
+    "source_sha256": "eed64c4cd69afd5a1da64b155316b7ead8a8110941d78ad25d8968dfe3652ddf",
+    "derived": "ct_covered_glove_sporty.skin",
+    "sha256": "654782d48ba89e6014745e41489bcd4a1d4086c0abead4a110d39d36b0b516bd",
+    "removed_triangles": 1216,
+    "kept_materials": [
+      "glove_sporty_left",
+      "glove_sporty_right"
+    ],
+    "vertex_and_bind_bytes_unchanged": true
+  },
+  {
+    "source": "glove_specialist.skin",
+    "source_sha256": "22a79356f2913e6c21271909920718a2dd967d51c2db6e863287c99cbd2035b1",
+    "derived": "ct_covered_glove_specialist.skin",
+    "sha256": "0f5318caf843660118e994666a41a399f268ce22efdcd73231179f49b9e2bfb5",
+    "removed_triangles": 1216,
+    "kept_materials": [
+      "glove_specialist_right",
+      "glove_specialist_left"
+    ],
+    "vertex_and_bind_bytes_unchanged": true
+  },
+  {
+    "source": "glove_slick.skin",
+    "source_sha256": "072c5bf0458b578a98e02750f575d684e963fbe83baec1390b87db4bfd6572eb",
+    "derived": "ct_covered_glove_slick.skin",
+    "sha256": "6ec19a54730104ed3a6762cc7bd51a08ae01a3702354cd15c2d9517dfcf6734a",
+    "removed_triangles": 1216,
+    "kept_materials": [
+      "glove_slick_left",
+      "glove_slick_right"
+    ],
+    "vertex_and_bind_bytes_unchanged": true
+  }
+]
