@@ -145,6 +145,10 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
     /// <summary>While the HUD is open, consume numeric hotbar selection without consuming the key edge used by the HUD.</summary>
     public void FilterInput(ComponentInput input) {
         var player=input?.m_componentPlayer;if(player is null||!huds.TryGetValue(player,out var hud)||!hud.Visible)return;
+        // The native hotbar consumes number keys through SelectInventorySlot, after
+        // the mod hook has seen the same key edge. Clear that field directly while
+        // leaving WidgetInput.IsKeyDownOnce available to the voice HUD.
+        input.m_playerInput.SelectInventorySlot=null; input.m_playerInput.ScrollInventory=0;
         object controls=input.m_playerInput;var flags=BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic;
         foreach(var field in controls.GetType().GetFields(flags)){
             string name=field.Name.ToLowerInvariant();if(!name.Contains("slot")&&!name.Contains("select")&&!name.Contains("hotbar"))continue;
@@ -195,7 +199,6 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
             pending.Remove(p);if(clip is null)continue;
             try{audio.PlaySound(clip.Resource,options.Volume,0,pos,3,false);
                 s.Next=now+(p.Manual?1.2:3);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,p.Manual));
-                if(options.Captions)foreach(var listener in players.ComponentPlayers.Where(x=>Vector3.DistanceSquared(x.ComponentBody.Position,pos)<max*max))listener.ComponentGui.DisplaySmallMessage((p.Role=="ct"?"CT":"T")+" · "+clip.Label.Split('·')[0].Trim(),Color.White,false,false);
             }catch(Exception ex){KnifeDiagnostics.WarnOnce("agent-voice-"+clip.Resource,ex.Message);}
         }
     }
@@ -206,11 +209,11 @@ public static class AgentVoiceMenus {
     static void Notice(ContainerWidget parent,string text)=>DialogsManager.ShowDialog(parent,new MessageDialog("探员语音",text,"知道了",null,null));
     public static void Settings(ContainerWidget parent){
         var o=AgentVoiceOptions.Current;
-        Select(parent,"探员语音 · 设置即时保存",new object[]{"language","volume","player","npc","captions","preview"},x=>(string)x switch{
-            "language"=>"语言："+(o.Language=="zh"?"中文":"英文"),"volume"=>$"音量：{o.Volume:P0}","player"=>"玩家主动语音："+(o.PlayerEnabled?"开":"关"),"npc"=>"NPC自动语音："+(o.NpcEnabled?"开":"关"),"captions"=>"语义提示："+(o.Captions?"开":"关"),_=>"本地试听（不在世界中喊话）"},x=>{
+        Select(parent,"探员语音 · 设置即时保存",new object[]{"language","volume","player","npc","preview"},x=>(string)x switch{
+            "language"=>"语言："+(o.Language=="zh"?"中文":"英文"),"volume"=>$"音量：{o.Volume:P0}","player"=>"玩家主动语音："+(o.PlayerEnabled?"开":"关"),"npc"=>"NPC自动语音："+(o.NpcEnabled?"开":"关"),_=>"本地试听（不在世界中喊话）"},x=>{
             string key=(string)x;
             if(key=="preview"){Select(parent,"选择试听声线",new object[]{"ct","t"},x=>(string)x=="ct"?"CT · SAS":"T · Phoenix",r=>Categories(parent,(string)r,null,true));return;}
-            bool saved=AgentVoiceOptions.Change(v=>{switch(key){case "language":v.Language=v.Language=="zh"?"en":"zh";break;case "volume":v.Volume=v.Volume>=.99f?0:Math.Min(1,v.Volume+.1f);break;case "player":v.PlayerEnabled=!v.PlayerEnabled;break;case "npc":v.NpcEnabled=!v.NpcEnabled;break;case "captions":v.Captions=!v.Captions;break;}});
+            bool saved=AgentVoiceOptions.Change(v=>{switch(key){case "language":v.Language=v.Language=="zh"?"en":"zh";break;case "volume":v.Volume=v.Volume>=.99f?0:Math.Min(1,v.Volume+.1f);break;case "player":v.PlayerEnabled=!v.PlayerEnabled;break;case "npc":v.NpcEnabled=!v.NpcEnabled;break;}});
             if(saved)Settings(parent);else Notice(parent,"设置无法保存，原配置已保留。");
         });
     }

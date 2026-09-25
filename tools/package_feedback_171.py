@@ -1,5 +1,5 @@
 """1.7.1 gameplay patch reuses verified family-1 resource streams; optional voices ship separately."""
-import argparse,json,hashlib,zipfile,zlib
+import argparse,json,hashlib,zipfile,zlib,xml.etree.ElementTree as ET
 from pathlib import Path
 from pack_single_scmods import raw_member,write_archive
 ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'output';REPORT=OUT/'release-feedback-1.7.1'
@@ -7,7 +7,7 @@ def sha(b):return hashlib.sha256(b).hexdigest()
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--edition',choices=['Full','Lite','Voice'],required=True);a=ap.parse_args();REPORT.mkdir(exist_ok=True)
     test=json.loads((ROOT/'.tmp/feedback-check.json').read_text());assert test['failed']==0
-    entries={};hashes={}
+    entries={};hashes={};marker_data=None;voice_assets=[]
     def add(n,data):
         c=zlib.compressobj(9,zlib.DEFLATED,-15);entries[n]=(8,zlib.crc32(data),len(data),c.compress(data)+c.flush());hashes[n]=sha(data)
     def dll(name):
@@ -33,8 +33,21 @@ def main():
             tactical=json.loads((ROOT/'src/ScCsgoTactical/modinfo.json').read_text('utf8'));add('Integrations/ScCsgoTactical.modinfo.json',json.dumps(tactical,ensure_ascii=False).encode('utf8'))
             bundle=json.loads(z.read('Integrations/ScCsgoBundle.json'));bundle.update(version='1.7.1',core='1.7.1',tactical='1.5.1',coreSha256=test['dlls']['ScCsgoKnives']);add('Integrations/ScCsgoBundle.json',json.dumps(bundle,ensure_ascii=False).encode('utf8'))
             family=json.loads(z.read('Integrations/CompatibilityFamily.json'));family.update(version='1.7.1',core_sha256=test['dlls']['ScCsgoKnives'],build_revision='2026-09-25-voice-hud');add('Integrations/CompatibilityFamily.json',json.dumps(family,indent=2).encode('utf8'))
+            marker_data=z.read('Assets/ScCsgoResources.xml')
         dll('ScCsgoKnives');dll('ScCsgoTactical')
-        add('INSTALL.txt','CS武器1.7.1总包（含战术1.5.1）：退出世界后替换CS主包，只启用一个全量/轻量总包，不另装独立战术包。\n兼容系列1，原枪状态保持，不自动备份，由玩家手动备份。\n投掷物按原版操作：按住左键进入准备动作，松开左键投掷；不设置投掷物同时存在上限。\nCT长袖使用遮蔽派生网格，T露肤保持；召唤同伴不限制数量。\n语音为独立可选scmod，本总包不含音频，安装CS探员语音1.1.0后，模组设置选中文/英文；CT/T玩家按Z打开左下角数字HUD，按1～5快速选句。\n诊断为离线与原生加载/渲染，不等于所有设备实机验收。\n'.encode('utf-8-sig'))
+        voiceRoot=ROOT/'src/ScCsgoVoice';dll('ScCsgoVoice')
+        add('Assets/ScAgentVoice.xdb',(voiceRoot/'Assets/ScAgentVoice.xdb').read_bytes())
+        add('Assets/ScAgentVoices.json',(voiceRoot/'Assets/ScAgentVoices.json').read_bytes())
+        for p in sorted((voiceRoot/'Assets/Audio').rglob('*')):
+            if p.is_file():
+                name=str(p.relative_to(ROOT/'src/ScCsgoVoice')).replace('\\','/');data=p.read_bytes();add(name,data);voice_assets.append((name,data))
+        if marker_data is not None:
+            marker=ET.fromstring(marker_data)
+            listed={e.get('Path') for e in marker.findall('File')}
+            for name,data in voice_assets:
+                if name not in listed:ET.SubElement(marker,'File',Path=name,Sha256=sha(data))
+            add('Assets/ScCsgoResources.xml',ET.tostring(marker,encoding='utf-8',xml_declaration=True))
+        add('INSTALL.txt','CS武器1.7.1总包（含战术1.5.1和中英探员语音1.1.0）：退出世界后替换CS主包，只启用一个全量/轻量总包，不另装独立战术包。\n兼容系列1，原枪状态保持，不自动备份，由玩家手动备份。\n投掷物按原版操作：按住左键进入准备动作，松开左键投掷；不设置投掷物同时存在上限。\nCT长袖使用遮蔽派生网格，T露肤保持；召唤同伴不限制数量。\n语音设置选择中文/英文；CT/T玩家按Z打开左下角数字HUD，按1～5快速选句，语音不会在屏幕上显示文字。轻量包沿用统一Deflate压缩，语音源为单声道32kHz OGG。\n诊断为离线与原生加载/渲染，不等于所有设备实机验收。\n'.encode('utf-8-sig'))
         target=OUT/f'[API1.9]CS武器1.7.1-作者ZH667-{"512轻量" if a.edition=="Lite" else "全量"}总包.scmod'
     pending=target.with_suffix('.pending');write_archive(pending,entries)
     with zipfile.ZipFile(pending) as z:
