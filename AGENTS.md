@@ -1,5 +1,15 @@
 # Project conventions
 
+- User feedback 2026-09-25 (PLANNING ONLY): docs/player-feedback-plan-2026-09-25.md
+  covers current shotgun buff verification, 35-gun player crafting levels (early
+  pistols/shotguns/SMGs, later rifles/snipers), CT heavy-knife sleeve clipping,
+  faster grenade response, and optional bilingual agent voice scmod. User additionally
+  requested player CT/T manual line selection, alongside global-language NPC random
+  event speech. No gameplay/model/audio implementation or new package is authorized
+  by this planning request. Voice ZIP header/path audit is not full listening QA;
+  video shows right-arm clipping, left arm requires further verification. Preserve
+  manual-backup policy and bidirectional compatibility when implementation is approved.
+
 - User override 2026-09-25: NO AUTOMATIC BACKUPS in CS packages, including the
   existing 1.0/1.2 compatibility revisions and latest Full/Lite. Users manage backups.
   This supersedes all earlier backup-before-load/switch/migration requirements below.

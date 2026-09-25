@@ -1,0 +1,1127 @@
+{
+  "chinese": {
+    "file": "中文语音包(2).zip",
+    "archive_bytes": 677433016,
+    "entries": 7940,
+    "wav_count": 7913,
+    "unpacked_bytes": 768930424,
+    "speakers": {
+      "中文语音包": 21,
+      "anarchist": 369,
+      "balkan": 388,
+      "balkan_epic": 635,
+      "fbihrt": 244,
+      "fbihrt_epic": 694,
+      "gign": 373,
+      "gsg9": 293,
+      "idf": 390,
+      "leet": 381,
+      "leet_epic": 701,
+      "phoenix": 360,
+      "pirate": 356,
+      "professional": 367,
+      "sas": 494,
+      "seal": 426,
+      "seal_epic": 738,
+      "separatist": 387,
+      "swat": 296
+    },
+    "headers": {
+      "44100Hz/1ch/16bit": 7911
+    },
+    "header_errors": [
+      {
+        "key": "idf/ctmap_cs_source98.wav",
+        "error": "fmt chunk and/or data chunk missing"
+      },
+      {
+        "key": "leet/tmap_cs_source43.wav",
+        "error": "unknown format: 3"
+      }
+    ],
+    "header_error_count": 2,
+    "total_seconds": 8624.29396825393,
+    "events": {
+      "tmap_cs_source": 269,
+      "ctmap_cs_source": 244,
+      "onarollbrag": 132,
+      "niceshot": 114,
+      "enemydown": 104,
+      "friendlyfire": 89,
+      "radio_locknload": 83,
+      "incombat": 81,
+      "radiobotendclean": 79,
+      "radio_letsgo": 76,
+      "ctmap_cs_office": 75,
+      "oneenemyleft": 74,
+      "lastmanstanding": 73,
+      "code_": 72,
+      "ctmap_cs_italy": 72,
+      "tmap_cs_italy": 70,
+      "radiobotendsolid": 69,
+      "scaredemote": 66,
+      "i_killed_enemy_": 64,
+      "sees_enemy_killed_": 63,
+      "round_winning_": 60,
+      "radio_takingfire": 59,
+      "spottedloosebomb": 58,
+      "killedfriend": 57,
+      "twoenemiesleft": 56,
+      "followingfriend": 54,
+      "tmap_de_dust": 54,
+      "disagree": 52,
+      "takingfire_friendly_": 52,
+      "agree": 51,
+      "radiobotfallback": 49,
+      "radiobotregroup": 49,
+      "affirmation_": 49,
+      "clearedarea": 48,
+      "help": 48,
+      "round_start_": 47,
+      "negative": 45,
+      "attacking_": 45,
+      "request_move_": 44,
+      "radiobotkillcount": 44,
+      "blinded": 43,
+      "threeenemiesleft": 43,
+      "cheer_": 43,
+      "bombtickingdown": 42,
+      "pinneddown": 41,
+      "radio_followme": 41,
+      "waitinghere": 41,
+      "affirmative": 40,
+      "radio_enemyspotted": 40,
+      "radiobothold": 39,
+      "coveringfriend": 38,
+      "coverme": 38,
+      "onmyway": 38,
+      "peptalk": 38,
+      "negative_": 38,
+      "ct_death": 38,
+      "ct_bombexploding": 38,
+      "reportingin": 37,
+      "requestreport": 37,
+      "scared_": 37,
+      "radiobotreponsenegative": 37,
+      "ctmap_de_aztec": 37,
+      "ctmap_de_boathouse": 37,
+      "tmap_de_inferno": 37,
+      "inposition": 36,
+      "lostenemy": 36,
+      "sniperkilled": 36,
+      "radiobotunderfire": 36,
+      "radio.letsgo": 36,
+      "radio.locknload": 36
+    }
+  },
+  "english": {
+    "file": "CSGO AGENT VOICE.zip",
+    "archive_bytes": 1123773526,
+    "entries": 11241,
+    "wav_count": 11213,
+    "unpacked_bytes": 1244175849,
+    "speakers": {
+      "anarchist": 369,
+      "balkan": 388,
+      "balkan_epic": 671,
+      "fbihrt": 244,
+      "fbihrt_epic": 735,
+      "gign": 373,
+      "gsg9": 293,
+      "idf": 390,
+      "leet": 381,
+      "leet_epic": 739,
+      "phoenix": 360,
+      "phoenix_coop": 634,
+      "pirate": 356,
+      "professional": 367,
+      "professional_epic": 584,
+      "professional_fem": 617,
+      "sas": 494,
+      "seal": 426,
+      "seal_epic": 775,
+      "separatist": 387,
+      "survival": 40,
+      "swat": 296,
+      "swat_epic": 627,
+      "swat_fem": 581,
+      "taunts": 80,
+      "temp": 6
+    },
+    "headers": {
+      "44100Hz/1ch/16bit": 11213
+    },
+    "header_errors": [],
+    "header_error_count": 0,
+    "total_seconds": 13850.33446712019,
+    "events": {
+      "tmap_cs_source": 269,
+      "ctmap_cs_source": 244,
+      "onarollbrag": 162,
+      "niceshot": 140,
+      "round_winning_": 126,
+      "enemydown": 122,
+      "i_killed_enemy_": 120,
+      "sees_enemy_killed_": 115,
+      "radio_locknload": 107,
+      "takingfire_friendly_": 104,
+      "friendlyfire": 103,
+      "incombat": 101,
+      "affirmation_": 99,
+      "round_start_": 96,
+      "radiobotendclean": 95,
+      "radio_letsgo": 94,
+      "oneenemyleft": 88,
+      "lastmanstanding": 87,
+      "scaredemote": 82,
+      "attacking_": 82,
+      "request_move_": 82,
+      "radiobotendsolid": 81,
+      "cheer_": 79,
+      "ctmap_cs_office": 75,
+      "code_": 72,
+      "death_": 72,
+      "ctmap_cs_italy": 72,
+      "radio_takingfire": 71,
+      "negative_": 71,
+      "spottedloosebomb": 70,
+      "tmap_cs_italy": 70,
+      "round_losing_": 69,
+      "scared_": 68,
+      "killedfriend": 67,
+      "twoenemiesleft": 66,
+      "compliment_": 66,
+      "followingfriend": 64,
+      "sees_enemy_": 64,
+      "takingfire_": 64,
+      "agree": 63,
+      "sees_area_clear_": 63,
+      "disagree": 62,
+      "sees_friend_killed_": 62,
+      "thankful_": 62,
+      "disagree_": 59,
+      "sees_team_combo_": 59,
+      "help": 58,
+      "agree_": 57,
+      "loc_a_": 57,
+      "last_unit_alive_": 56,
+      "radiobotfallback": 55,
+      "radiobotregroup": 55,
+      "clearedarea": 54,
+      "tmap_de_dust": 54,
+      "negative": 53,
+      "radio_followme": 53,
+      "loc_b_": 53,
+      "request_help_": 53,
+      "round_won_": 53,
+      "bombtickingdown": 52,
+      "threeenemiesleft": 51,
+      "blinded": 49,
+      "following_friend_": 49,
+      "omw_": 49,
+      "request_quiet_": 49,
+      "sorry_": 49,
+      "radio_enemyspotted": 48,
+      "pinneddown": 47,
+      "waitinghere": 47,
+      "affirmative": 46
+    }
+  },
+  "paired_relative_paths": 7891,
+  "notes": "Languages named by input archives; header/path audit is not a full listening/translation check.",
+  "preferred_speakers": {
+    "sas": {
+      "zh": [
+        {
+          "key": "sas/affirmative01.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 49436,
+          "seconds": 0.56,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/affirmative02.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 32022,
+          "seconds": 0.362562358276644,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/affirmative03.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 62910,
+          "seconds": 0.712766439909297,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/affirmative04.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 64202,
+          "seconds": 0.7274149659863945,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree01.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 26504,
+          "seconds": 0.3,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree02.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 40606,
+          "seconds": 0.45988662131519276,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree03.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 29220,
+          "seconds": 0.3307936507936508,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree04.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 55610,
+          "seconds": 0.63,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ],
+      "en": [
+        {
+          "key": "sas/affirmative01.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 45318,
+          "seconds": 0.4946031746031746,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/affirmative02.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 69894,
+          "seconds": 0.7720634920634921,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/affirmative03.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 58086,
+          "seconds": 0.6393650793650794,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/affirmative04.wav",
+          "speaker": "sas",
+          "event": "affirmative",
+          "bytes": 66598,
+          "seconds": 0.7358730158730159,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree01.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 49572,
+          "seconds": 0.5428344671201814,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree02.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 46136,
+          "seconds": 0.5038775510204082,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree03.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 42598,
+          "seconds": 0.46258503401360546,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "sas/agree04.wav",
+          "speaker": "sas",
+          "event": "agree",
+          "bytes": 77138,
+          "seconds": 0.8553741496598639,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ]
+    },
+    "phoenix": {
+      "zh": [
+        {
+          "key": "phoenix/affirmative01.wav",
+          "speaker": "phoenix",
+          "event": "affirmative",
+          "bytes": 42948,
+          "seconds": 0.48643990929705216,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/affirmative02.wav",
+          "speaker": "phoenix",
+          "event": "affirmative",
+          "bytes": 35508,
+          "seconds": 0.40208616780045353,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/affirmative03.wav",
+          "speaker": "phoenix",
+          "event": "affirmative",
+          "bytes": 44330,
+          "seconds": 0.5021088435374149,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree01.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 40346,
+          "seconds": 0.45693877551020406,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree02.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 38494,
+          "seconds": 0.43594104308390025,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree03.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 61166,
+          "seconds": 0.6929931972789115,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree04.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 123956,
+          "seconds": 1.4048979591836734,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree06.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 35644,
+          "seconds": 0.4036281179138322,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ],
+      "en": [
+        {
+          "key": "phoenix/affirmative01.wav",
+          "speaker": "phoenix",
+          "event": "affirmative",
+          "bytes": 70098,
+          "seconds": 0.7755102040816326,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/affirmative02.wav",
+          "speaker": "phoenix",
+          "event": "affirmative",
+          "bytes": 43274,
+          "seconds": 0.47138321995464855,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/affirmative03.wav",
+          "speaker": "phoenix",
+          "event": "affirmative",
+          "bytes": 54722,
+          "seconds": 0.6,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree01.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 44614,
+          "seconds": 0.48657596371882084,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree02.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 67414,
+          "seconds": 0.7450793650793651,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree03.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 45802,
+          "seconds": 0.5000453514739229,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree04.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 98366,
+          "seconds": 1.0948299319727892,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "phoenix/agree06.wav",
+          "speaker": "phoenix",
+          "event": "agree",
+          "bytes": 58146,
+          "seconds": 0.64,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ]
+    },
+    "leet": {
+      "zh": [
+        {
+          "key": "leet/affirmative01.wav",
+          "speaker": "leet",
+          "event": "affirmative",
+          "bytes": 21194,
+          "seconds": 0.23761904761904762,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/affirmative02.wav",
+          "speaker": "leet",
+          "event": "affirmative",
+          "bytes": 42252,
+          "seconds": 0.4763718820861678,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/affirmative03.wav",
+          "speaker": "leet",
+          "event": "affirmative",
+          "bytes": 29758,
+          "seconds": 0.33471655328798183,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/agree04.wav",
+          "speaker": "leet",
+          "event": "agree",
+          "bytes": 40162,
+          "seconds": 0.45267573696145125,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/agree05.wav",
+          "speaker": "leet",
+          "event": "agree",
+          "bytes": 43464,
+          "seconds": 0.49011337868480725,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/agree06.wav",
+          "speaker": "leet",
+          "event": "agree",
+          "bytes": 35908,
+          "seconds": 0.40444444444444444,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/blinded01.wav",
+          "speaker": "leet",
+          "event": "blinded",
+          "bytes": 158996,
+          "seconds": 1.8,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/blinded03.wav",
+          "speaker": "leet",
+          "event": "blinded",
+          "bytes": 72710,
+          "seconds": 0.8217006802721089,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ],
+      "en": [
+        {
+          "key": "leet/affirmative01.wav",
+          "speaker": "leet",
+          "event": "affirmative",
+          "bytes": 29920,
+          "seconds": 0.32,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/affirmative02.wav",
+          "speaker": "leet",
+          "event": "affirmative",
+          "bytes": 43158,
+          "seconds": 0.47009070294784583,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/affirmative03.wav",
+          "speaker": "leet",
+          "event": "affirmative",
+          "bytes": 35174,
+          "seconds": 0.3795691609977324,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/agree04.wav",
+          "speaker": "leet",
+          "event": "agree",
+          "bytes": 36976,
+          "seconds": 0.4,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/agree05.wav",
+          "speaker": "leet",
+          "event": "agree",
+          "bytes": 42926,
+          "seconds": 0.466281179138322,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/agree06.wav",
+          "speaker": "leet",
+          "event": "agree",
+          "bytes": 52452,
+          "seconds": 0.5742857142857143,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/blinded01.wav",
+          "speaker": "leet",
+          "event": "blinded",
+          "bytes": 51098,
+          "seconds": 0.5600907029478458,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "leet/blinded03.wav",
+          "speaker": "leet",
+          "event": "blinded",
+          "bytes": 32672,
+          "seconds": 0.3511791383219955,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ]
+    },
+    "fbi": {
+      "zh": [],
+      "en": []
+    },
+    "swat": {
+      "zh": [
+        {
+          "key": "swat/coverme01.wav",
+          "speaker": "swat",
+          "event": "coverme",
+          "bytes": 39796,
+          "seconds": 0.450702947845805,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/coverme02.wav",
+          "speaker": "swat",
+          "event": "coverme",
+          "bytes": 39796,
+          "seconds": 0.450702947845805,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death01.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 56142,
+          "seconds": 0.58,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death02.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 128466,
+          "seconds": 1.4,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death03.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 190206,
+          "seconds": 2.1,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death04.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 62316,
+          "seconds": 0.65,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death05.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 78580,
+          "seconds": 0.8343990929705215,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death06.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 260766,
+          "seconds": 2.9,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ],
+      "en": [
+        {
+          "key": "swat/coverme01.wav",
+          "speaker": "swat",
+          "event": "coverme",
+          "bytes": 54880,
+          "seconds": 0.62,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/coverme02.wav",
+          "speaker": "swat",
+          "event": "coverme",
+          "bytes": 33956,
+          "seconds": 0.38276643990929704,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death01.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 35884,
+          "seconds": 0.40462585034013604,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death02.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 75992,
+          "seconds": 0.8593650793650793,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death03.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 129680,
+          "seconds": 1.4680725623582767,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death04.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 67796,
+          "seconds": 0.7664399092970522,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death05.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 57146,
+          "seconds": 0.6456916099773242,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        },
+        {
+          "key": "swat/ct_death06.wav",
+          "speaker": "swat",
+          "event": "ct_death",
+          "bytes": 183148,
+          "seconds": 2.0742857142857143,
+          "rate": 44100,
+          "channels": 1,
+          "bits": 16
+        }
+      ]
+    }
+  },
+  "video": {
+    "file": "QQ20260925-162738-HD.mp4",
+    "bytes": 6842485,
+    "fps": 59.35107194247087,
+    "frames": 344,
+    "duration_seconds": 5.79602,
+    "frame_samples": [
+      0,
+      0.5,
+      1,
+      1.5,
+      2,
+      2.5,
+      3,
+      3.5,
+      4,
+      4.5,
+      5,
+      5.5
+    ]
+  },
+  "grenade_timings": {
+    "grenade_decoy": [
+      {
+        "alias": "deploy",
+        "duration": 1.0,
+        "throw_events": []
+      },
+      {
+        "alias": "pullpin",
+        "duration": 0.9666,
+        "throw_events": []
+      },
+      {
+        "alias": "throwHigh",
+        "duration": 0.7666,
+        "throw_events": [
+          {
+            "name": "Decoy.Throw",
+            "at": 0.06667
+          }
+        ]
+      },
+      {
+        "alias": "throwLow",
+        "duration": 0.5,
+        "throw_events": [
+          {
+            "name": "Decoy.Throw",
+            "at": 0.0
+          }
+        ]
+      }
+    ],
+    "grenade_flashbang": [
+      {
+        "alias": "deploy",
+        "duration": 1.0,
+        "throw_events": []
+      },
+      {
+        "alias": "pullpin",
+        "duration": 0.9666,
+        "throw_events": []
+      },
+      {
+        "alias": "throwHigh",
+        "duration": 0.7666,
+        "throw_events": [
+          {
+            "name": "Flashbang.Throw",
+            "at": 0.06667
+          }
+        ]
+      },
+      {
+        "alias": "throwLow",
+        "duration": 0.5,
+        "throw_events": [
+          {
+            "name": "Flashbang.Throw",
+            "at": 0.133333
+          }
+        ]
+      }
+    ],
+    "grenade_hegrenade": [
+      {
+        "alias": "deploy",
+        "duration": 1.0,
+        "throw_events": []
+      },
+      {
+        "alias": "pullpin",
+        "duration": 0.9666,
+        "throw_events": []
+      },
+      {
+        "alias": "throwHigh",
+        "duration": 0.7666,
+        "throw_events": [
+          {
+            "name": "HEGrenade.Throw",
+            "at": 0.06667
+          }
+        ]
+      },
+      {
+        "alias": "throwLow",
+        "duration": 0.5,
+        "throw_events": [
+          {
+            "name": "HEGrenade.Throw",
+            "at": 0.133333
+          }
+        ]
+      }
+    ],
+    "grenade_incendiary": [
+      {
+        "alias": "deploy",
+        "duration": 1.0,
+        "throw_events": []
+      },
+      {
+        "alias": "pullpin",
+        "duration": 0.9666,
+        "throw_events": []
+      },
+      {
+        "alias": "throwHigh",
+        "duration": 0.7666,
+        "throw_events": [
+          {
+            "name": "IncGrenade.Throw",
+            "at": 0.033335
+          }
+        ]
+      },
+      {
+        "alias": "throwLow",
+        "duration": 0.5,
+        "throw_events": [
+          {
+            "name": "IncGrenade.Throw",
+            "at": 0.0
+          }
+        ]
+      }
+    ],
+    "grenade_molotov": [
+      {
+        "alias": "deploy",
+        "duration": 1.0,
+        "throw_events": []
+      },
+      {
+        "alias": "pullpin",
+        "duration": 1.1332,
+        "throw_events": []
+      },
+      {
+        "alias": "throwHigh",
+        "duration": 0.7666,
+        "throw_events": [
+          {
+            "name": "Molotov.Throw",
+            "at": 0.033335
+          }
+        ]
+      },
+      {
+        "alias": "throwLow",
+        "duration": 0.5,
+        "throw_events": [
+          {
+            "name": "Molotov.Throw",
+            "at": 0.0
+          }
+        ]
+      }
+    ],
+    "grenade_smokegrenade": [
+      {
+        "alias": "deploy",
+        "duration": 1.0,
+        "throw_events": []
+      },
+      {
+        "alias": "pullpin",
+        "duration": 0.9666,
+        "throw_events": []
+      },
+      {
+        "alias": "throwHigh",
+        "duration": 0.7666,
+        "throw_events": [
+          {
+            "name": "SmokeGrenade.Throw",
+            "at": 0.06667
+          }
+        ]
+      },
+      {
+        "alias": "throwLow",
+        "duration": 0.5,
+        "throw_events": [
+          {
+            "name": "SmokeGrenade.Throw",
+            "at": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  "sas_phoenix": {
+    "zh": {
+      "count": 854,
+      "seconds": 831.8386848072557
+    },
+    "en": {
+      "count": 854,
+      "seconds": 943.3077777777778
+    }
+  }
+}
