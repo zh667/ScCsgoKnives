@@ -1,0 +1,2 @@
+# These compatibility fixtures are hashed as bytes; keep them identical across Windows/Linux checkouts.
+tools/fixtures/migration-120-20260925/*.xml -text
