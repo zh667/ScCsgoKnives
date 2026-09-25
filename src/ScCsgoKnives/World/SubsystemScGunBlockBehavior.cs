@@ -581,6 +581,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// record; the item value carries only the model and the record id, so state follows the item everywhere.</summary>
     ScGunRegistry m_registry;
     ValuesDictionary m_releaseBackup;
+    ValuesDictionary m_integrityProtection;
+    readonly HashSet<ComponentPlayer> m_integrityTold = [];
     bool m_saveReady;
     const string RegistryKey = "GunRegistry";
     const string LayoutKey = "GunDataLayout";
@@ -607,7 +609,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         var holders = ScGunHolders.Scan(Project, gunIndex).ToList();
         foreach (var batch in m_registry.Recovery.Batches) foreach (var step in batch.Steps) {
-            if (step.Count <= 0 || Terrain.ExtractContents(step.Value) != gunIndex) continue;
+            if (step.Count <= 0 || Terrain.ExtractContents(step.Value) != gunIndex || !ScGunHolders.MatchesRecord(step.Value)) continue;
             int id = GunSpec.GetId(Terrain.ExtractData(step.Value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId)
                 holders.Add(new ScGunHolders.Holder(id, $"recovery:{batch.Id}", null, -1));
@@ -730,6 +732,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // Where this world's pre-upgrade backup went, kept with the world so the player can always find it.
         m_schemaUpgrade = valuesDictionary.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.Marker, null);
         m_releaseBackup = valuesDictionary.GetValue<ValuesDictionary>(ScGunSchemaUpgrade.ReleaseMarker, null);
+        m_integrityProtection = valuesDictionary.GetValue<ValuesDictionary>(ScGunLoadIntegrity.ProtectionKey, null);
         if (m_schemaUpgrade is not null)
             KnifeLog.Information($"gun record schema upgraded from {m_schemaUpgrade.GetValue<int>("From", 0)}; world backup at {m_schemaUpgrade.GetValue<string>("Backup", "?")}");
         m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
@@ -778,6 +781,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (m_officialMigration is not null) valuesDictionary.SetValue(ScGun0282Migration.Marker, m_officialMigration);
         if (m_schemaUpgrade is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.Marker, m_schemaUpgrade);
         if (m_releaseBackup is not null) valuesDictionary.SetValue(ScGunSchemaUpgrade.ReleaseMarker, m_releaseBackup);
+        if (m_integrityProtection is not null) valuesDictionary.SetValue(ScGunLoadIntegrity.ProtectionKey, m_integrityProtection);
         valuesDictionary.SetValue(LayoutKey, ScGunRegistry.StampFor(m_registry?.LegacyWorld == true)); // a legacy world stays marked legacy
     }
 
@@ -830,6 +834,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
                 if (result == ScGunResult.Success)
                     KnifeLog.Trace($"[GUN_TEMPLATE] player={player.PlayerData.PlayerIndex} slot={inventory.ActiveSlotIndex} counter={counter} gun={ScGunBlock.SpecOf(value).Name} skin={ScGunBlock.SkinOf(value)} instance={GunSpec.GetId(Terrain.ExtractData(value))} result=Success");
             }
+            if (m_integrityProtection?.GetValue<int>("Count", 0) > 0 && m_integrityTold.Add(player))
+                player.ComponentGui.DisplaySmallMessage("旧世界已备份：正常枪械可继续使用，部分枪械记录异常，已原样保留并暂停使用，需原始备份恢复。", Color.Yellow, true, false);
             if (m_migrationNotice && m_migrationTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。原世界已备份。", Color.White, true, false);
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))

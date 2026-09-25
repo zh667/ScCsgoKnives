@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Project>
+  <Subsystems>
+    <Values Name="BlocksManager">
+      <Value Name="317" Type="string" Value="ScGunBlock" />
+    </Values>
+    <Values Name="ScGunBlockBehavior">
+      <Value Name="GunTravelSource" Type="string" Value="app:/doc/Worlds/World7" />
+      <Value Name="GunTravelWorldIdentity" Type="string" Value="3d97adf18e974819a24ad4b5e2cd0ea7" />
+      <Values Name="GunRegistry">
+        <Value Name="Schema" Type="int" Value="6" />
+        <Value Name="Next" Type="int" Value="6" />
+        <Values Name="Records">
+          <Value Name="1" Type="string" Value="v=0,r=17,s=0,d=1500,m=1500,n=106,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="2" Type="string" Value="v=6,r=30,s=0,d=1500,m=1500,n=124,c=-1,p=309,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="3" Type="string" Value="v=0,r=29,s=0,d=1500,m=1500,n=1,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="4" Type="string" Value="v=0,r=28,s=0,d=1500,m=1500,n=2,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="5" Type="string" Value="v=0,r=30,s=0,d=1500,m=1500,n=93,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+        </Values>
+        <Values Name="Recovery">
+          <Value Name="Schema" Type="int" Value="1" />
+          <Value Name="Next" Type="long" Value="1" />
+          <Values Name="Batches" />
+        </Values>
+        <Value Name="GrowthMode" Type="string" Value="Unset" />
+        <Values Name="PendingKills">
+          <Value Name="Next" Type="string" Value="1" />
+          <Values Name="Entries" />
+        </Values>
+      </Values>
+      <Value Name="GunDataLayout" Type="int" Value="5" />
+      <Values Name="GunTravelIdentities">
+        <Value Name="1" Type="string" Value="CA8E8B903015A52A02CA9675B9B3E173124FA31BF721B9039E825F2CFBAD399D" />
+        <Value Name="2" Type="string" Value="3BD09DE63CC8BAD01D50FD62A1CA856A6AB81AD1FE844741040FACAF188D531A" />
+        <Value Name="3" Type="string" Value="5B2E37A0BC82F84CEA1FE6B64E4F0762425B7173273BCDA430292F858993179E" />
+        <Value Name="4" Type="string" Value="F155C50ABDABBA1B203937A5F90D241E5E3F64C58C5D625F2392837F382C53A0" />
+        <Value Name="5" Type="string" Value="24B75927D51E42B5767065DB38C6C5411BB0F97E7B905D1D60772101F5E64134" />
+      </Values>
+    </Values>
+    <Values Name="UsedMods">
+      <Values Name="Mods">
+        <Values Name="0">
+          <Value Name="Version" Type="string" Value="1.2.0" />
+          <Value Name="PackageName" Type="string" Value="zh667.ScCsgoKnives" />
+        </Values>
+      </Values>
+    </Values>
+  </Subsystems>
+  <Entities>
+    <Entity Name="MalePlayer">
+      <Values Name="CreativeInventory">
+        <Values Name="Slots">
+          <Values Name="Slot0">
+            <Value Name="Contents" Type="int" Value="2195773" />
+          </Values>
+          <Values Name="Slot1">
+            <Value Name="Contents" Type="int" Value="5243197" />
+          </Values>
+          <Values Name="Slot10">
+            <Value Name="Contents" Type="int" Value="3637565" />
+          </Values>
+          <Values Name="Slot11">
+            <Value Name="Contents" Type="int" Value="4211005" />
+          </Values>
+        </Values>
+      </Values>
+      <Values Name="ScGunTravel">
+        <Value Name="Version" Type="int" Value="3" />
+        <Value Name="Source" Type="string" Value="app:/doc/Worlds/World7" />
+        <Value Name="GrowthMode" Type="string" Value="Unset" />
+        <Value Name="Schema" Type="int" Value="6" />
+        <Value Name="Layout" Type="int" Value="5" />
+        <Values Name="Records">
+          <Value Name="2" Type="string" Value="v=6,r=30,s=0,d=1500,m=1500,n=124,c=-1,p=309,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="5" Type="string" Value="v=0,r=30,s=0,d=1500,m=1500,n=93,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="3" Type="string" Value="v=0,r=29,s=0,d=1500,m=1500,n=1,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+          <Value Name="4" Type="string" Value="v=0,r=28,s=0,d=1500,m=1500,n=2,c=-1,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc=0,ov=0,kc=0" />
+        </Values>
+        <Values Name="Identities">
+          <Value Name="2" Type="string" Value="3BD09DE63CC8BAD01D50FD62A1CA856A6AB81AD1FE844741040FACAF188D531A" />
+          <Value Name="5" Type="string" Value="24B75927D51E42B5767065DB38C6C5411BB0F97E7B905D1D60772101F5E64134" />
+          <Value Name="3" Type="string" Value="5B2E37A0BC82F84CEA1FE6B64E4F0762425B7173273BCDA430292F858993179E" />
+          <Value Name="4" Type="string" Value="F155C50ABDABBA1B203937A5F90D241E5E3F64C58C5D625F2392837F382C53A0" />
+        </Values>
+      </Values>
+    </Entity>
+  </Entities>
+</Project>

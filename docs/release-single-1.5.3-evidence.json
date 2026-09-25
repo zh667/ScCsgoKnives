@@ -1,0 +1,166 @@
+{
+  "date": "2026-09-25",
+  "base_commit": "9426484",
+  "layout": 5,
+  "schema": 6,
+  "rules": 7,
+  "packages": {
+    "Full": {
+      "path": "[API1.9]CS武器1.5.3-作者ZH667-全量总包.scmod",
+      "bytes": 491120481,
+      "sha256": "2bcfd2e046798ccbaecfa53c61ed9c2ae818ba590cf0beae8e741ded47621505",
+      "gameplayDlls": {
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "90cda8dc7d10160f94f52f905e222b2f886a0806b374d1104671f081c231ea13",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553"
+      }
+    },
+    "Lite": {
+      "path": "[API1.9]CS武器1.5.3-作者ZH667-512轻量总包.scmod",
+      "bytes": 88470601,
+      "sha256": "49f63697ab198e5086c301b5143ce9acc485798e1c3ae356d493bfa77f0739c3",
+      "gameplayDlls": {
+        "Integrations/ScCsgoAppearance.bin": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "90cda8dc7d10160f94f52f905e222b2f886a0806b374d1104671f081c231ea13",
+        "ScCsgoResources.dll": "1a0fdc9759428ed8a4cf635c0b7a316b3d29f47cea96ef04433c1c1a958352d4",
+        "ScCsgoTactical.dll": "fcdad8e01ae244df8e19c40e14deee50cbd9810b3930554eb9322a5c26a22553"
+      }
+    }
+  },
+  "reports": {
+    "balance": {
+      "count": 28699,
+      "passed": 28699,
+      "failed": 0,
+      "coreSha256": "90cda8dc7d10160f94f52f905e222b2f886a0806b374d1104671f081c231ea13"
+    },
+    "sushi_inventory": {
+      "count": 2248,
+      "passed": 2248,
+      "failed": 0
+    },
+    "protected_load": [
+      {
+        "Name": "protected-load/actual-120-dll-confirms-two-preexisting-conflicts",
+        "Ok": true,
+        "Detail": "actual-120-dll-confirms-two-preexisting-conflicts"
+      },
+      {
+        "Name": "protected-load/whole-world-copy-with-local-conflict-is-not-a-player-import",
+        "Ok": true,
+        "Detail": "whole-world-copy-with-local-conflict-is-not-a-player-import"
+      },
+      {
+        "Name": "protected-load/backup-failure-is-atomic",
+        "Ok": true,
+        "Detail": "backup-failure-is-atomic"
+      },
+      {
+        "Name": "protected-load/native-subsystem-save-two-reloads-preserve-conflict-and-good-state",
+        "Ok": true,
+        "Detail": "native-subsystem-save-two-reloads-preserve-conflict-and-good-state"
+      },
+      {
+        "Name": "protected-load/orphan-watermark-survives-saving-and-new-guns",
+        "Ok": true,
+        "Detail": "orphan-watermark-survives-saving-and-new-guns"
+      },
+      {
+        "Name": "protected-load/unknown-schema-and-foreign-bits-still-refused",
+        "Ok": true,
+        "Detail": "unknown-schema-and-foreign-bits-still-refused"
+      },
+      {
+        "Name": "protected-load/nontext-record-cannot-enter-local-preservation",
+        "Ok": true,
+        "Detail": "nontext-record-cannot-enter-local-preservation"
+      },
+      {
+        "Name": "protected-load/duplicate-xml-record-cannot-be-silently-merged",
+        "Ok": true,
+        "Detail": "duplicate-xml-record-cannot-be-silently-merged"
+      },
+      {
+        "Name": "protected-load/changed-conflict-needs-a-new-backup",
+        "Ok": true,
+        "Detail": "changed-conflict-needs-a-new-backup"
+      },
+      {
+        "Name": "protected-load/raw-quarantined-row-and-item-survive-two-reloads",
+        "Ok": true,
+        "Detail": "raw-quarantined-row-and-item-survive-two-reloads"
+      },
+      {
+        "Name": "protected-load/mismatch-cannot-witness-duplicate-and-strip-good-gun-growth",
+        "Ok": true,
+        "Detail": "mismatch-cannot-witness-duplicate-and-strip-good-gun-growth"
+      },
+      {
+        "Name": "protected-load/travel-capture-does-not-export-AK-as-M249",
+        "Ok": true,
+        "Detail": "travel-capture-does-not-export-AK-as-M249"
+      },
+      {
+        "Name": "protected-load/failed-capture-does-not-keep-a-stale-destination-source",
+        "Ok": true,
+        "Detail": "failed-capture-does-not-keep-a-stale-destination-source"
+      }
+    ],
+    "core-Full": {
+      "count": 13621,
+      "failed": 0,
+      "report_sha256": "5ceb566ef83ad754eed63423dc61892466705af235d1149c45c57995ed224e69"
+    },
+    "tactical-Full": {
+      "count": 56,
+      "failed": 0,
+      "report_sha256": "61c62b30a10d1bb8cbbaad59eb411e00d954c4683dc178a4f15bd7cdb76fdb3f"
+    },
+    "gate-Full": {
+      "count": 9,
+      "failed": 0,
+      "report_sha256": "13a7550f0c9244ae18c3264f9c95b96a73d89d371c57c177f3a30db6f84b3ef2"
+    },
+    "core-Lite": {
+      "count": 14334,
+      "failed": 0,
+      "report_sha256": "181e740bb9d01821f96cf5df8546e53d36e059abd7735079e51fc0177320877e"
+    },
+    "tactical-Lite": {
+      "count": 56,
+      "failed": 0,
+      "report_sha256": "8f184bb3950d941f7242e021250d414d2f4e164f5eee5eba904ad399fad1bce6"
+    },
+    "gate-Lite": {
+      "count": 9,
+      "failed": 0,
+      "report_sha256": "13a7550f0c9244ae18c3264f9c95b96a73d89d371c57c177f3a30db6f84b3ef2"
+    }
+  },
+  "source_fixture": {
+    "source_project_sha256": "018ae333415562cfe28184b6a54ec5ac2b9f2c2584cf7bf051ee18b828117d7e",
+    "fixture_sha256": "bc2c95fcdd2f3354f2595e9c620d6c71587ce7b962e305ef2e05bcc6ac6bdaa1",
+    "source_version": "1.2.0",
+    "source_package_sha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
+    "extraction": "Only saved gun block mapping, complete gun subsystem, CS version, gun creative slots, and gun travel packet. No item/record values changed.",
+    "expected_valid_slots": [
+      "Slot0",
+      "Slot1"
+    ],
+    "expected_conflicting_slots": [
+      "Slot10",
+      "Slot11"
+    ]
+  },
+  "original_120_dll_sha256": "e3fce07af8835371ff2ac5cef7ba7576c8ac3c509b6f761c145c6a9fdafcb585",
+  "recovered_missing_states": false,
+  "compatibility": "Verified-backup-first local-damage preservation. Healthy gun states unchanged; two preexisting model conflicts kept unusable. Allocation watermark reserves old orphan IDs.",
+  "limits": [
+    "No installed-mod or original player-world writes",
+    "Original M249/M4A1-S state still requires a trustworthy pre-loss backup",
+    "Offline actual old/new DLL and native XML load/save paths; no full rendered game or Android acceptance"
+  ]
+}

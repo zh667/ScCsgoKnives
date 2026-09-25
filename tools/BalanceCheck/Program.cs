@@ -11,6 +11,7 @@ try {
     foreach(var c in full.RootElement.GetProperty("checks").EnumerateArray())Check(c.GetProperty("name").GetString(),c.GetProperty("ok").GetBoolean(),c.GetProperty("detail").GetString());
 }catch(Exception e){Check("Cs2SelfTest/exception",false,e.ToString());}
 if (args.Length >= 2) MigrationCheck.Run(args[1], Check);
+if (args.Length >= 2) ProtectedLoadCheck.Run(args[1], Check);
 BalanceRegression.Run(Check);
 LoadIntegrityCheck.Run(Check);
 string output = args.Length > 0 ? args[0] : "balance-check.json";

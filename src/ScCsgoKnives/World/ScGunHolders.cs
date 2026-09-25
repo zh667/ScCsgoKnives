@@ -86,20 +86,20 @@ public static class ScGunHolders {
         }
         var pickables = project.FindSubsystem<SubsystemPickables>(false);
         if (pickables is not null) foreach (var pickable in pickables.Pickables.ToArray()) {
-            if (pickable.Count <= 0 || Terrain.ExtractContents(pickable.Value) != gunBlockIndex) continue;
+            if (pickable.Count <= 0 || Terrain.ExtractContents(pickable.Value) != gunBlockIndex || !MatchesRecord(pickable.Value)) continue;
             int id = GunSpec.GetId(Terrain.ExtractData(pickable.Value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId && seen.Add(Key(pickable, 0))) yield return new Holder(id, Key(pickable, 0), null, -1);
         }
         var projectiles = project.FindSubsystem<SubsystemProjectiles>(false);
         if (projectiles is not null) foreach (var projectile in projectiles.Projectiles.ToArray()) {
-            if (Terrain.ExtractContents(projectile.Value) != gunBlockIndex) continue;
+            if (Terrain.ExtractContents(projectile.Value) != gunBlockIndex || !MatchesRecord(projectile.Value)) continue;
             int id = GunSpec.GetId(Terrain.ExtractData(projectile.Value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId) yield return new Holder(id, Key(projectile, 0), null, -1);
         }
         var moving = project.FindSubsystem<SubsystemMovingBlocks>(false);
         if (moving is not null) foreach (var set in moving.MovingBlockSetEnumerable) for (int i = 0; i < set.Blocks.Count; i++) {
             int value = set.Blocks[i].Value;
-            if (Terrain.ExtractContents(value) != gunBlockIndex) continue;
+            if (Terrain.ExtractContents(value) != gunBlockIndex || !MatchesRecord(value)) continue;
             int id = GunSpec.GetId(Terrain.ExtractData(value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId) yield return new Holder(id, Key(set, i), null, -1);
         }
@@ -120,14 +120,19 @@ public static class ScGunHolders {
         bool Live(Holder h) => h.Inventory is not null && !IsDormantPlayerInventory(h.Inventory)
             && h.Slot >= 0 && h.Slot < h.Inventory.SlotsCount && Key(h.Inventory, h.Slot) == h.Key
             && h.Inventory.GetSlotCount(h.Slot) > 0 && Terrain.ExtractContents(h.Inventory.GetSlotValue(h.Slot)) == gunIndex
+            && MatchesRecord(h.Inventory.GetSlotValue(h.Slot))
             && GunSpec.GetId(Terrain.ExtractData(h.Inventory.GetSlotValue(h.Slot))) == h.Id;
         return acting.Id == witness.Id && acting.Key != witness.Key && Live(acting) && Live(witness);
     }
     static IEnumerable<Holder> Of(IInventory inventory, int slot, int gunBlockIndex, HashSet<string> seen) {
         int value = inventory.GetSlotValue(slot);
-        if (inventory.GetSlotCount(slot) == 0 || Terrain.ExtractContents(value) != gunBlockIndex) yield break;
+        if (inventory.GetSlotCount(slot) == 0 || Terrain.ExtractContents(value) != gunBlockIndex || !MatchesRecord(value)) yield break;
         int id = GunSpec.GetId(Terrain.ExtractData(value));
         string key = Key(inventory, slot);
         if (id >= GunSpec.FirstId && id <= GunSpec.LastId && seen.Add(key)) yield return new Holder(id, key, inventory, slot);
     }
+    // Invalid references are reserved at XML load, but cannot witness a live duplicate: doing so
+    // would strip growth from a healthy gun merely because an unrelated broken item shares its number.
+    public static bool MatchesRecord(int value) => ScGunRegistry.Current is null
+        || GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out _);
 }

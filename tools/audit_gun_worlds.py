@@ -13,7 +13,7 @@ def analyze(data,label):
     result=dict(source=label,sha256=hashlib.sha256(data).hexdigest(),records=len(rows),gun_subsystem=gun is not None)
     refs=[]
     if len(maps)==1:
-        block=int(maps[0].get('Name'));ids={int(r.get('Name')) for r in rows}
+        block=int(maps[0].get('Name'));ids={int(r.get('Name')):dict(f.split('=',1) for f in r.get('Value').split(',') if '=' in f) for r in rows}
         for holder in doc.iter('Values'):
             slots=holder.find("Values[@Name='Slots']")
             if slots is None:continue
@@ -22,7 +22,8 @@ def analyze(data,label):
                 if field is None:continue
                 value=int(field.get('Value'));data=value>>14;rid=(data>>6)&1023
                 if value&1023==block and rid not in (0,1023):
-                    refs.append(dict(holder=holder.get('Name'),slot=slot.get('Name'),record=rid,variant=data&63,missing=rid not in ids))
+                    refs.append(dict(holder=holder.get('Name'),slot=slot.get('Name'),record=rid,variant=data&63,missing=rid not in ids,
+                                     model_mismatch=rid in ids and ids[rid].get('v')!=str(data&63)))
     result['references']=refs
     return result
 reports=[]
@@ -41,4 +42,5 @@ for p in Path(r'D:\下载').glob('*.scworld'):
 log=out/'Game.log'
 if not log.exists():shutil.copyfile(game/'Bugs/Game.log',log)
 (out/'audit.json').write_text(json.dumps(reports,ensure_ascii=False,indent=2),'utf-8')
-for r in reports:print(r['source'], 'records=',r['records'],'missing=',[i['record'] for i in r['references'] if i['missing']])
+for r in reports:print(r['source'], 'records=',r['records'],'missing=',[i['record'] for i in r['references'] if i['missing']],
+                      'model_conflicts=',[i['record'] for i in r['references'] if i['model_mismatch']])

@@ -1,5 +1,22 @@
 # Project conventions
 
+- User-reported 1.2.0 migration failure, 2026-09-25 follow-up: release 1.5.3 replaces
+  1.5.2's blanket local-reference refusal with verified-backup-first preservation.
+  Recognized v5 tables may retain missing/quarantined/model-conflicting items while
+  healthy guns remain usable. Preserve every item value and raw row; reserve the
+  allocation watermark above ALL old references before gameplay, including inactive
+  slots, drops, projectiles, moving blocks, recovery and pending kills. Unknown formats,
+  missing whole tables, nontext records, stacked instances or backup failure still refuse.
+  Invalid model references must not witness duplicates (or strip healthy gun growth),
+  and cannot be exported as the wrong model in travel packets. Keep prior packet evidence
+  with an explicit Error, not silently replace it with guessed state. Protected local
+  anomalies have a saved notice and a verified full-world snapshot; changed anomalies
+  require a new snapshot. New world and release formats/IDs remain v5/schema6/rules7.
+  The supplied actual 1.2.0 save already has Slot10 M249 -> AK record 3 and Slot11
+  M4A1-S -> AK record 4; freeze the minimal extracted fixture and its provenance under
+  tools/fixtures/migration-120-20260925. Do not claim these two original guns recovered.
+  See docs/release-single-1.5.3.md. Do not install or rewrite player worlds.
+
 - User correction 2026-09-25 supersedes the global base RPM reduction: every Lv0 gun
   uses extracted CS2 cadence, including burst and R8 alternate timings. Zeus base
   recharge is 30 seconds. Reduce earned speed bonuses only: ordinary Lv50 x1.325,

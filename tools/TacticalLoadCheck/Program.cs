@@ -50,6 +50,33 @@ if(args.Length==3&&args[0]=="--world-resource-gate"){
         if(!refused)throw new Exception("Actual XML hook failed to block missing gun registry");
         blockedGroup.Remove();if(!XNode.DeepEquals(broken,brokenBefore))throw new Exception("Guard changed source item fields");
         gateChecks.Add(new{name="actual-project-xml-hook-refuses-missing-record-without-source-edits",ok=true});
+        // Actual 1.2.0 gun subtree: two good carried guns and two model-conflicting old items.
+        var legacyFixture=XElement.Load("tools/fixtures/migration-120-20260925/world7-guns.xml");
+        var localCopy=new XElement(legacyFixture);
+        var auditDir=Directory.CreateTempSubdirectory("packaged-120-upgrade-");
+        string projectPath=Path.Combine(auditDir.FullName,"Project.xml");localCopy.Save(projectPath);
+        File.WriteAllText(Path.Combine(auditDir.FullName,"other-mod-state"),"preserved");
+        byte[] originalDisk=File.ReadAllBytes(projectPath);
+        world.DirectoryName=auditDir.FullName;
+        var hook=core.GetType("Game.ScCsgoKnivesModLoader").GetMethod("ProjectXmlLoad",[typeof(XElement),typeof(WorldInfo),typeof(ContainerWidget)]);
+        for(int round=0;round<2;round++){
+            hook.Invoke(loader,[localCopy,world,null]);
+            var gun=localCopy.Element("Subsystems").Elements("Values").Single(v=>(string)v.Attribute("Name")=="ScGunBlockBehavior");
+            var loadedValues=new ValuesDictionary();loadedValues.ApplyOverrides(gun);
+            core.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[loadedValues]);
+            var notice=loadedValues.GetValue<ValuesDictionary>("GunIntegrityProtection");
+            if(notice.GetValue<int>("Count")!=2||!File.Exists(notice.GetValue<string>("Backup")))throw new Exception("Local conflicts were not backed up and preserved");
+            if(!XNode.DeepEquals(legacyFixture.Element("Entities"),localCopy.Element("Entities")))throw new Exception("Player gun XML was changed by the compatibility hook");
+            localCopy=XElement.Parse(localCopy.ToString());
+        }
+        if(!originalDisk.SequenceEqual(File.ReadAllBytes(projectPath)))throw new Exception("Source world was overwritten by load hook");
+        var snapshots=Directory.GetFiles(auditDir.FullName,"*.snapshot");if(snapshots.Length!=1)throw new Exception("Expected one shared integrity/release backup");
+        using(var preserved=System.IO.Compression.ZipFile.OpenRead(snapshots[0])){
+            if(preserved.GetEntry("other-mod-state")==null)throw new Exception("Full-world backup omitted another mod's state");
+            using var stream=preserved.GetEntry("Project.xml").Open();using var data=new MemoryStream();stream.CopyTo(data);
+            if(!data.ToArray().SequenceEqual(originalDisk))throw new Exception("Backup differs from source world");
+        }
+        gateChecks.Add(new{name="actual-120-native-hook-two-loads-keep-items-backup-and-allow-local-conflicts",ok=true});
         foreach(var entry in entries.Where(e=>e.FilenameInZip.StartsWith("Assets/")&&(e.FilenameInZip.EndsWith(".xml")||e.FilenameInZip.EndsWith(".xdb")))){
             using var data=new MemoryStream();archive.ExtractFile(entry,data);data.Position=0;
             XElement.Load(data);gateChecks.Add(new{name="raw-xml/"+entry.FilenameInZip,ok=true});

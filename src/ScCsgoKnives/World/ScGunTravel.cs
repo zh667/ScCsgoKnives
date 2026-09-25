@@ -60,6 +60,8 @@ public static class ScGunTravel {
         if(!int.TryParse(Text(registry,"Schema"),out int schema)||schema is not (ScGunRegistry.SchemaTenLevels or ScGunRegistry.SchemaThirtyLevels or ScGunRegistry.SchemaStagedKills or ScGunRegistry.Schema))return;
         var rows=Map(Group(registry,"Records"));var identities=Map(Group(gun,Identities));int block=Index(project);
         if(block<0)return;
+        var proofValues=new ValuesDictionary();proofValues.ApplyOverrides(new XElement(registry));
+        var proofRegistry=ScGunRegistry.Load(proofValues,0);
         string worldId=Text(gun,WorldIdentity);
         // Old identities are preserved verbatim. New identities use a persisted world UUID, not a reusable folder name.
         string seed=Guid.TryParse(worldId,out var uuid)?uuid.ToString("N"):world;
@@ -72,7 +74,12 @@ public static class ScGunTravel {
             if(schema!=ScGunRegistry.SchemaTenLevels)packet.Add(Field("Schema",schema),Field("Layout",GunSpec.DataLayout));
             var carried=Make("Records");var keys=Make("Identities");
             try {
-                foreach(var item in Items(player,block).DistinctBy(i=>i.Id)) {
+                var items=Items(player,block).ToArray();
+                // Validate every item before deduplicating IDs; a conflicting second model is not a copy.
+                foreach(var item in items)
+                    if(!proofRegistry.TryGetSnapshot(item.Id,out var state)||state.Variant!=item.Variant)
+                        throw new InvalidOperationException($"携带枪械 #{item.Id} 的记录缺失、已隔离或型号冲突，请先恢复原记录；禁止跨世界重建新枪");
+                foreach(var item in items.DistinctBy(i=>i.Id)) {
                     string id=item.Id.ToString(CultureInfo.InvariantCulture);
                     if(!rows.TryGetValue(id,out var row))throw new InvalidOperationException("枪械记录缺失，禁止跨世界重建新枪");
                     carried.Add(Field(id,row));keys.Add(Field(id,identities.GetValueOrDefault(id)??Token(world,item.Id)));
@@ -81,7 +88,22 @@ public static class ScGunTravel {
                 bool pending=Group(Group(registry,"PendingKills"),"Entries")?.HasElements==true
                     || Group(Group(registry,"Recovery"),"Batches")?.HasElements==true;
                 if(carried.HasElements && pending)throw new InvalidOperationException("有待结算击杀或物品补偿，请结算后再传送");
-            }catch(Exception e){packet.Add(Field("Error",e.Message));}
+            }catch(Exception e){
+                // Retain any previous recovery evidence, but mark it unusable for transport.
+                if(Group(player,Packet) is {} previous) {
+                    var preserved=new XElement(previous);
+                    preserved.Elements("Value").Where(v=>(string)v.Attribute("Name")=="Error").Remove();
+                    // The error belongs to THIS save. Leaving an older destination as Source could
+                    // make a later failed transfer look local and bypass the incoming-error check.
+                    string oldSource=Text(preserved,"Source");
+                    if(oldSource!=world && Text(preserved,"RecoverySource") is null && oldSource is not null)
+                        preserved.Add(Field("RecoverySource",oldSource));
+                    preserved.Elements("Value").Where(v=>(string)v.Attribute("Name")=="Source").Remove();
+                    preserved.Add(Field("Source",world));
+                    preserved.Add(Field("Error",e.Message));Replace(player,preserved);continue;
+                }
+                packet.Add(Field("Error",e.Message));
+            }
             packet.Add(carried,keys);Replace(player,packet);
         }
         KnifeLog.Trace($"[GUN_TRAVEL_04110] saved world={world}; carried records="+project.Element("Entities")?.Elements().Where(Player).Sum(p=>Group(Group(p,Packet),"Records")?.Elements().Count()??0));
@@ -117,11 +139,13 @@ public static class ScGunTravel {
         int block=Index(doc);if(block<0)return false;
         var fields=new ValuesDictionary();var table=Group(gun,"GunRegistry");if(table is null)return false;
         fields.ApplyOverrides(table);var registry=ScGunRegistry.Load(fields,0);
-        if(registry.Disabled||registry.QuarantinedCount>0)return false;
+        if(registry.Disabled)return false;
         var rows=Map(Group(table,"Records"));var packetRows=Map(Group(packet,"Records"));
         var ids=Map(Group(gun,Identities));var packetIds=Map(Group(packet,"Identities"));
-        return Items(player,block).All(i=>registry.TryGetSnapshot(i.Id,out var s)&&s.Variant==i.Variant)
-            &&packetRows.All(p=>rows.GetValueOrDefault(p.Key)==p.Value)
+        _=Items(player,block).ToArray(); // unknown encodings/counts still refuse; only local record defects are tolerated
+        // Proven whole-world copies keep their local damaged references too. The integrity guard
+        // handles those after this step; treating them as player-only imports would overwrite/renumber them.
+        return packetRows.All(p=>rows.GetValueOrDefault(p.Key)==p.Value)
             &&packetIds.All(p=>ids.GetValueOrDefault(p.Key)==p.Value);
     }
     public static Plan Prepare(XElement source,string target) {

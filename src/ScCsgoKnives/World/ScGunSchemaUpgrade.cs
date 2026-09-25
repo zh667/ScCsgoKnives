@@ -18,7 +18,7 @@ namespace Game;
 /// is deliberately a separate copy so a change here cannot disturb that verified path.</summary>
 public static class ScGunSchemaUpgrade {
     public const string Marker = "GunSchemaUpgrade";
-    public const string ReleaseMarker = "GunReleaseBackup", Release = "1.5.2";
+    public const string ReleaseMarker = "GunReleaseBackup", Release = "1.5.3";
     static readonly CultureInfo CI = CultureInfo.InvariantCulture;
 
     static XElement Subsystem(XElement project) => project.Element("Subsystems")?.Elements("Values")

@@ -93,8 +93,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         try {
             string schemaBackup = ScGunSchemaUpgrade.BeforeLoad(project, world);
             ScGunTravel.BeforeLoad(project,world);
-            ScGunLoadIntegrity.ValidateReferences(project);
-            ScGunSchemaUpgrade.BeforeReleaseLoad(project, world, schemaBackup);
+            string integrityBackup = ScGunLoadIntegrity.BeforeLoad(project, world, schemaBackup);
+            ScGunSchemaUpgrade.BeforeReleaseLoad(project, world, schemaBackup ?? integrityBackup);
         }
         catch (Exception e) {
             // A freshly-created Ghoul subworld has no gun subsystem XML yet; the guard still needs

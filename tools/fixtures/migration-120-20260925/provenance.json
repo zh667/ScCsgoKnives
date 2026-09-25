@@ -1,0 +1,15 @@
+{
+  "source_project_sha256": "018ae333415562cfe28184b6a54ec5ac2b9f2c2584cf7bf051ee18b828117d7e",
+  "fixture_sha256": "bc2c95fcdd2f3354f2595e9c620d6c71587ce7b962e305ef2e05bcc6ac6bdaa1",
+  "source_version": "1.2.0",
+  "source_package_sha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
+  "extraction": "Only saved gun block mapping, complete gun subsystem, CS version, gun creative slots, and gun travel packet. No item/record values changed.",
+  "expected_valid_slots": [
+    "Slot0",
+    "Slot1"
+  ],
+  "expected_conflicting_slots": [
+    "Slot10",
+    "Slot11"
+  ]
+}
