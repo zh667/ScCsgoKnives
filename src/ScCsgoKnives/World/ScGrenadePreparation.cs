@@ -1,9 +1,18 @@
 namespace Game;
 
 /// <summary>Input release, not a timer, authorizes a throw. No live grenade exists here.</summary>
-public sealed class ScGrenadePreparation(double startedAt, float pullSeconds, float releaseSeconds, float throwSeconds) {
+public sealed class ScGrenadePreparation(double startedAt, float pullSeconds, float releaseSeconds, float throwSeconds, bool autoRelease = false) {
+    // Preserve the reflection-bound four-argument constructor used by older package diagnostics.
+    public ScGrenadePreparation(double startedAt, float pullSeconds, float releaseSeconds, float throwSeconds)
+        : this(startedAt, pullSeconds, releaseSeconds, throwSeconds, false) { }
+    /// <summary>
+    /// Quick throw keeps the authored pull/hold animation at its original speed. It only changes the
+    /// release policy: once the preparation clip reaches its end, the projectile is released immediately.
+    /// The previous implementation shortened pullpin to 0.15/0.20 seconds, which made the hand jump
+    /// between unrelated clip frames and looked like a broken animation.
+    /// </summary>
     public static ScGrenadePreparation Create(double now,float pull,float release,float duration,bool quick,bool molotov,double deployDelay=0) =>
-        quick?new(now+deployDelay,(molotov?.20f:.15f)-(release==0?0:.03f),release==0?0:.03f,(molotov?.35f:.30f)+(release==0?0:.03f)):new(now,pull,release,duration);
+        quick?new(now,pull,release,duration,true):new(now,pull,release,duration);
     public double StartedAt { get; } = startedAt;
     public double ReadyAt { get; } = startedAt + pullSeconds;
     public double ThrowStartedAt { get; private set; } = double.PositiveInfinity;
@@ -13,6 +22,7 @@ public sealed class ScGrenadePreparation(double startedAt, float pullSeconds, fl
     public double EndAt => ThrowStartedAt + throwSeconds;
     public void Step(double now, bool pressed) {
         if (!pressed) ReleaseRequested = true;
+        if (autoRelease && now >= ReadyAt) ReleaseRequested = true;
         if (!Throwing && ReleaseRequested && now >= ReadyAt) ThrowStartedAt = now;
     }
     public int Stage(double now) => Throwing ? 2 : now < ReadyAt ? 0 : 1;

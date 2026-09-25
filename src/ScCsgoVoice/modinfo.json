@@ -1,1 +1,12 @@
-{"Name":"CS探员语音 · 中英精选","Version":"1.0.0","ApiVersion":"1.9.3.1","ScVersion":"2.4.0.0","PackageName":"zh667.ScCsgoVoice","Author":"ZH667","LoadOrder":1030,"NonPersistentMod":true,"Description":"可选的SAS/Phoenix中英语音包：CT/T玩家主动选句、同伴与敌队自动喊话。语音跟随全局语言，卸载不影响世界；需要支持探员语音接口的CS主包。","Dependencies":{}}
+{
+  "Name": "CS探员语音 · 中英精选",
+  "Version": "1.1.0",
+  "ApiVersion": "1.9.3.1",
+  "ScVersion": "2.4.0.0",
+  "PackageName": "zh667.ScCsgoVoice",
+  "Author": "ZH667",
+  "LoadOrder": 1030,
+  "NonPersistentMod": true,
+  "Description": "可选的SAS/Phoenix中英语音包：CT/T玩家按Z打开左下角数字HUD快速选句、同伴与敌队自动喊话。语音跟随全局语言，卸载不影响世界；需要支持探员语音接口的CS主包。",
+  "Dependencies": {}
+}

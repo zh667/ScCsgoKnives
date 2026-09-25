@@ -220,7 +220,10 @@ public static class Cs2Rig {
         },
     };
 
-    static readonly ScResourceCache<string, Asset> s_assets = new("animations", 12);
+    // Keep the full gun set resident after the first draw. A 12-entry LRU repeatedly
+    // evicted weapons during hotbar switching, forcing synchronous JSON parsing and
+    // causing the visible hitch reported on desktop.
+    static readonly ScResourceCache<string, Asset> s_assets = new("animations", 40);
     static readonly Lazy<Dictionary<string, Asset>> s_metadata = new(() => {
         var watch = System.Diagnostics.Stopwatch.StartNew();
         var assembly = typeof(Cs2Rig).Assembly;

@@ -22,6 +22,10 @@ public static class ScGunBindings {
     public static bool KeyboardDown(ComponentPlayer p, string id, bool once = false) => Available(p)
         && Enum.TryParse<Key>(Get(id), out var key) && key != Key.Null
         && (once ? p.GameWidget.Input.IsKeyDownOnce(key) : p.GameWidget.Input.IsKeyDown(key));
+    public static bool NumberDown(ComponentPlayer p, int number) {
+        if(number<0||number>9||!Available(p))return false;
+        return p.GameWidget.Input.IsKeyDownOnce((Key)((int)Key.Number0+number));
+    }
     // Secondary actions are mutually exclusive across guns. Other shared keys would trigger two actions.
     public static bool Conflict(string a, string b) {
         if(a==ScGunFunctions.Voice||b==ScGunFunctions.Voice)return true;

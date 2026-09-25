@@ -14,7 +14,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override bool IsEditable_(int value) => false;
     static readonly int s_count = GunSpec.All.Length;
     static readonly string[] s_names = GunSpec.All.Select(spec => spec.Name).ToArray();
-    readonly ScResourceCache<int, BlockMesh> m_models = new("gun-items", 12, 2000);
+    readonly ScResourceCache<int, BlockMesh> m_models = new("gun-items", 40, 2000);
     readonly Dictionary<(int Variant, string Part), BlockMesh> m_nativeModels = [];
 
     /// <summary>Rig manifest index of a gun variant.</summary>

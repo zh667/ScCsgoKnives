@@ -46,16 +46,56 @@ public sealed class AgentVoiceModLoader:ModLoader {
     });
     [MethodImpl(MethodImplOptions.NoInlining)] static void Connect(){
         AgentVoiceOptions.Load();ScAgentVoice.OpenSettings=AgentVoiceMenus.Settings;
-        ScAgentVoice.OpenMenu=p=>AgentVoiceMenus.Menu(p);
+        // The in-world voice key is handled by the subsystem HUD. Keeping the callback
+        // here avoids opening a modal list dialog from a gameplay input edge.
+        ScAgentVoice.OpenMenu=p=>p?.Project?.FindSubsystem<SubsystemScAgentVoice>(false)?.OpenMenu(p);
         ScWorkbenchExtension.RegisterAction(new("agent-voice","探员语音设置","功能",(p,back)=>AgentVoiceMenus.Settings(p.GuiWidget)));
     }
+}
+sealed class VoiceHud : IDisposable {
+    public readonly CanvasWidget Root = new() {
+        Size = new Vector2(440, 116), HorizontalAlignment = WidgetAlignment.Near,
+        VerticalAlignment = WidgetAlignment.Far, MarginLeft = 12, MarginBottom = 126,
+        IsVisible = false, IsHitTestVisible = false
+    };
+    readonly LabelWidget title = ScGunUi.Label("语音菜单", .68f, ScGunUi.Accent);
+    readonly LabelWidget hint = ScGunUi.Label("按 1–5 选择；再次按 Z 关闭", .52f, ScGunUi.Dim);
+    readonly BevelledButtonWidget[] options = Enumerable.Range(1, 5).Select(i => ScGunUi.Button(i.ToString(), 78, 44)).ToArray();
+    readonly CanvasWidget content = new() { Size = new Vector2(420, 104), MarginLeft = 10, MarginTop = 6 };
+    readonly StackPanelWidget row = new() { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Near };
+    public bool Visible => Root.IsVisible;
+    public VoiceHud() {
+        var frame = ScGunUi.Frame(); frame.IsHitTestVisible = false; Root.Children.Add(frame);
+        foreach(var option in options){option.FontScale=.56f;option.Margin=new Vector2(2,0);}
+        var stack = new StackPanelWidget { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
+        stack.Children.Add(title); stack.Children.Add(hint); row.Children.Add(options[0]); row.Children.Add(options[1]);
+        row.Children.Add(options[2]); row.Children.Add(options[3]); row.Children.Add(options[4]); stack.Children.Add(row);
+        content.Children.Add(stack); Root.Children.Add(content);
+    }
+    public void Attach(ContainerWidget host) { if (!ReferenceEquals(Root.ParentWidget, host)) { Root.ParentWidget?.Children.Remove(Root); host?.Children.Add(Root); } }
+    public void Show(string role, string language, IReadOnlyList<string> labels) {
+        title.Text = (role == "ct" ? "CT · SAS" : "T · Phoenix") + " · " + (language == "zh" ? "中文" : "English");
+        hint.Text = "按数字键或点击；每项从对应语音变体中随机选择";
+        for (int i = 0; i < options.Length; i++) options[i].Text = $"{i + 1}  {labels[i]}";
+        Root.IsHitTestVisible = true; Root.IsVisible = true;
+    }
+    public int Clicked() { for (int i = 0; i < options.Length; i++) if (options[i].IsClicked) return i + 1; return 0; }
+    public void Hide() { Root.IsVisible = false; Root.IsHitTestVisible = false; }
+    public void Dispose() { Root.ParentWidget?.Children.Remove(Root); }
 }
 /// <summary>One scheduler per world; no voice queue or random clocks are written to saves.</summary>
 public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
     sealed class Speaker {public double Next,Ambient;public float Health;public readonly Queue<string> Recent=[];public readonly Dictionary<string,double> Last=[];}
     sealed record Pending(Entity Entity,string Role,string Action,double At,double Expires,AgentVoiceClip Exact=null,bool Manual=false);
     readonly Dictionary<Entity,Speaker> speakers=new(ReferenceEqualityComparer.Instance);
-    readonly Dictionary<ComponentPlayer,BevelledButtonWidget> buttons=[];
+    readonly Dictionary<ComponentPlayer,VoiceHud> huds=[];
+    static readonly (string Label, string[] Events)[] Commands = [
+        ("跟我来", ["radio.followme"]),
+        ("发现敌人", ["radio.enemyspotted"]),
+        ("需要支援", ["radio.needbackup"]),
+        ("投掷物", ["grenade", "flashbang", "smoke", "molotov", "decoy"]),
+        ("回应", ["affirmative", "negative", "thanks", "inposition", "waitinghere"])
+    ];
     readonly List<Pending> pending=[];
     readonly List<(Vector3 Position,double Until,bool Manual)> playing=[];
     readonly Engine.Random random=new();
@@ -87,21 +127,38 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
         if(s.Last.TryGetValue(clip.Id,out var last)&&now-last<15){reason="这句刚说过，请换一句";return false;}
         pending.RemoveAll(p=>ReferenceEquals(p.Entity,player.Entity));pending.Add(new(player.Entity,clip.Role,clip.Event,now,now+2,clip,true));return true;
     }
+    public bool ManualRandom(ComponentPlayer player, int command, out string reason) {
+        reason=""; string role=ScAgentVoice.PlayerRole(player), language=AgentVoiceOptions.Current.Language;
+        if(command<0||command>=Commands.Length){reason="语音选项无效";return false;}
+        var events=Commands[command].Events;
+        var candidates=AgentVoiceModLoader.Clips.Where(c=>c.Role==role&&c.Language==language
+            &&events.Contains(c.Event)).ToArray();
+        if(candidates.Length==0){reason="这个语音选项暂无可用语音";return false;}
+        return Manual(player,candidates[random.Int(0,candidates.Length-1)],out reason);
+    }
+    VoiceHud Hud(ComponentPlayer p) { if(!huds.TryGetValue(p,out var h)){h=new VoiceHud();h.Attach(p.ComponentGui.ControlsContainerWidget);huds[p]=h;}return h; }
+    public void OpenMenu(ComponentPlayer player) {
+        if(!enabled||player is null||!AgentVoiceOptions.Current.PlayerEnabled||ScAgentVoice.PlayerRole(player) is not("ct" or "t"))return;
+        Hud(player).Show(ScAgentVoice.PlayerRole(player),AgentVoiceOptions.Current.Language,Commands.Select(c=>c.Label).ToArray());
+    }
     [MethodImpl(MethodImplOptions.NoInlining)] void Unsubscribe()=>ScAgentVoice.Event-=Receive;
-    public override void Dispose(){if(enabled)Unsubscribe();foreach(var b in buttons.Values)b.ParentWidget?.Children.Remove(b);buttons.Clear();pending.Clear();speakers.Clear();playing.Clear();base.Dispose();}
+    public override void Dispose(){if(enabled)Unsubscribe();foreach(var h in huds.Values)h.Dispose();huds.Clear();pending.Clear();speakers.Clear();playing.Clear();base.Dispose();}
     public void Update(float dt){if(enabled)Tick();}
     [MethodImpl(MethodImplOptions.NoInlining)] void Tick(){
         double now=time.GameTime;var options=AgentVoiceOptions.Current;
         if(revision!=AgentVoiceOptions.Revision){revision=AgentVoiceOptions.Revision;pending.Clear();}
         playing.RemoveAll(p=>p.Until<=now);
         foreach(var player in players.ComponentPlayers){
-            if(!buttons.TryGetValue(player,out var b)){b=ScGunUi.Button("语音",90);buttons[player]=b;player.ComponentGui.ControlsContainerWidget.Children.Add(b);}
-            bool active=ScGunBindings.Available(player)&&ScAgentVoice.PlayerRole(player) is "ct" or "t"&&options.PlayerEnabled;
-            var layout=ScUiSettings.Layout(ScGunFunctions.Voice);b.IsVisible=active&&ScUiSettings.CustomButtons&&layout.Enabled&&player.ComponentGui.ControlsContainerWidget.IsVisible;
-            if(b.IsVisible)ScWeaponTouchPanel.Style(b,layout,player.ComponentGui.ControlsContainerWidget.ActualSize,new Color(80,80,80,255),new Color(180,180,180,255));
-            if(active&&(b.IsClicked||ScGunBindings.Down(player,ScGunFunctions.Voice,true)))AgentVoiceMenus.Menu(player);
+            var hud=Hud(player);bool active=ScGunBindings.Available(player)&&ScAgentVoice.PlayerRole(player) is "ct" or "t"&&options.PlayerEnabled;
+            if(!active){hud.Hide();continue;}
+            bool voicePressed=ScGunBindings.Down(player,ScGunFunctions.Voice,true);
+            if(voicePressed){if(hud.Visible)hud.Hide();else OpenMenu(player);}
+            if(!hud.Visible)continue;
+            int selected=hud.Clicked();
+            if(selected==0)for(int n=1;n<=5;n++)if(ScGunBindings.NumberDown(player,n)){selected=n;break;}
+            if(selected>0){ManualRandom(player,selected-1,out string reason);if(!string.IsNullOrEmpty(reason))player.ComponentGui.DisplaySmallMessage(reason,Color.White,false,false);hud.Hide();}
         }
-        foreach(var p in buttons.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){buttons[p].ParentWidget?.Children.Remove(buttons[p]);buttons.Remove(p);}
+        foreach(var p in huds.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){huds[p].Dispose();huds.Remove(p);}
         if(now>=nextScan){nextScan=now+.5;
             foreach(var e in Project.Entities){string role=Role(e);if(role is null||!Alive(e))continue;var s=State(e);float health=e.FindComponent<ComponentHealth>().Health;
                 if(health<s.Health-.0001f)Receive(e,role,"hurt");s.Health=health;

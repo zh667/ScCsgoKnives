@@ -61,12 +61,17 @@ static class ResourceRegression {
                 return string.Join("|", bones.OrderBy(p => p.Key).Select(p => p.Key + ":" + p.Value.ToString()));
             }
             string expected = Signature(Call("Cs2Rig", "Sample", "butterfly", "idle", .125f));
+            int Capacity(string type, string field) {
+                object cache=mod.GetType("Game."+type).GetField(field, BindingFlags.NonPublic|BindingFlags.Static).GetValue(null);
+                return (int)cache.GetType().GetProperty("Capacity").GetValue(cache);
+            }
+            int animationCapacity=Capacity("Cs2Rig","s_assets"), skinnedCapacity=Capacity("Cs2SkinnedMesh","s_weapons"), rigidCapacity=Capacity("Cs2RigidMesh","s_cache");
             foreach (string name in names) {
                 Test("load-with-cache-limits/" + name, () => {
                     if (Call("Cs2Rig", "Sample", name, "idle", .125f) is null) return false;
                     Call("Cs2SkinnedMesh", "Weapon", name); Call("Cs2RigidMesh", "For", name);
-                    var counts = Counts(); return counts.GetValueOrDefault("animations") <= 12
-                        && counts.GetValueOrDefault("skinned-weapons") <= 8 && counts.GetValueOrDefault("rigid-weapons") <= 8;
+                    var counts = Counts(); return counts.GetValueOrDefault("animations") <= animationCapacity
+                        && counts.GetValueOrDefault("skinned-weapons") <= skinnedCapacity && counts.GetValueOrDefault("rigid-weapons") <= rigidCapacity;
                 });
             }
             Test("evicted-animation-reloads-identically", () => Signature(Call("Cs2Rig", "Sample", "butterfly", "idle", .125f)) == expected);
