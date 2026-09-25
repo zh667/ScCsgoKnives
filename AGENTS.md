@@ -1,5 +1,33 @@
 # Project conventions
 
+- Standing user requirement, accepted 2026-09-25: implement the 1.0 / 1.2.0 /
+  latest COMPATIBILITY REVISIONS, and require bidirectional replacement for every
+  future formal release in this compatibility family. This supersedes the old
+  upgrade-only scope. Original downloaded archives remain immutable baselines;
+  do not imply unmodified original 1.0 can read newer saves. Preserve old gameplay/
+  assets where not required for compatibility; never label renamed current-rule
+  presets as historical compatibility builds. Keep permanent gun identities and
+  state, pending obligations, newer item/entity payloads, and all unrelated world
+  data across switches. No-op switches cannot grant/lose ammo, repair, levels or
+  rewards. Older builds must preserve unsupported newer content for return.
+  Every release needs the six-direction matrix plus prior family releases,
+  play/mutation tests, two save/reloads and backup/failure tests; a new format or
+  field cannot ship until older family readers preserve it safely. Refusal is a
+  fallback for damaged/unsupported input, not the normal replacement workflow.
+  Record the supported family/protocol explicitly; do not promise behavior of
+  arbitrary third-party mods or already distributed unmodified old binaries.
+  See docs/three-version-switching-design-2026-09-25.md. Packaging is authorized;
+  installation and writing original player worlds remain outside this work.
+
+- Compatibility family 1 is now implemented: 1.0.0-compat.1, 1.2.0-compat.1,
+  and latest 1.6.0 Full/Lite. Shared protocol-1 capsule, backup-first hook,
+  dormant entities, unavailable item carriers, appearance retention and common gun
+  state live in `ScCompatibility.cs`. Original archives remain immutable. Six-way
+  state/mutation checks (240 cases), native hook checks and package checks passed.
+  Only revision packages are bidirectional members; unmodified old binaries remain
+  protected/refused. Every later release must append to family 1 or add a preserving
+  protocol converter and rerun earlier family members.
+
 - User-reported 1.2.0 migration failure, 2026-09-25 follow-up: release 1.5.3 replaces
   1.5.2's blanket local-reference refusal with verified-backup-first preservation.
   Recognized v5 tables may retain missing/quarantined/model-conflicting items while

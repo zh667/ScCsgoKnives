@@ -129,7 +129,8 @@ public static class ScGunHolders {
         if (inventory.GetSlotCount(slot) == 0 || Terrain.ExtractContents(value) != gunBlockIndex || !MatchesRecord(value)) yield break;
         int id = GunSpec.GetId(Terrain.ExtractData(value));
         string key = Key(inventory, slot);
-        if (id >= GunSpec.FirstId && id <= GunSpec.LastId && seen.Add(key)) yield return new Holder(id, key, inventory, slot);
+        if (id >= GunSpec.FirstId && id <= GunSpec.LastId && seen.Add(key))
+            yield return inventory is ComponentScCompatibilityArchive ? new Holder(id,key,null,-1) : new Holder(id, key, inventory, slot);
     }
     // Invalid references are reserved at XML load, but cannot witness a live duplicate: doing so
     // would strip growth from a healthy gun merely because an unrelated broken item shares its number.

@@ -18,7 +18,7 @@ namespace Game;
 /// is deliberately a separate copy so a change here cannot disturb that verified path.</summary>
 public static class ScGunSchemaUpgrade {
     public const string Marker = "GunSchemaUpgrade";
-    public const string ReleaseMarker = "GunReleaseBackup", Release = "1.5.3";
+    public const string ReleaseMarker = "GunReleaseBackup", Release = "1.6.0";
     static readonly CultureInfo CI = CultureInfo.InvariantCulture;
 
     static XElement Subsystem(XElement project) => project.Element("Subsystems")?.Elements("Values")
@@ -104,7 +104,7 @@ public static class ScGunSchemaUpgrade {
     public static string BeforeLoad(XElement project, WorldInfo world) {
         if (world is null || !NeedsBackup(project)) return null;
         int from = SavedSchema(project);
-        string backup = Snapshot(world.DirectoryName, FileName(from, ScGunRegistry.Schema), from);
+        string backup = ScCompatibility.VerifiedBackup ?? Snapshot(world.DirectoryName, FileName(from, ScGunRegistry.Schema), from);
         if (string.IsNullOrWhiteSpace(backup)) throw new InvalidOperationException("世界备份没有成功完成，记录格式升级取消");
         Mark(project, from, backup);
         KnifeLog.Information($"gun record schema {from} -> {ScGunRegistry.Schema}: world backed up to {backup} before the first save in the new format");
@@ -121,7 +121,7 @@ public static class ScGunSchemaUpgrade {
         // A new world has no prior CS version. Do not snapshot every newly created world.
         string sourceVersion = ScGun0282Migration.SavedVersion(project);
         if (string.IsNullOrWhiteSpace(sourceVersion) || sourceVersion == Release) return null;
-        string backup = verifiedBackup ?? Snapshot(world.DirectoryName, "ScCsgoKnives-before-" + Release + "-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CI) + "-" + Guid.NewGuid().ToString("N")[..8]);
+        string backup = verifiedBackup ?? ScCompatibility.VerifiedBackup ?? Snapshot(world.DirectoryName, "ScCsgoKnives-before-" + Release + "-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CI) + "-" + Guid.NewGuid().ToString("N")[..8]);
         Group(gun, ReleaseMarker)?.Remove();
         gun.Add(new XElement("Values", new XAttribute("Name", ReleaseMarker), Value("Release", "string", Release),
             Value("SourceVersion", "string", sourceVersion), Value("Path", "string", backup)));

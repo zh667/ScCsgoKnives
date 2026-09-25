@@ -1,5 +1,17 @@
 # Repository instructions
 
+Standing user requirement (2026-09-25): 1.0/1.2.0/latest compatibility revisions
+are authorized. ALL future formal releases in that family must support safe
+bidirectional replacement, with original state and newer unsupported content
+preserved. Upgrade-only is no longer sufficient. Read the newest AGENTS.md rule
+and the three-version switching design; original historical archives remain
+immutable and are not retroactively made compatible by documentation.
+
+Family 1 compatibility revisions are now staged and tested: 1.0.0-compat.1,
+1.2.0-compat.1 and 1.6.0. Use the shared ScCompatibility protocol and preserve
+unsupported newer entities/items as dormant opaque payloads. Do not claim original
+unmodified old packages can read newer saves.
+
 Read and follow [AGENTS.md](AGENTS.md) for project conventions, current M4-only scope, peer synchronization and release requirements. Other milestones remain BLOCKED until the user resumes them.
 
 # Git handoff (user-directed 2026-09-08)

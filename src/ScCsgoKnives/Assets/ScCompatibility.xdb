@@ -1,0 +1,12 @@
+<Mod>
+  <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ScCompatibility" Guid="481d798d-3c61-46a1-90d5-106778881fe2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="99cf8258-554f-4e1d-a788-f071662e5f02" Value="Game.SubsystemScCompatibility" Type="string" />
+    </MemberSubsystemTemplate>
+  </ProjectTemplate>
+  <EntityTemplate Name="ScCompatibilityDormant" Guid="7807c7ed-ce6a-4fdf-aad7-782480bf5e83">
+    <MemberComponentTemplate Name="ScCompatibilityArchive" Guid="e3de7b72-09b4-41d0-b654-df1416bbfc8f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+      <Parameter Name="Class" Guid="324f84ba-1467-4c92-822b-6928ef49416e" Value="Game.ComponentScCompatibilityArchive" Type="string" />
+    </MemberComponentTemplate>
+  </EntityTemplate>
+</Mod>

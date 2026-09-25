@@ -7,6 +7,46 @@ using Engine.Serialization;
 using Game;
 using TemplatesDatabase;
 
+if(args.Length==4&&args[0]=="--compat-native") {
+    Dispatcher.Initialize();var cases=new List<object>();int failure=0;
+    void CheckCompat(string name,bool ok){cases.Add(new{name,ok});if(!ok)throw new Exception(name);}
+    try {
+        var coreMod=new HeadlessMod{ModArchive=Game.ZipArchive.Open(File.OpenRead(args[1]))};coreMod.InitResources();
+        ModsManager.ModList.Add(coreMod);var assemblies=coreMod.GetAssemblies();
+        foreach(var a in assemblies)ModsManager.Dlls[a.FullName]=a;
+        AppDomain.CurrentDomain.AssemblyResolve+=(_,e)=>ModsManager.Dlls.GetValueOrDefault(e.Name);
+        foreach(var a in assemblies)coreMod.HandleAssembly(a);
+        using var vanilla=System.IO.Compression.ZipFile.OpenRead(args[2]);
+        using var databaseStream=vanilla.Entries.Single(e=>e.FullName.EndsWith("Database.xml")).Open();var database=XElement.Load(databaseStream);
+        coreMod.LoadXdb(ref database);DatabaseManager.LoadDataBaseFromXml(database);
+        CheckCompat("native-database-resolves-dormant-entity",DatabaseManager.FindEntityValuesDictionary("ScCompatibilityDormant",true)!=null);
+        var coreAssembly=assemblies.Single(a=>a.GetName().Name=="ScCsgoKnives");
+        var hooks=ModsManager.m_tempModHooks["ProjectXmlLoad"].UnorderedItems.OrderBy(i=>i.Priority).Select(i=>i.Element).ToArray();
+        CheckCompat("compatibility-hook-precedes-core",hooks[0].GetType().Name=="ScCompatibilityModLoader");
+        ContentManager.AddContentReader(new Game.IContentReader.XmlReader());
+        coreMod.GetFile("Assets/ScCsgoResources.xml",s=>{
+            var copy=new MemoryStream();s.CopyTo(copy);copy.Position=0;
+            var contentInfo=new ContentInfo("ScCsgoResources.xml");contentInfo.SetContentStream(copy);ContentManager.Add(contentInfo);
+        });
+        var dir=Directory.CreateTempSubdirectory("compat-native-");
+        var doc=XElement.Load("tools/fixtures/migration-120-20260925/world7-guns.xml");
+        string path=Path.Combine(dir.FullName,"Project.xml");doc.Save(path);byte[] before=File.ReadAllBytes(path);
+        var info=(WorldInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(WorldInfo));info.DirectoryName=dir.FullName;
+        foreach(var hook in hooks)hook.ProjectXmlLoad(doc,info,null);
+        var gun=doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior");var values=new ValuesDictionary();values.ApplyOverrides(gun);
+        coreAssembly.GetType("Game.ScGunSaveGuard").GetMethod("Validate").Invoke(null,[values]);
+        CheckCompat("real-source-120-hook-allowed-after-backup",Directory.GetFiles(dir.FullName,"*.snapshot").Length>=1&&before.SequenceEqual(File.ReadAllBytes(path)));
+        var proxy=XElement.Parse("<Entity Id='42' Guid='7807c7ed-ce6a-4fdf-aad7-782480bf5e83' Name='ScCompatibilityDormant'><Values Name='ScCompatibilityArchive'><Value Name='Payload' Type='string' Value='&lt;Entity Id=&quot;42&quot; Name=&quot;Preserved&quot; /&gt;'/></Values></Entity>");
+        var data=new GameEntitySystem.EntityData(DatabaseManager.GameDatabase,proxy);var round=new XElement("Entity");data.Save(round);
+        CheckCompat("native-entity-serialization-keeps-id-and-payload",(string)round.Attribute("Id")=="42"&&round.Descendants("Value").Any(e=>(string)e.Attribute("Name")=="Payload"));
+        var activities=new List<Action>();foreach(var loader in coreMod.Loaders)if(loader.GetType().Name is "ScCompatibilityModLoader" or "BundleModLoader")loader.OnLoadingFinished(activities);
+        foreach(var action in activities)action();
+        CheckCompat("usedmods-keeps-tactical-identity",ModsManager.GetModEntity("zh667.ScCsgoTactical",out _));
+    }catch(Exception e){failure=1;cases.Add(new{error=e.ToString()});Console.Error.WriteLine(e);}
+    File.WriteAllText(args[3],JsonSerializer.Serialize(new{failed=failure,checks=cases},new JsonSerializerOptions{WriteIndented=true}));
+    Console.WriteLine($"compat-native {cases.Count} cases, failed={failure}");return failure;
+}
+
 // Exercise the native archive scanner, loader registration and database type resolution.
 // Each mode runs in its own process, without compile-time references to any tested mod.
 if(args.Length==3&&args[0]=="--world-resource-gate"){
