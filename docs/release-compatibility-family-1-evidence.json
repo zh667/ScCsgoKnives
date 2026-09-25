@@ -1,0 +1,110 @@
+{
+  "family": 1,
+  "protocol": 1,
+  "layout": 5,
+  "schema": 6,
+  "rules": 7,
+  "base_commit": "6688492",
+  "packages": [
+    {
+      "path": "[API1.9]CS武器1.0.0-双向兼容修订1-作者ZH667.scmod",
+      "version": "1.0.0-compat.1",
+      "profile": "1.0.0",
+      "edition": "Full",
+      "bytes": 330113731,
+      "sha256": "673650b921b4fc8667ed37b7c3958934ef8d3aed05c2be88a4106c9d36b36113",
+      "coreSha256": "816250d88dd1b15b5c757cfee9e95f5b3dd56ef1988afefdcd052d90b056163e",
+      "sourceSha256": "9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424",
+      "entries": 1131
+    },
+    {
+      "path": "[API1.9]CS武器1.2.0-双向兼容修订1-作者ZH667.scmod",
+      "version": "1.2.0-compat.1",
+      "profile": "1.2.0",
+      "edition": "Full",
+      "bytes": 376589665,
+      "sha256": "afd99facaed009cbc1094da4405546efe2c7709d55b2df7d4dc8772d9a6eaa4e",
+      "coreSha256": "075dd41435da3d033d3110deea88cb08a948a99b77b5e9e1a2917356b78b025e",
+      "sourceSha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
+      "entries": 1267
+    },
+    {
+      "path": "[API1.9]CS武器1.6.0-作者ZH667-全量总包.scmod",
+      "version": "1.6.0",
+      "profile": "latest",
+      "edition": "Full",
+      "bytes": 491127647,
+      "sha256": "840e0e40cb9e3f8f9ada69167f2def5a814a2b4f9c40ae076d2be10799cab8bb",
+      "coreSha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a",
+      "sourceSha256": "2bcfd2e046798ccbaecfa53c61ed9c2ae818ba590cf0beae8e741ded47621505",
+      "entries": 1425
+    },
+    {
+      "path": "[API1.9]CS武器1.6.0-作者ZH667-512轻量总包.scmod",
+      "version": "1.6.0",
+      "profile": "latest",
+      "edition": "Lite",
+      "bytes": 88477780,
+      "sha256": "2e5a34ca1b61552b3383bf9c42953aac5c480581f7750ab4c9f1921d64b03739",
+      "coreSha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a",
+      "sourceSha256": "49f63697ab198e5086c301b5143ce9acc485798e1c3ae356d493bfa77f0739c3",
+      "entries": 1427
+    }
+  ],
+  "reports": {
+    "matrix": {
+      "count": 240,
+      "passed": 240,
+      "failed": 0,
+      "modules": [
+        {
+          "Name": "0",
+          "sha256": "816250d88dd1b15b5c757cfee9e95f5b3dd56ef1988afefdcd052d90b056163e"
+        },
+        {
+          "Name": "1",
+          "sha256": "075dd41435da3d033d3110deea88cb08a948a99b77b5e9e1a2917356b78b025e"
+        },
+        {
+          "Name": "2",
+          "sha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a"
+        }
+      ]
+    },
+    "latest_balance": {
+      "count": 28699,
+      "passed": 28699,
+      "failed": 0,
+      "coreSha256": "f13366f0d75b6456e171b64c6b92337d53aebff1313bf5c84418a95ec5c86c4a"
+    },
+    "native_100": {
+      "count": 5,
+      "failed": 0
+    },
+    "native_120": {
+      "count": 5,
+      "failed": 0
+    },
+    "native_160": {
+      "count": 5,
+      "failed": 0
+    },
+    "packaged_full": {
+      "count": 13621,
+      "failed": 0,
+      "packageSha256": "840e0e40cb9e3f8f9ada69167f2def5a814a2b4f9c40ae076d2be10799cab8bb"
+    },
+    "packaged_lite": {
+      "count": 14334,
+      "failed": 0,
+      "packageSha256": "2e5a34ca1b61552b3383bf9c42953aac5c480581f7750ab4c9f1921d64b03739"
+    }
+  },
+  "limitations": [
+    "Offline/native diagnostics, not full-game or Android acceptance",
+    "Historical revisions share canonical 50-level persistence and safety code; they are not byte-identical originals",
+    "Unmodified old binaries remain outside bidirectional family",
+    "Unknown future types/fields require preserving converters and all-prior-version release tests",
+    "Already missing original gun records cannot be reconstructed without trustworthy backups"
+  ]
+}
