@@ -20,8 +20,8 @@ def main():
         dll=ROOT/'src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll';version='1.6.0'
         name=f'[API1.9]CS武器1.6.0-作者ZH667-{"512轻量" if lite else "全量"}总包.scmod'
     else:
-        _,source,expected=SOURCES[a.profile];version=a.profile+'-compat.1';dll=ROOT/f'.tmp/compatibility/{a.profile}/src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll'
-        name=f'[API1.9]CS武器{a.profile}-双向兼容修订1-作者ZH667.scmod'
+        _,source,expected=SOURCES[a.profile];version=a.profile;dll=ROOT/f'.tmp/compatibility/{a.profile}/src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll'
+        name=f'[API1.9]CS武器{a.profile}-双向兼容-全量包.scmod'
     assert sha(source.read_bytes())==expected
     matrix=json.loads((ROOT/'.tmp/compatibility-check.json').read_text('utf8'));assert matrix['failed']==0
     index={'1.0.0':0,'1.2.0':1,'latest':2}[a.profile]
@@ -44,7 +44,7 @@ def main():
     add('Assets/ScCompatibilityManifest.xml',build(not latest))
     add('Integrations/CompatibilityFamily.json',json.dumps(dict(family=1,profile=a.profile,version=version,source_sha256=expected,core_sha256=sha(dll.read_bytes()),legacy=not latest,backup_policy='manual',build_revision='2026-09-25-manual-backup'),indent=2).encode('utf8'))
     text='''双向兼容系列1。退出世界后在本系列内替换，一个世界只启用一个CS主包。
-系列成员：1.0.0-compat.1、1.2.0-compat.1、1.6.0（全量/轻量）。未修订原1.0/1.2包不是双向系列成员。
+系列成员：1.0.0、1.2.0 双向兼容包，以及后续系列1版本（全量/轻量）。仅版本号相同不代表兼容；未修订原1.0/1.2包不是双向系列成员。
 原版1.0/1.2存档可以首次导入。模组不自动生成备份；更新、切换及迁移前请自行备份世界。
 旧版修订保留历史玩法/资源源码，统一回移50级持久成长、库存事务、身份与补偿保护，避免永久状态反复折算。
 旧版修订中小鸡、战术实体暂时休眠，保留编号、装备和状态。新版物品保留类型与data，显示暂不可用；返回最新版恢复。

@@ -1,0 +1,3187 @@
+{
+  "date": "2026-09-26",
+  "scope": "Plain 1.0.0/1.2.0 versions, four historical Full/Lite deliveries and 1.0.0 Lite resource gate fix",
+  "packages": [
+    {
+      "path": "[API1.9]CS武器1.0.0-双向兼容-全量包.scmod",
+      "version": "1.0.0",
+      "profile": "1.0.0",
+      "edition": "Full",
+      "bytes": 330113322,
+      "sha256": "8bbcb323b615b331e31e32d60eb9e93b8ed97291813aa89620d943190b8d0a26",
+      "coreSha256": "0028d99a9f15bb7e5ef8971efb14caab5b0c47b30f63e2386a465744c22c86d4",
+      "sourceSha256": "9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424",
+      "entries": 1131,
+      "packageName": "zh667.ScCsgoKnives",
+      "native": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native-database-resolves-dormant-entity",
+            "ok": true
+          },
+          {
+            "name": "compatibility-hook-precedes-core",
+            "ok": true
+          },
+          {
+            "name": "real-source-120-hook-no-automatic-backup",
+            "ok": true
+          },
+          {
+            "name": "second-load-without-backup-directory",
+            "ok": true
+          },
+          {
+            "name": "native-entity-serialization-keeps-id-and-payload",
+            "ok": true
+          },
+          {
+            "name": "usedmods-keeps-tactical-identity",
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "path": "[API1.9]CS武器1.0.0-双向兼容-轻量包.scmod",
+      "version": "1.0.0",
+      "profile": "1.0.0",
+      "edition": "Lite",
+      "bytes": 75848241,
+      "sha256": "39cabc241c5f232f6d17f7e3236dfd89fca1c3daa30ae2a828cbb0d85f9af80c",
+      "sourceSha256": "b0ea6fe417abaa175fe22687fbc49472d6e8261c3699cfcde7119952746c902e",
+      "entries": 1132,
+      "coreSha256": "0028d99a9f15bb7e5ef8971efb14caab5b0c47b30f63e2386a465744c22c86d4",
+      "previousPackageSha256": "c5cb950a4046fd9491d031a2a1ed55a875d2ab8b05f74c3d3133705f5eedb41f",
+      "preservedCompressedEntries": 1128,
+      "changedEntries": [
+        "Integrations/CompatibilityFamily.json",
+        "ScCsgoKnives.dll"
+      ],
+      "packageName": "zh667.ScCsgoKnives",
+      "native": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native-database-resolves-dormant-entity",
+            "ok": true
+          },
+          {
+            "name": "compatibility-hook-precedes-core",
+            "ok": true
+          },
+          {
+            "name": "real-source-120-hook-no-automatic-backup",
+            "ok": true
+          },
+          {
+            "name": "second-load-without-backup-directory",
+            "ok": true
+          },
+          {
+            "name": "native-entity-serialization-keeps-id-and-payload",
+            "ok": true
+          },
+          {
+            "name": "usedmods-keeps-tactical-identity",
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "path": "[API1.9]CS武器1.2.0-双向兼容-全量包.scmod",
+      "version": "1.2.0",
+      "profile": "1.2.0",
+      "edition": "Full",
+      "bytes": 376588904,
+      "sha256": "71e05f1d62683f0081b6de233879cda86acae2f5541d91f9270b533a9438527c",
+      "coreSha256": "166073263c689563385130a3ea4527f7c5ea1ee8867a4ca90d28b7f487d64e24",
+      "sourceSha256": "b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95",
+      "entries": 1267,
+      "packageName": "zh667.ScCsgoKnives",
+      "native": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native-database-resolves-dormant-entity",
+            "ok": true
+          },
+          {
+            "name": "compatibility-hook-precedes-core",
+            "ok": true
+          },
+          {
+            "name": "real-source-120-hook-no-automatic-backup",
+            "ok": true
+          },
+          {
+            "name": "second-load-without-backup-directory",
+            "ok": true
+          },
+          {
+            "name": "native-entity-serialization-keeps-id-and-payload",
+            "ok": true
+          },
+          {
+            "name": "usedmods-keeps-tactical-identity",
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "path": "[API1.9]CS武器1.2.0-双向兼容-轻量包.scmod",
+      "version": "1.2.0",
+      "profile": "1.2.0",
+      "edition": "Lite",
+      "bytes": 79617268,
+      "sha256": "5b23d24b60623baf8f76a752d85d2500b0eee768259841b32069456c3de67d65",
+      "sourceSha256": "bef9f363b2917d9d67be901b63ac34fc5138434f7da2d6fef1d6e3d32ec72a20",
+      "entries": 1268,
+      "coreSha256": "166073263c689563385130a3ea4527f7c5ea1ee8867a4ca90d28b7f487d64e24",
+      "previousPackageSha256": "5b23d24b60623baf8f76a752d85d2500b0eee768259841b32069456c3de67d65",
+      "preservedCompressedEntries": 1264,
+      "changedEntries": [],
+      "packageName": "zh667.ScCsgoKnives",
+      "native": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native-database-resolves-dormant-entity",
+            "ok": true
+          },
+          {
+            "name": "compatibility-hook-precedes-core",
+            "ok": true
+          },
+          {
+            "name": "real-source-120-hook-no-automatic-backup",
+            "ok": true
+          },
+          {
+            "name": "second-load-without-backup-directory",
+            "ok": true
+          },
+          {
+            "name": "native-entity-serialization-keeps-id-and-payload",
+            "ok": true
+          },
+          {
+            "name": "usedmods-keeps-tactical-identity",
+            "ok": true
+          }
+        ]
+      }
+    }
+  ],
+  "resourceChecks": [
+    {
+      "version": "1.0.0",
+      "failed": 0,
+      "count": 526,
+      "passed": 526,
+      "fullSha256": "8bbcb323b615b331e31e32d60eb9e93b8ed97291813aa89620d943190b8d0a26",
+      "liteSha256": "39cabc241c5f232f6d17f7e3236dfd89fca1c3daa30ae2a828cbb0d85f9af80c",
+      "liteBytes": 75848241
+    },
+    {
+      "version": "1.2.0",
+      "failed": 0,
+      "count": 617,
+      "passed": 617,
+      "fullSha256": "71e05f1d62683f0081b6de233879cda86acae2f5541d91f9270b533a9438527c",
+      "liteSha256": "5b23d24b60623baf8f76a752d85d2500b0eee768259841b32069456c3de67d65",
+      "liteBytes": 79617268
+    }
+  ],
+  "compatibilityMatrices": [
+    {
+      "label": "current-family",
+      "failed": 0,
+      "count": 243,
+      "passed": 243,
+      "modules": [
+        {
+          "Name": "0",
+          "sha256": "0028d99a9f15bb7e5ef8971efb14caab5b0c47b30f63e2386a465744c22c86d4"
+        },
+        {
+          "Name": "1",
+          "sha256": "166073263c689563385130a3ea4527f7c5ea1ee8867a4ca90d28b7f487d64e24"
+        },
+        {
+          "Name": "2",
+          "sha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc"
+        }
+      ],
+      "checks": [
+        {
+          "name": "0->1/state/0",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/1",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/2",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/3",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/4",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/5",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/6",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/7",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/8",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/9",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/10",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/11",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/12",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/13",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/14",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/15",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/16",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/17",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/18",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/19",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/20",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/21",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/22",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/23",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/24",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/25",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/26",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/27",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/28",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/29",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/30",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/31",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/32",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/33",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/34",
+          "ok": true
+        },
+        {
+          "name": "0->1/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "0->1/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "0->1/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "0->1/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/0",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/1",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/2",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/3",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/4",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/5",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/6",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/7",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/8",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/9",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/10",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/11",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/12",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/13",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/14",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/15",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/16",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/17",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/18",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/19",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/20",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/21",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/22",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/23",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/24",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/25",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/26",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/27",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/28",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/29",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/30",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/31",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/32",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/33",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/34",
+          "ok": true
+        },
+        {
+          "name": "0->2/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "0->2/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "0->2/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "0->2/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/0",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/1",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/2",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/3",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/4",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/5",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/6",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/7",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/8",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/9",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/10",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/11",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/12",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/13",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/14",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/15",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/16",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/17",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/18",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/19",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/20",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/21",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/22",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/23",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/24",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/25",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/26",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/27",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/28",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/29",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/30",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/31",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/32",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/33",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/34",
+          "ok": true
+        },
+        {
+          "name": "1->0/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "1->0/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "1->0/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "1->0/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/0",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/1",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/2",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/3",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/4",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/5",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/6",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/7",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/8",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/9",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/10",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/11",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/12",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/13",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/14",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/15",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/16",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/17",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/18",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/19",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/20",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/21",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/22",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/23",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/24",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/25",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/26",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/27",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/28",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/29",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/30",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/31",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/32",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/33",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/34",
+          "ok": true
+        },
+        {
+          "name": "1->2/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "1->2/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "1->2/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "1->2/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/0",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/1",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/2",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/3",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/4",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/5",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/6",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/7",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/8",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/9",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/10",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/11",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/12",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/13",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/14",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/15",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/16",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/17",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/18",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/19",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/20",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/21",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/22",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/23",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/24",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/25",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/26",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/27",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/28",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/29",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/30",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/31",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/32",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/33",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/34",
+          "ok": true
+        },
+        {
+          "name": "2->0/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "2->0/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "2->0/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "2->0/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/0",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/1",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/2",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/3",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/4",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/5",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/6",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/7",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/8",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/9",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/10",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/11",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/12",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/13",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/14",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/15",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/16",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/17",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/18",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/19",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/20",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/21",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/22",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/23",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/24",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/25",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/26",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/27",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/28",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/29",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/30",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/31",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/32",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/33",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/34",
+          "ok": true
+        },
+        {
+          "name": "2->1/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "2->1/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "2->1/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "2->1/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "0/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "0/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "0/opaque-entity-roundtrip",
+          "ok": true
+        },
+        {
+          "name": "1/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "1/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "1/opaque-entity-roundtrip",
+          "ok": true
+        },
+        {
+          "name": "2/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "2/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "2/opaque-entity-roundtrip",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "previous-modern",
+      "failed": 0,
+      "count": 243,
+      "passed": 243,
+      "modules": [
+        {
+          "Name": "0",
+          "sha256": "0028d99a9f15bb7e5ef8971efb14caab5b0c47b30f63e2386a465744c22c86d4"
+        },
+        {
+          "Name": "1",
+          "sha256": "166073263c689563385130a3ea4527f7c5ea1ee8867a4ca90d28b7f487d64e24"
+        },
+        {
+          "Name": "2",
+          "sha256": "3caf95fc6bcb27cf4f893555c8220fa8fe8b3bc8653f62afb3afe3be188305e9"
+        }
+      ],
+      "checks": [
+        {
+          "name": "0->1/state/0",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/1",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/2",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/3",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/4",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/5",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/6",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/7",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/8",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/9",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/10",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/11",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/12",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/13",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/14",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/15",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/16",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/17",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/18",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/19",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/20",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/21",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/22",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/23",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/24",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/25",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/26",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/27",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/28",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/29",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/30",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/31",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/32",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/33",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/34",
+          "ok": true
+        },
+        {
+          "name": "0->1/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "0->1/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "0->1/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "0->1/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/0",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/1",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/2",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/3",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/4",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/5",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/6",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/7",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/8",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/9",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/10",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/11",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/12",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/13",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/14",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/15",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/16",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/17",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/18",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/19",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/20",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/21",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/22",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/23",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/24",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/25",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/26",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/27",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/28",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/29",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/30",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/31",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/32",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/33",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/34",
+          "ok": true
+        },
+        {
+          "name": "0->2/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "0->2/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "0->2/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "0->2/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/0",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/1",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/2",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/3",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/4",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/5",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/6",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/7",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/8",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/9",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/10",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/11",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/12",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/13",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/14",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/15",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/16",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/17",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/18",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/19",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/20",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/21",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/22",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/23",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/24",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/25",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/26",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/27",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/28",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/29",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/30",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/31",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/32",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/33",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/34",
+          "ok": true
+        },
+        {
+          "name": "1->0/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "1->0/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "1->0/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "1->0/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/0",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/1",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/2",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/3",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/4",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/5",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/6",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/7",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/8",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/9",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/10",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/11",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/12",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/13",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/14",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/15",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/16",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/17",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/18",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/19",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/20",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/21",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/22",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/23",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/24",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/25",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/26",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/27",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/28",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/29",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/30",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/31",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/32",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/33",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/34",
+          "ok": true
+        },
+        {
+          "name": "1->2/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "1->2/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "1->2/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "1->2/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/0",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/1",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/2",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/3",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/4",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/5",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/6",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/7",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/8",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/9",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/10",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/11",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/12",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/13",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/14",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/15",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/16",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/17",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/18",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/19",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/20",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/21",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/22",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/23",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/24",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/25",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/26",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/27",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/28",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/29",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/30",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/31",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/32",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/33",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/34",
+          "ok": true
+        },
+        {
+          "name": "2->0/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "2->0/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "2->0/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "2->0/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/0",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/1",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/2",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/3",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/4",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/5",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/6",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/7",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/8",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/9",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/10",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/11",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/12",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/13",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/14",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/15",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/16",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/17",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/18",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/19",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/20",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/21",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/22",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/23",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/24",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/25",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/26",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/27",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/28",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/29",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/30",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/31",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/32",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/33",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/34",
+          "ok": true
+        },
+        {
+          "name": "2->1/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "2->1/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "2->1/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "2->1/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "0/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "0/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "0/opaque-entity-roundtrip",
+          "ok": true
+        },
+        {
+          "name": "1/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "1/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "1/opaque-entity-roundtrip",
+          "ok": true
+        },
+        {
+          "name": "2/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "2/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "2/opaque-entity-roundtrip",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "previous-100-revision",
+      "failed": 0,
+      "count": 243,
+      "passed": 243,
+      "modules": [
+        {
+          "Name": "0",
+          "sha256": "9a373b5f1db6b9e2dfb3eed91f8fe29272f077a6a48d062faf0d6a5c5197d5b6"
+        },
+        {
+          "Name": "1",
+          "sha256": "0028d99a9f15bb7e5ef8971efb14caab5b0c47b30f63e2386a465744c22c86d4"
+        },
+        {
+          "Name": "2",
+          "sha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc"
+        }
+      ],
+      "checks": [
+        {
+          "name": "0->1/state/0",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/1",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/2",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/3",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/4",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/5",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/6",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/7",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/8",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/9",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/10",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/11",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/12",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/13",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/14",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/15",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/16",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/17",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/18",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/19",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/20",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/21",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/22",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/23",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/24",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/25",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/26",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/27",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/28",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/29",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/30",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/31",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/32",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/33",
+          "ok": true
+        },
+        {
+          "name": "0->1/state/34",
+          "ok": true
+        },
+        {
+          "name": "0->1/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "0->1/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "0->1/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "0->1/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/0",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/1",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/2",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/3",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/4",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/5",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/6",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/7",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/8",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/9",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/10",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/11",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/12",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/13",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/14",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/15",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/16",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/17",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/18",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/19",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/20",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/21",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/22",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/23",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/24",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/25",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/26",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/27",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/28",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/29",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/30",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/31",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/32",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/33",
+          "ok": true
+        },
+        {
+          "name": "0->2/state/34",
+          "ok": true
+        },
+        {
+          "name": "0->2/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "0->2/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "0->2/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "0->2/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/0",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/1",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/2",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/3",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/4",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/5",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/6",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/7",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/8",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/9",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/10",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/11",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/12",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/13",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/14",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/15",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/16",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/17",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/18",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/19",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/20",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/21",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/22",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/23",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/24",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/25",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/26",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/27",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/28",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/29",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/30",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/31",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/32",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/33",
+          "ok": true
+        },
+        {
+          "name": "1->0/state/34",
+          "ok": true
+        },
+        {
+          "name": "1->0/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "1->0/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "1->0/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "1->0/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/0",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/1",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/2",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/3",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/4",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/5",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/6",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/7",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/8",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/9",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/10",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/11",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/12",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/13",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/14",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/15",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/16",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/17",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/18",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/19",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/20",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/21",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/22",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/23",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/24",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/25",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/26",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/27",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/28",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/29",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/30",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/31",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/32",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/33",
+          "ok": true
+        },
+        {
+          "name": "1->2/state/34",
+          "ok": true
+        },
+        {
+          "name": "1->2/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "1->2/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "1->2/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "1->2/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/0",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/1",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/2",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/3",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/4",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/5",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/6",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/7",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/8",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/9",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/10",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/11",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/12",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/13",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/14",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/15",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/16",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/17",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/18",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/19",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/20",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/21",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/22",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/23",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/24",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/25",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/26",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/27",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/28",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/29",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/30",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/31",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/32",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/33",
+          "ok": true
+        },
+        {
+          "name": "2->0/state/34",
+          "ok": true
+        },
+        {
+          "name": "2->0/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "2->0/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "2->0/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "2->0/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/0",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/1",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/2",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/3",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/4",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/5",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/6",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/7",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/8",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/9",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/10",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/11",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/12",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/13",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/14",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/15",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/16",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/17",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/18",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/19",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/20",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/21",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/22",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/23",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/24",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/25",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/26",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/27",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/28",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/29",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/30",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/31",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/32",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/33",
+          "ok": true
+        },
+        {
+          "name": "2->1/state/34",
+          "ok": true
+        },
+        {
+          "name": "2->1/play-state-and-kill",
+          "ok": true
+        },
+        {
+          "name": "2->1/repair-skin-silencer-and-new-gun",
+          "ok": true
+        },
+        {
+          "name": "2->1/growth-and-clone-do-not-inflate",
+          "ok": true
+        },
+        {
+          "name": "2->1/pending-kills-quarantine-and-full-watermark",
+          "ok": true
+        },
+        {
+          "name": "0/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "0/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "0/opaque-entity-roundtrip",
+          "ok": true
+        },
+        {
+          "name": "1/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "1/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "1/opaque-entity-roundtrip",
+          "ok": true
+        },
+        {
+          "name": "2/manual-backup-all-runtime-migration-paths",
+          "ok": true
+        },
+        {
+          "name": "2/preserves-all-later-item-type-identities",
+          "ok": true
+        },
+        {
+          "name": "2/opaque-entity-roundtrip",
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Offline and native loading diagnostics, not Android or full graphical game acceptance",
+    "Original downloaded archives and player worlds were not modified"
+  ]
+}

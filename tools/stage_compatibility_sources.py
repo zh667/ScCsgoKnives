@@ -47,6 +47,14 @@ def main():
     if a.version=='1.0.0':
         s=s.replace('    public static float SkinDamageMultiplier', '    public static float ShotInterval(float baseSeconds, int level) => ShotInterval(-1, baseSeconds, level);\n    public static float SkinDamageMultiplier')
     growth.write_text(s,'utf8')
+    # Historical 1.0 originally accepted only Full; both new editions must enter worlds.
+    if a.version=='1.0.0':
+        required=src/'World/ScRequiredResources.cs';s=required.read_text('utf8')
+        s=s.replace('(string)marker.Attribute("Edition")!="Full"', '(string)marker.Attribute("Edition") is not ("Full" or "Optimized512")')
+        s=s.replace('请安装匹配的 CS 武器完整资源前置包 "+Version+"，不要只安装主包。', '请安装匹配的 CS 武器 "+Version+" 全量包或512轻量包，内置资源缺失或不兼容。')
+        required.write_text(s,'utf8')
+        policy=src/'Rendering/ScResourcePolicy.cs';s=policy.read_text('utf8')
+        policy.write_text(s.replace('edition is "Lite" or "Mini";', 'edition is "Lite" or "Mini" or "Optimized512";'),'utf8')
     # Add the current pre-play integrity/backup calls without replacing historical input/render hooks.
     loader=src/'Mod/ScCsgoKnivesModLoader.cs';s=loader.read_text('utf8')
     old='try { ScGunSchemaUpgrade.BeforeLoad(project, world); ScGunTravel.BeforeLoad(project,world); }'
@@ -69,7 +77,7 @@ def main():
     s=s.replace('<ProjectReference Include="../ScCsgoResources/ScCsgoResources.csproj" />','<Reference Include="ScCsgoResources"><HintPath>../../refs/ScCsgoResources.dll</HintPath></Reference>')
     s=s.replace('<Target Name="PostBuild" AfterTargets="PostBuildEvent">','<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="\'$(SkipScmodPackaging)\' != \'true\'">')
     csproj.write_text(s,'utf8')
-    metadata['Version']=a.version+'-compat.1';metadata['Name']+=' · 双向兼容修订';metadata['ApiVersion']='1.9.3.1'
+    metadata['Version']=a.version;metadata['Name']+=' · 双向兼容修订';metadata['ApiVersion']='1.9.3.1'
     (src/'modinfo.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n','utf8')
     (stage/'backport.json').write_text(json.dumps(dict(source_commit=ref,source_package_sha256=digest,profile=a.version,shared_sources=changes),indent=2)+'\n','utf8')
     print(src)

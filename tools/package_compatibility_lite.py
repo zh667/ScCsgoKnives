@@ -22,8 +22,8 @@ def light_texture(name,data):
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('profile',choices=['1.0.0','1.2.0']);a=ap.parse_args()
-    source=OUT/f'[API1.9]CS武器{a.profile}-双向兼容修订1-作者ZH667.scmod'
-    target=OUT/f'[API1.9]CS武器{a.profile}-双向兼容修订1-512轻量-作者ZH667.scmod'
+    source=OUT/f'[API1.9]CS武器{a.profile}-双向兼容-全量包.scmod'
+    target=OUT/f'[API1.9]CS武器{a.profile}-双向兼容-轻量包.scmod'
     entries={};hashes={};renamed={};provenance=[]
     with zipfile.ZipFile(source) as z:
         for e in z.infolist():
@@ -48,6 +48,6 @@ def main():
         assert z.testzip() is None
         for name,h in hashes.items():assert sha(z.read(name))==h
     pending.replace(target);REPORT.mkdir(exist_ok=True)
-    report=dict(path=target.name,version=a.profile+'-compat.1',profile=a.profile,edition='Lite',bytes=target.stat().st_size,sha256=sha(target.read_bytes()),sourceSha256=sha(source.read_bytes()),entries=len(entries))
+    report=dict(path=target.name,version=a.profile,profile=a.profile,edition='Lite',bytes=target.stat().st_size,sha256=sha(target.read_bytes()),sourceSha256=sha(source.read_bytes()),entries=len(entries))
     (REPORT/f'{a.profile}-Lite.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n','utf8');print(json.dumps(report,ensure_ascii=False))
 if __name__=='__main__':main()
