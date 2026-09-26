@@ -3,8 +3,13 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class ComponentTacticalModel : ComponentCreatureModel {
+    public override void Load(TemplatesDatabase.ValuesDictionary values,GameEntitySystem.IdToEntityMap entities){
+        using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.ModelLoad,values.GetValue("ModelName",""));
+        base.Load(values,entities);
+    }
     public override void SetModel(Model model) {
-        ScActorAnimations.Ensure(model);
+        using var timing=ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.ModelSet);
+        using(ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.AnimationCache))ScActorAnimations.Ensure(model);
         base.SetModel(model);
     }
     Matrix?[] lastLivingPose;
@@ -18,10 +23,15 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     ScWeaponAction animatedAction;
     int animatedValue;
     int HeldValue => Entity.FindComponent<ComponentTacticalEnemy>()?.State?.DisplayValue??Entity.FindComponent<ComponentTacticalInventory>()?.GetSlotValue(0)??0;
-    ScAgentActions Actions {get {if(actionModel!=Model){actionModel=Model;actions=new(Model);}return actions;}}
+    ScAgentActions Actions {get {if(actionModel!=Model){using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.ActionsInit);actionModel=Model;actions=new(Model);}return actions;}}
     public ScWeaponAction VisualAction=>Entity.FindComponent<ComponentTacticalEnemy>()?.VisualAction??Entity.FindComponent<ComponentTacticalCompanion>()?.VisualAction??default;
     public override void AnimateCreature(){}
+    public override void CalculateAbsoluteBonesTransforms(Camera camera){
+        using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Bones);
+        base.CalculateAbsoluteBonesTransforms(camera);
+    }
     public override void Animate(){
+        using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Animate);
         var action=VisualAction;
         bool alive=m_componentCreature.ComponentHealth.Health>0;
         if(animatedFrame==Time.FrameIndex&&animatedDeath==DeathPhase&&animatedAlive==alive&&animatedModel==Model&&animatedAction==action&&animatedValue==HeldValue&&framePose!=null){
@@ -62,6 +72,7 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     }
     public override void SyncAnimationParameters(){base.SyncAnimationParameters();AnimationController?.Parameters.SetFloat("DeathSpeed",1.2f);var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
     public override void DrawExtras(Camera camera){
+        using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Extras);
         base.DrawExtras(camera);if(m_componentCreature.ComponentHealth.Health<=0)return;
         if(Entity.FindComponent<ComponentTacticalEnemy>()?.State is {} enemy){DrawGun(camera,enemy.DisplayValue);return;}
         var inv=Entity.FindComponent<ComponentTacticalInventory>();if(inv is null||inv.GetSlotCount(0)<=0)return;
@@ -75,8 +86,11 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     }
     void DrawGun(Camera camera,int value){
         if(!EffectiveGunStats.TrySnapshotValue(value,out var state))return;
-        string asset=GunSpec.All[state.Variant].Name;var native=ScGunNativeMesh.Resolve(asset,state.SkinId,out var texture,out _);
-        var weapon=ScThirdPersonWeapon.For(asset,native is not null);var hand=Model.FindBone("hand_R",false);
+        string asset=GunSpec.All[state.Variant].Name;ScGunNativeMesh.Part[] native;Texture2D texture;ScThirdPersonWeapon weapon;
+        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponResolve,asset))native=ScGunNativeMesh.Resolve(asset,state.SkinId,out texture,out _);
+        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponBuild,asset))weapon=ScThirdPersonWeapon.For(asset,native is not null);
+        using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponDraw,asset);
+        var hand=Model.FindBone("hand_R",false);
         if(weapon is null||!weapon.HasRightGrip||hand is null)return;
         var world=Actions.RootWorld(weapon,AbsoluteBoneTransformsForCamera)*camera.InvertedViewMatrix;
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var p=world.Translation;

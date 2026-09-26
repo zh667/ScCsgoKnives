@@ -49,6 +49,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         var body=bodies.Raycast(from,to,0,(b,d)=>b.Entity!=Entity);return body.HasValue&&body.Value.ComponentBody==target;
     }
     public void Update(float dt){
+        using var timing=ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.EnemyAI);
         if(State is null)return;
         string asset=GunSpec.All[State.Variant].Name;
         if(visualAsset!=asset){visualAsset=asset;actions.Start(asset,ScWeaponActionKind.Draw,"deploy",time.GameTime,.65f);}

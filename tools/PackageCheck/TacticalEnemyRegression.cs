@@ -27,7 +27,7 @@ static class TacticalEnemyRegression {
         public override void AddEntity(Entity e){if(Factory==null){base.AddEntity(e);return;}e.m_isAddedToProject=true;m_entities[e]=true;Added?.Invoke(e);}
         public override void RemoveEntity(Entity e,bool dispose){if(Factory==null){base.RemoveEntity(e,dispose);return;}e.m_isAddedToProject=false;m_entities.Remove(e);Removed?.Invoke(e);}
     }
-    internal static List<TacticalRegression.Result> Run(Assembly core,Assembly dlc,string corePath,string dlcPath){
+    internal static List<TacticalRegression.Result> Run(Assembly core,Assembly dlc,string corePath,string dlcPath,bool includeRendering=true){
         var results=new List<TacticalRegression.Result>();
         void Test(string n,Action a){try{a();results.Add(new("enemy/"+n,true,""));}catch(Exception ex){results.Add(new("enemy/"+n,false,ex.ToString()));}}
         void Check(bool value,string message){if(!value)throw new Exception(message);}
@@ -144,9 +144,11 @@ static class TacticalEnemyRegression {
                 Check(playerTarget?target.m_totalImpulse==Vector3.Zero&&motion.StunTime==0:target.m_totalImpulse.LengthSquared()>0&&motion.StunTime>.0f,"player bullet control remains or creature control lost");
                 var grenades=f.P.m_subsystems.Single(s=>s.GetType()==C("SubsystemScGrenades"));var blindType=C("SubsystemScGrenades").GetNestedType("Blindness",BindingFlags.NonPublic);var blind=Activator.CreateInstance(blindType);Set(blind,"Until",50d);Set(blind,"ImmuneUntil",60d);var dict=(System.Collections.IDictionary)C("SubsystemScGrenades").GetField("m_blind",Fields).GetValue(grenades);dict.Add(e.Creature.ComponentBody,blind);before=e.Enemy.State.Rounds;for(int i=0;i<30;i++)((IUpdateable)e.Enemy).Update(.1f);Check(before==e.Enemy.State.Rounds&&e.Path.Destination is null,"blinded enemy keeps firing/chasing");
             });
-            Test("hostile-grenade-cap-fuse-smoke-visibility-and-player-damage-filter",()=>{
+            Test("hostile-grenade-unlimited-count-fuse-smoke-visibility-and-player-damage-filter",()=>{
                 var f=World();var g=f.P.m_subsystems.Single(s=>s.GetType()==C("SubsystemScGrenades"));dynamic grenade=g;
-                for(int i=0;i<4;i++)Check(grenade.TryThrowHostile(i,new Vector3(0,61,0),new Vector3(0,4,-12)),"legal throw refused");Check(!grenade.TryThrowHostile(4,Vector3.Zero,Vector3.One)&&!grenade.TryThrowHostile(6,Vector3.Zero,Vector3.One),"throw budget/kind bypass");
+                // Published feedback 1.7.1 (now public 1.3.0) removed count caps; validate input instead.
+                for(int i=0;i<5;i++)Check(grenade.TryThrowHostile(i,new Vector3(0,61,0),new Vector3(0,4,-12)),"legal throw refused");
+                Check(!grenade.TryThrowHostile(6,Vector3.Zero,Vector3.One)&&!grenade.TryThrowHostile(-1,Vector3.Zero,Vector3.One)&&!grenade.TryThrowHostile(0,new Vector3(float.NaN,0,0),Vector3.One),"invalid kind/position accepted");
                 var states=((System.Collections.IEnumerable)C("SubsystemScGrenades").GetField("m_active",Fields).GetValue(g)).Cast<object>().ToArray();dynamic fire=states[3];Check(fire.Remaining==2f&&fire.Owner==-2,"wrong enemy fire fuse/owner");
                 var player=Blank<ComponentPlayer>();var body=new ComponentBody();E(f.P,player,body);var friendly=C("SubsystemScGrenades").GetMethod("Friendly",Fields);Check((bool)friendly.Invoke(g,[states[0],body]),"enemy grenade immunity inherited player friendly-fire setting");
                 dynamic smoke=states[2];smoke.Effect=true;smoke.Age=5f;smoke.Remaining=10f;smoke.Position=new Vector3(0,61,0);Check(grenade.SmokeBlocksSight(new Vector3(-4,61,0),new Vector3(4,61,0)),"NPC ignores dense smoke");
@@ -179,7 +181,7 @@ static class TacticalEnemyRegression {
                 }finally{bombs.Dispose();}
                 Check(!(bool)C("ScWeaponActionGate").GetMethod("Blocks").Invoke(null,[null]),"disposed DLC leaves action gate subscribed");
             });
-            Test("kit-native-item-draw-carry-and-cs2-sounds",()=>{
+            if(includeRendering)Test("kit-native-item-draw-carry-and-cs2-sounds",()=>{
                 using var zip=ZipFile.OpenRead(dlcPath);using var png=(zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.png")??zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.webp")).Open();var img=Image.Load(png);Check(img.Pixels.Count(c=>c.A>0)>1000,"empty kit atlas");var block=BlocksManager.Blocks[707];
                 foreach(var mode in Enum.GetValues<DrawBlockMode>()){var renderer=new PrimitivesRenderer3D();var m=Matrix.Identity;block.DrawBlock(renderer,707,Color.White,1,ref m,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=mode});var v=renderer.TexturedBatches.Single().TriangleVertices.ToArray();Check(v.Length>24&&v.All(p=>p.TexCoord.X>=0&&p.TexCoord.X<=1),"invalid kit mesh/UV");}
                 var p=Blank<ComponentPlayer>();var inv=new ComponentInventory();for(int i=0;i<36;i++)inv.m_slots.Add(new());p.ComponentMiner=new ComponentMiner{Inventory=inv};inv.m_slots[35]=new(){Count=1,Value=707};Check((bool)T("SubsystemTacticalBombs").GetMethod("HasKit").Invoke(null,[p]),"kit only recognizes hotbar");inv.m_slots[35].Count=0;Check(!(bool)T("SubsystemTacticalBombs").GetMethod("HasKit").Invoke(null,[p]),"empty slot grants kit");

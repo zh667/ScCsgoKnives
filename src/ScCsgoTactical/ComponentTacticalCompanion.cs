@@ -67,6 +67,7 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
     }
     public void Died(){if(DeathHandled)return;reload?.Cancel();reload=null;path.Stop();Inventory.DropAllItems(Creature.ComponentBody.BoundingBox.Center());DeathHandled=true;}
     public void Update(float dt){
+        using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.CompanionAI);
         if(Creature.ComponentHealth.Health<=0){Died();return;}
         int held=Inventory.GetSlotCount(0)>0?Inventory.GetSlotValue(0):0;
         string asset=ScInventoryTransaction.IsWeaponSlot(Inventory,0)?ScGunBlock.SpecOf(held).Name:null;

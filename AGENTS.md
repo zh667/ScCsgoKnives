@@ -1,5 +1,14 @@
 # Project conventions
 
+- User-directed 2026-09-26 crowd follow-up: full-only 1.3.0 diagnostic build,
+  `crowd-diag-20260926`, adds bounded `[CS_PERF]` spawn/model/AI/animation/bones/
+  weapon timings and 10-second frame/GC summaries. Preserve gameplay and atomic
+  squad creation; do not claim remaining mobile stutter fixed without device data.
+  Installed previous full hash was verified; cold weapon-mesh construction and
+  steady animation allocations remain measurable costs. See
+  docs/release-crowd-diagnostics-1.3.0-2026-09-26.md. Do not change Lite, install
+  Mods or edit player worlds. Timing scopes are inclusive, not GPU measurements.
+
 - User-directed 2026-09-26 mobile freeze fix: deliver FULL ONLY for this request,
   retaining public 1.3.0; do not replace Lite or install into the user's Mods.
   Beacon spawn, NMM model selection and saved CS actors on world reentry share

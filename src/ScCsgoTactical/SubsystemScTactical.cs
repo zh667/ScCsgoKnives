@@ -18,6 +18,7 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
     }
     readonly HashSet<ComponentTacticalCompanion> companions=[];
     public IEnumerable<ComponentTacticalCompanion> Companions=>companions;
+    public int CompanionCount=>companions.Count;
     public override void OnEntityAdded(GameEntitySystem.Entity entity){base.OnEntityAdded(entity);if(entity.FindComponent<ComponentTacticalCompanion>() is {} c)companions.Add(c);}
     public override void OnEntityRemoved(GameEntitySystem.Entity entity){if(entity.FindComponent<ComponentTacticalCompanion>() is {} c)companions.Remove(c);base.OnEntityRemoved(entity);}
     public override int[] HandledBlocks=>[BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true),BlocksManager.GetBlockIndex<ScTacticalSquadBlock>(true)];
@@ -42,15 +43,17 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
         var bodies=new DynamicArray<ComponentBody>();Project.FindSubsystem<SubsystemBodies>(true).FindBodiesAroundPoint(new Vector2(pos.X,pos.Z),1,bodies);
         if(bodies.Any(b=>Vector3.DistanceSquared(b.Position,pos)<1)){Message(player,"落点被生物占用。");return true;}
         GameEntitySystem.Entity entity=null;
+        using var trace=ScTacticalPerformance.Spawn(Project,"companion",1);
         try {
-            entity=DatabaseManager.CreateEntity(Project,new[]{"ScTacticalHostage","ScTacticalCT","ScTacticalT"}[kind],true);
+            using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.EntityCreate))entity=DatabaseManager.CreateEntity(Project,new[]{"ScTacticalHostage","ScTacticalCT","ScTacticalT"}[kind],true);
             entity.FindComponent<ComponentBody>(true).Position=pos;var c=entity.FindComponent<ComponentTacticalCompanion>(true);c.OwnerIndex=player.PlayerData.PlayerIndex;c.GuardPosition=pos;
             entity.FindComponent<ComponentSpawn>(true).SpawnDuration=.3f;
             // Construct first. A template/resource failure must not consume a beacon.
-            Project.AddEntity(entity);
+            using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.AddEntity))Project.AddEntity(entity);
             if(inv is not ComponentCreativeInventory&&inv.RemoveSlotItems(slot,1)!=1){Project.RemoveEntity(entity,true);Message(player,"信标状态已变化，请重试。");return true;}
         }catch(Exception e){if(entity?.IsAddedToProject==true)Project.RemoveEntity(entity,true);Log.Error("[CS Tactical] summon failed: "+e);Message(player,"召唤失败，信标未消耗。请检查日志。");return true;}
         ScAgentVoice.Emit(entity,kind==1?"ct":"t","spawn");
+        trace.Success=true;
         ScInventoryTransaction.Changed(inv);Message(player,"同伴已加入。对准它按 E／交互键管理装备和指令。");
         return true;
     }

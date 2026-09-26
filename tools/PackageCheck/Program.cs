@@ -52,9 +52,11 @@ bool features130=false;
 bool eggFeedbackOnly=false;
 bool splitChickenOnly=false;
 string hapticsPackage=null,tacticalPackage=null;
+bool tacticalAiOnly=false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--tactical-package":tacticalPackage=args[++i];break;
+        case "--tactical-ai-only":tacticalAiOnly=true;break;
         case "--split-chicken-only": splitChickenOnly=true;break;
         case "--egg-feedback-only": eggFeedbackOnly=true;break;
         case "--haptics-package": hapticsPackage=args[++i];break;
@@ -153,7 +155,13 @@ if (selfTest is null) { Console.Error.WriteLine("the packaged assembly has no Ga
 if(tacticalPackage is not null){
     using var zip=ZipFile.OpenRead(tacticalPackage);using var input=zip.GetEntry("ScCsgoTactical.dll").Open();using var bytes=new MemoryStream();input.CopyTo(bytes);bytes.Position=0;
     var tactical=context.LoadFromStream(bytes);
-    var cases=TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
+    if(tacticalAiOnly){
+        foreach(var pair in new[]{("ScGunBlock",701),("ScAmmoBlock",702),("ScGunSkinTemplateBlock",703),("ScGunCounterTemplateBlock",704),("ScTacticalShieldBlock",705),("ScTacticalBeaconBlock",706),("ScTacticalDefuserBlock",707),("ScWeaponMaterialBlock",708),("ScTacticalSquadBlock",709)}){
+            var type=mod.GetType("Game."+pair.Item1)??tactical.GetType("Game."+pair.Item1,true);var block=(Game.Block)Activator.CreateInstance(type);
+            block.BlockIndex=pair.Item2;Game.BlocksManager.Blocks[pair.Item2]=block;Game.BlocksManager.BlockTypeToIndex[type]=pair.Item2;
+        }
+    }
+    var cases=tacticalAiOnly?TacticalEnemyRegression.Run(mod,tactical,scmod,tacticalPackage,false):TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
     var report=JsonSerializer.Serialize(new{coreSha256=digest,dlcSha256=Sha256(tacticalPackage),failed=cases.Count(c=>!c.Ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.Ok)?1:0;
 }
