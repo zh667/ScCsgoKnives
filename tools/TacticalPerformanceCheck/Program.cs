@@ -53,6 +53,7 @@ using var package=ZipFile.OpenRead(Path.Combine(root,"output/[API1.9]CS武器1.3
 foreach(var e in package.Entries.Where(e=>e.FullName.StartsWith("Assets/Models/ScCsgoKnives/")&&e.FullName.EndsWith(".obj"))){var info=new ContentInfo(e.FullName[7..]);using var s=e.Open();var copy=new MemoryStream();s.CopyTo(copy);copy.Position=0;info.SetContentStream(copy);ContentManager.Add(info);}
 bool done=false;int exit=0;
 Window.Frame+=()=>{if(done)return;done=true;try{
+    var hook=new ModsManager.ModHook("OnAnimateModel");hook.Add(new TacticalModLoader());ModsManager.ModHooks["OnAnimateModel"]=hook;
     LightingManager.Initialize();BlocksManager.BlockTypeToIndex[typeof(ScGunBlock)]=701;BlocksManager.Blocks[701]=new ScGunBlock{BlockIndex=701};
     BlocksManager.BlockTypeToIndex[typeof(ScTacticalShieldBlock)]=705;BlocksManager.Blocks[705]=new ScTacticalShieldBlock{BlockIndex=705};
     foreach(var pair in new[]{(typeof(AirBlock),0),(typeof(ScKnifeBlock),700),(typeof(ScGrenadeBlock),702)}){var block=(Block)Activator.CreateInstance(pair.Item1);block.BlockIndex=pair.Item2;BlocksManager.Blocks[pair.Item2]=block;BlocksManager.BlockTypeToIndex[pair.Item1]=pair.Item2;}

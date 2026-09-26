@@ -1,0 +1,411 @@
+{
+  "path": "[API1.9]CS武器1.3.0-全量包.scmod",
+  "revision": "crowd-smooth-20260926",
+  "sourceSha256": "0c4f2fddc79b56b90a701e892fe9e52195bb02cbecfc1b2ee67aeb1cc2926929",
+  "sha256": "a2922a8115fe010b564691115351667dba1c3327329fd1a36870184ffef10f02",
+  "bytes": 522867456,
+  "changedEntries": [
+    "ScCsgoTactical.dll"
+  ],
+  "unchangedCompressedEntries": 1696,
+  "dllHashes": {
+    "Integrations/ScCsgoAppearance.bin": "0b8bdbbd5a3be253bb1ab454f919d7062c4dca8b1609a0fad91e6e85c3c316f7",
+    "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+    "ScCsgoKnives.dll": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+    "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+    "ScCsgoTactical.dll": "67e1fc2b4a816a332f8f2a94f643d1d72db34be5629586946135e72bd4305a0d",
+    "ScCsgoVoice.dll": "370d795d6d2eaa466107062dd40f55fb39a9cfd00ba2364b4835ed5248f837d0"
+  },
+  "validation": [
+    {
+      "name": "gate",
+      "checks": 12,
+      "sha256": "57e744daf7eb0b5478898f718be39d6cc436f8741bb5f329eef9785c279533c0"
+    },
+    {
+      "name": "native",
+      "checks": 6,
+      "sha256": "0e8d9ef0b975787d31b93cc1da07feacb8b52b9e6a84da770d88e905ac9ac2a8"
+    },
+    {
+      "name": "ai",
+      "checks": 15,
+      "sha256": "a0b32e0782c8630e98d7d4e3307ff480ec25f84871a41b4bb5fa3274fddbd479"
+    },
+    {
+      "name": "compatibility",
+      "checks": 243,
+      "sha256": "dd1cefbbd5fa41b3d93498c54d50f6117872ea98026a4abcf6b75023bfab69ba"
+    },
+    {
+      "name": "official-both",
+      "checks": 20,
+      "sha256": "16497b0ea615118d9adf8e0d5ed8bc17994edb81300ae367e138bc9cfef1d2c0"
+    },
+    {
+      "name": "official-reversed",
+      "checks": 20,
+      "sha256": "f697a7af6d51da81aead11cb192cddacf479ad0b34da5d2054cf47f5e341c3ea"
+    },
+    {
+      "name": "official-none",
+      "checks": 14,
+      "sha256": "6d4974280ad2a50579db75a3974dd1b0092c251e085bb751a48f201e6d2652e2"
+    },
+    {
+      "name": "official-nmm-only",
+      "checks": 14,
+      "sha256": "05a2f534dbab201d707ec1c03fa5c4dc2a5b50ab0dce18ad906627f8838f72f3"
+    },
+    {
+      "name": "official-neo-only",
+      "checks": 14,
+      "sha256": "92ee488ca2c10c2ffd0deaf06148284a28cfc0b30da25fb2d66c172f6725f9ab"
+    },
+    {
+      "name": "official-disabled",
+      "checks": 14,
+      "sha256": "e848e29cef8166a45e6a0c508b686a963f044de11a233082e3c4b9b66e08352a"
+    },
+    {
+      "name": "official-outdated",
+      "checks": 14,
+      "sha256": "6e8f06f8a558bd13377bde99897b475a89844813d81a9401523c7f7e08a06d7c"
+    }
+  ],
+  "probe": {
+    "failed": 0,
+    "checks": [
+      "burst detail is rate limited",
+      "hot scopes allocate less than one byte per call",
+      "no log per timed call",
+      "no early summary or duplicate frame log",
+      "periodic frame sample counted once and includes population",
+      "summary retains exception and all burst counts",
+      "dispose is idempotent",
+      "reentry drops old counters",
+      "unattached empty components retain native no-op behavior",
+      "ct/1 finite pose",
+      "ct/3 finite pose",
+      "ct/5 finite pose",
+      "ct/20 finite pose",
+      "t/1 finite pose",
+      "t/3 finite pose",
+      "t/5 finite pose",
+      "t/20 finite pose",
+      "awp builds full third person mesh",
+      "ak47 builds full third person mesh",
+      "mp9 builds full third person mesh",
+      "m249 builds full third person mesh",
+      "deagle builds full third person mesh"
+    ],
+    "measurements": [
+      {
+        "stage": "logger",
+        "overheadNs": 233.965,
+        "allocatedBytes": 168,
+        "calls": 100000
+      },
+      {
+        "role": "ct",
+        "stage": "coldGeometryGpuAndAnimation",
+        "ms": 223.6388,
+        "bytes": 38942656,
+        "bones": 580
+      },
+      {
+        "role": "ct",
+        "stage": "coldBodyTextures",
+        "ms": 161.6491
+      },
+      {
+        "role": "ct",
+        "count": 1,
+        "stage": "warmComponentLoad",
+        "ms": 101.9997,
+        "bytes": 451856
+      },
+      {
+        "role": "ct",
+        "count": 1,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.06419,
+        "bytesPerFrame": 247
+      },
+      {
+        "role": "ct",
+        "count": 3,
+        "stage": "warmComponentLoad",
+        "ms": 6.2818,
+        "bytes": 398584
+      },
+      {
+        "role": "ct",
+        "count": 3,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.18915666666666667,
+        "bytesPerFrame": 722
+      },
+      {
+        "role": "ct",
+        "count": 5,
+        "stage": "warmComponentLoad",
+        "ms": 18.2167,
+        "bytes": 664520
+      },
+      {
+        "role": "ct",
+        "count": 5,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.2900783333333333,
+        "bytesPerFrame": 1214
+      },
+      {
+        "role": "ct",
+        "count": 20,
+        "stage": "warmComponentLoad",
+        "ms": 23.4874,
+        "bytes": 2657112
+      },
+      {
+        "role": "ct",
+        "count": 20,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 1.3058433333333332,
+        "bytesPerFrame": 4872
+      },
+      {
+        "role": "t",
+        "stage": "coldGeometryGpuAndAnimation",
+        "ms": 102.7898,
+        "bytes": 38607792,
+        "bones": 572
+      },
+      {
+        "role": "t",
+        "stage": "coldBodyTextures",
+        "ms": 107.8747
+      },
+      {
+        "role": "t",
+        "count": 1,
+        "stage": "warmComponentLoad",
+        "ms": 1.9194,
+        "bytes": 133072
+      },
+      {
+        "role": "t",
+        "count": 1,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.05661083333333334,
+        "bytesPerFrame": 245
+      },
+      {
+        "role": "t",
+        "count": 3,
+        "stage": "warmComponentLoad",
+        "ms": 4.0424,
+        "bytes": 395416
+      },
+      {
+        "role": "t",
+        "count": 3,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.16720333333333331,
+        "bytesPerFrame": 719
+      },
+      {
+        "role": "t",
+        "count": 5,
+        "stage": "warmComponentLoad",
+        "ms": 8.2712,
+        "bytes": 659040
+      },
+      {
+        "role": "t",
+        "count": 5,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.276745,
+        "bytesPerFrame": 1209
+      },
+      {
+        "role": "t",
+        "count": 20,
+        "stage": "warmComponentLoad",
+        "ms": 16.7869,
+        "bytes": 2636192
+      },
+      {
+        "role": "t",
+        "count": 20,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 1.1745191666666666,
+        "bytesPerFrame": 4851
+      },
+      {
+        "asset": "awp",
+        "stage": "weaponMesh",
+        "coldMs": 196.3904,
+        "warmMsPerCall": 0.0001497,
+        "vertices": 119292
+      },
+      {
+        "asset": "ak47",
+        "stage": "weaponMesh",
+        "coldMs": 175.579,
+        "warmMsPerCall": 0.00013209999999999999,
+        "vertices": 78498
+      },
+      {
+        "asset": "mp9",
+        "stage": "weaponMesh",
+        "coldMs": 59.9599,
+        "warmMsPerCall": 0.0001263,
+        "vertices": 24393
+      },
+      {
+        "asset": "m249",
+        "stage": "weaponMesh",
+        "coldMs": 97.8828,
+        "warmMsPerCall": 0.0001291,
+        "vertices": 54973
+      },
+      {
+        "asset": "deagle",
+        "stage": "weaponMesh",
+        "coldMs": 60.1714,
+        "warmMsPerCall": 0.00010899999999999999,
+        "vertices": 15038
+      }
+    ]
+  },
+  "samplingChecks": 1793,
+  "samplingMeasurements": [
+    {
+      "stage": "sampler",
+      "role": "ct",
+      "nativeBytes": 24112000,
+      "optimizedBytes": 0,
+      "nativeMs": 18.105,
+      "optimizedMs": 8.2877,
+      "calls": 1000
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 1,
+      "optimized": false,
+      "msPerFrame": 0.055253888888888894,
+      "bytesPerFrame": 24324
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 1,
+      "optimized": true,
+      "msPerFrame": 0.03225111111111111,
+      "bytesPerFrame": 212
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 5,
+      "optimized": false,
+      "msPerFrame": 0.26123777777777774,
+      "bytesPerFrame": 121620
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 5,
+      "optimized": true,
+      "msPerFrame": 0.17221555555555554,
+      "bytesPerFrame": 1060
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 41,
+      "optimized": false,
+      "msPerFrame": 2.7875694444444443,
+      "bytesPerFrame": 997284
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 41,
+      "optimized": true,
+      "msPerFrame": 1.529802222222222,
+      "bytesPerFrame": 8692
+    },
+    {
+      "stage": "sampler",
+      "role": "t",
+      "nativeBytes": 10664000,
+      "optimizedBytes": 0,
+      "nativeMs": 15.1622,
+      "optimizedMs": 7.1092,
+      "calls": 1000
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 1,
+      "optimized": false,
+      "msPerFrame": 0.030639444444444445,
+      "bytesPerFrame": 10875
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 1,
+      "optimized": true,
+      "msPerFrame": 0.021685555555555555,
+      "bytesPerFrame": 211
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 5,
+      "optimized": false,
+      "msPerFrame": 0.167435,
+      "bytesPerFrame": 54376
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 5,
+      "optimized": true,
+      "msPerFrame": 0.11492111111111111,
+      "bytesPerFrame": 1056
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 41,
+      "optimized": false,
+      "msPerFrame": 1.676928888888889,
+      "bytesPerFrame": 445887
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 41,
+      "optimized": true,
+      "msPerFrame": 1.132476111111111,
+      "bytesPerFrame": 8663
+    }
+  ],
+  "weaponChecks": 3211,
+  "appearanceChecks": 7892,
+  "nativeActorFrames": 12,
+  "scope": "Windows isolated native fixtures; no Android, actual player world, or all-installed-mod combination acceptance"
+}

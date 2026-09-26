@@ -4,8 +4,9 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class TacticalModLoader : ModLoader {
-    public override void __ModInitialize(){TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
-    public override void OnProjectLoaded(GameEntitySystem.Project project)=>project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();
+    public override void __ModInitialize(){TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
+    public override void OnAnimateModel(ComponentModel model,out bool skip)=>skip=model is ComponentTacticalModel tactical&&tactical.TrySampleAnimation();
+    public override void OnProjectLoaded(GameEntitySystem.Project project){ScTacticalWarmup.PrepareShader();project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();}
     public override void OnSaveSpawnData(ComponentSpawn spawn,SpawnEntityData data)=>SubsystemTacticalEnemies.SaveSpawn(spawn,data);
     public override void OnReadSpawnData(GameEntitySystem.Entity entity,SpawnEntityData data)=>SubsystemTacticalEnemies.ReadSpawn(entity,data);
     public override void DeadBeforeDrops(ComponentHealth health,ref KillParticleSystem particles,ref bool dropAll){if(health.Entity.FindComponent<ComponentTacticalEnemy>() is {} enemy){dropAll=false;enemy.Died();}}
@@ -51,8 +52,8 @@ public sealed class TacticalModLoader : ModLoader {
             skip=true;
         }finally{Display.BlendState=blend;Display.DepthStencilState=depth;Display.RasterizerState=raster;Display.ScissorRectangle=scissor;}
     }
-    public override void OnLoadingFinished(List<Action> actions)=>actions.Add(()=>{SubsystemScTactical.RegisterRecipes();TacticalArms.Register();});
-    public override void OnProjectDisposed(){ScNpcWeaponRenderer.Clear();ScNpcWeaponGeometry.Clear();TacticalArms.Clear();}
+    public override void OnLoadingFinished(List<Action> actions){actions.Add(()=>{SubsystemScTactical.RegisterRecipes();TacticalArms.Register();});ScTacticalWarmup.Add(actions);}
+    public override void OnProjectDisposed(){ScNpcWeaponRenderer.Clear();ScNpcWeaponGeometry.Clear();ScActorSampler.Clear();TacticalArms.Clear();}
     public override void ProcessAttackment(Attackment attack){
         if(attack?.Target?.Project is {} project&&attack.AttackPower>0){var attacker=attack.Attacker?.FindComponent<ComponentBody>();
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);

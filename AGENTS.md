@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed 2026-09-26 comprehensive mobile follow-up: full-only 1.3.0
+  revision `crowd-smooth-20260926` retains native controller state/events and
+  interpolation, compiling actor channel bindings and reusing transition output.
+  Keep the NPC-only hook guards for root motion/participants and native fallback
+  for unsupported layer features; preserve exact poses and camera clocks. Flattened
+  hierarchy must retain every bone, same-model assignment stays idempotent.
+  Actor model/texture and weapon-shader warmups run on the main loading thread.
+  See docs/release-crowd-smoothing-1.3.0-2026-09-26.md. Windows measurements are
+  not Android acceptance or a guarantee that all first-world long frames are gone.
+
 - User-directed 2026-09-26 crowd optimization: FULL ONLY remains public 1.3.0,
   revision `crowd-gpu-20260926`. NPC guns use deferred static GPU buffers and
   63 lossless `.scmesh` caches baked with the native OBJ loader (the headless

@@ -14,6 +14,7 @@ public sealed class ScAgentActions {
     readonly Dictionary<string,ModelAnimation> clips;
     readonly Dictionary<string,int> bones;
     readonly Dictionary<string,Matrix?[]> holds=new();
+    readonly Dictionary<(string Asset,string Bone),int> propIndices=new();
     public ScAgentActions(Model source) {
         // Also covers NMM list previews and restored player appearances before pose creation.
         ScActorAnimations.Ensure(source);
@@ -24,7 +25,7 @@ public sealed class ScAgentActions {
         bool Upper(ModelBone b)=>b!=null&&(b==spine||Upper(b.ParentBone));
         upper=source.Bones.Where(Upper).Select(b=>b.Index).ToArray();
         var idle=source.Animations.FirstOrDefault(a=>a.Name=="aim");
-        if(idle!=null){player.SetAnimation(source,idle);player.Time=0;player.SampleBoneTransforms(sampled);}
+        if(idle!=null){player.SetAnimation(source,idle);player.Time=0;ScActorSampler.Sample(player,sampled);}
         Matrix Absolute(ModelBone b)=>(sampled[b.Index]??b.Transform)*(b.ParentBone==null?Matrix.CreateRotationY(MathF.PI):Absolute(b.ParentBone));
         var hand=source.FindBone("hand_R",false);
         var basis=hand==null?Matrix.Identity:Absolute(hand);basis.Translation=Vector3.Zero;
@@ -34,9 +35,12 @@ public sealed class ScAgentActions {
     public static string WorldAsset(string asset) => asset?.StartsWith("grenade_")==true?(asset=="grenade_molotov"?"molotov":"grenade"):asset;
     public bool HasProp(string asset,string bone)=>bones.ContainsKey("cswp_"+WorldAsset(asset)+"/"+bone);
     public Matrix PropFrame(string asset,string bone,Matrix[] absolute) {
-        string prefix="cswp_"+WorldAsset(asset)+"/";
-        if(!bones.TryGetValue(prefix+bone,out int index)&&!bones.TryGetValue(prefix+"weapon",out index))return Matrix.Identity;
-        return absolute[index];
+        if(!propIndices.TryGetValue((asset,bone),out int index)){
+            string prefix="cswp_"+WorldAsset(asset)+"/";
+            if(!bones.TryGetValue(prefix+bone,out index)&&!bones.TryGetValue(prefix+"weapon",out index))index=-1;
+            propIndices[(asset,bone)]=index;
+        }
+        return index<0?Matrix.Identity:absolute[index];
     }
     public Matrix RootWorld(ScThirdPersonWeapon weapon,Matrix[] absolute)=>weapon.WorldRootInverse*PropFrame(weapon.Asset,"weapon",absolute);
     public (BlockMesh Mesh,Matrix Transform) WorldPart(ScThirdPersonWeapon weapon,ScThirdPersonWeapon.Group group,Matrix[] absolute)=>WorldPartFor(weapon.Asset,group,absolute);
@@ -69,7 +73,7 @@ public sealed class ScAgentActions {
     public void ApplyHeld(Matrix?[] local, ScWeaponAction action,string heldAsset) {
         if(heldAsset!=null&&clips.TryGetValue("hold_"+WorldAsset(heldAsset),out var hold)){
             if(!holds.TryGetValue(hold.Name,out var held)){
-                held=new Matrix?[model.Bones.Count];player.SetAnimation(model,hold);player.Time=0;player.SampleBoneTransforms(held);holds[hold.Name]=held;
+                held=new Matrix?[model.Bones.Count];player.SetAnimation(model,hold);player.Time=0;ScActorSampler.Sample(player,held);holds[hold.Name]=held;
             }
             foreach(int i in upper)if(held[i] is Matrix target)local[i]=target;
         }
@@ -82,7 +86,7 @@ public sealed class ScAgentActions {
             float phase=action.Progress;
             if(action.LoopedReload)phase=Math.Clamp(action.ClipTime/Math.Max(.001f,Cs2Rig.Duration(action.Asset,action.Clip)),0,1);
             player.Time=phase*clip.Duration;
-            Array.Clear(sampled);player.SampleBoneTransforms(sampled);
+            Array.Clear(sampled);ScActorSampler.Sample(player,sampled);
             foreach(int i in upper)if(sampled[i] is Matrix target)local[i]=Blend(local[i]??model.Bones[i].Transform,target,weight);
             return;
         }

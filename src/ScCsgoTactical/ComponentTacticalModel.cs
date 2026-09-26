@@ -1,4 +1,5 @@
 using Engine;
+using Engine.Animation;
 using Engine.Graphics;
 namespace Game;
 
@@ -8,13 +9,18 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         base.Load(values,entities);
     }
     public override void SetModel(Model model) {
+        bool changed=model!=Model;
         using var timing=ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.ModelSet);
         using(ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.AnimationCache))ScActorAnimations.Ensure(model);
         base.SetModel(model);
+        if(changed){lastLivingPose=null;framePose=null;hierarchyModel=null;hierarchy=null;actionModel=null;actions=null;nativeAnimationRequired=false;animatedFrame=-1;}
     }
     Matrix?[] lastLivingPose;
     ScAgentActions actions;
     Model actionModel;
+    Model hierarchyModel;
+    ModelBone[] hierarchy;
+    bool nativeAnimationRequired;
     Matrix?[] framePose;
     int animatedFrame=-1;
     float animatedDeath=-1;
@@ -29,6 +35,41 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     public override void CalculateAbsoluteBonesTransforms(Camera camera){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Bones);
         base.CalculateAbsoluteBonesTransforms(camera);
+    }
+    public override void ProcessBoneHierarchy(ModelBone bone,Matrix parent,Matrix[] output){
+        if(bone!=Model.RootBone){base.ProcessBoneHierarchy(bone,parent,output);return;}
+        if(hierarchyModel!=Model){
+            var ordered=new List<ModelBone>(Model.Bones.Count);
+            void Visit(ModelBone b){ordered.Add(b);foreach(var child in b.ChildBones)Visit(child);}
+            Visit(bone);hierarchy=ordered.ToArray();hierarchyModel=Model;
+        }
+        bool full=Model.HasSkin||m_animationPlayer?.IsPlaying==true;
+        for(int i=0;i<hierarchy.Length;i++){
+            var b=hierarchy[i];Matrix local=b.Transform;
+            if(m_boneTransforms[b.Index] is Matrix value){
+                if(full)local=value;
+                else{var translation=local.Translation;local.Translation=Vector3.Zero;local*=value;local.Translation+=translation;}
+            }
+            if(i==0&&ModelScale!=1)local=Matrix.CreateScale(ModelScale)*local;
+            var p=i==0?parent:output[b.ParentBone.Index];Matrix.MultiplyRestricted(ref local,ref p,out output[b.Index]);
+        }
+    }
+    // Called by the normal native OnAnimateModel hook after parameter/participant
+    // sync. Keep the engine controller and all its events and state transitions.
+    public bool TrySampleAnimation(){
+        var c=AnimationController;
+        if(Animated||c==null||nativeAnimationRequired||c.Layers.Length!=1||m_animationParticipants is {Count:>0})return false;
+        if(c.HasRootMotion){nativeAnimationRequired=true;return false;}
+        foreach(var reference in c.m_animationReferences.Values)if(reference.RootMotion!=null){nativeAnimationRequired=true;return false;}
+        bool SafeRules(List<StateRuleConfig> rules){if(rules==null)return true;foreach(var rule in rules)if(rule.Animation?.RootMotion!=null||!SafeRules(rule.Rules))return false;return true;}
+        if(c.m_stateConfigs!=null)foreach(var config in c.m_stateConfigs.Values)if(!SafeRules(config.Rules)){nativeAnimationRequired=true;return false;}
+        Array.Clear(m_boneTransforms);
+        var body=m_componentCreature.ComponentBody;c.Velocity=body.Velocity;c.EntityRotation=body.Rotation;
+        if(!DisableAnimation){
+            using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.AnimationUpdate))c.Update(Time.FrameDuration);
+            using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.AnimationSample))ScActorSampler.Compute(c,m_boneTransforms,true);
+        }
+        return true;
     }
     public override void Animate(){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Animate);
@@ -54,7 +95,7 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
             m_boneTransforms[Model.RootBone.Index]=root*Matrix.CreateTranslation(-pos)*Matrix.CreateFromAxisAngle(axis,MathF.PI*.5f*ease)*Matrix.CreateTranslation(pos+Vector3.UnitY*(.43f*ease));
         }else{
             if(HeldValue!=0&&!ScTacticalShieldBlock.IsShield(HeldValue))Actions.ApplyHeld(m_boneTransforms,action,ScThirdPerson.AssetFor(HeldValue,out _));
-            lastLivingPose??=new Matrix?[m_boneTransforms.Length];Array.Copy(m_boneTransforms,lastLivingPose,m_boneTransforms.Length);
+            if(lastLivingPose?.Length!=m_boneTransforms.Length)lastLivingPose=new Matrix?[m_boneTransforms.Length];Array.Copy(m_boneTransforms,lastLivingPose,m_boneTransforms.Length);
         }
         if(framePose?.Length!=m_boneTransforms.Length)framePose=new Matrix?[m_boneTransforms.Length];
         Array.Copy(m_boneTransforms,framePose,framePose.Length);animatedFrame=Time.FrameIndex;animatedDeath=DeathPhase;animatedAlive=alive;animatedModel=Model;animatedAction=action;animatedValue=HeldValue;

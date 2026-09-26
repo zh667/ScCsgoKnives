@@ -8,9 +8,9 @@ namespace Game;
 
 // Diagnostic timings are inclusive CPU wall times, not GPU timers. No world data or files.
 public static class ScTacticalPerformance {
-    public const string Revision="crowd-gpu-20260926";
+    public const string Revision="crowd-smooth-20260926";
     public enum Stage { Placement, EntityCreate, Configure, AddEntity, ModelLoad, ModelSet,
-        AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, Count }
+        AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, Count }
     static readonly ConditionalWeakTable<Project,Session> sessions=new();
     static Session For(Project project)=>project==null?null:sessions.GetValue(project,_=>new Session());
     public static Scope Measure(Project project,Stage stage,string resource=null)=>new(For(project),stage,resource);

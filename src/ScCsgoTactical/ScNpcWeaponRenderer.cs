@@ -55,6 +55,11 @@ public static class ScNpcWeaponRenderer {
     static readonly ConditionalWeakTable<PrimitivesRenderer3D,Batch> batches=new();
     static Shader shader;
     static bool failed;
+    public static bool Prepare(){
+        if(failed)return false;
+        try{shader??=new Shader(VertexShader,PixelShader);return true;}
+        catch(Exception e){failed=true;KnifeDiagnostics.WarnOnce("npc-gpu",$"NPC shader unavailable: {e.Message}; using original renderer.");return false;}
+    }
     public static int CachedMeshes=>meshes.Count;
     // If a driver rejects the shader, retain the native path without exact-size
     // reallocations for every additional part/actor in the growing crowd.
@@ -71,7 +76,7 @@ public static class ScNpcWeaponRenderer {
     public static bool Queue(PrimitivesRenderer3D renderer,BlockMesh mesh,Texture2D texture,Matrix transform,int light,bool legacy,Project project=null){
         if(failed)return false;if(mesh.Indices.Count==0)return true;
         try{
-            if(shader==null)shader=new Shader(VertexShader,PixelShader);
+            if(!Prepare())return false;
             if(!meshes.TryGetValue(mesh,out var gpu)){
                 using var timing=ScTacticalPerformance.Measure(project,ScTacticalPerformance.Stage.WeaponUpload);
                 gpu=new(mesh);meshes.Add(mesh,gpu);
