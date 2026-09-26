@@ -200,6 +200,8 @@ public sealed class ScCompatibilityModLoader : ModLoader {
     public override void __ModInitialize(){
         ScCompatibility.ActiveBuild=Entity.modInfo.Version;
         Entity.GetFile("Assets/ScCompatibilityManifest.xml",s=>ScCompatibility.Manifest=XElement.Load(s));
+        if(ScOptionalAgents.Split && ModsManager.ModList.Any(m=>!m.IsDisabled&&m.ModArchive!=null&&m.modInfo.PackageName=="zh667.ScCsgoTactical") && !ScOptionalAgents.Available)
+            throw new InvalidOperationException("新的轻量包需要配套1.3.0探员包，请先停用旧独立战术拓展。");
         if((bool?)ScCompatibility.Manifest.Attribute("Legacy")==true&&ModsManager.ModList.Any(m=>!m.IsDisabled&&m.modInfo.PackageName=="zh667.ScCsgoTactical"))
             throw new InvalidOperationException("旧版兼容包只保留战术数据，不能同时启用依赖新版接口的独立战术拓展；请停用独立拓展或换回最新兼容总包。");
         ModsManager.RegisterHook("ProjectXmlLoad",this,-1000);
@@ -214,11 +216,12 @@ public sealed class ScCompatibilityModLoader : ModLoader {
     }
     public override void OnProjectXmlSaved(XElement project)=>ScCompatibility.PreserveOpaque(project);
     public override void OnLoadingFinished(List<Action> actions){
-        if((bool?)ScCompatibility.Manifest.Attribute("Legacy")!=true)return;
+        if((bool?)ScCompatibility.Manifest.Attribute("Legacy")!=true && !ScOptionalAgents.Split)return;
         actions.Add(()=>{
             if(ModsManager.ModList.Any(m=>m.modInfo.PackageName=="zh667.ScCsgoTactical"))return;
             // Identity denotes preserved data, not active tactical gameplay. The archive has no loaders/resources.
             tacticalAlias=new ModEntity{modInfo=ModsManager.DeserializeJson("{\"Name\":\"CS战术数据保留（旧版休眠）\",\"Version\":\"1.4.0\",\"ApiVersion\":\"1.9.3.1\",\"PackageName\":\"zh667.ScCsgoTactical\",\"NonPersistentMod\":false}"),IsDependencyChecked=true};
+            if(ScOptionalAgents.Split){tacticalAlias.modInfo.Version=Entity.modInfo.Version;tacticalAlias.modInfo.Name="CS探员数据保留（未启用探员包）";}
             ModsManager.ModList.Add(tacticalAlias);ModsManager.PackageNameToModEntity["zh667.ScCsgoTactical"]=tacticalAlias;
         });
     }

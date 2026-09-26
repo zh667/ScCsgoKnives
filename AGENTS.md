@@ -1,5 +1,20 @@
 # Project conventions
 
+- User-directed 2026-09-26 modular Lite supersedes the earlier unchanged-Lite scope:
+  split the complete Lite catalogue into a standalone weapon package below
+  40,000,000 bytes where feasible and an optional compressed agents package.
+  Both stay public 1.3.0. Preserve 35 guns, all 44 gun finishes, 22 knives and
+  finishes, inspection, Lite geometry and 512 colour textures. Agents owns
+  tactical gameplay, appearance/gloves, chickens and bilingual agent voices.
+  SC_SPLIT core owns stable optional item types; addon forwards those types and
+  activates them only when actually enabled. Preserve family-1 dormant data when
+  the addon is absent; keep native actor/NPC caches and their exact idle poses.
+  Derived curve values may be compacted only within measured error bounds; keep
+  first/last keys bit-exact. Do not install into Mods or modify player worlds.
+  Replace delivered Lite only after both candidates pass their split-load,
+  native-resource, cache and compatibility gates. Full/Mini remain unchanged.
+  See docs/release-split-lite-1.3.0-2026-09-26.md.
+
 - User-directed 2026-09-26 Mini quality revision supersedes the 30 MB/inspection
   cuts below: accept under 40,000,000 bytes, restore published Lite gun geometry
   and 512 gun colour/default-hand textures, remove CS chicken gameplay/resources,

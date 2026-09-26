@@ -4,7 +4,11 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class TacticalModLoader : ModLoader {
-    public override void __ModInitialize(){TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
+    public override void __ModInitialize(){
+#if SC_SPLIT
+        ScSplitAgentMarker.ValidateCore();
+#endif
+        TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
     public override void OnAnimateModel(ComponentModel model,out bool skip)=>skip=model is ComponentTacticalModel tactical&&tactical.TrySampleAnimation();
     public override void OnProjectLoaded(GameEntitySystem.Project project){ScTacticalWarmup.PrepareShader();project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();}
     public override void OnSaveSpawnData(ComponentSpawn spawn,SpawnEntityData data)=>SubsystemTacticalEnemies.SaveSpawn(spawn,data);

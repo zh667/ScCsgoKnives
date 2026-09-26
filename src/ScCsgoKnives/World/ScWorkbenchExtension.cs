@@ -58,7 +58,7 @@ public static class ScWorkbenchExtension {
         }
         // A creature spawner has no survival crafting route. Natural CS chickens
         // remain available; do not mistake vanilla creative eggs for laid eggs.
-        if (!ScMinimalEdition.Enabled) Add("chicken-egg", "CS 小鸡生成蛋", "生物", () => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)), 2,
+        if (ScOptionalAgents.Available) Add("chicken-egg", "CS 小鸡生成蛋", "生物", () => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)), 2,
             [], creativeOnly:true);
     }
 }
