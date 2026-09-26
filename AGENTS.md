@@ -1,5 +1,12 @@
 # Project conventions
 
+- Current user request is RESEARCH into internal model/animation encoding using
+  open-source projects. Probe the exact current split-package resources in an
+  isolated .tmp workspace; quantify compression, roundtrip correctness, numerical
+  error and decode cost. Separate lossless transformations from quantization and
+  offline estimates from a loadable release. Keep delivered packages, production
+  resource readers, installed Mods and player worlds unchanged for this study.
+
 - User-directed split-package compression follow-up: further optimize the current
   1.3.0 Lite and agents files with open-source lossless tools. Preserve every
   extracted member byte, including all models, textures, animations, assemblies,
