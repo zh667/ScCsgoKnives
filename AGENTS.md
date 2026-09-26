@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed split-package compression follow-up: further optimize the current
+  1.3.0 Lite and agents files with open-source lossless tools. Preserve every
+  extracted member byte, including all models, textures, animations, assemblies,
+  metadata and native caches. Compare existing 7-Zip streams with Zopfli and ECT
+  per member; keep the smallest game-compatible standard Deflate stream. Verify
+  final archives with Game.ZipArchive before replacing output deliveries. Keep
+  prior deliveries recoverable and leave Mods, worlds, Full and Mini unchanged.
+
 - User-directed 2026-09-26 modular Lite supersedes the earlier unchanged-Lite scope:
   split the complete Lite catalogue into a standalone weapon package below
   40,000,000 bytes where feasible and an optional compressed agents package.
