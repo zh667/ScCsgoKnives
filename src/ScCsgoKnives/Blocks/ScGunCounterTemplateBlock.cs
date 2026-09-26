@@ -23,6 +23,7 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
         // performed at the workbench for a real hotbar instance, avoiding a 31x
         // catalogue explosion.
         for (int entry = 0; entry < Entries.Length; entry++)
+            if (ScMinimalEdition.SkinAvailable(Entries[entry].Skin))
             yield return Terrain.MakeBlockValue(BlockIndex, 0, Encode(entry, 0));
     }
     static bool TrySpec(int data, out int variant, out int skin, out int level) {

@@ -36,6 +36,7 @@ public static class ScWeaponCrafting {
     static Entry[] Build() {
         var entries = new List<Entry>();
         for (int v = 0; v < CsmcKnifeRig.KnifeCount; v++) {
+            if (!ScMinimalEdition.KnifeAvailable(v)) continue;
             string name = CsmcKnifeRig.GetAssetName(v);
             bool collection = name is "karambit" or "butterfly";
             entries.Add(new(name, true, v, collection ? 3 : 1, 2, collection ? 1 : 0, 1, Diamond: collection ? 1 : 0));

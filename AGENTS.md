@@ -1,5 +1,16 @@
 # Project conventions
 
+- User-directed 2026-09-26 Mini release supersedes the feasibility-only scope below:
+  deliver a separate 1.3.0 Mini under 30,000,000 bytes. Keep Full/Lite and installed
+  Mods/worlds unchanged. Mini keeps all 35 guns and current published gameplay,
+  13 selected main-weapon finishes, CT/T basic knife menus, default arms and core
+  grenades/C4. Remove tactical/appearance modules and disable inspection; reduce
+  meshes, texture resolution (256/128), audio and animation curves. Preserve saved
+  IDs, old knife compatibility geometry, excluded paint IDs/factory fallback and
+  dormant tactical data. No new save format or automatic backups. See
+  docs/release-minimal-1.3.0-2026-09-26.md and its exact payload/check evidence.
+  Native Windows fixtures do not establish Android acceptance.
+
 - User-directed 2026-09-26 Lite follow-up supersedes the Full-only scope below:
   replace current 1.3.0 Lite with crowd-smooth-20260926 code and Lite-native
   actor/weapon caches. Retain all ordinary Lite gameplay/assets and 512 quality.

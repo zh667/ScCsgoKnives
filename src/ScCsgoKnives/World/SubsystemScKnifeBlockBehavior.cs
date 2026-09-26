@@ -108,7 +108,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             ScGunFunctions.ThrowWeak or ScGunFunctions.ThrowStrong => grenade,
             ScGunFunctions.Plant => c4,
             ScGunFunctions.C4Timer => c4,
-            ScGunFunctions.Inspect => knife || gun || grenade || c4,
+            ScGunFunctions.Inspect => !ScMinimalEdition.Enabled && (knife || gun || grenade || c4),
             _ => secondary == id,
         });
         bool Pressed(string id) => enabled && (panel?.Pressed(id) == true || ScGunBindings.Down(player, id));
@@ -147,7 +147,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         // inspect loops without any inspect press.
         bool touchInspect = enabled && panel?.Clicked(ScGunFunctions.Inspect) == true;
         bool keyInspect = enabled && ScGunBindings.Down(player, ScGunFunctions.Inspect, true);
-        bool inspectPressed = touchInspect || keyInspect;
+        bool inspectPressed = !ScMinimalEdition.Enabled && (touchInspect || keyInspect);
         m_inspectHeld[player] = false;
         if ((knife || gun || grenade || c4) && inspectPressed && !(c4 && Project.FindSubsystem<SubsystemScC4>()?.IsPlanting(player) == true)) {
             if (knife) State(player).Cancel();

@@ -72,13 +72,14 @@ public static class ScGunSkinCatalog {
     static readonly Dictionary<int, ScGunSkin> s_byId = All.ToDictionary(s => s.PaintId);
 
     public static ScGunSkin Find(int paintId) => paintId != None && s_byId.TryGetValue(paintId, out var skin) ? skin : null;
+    public static IEnumerable<ScGunSkin> Available => All.Where(s => ScMinimalEdition.SkinAvailable(s.PaintId));
     /// <summary>A paint ID this build can render: 0 (none) or one of the catalogue. Anything else is a
     /// record from a version that knew more finishes and must not be guessed at.</summary>
     public static bool IsKnown(int paintId) => paintId == None || s_byId.ContainsKey(paintId);
     /// <summary>The finishes offered for a gun variant, in catalogue order.</summary>
     public static IEnumerable<ScGunSkin> For(int variant) {
         string gun = variant >= 0 && variant < GunSpec.All.Length ? GunSpec.All[variant].Name : null;
-        return gun is null ? [] : All.Where(s => s.Gun == gun);
+        return gun is null ? [] : Available.Where(s => s.Gun == gun);
     }
     public static bool Fits(ScGunSkin skin, int variant) =>
         skin is not null && variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].Name == skin.Gun;
@@ -106,10 +107,10 @@ public static class ScGunSkinCatalog {
     /// record from a newer build draws the plain gun instead of nothing.</summary>
     public static string Material(string asset, int paintId) {
         var skin = Find(paintId);
-        return skin is not null && skin.Gun == asset ? skin.Material : $"{asset}_hd";
+        return skin is not null && skin.Gun == asset && ScMinimalEdition.SkinAvailable(paintId) ? skin.Material : $"{asset}_hd";
     }
     public static string Icon(string asset, int paintId) {
         var skin = Find(paintId);
-        return skin is not null && skin.Gun == asset ? skin.Icon : $"{asset}_slot";
+        return skin is not null && skin.Gun == asset && ScMinimalEdition.SkinAvailable(paintId) ? skin.Icon : $"{asset}_slot";
     }
 }

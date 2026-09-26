@@ -21,7 +21,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         public string Name => DisplayName(Variant) + (SkinId == 0 ? "" : " · " + ScGunSkinCatalog.NameOf(SkinId));
     }
     static readonly CatalogueEntry[] Catalogue = Enumerable.Range(0, GunSpec.All.Length).Select(v => new CatalogueEntry(v, 0))
-        .Concat(ScGunSkinCatalog.All.Select(s => new CatalogueEntry(Array.FindIndex(GunSpec.All, g => g.Name == s.Gun), s.PaintId))).ToArray();
+        .Concat(ScGunSkinCatalog.Available.Select(s => new CatalogueEntry(Array.FindIndex(GunSpec.All, g => g.Name == s.Gun), s.PaintId))).ToArray();
     int m_instanceValue;          // the item the player came from, when they came from one
     int m_previewLevel = -1;      // -1 follows the real level; never writes to the gun
     readonly List<Widget> m_futureRows = [];
@@ -99,7 +99,7 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
         m_entryIndex = Math.Clamp(index, 0, Catalogue.Length - 1);
         var entry = Catalogue[m_entryIndex]; m_variant = entry.Variant;
         m_value = m_instanceValue != 0 && EffectiveGunStats.TrySnapshotValue(m_instanceValue, out var origin) && origin.Variant == m_variant
-            && origin.SkinId == entry.SkinId ? m_instanceValue : entry.Value;
+            && (origin.SkinId == entry.SkinId || ScMinimalEdition.Enabled && !ScMinimalEdition.SkinAvailable(origin.SkinId) && entry.SkinId == 0) ? m_instanceValue : entry.Value;
         if (m_list.SelectedIndex != m_entryIndex) m_list.SelectedIndex = m_entryIndex;
         Refresh();
     }

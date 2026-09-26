@@ -96,6 +96,7 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
     public override IEnumerable<int> GetCreativeValues() {
         for (int variant = 0; variant < s_names.Length; variant++)
         {
+            if (!ScMinimalEdition.KnifeAvailable(variant)) continue;
             // Factory knives remain available alongside their finish variants.
             yield return Terrain.MakeBlockValue(BlockIndex, 0, ScKnifeSkinCatalog.With(variant, ScKnifeSkinCatalog.None));
             int skin = ScKnifeSkinCatalog.ForVariant(variant);

@@ -19,9 +19,9 @@ public static class ScKnifeSkinCatalog {
         : Phase(variant) > 0 ? $"伽马多普勒 P{Phase(variant)}" : "渐变之色";
     // Unsupported Gamma in the old preview used skin 1. Preserve stored values
     // and knife identities while resolving the selected supported finish visually.
-    public static string Texture(string asset, int skin, int variant) => skin != None && Finish(variant) is {} finish
+    public static string Texture(string asset, int skin, int variant) => !ScMinimalEdition.Enabled && skin != None && Finish(variant) is {} finish
         ? $"{asset}_finish__{finish}" : $"{asset}_cs2";
-    public static string Icon(string asset, int skin, int variant) => skin != None && Finish(variant) is {} finish
+    public static string Icon(string asset, int skin, int variant) => !ScMinimalEdition.Enabled && skin != None && Finish(variant) is {} finish
         ? $"{asset}_slot__{finish}" : $"{asset}_slot";
     // Use the exact item being drawn, including during a switch-out.
     public static string MaterialForRender(string asset, int variant, int itemValue) =>

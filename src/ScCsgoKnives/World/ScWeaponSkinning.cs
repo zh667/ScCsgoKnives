@@ -33,6 +33,7 @@ public static class ScWeaponSkinning {
     /// <summary>Prices a change. Null when the slot cannot be read, the finish does not belong to this gun,
     /// or the gun already wears it - re-picking the current finish is refused before anything is charged.</summary>
     public static Quote Prepare(IInventory inventory, int slot, ScGunSkin skin, bool free, Func<int, int> materialValue) {
+        if (!ScMinimalEdition.SkinAvailable(skin?.PaintId ?? 0)) return null;
         if (inventory is null || slot < 0 || slot >= inventory.SlotsCount) return null;
         if (!ScInventoryTransaction.IsWeaponSlot(inventory, slot)) return null;
         int value = inventory.GetSlotValue(slot);
@@ -48,6 +49,7 @@ public static class ScWeaponSkinning {
     /// untouched. A gun that was still a stackable factory template gets its instance record here, which is
     /// what stops two finished guns from ever sharing one item value.</summary>
     public static ScGunResult Apply(IInventory inventory, Quote quote, string holder) {
+        if (!ScMinimalEdition.SkinAvailable(quote?.Skin?.PaintId ?? 0)) return ScGunResult.Invalid;
         if (inventory is null || quote is null || quote.Slot < 0 || quote.Slot >= inventory.SlotsCount) return ScGunResult.Invalid;
         if (inventory.GetSlotValue(quote.Slot) != quote.Value) return ScGunMutation.QuoteChanged("skin", inventory, quote.Slot, quote.Value, quote.Id, quote.Revision, "slot changed after quote");
         var mutation = ScGunMutation.Prepare(inventory, quote.Slot, holder, out ScGunResult why);
