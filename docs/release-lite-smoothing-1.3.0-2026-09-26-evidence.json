@@ -1,0 +1,379 @@
+{
+  "path": "[API1.9]CS武器1.3.0-轻量包.scmod",
+  "revision": "crowd-smooth-20260926",
+  "edition": "Lite",
+  "sourceSha256": "bfa85bcf02cd40246b883099367ee7a3a8bd7bac8c1e8b1602f5f8a8d596c9d7",
+  "fullUnchangedSha256": "a2922a8115fe010b564691115351667dba1c3327329fd1a36870184ffef10f02",
+  "sha256": "187598bfb07a358d88a60806c80dbb446808fe8663258761a4e38c776f8a3dce",
+  "bytes": 107490662,
+  "unchangedCompressedEntries": 1630,
+  "losslessAdditionalBytesSaved": 1020988,
+  "replacementHashes": {
+    "ScCsgoTactical.dll": "67e1fc2b4a816a332f8f2a94f643d1d72db34be5629586946135e72bd4305a0d",
+    "Assets/Animations/ScCsgoTactical/ct.scanim": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1",
+    "Assets/Models/ScCsgoTactical/ct.glb": "410298028e737ae4cf2049682de00d6cfe1cd188b6f01f02e4f389629f6b8f47",
+    "Assets/Animations/ScCsgoTactical/t.scanim": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671",
+    "Assets/Models/ScCsgoTactical/t.glb": "e3e8c791664afd68bf9488b1483059c86bab5b8786da7e5b725dcff297e86e71",
+    "Assets/Models/ScCsgoTactical/Weapons/ak47-legacy.scmesh": "044e6ec02dc0de42c4dbb0584bfa8b55bfad1e3f84c1fdc90d098b030a7837b3",
+    "Assets/Models/ScCsgoTactical/Weapons/ak47.scmesh": "4413a30685f60f4f47e0a3929b319b49d63efa6e9264df650f6cb0c5b505254c",
+    "Assets/Models/ScCsgoTactical/Weapons/aug-legacy.scmesh": "d4ab163fee4a32eec9ddfa49b28a9fcc34e6ca78a880a1ad45e67c57950f0d21",
+    "Assets/Models/ScCsgoTactical/Weapons/aug.scmesh": "8f2d0ebe4057f04837ecbeb8aa4abe3abdc85dd7afbb9f80f0797d45d7ac7191",
+    "Assets/Models/ScCsgoTactical/Weapons/awp-legacy.scmesh": "bac202b569c091fb1741d2e66578d31310fcfdba5b4242589f6fdde4b5b4ca0f",
+    "Assets/Models/ScCsgoTactical/Weapons/awp.scmesh": "437a71ebb0dde7b682d23ac70f5cb99b119727313a9ed4e60971e31689032b33",
+    "Assets/Models/ScCsgoTactical/Weapons/bizon-legacy.scmesh": "01b400448008d65eeaf062b2878d63d321ccab062d3808efe854a5a6f92a5d17",
+    "Assets/Models/ScCsgoTactical/Weapons/bizon.scmesh": "75d074c2eb5a28d9ef469dcf18adce5b9e98d26476a881801c8f09375a524201",
+    "Assets/Models/ScCsgoTactical/Weapons/cz75a-legacy.scmesh": "c0f06191dc877bb04acbcfce61d0a6d2e87bf571029e31b70d8a2e712259c6c8",
+    "Assets/Models/ScCsgoTactical/Weapons/cz75a.scmesh": "bf8c8b973fd173539b9553dc10a9ea6bb21d12cb8471b3e823d4aa25e9d4b843",
+    "Assets/Models/ScCsgoTactical/Weapons/deagle-legacy.scmesh": "345984b28f5990496f62b700c21af4b1a2bbf826246e688bf249e0e8b2e2ac8f",
+    "Assets/Models/ScCsgoTactical/Weapons/deagle.scmesh": "92fddb2a32c63a82b2faa1cae84fa67a793b075b3a0c7a5f481a35793e30c3e8",
+    "Assets/Models/ScCsgoTactical/Weapons/elite.scmesh": "41571d928da755362f08f7cd9e4936afc487163633c1931e7b86c3848d5a2d78",
+    "Assets/Models/ScCsgoTactical/Weapons/famas-legacy.scmesh": "a1cfba12b0f785865133712b3e15f7f5964f94ac80df8a30b72e96f212fb7574",
+    "Assets/Models/ScCsgoTactical/Weapons/famas.scmesh": "ae6af27fe408d003b0b5bf518c67fd016848bf450d0f9207c29de4473d39e0ac",
+    "Assets/Models/ScCsgoTactical/Weapons/fiveseven-legacy.scmesh": "3b5ca2cf27f8c89526dc4a937c0cc82537cddabfb1cc2be2ef01016e617d5d23",
+    "Assets/Models/ScCsgoTactical/Weapons/fiveseven.scmesh": "d4b9efb700a9dc4edde7950a9c9eefa34b6befc8c55fdae6383a2f15e3bda9c5",
+    "Assets/Models/ScCsgoTactical/Weapons/g3sg1.scmesh": "2938e63d6816b39b466f31b5acda8ad8c8cb375be4809d0540077fcf82cd6781",
+    "Assets/Models/ScCsgoTactical/Weapons/galilar-legacy.scmesh": "07fad7c273dc4c86bf03f35238436daf55a7c47f529d4a9e05cd60e4fef11a3d",
+    "Assets/Models/ScCsgoTactical/Weapons/galilar.scmesh": "234acffb93964d27af7fb5b443e59449e5a2ddcb7dcdae22b9bef25b360c3cff",
+    "Assets/Models/ScCsgoTactical/Weapons/glock18-legacy.scmesh": "8efb30e2c7696eda803780376af326c87e1ddef2dc55d12874a9bea5d004ca16",
+    "Assets/Models/ScCsgoTactical/Weapons/glock18.scmesh": "dbe151ad0ad36de3c145b976709022e7b62ede2b0352d4522231bbf6ec46eaa2",
+    "Assets/Models/ScCsgoTactical/Weapons/hkp2000-legacy.scmesh": "70f6b4c0654786d115d85bb3a8d2623fdc85574c3a689c9f68731618932b450d",
+    "Assets/Models/ScCsgoTactical/Weapons/hkp2000.scmesh": "fb12cd460e145971f14cc42908e6243e3b159181e77d1f41006dc12247e055c9",
+    "Assets/Models/ScCsgoTactical/Weapons/m249-legacy.scmesh": "c0a4c9249ba26913aae7d91d3bc799a5a9148e4e1e09097cfec63fc2b5b99500",
+    "Assets/Models/ScCsgoTactical/Weapons/m249.scmesh": "ffda3a83da00c61f00683564b1d0244827eadc5a8a06d5494f20e667b84df96a",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a1s-legacy.scmesh": "84a0d7758a60033567e4d9461fc43a1e11eb6db103125ad0114ebbd3c51d6c2c",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a1s.scmesh": "865c57143a4dc8225caea7beac307f147f14fff5f3bae193c87efded09d61dc6",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a4-legacy.scmesh": "c04d8789125fed537873cd44e8efca70923d7383b9f665c4e614a9cca51c9af0",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a4.scmesh": "15e0aa4679b40a738ff3e14bc78ff80343cc4ac8bea9bc0e730f211181c99f8c",
+    "Assets/Models/ScCsgoTactical/Weapons/mac10-legacy.scmesh": "70b5609bbe4e9ddd74f9dc8f123d943ec83758fb0ce06e4ef145e4313a74e450",
+    "Assets/Models/ScCsgoTactical/Weapons/mac10.scmesh": "6c19d71eabb103e2f191e58a0d03086a965eacc673c36a9b169b47489a725a10",
+    "Assets/Models/ScCsgoTactical/Weapons/mag7-legacy.scmesh": "ee1f5d6d6d8b11792fe96ea52fb50eea468e3bb743b611431de8561a43d3304f",
+    "Assets/Models/ScCsgoTactical/Weapons/mag7.scmesh": "56026aaf7bc090c5facbcbeecdc9b796899e9cf98daf7d089b3ae85f2a073b95",
+    "Assets/Models/ScCsgoTactical/Weapons/mp5sd-legacy.scmesh": "3d2766db3c82ae5bb3535c55592c8543e47e40f57dcf13d268ac185e1daa3a0d",
+    "Assets/Models/ScCsgoTactical/Weapons/mp5sd.scmesh": "d33c9dc6daa7f3fad49748ae7d5741759a64d0889f67b50f131bbbbcc3f76e45",
+    "Assets/Models/ScCsgoTactical/Weapons/mp7.scmesh": "1420b6efebc2384c556400dd53e80d7a03d9e5c69af8770e25bd7e34b2282afd",
+    "Assets/Models/ScCsgoTactical/Weapons/mp9.scmesh": "ce45237458dc84e9d9bcaf15d44933864aac3e9a03ef70e3a2b9042134ec0196",
+    "Assets/Models/ScCsgoTactical/Weapons/negev-legacy.scmesh": "931dc8a93c2b35d400ba9ba72cfdd48ee796f1a20649eb36b4bd2e6a4edebcde",
+    "Assets/Models/ScCsgoTactical/Weapons/negev.scmesh": "56bca06938b67f2d0aadfb2ea448c456382c99defae12e277756868f05cd4ec6",
+    "Assets/Models/ScCsgoTactical/Weapons/nova-legacy.scmesh": "7dc4852815ea701d175f7ec8e1d3590883820ae877599fbf48a4bce68d36f511",
+    "Assets/Models/ScCsgoTactical/Weapons/nova.scmesh": "5268739588c53b3db50654dc1029f0cc5e3b0867d22c2ff24311204808df21b2",
+    "Assets/Models/ScCsgoTactical/Weapons/p250.scmesh": "78aed1ebf688d4005dd6cdd75c0b2040f097a5034f42c4206bc8dc31859d0156",
+    "Assets/Models/ScCsgoTactical/Weapons/p90-legacy.scmesh": "9606b78963eeba619a069fa23e1ff5b7ff26716dd175232164e91aec442b8b3d",
+    "Assets/Models/ScCsgoTactical/Weapons/p90.scmesh": "1b0d32c3a844318d1bf5af3f60821b63369187fdf0810d04c3bf19e6bc1d34b2",
+    "Assets/Models/ScCsgoTactical/Weapons/revolver-legacy.scmesh": "0724a5027c1c65f45ff3418bd0cb1b3e73a69a6d60ba9707a4638d1859ae5fbc",
+    "Assets/Models/ScCsgoTactical/Weapons/revolver.scmesh": "93b6001de94cca7f3b272ba3a6d3dbe7ece2fd10509e1ab6f04f86e9326613a6",
+    "Assets/Models/ScCsgoTactical/Weapons/sawedoff-legacy.scmesh": "72864422e366889c2d7c7a0bd8eac37a5a990579e6531927e6b0098fa4ed90e9",
+    "Assets/Models/ScCsgoTactical/Weapons/sawedoff.scmesh": "88b2f0d5795cafb995b4e7d9fc2945b6a0440184a24ae41b8bda74e695770f61",
+    "Assets/Models/ScCsgoTactical/Weapons/scar20-legacy.scmesh": "1ef46e4a46c33a3167055d25c7077498fbd360ed3aaae59334d4cb38ec82afaf",
+    "Assets/Models/ScCsgoTactical/Weapons/scar20.scmesh": "d3a71d2b017f1a807fb4903236cbab920cda760cf7c11bb167b1635384921ee8",
+    "Assets/Models/ScCsgoTactical/Weapons/sg556-legacy.scmesh": "c472ffb99732079f681b75efde50c0a0e9fc0aa980917a8d4b567fccd58309d4",
+    "Assets/Models/ScCsgoTactical/Weapons/sg556.scmesh": "38d8935d1f5a7b3bb183b859c8d250195c70c80bac458721070106380fd445c5",
+    "Assets/Models/ScCsgoTactical/Weapons/ssg08-legacy.scmesh": "6884d66379e79b883a41581159f69e78aad937c12c7f5fcf2802faba685114ca",
+    "Assets/Models/ScCsgoTactical/Weapons/ssg08.scmesh": "9904f2aec8cc931f89b8639af330f55ef351d29348bf9429af6902f734d35727",
+    "Assets/Models/ScCsgoTactical/Weapons/taser.scmesh": "883aa0d63a7bf70818d6156da2e251cdd988ffd0fa0ce1de98bce115049adf62",
+    "Assets/Models/ScCsgoTactical/Weapons/tec9-legacy.scmesh": "b1aa1b45cf615934a22290b4492726386b98c1e54f06a75ee5404cbaba001895",
+    "Assets/Models/ScCsgoTactical/Weapons/tec9.scmesh": "e0d8a2a14a2458ee108d5c059a7dd969c4b4a7f29abc2c3e5721fcbae402394b",
+    "Assets/Models/ScCsgoTactical/Weapons/ump45.scmesh": "1a8c406f3a84e3d78898af0226545f3a7978be1b4e59bc254df3cb43050b1825",
+    "Assets/Models/ScCsgoTactical/Weapons/usp_silencer-legacy.scmesh": "4f3e75301ad98b90a00731df3003ae0caffbe8c5bdb79b801bb82e197d240c4d",
+    "Assets/Models/ScCsgoTactical/Weapons/usp_silencer.scmesh": "41d1d448bcc54d8e6b577b989702a16c5b90999f758d429475180448fc6ec3d9",
+    "Assets/Models/ScCsgoTactical/Weapons/xm1014-legacy.scmesh": "2267299b7b17a5bba65ba66c39c78034773f1b2ff6d1acf86c96b97f30f1a24d",
+    "Assets/Models/ScCsgoTactical/Weapons/xm1014.scmesh": "122f6396acb6e8eda415accb3a26bdb6b9aa37244ef3cbb25eabdef51815d792",
+    "Assets/ScCsgoResources.xml": "146186d8c76e404be1b0419bb42ac74bf390a8a424e5645e019f13480f0d9b88"
+  },
+  "dllHashes": {
+    "Integrations/ScCsgoAppearance.bin": "0b8bdbbd5a3be253bb1ab454f919d7062c4dca8b1609a0fad91e6e85c3c316f7",
+    "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+    "ScCsgoKnives.dll": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+    "ScCsgoResources.dll": "1a0fdc9759428ed8a4cf635c0b7a316b3d29f47cea96ef04433c1c1a958352d4",
+    "ScCsgoTactical.dll": "67e1fc2b4a816a332f8f2a94f643d1d72db34be5629586946135e72bd4305a0d",
+    "ScCsgoVoice.dll": "370d795d6d2eaa466107062dd40f55fb39a9cfd00ba2364b4835ed5248f837d0"
+  },
+  "validation": [
+    {
+      "name": "gate",
+      "checks": 12,
+      "sha256": "57e744daf7eb0b5478898f718be39d6cc436f8741bb5f329eef9785c279533c0"
+    },
+    {
+      "name": "native",
+      "checks": 6,
+      "sha256": "0e8d9ef0b975787d31b93cc1da07feacb8b52b9e6a84da770d88e905ac9ac2a8"
+    },
+    {
+      "name": "ai",
+      "checks": 15,
+      "sha256": "1ff9e8201bf57d13b5c3a6d6c83c2f37b84c15ab5b53665499ab8778bf55ee4a"
+    },
+    {
+      "name": "compatibility",
+      "checks": 243,
+      "sha256": "dd1cefbbd5fa41b3d93498c54d50f6117872ea98026a4abcf6b75023bfab69ba"
+    },
+    {
+      "name": "official-both",
+      "checks": 20,
+      "sha256": "16497b0ea615118d9adf8e0d5ed8bc17994edb81300ae367e138bc9cfef1d2c0"
+    },
+    {
+      "name": "official-reversed",
+      "checks": 20,
+      "sha256": "f697a7af6d51da81aead11cb192cddacf479ad0b34da5d2054cf47f5e341c3ea"
+    },
+    {
+      "name": "official-none",
+      "checks": 14,
+      "sha256": "6d4974280ad2a50579db75a3974dd1b0092c251e085bb751a48f201e6d2652e2"
+    },
+    {
+      "name": "official-nmm-only",
+      "checks": 14,
+      "sha256": "05a2f534dbab201d707ec1c03fa5c4dc2a5b50ab0dce18ad906627f8838f72f3"
+    },
+    {
+      "name": "official-neo-only",
+      "checks": 14,
+      "sha256": "92ee488ca2c10c2ffd0deaf06148284a28cfc0b30da25fb2d66c172f6725f9ab"
+    },
+    {
+      "name": "official-disabled",
+      "checks": 14,
+      "sha256": "e848e29cef8166a45e6a0c508b686a963f044de11a233082e3c4b9b66e08352a"
+    },
+    {
+      "name": "official-outdated",
+      "checks": 14,
+      "sha256": "6e8f06f8a558bd13377bde99897b475a89844813d81a9401523c7f7e08a06d7c"
+    },
+    {
+      "name": "sampling/checks",
+      "checks": 1793,
+      "sha256": "398dbf3393952aa9e40b6124e95214166c57d4a4aa14503a0e98afb31c3784cd"
+    },
+    {
+      "name": "weapons/checks",
+      "checks": 3211,
+      "sha256": "5394543f8e9aaa35eae3f9d1a72b5cac9e6d989fb80ea2b02bbc879dd34f663e"
+    },
+    {
+      "name": "appearance/checks",
+      "checks": 7892,
+      "sha256": "84677c9774b3c961fe686c91d2b26b5e47d6de3ac65852a9a8192bdbbdb4d862"
+    }
+  ],
+  "nativeActorFrames": 12,
+  "scope": "Actual Lite assets/resources in isolated Windows native fixtures; no Android/player-world acceptance",
+  "actors": {
+    "ct": {
+      "before": {
+        "mode": "bake",
+        "gltfSha256": "245755fcc2a9d9a852f5931cbe627efd87a17152c5b09c480bceef83a9d0650f",
+        "cacheSha256": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1",
+        "gltfMs": 20477,
+        "gltfAllocatedBytes": 16088750136,
+        "cacheReadMs": 292,
+        "totalAllocatedBytes": 16130494408,
+        "peakWorkingSetBytes": 221859840,
+        "bones": 580,
+        "clips": 170,
+        "channels": 43129,
+        "samples": 1496147,
+        "checks": 129729,
+        "failed": 0,
+        "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+      },
+      "after": {
+        "mode": "verify",
+        "gltfSha256": "410298028e737ae4cf2049682de00d6cfe1cd188b6f01f02e4f389629f6b8f47",
+        "cacheSha256": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1",
+        "gltfMs": 155,
+        "gltfAllocatedBytes": 7365392,
+        "cacheReadMs": 130,
+        "totalAllocatedBytes": 36635152,
+        "peakWorkingSetBytes": 82300928,
+        "bones": 580,
+        "clips": 170,
+        "channels": 43129,
+        "samples": 1496147,
+        "checks": 13,
+        "failed": 0,
+        "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+      },
+      "geometry": {
+        "role": "ct",
+        "sourceSha256": "245755fcc2a9d9a852f5931cbe627efd87a17152c5b09c480bceef83a9d0650f",
+        "sha256": "410298028e737ae4cf2049682de00d6cfe1cd188b6f01f02e4f389629f6b8f47",
+        "bytesBefore": 39213176,
+        "bytesAfter": 2354652,
+        "clipsBaked": 170,
+        "animationChannels": 43129,
+        "preservedAccessors": 30,
+        "preservedBufferViews": 35,
+        "geometrySkinMaterialsAndFullResolutionImagesExact": true
+      }
+    },
+    "t": {
+      "before": {
+        "mode": "bake",
+        "gltfSha256": "722a3fe89aebe220811610d8ad1bb345bbcab60bb2b44d9bbdc13bd3ff6e86fc",
+        "cacheSha256": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671",
+        "gltfMs": 17438,
+        "gltfAllocatedBytes": 14649278824,
+        "cacheReadMs": 304,
+        "totalAllocatedBytes": 14688657288,
+        "peakWorkingSetBytes": 208457728,
+        "bones": 572,
+        "clips": 170,
+        "channels": 40516,
+        "samples": 1408328,
+        "checks": 121890,
+        "failed": 0,
+        "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+      },
+      "after": {
+        "mode": "verify",
+        "gltfSha256": "e3e8c791664afd68bf9488b1483059c86bab5b8786da7e5b725dcff297e86e71",
+        "cacheSha256": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671",
+        "gltfMs": 156,
+        "gltfAllocatedBytes": 6971048,
+        "cacheReadMs": 110,
+        "totalAllocatedBytes": 34513968,
+        "peakWorkingSetBytes": 72175616,
+        "bones": 572,
+        "clips": 170,
+        "channels": 40516,
+        "samples": 1408328,
+        "checks": 13,
+        "failed": 0,
+        "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+      },
+      "geometry": {
+        "role": "t",
+        "sourceSha256": "722a3fe89aebe220811610d8ad1bb345bbcab60bb2b44d9bbdc13bd3ff6e86fc",
+        "sha256": "e3e8c791664afd68bf9488b1483059c86bab5b8786da7e5b725dcff297e86e71",
+        "bytesBefore": 37481820,
+        "bytesAfter": 2761784,
+        "clipsBaked": 170,
+        "animationChannels": 40516,
+        "preservedAccessors": 40,
+        "preservedBufferViews": 45,
+        "geometrySkinMaterialsAndFullResolutionImagesExact": true
+      }
+    }
+  },
+  "samplingMeasurements": [
+    {
+      "stage": "sampler",
+      "role": "ct",
+      "nativeBytes": 24112000,
+      "optimizedBytes": 0,
+      "nativeMs": 17.4875,
+      "optimizedMs": 8.0077,
+      "calls": 1000
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 1,
+      "optimized": false,
+      "msPerFrame": 0.05269833333333333,
+      "bytesPerFrame": 24324
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 1,
+      "optimized": true,
+      "msPerFrame": 0.031019444444444443,
+      "bytesPerFrame": 212
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 5,
+      "optimized": false,
+      "msPerFrame": 0.27675833333333333,
+      "bytesPerFrame": 121620
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 5,
+      "optimized": true,
+      "msPerFrame": 0.18334499999999998,
+      "bytesPerFrame": 1060
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 41,
+      "optimized": false,
+      "msPerFrame": 2.6388666666666665,
+      "bytesPerFrame": 997284
+    },
+    {
+      "stage": "crowd",
+      "role": "ct",
+      "count": 41,
+      "optimized": true,
+      "msPerFrame": 1.7338022222222222,
+      "bytesPerFrame": 8692
+    },
+    {
+      "stage": "sampler",
+      "role": "t",
+      "nativeBytes": 10664000,
+      "optimizedBytes": 0,
+      "nativeMs": 15.2303,
+      "optimizedMs": 7.1992,
+      "calls": 1000
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 1,
+      "optimized": false,
+      "msPerFrame": 0.04228055555555556,
+      "bytesPerFrame": 10875
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 1,
+      "optimized": true,
+      "msPerFrame": 0.021032777777777775,
+      "bytesPerFrame": 211
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 5,
+      "optimized": false,
+      "msPerFrame": 0.23445055555555555,
+      "bytesPerFrame": 54376
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 5,
+      "optimized": true,
+      "msPerFrame": 0.10953444444444445,
+      "bytesPerFrame": 1056
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 41,
+      "optimized": false,
+      "msPerFrame": 1.7438277777777778,
+      "bytesPerFrame": 445887
+    },
+    {
+      "stage": "crowd",
+      "role": "t",
+      "count": 41,
+      "optimized": true,
+      "msPerFrame": 1.0038466666666666,
+      "bytesPerFrame": 8663
+    }
+  ],
+  "weaponBakeSourceResourceDll": "1a0fdc9759428ed8a4cf635c0b7a316b3d29f47cea96ef04433c1c1a958352d4"
+}

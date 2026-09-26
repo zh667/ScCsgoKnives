@@ -1,5 +1,18 @@
 # Project conventions
 
+- User-directed 2026-09-26 Lite follow-up supersedes the Full-only scope below:
+  replace current 1.3.0 Lite with crowd-smooth-20260926 code and Lite-native
+  actor/weapon caches. Retain all ordinary Lite gameplay/assets and 512 quality.
+  Full stays unchanged. Bake NPC geometry with the actual Lite resource DLL and
+  OBJ files into a separate output directory, never overwrite Full source caches.
+  Minimal <30,000,000-byte edition is a separate feasibility study; user permits
+  dropping agents if necessary, surplus gun skins and considering further cuts.
+  Do not apply those cuts to ordinary Lite/Full. Skin deletion and even removing
+  all tactical/appearance resources are insufficient alone (about 64.2 MB left
+  with one finish per main weapon). Any future minimal build must preserve saved
+  identities/dormant data and support missing cosmetics deliberately. See
+  docs/release-lite-smoothing-1.3.0-2026-09-26.md and its size-budget links.
+
 - User-directed 2026-09-26 comprehensive mobile follow-up: full-only 1.3.0
   revision `crowd-smooth-20260926` retains native controller state/events and
   interpolation, compiling actor channel bindings and reusing transition output.

@@ -7,8 +7,9 @@ using Engine.Graphics;
 using Engine.Media;
 using Game;
 
-if(args.Length!=4)throw new ArgumentException("NpcWeaponCheck <repo> <package> <Content.zip> <output>");
+if(args.Length is not (4 or 5))throw new ArgumentException("NpcWeaponCheck <repo> <package> <Content.zip> <output> [baked Assets directory]");
 string root=Path.GetFullPath(args[0]),output=Path.GetFullPath(args[3]);Directory.CreateDirectory(output);
+string bakeAssets=args.Length==5?Path.GetFullPath(args[4]):Path.Combine(root,"src/ScCsgoTactical/Assets");
 var checks=new List<string>();var rows=new List<object>();int exit=0;
 void Check(string name,bool pass){if(!pass)throw new Exception(name);checks.Add(name);}
 Dispatcher.Initialize();
@@ -16,7 +17,7 @@ Dispatcher.Initialize();
 var geometries=new List<(string Asset,bool Legacy,ScNpcWeaponGeometry Geometry)>();
 using var package=ZipFile.OpenRead(args[1]);using var content=ZipFile.OpenRead(args[2]);
 var textures=new Dictionary<string,Texture2D>();
-Texture2D Texture(string name){if(textures.TryGetValue(name,out var texture))return texture;using var stream=package.GetEntry("Assets/Textures/ScCsgoKnives/"+name+".png").Open();return textures[name]=Texture2D.Load(Image.Load(stream));}
+Texture2D Texture(string name){if(textures.TryGetValue(name,out var texture))return texture;string path="Assets/Textures/ScCsgoKnives/"+name;using var stream=(package.GetEntry(path+".png")??package.GetEntry(path+".webp")??throw new FileNotFoundException(path)).Open();return textures[name]=Texture2D.Load(Image.Load(stream));}
 string Read(string suffix){using var reader=new StreamReader(content.Entries.Single(e=>e.FullName.EndsWith(suffix)).Open());return reader.ReadToEnd();}
 ContentManager.AddContentReader(new Game.IContentReader.ObjModelReader());
 foreach(var e in package.Entries.Where(e=>e.FullName.StartsWith("Assets/Models/ScCsgoKnives/")&&e.FullName.EndsWith(".obj"))){var info=new ContentInfo(e.FullName[7..]);using var input=e.Open();var copy=new MemoryStream();input.CopyTo(copy);copy.Position=0;info.SetContentStream(copy);ContentManager.Add(info);}
@@ -32,7 +33,7 @@ foreach(string asset in GunSpec.All.Select(g=>g.Name))foreach(bool legacy in ScG
         var a=source.Groups[i];var b=copy.Groups[i];
         Check(asset+" group "+i,a.Texture==b.Texture&&a.Silencer==b.Silencer&&a.Bone==b.Bone&&a.BindInverse==b.BindInverse&&a.WorldBone==b.WorldBone&&a.WorldInverse==b.WorldInverse&&a.Mesh.Vertices.SequenceEqual(b.Mesh.Vertices)&&a.Mesh.Indices.SequenceEqual(b.Mesh.Indices));
     }
-    string path=Path.Combine(root,"src/ScCsgoTactical/Assets",ScNpcWeaponGeometry.PathFor(asset,legacy));Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllBytes(path,data.ToArray());
+    string path=Path.Combine(bakeAssets,ScNpcWeaponGeometry.PathFor(asset,legacy));Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllBytes(path,data.ToArray());
     if(package.GetEntry("Assets/"+ScNpcWeaponGeometry.PathFor(asset,legacy)) is {} packaged){using var input=packaged.Open();using var bytes=new MemoryStream();input.CopyTo(bytes);Check(asset+" packaged native geometry",bytes.ToArray().SequenceEqual(data.ToArray()));}
     var info=new ContentInfo(ScNpcWeaponGeometry.PathFor(asset,legacy));info.SetContentStream(new MemoryStream(data.ToArray()));ContentManager.Add(info);
     Check(asset+" ContentManager reader",ScNpcWeaponGeometry.For(asset,legacy).Groups.Length==copy.Groups.Length);

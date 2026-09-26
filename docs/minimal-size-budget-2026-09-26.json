@@ -1,0 +1,42 @@
+{
+  "package": "[API1.9]CS武器1.3.0-轻量包.scmod",
+  "bytes": 107490662,
+  "limitBytes": 30000000,
+  "compressedCategories": {
+    "Other metadata/resources": 227334,
+    "Actor animation caches": 12770484,
+    "Audio": 13549246,
+    "OBJ geometry": 7531232,
+    "GLB models": 8122304,
+    "NPC weapon caches": 16501571,
+    "Other textures": 12492045,
+    "Optional gun/knife cosmetic textures": 5723855,
+    "Other code/embedded resources": 3405638,
+    "Embedded weapon animation/geometry DLL": 26859977
+  },
+  "zipHeadersBytes": 306976,
+  "retainedMainWeaponFinishes": {
+    "ak47": "cu_ak47_rubber",
+    "aug": "cu_anime_aug",
+    "awp": "am_lightning_awp",
+    "famas": "gs_famas_mecha",
+    "g3sg1": "so_green",
+    "galilar": "cu_galil_candychaos",
+    "m249": "gs_m249_nebula_crusader",
+    "m4a1s": "cu_m4a1s_printstream",
+    "m4a4": "cu_m4a1_howling",
+    "negev": "gs_negev_thor",
+    "scar20": "cu_scar20_intervention",
+    "sg556": "cu_sg553_caution",
+    "ssg08": "cu_ssg08_dragonfire_scope"
+  },
+  "retainedMainWeaponFinishBytes": 1254885,
+  "allOptionalGunTextureBytes": 4615186,
+  "removeOtherGunFinishesBytes": 104130361,
+  "removeAllOptionalGunAndKnifeTexturesBytes": 101766807,
+  "threeResourceGroupsAloneBytes": 56132032,
+  "removeEntireTacticalAndAppearanceBytes": 67518837,
+  "removeEntireTacticalAndAppearanceAndOtherGunFinishesBytes": 64158536,
+  "noAgentsScope": "Conservative source-ownership budget for removing the entire tactical/appearance module, broader than agents alone. Retains shared core assets. Requires bundle initialization and dormant world-data support; direct DLL deletion is not sufficient.",
+  "caveat": "Deletion budgets only, before tiny ZIP header savings. No catalogue/fallback code changes; NOT valid playable packages. Cosmetic IDs and saved values must be preserved by a future minimal edition."
+}
