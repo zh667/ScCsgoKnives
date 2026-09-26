@@ -1,5 +1,5 @@
 """Package tactical gameplay plus the lazily loaded player appearance integration."""
-import hashlib,json,zipfile
+import hashlib,json,struct,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'src/ScCsgoTactical'
@@ -13,6 +13,14 @@ entries={'ScCsgoTactical.dll':dll.read_bytes(),'modinfo.json':(SOURCE/'modinfo.j
 entries['ASSET_SOURCES.md']=(SOURCE/'ASSET_SOURCES.md').read_bytes()
 for p in sorted((SOURCE/'Assets').rglob('*')):
     if p.is_file():entries[p.relative_to(SOURCE).as_posix()]=p.read_bytes()
+# Re-exported dense actor GLBs must be prebaked again, or the mobile freeze returns.
+for role in ('ct','t'):
+    actor=entries[f'Assets/Models/ScCsgoTactical/{role}.glb']
+    header_size=struct.unpack_from('<I',actor,12)[0]
+    header=json.loads(actor[20:20+header_size])
+    assert [a['name'] for a in header['animations']]==[f'__sc_prebaked_{role}_v1'], \
+        'Bake native actor animations before packaging; see docs/release-actor-freeze-1.3.0-2026-09-26.md'
+    assert entries[f'Assets/Animations/ScCsgoTactical/{role}.scanim'].startswith(b'SCACT001')
 appearance=ROOT/'src/ScCsgoAppearance'
 bridge=appearance/'bin/Release/net10.0/ScCsgoAppearance.dll'
 bridge_sources=list(appearance.glob('*.cs'))+[appearance/'ScCsgoAppearance.csproj',dll]

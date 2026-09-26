@@ -17,6 +17,10 @@ using var content=ZipFile.OpenRead(args[1]);
 string Read(string suffix){using var r=new StreamReader(content.Entries.Single(e=>e.FullName.EndsWith(suffix)).Open());return r.ReadToEnd();}
 AnimationTemplateManager.LoadFromJsonNode(JsonNode.Parse(Read("Simple.template.json")));
 var caches=(IDictionary<string,List<object>>)typeof(ContentManager).GetField("Caches",BindingFlags.NonPublic|BindingFlags.Static).GetValue(null);
+foreach(string role in new[]{"ct","t"}){
+    string name="Animations/ScCsgoTactical/"+role+".scanim";string path=Path.Combine(assets,name);
+    if(File.Exists(path)){var info=new ContentInfo(name);info.SetContentStream(new MemoryStream(File.ReadAllBytes(path)));ContentManager.Add(info);}
+}
 foreach(var e in content.Entries.Where(e=>e.FullName.Contains("Shaders/")&&!e.FullName.EndsWith('/'))){using var reader=new StreamReader(e.Open());caches[e.FullName.Replace("Assets/","")]=[reader.ReadToEnd()];}
 bool done=false;int exit=0;
 Window.Frame+=()=>{if(done)return;done=true;try{

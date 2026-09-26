@@ -40,6 +40,11 @@ var modelDict=(Dictionary<string,NekoResModel>)typeof(NekoMekoDataManager).GetFi
 var skinDict=(Dictionary<string,NekoResSkin>)typeof(NekoMekoDataManager).GetField("m_skinsByKey",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null);
 foreach(var file in Directory.GetFiles(Path.Combine(source,"Assets/NekoMekoRes/NekoResModel"),"*.json")){var m=JsonSerializer.Deserialize<NekoResModel>(File.ReadAllText(file));modelDict[m.Key]=m;}
 foreach(var file in Directory.GetFiles(Path.Combine(source,"Assets/NekoMekoRes/NekoResSkin"),"*.json")){var m=JsonSerializer.Deserialize<NekoResSkin>(File.ReadAllText(file));skinDict[m.Key]=m;}
+foreach(string role in new[]{"ct","t"}){
+    string name="Animations/ScCsgoTactical/"+role+".scanim";
+    string path=Path.Combine(root,"src/ScCsgoTactical/Assets",name);
+    if(File.Exists(path)){var info=new ContentInfo(name);info.SetContentStream(new MemoryStream(File.ReadAllBytes(path)));ContentManager.Add(info);}
+}
 bool done=false;int exit=0;
 Window.Frame+=()=>{if(done)return;done=true;try{
     LightingManager.Initialize();

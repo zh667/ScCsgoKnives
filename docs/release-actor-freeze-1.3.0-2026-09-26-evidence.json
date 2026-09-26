@@ -1,0 +1,520 @@
+{
+  "date": "2026-09-26",
+  "publicVersion": "1.3.0",
+  "edition": "Full only",
+  "package": {
+    "path": "[API1.9]CS武器1.3.0-全量包.scmod",
+    "version": "1.3.0",
+    "edition": "Full",
+    "sourceSha256": "82627ceded4e6f5fb7edfc203373c093f8d954790d7e5b9cb3f825bc41ca8f08",
+    "sha256": "b4d31f6e785cb8fb5814c01b9d228dbacf3b097da98c73528ee868eaf9a38099",
+    "bytes": 493079054,
+    "entries": 1634,
+    "changedEntries": [
+      "Assets/Models/ScCsgoTactical/ct.glb",
+      "Assets/Models/ScCsgoTactical/t.glb",
+      "ScCsgoTactical.dll"
+    ],
+    "addedEntries": [
+      "Assets/Animations/ScCsgoTactical/ct.scanim",
+      "Assets/Animations/ScCsgoTactical/t.scanim"
+    ],
+    "unchangedCompressedEntries": 1629,
+    "dllHashes": {
+      "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+      "ScCsgoKnives.dll": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+      "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+      "ScCsgoTactical.dll": "40e310814b58c773097293e016135ae23a820529ac15a550a5bddd91024b3849",
+      "ScCsgoVoice.dll": "370d795d6d2eaa466107062dd40f55fb39a9cfd00ba2364b4835ed5248f837d0"
+    },
+    "replacementHashes": {
+      "ScCsgoTactical.dll": "40e310814b58c773097293e016135ae23a820529ac15a550a5bddd91024b3849",
+      "Assets/Models/ScCsgoTactical/ct.glb": "3413f08276be4e319a4cdf83e14007a9c64a1395e7617e0f2dc238c90951f110",
+      "Assets/Animations/ScCsgoTactical/ct.scanim": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1",
+      "Assets/Models/ScCsgoTactical/t.glb": "5bf6c391ecd12e8f5a2c3f4340b49186d278dc4eb8f5a815c07eed3c0c96b1b5",
+      "Assets/Animations/ScCsgoTactical/t.scanim": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671"
+    }
+  },
+  "validation": {
+    "failed": 0,
+    "packageSha256": "b4d31f6e785cb8fb5814c01b9d228dbacf3b097da98c73528ee868eaf9a38099",
+    "performance": {
+      "ct": {
+        "before": {
+          "mode": "bake",
+          "gltfSha256": "ace29a486c0e6c3538cc8f54276f54754ad27e0ef5bbd0f55a3ef68b118a6fb8",
+          "cacheSha256": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1",
+          "gltfMs": 19631,
+          "gltfAllocatedBytes": 16090909112,
+          "cacheReadMs": 295,
+          "totalAllocatedBytes": 16132685544,
+          "peakWorkingSetBytes": 223563776,
+          "bones": 580,
+          "clips": 170,
+          "channels": 43129,
+          "samples": 1496147,
+          "checks": 129728,
+          "failed": 0,
+          "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+        },
+        "after": {
+          "mode": "verify",
+          "gltfSha256": "3413f08276be4e319a4cdf83e14007a9c64a1395e7617e0f2dc238c90951f110",
+          "cacheSha256": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1",
+          "gltfMs": 153,
+          "gltfAllocatedBytes": 9530744,
+          "cacheReadMs": 124,
+          "totalAllocatedBytes": 38802096,
+          "peakWorkingSetBytes": 75993088,
+          "bones": 580,
+          "clips": 170,
+          "channels": 43129,
+          "samples": 1496147,
+          "checks": 13,
+          "failed": 0,
+          "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+        },
+        "geometry": {
+          "role": "ct",
+          "sourceSha256": "ace29a486c0e6c3538cc8f54276f54754ad27e0ef5bbd0f55a3ef68b118a6fb8",
+          "sha256": "3413f08276be4e319a4cdf83e14007a9c64a1395e7617e0f2dc238c90951f110",
+          "bytesBefore": 41383592,
+          "bytesAfter": 4519828,
+          "clipsBaked": 170,
+          "animationChannels": 43129,
+          "preservedAccessors": 30,
+          "preservedBufferViews": 35,
+          "geometrySkinMaterialsAndFullResolutionImagesExact": true
+        }
+      },
+      "t": {
+        "before": {
+          "mode": "bake",
+          "gltfSha256": "789bc8fde5ebe4c30b28632a3d6f7e95add653695eb2b23213b15129ae975bd7",
+          "cacheSha256": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671",
+          "gltfMs": 17501,
+          "gltfAllocatedBytes": 14653262984,
+          "cacheReadMs": 268,
+          "totalAllocatedBytes": 14692652112,
+          "peakWorkingSetBytes": 191528960,
+          "bones": 572,
+          "clips": 170,
+          "channels": 40516,
+          "samples": 1408328,
+          "checks": 121889,
+          "failed": 0,
+          "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+        },
+        "after": {
+          "mode": "verify",
+          "gltfSha256": "5bf6c391ecd12e8f5a2c3f4340b49186d278dc4eb8f5a815c07eed3c0c96b1b5",
+          "cacheSha256": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671",
+          "gltfMs": 168,
+          "gltfAllocatedBytes": 10899688,
+          "cacheReadMs": 127,
+          "totalAllocatedBytes": 38444848,
+          "peakWorkingSetBytes": 75497472,
+          "bones": 572,
+          "clips": 170,
+          "channels": 40516,
+          "samples": 1408328,
+          "checks": 13,
+          "failed": 0,
+          "host": "Windows native API 1.9.3.1; headless CPU benchmark, not Android"
+        },
+        "geometry": {
+          "role": "t",
+          "sourceSha256": "789bc8fde5ebe4c30b28632a3d6f7e95add653695eb2b23213b15129ae975bd7",
+          "sha256": "5bf6c391ecd12e8f5a2c3f4340b49186d278dc4eb8f5a815c07eed3c0c96b1b5",
+          "bytesBefore": 41419260,
+          "bytesAfter": 6690252,
+          "clipsBaked": 170,
+          "animationChannels": 40516,
+          "preservedAccessors": 40,
+          "preservedBufferViews": 45,
+          "geometrySkinMaterialsAndFullResolutionImagesExact": true
+        }
+      }
+    },
+    "reports": [
+      {
+        "name": "official-both",
+        "count": 20,
+        "sha256": "16497b0ea615118d9adf8e0d5ed8bc17994edb81300ae367e138bc9cfef1d2c0",
+        "failed": 0
+      },
+      {
+        "name": "official-reversed",
+        "count": 20,
+        "sha256": "f697a7af6d51da81aead11cb192cddacf479ad0b34da5d2054cf47f5e341c3ea",
+        "failed": 0
+      },
+      {
+        "name": "official-none",
+        "count": 14,
+        "sha256": "6d4974280ad2a50579db75a3974dd1b0092c251e085bb751a48f201e6d2652e2",
+        "failed": 0
+      },
+      {
+        "name": "official-nmm-only",
+        "count": 14,
+        "sha256": "05a2f534dbab201d707ec1c03fa5c4dc2a5b50ab0dce18ad906627f8838f72f3",
+        "failed": 0
+      },
+      {
+        "name": "official-neo-only",
+        "count": 14,
+        "sha256": "92ee488ca2c10c2ffd0deaf06148284a28cfc0b30da25fb2d66c172f6725f9ab",
+        "failed": 0
+      },
+      {
+        "name": "official-disabled",
+        "count": 14,
+        "sha256": "e848e29cef8166a45e6a0c508b686a963f044de11a233082e3c4b9b66e08352a",
+        "failed": 0
+      },
+      {
+        "name": "official-outdated",
+        "count": 14,
+        "sha256": "6e8f06f8a558bd13377bde99897b475a89844813d81a9401523c7f7e08a06d7c",
+        "failed": 0
+      },
+      {
+        "name": "legacy-both",
+        "count": 20,
+        "sha256": "16497b0ea615118d9adf8e0d5ed8bc17994edb81300ae367e138bc9cfef1d2c0",
+        "failed": 0
+      },
+      {
+        "name": "legacy-reversed",
+        "count": 20,
+        "sha256": "f697a7af6d51da81aead11cb192cddacf479ad0b34da5d2054cf47f5e341c3ea",
+        "failed": 0
+      },
+      {
+        "name": "legacy-none",
+        "count": 14,
+        "sha256": "6d4974280ad2a50579db75a3974dd1b0092c251e085bb751a48f201e6d2652e2",
+        "failed": 0
+      },
+      {
+        "name": "legacy-nmm-only",
+        "count": 14,
+        "sha256": "05a2f534dbab201d707ec1c03fa5c4dc2a5b50ab0dce18ad906627f8838f72f3",
+        "failed": 0
+      },
+      {
+        "name": "legacy-neo-only",
+        "count": 14,
+        "sha256": "92ee488ca2c10c2ffd0deaf06148284a28cfc0b30da25fb2d66c172f6725f9ab",
+        "failed": 0
+      },
+      {
+        "name": "legacy-disabled",
+        "count": 14,
+        "sha256": "e848e29cef8166a45e6a0c508b686a963f044de11a233082e3c4b9b66e08352a",
+        "failed": 0
+      },
+      {
+        "name": "legacy-outdated",
+        "count": 14,
+        "sha256": "6e8f06f8a558bd13377bde99897b475a89844813d81a9401523c7f7e08a06d7c",
+        "failed": 0
+      },
+      {
+        "name": "gate",
+        "count": 12,
+        "sha256": "57e744daf7eb0b5478898f718be39d6cc436f8741bb5f329eef9785c279533c0",
+        "failed": 0
+      },
+      {
+        "name": "native",
+        "count": 6,
+        "sha256": "0e8d9ef0b975787d31b93cc1da07feacb8b52b9e6a84da770d88e905ac9ac2a8",
+        "failed": 0
+      },
+      {
+        "name": "compatibility",
+        "count": 243,
+        "sha256": "dd1cefbbd5fa41b3d93498c54d50f6117872ea98026a4abcf6b75023bfab69ba",
+        "failed": 0
+      }
+    ],
+    "appearance": {
+      "provider": "unmodified official NekoMeko 1.1 DLL",
+      "checks": 7892,
+      "failed": 0,
+      "sha256": "bfe1800ab75c5d58cef76f5b1518a50ebb16e5f16a322a93c4fdb3119b50369b"
+    },
+    "actorRenders": {
+      "checks": 12,
+      "failed": 0,
+      "sha256": "4c84220d58f0bf9c09a46108561661c06aeb58e38041d3ef6114cc6e85cc2b13"
+    },
+    "providers": {
+      "officialSha256": "12a659a67676640203277b9ad862d91e3116c4b3e3db84f35fdf9e0003cdeafc",
+      "legacyDllSha256": "ed01c11be9db13066f35298869cf63590a4af7c1e7bcceda9eb2be22c7ff8465",
+      "fixtureSha256": "ef9441b7831211b300f761e1f687d369b7739d67c5acce7caed6e1d2a82a7c9d",
+      "fixtureScope": "Temporary regression fixture: unchanged official resources with the preserved legacy local 1.0.0.0 DLL; not a delivered third-party package"
+    },
+    "verificationScope": "Windows native CPU/GPU and simulated component/save lifecycle; no Android or actual player-world acceptance"
+  },
+  "comparators": [
+    {
+      "label": "ghoul",
+      "name": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c",
+      "modelCount": 13,
+      "largestModels": [
+        {
+          "name": "Assets/Tartareosity/Models/Corpsifice.dae",
+          "bytes": 582216
+        },
+        {
+          "name": "Assets/Tartareosity/Models/Corpsifice_Head.dae",
+          "bytes": 135592
+        },
+        {
+          "name": "Assets/Models/DynamicSpear.dae",
+          "bytes": 124685
+        },
+        {
+          "name": "Assets/Models/SAGArtifact.dae",
+          "bytes": 121206
+        },
+        {
+          "name": "Assets/Tartareosity/Models/Altar.dae",
+          "bytes": 71186
+        }
+      ],
+      "dlls": [
+        ".tmp\\actor-freeze-20260926\\comparators\\ghoul-sc-saghoulmod.dll"
+      ]
+    },
+    {
+      "label": "command",
+      "name": "[API1.8.1.3]命令方块4.1.7.scmod",
+      "sha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a",
+      "modelCount": 0,
+      "largestModels": [],
+      "dlls": [
+        ".tmp\\actor-freeze-20260926\\comparators\\command-CommandBlock.dll"
+      ]
+    }
+  ],
+  "comparatorFinding": "Inspected Ghoul and CommandBlock summon methods use the same native CreateEntity/Position/AddEntity sequence. No third-party DLL was modified or executed.",
+  "liteUnchangedSha256": "bfa85bcf02cd40246b883099367ee7a3a8bd7bac8c1e8b1602f5f8a8d596c9d7",
+  "actorRenders": [
+    {
+      "name": "ct",
+      "phase": -1,
+      "pixels": 39136,
+      "bones": 580,
+      "meshes": 5,
+      "min": "-0.424469,-0.0026855469,-0.75242615",
+      "max": "0.37830353,1.8246841,0.4069519"
+    },
+    {
+      "name": "ct",
+      "phase": 0,
+      "pixels": 39136,
+      "bones": 580,
+      "meshes": 5,
+      "min": "-0.424469,-0.0026855469,-0.75242615",
+      "max": "0.37830353,1.8246841,0.4069519"
+    },
+    {
+      "name": "ct",
+      "phase": 0.5,
+      "pixels": 50684,
+      "bones": 580,
+      "meshes": 5,
+      "min": "-0.4826126,-0.069107056,-0.3738861",
+      "max": "0.3982544,1.6317139,1.3087158"
+    },
+    {
+      "name": "ct",
+      "phase": 1,
+      "pixels": 40818,
+      "bones": 580,
+      "meshes": 5,
+      "min": "-0.4889145,0.0230484,-0.0027160645",
+      "max": "0.41710663,0.9773941,1.805542"
+    },
+    {
+      "name": "t",
+      "phase": -1,
+      "pixels": 37696,
+      "bones": 572,
+      "meshes": 5,
+      "min": "-0.38406372,-0.011390686,-0.75190735",
+      "max": "0.3745346,1.8052673,0.41732788"
+    },
+    {
+      "name": "t",
+      "phase": 0,
+      "pixels": 37696,
+      "bones": 572,
+      "meshes": 5,
+      "min": "-0.38406372,-0.011390686,-0.75190735",
+      "max": "0.3745346,1.8052673,0.41732788"
+    },
+    {
+      "name": "t",
+      "phase": 0.5,
+      "pixels": 46637,
+      "bones": 572,
+      "meshes": 5,
+      "min": "-0.42923737,-0.068229675,-0.3639984",
+      "max": "0.38898468,1.6336212,1.200119"
+    },
+    {
+      "name": "t",
+      "phase": 1,
+      "pixels": 33733,
+      "bones": 572,
+      "meshes": 5,
+      "min": "-0.45500946,0.012680054,-0.011398315",
+      "max": "0.39847565,0.95256805,1.7593536"
+    },
+    {
+      "name": "hostage",
+      "phase": -1,
+      "pixels": 37310,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.39164734,-0.015914917,-0.6466675",
+      "max": "0.34516907,1.8095322,0.40496826"
+    },
+    {
+      "name": "hostage",
+      "phase": 0,
+      "pixels": 37310,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.39164734,-0.015914917,-0.6466675",
+      "max": "0.34516907,1.8095322,0.40496826"
+    },
+    {
+      "name": "hostage",
+      "phase": 0.5,
+      "pixels": 42686,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.43746948,-0.025413513,-0.33573914",
+      "max": "0.36709595,1.5814133,1.2500458"
+    },
+    {
+      "name": "hostage",
+      "phase": 1,
+      "pixels": 34644,
+      "bones": 90,
+      "meshes": 3,
+      "min": "-0.47776794,0.025047302,-0.015945435",
+      "max": "0.36442566,0.8989334,1.7720337"
+    }
+  ],
+  "finalMetadata": {
+    "modinfo.json": {
+      "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
+      "Name": "CS武器 · 最新双向兼容总包",
+      "Version": "1.3.0",
+      "ApiVersion": "1.9.3.1",
+      "Description": "制作等级按前期手枪/霰弹/冲锋、后期步枪/狙击重排；投掷物按按住左键准备、松开左键投掷；修复CT重刀内层手臂穿袖；支持独立CS探员中英语音附属。兼容系列1双向替换，不自动备份。 电击枪恢复1.2.0数值：初始10秒、满级1秒充能，其他枪械不变。",
+      "ScVersion": "2.4.0.0",
+      "LoadOrder": 1010,
+      "NonPersistentMod": false,
+      "GameplayImpactLevel": "Turbo",
+      "Link": "https://github.com/zh667/ScCsgoKnives",
+      "Author": "zh667",
+      "PackageName": "zh667.ScCsgoKnives",
+      "Dependencies": {},
+      "Settings": [
+        {
+          "Id": "Weapons",
+          "Name": "CS 枪械",
+          "Title": "CS 枪械 · 模组设置",
+          "Description": "准星、操作绑定、触屏布局及击杀反馈。",
+          "Items": [
+            {
+              "Id": "Editor",
+              "Name": "枪械与操作",
+              "Description": "直接进入完整设置，修改后点击保存生效。",
+              "Type": "System.Boolean",
+              "Default": false,
+              "Widget": "Game.ScGunModSettingsWidget"
+            }
+          ]
+        }
+      ]
+    },
+    "Integrations/ScCsgoKnives.modinfo.json": {
+      "$schema": "https://gitee.com/SC-SPM/SurvivalcraftApi/raw/SCAPI1.9/Survivalcraft/Content/modinfo-scheme.json",
+      "Name": "CS武器",
+      "Version": "1.3.0",
+      "ApiVersion": "1.9.3.1",
+      "Description": "CS风格枪械、刀具与投掷物，包含35款枪械、44款皮肤、切枪换弹检视动画、枪械台批量制作涂装维修、击杀计数器与50级成长、属性查询及手机触控自定义。支持生存与创造模式。已内置完整资源，安装本文件即可；非官方模组。无等级 C4 可设时5～300秒（默认20秒、中心伤害5000、半径32格），电击枪有效命中后可短暂眩晕目标。",
+      "ScVersion": "2.4.0.0",
+      "LoadOrder": 1010,
+      "NonPersistentMod": false,
+      "GameplayImpactLevel": "Turbo",
+      "Link": "https://github.com/zh667/ScCsgoKnives",
+      "Author": "zh667",
+      "PackageName": "zh667.ScCsgoKnives",
+      "Dependencies": {},
+      "Settings": [
+        {
+          "Id": "Weapons",
+          "Name": "CS 枪械",
+          "Title": "CS 枪械 · 模组设置",
+          "Description": "准星、操作绑定、触屏布局及击杀反馈。",
+          "Items": [
+            {
+              "Id": "Editor",
+              "Name": "枪械与操作",
+              "Description": "直接进入完整设置，修改后点击保存生效。",
+              "Type": "System.Boolean",
+              "Default": false,
+              "Widget": "Game.ScGunModSettingsWidget"
+            }
+          ]
+        }
+      ]
+    },
+    "Integrations/ScCsgoBundle.json": {
+      "version": "1.3.0",
+      "core": "1.3.0",
+      "tactical": "1.5.1",
+      "edition": "Full",
+      "sourcePackages": [
+        {
+          "path": "[API1.9]CS武器1.5.0-作者ZH667-全量版.scmod",
+          "sha256": "95c339e2aa68b4df2cf4f9068b8bbf5d45143971c7d58f758447c43d39cb5107"
+        },
+        {
+          "path": "[API1.9]CS战术同伴拓展1.4.0-作者ZH667.scmod",
+          "sha256": "d51915401082c1d32541d45e1a56866d4b2d2a8d989faa239d96b3c25142bec7"
+        }
+      ],
+      "sourceBundleSha256": "ab5f7bc7b9a11a6b1066766f599b2637e5b998355f04c47419fad3fc1b9db9a2",
+      "coreSha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+      "sourcePackagesNote": "Historical resource provenance; gameplay core replaced by the tested 1.5.3 DLL."
+    },
+    "Integrations/CompatibilityFamily.json": {
+      "family": 1,
+      "profile": "latest",
+      "version": "1.3.0",
+      "source_sha256": "840e0e40cb9e3f8f9ada69167f2def5a814a2b4f9c40ae076d2be10799cab8bb",
+      "core_sha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+      "legacy": false,
+      "backup_policy": "manual",
+      "build_revision": "2026-09-26-zeus-only"
+    }
+  },
+  "installedToGame": false,
+  "playerWorldsWritten": false,
+  "androidAcceptance": false,
+  "allInstalledModsCombinationAcceptance": false,
+  "geometryOriginalCommit": "d721fb8",
+  "provenance": "Original full actor GLBs are preserved in Git history and local .tmp/actor-freeze-20260926/before. Bake comparisons used native API 1.9.3.1."
+}

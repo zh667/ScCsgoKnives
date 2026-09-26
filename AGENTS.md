@@ -1,5 +1,16 @@
 # Project conventions
 
+- User-directed 2026-09-26 mobile freeze fix: deliver FULL ONLY for this request,
+  retaining public 1.3.0; do not replace Lite or install into the user's Mods.
+  Beacon spawn, NMM model selection and saved CS actors on world reentry share
+  expensive native glTF animation conversion. Ship derived ct/t GLBs plus their
+  .scanim native-sample caches as one unit. Keep original-quality geometry/images,
+  every clip, bone order, IDs, saved role keys, v5/schema6/rules7 and manual backups.
+  Never bake an already stripped marker GLB; preserve original exports/history.
+  Run cache equality/lifecycle, native appearance/NPC render, dependency and
+  six-direction compatibility checks. Windows probes are not Android acceptance.
+  See docs/release-actor-freeze-1.3.0-2026-09-26.md.
+
 - User-directed fix 2026-09-26: keep the current public Full/Lite at 1.3.0
   and support the author's official NekoMeko Model 1.1 (assembly 0.0.0.0).
   The older local source build used assembly 1.0.0.0; retain compatibility via

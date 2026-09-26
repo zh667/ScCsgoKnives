@@ -15,6 +15,8 @@ public sealed class ScAgentActions {
     readonly Dictionary<string,int> bones;
     readonly Dictionary<string,Matrix?[]> holds=new();
     public ScAgentActions(Model source) {
+        // Also covers NMM list previews and restored player appearances before pose creation.
+        ScActorAnimations.Ensure(source);
         model=source;sampled=new Matrix?[source.Bones.Count];
         clips=source.Animations.ToDictionary(a=>a.Name);
         bones=source.Bones.ToDictionary(b=>b.Name,b=>b.Index);

@@ -3,6 +3,10 @@ using Engine.Graphics;
 namespace Game;
 
 public sealed class ComponentTacticalModel : ComponentCreatureModel {
+    public override void SetModel(Model model) {
+        ScActorAnimations.Ensure(model);
+        base.SetModel(model);
+    }
     Matrix?[] lastLivingPose;
     ScAgentActions actions;
     Model actionModel;
