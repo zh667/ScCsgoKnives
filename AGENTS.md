@@ -1,5 +1,17 @@
 # Project conventions
 
+- User correction 2026-09-26: the current Full/Lite public release is 1.3.0,
+  including the already accepted Zeus correction previously labeled 1.7.2.
+  Match filenames, root/core modinfo, bundle core/version and family version;
+  preserve all gameplay/resource DLLs, compressed assets, IDs and save formats.
+  Historical internal labels in older evidence are provenance, not public versions.
+
+- User correction: Zeus alone restores the published 1.2.0 balance in 1.7.2:
+  base recharge 10s, Lv10/20/30/40/50 = 5/3/2/1.5/1s, firing bonus +1%/level.
+  This overrides the earlier Zeus 30s/65%-bonus rule below, not other gun balance.
+  Damage/range/capacity already match 1.2.0. Keep v5/schema6/rules7, saved ongoing
+  charge seconds, manual backups and family-1 bidirectional state preservation.
+
 - User feedback 2026-09-25 (PLANNING ONLY): docs/player-feedback-plan-2026-09-25.md
   covers current shotgun buff verification, 35-gun player crafting levels (early
   pistols/shotguns/SMGs, later rifles/snipers), CT heavy-knife sleeve clipping,

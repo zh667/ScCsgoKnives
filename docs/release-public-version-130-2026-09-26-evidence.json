@@ -1,0 +1,251 @@
+{
+  "date": "2026-09-26",
+  "scope": "Correct current Full/Lite public metadata from 1.7.2 to filename version 1.3.0",
+  "packages": [
+    {
+      "path": "[API1.9]CS武器1.3.0-全量包.scmod",
+      "version": "1.3.0",
+      "edition": "Full",
+      "bytes": 493813945,
+      "sha256": "25f9641a15352a0d5a6fd940e738b6f189b34b8173e4cf3c94d80c6e1de9e622",
+      "sourceSha256": "3b7dcc6ffbdc9b3cb8142d2e571dbbc88a0b52155c28a831922c2a29ae057ec8",
+      "coreSha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+      "dllHashes": {
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+        "ScCsgoTactical.dll": "7c1ee32803f25b33be1f0cea4599a717250d0251b3472d554bb248d3a0ce3804",
+        "ScCsgoVoice.dll": "370d795d6d2eaa466107062dd40f55fb39a9cfd00ba2364b4835ed5248f837d0"
+      },
+      "entries": 1632,
+      "changedEntries": [
+        "INSTALL.txt",
+        "Integrations/CompatibilityFamily.json",
+        "Integrations/ScCsgoBundle.json",
+        "Integrations/ScCsgoKnives.modinfo.json",
+        "modinfo.json"
+      ],
+      "preservedCompressedEntries": 1627,
+      "failed": 0,
+      "resourceGate": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "cold-native-resource-and-world-save-guard",
+            "ok": true
+          },
+          {
+            "name": "world-fixture-unchanged",
+            "ok": true
+          },
+          {
+            "name": "actual-project-xml-hook-refuses-missing-record-without-source-edits",
+            "ok": true
+          },
+          {
+            "name": "actual-120-native-hook-two-loads-preserve-items-without-automatic-backups",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScAgentVoice.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScChicken.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCompatibility.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCompatibilityManifest.xml",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCsgoKnivesDatabase.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCsgoKnivesEdition.xml",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCsgoResources.xml",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScTactical.xdb",
+            "ok": true
+          }
+        ]
+      },
+      "nativeCompatibility": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native-database-resolves-dormant-entity",
+            "ok": true
+          },
+          {
+            "name": "compatibility-hook-precedes-core",
+            "ok": true
+          },
+          {
+            "name": "real-source-120-hook-no-automatic-backup",
+            "ok": true
+          },
+          {
+            "name": "second-load-without-backup-directory",
+            "ok": true
+          },
+          {
+            "name": "native-entity-serialization-keeps-id-and-payload",
+            "ok": true
+          },
+          {
+            "name": "usedmods-keeps-tactical-identity",
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "path": "[API1.9]CS武器1.3.0-轻量包.scmod",
+      "version": "1.3.0",
+      "edition": "Lite",
+      "bytes": 91205379,
+      "sha256": "0a7ba7c1cd1d24dafc0764c0ce517cc1999cd657ecc485d9f67a4b1b13610308",
+      "sourceSha256": "3402409c9a7a0a3c7b9893c1fb5bf3bc0dd1bdf42dfb08a1c934e3b984298cc4",
+      "coreSha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+      "dllHashes": {
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+        "ScCsgoResources.dll": "1a0fdc9759428ed8a4cf635c0b7a316b3d29f47cea96ef04433c1c1a958352d4",
+        "ScCsgoTactical.dll": "7c1ee32803f25b33be1f0cea4599a717250d0251b3472d554bb248d3a0ce3804",
+        "ScCsgoVoice.dll": "370d795d6d2eaa466107062dd40f55fb39a9cfd00ba2364b4835ed5248f837d0"
+      },
+      "entries": 1634,
+      "changedEntries": [
+        "INSTALL.txt",
+        "Integrations/CompatibilityFamily.json",
+        "Integrations/ScCsgoBundle.json",
+        "Integrations/ScCsgoKnives.modinfo.json",
+        "modinfo.json"
+      ],
+      "preservedCompressedEntries": 1629,
+      "failed": 0,
+      "resourceGate": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "cold-native-resource-and-world-save-guard",
+            "ok": true
+          },
+          {
+            "name": "world-fixture-unchanged",
+            "ok": true
+          },
+          {
+            "name": "actual-project-xml-hook-refuses-missing-record-without-source-edits",
+            "ok": true
+          },
+          {
+            "name": "actual-120-native-hook-two-loads-preserve-items-without-automatic-backups",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScAgentVoice.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScChicken.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCompatibility.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCompatibilityManifest.xml",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCsgoKnivesDatabase.xdb",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCsgoKnivesEdition.xml",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScCsgoResources.xml",
+            "ok": true
+          },
+          {
+            "name": "raw-xml/Assets/ScTactical.xdb",
+            "ok": true
+          }
+        ]
+      },
+      "nativeCompatibility": {
+        "failed": 0,
+        "checks": [
+          {
+            "name": "native-database-resolves-dormant-entity",
+            "ok": true
+          },
+          {
+            "name": "compatibility-hook-precedes-core",
+            "ok": true
+          },
+          {
+            "name": "real-source-120-hook-no-automatic-backup",
+            "ok": true
+          },
+          {
+            "name": "second-load-without-backup-directory",
+            "ok": true
+          },
+          {
+            "name": "native-entity-serialization-keeps-id-and-payload",
+            "ok": true
+          },
+          {
+            "name": "usedmods-keeps-tactical-identity",
+            "ok": true
+          }
+        ]
+      }
+    }
+  ],
+  "outputVersionAudit": [
+    {
+      "path": "[API1.9]CS武器1.0.0-双向兼容-全量包.scmod",
+      "version": "1.0.0"
+    },
+    {
+      "path": "[API1.9]CS武器1.0.0-双向兼容-轻量包.scmod",
+      "version": "1.0.0"
+    },
+    {
+      "path": "[API1.9]CS武器1.2.0-双向兼容-全量包.scmod",
+      "version": "1.2.0"
+    },
+    {
+      "path": "[API1.9]CS武器1.2.0-双向兼容-轻量包.scmod",
+      "version": "1.2.0"
+    },
+    {
+      "path": "[API1.9]CS武器1.3.0-全量包.scmod",
+      "version": "1.3.0"
+    },
+    {
+      "path": "[API1.9]CS武器1.3.0-轻量包.scmod",
+      "version": "1.3.0"
+    }
+  ],
+  "sourceVersion": "1.3.0",
+  "unchanged": "All five DLLs in each package and every non-metadata compressed member",
+  "limitations": "Native/offline checks only; no game installation or player world edits"
+}
