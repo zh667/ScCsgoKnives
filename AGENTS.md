@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed fix 2026-09-26: keep the current public Full/Lite at 1.3.0
+  and support the author's official NekoMeko Model 1.1 (assembly 0.0.0.0).
+  The older local source build used assembly 1.0.0.0; retain compatibility via
+  the appearance adapter's narrowly scoped resolver, not third-party repacking
+  or global DLL aliases. Both dependency variants and both editions passed the
+  native load matrix; see docs/release-nmm-fix-1.3.0-2026-09-26.md. Keep providers,
+  installed Mods and player worlds unchanged unless installation is authorized.
+
 - User correction 2026-09-26: the current Full/Lite public release is 1.3.0,
   including the already accepted Zeus correction previously labeled 1.7.2.
   Match filenames, root/core modinfo, bundle core/version and family version;

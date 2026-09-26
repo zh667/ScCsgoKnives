@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework><LangVersion>preview</LangVersion>
     <AssemblyName>sc-nekomekomodel</AssemblyName><EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- Match the author's 1.1 binary identity; SDK defaults otherwise invent 1.0.0.0. -->
+    <AssemblyVersion>0.0.0.0</AssemblyVersion><FileVersion>0.0.0.0</FileVersion>
     <NekoSource Condition="'$(NekoSource)'==''">../../.tmp/nmm-player-appearance-audit-20260920</NekoSource>
     <NeorxnaDll Condition="'$(NeorxnaDll)'==''">../../.tmp/creature-audit-20260917/10/neorxna.dll</NeorxnaDll>
   </PropertyGroup>

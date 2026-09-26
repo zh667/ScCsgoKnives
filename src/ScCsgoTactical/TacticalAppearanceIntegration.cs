@@ -18,7 +18,8 @@ public static class TacticalAppearanceIntegration {
         // An old standalone installation still owns its loader. Do not register its hooks twice.
         if (Enabled("zh667.ScCsgoAppearance", "1.0")) return;
         if (entity.Loaders.Any(loader => loader.GetType().FullName == "Game.AppearanceModLoader")) return;
-        if (!ModsManager.Dlls.Values.Any(a => a.GetName().Name == "sc-nekomekomodel") ||
+        var nmm = ModsManager.Dlls.Values.FirstOrDefault(a => a.GetName().Name == "sc-nekomekomodel");
+        if (nmm == null ||
             !ModsManager.Dlls.Values.Any(a => a.GetName().Name == "neorxna")) return;
 
         var assembly = ModsManager.Dlls.Values.FirstOrDefault(a => a.GetName().Name == "ScCsgoAppearance");
@@ -27,7 +28,22 @@ public static class TacticalAppearanceIntegration {
             entity.GetFile(Payload, stream => bytes = ModsManager.StreamToBytes(stream));
             if (bytes == null) throw new InvalidOperationException("CS战术拓展缺少内置玩家外观组件，请重新安装完整拓展包。");
             assembly = Assembly.Load(bytes);
-            assembly.GetTypes(); // Resolve the optional frameworks before publishing the assembly.
+            // The author's 1.1 package has assembly version 0.0.0.0. Our old, otherwise
+            // equivalent source build used the SDK default 1.0.0.0. Bind that one old
+            // identity only for this adapter; never rewrite the provider or global DLL map.
+            ResolveEventHandler sourceBuildResolver = null;
+            if (nmm.FullName == "sc-nekomekomodel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null") {
+                sourceBuildResolver = (_, request) =>
+                    ReferenceEquals(request.RequestingAssembly, assembly) &&
+                    request.Name == "sc-nekomekomodel, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                        ? nmm : null;
+                AppDomain.CurrentDomain.AssemblyResolve += sourceBuildResolver;
+            }
+            try { assembly.GetTypes(); } // Resolve before publishing; retain the scoped handler for later JITs.
+            catch {
+                if (sourceBuildResolver != null) AppDomain.CurrentDomain.AssemblyResolve -= sourceBuildResolver;
+                throw;
+            }
             ModsManager.Dlls[assembly.FullName] = assembly;
         }
         entity.HandleAssembly(assembly);

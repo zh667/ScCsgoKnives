@@ -196,7 +196,7 @@ try {
     bool nmmPresent=complete || mode is "nmm-only" or "disabled" or "outdated";
     bool neoPresent=complete || mode is "neo-only" or "disabled" or "outdated";
     ModEntity nmm=null,neo=null,legacy=null;
-    if(nmmPresent){nmm=Package(Output("[API1.9]NekoMekoModel1.1-源码构建.scmod"));mods.Add(nmm);}
+    if(nmmPresent){nmm=Package(Environment.GetEnvironmentVariable("SC_NMM_CHECK_PACKAGE")??Output("[API1.9]NekoMekoModel1.1-源码构建.scmod"));mods.Add(nmm);}
     if(neoPresent){
         string source=Path.Combine(root,".tmp/creature-audit-20260917/10");
         neo=new ModEntity{modInfo=ModsManager.DeserializeJson(File.ReadAllText(Path.Combine(source,"modinfo.json")))};
@@ -215,8 +215,10 @@ try {
         foreach(var a in assemblies[mod])ModsManager.Dlls[a.FullName]=a;
     }
     var tacticalAssembly=assemblies[tactical].Single(a=>a.GetName().Name=="ScCsgoTactical");
+    var expectedRootAssemblies=new List<string>{"ScCsgoBundle","ScCsgoKnives","ScCsgoResources","ScCsgoTactical"};
+    if(core.ModFiles.ContainsKey("ScCsgoVoice.dll"))expectedRootAssemblies.Add("ScCsgoVoice");
     Check("native scanner sees expected root DLLs",merged?
-        assemblies[core].Select(a=>a.GetName().Name).Order().SequenceEqual(new[]{"ScCsgoBundle","ScCsgoKnives","ScCsgoResources","ScCsgoTactical"}):assemblies[tactical].Length==1);
+        assemblies[core].Select(a=>a.GetName().Name).Order().SequenceEqual(expectedRootAssemblies.Order()):assemblies[tactical].Length==1);
     Check("tactical has no framework references",tacticalAssembly.GetReferencedAssemblies().All(a=>a.Name is not ("sc-nekomekomodel" or "neorxna" or "ScCsgoAppearance")));
     Check("native dependency declaration",merged?core.modInfo.DependencyRanges.Count==0:tactical.modInfo.DependencyRanges.Count==1&&tactical.modInfo.DependencyRanges.ContainsKey(core.modInfo.PackageName));
     foreach(var mod in mods.Where(m=>!m.IsDisabled))mod.CombineContent();
@@ -244,7 +246,7 @@ try {
             if(xmlRoundtrip){var xml=new XElement("Values");saved.Save(xml);saved=new ValuesDictionary();saved.ApplyOverrides(XElement.Parse(xml.ToString()));}
             else used.Save(saved);
             var entries=saved.GetValue<ValuesDictionary>("Mods");var identities=Enumerable.Range(0,saved.GetValue<int>("ModsCount")).Select(i=>entries.GetValue<ValuesDictionary>(i.ToString())).ToArray();
-            Check("native UsedMods "+(xmlRoundtrip?"XML roundtrip ":"identity save ")+round,identities.Count(v=>v.GetValue<string>("PackageName")=="zh667.ScCsgoKnives")==1&&identities.Count(v=>v.GetValue<string>("PackageName")=="zh667.ScCsgoTactical"&&v.GetValue<string>("Version")=="1.4.0")==1);
+            Check("native UsedMods "+(xmlRoundtrip?"XML roundtrip ":"identity save ")+round,identities.Count(v=>v.GetValue<string>("PackageName")=="zh667.ScCsgoKnives")==1&&identities.Count(v=>v.GetValue<string>("PackageName")=="zh667.ScCsgoTactical"&&v.GetValue<string>("Version")==identity.modInfo.Version)==1);
         }
         ModsManager.ModList.Remove(identity);var duplicate=new ModEntity{modInfo=identity.modInfo};ModsManager.ModList.Add(duplicate);
         bool refused=false;try{loader.__ModInitialize();}catch(InvalidOperationException){refused=true;}finally{ModsManager.ModList.Remove(duplicate);ModsManager.ModList.Add(identity);}

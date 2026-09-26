@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-26",
+  "failure": "CS appearance requests sc-nekomekomodel 1.0.0.0; official provider loads 0.0.0.0",
+  "appearanceAssembly": "ScCsgoAppearance, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+  "appearanceReference": "sc-nekomekomodel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "apiChecks": [
+    {
+      "label": "official",
+      "assembly": "sc-nekomekomodel, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "referencedTypes": 6,
+      "referencedMembers": 26,
+      "missingTypes": [],
+      "missingMembers": []
+    },
+    {
+      "label": "source-built",
+      "assembly": "sc-nekomekomodel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "referencedTypes": 6,
+      "referencedMembers": 26,
+      "missingTypes": [],
+      "missingMembers": []
+    }
+  ],
+  "playerLogSha256": "0896b193b777c7c117abafbea51e62a7316702f02004b75c37af6c9db5157b97",
+  "scope": "Read-only diagnosis; no deployed DLL, package, world or third-party file modified",
+  "currentDeliveries": [
+    {
+      "path": "[API1.9]CS武器1.3.0-全量包.scmod",
+      "appearanceSha256": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+      "sameAsFailingPackage": true
+    },
+    {
+      "path": "[API1.9]CS武器1.3.0-轻量包.scmod",
+      "appearanceSha256": "ed5deaaadb6b2a364e0a7c0d0211cef8496bdac9c295f478dccd7e00a019228a",
+      "sameAsFailingPackage": true
+    }
+  ]
+}
