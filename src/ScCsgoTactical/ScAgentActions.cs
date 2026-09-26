@@ -39,17 +39,19 @@ public sealed class ScAgentActions {
         return absolute[index];
     }
     public Matrix RootWorld(ScThirdPersonWeapon weapon,Matrix[] absolute)=>weapon.WorldRootInverse*PropFrame(weapon.Asset,"weapon",absolute);
-    public (BlockMesh Mesh,Matrix Transform) WorldPart(ScThirdPersonWeapon weapon,ScThirdPersonWeapon.Group group,Matrix[] absolute) {
-        if(group.VertexBones==null)return (group.Mesh,group.WorldInverse*PropFrame(weapon.Asset,group.WorldBone,absolute));
+    public (BlockMesh Mesh,Matrix Transform) WorldPart(ScThirdPersonWeapon weapon,ScThirdPersonWeapon.Group group,Matrix[] absolute)=>WorldPartFor(weapon.Asset,group,absolute);
+    public (BlockMesh Mesh,Matrix Transform) WorldPartFor(string asset,ScThirdPersonWeapon.Group group,Matrix[] absolute) {
+        if(group.VertexBones==null)return (group.Mesh,group.WorldInverse*PropFrame(asset,group.WorldBone,absolute));
         for(int i=0;i<group.Mesh.Vertices.Count;i++){
-            var v=group.Mesh.Vertices[i];v.Position=Vector3.Transform(v.Position,group.VertexInverses[i]*PropFrame(weapon.Asset,group.VertexBones[i],absolute));group.WorldScratch.Vertices[i]=v;
+            var v=group.Mesh.Vertices[i];v.Position=Vector3.Transform(v.Position,group.VertexInverses[i]*PropFrame(asset,group.VertexBones[i],absolute));group.WorldScratch.Vertices[i]=v;
         }
         return (group.WorldScratch,Matrix.Identity);
     }
-    public bool ShowWorldPart(ScThirdPersonWeapon weapon,ScThirdPersonWeapon.Group group,ScWeaponAction action) {
+    public bool ShowWorldPart(ScThirdPersonWeapon weapon,ScThirdPersonWeapon.Group group,ScWeaponAction action)=>ShowWorldPartFor(weapon.Asset,group,action);
+    public bool ShowWorldPartFor(string asset,ScThirdPersonWeapon.Group group,ScWeaponAction action) {
         // FPP helper shells have no matching world prop and can otherwise orbit the player.
-        if(group.WorldBone=="shell"&&!HasProp(weapon.Asset,"shell"))return false;
-        if(weapon.Asset=="revolver"&&group.WorldBone is "loader_handle" or "loader_holder")return action.Active&&action.Kind==ScWeaponActionKind.Reload;
+        if(group.WorldBone=="shell"&&!HasProp(asset,"shell"))return false;
+        if(asset=="revolver"&&group.WorldBone is "loader_handle" or "loader_holder")return action.Active&&action.Kind==ScWeaponActionKind.Reload;
         // Remaining visibility comes from the world clip's own scale tracks.
         return true;
     }

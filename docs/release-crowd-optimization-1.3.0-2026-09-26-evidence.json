@@ -1,0 +1,2961 @@
+{
+  "path": "[API1.9]CS武器1.3.0-全量包.scmod",
+  "revision": "crowd-gpu-20260926",
+  "sourceSha256": "3760e94fde9e3b9dff4e96a9a47240b39c677d13ffc791d9d213b72cce8721a9",
+  "sha256": "0c4f2fddc79b56b90a701e892fe9e52195bb02cbecfc1b2ee67aeb1cc2926929",
+  "bytes": 522864645,
+  "changedEntries": [
+    "ScCsgoTactical.dll"
+  ],
+  "unchangedCompressedEntries": 1633,
+  "meshCaches": {
+    "Assets/Models/ScCsgoTactical/Weapons/ak47-legacy.scmesh": "1672831d2238e5052aa6093e9d2402e521d93cd7338e4beccbed61ce5dd53770",
+    "Assets/Models/ScCsgoTactical/Weapons/ak47.scmesh": "79580ab8a6fbf792a44ec5b5f99c3b54010bb5f776495d5ed4b6aed37142c7fe",
+    "Assets/Models/ScCsgoTactical/Weapons/aug-legacy.scmesh": "f5204a78cc877d1034ee4b1211b05052dc2dc8a2456380d33736ed4fef492249",
+    "Assets/Models/ScCsgoTactical/Weapons/aug.scmesh": "3b56924e974b3a89987cc348997c108c91a0a16df51d939e3f6ba333c952dac3",
+    "Assets/Models/ScCsgoTactical/Weapons/awp-legacy.scmesh": "b31d1d4878acdb985efa6225a4e72a491d30eda88a9a837a53d4dd04a8c76d79",
+    "Assets/Models/ScCsgoTactical/Weapons/awp.scmesh": "8dffd9ad46280eb0f382d063289ff7fce9959d7d0b77cc4b85e927f911ee21af",
+    "Assets/Models/ScCsgoTactical/Weapons/bizon-legacy.scmesh": "91e7f640ff352466a089993a48bfd87727eeecfc70f354e8cbaaafcbd9e05e3b",
+    "Assets/Models/ScCsgoTactical/Weapons/bizon.scmesh": "7ef8311c16301c2d1c81d3ba0b43d91084b1c2d4886950341f03dedb8c6eece1",
+    "Assets/Models/ScCsgoTactical/Weapons/cz75a-legacy.scmesh": "2e5ba7e7db0f16abff60b798d2f20d766d2e4d0d2a1270bcaa533c10d647dc68",
+    "Assets/Models/ScCsgoTactical/Weapons/cz75a.scmesh": "c7355d9498762e719f6e10cde1a23b1d0638bb07c37ca49e09ca1da0938974c2",
+    "Assets/Models/ScCsgoTactical/Weapons/deagle-legacy.scmesh": "a11e8ccb74788f5f7e0072734a61bd90e442b01ebcf27af262670820c2551d55",
+    "Assets/Models/ScCsgoTactical/Weapons/deagle.scmesh": "0bde050127e9c1f6e730438af627b4798e60e5d6997e8d0f9161613ed49cc7c3",
+    "Assets/Models/ScCsgoTactical/Weapons/elite.scmesh": "bcf6a96cd8518c7cb96f688567e0757d1c766517f55e0b2b3a8723e94c18d409",
+    "Assets/Models/ScCsgoTactical/Weapons/famas-legacy.scmesh": "ad1f106420c11bdccd8055cbfbd873cc1965d2176f9539a47a102d51a8724b42",
+    "Assets/Models/ScCsgoTactical/Weapons/famas.scmesh": "3c0d265793511f2cdb753a7fd0fd1234cb6ffb08cbe83f7ac8debf2c6cd336bd",
+    "Assets/Models/ScCsgoTactical/Weapons/fiveseven-legacy.scmesh": "199cdbaa110b764ca4c48cbe5179ff90d29236046dbba2e4657e60cf27bba425",
+    "Assets/Models/ScCsgoTactical/Weapons/fiveseven.scmesh": "e4ac7b3ab0cd0e59dda1986308997d6f5ec8568d3904a6f5f16fcd382f23f9f1",
+    "Assets/Models/ScCsgoTactical/Weapons/g3sg1.scmesh": "fadb5189c36041bbce3f990e7a974e4a45ccdd44ac73807196e72d981b48c791",
+    "Assets/Models/ScCsgoTactical/Weapons/galilar-legacy.scmesh": "f55b2932ddcea647ab03d6193a9327f89db91e19f73bb962812878a5d02f4077",
+    "Assets/Models/ScCsgoTactical/Weapons/galilar.scmesh": "d8a7870be70d7f82c6bdaed262079061626c56baa31661cf230d9695575db321",
+    "Assets/Models/ScCsgoTactical/Weapons/glock18-legacy.scmesh": "7d997ee21a2cc5cab98c7b9af813f10fac61f6badee02aeb47e35429f827d2e6",
+    "Assets/Models/ScCsgoTactical/Weapons/glock18.scmesh": "6917d0f9f5b72bacb7398ea8872f0f8cced75de4096256c7ff21a03f58989410",
+    "Assets/Models/ScCsgoTactical/Weapons/hkp2000-legacy.scmesh": "592fac42d09ac2c2143acf340fac998edcb49b4eb9e0244c889ca1138c90a5c1",
+    "Assets/Models/ScCsgoTactical/Weapons/hkp2000.scmesh": "caa6b229ed87aef1c78e14c2bb28cbd99073eb7e691c058c0079fb61960aa2ca",
+    "Assets/Models/ScCsgoTactical/Weapons/m249-legacy.scmesh": "aaf066017bef8feb871fa7b47922e33ad30a2470da8e3e50c645b56dc78e513b",
+    "Assets/Models/ScCsgoTactical/Weapons/m249.scmesh": "50731dcdcc5fe87c23c78e9c820cc4bb9e9ac6e25ff9340bf3746c07c27fdcbd",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a1s-legacy.scmesh": "011cbab6a1c95918485acd9dd823347d53d83b3491a62c5adabbdfae77feb3b5",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a1s.scmesh": "43590ae56de352be5f4f342dc6f76cb00a323ee54dedc6e6e6667053c93ad425",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a4-legacy.scmesh": "10c075b502a5f3ed0408b9a950e0a50de32208d0f34a64d408b823c0dbdf50db",
+    "Assets/Models/ScCsgoTactical/Weapons/m4a4.scmesh": "9508b709053d1f6908b638227ecd85c70da74e94f6fdfe7674848174b72c89d6",
+    "Assets/Models/ScCsgoTactical/Weapons/mac10-legacy.scmesh": "3d36f5048ed0f086bb7a0b5bb9b3948f7d72338aa3580a39be17d1e494995085",
+    "Assets/Models/ScCsgoTactical/Weapons/mac10.scmesh": "9a4ec6c53ce3595c3276c99b3cf2e528f8a778429bc526034357a862770f5f17",
+    "Assets/Models/ScCsgoTactical/Weapons/mag7-legacy.scmesh": "376336307322534f82bb6c0b8ab977904f4cd2290ac0a95912cb84f77b059a3c",
+    "Assets/Models/ScCsgoTactical/Weapons/mag7.scmesh": "58519e2a9026b3b58da327fe4c7442c0e83378dc118cf38e9412cb96ee856f4a",
+    "Assets/Models/ScCsgoTactical/Weapons/mp5sd-legacy.scmesh": "d401bc0a384cabeed623f977aa2163980abfbd1c0cb556e2a52a9cfd179247f1",
+    "Assets/Models/ScCsgoTactical/Weapons/mp5sd.scmesh": "8b3ae712ac98ca05cc7010ab7c378b31a530975972fdda6915bc71ffe929877d",
+    "Assets/Models/ScCsgoTactical/Weapons/mp7.scmesh": "eee068f491c3aea5b7cbc22d0f799aaadee1aebc114b58a5c9200e9017375222",
+    "Assets/Models/ScCsgoTactical/Weapons/mp9.scmesh": "321ffc7c3c7d69cef8826ef8f422ed493475714c8b46cb87e561b8c80fdbfbed",
+    "Assets/Models/ScCsgoTactical/Weapons/negev-legacy.scmesh": "957d1a242ce2752125e40034a6850d8c5f4d5ded97ab4584632b424f14a5d8a6",
+    "Assets/Models/ScCsgoTactical/Weapons/negev.scmesh": "7bc328c515172189a012a7021ca6d6dd8491c29e7f2946dee373a8e2429225ef",
+    "Assets/Models/ScCsgoTactical/Weapons/nova-legacy.scmesh": "848f852750dab269f46cbb91cd2a8e1dc2487247e34013fd47b9e3541930d498",
+    "Assets/Models/ScCsgoTactical/Weapons/nova.scmesh": "db0fb7ed61849be5c746ad40c21d6e90141d3f3f7e080979afe320f77b313945",
+    "Assets/Models/ScCsgoTactical/Weapons/p250.scmesh": "f05d86432c99b24b79673c2fc27fb8171adfccdabf037542a13fd926ba1a06c5",
+    "Assets/Models/ScCsgoTactical/Weapons/p90-legacy.scmesh": "68c941745a309da842b921a17ddf98f548e14bd317522f387f44f0beaf2b007f",
+    "Assets/Models/ScCsgoTactical/Weapons/p90.scmesh": "95b74ef018c16cc34c03ce1521ce330f585eff9ca7dbe72c132c01acbbff7c4c",
+    "Assets/Models/ScCsgoTactical/Weapons/revolver-legacy.scmesh": "bb3f036457c103d38261db30267f74ff2e597fa458f6191efe62da6a26cda3aa",
+    "Assets/Models/ScCsgoTactical/Weapons/revolver.scmesh": "867c5c0739182fec753b5f0a01ef5151fec7496893e1b59d092014c836cb1bdb",
+    "Assets/Models/ScCsgoTactical/Weapons/sawedoff-legacy.scmesh": "6084f070a26980788b98df55f72a47a79414312e231238e85874fc0ac4808354",
+    "Assets/Models/ScCsgoTactical/Weapons/sawedoff.scmesh": "e61127e65c9d6cd5e0513575a572875be83ae6403baa07f775276a6f8d1eccc0",
+    "Assets/Models/ScCsgoTactical/Weapons/scar20-legacy.scmesh": "d143a43211a82f2545ebf881fc37c0a4b92b7c8c9522b1033d01ddced3b2419d",
+    "Assets/Models/ScCsgoTactical/Weapons/scar20.scmesh": "4375efa545cba253a166eb6263fc0ba5865e8925ead450f31d7c82e0426c2b09",
+    "Assets/Models/ScCsgoTactical/Weapons/sg556-legacy.scmesh": "697b587be6ac28e0705808caea6c38166a6bbb99b423a7205372752f07299ff7",
+    "Assets/Models/ScCsgoTactical/Weapons/sg556.scmesh": "9489e9f944a822f3c11362e929e852fb3471c64360100a96f983968b1112fec6",
+    "Assets/Models/ScCsgoTactical/Weapons/ssg08-legacy.scmesh": "1b87e4e09eb61eeaf652f15d97b093d85da849470d1219c1a026df1eb4732b6a",
+    "Assets/Models/ScCsgoTactical/Weapons/ssg08.scmesh": "4dc21cbd060c76b8c12e5dfeb892c0e774b8079a39981dd03883eda1968b47b4",
+    "Assets/Models/ScCsgoTactical/Weapons/taser.scmesh": "2c9fc3729c66466875c1cd540fceffe0259a72f3a4bc5db418aaa0d7cdbc2443",
+    "Assets/Models/ScCsgoTactical/Weapons/tec9-legacy.scmesh": "019d1e8a0821979f9168ce6352c5b925c97f7eb4ebba72a809b555e33aa19d6b",
+    "Assets/Models/ScCsgoTactical/Weapons/tec9.scmesh": "3eeb40da715d33e132274472641da1848244b708dd7e244db1f090848400a38f",
+    "Assets/Models/ScCsgoTactical/Weapons/ump45.scmesh": "df0eced708cac0d60a8d8cdc41c1d63c5f6b0594324e523b64ce1a64670a4241",
+    "Assets/Models/ScCsgoTactical/Weapons/usp_silencer-legacy.scmesh": "7a91396d5f3f181e693b70a95ba51d294de91d711cd1d5779c83dc486bbfbbdd",
+    "Assets/Models/ScCsgoTactical/Weapons/usp_silencer.scmesh": "7a29fa35eb66c538310adb1bd63c993743d98eab5b09e90b0fc046b1fe1e16b4",
+    "Assets/Models/ScCsgoTactical/Weapons/xm1014-legacy.scmesh": "ab38075acb4b5deb6b1c9dcc1873f6f215ea2185c96c913279d01898cd2fcb49",
+    "Assets/Models/ScCsgoTactical/Weapons/xm1014.scmesh": "a3a30b32e0f97eb712e358942202d19ca448d9495212da692bb2a2a48243ab2b"
+  },
+  "dllHashes": {
+    "Integrations/ScCsgoAppearance.bin": "0b8bdbbd5a3be253bb1ab454f919d7062c4dca8b1609a0fad91e6e85c3c316f7",
+    "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+    "ScCsgoKnives.dll": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+    "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+    "ScCsgoTactical.dll": "38bc4b1db28a1bd800ee0a65de3ca9d955e929b498e5985f0ef766ebc503ca5e",
+    "ScCsgoVoice.dll": "370d795d6d2eaa466107062dd40f55fb39a9cfd00ba2364b4835ed5248f837d0"
+  },
+  "validation": [
+    {
+      "name": "gate",
+      "checks": 12,
+      "sha256": "57e744daf7eb0b5478898f718be39d6cc436f8741bb5f329eef9785c279533c0"
+    },
+    {
+      "name": "native",
+      "checks": 6,
+      "sha256": "0e8d9ef0b975787d31b93cc1da07feacb8b52b9e6a84da770d88e905ac9ac2a8"
+    },
+    {
+      "name": "ai",
+      "checks": 15,
+      "sha256": "862a5fdf4ab541f00d7f77fc93b61d016dd0d5ee6aa238ca668dbd1b4df16989"
+    },
+    {
+      "name": "compatibility",
+      "checks": 243,
+      "sha256": "dd1cefbbd5fa41b3d93498c54d50f6117872ea98026a4abcf6b75023bfab69ba"
+    },
+    {
+      "name": "official-both",
+      "checks": 20,
+      "sha256": "16497b0ea615118d9adf8e0d5ed8bc17994edb81300ae367e138bc9cfef1d2c0"
+    },
+    {
+      "name": "official-reversed",
+      "checks": 20,
+      "sha256": "f697a7af6d51da81aead11cb192cddacf479ad0b34da5d2054cf47f5e341c3ea"
+    },
+    {
+      "name": "official-none",
+      "checks": 14,
+      "sha256": "6d4974280ad2a50579db75a3974dd1b0092c251e085bb751a48f201e6d2652e2"
+    },
+    {
+      "name": "official-nmm-only",
+      "checks": 14,
+      "sha256": "05a2f534dbab201d707ec1c03fa5c4dc2a5b50ab0dce18ad906627f8838f72f3"
+    },
+    {
+      "name": "official-neo-only",
+      "checks": 14,
+      "sha256": "92ee488ca2c10c2ffd0deaf06148284a28cfc0b30da25fb2d66c172f6725f9ab"
+    },
+    {
+      "name": "official-disabled",
+      "checks": 14,
+      "sha256": "e848e29cef8166a45e6a0c508b686a963f044de11a233082e3c4b9b66e08352a"
+    },
+    {
+      "name": "official-outdated",
+      "checks": 14,
+      "sha256": "6e8f06f8a558bd13377bde99897b475a89844813d81a9401523c7f7e08a06d7c"
+    }
+  ],
+  "probe": {
+    "failed": 0,
+    "checks": [
+      "burst detail is rate limited",
+      "hot scopes allocate less than one byte per call",
+      "no log per timed call",
+      "no early summary or duplicate frame log",
+      "periodic frame sample counted once and includes population",
+      "summary retains exception and all burst counts",
+      "dispose is idempotent",
+      "reentry drops old counters",
+      "unattached empty components retain native no-op behavior",
+      "ct/1 finite pose",
+      "ct/3 finite pose",
+      "ct/5 finite pose",
+      "ct/20 finite pose",
+      "t/1 finite pose",
+      "t/3 finite pose",
+      "t/5 finite pose",
+      "t/20 finite pose",
+      "awp builds full third person mesh",
+      "ak47 builds full third person mesh",
+      "mp9 builds full third person mesh",
+      "m249 builds full third person mesh",
+      "deagle builds full third person mesh"
+    ],
+    "measurements": [
+      {
+        "stage": "logger",
+        "overheadNs": 258.315,
+        "allocatedBytes": 168,
+        "calls": 100000
+      },
+      {
+        "role": "ct",
+        "stage": "coldGeometryGpuAndAnimation",
+        "ms": 227.7306,
+        "bytes": 38942408,
+        "bones": 580
+      },
+      {
+        "role": "ct",
+        "stage": "coldBodyTextures",
+        "ms": 166.775
+      },
+      {
+        "role": "ct",
+        "count": 1,
+        "stage": "warmComponentLoad",
+        "ms": 103.1262,
+        "bytes": 444016
+      },
+      {
+        "role": "ct",
+        "count": 1,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.25635833333333335,
+        "bytesPerFrame": 24361
+      },
+      {
+        "role": "ct",
+        "count": 3,
+        "stage": "warmComponentLoad",
+        "ms": 4.5157,
+        "bytes": 398736
+      },
+      {
+        "role": "ct",
+        "count": 3,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.43232916666666665,
+        "bytesPerFrame": 73064
+      },
+      {
+        "role": "ct",
+        "count": 5,
+        "stage": "warmComponentLoad",
+        "ms": 6.6844,
+        "bytes": 664440
+      },
+      {
+        "role": "ct",
+        "count": 5,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.7197316666666667,
+        "bytesPerFrame": 121784
+      },
+      {
+        "role": "ct",
+        "count": 20,
+        "stage": "warmComponentLoad",
+        "ms": 14.2289,
+        "bytes": 2656992
+      },
+      {
+        "role": "ct",
+        "count": 20,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 2.8989233333333333,
+        "bytesPerFrame": 487152
+      },
+      {
+        "role": "t",
+        "stage": "coldGeometryGpuAndAnimation",
+        "ms": 103.5816,
+        "bytes": 38509808,
+        "bones": 572
+      },
+      {
+        "role": "t",
+        "stage": "coldBodyTextures",
+        "ms": 114.1823
+      },
+      {
+        "role": "t",
+        "count": 1,
+        "stage": "warmComponentLoad",
+        "ms": 1.8645,
+        "bytes": 132976
+      },
+      {
+        "role": "t",
+        "count": 1,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.12286083333333334,
+        "bytesPerFrame": 10912
+      },
+      {
+        "role": "t",
+        "count": 3,
+        "stage": "warmComponentLoad",
+        "ms": 13.5197,
+        "bytes": 395568
+      },
+      {
+        "role": "t",
+        "count": 3,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.3523983333333333,
+        "bytesPerFrame": 32720
+      },
+      {
+        "role": "t",
+        "count": 5,
+        "stage": "warmComponentLoad",
+        "ms": 6.6694,
+        "bytes": 658960
+      },
+      {
+        "role": "t",
+        "count": 5,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 0.6163266666666666,
+        "bytesPerFrame": 54544
+      },
+      {
+        "role": "t",
+        "count": 20,
+        "stage": "warmComponentLoad",
+        "ms": 22.9211,
+        "bytes": 2635872
+      },
+      {
+        "role": "t",
+        "count": 20,
+        "stage": "warmAnimationAndHierarchy",
+        "frames": 120,
+        "msPerFrame": 2.9109174999999996,
+        "bytesPerFrame": 218192
+      },
+      {
+        "asset": "awp",
+        "stage": "weaponMesh",
+        "coldMs": 188.9724,
+        "warmMsPerCall": 0.0001001,
+        "vertices": 119292
+      },
+      {
+        "asset": "ak47",
+        "stage": "weaponMesh",
+        "coldMs": 160.4408,
+        "warmMsPerCall": 8.17e-05,
+        "vertices": 78498
+      },
+      {
+        "asset": "mp9",
+        "stage": "weaponMesh",
+        "coldMs": 54.9314,
+        "warmMsPerCall": 6.57e-05,
+        "vertices": 24393
+      },
+      {
+        "asset": "m249",
+        "stage": "weaponMesh",
+        "coldMs": 88.5595,
+        "warmMsPerCall": 6.840000000000001e-05,
+        "vertices": 54973
+      },
+      {
+        "asset": "deagle",
+        "stage": "weaponMesh",
+        "coldMs": 51.9375,
+        "warmMsPerCall": 6.44e-05,
+        "vertices": 15038
+      }
+    ]
+  },
+  "weaponChecks": 3211,
+  "weaponMeasurements": [
+    {
+      "stage": "geometry",
+      "asset": "ak47",
+      "legacy": false,
+      "sourceMs": 248.0213,
+      "cacheMs": 17.4362,
+      "bytes": 2669885,
+      "vertices": 78498,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "ak47",
+      "legacy": true,
+      "sourceMs": 80.8569,
+      "cacheMs": 3.2958,
+      "bytes": 1371310,
+      "vertices": 40305,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "m4a1s",
+      "legacy": false,
+      "sourceMs": 137.4194,
+      "cacheMs": 9.0723,
+      "bytes": 4629081,
+      "vertices": 136116,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "m4a1s",
+      "legacy": true,
+      "sourceMs": 51.2826,
+      "cacheMs": 4.2013,
+      "bytes": 2418340,
+      "vertices": 71100,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "awp",
+      "legacy": false,
+      "sourceMs": 117.725,
+      "cacheMs": 7.4,
+      "bytes": 4057057,
+      "vertices": 119292,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "awp",
+      "legacy": true,
+      "sourceMs": 32.3104,
+      "cacheMs": 6.1532,
+      "bytes": 2236557,
+      "vertices": 65748,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "deagle",
+      "legacy": false,
+      "sourceMs": 62.2285,
+      "cacheMs": 1.1363,
+      "bytes": 611136,
+      "vertices": 15038,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "deagle",
+      "legacy": true,
+      "sourceMs": 46.8095,
+      "cacheMs": 2.4083,
+      "bytes": 886202,
+      "vertices": 26037,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "glock18",
+      "legacy": false,
+      "sourceMs": 39.7516,
+      "cacheMs": 1.0103,
+      "bytes": 487831,
+      "vertices": 11688,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "glock18",
+      "legacy": true,
+      "sourceMs": 26.7801,
+      "cacheMs": 1.1122,
+      "bytes": 475495,
+      "vertices": 13962,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "usp_silencer",
+      "legacy": false,
+      "sourceMs": 61.9543,
+      "cacheMs": 1.4133,
+      "bytes": 639756,
+      "vertices": 15830,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "usp_silencer",
+      "legacy": true,
+      "sourceMs": 87.6797,
+      "cacheMs": 2.9622,
+      "bytes": 1224956,
+      "vertices": 35994,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "m4a4",
+      "legacy": false,
+      "sourceMs": 39.021,
+      "cacheMs": 3.0875,
+      "bytes": 1574334,
+      "vertices": 39558,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "m4a4",
+      "legacy": true,
+      "sourceMs": 30.7558,
+      "cacheMs": 6.0395,
+      "bytes": 1852674,
+      "vertices": 54468,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "famas",
+      "legacy": false,
+      "sourceMs": 24.717,
+      "cacheMs": 2.3596,
+      "bytes": 1100193,
+      "vertices": 27115,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "famas",
+      "legacy": true,
+      "sourceMs": 20.3159,
+      "cacheMs": 0.9813,
+      "bytes": 1059943,
+      "vertices": 31152,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "mp9",
+      "legacy": false,
+      "sourceMs": 32.1334,
+      "cacheMs": 0.9061,
+      "bytes": 1007200,
+      "vertices": 24393,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "p90",
+      "legacy": false,
+      "sourceMs": 25.5616,
+      "cacheMs": 0.7851,
+      "bytes": 872417,
+      "vertices": 22086,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "p90",
+      "legacy": true,
+      "sourceMs": 22.9984,
+      "cacheMs": 1.5007,
+      "bytes": 1623252,
+      "vertices": 47715,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "ssg08",
+      "legacy": false,
+      "sourceMs": 32.8282,
+      "cacheMs": 1.4567,
+      "bytes": 1674826,
+      "vertices": 41658,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "ssg08",
+      "legacy": true,
+      "sourceMs": 45.68,
+      "cacheMs": 3.7513,
+      "bytes": 3937407,
+      "vertices": 115773,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "fiveseven",
+      "legacy": false,
+      "sourceMs": 21.1046,
+      "cacheMs": 0.7209,
+      "bytes": 809991,
+      "vertices": 19655,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "fiveseven",
+      "legacy": true,
+      "sourceMs": 20.7431,
+      "cacheMs": 1.0544,
+      "bytes": 1144829,
+      "vertices": 33648,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "hkp2000",
+      "legacy": false,
+      "sourceMs": 17.7418,
+      "cacheMs": 0.5055,
+      "bytes": 537362,
+      "vertices": 13644,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "hkp2000",
+      "legacy": true,
+      "sourceMs": 11.8099,
+      "cacheMs": 3.0349,
+      "bytes": 1030334,
+      "vertices": 30276,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "p250",
+      "legacy": false,
+      "sourceMs": 13.1002,
+      "cacheMs": 0.5055,
+      "bytes": 532682,
+      "vertices": 13187,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "tec9",
+      "legacy": false,
+      "sourceMs": 11.0136,
+      "cacheMs": 0.6193,
+      "bytes": 691952,
+      "vertices": 16518,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "tec9",
+      "legacy": true,
+      "sourceMs": 7.8924,
+      "cacheMs": 0.863,
+      "bytes": 913154,
+      "vertices": 26835,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "cz75a",
+      "legacy": false,
+      "sourceMs": 30.5513,
+      "cacheMs": 0.661,
+      "bytes": 749919,
+      "vertices": 18461,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "cz75a",
+      "legacy": true,
+      "sourceMs": 21.6692,
+      "cacheMs": 2.165,
+      "bytes": 2375375,
+      "vertices": 69831,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "mac10",
+      "legacy": false,
+      "sourceMs": 15.1067,
+      "cacheMs": 0.7719,
+      "bytes": 835963,
+      "vertices": 20352,
+      "groups": 12
+    },
+    {
+      "stage": "geometry",
+      "asset": "mac10",
+      "legacy": true,
+      "sourceMs": 9.0835,
+      "cacheMs": 0.8542,
+      "bytes": 895199,
+      "vertices": 26277,
+      "groups": 10
+    },
+    {
+      "stage": "geometry",
+      "asset": "mp7",
+      "legacy": false,
+      "sourceMs": 17.2701,
+      "cacheMs": 0.8768,
+      "bytes": 1045237,
+      "vertices": 26520,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "ump45",
+      "legacy": false,
+      "sourceMs": 16.676,
+      "cacheMs": 0.961,
+      "bytes": 1113755,
+      "vertices": 27672,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "bizon",
+      "legacy": false,
+      "sourceMs": 13.3816,
+      "cacheMs": 0.8244,
+      "bytes": 936867,
+      "vertices": 23582,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "bizon",
+      "legacy": true,
+      "sourceMs": 9.7761,
+      "cacheMs": 1.448,
+      "bytes": 1629911,
+      "vertices": 47916,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "mp5sd",
+      "legacy": false,
+      "sourceMs": 13.9377,
+      "cacheMs": 1.027,
+      "bytes": 1201087,
+      "vertices": 28721,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "mp5sd",
+      "legacy": true,
+      "sourceMs": 8.9833,
+      "cacheMs": 1.9704,
+      "bytes": 2262105,
+      "vertices": 66510,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "galilar",
+      "legacy": false,
+      "sourceMs": 18.3897,
+      "cacheMs": 1.178,
+      "bytes": 1432262,
+      "vertices": 36094,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "galilar",
+      "legacy": true,
+      "sourceMs": 8.3818,
+      "cacheMs": 0.6091,
+      "bytes": 694452,
+      "vertices": 20397,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "scar20",
+      "legacy": false,
+      "sourceMs": 14.8544,
+      "cacheMs": 1.9925,
+      "bytes": 1916522,
+      "vertices": 48263,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "scar20",
+      "legacy": true,
+      "sourceMs": 9.4069,
+      "cacheMs": 1.1047,
+      "bytes": 1253931,
+      "vertices": 36852,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "g3sg1",
+      "legacy": false,
+      "sourceMs": 11.8539,
+      "cacheMs": 1.3386,
+      "bytes": 1579066,
+      "vertices": 38698,
+      "groups": 7
+    },
+    {
+      "stage": "geometry",
+      "asset": "aug",
+      "legacy": false,
+      "sourceMs": 12.9143,
+      "cacheMs": 1.1281,
+      "bytes": 1335493,
+      "vertices": 32910,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "aug",
+      "legacy": true,
+      "sourceMs": 11.5954,
+      "cacheMs": 2.1209,
+      "bytes": 2238099,
+      "vertices": 65793,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "sg556",
+      "legacy": false,
+      "sourceMs": 10.6711,
+      "cacheMs": 1.5879,
+      "bytes": 1836105,
+      "vertices": 46424,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "sg556",
+      "legacy": true,
+      "sourceMs": 7.5275,
+      "cacheMs": 1.4127,
+      "bytes": 1405910,
+      "vertices": 41322,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "nova",
+      "legacy": false,
+      "sourceMs": 8.7746,
+      "cacheMs": 0.821,
+      "bytes": 769844,
+      "vertices": 17592,
+      "groups": 5
+    },
+    {
+      "stage": "geometry",
+      "asset": "nova",
+      "legacy": true,
+      "sourceMs": 12.4603,
+      "cacheMs": 2.2468,
+      "bytes": 2063426,
+      "vertices": 60666,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "xm1014",
+      "legacy": false,
+      "sourceMs": 7.2097,
+      "cacheMs": 0.8539,
+      "bytes": 1011100,
+      "vertices": 25009,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "xm1014",
+      "legacy": true,
+      "sourceMs": 8.0527,
+      "cacheMs": 2.0682,
+      "bytes": 2360274,
+      "vertices": 69384,
+      "groups": 6
+    },
+    {
+      "stage": "geometry",
+      "asset": "sawedoff",
+      "legacy": false,
+      "sourceMs": 7.9753,
+      "cacheMs": 0.3587,
+      "bytes": 415052,
+      "vertices": 9903,
+      "groups": 3
+    },
+    {
+      "stage": "geometry",
+      "asset": "sawedoff",
+      "legacy": true,
+      "sourceMs": 6.9052,
+      "cacheMs": 0.3853,
+      "bytes": 439010,
+      "vertices": 12894,
+      "groups": 3
+    },
+    {
+      "stage": "geometry",
+      "asset": "mag7",
+      "legacy": false,
+      "sourceMs": 5.9765,
+      "cacheMs": 0.7247,
+      "bytes": 658622,
+      "vertices": 16086,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "mag7",
+      "legacy": true,
+      "sourceMs": 6.9441,
+      "cacheMs": 0.8546,
+      "bytes": 966200,
+      "vertices": 28395,
+      "groups": 4
+    },
+    {
+      "stage": "geometry",
+      "asset": "m249",
+      "legacy": false,
+      "sourceMs": 28.7016,
+      "cacheMs": 2.0059,
+      "bytes": 2143376,
+      "vertices": 54973,
+      "groups": 36
+    },
+    {
+      "stage": "geometry",
+      "asset": "m249",
+      "legacy": true,
+      "sourceMs": 26.1555,
+      "cacheMs": 2.1036,
+      "bytes": 2156378,
+      "vertices": 63303,
+      "groups": 21
+    },
+    {
+      "stage": "geometry",
+      "asset": "negev",
+      "legacy": false,
+      "sourceMs": 21.6362,
+      "cacheMs": 3.8997,
+      "bytes": 2089408,
+      "vertices": 53752,
+      "groups": 37
+    },
+    {
+      "stage": "geometry",
+      "asset": "negev",
+      "legacy": true,
+      "sourceMs": 22.2959,
+      "cacheMs": 2.8758,
+      "bytes": 3003593,
+      "vertices": 88113,
+      "groups": 38
+    },
+    {
+      "stage": "geometry",
+      "asset": "revolver",
+      "legacy": false,
+      "sourceMs": 15.4517,
+      "cacheMs": 0.6519,
+      "bytes": 784708,
+      "vertices": 19602,
+      "groups": 15
+    },
+    {
+      "stage": "geometry",
+      "asset": "revolver",
+      "legacy": true,
+      "sourceMs": 13.5672,
+      "cacheMs": 3.6496,
+      "bytes": 1744210,
+      "vertices": 51213,
+      "groups": 15
+    },
+    {
+      "stage": "geometry",
+      "asset": "elite",
+      "legacy": false,
+      "sourceMs": 15.2132,
+      "cacheMs": 1.2636,
+      "bytes": 1447965,
+      "vertices": 36252,
+      "groups": 10
+    },
+    {
+      "stage": "geometry",
+      "asset": "taser",
+      "legacy": false,
+      "sourceMs": 5.9521,
+      "cacheMs": 0.2399,
+      "bytes": 275500,
+      "vertices": 6781,
+      "groups": 1
+    },
+    {
+      "stage": "pixels",
+      "asset": "ak47",
+      "legacy": false,
+      "light": 0,
+      "visible": 3304,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ak47",
+      "legacy": false,
+      "light": 7,
+      "visible": 3304,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ak47",
+      "legacy": false,
+      "light": 15,
+      "visible": 3304,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ak47",
+      "legacy": true,
+      "light": 0,
+      "visible": 3561,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ak47",
+      "legacy": true,
+      "light": 7,
+      "visible": 3561,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ak47",
+      "legacy": true,
+      "light": 15,
+      "visible": 3561,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a1s",
+      "legacy": false,
+      "light": 0,
+      "visible": 2852,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a1s",
+      "legacy": false,
+      "light": 7,
+      "visible": 2852,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a1s",
+      "legacy": false,
+      "light": 15,
+      "visible": 2852,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a1s",
+      "legacy": true,
+      "light": 0,
+      "visible": 2953,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a1s",
+      "legacy": true,
+      "light": 7,
+      "visible": 2953,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a1s",
+      "legacy": true,
+      "light": 15,
+      "visible": 2953,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "awp",
+      "legacy": false,
+      "light": 0,
+      "visible": 2853,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "awp",
+      "legacy": false,
+      "light": 7,
+      "visible": 2853,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "awp",
+      "legacy": false,
+      "light": 15,
+      "visible": 2853,
+      "changed": 1,
+      "max": 3,
+      "meanError": 2.0345052083333332e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "awp",
+      "legacy": true,
+      "light": 0,
+      "visible": 2757,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "awp",
+      "legacy": true,
+      "light": 7,
+      "visible": 2757,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "awp",
+      "legacy": true,
+      "light": 15,
+      "visible": 2757,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "deagle",
+      "legacy": false,
+      "light": 0,
+      "visible": 8828,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "deagle",
+      "legacy": false,
+      "light": 7,
+      "visible": 8828,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "deagle",
+      "legacy": false,
+      "light": 15,
+      "visible": 8828,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "deagle",
+      "legacy": true,
+      "light": 0,
+      "visible": 8041,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "deagle",
+      "legacy": true,
+      "light": 7,
+      "visible": 8041,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "deagle",
+      "legacy": true,
+      "light": 15,
+      "visible": 8041,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "glock18",
+      "legacy": false,
+      "light": 0,
+      "visible": 10386,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "glock18",
+      "legacy": false,
+      "light": 7,
+      "visible": 10386,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "glock18",
+      "legacy": false,
+      "light": 15,
+      "visible": 10386,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "glock18",
+      "legacy": true,
+      "light": 0,
+      "visible": 10815,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "glock18",
+      "legacy": true,
+      "light": 7,
+      "visible": 10815,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "glock18",
+      "legacy": true,
+      "light": 15,
+      "visible": 10815,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "usp_silencer",
+      "legacy": false,
+      "light": 0,
+      "visible": 5981,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "usp_silencer",
+      "legacy": false,
+      "light": 7,
+      "visible": 5981,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "usp_silencer",
+      "legacy": false,
+      "light": 15,
+      "visible": 5981,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "usp_silencer",
+      "legacy": true,
+      "light": 0,
+      "visible": 6079,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "usp_silencer",
+      "legacy": true,
+      "light": 7,
+      "visible": 6079,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "usp_silencer",
+      "legacy": true,
+      "light": 15,
+      "visible": 6079,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a4",
+      "legacy": false,
+      "light": 0,
+      "visible": 4357,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a4",
+      "legacy": false,
+      "light": 7,
+      "visible": 4357,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a4",
+      "legacy": false,
+      "light": 15,
+      "visible": 4357,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a4",
+      "legacy": true,
+      "light": 0,
+      "visible": 4496,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a4",
+      "legacy": true,
+      "light": 7,
+      "visible": 4496,
+      "changed": 0,
+      "max": 1,
+      "meanError": 5.425347222222222e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "m4a4",
+      "legacy": true,
+      "light": 15,
+      "visible": 4496,
+      "changed": 0,
+      "max": 1,
+      "meanError": 8.816189236111111e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "famas",
+      "legacy": false,
+      "light": 0,
+      "visible": 5546,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "famas",
+      "legacy": false,
+      "light": 7,
+      "visible": 5546,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "famas",
+      "legacy": false,
+      "light": 15,
+      "visible": 5546,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "famas",
+      "legacy": true,
+      "light": 0,
+      "visible": 5455,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "famas",
+      "legacy": true,
+      "light": 7,
+      "visible": 5455,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "famas",
+      "legacy": true,
+      "light": 15,
+      "visible": 5455,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp9",
+      "legacy": false,
+      "light": 0,
+      "visible": 4269,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp9",
+      "legacy": false,
+      "light": 7,
+      "visible": 4269,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp9",
+      "legacy": false,
+      "light": 15,
+      "visible": 4269,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "p90",
+      "legacy": false,
+      "light": 0,
+      "visible": 8047,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "p90",
+      "legacy": false,
+      "light": 7,
+      "visible": 8047,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "p90",
+      "legacy": false,
+      "light": 15,
+      "visible": 8047,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "p90",
+      "legacy": true,
+      "light": 0,
+      "visible": 8472,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "p90",
+      "legacy": true,
+      "light": 7,
+      "visible": 8472,
+      "changed": 0,
+      "max": 1,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "p90",
+      "legacy": true,
+      "light": 15,
+      "visible": 8472,
+      "changed": 0,
+      "max": 1,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "ssg08",
+      "legacy": false,
+      "light": 0,
+      "visible": 3240,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ssg08",
+      "legacy": false,
+      "light": 7,
+      "visible": 3240,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ssg08",
+      "legacy": false,
+      "light": 15,
+      "visible": 3240,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ssg08",
+      "legacy": true,
+      "light": 0,
+      "visible": 3366,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ssg08",
+      "legacy": true,
+      "light": 7,
+      "visible": 3366,
+      "changed": 3,
+      "max": 16,
+      "meanError": 0.00018988715277777778
+    },
+    {
+      "stage": "pixels",
+      "asset": "ssg08",
+      "legacy": true,
+      "light": 15,
+      "visible": 3366,
+      "changed": 5,
+      "max": 43,
+      "meanError": 0.00048828125
+    },
+    {
+      "stage": "pixels",
+      "asset": "fiveseven",
+      "legacy": false,
+      "light": 0,
+      "visible": 10871,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "fiveseven",
+      "legacy": false,
+      "light": 7,
+      "visible": 10871,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "fiveseven",
+      "legacy": false,
+      "light": 15,
+      "visible": 10871,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "fiveseven",
+      "legacy": true,
+      "light": 0,
+      "visible": 11314,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "fiveseven",
+      "legacy": true,
+      "light": 7,
+      "visible": 11314,
+      "changed": 1,
+      "max": 40,
+      "meanError": 0.0002712673611111111
+    },
+    {
+      "stage": "pixels",
+      "asset": "fiveseven",
+      "legacy": true,
+      "light": 15,
+      "visible": 11314,
+      "changed": 1,
+      "max": 104,
+      "meanError": 0.0007052951388888889
+    },
+    {
+      "stage": "pixels",
+      "asset": "hkp2000",
+      "legacy": false,
+      "light": 0,
+      "visible": 11325,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "hkp2000",
+      "legacy": false,
+      "light": 7,
+      "visible": 11325,
+      "changed": 0,
+      "max": 2,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "hkp2000",
+      "legacy": false,
+      "light": 15,
+      "visible": 11325,
+      "changed": 1,
+      "max": 4,
+      "meanError": 2.712673611111111e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "hkp2000",
+      "legacy": true,
+      "light": 0,
+      "visible": 11954,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "hkp2000",
+      "legacy": true,
+      "light": 7,
+      "visible": 11954,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "hkp2000",
+      "legacy": true,
+      "light": 15,
+      "visible": 11954,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "p250",
+      "legacy": false,
+      "light": 0,
+      "visible": 11317,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "p250",
+      "legacy": false,
+      "light": 7,
+      "visible": 11317,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "p250",
+      "legacy": false,
+      "light": 15,
+      "visible": 11317,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "tec9",
+      "legacy": false,
+      "light": 0,
+      "visible": 8261,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "tec9",
+      "legacy": false,
+      "light": 7,
+      "visible": 8261,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "tec9",
+      "legacy": false,
+      "light": 15,
+      "visible": 8261,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "tec9",
+      "legacy": true,
+      "light": 0,
+      "visible": 8612,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "tec9",
+      "legacy": true,
+      "light": 7,
+      "visible": 8612,
+      "changed": 1,
+      "max": 12,
+      "meanError": 9.494357638888889e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "tec9",
+      "legacy": true,
+      "light": 15,
+      "visible": 8612,
+      "changed": 1,
+      "max": 31,
+      "meanError": 0.00023057725694444444
+    },
+    {
+      "stage": "pixels",
+      "asset": "cz75a",
+      "legacy": false,
+      "light": 0,
+      "visible": 9477,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "cz75a",
+      "legacy": false,
+      "light": 7,
+      "visible": 9477,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "cz75a",
+      "legacy": false,
+      "light": 15,
+      "visible": 9477,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "cz75a",
+      "legacy": true,
+      "light": 0,
+      "visible": 8906,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "cz75a",
+      "legacy": true,
+      "light": 7,
+      "visible": 8906,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "cz75a",
+      "legacy": true,
+      "light": 15,
+      "visible": 8906,
+      "changed": 0,
+      "max": 1,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "mac10",
+      "legacy": false,
+      "light": 0,
+      "visible": 9938,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mac10",
+      "legacy": false,
+      "light": 7,
+      "visible": 9938,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "mac10",
+      "legacy": false,
+      "light": 15,
+      "visible": 9938,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "mac10",
+      "legacy": true,
+      "light": 0,
+      "visible": 9573,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mac10",
+      "legacy": true,
+      "light": 7,
+      "visible": 9573,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mac10",
+      "legacy": true,
+      "light": 15,
+      "visible": 9573,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp7",
+      "legacy": false,
+      "light": 0,
+      "visible": 7339,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp7",
+      "legacy": false,
+      "light": 7,
+      "visible": 7339,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp7",
+      "legacy": false,
+      "light": 15,
+      "visible": 7339,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ump45",
+      "legacy": false,
+      "light": 0,
+      "visible": 4829,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ump45",
+      "legacy": false,
+      "light": 7,
+      "visible": 4829,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "ump45",
+      "legacy": false,
+      "light": 15,
+      "visible": 4829,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "bizon",
+      "legacy": false,
+      "light": 0,
+      "visible": 3993,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "bizon",
+      "legacy": false,
+      "light": 7,
+      "visible": 3993,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "bizon",
+      "legacy": false,
+      "light": 15,
+      "visible": 3993,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "bizon",
+      "legacy": true,
+      "light": 0,
+      "visible": 3819,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "bizon",
+      "legacy": true,
+      "light": 7,
+      "visible": 3819,
+      "changed": 1,
+      "max": 3,
+      "meanError": 2.0345052083333332e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "bizon",
+      "legacy": true,
+      "light": 15,
+      "visible": 3819,
+      "changed": 1,
+      "max": 8,
+      "meanError": 5.425347222222222e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp5sd",
+      "legacy": false,
+      "light": 0,
+      "visible": 5448,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp5sd",
+      "legacy": false,
+      "light": 7,
+      "visible": 5448,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp5sd",
+      "legacy": false,
+      "light": 15,
+      "visible": 5448,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp5sd",
+      "legacy": true,
+      "light": 0,
+      "visible": 5152,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp5sd",
+      "legacy": true,
+      "light": 7,
+      "visible": 5152,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "mp5sd",
+      "legacy": true,
+      "light": 15,
+      "visible": 5152,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "galilar",
+      "legacy": false,
+      "light": 0,
+      "visible": 4195,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "galilar",
+      "legacy": false,
+      "light": 7,
+      "visible": 4195,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "galilar",
+      "legacy": false,
+      "light": 15,
+      "visible": 4195,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "galilar",
+      "legacy": true,
+      "light": 0,
+      "visible": 4005,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "galilar",
+      "legacy": true,
+      "light": 7,
+      "visible": 4005,
+      "changed": 1,
+      "max": 14,
+      "meanError": 9.494357638888889e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "galilar",
+      "legacy": true,
+      "light": 15,
+      "visible": 4005,
+      "changed": 1,
+      "max": 33,
+      "meanError": 0.00022379557291666666
+    },
+    {
+      "stage": "pixels",
+      "asset": "scar20",
+      "legacy": false,
+      "light": 0,
+      "visible": 4257,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "scar20",
+      "legacy": false,
+      "light": 7,
+      "visible": 4257,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "scar20",
+      "legacy": false,
+      "light": 15,
+      "visible": 4257,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "scar20",
+      "legacy": true,
+      "light": 0,
+      "visible": 3904,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "scar20",
+      "legacy": true,
+      "light": 7,
+      "visible": 3904,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "scar20",
+      "legacy": true,
+      "light": 15,
+      "visible": 3904,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "g3sg1",
+      "legacy": false,
+      "light": 0,
+      "visible": 3823,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "g3sg1",
+      "legacy": false,
+      "light": 7,
+      "visible": 3823,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "g3sg1",
+      "legacy": false,
+      "light": 15,
+      "visible": 3823,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "aug",
+      "legacy": false,
+      "light": 0,
+      "visible": 5599,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "aug",
+      "legacy": false,
+      "light": 7,
+      "visible": 5599,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "aug",
+      "legacy": false,
+      "light": 15,
+      "visible": 5599,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "aug",
+      "legacy": true,
+      "light": 0,
+      "visible": 5306,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "aug",
+      "legacy": true,
+      "light": 7,
+      "visible": 5306,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "aug",
+      "legacy": true,
+      "light": 15,
+      "visible": 5306,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sg556",
+      "legacy": false,
+      "light": 0,
+      "visible": 4244,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sg556",
+      "legacy": false,
+      "light": 7,
+      "visible": 4244,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sg556",
+      "legacy": false,
+      "light": 15,
+      "visible": 4244,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sg556",
+      "legacy": true,
+      "light": 0,
+      "visible": 4296,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sg556",
+      "legacy": true,
+      "light": 7,
+      "visible": 4296,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sg556",
+      "legacy": true,
+      "light": 15,
+      "visible": 4296,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "nova",
+      "legacy": false,
+      "light": 0,
+      "visible": 2798,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "nova",
+      "legacy": false,
+      "light": 7,
+      "visible": 2798,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "nova",
+      "legacy": false,
+      "light": 15,
+      "visible": 2798,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "nova",
+      "legacy": true,
+      "light": 0,
+      "visible": 2795,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "nova",
+      "legacy": true,
+      "light": 7,
+      "visible": 2795,
+      "changed": 0,
+      "max": 2,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "nova",
+      "legacy": true,
+      "light": 15,
+      "visible": 2795,
+      "changed": 1,
+      "max": 6,
+      "meanError": 4.0690104166666664e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "xm1014",
+      "legacy": false,
+      "light": 0,
+      "visible": 2690,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "xm1014",
+      "legacy": false,
+      "light": 7,
+      "visible": 2690,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "xm1014",
+      "legacy": false,
+      "light": 15,
+      "visible": 2690,
+      "changed": 1,
+      "max": 3,
+      "meanError": 2.0345052083333332e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "xm1014",
+      "legacy": true,
+      "light": 0,
+      "visible": 2882,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "xm1014",
+      "legacy": true,
+      "light": 7,
+      "visible": 2882,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "xm1014",
+      "legacy": true,
+      "light": 15,
+      "visible": 2882,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sawedoff",
+      "legacy": false,
+      "light": 0,
+      "visible": 3844,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sawedoff",
+      "legacy": false,
+      "light": 7,
+      "visible": 3844,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sawedoff",
+      "legacy": false,
+      "light": 15,
+      "visible": 3844,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sawedoff",
+      "legacy": true,
+      "light": 0,
+      "visible": 3744,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sawedoff",
+      "legacy": true,
+      "light": 7,
+      "visible": 3744,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "sawedoff",
+      "legacy": true,
+      "light": 15,
+      "visible": 3744,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "mag7",
+      "legacy": false,
+      "light": 0,
+      "visible": 5853,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mag7",
+      "legacy": false,
+      "light": 7,
+      "visible": 5853,
+      "changed": 1,
+      "max": 3,
+      "meanError": 2.0345052083333332e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "mag7",
+      "legacy": false,
+      "light": 15,
+      "visible": 5853,
+      "changed": 1,
+      "max": 7,
+      "meanError": 4.7471788194444445e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "mag7",
+      "legacy": true,
+      "light": 0,
+      "visible": 5784,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mag7",
+      "legacy": true,
+      "light": 7,
+      "visible": 5784,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "mag7",
+      "legacy": true,
+      "light": 15,
+      "visible": 5784,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m249",
+      "legacy": false,
+      "light": 0,
+      "visible": 4043,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m249",
+      "legacy": false,
+      "light": 7,
+      "visible": 4043,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m249",
+      "legacy": false,
+      "light": 15,
+      "visible": 4043,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m249",
+      "legacy": true,
+      "light": 0,
+      "visible": 3485,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "m249",
+      "legacy": true,
+      "light": 7,
+      "visible": 3485,
+      "changed": 1,
+      "max": 4,
+      "meanError": 2.712673611111111e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "m249",
+      "legacy": true,
+      "light": 15,
+      "visible": 3485,
+      "changed": 1,
+      "max": 9,
+      "meanError": 6.103515625e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "negev",
+      "legacy": false,
+      "light": 0,
+      "visible": 4494,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "negev",
+      "legacy": false,
+      "light": 7,
+      "visible": 4494,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "negev",
+      "legacy": false,
+      "light": 15,
+      "visible": 4494,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "negev",
+      "legacy": true,
+      "light": 0,
+      "visible": 3809,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "negev",
+      "legacy": true,
+      "light": 7,
+      "visible": 3809,
+      "changed": 0,
+      "max": 1,
+      "meanError": 6.781684027777777e-06
+    },
+    {
+      "stage": "pixels",
+      "asset": "negev",
+      "legacy": true,
+      "light": 15,
+      "visible": 3809,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "revolver",
+      "legacy": false,
+      "light": 0,
+      "visible": 7731,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "revolver",
+      "legacy": false,
+      "light": 7,
+      "visible": 7731,
+      "changed": 0,
+      "max": 2,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "revolver",
+      "legacy": false,
+      "light": 15,
+      "visible": 7731,
+      "changed": 1,
+      "max": 4,
+      "meanError": 2.712673611111111e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "revolver",
+      "legacy": true,
+      "light": 0,
+      "visible": 7451,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "revolver",
+      "legacy": true,
+      "light": 7,
+      "visible": 7451,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "revolver",
+      "legacy": true,
+      "light": 15,
+      "visible": 7451,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "elite",
+      "legacy": false,
+      "light": 0,
+      "visible": 10102,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "elite",
+      "legacy": false,
+      "light": 7,
+      "visible": 10102,
+      "changed": 0,
+      "max": 1,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "elite",
+      "legacy": false,
+      "light": 15,
+      "visible": 10102,
+      "changed": 0,
+      "max": 1,
+      "meanError": 1.3563368055555555e-05
+    },
+    {
+      "stage": "pixels",
+      "asset": "taser",
+      "legacy": false,
+      "light": 0,
+      "visible": 10674,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "taser",
+      "legacy": false,
+      "light": 7,
+      "visible": 10674,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "pixels",
+      "asset": "taser",
+      "legacy": false,
+      "light": 15,
+      "visible": 10674,
+      "changed": 0,
+      "max": 0,
+      "meanError": 0
+    },
+    {
+      "stage": "submission",
+      "count": 1,
+      "gpu": false,
+      "coldMs": 4.0518,
+      "coldBytes": 10378208,
+      "warmMs": 2.6361933333333334,
+      "bytes": 1040,
+      "completedMs": 2.8468500000000003
+    },
+    {
+      "stage": "submission",
+      "count": 1,
+      "gpu": true,
+      "coldMs": 7.7859,
+      "coldBytes": 2608632,
+      "warmMs": 0.00407,
+      "bytes": 0,
+      "completedMs": 0.15593666666666667
+    },
+    {
+      "stage": "submission",
+      "count": 3,
+      "gpu": false,
+      "coldMs": 8.9699,
+      "coldBytes": 34748056,
+      "warmMs": 5.663573333333333,
+      "bytes": 3328,
+      "completedMs": 5.673906666666666
+    },
+    {
+      "stage": "submission",
+      "count": 3,
+      "gpu": true,
+      "coldMs": 5.4141,
+      "coldBytes": 7296704,
+      "warmMs": 0.005203333333333333,
+      "bytes": 0,
+      "completedMs": 0.05591666666666666
+    },
+    {
+      "stage": "submission",
+      "count": 5,
+      "gpu": false,
+      "coldMs": 15.6692,
+      "coldBytes": 88960376,
+      "warmMs": 6.868086666666667,
+      "bytes": 11856,
+      "completedMs": 6.878893333333334
+    },
+    {
+      "stage": "submission",
+      "count": 5,
+      "gpu": true,
+      "coldMs": 11.2362,
+      "coldBytes": 9728816,
+      "warmMs": 0.01728333333333333,
+      "bytes": 0,
+      "completedMs": 0.09892333333333332
+    },
+    {
+      "stage": "submission",
+      "count": 28,
+      "gpu": false,
+      "coldMs": 402.4847,
+      "coldBytes": 1842015944,
+      "warmMs": 43.35924,
+      "bytes": 62608,
+      "completedMs": 43.383363333333335
+    },
+    {
+      "stage": "submission",
+      "count": 28,
+      "gpu": true,
+      "coldMs": 9.566,
+      "coldBytes": 9809280,
+      "warmMs": 0.07921,
+      "bytes": 0,
+      "completedMs": 0.33805666666666667
+    }
+  ],
+  "appearanceChecks": 7892,
+  "nativeActorFrames": 12,
+  "scope": "Windows isolated native fixtures; no Android, actual player world, or all-installed-mod combination acceptance"
+}

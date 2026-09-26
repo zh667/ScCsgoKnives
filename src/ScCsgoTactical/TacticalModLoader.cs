@@ -52,7 +52,7 @@ public sealed class TacticalModLoader : ModLoader {
         }finally{Display.BlendState=blend;Display.DepthStencilState=depth;Display.RasterizerState=raster;Display.ScissorRectangle=scissor;}
     }
     public override void OnLoadingFinished(List<Action> actions)=>actions.Add(()=>{SubsystemScTactical.RegisterRecipes();TacticalArms.Register();});
-    public override void OnProjectDisposed()=>TacticalArms.Clear();
+    public override void OnProjectDisposed(){ScNpcWeaponRenderer.Clear();ScNpcWeaponGeometry.Clear();TacticalArms.Clear();}
     public override void ProcessAttackment(Attackment attack){
         if(attack?.Target?.Project is {} project&&attack.AttackPower>0){var attacker=attack.Attacker?.FindComponent<ComponentBody>();
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);

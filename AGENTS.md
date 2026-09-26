@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed 2026-09-26 crowd optimization: FULL ONLY remains public 1.3.0,
+  revision `crowd-gpu-20260926`. NPC guns use deferred static GPU buffers and
+  63 lossless `.scmesh` caches baked with the native OBJ loader (the headless
+  ObjProvider differs in lighting/double-sided indices and is NOT a bake source).
+  Preserve all parts, animation transforms, texture sampling and byte lighting.
+  Dispose owned buffers on world exit and reupload after device reset. Keep
+  WeaponSubmit timing: WeaponDraw alone now excludes deferred submission.
+  See docs/release-crowd-optimization-1.3.0-2026-09-26.md. Native Windows tests
+  do not establish Android acceptance. Keep Lite/installed Mods/worlds unchanged.
+
 - User-directed 2026-09-26 crowd follow-up: full-only 1.3.0 diagnostic build,
   `crowd-diag-20260926`, adds bounded `[CS_PERF]` spawn/model/AI/animation/bones/
   weapon timings and 10-second frame/GC summaries. Preserve gameplay and atomic

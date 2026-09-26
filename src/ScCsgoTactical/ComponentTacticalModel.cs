@@ -86,19 +86,28 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     }
     void DrawGun(Camera camera,int value){
         if(!EffectiveGunStats.TrySnapshotValue(value,out var state))return;
-        string asset=GunSpec.All[state.Variant].Name;ScGunNativeMesh.Part[] native;Texture2D texture;ScThirdPersonWeapon weapon;
-        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponResolve,asset))native=ScGunNativeMesh.Resolve(asset,state.SkinId,out texture,out _);
-        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponBuild,asset))weapon=ScThirdPersonWeapon.For(asset,native is not null);
+        string asset=GunSpec.All[state.Variant].Name;bool legacy;Texture2D texture;ScNpcWeaponGeometry weapon;
+        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponResolve,asset)){
+            texture=ScGunVisualMaterial.Load(asset,state.SkinId,out var material);legacy=ScGunNativeMesh.UsesLegacy(asset,material);
+        }
+        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponBuild,asset)){
+            weapon=ScNpcWeaponGeometry.For(asset,legacy);
+            // Match native fallback: never put a legacy paint on factory geometry.
+            if(weapon==null&&legacy){legacy=false;texture=ScGunVisualMaterial.Load(asset,0,out _);weapon=ScNpcWeaponGeometry.For(asset);}
+        }
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponDraw,asset);
         var hand=Model.FindBone("hand_R",false);
         if(weapon is null||!weapon.HasRightGrip||hand is null)return;
-        var world=Actions.RootWorld(weapon,AbsoluteBoneTransformsForCamera)*camera.InvertedViewMatrix;
+        var world=(weapon.WorldRootInverse*Actions.PropFrame(asset,"weapon",AbsoluteBoneTransformsForCamera))*camera.InvertedViewMatrix;
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var p=world.Translation;
         var env=new DrawBlockEnvironmentData{DrawBlockMode=DrawBlockMode.ThirdPerson,InWorldMatrix=world,Owner=Entity,SubsystemTerrain=terrain,Light=terrain.Terrain.GetCellLight(Terrain.ToCell(p.X),Terrain.ToCell(p.Y),Terrain.ToCell(p.Z))};
         var view=world*camera.ViewMatrix;var renderer=Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer;
-        foreach(var group in weapon.Groups){if(group.Silencer&&state.SilencerOff||!Actions.ShowWorldPart(weapon,group,VisualAction))continue;var tex=group.Texture==asset+"_hd"?texture:ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+group.Texture);
-            var part=Actions.WorldPart(weapon,group,AbsoluteBoneTransformsForCamera);var partView=part.Transform;
-            if(native is not null)ScGunNativeMesh.DrawWorld(renderer,part.Mesh,tex,Color.White,1,ref partView,env);else BlocksManager.DrawMeshBlock(renderer,part.Mesh,tex,Color.White,1,ref partView,env);}
-        ScStatTrakRenderer.DrawThirdPerson(value,asset,native is not null,view,renderer,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
+        string bodyTexture=asset+"_hd";
+        foreach(var group in weapon.Groups){if(group.Silencer&&state.SilencerOff||!Actions.ShowWorldPartFor(asset,group,VisualAction))continue;var tex=group.Texture==bodyTexture?texture:ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+group.Texture);
+            var part=Actions.WorldPartFor(asset,group,AbsoluteBoneTransformsForCamera);var partView=part.Transform;
+            if(group.VertexBones==null&&ScNpcWeaponRenderer.Queue(renderer,part.Mesh,tex,partView,env.Light,legacy,Project))continue;
+            ScNpcWeaponRenderer.ReserveFallback(renderer,part.Mesh,tex,legacy);
+            if(legacy)ScGunNativeMesh.DrawWorld(renderer,part.Mesh,tex,Color.White,1,ref partView,env);else BlocksManager.DrawMeshBlock(renderer,part.Mesh,tex,Color.White,1,ref partView,env);}
+        ScStatTrakRenderer.DrawThirdPerson(value,asset,legacy,view,renderer,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
     }
 }
