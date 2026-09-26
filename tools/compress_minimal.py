@@ -1,9 +1,9 @@
 """Stronger standard Deflate, verifying unchanged payloads. No installation/publishing."""
 from pathlib import Path
-import zipfile,subprocess,json,sys,hashlib,tempfile
+import zipfile,subprocess,json,sys,hashlib,tempfile,os
 from pack_single_scmods import raw_member,write_archive
 
-r=Path(__file__).resolve().parents[1];s=r/'.tmp/minimal-130-20260926'
+r=Path(__file__).resolve().parents[1];s=r/os.environ.get('SC_MINIMAL_STAGE','.tmp/minimal-130-20260926')
 p=s/'candidate/[API1.9]CS武器1.3.0-极简包.scmod'
 before=p.stat().st_size
 # Fresh scratch avoids 7-Zip update mode retaining stale files from a prior build.

@@ -4,8 +4,8 @@ Source hashes record the exact inputs, including any local changes. Review these
 against the release evidence before rebuilding an existing release.
 """
 from pathlib import Path
-import hashlib,json
-r=Path(__file__).resolve().parents[1];s=r/'.tmp/minimal-130-20260926';d=s/'core';d.mkdir(parents=True,exist_ok=True)
+import hashlib,json,os
+r=Path(__file__).resolve().parents[1];s=r/os.environ.get('SC_MINIMAL_STAGE','.tmp/minimal-130-20260926');d=s/'core';d.mkdir(parents=True,exist_ok=True)
 files={}
 for p in (r/'src/ScCsgoKnives').rglob('*'):
  if not p.is_file():continue
@@ -17,4 +17,6 @@ for p in (r/'src/ScCsgoKnives').rglob('*'):
 staged={p.relative_to(d).as_posix() for p in d.rglob('*') if p.is_file() and p.relative_to(d).parts[0] not in ['bin','obj'] and p.suffix in ['.cs','.json','.psh','.vsh']}
 assert staged==set(files),'Stale snapshot sources; use a fresh reviewed stage directory'
 project='''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><AssemblyName>ScCsgoKnives</AssemblyName><RootNamespace>Game</RootNamespace><GenerateAssemblyInfo>false</GenerateAssemblyInfo><GenerateDependencyFile>false</GenerateDependencyFile><Nullable>disable</Nullable><LangVersion>preview</LangVersion><DefineConstants>SC_MINIMAL</DefineConstants></PropertyGroup><ItemGroup><PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1"/><Reference Include="ScCsgoResources"><HintPath>../resources/bin/Release/net10.0/ScCsgoResources.dll</HintPath></Reference><EmbeddedResource Include="AnimationData/*.json;Shaders/*.vsh;Shaders/*.psh" /></ItemGroup></Project>'''
+if json.loads((s/'resource-derivation.json').read_text(encoding='utf8')).get('inspect'):
+ project=project.replace('<DefineConstants>SC_MINIMAL</DefineConstants>','<DefineConstants>SC_MINIMAL;SC_MINIMAL_INSPECT</DefineConstants>')
 (d/'ScCsgoKnives.csproj').write_text(project,encoding='utf8');(s/'core-source-hashes.json').write_text(json.dumps(files,indent=2),encoding='utf8')

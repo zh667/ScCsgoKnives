@@ -21,6 +21,7 @@ public sealed class SubsystemScChicken : SubsystemBlockBehavior {
         return true;
     }
     public static void RegisterSpawn(GameEntitySystem.Project project) {
+        if (ScMinimalEdition.Enabled) return;
         var spawn=project.FindSubsystem<SubsystemCreatureSpawn>(false);
         if(spawn is null || spawn.m_creatureTypes.Any(t=>t.Name==ComponentScChicken.Template))return;
         spawn.m_creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType(ComponentScChicken.Template,SpawnLocationType.Surface,true,false){
@@ -35,6 +36,7 @@ public sealed class SubsystemScChicken : SubsystemBlockBehavior {
     static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComponentPlayer,Press> Presses=new();
     sealed class Press { public bool Down; }
     public static bool HandleFollow(ComponentInput input,WidgetInput widgets) {
+        if (ScMinimalEdition.Enabled) return false;
         var player=input.m_componentPlayer;if(player is null)return false;
         var press=Presses.GetOrCreateValue(player);
         bool down=widgets.IsKeyDown(Key.E)||input.PlayerInput.Interact.HasValue;

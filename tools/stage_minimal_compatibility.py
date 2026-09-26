@@ -4,10 +4,10 @@ The historical runner assumed Tactical types always lived in older core DLLs.
 For bundles, actually resolve and check these types in their companion DLL instead.
 """
 from pathlib import Path
-import subprocess, zipfile, hashlib, json
+import subprocess, zipfile, hashlib, json, os
 
 root=Path(__file__).resolve().parents[1]
-stage=root/'.tmp/minimal-130-20260926'
+stage=root/os.environ.get('SC_MINIMAL_STAGE','.tmp/minimal-130-20260926')
 out=stage/'compat-runner';out.mkdir(parents=True,exist_ok=True)
 ref='5cd70c1'
 source=subprocess.check_output(['git','show',ref+':tools/CompatibilityCheck/Program.cs'],cwd=root).decode('utf-8')

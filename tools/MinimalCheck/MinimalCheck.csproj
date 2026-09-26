@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
+  <PropertyGroup><MinimalStage Condition="'$(MinimalStage)'==''">../../.tmp/minimal-130-20260926</MinimalStage></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../PackageCheck/SwitchAnimationRegression.cs" Link="SwitchAnimationRegression.cs" />
     <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
-    <Reference Include="ScCsgoKnives"><HintPath>../../.tmp/minimal-130-20260926/core/bin/Release/net10.0/ScCsgoKnives.dll</HintPath></Reference>
-    <Reference Include="ScCsgoResources"><HintPath>../../.tmp/minimal-130-20260926/resources/bin/Release/net10.0/ScCsgoResources.dll</HintPath></Reference>
+    <Reference Include="ScCsgoKnives"><HintPath>$(MinimalStage)/core/bin/Release/net10.0/ScCsgoKnives.dll</HintPath></Reference>
+    <Reference Include="ScCsgoResources"><HintPath>$(MinimalStage)/resources/bin/Release/net10.0/ScCsgoResources.dll</HintPath></Reference>
   </ItemGroup>
 </Project>

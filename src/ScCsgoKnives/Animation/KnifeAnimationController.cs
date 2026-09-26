@@ -181,7 +181,7 @@ public static class KnifeAnimationController {
         model != null && s_states.TryGetValue(model, out State state) ? state.Pose : null;
 
     public static bool TriggerInspect(ComponentPlayer player) {
-        if (ScMinimalEdition.Enabled) return false;
+        if (!ScMinimalEdition.InspectEnabled) return false;
         ComponentFirstPersonModel model = player.Entity.FindComponent<ComponentFirstPersonModel>();
         if (model is null) return false;
         int value = player.ComponentMiner.ActiveBlockValue;

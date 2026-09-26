@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed 2026-09-26 Mini quality revision supersedes the 30 MB/inspection
+  cuts below: accept under 40,000,000 bytes, restore published Lite gun geometry
+  and 512 gun colour/default-hand textures, remove CS chicken gameplay/resources,
+  and ENABLE inspection. Keep 35 guns/13 finishes, old item IDs and dormant chicken
+  entities/egg identities; retain regular Full/Lite and installed Mods/worlds.
+  The release uses existing resource formats, bounded curve simplification and
+  standard Deflate. 30 MB remains exploratory; do not claim it achieved or ship
+  offline codec experiments as native/Android-validated integrations. See
+  docs/release-minimal-inspect-1.3.0-2026-09-26.md and open-source compression audit.
+
 - User-directed 2026-09-26 Mini release supersedes the feasibility-only scope below:
   deliver a separate 1.3.0 Mini under 30,000,000 bytes. Keep Full/Lite and installed
   Mods/worlds unchanged. Mini keeps all 35 guns and current published gameplay,

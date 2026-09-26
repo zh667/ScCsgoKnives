@@ -2,6 +2,8 @@ using Engine;
 using Engine.Graphics;
 namespace Game;
 
+#if !SC_MINIMAL
+
 /// <summary>Own block identity avoids competing for other mods' vanilla egg data IDs.</summary>
 public sealed class ScChickenEggBlock : ScNoDurabilityBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
@@ -24,3 +26,4 @@ public sealed class ScChickenEggBlock : ScNoDurabilityBlock {
         eggs.DrawBlock(renderer,Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<EggBlock>(true),0,EggBlock.SetEggType(0,egg.EggTypeIndex)),new Color(235,210,140)*color,size,ref matrix,env);
     }
 }
+#endif

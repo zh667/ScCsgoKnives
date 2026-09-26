@@ -1,0 +1,1365 @@
+{
+  "sources": [
+    {
+      "name": "meshoptimizer",
+      "url": "https://raw.githubusercontent.com/zeux/meshoptimizer/master/README.md",
+      "bytes": 106245,
+      "sha256": "6edcb11eff0761a4fb196219cf1270c68b4abe1ea5535665843200c32712adb6"
+    },
+    {
+      "name": "acl",
+      "url": "https://raw.githubusercontent.com/nfrechette/acl/develop/README.md",
+      "bytes": 11734,
+      "sha256": "4583b9abd3d98e98d33d7b01dd0e0dab9b1949bacd0aeb1bdaba78cc5c662837"
+    },
+    {
+      "name": "brotli",
+      "url": "https://raw.githubusercontent.com/google/brotli/master/README.md",
+      "bytes": 4586,
+      "sha256": "e45155f191dab9d8999a85060a2ccb0cda94810868fcc816a0dae46d9aa04c97"
+    },
+    {
+      "name": "basis_universal",
+      "url": "https://raw.githubusercontent.com/BinomialLLC/basis_universal/master/README.md",
+      "bytes": 48151,
+      "sha256": "555e83e95bfd35dfadece288bcffbcfb1895d4c76bcb92c8b1badbca11a7789f"
+    }
+  ],
+  "meshCodec": {
+    "rows": [
+      {
+        "name": "aug.cs2.parts",
+        "sourceSha256": "ad9e21e81999106e776a3d0c8620855312e4832bb88cee8ab6bb69bca2beadff",
+        "raw": 840407,
+        "zlib9": 436881,
+        "meshoptBrotli9": 393312,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "bayonet.cs2.skin",
+        "sourceSha256": "468f2315766731ad28c9dc01205fcc836a88984df39a1fe6deb37a128a52145c",
+        "raw": 48217,
+        "zlib9": 13437,
+        "meshoptBrotli9": 16953,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "bizon.cs2.parts",
+        "sourceSha256": "5d041bf8f73da9cbb87ff911b1ebb94d48828340396d7a600dc0ab011039a918",
+        "raw": 589210,
+        "zlib9": 275746,
+        "meshoptBrotli9": 298350,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "bowie.cs2.skin",
+        "sourceSha256": "760f79930a84b761285c02abb6d2467f2ad3595786a39437dd1f61a0df42f7a3",
+        "raw": 253627,
+        "zlib9": 83222,
+        "meshoptBrotli9": 84991,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "butterfly.cs2.skin",
+        "sourceSha256": "712ba3516276f6ac431ea5809e759f11631e81e687b1b03485378cff82d87041",
+        "raw": 156473,
+        "zlib9": 58184,
+        "meshoptBrotli9": 53517,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "c4.cs2.skin",
+        "sourceSha256": "f2ce65e773e4cbd86beab6ca77f7a7c7133073d63dcf4da492e1aab8ed9110bf",
+        "raw": 338316,
+        "zlib9": 113556,
+        "meshoptBrotli9": 115678,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "canis.cs2.skin",
+        "sourceSha256": "5b088da36b6e5a1acbf6445fef08de9e73c4795128590a44e75224545fb69aa1",
+        "raw": 83695,
+        "zlib9": 33958,
+        "meshoptBrotli9": 32687,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "cord.cs2.skin",
+        "sourceSha256": "262c91c3ae3bc44e32410a0716d59741d7098956af7906e13cd977ee1aeb3cb3",
+        "raw": 56454,
+        "zlib9": 17855,
+        "meshoptBrotli9": 20346,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "cs2_arms.skin",
+        "sourceSha256": "2bfceee4c2247210aa8d2d2a94bd2c60bda61161bdebc6d175b0228b27b4684b",
+        "raw": 338181,
+        "zlib9": 178632,
+        "meshoptBrotli9": 159747,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "css.cs2.skin",
+        "sourceSha256": "282aac10ad07c0cca357835cbadcdef0fb28f2b5511e10fd94ef1c2a5513a04a",
+        "raw": 22865,
+        "zlib9": 7931,
+        "meshoptBrotli9": 8766,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "cz75a.cs2.parts",
+        "sourceSha256": "d61ff1bd695b1f23ccd64de65617b5c9e17e96000bec757de2477fb85a92e829",
+        "raw": 466748,
+        "zlib9": 203988,
+        "meshoptBrotli9": 236236,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "deagle.cs2.parts",
+        "sourceSha256": "0b794a2cb084878a9a652839f0aff93a441db2c790ecb01b4d64a8dfd4c16997",
+        "raw": 396273,
+        "zlib9": 183310,
+        "meshoptBrotli9": 207387,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "default_ct.cs2.skin",
+        "sourceSha256": "571513821dcb5d12eb6790d4139fcf36dce43dbe9ae117fd7506e4cd849836fc",
+        "raw": 104836,
+        "zlib9": 31573,
+        "meshoptBrotli9": 36799,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "default_t.cs2.skin",
+        "sourceSha256": "7ca3379f18601d276e08fd2b114e279becd94580097914ae2c0ffe67ab32cad1",
+        "raw": 26571,
+        "zlib9": 9889,
+        "meshoptBrotli9": 10746,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "elite.cs2.parts",
+        "sourceSha256": "589e9179ea0c8cfda9528201b7344d16abb4da3f2e8293ae4ff448ee10cfb42c",
+        "raw": 891521,
+        "zlib9": 448154,
+        "meshoptBrotli9": 434867,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "falchion.cs2.skin",
+        "sourceSha256": "30032c5d6f7ff6bfcdf9415a53928504d6ee2684414fc8ffee205052ee615acf",
+        "raw": 145033,
+        "zlib9": 48618,
+        "meshoptBrotli9": 51371,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "famas.cs2.parts",
+        "sourceSha256": "6334f961e0af1f5be84677bb58d8678a08f054d814696186602f7d7c56533cbc",
+        "raw": 691478,
+        "zlib9": 350267,
+        "meshoptBrotli9": 364286,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "fiveseven.cs2.parts",
+        "sourceSha256": "c0d95add28b167cc8843c88eaaab696441c2edf8ff282af7cfed05f362d5ae0e",
+        "raw": 513687,
+        "zlib9": 232747,
+        "meshoptBrotli9": 249095,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "flip.cs2.skin",
+        "sourceSha256": "96a8472eaf0566d4023067ae2ad29622599b2956701370999a57175626ccbe91",
+        "raw": 63601,
+        "zlib9": 20014,
+        "meshoptBrotli9": 23361,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "g3sg1.cs2.parts",
+        "sourceSha256": "8f630ada7513a5cea4c04660a3b4015f469680b5d0d12e6cbf38960f460dbd75",
+        "raw": 976927,
+        "zlib9": 475212,
+        "meshoptBrotli9": 493211,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "galilar.cs2.parts",
+        "sourceSha256": "3a547097f37e610368442e280850481574de45f456c31cdba5d477140c8b53f6",
+        "raw": 920383,
+        "zlib9": 415362,
+        "meshoptBrotli9": 454615,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "glock18.cs2.parts",
+        "sourceSha256": "19ba70fed25bf6f5fbdb6e671f44bb6ce7d926644348eb1356c97a93d1031427",
+        "raw": 306911,
+        "zlib9": 149983,
+        "meshoptBrotli9": 157481,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "grenade_decoy.cs2.skin",
+        "sourceSha256": "69d2c24007679de3aedb179af359ab77833508fc64687a8ab182f94c3dea1997",
+        "raw": 118656,
+        "zlib9": 44426,
+        "meshoptBrotli9": 47165,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "grenade_flashbang.cs2.skin",
+        "sourceSha256": "d9c5baa83378813e060ea41e77eefe5a2bc3820077adf88380e09b7795b063eb",
+        "raw": 118660,
+        "zlib9": 44430,
+        "meshoptBrotli9": 47170,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "grenade_hegrenade.cs2.skin",
+        "sourceSha256": "f570a3f382a0d901f6b19e42debc0a2fb85cc4d3f1e6ac0e1a8707783e5d138f",
+        "raw": 99100,
+        "zlib9": 41014,
+        "meshoptBrotli9": 39605,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "grenade_incendiary.cs2.skin",
+        "sourceSha256": "f559d4ef03452a63064a1d83bd1fceb5bda0ae69a8733899f5deea0162e90cc8",
+        "raw": 116544,
+        "zlib9": 43229,
+        "meshoptBrotli9": 44948,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "grenade_molotov.cs2.skin",
+        "sourceSha256": "cb7ab51bcffc48454b4592be9f861e2a078a2b81ffa1b61f9520d3d13636fb50",
+        "raw": 167750,
+        "zlib9": 74756,
+        "meshoptBrotli9": 67168,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "grenade_smokegrenade.cs2.skin",
+        "sourceSha256": "0248d597e94e983f7127de2156cd227e4e8c2eb163a9b8037e16931f3ec1e4f5",
+        "raw": 115551,
+        "zlib9": 42761,
+        "meshoptBrotli9": 44791,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "gut.cs2.skin",
+        "sourceSha256": "3724d1f42c678183fe7848736559bad6bd0dc7b49c335c5194b6c7dd61b44cc2",
+        "raw": 131277,
+        "zlib9": 52179,
+        "meshoptBrotli9": 49994,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "hkp2000.cs2.parts",
+        "sourceSha256": "73c9bb9a474ac0bc216c4116c0a5608382917e9c35882e7efb5985faddf34c2c",
+        "raw": 396654,
+        "zlib9": 165680,
+        "meshoptBrotli9": 210020,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "karambit.cs2.skin",
+        "sourceSha256": "aad70b28c36a3d246f82d548b90bb09332557213201c186c7509f0eb1e6c97d5",
+        "raw": 297122,
+        "zlib9": 92486,
+        "meshoptBrotli9": 100560,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "kukri.cs2.skin",
+        "sourceSha256": "b56e9bab36918f56c6eac12b71e03235960f32756d0357815d23948ef0c73108",
+        "raw": 90343,
+        "zlib9": 43429,
+        "meshoptBrotli9": 37231,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "m249.cs2.parts",
+        "sourceSha256": "6ecf0067c4c62bfe35aa5fc51a662beefebdb1bd8e312c4b7fadd9a1de856659",
+        "raw": 1376860,
+        "zlib9": 676049,
+        "meshoptBrotli9": 673895,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "m4a4.cs2.parts",
+        "sourceSha256": "8656a6141af0a5d3719ee9d25b760226838761947cebcc0e72b2995c6e2334a2",
+        "raw": 996420,
+        "zlib9": 468744,
+        "meshoptBrotli9": 491400,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "m9.cs2.skin",
+        "sourceSha256": "d91335b2c40c6b4645ae1a8352a5e9b82dd2a30b390b822c0b30b086a2c8e447",
+        "raw": 130968,
+        "zlib9": 46284,
+        "meshoptBrotli9": 53464,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "mac10.cs2.parts",
+        "sourceSha256": "c4a424478e72085a862fa3e0e70b4b3ee7169492bac9bcff176441849a7ca11b",
+        "raw": 528744,
+        "zlib9": 245051,
+        "meshoptBrotli9": 240261,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "mag7.cs2.parts",
+        "sourceSha256": "948000abc483b31435ac66c984ddcd4d861631c9887460b81205ffc5afd07316",
+        "raw": 413726,
+        "zlib9": 197488,
+        "meshoptBrotli9": 208922,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "mp5sd.cs2.parts",
+        "sourceSha256": "42c9db455527c0f089821dbe7c459ab7cdd2e0e95b6bc160d0bca460d5ae87f4",
+        "raw": 740457,
+        "zlib9": 343134,
+        "meshoptBrotli9": 368850,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "mp7.cs2.parts",
+        "sourceSha256": "3fa2dd70364aa98bc961cf5156ea2f12718ff77905588fec5a0b3b1ebbebbf60",
+        "raw": 661922,
+        "zlib9": 303939,
+        "meshoptBrotli9": 334741,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "mp9.cs2.parts",
+        "sourceSha256": "b8c9841dfcfe704cda026d0817780b5293ee3c704944fcd77481a260bd50addd",
+        "raw": 619730,
+        "zlib9": 270296,
+        "meshoptBrotli9": 298601,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "navaja.cs2.skin",
+        "sourceSha256": "b21f026e55ec7646317340771ed6b63a981ca78c7fc27278e5dc54aaa583b7d0",
+        "raw": 85771,
+        "zlib9": 32526,
+        "meshoptBrotli9": 33525,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "negev.cs2.parts",
+        "sourceSha256": "77f886bcfba424fbab9acc4d01241ed397b01a38224342f657224dfc6163e0e6",
+        "raw": 1359530,
+        "zlib9": 637689,
+        "meshoptBrotli9": 657759,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "nova.cs2.parts",
+        "sourceSha256": "cd29f7d64418ef6c44321ea3ea77280c2adffae92ad59feb0011747af7a64016",
+        "raw": 453990,
+        "zlib9": 254819,
+        "meshoptBrotli9": 236279,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "outdoor.cs2.skin",
+        "sourceSha256": "d1593d4bde2220e598d2fb2001278caecf60958e79420d25c5b6cb39ce7ec4f7",
+        "raw": 178888,
+        "zlib9": 64325,
+        "meshoptBrotli9": 63912,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "p250.cs2.parts",
+        "sourceSha256": "9f15f848f7323f93cb171f3fba1d4af1749f001ea4084e326d67b788fed2ed17",
+        "raw": 347911,
+        "zlib9": 157469,
+        "meshoptBrotli9": 171398,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "p90.cs2.parts",
+        "sourceSha256": "ca50aa8807a984283a2464f3eb5f424e052d810945a46cbfd43e6265726348b0",
+        "raw": 546859,
+        "zlib9": 264497,
+        "meshoptBrotli9": 276674,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "push.cs2.skin",
+        "sourceSha256": "ad7f797145c65bf2c474839b22e82481c24415d7a652a73f827bbc2380f73064",
+        "raw": 93081,
+        "zlib9": 37978,
+        "meshoptBrotli9": 36008,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "revolver.cs2.parts",
+        "sourceSha256": "d39a40e44781e93c32d1fd74b127bef2fb57020b2564a3018d3125f89676c023",
+        "raw": 536523,
+        "zlib9": 246844,
+        "meshoptBrotli9": 267967,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "sawedoff.cs2.parts",
+        "sourceSha256": "138e33c825c1c700fb9d295c9087748a8ece10c2b8f2a696324f0fe38c5071ce",
+        "raw": 271511,
+        "zlib9": 126241,
+        "meshoptBrotli9": 136247,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "scar20.cs2.parts",
+        "sourceSha256": "d7dd6e88b979f90ca31fd4ebb00d6de11ffbf5c6639ecc7692f3d40e1c2a8502",
+        "raw": 1192810,
+        "zlib9": 530988,
+        "meshoptBrotli9": 554834,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "sg556.cs2.parts",
+        "sourceSha256": "b6f70a0af499999d6cb78f08210dcbef09ed53e7fadae6def8e186cadbbee8e9",
+        "raw": 1152330,
+        "zlib9": 541400,
+        "meshoptBrotli9": 555985,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "skeleton.cs2.skin",
+        "sourceSha256": "12f54a77eed60077c8af7e8ac8387e8f09eae2b25b1feb351eeeb15f09bf0809",
+        "raw": 54282,
+        "zlib9": 22471,
+        "meshoptBrotli9": 22142,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "ssg08.cs2.parts",
+        "sourceSha256": "a05c2d2e26117ca9e31b05ab76df7530cc2497dc55102e32f5bee18242c22b2e",
+        "raw": 1047494,
+        "zlib9": 509240,
+        "meshoptBrotli9": 485965,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "stiletto.cs2.skin",
+        "sourceSha256": "ca5c8c409a8fe227118d404aa32e4133a77d8ff711a2a179a80c4d16479e0459",
+        "raw": 139677,
+        "zlib9": 46105,
+        "meshoptBrotli9": 43212,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "tactical.cs2.skin",
+        "sourceSha256": "1081bf99563b68ccbc722eea734eab701bd312d30f589f54355881a524ceaec8",
+        "raw": 241210,
+        "zlib9": 69072,
+        "meshoptBrotli9": 76779,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "talon.cs2.skin",
+        "sourceSha256": "4ac7cfd74c0e3d7371461cab0bd89989904a2cc40f534c78d62cf20a4e597a0a",
+        "raw": 106331,
+        "zlib9": 41429,
+        "meshoptBrotli9": 40931,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "taser.cs2.parts",
+        "sourceSha256": "961b814fc5a92b6c4e5336b81124add796e50f361e751ae99ee94388ab50dbd8",
+        "raw": 181625,
+        "zlib9": 80644,
+        "meshoptBrotli9": 93263,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "tec9.cs2.parts",
+        "sourceSha256": "32c205b8693652933cd64f399dbf9e7bb30397e7deb8e109190ede3de5066ab4",
+        "raw": 411739,
+        "zlib9": 189079,
+        "meshoptBrotli9": 205122,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "ump45.cs2.parts",
+        "sourceSha256": "f98a98dc1b3ec2d2a574c1f437e5dda3391789bdefe2fa08ee812d1c0db324ec",
+        "raw": 702259,
+        "zlib9": 316936,
+        "meshoptBrotli9": 342627,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "ursus.cs2.skin",
+        "sourceSha256": "9e9f4ddf9e8a48cd3b7e986c49b17eff31f17a8bf7ae2fa8adf17b926f0ce4a6",
+        "raw": 57943,
+        "zlib9": 23928,
+        "meshoptBrotli9": 24921,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "usp_silencer.cs2.parts",
+        "sourceSha256": "dbbbe939f945de89693860713aa261cf2d33b69e90d415de782f11a52d2e7676",
+        "raw": 408253,
+        "zlib9": 181215,
+        "meshoptBrotli9": 217723,
+        "decodedBuffersExact": true
+      },
+      {
+        "name": "xm1014.cs2.parts",
+        "sourceSha256": "1816c673a22de07fc36268eac76cf6e27acd795e2007465a37c5ff286df1f708",
+        "raw": 630501,
+        "zlib9": 287621,
+        "meshoptBrotli9": 309492,
+        "decodedBuffersExact": true
+      }
+    ],
+    "totals": {
+      "raw": 25552416,
+      "zlib9": 11646410,
+      "meshoptBrotli9": 12115353
+    },
+    "scope": "Offline codec estimate, not package savings or a loadable resource format. Sequence codec preserves exact index order. No quantization or simplification. Native decoder integration/Android testing not performed."
+  },
+  "animationAudit": {
+    "totals": {
+      "inspectClips": 90,
+      "inspectKeys": 829165,
+      "inspectFloatBytes": 16073888,
+      "allFloatBytes": 33625984,
+      "compressedAll": 16712659,
+      "compressedWithoutInspect": 9635253,
+      "inspectMarginalCompressed": 7077406,
+      "currentCompressed": 6230576,
+      "currentInspectKeys": 0
+    },
+    "rows": [
+      {
+        "name": "Game.AnimationData.ak47.cs2.animation.json",
+        "inspectClips": 7,
+        "inspectKeys": 64124,
+        "inspectFloatBytes": 1255676,
+        "allFloatBytes": 1398772,
+        "compressedAll": 534821,
+        "compressedWithoutInspect": 90747,
+        "inspectMarginalCompressed": 444074,
+        "currentCompressed": 67769,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.aug.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 7796,
+        "inspectFloatBytes": 152548,
+        "allFloatBytes": 374108,
+        "compressedAll": 168213,
+        "compressedWithoutInspect": 118726,
+        "inspectMarginalCompressed": 49487,
+        "currentCompressed": 85348,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.awp.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 8978,
+        "inspectFloatBytes": 174504,
+        "allFloatBytes": 388608,
+        "compressedAll": 172417,
+        "compressedWithoutInspect": 126033,
+        "inspectMarginalCompressed": 46384,
+        "currentCompressed": 96882,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.bayonet.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10534,
+        "inspectFloatBytes": 205980,
+        "allFloatBytes": 568696,
+        "compressedAll": 285568,
+        "compressedWithoutInspect": 192185,
+        "inspectMarginalCompressed": 93383,
+        "currentCompressed": 102941,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.bizon.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 5716,
+        "inspectFloatBytes": 108348,
+        "allFloatBytes": 266220,
+        "compressedAll": 134919,
+        "compressedWithoutInspect": 92787,
+        "inspectMarginalCompressed": 42132,
+        "currentCompressed": 64815,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.bowie.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11218,
+        "inspectFloatBytes": 216724,
+        "allFloatBytes": 594484,
+        "compressedAll": 284799,
+        "compressedWithoutInspect": 165746,
+        "inspectMarginalCompressed": 119053,
+        "currentCompressed": 89042,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.butterfly.cs2.animation.json",
+        "inspectClips": 3,
+        "inspectKeys": 23968,
+        "inspectFloatBytes": 467292,
+        "allFloatBytes": 896252,
+        "compressedAll": 417275,
+        "compressedWithoutInspect": 213496,
+        "inspectMarginalCompressed": 203779,
+        "currentCompressed": 120896,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.c4.cs2.animation.json",
+        "inspectClips": 3,
+        "inspectKeys": 20979,
+        "inspectFloatBytes": 407840,
+        "allFloatBytes": 596460,
+        "compressedAll": 236360,
+        "compressedWithoutInspect": 78722,
+        "inspectMarginalCompressed": 157638,
+        "currentCompressed": 54401,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.canis.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 24652,
+        "inspectFloatBytes": 482104,
+        "allFloatBytes": 814104,
+        "compressedAll": 434498,
+        "compressedWithoutInspect": 194564,
+        "inspectMarginalCompressed": 239934,
+        "currentCompressed": 115097,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.cord.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 18263,
+        "inspectFloatBytes": 357624,
+        "allFloatBytes": 749024,
+        "compressedAll": 393579,
+        "compressedWithoutInspect": 215257,
+        "inspectMarginalCompressed": 178322,
+        "currentCompressed": 120195,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.css.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 17435,
+        "inspectFloatBytes": 340432,
+        "allFloatBytes": 789472,
+        "compressedAll": 411730,
+        "compressedWithoutInspect": 230334,
+        "inspectMarginalCompressed": 181396,
+        "currentCompressed": 120846,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.cz75a.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11517,
+        "inspectFloatBytes": 223904,
+        "allFloatBytes": 910308,
+        "compressedAll": 491135,
+        "compressedWithoutInspect": 388193,
+        "inspectMarginalCompressed": 102942,
+        "currentCompressed": 274637,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.deagle.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 26606,
+        "inspectFloatBytes": 518008,
+        "allFloatBytes": 766288,
+        "compressedAll": 359232,
+        "compressedWithoutInspect": 144152,
+        "inspectMarginalCompressed": 215080,
+        "currentCompressed": 116316,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.default_ct.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10534,
+        "inspectFloatBytes": 205980,
+        "allFloatBytes": 520076,
+        "compressedAll": 298284,
+        "compressedWithoutInspect": 182803,
+        "inspectMarginalCompressed": 115481,
+        "currentCompressed": 102228,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.default_t.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10534,
+        "inspectFloatBytes": 205980,
+        "allFloatBytes": 556776,
+        "compressedAll": 309520,
+        "compressedWithoutInspect": 193829,
+        "inspectMarginalCompressed": 115691,
+        "currentCompressed": 101517,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.elite.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 9808,
+        "inspectFloatBytes": 189240,
+        "allFloatBytes": 457528,
+        "compressedAll": 208256,
+        "compressedWithoutInspect": 137858,
+        "inspectMarginalCompressed": 70398,
+        "currentCompressed": 95785,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.falchion.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 24763,
+        "inspectFloatBytes": 469004,
+        "allFloatBytes": 896632,
+        "compressedAll": 428002,
+        "compressedWithoutInspect": 216572,
+        "inspectMarginalCompressed": 211430,
+        "currentCompressed": 119712,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.famas.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 5976,
+        "inspectFloatBytes": 115628,
+        "allFloatBytes": 263924,
+        "compressedAll": 140694,
+        "compressedWithoutInspect": 92410,
+        "inspectMarginalCompressed": 48284,
+        "currentCompressed": 69882,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.fiveseven.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11899,
+        "inspectFloatBytes": 231552,
+        "allFloatBytes": 471908,
+        "compressedAll": 258128,
+        "compressedWithoutInspect": 155357,
+        "inspectMarginalCompressed": 102771,
+        "currentCompressed": 121989,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.flip.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10908,
+        "inspectFloatBytes": 212712,
+        "allFloatBytes": 580632,
+        "compressedAll": 312501,
+        "compressedWithoutInspect": 202090,
+        "inspectMarginalCompressed": 110411,
+        "currentCompressed": 102494,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.g3sg1.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 7788,
+        "inspectFloatBytes": 150744,
+        "allFloatBytes": 397312,
+        "compressedAll": 195276,
+        "compressedWithoutInspect": 142224,
+        "inspectMarginalCompressed": 53052,
+        "currentCompressed": 99130,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.galilar.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 8622,
+        "inspectFloatBytes": 167800,
+        "allFloatBytes": 359460,
+        "compressedAll": 158275,
+        "compressedWithoutInspect": 105639,
+        "inspectMarginalCompressed": 52636,
+        "currentCompressed": 67358,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.glock18.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11899,
+        "inspectFloatBytes": 231552,
+        "allFloatBytes": 473980,
+        "compressedAll": 267676,
+        "compressedWithoutInspect": 159730,
+        "inspectMarginalCompressed": 107946,
+        "currentCompressed": 122262,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.grenade_decoy.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 12079,
+        "inspectFloatBytes": 231788,
+        "allFloatBytes": 331048,
+        "compressedAll": 167893,
+        "compressedWithoutInspect": 60032,
+        "inspectMarginalCompressed": 107861,
+        "currentCompressed": 47210,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.grenade_flashbang.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 11167,
+        "inspectFloatBytes": 214248,
+        "allFloatBytes": 314108,
+        "compressedAll": 175142,
+        "compressedWithoutInspect": 60235,
+        "inspectMarginalCompressed": 114907,
+        "currentCompressed": 47359,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.grenade_hegrenade.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 10784,
+        "inspectFloatBytes": 208152,
+        "allFloatBytes": 321356,
+        "compressedAll": 138362,
+        "compressedWithoutInspect": 65924,
+        "inspectMarginalCompressed": 72438,
+        "currentCompressed": 49649,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.grenade_incendiary.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 13448,
+        "inspectFloatBytes": 260016,
+        "allFloatBytes": 394520,
+        "compressedAll": 151531,
+        "compressedWithoutInspect": 78288,
+        "inspectMarginalCompressed": 73243,
+        "currentCompressed": 53656,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.grenade_molotov.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 12746,
+        "inspectFloatBytes": 245236,
+        "allFloatBytes": 385476,
+        "compressedAll": 164361,
+        "compressedWithoutInspect": 75848,
+        "inspectMarginalCompressed": 88513,
+        "currentCompressed": 44568,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.grenade_smokegrenade.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 12176,
+        "inspectFloatBytes": 234992,
+        "allFloatBytes": 355384,
+        "compressedAll": 163201,
+        "compressedWithoutInspect": 73933,
+        "inspectMarginalCompressed": 89268,
+        "currentCompressed": 53246,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.gut.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10534,
+        "inspectFloatBytes": 205980,
+        "allFloatBytes": 530676,
+        "compressedAll": 303757,
+        "compressedWithoutInspect": 188187,
+        "inspectMarginalCompressed": 115570,
+        "currentCompressed": 107763,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.hkp2000.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11708,
+        "inspectFloatBytes": 227728,
+        "allFloatBytes": 473568,
+        "compressedAll": 257576,
+        "compressedWithoutInspect": 158044,
+        "inspectMarginalCompressed": 99532,
+        "currentCompressed": 122426,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.karambit.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 8732,
+        "inspectFloatBytes": 169148,
+        "allFloatBytes": 532764,
+        "compressedAll": 296823,
+        "compressedWithoutInspect": 198969,
+        "inspectMarginalCompressed": 97854,
+        "currentCompressed": 110244,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.kukri.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 13511,
+        "inspectFloatBytes": 261812,
+        "allFloatBytes": 629472,
+        "compressedAll": 314655,
+        "compressedWithoutInspect": 206193,
+        "inspectMarginalCompressed": 108462,
+        "currentCompressed": 126155,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.m249.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 15434,
+        "inspectFloatBytes": 289348,
+        "allFloatBytes": 1085448,
+        "compressedAll": 471042,
+        "compressedWithoutInspect": 380973,
+        "inspectMarginalCompressed": 90069,
+        "currentCompressed": 211609,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.m4a1s.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 9034,
+        "inspectFloatBytes": 176604,
+        "allFloatBytes": 617476,
+        "compressedAll": 284977,
+        "compressedWithoutInspect": 221943,
+        "inspectMarginalCompressed": 63034,
+        "currentCompressed": 170704,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.m4a4.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 9030,
+        "inspectFloatBytes": 176532,
+        "allFloatBytes": 337756,
+        "compressedAll": 146821,
+        "compressedWithoutInspect": 84389,
+        "inspectMarginalCompressed": 62432,
+        "currentCompressed": 61639,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.m9.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10534,
+        "inspectFloatBytes": 205980,
+        "allFloatBytes": 517976,
+        "compressedAll": 291644,
+        "compressedWithoutInspect": 183230,
+        "inspectMarginalCompressed": 108414,
+        "currentCompressed": 103197,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.mac10.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 12322,
+        "inspectFloatBytes": 238544,
+        "allFloatBytes": 441024,
+        "compressedAll": 193793,
+        "compressedWithoutInspect": 109757,
+        "inspectMarginalCompressed": 84036,
+        "currentCompressed": 77950,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.mag7.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 5587,
+        "inspectFloatBytes": 106916,
+        "allFloatBytes": 213820,
+        "compressedAll": 108510,
+        "compressedWithoutInspect": 60145,
+        "inspectMarginalCompressed": 48365,
+        "currentCompressed": 48245,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.mp5sd.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 7946,
+        "inspectFloatBytes": 154068,
+        "allFloatBytes": 280240,
+        "compressedAll": 147763,
+        "compressedWithoutInspect": 81505,
+        "inspectMarginalCompressed": 66258,
+        "currentCompressed": 69888,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.mp7.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 12526,
+        "inspectFloatBytes": 243068,
+        "allFloatBytes": 420044,
+        "compressedAll": 206438,
+        "compressedWithoutInspect": 79895,
+        "inspectMarginalCompressed": 126543,
+        "currentCompressed": 61958,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.mp9.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 13766,
+        "inspectFloatBytes": 267148,
+        "allFloatBytes": 414252,
+        "compressedAll": 202947,
+        "compressedWithoutInspect": 82189,
+        "inspectMarginalCompressed": 120758,
+        "currentCompressed": 57403,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.navaja.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11094,
+        "inspectFloatBytes": 216432,
+        "allFloatBytes": 583152,
+        "compressedAll": 308257,
+        "compressedWithoutInspect": 196318,
+        "inspectMarginalCompressed": 111939,
+        "currentCompressed": 102371,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.negev.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 14820,
+        "inspectFloatBytes": 277884,
+        "allFloatBytes": 739540,
+        "compressedAll": 366040,
+        "compressedWithoutInspect": 259757,
+        "inspectMarginalCompressed": 106283,
+        "currentCompressed": 165889,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.nova.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11218,
+        "inspectFloatBytes": 216036,
+        "allFloatBytes": 329924,
+        "compressedAll": 155516,
+        "compressedWithoutInspect": 65685,
+        "inspectMarginalCompressed": 89831,
+        "currentCompressed": 52582,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.outdoor.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 19428,
+        "inspectFloatBytes": 379272,
+        "allFloatBytes": 828780,
+        "compressedAll": 443500,
+        "compressedWithoutInspect": 250990,
+        "inspectMarginalCompressed": 192510,
+        "currentCompressed": 144034,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.p250.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 12094,
+        "inspectFloatBytes": 235448,
+        "allFloatBytes": 479152,
+        "compressedAll": 262323,
+        "compressedWithoutInspect": 160633,
+        "inspectMarginalCompressed": 101690,
+        "currentCompressed": 124065,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.p90.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 8288,
+        "inspectFloatBytes": 159744,
+        "allFloatBytes": 357244,
+        "compressedAll": 199249,
+        "compressedWithoutInspect": 119386,
+        "inspectMarginalCompressed": 79863,
+        "currentCompressed": 83935,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.push.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 7518,
+        "inspectFloatBytes": 144732,
+        "allFloatBytes": 376256,
+        "compressedAll": 205262,
+        "compressedWithoutInspect": 130970,
+        "inspectMarginalCompressed": 74292,
+        "currentCompressed": 76078,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.revolver.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 9077,
+        "inspectFloatBytes": 168636,
+        "allFloatBytes": 524148,
+        "compressedAll": 241771,
+        "compressedWithoutInspect": 161861,
+        "inspectMarginalCompressed": 79910,
+        "currentCompressed": 124385,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.sawedoff.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10852,
+        "inspectFloatBytes": 209868,
+        "allFloatBytes": 339796,
+        "compressedAll": 150524,
+        "compressedWithoutInspect": 76983,
+        "inspectMarginalCompressed": 73541,
+        "currentCompressed": 57282,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.scar20.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 6009,
+        "inspectFloatBytes": 116112,
+        "allFloatBytes": 398600,
+        "compressedAll": 204321,
+        "compressedWithoutInspect": 150661,
+        "inspectMarginalCompressed": 53660,
+        "currentCompressed": 99980,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.sg556.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 4936,
+        "inspectFloatBytes": 95348,
+        "allFloatBytes": 261248,
+        "compressedAll": 130500,
+        "compressedWithoutInspect": 94023,
+        "inspectMarginalCompressed": 36477,
+        "currentCompressed": 71977,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.skeleton.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 14280,
+        "inspectFloatBytes": 279352,
+        "allFloatBytes": 669672,
+        "compressedAll": 349520,
+        "compressedWithoutInspect": 217109,
+        "inspectMarginalCompressed": 132411,
+        "currentCompressed": 118591,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.ssg08.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 9986,
+        "inspectFloatBytes": 191832,
+        "allFloatBytes": 417328,
+        "compressedAll": 182009,
+        "compressedWithoutInspect": 118766,
+        "inspectMarginalCompressed": 63243,
+        "currentCompressed": 95438,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.stiletto.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 15930,
+        "inspectFloatBytes": 311040,
+        "allFloatBytes": 677160,
+        "compressedAll": 339612,
+        "compressedWithoutInspect": 202469,
+        "inspectMarginalCompressed": 137143,
+        "currentCompressed": 105882,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.tactical.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 10720,
+        "inspectFloatBytes": 209700,
+        "allFloatBytes": 520016,
+        "compressedAll": 294425,
+        "compressedWithoutInspect": 179429,
+        "inspectMarginalCompressed": 114996,
+        "currentCompressed": 100852,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.talon.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 13921,
+        "inspectFloatBytes": 269192,
+        "allFloatBytes": 589328,
+        "compressedAll": 333084,
+        "compressedWithoutInspect": 177794,
+        "inspectMarginalCompressed": 155290,
+        "currentCompressed": 98498,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.taser.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 11702,
+        "inspectFloatBytes": 226848,
+        "allFloatBytes": 279060,
+        "compressedAll": 164271,
+        "compressedWithoutInspect": 34676,
+        "inspectMarginalCompressed": 129595,
+        "currentCompressed": 25431,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.tec9.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 9406,
+        "inspectFloatBytes": 181488,
+        "allFloatBytes": 326936,
+        "compressedAll": 145498,
+        "compressedWithoutInspect": 65277,
+        "inspectMarginalCompressed": 80221,
+        "currentCompressed": 52012,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.ump45.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 13252,
+        "inspectFloatBytes": 256576,
+        "allFloatBytes": 451604,
+        "compressedAll": 208396,
+        "compressedWithoutInspect": 111312,
+        "inspectMarginalCompressed": 97084,
+        "currentCompressed": 74114,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.ursus.cs2.animation.json",
+        "inspectClips": 2,
+        "inspectKeys": 19388,
+        "inspectFloatBytes": 379224,
+        "allFloatBytes": 725624,
+        "compressedAll": 417629,
+        "compressedWithoutInspect": 207234,
+        "inspectMarginalCompressed": 210395,
+        "currentCompressed": 122955,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.usp_silencer.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 12291,
+        "inspectFloatBytes": 237836,
+        "allFloatBytes": 875572,
+        "compressedAll": 416170,
+        "compressedWithoutInspect": 310009,
+        "inspectMarginalCompressed": 106161,
+        "currentCompressed": 230188,
+        "currentInspectKeys": 0
+      },
+      {
+        "name": "Game.AnimationData.xm1014.cs2.animation.json",
+        "inspectClips": 1,
+        "inspectKeys": 5374,
+        "inspectFloatBytes": 102804,
+        "allFloatBytes": 188412,
+        "compressedAll": 106388,
+        "compressedWithoutInspect": 54778,
+        "inspectMarginalCompressed": 51610,
+        "currentCompressed": 47626,
+        "currentInspectKeys": 0
+      }
+    ],
+    "method": "Per-file zlib9 marginal estimate; float bytes exclude objects/arrays/metadata. Not measured runtime RAM."
+  },
+  "memory": [
+    {
+      "label": "Lite",
+      "assetsSampled": 64,
+      "cacheCounts": {
+        "animations": 40
+      },
+      "coreSha256": "dd8120ff30f07e4ec32c474304bd98077c424888262def3261d0d545126e44fc",
+      "managedBefore": 1366168,
+      "managedAfter": 56513464,
+      "retainedAnimationDelta": 55147296,
+      "inspectClipsCleared": 49,
+      "inspectRetainedDelta": 23862800,
+      "loadMilliseconds": 1428,
+      "scope": "All 64 rigs sampled once through normal bounded cache; retained managed bytes after full GC, not all rigs retained. No geometry/textures/audio. Windows .NET only, not Android or peak/process RAM."
+    },
+    {
+      "label": "QualityMini",
+      "assetsSampled": 64,
+      "cacheCounts": {
+        "animations": 40
+      },
+      "coreSha256": "2454c77b4b67db0db23f3bd6180e80b2ffafd9c5661d4a7e219474a081984e77",
+      "managedBefore": 1362152,
+      "managedAfter": 20854568,
+      "retainedAnimationDelta": 19492416,
+      "inspectClipsCleared": 0,
+      "inspectRetainedDelta": -4960,
+      "loadMilliseconds": 785,
+      "scope": "All 64 rigs sampled once through normal bounded cache; retained managed bytes after full GC, not all rigs retained. No geometry/textures/audio. Windows .NET only, not Android or peak/process RAM."
+    },
+    {
+      "label": "InspectMini",
+      "assetsSampled": 64,
+      "cacheCounts": {
+        "animations": 40
+      },
+      "coreSha256": "213a3e5009c601669d92f7f87a3aa490fcb4ffa118d33991f1154194e38f649d",
+      "managedBefore": 1362152,
+      "managedAfter": 28612024,
+      "retainedAnimationDelta": 27249872,
+      "inspectClipsCleared": 49,
+      "inspectRetainedDelta": 7621792,
+      "loadMilliseconds": 1208,
+      "scope": "All 64 rigs sampled once through normal bounded cache; retained managed bytes after full GC, not all rigs retained. No geometry/textures/audio. Windows .NET only, not Android or peak/process RAM."
+    }
+  ]
+}

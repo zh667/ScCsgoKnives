@@ -10,22 +10,79 @@ using Engine.Graphics;
 using Engine.Media;
 using Game;
 
-if(args.Length!=4)throw new ArgumentException("MinimalCheck <Mini.scmod> <Lite.scmod> <Content.zip> <output>");
+if(args.Length is not (4 or 5))throw new ArgumentException("MinimalCheck <Mini.scmod> <Lite.scmod> <Content.zip> <output> [previous Mini.scmod]");
 Dispatcher.Initialize();string output=Path.GetFullPath(args[3]);Directory.CreateDirectory(output);
 var checks=new List<string>();var frames=new List<object>();int failed=0;
 void Check(string name,bool ok){if(!ok)throw new Exception(name);checks.Add(name);}
 using var package=ZipFile.OpenRead(args[0]);using var baseline=ZipFile.OpenRead(args[1]);using var content=ZipFile.OpenRead(args[2]);
 byte[] Bytes(System.IO.Compression.ZipArchive z,string name){using var s=z.GetEntry(name).Open();using var m=new MemoryStream();s.CopyTo(m);return m.ToArray();}
 string Hash(byte[] b)=>Convert.ToHexStringLower(SHA256.HashData(b));
-Check("candidate under 30000000 bytes",new FileInfo(args[0]).Length<30_000_000);
+long limit=args.Length==5?40_000_000:30_000_000;
+Check("candidate under "+limit+" bytes",new FileInfo(args[0]).Length<limit);
 Check("tested core is packaged core",Hash(File.ReadAllBytes(typeof(GunSpec).Assembly.Location))==Hash(Bytes(package,"ScCsgoKnives.dll")));
 Check("tested resources are packaged resources",Hash(File.ReadAllBytes(typeof(ScCsgoResources.ResourceMarker).Assembly.Location))==Hash(Bytes(package,"ScCsgoResources.dll")));
 Check("independent minimal profile",ScMinimalEdition.Enabled&&package.GetEntry("ScCsgoTactical.dll")==null&&package.GetEntry("ScCsgoBundle.dll")==null);
 Check("full registry and sparse available skin catalogue",GunSpec.All.Length==35&&ScGunSkinCatalog.All.Length==44&&ScGunSkinCatalog.Available.Count()==13);
-Check("inspection refuses before touching player",!KnifeAnimationController.TriggerInspect(null));
+bool inspectEnabled=JsonDocument.Parse(Bytes(package,"Integrations/ScMinimal.json")).RootElement.GetProperty("inspect").GetBoolean();
+Check("inspection runtime matches package",ScMinimalEdition.InspectEnabled==inspectEnabled);
+if(!inspectEnabled)Check("inspection refuses before touching player",!KnifeAnimationController.TriggerInspect(null));
 var context=new AssemblyLoadContext("published baseline");
 var oldResources=context.LoadFromStream(new MemoryStream(Bytes(baseline,"ScCsgoResources.dll")));
 var oldCore=context.LoadFromStream(new MemoryStream(Bytes(baseline,"ScCsgoKnives.dll")));
+if(args.Length==5){
+    using var previous=ZipFile.OpenRead(args[4]);var previousContext=new AssemblyLoadContext("previous Mini");
+    var previousResources=previousContext.LoadFromStream(new MemoryStream(Bytes(previous,"ScCsgoResources.dll")));
+    var previousCore=previousContext.LoadFromStream(new MemoryStream(Bytes(previous,"ScCsgoKnives.dll")));
+    Check("chicken resources removed",!package.Entries.Any(e=>e.FullName.Contains("chicken",StringComparison.OrdinalIgnoreCase)));
+    Check("chicken egg inert",typeof(ScChickenEggBlock).BaseType==typeof(ScCompatibilityItemBlock));
+    ScWorkbenchExtension.RegisterBaseRecipes();Check("chicken recipe removed",!ScWorkbenchExtension.All.Any(r=>r.Key=="chicken-egg"));
+    SubsystemScChicken.RegisterSpawn(null);Check("no chicken natural spawn",true);
+    Check("no chicken interaction",!SubsystemScChicken.HandleFollow(null,null));
+    // The original chicken payload must survive two Mini save/load passes and restoration.
+    var manifest=System.Xml.Linq.XElement.Parse(System.Text.Encoding.UTF8.GetString(Bytes(package,"Assets/ScCompatibilityManifest.xml")));
+    var world=System.Xml.Linq.XElement.Parse("<Project><Subsystems><Values Name='ScChicken'><Value Name='Future' Type='string' Value='keep'/></Values></Subsystems><Entities NextID='43'><Entity Id='42' Name='ScCsgoChicken' Guid='30026525-138a-542b-8f18-06006950d40c'><Values Name='ScChicken'><Value Name='FollowerPlayer' Type='int' Value='2'/></Values></Entity></Entities></Project>");
+    var entity=new System.Xml.Linq.XElement(world.Element("Entities").Element("Entity"));
+    var sleeping=ScCompatibility.Prepare(world,"Mini",manifest,_=>false);Check("chicken dormant",sleeping.Dormant==1);
+    sleeping=ScCompatibility.Prepare(sleeping.Document,"Mini",manifest,_=>false);Check("chicken still dormant after reload",sleeping.Dormant==1);
+    var restored=ScCompatibility.Prepare(sleeping.Document,"Full",manifest,_=>true);
+    Check("chicken original payload restored",restored.Restored==1&&System.Xml.Linq.XNode.DeepEquals(entity,restored.Document.Element("Entities").Element("Entity")));
+    object Property(object o,string n)=>o.GetType().GetProperty(n).GetValue(o);
+    foreach(string name in previousResources.GetManifestResourceNames().Where(n=>n.EndsWith(".animation.json"))){
+        using var stream=previousResources.GetManifestResourceStream(name);using var expected=JsonDocument.Parse(stream);
+        string asset=name["Game.AnimationData.".Length..].Replace(".cs2.animation.json","");
+        var loaded=typeof(Cs2Rig).GetMethod("Load",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,[asset]);
+        var file=loaded.GetType().GetField("File").GetValue(loaded);var newClips=(IDictionary)Property(file,"Clips");
+        foreach(var clip in expected.RootElement.GetProperty("Clips").EnumerateObject()){
+            if(inspectEnabled&&new[]{"inspect","lookat"}.Any(term=>(clip.Name+" "+(clip.Value.TryGetProperty("Alias",out var ca)?ca.ToString():"")).Contains(term,StringComparison.OrdinalIgnoreCase)))continue;
+            var bones=(IDictionary)Property(newClips[clip.Name],"Bones");Check(asset+clip.Name+" curve bone count",bones.Count==clip.Value.GetProperty("Bones").EnumerateObject().Count());
+            foreach(var bone in clip.Value.GetProperty("Bones").EnumerateObject())foreach(var curve in bone.Value.EnumerateObject()){
+                var actual=Property(bones[bone.Name],curve.Name);
+                if(curve.Value.ValueKind==JsonValueKind.Null){Check(asset+bone.Name+" null curve",actual==null);continue;}
+                var times=(float[])Property(actual,"Times");var values=(float[][])Property(actual,"Values");
+                Check(asset+clip.Name+bone.Name+curve.Name+" exact time bits",times.Select(BitConverter.SingleToInt32Bits).SequenceEqual(curve.Value.GetProperty("Times").EnumerateArray().Select(v=>BitConverter.SingleToInt32Bits(v.GetSingle()))));
+                Check(asset+clip.Name+bone.Name+curve.Name+" exact value bits",values.SelectMany(v=>v).Select(BitConverter.SingleToInt32Bits).SequenceEqual(curve.Value.GetProperty("Values").EnumerateArray().SelectMany(v=>v.EnumerateArray()).Select(v=>BitConverter.SingleToInt32Bits(v.GetSingle()))));
+            }
+            if(!clip.Value.GetProperty("Bones").EnumerateObject().Any())continue;
+            float duration=clip.Value.GetProperty("Duration").GetSingle();
+            foreach(float phase in new[]{0f,.5f,1f}){
+                var oldPose=previousCore.GetType("Game.Cs2Rig").GetMethod("Sample").Invoke(null,[asset,clip.Name,duration*phase]);
+                var oldBones=(Dictionary<string,Matrix>)oldPose.GetType().GetField("Bones").GetValue(oldPose);
+                var pose=Cs2Rig.Sample(asset,clip.Name,duration*phase);
+                Check(asset+clip.Name+phase+" exact native bone matrices",oldBones.Count==pose.Bones.Count&&oldBones.All(b=>pose.Bones[b.Key].Equals(b.Value)));
+            }
+        }
+    }
+    foreach(string n in typeof(ScCsgoResources.ResourceMarker).Assembly.GetManifestResourceNames().Where(n=>n.EndsWith(".parts")||n.EndsWith(".skin"))){
+        using var actual=typeof(ScCsgoResources.ResourceMarker).Assembly.GetManifestResourceStream(n);using var m=new MemoryStream();actual.CopyTo(m);
+        string asset=n["Game.AnimationData.".Length..].Split(".cs2.")[0];bool gun=GunSpec.ForAsset(asset)!=null;
+        using var expected=(gun?oldResources:previousResources).GetManifestResourceStream(n);using var e=new MemoryStream();expected.CopyTo(e);
+        Check(n+" decoded mesh byte identity",m.ToArray().SequenceEqual(e.ToArray()));
+    }
+    foreach(var e in package.Entries.Where(e=>e.FullName.EndsWith(".obj"))){
+        string asset=Path.GetFileNameWithoutExtension(e.FullName).Split(new[]{"_legacy_cs2_","_cs2_"},StringSplitOptions.None)[0];
+        Check(e.FullName+" expected OBJ",Bytes(package,e.FullName).SequenceEqual(Bytes(GunSpec.ForAsset(asset)!=null?baseline:previous,e.FullName)));
+    }
+}
 var oldSpecs=(Array)oldCore.GetType("Game.GunSpec").GetField("All").GetValue(null);
 foreach(var type in new[]{typeof(ScGunBlock),typeof(ScKnifeBlock),typeof(ScGunSkinTemplateBlock),typeof(ScGunCounterTemplateBlock),typeof(ScGrenadeBlock),typeof(ScC4Block)}){
     int id=700+BlocksManager.BlockTypeToIndex.Count;var block=(Block)Activator.CreateInstance(type);block.BlockIndex=id;BlocksManager.BlockTypeToIndex[type]=id;BlocksManager.Blocks[id]=block;
@@ -85,6 +142,7 @@ foreach(string name in oldResources.GetManifestResourceNames().Where(n=>n.EndsWi
     }
 }
 Console.WriteLine($"CPU checks {checks.Count}, {clips} clips retain timing/events");
+if(inspectEnabled)foreach(var result in SwitchAnimationRegression.Run(typeof(GunSpec).Assembly))Check(result.Name+" "+result.Detail,result.Ok);
 var caches=(IDictionary<string,List<object>>)typeof(ContentManager).GetField("Caches",BindingFlags.NonPublic|BindingFlags.Static).GetValue(null);
 foreach(var e in content.Entries.Where(e=>e.FullName.Contains("Shaders/")&&!e.FullName.EndsWith('/'))){using var r=new StreamReader(e.Open());caches[e.FullName.Replace("Assets/","")]=[r.ReadToEnd()];}
 ContentManager.AddContentReader(new Game.IContentReader.ObjModelReader());
@@ -127,7 +185,7 @@ Window.Frame+=()=>{if(done)return;done=true;try{
             // Draw/reload can intentionally start below the viewport. Idle must be visible.
             if(alias.StartsWith("idle"))Check(asset+" visible "+alias+phase,visible>50);
             frames.Add(new{asset,alias,phase,visible});
-            if(alias.StartsWith("idle")&&phase==0||asset is "ak47" or "awp" or "m249" or "nova"&&alias.StartsWith("reload")&&phase==.5f){using var png=File.Create(Path.Combine(output,asset+"-"+alias+"-"+phase+".png"));Image.Save(pixels,png,ImageFileFormat.Png,false);}
+            if(alias.StartsWith("idle")&&phase==0||asset is "ak47" or "awp" or "m249" or "nova"&&alias.StartsWith("reload")&&phase==.5f||asset is "ak47" or "awp" or "default_ct"&&phase==.5f&&(alias.Contains("inspect")||alias.Contains("lookat"))){using var png=File.Create(Path.Combine(output,asset+"-"+alias+"-"+phase+".png"));Image.Save(pixels,png,ImageFileFormat.Png,false);}
         }
     }
     // Actual native legacy OBJ/UV material routes for every retained finish.
