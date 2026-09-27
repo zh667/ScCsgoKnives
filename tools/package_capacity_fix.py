@@ -3,6 +3,7 @@ import json,zipfile,zlib,xml.etree.ElementTree as ET
 from prepare_capacity_fix import ROOT,STAGE,sha
 from run_capacity_checks import DLLS
 from pack_single_scmods import raw_member,write_archive
+from package_display import presentation
 NOTICE='''枪械扩容修订 capacity-20260927，布局6／schema7。保留全部原枪编号与属性，最多66558条实例记录，不回收旧编号。1023仍是空弹模板。
 升级、换包之前请自行导出完整世界备份。启用本修订后，只能在本次扩容修订的1.0.0／1.2.0／1.3.0之间互换。
 已传播的未更新兼容包不支持新格式，应安全拒绝；它们不会因版本号相同而自动获得支持。不要手动降布局或schema。
@@ -36,12 +37,12 @@ def main():
                 if name not in z.namelist():continue
                 meta=json.loads(z.read(name))
                 if name.endswith('modinfo.json'):
-                    meta['Name']=meta['Name']+' · 枪械扩容修订';meta['Description']=NOTICE
+                    meta['Name'],meta['Description']=presentation(version,'lite' if label=='轻量' else 'full')
                 elif name.endswith('ScCsgoBundle.json'):meta['coreSha256']=sha(core)
                 else:meta.update(build_revision='capacity-20260927',gun_layout=6,gun_schema=7,capacity=66558,requires_capacity_revision=True)
                 if name.endswith('CompatibilityFamily.json'):meta['core_sha256']=sha(core)
                 changes[name]=json.dumps(meta,ensure_ascii=False,indent=2).encode('utf8')
-            # Keep public version labels, but distinguish the revision in every filename and UI name.
+            # Intermediate revision filenames are normalized at delivery by normalize_package_names.py.
             target=STAGE/'candidate'/sourceName.replace('.scmod','-扩容修订.scmod');target.parent.mkdir(exist_ok=True)
             for name,data in changes.items():
                 compressor=zlib.compressobj(9,zlib.DEFLATED,-15);entries[name]=(8,zlib.crc32(data),len(data),compressor.compress(data)+compressor.flush());hashes[name]=sha(data)

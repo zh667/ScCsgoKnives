@@ -1,5 +1,12 @@
 # Project conventions
 
+- User correction 2026-09-27: replace the six capacity deliveries under their
+  ordinary original filenames. In-game names/descriptions use generic player-facing
+  product text, never capacity/revision/schema/debug notes. Preserve exact gameplay
+  and resource bytes; retain old packages recoverably in a history directory.
+  Keep technical revision/hash and compatibility notices in separate release docs
+  and internal metadata. Agents/Mini, installed Mods and player worlds stay unchanged.
+
 - User-directed 2026-09-27 capacity revision supersedes the v5/schema6 freeze for
   this compatibility family: preserve all old IDs, reserve 0/1023, extend to 66558
   records using layout6/schema7. Ship distinctly named 1.3.0 Full/Lite and 1.0/1.2
