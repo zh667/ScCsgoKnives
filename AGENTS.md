@@ -1,5 +1,14 @@
 # Project conventions
 
+- User-directed 2026-09-27 codec release supersedes the research-only scope:
+  implement original-byte Zstd compression for the matching 1.3.0 split Lite and
+  agents packages, validate and replace both output deliveries. Retain all current
+  geometry, textures, animation values/events and native caches; no quantization.
+  Use isolated decoder identity, bounded integrity-checked reads and correct shared
+  stream ownership. Preserve unrelated Zeus work, Full/Mini, installed Mods and
+  worlds. User will perform Android stutter acceptance after delivery; report
+  Windows/native evidence separately. No automatic player-world backups.
+
 - Current user request is RESEARCH into internal model/animation encoding using
   open-source projects. Probe the exact current split-package resources in an
   isolated .tmp workspace; quantify compression, roundtrip correctness, numerical

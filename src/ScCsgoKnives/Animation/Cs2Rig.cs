@@ -493,7 +493,7 @@ public static class Cs2Rig {
         string suffix = $"AnimationData.{gun}.cs2.animation.json";
         string resource = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Missing embedded {suffix}.");
-        using Stream stream = assembly.GetManifestResourceStream(resource);
+        using Stream stream = ScResourceCompression.Open(assembly.GetManifestResourceStream(resource), resource);
         RigFile file = JsonSerializer.Deserialize<RigFile>(stream);
         if (file?.Format != ExpectedFormat || file.Skeleton is null || file.Clips is null || file.Bindings is null)
             throw new InvalidDataException($"{suffix} is not {ExpectedFormat}.");

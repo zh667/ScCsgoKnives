@@ -25,6 +25,12 @@
     <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
     <ProjectReference Include="../ScCsgoResources/ScCsgoResources.csproj" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(ScResourceZstd)' == 'true'">
+    <DefineConstants>$(DefineConstants);SC_RESOURCE_ZSTD</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(ScResourceZstd)' == 'true'">
+    <ProjectReference Include="../ScCsgoResourceCodec/ScCsgoResourceCodec.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="modinfo.json"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>
     <None Update="Assets\**\*"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>

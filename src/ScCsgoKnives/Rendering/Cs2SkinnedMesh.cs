@@ -147,7 +147,8 @@ public sealed class Cs2SkinnedMesh {
 
     /// <summary>Load an optional DLC mesh without changing the built-in arms resource.</summary>
     public static Cs2SkinnedMesh ReadMesh(Stream stream) {
-        using BinaryReader reader = new(stream, System.Text.Encoding.UTF8, leaveOpen:true);
+        using var decoded = ScResourceCompression.Open(stream, "skinned mesh", leaveOpen: true);
+        using BinaryReader reader = new(decoded, System.Text.Encoding.UTF8, leaveOpen:true);
         if (new string(reader.ReadChars(8)) != "SCK2SKIN") throw new InvalidDataException("bad magic");
         if (reader.ReadUInt32() != 2u) throw new InvalidDataException("unsupported version");
 

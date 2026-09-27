@@ -20,7 +20,7 @@ public sealed class ScNpcWeaponGeometry {
         if(cache.TryGetValue(key,out var hit))return hit;
         try { // ContentManager owns this stream, including its rewind/lifetime.
             hit=Read(ContentManager.GetStream(PathFor(asset,legacy)),asset,legacy);
-        }catch(Exception e){
+        }catch(Exception e) when(e is not ScResourceCodecException and not InvalidDataException and not EndOfStreamException and not OutOfMemoryException){
             KnifeDiagnostics.WarnOnce("npc-mesh-"+key,$"NPC mesh cache {key}: {e.Message}; using original geometry.");
             if(legacy&&ScThirdPersonWeapon.ObjProvider==null){
                 try{foreach(var part in ScGunNativeMesh.Parts(asset))part.Model=ContentManager.Get<ObjModel>(ScGunNativeMesh.ModelPath(asset,part));}
@@ -48,6 +48,8 @@ public sealed class ScNpcWeaponGeometry {
         }
     }
     public static ScNpcWeaponGeometry Read(Stream stream,string asset,bool legacy){
+        using var decodedStream=ScResourceCompression.Open(stream,asset+".scmesh",leaveOpen:true);
+        stream=decodedStream;
         using var r=new BinaryReader(stream,System.Text.Encoding.UTF8,true);
         if(r.ReadInt32()!=Magic||Text(r)!=asset||r.ReadBoolean()!=legacy)throw new InvalidDataException("Mesh cache identity");
         var result=new ScNpcWeaponGeometry{Asset=asset,HasRightGrip=r.ReadBoolean(),WorldRootInverse=MatrixRead(r)};

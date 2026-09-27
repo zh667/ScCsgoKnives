@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ScCsgoResourceCodec</AssemblyName>
+    <Version>0.8.8</Version>
+    <AssemblyVersion>0.8.8.0</AssemblyVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <DebugType>none</DebugType>
+    <ZstdSource Condition="'$(ZstdSource)' == ''">../../.tmp/codec-release-130-20260927/upstream/ZstdSharp-2cd0c019693bc786a5fe5c3be94e107b24e7267e/src/ZstdSharp</ZstdSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(ZstdSource)/**/*.cs" Exclude="$(ZstdSource)/obj/**;$(ZstdSource)/bin/**" />
+    <PackageReference Include="Fody" Version="6.9.1" PrivateAssets="all" />
+    <PackageReference Include="InlineMethod.Fody" Version="0.8.4" PrivateAssets="all" />
+  </ItemGroup>
+  <Target Name="RequirePinnedSource" BeforeTargets="CoreCompile">
+    <Error Condition="!Exists('$(ZstdSource)/Decompressor.cs')" Text="Run tools/prepare_codec_release.py to fetch and verify pinned ZstdSharp sources." />
+  </Target>
+</Project>

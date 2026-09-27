@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ScCsgoKnives"><HintPath>../../.tmp/codec-release-130-20260927/core/source/bin/Release/net10.0/ScCsgoKnives.dll</HintPath></Reference>
+    <Reference Include="ScCsgoResourceCodec"><HintPath>../../src/ScCsgoResourceCodec/bin/Release/net10.0/ScCsgoResourceCodec.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

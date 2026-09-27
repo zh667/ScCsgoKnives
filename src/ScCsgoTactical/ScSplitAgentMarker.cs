@@ -13,6 +13,10 @@ public static class ScSplitAgentMarker {
         var core=ModsManager.Dlls.Values.FirstOrDefault(a=>a.GetName().Name=="ScCsgoKnives");
         if(core?.GetType("Game.ScOptionalAgents")?.GetField("Split")?.GetRawConstantValue() is not true)
             throw new InvalidOperationException("此探员包需要配套新的1.3.0轻量包，不能与旧全量、轻量或极简包混装。");
+#if SC_RESOURCE_ZSTD
+        if(core.GetType("Game.ScResourceCompression")?.GetField("Protocol")?.GetRawConstantValue() is not 1)
+            throw new InvalidOperationException("此探员包需要配套的1.3.0无损压缩轻量包，请同时更新两个文件。");
+#endif
     }
 }
 #endif

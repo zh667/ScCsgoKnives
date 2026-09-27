@@ -85,7 +85,7 @@ public sealed class Cs2RigidMesh {
         string name = assembly.GetManifestResourceNames()
             .FirstOrDefault(n => n.EndsWith(resource, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Missing embedded {resource}.");
-        using Stream stream = assembly.GetManifestResourceStream(name);
+        using Stream stream = ScResourceCompression.Open(assembly.GetManifestResourceStream(name), name);
         using BinaryReader reader = new(stream);
         if (new string(reader.ReadChars(8)) != "SCK2PART") throw new InvalidDataException("bad magic");
         if (reader.ReadUInt32() != 1u) throw new InvalidDataException("unsupported version");
