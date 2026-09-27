@@ -1,0 +1,5550 @@
+{
+  "input": {
+    "file": "Game.log",
+    "bytes": 64732,
+    "sha256": "4b43ce0cbb51b0d0de95196252129424a56eb4846ca71b66d088f4b6fbda55ca"
+  },
+  "scope": "Observed Android session only, no matched before/after. Approximate FPS=1000/mean logged frame; nested scopes must not be added.",
+  "windows": [
+    {
+      "line": 162,
+      "time": "16:21:35.231",
+      "final": false,
+      "windowMs": 10043,
+      "enemies": 25,
+      "companions": 0,
+      "peakActors": 25,
+      "frames": 412,
+      "engineAvgMs": 24.37,
+      "engineMaxMs": 293.98,
+      "engineCpuAvgMs": 23.42,
+      "over50/100/250": "16/6/1",
+      "spawnRequests": 5,
+      "spawnFailed": 0,
+      "detailSuppressed": 1,
+      "managedMB": 635.0,
+      "gc": "22/1/1",
+      "processAllocMB": 195.53,
+      "sampledMs": 10042.0,
+      "renderBones": "152824/832260",
+      "bonePasses": 1455,
+      "longFrameSuppressed": 0,
+      "gpuMeshes": 138,
+      "prefetchPending": 0,
+      "prefetchStarted": 10,
+      "prefetchReady": 10,
+      "prefetchWaitTotalMs": 0.04,
+      "texturePending": 0,
+      "textureStarted": 15,
+      "textureReady": 7,
+      "textureWaitMs": 399.08,
+      "textureUploadMs": 233.67,
+      "textureSkipped": 0,
+      "stages": {
+        "Placement": {
+          "n": 5,
+          "totalMs": 8.17,
+          "maxMs": 5.4,
+          "allocKB": 137.2
+        },
+        "EntityCreate": {
+          "n": 25,
+          "totalMs": 118.69,
+          "maxMs": 6.49,
+          "allocKB": 4307.6
+        },
+        "Configure": {
+          "n": 25,
+          "totalMs": 6.05,
+          "maxMs": 5.1,
+          "allocKB": 29.5
+        },
+        "AddEntity": {
+          "n": 25,
+          "totalMs": 1.83,
+          "maxMs": 0.45,
+          "allocKB": 40.9
+        },
+        "ModelLoad": {
+          "n": 25,
+          "totalMs": 98.06,
+          "maxMs": 4.53,
+          "allocKB": 3160.5,
+          "maxFor": "Models/ScCsgoTactical/t"
+        },
+        "ModelSet": {
+          "n": 25,
+          "totalMs": 94.57,
+          "maxMs": 4.4,
+          "allocKB": 3146.9
+        },
+        "AnimationCache": {
+          "n": 25,
+          "totalMs": 0.04,
+          "maxMs": 0.01,
+          "allocKB": 0.0
+        },
+        "ActionsInit": {
+          "n": 25,
+          "totalMs": 10.67,
+          "maxMs": 1.38,
+          "allocKB": 2777.7
+        },
+        "EnemyAI": {
+          "n": 1447,
+          "totalMs": 196.58,
+          "maxMs": 41.09,
+          "allocKB": 2565.9
+        },
+        "Animate": {
+          "n": 1455,
+          "totalMs": 851.17,
+          "maxMs": 17.12,
+          "allocKB": 19482.6
+        },
+        "AnimationUpdate": {
+          "n": 1455,
+          "totalMs": 123.69,
+          "maxMs": 6.55,
+          "allocKB": 12786.1
+        },
+        "AnimationSample": {
+          "n": 1455,
+          "totalMs": 247.79,
+          "maxMs": 3.1,
+          "allocKB": 18.1
+        },
+        "Bones": {
+          "n": 1455,
+          "totalMs": 308.13,
+          "maxMs": 4.8,
+          "allocKB": 475.8
+        },
+        "Extras": {
+          "n": 1455,
+          "totalMs": 809.13,
+          "maxMs": 140.99,
+          "allocKB": 20766.8
+        },
+        "WeaponResolve": {
+          "n": 1455,
+          "totalMs": 422.9,
+          "maxMs": 124.39,
+          "allocKB": 95.9,
+          "maxFor": "mp5sd"
+        },
+        "WeaponBuild": {
+          "n": 1455,
+          "totalMs": 80.8,
+          "maxMs": 23.95,
+          "allocKB": 8098.0,
+          "maxFor": "negev"
+        },
+        "WeaponDraw": {
+          "n": 1455,
+          "totalMs": 272.15,
+          "maxMs": 11.0,
+          "allocKB": 12345.5,
+          "maxFor": "ak47"
+        },
+        "WeaponUpload": {
+          "n": 138,
+          "totalMs": 50.75,
+          "maxMs": 3.58,
+          "allocKB": 11885.6
+        },
+        "WeaponSubmit": {
+          "n": 15637,
+          "totalMs": 209.11,
+          "maxMs": 0.14,
+          "allocKB": 0.3
+        },
+        "Director": {
+          "n": 412,
+          "totalMs": 3.49,
+          "maxMs": 0.02,
+          "allocKB": 74.0
+        },
+        "ActionApply": {
+          "n": 1455,
+          "totalMs": 352.17,
+          "maxMs": 9.1,
+          "allocKB": 4484.2
+        },
+        "WeaponPrepare": {
+          "n": 25,
+          "totalMs": 19.28,
+          "maxMs": 8.07,
+          "allocKB": 3222.2
+        }
+      },
+      "approxFpsFromMeanFrame": 41.03405826836274,
+      "overThresholdCounts": [
+        16,
+        6,
+        1
+      ],
+      "gcCounts": [
+        22,
+        1,
+        1
+      ],
+      "perFrame": {
+        "Placement": {
+          "milliseconds": 0.01983009708737864,
+          "allocatedKiB": 0.33300970873786406,
+          "calls": 0.012135922330097087
+        },
+        "EntityCreate": {
+          "milliseconds": 0.28808252427184466,
+          "allocatedKiB": 10.455339805825243,
+          "calls": 0.06067961165048544
+        },
+        "Configure": {
+          "milliseconds": 0.014684466019417475,
+          "allocatedKiB": 0.07160194174757281,
+          "calls": 0.06067961165048544
+        },
+        "AddEntity": {
+          "milliseconds": 0.004441747572815534,
+          "allocatedKiB": 0.09927184466019418,
+          "calls": 0.06067961165048544
+        },
+        "ModelLoad": {
+          "milliseconds": 0.2380097087378641,
+          "allocatedKiB": 7.671116504854369,
+          "calls": 0.06067961165048544
+        },
+        "ModelSet": {
+          "milliseconds": 0.2295388349514563,
+          "allocatedKiB": 7.638106796116505,
+          "calls": 0.06067961165048544
+        },
+        "AnimationCache": {
+          "milliseconds": 9.70873786407767e-05,
+          "allocatedKiB": 0.0,
+          "calls": 0.06067961165048544
+        },
+        "ActionsInit": {
+          "milliseconds": 0.025898058252427185,
+          "allocatedKiB": 6.741990291262136,
+          "calls": 0.06067961165048544
+        },
+        "EnemyAI": {
+          "milliseconds": 0.4771359223300971,
+          "allocatedKiB": 6.2279126213592235,
+          "calls": 3.512135922330097
+        },
+        "Animate": {
+          "milliseconds": 2.0659466019417474,
+          "allocatedKiB": 47.2878640776699,
+          "calls": 3.5315533980582523
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.30021844660194175,
+          "allocatedKiB": 31.034223300970876,
+          "calls": 3.5315533980582523
+        },
+        "AnimationSample": {
+          "milliseconds": 0.6014320388349514,
+          "allocatedKiB": 0.04393203883495146,
+          "calls": 3.5315533980582523
+        },
+        "Bones": {
+          "milliseconds": 0.7478883495145631,
+          "allocatedKiB": 1.154854368932039,
+          "calls": 3.5315533980582523
+        },
+        "Extras": {
+          "milliseconds": 1.9639077669902913,
+          "allocatedKiB": 50.404854368932035,
+          "calls": 3.5315533980582523
+        },
+        "WeaponResolve": {
+          "milliseconds": 1.0264563106796116,
+          "allocatedKiB": 0.23276699029126216,
+          "calls": 3.5315533980582523
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.19611650485436893,
+          "allocatedKiB": 19.655339805825243,
+          "calls": 3.5315533980582523
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.6605582524271844,
+          "allocatedKiB": 29.964805825242717,
+          "calls": 3.5315533980582523
+        },
+        "WeaponUpload": {
+          "milliseconds": 0.12317961165048544,
+          "allocatedKiB": 28.84854368932039,
+          "calls": 0.33495145631067963
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.5075485436893205,
+          "allocatedKiB": 0.0007281553398058253,
+          "calls": 37.95388349514563
+        },
+        "Director": {
+          "milliseconds": 0.008470873786407767,
+          "allocatedKiB": 0.1796116504854369,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 0.8547815533980583,
+          "allocatedKiB": 10.883980582524272,
+          "calls": 3.5315533980582523
+        },
+        "WeaponPrepare": {
+          "milliseconds": 0.04679611650485437,
+          "allocatedKiB": 7.820873786407766,
+          "calls": 0.06067961165048544
+        }
+      },
+      "selectedNonNestedMsPerFrame": 5.770898058252428,
+      "cpuFrameMinusSelectedScopesMs": 17.649101941747574,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.21177319587628865,
+      "renderBoneFraction": 0.18362530939850527,
+      "uncoveredWallMs": 2.5599999999994907
+    },
+    {
+      "line": 190,
+      "time": "16:21:45.351",
+      "final": false,
+      "windowMs": 10121,
+      "enemies": 80,
+      "companions": 0,
+      "peakActors": 80,
+      "frames": 115,
+      "engineAvgMs": 87.8,
+      "engineMaxMs": 176.32,
+      "engineCpuAvgMs": 86.77,
+      "over50/100/250": "107/38/0",
+      "spawnRequests": 11,
+      "spawnFailed": 0,
+      "detailSuppressed": 5,
+      "managedMB": 785.6,
+      "gc": "31/0/0",
+      "processAllocMB": 250.77,
+      "sampledMs": 10097.04,
+      "renderBones": "586978/3183180",
+      "bonePasses": 5565,
+      "longFrameSuppressed": 32,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "Placement": {
+          "n": 11,
+          "totalMs": 10.35,
+          "maxMs": 1.26,
+          "allocKB": 600.0
+        },
+        "EntityCreate": {
+          "n": 55,
+          "totalMs": 271.54,
+          "maxMs": 21.27,
+          "allocKB": 9473.3
+        },
+        "Configure": {
+          "n": 55,
+          "totalMs": 1.54,
+          "maxMs": 0.06,
+          "allocKB": 51.9
+        },
+        "AddEntity": {
+          "n": 55,
+          "totalMs": 3.21,
+          "maxMs": 0.15,
+          "allocKB": 87.9
+        },
+        "ModelLoad": {
+          "n": 55,
+          "totalMs": 224.0,
+          "maxMs": 13.06,
+          "allocKB": 6953.2,
+          "maxFor": "Models/ScCsgoTactical/t"
+        },
+        "ModelSet": {
+          "n": 55,
+          "totalMs": 216.76,
+          "maxMs": 12.67,
+          "allocKB": 6923.1
+        },
+        "AnimationCache": {
+          "n": 55,
+          "totalMs": 0.06,
+          "maxMs": 0.0,
+          "allocKB": 0.0
+        },
+        "ActionsInit": {
+          "n": 55,
+          "totalMs": 25.22,
+          "maxMs": 5.58,
+          "allocKB": 6111.0
+        },
+        "EnemyAI": {
+          "n": 5554,
+          "totalMs": 651.66,
+          "maxMs": 7.26,
+          "allocKB": 17003.8
+        },
+        "Animate": {
+          "n": 5565,
+          "totalMs": 2461.75,
+          "maxMs": 13.96,
+          "allocKB": 91052.4
+        },
+        "AnimationUpdate": {
+          "n": 5565,
+          "totalMs": 503.92,
+          "maxMs": 13.25,
+          "allocKB": 76856.0
+        },
+        "AnimationSample": {
+          "n": 5565,
+          "totalMs": 987.8,
+          "maxMs": 1.05,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 5565,
+          "totalMs": 1150.97,
+          "maxMs": 6.19,
+          "allocKB": 1229.9
+        },
+        "Extras": {
+          "n": 5565,
+          "totalMs": 1065.87,
+          "maxMs": 46.06,
+          "allocKB": 10756.4
+        },
+        "WeaponResolve": {
+          "n": 5565,
+          "totalMs": 130.36,
+          "maxMs": 44.21,
+          "allocKB": 340.9,
+          "maxFor": "mag7"
+        },
+        "WeaponBuild": {
+          "n": 5565,
+          "totalMs": 22.97,
+          "maxMs": 9.22,
+          "allocKB": 1075.1,
+          "maxFor": "mac10"
+        },
+        "WeaponDraw": {
+          "n": 5565,
+          "totalMs": 805.69,
+          "maxMs": 5.52,
+          "allocKB": 8470.9,
+          "maxFor": "m4a1s"
+        },
+        "WeaponUpload": {
+          "n": 59,
+          "totalMs": 22.79,
+          "maxMs": 2.15,
+          "allocKB": 6816.8
+        },
+        "WeaponSubmit": {
+          "n": 62261,
+          "totalMs": 781.29,
+          "maxMs": 0.5,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 115,
+          "totalMs": 1.12,
+          "maxMs": 0.04,
+          "allocKB": 20.7
+        },
+        "ActionApply": {
+          "n": 5565,
+          "totalMs": 547.85,
+          "maxMs": 5.84,
+          "allocKB": 9001.1
+        },
+        "WeaponPrepare": {
+          "n": 55,
+          "totalMs": 8.78,
+          "maxMs": 1.38,
+          "allocKB": 2318.1
+        }
+      },
+      "approxFpsFromMeanFrame": 11.389521640091116,
+      "overThresholdCounts": [
+        107,
+        38,
+        0
+      ],
+      "gcCounts": [
+        31,
+        0,
+        0
+      ],
+      "perFrame": {
+        "Placement": {
+          "milliseconds": 0.09,
+          "allocatedKiB": 5.217391304347826,
+          "calls": 0.09565217391304348
+        },
+        "EntityCreate": {
+          "milliseconds": 2.361217391304348,
+          "allocatedKiB": 82.37652173913042,
+          "calls": 0.4782608695652174
+        },
+        "Configure": {
+          "milliseconds": 0.013391304347826087,
+          "allocatedKiB": 0.45130434782608697,
+          "calls": 0.4782608695652174
+        },
+        "AddEntity": {
+          "milliseconds": 0.02791304347826087,
+          "allocatedKiB": 0.7643478260869566,
+          "calls": 0.4782608695652174
+        },
+        "ModelLoad": {
+          "milliseconds": 1.9478260869565218,
+          "allocatedKiB": 60.46260869565217,
+          "calls": 0.4782608695652174
+        },
+        "ModelSet": {
+          "milliseconds": 1.8848695652173912,
+          "allocatedKiB": 60.200869565217396,
+          "calls": 0.4782608695652174
+        },
+        "AnimationCache": {
+          "milliseconds": 0.0005217391304347826,
+          "allocatedKiB": 0.0,
+          "calls": 0.4782608695652174
+        },
+        "ActionsInit": {
+          "milliseconds": 0.21930434782608696,
+          "allocatedKiB": 53.13913043478261,
+          "calls": 0.4782608695652174
+        },
+        "EnemyAI": {
+          "milliseconds": 5.666608695652173,
+          "allocatedKiB": 147.8591304347826,
+          "calls": 48.29565217391304
+        },
+        "Animate": {
+          "milliseconds": 21.406521739130437,
+          "allocatedKiB": 791.76,
+          "calls": 48.391304347826086
+        },
+        "AnimationUpdate": {
+          "milliseconds": 4.381913043478261,
+          "allocatedKiB": 668.3130434782609,
+          "calls": 48.391304347826086
+        },
+        "AnimationSample": {
+          "milliseconds": 8.589565217391304,
+          "allocatedKiB": 0.0,
+          "calls": 48.391304347826086
+        },
+        "Bones": {
+          "milliseconds": 10.008434782608695,
+          "allocatedKiB": 10.694782608695652,
+          "calls": 48.391304347826086
+        },
+        "Extras": {
+          "milliseconds": 9.268434782608695,
+          "allocatedKiB": 93.53391304347826,
+          "calls": 48.391304347826086
+        },
+        "WeaponResolve": {
+          "milliseconds": 1.1335652173913044,
+          "allocatedKiB": 2.9643478260869562,
+          "calls": 48.391304347826086
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.19973913043478259,
+          "allocatedKiB": 9.348695652173912,
+          "calls": 48.391304347826086
+        },
+        "WeaponDraw": {
+          "milliseconds": 7.006,
+          "allocatedKiB": 73.66,
+          "calls": 48.391304347826086
+        },
+        "WeaponUpload": {
+          "milliseconds": 0.19817391304347826,
+          "allocatedKiB": 59.27652173913044,
+          "calls": 0.5130434782608696
+        },
+        "WeaponSubmit": {
+          "milliseconds": 6.793826086956521,
+          "allocatedKiB": 0.0,
+          "calls": 541.4
+        },
+        "Director": {
+          "milliseconds": 0.00973913043478261,
+          "allocatedKiB": 0.18,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 4.7639130434782615,
+          "allocatedKiB": 78.2704347826087,
+          "calls": 48.391304347826086
+        },
+        "WeaponPrepare": {
+          "milliseconds": 0.07634782608695652,
+          "allocatedKiB": 20.157391304347826,
+          "calls": 0.4782608695652174
+        }
+      },
+      "selectedNonNestedMsPerFrame": 53.153565217391304,
+      "cpuFrameMinusSelectedScopesMs": 33.61643478260869,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.2068230008984726,
+      "renderBoneFraction": 0.18439987685270703,
+      "uncoveredWallMs": 24.0
+    },
+    {
+      "line": 197,
+      "time": "16:21:57.970",
+      "final": false,
+      "windowMs": 12621,
+      "enemies": 80,
+      "companions": 0,
+      "peakActors": 80,
+      "frames": 47,
+      "engineAvgMs": 106.98,
+      "engineMaxMs": 152.28,
+      "engineCpuAvgMs": 105.43,
+      "over50/100/250": "46/28/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 759.4,
+      "gc": "28/1/1",
+      "processAllocMB": 238.12,
+      "sampledMs": 5028.03,
+      "renderBones": "396445/2150720",
+      "bonePasses": 3760,
+      "longFrameSuppressed": 23,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 3770,
+          "totalMs": 312.07,
+          "maxMs": 3.64,
+          "allocKB": 7309.6
+        },
+        "Animate": {
+          "n": 3760,
+          "totalMs": 1040.43,
+          "maxMs": 6.42,
+          "allocKB": 16792.2
+        },
+        "AnimationUpdate": {
+          "n": 3760,
+          "totalMs": 133.34,
+          "maxMs": 5.75,
+          "allocKB": 15951.0
+        },
+        "AnimationSample": {
+          "n": 3760,
+          "totalMs": 450.11,
+          "maxMs": 0.64,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 3760,
+          "totalMs": 760.33,
+          "maxMs": 0.37,
+          "allocKB": 470.0
+        },
+        "Extras": {
+          "n": 3760,
+          "totalMs": 615.2,
+          "maxMs": 5.0,
+          "allocKB": 1703.4
+        },
+        "WeaponResolve": {
+          "n": 3760,
+          "totalMs": 10.63,
+          "maxMs": 0.11,
+          "allocKB": 201.2,
+          "maxFor": "mp7"
+        },
+        "WeaponBuild": {
+          "n": 3760,
+          "totalMs": 8.81,
+          "maxMs": 0.03,
+          "allocKB": 0.0,
+          "maxFor": "m249"
+        },
+        "WeaponDraw": {
+          "n": 3760,
+          "totalMs": 525.65,
+          "maxMs": 4.98,
+          "allocKB": 914.7,
+          "maxFor": "g3sg1"
+        },
+        "WeaponSubmit": {
+          "n": 42112,
+          "totalMs": 516.91,
+          "maxMs": 0.34,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 47,
+          "totalMs": 0.49,
+          "maxMs": 0.02,
+          "allocKB": 8.4
+        },
+        "ActionApply": {
+          "n": 3760,
+          "totalMs": 182.7,
+          "maxMs": 0.72,
+          "allocKB": 253.7
+        }
+      },
+      "approxFpsFromMeanFrame": 9.347541596560104,
+      "overThresholdCounts": [
+        46,
+        28,
+        0
+      ],
+      "gcCounts": [
+        28,
+        1,
+        1
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 6.639787234042553,
+          "allocatedKiB": 155.52340425531915,
+          "calls": 80.2127659574468
+        },
+        "Animate": {
+          "milliseconds": 22.1368085106383,
+          "allocatedKiB": 357.2808510638298,
+          "calls": 80.0
+        },
+        "AnimationUpdate": {
+          "milliseconds": 2.8370212765957445,
+          "allocatedKiB": 339.3829787234043,
+          "calls": 80.0
+        },
+        "AnimationSample": {
+          "milliseconds": 9.576808510638298,
+          "allocatedKiB": 0.0,
+          "calls": 80.0
+        },
+        "Bones": {
+          "milliseconds": 16.17723404255319,
+          "allocatedKiB": 10.0,
+          "calls": 80.0
+        },
+        "Extras": {
+          "milliseconds": 13.089361702127661,
+          "allocatedKiB": 36.242553191489364,
+          "calls": 80.0
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.22617021276595747,
+          "allocatedKiB": 4.280851063829787,
+          "calls": 80.0
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.1874468085106383,
+          "allocatedKiB": 0.0,
+          "calls": 80.0
+        },
+        "WeaponDraw": {
+          "milliseconds": 11.184042553191489,
+          "allocatedKiB": 19.461702127659574,
+          "calls": 80.0
+        },
+        "WeaponSubmit": {
+          "milliseconds": 10.998085106382979,
+          "allocatedKiB": 0.0,
+          "calls": 896.0
+        },
+        "Director": {
+          "milliseconds": 0.010425531914893617,
+          "allocatedKiB": 0.17872340425531916,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 3.887234042553191,
+          "allocatedKiB": 5.397872340425532,
+          "calls": 80.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 69.05170212765957,
+      "cpuFrameMinusSelectedScopesMs": 36.37829787234044,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.2022154255319149,
+      "renderBoneFraction": 0.1843312937062937,
+      "uncoveredWallMs": 7592.94
+    },
+    {
+      "line": 205,
+      "time": "16:22:08.001",
+      "final": false,
+      "windowMs": 10028,
+      "enemies": 80,
+      "companions": 0,
+      "peakActors": 80,
+      "frames": 90,
+      "engineAvgMs": 111.26,
+      "engineMaxMs": 258.93,
+      "engineCpuAvgMs": 110.07,
+      "over50/100/250": "90/75/1",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 792.1,
+      "gc": "25/0/0",
+      "processAllocMB": 117.86,
+      "sampledMs": 10013.36,
+      "renderBones": "733223/3970252",
+      "bonePasses": 6941,
+      "longFrameSuppressed": 69,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 7190,
+          "totalMs": 1131.29,
+          "maxMs": 13.43,
+          "allocKB": 25722.6
+        },
+        "Animate": {
+          "n": 6941,
+          "totalMs": 1773.09,
+          "maxMs": 4.62,
+          "allocKB": 24226.8
+        },
+        "AnimationUpdate": {
+          "n": 6941,
+          "totalMs": 222.91,
+          "maxMs": 3.94,
+          "allocKB": 22640.0
+        },
+        "AnimationSample": {
+          "n": 6941,
+          "totalMs": 702.43,
+          "maxMs": 0.93,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 6941,
+          "totalMs": 1422.83,
+          "maxMs": 4.36,
+          "allocKB": 867.6
+        },
+        "Extras": {
+          "n": 6941,
+          "totalMs": 1135.84,
+          "maxMs": 0.97,
+          "allocKB": 3150.1
+        },
+        "WeaponResolve": {
+          "n": 6941,
+          "totalMs": 20.19,
+          "maxMs": 0.19,
+          "allocKB": 377.2,
+          "maxFor": "sawedoff"
+        },
+        "WeaponBuild": {
+          "n": 6941,
+          "totalMs": 16.94,
+          "maxMs": 0.13,
+          "allocKB": 0.0,
+          "maxFor": "aug"
+        },
+        "WeaponDraw": {
+          "n": 6941,
+          "totalMs": 969.0,
+          "maxMs": 0.91,
+          "allocKB": 1688.3,
+          "maxFor": "m249"
+        },
+        "WeaponSubmit": {
+          "n": 79089,
+          "totalMs": 970.63,
+          "maxMs": 0.63,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 90,
+          "totalMs": 0.94,
+          "maxMs": 0.02,
+          "allocKB": 16.2
+        },
+        "ActionApply": {
+          "n": 6941,
+          "totalMs": 342.63,
+          "maxMs": 2.63,
+          "allocKB": 502.2
+        }
+      },
+      "approxFpsFromMeanFrame": 8.987956138774042,
+      "overThresholdCounts": [
+        90,
+        75,
+        1
+      ],
+      "gcCounts": [
+        25,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 12.569888888888888,
+          "allocatedKiB": 285.8066666666667,
+          "calls": 79.88888888888889
+        },
+        "Animate": {
+          "milliseconds": 19.701,
+          "allocatedKiB": 269.18666666666667,
+          "calls": 77.12222222222222
+        },
+        "AnimationUpdate": {
+          "milliseconds": 2.4767777777777775,
+          "allocatedKiB": 251.55555555555554,
+          "calls": 77.12222222222222
+        },
+        "AnimationSample": {
+          "milliseconds": 7.804777777777777,
+          "allocatedKiB": 0.0,
+          "calls": 77.12222222222222
+        },
+        "Bones": {
+          "milliseconds": 15.809222222222221,
+          "allocatedKiB": 9.64,
+          "calls": 77.12222222222222
+        },
+        "Extras": {
+          "milliseconds": 12.620444444444443,
+          "allocatedKiB": 35.00111111111111,
+          "calls": 77.12222222222222
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.22433333333333336,
+          "allocatedKiB": 4.191111111111111,
+          "calls": 77.12222222222222
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.18822222222222224,
+          "allocatedKiB": 0.0,
+          "calls": 77.12222222222222
+        },
+        "WeaponDraw": {
+          "milliseconds": 10.766666666666667,
+          "allocatedKiB": 18.758888888888887,
+          "calls": 77.12222222222222
+        },
+        "WeaponSubmit": {
+          "milliseconds": 10.784777777777778,
+          "allocatedKiB": 0.0,
+          "calls": 878.7666666666667
+        },
+        "Director": {
+          "milliseconds": 0.010444444444444444,
+          "allocatedKiB": 0.18,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 3.807,
+          "allocatedKiB": 5.58,
+          "calls": 77.12222222222222
+        }
+      },
+      "selectedNonNestedMsPerFrame": 71.49577777777777,
+      "cpuFrameMinusSelectedScopesMs": 38.57422222222222,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.2049891946405417,
+      "renderBoneFraction": 0.18467920927941098,
+      "uncoveredWallMs": 14.600000000000364
+    },
+    {
+      "line": 212,
+      "time": "16:22:18.039",
+      "final": false,
+      "windowMs": 10032,
+      "enemies": 80,
+      "companions": 0,
+      "peakActors": 80,
+      "frames": 81,
+      "engineAvgMs": 124.01,
+      "engineMaxMs": 158.17,
+      "engineCpuAvgMs": 122.74,
+      "over50/100/250": "81/81/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 838.7,
+      "gc": "28/0/0",
+      "processAllocMB": 135.85,
+      "sampledMs": 10044.5,
+      "renderBones": "677253/3672240",
+      "bonePasses": 6420,
+      "longFrameSuppressed": 75,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 6483,
+          "totalMs": 1153.71,
+          "maxMs": 13.77,
+          "allocKB": 30980.8
+        },
+        "Animate": {
+          "n": 6420,
+          "totalMs": 1903.02,
+          "maxMs": 12.54,
+          "allocKB": 36709.6
+        },
+        "AnimationUpdate": {
+          "n": 6420,
+          "totalMs": 322.38,
+          "maxMs": 12.27,
+          "allocKB": 35217.2
+        },
+        "AnimationSample": {
+          "n": 6420,
+          "totalMs": 743.04,
+          "maxMs": 0.9,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 6420,
+          "totalMs": 1306.74,
+          "maxMs": 0.75,
+          "allocKB": 802.5
+        },
+        "Extras": {
+          "n": 6420,
+          "totalMs": 1040.57,
+          "maxMs": 0.91,
+          "allocKB": 2909.7
+        },
+        "WeaponResolve": {
+          "n": 6420,
+          "totalMs": 17.83,
+          "maxMs": 0.11,
+          "allocKB": 344.9,
+          "maxFor": "awp"
+        },
+        "WeaponBuild": {
+          "n": 6420,
+          "totalMs": 15.2,
+          "maxMs": 0.1,
+          "allocKB": 0.0,
+          "maxFor": "negev"
+        },
+        "WeaponDraw": {
+          "n": 6420,
+          "totalMs": 887.63,
+          "maxMs": 0.53,
+          "allocKB": 1561.6,
+          "maxFor": "glock18"
+        },
+        "WeaponSubmit": {
+          "n": 72245,
+          "totalMs": 884.43,
+          "maxMs": 0.33,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 81,
+          "totalMs": 0.81,
+          "maxMs": 0.02,
+          "allocKB": 14.6
+        },
+        "ActionApply": {
+          "n": 6420,
+          "totalMs": 373.75,
+          "maxMs": 2.67,
+          "allocKB": 489.3
+        }
+      },
+      "approxFpsFromMeanFrame": 8.0638658172728,
+      "overThresholdCounts": [
+        81,
+        81,
+        0
+      ],
+      "gcCounts": [
+        28,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 14.243333333333334,
+          "allocatedKiB": 382.479012345679,
+          "calls": 80.03703703703704
+        },
+        "Animate": {
+          "milliseconds": 23.494074074074074,
+          "allocatedKiB": 453.20493827160493,
+          "calls": 79.25925925925925
+        },
+        "AnimationUpdate": {
+          "milliseconds": 3.98,
+          "allocatedKiB": 434.7802469135802,
+          "calls": 79.25925925925925
+        },
+        "AnimationSample": {
+          "milliseconds": 9.173333333333332,
+          "allocatedKiB": 0.0,
+          "calls": 79.25925925925925
+        },
+        "Bones": {
+          "milliseconds": 16.132592592592594,
+          "allocatedKiB": 9.907407407407407,
+          "calls": 79.25925925925925
+        },
+        "Extras": {
+          "milliseconds": 12.846543209876543,
+          "allocatedKiB": 35.92222222222222,
+          "calls": 79.25925925925925
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.22012345679012343,
+          "allocatedKiB": 4.258024691358024,
+          "calls": 79.25925925925925
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.1876543209876543,
+          "allocatedKiB": 0.0,
+          "calls": 79.25925925925925
+        },
+        "WeaponDraw": {
+          "milliseconds": 10.958395061728394,
+          "allocatedKiB": 19.27901234567901,
+          "calls": 79.25925925925925
+        },
+        "WeaponSubmit": {
+          "milliseconds": 10.918888888888889,
+          "allocatedKiB": 0.0,
+          "calls": 891.9135802469136
+        },
+        "Director": {
+          "milliseconds": 0.01,
+          "allocatedKiB": 0.18024691358024691,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 4.614197530864198,
+          "allocatedKiB": 6.040740740740741,
+          "calls": 79.25925925925925
+        }
+      },
+      "selectedNonNestedMsPerFrame": 77.64543209876544,
+      "cpuFrameMinusSelectedScopesMs": 45.094567901234555,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.20354205607476636,
+      "renderBoneFraction": 0.1844250375792432,
+      "uncoveredWallMs": -12.81000000000131
+    },
+    {
+      "line": 351,
+      "time": "16:22:28.089",
+      "final": false,
+      "windowMs": 10061,
+      "enemies": 80,
+      "companions": 0,
+      "peakActors": 80,
+      "frames": 100,
+      "engineAvgMs": 100.64,
+      "engineMaxMs": 460.97,
+      "engineCpuAvgMs": 99.57,
+      "over50/100/250": "86/40/3",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 706.2,
+      "gc": "38/1/1",
+      "processAllocMB": 211.5,
+      "sampledMs": 10063.67,
+      "renderBones": "291670/1575860",
+      "bonePasses": 2755,
+      "longFrameSuppressed": 34,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 8000,
+          "totalMs": 2152.47,
+          "maxMs": 18.71,
+          "allocKB": 67964.2
+        },
+        "Animate": {
+          "n": 2755,
+          "totalMs": 789.95,
+          "maxMs": 1.9,
+          "allocKB": 18344.6
+        },
+        "AnimationUpdate": {
+          "n": 2755,
+          "totalMs": 134.62,
+          "maxMs": 1.23,
+          "allocKB": 17728.5
+        },
+        "AnimationSample": {
+          "n": 2755,
+          "totalMs": 316.74,
+          "maxMs": 0.64,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 2755,
+          "totalMs": 563.67,
+          "maxMs": 1.08,
+          "allocKB": 344.4
+        },
+        "Extras": {
+          "n": 2755,
+          "totalMs": 457.3,
+          "maxMs": 0.77,
+          "allocKB": 1249.8
+        },
+        "WeaponResolve": {
+          "n": 2755,
+          "totalMs": 7.76,
+          "maxMs": 0.02,
+          "allocKB": 149.1,
+          "maxFor": "m4a1s"
+        },
+        "WeaponBuild": {
+          "n": 2755,
+          "totalMs": 6.6,
+          "maxMs": 0.05,
+          "allocKB": 0.0,
+          "maxFor": "g3sg1"
+        },
+        "WeaponDraw": {
+          "n": 2755,
+          "totalMs": 390.95,
+          "maxMs": 0.74,
+          "allocKB": 670.2,
+          "maxFor": "p250"
+        },
+        "WeaponSubmit": {
+          "n": 32030,
+          "totalMs": 394.19,
+          "maxMs": 0.17,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 100,
+          "totalMs": 2.18,
+          "maxMs": 0.86,
+          "allocKB": 35.3
+        },
+        "ActionApply": {
+          "n": 2755,
+          "totalMs": 136.38,
+          "maxMs": 0.62,
+          "allocKB": 185.6
+        }
+      },
+      "approxFpsFromMeanFrame": 9.936406995230525,
+      "overThresholdCounts": [
+        86,
+        40,
+        3
+      ],
+      "gcCounts": [
+        38,
+        1,
+        1
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 21.5247,
+          "allocatedKiB": 679.6419999999999,
+          "calls": 80.0
+        },
+        "Animate": {
+          "milliseconds": 7.899500000000001,
+          "allocatedKiB": 183.446,
+          "calls": 27.55
+        },
+        "AnimationUpdate": {
+          "milliseconds": 1.3462,
+          "allocatedKiB": 177.285,
+          "calls": 27.55
+        },
+        "AnimationSample": {
+          "milliseconds": 3.1674,
+          "allocatedKiB": 0.0,
+          "calls": 27.55
+        },
+        "Bones": {
+          "milliseconds": 5.636699999999999,
+          "allocatedKiB": 3.444,
+          "calls": 27.55
+        },
+        "Extras": {
+          "milliseconds": 4.573,
+          "allocatedKiB": 12.498,
+          "calls": 27.55
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.0776,
+          "allocatedKiB": 1.4909999999999999,
+          "calls": 27.55
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.066,
+          "allocatedKiB": 0.0,
+          "calls": 27.55
+        },
+        "WeaponDraw": {
+          "milliseconds": 3.9095,
+          "allocatedKiB": 6.702000000000001,
+          "calls": 27.55
+        },
+        "WeaponSubmit": {
+          "milliseconds": 3.9419,
+          "allocatedKiB": 0.0,
+          "calls": 320.3
+        },
+        "Director": {
+          "milliseconds": 0.0218,
+          "allocatedKiB": 0.353,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 1.3638,
+          "allocatedKiB": 1.8559999999999999,
+          "calls": 27.55
+        }
+      },
+      "selectedNonNestedMsPerFrame": 43.5976,
+      "cpuFrameMinusSelectedScopesMs": 55.97239999999999,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.20459891107078038,
+      "renderBoneFraction": 0.18508623862525858,
+      "uncoveredWallMs": -3.0
+    },
+    {
+      "line": 358,
+      "time": "16:22:38.170",
+      "final": false,
+      "windowMs": 10074,
+      "enemies": 80,
+      "companions": 0,
+      "peakActors": 80,
+      "frames": 62,
+      "engineAvgMs": 162.61,
+      "engineMaxMs": 1008.18,
+      "engineCpuAvgMs": 161.1,
+      "over50/100/250": "62/54/2",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 819.5,
+      "gc": "23/1/1",
+      "processAllocMB": 394.53,
+      "sampledMs": 10081.67,
+      "renderBones": "453552/2460172",
+      "bonePasses": 4301,
+      "longFrameSuppressed": 48,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 4960,
+          "totalMs": 359.39,
+          "maxMs": 17.56,
+          "allocKB": 10812.5
+        },
+        "Animate": {
+          "n": 4301,
+          "totalMs": 3526.14,
+          "maxMs": 13.38,
+          "allocKB": 10195.5
+        },
+        "AnimationUpdate": {
+          "n": 4301,
+          "totalMs": 103.5,
+          "maxMs": 12.42,
+          "allocKB": 7925.7
+        },
+        "AnimationSample": {
+          "n": 4301,
+          "totalMs": 112.33,
+          "maxMs": 0.66,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 4301,
+          "totalMs": 877.99,
+          "maxMs": 0.75,
+          "allocKB": 537.6
+        },
+        "Extras": {
+          "n": 4301,
+          "totalMs": 152.25,
+          "maxMs": 0.54,
+          "allocKB": 889.5
+        },
+        "WeaponResolve": {
+          "n": 760,
+          "totalMs": 2.27,
+          "maxMs": 0.02,
+          "allocKB": 32.3,
+          "maxFor": "awp"
+        },
+        "WeaponBuild": {
+          "n": 760,
+          "totalMs": 2.05,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "negev"
+        },
+        "WeaponDraw": {
+          "n": 760,
+          "totalMs": 103.85,
+          "maxMs": 0.5,
+          "allocKB": 185.2,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 7893,
+          "totalMs": 103.64,
+          "maxMs": 0.33,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 62,
+          "totalMs": 4.0,
+          "maxMs": 0.08,
+          "allocKB": 187.9
+        },
+        "ActionApply": {
+          "n": 760,
+          "totalMs": 57.43,
+          "maxMs": 2.68,
+          "allocKB": 103.9
+        }
+      },
+      "approxFpsFromMeanFrame": 6.149683291310497,
+      "overThresholdCounts": [
+        62,
+        54,
+        2
+      ],
+      "gcCounts": [
+        23,
+        1,
+        1
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 5.796612903225806,
+          "allocatedKiB": 174.3951612903226,
+          "calls": 80.0
+        },
+        "Animate": {
+          "milliseconds": 56.87322580645161,
+          "allocatedKiB": 164.44354838709677,
+          "calls": 69.37096774193549
+        },
+        "AnimationUpdate": {
+          "milliseconds": 1.6693548387096775,
+          "allocatedKiB": 127.83387096774193,
+          "calls": 69.37096774193549
+        },
+        "AnimationSample": {
+          "milliseconds": 1.811774193548387,
+          "allocatedKiB": 0.0,
+          "calls": 69.37096774193549
+        },
+        "Bones": {
+          "milliseconds": 14.161129032258065,
+          "allocatedKiB": 8.670967741935485,
+          "calls": 69.37096774193549
+        },
+        "Extras": {
+          "milliseconds": 2.4556451612903225,
+          "allocatedKiB": 14.346774193548388,
+          "calls": 69.37096774193549
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.03661290322580645,
+          "allocatedKiB": 0.5209677419354838,
+          "calls": 12.258064516129032
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.03306451612903225,
+          "allocatedKiB": 0.0,
+          "calls": 12.258064516129032
+        },
+        "WeaponDraw": {
+          "milliseconds": 1.6749999999999998,
+          "allocatedKiB": 2.987096774193548,
+          "calls": 12.258064516129032
+        },
+        "WeaponSubmit": {
+          "milliseconds": 1.6716129032258065,
+          "allocatedKiB": 0.0,
+          "calls": 127.30645161290323
+        },
+        "Director": {
+          "milliseconds": 0.06451612903225806,
+          "allocatedKiB": 3.0306451612903227,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 0.9262903225806451,
+          "allocatedKiB": 1.6758064516129034,
+          "calls": 12.258064516129032
+        }
+      },
+      "selectedNonNestedMsPerFrame": 81.02274193548386,
+      "cpuFrameMinusSelectedScopesMs": 80.07725806451613,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.20413624738432923,
+      "renderBoneFraction": 0.1843578416468442,
+      "uncoveredWallMs": -7.820000000001528
+    },
+    {
+      "line": 360,
+      "time": "16:22:48.184",
+      "final": false,
+      "windowMs": 10017,
+      "enemies": 4,
+      "companions": 0,
+      "peakActors": 68,
+      "frames": 206,
+      "engineAvgMs": 48.63,
+      "engineMaxMs": 153.29,
+      "engineCpuAvgMs": 47.18,
+      "over50/100/250": "86/1/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 843.3,
+      "gc": "12/0/0",
+      "processAllocMB": 69.69,
+      "sampledMs": 10016.82,
+      "renderBones": "136370/753324",
+      "bonePasses": 1317,
+      "longFrameSuppressed": 0,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 1711,
+          "totalMs": 141.94,
+          "maxMs": 2.87,
+          "allocKB": 1957.4
+        },
+        "Animate": {
+          "n": 1317,
+          "totalMs": 685.57,
+          "maxMs": 4.21,
+          "allocKB": 2844.8
+        },
+        "AnimationUpdate": {
+          "n": 1317,
+          "totalMs": 32.53,
+          "maxMs": 0.94,
+          "allocKB": 2401.5
+        },
+        "AnimationSample": {
+          "n": 1317,
+          "totalMs": 115.11,
+          "maxMs": 0.54,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 1317,
+          "totalMs": 268.93,
+          "maxMs": 0.34,
+          "allocKB": 164.6
+        },
+        "Extras": {
+          "n": 1317,
+          "totalMs": 153.22,
+          "maxMs": 0.51,
+          "allocKB": 474.9
+        },
+        "WeaponResolve": {
+          "n": 975,
+          "totalMs": 3.36,
+          "maxMs": 0.08,
+          "allocKB": 30.5,
+          "maxFor": "negev"
+        },
+        "WeaponBuild": {
+          "n": 975,
+          "totalMs": 3.21,
+          "maxMs": 0.03,
+          "allocKB": 0.0,
+          "maxFor": "usp_silencer"
+        },
+        "WeaponDraw": {
+          "n": 975,
+          "totalMs": 122.63,
+          "maxMs": 0.47,
+          "allocKB": 238.6,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 7752,
+          "totalMs": 108.2,
+          "maxMs": 0.15,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 206,
+          "totalMs": 5.42,
+          "maxMs": 0.74,
+          "allocKB": 204.1
+        },
+        "ActionApply": {
+          "n": 975,
+          "totalMs": 147.13,
+          "maxMs": 2.65,
+          "allocKB": 93.3
+        }
+      },
+      "approxFpsFromMeanFrame": 20.563438206868188,
+      "overThresholdCounts": [
+        86,
+        1,
+        0
+      ],
+      "gcCounts": [
+        12,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.6890291262135922,
+          "allocatedKiB": 9.501941747572817,
+          "calls": 8.305825242718447
+        },
+        "Animate": {
+          "milliseconds": 3.328009708737864,
+          "allocatedKiB": 13.809708737864078,
+          "calls": 6.393203883495145
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.1579126213592233,
+          "allocatedKiB": 11.657766990291263,
+          "calls": 6.393203883495145
+        },
+        "AnimationSample": {
+          "milliseconds": 0.5587864077669903,
+          "allocatedKiB": 0.0,
+          "calls": 6.393203883495145
+        },
+        "Bones": {
+          "milliseconds": 1.3054854368932038,
+          "allocatedKiB": 0.7990291262135922,
+          "calls": 6.393203883495145
+        },
+        "Extras": {
+          "milliseconds": 0.7437864077669902,
+          "allocatedKiB": 2.3053398058252426,
+          "calls": 6.393203883495145
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.016310679611650485,
+          "allocatedKiB": 0.14805825242718446,
+          "calls": 4.733009708737864
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.01558252427184466,
+          "allocatedKiB": 0.0,
+          "calls": 4.733009708737864
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.5952912621359223,
+          "allocatedKiB": 1.158252427184466,
+          "calls": 4.733009708737864
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.525242718446602,
+          "allocatedKiB": 0.0,
+          "calls": 37.63106796116505
+        },
+        "Director": {
+          "milliseconds": 0.026310679611650484,
+          "allocatedKiB": 0.9907766990291262,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 0.7142233009708737,
+          "allocatedKiB": 0.4529126213592233,
+          "calls": 4.733009708737864
+        }
+      },
+      "selectedNonNestedMsPerFrame": 6.617864077669904,
+      "cpuFrameMinusSelectedScopesMs": 40.56213592233009,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.20419893697798025,
+      "renderBoneFraction": 0.18102436667356941,
+      "uncoveredWallMs": -0.7800000000006548
+    },
+    {
+      "line": 361,
+      "time": "16:22:58.208",
+      "final": false,
+      "windowMs": 10025,
+      "enemies": 4,
+      "companions": 0,
+      "peakActors": 4,
+      "frames": 263,
+      "engineAvgMs": 38.12,
+      "engineMaxMs": 61.05,
+      "engineCpuAvgMs": 37.01,
+      "over50/100/250": "17/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 861.6,
+      "gc": "13/0/0",
+      "processAllocMB": 67.15,
+      "sampledMs": 10025.09,
+      "renderBones": "86127/493064",
+      "bonePasses": 862,
+      "longFrameSuppressed": 0,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 1055,
+          "totalMs": 72.38,
+          "maxMs": 2.49,
+          "allocKB": 714.5
+        },
+        "Animate": {
+          "n": 862,
+          "totalMs": 295.27,
+          "maxMs": 2.91,
+          "allocKB": 2160.3
+        },
+        "AnimationUpdate": {
+          "n": 862,
+          "totalMs": 23.39,
+          "maxMs": 0.49,
+          "allocKB": 1941.4
+        },
+        "AnimationSample": {
+          "n": 862,
+          "totalMs": 92.23,
+          "maxMs": 0.65,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 862,
+          "totalMs": 175.94,
+          "maxMs": 0.66,
+          "allocKB": 107.8
+        },
+        "Extras": {
+          "n": 862,
+          "totalMs": 125.47,
+          "maxMs": 0.33,
+          "allocKB": 374.5
+        },
+        "WeaponResolve": {
+          "n": 862,
+          "totalMs": 3.4,
+          "maxMs": 0.01,
+          "allocKB": 26.9,
+          "maxFor": "ak47"
+        },
+        "WeaponBuild": {
+          "n": 862,
+          "totalMs": 3.33,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "ak47"
+        },
+        "WeaponDraw": {
+          "n": 862,
+          "totalMs": 98.97,
+          "maxMs": 0.28,
+          "allocKB": 212.9,
+          "maxFor": "ak47"
+        },
+        "WeaponSubmit": {
+          "n": 4836,
+          "totalMs": 74.0,
+          "maxMs": 0.14,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 263,
+          "totalMs": 5.99,
+          "maxMs": 0.12,
+          "allocKB": 205.5
+        },
+        "ActionApply": {
+          "n": 862,
+          "totalMs": 114.05,
+          "maxMs": 2.6,
+          "allocKB": 84.2
+        }
+      },
+      "approxFpsFromMeanFrame": 26.23294858342078,
+      "overThresholdCounts": [
+        17,
+        0,
+        0
+      ],
+      "gcCounts": [
+        13,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.27520912547528514,
+          "allocatedKiB": 2.716730038022814,
+          "calls": 4.011406844106464
+        },
+        "Animate": {
+          "milliseconds": 1.122699619771863,
+          "allocatedKiB": 8.21406844106464,
+          "calls": 3.277566539923954
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.08893536121673004,
+          "allocatedKiB": 7.381749049429658,
+          "calls": 3.277566539923954
+        },
+        "AnimationSample": {
+          "milliseconds": 0.35068441064638783,
+          "allocatedKiB": 0.0,
+          "calls": 3.277566539923954
+        },
+        "Bones": {
+          "milliseconds": 0.6689733840304183,
+          "allocatedKiB": 0.4098859315589353,
+          "calls": 3.277566539923954
+        },
+        "Extras": {
+          "milliseconds": 0.4770722433460076,
+          "allocatedKiB": 1.4239543726235742,
+          "calls": 3.277566539923954
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.012927756653992395,
+          "allocatedKiB": 0.10228136882129277,
+          "calls": 3.277566539923954
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.012661596958174905,
+          "allocatedKiB": 0.0,
+          "calls": 3.277566539923954
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.37631178707224333,
+          "allocatedKiB": 0.8095057034220533,
+          "calls": 3.277566539923954
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.2813688212927757,
+          "allocatedKiB": 0.0,
+          "calls": 18.38783269961977
+        },
+        "Director": {
+          "milliseconds": 0.022775665399239545,
+          "allocatedKiB": 0.7813688212927756,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 0.4336501901140684,
+          "allocatedKiB": 0.32015209125475286,
+          "calls": 3.277566539923954
+        }
+      },
+      "selectedNonNestedMsPerFrame": 2.848098859315589,
+      "cpuFrameMinusSelectedScopesMs": 34.16190114068441,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.20410672853828307,
+      "renderBoneFraction": 0.17467712102282867,
+      "uncoveredWallMs": -0.5599999999994907
+    },
+    {
+      "line": 362,
+      "time": "16:23:08.216",
+      "final": false,
+      "windowMs": 10009,
+      "enemies": 3,
+      "companions": 0,
+      "peakActors": 4,
+      "frames": 344,
+      "engineAvgMs": 29.1,
+      "engineMaxMs": 60.78,
+      "engineCpuAvgMs": 28.16,
+      "over50/100/250": "2/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 884.7,
+      "gc": "16/0/0",
+      "processAllocMB": 83.99,
+      "sampledMs": 10009.16,
+      "renderBones": "66919/383812",
+      "bonePasses": 671,
+      "longFrameSuppressed": 0,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 1252,
+          "totalMs": 91.04,
+          "maxMs": 2.64,
+          "allocKB": 1103.4
+        },
+        "Animate": {
+          "n": 671,
+          "totalMs": 277.52,
+          "maxMs": 1.84,
+          "allocKB": 1819.9
+        },
+        "AnimationUpdate": {
+          "n": 671,
+          "totalMs": 19.21,
+          "maxMs": 0.87,
+          "allocKB": 1626.6
+        },
+        "AnimationSample": {
+          "n": 671,
+          "totalMs": 75.57,
+          "maxMs": 0.92,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 671,
+          "totalMs": 137.5,
+          "maxMs": 0.34,
+          "allocKB": 83.9
+        },
+        "Extras": {
+          "n": 671,
+          "totalMs": 90.31,
+          "maxMs": 0.62,
+          "allocKB": 258.6
+        },
+        "WeaponResolve": {
+          "n": 553,
+          "totalMs": 2.72,
+          "maxMs": 0.01,
+          "allocKB": 17.3,
+          "maxFor": "ak47"
+        },
+        "WeaponBuild": {
+          "n": 553,
+          "totalMs": 2.57,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "usp_silencer"
+        },
+        "WeaponDraw": {
+          "n": 553,
+          "totalMs": 69.47,
+          "maxMs": 0.59,
+          "allocKB": 136.5,
+          "maxFor": "cz75a"
+        },
+        "WeaponSubmit": {
+          "n": 3091,
+          "totalMs": 51.63,
+          "maxMs": 0.4,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 344,
+          "totalMs": 17.36,
+          "maxMs": 10.99,
+          "allocKB": 246.3
+        },
+        "ActionApply": {
+          "n": 553,
+          "totalMs": 29.48,
+          "maxMs": 0.63,
+          "allocKB": 38.7
+        }
+      },
+      "approxFpsFromMeanFrame": 34.36426116838488,
+      "overThresholdCounts": [
+        2,
+        0,
+        0
+      ],
+      "gcCounts": [
+        16,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.26465116279069767,
+          "allocatedKiB": 3.207558139534884,
+          "calls": 3.63953488372093
+        },
+        "Animate": {
+          "milliseconds": 0.8067441860465115,
+          "allocatedKiB": 5.290406976744186,
+          "calls": 1.9505813953488371
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.05584302325581396,
+          "allocatedKiB": 4.728488372093023,
+          "calls": 1.9505813953488371
+        },
+        "AnimationSample": {
+          "milliseconds": 0.2196802325581395,
+          "allocatedKiB": 0.0,
+          "calls": 1.9505813953488371
+        },
+        "Bones": {
+          "milliseconds": 0.3997093023255814,
+          "allocatedKiB": 0.2438953488372093,
+          "calls": 1.9505813953488371
+        },
+        "Extras": {
+          "milliseconds": 0.2625290697674419,
+          "allocatedKiB": 0.7517441860465117,
+          "calls": 1.9505813953488371
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.007906976744186047,
+          "allocatedKiB": 0.05029069767441861,
+          "calls": 1.6075581395348837
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.007470930232558139,
+          "allocatedKiB": 0.0,
+          "calls": 1.6075581395348837
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.20194767441860464,
+          "allocatedKiB": 0.39680232558139533,
+          "calls": 1.6075581395348837
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.15008720930232558,
+          "allocatedKiB": 0.0,
+          "calls": 8.98546511627907
+        },
+        "Director": {
+          "milliseconds": 0.050465116279069765,
+          "allocatedKiB": 0.7159883720930232,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 0.08569767441860465,
+          "allocatedKiB": 0.1125,
+          "calls": 1.6075581395348837
+        }
+      },
+      "selectedNonNestedMsPerFrame": 1.9341860465116278,
+      "cpuFrameMinusSelectedScopesMs": 26.225813953488373,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.20491803278688525,
+      "renderBoneFraction": 0.17435358977832896,
+      "uncoveredWallMs": -1.3999999999996362
+    },
+    {
+      "line": 363,
+      "time": "16:23:18.236",
+      "final": false,
+      "windowMs": 10020,
+      "enemies": 0,
+      "companions": 0,
+      "peakActors": 3,
+      "frames": 459,
+      "engineAvgMs": 21.83,
+      "engineMaxMs": 50.59,
+      "engineCpuAvgMs": 20.69,
+      "over50/100/250": "1/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 909.4,
+      "gc": "20/0/0",
+      "processAllocMB": 101.83,
+      "sampledMs": 10020.94,
+      "renderBones": "20998/119548",
+      "bonePasses": 209,
+      "longFrameSuppressed": 0,
+      "gpuMeshes": 197,
+      "prefetchPending": 0,
+      "prefetchStarted": 19,
+      "prefetchReady": 19,
+      "prefetchWaitTotalMs": 0.06,
+      "texturePending": 0,
+      "textureStarted": 24,
+      "textureReady": 12,
+      "textureWaitMs": 502.0,
+      "textureUploadMs": 243.51,
+      "textureSkipped": 0,
+      "stages": {
+        "EnemyAI": {
+          "n": 692,
+          "totalMs": 10.88,
+          "maxMs": 1.58,
+          "allocKB": 123.5
+        },
+        "Animate": {
+          "n": 209,
+          "totalMs": 133.11,
+          "maxMs": 5.93,
+          "allocKB": 740.5
+        },
+        "AnimationUpdate": {
+          "n": 209,
+          "totalMs": 10.23,
+          "maxMs": 4.49,
+          "allocKB": 665.5
+        },
+        "AnimationSample": {
+          "n": 209,
+          "totalMs": 35.77,
+          "maxMs": 0.93,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 209,
+          "totalMs": 43.02,
+          "maxMs": 0.25,
+          "allocKB": 26.1
+        },
+        "Extras": {
+          "n": 209,
+          "totalMs": 22.41,
+          "maxMs": 0.25,
+          "allocKB": 69.8
+        },
+        "WeaponResolve": {
+          "n": 132,
+          "totalMs": 0.66,
+          "maxMs": 0.01,
+          "allocKB": 4.1,
+          "maxFor": "usp_silencer"
+        },
+        "WeaponBuild": {
+          "n": 132,
+          "totalMs": 0.65,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "usp_silencer"
+        },
+        "WeaponDraw": {
+          "n": 132,
+          "totalMs": 16.91,
+          "maxMs": 0.2,
+          "allocKB": 33.0,
+          "maxFor": "usp_silencer"
+        },
+        "WeaponSubmit": {
+          "n": 792,
+          "totalMs": 12.96,
+          "maxMs": 0.08,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 459,
+          "totalMs": 7.03,
+          "maxMs": 0.18,
+          "allocKB": 207.9
+        },
+        "ActionApply": {
+          "n": 132,
+          "totalMs": 6.31,
+          "maxMs": 0.08,
+          "allocKB": 9.8
+        }
+      },
+      "approxFpsFromMeanFrame": 45.80852038479158,
+      "overThresholdCounts": [
+        1,
+        0,
+        0
+      ],
+      "gcCounts": [
+        20,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.023703703703703706,
+          "allocatedKiB": 0.2690631808278867,
+          "calls": 1.5076252723311547
+        },
+        "Animate": {
+          "milliseconds": 0.29000000000000004,
+          "allocatedKiB": 1.6132897603485838,
+          "calls": 0.4553376906318083
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.022287581699346404,
+          "allocatedKiB": 1.4498910675381265,
+          "calls": 0.4553376906318083
+        },
+        "AnimationSample": {
+          "milliseconds": 0.07793028322440088,
+          "allocatedKiB": 0.0,
+          "calls": 0.4553376906318083
+        },
+        "Bones": {
+          "milliseconds": 0.09372549019607844,
+          "allocatedKiB": 0.05686274509803922,
+          "calls": 0.4553376906318083
+        },
+        "Extras": {
+          "milliseconds": 0.0488235294117647,
+          "allocatedKiB": 0.15206971677559913,
+          "calls": 0.4553376906318083
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.0014379084967320263,
+          "allocatedKiB": 0.008932461873638343,
+          "calls": 0.2875816993464052
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.0014161220043572985,
+          "allocatedKiB": 0.0,
+          "calls": 0.2875816993464052
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.03684095860566449,
+          "allocatedKiB": 0.0718954248366013,
+          "calls": 0.2875816993464052
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.02823529411764706,
+          "allocatedKiB": 0.0,
+          "calls": 1.7254901960784315
+        },
+        "Director": {
+          "milliseconds": 0.015315904139433551,
+          "allocatedKiB": 0.45294117647058824,
+          "calls": 1.0
+        },
+        "ActionApply": {
+          "milliseconds": 0.013747276688453158,
+          "allocatedKiB": 0.021350762527233117,
+          "calls": 0.2875816993464052
+        }
+      },
+      "selectedNonNestedMsPerFrame": 0.4998039215686275,
+      "cpuFrameMinusSelectedScopesMs": 20.190196078431374,
+      "launch": 1,
+      "world": 1,
+      "boneMsPerCall": 0.2058373205741627,
+      "renderBoneFraction": 0.175644929233446,
+      "uncoveredWallMs": 0.030000000000654836
+    }
+  ],
+  "spawns": [
+    {
+      "line": 107,
+      "time": "16:21:29.839",
+      "id": 1,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 48.65,
+      "EntityCreateMs": 25.42,
+      "ConfigureMs": 5.51,
+      "AddEntityMs": 0.67,
+      "ModelLoadMs": 19.85,
+      "ModelSetMs": 18.94,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 9.79,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 119,
+      "time": "16:21:31.843",
+      "id": 2,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 26.33,
+      "EntityCreateMs": 23.41,
+      "ConfigureMs": 0.15,
+      "AddEntityMs": 0.29,
+      "ModelLoadMs": 19.45,
+      "ModelSetMs": 18.81,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 2.17,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 140,
+      "time": "16:21:33.737",
+      "id": 4,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 28.27,
+      "EntityCreateMs": 24.2,
+      "ConfigureMs": 0.14,
+      "AddEntityMs": 0.3,
+      "ModelLoadMs": 20.29,
+      "ModelSetMs": 19.59,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 3.31,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 153,
+      "time": "16:21:34.897",
+      "id": 5,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.95,
+      "EntityCreateMs": 22.59,
+      "ConfigureMs": 0.13,
+      "AddEntityMs": 0.28,
+      "ModelLoadMs": 19.03,
+      "ModelSetMs": 18.42,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 1.67,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 167,
+      "time": "16:21:36.221",
+      "id": 7,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 42.3,
+      "EntityCreateMs": 39.66,
+      "ConfigureMs": 0.12,
+      "AddEntityMs": 0.28,
+      "ModelLoadMs": 28.46,
+      "ModelSetMs": 27.53,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 1.95,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 179,
+      "time": "16:21:38.957",
+      "id": 9,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.58,
+      "EntityCreateMs": 23.01,
+      "ConfigureMs": 0.17,
+      "AddEntityMs": 0.27,
+      "ModelLoadMs": 19.37,
+      "ModelSetMs": 18.71,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 0.9,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 183,
+      "time": "16:21:40.624",
+      "id": 11,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.65,
+      "EntityCreateMs": 22.93,
+      "ConfigureMs": 0.14,
+      "AddEntityMs": 0.27,
+      "ModelLoadMs": 19.34,
+      "ModelSetMs": 18.72,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 1.04,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 185,
+      "time": "16:21:42.319",
+      "id": 13,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 25.87,
+      "EntityCreateMs": 25.0,
+      "ConfigureMs": 0.15,
+      "AddEntityMs": 0.27,
+      "ModelLoadMs": 21.04,
+      "ModelSetMs": 20.37,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 0.14,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 187,
+      "time": "16:21:43.881",
+      "id": 15,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.41,
+      "EntityCreateMs": 23.5,
+      "ConfigureMs": 0.15,
+      "AddEntityMs": 0.31,
+      "ModelLoadMs": 19.66,
+      "ModelSetMs": 19.02,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 0.14,
+      "launch": 1,
+      "world": 1
+    },
+    {
+      "line": 189,
+      "time": "16:21:45.080",
+      "id": 16,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 23.88,
+      "EntityCreateMs": 23.06,
+      "ConfigureMs": 0.15,
+      "AddEntityMs": 0.27,
+      "ModelLoadMs": 19.5,
+      "ModelSetMs": 18.94,
+      "AnimationCacheMs": 0.01,
+      "WeaponPrepareMs": 0.13,
+      "launch": 1,
+      "world": 1
+    }
+  ],
+  "warmups": [
+    {
+      "line": 75,
+      "time": "16:20:48.205",
+      "stage": "ct-geometry",
+      "ms": 186.33,
+      "allocKB": 8136.0,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 78,
+      "time": "16:20:48.829",
+      "stage": "ct-animation",
+      "ms": 622.65,
+      "allocKB": 54026.5,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 79,
+      "time": "16:20:48.900",
+      "stage": "ct-textures",
+      "ms": 65.26,
+      "allocKB": 2133.3,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 80,
+      "time": "16:20:48.971",
+      "stage": "t-geometry",
+      "ms": 70.7,
+      "allocKB": 7725.9,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 82,
+      "time": "16:20:49.442",
+      "stage": "t-animation",
+      "ms": 469.25,
+      "allocKB": 51079.8,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 83,
+      "time": "16:20:49.518",
+      "stage": "t-textures",
+      "ms": 68.54,
+      "allocKB": 1559.5,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 84,
+      "time": "16:20:49.520",
+      "stage": "weapon-shader",
+      "ms": 1.89,
+      "allocKB": 89.0,
+      "launch": 1,
+      "world": 0
+    },
+    {
+      "line": 91,
+      "time": "16:20:55.442",
+      "stage": "weapon-shader",
+      "ms": 0.0,
+      "allocKB": 0.1,
+      "launch": 1,
+      "world": 1
+    }
+  ],
+  "totals": {
+    "windows": 11,
+    "frames": 2179,
+    "frameWeightedMeanMs": 48.390656264341445,
+    "overThresholdCounts": [
+      594,
+      323,
+      7
+    ],
+    "gcCounts": [
+      256,
+      4,
+      4
+    ],
+    "spawnRequests": 16,
+    "spawnFailed": 0,
+    "managedMiBRange": [
+      635.0,
+      909.4
+    ],
+    "warmupMilliseconds": 1484.6200000000001,
+    "warnings": [],
+    "errors": [
+      {
+        "line": 219,
+        "text": "16:22:24.848 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 220,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 221,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 222,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 223,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 224,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 225,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 226,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 227,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 228,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 229,
+        "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 230,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 231,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 232,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 233,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 234,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 235,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 236,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 237,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 238,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 239,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 240,
+        "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 241,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 242,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 243,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 244,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 245,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 246,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 247,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 248,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 249,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 250,
+        "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 251,
+        "text": "16:22:24.852 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 252,
+        "text": "16:22:24.852 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 253,
+        "text": "16:22:24.852 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 254,
+        "text": "16:22:24.852 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 255,
+        "text": "16:22:24.852 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 256,
+        "text": "16:22:24.852 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 257,
+        "text": "16:22:24.926 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 258,
+        "text": "16:22:24.926 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 259,
+        "text": "16:22:24.926 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 260,
+        "text": "16:22:24.926 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 261,
+        "text": "16:22:24.927 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 262,
+        "text": "16:22:24.927 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 263,
+        "text": "16:22:24.988 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 264,
+        "text": "16:22:24.988 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 265,
+        "text": "16:22:24.988 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 266,
+        "text": "16:22:24.988 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 267,
+        "text": "16:22:24.988 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 268,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 269,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 270,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 271,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 272,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 273,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 274,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 275,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 276,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 277,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 278,
+        "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 279,
+        "text": "16:22:24.990 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 280,
+        "text": "16:22:24.990 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 281,
+        "text": "16:22:25.210 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 282,
+        "text": "16:22:25.210 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 283,
+        "text": "16:22:25.216 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 284,
+        "text": "16:22:25.217 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 285,
+        "text": "16:22:25.227 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 286,
+        "text": "16:22:25.228 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 287,
+        "text": "16:22:25.228 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 288,
+        "text": "16:22:25.228 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 289,
+        "text": "16:22:25.626 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 290,
+        "text": "16:22:25.627 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 291,
+        "text": "16:22:25.707 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 292,
+        "text": "16:22:25.707 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 293,
+        "text": "16:22:25.707 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 294,
+        "text": "16:22:25.707 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 295,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 296,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 297,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 298,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 299,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 300,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 301,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 302,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 303,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 304,
+        "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 305,
+        "text": "16:22:25.826 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 306,
+        "text": "16:22:25.826 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 307,
+        "text": "16:22:25.826 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 308,
+        "text": "16:22:25.827 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 309,
+        "text": "16:22:25.827 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 310,
+        "text": "16:22:25.827 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 311,
+        "text": "16:22:26.206 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 312,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 313,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 314,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 315,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 316,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 317,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 318,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 319,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 320,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 321,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 322,
+        "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 323,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 324,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 325,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 326,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 327,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 328,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 329,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 330,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 331,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 332,
+        "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 333,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 334,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 335,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 336,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 337,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 338,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 339,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 340,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 341,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 342,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 343,
+        "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 344,
+        "text": "16:22:26.371 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 345,
+        "text": "16:22:26.371 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 346,
+        "text": "16:22:26.371 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 347,
+        "text": "16:22:26.431 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 348,
+        "text": "16:22:26.431 ERROR: OPENAL ERROR: InvalidName"
+      },
+      {
+        "line": 349,
+        "text": "16:22:26.687 ERROR: OPENAL ERROR: OutOfMemory"
+      },
+      {
+        "line": 350,
+        "text": "16:22:26.687 ERROR: OPENAL ERROR: InvalidName"
+      }
+    ],
+    "worldLoadLines": [
+      {
+        "line": 93,
+        "text": "16:20:55.445 INFO: 世界加载成功，游戏模式=创造，出生点难度=简单，世界名称=Manlau Palis，视距=128，渲染分辨率=高"
+      }
+    ],
+    "buildLines": [
+      {
+        "line": 90,
+        "text": "16:20:55.125 INFO: [CS_PERF] build=mobile-resources-20260927; tacticalMvid=07ac23a6-11c7-4ea0-9bb6-4d35a822a3fe; interval=10s; timings=inclusive CPU wall ms; engineFrame includes non-CS work/vsync; GPU not measured"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "line": 76,
+      "time": "16:20:48.547",
+      "launch": 1,
+      "world": 0,
+      "stage": "decode",
+      "resource": "actor",
+      "ms": 333.72,
+      "allocKB": "25090.4;"
+    },
+    {
+      "line": 77,
+      "time": "16:20:48.829",
+      "launch": 1,
+      "world": 0,
+      "stage": "actor-parse",
+      "resource": 580,
+      "ms": 282.32,
+      "allocKB": "28917.5;"
+    },
+    {
+      "line": 81,
+      "time": "16:20:49.442",
+      "launch": 1,
+      "world": 0,
+      "stage": "actor-parse",
+      "resource": 572,
+      "ms": 270.43,
+      "allocKB": "27211.7;"
+    },
+    {
+      "line": 96,
+      "time": "16:20:57.523",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-upload",
+      "resource": "Textures/ScCsgoKnives/ak47_hd",
+      "ms": 75.5,
+      "allocKB": "1117.2;"
+    },
+    {
+      "line": 97,
+      "time": "16:20:57.524",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "ak47",
+      "ms": 78.69,
+      "allocKB": "1119.2;"
+    },
+    {
+      "line": 98,
+      "time": "16:21:02.300",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-upload",
+      "resource": "Textures/ScCsgoKnives/galilar_hd",
+      "ms": 71.1,
+      "allocKB": "1117.0;"
+    },
+    {
+      "line": 99,
+      "time": "16:21:02.300",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "galilar",
+      "ms": 71.29,
+      "allocKB": "1118.4;"
+    },
+    {
+      "line": 100,
+      "time": "16:21:02.313",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "Game.AnimationData.galilar.cs2.parts",
+      "ms": 11.2,
+      "allocKB": "1211.6;"
+    },
+    {
+      "line": 101,
+      "time": "16:21:23.865",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-upload",
+      "resource": "Textures/ScCsgoKnives/m249_hd",
+      "ms": 70.6,
+      "allocKB": "92.9;"
+    },
+    {
+      "line": 102,
+      "time": "16:21:23.865",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "m249",
+      "ms": 70.84,
+      "allocKB": "94.3;"
+    },
+    {
+      "line": 103,
+      "time": "16:21:23.883",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "Game.AnimationData.m249.cs2.parts",
+      "ms": 17.46,
+      "allocKB": "1884.0;"
+    },
+    {
+      "line": 105,
+      "time": "16:21:29.827",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "scar20.scmesh",
+      "ms": 11.78,
+      "allocKB": "1372.5;"
+    },
+    {
+      "line": 106,
+      "time": "16:21:29.838",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "scar20",
+      "ms": 10.85,
+      "allocKB": "1062.0;"
+    },
+    {
+      "line": 108,
+      "time": "16:21:29.843",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "ak47.scmesh",
+      "ms": 25.77,
+      "allocKB": "1627.3;"
+    },
+    {
+      "line": 109,
+      "time": "16:21:29.857",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "ak47",
+      "ms": 13.53,
+      "allocKB": "1447.9;"
+    },
+    {
+      "line": 110,
+      "time": "16:21:29.922",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/scar20_hd.webp",
+      "ms": 110.04,
+      "allocKB": "2139.9;"
+    },
+    {
+      "line": 111,
+      "time": "16:21:29.954",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/sawedoff_hd.webp",
+      "ms": 130.81,
+      "allocKB": "2205.6;"
+    },
+    {
+      "line": 112,
+      "time": "16:21:29.997",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/negev_hd.webp",
+      "ms": 75.27,
+      "allocKB": "2197.2;"
+    },
+    {
+      "line": 113,
+      "time": "16:21:30.000",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "negev",
+      "ms": 78.56,
+      "allocKB": "2.6;"
+    },
+    {
+      "line": 114,
+      "time": "16:21:30.012",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "negev.scmesh",
+      "ms": 11.99,
+      "allocKB": "1543.0;"
+    },
+    {
+      "line": 115,
+      "time": "16:21:30.024",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "negev",
+      "ms": 11.45,
+      "allocKB": "1225.3;"
+    },
+    {
+      "line": 116,
+      "time": "16:21:30.030",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/tec9_hd.webp",
+      "ms": 75.75,
+      "allocKB": "2180.4;"
+    },
+    {
+      "line": 120,
+      "time": "16:21:31.853",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "p90.scmesh",
+      "ms": 20.44,
+      "allocKB": "637.2;"
+    },
+    {
+      "line": 121,
+      "time": "16:21:31.866",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "p90",
+      "ms": 12.98,
+      "allocKB": "488.0;"
+    },
+    {
+      "line": 122,
+      "time": "16:21:31.879",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "m249.scmesh",
+      "ms": 40.54,
+      "allocKB": "1564.6;"
+    },
+    {
+      "line": 123,
+      "time": "16:21:31.891",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "m249",
+      "ms": 11.53,
+      "allocKB": "1240.5;"
+    },
+    {
+      "line": 124,
+      "time": "16:21:31.913",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/p90_hd.webp",
+      "ms": 80.88,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 125,
+      "time": "16:21:31.915",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "p90",
+      "ms": 40.13,
+      "allocKB": "2.9;"
+    },
+    {
+      "line": 126,
+      "time": "16:21:31.945",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/p250_hd.webp",
+      "ms": 102.15,
+      "allocKB": "1131.3;"
+    },
+    {
+      "line": 127,
+      "time": "16:21:31.946",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "p250",
+      "ms": 21.31,
+      "allocKB": "2.2;"
+    },
+    {
+      "line": 129,
+      "time": "16:21:32.836",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "xm1014.scmesh",
+      "ms": 23.06,
+      "allocKB": "721.8;"
+    },
+    {
+      "line": 130,
+      "time": "16:21:32.847",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "sg556.scmesh",
+      "ms": 41.95,
+      "allocKB": "1335.0;"
+    },
+    {
+      "line": 131,
+      "time": "16:21:32.853",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "xm1014",
+      "ms": 15.93,
+      "allocKB": "564.3;"
+    },
+    {
+      "line": 132,
+      "time": "16:21:32.878",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "sg556",
+      "ms": 30.47,
+      "allocKB": "1025.4;"
+    },
+    {
+      "line": 133,
+      "time": "16:21:32.896",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/xm1014_hd.webp",
+      "ms": 88.32,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 134,
+      "time": "16:21:32.899",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "xm1014",
+      "ms": 17.13,
+      "allocKB": "2.2;"
+    },
+    {
+      "line": 135,
+      "time": "16:21:32.906",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/sg556_hd.webp",
+      "ms": 103.59,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 136,
+      "time": "16:21:32.983",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/fiveseven_hd.webp",
+      "ms": 85.82,
+      "allocKB": "2150.6;"
+    },
+    {
+      "line": 137,
+      "time": "16:21:32.984",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "fiveseven",
+      "ms": 73.07,
+      "allocKB": "2.3;"
+    },
+    {
+      "line": 141,
+      "time": "16:21:33.744",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "m4a4.scmesh",
+      "ms": 17.51,
+      "allocKB": "1149.5;"
+    },
+    {
+      "line": 142,
+      "time": "16:21:33.766",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "m4a4",
+      "ms": 22.1,
+      "allocKB": "887.0;"
+    },
+    {
+      "line": 143,
+      "time": "16:21:33.780",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "awp.scmesh",
+      "ms": 62.05,
+      "allocKB": "2520.6;"
+    },
+    {
+      "line": 144,
+      "time": "16:21:33.821",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/awp_hd.webp",
+      "ms": 106.75,
+      "allocKB": "1147.3;"
+    },
+    {
+      "line": 145,
+      "time": "16:21:33.828",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "awp",
+      "ms": 48.34,
+      "allocKB": "2274.1;"
+    },
+    {
+      "line": 146,
+      "time": "16:21:33.829",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/m4a4_hd.webp",
+      "ms": 108.64,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 147,
+      "time": "16:21:33.903",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/mp5sd_hd.webp",
+      "ms": 81.42,
+      "allocKB": "1131.3;"
+    },
+    {
+      "line": 148,
+      "time": "16:21:33.906",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "mp5sd",
+      "ms": 124.18,
+      "allocKB": "2.2;"
+    },
+    {
+      "line": 149,
+      "time": "16:21:33.911",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/glock18_hd.webp",
+      "ms": 81.08,
+      "allocKB": "2180.4;"
+    },
+    {
+      "line": 154,
+      "time": "16:21:34.915",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "aug.scmesh",
+      "ms": 28.84,
+      "allocKB": "957.4;"
+    },
+    {
+      "line": 155,
+      "time": "16:21:34.916",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "ump45.scmesh",
+      "ms": 26.63,
+      "allocKB": "810.0;"
+    },
+    {
+      "line": 156,
+      "time": "16:21:34.934",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "ump45",
+      "ms": 17.41,
+      "allocKB": "626.4;"
+    },
+    {
+      "line": 157,
+      "time": "16:21:34.936",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "aug",
+      "ms": 20.24,
+      "allocKB": "749.8;"
+    },
+    {
+      "line": 158,
+      "time": "16:21:34.965",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/ump45_hd.webp",
+      "ms": 77.74,
+      "allocKB": "1147.3;"
+    },
+    {
+      "line": 159,
+      "time": "16:21:34.990",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/aug_hd.webp",
+      "ms": 108.09,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 160,
+      "time": "16:21:34.992",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "aug",
+      "ms": 53.14,
+      "allocKB": "2.1;"
+    },
+    {
+      "line": 165,
+      "time": "16:21:36.208",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "g3sg1.scmesh",
+      "ms": 22.35,
+      "allocKB": "1134.9;"
+    },
+    {
+      "line": 166,
+      "time": "16:21:36.213",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "galilar.scmesh",
+      "ms": 23.05,
+      "allocKB": "1047.8;"
+    },
+    {
+      "line": 168,
+      "time": "16:21:36.236",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "galilar",
+      "ms": 21.84,
+      "allocKB": "819.6;"
+    },
+    {
+      "line": 169,
+      "time": "16:21:36.285",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/mac10_hd.webp",
+      "ms": 89.96,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 170,
+      "time": "16:21:36.315",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture-decode",
+      "resource": "Textures/ScCsgoKnives/g3sg1_hd.webp",
+      "ms": 131.01,
+      "allocKB": "1115.3;"
+    },
+    {
+      "line": 171,
+      "time": "16:21:36.316",
+      "launch": 1,
+      "world": 1,
+      "stage": "texture",
+      "resource": "g3sg1",
+      "ms": 36.55,
+      "allocKB": "2.2;"
+    },
+    {
+      "line": 173,
+      "time": "16:21:36.794",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "mag7.scmesh",
+      "ms": 16.45,
+      "allocKB": "477.6;"
+    },
+    {
+      "line": 174,
+      "time": "16:21:36.803",
+      "launch": 1,
+      "world": 1,
+      "stage": "decode",
+      "resource": "cz75a.scmesh",
+      "ms": 16.64,
+      "allocKB": "533.1;"
+    },
+    {
+      "line": 175,
+      "time": "16:21:36.815",
+      "launch": 1,
+      "world": 1,
+      "stage": "npc-parse",
+      "resource": "cz75a",
+      "ms": 10.91,
+      "allocKB": "418.7;"
+    }
+  ],
+  "longFrames": [
+    {
+      "line": 117,
+      "time": "16:21:30.062",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:30.062 INFO: [CS_PERF] long-frame index=1759 engineMs=293.98 cpuMs=292.82 updateGapMs=221.37 gcDelta=1/0 scopesFrame=1758 enemies=5 companions=0 | PlacementMs=5.40 | EntityCreateMs=25.42 | ConfigureMs=5.51 | AddEntityMs=0.67 | ModelLoadMs=19.85,resource=Models/ScCsgoTactical/t | ModelSetMs=18.94 | AnimationCacheMs=0.01 | ActionsInitMs=2.00 | AnimateMs=37.27 | AnimationUpdateMs=6.44 | AnimationSampleMs=5.01 | BonesMs=6.29 | ExtrasMs=146.33 | WeaponResolveMs=80.20,resource=negev | WeaponBuildMs=38.63,resource=negev | WeaponDrawMs=26.07,resource=ak47 | WeaponUploadMs=18.14 | WeaponSubmitMs=0.79 | DirectorMs=0.01 | ActionApplyMs=21.89 | WeaponPrepareMs=9.79; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1759,
+      "engineMs": 293.98,
+      "cpuMs": 292.82,
+      "updateGapMs": 221.37,
+      "gcDelta": "1/0",
+      "scopesFrame": 1758,
+      "enemies": 5,
+      "companions": 0
+    },
+    {
+      "line": 128,
+      "time": "16:21:31.966",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:31.966 INFO: [CS_PERF] long-frame index=1834 engineMs=150.34 cpuMs=149.28 updateGapMs=151.58 gcDelta=0/0 scopesFrame=1833 enemies=10 companions=0 | PlacementMs=0.47 | EntityCreateMs=23.41 | ConfigureMs=0.15 | AddEntityMs=0.29 | ModelLoadMs=19.45,resource=Models/ScCsgoTactical/t | ModelSetMs=18.81 | AnimationCacheMs=0.01 | ActionsInitMs=1.94 | EnemyAIMs=0.28 | AnimateMs=18.18 | AnimationUpdateMs=3.43 | AnimationSampleMs=2.92 | BonesMs=2.72 | ExtrasMs=82.93 | WeaponResolveMs=61.82,resource=p90 | WeaponBuildMs=8.23,resource=p250 | WeaponDrawMs=12.62,resource=m249 | WeaponUploadMs=10.21 | WeaponSubmitMs=1.85 | DirectorMs=0.01 | ActionApplyMs=10.65 | WeaponPrepareMs=2.17; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1834,
+      "engineMs": 150.34,
+      "cpuMs": 149.28,
+      "updateGapMs": 151.58,
+      "gcDelta": "0/0",
+      "scopesFrame": 1833,
+      "enemies": 10,
+      "companions": 0
+    },
+    {
+      "line": 138,
+      "time": "16:21:33.004",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:33.004 INFO: [CS_PERF] long-frame index=1861 engineMs=214.57 cpuMs=213.53 updateGapMs=214.72 gcDelta=1/0 scopesFrame=1860 enemies=15 companions=0 | PlacementMs=0.49 | EntityCreateMs=23.08 | ConfigureMs=0.13 | AddEntityMs=0.29 | ModelLoadMs=19.44,resource=Models/ScCsgoTactical/t | ModelSetMs=18.81 | AnimationCacheMs=0.01 | ActionsInitMs=2.90 | EnemyAIMs=0.68 | AnimateMs=36.81 | AnimationUpdateMs=5.63 | AnimationSampleMs=4.02 | BonesMs=4.68 | ExtrasMs=115.69 | WeaponResolveMs=94.43,resource=fiveseven | WeaponBuildMs=9.63,resource=fiveseven | WeaponDrawMs=11.15,resource=xm1014 | WeaponUploadMs=7.42 | WeaponSubmitMs=2.80 | DirectorMs=0.01 | ActionApplyMs=16.00 | WeaponPrepareMs=2.35; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1861,
+      "engineMs": 214.57,
+      "cpuMs": 213.53,
+      "updateGapMs": 214.72,
+      "gcDelta": "1/0",
+      "scopesFrame": 1860,
+      "enemies": 15,
+      "companions": 0
+    },
+    {
+      "line": 150,
+      "time": "16:21:33.953",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:33.953 INFO: [CS_PERF] long-frame index=1880 engineMs=246.15 cpuMs=245.21 updateGapMs=246.72 gcDelta=1/0 scopesFrame=1879 enemies=20 companions=0 | PlacementMs=0.60 | EntityCreateMs=24.20 | ConfigureMs=0.14 | AddEntityMs=0.30 | ModelLoadMs=20.29,resource=Models/ScCsgoTactical/t | ModelSetMs=19.59 | AnimationCacheMs=0.01 | ActionsInitMs=2.07 | EnemyAIMs=0.51 | AnimateMs=26.86 | AnimationUpdateMs=8.08 | AnimationSampleMs=4.77 | BonesMs=4.96 | ExtrasMs=161.72 | WeaponResolveMs=126.87,resource=mp5sd | WeaponBuildMs=20.06,resource=mp5sd | WeaponDrawMs=14.33,resource=awp | WeaponUploadMs=10.13 | WeaponSubmitMs=2.81 | DirectorMs=0.01 | ActionApplyMs=11.96 | WeaponPrepareMs=3.31; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1880,
+      "engineMs": 246.15,
+      "cpuMs": 245.21,
+      "updateGapMs": 246.72,
+      "gcDelta": "1/0",
+      "scopesFrame": 1879,
+      "enemies": 20,
+      "companions": 0
+    },
+    {
+      "line": 151,
+      "time": "16:21:34.299",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:34.299 INFO: [CS_PERF] long-frame index=1886 engineMs=115.82 cpuMs=114.85 updateGapMs=116.51 gcDelta=0/1 scopesFrame=1885 enemies=20 companions=0 | EnemyAIMs=0.72 | AnimateMs=8.14 | AnimationUpdateMs=0.47 | AnimationSampleMs=2.57 | BonesMs=4.09 | ExtrasMs=3.31 | WeaponResolveMs=0.06,resource=awp | WeaponBuildMs=0.05,resource=mp5sd | WeaponDrawMs=2.79,resource=negev | WeaponSubmitMs=2.91 | DirectorMs=0.01 | ActionApplyMs=3.62; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1886,
+      "engineMs": 115.82,
+      "cpuMs": 114.85,
+      "updateGapMs": 116.51,
+      "gcDelta": "0/1",
+      "scopesFrame": 1885,
+      "enemies": 20,
+      "companions": 0
+    },
+    {
+      "line": 161,
+      "time": "16:21:35.011",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:35.011 INFO: [CS_PERF] long-frame index=1900 engineMs=142.00 cpuMs=141.25 updateGapMs=144.63 gcDelta=0/0 scopesFrame=1899 enemies=25 companions=0 | PlacementMs=1.21 | EntityCreateMs=22.59 | ConfigureMs=0.13 | AddEntityMs=0.28 | ModelLoadMs=19.03,resource=Models/ScCsgoTactical/t | ModelSetMs=18.42 | AnimationCacheMs=0.01 | ActionsInitMs=1.76 | EnemyAIMs=2.43 | AnimateMs=18.37 | AnimationUpdateMs=3.52 | AnimationSampleMs=5.10 | BonesMs=5.64 | ExtrasMs=64.45 | WeaponResolveMs=54.92,resource=aug | WeaponBuildMs=0.09,resource=aug | WeaponDrawMs=8.90,resource=aug | WeaponUploadMs=4.85 | WeaponSubmitMs=3.51 | DirectorMs=0.01 | ActionApplyMs=7.63 | WeaponPrepareMs=1.67; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1900,
+      "engineMs": 142.0,
+      "cpuMs": 141.25,
+      "updateGapMs": 144.63,
+      "gcDelta": "0/0",
+      "scopesFrame": 1899,
+      "enemies": 25,
+      "companions": 0
+    },
+    {
+      "line": 163,
+      "time": "16:21:35.735",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:35.735 INFO: [CS_PERF] long-frame index=1913 engineMs=107.14 cpuMs=106.29 updateGapMs=56.17 gcDelta=0/0 scopesFrame=1912 enemies=30 companions=0 | PlacementMs=0.69 | EntityCreateMs=22.52 | ConfigureMs=0.12 | AddEntityMs=0.28 | ModelLoadMs=19.03,resource=Models/ScCsgoTactical/t | ModelSetMs=18.44 | AnimationCacheMs=0.01 | ActionsInitMs=1.71 | EnemyAIMs=3.29 | AnimateMs=18.21 | AnimationUpdateMs=3.97 | AnimationSampleMs=6.44 | BonesMs=6.36 | ExtrasMs=5.06 | WeaponResolveMs=0.09,resource=awp | WeaponBuildMs=0.08,resource=p250 | WeaponDrawMs=4.33,resource=negev | WeaponSubmitMs=4.28 | DirectorMs=0.01 | ActionApplyMs=5.35 | WeaponPrepareMs=0.12; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1913,
+      "engineMs": 107.14,
+      "cpuMs": 106.29,
+      "updateGapMs": 56.17,
+      "gcDelta": "0/0",
+      "scopesFrame": 1912,
+      "enemies": 30,
+      "companions": 0
+    },
+    {
+      "line": 172,
+      "time": "16:21:36.359",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:36.359 INFO: [CS_PERF] long-frame index=1922 engineMs=171.68 cpuMs=170.82 updateGapMs=184.76 gcDelta=1/0 scopesFrame=1921 enemies=35 companions=0 | PlacementMs=0.60 | EntityCreateMs=39.66 | ConfigureMs=0.12 | AddEntityMs=0.28 | ModelLoadMs=28.46,resource=Models/ScCsgoTactical/t | ModelSetMs=27.53 | AnimationCacheMs=0.01 | ActionsInitMs=1.72 | EnemyAIMs=1.92 | AnimateMs=27.28 | AnimationUpdateMs=4.02 | AnimationSampleMs=6.83 | BonesMs=8.31 | ExtrasMs=60.41 | WeaponResolveMs=37.69,resource=g3sg1 | WeaponBuildMs=9.34,resource=mac10 | WeaponDrawMs=12.64,resource=mac10 | WeaponUploadMs=7.02 | WeaponSubmitMs=5.03 | DirectorMs=0.01 | ActionApplyMs=13.25 | WeaponPrepareMs=1.95; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1922,
+      "engineMs": 171.68,
+      "cpuMs": 170.82,
+      "updateGapMs": 184.76,
+      "gcDelta": "1/0",
+      "scopesFrame": 1921,
+      "enemies": 35,
+      "companions": 0
+    },
+    {
+      "line": 176,
+      "time": "16:21:36.907",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:36.907 INFO: [CS_PERF] long-frame index=1929 engineMs=150.85 cpuMs=150.05 updateGapMs=150.40 gcDelta=0/0 scopesFrame=1928 enemies=40 companions=0 | PlacementMs=1.26 | EntityCreateMs=22.61 | ConfigureMs=0.14 | AddEntityMs=0.34 | ModelLoadMs=19.11,resource=Models/ScCsgoTactical/t | ModelSetMs=18.48 | AnimationCacheMs=0.00 | ActionsInitMs=1.73 | EnemyAIMs=2.72 | AnimateMs=25.95 | AnimationUpdateMs=3.90 | AnimationSampleMs=7.80 | BonesMs=8.65 | ExtrasMs=55.00 | WeaponResolveMs=45.14,resource=mag7 | WeaponBuildMs=0.12,resource=mag7 | WeaponDrawMs=8.94,resource=mag7 | WeaponUploadMs=2.90 | WeaponSubmitMs=5.69 | DirectorMs=0.01 | ActionApplyMs=11.05 | WeaponPrepareMs=1.34; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1929,
+      "engineMs": 150.85,
+      "cpuMs": 150.05,
+      "updateGapMs": 150.4,
+      "gcDelta": "0/0",
+      "scopesFrame": 1928,
+      "enemies": 40,
+      "companions": 0
+    },
+    {
+      "line": 177,
+      "time": "16:21:37.601",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:37.601 INFO: [CS_PERF] long-frame index=1938 engineMs=115.41 cpuMs=114.54 updateGapMs=114.19 gcDelta=0/0 scopesFrame=1937 enemies=40 companions=0 | EnemyAIMs=7.58 | AnimateMs=19.48 | AnimationUpdateMs=4.47 | AnimationSampleMs=8.52 | BonesMs=8.53 | ExtrasMs=6.52 | WeaponResolveMs=0.13,resource=awp | WeaponBuildMs=0.10,resource=m4a4 | WeaponDrawMs=5.51,resource=negev | WeaponSubmitMs=5.55 | DirectorMs=0.01 | ActionApplyMs=3.43; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1938,
+      "engineMs": 115.41,
+      "cpuMs": 114.54,
+      "updateGapMs": 114.19,
+      "gcDelta": "0/0",
+      "scopesFrame": 1937,
+      "enemies": 40,
+      "companions": 0
+    },
+    {
+      "line": 180,
+      "time": "16:21:39.051",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:39.051 INFO: [CS_PERF] long-frame index=1959 engineMs=111.94 cpuMs=111.19 updateGapMs=122.25 gcDelta=0/0 scopesFrame=1958 enemies=45 companions=0 | PlacementMs=1.05 | EntityCreateMs=23.01 | ConfigureMs=0.17 | AddEntityMs=0.27 | ModelLoadMs=19.37,resource=Models/ScCsgoTactical/t | ModelSetMs=18.71 | AnimationCacheMs=0.01 | ActionsInitMs=1.70 | EnemyAIMs=4.12 | AnimateMs=29.54 | AnimationUpdateMs=8.39 | AnimationSampleMs=10.92 | BonesMs=9.79 | ExtrasMs=9.97 | WeaponResolveMs=1.01,resource=famas | WeaponBuildMs=0.12,resource=famas | WeaponDrawMs=7.96,resource=famas | WeaponUploadMs=1.43 | WeaponSubmitMs=6.24 | DirectorMs=0.01 | ActionApplyMs=6.49 | WeaponPrepareMs=0.90; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1959,
+      "engineMs": 111.94,
+      "cpuMs": 111.19,
+      "updateGapMs": 122.25,
+      "gcDelta": "0/0",
+      "scopesFrame": 1958,
+      "enemies": 45,
+      "companions": 0
+    },
+    {
+      "line": 181,
+      "time": "16:21:39.992",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:39.992 INFO: [CS_PERF] long-frame index=1970 engineMs=111.55 cpuMs=110.82 updateGapMs=88.34 gcDelta=0/0 scopesFrame=1969 enemies=50 companions=0 | PlacementMs=0.95 | EntityCreateMs=22.85 | ConfigureMs=0.14 | AddEntityMs=0.28 | ModelLoadMs=19.28,resource=Models/ScCsgoTactical/t | ModelSetMs=18.69 | AnimationCacheMs=0.01 | ActionsInitMs=1.68 | EnemyAIMs=2.85 | AnimateMs=31.07 | AnimationUpdateMs=9.09 | AnimationSampleMs=13.24 | BonesMs=10.68 | ExtrasMs=8.32 | WeaponResolveMs=0.15,resource=awp | WeaponBuildMs=0.12,resource=glock18 | WeaponDrawMs=7.13,resource=negev | WeaponSubmitMs=6.92 | DirectorMs=0.01 | ActionApplyMs=4.69 | WeaponPrepareMs=0.12; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 1970,
+      "engineMs": 111.55,
+      "cpuMs": 110.82,
+      "updateGapMs": 88.34,
+      "gcDelta": "0/0",
+      "scopesFrame": 1969,
+      "enemies": 50,
+      "companions": 0
+    },
+    {
+      "line": 191,
+      "time": "16:21:45.467",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:45.467 INFO: [CS_PERF] long-frame index=2020 engineMs=152.28 cpuMs=151.49 updateGapMs=129.83 gcDelta=0/0 scopesFrame=2019 enemies=80 companions=0 | EnemyAIMs=12.69 | AnimateMs=33.35 | AnimationUpdateMs=8.51 | AnimationSampleMs=12.77 | BonesMs=16.08 | ExtrasMs=12.97 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.19,resource=mag7 | WeaponDrawMs=11.04,resource=m249 | WeaponSubmitMs=11.06 | DirectorMs=0.02 | ActionApplyMs=6.30; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2020,
+      "engineMs": 152.28,
+      "cpuMs": 151.49,
+      "updateGapMs": 129.83,
+      "gcDelta": "0/0",
+      "scopesFrame": 2019,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 192,
+      "time": "16:21:45.586",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:45.586 INFO: [CS_PERF] long-frame index=2021 engineMs=117.09 cpuMs=114.52 updateGapMs=119.21 gcDelta=1/0 scopesFrame=2020 enemies=80 companions=0 | EnemyAIMs=7.31 | AnimateMs=34.48 | AnimationUpdateMs=10.73 | AnimationSampleMs=11.12 | BonesMs=16.18 | ExtrasMs=13.05 | WeaponResolveMs=0.22,resource=awp | WeaponBuildMs=0.19,resource=aug | WeaponDrawMs=11.13,resource=m249 | WeaponSubmitMs=11.05 | DirectorMs=0.01 | ActionApplyMs=6.08; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2021,
+      "engineMs": 117.09,
+      "cpuMs": 114.52,
+      "updateGapMs": 119.21,
+      "gcDelta": "1/0",
+      "scopesFrame": 2020,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 193,
+      "time": "16:21:45.702",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:45.702 INFO: [CS_PERF] long-frame index=2022 engineMs=116.55 cpuMs=115.43 updateGapMs=115.69 gcDelta=0/0 scopesFrame=2021 enemies=80 companions=0 | EnemyAIMs=8.39 | AnimateMs=27.23 | AnimationUpdateMs=4.22 | AnimationSampleMs=11.01 | BonesMs=16.30 | ExtrasMs=13.15 | WeaponResolveMs=0.24,resource=awp | WeaponBuildMs=0.20,resource=mag7 | WeaponDrawMs=11.20,resource=negev | WeaponSubmitMs=11.07 | DirectorMs=0.01 | ActionApplyMs=6.25; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2022,
+      "engineMs": 116.55,
+      "cpuMs": 115.43,
+      "updateGapMs": 115.69,
+      "gcDelta": "0/0",
+      "scopesFrame": 2021,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 194,
+      "time": "16:21:45.817",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:45.817 INFO: [CS_PERF] long-frame index=2023 engineMs=110.61 cpuMs=109.18 updateGapMs=115.61 gcDelta=0/0 scopesFrame=2022 enemies=80 companions=0 | EnemyAIMs=9.19 | AnimateMs=28.17 | AnimationUpdateMs=4.81 | AnimationSampleMs=11.09 | BonesMs=16.34 | ExtrasMs=12.89 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.19,resource=mag7 | WeaponDrawMs=10.97,resource=m249 | WeaponSubmitMs=10.97 | DirectorMs=0.02 | ActionApplyMs=6.08; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2023,
+      "engineMs": 110.61,
+      "cpuMs": 109.18,
+      "updateGapMs": 115.61,
+      "gcDelta": "0/0",
+      "scopesFrame": 2022,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 195,
+      "time": "16:21:45.948",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:45.948 INFO: [CS_PERF] long-frame index=2024 engineMs=120.55 cpuMs=118.27 updateGapMs=131.39 gcDelta=1/0 scopesFrame=2023 enemies=80 companions=0 | EnemyAIMs=12.32 | AnimateMs=25.36 | AnimationUpdateMs=3.82 | AnimationSampleMs=10.38 | BonesMs=16.15 | ExtrasMs=12.96 | WeaponResolveMs=0.24,resource=awp | WeaponBuildMs=0.19,resource=mag7 | WeaponDrawMs=11.05,resource=negev | WeaponSubmitMs=11.07 | DirectorMs=0.01 | ActionApplyMs=5.28; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2024,
+      "engineMs": 120.55,
+      "cpuMs": 118.27,
+      "updateGapMs": 131.39,
+      "gcDelta": "1/0",
+      "scopesFrame": 2023,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 196,
+      "time": "16:21:46.067",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:46.067 INFO: [CS_PERF] long-frame index=2025 engineMs=129.46 cpuMs=128.39 updateGapMs=118.93 gcDelta=0/0 scopesFrame=2024 enemies=80 companions=0 | EnemyAIMs=12.95 | AnimateMs=26.25 | AnimationUpdateMs=4.30 | AnimationSampleMs=11.39 | BonesMs=16.26 | ExtrasMs=13.26 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.19,resource=mag7 | WeaponDrawMs=11.30,resource=negev | WeaponSubmitMs=10.98 | DirectorMs=0.01 | ActionApplyMs=4.76; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2025,
+      "engineMs": 129.46,
+      "cpuMs": 128.39,
+      "updateGapMs": 118.93,
+      "gcDelta": "0/0",
+      "scopesFrame": 2024,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 199,
+      "time": "16:21:58.069",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:58.069 INFO: [CS_PERF] long-frame index=2839 engineMs=117.56 cpuMs=116.73 updateGapMs=110.72 gcDelta=0/0 scopesFrame=2838 enemies=80 companions=0 | EnemyAIMs=3.53 | AnimateMs=17.52 | AnimationUpdateMs=0.38 | AnimationSampleMs=7.92 | BonesMs=16.19 | ExtrasMs=12.86 | WeaponResolveMs=0.22,resource=awp | WeaponBuildMs=0.26,resource=m4a4 | WeaponDrawMs=10.92,resource=m249 | WeaponSubmitMs=10.99 | DirectorMs=0.02 | ActionApplyMs=3.60; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2839,
+      "engineMs": 117.56,
+      "cpuMs": 116.73,
+      "updateGapMs": 110.72,
+      "gcDelta": "0/0",
+      "scopesFrame": 2838,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 200,
+      "time": "16:21:58.465",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:58.465 INFO: [CS_PERF] long-frame index=2843 engineMs=114.84 cpuMs=112.33 updateGapMs=98.50 gcDelta=1/0 scopesFrame=2842 enemies=80 companions=0 | EnemyAIMs=1.90 | AnimateMs=17.42 | AnimationUpdateMs=0.43 | AnimationSampleMs=7.94 | BonesMs=16.20 | ExtrasMs=13.01 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=m249 | WeaponDrawMs=11.10,resource=negev | WeaponSubmitMs=10.85 | DirectorMs=0.01 | ActionApplyMs=3.51; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2843,
+      "engineMs": 114.84,
+      "cpuMs": 112.33,
+      "updateGapMs": 98.5,
+      "gcDelta": "1/0",
+      "scopesFrame": 2842,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 201,
+      "time": "16:21:59.229",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:59.229 INFO: [CS_PERF] long-frame index=2851 engineMs=104.87 cpuMs=103.74 updateGapMs=104.56 gcDelta=0/0 scopesFrame=2850 enemies=80 companions=0 | EnemyAIMs=8.98 | AnimateMs=21.48 | AnimationUpdateMs=2.79 | AnimationSampleMs=9.32 | BonesMs=16.15 | ExtrasMs=12.74 | WeaponResolveMs=0.22,resource=awp | WeaponBuildMs=0.21,resource=mp7 | WeaponDrawMs=10.86,resource=m249 | WeaponSubmitMs=10.94 | DirectorMs=0.01 | ActionApplyMs=3.62; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2851,
+      "engineMs": 104.87,
+      "cpuMs": 103.74,
+      "updateGapMs": 104.56,
+      "gcDelta": "0/0",
+      "scopesFrame": 2850,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 202,
+      "time": "16:21:59.357",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:59.357 INFO: [CS_PERF] long-frame index=2852 engineMs=116.30 cpuMs=114.24 updateGapMs=127.92 gcDelta=1/0 scopesFrame=2851 enemies=80 companions=0 | EnemyAIMs=8.87 | AnimateMs=25.28 | AnimationUpdateMs=4.87 | AnimationSampleMs=11.28 | BonesMs=16.29 | ExtrasMs=13.02 | WeaponResolveMs=0.22,resource=awp | WeaponBuildMs=0.19,resource=m249 | WeaponDrawMs=11.14,resource=negev | WeaponSubmitMs=10.90 | DirectorMs=0.02 | ActionApplyMs=3.49; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2852,
+      "engineMs": 116.3,
+      "cpuMs": 114.24,
+      "updateGapMs": 127.92,
+      "gcDelta": "1/0",
+      "scopesFrame": 2851,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 203,
+      "time": "16:21:59.465",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:59.465 INFO: [CS_PERF] long-frame index=2853 engineMs=115.90 cpuMs=114.29 updateGapMs=107.96 gcDelta=0/0 scopesFrame=2852 enemies=80 companions=0 | EnemyAIMs=8.22 | AnimateMs=20.65 | AnimationUpdateMs=2.69 | AnimationSampleMs=8.52 | BonesMs=16.40 | ExtrasMs=12.92 | WeaponResolveMs=0.22,resource=m4a1s | WeaponBuildMs=0.19,resource=m249 | WeaponDrawMs=11.05,resource=m249 | WeaponSubmitMs=10.99 | DirectorMs=0.01 | ActionApplyMs=3.52; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2853,
+      "engineMs": 115.9,
+      "cpuMs": 114.29,
+      "updateGapMs": 107.96,
+      "gcDelta": "0/0",
+      "scopesFrame": 2852,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 204,
+      "time": "16:21:59.570",
+      "launch": 1,
+      "world": 1,
+      "text": "16:21:59.570 INFO: [CS_PERF] long-frame index=2854 engineMs=106.01 cpuMs=105.28 updateGapMs=105.19 gcDelta=0/0 scopesFrame=2853 enemies=80 companions=0 | EnemyAIMs=11.23 | AnimateMs=20.22 | AnimationUpdateMs=2.09 | AnimationSampleMs=8.78 | BonesMs=16.10 | ExtrasMs=14.08 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.20,resource=mac10 | WeaponDrawMs=11.33,resource=m249 | WeaponSubmitMs=10.95 | DirectorMs=0.01 | ActionApplyMs=3.52; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2854,
+      "engineMs": 106.01,
+      "cpuMs": 105.28,
+      "updateGapMs": 105.19,
+      "gcDelta": "0/0",
+      "scopesFrame": 2853,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 206,
+      "time": "16:22:08.112",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:08.112 INFO: [CS_PERF] long-frame index=2929 engineMs=141.03 cpuMs=140.11 updateGapMs=125.87 gcDelta=1/0 scopesFrame=2928 enemies=80 companions=0 | EnemyAIMs=11.66 | AnimateMs=21.40 | AnimationUpdateMs=2.68 | AnimationSampleMs=8.36 | BonesMs=16.39 | ExtrasMs=12.96 | WeaponResolveMs=0.22,resource=awp | WeaponBuildMs=0.19,resource=m249 | WeaponDrawMs=11.07,resource=m249 | WeaponSubmitMs=11.01 | DirectorMs=0.02 | ActionApplyMs=4.50; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2929,
+      "engineMs": 141.03,
+      "cpuMs": 140.11,
+      "updateGapMs": 125.87,
+      "gcDelta": "1/0",
+      "scopesFrame": 2928,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 207,
+      "time": "16:22:08.234",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:08.234 INFO: [CS_PERF] long-frame index=2930 engineMs=122.29 cpuMs=121.08 updateGapMs=121.38 gcDelta=0/0 scopesFrame=2929 enemies=80 companions=0 | EnemyAIMs=13.22 | AnimateMs=22.77 | AnimationUpdateMs=3.34 | AnimationSampleMs=8.61 | BonesMs=16.49 | ExtrasMs=12.92 | WeaponResolveMs=0.25,resource=fiveseven | WeaponBuildMs=0.19,resource=m249 | WeaponDrawMs=10.98,resource=m249 | WeaponSubmitMs=10.96 | DirectorMs=0.01 | ActionApplyMs=4.69; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2930,
+      "engineMs": 122.29,
+      "cpuMs": 121.08,
+      "updateGapMs": 121.38,
+      "gcDelta": "0/0",
+      "scopesFrame": 2929,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 208,
+      "time": "16:22:08.362",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:08.362 INFO: [CS_PERF] long-frame index=2931 engineMs=115.51 cpuMs=114.68 updateGapMs=128.82 gcDelta=0/0 scopesFrame=2930 enemies=80 companions=0 | EnemyAIMs=13.31 | AnimateMs=21.64 | AnimationUpdateMs=2.87 | AnimationSampleMs=8.22 | BonesMs=16.47 | ExtrasMs=13.10 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.21,resource=g3sg1 | WeaponDrawMs=11.07,resource=m249 | WeaponSubmitMs=11.08 | DirectorMs=0.02 | ActionApplyMs=4.72; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2931,
+      "engineMs": 115.51,
+      "cpuMs": 114.68,
+      "updateGapMs": 128.82,
+      "gcDelta": "0/0",
+      "scopesFrame": 2930,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 209,
+      "time": "16:22:08.490",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:08.490 INFO: [CS_PERF] long-frame index=2932 engineMs=140.49 cpuMs=139.35 updateGapMs=127.87 gcDelta=1/0 scopesFrame=2931 enemies=80 companions=0 | EnemyAIMs=15.64 | AnimateMs=19.76 | AnimationUpdateMs=2.21 | AnimationSampleMs=7.50 | BonesMs=15.90 | ExtrasMs=12.78 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.21,resource=scar20 | WeaponDrawMs=10.93,resource=negev | WeaponSubmitMs=10.91 | DirectorMs=0.01 | ActionApplyMs=4.55; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2932,
+      "engineMs": 140.49,
+      "cpuMs": 139.35,
+      "updateGapMs": 127.87,
+      "gcDelta": "1/0",
+      "scopesFrame": 2931,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 210,
+      "time": "16:22:08.601",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:08.601 INFO: [CS_PERF] long-frame index=2933 engineMs=110.75 cpuMs=109.88 updateGapMs=110.97 gcDelta=0/0 scopesFrame=2932 enemies=80 companions=0 | EnemyAIMs=13.26 | AnimateMs=19.81 | AnimationUpdateMs=2.55 | AnimationSampleMs=7.52 | BonesMs=15.46 | ExtrasMs=12.57 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=ssg08 | WeaponDrawMs=10.69,resource=negev | WeaponSubmitMs=10.69 | DirectorMs=0.01 | ActionApplyMs=4.37; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2933,
+      "engineMs": 110.75,
+      "cpuMs": 109.88,
+      "updateGapMs": 110.97,
+      "gcDelta": "0/0",
+      "scopesFrame": 2932,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 211,
+      "time": "16:22:08.714",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:08.714 INFO: [CS_PERF] long-frame index=2934 engineMs=110.14 cpuMs=109.06 updateGapMs=112.43 gcDelta=0/0 scopesFrame=2933 enemies=80 companions=0 | EnemyAIMs=13.06 | AnimateMs=19.79 | AnimationUpdateMs=2.77 | AnimationSampleMs=7.13 | BonesMs=15.47 | ExtrasMs=12.31 | WeaponResolveMs=0.21,resource=m4a1s | WeaponBuildMs=0.18,resource=ssg08 | WeaponDrawMs=10.55,resource=m249 | WeaponSubmitMs=10.66 | DirectorMs=0.01 | ActionApplyMs=4.39; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 2934,
+      "engineMs": 110.14,
+      "cpuMs": 109.06,
+      "updateGapMs": 112.43,
+      "gcDelta": "0/0",
+      "scopesFrame": 2933,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 213,
+      "time": "16:22:18.159",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:18.159 INFO: [CS_PERF] long-frame index=3010 engineMs=144.88 cpuMs=144.05 updateGapMs=140.82 gcDelta=0/0 scopesFrame=3009 enemies=80 companions=0 | EnemyAIMs=21.27 | AnimateMs=24.76 | AnimationUpdateMs=5.08 | AnimationSampleMs=10.49 | BonesMs=16.07 | ExtrasMs=12.69 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=mp5sd | WeaponDrawMs=10.88,resource=negev | WeaponSubmitMs=10.84 | DirectorMs=0.02 | ActionApplyMs=3.56; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3010,
+      "engineMs": 144.88,
+      "cpuMs": 144.05,
+      "updateGapMs": 140.82,
+      "gcDelta": "0/0",
+      "scopesFrame": 3009,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 214,
+      "time": "16:22:18.287",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:18.287 INFO: [CS_PERF] long-frame index=3011 engineMs=126.98 cpuMs=125.89 updateGapMs=128.64 gcDelta=1/0 scopesFrame=3010 enemies=80 companions=0 | EnemyAIMs=9.72 | AnimateMs=21.58 | AnimationUpdateMs=3.60 | AnimationSampleMs=8.75 | BonesMs=16.18 | ExtrasMs=12.74 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=mp5sd | WeaponDrawMs=10.93,resource=m249 | WeaponSubmitMs=10.86 | DirectorMs=0.01 | ActionApplyMs=3.65; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3011,
+      "engineMs": 126.98,
+      "cpuMs": 125.89,
+      "updateGapMs": 128.64,
+      "gcDelta": "1/0",
+      "scopesFrame": 3010,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 215,
+      "time": "16:22:18.417",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:18.417 INFO: [CS_PERF] long-frame index=3012 engineMs=115.77 cpuMs=115.03 updateGapMs=129.23 gcDelta=0/0 scopesFrame=3011 enemies=80 companions=0 | EnemyAIMs=11.68 | AnimateMs=23.51 | AnimationUpdateMs=4.15 | AnimationSampleMs=10.10 | BonesMs=15.91 | ExtrasMs=12.85 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=mp5sd | WeaponDrawMs=11.01,resource=m249 | WeaponSubmitMs=10.90 | DirectorMs=0.01 | ActionApplyMs=3.60; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3012,
+      "engineMs": 115.77,
+      "cpuMs": 115.03,
+      "updateGapMs": 129.23,
+      "gcDelta": "0/0",
+      "scopesFrame": 3011,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 216,
+      "time": "16:22:18.534",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:18.534 INFO: [CS_PERF] long-frame index=3013 engineMs=132.35 cpuMs=130.97 updateGapMs=117.22 gcDelta=0/0 scopesFrame=3012 enemies=80 companions=0 | EnemyAIMs=7.57 | AnimateMs=24.16 | AnimationUpdateMs=4.88 | AnimationSampleMs=9.94 | BonesMs=16.17 | ExtrasMs=13.48 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.20,resource=p250 | WeaponDrawMs=11.03,resource=m249 | WeaponSubmitMs=10.82 | DirectorMs=0.01 | ActionApplyMs=3.55; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3013,
+      "engineMs": 132.35,
+      "cpuMs": 130.97,
+      "updateGapMs": 117.22,
+      "gcDelta": "0/0",
+      "scopesFrame": 3012,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 217,
+      "time": "16:22:18.652",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:18.652 INFO: [CS_PERF] long-frame index=3014 engineMs=122.35 cpuMs=121.32 updateGapMs=118.11 gcDelta=1/0 scopesFrame=3013 enemies=80 companions=0 | EnemyAIMs=12.77 | AnimateMs=24.72 | AnimationUpdateMs=5.15 | AnimationSampleMs=10.47 | BonesMs=16.14 | ExtrasMs=12.85 | WeaponResolveMs=0.22,resource=awp | WeaponBuildMs=0.18,resource=mp5sd | WeaponDrawMs=11.00,resource=m249 | WeaponSubmitMs=10.79 | DirectorMs=0.02 | ActionApplyMs=3.57; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3014,
+      "engineMs": 122.35,
+      "cpuMs": 121.32,
+      "updateGapMs": 118.11,
+      "gcDelta": "1/0",
+      "scopesFrame": 3013,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 218,
+      "time": "16:22:18.773",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:18.773 INFO: [CS_PERF] long-frame index=3015 engineMs=116.75 cpuMs=115.33 updateGapMs=121.41 gcDelta=0/0 scopesFrame=3014 enemies=80 companions=0 | EnemyAIMs=10.28 | AnimateMs=26.79 | AnimationUpdateMs=5.95 | AnimationSampleMs=11.28 | BonesMs=15.91 | ExtrasMs=12.87 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=mp5sd | WeaponDrawMs=11.02,resource=negev | WeaponSubmitMs=10.98 | DirectorMs=0.01 | ActionApplyMs=3.61; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3015,
+      "engineMs": 116.75,
+      "cpuMs": 115.33,
+      "updateGapMs": 121.41,
+      "gcDelta": "0/0",
+      "scopesFrame": 3014,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 352,
+      "time": "16:22:28.759",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:28.759 INFO: [CS_PERF] long-frame index=3118 engineMs=140.19 cpuMs=139.25 updateGapMs=141.54 gcDelta=1/0 scopesFrame=3117 enemies=80 companions=0 | EnemyAIMs=17.72 | AnimateMs=32.10 | AnimationUpdateMs=8.71 | AnimationSampleMs=13.96 | BonesMs=12.81 | ExtrasMs=9.32 | WeaponResolveMs=0.17,resource=awp | WeaponBuildMs=0.13,resource=glock18 | WeaponDrawMs=7.93,resource=negev | WeaponSubmitMs=8.31 | DirectorMs=0.06 | ActionApplyMs=4.39; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3118,
+      "engineMs": 140.19,
+      "cpuMs": 139.25,
+      "updateGapMs": 141.54,
+      "gcDelta": "1/0",
+      "scopesFrame": 3117,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 353,
+      "time": "16:22:28.960",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:28.960 INFO: [CS_PERF] long-frame index=3119 engineMs=175.00 cpuMs=173.84 updateGapMs=201.18 gcDelta=1/0 scopesFrame=3118 enemies=80 companions=0 | EnemyAIMs=27.48 | AnimateMs=39.76 | AnimationUpdateMs=7.75 | AnimationSampleMs=13.60 | BonesMs=16.52 | ExtrasMs=12.85 | WeaponResolveMs=0.23,resource=awp | WeaponBuildMs=0.19,resource=p250 | WeaponDrawMs=10.93,resource=m249 | WeaponSubmitMs=10.80 | DirectorMs=0.08 | ActionApplyMs=12.15; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3119,
+      "engineMs": 175.0,
+      "cpuMs": 173.84,
+      "updateGapMs": 201.18,
+      "gcDelta": "1/0",
+      "scopesFrame": 3118,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 354,
+      "time": "16:22:29.124",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:29.124 INFO: [CS_PERF] long-frame index=3120 engineMs=176.09 cpuMs=175.18 updateGapMs=164.00 gcDelta=0/0 scopesFrame=3119 enemies=80 companions=0 | EnemyAIMs=44.41 | AnimateMs=29.00 | AnimationUpdateMs=5.62 | AnimationSampleMs=10.67 | BonesMs=16.14 | ExtrasMs=12.91 | WeaponResolveMs=0.21,resource=awp | WeaponBuildMs=0.18,resource=p250 | WeaponDrawMs=11.07,resource=m249 | WeaponSubmitMs=10.97 | DirectorMs=0.06 | ActionApplyMs=6.86; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3120,
+      "engineMs": 176.09,
+      "cpuMs": 175.18,
+      "updateGapMs": 164.0,
+      "gcDelta": "0/0",
+      "scopesFrame": 3119,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 355,
+      "time": "16:22:29.301",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:29.301 INFO: [CS_PERF] long-frame index=3121 engineMs=177.13 cpuMs=176.21 updateGapMs=177.12 gcDelta=1/0 scopesFrame=3120 enemies=80 companions=0 | EnemyAIMs=40.69 | AnimateMs=26.80 | AnimationUpdateMs=3.97 | AnimationSampleMs=10.07 | BonesMs=16.23 | ExtrasMs=12.93 | WeaponResolveMs=0.21,resource=m4a1s | WeaponBuildMs=0.18,resource=p250 | WeaponDrawMs=11.07,resource=negev | WeaponSubmitMs=13.59 | DirectorMs=0.07 | ActionApplyMs=6.93; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3121,
+      "engineMs": 177.13,
+      "cpuMs": 176.21,
+      "updateGapMs": 177.12,
+      "gcDelta": "1/0",
+      "scopesFrame": 3120,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 356,
+      "time": "16:22:29.793",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:29.793 INFO: [CS_PERF] long-frame index=3122 engineMs=460.07 cpuMs=459.17 updateGapMs=492.30 gcDelta=2/0 scopesFrame=3121 enemies=80 companions=0 | EnemyAIMs=16.25 | AnimateMs=46.62 | AnimationUpdateMs=5.61 | AnimationSampleMs=16.17 | BonesMs=16.37 | ExtrasMs=11.50 | WeaponResolveMs=0.20,resource=awp | WeaponBuildMs=0.16,resource=p250 | WeaponDrawMs=9.81,resource=negev | WeaponSubmitMs=10.19 | DirectorMs=0.08 | ActionApplyMs=5.86; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3122,
+      "engineMs": 460.07,
+      "cpuMs": 459.17,
+      "updateGapMs": 492.3,
+      "gcDelta": "2/0",
+      "scopesFrame": 3121,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 357,
+      "time": "16:22:30.764",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:30.764 INFO: [CS_PERF] long-frame index=3123 engineMs=1008.18 cpuMs=1006.41 updateGapMs=971.04 gcDelta=4/1 scopesFrame=3122 enemies=80 companions=0 | EnemyAIMs=0.95 | AnimateMs=68.12 | AnimationUpdateMs=1.41 | AnimationSampleMs=1.16 | BonesMs=16.29 | ExtrasMs=1.83 | WeaponResolveMs=0.02,resource=negev | WeaponBuildMs=0.03,resource=negev | WeaponDrawMs=1.06,resource=negev | WeaponSubmitMs=1.04 | DirectorMs=0.06 | ActionApplyMs=0.40; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3123,
+      "engineMs": 1008.18,
+      "cpuMs": 1006.41,
+      "updateGapMs": 971.04,
+      "gcDelta": "4/1",
+      "scopesFrame": 3122,
+      "enemies": 80,
+      "companions": 0
+    },
+    {
+      "line": 359,
+      "time": "16:22:38.312",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:38.312 INFO: [CS_PERF] long-frame index=3172 engineMs=153.29 cpuMs=150.45 updateGapMs=158.85 gcDelta=0/0 scopesFrame=3171 enemies=68 companions=0 | EnemyAIMs=0.55 | AnimateMs=59.97 | AnimationUpdateMs=0.85 | AnimationSampleMs=0.89 | BonesMs=14.52 | ExtrasMs=1.87 | WeaponResolveMs=0.03,resource=negev | WeaponBuildMs=0.03,resource=negev | WeaponDrawMs=1.03,resource=negev | WeaponSubmitMs=0.97 | DirectorMs=0.08 | ActionApplyMs=0.87; scopes inclusive, frame IDs retained; GPU/physics not isolated",
+      "index": 3172,
+      "engineMs": 153.29,
+      "cpuMs": 150.45,
+      "updateGapMs": 158.85,
+      "gcDelta": "0/0",
+      "scopesFrame": 3171,
+      "enemies": 68,
+      "companions": 0
+    }
+  ],
+  "errorsWithStacks": [
+    {
+      "line": 219,
+      "time": "16:22:24.848",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.848 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 220,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 221,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 222,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 223,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 224,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 225,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 226,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 227,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 228,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 229,
+      "time": "16:22:24.849",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.849 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 230,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 231,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 232,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 233,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 234,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 235,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 236,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 237,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 238,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 239,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 240,
+      "time": "16:22:24.850",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.850 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 241,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 242,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 243,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 244,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 245,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 246,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 247,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 248,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 249,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 250,
+      "time": "16:22:24.851",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.851 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 251,
+      "time": "16:22:24.852",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.852 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 252,
+      "time": "16:22:24.852",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.852 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 253,
+      "time": "16:22:24.852",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.852 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 254,
+      "time": "16:22:24.852",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.852 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 255,
+      "time": "16:22:24.852",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.852 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 256,
+      "time": "16:22:24.852",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.852 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 257,
+      "time": "16:22:24.926",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.926 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 258,
+      "time": "16:22:24.926",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.926 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 259,
+      "time": "16:22:24.926",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.926 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 260,
+      "time": "16:22:24.926",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.926 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 261,
+      "time": "16:22:24.927",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.927 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 262,
+      "time": "16:22:24.927",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.927 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 263,
+      "time": "16:22:24.988",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.988 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 264,
+      "time": "16:22:24.988",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.988 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 265,
+      "time": "16:22:24.988",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.988 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 266,
+      "time": "16:22:24.988",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.988 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 267,
+      "time": "16:22:24.988",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.988 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 268,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 269,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 270,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 271,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 272,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 273,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 274,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 275,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 276,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 277,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 278,
+      "time": "16:22:24.989",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.989 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 279,
+      "time": "16:22:24.990",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.990 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 280,
+      "time": "16:22:24.990",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:24.990 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 281,
+      "time": "16:22:25.210",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.210 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 282,
+      "time": "16:22:25.210",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.210 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 283,
+      "time": "16:22:25.216",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.216 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 284,
+      "time": "16:22:25.217",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.217 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 285,
+      "time": "16:22:25.227",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.227 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 286,
+      "time": "16:22:25.228",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.228 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 287,
+      "time": "16:22:25.228",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.228 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 288,
+      "time": "16:22:25.228",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.228 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 289,
+      "time": "16:22:25.626",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.626 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 290,
+      "time": "16:22:25.627",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.627 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 291,
+      "time": "16:22:25.707",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.707 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 292,
+      "time": "16:22:25.707",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.707 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 293,
+      "time": "16:22:25.707",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.707 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 294,
+      "time": "16:22:25.707",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.707 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 295,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 296,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 297,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 298,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 299,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 300,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 301,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 302,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 303,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 304,
+      "time": "16:22:25.708",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.708 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 305,
+      "time": "16:22:25.826",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.826 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 306,
+      "time": "16:22:25.826",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.826 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 307,
+      "time": "16:22:25.826",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.826 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 308,
+      "time": "16:22:25.827",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.827 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 309,
+      "time": "16:22:25.827",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.827 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 310,
+      "time": "16:22:25.827",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:25.827 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 311,
+      "time": "16:22:26.206",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.206 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 312,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 313,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 314,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 315,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 316,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 317,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 318,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 319,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 320,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 321,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 322,
+      "time": "16:22:26.207",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.207 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 323,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 324,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 325,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 326,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 327,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 328,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 329,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 330,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 331,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 332,
+      "time": "16:22:26.369",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.369 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 333,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 334,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 335,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 336,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 337,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 338,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 339,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 340,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 341,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 342,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 343,
+      "time": "16:22:26.370",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.370 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 344,
+      "time": "16:22:26.371",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.371 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 345,
+      "time": "16:22:26.371",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.371 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 346,
+      "time": "16:22:26.371",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.371 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 347,
+      "time": "16:22:26.431",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.431 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 348,
+      "time": "16:22:26.431",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.431 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    },
+    {
+      "line": 349,
+      "time": "16:22:26.687",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.687 ERROR: OPENAL ERROR: OutOfMemory",
+      "stack": []
+    },
+    {
+      "line": 350,
+      "time": "16:22:26.687",
+      "launch": 1,
+      "world": 1,
+      "text": "16:22:26.687 ERROR: OPENAL ERROR: InvalidName",
+      "stack": []
+    }
+  ],
+  "capture": {
+    "method": "adb pull, USB-authorized read-only copy",
+    "remote": "/sdcard/Survivalcraft2.4_API1.9/Bugs/Game.log",
+    "cutoff": "16:23:20.266",
+    "sha256": "4b43ce0cbb51b0d0de95196252129424a56eb4846ca71b66d088f4b6fbda55ca",
+    "note": "Live append log; fixed snapshot, not continuous monitoring. launch/world IDs separate restarts and reentries."
+  },
+  "launches": [
+    {
+      "launch": 1,
+      "worlds": [
+        1
+      ],
+      "windows": 11,
+      "frames": 2179,
+      "spawnDetails": 10,
+      "spawnFailed": 0,
+      "overThresholds": [
+        594,
+        323,
+        7
+      ],
+      "boneMsPerCallRange": [
+        0.2022154255319149,
+        0.21177319587628865
+      ],
+      "textureLoggedCount": 11,
+      "textureLoggedMs": 664.89,
+      "textureLoggedRange": [
+        17.13,
+        124.18
+      ],
+      "managedMiBRange": [
+        635.0,
+        909.4
+      ]
+    }
+  ]
+}
