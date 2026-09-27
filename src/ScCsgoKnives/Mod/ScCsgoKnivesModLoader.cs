@@ -159,6 +159,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         }
     }
     public override void AfterWidgetUpdate(Widget widget) {
+        ScOwnedAudio.Tick();
         if (widget is not Screen screen || !ScRecipaediaBrowser.Selection(widget, out var recipes, out int value)) return;
         if (ScWeaponCrafting.Find(value) is not null || ScComponentCrafting.Find(value) is not null || ScWorkbenchExtension.IsRecipe(value) || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
             recipes.Text = "装配配方";
@@ -286,7 +287,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScOwnedAudio.Clear(); CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         // Register all base CS supplies in the same workshop catalogue used by

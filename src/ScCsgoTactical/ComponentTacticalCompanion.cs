@@ -143,7 +143,7 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable {
         ScProjectileDefense.Apply(threat,attack);ComponentMiner.AttackBody(attack);
         if(spec.RechargeSeconds>0)ScElectricStun.Apply(threat,before,health.Health,now);
         if(before>0&&health.Health<=0&&credit!=null&&ScGunKillRules.Counts(threat,owner,false,out _))ScGunRegistry.Current.Kills.Enqueue(credit.RecordId,credit.Variant);
-        Project.FindSubsystem<SubsystemAudio>(true).PlaySound(SubsystemScGunBlockBehavior.ExtensionShotSound(spec,!state.SilencerOff),.6f,0,start,8,true);
+        ScOwnedAudio.World(Project.FindSubsystem<SubsystemAudio>(true),SubsystemScGunBlockBehavior.ExtensionShotSound(spec,!state.SilencerOff),.6f,0,start,8,true);
         Status="攻击";
     }
 }

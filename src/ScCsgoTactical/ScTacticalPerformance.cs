@@ -8,7 +8,7 @@ namespace Game;
 
 // Diagnostic timings are inclusive CPU wall times, not GPU timers. No world data or files.
 public static class ScTacticalPerformance {
-    public const string Revision="mobile-resources-20260927";
+    public const string Revision="gameplay-audio-20260927";
     public enum Stage { Placement, EntityCreate, Configure, AddEntity, ModelLoad, ModelSet,
         AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, ActionApply, WeaponPrepare, Count }
     static readonly ConditionalWeakTable<Project,Session> sessions=new();

@@ -1664,7 +1664,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         string path = $"Audio/ScCsgoKnives/{name}";
         if (s_missingSounds.Contains(path)) return;
         try {
-            m_audio.PlaySound(path, 1f, m_random.Float(-0.05f, 0.05f), player.ComponentCreatureModel.EyePosition, 24f, true);
+            ScOwnedAudio.World(m_audio,path,1f,m_random.Float(-0.05f,0.05f),player.ComponentCreatureModel.EyePosition,24f,true,priority:true);
         }
         catch (Exception e) {
             s_missingSounds.Add(path);

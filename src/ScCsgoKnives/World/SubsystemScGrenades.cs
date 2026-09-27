@@ -47,7 +47,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     readonly PrimitivesRenderer3D m_renderer = new();
     readonly PrimitivesRenderer2D m_overlay = new();
     readonly DrawBlockEnvironmentData m_environment = new();
-    readonly Texture2D[] m_effectTextures = new Texture2D[4];
+    readonly Texture2D[] m_effectTextures = new Texture2D[ScGrenadeVisuals.Textures.Length];
+    sealed class FireBurst {public Vector3 Position;public float Age;}
+    readonly List<FireBurst> fireBursts=[];
+    int eventLogs;
     Sound m_fireLoop;
     readonly Dictionary<ScGrenadeState,List<Vector3>> m_firePoints=[];
     SubsystemTime m_time;
@@ -122,7 +125,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         int kind=ScGrenadeBlock.Kind(player.ComponentMiner.ActiveBlockValue);
         if (!ScGrenadeBlock.Enabled(kind)) return;
         var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
-        if (KnifeAnimationController.IsBusy(model)) return;
+        bool interrupted=KnifeAnimationController.IsGrenadeDrawing(model);
+        if (!KnifeAnimationController.CanStartGrenade(model,player.ComponentMiner.ActiveBlockValue)) return;
         string asset=ScGrenadeBlock.Assets[kind], alias=low?"throwLow":"throwHigh";
         float pull=Cs2Rig.Duration(asset,"pullpin");
         var inv=player.ComponentMiner.Inventory;
@@ -132,7 +136,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             OriginalPull=pull,OriginalRelease=Cs2Rig.GrenadeReleaseTime(asset,alias),OriginalThrow=Cs2Rig.Duration(asset,alias),
             Timeline=ScGrenadePreparation.Create(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias),false,kind==3) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
-        AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
+        ScOwnedAudio.Play("Audio/ScCsgoKnives/"+asset+"_pin",1);
+        if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] prepare kind={kind} deployInterrupted={interrupted}");
         KnifeLog.Trace($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
     }
     static void Message(ComponentPlayer p,string text) => p.ComponentGui.DisplaySmallMessage(text,Color.White,true,false);
@@ -205,7 +210,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 ScControllerFeedback.Thrown(p);
                 prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
                 KnifeLog.Trace($"grenade release: {ScGrenadeBlock.Assets[prep.Kind]} speed {state.Velocity.Length():0.0} (player {p.ComponentBody.Velocity.Length():0.0}) low={prep.Low} at {pos}");
-                AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
+                ScOwnedAudio.Play("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1);
+                if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] released id={state.Id} kind={state.Kind} fuse={state.Remaining}");
             }
             if (m_time.GameTime>=prep.Timeline.EndAt) {
                 m_preparing.Remove(p);
@@ -224,6 +230,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         // Order inside one update: fire validity (water/smoke extinguish) -> grenade motion -> heat trigger
         // -> fuse and smoke growth. The order is fixed here, not by list position.
         ExtinguishFires();
+        foreach(var burst in fireBursts)burst.Age+=ScGrenadeBallistics.Step(dt);
+        fireBursts.RemoveAll(b=>b.Age>=ScGrenadeVisuals.FireBurstLifetime);
         foreach (var opening in m_disturbances) opening.Remaining-=ScGrenadeBallistics.Step(dt);
         m_disturbances.RemoveAll(o=>!o.Active);
         foreach (var s in m_active.ToArray()) {
@@ -337,6 +345,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     void Detonate(ScGrenadeState s) => DetonateWithBudget(s, false);
     void DetonateWithBudget(ScGrenadeState s,bool chicken) {
         if (s.Kind is 3 or 4) {
+            if(fireBursts.Count>=24)fireBursts.RemoveAt(0);
+            fireBursts.Add(new FireBurst{Position=s.Position});
+            ScOwnedAudio.World(Project.FindSubsystem<SubsystemAudio>(true),"Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,6,true);
+            if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] fire-burst id={s.Id} airborne={!s.Grounded} flightAge={s.Age:F2}");
             // A bounded airborne timeout may ignite a reachable floor below it,
             // never an unsupported sphere of fire in mid-air.
             var floor=SolidRay(s.Position+Vector3.UnitY*.1f,s.Position-Vector3.UnitY*4);
@@ -345,7 +357,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (Water(s.Position)) { RemoveEffect(s,true);return; }
             s.Effect=true;s.Remaining=ScFireArea.Lifetime(s.Kind);s.Age=0;s.Velocity=Vector3.Zero;
             if(m_active.Any(smoke=>ScFireArea.SmokeExtinguishes(s,smoke,Clear))) {RemoveEffect(s,true);return;}
-            Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,6,true);
             return;
         }
         if (s.Kind==5) { s.Effect=true;s.Remaining=10;s.Age=0;s.Velocity=Vector3.Zero;DecoyPulse(s);return; }
@@ -445,6 +456,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             }
             m_renderer.Flush(camera.ViewProjectionMatrix);
         } else if (drawOrder==EffectsDrawOrder) {
+            foreach(var burst in fireBursts){
+                float distance=Vector3.Distance(camera.ViewPosition,burst.Position);
+                if(distance<80)DrawSprites(camera,new ScGrenadeState{Kind=3,Position=burst.Position},ScGrenadeVisuals.FireBurst(burst.Position,burst.Age,distance));
+            }
             foreach (var s in m_active.OrderByDescending(s=>Vector3.DistanceSquared(camera.ViewPosition,s.Position))) {
                 if (Vector3.DistanceSquared(camera.ViewPosition,s.Position)>80*80 || !s.Effect || s.Kind==5) continue;
                 if (ScFireArea.IsFire(s)) {
@@ -514,6 +529,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
 
     public override void Dispose() {
         if (m_fireLoop is not null) { m_fireLoop.Stop();m_fireLoop.Dispose();Project.FindSubsystem<SubsystemAudio>()?.m_sounds.Remove(m_fireLoop);m_fireLoop=null; }
-        m_preparing.Clear();m_throwSources.Clear();m_releaseGates.Clear();m_padMasks.Clear();m_slots.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
+        fireBursts.Clear();m_preparing.Clear();m_throwSources.Clear();m_releaseGates.Clear();m_padMasks.Clear();m_slots.Clear();m_active.Clear();m_justReleased.Clear();m_blind.Clear();m_savedBlind.Clear();m_firePoints.Clear();base.Dispose();
     }
 }

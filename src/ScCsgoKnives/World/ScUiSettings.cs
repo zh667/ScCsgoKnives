@@ -66,6 +66,8 @@ public static class ScUiSettings {
     public const int Version = 1;
 
     public static bool SimpleMaterials;
+    public static ScHudPosition AmmoHud=new();
+    public static bool NaturalEnemies=true;
     public static bool CustomButtons = true;
     public static bool ButtonOnlyFire;
     public static readonly Dictionary<int,int> C4Fuses=[];
@@ -105,6 +107,7 @@ public static class ScUiSettings {
         foreach (string id in ScGunFunctions.All) set[id] = ScGunFunctions.Default(id, leftHanded);
     }
     public static void ResetAll() {
+        AmmoHud=new();NaturalEnemies=true;
         ScGunBindings.Reset();
         ScGamepadBindings.Keys.Clear(); ScGamepadBindings.Threshold = .5f;
         ResetHand(false); ResetHand(true);
@@ -127,6 +130,8 @@ public static class ScUiSettings {
     }
 
     sealed class File {
+        public ScHudPosition AmmoHud {get;set;}=new();
+        public bool NaturalEnemies {get;set;}=true;
         public int Version { get; set; } = ScUiSettings.Version;
         public bool? SimpleMaterials { get; set; }
         public bool CustomButtonsEnabled { get; set; } = true;
@@ -167,6 +172,7 @@ public static class ScUiSettings {
             if (file is null) throw new InvalidDataException("empty settings file");
             if (file.Version != Version) throw new InvalidDataException($"Version {file.Version} is not {Version}");
             SimpleMaterials = file.SimpleMaterials ?? (ScResourcePolicy.Edition == "Optimized512");
+            AmmoHud=(file.AmmoHud??new()).Normalize();NaturalEnemies=file.NaturalEnemies;
             CustomButtons = file.CustomButtonsEnabled;
             ButtonOnlyFire = file.ButtonOnlyFire;
             foreach(var p in file.C4Fuses??[])if(p.Key>=0)C4Fuses[p.Key]=Math.Clamp(p.Value,5,300);
@@ -198,6 +204,7 @@ public static class ScUiSettings {
         if (!Writable) return false;
         try {
             var file = new File {
+                AmmoHud=AmmoHud.Copy().Normalize(),NaturalEnemies=NaturalEnemies,
                 SimpleMaterials = SimpleMaterials,
                 KeyBindings = new(ScGunBindings.Keys),
                 GamepadBindings = new(ScGamepadBindings.Keys), GamepadTriggerThreshold = ScGamepadBindings.Threshold,

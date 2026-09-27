@@ -115,7 +115,7 @@ public static class SurvivalSelfTest {
             Vector3 stand = ScGrenadeBallistics.LaunchVelocity(d, Vector3.Zero, false), run = ScGrenadeBallistics.LaunchVelocity(d, Vector3.UnitZ * 4, false), back = ScGrenadeBallistics.LaunchVelocity(d, -Vector3.UnitZ * 4, false);
             Vector3 weak = ScGrenadeBallistics.LaunchVelocity(ScGrenadeBallistics.Direction(Vector3.UnitZ, true), Vector3.Zero, true);
             return Math.Abs(stand.Length() - 20) < .001f && run.Z > stand.Z && back.Z < stand.Z && Math.Abs(run.Z - stand.Z - 5) < .001f
-                && Math.Abs(weak.Length() - 10) < .001f && d.Y > 0 && ScGrenadeBallistics.Fuse(3) == 2 && ScGrenadeBallistics.Fuse(2) == 1.5f;
+                && Math.Abs(weak.Length() - 10) < .001f && d.Y > 0 && ScGrenadeBallistics.Fuse(3) == 3 && ScGrenadeBallistics.Fuse(2) == 1.5f;
         });
         Test("throw-step-clamped", () => ScGrenadeBallistics.Step(.016f) == .016f && ScGrenadeBallistics.Step(3) == .5f && ScGrenadeBallistics.Step(float.NaN) == 0);
         Test("smoke-settles-before-pop", () => {

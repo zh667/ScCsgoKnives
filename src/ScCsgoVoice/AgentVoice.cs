@@ -197,7 +197,7 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
             if(candidates.Length==0&&s.Recent.Count>0)candidates=AgentVoiceModLoader.Clips.Where(c=>c.Language==options.Language&&c.Role==p.Role&&c.Event==p.Action&&c.Id!=s.Recent.Last()&&(!s.Last.TryGetValue(c.Id,out var last)||now-last>=15)).ToArray();
             var clip=p.Exact is { } exact&&exact.Language==options.Language?exact:candidates.Length>0?candidates[random.Int(0,candidates.Length-1)]:null;
             pending.Remove(p);if(clip is null)continue;
-            try{audio.PlaySound(clip.Resource,options.Volume,0,pos,3,false);
+            try{if(!ScOwnedAudio.World(audio,clip.Resource,options.Volume,0,pos,3,false,true))continue;
                 s.Next=now+(p.Manual?1.2:3);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,p.Manual));
             }catch(Exception ex){KnifeDiagnostics.WarnOnce("agent-voice-"+clip.Resource,ex.Message);}
         }

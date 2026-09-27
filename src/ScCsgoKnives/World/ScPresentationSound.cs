@@ -9,7 +9,11 @@ public static class ScPresentationSound {
         float gain=Math.Clamp(SettingsManager.SoundsVolume,0,1)*volume;
         if(gain<=AudioManager.MinAudibleVolume)return;
         if(Cs2SoundVariants.All.TryGetValue(name,out int count))name+="_"+s_random.Int(1,count);
-        try {new Sound(ContentManager.Get<SoundBuffer>("Audio/ScCsgoKnives/"+name),gain,MathF.Pow(2,pitch),0,false,true).Play();}
+        try {ScOwnedAudio.Play("Audio/ScCsgoKnives/"+name,volume,pitch);}
         catch(Exception e){KnifeDiagnostics.WarnOnce("presentation-sound/"+name,"Animation sound "+name+": "+e.Message);}
+    }
+    public static void Draw(string name,object owner){
+        if(Cs2SoundVariants.All.TryGetValue(name,out int count))name+="_"+s_random.Int(1,count);
+        ScOwnedAudio.Play("Audio/ScCsgoKnives/"+name,1,0,"draw",owner,true);
     }
 }

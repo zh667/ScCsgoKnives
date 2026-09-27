@@ -117,8 +117,12 @@ public sealed class ScAmmoHud : IDisposable {
     void Position() {
         if (host is null || host.ActualSize.X <= 1) return;
         Vector2 size = new(Math.Max(116, Panel.ActualSize.X), Math.Max(76, Panel.ActualSize.Y));
-        var obstacles = Obstacles(host).Select(w => new BoundingRectangle(host.ScreenToWidget(w.GlobalBounds.Min), host.ScreenToWidget(w.GlobalBounds.Max))).ToArray();
-        Vector2 corner = FindCorner(host.ActualSize, size, obstacles);
+        Vector2 corner;
+        if(ScUiSettings.AmmoHud.Custom)corner=ScUiSettings.AmmoHud.Position(host.ActualSize,size);
+        else{
+            var obstacles=Obstacles(host).Select(w=>new BoundingRectangle(host.ScreenToWidget(w.GlobalBounds.Min),host.ScreenToWidget(w.GlobalBounds.Max))).ToArray();
+            corner=FindCorner(host.ActualSize,size,obstacles);
+        }
         Panel.MarginRight = Math.Max(0,host.ActualSize.X-corner.X-size.X); Panel.MarginLeft = 0;
         Panel.MarginBottom = Math.Max(0, host.ActualSize.Y - corner.Y - size.Y); Panel.MarginTop = 0;
     }

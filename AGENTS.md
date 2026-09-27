@@ -1,5 +1,12 @@
 # Project conventions
 
+- User-directed 2026-09-27 gameplay/settings: bound own gun/voice/draw audio and
+  stop stale knife draw sounds; HUD position in settings; interrupt grenade deploy;
+  fire fuse 3s after release plus CS2 airburst; default-on natural enemies after
+  30 elapsed days (manual beacons unchanged). Improve settings groups/Save/Cancel
+  and add bounded logs. Ship matching 1.3.0 Full/split. Preserve third-party mods,
+  installed Mods/phone/worlds, Mini, resource quality and unrelated Zeus work.
+
 - User-directed USB follow-up 2026-09-27: fix NEO rigid-body bone-buffer
   synchronization ONLY in our appearance adapter; never patch/repack NEO/NMM.
   Prepare demanded weapon textures and restored-world resources with original

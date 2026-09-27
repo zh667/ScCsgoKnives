@@ -80,6 +80,7 @@ public static class KnifeAnimationController {
     public static KnifeRigPose Update(ComponentFirstPersonModel model, int itemValue) {
         int variant = ResolveVariant(itemValue);
         if (variant < 0) {
+            ScOwnedAudio.StopOwner(model);
             if (s_states.TryGetValue(model, out State oldState)) {
                 oldState.Variant = -1;
                 oldState.Pose = null;
@@ -121,7 +122,8 @@ public static class KnifeAnimationController {
             if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
             state.DrawReadyAt=KnifeClock.Now+CsmcKnifeRig.GetProfileDuration(variant,deploy);
-            PlayDrawSound(variant);
+            ScOwnedAudio.StopOwner(model);
+            PlayDrawSound(variant,model);
             LogActionStart(state, variant);
         }
 
@@ -268,6 +270,11 @@ public static class KnifeAnimationController {
 
     public static bool IsGrenadeDrawing(ComponentFirstPersonModel model)=>model is not null&&s_states.TryGetValue(model,out var s)
         &&CsmcKnifeRig.IsGrenade(s.Variant)&&(s.Action==ActionKind.Draw||KnifeClock.Now<s.DrawReadyAt);
+    public static bool CanStartGrenade(ComponentFirstPersonModel model,int value){
+        int variant=ResolveVariant(value);
+        if(variant<0||!CsmcKnifeRig.IsGrenade(variant))return false;
+        return model==null||!s_states.TryGetValue(model,out var s)||s.Variant!=variant||!IsBusy(model)||IsGrenadeDrawing(model);
+    }
     public static void ScrubGrenade(ComponentPlayer player,string alias,float elapsed) {
         var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
         if(model is not null&&s_states.TryGetValue(model,out var s)&&s.Action==ActionKind.Grenade&&s.ClipAlias==alias)s.StartedAt=KnifeClock.Now-elapsed;
@@ -440,6 +447,9 @@ public static class KnifeAnimationController {
         int variant = ResolveVariant(player.ComponentMiner.ActiveBlockValue);
         if (model is null || variant < 0 || !CsmcKnifeRig.IsGrenade(variant)) return;
         var state = StateFor(model); state.Variant = variant; state.PendingInspect = false;
+        state.DrawReadyAt=KnifeClock.Now;
+        var inventory=player.ComponentMiner.Inventory;
+        state.Selection.Observe(inventory,inventory.ActiveSlotIndex,player.ComponentMiner.ActiveBlockValue,false);
         Start(state, ActionKind.Grenade, alias); state.StartedAt -= elapsed;
     }
     public static long C4Action(ComponentPlayer player, string alias) {
@@ -572,14 +582,14 @@ public static class KnifeAnimationController {
     // The flipping sounds were recorded for a balisong and only fit that knife.
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";
 
-    static void PlayDrawSound(int variant) {
+    static void PlayDrawSound(int variant,ComponentFirstPersonModel model) {
         if (CsmcKnifeRig.IsC4(variant)) { ScPresentationSound.Play("c4_draw"); return; }
         if (CsmcKnifeRig.IsGrenade(variant)) {
             if (variant-CsmcKnifeRig.GrenadeOffset < 6) ScPresentationSound.Play(CsmcKnifeRig.GetAssetName(variant)+"_draw");
             return;
         }
         if (CsmcKnifeRig.IsGun(variant)) return;          // guns: SubsystemScGunBlockBehavior plays their own files when shipped
-        ScPresentationSound.Play(IsBalisong(variant) ? "butterfly_draw" : "knife_deploy");
+        ScPresentationSound.Draw(IsBalisong(variant) ? "butterfly_draw" : "knife_deploy",model);
     }
 
     static void LogActionStart(State state, int variant) {

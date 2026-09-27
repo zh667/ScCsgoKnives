@@ -18,6 +18,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         if(FiveMemberDay<1||FiveMemberDay>10000||MaxActive<5||MaxActive>20||!float.IsFinite(spawnCooldown)||spawnCooldown<0||spawnCooldown>600)throw new InvalidOperationException("敌方小队设置异常。");
         spawn=Project.FindSubsystem<SubsystemCreatureSpawn>(true);terrain=Project.FindSubsystem<SubsystemTerrain>(true);players=Project.FindSubsystem<SubsystemPlayers>(true);time=Project.FindSubsystem<SubsystemTime>(true);info=Project.FindSubsystem<SubsystemGameInfo>(true);
         ScTacticalPerformance.Start(Project);
+        Log.Information($"[CS_SPAWN] naturalEnabled={ScUiSettings.NaturalEnemies} graceDays={ScEnemySpawnPolicy.GraceDays} elapsedSeconds={info.TotalElapsedGameTime:F1}");
     }
     public override void Save(ValuesDictionary values){base.Save(values);values.SetValue("Schema",1);values.SetValue("FiveMemberDay",FiveMemberDay);values.SetValue("MaxActive",MaxActive);values.SetValue("SpawnCooldown",spawnCooldown);}
     public void Register(){if(spawn.m_creatureTypes.Any(c=>c.Name==Template))return;
@@ -47,6 +48,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
     int Day=>1+(int)(info.TotalElapsedGameTime/Math.Max(1,Project.FindSubsystem<SubsystemTimeOfDay>(true).DayDuration));
     bool ModeAllowed=>info.WorldSettings.EnvironmentBehaviorMode==EnvironmentBehaviorMode.Living&&info.WorldSettings.GameMode>=GameMode.Survival;
     bool Suitable(Point3 point){
+        if(!ScEnemySpawnPolicy.Allows(ScUiSettings.NaturalEnemies,info.TotalElapsedGameTime,Project.FindSubsystem<SubsystemTimeOfDay>(true).DayDuration))return false;
         if(!ModeAllowed||spawnCooldown>0||Enemies.Count+Roles(Day,FiveMemberDay).Length>MaxActive)return false;
         // Native suitability receives the first free cell ABOVE the support block.
         point.Y--;Vector3 p=new(point.X+.5f,point.Y+1.1f,point.Z+.5f);

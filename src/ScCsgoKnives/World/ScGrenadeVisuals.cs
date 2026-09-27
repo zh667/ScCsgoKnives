@@ -4,7 +4,19 @@ namespace Game;
 
 /// <summary>Bounded, deterministic sprite animation, separate from damage and saved state.</summary>
 public static class ScGrenadeVisuals {
-    public static readonly string[] Textures = ["grenade_smoke_atlas", "grenade_fire_atlas", "grenade_blast_atlas", "grenade_glow"];
+    public static readonly string[] Textures = ["grenade_smoke_atlas", "grenade_fire_atlas", "grenade_blast_atlas", "grenade_glow","grenade_fireburst_atlas"];
+    public const float FireBurstLifetime=.85f;
+    public static List<Sprite> FireBurst(Vector3 position,float age,float distance){
+        List<Sprite> sprites=[];if(age<0||age>=FireBurstLifetime)return sprites;
+        float t=age/FireBurstLifetime,fade=Math.Clamp(age/.035f,0,1)*(1-t);
+        int count=distance>30||ScResourcePolicy.Lite?4:7;
+        for(int i=0;i<count;i++){
+            float angle=i*2.399963f;
+            var p=position+new Vector3(MathF.Cos(angle),Hash(i+71)*.8f,MathF.Sin(angle))*(.15f+t*.8f);
+            sprites.Add(new(p,.5f+t*1.5f,.6f+t*1.6f,Tint(255,225,180,fade),4,Frame(t),angle,Additive:true));
+        }
+        return sprites;
+    }
     // CS2's flash has a short white core followed by a visible after-flash; the burst sprite
     // must outlive the core or it looks as if the effect is cut off on the next frame.
     public const float BlastLifetime = 2.2f, FlashLifetime = 1.15f;

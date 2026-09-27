@@ -14,7 +14,7 @@ public static class ScGrenadeBallistics {
     // Lift is added to the view vector before normalising; it is not an angle (0.28.x values kept).
     public const float StrongLift = .18f, WeakLift = .08f;
     public const float PlayerVelocityShare = 1.25f; // 0.28.x: .5; CS:GO SDK factor, sampled once at release
-    public const float FuseSeconds = 1.5f, FireFuseSeconds = 2f; // unchanged
+    public const float FuseSeconds = 1.5f, FireFuseSeconds = 3f;
     // F04: smoke/decoy pop only after resting on support for SettleHold (估计). SettleTimeout is
     // the abnormal-case cap for a grenade that never comes to rest, not a normal trigger path.
     public const float SettleHold = .15f;

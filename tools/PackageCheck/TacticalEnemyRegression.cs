@@ -117,12 +117,17 @@ static class TacticalEnemyRegression {
                 T("SubsystemTacticalEnemies").GetMethod("ReadSpawn").Invoke(null,[e.Creature.Entity,data]);Check(e.Creature.ComponentHealth.Health==.2f&&e.Enemy.State.ReloadLeft==1.2f,"fade snapshot discarded last health/state");
                 e.Creature.ComponentHealth.Health=0;e.Enemy.Died();f.Director.OnEntityRemoved(e.Creature.Entity);Check(chunk.SpawnsData.Count==0&&!f.Sleeping.m_spawnEntityDatas.ContainsKey(data.EntityId),"dead fading enemy remains eligible to respawn");
             });
-            Test("day29-30-native-surface-point-mode-population-and-sleeping-squad",()=>{
+            Test("30-elapsed-days-setting-native-surface-mode-population-and-sleeping-squad",()=>{
                 var f=World();BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};
                 var chunk=f.Terrain.Terrain.AllocateChunk(0,0);chunk.State=TerrainChunkState.Valid;f.Terrain.Terrain.SetCellValueFast(8,60,8,2);f.Terrain.Terrain.SetTopHeight(8,8,60);
                 var point=f.Spawn.ProcessSpawnPoint(new Point3(8,60,8),SpawnLocationType.Surface);Check(point==new Point3(8,61,8),"unexpected native spawn convention: "+point);f.Director.Register();f.Director.Register();var registered=f.Spawn.m_creatureTypes.Single(c=>c.Name=="ScTacticalEnemy");
                 bool Suitable()=>registered.SpawnSuitabilityFunction(registered,point.Value)>0;
-                Check(Suitable(),"native first-free-cell rejected");
+                Check(!Suitable(),"natural enemies spawned before grace period");
+                double daySeconds=f.P.FindSubsystem<SubsystemTimeOfDay>(true).DayDuration;
+                f.Info.TotalElapsedGameTime=30*daySeconds;
+                Check(Suitable(),"native first-free-cell rejected after grace period");
+                var setting=C("ScUiSettings").GetField("NaturalEnemies");setting.SetValue(null,false);
+                try{Check(!Suitable(),"disabled natural spawning ignored");}finally{setting.SetValue(null,true);}
                 foreach(var mode in new[]{GameMode.Creative,GameMode.Harmless}){f.Info.WorldSettings.GameMode=mode;Check(!Suitable(),"peaceful mode spawned enemies");}f.Info.WorldSettings.GameMode=GameMode.Survival;
                 f.Info.WorldSettings.EnvironmentBehaviorMode=EnvironmentBehaviorMode.Static;Check(!Suitable(),"static ecology ignored");f.Info.WorldSettings.EnvironmentBehaviorMode=EnvironmentBehaviorMode.Living;
                 Check(((Array)T("SubsystemTacticalEnemies").GetMethod("Roles").Invoke(null,[29,30])).Length==3&&((Array)T("SubsystemTacticalEnemies").GetMethod("Roles").Invoke(null,[30,30])).Length==5,"day boundary");
@@ -149,7 +154,7 @@ static class TacticalEnemyRegression {
                 // Published feedback 1.7.1 (now public 1.3.0) removed count caps; validate input instead.
                 for(int i=0;i<5;i++)Check(grenade.TryThrowHostile(i,new Vector3(0,61,0),new Vector3(0,4,-12)),"legal throw refused");
                 Check(!grenade.TryThrowHostile(6,Vector3.Zero,Vector3.One)&&!grenade.TryThrowHostile(-1,Vector3.Zero,Vector3.One)&&!grenade.TryThrowHostile(0,new Vector3(float.NaN,0,0),Vector3.One),"invalid kind/position accepted");
-                var states=((System.Collections.IEnumerable)C("SubsystemScGrenades").GetField("m_active",Fields).GetValue(g)).Cast<object>().ToArray();dynamic fire=states[3];Check(fire.Remaining==2f&&fire.Owner==-2,"wrong enemy fire fuse/owner");
+                var states=((System.Collections.IEnumerable)C("SubsystemScGrenades").GetField("m_active",Fields).GetValue(g)).Cast<object>().ToArray();dynamic fire=states[3];Check(fire.Remaining==3f&&fire.Owner==-2,"wrong enemy fire fuse/owner");
                 var player=Blank<ComponentPlayer>();var body=new ComponentBody();E(f.P,player,body);var friendly=C("SubsystemScGrenades").GetMethod("Friendly",Fields);Check((bool)friendly.Invoke(g,[states[0],body]),"enemy grenade immunity inherited player friendly-fire setting");
                 dynamic smoke=states[2];smoke.Effect=true;smoke.Age=5f;smoke.Remaining=10f;smoke.Position=new Vector3(0,61,0);Check(grenade.SmokeBlocksSight(new Vector3(-4,61,0),new Vector3(4,61,0)),"NPC ignores dense smoke");
             });
