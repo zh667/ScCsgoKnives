@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed mobile follow-up 2026-09-27: fix smoke repeatedly bouncing on
+  bodies (one body collision per smoke, terrain/fuse/support rules retained),
+  optimize proven animation/bone/first-use weapon costs, and add bounded diagnostics
+  for uncertain frame/GC costs. Use shared Full/Lite code, retain visuals, gameplay,
+  save identities and manual-backup policy. Deliver updated 1.3.0 split pair and
+  matching Full; Mini and installed Mods/worlds stay unchanged. Preserve unrelated
+  dirty Zeus work. Phone acceptance follows detached native validation.
+
 - User-directed 2026-09-27 codec release supersedes the research-only scope:
   implement original-byte Zstd compression for the matching 1.3.0 split Lite and
   agents packages, validate and replace both output deliveries. Retain all current

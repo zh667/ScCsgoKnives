@@ -303,10 +303,10 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         s.Velocity*=MathF.Exp(-(water?3:.08f)*dt);
         Vector3 next=s.Position+s.Velocity*dt;
         var hit=SolidRay(s.Position,next);
-        var bodyHit=m_bodies.Raycast(s.Position,next,.08f,(b,_)=>s.Age>.3f || b.Entity.FindComponent<ComponentPlayer>()?.PlayerData.PlayerIndex!=s.Owner);
+        var bodyHit=ScGrenadeBallistics.BodyCollisionAllowed(s)
+            ?m_bodies.Raycast(s.Position,next,.08f,(b,_)=>s.Age>.3f || b.Entity.FindComponent<ComponentPlayer>()?.PlayerData.PlayerIndex!=s.Owner):null;
         if (bodyHit.HasValue && (!hit.HasValue || bodyHit.Value.Distance<hit.Value.Distance)) {
-            Vector3 direction=s.Velocity.LengthSquared()>.001f?Vector3.Normalize(s.Velocity):Vector3.UnitY;
-            s.Position=bodyHit.Value.HitPoint()-direction*.10f;s.Velocity=-s.Velocity*.3f;return;
+            ScGrenadeBallistics.BounceFromBody(s,bodyHit.Value.HitPoint());return;
         }
         if (hit.HasValue) {
             Vector3 normal=CellFace.FaceToVector3(hit.Value.CellFace.Face);

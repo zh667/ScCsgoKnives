@@ -70,12 +70,17 @@ Window.Frame+=()=>{if(done)return;done=true;try{
             var reference=new ComponentModel{m_model=model,m_boneTransforms=native.m_boneTransforms,ModelScale=1};var expected=new Matrix[model.Bones.Count];reference.ProcessBoneHierarchy(model.RootBone,Matrix.Identity,expected);
             fast.ProcessBoneHierarchy(model.RootBone,Matrix.Identity,fast.AbsoluteBoneTransformsForCamera);
             Check(role+" hierarchy "+i,expected.SequenceEqual(fast.AbsoluteBoneTransformsForCamera));
+            var view=Matrix.CreateLookAt(new(1,2,3),new(2,1,-4),Vector3.UnitY);
+            fast.CalculateRenderBones(view);
+            string held=armed?ScThirdPerson.AssetFor(fast.Entity.FindComponent<ComponentTacticalEnemy>().State.DisplayValue,out _):null;
+            foreach(var bone in ScActorRenderBones.For(model,held))if(fast.AbsoluteBoneTransformsForCamera[bone.Index]!=expected[bone.Index]*view)throw new Exception(role+" sparse camera matrix "+i+"/"+bone.Name);
         }
         Check(role+" native controller state and death poses "+armed,true);
         }
         // Native state/transition/event code is still exercised; repeat cameras must not tick it twice.
         var camera=Component();Hooks(true);camera.Animate();float t=camera.AnimationController.Layers[0].Player.Time;camera.Animate();Check(role+" camera clock guard",camera.AnimationController.Layers[0].Player.Time==t);
         camera.DisableAnimation=true;frame.SetValue(camera,-1);camera.Animate();Check(role+" disabled animation clock",camera.AnimationController.Layers[0].Player.Time==t);
+        MobileRenderChecks.Run(role,model,Component,Check,rows);
         foreach(int count in new[]{1,5,41})foreach(bool optimized in new[]{false,true}){
             var group=Enumerable.Range(0,count).Select(_=>Component(true)).ToArray();Hooks(optimized);
             foreach(var c in group){c.Animate();c.AnimationController.Update(.3f);}

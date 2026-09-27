@@ -3,4 +3,5 @@
   <ItemGroup><PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" /></ItemGroup>
   <ItemGroup><Compile Include="../../src/ScCsgoTactical/ScActorAnimations.cs" Link="ScActorAnimations.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../../src/ScCsgoKnives/Rendering/ScResourceCompression.cs" Link="ScResourceCompression.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/ScCsgoKnives/Rendering/ScResourceTiming.cs" Link="ScResourceTiming.cs" /><Compile Include="../../src/ScCsgoKnives/Rendering/KnifeLog.cs" Link="KnifeLog.cs" /></ItemGroup>
 </Project>

@@ -14,6 +14,7 @@ public sealed class ScAgentActions {
     readonly Dictionary<string,ModelAnimation> clips;
     readonly Dictionary<string,int> bones;
     readonly Dictionary<string,Matrix?[]> holds=new();
+    readonly Dictionary<string,int[]> holdIndices=new();
     readonly Dictionary<(string Asset,string Bone),int> propIndices=new();
     public ScAgentActions(Model source) {
         // Also covers NMM list previews and restored player appearances before pose creation.
@@ -74,8 +75,9 @@ public sealed class ScAgentActions {
         if(heldAsset!=null&&clips.TryGetValue("hold_"+WorldAsset(heldAsset),out var hold)){
             if(!holds.TryGetValue(hold.Name,out var held)){
                 held=new Matrix?[model.Bones.Count];player.SetAnimation(model,hold);player.Time=0;ScActorSampler.Sample(player,held);holds[hold.Name]=held;
+                holdIndices[hold.Name]=upper.Where(i=>held[i].HasValue).ToArray();
             }
-            foreach(int i in upper)if(held[i] is Matrix target)local[i]=target;
+            foreach(int i in holdIndices[hold.Name])local[i]=held[i];
         }
         if(action.Asset!=heldAsset)return;
         if(!action.Active)return;

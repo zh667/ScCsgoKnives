@@ -13,6 +13,8 @@ public sealed class ScGrenadeState {
     public float Rested;
     public float NextBounceSound;
     public bool Effect, Grounded;
+    // Optional flight-only extension. Old saves default to allowing the first body hit.
+    public bool SmokeBodyBounceUsed;
     // Do not impose a gameplay upper limit on simultaneous projectiles. Effects still expire naturally;
     // this helper remains for save/load call sites and validates only the state itself.
     public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => true;
@@ -34,12 +36,14 @@ public sealed class ScGrenadeState {
     public ValuesDictionary Save() {
         var d = new ValuesDictionary(); d.SetValue("Kind", Kind); d.SetValue("Owner", Owner); d.SetValue("Id", Id); d.SetValue("Position", Position);
         d.SetValue("Velocity", Velocity); d.SetValue("Remaining", Remaining); d.SetValue("Age", Age);
-        d.SetValue("Effect", Effect); d.SetValue("Grounded", Grounded); d.SetValue("Rested", Rested); return d;
+        d.SetValue("Effect", Effect); d.SetValue("Grounded", Grounded); d.SetValue("Rested", Rested);
+        d.SetValue("SmokeBodyBounceUsed", SmokeBodyBounceUsed); return d;
     }
     public static ScGrenadeState Load(ValuesDictionary d) {
         var s = new ScGrenadeState { Kind=d.GetValue<int>("Kind"), Owner=d.GetValue<int>("Owner"), Id=d.GetValue<int>("Id",0), Position=d.GetValue<Vector3>("Position"),
             Velocity=d.GetValue<Vector3>("Velocity"), Remaining=d.GetValue<float>("Remaining"), Age=d.GetValue<float>("Age",0),
-            Effect=d.GetValue<bool>("Effect",false), Grounded=d.GetValue<bool>("Grounded",false), Rested=d.GetValue<float>("Rested",0) };
+            Effect=d.GetValue<bool>("Effect",false), Grounded=d.GetValue<bool>("Grounded",false), Rested=d.GetValue<float>("Rested",0),
+            SmokeBodyBounceUsed=d.GetValue<bool>("SmokeBodyBounceUsed",false) };
         if (s.Kind < 0 || s.Kind >= 6 || !float.IsFinite(s.Remaining) || s.Remaining < 0 || s.Remaining > 30 || !float.IsFinite(s.Age) || !float.IsFinite(s.Rested) || s.Rested < 0
             || !Finite(s.Position) || !Finite(s.Velocity)) return null;
         return s;

@@ -30,6 +30,7 @@ public static class ScActorAnimations {
     public static List<ModelAnimation> Read(Stream stream, IReadOnlyList<string> bones) {
         using var decodedStream = ScResourceCompression.Open(stream, "actor animation", leaveOpen: true);
         stream = decodedStream;
+        using var parse=ScResourceTiming.Measure("actor-parse",bones.Count.ToString());
         using var reader = new BinaryReader(stream, Encoding.UTF8, leaveOpen: true);
         if (!reader.ReadBytes(8).AsSpan().SequenceEqual("SCACT001"u8))
             throw new InvalidDataException("Invalid CS actor animation header.");

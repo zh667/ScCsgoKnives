@@ -1,6 +1,8 @@
 using System.IO;
 using Engine;
 using Engine.Graphics;
+using System.Diagnostics;
+using System.Threading.Tasks;
 namespace Game;
 
 // Lossless, offline-derived rigid world geometry. Bounded by the published gun catalogue,
@@ -8,16 +10,50 @@ namespace Game;
 public sealed class ScNpcWeaponGeometry {
     const int Magic=0x314D574E;
     static readonly ScResourceCache<string,ScNpcWeaponGeometry> cache=new("npc-weapons",80);
+    // Owned byte snapshots only. ContentManager and GPU objects stay on the caller
+    // thread. Limit in-flight buffers/work rather than preloading every weapon.
+    static readonly Dictionary<string,Task<ScNpcWeaponGeometry>> pending=new();
+    public static int PendingCount=>pending.Count;
+    public static long PrefetchStarted,PrefetchReady;
+    public static double PrefetchWaitMs;
     public string Asset {get;private set;}
     public bool HasRightGrip {get;private set;}
     public Matrix WorldRootInverse {get;private set;}
     public ScThirdPersonWeapon.Group[] Groups {get;private set;}
-    public static void Clear()=>cache.Clear();
+    public static void Clear(){cache.Clear();pending.Clear();PrefetchStarted=PrefetchReady=0;PrefetchWaitMs=0;}
+    public static void Request(string asset,bool legacy=false){
+        string key=asset+(legacy?"-legacy":"");
+        if(cache.TryGetValue(key,out _)||pending.ContainsKey(key)||pending.Count>=2)return;
+        try{
+            using var timing=ScResourceTiming.Measure("npc-read-ahead",key);
+            var stream=ContentManager.GetStream(PathFor(asset,legacy));
+            if(stream==null||!stream.CanSeek)return;
+            long remaining=stream.Length-stream.Position;
+            if(remaining<=0||remaining>ScResourceCompression.MaximumBytes)return;
+            var bytes=new byte[(int)remaining];stream.ReadExactly(bytes);
+            pending.Add(key,Task.Run(()=>{
+                using var input=new MemoryStream(bytes,writable:false);
+                // Observe errors in the task itself; For rethrows before fallback.
+                try{return Read(input,asset,legacy);}
+                catch(Exception e){return new ScNpcWeaponGeometry{loadError=e};}
+            }));
+            PrefetchStarted++;
+        }catch(Exception e) when(e is not OutOfMemoryException){
+            KnifeDiagnostics.WarnOnce("npc-prefetch-"+key,$"NPC prefetch {key}: {e.Message}; normal reader will validate on demand.");
+        }
+    }
+    Exception loadError;
     public static string PathFor(string asset,bool legacy)=>"Models/ScCsgoTactical/Weapons/"+asset+(legacy?"-legacy":"")+".scmesh";
     public static ScNpcWeaponGeometry Wrap(ScThirdPersonWeapon source)=>source==null?null:new(){Asset=source.Asset,HasRightGrip=source.HasRightGrip,WorldRootInverse=source.WorldRootInverse,Groups=source.Groups};
     public static ScNpcWeaponGeometry For(string asset,bool legacy=false){
         string key=asset+(legacy?"-legacy":"");
         if(cache.TryGetValue(key,out var hit))return hit;
+        if(pending.Remove(key,out var prepared)){
+            long tick=Stopwatch.GetTimestamp();if(prepared.IsCompleted)PrefetchReady++;
+            hit=prepared.GetAwaiter().GetResult();PrefetchWaitMs+=Stopwatch.GetElapsedTime(tick).TotalMilliseconds;
+            if(hit.loadError!=null)System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(hit.loadError).Throw();
+            cache[key]=hit;return hit;
+        }
         try { // ContentManager owns this stream, including its rewind/lifetime.
             hit=Read(ContentManager.GetStream(PathFor(asset,legacy)),asset,legacy);
         }catch(Exception e) when(e is not ScResourceCodecException and not InvalidDataException and not EndOfStreamException and not OutOfMemoryException){
@@ -50,6 +86,7 @@ public sealed class ScNpcWeaponGeometry {
     public static ScNpcWeaponGeometry Read(Stream stream,string asset,bool legacy){
         using var decodedStream=ScResourceCompression.Open(stream,asset+".scmesh",leaveOpen:true);
         stream=decodedStream;
+        using var parse=ScResourceTiming.Measure("npc-parse",asset);
         using var r=new BinaryReader(stream,System.Text.Encoding.UTF8,true);
         if(r.ReadInt32()!=Magic||Text(r)!=asset||r.ReadBoolean()!=legacy)throw new InvalidDataException("Mesh cache identity");
         var result=new ScNpcWeaponGeometry{Asset=asset,HasRightGrip=r.ReadBoolean(),WorldRootInverse=MatrixRead(r)};

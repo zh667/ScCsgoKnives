@@ -27,6 +27,12 @@ public static class ScGrenadeBallistics {
     public static float Fuse(int kind) => kind is 3 or 4 ? FireFuseSeconds : FuseSeconds;
     public static float Step(float dt) => float.IsFinite(dt) ? Math.Clamp(dt, 0, MaxStep) : 0;
     public static bool Settled(ScGrenadeState s) => s.Grounded && s.Rested >= SettleHold;
+    public static bool BodyCollisionAllowed(ScGrenadeState s) => s.Kind != 2 || !s.SmokeBodyBounceUsed;
+    public static void BounceFromBody(ScGrenadeState s, Vector3 hitPoint) {
+        Vector3 direction=s.Velocity.LengthSquared()>.001f?Vector3.Normalize(s.Velocity):Vector3.UnitY;
+        s.Position=hitPoint-direction*.10f;s.Velocity=-s.Velocity*.3f;
+        if(s.Kind==2)s.SmokeBodyBounceUsed=true;
+    }
     /// <summary>F02 (user, 2026-09-07): once a throw has finished, go back to the slot the player held
     /// before the grenade slot, whatever it holds now; -1 (stay) when there is no such slot.</summary>
     public static int FollowUpSlot(int slotsCount, int thrownSlot, int previousSlot)

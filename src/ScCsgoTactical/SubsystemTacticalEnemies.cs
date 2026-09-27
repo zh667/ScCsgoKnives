@@ -134,6 +134,9 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
                 Entity e;using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.EntityCreate))e=DatabaseManager.CreateEntity(Project,Template,true);
                 made.Add(e);
                 using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Configure))e.FindComponent<ComponentTacticalEnemy>(true).Configure(TacticalEnemyState.Create(roles[i],squad,random),locations[i]);
+                var state=e.FindComponent<ComponentTacticalEnemy>(true).State;
+                using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponPrepare))
+                    ScNpcWeaponGeometry.Request(GunSpec.All[state.Variant].Name);
             }
             foreach(var e in made){using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.AddEntity);Project.AddEntity(e);}
             spawnCooldown=60;trace.Success=true;return made.Count;

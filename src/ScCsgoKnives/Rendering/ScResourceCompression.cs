@@ -28,6 +28,7 @@ public static class ScResourceCompression {
             if (count != 8 || !prefix.AsSpan().SequenceEqual("SCZSTD01"u8))
                 return new PrefixStream(source, prefix, count, leaveOpen);
             try {
+                using var timing=ScResourceTiming.Measure("decode",resource);
                 Span<byte> header = stackalloc byte[40];
                 source.ReadExactly(header);
                 int rawLength = BinaryPrimitives.ReadInt32LittleEndian(header);

@@ -30,7 +30,7 @@ Check("no log per timed call",sink.Lines.Count==3);
 var session=typeof(ScTacticalPerformance).GetMethod("For",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,[diagnosticProject]);
 var frameMethod=session.GetType().GetMethod("Frame",BindingFlags.NonPublic|BindingFlags.Instance);
 frameMethod.Invoke(session,[1,100d,4d,3,2]);frameMethod.Invoke(session,[1,999d,99d,3,2]);
-Check("no early summary or duplicate frame log",sink.Lines.Count==3);
+Check("bounded long frame and no duplicate frame log",sink.Lines.Count==4&&sink.Lines.Last().Contains("long-frame")&&sink.Lines.Last().Contains("scopesFrame="));
 session.GetType().GetField("reportAt",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(session,Stopwatch.GetTimestamp()-11*Stopwatch.Frequency);
 frameMethod.Invoke(session,[2,20d,3d,3,2]);
 Check("periodic frame sample counted once and includes population",sink.Lines.Last().Contains("frames=2")&&sink.Lines.Last().Contains("engineAvgMs=60.00")&&sink.Lines.Last().Contains("over50/100/250=1/1/0")&&sink.Lines.Last().Contains("peakActors=5"));

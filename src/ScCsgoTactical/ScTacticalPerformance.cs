@@ -8,9 +8,9 @@ namespace Game;
 
 // Diagnostic timings are inclusive CPU wall times, not GPU timers. No world data or files.
 public static class ScTacticalPerformance {
-    public const string Revision="crowd-smooth-20260926";
+    public const string Revision="mobile-common-20260927";
     public enum Stage { Placement, EntityCreate, Configure, AddEntity, ModelLoad, ModelSet,
-        AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, Count }
+        AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, ActionApply, WeaponPrepare, Count }
     static readonly ConditionalWeakTable<Project,Session> sessions=new();
     static Session For(Project project)=>project==null?null:sessions.GetValue(project,_=>new Session());
     public static Scope Measure(Project project,Stage stage,string resource=null)=>new(For(project),stage,resource);
@@ -18,6 +18,7 @@ public static class ScTacticalPerformance {
     public static void Frame(Project project,int enemies,int companions)=>For(project)?.Frame(Time.FrameIndex,Time.FrameDuration*1000,Time.CpuFrameDuration*1000,enemies,companions);
     public static void Finish(Project project){if(project!=null&&sessions.TryGetValue(project,out var s)){s.Report(true);sessions.Remove(project);}}
     public static SpawnTrace Spawn(Project project,string kind,int count)=>new(For(project),kind,count);
+    public static void BoneWork(Project project,int active,int total){var s=For(project);if(s!=null){s.activeBones+=active;s.totalBones+=total;s.bonePasses++;}}
 
     public readonly struct Scope : IDisposable {
         readonly Session session;readonly Stage stage;readonly long started,allocated;readonly string resource;
@@ -45,13 +46,38 @@ public static class ScTacticalPerformance {
         double frameMs,cpuMs,maxFrame;
         int gc0=GC.CollectionCount(0),gc1=GC.CollectionCount(1),gc2=GC.CollectionCount(2);
         internal int requests,failed,suppressed,sequence;
+        internal long activeBones,totalBones,bonePasses;
+        readonly Counter[] frameCounters=new Counter[(int)Stage.Count];
+        int scopesFrame=-1,frameGc0=GC.CollectionCount(0),frameGc2=GC.CollectionCount(2),longFrameDetails,longFrameSuppressed;
+        long lastFrameAt,allocatedAt=GC.GetTotalAllocatedBytes(false);
         internal long[] Timings()=>counters.Select(c=>c.ticks).ToArray();
         internal void AppendDifference(StringBuilder b,long[] before){for(int i=0;i<counters.Length;i++){long d=counters[i].ticks-before[i];if(d>0)b.Append(CultureInfo.InvariantCulture,$" {(Stage)i}Ms={Milliseconds(d):F2}");}}
-        internal void Add(Stage stage,long ticks,long bytes,string resource){ref var c=ref counters[(int)stage];c.calls++;c.ticks+=ticks;if(ticks>c.max){c.max=ticks;c.maxResource=resource;}c.bytes+=Math.Max(0,bytes);}
+        internal void Add(Stage stage,long ticks,long bytes,string resource){
+            void AddCounter(ref Counter c){c.calls++;c.ticks+=ticks;if(ticks>c.max){c.max=ticks;c.maxResource=resource;}c.bytes+=Math.Max(0,bytes);}
+            AddCounter(ref counters[(int)stage]);
+            if(scopesFrame!=Time.FrameIndex){Array.Clear(frameCounters);scopesFrame=Time.FrameIndex;}
+            AddCounter(ref frameCounters[(int)stage]);
+        }
         internal bool AllowDetail(long now){if(detailAt!=long.MinValue&&Milliseconds(now-detailAt)<1000)return false;detailAt=now;return true;}
         internal void Frame(int index,double ms,double cpu,int enemyCount,int companionCount){
             enemies=enemyCount;companions=companionCount;peak=Math.Max(peak,enemies+companions);
-            if(index!=lastFrame){lastFrame=index;frames++;frameMs+=ms;cpuMs+=cpu;maxFrame=Math.Max(maxFrame,ms);if(ms>=50)over50++;if(ms>=100)over100++;if(ms>=250)over250++;}
+            if(index!=lastFrame){
+                long now=Stopwatch.GetTimestamp();double gap=lastFrameAt==0?0:Milliseconds(now-lastFrameAt);
+                int currentGc0=GC.CollectionCount(0),currentGc2=GC.CollectionCount(2);
+                if((ms>=100||gap>=1000)&&(enemies+companions>0||peak>0||requests>0)){
+                    if(longFrameDetails++<6){
+                        var b=new StringBuilder(512);
+                        b.Append(CultureInfo.InvariantCulture,$"[CS_PERF] long-frame index={index} engineMs={ms:F2} cpuMs={cpu:F2} updateGapMs={gap:F2} gcDelta={currentGc0-frameGc0}/{currentGc2-frameGc2} scopesFrame={scopesFrame} enemies={enemies} companions={companions}");
+                        for(int i=0;i<frameCounters.Length;i++)if(frameCounters[i].ticks>0){
+                            b.Append(CultureInfo.InvariantCulture,$" | {(Stage)i}Ms={Milliseconds(frameCounters[i].ticks):F2}");
+                            if(frameCounters[i].maxResource!=null)b.Append(",resource=").Append(frameCounters[i].maxResource);
+                        }
+                        b.Append("; scopes inclusive, frame IDs retained; GPU/physics not isolated");Log.Information(b.ToString());
+                    }else longFrameSuppressed++;
+                }
+                frameGc0=currentGc0;frameGc2=currentGc2;lastFrameAt=now;
+                lastFrame=index;frames++;frameMs+=ms;cpuMs+=cpu;maxFrame=Math.Max(maxFrame,ms);if(ms>=50)over50++;if(ms>=100)over100++;if(ms>=250)over250++;
+            }
             if(Milliseconds(Stopwatch.GetTimestamp()-reportAt)>=10000)Report(false);
         }
         internal void Report(bool final){
@@ -60,11 +86,14 @@ public static class ScTacticalPerformance {
             if(active){
                 var b=new StringBuilder(1600);
                 b.Append(CultureInfo.InvariantCulture,$"[CS_PERF] summary final={final} windowMs={Milliseconds(now-reportAt):F0} enemies={enemies} companions={companions} peakActors={peak} frames={frames} engineAvgMs={frameMs/Math.Max(1,frames):F2} engineMaxMs={maxFrame:F2} engineCpuAvgMs={cpuMs/Math.Max(1,frames):F2} over50/100/250={over50}/{over100}/{over250} spawnRequests={requests} spawnFailed={failed} detailSuppressed={suppressed} managedMB={GC.GetTotalMemory(false)/1048576d:F1} gc={current0-gc0}/{current1-gc1}/{current2-gc2}");
+                b.Append(CultureInfo.InvariantCulture,$" processAllocMB={(GC.GetTotalAllocatedBytes(false)-allocatedAt)/1048576d:F2} sampledMs={frameMs:F2} renderBones={activeBones}/{totalBones} bonePasses={bonePasses} longFrameSuppressed={longFrameSuppressed} gpuMeshes={ScNpcWeaponRenderer.CachedMeshes}");
+                b.Append(CultureInfo.InvariantCulture,$" prefetchPending={ScNpcWeaponGeometry.PendingCount} prefetchStarted={ScNpcWeaponGeometry.PrefetchStarted} prefetchReady={ScNpcWeaponGeometry.PrefetchReady} prefetchWaitTotalMs={ScNpcWeaponGeometry.PrefetchWaitMs:F2}");
                 for(int i=0;i<counters.Length;i++){var c=counters[i];if(c.calls==0)continue;
                     b.Append(CultureInfo.InvariantCulture,$" | {(Stage)i}:n={c.calls},totalMs={Milliseconds(c.ticks):F2},maxMs={Milliseconds(c.max):F2},allocKB={c.bytes/1024d:F1}");if(c.maxResource!=null)b.Append(",maxFor=").Append(c.maxResource);}
                 Log.Information(b.ToString());
             }
             Array.Clear(counters);frames=over50=over100=over250=peak=requests=failed=suppressed=0;frameMs=cpuMs=maxFrame=0;
+            activeBones=totalBones=bonePasses=0;longFrameDetails=longFrameSuppressed=0;allocatedAt=GC.GetTotalAllocatedBytes(false);
             gc0=current0;gc1=current1;gc2=current2;reportAt=now;
         }
     }

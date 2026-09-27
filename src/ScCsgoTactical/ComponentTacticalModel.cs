@@ -34,7 +34,26 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     public override void AnimateCreature(){}
     public override void CalculateAbsoluteBonesTransforms(Camera camera){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Bones);
-        base.CalculateAbsoluteBonesTransforms(camera);
+        if(!Model.HasSkin||m_animationParticipants is {Count:>0}||nativeAnimationRequired){
+            base.CalculateAbsoluteBonesTransforms(camera);return;
+        }
+        bool skip=false;
+        ModsManager.HookAction("OnModelCalculateBones",loader=>{loader.OnModelCalculateBones(this,camera,out bool handled);skip|=handled;return false;});
+        if(skip)return;
+        CalculateRenderBones(camera.ViewMatrix);
+    }
+    public void CalculateRenderBones(Matrix view){
+        string asset=HeldValue==0?null:ScThirdPerson.AssetFor(HeldValue,out _);
+        var bones=ScActorRenderBones.For(Model,asset);
+        // Preserve world-space hierarchy ordering and the native view multiply order.
+        foreach(var b in bones){
+            Matrix local=m_boneTransforms[b.Index]??b.Transform;
+            if(b==Model.RootBone&&ModelScale!=1)local=Matrix.CreateScale(ModelScale)*local;
+            var parent=b==Model.RootBone?Matrix.Identity:AbsoluteBoneTransformsForCamera[b.ParentBone.Index];
+            Matrix.MultiplyRestricted(ref local,ref parent,out AbsoluteBoneTransformsForCamera[b.Index]);
+        }
+        foreach(var b in bones)AbsoluteBoneTransformsForCamera[b.Index]*=view;
+        ScTacticalPerformance.BoneWork(Project,bones.Length,Model.Bones.Count);
     }
     public override void ProcessBoneHierarchy(ModelBone bone,Matrix parent,Matrix[] output){
         if(bone!=Model.RootBone){base.ProcessBoneHierarchy(bone,parent,output);return;}
@@ -94,7 +113,10 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
             var axis=Vector3.Normalize(Vector3.Cross(Vector3.UnitY,away));
             m_boneTransforms[Model.RootBone.Index]=root*Matrix.CreateTranslation(-pos)*Matrix.CreateFromAxisAngle(axis,MathF.PI*.5f*ease)*Matrix.CreateTranslation(pos+Vector3.UnitY*(.43f*ease));
         }else{
-            if(HeldValue!=0&&!ScTacticalShieldBlock.IsShield(HeldValue))Actions.ApplyHeld(m_boneTransforms,action,ScThirdPerson.AssetFor(HeldValue,out _));
+            if(HeldValue!=0&&!ScTacticalShieldBlock.IsShield(HeldValue)){
+                using var apply=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.ActionApply);
+                Actions.ApplyHeld(m_boneTransforms,action,ScThirdPerson.AssetFor(HeldValue,out _));
+            }
             if(lastLivingPose?.Length!=m_boneTransforms.Length)lastLivingPose=new Matrix?[m_boneTransforms.Length];Array.Copy(m_boneTransforms,lastLivingPose,m_boneTransforms.Length);
         }
         if(framePose?.Length!=m_boneTransforms.Length)framePose=new Matrix?[m_boneTransforms.Length];
