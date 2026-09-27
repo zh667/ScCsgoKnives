@@ -1,0 +1,2259 @@
+{
+  "input": {
+    "file": "Game (5).log",
+    "bytes": 21363,
+    "sha256": "d0654697f6688ad1032054068a8651c52a7666cb59e94240e934a78ddb4150ee"
+  },
+  "scope": "Observed Android session only, no matched before/after. Approximate FPS=1000/mean logged frame; nested scopes must not be added.",
+  "windows": [
+    {
+      "line": 93,
+      "time": "14:00:47.347",
+      "final": false,
+      "windowMs": 10018,
+      "enemies": 5,
+      "companions": 0,
+      "peakActors": 5,
+      "frames": 324,
+      "engineAvgMs": 29.84,
+      "engineMaxMs": 1375.53,
+      "engineCpuAvgMs": 28.86,
+      "over50/100/250": "9/6/4",
+      "spawnRequests": 1,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 666.6,
+      "gc": "30/1/1",
+      "stages": {
+        "Placement": {
+          "n": 1,
+          "totalMs": 5.43,
+          "maxMs": 5.43,
+          "allocKB": 14.3
+        },
+        "EntityCreate": {
+          "n": 5,
+          "totalMs": 29.52,
+          "maxMs": 10.76,
+          "allocKB": 875.2
+        },
+        "Configure": {
+          "n": 5,
+          "totalMs": 5.49,
+          "maxMs": 5.09,
+          "allocKB": 9.3
+        },
+        "AddEntity": {
+          "n": 5,
+          "totalMs": 0.63,
+          "maxMs": 0.41,
+          "allocKB": 5.7
+        },
+        "ModelLoad": {
+          "n": 5,
+          "totalMs": 23.85,
+          "maxMs": 8.21,
+          "allocKB": 644.5,
+          "maxFor": "Models/ScCsgoTactical/t"
+        },
+        "ModelSet": {
+          "n": 5,
+          "totalMs": 22.8,
+          "maxMs": 7.7,
+          "allocKB": 630.5
+        },
+        "AnimationCache": {
+          "n": 5,
+          "totalMs": 0.01,
+          "maxMs": 0.01,
+          "allocKB": 0.0
+        },
+        "ActionsInit": {
+          "n": 5,
+          "totalMs": 7.27,
+          "maxMs": 5.73,
+          "allocKB": 556.9
+        },
+        "EnemyAI": {
+          "n": 196,
+          "totalMs": 62.69,
+          "maxMs": 40.73,
+          "allocKB": 460.5
+        },
+        "Animate": {
+          "n": 200,
+          "totalMs": 203.31,
+          "maxMs": 29.24,
+          "allocKB": 3077.8
+        },
+        "AnimationUpdate": {
+          "n": 200,
+          "totalMs": 22.87,
+          "maxMs": 6.79,
+          "allocKB": 1661.2
+        },
+        "AnimationSample": {
+          "n": 200,
+          "totalMs": 39.77,
+          "maxMs": 9.61,
+          "allocKB": 37.5
+        },
+        "Bones": {
+          "n": 200,
+          "totalMs": 76.0,
+          "maxMs": 1.5,
+          "allocKB": 78.0
+        },
+        "Extras": {
+          "n": 200,
+          "totalMs": 526.01,
+          "maxMs": 108.79,
+          "allocKB": 17841.0
+        },
+        "WeaponResolve": {
+          "n": 200,
+          "totalMs": 382.41,
+          "maxMs": 80.52,
+          "allocKB": 5591.7,
+          "maxFor": "m4a4"
+        },
+        "WeaponBuild": {
+          "n": 200,
+          "totalMs": 82.39,
+          "maxMs": 25.5,
+          "allocKB": 8846.1,
+          "maxFor": "scar20"
+        },
+        "WeaponDraw": {
+          "n": 200,
+          "totalMs": 55.3,
+          "maxMs": 10.72,
+          "allocKB": 3371.8,
+          "maxFor": "scar20"
+        },
+        "WeaponUpload": {
+          "n": 54,
+          "totalMs": 15.27,
+          "maxMs": 3.85,
+          "allocKB": 3291.4
+        },
+        "WeaponSubmit": {
+          "n": 2160,
+          "totalMs": 30.62,
+          "maxMs": 0.15,
+          "allocKB": 0.3
+        },
+        "Director": {
+          "n": 323,
+          "totalMs": 5.57,
+          "maxMs": 2.47,
+          "allocKB": 58.1
+        }
+      },
+      "approxFpsFromMeanFrame": 33.51206434316354,
+      "overThresholdCounts": [
+        9,
+        6,
+        4
+      ],
+      "gcCounts": [
+        30,
+        1,
+        1
+      ],
+      "perFrame": {
+        "Placement": {
+          "milliseconds": 0.01675925925925926,
+          "allocatedKiB": 0.0441358024691358,
+          "calls": 0.0030864197530864196
+        },
+        "EntityCreate": {
+          "milliseconds": 0.09111111111111111,
+          "allocatedKiB": 2.701234567901235,
+          "calls": 0.015432098765432098
+        },
+        "Configure": {
+          "milliseconds": 0.016944444444444446,
+          "allocatedKiB": 0.028703703703703707,
+          "calls": 0.015432098765432098
+        },
+        "AddEntity": {
+          "milliseconds": 0.0019444444444444444,
+          "allocatedKiB": 0.017592592592592594,
+          "calls": 0.015432098765432098
+        },
+        "ModelLoad": {
+          "milliseconds": 0.07361111111111111,
+          "allocatedKiB": 1.9891975308641976,
+          "calls": 0.015432098765432098
+        },
+        "ModelSet": {
+          "milliseconds": 0.07037037037037037,
+          "allocatedKiB": 1.9459876543209877,
+          "calls": 0.015432098765432098
+        },
+        "AnimationCache": {
+          "milliseconds": 3.08641975308642e-05,
+          "allocatedKiB": 0.0,
+          "calls": 0.015432098765432098
+        },
+        "ActionsInit": {
+          "milliseconds": 0.02243827160493827,
+          "allocatedKiB": 1.718827160493827,
+          "calls": 0.015432098765432098
+        },
+        "EnemyAI": {
+          "milliseconds": 0.19348765432098763,
+          "allocatedKiB": 1.4212962962962963,
+          "calls": 0.6049382716049383
+        },
+        "Animate": {
+          "milliseconds": 0.6275000000000001,
+          "allocatedKiB": 9.499382716049384,
+          "calls": 0.6172839506172839
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.07058641975308642,
+          "allocatedKiB": 5.12716049382716,
+          "calls": 0.6172839506172839
+        },
+        "AnimationSample": {
+          "milliseconds": 0.12274691358024692,
+          "allocatedKiB": 0.11574074074074074,
+          "calls": 0.6172839506172839
+        },
+        "Bones": {
+          "milliseconds": 0.2345679012345679,
+          "allocatedKiB": 0.24074074074074073,
+          "calls": 0.6172839506172839
+        },
+        "Extras": {
+          "milliseconds": 1.6234876543209875,
+          "allocatedKiB": 55.06481481481482,
+          "calls": 0.6172839506172839
+        },
+        "WeaponResolve": {
+          "milliseconds": 1.1802777777777778,
+          "allocatedKiB": 17.258333333333333,
+          "calls": 0.6172839506172839
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.25429012345679014,
+          "allocatedKiB": 27.302777777777777,
+          "calls": 0.6172839506172839
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.170679012345679,
+          "allocatedKiB": 10.40679012345679,
+          "calls": 0.6172839506172839
+        },
+        "WeaponUpload": {
+          "milliseconds": 0.047129629629629625,
+          "allocatedKiB": 10.158641975308642,
+          "calls": 0.16666666666666666
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.09450617283950617,
+          "allocatedKiB": 0.0009259259259259259,
+          "calls": 6.666666666666667
+        },
+        "Director": {
+          "milliseconds": 0.01719135802469136,
+          "allocatedKiB": 0.179320987654321,
+          "calls": 0.9969135802469136
+        }
+      },
+      "selectedNonNestedMsPerFrame": 2.7907407407407407,
+      "cpuFrameMinusSelectedScopesMs": 26.06925925925926
+    },
+    {
+      "line": 102,
+      "time": "14:00:57.431",
+      "final": false,
+      "windowMs": 10085,
+      "enemies": 25,
+      "companions": 0,
+      "peakActors": 25,
+      "frames": 182,
+      "engineAvgMs": 55.38,
+      "engineMaxMs": 589.29,
+      "engineCpuAvgMs": 54.42,
+      "over50/100/250": "67/9/5",
+      "spawnRequests": 4,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 706.7,
+      "gc": "17/1/1",
+      "stages": {
+        "Placement": {
+          "n": 4,
+          "totalMs": 2.45,
+          "maxMs": 0.7,
+          "allocKB": 83.4
+        },
+        "EntityCreate": {
+          "n": 20,
+          "totalMs": 98.15,
+          "maxMs": 7.42,
+          "allocKB": 3444.8
+        },
+        "Configure": {
+          "n": 20,
+          "totalMs": 0.62,
+          "maxMs": 0.07,
+          "allocKB": 20.2
+        },
+        "AddEntity": {
+          "n": 20,
+          "totalMs": 1.21,
+          "maxMs": 0.1,
+          "allocKB": 35.0
+        },
+        "ModelLoad": {
+          "n": 20,
+          "totalMs": 83.63,
+          "maxMs": 6.72,
+          "allocKB": 2528.4,
+          "maxFor": "Models/ScCsgoTactical/t"
+        },
+        "ModelSet": {
+          "n": 20,
+          "totalMs": 81.14,
+          "maxMs": 6.58,
+          "allocKB": 2517.5
+        },
+        "AnimationCache": {
+          "n": 20,
+          "totalMs": 0.02,
+          "maxMs": 0.0,
+          "allocKB": 0.0
+        },
+        "ActionsInit": {
+          "n": 20,
+          "totalMs": 7.71,
+          "maxMs": 0.46,
+          "allocKB": 2220.5
+        },
+        "EnemyAI": {
+          "n": 3048,
+          "totalMs": 237.88,
+          "maxMs": 2.75,
+          "allocKB": 4051.2
+        },
+        "Animate": {
+          "n": 3029,
+          "totalMs": 1697.01,
+          "maxMs": 5.38,
+          "allocKB": 35719.2
+        },
+        "AnimationUpdate": {
+          "n": 3029,
+          "totalMs": 224.1,
+          "maxMs": 3.91,
+          "allocKB": 30062.7
+        },
+        "AnimationSample": {
+          "n": 3029,
+          "totalMs": 576.4,
+          "maxMs": 0.77,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 3029,
+          "totalMs": 1165.89,
+          "maxMs": 0.56,
+          "allocKB": 677.6
+        },
+        "Extras": {
+          "n": 3029,
+          "totalMs": 1814.79,
+          "maxMs": 124.34,
+          "allocKB": 47883.3
+        },
+        "WeaponResolve": {
+          "n": 3028,
+          "totalMs": 907.0,
+          "maxMs": 85.45,
+          "allocKB": 12477.5,
+          "maxFor": "deagle"
+        },
+        "WeaponBuild": {
+          "n": 3028,
+          "totalMs": 287.4,
+          "maxMs": 86.86,
+          "allocKB": 24580.5,
+          "maxFor": "ak47"
+        },
+        "WeaponDraw": {
+          "n": 3028,
+          "totalMs": 551.66,
+          "maxMs": 7.39,
+          "allocKB": 10352.0,
+          "maxFor": "m249"
+        },
+        "WeaponUpload": {
+          "n": 110,
+          "totalMs": 32.11,
+          "maxMs": 2.36,
+          "allocKB": 9467.0
+        },
+        "WeaponSubmit": {
+          "n": 35936,
+          "totalMs": 503.03,
+          "maxMs": 0.19,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 182,
+          "totalMs": 1.66,
+          "maxMs": 0.02,
+          "allocKB": 32.7
+        }
+      },
+      "approxFpsFromMeanFrame": 18.057060310581438,
+      "overThresholdCounts": [
+        67,
+        9,
+        5
+      ],
+      "gcCounts": [
+        17,
+        1,
+        1
+      ],
+      "perFrame": {
+        "Placement": {
+          "milliseconds": 0.013461538461538462,
+          "allocatedKiB": 0.4582417582417583,
+          "calls": 0.02197802197802198
+        },
+        "EntityCreate": {
+          "milliseconds": 0.5392857142857144,
+          "allocatedKiB": 18.927472527472528,
+          "calls": 0.10989010989010989
+        },
+        "Configure": {
+          "milliseconds": 0.0034065934065934064,
+          "allocatedKiB": 0.11098901098901098,
+          "calls": 0.10989010989010989
+        },
+        "AddEntity": {
+          "milliseconds": 0.006648351648351648,
+          "allocatedKiB": 0.19230769230769232,
+          "calls": 0.10989010989010989
+        },
+        "ModelLoad": {
+          "milliseconds": 0.4595054945054945,
+          "allocatedKiB": 13.892307692307693,
+          "calls": 0.10989010989010989
+        },
+        "ModelSet": {
+          "milliseconds": 0.44582417582417583,
+          "allocatedKiB": 13.832417582417582,
+          "calls": 0.10989010989010989
+        },
+        "AnimationCache": {
+          "milliseconds": 0.00010989010989010989,
+          "allocatedKiB": 0.0,
+          "calls": 0.10989010989010989
+        },
+        "ActionsInit": {
+          "milliseconds": 0.04236263736263736,
+          "allocatedKiB": 12.20054945054945,
+          "calls": 0.10989010989010989
+        },
+        "EnemyAI": {
+          "milliseconds": 1.307032967032967,
+          "allocatedKiB": 22.25934065934066,
+          "calls": 16.747252747252748
+        },
+        "Animate": {
+          "milliseconds": 9.32423076923077,
+          "allocatedKiB": 196.25934065934064,
+          "calls": 16.642857142857142
+        },
+        "AnimationUpdate": {
+          "milliseconds": 1.2313186813186814,
+          "allocatedKiB": 165.17967032967033,
+          "calls": 16.642857142857142
+        },
+        "AnimationSample": {
+          "milliseconds": 3.167032967032967,
+          "allocatedKiB": 0.0,
+          "calls": 16.642857142857142
+        },
+        "Bones": {
+          "milliseconds": 6.405989010989011,
+          "allocatedKiB": 3.723076923076923,
+          "calls": 16.642857142857142
+        },
+        "Extras": {
+          "milliseconds": 9.971373626373627,
+          "allocatedKiB": 263.095054945055,
+          "calls": 16.642857142857142
+        },
+        "WeaponResolve": {
+          "milliseconds": 4.983516483516484,
+          "allocatedKiB": 68.5576923076923,
+          "calls": 16.63736263736264
+        },
+        "WeaponBuild": {
+          "milliseconds": 1.579120879120879,
+          "allocatedKiB": 135.05769230769232,
+          "calls": 16.63736263736264
+        },
+        "WeaponDraw": {
+          "milliseconds": 3.031098901098901,
+          "allocatedKiB": 56.879120879120876,
+          "calls": 16.63736263736264
+        },
+        "WeaponUpload": {
+          "milliseconds": 0.17642857142857143,
+          "allocatedKiB": 52.01648351648352,
+          "calls": 0.6043956043956044
+        },
+        "WeaponSubmit": {
+          "milliseconds": 2.7639010989010986,
+          "allocatedKiB": 0.0,
+          "calls": 197.45054945054946
+        },
+        "Director": {
+          "milliseconds": 0.009120879120879121,
+          "allocatedKiB": 0.1796703296703297,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 29.781648351648347,
+      "cpuFrameMinusSelectedScopesMs": 24.638351648351655
+    },
+    {
+      "line": 103,
+      "time": "14:01:07.447",
+      "final": false,
+      "windowMs": 10014,
+      "enemies": 21,
+      "companions": 0,
+      "peakActors": 25,
+      "frames": 166,
+      "engineAvgMs": 60.36,
+      "engineMaxMs": 85.2,
+      "engineCpuAvgMs": 59.29,
+      "over50/100/250": "164/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 742.7,
+      "gc": "17/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 3882,
+          "totalMs": 302.72,
+          "maxMs": 2.78,
+          "allocKB": 5138.4
+        },
+        "Animate": {
+          "n": 3829,
+          "totalMs": 2083.78,
+          "maxMs": 3.28,
+          "allocKB": 23660.5
+        },
+        "AnimationUpdate": {
+          "n": 3829,
+          "totalMs": 200.69,
+          "maxMs": 1.15,
+          "allocKB": 22656.2
+        },
+        "AnimationSample": {
+          "n": 3829,
+          "totalMs": 574.54,
+          "maxMs": 1.01,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 3829,
+          "totalMs": 1479.2,
+          "maxMs": 3.75,
+          "allocKB": 628.2
+        },
+        "Extras": {
+          "n": 3829,
+          "totalMs": 642.61,
+          "maxMs": 0.59,
+          "allocKB": 1580.4
+        },
+        "WeaponResolve": {
+          "n": 3306,
+          "totalMs": 10.94,
+          "maxMs": 0.17,
+          "allocKB": 161.7,
+          "maxFor": "m4a4"
+        },
+        "WeaponBuild": {
+          "n": 3306,
+          "totalMs": 9.03,
+          "maxMs": 0.1,
+          "allocKB": 0.0,
+          "maxFor": "negev"
+        },
+        "WeaponDraw": {
+          "n": 3306,
+          "totalMs": 544.76,
+          "maxMs": 0.57,
+          "allocKB": 820.5,
+          "maxFor": "m249"
+        },
+        "WeaponSubmit": {
+          "n": 38220,
+          "totalMs": 528.36,
+          "maxMs": 0.43,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 166,
+          "totalMs": 1.81,
+          "maxMs": 0.02,
+          "allocKB": 29.8
+        }
+      },
+      "approxFpsFromMeanFrame": 16.56726308813784,
+      "overThresholdCounts": [
+        164,
+        0,
+        0
+      ],
+      "gcCounts": [
+        17,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 1.8236144578313254,
+          "allocatedKiB": 30.954216867469878,
+          "calls": 23.3855421686747
+        },
+        "Animate": {
+          "milliseconds": 12.552891566265062,
+          "allocatedKiB": 142.53313253012047,
+          "calls": 23.066265060240966
+        },
+        "AnimationUpdate": {
+          "milliseconds": 1.2089759036144578,
+          "allocatedKiB": 136.48313253012049,
+          "calls": 23.066265060240966
+        },
+        "AnimationSample": {
+          "milliseconds": 3.4610843373493974,
+          "allocatedKiB": 0.0,
+          "calls": 23.066265060240966
+        },
+        "Bones": {
+          "milliseconds": 8.910843373493977,
+          "allocatedKiB": 3.7843373493975907,
+          "calls": 23.066265060240966
+        },
+        "Extras": {
+          "milliseconds": 3.871144578313253,
+          "allocatedKiB": 9.520481927710843,
+          "calls": 23.066265060240966
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.06590361445783133,
+          "allocatedKiB": 0.9740963855421686,
+          "calls": 19.91566265060241
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.05439759036144578,
+          "allocatedKiB": 0.0,
+          "calls": 19.91566265060241
+        },
+        "WeaponDraw": {
+          "milliseconds": 3.2816867469879516,
+          "allocatedKiB": 4.942771084337349,
+          "calls": 19.91566265060241
+        },
+        "WeaponSubmit": {
+          "milliseconds": 3.1828915662650603,
+          "allocatedKiB": 0.0,
+          "calls": 230.24096385542168
+        },
+        "Director": {
+          "milliseconds": 0.010903614457831326,
+          "allocatedKiB": 0.17951807228915664,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 30.352289156626505,
+      "cpuFrameMinusSelectedScopesMs": 28.937710843373495
+    },
+    {
+      "line": 105,
+      "time": "14:01:17.451",
+      "final": false,
+      "windowMs": 10008,
+      "enemies": 14,
+      "companions": 0,
+      "peakActors": 21,
+      "frames": 254,
+      "engineAvgMs": 39.4,
+      "engineMaxMs": 70.51,
+      "engineCpuAvgMs": 38.36,
+      "over50/100/250": "56/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 760.2,
+      "gc": "16/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 4172,
+          "totalMs": 280.97,
+          "maxMs": 14.41,
+          "allocKB": 3623.0
+        },
+        "Animate": {
+          "n": 3005,
+          "totalMs": 1809.78,
+          "maxMs": 13.77,
+          "allocKB": 17629.4
+        },
+        "AnimationUpdate": {
+          "n": 3005,
+          "totalMs": 188.81,
+          "maxMs": 12.98,
+          "allocKB": 16805.1
+        },
+        "AnimationSample": {
+          "n": 3005,
+          "totalMs": 488.14,
+          "maxMs": 0.77,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 3005,
+          "totalMs": 1159.02,
+          "maxMs": 0.6,
+          "allocKB": 493.0
+        },
+        "Extras": {
+          "n": 3005,
+          "totalMs": 448.09,
+          "maxMs": 0.58,
+          "allocKB": 1267.0
+        },
+        "WeaponResolve": {
+          "n": 2531,
+          "totalMs": 9.73,
+          "maxMs": 0.05,
+          "allocKB": 164.5,
+          "maxFor": "scar20"
+        },
+        "WeaponBuild": {
+          "n": 2531,
+          "totalMs": 7.51,
+          "maxMs": 0.09,
+          "allocKB": 0.0,
+          "maxFor": "nova"
+        },
+        "WeaponDraw": {
+          "n": 2531,
+          "totalMs": 367.66,
+          "maxMs": 0.56,
+          "allocKB": 633.0,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 22362,
+          "totalMs": 320.95,
+          "maxMs": 0.2,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 254,
+          "totalMs": 2.48,
+          "maxMs": 0.05,
+          "allocKB": 45.6
+        }
+      },
+      "approxFpsFromMeanFrame": 25.38071065989848,
+      "overThresholdCounts": [
+        56,
+        0,
+        0
+      ],
+      "gcCounts": [
+        16,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 1.1061811023622048,
+          "allocatedKiB": 14.263779527559056,
+          "calls": 16.4251968503937
+        },
+        "Animate": {
+          "milliseconds": 7.125118110236221,
+          "allocatedKiB": 69.40708661417324,
+          "calls": 11.830708661417322
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.7433464566929134,
+          "allocatedKiB": 66.16181102362204,
+          "calls": 11.830708661417322
+        },
+        "AnimationSample": {
+          "milliseconds": 1.9218110236220471,
+          "allocatedKiB": 0.0,
+          "calls": 11.830708661417322
+        },
+        "Bones": {
+          "milliseconds": 4.563070866141732,
+          "allocatedKiB": 1.9409448818897639,
+          "calls": 11.830708661417322
+        },
+        "Extras": {
+          "milliseconds": 1.7641338582677164,
+          "allocatedKiB": 4.988188976377953,
+          "calls": 11.830708661417322
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.03830708661417323,
+          "allocatedKiB": 0.6476377952755905,
+          "calls": 9.964566929133857
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.029566929133858267,
+          "allocatedKiB": 0.0,
+          "calls": 9.964566929133857
+        },
+        "WeaponDraw": {
+          "milliseconds": 1.4474803149606301,
+          "allocatedKiB": 2.4921259842519685,
+          "calls": 9.964566929133857
+        },
+        "WeaponSubmit": {
+          "milliseconds": 1.2635826771653542,
+          "allocatedKiB": 0.0,
+          "calls": 88.03937007874016
+        },
+        "Director": {
+          "milliseconds": 0.009763779527559056,
+          "allocatedKiB": 0.1795275590551181,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 15.831850393700787,
+      "cpuFrameMinusSelectedScopesMs": 22.528149606299213
+    },
+    {
+      "line": 106,
+      "time": "14:01:30.018",
+      "final": false,
+      "windowMs": 12563,
+      "enemies": 14,
+      "companions": 0,
+      "peakActors": 14,
+      "frames": 274,
+      "engineAvgMs": 20.06,
+      "engineMaxMs": 69.58,
+      "engineCpuAvgMs": 18.36,
+      "over50/100/250": "2/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 650.3,
+      "gc": "29/1/1",
+      "stages": {
+        "EnemyAI": {
+          "n": 3836,
+          "totalMs": 123.21,
+          "maxMs": 1.66,
+          "allocKB": 421.6
+        },
+        "Animate": {
+          "n": 284,
+          "totalMs": 94.38,
+          "maxMs": 0.48,
+          "allocKB": 195.5
+        },
+        "AnimationUpdate": {
+          "n": 284,
+          "totalMs": 3.54,
+          "maxMs": 0.09,
+          "allocKB": 140.0
+        },
+        "AnimationSample": {
+          "n": 284,
+          "totalMs": 27.76,
+          "maxMs": 0.22,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 284,
+          "totalMs": 110.33,
+          "maxMs": 0.52,
+          "allocKB": 46.6
+        },
+        "Extras": {
+          "n": 284,
+          "totalMs": 54.2,
+          "maxMs": 0.42,
+          "allocKB": 221.9
+        },
+        "WeaponResolve": {
+          "n": 284,
+          "totalMs": 4.14,
+          "maxMs": 0.06,
+          "allocKB": 108.7,
+          "maxFor": "awp"
+        },
+        "WeaponBuild": {
+          "n": 284,
+          "totalMs": 1.71,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "awp"
+        },
+        "WeaponDraw": {
+          "n": 284,
+          "totalMs": 39.66,
+          "maxMs": 0.34,
+          "allocKB": 68.8,
+          "maxFor": "awp"
+        },
+        "WeaponSubmit": {
+          "n": 1704,
+          "totalMs": 32.19,
+          "maxMs": 0.16,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 274,
+          "totalMs": 2.04,
+          "maxMs": 0.06,
+          "allocKB": 49.2
+        }
+      },
+      "approxFpsFromMeanFrame": 49.85044865403789,
+      "overThresholdCounts": [
+        2,
+        0,
+        0
+      ],
+      "gcCounts": [
+        29,
+        1,
+        1
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.4496715328467153,
+          "allocatedKiB": 1.5386861313868614,
+          "calls": 14.0
+        },
+        "Animate": {
+          "milliseconds": 0.3444525547445255,
+          "allocatedKiB": 0.7135036496350365,
+          "calls": 1.0364963503649636
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.01291970802919708,
+          "allocatedKiB": 0.5109489051094891,
+          "calls": 1.0364963503649636
+        },
+        "AnimationSample": {
+          "milliseconds": 0.1013138686131387,
+          "allocatedKiB": 0.0,
+          "calls": 1.0364963503649636
+        },
+        "Bones": {
+          "milliseconds": 0.4026642335766423,
+          "allocatedKiB": 0.17007299270072992,
+          "calls": 1.0364963503649636
+        },
+        "Extras": {
+          "milliseconds": 0.1978102189781022,
+          "allocatedKiB": 0.8098540145985401,
+          "calls": 1.0364963503649636
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.015109489051094889,
+          "allocatedKiB": 0.3967153284671533,
+          "calls": 1.0364963503649636
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.006240875912408759,
+          "allocatedKiB": 0.0,
+          "calls": 1.0364963503649636
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.14474452554744524,
+          "allocatedKiB": 0.2510948905109489,
+          "calls": 1.0364963503649636
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.11748175182481752,
+          "allocatedKiB": 0.0,
+          "calls": 6.218978102189781
+        },
+        "Director": {
+          "milliseconds": 0.007445255474452555,
+          "allocatedKiB": 0.17956204379562044,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 1.5195255474452554,
+      "cpuFrameMinusSelectedScopesMs": 16.840474452554744
+    },
+    {
+      "line": 107,
+      "time": "14:01:40.020",
+      "final": false,
+      "windowMs": 10004,
+      "enemies": 11,
+      "companions": 0,
+      "peakActors": 14,
+      "frames": 281,
+      "engineAvgMs": 35.61,
+      "engineMaxMs": 217.22,
+      "engineCpuAvgMs": 34.45,
+      "over50/100/250": "19/1/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 676.7,
+      "gc": "16/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 3870,
+          "totalMs": 175.0,
+          "maxMs": 12.68,
+          "allocKB": 1292.7
+        },
+        "Animate": {
+          "n": 2483,
+          "totalMs": 1416.95,
+          "maxMs": 11.63,
+          "allocKB": 13334.5
+        },
+        "AnimationUpdate": {
+          "n": 2483,
+          "totalMs": 122.07,
+          "maxMs": 11.3,
+          "allocKB": 12666.4
+        },
+        "AnimationSample": {
+          "n": 2483,
+          "totalMs": 411.74,
+          "maxMs": 0.99,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 2483,
+          "totalMs": 954.29,
+          "maxMs": 1.22,
+          "allocKB": 407.4
+        },
+        "Extras": {
+          "n": 2483,
+          "totalMs": 393.48,
+          "maxMs": 0.58,
+          "allocKB": 1006.0
+        },
+        "WeaponResolve": {
+          "n": 2033,
+          "totalMs": 7.55,
+          "maxMs": 0.05,
+          "allocKB": 105.0,
+          "maxFor": "negev"
+        },
+        "WeaponBuild": {
+          "n": 2033,
+          "totalMs": 6.37,
+          "maxMs": 0.11,
+          "allocKB": 0.0,
+          "maxFor": "m4a4"
+        },
+        "WeaponDraw": {
+          "n": 2033,
+          "totalMs": 329.39,
+          "maxMs": 0.56,
+          "allocKB": 513.0,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 21803,
+          "totalMs": 310.77,
+          "maxMs": 0.23,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 281,
+          "totalMs": 2.64,
+          "maxMs": 0.14,
+          "allocKB": 50.5
+        }
+      },
+      "approxFpsFromMeanFrame": 28.08199943836001,
+      "overThresholdCounts": [
+        19,
+        1,
+        0
+      ],
+      "gcCounts": [
+        16,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.6227758007117438,
+          "allocatedKiB": 4.600355871886121,
+          "calls": 13.772241992882563
+        },
+        "Animate": {
+          "milliseconds": 5.042526690391459,
+          "allocatedKiB": 47.45373665480427,
+          "calls": 8.836298932384341
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.43441281138790033,
+          "allocatedKiB": 45.07615658362989,
+          "calls": 8.836298932384341
+        },
+        "AnimationSample": {
+          "milliseconds": 1.4652669039145907,
+          "allocatedKiB": 0.0,
+          "calls": 8.836298932384341
+        },
+        "Bones": {
+          "milliseconds": 3.396049822064057,
+          "allocatedKiB": 1.4498220640569395,
+          "calls": 8.836298932384341
+        },
+        "Extras": {
+          "milliseconds": 1.400284697508897,
+          "allocatedKiB": 3.580071174377224,
+          "calls": 8.836298932384341
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.026868327402135232,
+          "allocatedKiB": 0.3736654804270463,
+          "calls": 7.234875444839858
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.022669039145907472,
+          "allocatedKiB": 0.0,
+          "calls": 7.234875444839858
+        },
+        "WeaponDraw": {
+          "milliseconds": 1.17220640569395,
+          "allocatedKiB": 1.8256227758007118,
+          "calls": 7.234875444839858
+        },
+        "WeaponSubmit": {
+          "milliseconds": 1.1059430604982206,
+          "allocatedKiB": 0.0,
+          "calls": 77.59074733096085
+        },
+        "Director": {
+          "milliseconds": 0.009395017793594307,
+          "allocatedKiB": 0.1797153024911032,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 11.57697508896797,
+      "cpuFrameMinusSelectedScopesMs": 22.873024911032033
+    },
+    {
+      "line": 108,
+      "time": "14:01:50.049",
+      "final": false,
+      "windowMs": 10031,
+      "enemies": 6,
+      "companions": 0,
+      "peakActors": 11,
+      "frames": 293,
+      "engineAvgMs": 34.21,
+      "engineMaxMs": 189.38,
+      "engineCpuAvgMs": 33.12,
+      "over50/100/250": "9/1/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 698.0,
+      "gc": "14/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 2324,
+          "totalMs": 143.93,
+          "maxMs": 2.55,
+          "allocKB": 1655.0
+        },
+        "Animate": {
+          "n": 2078,
+          "totalMs": 1227.68,
+          "maxMs": 11.05,
+          "allocKB": 4287.9
+        },
+        "AnimationUpdate": {
+          "n": 2078,
+          "totalMs": 68.04,
+          "maxMs": 10.71,
+          "allocKB": 3645.1
+        },
+        "AnimationSample": {
+          "n": 2078,
+          "totalMs": 211.64,
+          "maxMs": 0.66,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 2078,
+          "totalMs": 797.75,
+          "maxMs": 0.71,
+          "allocKB": 340.9
+        },
+        "Extras": {
+          "n": 2078,
+          "totalMs": 353.69,
+          "maxMs": 0.57,
+          "allocKB": 765.8
+        },
+        "WeaponResolve": {
+          "n": 1550,
+          "totalMs": 5.79,
+          "maxMs": 0.12,
+          "allocKB": 48.4,
+          "maxFor": "g3sg1"
+        },
+        "WeaponBuild": {
+          "n": 1550,
+          "totalMs": 5.2,
+          "maxMs": 0.05,
+          "allocKB": 0.0,
+          "maxFor": "negev"
+        },
+        "WeaponDraw": {
+          "n": 1550,
+          "totalMs": 300.54,
+          "maxMs": 0.51,
+          "allocKB": 392.7,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 22046,
+          "totalMs": 315.14,
+          "maxMs": 0.36,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 293,
+          "totalMs": 2.81,
+          "maxMs": 0.05,
+          "allocKB": 52.6
+        }
+      },
+      "approxFpsFromMeanFrame": 29.231218941829873,
+      "overThresholdCounts": [
+        9,
+        1,
+        0
+      ],
+      "gcCounts": [
+        14,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.49122866894197953,
+          "allocatedKiB": 5.648464163822526,
+          "calls": 7.931740614334471
+        },
+        "Animate": {
+          "milliseconds": 4.190034129692833,
+          "allocatedKiB": 14.634470989761091,
+          "calls": 7.092150170648464
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.2322184300341297,
+          "allocatedKiB": 12.44061433447099,
+          "calls": 7.092150170648464
+        },
+        "AnimationSample": {
+          "milliseconds": 0.7223208191126279,
+          "allocatedKiB": 0.0,
+          "calls": 7.092150170648464
+        },
+        "Bones": {
+          "milliseconds": 2.7226962457337884,
+          "allocatedKiB": 1.163481228668942,
+          "calls": 7.092150170648464
+        },
+        "Extras": {
+          "milliseconds": 1.2071331058020478,
+          "allocatedKiB": 2.6136518771331056,
+          "calls": 7.092150170648464
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.019761092150170648,
+          "allocatedKiB": 0.1651877133105802,
+          "calls": 5.290102389078498
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.017747440273037544,
+          "allocatedKiB": 0.0,
+          "calls": 5.290102389078498
+        },
+        "WeaponDraw": {
+          "milliseconds": 1.0257337883959046,
+          "allocatedKiB": 1.3402730375426621,
+          "calls": 5.290102389078498
+        },
+        "WeaponSubmit": {
+          "milliseconds": 1.0755631399317405,
+          "allocatedKiB": 0.0,
+          "calls": 75.24232081911263
+        },
+        "Director": {
+          "milliseconds": 0.009590443686006827,
+          "allocatedKiB": 0.1795221843003413,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 9.696245733788396,
+      "cpuFrameMinusSelectedScopesMs": 23.423754266211603
+    },
+    {
+      "line": 109,
+      "time": "14:02:00.055",
+      "final": false,
+      "windowMs": 10006,
+      "enemies": 6,
+      "companions": 0,
+      "peakActors": 6,
+      "frames": 361,
+      "engineAvgMs": 27.71,
+      "engineMaxMs": 47.09,
+      "engineCpuAvgMs": 26.61,
+      "over50/100/250": "0/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 715.8,
+      "gc": "15/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 2167,
+          "totalMs": 224.91,
+          "maxMs": 2.43,
+          "allocKB": 3329.6
+        },
+        "Animate": {
+          "n": 1360,
+          "totalMs": 616.69,
+          "maxMs": 3.11,
+          "allocKB": 2524.0
+        },
+        "AnimationUpdate": {
+          "n": 1360,
+          "totalMs": 43.31,
+          "maxMs": 1.03,
+          "allocKB": 2219.4
+        },
+        "AnimationSample": {
+          "n": 1360,
+          "totalMs": 133.12,
+          "maxMs": 0.68,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 1360,
+          "totalMs": 524.94,
+          "maxMs": 0.6,
+          "allocKB": 223.1
+        },
+        "Extras": {
+          "n": 1360,
+          "totalMs": 306.49,
+          "maxMs": 0.61,
+          "allocKB": 593.4
+        },
+        "WeaponResolve": {
+          "n": 1360,
+          "totalMs": 5.49,
+          "maxMs": 0.12,
+          "allocKB": 42.5,
+          "maxFor": "negev"
+        },
+        "WeaponBuild": {
+          "n": 1360,
+          "totalMs": 5.14,
+          "maxMs": 0.08,
+          "allocKB": 0.0,
+          "maxFor": "deagle"
+        },
+        "WeaponDraw": {
+          "n": 1360,
+          "totalMs": 262.27,
+          "maxMs": 0.58,
+          "allocKB": 338.4,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 19031,
+          "totalMs": 276.52,
+          "maxMs": 0.19,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 361,
+          "totalMs": 3.17,
+          "maxMs": 0.02,
+          "allocKB": 64.9
+        }
+      },
+      "approxFpsFromMeanFrame": 36.088054853843374,
+      "overThresholdCounts": [
+        0,
+        0,
+        0
+      ],
+      "gcCounts": [
+        15,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.6230193905817174,
+          "allocatedKiB": 9.223268698060942,
+          "calls": 6.002770083102493
+        },
+        "Animate": {
+          "milliseconds": 1.7082825484764546,
+          "allocatedKiB": 6.991689750692521,
+          "calls": 3.7673130193905817
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.11997229916897507,
+          "allocatedKiB": 6.14792243767313,
+          "calls": 3.7673130193905817
+        },
+        "AnimationSample": {
+          "milliseconds": 0.36875346260387815,
+          "allocatedKiB": 0.0,
+          "calls": 3.7673130193905817
+        },
+        "Bones": {
+          "milliseconds": 1.4541274238227149,
+          "allocatedKiB": 0.618005540166205,
+          "calls": 3.7673130193905817
+        },
+        "Extras": {
+          "milliseconds": 0.8490027700831025,
+          "allocatedKiB": 1.6437673130193906,
+          "calls": 3.7673130193905817
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.015207756232686982,
+          "allocatedKiB": 0.11772853185595568,
+          "calls": 3.7673130193905817
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.014238227146814404,
+          "allocatedKiB": 0.0,
+          "calls": 3.7673130193905817
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.7265096952908586,
+          "allocatedKiB": 0.9373961218836564,
+          "calls": 3.7673130193905817
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.765983379501385,
+          "allocatedKiB": 0.0,
+          "calls": 52.717451523545705
+        },
+        "Director": {
+          "milliseconds": 0.008781163434903047,
+          "allocatedKiB": 0.17977839335180057,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 5.409196675900277,
+      "cpuFrameMinusSelectedScopesMs": 21.200803324099724
+    },
+    {
+      "line": 110,
+      "time": "14:02:10.068",
+      "final": false,
+      "windowMs": 10011,
+      "enemies": 4,
+      "companions": 0,
+      "peakActors": 6,
+      "frames": 347,
+      "engineAvgMs": 28.88,
+      "engineMaxMs": 195.89,
+      "engineCpuAvgMs": 27.84,
+      "over50/100/250": "1/1/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 738.9,
+      "gc": "16/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 1937,
+          "totalMs": 139.13,
+          "maxMs": 2.41,
+          "allocKB": 1834.6
+        },
+        "Animate": {
+          "n": 1060,
+          "totalMs": 585.96,
+          "maxMs": 1.98,
+          "allocKB": 2512.5
+        },
+        "AnimationUpdate": {
+          "n": 1060,
+          "totalMs": 29.23,
+          "maxMs": 0.99,
+          "allocKB": 2240.9
+        },
+        "AnimationSample": {
+          "n": 1060,
+          "totalMs": 115.36,
+          "maxMs": 0.95,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 1060,
+          "totalMs": 404.37,
+          "maxMs": 0.53,
+          "allocKB": 173.9
+        },
+        "Extras": {
+          "n": 1060,
+          "totalMs": 220.91,
+          "maxMs": 0.63,
+          "allocKB": 434.2
+        },
+        "WeaponResolve": {
+          "n": 932,
+          "totalMs": 4.15,
+          "maxMs": 0.01,
+          "allocKB": 29.1,
+          "maxFor": "glock18"
+        },
+        "WeaponBuild": {
+          "n": 932,
+          "totalMs": 3.71,
+          "maxMs": 0.05,
+          "allocKB": 0.0,
+          "maxFor": "glock18"
+        },
+        "WeaponDraw": {
+          "n": 932,
+          "totalMs": 188.23,
+          "maxMs": 0.52,
+          "allocKB": 239.5,
+          "maxFor": "negev"
+        },
+        "WeaponSubmit": {
+          "n": 13408,
+          "totalMs": 196.0,
+          "maxMs": 0.16,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 347,
+          "totalMs": 3.24,
+          "maxMs": 0.02,
+          "allocKB": 62.4
+        }
+      },
+      "approxFpsFromMeanFrame": 34.62603878116344,
+      "overThresholdCounts": [
+        1,
+        1,
+        0
+      ],
+      "gcCounts": [
+        16,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.4009510086455331,
+          "allocatedKiB": 5.287031700288185,
+          "calls": 5.582132564841499
+        },
+        "Animate": {
+          "milliseconds": 1.6886455331412105,
+          "allocatedKiB": 7.240634005763689,
+          "calls": 3.0547550432276656
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.08423631123919309,
+          "allocatedKiB": 6.45792507204611,
+          "calls": 3.0547550432276656
+        },
+        "AnimationSample": {
+          "milliseconds": 0.33244956772334294,
+          "allocatedKiB": 0.0,
+          "calls": 3.0547550432276656
+        },
+        "Bones": {
+          "milliseconds": 1.1653314121037464,
+          "allocatedKiB": 0.5011527377521614,
+          "calls": 3.0547550432276656
+        },
+        "Extras": {
+          "milliseconds": 0.636628242074928,
+          "allocatedKiB": 1.2512968299711815,
+          "calls": 3.0547550432276656
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.011959654178674353,
+          "allocatedKiB": 0.08386167146974063,
+          "calls": 2.685878962536023
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.01069164265129683,
+          "allocatedKiB": 0.0,
+          "calls": 2.685878962536023
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.542449567723343,
+          "allocatedKiB": 0.6902017291066282,
+          "calls": 2.685878962536023
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.5648414985590778,
+          "allocatedKiB": 0.0,
+          "calls": 38.63976945244957
+        },
+        "Director": {
+          "milliseconds": 0.009337175792507205,
+          "allocatedKiB": 0.17982708933717578,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 4.465734870317004,
+      "cpuFrameMinusSelectedScopesMs": 23.374265129682996
+    },
+    {
+      "line": 111,
+      "time": "14:02:20.073",
+      "final": false,
+      "windowMs": 10006,
+      "enemies": 1,
+      "companions": 0,
+      "peakActors": 4,
+      "frames": 404,
+      "engineAvgMs": 24.77,
+      "engineMaxMs": 250.85,
+      "engineCpuAvgMs": 23.77,
+      "over50/100/250": "1/1/1",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 758.6,
+      "gc": "15/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 867,
+          "totalMs": 29.47,
+          "maxMs": 1.5,
+          "allocKB": 94.0
+        },
+        "Animate": {
+          "n": 664,
+          "totalMs": 462.63,
+          "maxMs": 1.89,
+          "allocKB": 853.5
+        },
+        "AnimationUpdate": {
+          "n": 664,
+          "totalMs": 16.27,
+          "maxMs": 0.48,
+          "allocKB": 588.9
+        },
+        "AnimationSample": {
+          "n": 664,
+          "totalMs": 37.34,
+          "maxMs": 0.91,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 664,
+          "totalMs": 252.2,
+          "maxMs": 0.5,
+          "allocKB": 108.9
+        },
+        "Extras": {
+          "n": 664,
+          "totalMs": 63.16,
+          "maxMs": 0.27,
+          "allocKB": 190.8
+        },
+        "WeaponResolve": {
+          "n": 318,
+          "totalMs": 2.06,
+          "maxMs": 0.01,
+          "allocKB": 9.9,
+          "maxFor": "deagle"
+        },
+        "WeaponBuild": {
+          "n": 318,
+          "totalMs": 1.96,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "deagle"
+        },
+        "WeaponDraw": {
+          "n": 318,
+          "totalMs": 43.63,
+          "maxMs": 0.22,
+          "allocKB": 77.1,
+          "maxFor": "deagle"
+        },
+        "WeaponSubmit": {
+          "n": 1590,
+          "totalMs": 32.32,
+          "maxMs": 0.13,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 404,
+          "totalMs": 6.48,
+          "maxMs": 1.34,
+          "allocKB": 122.0
+        }
+      },
+      "approxFpsFromMeanFrame": 40.37141703673799,
+      "overThresholdCounts": [
+        1,
+        1,
+        1
+      ],
+      "gcCounts": [
+        15,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.07294554455445544,
+          "allocatedKiB": 0.23267326732673269,
+          "calls": 2.146039603960396
+        },
+        "Animate": {
+          "milliseconds": 1.1451237623762376,
+          "allocatedKiB": 2.112623762376238,
+          "calls": 1.6435643564356435
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.04027227722772277,
+          "allocatedKiB": 1.4576732673267325,
+          "calls": 1.6435643564356435
+        },
+        "AnimationSample": {
+          "milliseconds": 0.09242574257425744,
+          "allocatedKiB": 0.0,
+          "calls": 1.6435643564356435
+        },
+        "Bones": {
+          "milliseconds": 0.6242574257425743,
+          "allocatedKiB": 0.26955445544554457,
+          "calls": 1.6435643564356435
+        },
+        "Extras": {
+          "milliseconds": 0.15633663366336634,
+          "allocatedKiB": 0.4722772277227723,
+          "calls": 1.6435643564356435
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.005099009900990099,
+          "allocatedKiB": 0.024504950495049506,
+          "calls": 0.7871287128712872
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.0048514851485148515,
+          "allocatedKiB": 0.0,
+          "calls": 0.7871287128712872
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.10799504950495051,
+          "allocatedKiB": 0.19084158415841582,
+          "calls": 0.7871287128712872
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.08,
+          "allocatedKiB": 0.0,
+          "calls": 3.9356435643564356
+        },
+        "Director": {
+          "milliseconds": 0.01603960396039604,
+          "allocatedKiB": 0.30198019801980197,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 2.0947029702970297,
+      "cpuFrameMinusSelectedScopesMs": 21.67529702970297
+    },
+    {
+      "line": 113,
+      "time": "14:02:30.077",
+      "final": false,
+      "windowMs": 10003,
+      "enemies": 1,
+      "companions": 0,
+      "peakActors": 1,
+      "frames": 455,
+      "engineAvgMs": 21.98,
+      "engineMaxMs": 178.02,
+      "engineCpuAvgMs": 21.04,
+      "over50/100/250": "3/1/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 786.2,
+      "gc": "17/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 455,
+          "totalMs": 24.87,
+          "maxMs": 0.18,
+          "allocKB": 37.0
+        },
+        "Animate": {
+          "n": 441,
+          "totalMs": 206.33,
+          "maxMs": 1.76,
+          "allocKB": 1309.3
+        },
+        "AnimationUpdate": {
+          "n": 441,
+          "totalMs": 18.61,
+          "maxMs": 1.03,
+          "allocKB": 1204.3
+        },
+        "AnimationSample": {
+          "n": 441,
+          "totalMs": 55.62,
+          "maxMs": 0.6,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 441,
+          "totalMs": 169.76,
+          "maxMs": 0.9,
+          "allocKB": 72.4
+        },
+        "Extras": {
+          "n": 441,
+          "totalMs": 74.9,
+          "maxMs": 0.27,
+          "allocKB": 178.3
+        },
+        "WeaponResolve": {
+          "n": 400,
+          "totalMs": 2.63,
+          "maxMs": 0.04,
+          "allocKB": 12.5,
+          "maxFor": "deagle"
+        },
+        "WeaponBuild": {
+          "n": 400,
+          "totalMs": 2.45,
+          "maxMs": 0.01,
+          "allocKB": 0.0,
+          "maxFor": "deagle"
+        },
+        "WeaponDraw": {
+          "n": 400,
+          "totalMs": 55.28,
+          "maxMs": 0.23,
+          "allocKB": 96.9,
+          "maxFor": "deagle"
+        },
+        "WeaponSubmit": {
+          "n": 2000,
+          "totalMs": 40.96,
+          "maxMs": 0.09,
+          "allocKB": 0.0
+        },
+        "Director": {
+          "n": 455,
+          "totalMs": 7.53,
+          "maxMs": 0.11,
+          "allocKB": 184.8
+        }
+      },
+      "approxFpsFromMeanFrame": 45.49590536851683,
+      "overThresholdCounts": [
+        3,
+        1,
+        0
+      ],
+      "gcCounts": [
+        17,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.05465934065934066,
+          "allocatedKiB": 0.08131868131868132,
+          "calls": 1.0
+        },
+        "Animate": {
+          "milliseconds": 0.4534725274725275,
+          "allocatedKiB": 2.8775824175824174,
+          "calls": 0.9692307692307692
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.0409010989010989,
+          "allocatedKiB": 2.6468131868131866,
+          "calls": 0.9692307692307692
+        },
+        "AnimationSample": {
+          "milliseconds": 0.12224175824175823,
+          "allocatedKiB": 0.0,
+          "calls": 0.9692307692307692
+        },
+        "Bones": {
+          "milliseconds": 0.3730989010989011,
+          "allocatedKiB": 0.15912087912087913,
+          "calls": 0.9692307692307692
+        },
+        "Extras": {
+          "milliseconds": 0.16461538461538464,
+          "allocatedKiB": 0.3918681318681319,
+          "calls": 0.9692307692307692
+        },
+        "WeaponResolve": {
+          "milliseconds": 0.00578021978021978,
+          "allocatedKiB": 0.027472527472527472,
+          "calls": 0.8791208791208791
+        },
+        "WeaponBuild": {
+          "milliseconds": 0.005384615384615385,
+          "allocatedKiB": 0.0,
+          "calls": 0.8791208791208791
+        },
+        "WeaponDraw": {
+          "milliseconds": 0.1214945054945055,
+          "allocatedKiB": 0.21296703296703298,
+          "calls": 0.8791208791208791
+        },
+        "WeaponSubmit": {
+          "milliseconds": 0.09002197802197802,
+          "allocatedKiB": 0.0,
+          "calls": 4.395604395604396
+        },
+        "Director": {
+          "milliseconds": 0.01654945054945055,
+          "allocatedKiB": 0.4061538461538462,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 1.1524175824175824,
+      "cpuFrameMinusSelectedScopesMs": 19.887582417582415
+    },
+    {
+      "line": 114,
+      "time": "14:02:40.088",
+      "final": false,
+      "windowMs": 10012,
+      "enemies": 0,
+      "companions": 0,
+      "peakActors": 1,
+      "frames": 498,
+      "engineAvgMs": 20.1,
+      "engineMaxMs": 40.55,
+      "engineCpuAvgMs": 19.19,
+      "over50/100/250": "0/0/0",
+      "spawnRequests": 0,
+      "spawnFailed": 0,
+      "detailSuppressed": 0,
+      "managedMB": 812.4,
+      "gc": "19/0/0",
+      "stages": {
+        "EnemyAI": {
+          "n": 197,
+          "totalMs": 0.53,
+          "maxMs": 0.01,
+          "allocKB": 10.8
+        },
+        "Animate": {
+          "n": 66,
+          "totalMs": 66.38,
+          "maxMs": 1.81,
+          "allocKB": 56.2
+        },
+        "AnimationUpdate": {
+          "n": 66,
+          "totalMs": 0.56,
+          "maxMs": 0.01,
+          "allocKB": 18.0
+        },
+        "AnimationSample": {
+          "n": 66,
+          "totalMs": 0.27,
+          "maxMs": 0.01,
+          "allocKB": 0.0
+        },
+        "Bones": {
+          "n": 66,
+          "totalMs": 24.72,
+          "maxMs": 0.42,
+          "allocKB": 10.8
+        },
+        "Extras": {
+          "n": 66,
+          "totalMs": 0.95,
+          "maxMs": 0.02,
+          "allocKB": 10.3
+        },
+        "Director": {
+          "n": 498,
+          "totalMs": 6.38,
+          "maxMs": 0.86,
+          "allocKB": 134.4
+        }
+      },
+      "approxFpsFromMeanFrame": 49.75124378109452,
+      "overThresholdCounts": [
+        0,
+        0,
+        0
+      ],
+      "gcCounts": [
+        19,
+        0,
+        0
+      ],
+      "perFrame": {
+        "EnemyAI": {
+          "milliseconds": 0.0010642570281124497,
+          "allocatedKiB": 0.021686746987951807,
+          "calls": 0.39558232931726905
+        },
+        "Animate": {
+          "milliseconds": 0.13329317269076305,
+          "allocatedKiB": 0.11285140562248996,
+          "calls": 0.13253012048192772
+        },
+        "AnimationUpdate": {
+          "milliseconds": 0.0011244979919678717,
+          "allocatedKiB": 0.03614457831325301,
+          "calls": 0.13253012048192772
+        },
+        "AnimationSample": {
+          "milliseconds": 0.0005421686746987952,
+          "allocatedKiB": 0.0,
+          "calls": 0.13253012048192772
+        },
+        "Bones": {
+          "milliseconds": 0.04963855421686747,
+          "allocatedKiB": 0.021686746987951807,
+          "calls": 0.13253012048192772
+        },
+        "Extras": {
+          "milliseconds": 0.0019076305220883532,
+          "allocatedKiB": 0.02068273092369478,
+          "calls": 0.13253012048192772
+        },
+        "Director": {
+          "milliseconds": 0.012811244979919678,
+          "allocatedKiB": 0.26987951807228916,
+          "calls": 1.0
+        }
+      },
+      "selectedNonNestedMsPerFrame": 0.198714859437751,
+      "cpuFrameMinusSelectedScopesMs": 18.99128514056225
+    }
+  ],
+  "spawns": [
+    {
+      "line": 92,
+      "time": "14:00:45.779",
+      "id": 1,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 42.97,
+      "EntityCreateMs": 29.52,
+      "ConfigureMs": 5.49,
+      "AddEntityMs": 0.63,
+      "ModelLoadMs": 23.85,
+      "ModelSetMs": 22.8,
+      "AnimationCacheMs": 0.01
+    },
+    {
+      "line": 95,
+      "time": "14:00:47.535",
+      "id": 2,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.5,
+      "EntityCreateMs": 23.79,
+      "ConfigureMs": 0.18,
+      "AddEntityMs": 0.3,
+      "ModelLoadMs": 20.02,
+      "ModelSetMs": 19.39,
+      "AnimationCacheMs": 0.01
+    },
+    {
+      "line": 97,
+      "time": "14:00:49.538",
+      "id": 3,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.3,
+      "EntityCreateMs": 23.63,
+      "ConfigureMs": 0.16,
+      "AddEntityMs": 0.3,
+      "ModelLoadMs": 20.15,
+      "ModelSetMs": 19.57,
+      "AnimationCacheMs": 0.01
+    },
+    {
+      "line": 99,
+      "time": "14:00:51.676",
+      "id": 4,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 27.41,
+      "EntityCreateMs": 26.7,
+      "ConfigureMs": 0.14,
+      "AddEntityMs": 0.31,
+      "ModelLoadMs": 23.06,
+      "ModelSetMs": 22.42,
+      "AnimationCacheMs": 0.01
+    },
+    {
+      "line": 101,
+      "time": "14:00:53.336",
+      "id": 5,
+      "kind": "squad",
+      "requested": 5,
+      "success": true,
+      "totalMs": 24.69,
+      "EntityCreateMs": 24.03,
+      "ConfigureMs": 0.14,
+      "AddEntityMs": 0.3,
+      "ModelLoadMs": 20.39,
+      "ModelSetMs": 19.75,
+      "AnimationCacheMs": 0.01
+    }
+  ],
+  "warmups": [
+    {
+      "line": 75,
+      "time": "14:00:29.187",
+      "stage": "ct-geometry",
+      "ms": 199.06,
+      "allocKB": 8136.0
+    },
+    {
+      "line": 76,
+      "time": "14:00:29.801",
+      "stage": "ct-animation",
+      "ms": 609.52,
+      "allocKB": 54022.1
+    },
+    {
+      "line": 77,
+      "time": "14:00:29.874",
+      "stage": "ct-textures",
+      "ms": 70.29,
+      "allocKB": 2133.3
+    },
+    {
+      "line": 78,
+      "time": "14:00:29.956",
+      "stage": "t-geometry",
+      "ms": 82.69,
+      "allocKB": 7725.9
+    },
+    {
+      "line": 79,
+      "time": "14:00:30.493",
+      "stage": "t-animation",
+      "ms": 534.47,
+      "allocKB": 51078.7
+    },
+    {
+      "line": 80,
+      "time": "14:00:30.575",
+      "stage": "t-textures",
+      "ms": 74.49,
+      "allocKB": 1559.5
+    },
+    {
+      "line": 81,
+      "time": "14:00:30.578",
+      "stage": "weapon-shader",
+      "ms": 2.11,
+      "allocKB": 89.0
+    },
+    {
+      "line": 88,
+      "time": "14:00:37.603",
+      "stage": "weapon-shader",
+      "ms": 0.0,
+      "allocKB": 0.1
+    }
+  ],
+  "totals": {
+    "windows": 12,
+    "frames": 3839,
+    "frameWeightedMeanMs": 30.045196665798382,
+    "overThresholdCounts": [
+      331,
+      20,
+      10
+    ],
+    "gcCounts": [
+      221,
+      3,
+      3
+    ],
+    "spawnRequests": 5,
+    "spawnFailed": 0,
+    "managedMiBRange": [
+      650.3,
+      812.4
+    ],
+    "warmupMilliseconds": 1572.6299999999999,
+    "warnings": [
+      {
+        "line": 112,
+        "text": "14:02:27.379 WARNING: grenade kind 2 id 1 never settled within 12 s at -12.58924,67.94086,-86.732605 (grounded=False rested=0.00 v=0.85); removed without effect"
+      }
+    ],
+    "errors": [],
+    "worldLoadLines": [
+      {
+        "line": 89,
+        "text": "14:00:37.605 INFO: 世界加载成功，游戏模式=创造，出生点难度=简单，世界名称=Manlau Palis，视距=128，渲染分辨率=高"
+      }
+    ],
+    "buildLines": [
+      {
+        "line": 87,
+        "text": "14:00:37.319 INFO: [CS_PERF] build=crowd-smooth-20260926; tacticalMvid=c2a77493-b588-45cf-b896-74d93b4d3db6; interval=10s; timings=inclusive CPU wall ms; engineFrame includes non-CS work/vsync; GPU not measured"
+      }
+    ]
+  }
+}
