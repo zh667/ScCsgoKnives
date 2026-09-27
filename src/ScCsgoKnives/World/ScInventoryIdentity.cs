@@ -39,7 +39,10 @@ public static class ScInventoryIdentity {
                 // Verified SushiTool DLL uses Dictionary<int,SushiSyncInventory>, not IList.
                 // Channel keys can be sparse; never substitute channel zero or bound by Count.
                 if (channel is int key && ScSushiInventory.Channels(sync) is { } channels
-                    && channels.Contains(key) && channels[key] is IInventory real) return real;
+                    && channels.Contains(key) && channels[key] is IInventory real) {
+                    KnifeDiagnostics.WarnOnce("inventory-alias-sushi-sync", "[GUN_STORAGE] mapped Sushi sync-box proxies to shared channel inventory; one backing slot is one holder, no proxy clone allocation");
+                    return real;
+                }
                 KnifeDiagnostics.WarnOnce("inventory-alias-sushi-sync-unresolved", "[GUN_STORAGE] Sushi sync-box channel unavailable or member contract changed; no guessed alias");
             } catch (Exception e) { KnifeDiagnostics.WarnOnce("inventory-alias-sushi-sync-error", "[GUN_STORAGE] Sushi sync-box mapping failed: " + e.GetBaseException().Message); }
         }

@@ -1,0 +1,453 @@
+{
+  "source": "D:\\下载\\Game(1) (1).log",
+  "sha256": "1faf9f3b790637581f998332136b46abef9cabe072321bcd6057a1fb06d854a0",
+  "bytes": 1554293,
+  "findings": [
+    "Loaded registries already contain 1022 records and next=1023 in both 1.3.0 world entries.",
+    "Earlier sessions report Sushi sync-box duplicate holders and split allocations, but the log does not establish provenance of every historical record.",
+    "Later old sessions load empty registries while inventory still references ID1022: missing-record warnings are separate from capacity.",
+    "A log cannot certify safe reclamation of IDs: unloaded holders, dormant data, external storage and other worlds are not enumerated. No registry or world changed."
+  ],
+  "evidence": [
+    {
+      "line": 409,
+      "reportedVersion": "1.2.0",
+      "text": "05:24:10.395 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 513,
+      "reportedVersion": "1.2.0",
+      "text": "05:25:14.105 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 536,
+      "reportedVersion": "1.2.0",
+      "text": "05:25:14.999 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:3:24, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 925,
+      "reportedVersion": "1.2.0",
+      "text": "05:28:09.134 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 949,
+      "reportedVersion": "1.2.0",
+      "text": "05:28:13.571 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:2:24, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 1030,
+      "reportedVersion": "1.2.0",
+      "text": "05:28:41.617 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 1483,
+      "reportedVersion": "1.2.0",
+      "text": "05:32:12.783 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 1505,
+      "reportedVersion": "1.2.0",
+      "text": "05:32:16.440 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:2:24, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 1616,
+      "reportedVersion": "1.2.0",
+      "text": "05:32:49.983 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 1726,
+      "reportedVersion": "1.2.0",
+      "text": "05:33:05.802 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 1872,
+      "reportedVersion": "1.2.0",
+      "text": "05:34:59.783 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 2269,
+      "reportedVersion": "1.2.0",
+      "text": "05:36:36.408 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 2300,
+      "reportedVersion": "1.2.0",
+      "text": "05:36:39.409 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:2:24, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 2373,
+      "reportedVersion": "1.2.0",
+      "text": "05:38:18.755 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 2487,
+      "reportedVersion": "1.2.0",
+      "text": "05:41:22.605 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 2578,
+      "reportedVersion": "1.2.0",
+      "text": "05:43:26.267 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 3012,
+      "reportedVersion": "1.2.0",
+      "text": "05:55:19.062 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 3161,
+      "reportedVersion": "1.2.0",
+      "text": "05:55:52.243 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 3610,
+      "reportedVersion": "1.2.0",
+      "text": "06:16:08.928 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 3675,
+      "reportedVersion": "1.2.0",
+      "text": "06:16:12.026 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:2:21, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 3747,
+      "reportedVersion": "1.2.0",
+      "text": "06:16:46.179 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 4171,
+      "reportedVersion": "1.2.0",
+      "text": "16:08:21.520 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 4228,
+      "reportedVersion": "1.2.0",
+      "text": "16:08:25.617 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:1:21, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 4304,
+      "reportedVersion": "1.2.0",
+      "text": "16:08:36.688 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 4404,
+      "reportedVersion": "1.2.0",
+      "text": "16:08:59.685 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 4518,
+      "reportedVersion": "1.2.0",
+      "text": "16:09:38.914 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 5718,
+      "reportedVersion": "1.2.0",
+      "text": "16:30:38.787 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 5891,
+      "reportedVersion": "1.2.0",
+      "text": "16:32:01.964 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 6640,
+      "reportedVersion": "1.2.0",
+      "text": "16:43:23.238 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 7337,
+      "reportedVersion": "1.2.0",
+      "text": "00:27:56.323 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 7736,
+      "reportedVersion": "1.1.0",
+      "text": "00:32:20.925 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 7833,
+      "reportedVersion": "1.1.0",
+      "text": "00:33:00.791 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 8232,
+      "reportedVersion": "1.2.0",
+      "text": "00:35:24.051 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 8945,
+      "reportedVersion": "1.2.0",
+      "text": "01:44:21.919 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9051,
+      "reportedVersion": "1.2.0",
+      "text": "01:44:52.358 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9151,
+      "reportedVersion": "1.2.0",
+      "text": "01:47:25.897 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9544,
+      "reportedVersion": "1.2.0",
+      "text": "01:49:15.865 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9638,
+      "reportedVersion": "1.2.0",
+      "text": "01:49:31.080 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9665,
+      "reportedVersion": "1.2.0",
+      "text": "01:50:17.563 INFO: [GUN_STORAGE] real duplicate 2: holder:3:35 (Sushi.ComponentSushiSyncBox) -> 3; next=4"
+    },
+    {
+      "line": 9666,
+      "reportedVersion": "1.2.0",
+      "text": "01:50:19.072 INFO: [GUN_STORAGE] real duplicate 1: holder:3:34 (Sushi.ComponentSushiSyncBox) -> 4; next=5"
+    },
+    {
+      "line": 9742,
+      "reportedVersion": "1.2.0",
+      "text": "01:51:03.713 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9837,
+      "reportedVersion": "1.2.0",
+      "text": "01:51:25.467 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 9867,
+      "reportedVersion": "1.2.0",
+      "text": "01:53:00.563 WARNING: [ScCsgoKnives] [GUN_STORAGE] mapped Sushi.ComponentSushiPersonBox to the player's underlying inventory"
+    },
+    {
+      "line": 9955,
+      "reportedVersion": "1.2.0",
+      "text": "01:56:40.423 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 10736,
+      "reportedVersion": "1.2.0",
+      "text": "01:59:22.078 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 10832,
+      "reportedVersion": "1.2.0",
+      "text": "01:59:48.158 INFO: gun registry: 1 records (0 quarantined), next id 2; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 10947,
+      "reportedVersion": "1.2.0",
+      "text": "02:01:07.194 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11042,
+      "reportedVersion": "1.2.0",
+      "text": "02:01:38.389 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11133,
+      "reportedVersion": "1.2.0",
+      "text": "02:01:49.328 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11155,
+      "reportedVersion": "1.2.0",
+      "text": "02:01:49.529 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:6:24, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 11222,
+      "reportedVersion": "1.2.0",
+      "text": "02:02:20.513 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11313,
+      "reportedVersion": "1.2.0",
+      "text": "02:03:10.134 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11405,
+      "reportedVersion": "1.2.0",
+      "text": "02:03:45.963 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11496,
+      "reportedVersion": "1.2.0",
+      "text": "02:04:03.357 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11590,
+      "reportedVersion": "1.2.0",
+      "text": "02:04:52.129 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11680,
+      "reportedVersion": "1.2.0",
+      "text": "02:05:19.926 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11779,
+      "reportedVersion": "1.2.0",
+      "text": "02:07:21.385 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11877,
+      "reportedVersion": "1.2.0",
+      "text": "02:07:52.554 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 11973,
+      "reportedVersion": "1.2.0",
+      "text": "02:08:32.002 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12078,
+      "reportedVersion": "1.2.0",
+      "text": "02:09:00.037 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12181,
+      "reportedVersion": "1.2.0",
+      "text": "02:10:13.872 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12281,
+      "reportedVersion": "1.2.0",
+      "text": "02:11:00.952 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12382,
+      "reportedVersion": "1.2.0",
+      "text": "02:11:10.442 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12488,
+      "reportedVersion": "1.2.0",
+      "text": "02:11:50.947 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12592,
+      "reportedVersion": "1.2.0",
+      "text": "02:12:34.063 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 12699,
+      "reportedVersion": "1.2.0",
+      "text": "02:13:22.490 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 13873,
+      "reportedVersion": "1.2.0",
+      "text": "02:18:51.106 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 13896,
+      "reportedVersion": "1.2.0",
+      "text": "02:18:54.789 WARNING: [ScCsgoKnives] [GUN_STORAGE] record=1022, holder=holder:3:24, type=Sushi.ComponentSushiSyncBox, next=1: split deferred: MissingRecord"
+    },
+    {
+      "line": 13969,
+      "reportedVersion": "1.2.0",
+      "text": "02:19:30.218 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 13990,
+      "reportedVersion": "1.2.0",
+      "text": "02:19:30.398 WARNING: [ScCsgoKnives] [GUN_STORAGE] record=1022, holder=holder:5:24, type=Sushi.ComponentSushiSyncBox, next=1: split deferred: MissingRecord"
+    },
+    {
+      "line": 14059,
+      "reportedVersion": "1.2.0",
+      "text": "02:21:02.640 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 14080,
+      "reportedVersion": "1.2.0",
+      "text": "02:21:02.808 WARNING: [ScCsgoKnives] [GUN_STORAGE] record=1022, holder=holder:9:24, type=Sushi.ComponentSushiSyncBox, next=1: split deferred: MissingRecord"
+    },
+    {
+      "line": 15150,
+      "reportedVersion": "1.2.0",
+      "text": "02:33:26.089 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 15173,
+      "reportedVersion": "1.2.0",
+      "text": "02:33:29.725 WARNING: [ScCsgoKnives] [GUN_STORAGE] record=1022, holder=holder:3:24, type=Sushi.ComponentSushiSyncBox, next=1: split deferred: MissingRecord"
+    },
+    {
+      "line": 15246,
+      "reportedVersion": "1.2.0",
+      "text": "02:34:48.580 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 15274,
+      "reportedVersion": "1.2.0",
+      "text": "02:36:30.153 INFO: [GUN_STORAGE] real duplicate 3: holder:9:10 (Game.ComponentChest) -> 6; next=7"
+    },
+    {
+      "line": 15275,
+      "reportedVersion": "1.2.0",
+      "text": "02:36:31.190 INFO: [GUN_STORAGE] real duplicate 5: holder:9:15 (Game.ComponentChest) -> 7; next=8"
+    },
+    {
+      "line": 15276,
+      "reportedVersion": "1.2.0",
+      "text": "02:36:32.725 INFO: [GUN_STORAGE] real duplicate 4: holder:9:14 (Game.ComponentChest) -> 8; next=9"
+    },
+    {
+      "line": 15277,
+      "reportedVersion": "1.2.0",
+      "text": "02:36:33.753 INFO: [GUN_STORAGE] real duplicate 1: holder:9:11 (Game.ComponentChest) -> 9; next=10"
+    },
+    {
+      "line": 15337,
+      "reportedVersion": "1.2.0",
+      "text": "02:36:41.955 INFO: gun registry: 9 records (0 quarantined), next id 10; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 16163,
+      "reportedVersion": "1.2.0",
+      "text": "02:42:49.569 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 16194,
+      "reportedVersion": "1.2.0",
+      "text": "02:42:53.287 WARNING: [ScCsgoKnives] [GUN_STORAGE] id=1022 has 2 distinct holders; next=1023, no free ID. Audit allocation retries suspended until capacity changes. First=holder:1:24, type=Sushi.ComponentSushiSyncBox"
+    },
+    {
+      "line": 16261,
+      "reportedVersion": "1.2.0",
+      "text": "02:43:34.547 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 16282,
+      "reportedVersion": "1.2.0",
+      "text": "02:43:34.745 WARNING: [ScCsgoKnives] [GUN_STORAGE] record=1022, holder=holder:6:24, type=Sushi.ComponentSushiSyncBox, next=1: split deferred: MissingRecord"
+    },
+    {
+      "line": 16347,
+      "reportedVersion": "1.2.0",
+      "text": "02:43:46.711 INFO: gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule Unset, 0 kill credit(s) pending"
+    },
+    {
+      "line": 16368,
+      "reportedVersion": "1.2.0",
+      "text": "02:43:46.869 WARNING: [ScCsgoKnives] [GUN_STORAGE] record=1022, holder=holder:8:24, type=Sushi.ComponentSushiSyncBox, next=1: split deferred: MissingRecord"
+    },
+    {
+      "line": 16752,
+      "reportedVersion": "1.3.0",
+      "text": "21:17:04.907 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    },
+    {
+      "line": 16846,
+      "reportedVersion": "1.3.0",
+      "text": "21:17:26.414 INFO: gun registry: 1022 records (0 quarantined), next id 1023; world gun data layout stamp 5, status Compatible, this version 5, schema read 6 -> written 6, counter rule CountAndGrow, 0 kill credit(s) pending"
+    }
+  ]
+}

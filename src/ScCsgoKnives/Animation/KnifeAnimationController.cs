@@ -159,7 +159,7 @@ public static class KnifeAnimationController {
         }
         if (elapsed >= duration) {
             // An inspect asked for during the draw runs now rather than being lost.
-            if (state.PendingInspect && !KnifeQa.Active) {
+            if (state.PendingInspect && !state.Scoped && !KnifeQa.Active) {
                 state.PendingInspect = false;
                 Start(state, ActionKind.Inspect, PickInspect(variant));
                 if(CsmcKnifeRig.IsGun(variant)) model.m_componentPlayer?.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.InspectSound(model.m_componentPlayer,state.ClipAlias);
@@ -189,6 +189,9 @@ public static class KnifeAnimationController {
         if (variant < 0) return false;
 
         State state = StateFor(model);
+        if(CsmcKnifeRig.IsGun(variant)&&(state.Scoped||player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.IsScoped(player)==true)){
+            state.PendingInspect=false;return false;
+        }
         // Inspect can arrive before the drawing hook observes an inventory switch.
         // Initialize that weapon's deploy and its readiness deadline before interrupting its visuals.
         Update(model, value);
@@ -393,6 +396,10 @@ public static class KnifeAnimationController {
         ComponentFirstPersonModel model = player?.Entity?.FindComponent<ComponentFirstPersonModel>();
         if (model is null || !s_states.TryGetValue(model, out State state)) return;
         state.Scoped = scoped;
+        if(scoped){
+            state.PendingInspect=false;
+            if(state.Action==ActionKind.Inspect)Start(state,ActionKind.Idle,IdleClip(state.Variant,Rounds(state.Variant,player.ComponentMiner.ActiveBlockValue),true));
+        }
     }
 
     /// <summary>The draw for the silencer state: draw_silenced_* with the silencer on, where the rig has it.</summary>

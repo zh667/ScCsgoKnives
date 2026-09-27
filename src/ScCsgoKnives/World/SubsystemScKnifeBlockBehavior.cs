@@ -108,7 +108,8 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             ScGunFunctions.ThrowWeak or ScGunFunctions.ThrowStrong => grenade,
             ScGunFunctions.Plant => c4,
             ScGunFunctions.C4Timer => c4,
-            ScGunFunctions.Inspect => ScMinimalEdition.InspectEnabled && (knife || gun || grenade || c4),
+            ScGunFunctions.Inspect => ScMinimalEdition.InspectEnabled && (knife || gun || grenade || c4)
+                && !(gun && Project.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.IsScoped(player)==true),
             _ => secondary == id,
         });
         bool Pressed(string id) => enabled && (panel?.Pressed(id) == true || ScGunBindings.Down(player, id));

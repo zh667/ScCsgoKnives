@@ -17,8 +17,8 @@ public sealed class ScGunLayoutScreen : Screen {
     public const string HudId="ammo_hud";
     static readonly string[] Entries=[..ScGunFunctions.All,HudId];
     ScHudPosition m_hud=new();
-    readonly LabelWidget m_hudProxy=new(){Text="弹药 HUD\n30 / 30",FontScale=.7f,DropShadow=true,TextAnchor=TextAnchor.HorizontalCenter|TextAnchor.VerticalCenter,
-        Size=new Vector2(116,76),IsHitTestVisible=false,IsVisible=false};
+    readonly CanvasWidget m_hudProxy=new(){Size=new Vector2(116,76),IsHitTestVisible=false,IsVisible=false};
+    readonly ScAmmoHud m_hudSample=new();
     CheckboxWidget m_hudCustom;
     readonly ScHudGesture m_hudGesture=new();
 
@@ -60,6 +60,11 @@ public sealed class ScGunLayoutScreen : Screen {
             m_preview.Children.Add(proxy);
         }
         m_preview.Children.Add(m_hudProxy);
+        m_hudSample.Show(new ScAmmoReadout("","",false,false,false){Compact=true,LoadedText="46",CapacityText="/ 46",WeaponIcon="m4a4",ReserveCount="∞",Fraction=1});
+        m_hudSample.Panel.Margin=Vector2.Zero;
+        m_hudSample.Panel.HorizontalAlignment=WidgetAlignment.Center;
+        m_hudSample.Panel.VerticalAlignment=WidgetAlignment.Center;
+        m_hudProxy.Children.Add(m_hudSample.Panel);
         m_panel.Children.Add(ScGunUi.Frame());
         m_panelScroll.Children.Add(m_controls);
         m_panelBody.Children.Add(m_panelScroll);
@@ -143,8 +148,8 @@ public sealed class ScGunLayoutScreen : Screen {
         base.MeasureOverride(availableSize);
     }
 
-    public bool PreviewVisible(string id) => id==HudId?m_selected==HudId&&m_hud.Custom:
-        Concurrent.FirstOrDefault(g=>g.Contains(m_selected))?.Contains(id)==true;
+    public bool PreviewVisible(string id) => id==HudId?m_selected==HudId:
+        id==m_selected||id==ScGunFunctions.Voice||Concurrent.FirstOrDefault(g=>g.Contains(m_selected))?.Contains(id)==true;
 
     ScButtonLayout Selected => ScUiSettings.Layout(m_working, m_selected, m_leftHanded);
     void LoadSelected() {
@@ -170,6 +175,8 @@ public sealed class ScGunLayoutScreen : Screen {
         [ScGunFunctions.Reload, ScGunFunctions.RevolverAlt, ScGunFunctions.Inspect, ScGunFunctions.Fire],
         [ScGunFunctions.KnifeHeavy, ScGunFunctions.Inspect],
         [ScGunFunctions.ThrowWeak, ScGunFunctions.ThrowStrong],
+        [ScGunFunctions.Plant, ScGunFunctions.C4Timer, ScGunFunctions.Inspect],
+        [ScGunFunctions.Voice],
     ];
     public static bool Overlap(ScButtonLayout a, ScButtonLayout b, Vector2 area) {
         Vector2 pa = ScWeaponTouchPanel.CornerOf(a, area), sa = ScWeaponTouchPanel.SizeOf(a);
@@ -219,9 +226,9 @@ public sealed class ScGunLayoutScreen : Screen {
                 if (id == m_selected) proxy.BevelColor = ScGunUi.Accent;
             }
             m_hudProxy.IsVisible=PreviewVisible(HudId);
-            m_preview.SetWidgetPosition(m_hudProxy,m_hud.Position(area,m_hudProxy.Size));
-            m_hudProxy.RenderTransform=m_hud.Transform(m_hudProxy.Size);
-            m_warning.Text=m_selected==HudId?(m_hud.Custom?"手机：双指移动、捏合缩放、转动旋转。电脑：拖动移动，滚轮缩放，Shift＋滚轮旋转。面板挡住时先收起；保存后应用。":"当前为自动右下角位置。勾选后可直接调整 HUD。"):FindOverlap(area);
+            m_preview.SetWidgetPosition(m_hudProxy,HudCorner(area));
+            m_hudProxy.RenderTransform=m_hud.Custom?m_hud.Transform(m_hudProxy.Size):Matrix.Identity;
+            m_warning.Text=m_selected==HudId?"M4A4 弹药 HUD 示例。手机：双指移动、捏合缩放、转动旋转。电脑：拖动移动，滚轮缩放，Shift＋滚轮旋转。直接操作即可启用自定义；面板挡住时先收起。":FindOverlap(area);
         }
 
         if (m_collapse.IsClicked) { m_collapsed = !m_collapsed; m_collapse.Text = m_collapsed ? "展开面板" : "收起面板"; }
@@ -262,11 +269,16 @@ public sealed class ScGunLayoutScreen : Screen {
     }
 
     void Drag(Vector2 area) {
-        if(m_selected==HudId&&m_hud.Custom){
-            if(m_hudGesture.Step(Input.TouchLocations,m_hud,area,m_hudProxy.Size,m_preview.ScreenToWidget,p=>!OverPanel(p)&&!OverExpand(p))){m_dragging=null;return;}
+        if(m_selected==HudId){
+            if(!m_hud.Custom){
+                var center=HudCorner(area)+m_hudProxy.Size/2;
+                m_hud.X=center.X/area.X;m_hud.Y=center.Y/area.Y;m_hud.Scale=1;m_hud.Rotation=0;
+            }
+            if(m_hudGesture.Step(Input.TouchLocations,m_hud,area,m_hudProxy.Size,m_preview.ScreenToWidget,p=>!OverPanel(p)&&!OverExpand(p))){EnableHud();m_dragging=null;return;}
             if(Input.Scroll is Vector3 wheel){
                 var pos=new Vector2(wheel.X,wheel.Y);
                 if(!OverPanel(pos)&&HudHit(m_preview.ScreenToWidget(pos),area)){
+                    EnableHud();
                     if(Input.IsKeyDown(Key.Shift))m_hud.Rotation+=wheel.Z*MathF.PI/36;
                     else m_hud.Scale*=MathF.Pow(1.1f,wheel.Z);
                     m_hud.Normalize();
@@ -282,10 +294,10 @@ public sealed class ScGunLayoutScreen : Screen {
         if (m_dragging is null && OverPanel(press.Value)) return;
         Vector2 point = m_preview.ScreenToWidget(press.Value);
         if(m_selected==HudId){
-            if(!m_hud.Custom)return;
-            var corner=m_hud.Position(area,m_hudProxy.Size);
+            var corner=HudCorner(area);
             if(m_dragging==null){
                 if(!HudHit(point,area))return;
+                EnableHud();
                 m_dragging=HudId;m_dragOffset=point-corner;return;
             }
             m_hud.X=Math.Clamp((point.X-m_dragOffset.X+m_hudProxy.Size.X/2)/area.X,0,1);
@@ -311,8 +323,10 @@ public sealed class ScGunLayoutScreen : Screen {
     }
 
     bool OverExpand(Vector2 p){var local=m_expand.ScreenToWidget(p);return m_collapsed&&local.X>=0&&local.Y>=0&&local.X<=m_expand.ActualSize.X&&local.Y<=m_expand.ActualSize.Y;}
+    void EnableHud(){m_hud.Custom=true;m_hudCustom.IsChecked=true;}
+    Vector2 HudCorner(Vector2 area)=>m_hud.Custom?m_hud.Position(area,m_hudProxy.Size):ScAmmoHud.FindCorner(area,m_hudProxy.Size,[]);
     bool HudHit(Vector2 point,Vector2 area){
-        var center=m_hud.Position(area,m_hudProxy.Size)+m_hudProxy.Size/2;
+        var center=HudCorner(area)+m_hudProxy.Size/2;
         var local=Vector2.Transform(point-center,Matrix.CreateRotationZ(-m_hud.Rotation))/m_hud.Scale;
         return MathF.Abs(local.X)<=m_hudProxy.Size.X/2&&MathF.Abs(local.Y)<=m_hudProxy.Size.Y/2;
     }

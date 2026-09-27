@@ -21,6 +21,9 @@ public static class TacticalArms {
         if(!meshes.TryGetValue(name,out var mesh)){using var s=Resource(name+".skin");meshes[name]=mesh=Cs2SkinnedMesh.ReadMesh(s);}return mesh;
     }
     public static string Role(ComponentFirstPersonModel first)=>first?.Entity?.Components.OfType<IScFirstPersonAppearance>().FirstOrDefault()?.FirstPersonRole;
+    // NMM/vanilla owns ordinary characters' empty hands. Gloves replace CS weapon
+    // arms only; drawing a second empty-hand rig would overlap those independent hooks.
+    public static bool OwnsEmptyHands(ComponentFirstPersonModel first)=>Role(first) is "ct" or "t";
     public static bool ValidGlove(string key)=>key==""||Gloves.Any(g=>g.Key==key);
     public static IReadOnlyList<ScFirstPersonArmPart> Resolve(ComponentFirstPersonModel first){
         var player=first?.Entity?.FindComponent<ComponentPlayer>();if(player==null)return null;
@@ -61,7 +64,7 @@ public static class TacticalArms {
         var subsystem=player.Project.FindSubsystem<SubsystemScTactical>(true);
         string selected=subsystem.GloveFor(player.PlayerData.PlayerIndex);
         string role=Role(player.Entity.FindComponent<ComponentFirstPersonModel>());
-        string scope=role is "ct" or "t"?"第一人称与当前 CT／T 的第三人称同步更换。":"第一人称生效；选择 CT／T 角色后，第三人称也会同步。";
+        string scope=role is "ct" or "t"?"第一人称与当前 CT／T 的第三人称同步更换。":"持 CS 武器时显示所选手套；空手保留当前人物的原装手臂，避免与其他模型叠加。选择 CT／T 后空手和第三人称也会同步。";
         ScWorkbenchAppearance[] items=[new("","跟随角色默认手套","恢复角色原装手套。未选 CT／T 时恢复原第一人称手臂。\n免费外观，不消耗材料。","Textures/ScCsgoTactical/Gloves/default_"+(role is "ct" or "t"?role:"arms")),
             ..Gloves.Select(g=>new ScWorkbenchAppearance(g.Key,g.Name,"崭新出厂 · 磨损 0.06\n"+scope+"\n袖子跟随角色；按玩家独立保存。\n免费外观，不消耗材料。","Textures/ScCsgoTactical/Gloves/"+g.Key))];
         var dialog=new ScWorkbenchSelectionDialog("人物外观 · 更换手套",items,64,

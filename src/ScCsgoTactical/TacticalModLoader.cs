@@ -34,7 +34,7 @@ public sealed class TacticalModLoader : ModLoader {
         // Do not draw empty hands over that still-visible action after the slot empties.
         int presented=first.Project.FindSubsystem<SubsystemScC4>(false)?.ViewmodelValue(first.m_componentPlayer,value)??value;
         presented=first.Project.FindSubsystem<SubsystemScGrenades>(false)?.ViewmodelValue(first.m_componentPlayer,presented)??presented;
-        if(presented==0&&TacticalArms.Resolve(first) is {Count:>0}){
+        if(presented==0&&TacticalArms.OwnsEmptyHands(first)&&TacticalArms.Resolve(first) is {Count:>0}){
             var oldBlend=Display.BlendState;var oldDepth=Display.DepthStencilState;var oldRaster=Display.RasterizerState;var oldScissor=Display.ScissorRectangle;
             try{Display.ScissorRectangle=ScCameraViewport.Clip(camera.ViewportSize,camera.ViewportMatrix,oldScissor);
                 skip=CsmcFirstPersonRenderer.DrawExtensionArms(first,camera,"default_t","idle",Matrix.CreateTranslation(0,-.08f,0)*unused);

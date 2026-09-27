@@ -1,5 +1,13 @@
 # Project conventions
 
+- User feedback 2026-09-27: fix editor C4/voice visibility and use the real M4A4
+  ammo widget as the always-visible HUD editing sample; gestures can enable custom
+  positioning directly. Non-CS empty hands belong to vanilla/NMM; custom gloves
+  still replace CS weapon arms. Disallow scoped inspection, including queued
+  actions. Audit supplied Game(1) (1).log and actual Sushi storage adapters without
+  clearing/reusing exhausted gun IDs or rewriting player saves. Ship 1.3.0 trio,
+  preserve previous accepted changes and unrelated dirty Zeus files.
+
 - User correction 2026-09-27 overrides the previous settings/audio redesign:
   restore pre-efb14b0 settings order and audio paths, keep group number pinned
   visible at the top, put HUD position editing inside the button-layout editor.
