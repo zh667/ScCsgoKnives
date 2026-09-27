@@ -36,6 +36,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
     }}
     public override void Dispose(){ScTacticalPerformance.Finish(Project);base.Dispose();}
     public void Update(float dt){
+        ScTexturePreparation.Pump();
         ScTacticalPerformance.Frame(Project,Enemies.Count,Project.FindSubsystem<SubsystemScTactical>()?.CompanionCount??0);
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Director);
         spawnCooldown=Math.Max(0,spawnCooldown-Math.Max(0,dt));foreach(var key in grenades.Keys.Where(k=>!Enemies.Any(e=>e.State?.Squad==k)).ToArray())grenades.Remove(key);
@@ -136,7 +137,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
                 using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Configure))e.FindComponent<ComponentTacticalEnemy>(true).Configure(TacticalEnemyState.Create(roles[i],squad,random),locations[i]);
                 var state=e.FindComponent<ComponentTacticalEnemy>(true).State;
                 using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponPrepare))
-                    ScNpcWeaponGeometry.Request(GunSpec.All[state.Variant].Name);
+                    ScWeaponPreparation.Request(state.DisplayValue);
             }
             foreach(var e in made){using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.AddEntity);Project.AddEntity(e);}
             spawnCooldown=60;trace.Success=true;return made.Count;

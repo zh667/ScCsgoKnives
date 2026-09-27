@@ -23,6 +23,7 @@ public sealed class ComponentCsPlayerAppearance : ComponentNekoMekoModel, INeoMo
 
     void IUpdateable.Update(float dt) { base.Update(dt); RefreshModel(); }
     void RefreshModel() {
+        CsNeoBoneBuffer.Ensure(TargetComponent);
         if (IsCs) {
             ComponentNeoModel.FirstPersonModel = null;
             ComponentNeoModel.FirstPersonArms2Model = null;

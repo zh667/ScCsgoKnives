@@ -3,7 +3,7 @@ namespace Game;
 
 /// <summary>Cold operations only; bounded per-process diagnostics, no frame-path strings.</summary>
 public static class ScResourceTiming {
-    public const int MobileProtocol=1;
+    public const int MobileProtocol=2;
     static readonly HashSet<string> seen=new();
     static int emitted;
     public static Scope Measure(string kind,string resource)=>new(kind,resource);

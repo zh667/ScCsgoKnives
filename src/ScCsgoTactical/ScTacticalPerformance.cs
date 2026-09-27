@@ -8,7 +8,7 @@ namespace Game;
 
 // Diagnostic timings are inclusive CPU wall times, not GPU timers. No world data or files.
 public static class ScTacticalPerformance {
-    public const string Revision="mobile-common-20260927";
+    public const string Revision="mobile-resources-20260927";
     public enum Stage { Placement, EntityCreate, Configure, AddEntity, ModelLoad, ModelSet,
         AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, ActionApply, WeaponPrepare, Count }
     static readonly ConditionalWeakTable<Project,Session> sessions=new();
@@ -48,6 +48,8 @@ public static class ScTacticalPerformance {
         internal int requests,failed,suppressed,sequence;
         internal long activeBones,totalBones,bonePasses;
         readonly Counter[] frameCounters=new Counter[(int)Stage.Count];
+        readonly Counter[] completedFrameCounters=new Counter[(int)Stage.Count];
+        int completedScopesFrame=-1;
         int scopesFrame=-1,frameGc0=GC.CollectionCount(0),frameGc2=GC.CollectionCount(2),longFrameDetails,longFrameSuppressed;
         long lastFrameAt,allocatedAt=GC.GetTotalAllocatedBytes(false);
         internal long[] Timings()=>counters.Select(c=>c.ticks).ToArray();
@@ -55,7 +57,10 @@ public static class ScTacticalPerformance {
         internal void Add(Stage stage,long ticks,long bytes,string resource){
             void AddCounter(ref Counter c){c.calls++;c.ticks+=ticks;if(ticks>c.max){c.max=ticks;c.maxResource=resource;}c.bytes+=Math.Max(0,bytes);}
             AddCounter(ref counters[(int)stage]);
-            if(scopesFrame!=Time.FrameIndex){Array.Clear(frameCounters);scopesFrame=Time.FrameIndex;}
+            if(scopesFrame!=Time.FrameIndex){
+                Array.Copy(frameCounters,completedFrameCounters,frameCounters.Length);completedScopesFrame=scopesFrame;
+                Array.Clear(frameCounters);scopesFrame=Time.FrameIndex;
+            }
             AddCounter(ref frameCounters[(int)stage]);
         }
         internal bool AllowDetail(long now){if(detailAt!=long.MinValue&&Milliseconds(now-detailAt)<1000)return false;detailAt=now;return true;}
@@ -67,10 +72,13 @@ public static class ScTacticalPerformance {
                 if((ms>=100||gap>=1000)&&(enemies+companions>0||peak>0||requests>0)){
                     if(longFrameDetails++<6){
                         var b=new StringBuilder(512);
-                        b.Append(CultureInfo.InvariantCulture,$"[CS_PERF] long-frame index={index} engineMs={ms:F2} cpuMs={cpu:F2} updateGapMs={gap:F2} gcDelta={currentGc0-frameGc0}/{currentGc2-frameGc2} scopesFrame={scopesFrame} enemies={enemies} companions={companions}");
-                        for(int i=0;i<frameCounters.Length;i++)if(frameCounters[i].ticks>0){
-                            b.Append(CultureInfo.InvariantCulture,$" | {(Stage)i}Ms={Milliseconds(frameCounters[i].ticks):F2}");
-                            if(frameCounters[i].maxResource!=null)b.Append(",resource=").Append(frameCounters[i].maxResource);
+                        bool previous=completedScopesFrame==index-1;
+                        var recorded=previous?completedFrameCounters:frameCounters;
+                        int recordedFrame=previous?completedScopesFrame:scopesFrame;
+                        b.Append(CultureInfo.InvariantCulture,$"[CS_PERF] long-frame index={index} engineMs={ms:F2} cpuMs={cpu:F2} updateGapMs={gap:F2} gcDelta={currentGc0-frameGc0}/{currentGc2-frameGc2} scopesFrame={recordedFrame} enemies={enemies} companions={companions}");
+                        for(int i=0;i<recorded.Length;i++)if(recorded[i].ticks>0){
+                            b.Append(CultureInfo.InvariantCulture,$" | {(Stage)i}Ms={Milliseconds(recorded[i].ticks):F2}");
+                            if(recorded[i].maxResource!=null)b.Append(",resource=").Append(recorded[i].maxResource);
                         }
                         b.Append("; scopes inclusive, frame IDs retained; GPU/physics not isolated");Log.Information(b.ToString());
                     }else longFrameSuppressed++;
@@ -88,6 +96,7 @@ public static class ScTacticalPerformance {
                 b.Append(CultureInfo.InvariantCulture,$"[CS_PERF] summary final={final} windowMs={Milliseconds(now-reportAt):F0} enemies={enemies} companions={companions} peakActors={peak} frames={frames} engineAvgMs={frameMs/Math.Max(1,frames):F2} engineMaxMs={maxFrame:F2} engineCpuAvgMs={cpuMs/Math.Max(1,frames):F2} over50/100/250={over50}/{over100}/{over250} spawnRequests={requests} spawnFailed={failed} detailSuppressed={suppressed} managedMB={GC.GetTotalMemory(false)/1048576d:F1} gc={current0-gc0}/{current1-gc1}/{current2-gc2}");
                 b.Append(CultureInfo.InvariantCulture,$" processAllocMB={(GC.GetTotalAllocatedBytes(false)-allocatedAt)/1048576d:F2} sampledMs={frameMs:F2} renderBones={activeBones}/{totalBones} bonePasses={bonePasses} longFrameSuppressed={longFrameSuppressed} gpuMeshes={ScNpcWeaponRenderer.CachedMeshes}");
                 b.Append(CultureInfo.InvariantCulture,$" prefetchPending={ScNpcWeaponGeometry.PendingCount} prefetchStarted={ScNpcWeaponGeometry.PrefetchStarted} prefetchReady={ScNpcWeaponGeometry.PrefetchReady} prefetchWaitTotalMs={ScNpcWeaponGeometry.PrefetchWaitMs:F2}");
+                b.Append(CultureInfo.InvariantCulture,$" texturePending={ScTexturePreparation.PendingCount} textureStarted={ScTexturePreparation.Started} textureReady={ScTexturePreparation.Ready} textureWaitMs={ScTexturePreparation.WaitMilliseconds:F2} textureUploadMs={ScTexturePreparation.UploadMilliseconds:F2} textureSkipped={ScTexturePreparation.Skipped}");
                 for(int i=0;i<counters.Length;i++){var c=counters[i];if(c.calls==0)continue;
                     b.Append(CultureInfo.InvariantCulture,$" | {(Stage)i}:n={c.calls},totalMs={Milliseconds(c.ticks):F2},maxMs={Milliseconds(c.max):F2},allocKB={c.bytes/1024d:F1}");if(c.maxResource!=null)b.Append(",maxFor=").Append(c.maxResource);}
                 Log.Information(b.ToString());

@@ -16,7 +16,7 @@ public static class ScGunVisualMaterial {
     public static Texture2D Load(string asset, int skin, out string material) {
         if (s_cache.TryGetValue((asset, skin), out var cached)) { material = cached.Material; return cached.Texture; }
         using var timing=ScResourceTiming.Measure("texture",asset);
-        Texture2D Try(string key) { try { return ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + key); } catch { return null; } }
+        Texture2D Try(string key) { try { return ScTexturePreparation.Load("Textures/ScCsgoKnives/" + key); } catch { return null; } }
         var texture = Resolve(asset, skin, Try, out material);
         if (skin != 0) {
             string wanted = ScGunSkinCatalog.Material(asset, skin);

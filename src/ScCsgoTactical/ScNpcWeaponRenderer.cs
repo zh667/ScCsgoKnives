@@ -61,6 +61,16 @@ public static class ScNpcWeaponRenderer {
         catch(Exception e){failed=true;KnifeDiagnostics.WarnOnce("npc-gpu",$"NPC shader unavailable: {e.Message}; using original renderer.");return false;}
     }
     public static int CachedMeshes=>meshes.Count;
+    public static void PrepareGeometry(ScNpcWeaponGeometry geometry,Project project){
+        if(!Prepare())return;
+        foreach(var group in geometry.Groups){
+            var source=group.Mesh;
+            if(source.Indices.Count==0||meshes.ContainsKey(source))continue;
+            using var timing=ScTacticalPerformance.Measure(project,ScTacticalPerformance.Stage.WeaponUpload);
+            try{meshes.Add(source,new Mesh(source));}
+            catch(Exception e)when(e is not OutOfMemoryException){failed=true;KnifeDiagnostics.WarnOnce("npc-gpu",e.Message);return;}
+        }
+    }
     // If a driver rejects the shader, retain the native path without exact-size
     // reallocations for every additional part/actor in the growing crowd.
     public static void ReserveFallback(PrimitivesRenderer3D renderer,BlockMesh mesh,Texture2D texture,bool legacy){

@@ -93,6 +93,7 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     public override void Animate(){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Animate);
         var action=VisualAction;
+        if(preparedValue!=HeldValue){preparedValue=HeldValue;ScWeaponPreparation.Request(preparedValue);}
         bool alive=m_componentCreature.ComponentHealth.Health>0;
         if(animatedFrame==Time.FrameIndex&&animatedDeath==DeathPhase&&animatedAlive==alive&&animatedModel==Model&&animatedAction==action&&animatedValue==HeldValue&&framePose!=null){
             Array.Copy(framePose,m_boneTransforms,framePose.Length);return;
@@ -122,6 +123,7 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         if(framePose?.Length!=m_boneTransforms.Length)framePose=new Matrix?[m_boneTransforms.Length];
         Array.Copy(m_boneTransforms,framePose,framePose.Length);animatedFrame=Time.FrameIndex;animatedDeath=DeathPhase;animatedAlive=alive;animatedModel=Model;animatedAction=action;animatedValue=HeldValue;
     }
+    int preparedValue;
     void Bend(string name,float radians){var bone=Model.FindBone(name,false);if(bone==null)return;var local=m_boneTransforms[bone.Index]??bone.Transform;var position=local.Translation;local.Translation=Vector3.Zero;m_boneTransforms[bone.Index]=Matrix.CreateRotationZ(radians)*local*Matrix.CreateTranslation(position);}
     void RelaxLimb(string name,string childName,Vector3 goal,float amount){
         var bone=Model.FindBone(name,false);var child=Model.FindBone(childName,false);if(bone?.ParentBone==null||child==null)return;

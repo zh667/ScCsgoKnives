@@ -41,6 +41,19 @@ ScTacticalPerformance.Start(diagnosticProject);ScTacticalPerformance.Finish(diag
 using(ScTacticalPerformance.Measure(null,ScTacticalPerformance.Stage.Animate)){}
 new ComponentTacticalEnemy().Update(0);new ComponentTacticalModel().SetModel(null);
 Check("unattached empty components retain native no-op behavior",true);
+var indexProperty=typeof(Time).GetProperty("FrameIndex");int savedIndex=Time.FrameIndex;
+try{
+    var previousFrameProject=new Project();
+    indexProperty.SetValue(null,100);using(ScTacticalPerformance.Measure(previousFrameProject,ScTacticalPerformance.Stage.WeaponDraw,"fixture-gun")){System.Threading.Thread.SpinWait(10000);}
+    indexProperty.SetValue(null,101);using(ScTacticalPerformance.Measure(previousFrameProject,ScTacticalPerformance.Stage.EnemyAI)){}
+    ScTacticalPerformance.Frame(previousFrameProject,3,0);
+    var previousSession=typeof(ScTacticalPerformance).GetMethod("For",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,[previousFrameProject]);
+    // Force a new reported sample with engine elapsed time for frame 100.
+    previousSession.GetType().GetField("lastFrame",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(previousSession,-1);
+    frameMethod.Invoke(previousSession,[101,150d,140d,3,0]);
+    Check("new AI scope preserves previous rendering frame",sink.Lines.Last().Contains("scopesFrame=100")&&sink.Lines.Last().Contains("WeaponDrawMs=")&&!sink.Lines.Last().Contains("EnemyAIMs="));
+    ScTacticalPerformance.Finish(previousFrameProject);
+}finally{indexProperty.SetValue(null,savedIndex);}
 rows.Add(new{stage="logger",overheadNs,allocatedBytes=loggerBytes,calls=100000});
 using var content=ZipFile.OpenRead(args[1]);
 string Read(string suffix){using var reader=new StreamReader(content.Entries.Single(e=>e.FullName.EndsWith(suffix)).Open());return reader.ReadToEnd();}

@@ -1,5 +1,13 @@
 # Project conventions
 
+- User-directed USB follow-up 2026-09-27: fix NEO rigid-body bone-buffer
+  synchronization ONLY in our appearance adapter; never patch/repack NEO/NMM.
+  Prepare demanded weapon textures and restored-world resources with original
+  pixels/dimensions/native upload settings. Share runtime fixes across 1.3.0
+  Full and split Lite/agents; validate and replace the three output packages.
+  Installed Mods/phone/worlds and Mini stay untouched. Preserve unrelated Zeus
+  edits; add bounded diagnostics and report remaining Android acceptance honestly.
+
 - User-directed mobile follow-up 2026-09-27: fix smoke repeatedly bouncing on
   bodies (one body collision per smoke, terrain/fuse/support rules retained),
   optimize proven animation/bone/first-use weapon costs, and add bounded diagnostics

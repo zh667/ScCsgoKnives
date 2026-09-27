@@ -107,6 +107,7 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         Check("NMM save keys",saved.GetValue<string>("ModelKey")==key&&saved.GetValue<string>("SkinKey")==key+".default");
         for(int round=0;round<2;round++){var xml=new XElement("Values");saved.Save(xml);var reloaded=new ValuesDictionary();reloaded.ApplyOverrides(XElement.Parse(xml.ToString()));adapter.SetResModel("fixture.default");adapter.LoadResModelAndSkin(reloaded);Check("reload "+key+" "+round,adapter.ModelKey==key&&adapter.SkinKey==key+".default");}
     }
+    NeoBufferChecks.Run(human,adapter,Check);
     data.SetData(0,"zh667.cs.ct","zh667.cs.ct.default");data.SetData(1,"zh667.cs.t","zh667.cs.t.default");
     data.GetData(0,out var key0,out var skin0);data.GetData(1,out var key1,out var skin1);
     Check("respawn cache is per player",key0=="zh667.cs.ct"&&key1=="zh667.cs.t"&&skin0!=skin1);

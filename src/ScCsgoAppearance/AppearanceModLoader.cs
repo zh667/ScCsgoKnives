@@ -12,7 +12,13 @@ namespace Game;
 
 public sealed class AppearanceModLoader : ModLoader {
     readonly ConditionalWeakTable<PlayerModelWidget, Dictionary<Model, CsPlayerPose>> previews = new();
-    public override void __ModInitialize() => ModsManager.RegisterHook("OnPlayerModelWidgetMeasureOverride", this, 100);
+    public override void __ModInitialize(){
+        ModsManager.RegisterHook("OnPlayerModelWidgetMeasureOverride",this,100);
+        ModsManager.RegisterHook("OnModelCalculateBones",this,-100);
+    }
+    public override void OnModelCalculateBones(ComponentModel model,Camera camera,out bool skip){
+        skip=false;CsNeoBoneBuffer.Ensure(model);
+    }
     public override void OnXdbLoad(XElement database) {
         var player = database.Descendants("EntityTemplate").Single(e => (string)e.Attribute("Guid") == "4be6c1c5-d65d-4537-8a8b-a391969e6dc2");
         foreach (var pair in new[] { ("NekoMekoModel", typeof(ComponentCsPlayerAppearance)), ("NekoHUD", typeof(ComponentCsAppearanceHud)) }) {
