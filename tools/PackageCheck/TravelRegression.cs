@@ -14,10 +14,12 @@ static class TravelRegression {
         XElement G(XElement p,string n)=>p?.Elements("Values").SingleOrDefault(e=>(string)e.Attribute("Name")==n);
         string Text(XElement p,string n)=>(string)p.Elements("Value").Single(e=>(string)e.Attribute("Name")==n).Attribute("Value");
         const int block=302;
+        int layout=(int)mod.GetType("Game.GunSpec").GetField("DataLayout").GetRawConstantValue();
+        int lastId=(int)mod.GetType("Game.GunSpec").GetField("LastId").GetRawConstantValue();
         XElement World(string row,bool player=true) {
             var records=Group("Records");if(row!=null)records.Add(Value("1",row));
             var table=Group("GunRegistry",Value("Schema",(int)registryType.GetField("Schema").GetRawConstantValue()),Value("Next",row==null?1:2),Value("GrowthMode","CountAndGrow"),records);
-            return new XElement("Project",new XElement("Subsystems",Group("BlocksManager",Value("302","ScGunBlock")),Group("ScGunBlockBehavior",Value("GunDataLayout",5),table)),
+            return new XElement("Project",new XElement("Subsystems",Group("BlocksManager",Value("302","ScGunBlock")),Group("ScGunBlockBehavior",Value("GunDataLayout",layout),table)),
                 new XElement("Entities",player?new XElement("Entity",new XAttribute("Name","MalePlayer"),Group("Inventory",Group("Slots",Group("0",Value("Contents",Terrain.MakeBlockValue(block,0,66)),Value("Count",1))))):null));
         }
         void Capture(XElement p,string path)=>type.GetMethod("Capture").Invoke(null,[p,path]);
@@ -45,7 +47,7 @@ static class TravelRegression {
             for(int i=0;i<2;i++){returned=XElement.Parse(returned.ToString());Capture(returned,"data:/Worlds/Test");Check("same-world-reload-idempotent/"+i,Prepare(returned,"data:/Worlds/Test")==null);}
             var broken=World(row);Capture(broken,"data:/Worlds/Test");var packet=G(broken.Element("Entities").Element("Entity"),"ScGunTravel");G(packet,"Records").Elements("Value").First().SetAttributeValue("Value","corrupt");
             bool refused=false;try{Prepare(broken,"data:/Worlds/Test/Tartareosity");}catch(TargetInvocationException){refused=true;}Check("corrupt-packet-refused",refused);
-            var full=World(row,false);G(G(full.Element("Subsystems"),"ScGunBlockBehavior"),"GunRegistry").Elements("Value").Single(e=>(string)e.Attribute("Name")=="Next").SetAttributeValue("Value",1023);
+            var full=World(row,false);G(G(full.Element("Subsystems"),"ScGunBlockBehavior"),"GunRegistry").Elements("Value").Single(e=>(string)e.Attribute("Name")=="Next").SetAttributeValue("Value",lastId+1);
             var source=World(row);Capture(source,"data:/Worlds/Test");Transfer(source,full);before=full.ToString();refused=false;try{Prepare(full,"data:/Worlds/Test/Tartareosity");}catch(TargetInvocationException){refused=true;}
             Check("full-target-refused-without-changes",refused&&before==full.ToString());
             foreach(var fault in new[]{"unknown-schema","duplicate-identity","foreign-world","target-holder"}) {

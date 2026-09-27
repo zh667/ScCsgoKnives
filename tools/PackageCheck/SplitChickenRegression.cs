@@ -114,7 +114,7 @@ static class SplitChickenRegression {
                 for(int i=0;i<states.Length;i++)foreach(var p in snapshots[i]){if(p.value is Array a)a.CopyTo((Array)p.f.GetValue(states.GetValue(i)),0);else p.f.SetValue(states.GetValue(i),p.value);}
             }
         });
-        Test("native-chicken-animation-loops-in-place",()=>{
+        if(!ResourcePackInput.AgentsAbsent(mod)) Test("native-chicken-animation-loops-in-place",()=>{
             using var zip=ZipFile.OpenRead(package);using var stream=zip.GetEntry("Assets/Models/ScCsgoKnives/chicken.glb").Open();using var bytes=new MemoryStream();stream.CopyTo(bytes);bytes.Position=0;var data=GltfLoader.Load(bytes);
             using var model=new Model{ModelData=data,Skin=data.Skin,Animations=data.Animations};
             foreach(var b in data.Bones)model.m_bones.Add(new ModelBone{Model=model,Index=model.m_bones.Count,Name=b.Name,Transform=b.Transform});

@@ -8,6 +8,13 @@ using Game;
 /// <summary>Validate actual separately shipped archives, then expose their disjoint union to
 /// existing package tests. The union is temporary, not a deliverable and never hides collisions.</summary>
 static class ResourcePackInput {
+    internal static bool AgentsAbsent(Assembly core) => core.GetType("Game.ScOptionalAgents") is {} type
+        && (bool)type.GetField("Split").GetRawConstantValue() && !(bool)type.GetProperty("Available").GetValue(null);
+    internal static Stream OpenResource(Assembly core, Assembly owner, string name) {
+        var stream=owner.GetManifestResourceStream(name)??throw new InvalidDataException("Missing resource: "+name);
+        return core.GetType("Game.ScResourceCompression") is {} type
+            ? (Stream)type.GetMethod("Open").Invoke(null,[stream,name,false]) : stream;
+    }
     /// <summary>True when the core's dependency admits this resource version: exact `[x]`, bare `x` (minimum) or a
     /// NuGet interval `[lo,hi)`. Keeps an asset-cleanup release from pinning every player to one exact pack.</summary>
     static bool DependencyAccepts(string spec, string version) {

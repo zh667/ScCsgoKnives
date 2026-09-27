@@ -222,7 +222,7 @@ static class WeaponHelpLayoutRegression {
                 dialog.Measure(new(850,479));dialog.Arrange(Vector2.Zero,new(850,479));
                 var list=(ListPanelWidget)dialog.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
                 Check($"workbench-all-functions-visible/{creative}",list.Items.Count==5&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")&&list.Items.Any(o=>o.GetType().Name=="OwnedAttributesMenu")
-                    && menu.Length==craftItems.Length+20,"actual runtime menu: five operations + five components + ten supplies, plus gun/knife assembly");
+                    && menu.Length==craftItems.Length+(ResourcePackInput.AgentsAbsent(mod)?19:20),"actual runtime menu: five operations + five components + supplies; chicken egg requires agents");
             }
             foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
                 var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;
@@ -474,10 +474,17 @@ static class WeaponHelpLayoutRegression {
                         }
                         var canvas = (CanvasWidget)EditorField("m_preview"); var panel = EditorField("m_panel"); var save = EditorField("m_save");
                         var proxies = canvas.Children.Where(w=>w.IsVisible).ToArray();
+                        var buttonProxies=(Dictionary<string,BevelledButtonWidget>)editorType.GetField("m_proxies",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(editor);
+                        string[] expectedButtons=id switch {
+                            "reload" or "scope" => ["reload","scope","inspect","fire","agent_voice"],
+                            "throw_weak" => ["throw_weak","throw_strong","agent_voice"],
+                            _ => ["knife_heavy","inspect","agent_voice"]
+                        };
                         Check($"editor-stable/{size}/{id}/{collapsed}/{results.Count}", stable && canvas.ActualSize==size
-                            && proxies.Length is >=2 and <=4 && proxies.All(w=>!w.IsUpdateEnabled && !w.IsHitTestVisible)
+                            && buttonProxies.Where(p=>p.Value.IsVisible).Select(p=>p.Key).ToHashSet().SetEquals(expectedButtons)
+                            && proxies.All(w=>!w.IsUpdateEnabled && !w.IsHitTestVisible)
                             && (collapsed ? !panel.IsVisible : save.GlobalBounds.Max.Y<=panel.GlobalBounds.Max.Y+.1f && save.ActualSize.Y>=48),
-                            "12 real Update/Measure/Arrange frames: fixed preview area, no oscillation, only concurrent buttons, footer reachable");
+                            "12 real Update/Measure/Arrange frames: stable concurrent buttons plus persistent voice preview, footer reachable");
                         if (!collapsed) {
                             var scroll = (ScrollPanelWidget)EditorField("m_panelScroll"); scroll.ScrollPosition=Math.Max(0,scroll.CalculateScrollAreaLength()-scroll.ActualSize.Y);
                             editor.Measure(size); editor.Arrange(Vector2.Zero,size);

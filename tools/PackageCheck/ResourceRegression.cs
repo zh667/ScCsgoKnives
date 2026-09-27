@@ -25,7 +25,7 @@ static class ResourceRegression {
             });
             foreach (string name in names) Test("metadata-only/" + name, () => {
                 string resource = animations.GetManifestResourceNames().Single(n => n.EndsWith("." + name + ".cs2.animation.json"));
-                using var stream = animations.GetManifestResourceStream(resource); using var document = JsonDocument.Parse(stream);
+                using var stream = ResourcePackInput.OpenResource(mod,animations,resource); using var document = JsonDocument.Parse(stream);
                 var root = document.RootElement;
                 string Value(string key) => root.TryGetProperty(key, out var p) && p.ValueKind != JsonValueKind.Null ? p.GetString() : null;
                 return (bool)Call("Cs2Rig", "Has", name)

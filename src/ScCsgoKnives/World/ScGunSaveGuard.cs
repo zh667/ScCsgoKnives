@@ -14,7 +14,7 @@ public static class ScGunSaveGuard {
         if (error is not null) throw new InvalidOperationException(error);
         if (values.ContainsKey("GunDataLayout")) {
             int stamp = values.GetValue<int>("GunDataLayout");
-            if (stamp != GunSpec.DataLayout && stamp != ScGunRegistry.LegacyStamp)
+            if (stamp != GunSpec.DataLayout && stamp != ScGunEncoding.PreviousLayout && stamp != ScGunRegistry.LegacyStamp)
                 throw Refused($"GunDataLayout={stamp}");
         }
         if (values.ContainsKey("GunRegistry")) {
@@ -23,6 +23,9 @@ public static class ScGunSaveGuard {
             if (!registry.ContainsKey("Schema")) throw Refused("GunRegistry 缺少 Schema（记录格式版本）；不能猜测记录格式，请提供来源版本或原始备份");
             int schema = registry.GetValue<int>("Schema", 0);
             if (!ScGunRegistry.IsKnownSchema(schema)) throw Refused($"GunRegistry.Schema={schema}");
+            int layout = values.GetValue<int>("GunDataLayout", ScGunEncoding.PreviousLayout);
+            if (schema == ScGunRegistry.Schema && layout != GunSpec.DataLayout && layout != ScGunRegistry.LegacyStamp)
+                throw Refused("扩容记录表必须与布局6同时保存，不能混用旧布局标记");
             // A growth mode name this build does not know means a rule set it cannot honour; refuse before play.
             string mode = registry.GetValue<string>("GrowthMode", null);
             if (mode is not null && !Enum.TryParse<ScGunGrowthMode>(mode, out _)) throw Refused($"GunRegistry.GrowthMode={mode}");
@@ -66,7 +69,7 @@ public static class ScGunSaveGuard {
 
     internal static void ValidateSave(bool loaded, int sourceLayout, ScGunRegistry registry) {
         if (!loaded || registry is null) throw Refused("world load did not complete");
-        if (sourceLayout != 0 && sourceLayout != GunSpec.DataLayout && sourceLayout != ScGunRegistry.LegacyStamp)
+        if (sourceLayout != 0 && sourceLayout != GunSpec.DataLayout && sourceLayout != ScGunEncoding.PreviousLayout && sourceLayout != ScGunRegistry.LegacyStamp)
             throw Refused($"GunDataLayout={sourceLayout}");
         if (registry.UnknownSchema) throw Refused("unsupported registry/recovery schema");
     }

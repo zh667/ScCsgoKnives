@@ -26,7 +26,7 @@ public sealed class ScGunKillQueue {
     /// <summary>Records one confirmed kill against one gun instance. Returns the event id, or -1 when the
     /// credential is not a usable record reference.</summary>
     public long Enqueue(int recordId, int variant) {
-        if (recordId < GunSpec.FirstId || recordId > GunSpec.LastId) return -1;
+        if (!ScGunEncoding.IsRecordId(recordId)) return -1;
         if (variant < 0 || variant >= GunSpec.All.Length) return -1;
         if (m_pending.Count == MaxPending)
             KnifeLog.Warning($"gun kill queue has {MaxPending} waiting credits; all are retained until their guns are reachable");
@@ -72,7 +72,7 @@ public sealed class ScGunKillQueue {
                 || parts.Length != 2
                 || !int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int record)
                 || !int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int variant)
-                || record < GunSpec.FirstId || record > GunSpec.LastId || variant < 0 || variant >= GunSpec.All.Length)
+                || !ScGunEncoding.IsRecordId(record) || variant < 0 || variant >= GunSpec.All.Length)
                 throw new InvalidOperationException("PendingKills entry '" + pair.Key + "' is not a valid credential");
             if (m_pending.Any(e => e.EventId == id)) throw new InvalidOperationException("PendingKills has a duplicate event id " + id);
             m_pending.Add(new Entry(id, record, variant));

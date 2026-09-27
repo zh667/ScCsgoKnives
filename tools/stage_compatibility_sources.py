@@ -5,7 +5,7 @@ ROOT=Path(__file__).resolve().parents[1]
 SOURCES={
  '1.0.0':('cf6907f',Path(r'D:\下载\[API1.9]CS武器1.0- 作者ZH667.scmod'),'9c700bc8133942ca4fe0ce7e9604296e7acd1533f684aaa5dd4bfda252e84424'),
  '1.2.0':('0f78a1b',Path(r'D:\下载\[API1.9]CS武器1.2.0-全量版.scmod'),'b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95')}
-SHARED=['ScGunRegistry','ScGunGrowth','ScGunGrowthMigration','ScGunGrowthService','ScGunSaveGuard','ScGunSchemaUpgrade',
+SHARED=['ScGunEncoding','ScGunKillQueue','ScGunRegistry','ScGunGrowth','ScGunGrowthMigration','ScGunGrowthService','ScGunSaveGuard','ScGunSchemaUpgrade',
         'ScGunLoadIntegrity','ScGunTravel','ScGunHolders','ScGunMutation','ScInventoryIdentity','ScSushiInventory',
         'ScInventoryTransaction','ScGunRecovery','ScCompatibility','ScGun0282Migration','ScGhoulTestBridge']
 def main():
@@ -28,6 +28,27 @@ def main():
     for name in SHARED:
         path=ROOT/f'src/ScCsgoKnives/World/{name}.cs';assert path.exists(),name
         data=path.read_text('utf8');(src/'World'/path.name).write_text(data,'utf8');changes.append(str(path.relative_to(ROOT)))
+    # Only persistence helpers are backported; historical weapon stats and handling stay original.
+    spec=src/'Rendering/GunSpec.cs';old_spec=spec.read_text('utf8')
+    current_spec=(ROOT/'src/ScCsgoKnives/Rendering/GunSpec.cs').read_text('utf8')
+    begin='    public const int FreshFull';end='    static int MagazineOf'
+    spec.write_text(old_spec[:old_spec.index(begin)]+current_spec[current_spec.index(begin):current_spec.index(end)]+old_spec[old_spec.index(end):],'utf8')
+    # Shared proxy resolution must cover historical UI candidate enumeration too.
+    for filename,signatures in {
+        'ScOwnedGunAttributes.cs':['public static bool TryRead(IInventory inventory, int slot, out Candidate gun) {','public static Candidate[] Candidates(IInventory inventory) {'],
+        'ScGunCounter.cs':['public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {'],
+        'ScWeaponSkinning.cs':['public static IEnumerable<Candidate> Candidates(IInventory inventory, int gunBlockIndex = -1) {'],
+    }.items():
+        path=src/'World'/filename;text=path.read_text('utf8')
+        for signature in signatures:
+            assert signature in text,(filename,signature)
+            insertion='\n        inventory = ScInventoryIdentity.Inventory(inventory);'
+            if 'IEnumerable' in signature:insertion+='\n        if (inventory is null) yield break;'
+            if signature+insertion not in text:text=text.replace(signature,signature+insertion)
+        path.write_text(text,'utf8')
+    block=src/'Blocks/ScGunBlock.cs';text=block.read_text('utf8')
+    text=text.replace('&& GetVariant(value) < s_count;', '&& GetVariant(value) >= 0 && GetVariant(value) < s_count;')
+    block.write_text(text,'utf8')
     # Keep unavailable later item identities registered. These are inert carriers, not substitute guns.
     later=[('ScChickenEggBlock','CS小鸡生成蛋',40),('ScTacticalShieldBlock','防爆盾',1),('ScTacticalBeaconBlock','招募信标/战术维修包',10),('ScTacticalDefuserBlock','拆弹钳',1),('ScTacticalSquadBlock','敌队挑战信标',1)]
     if a.version=='1.0.0':later.append(('ScC4Block','C4定时炸弹',10))
@@ -35,6 +56,7 @@ def main():
     for name,label,stack in later:
         definitions+='public sealed class '+name+' : ScCompatibilityItemBlock { public '+name+'(){ DefaultDisplayName="'+label+'"; MaxStacking='+str(stack)+'; } }\n'
     (src/'World/ScCompatibilityLegacyItems.cs').write_text(definitions,'utf8')
+    (src/'World/ScOptionalAgents.cs').write_text('namespace Game; public static class ScOptionalAgents { public const bool Split = false; public static bool Available => false; }\n','utf8')
     # The persistent growth/identity curve is shared. Preserve the historical cadence endpoints and recharge
     # baseline rather than replacing old weapon behavior with the latest balance.
     growth=src/'World/ScGunGrowth.cs';s=growth.read_text('utf8')

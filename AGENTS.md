@@ -1,5 +1,15 @@
 # Project conventions
 
+- User-directed 2026-09-27 capacity revision supersedes the v5/schema6 freeze for
+  this compatibility family: preserve all old IDs, reserve 0/1023, extend to 66558
+  records using layout6/schema7. Ship distinctly named 1.3.0 Full/Lite and 1.0/1.2
+  compatibility revisions; preserve original packages and the existing agents addon.
+  Restore only the two authorized hashed exports into independent copies; no ID
+  recycling, guessed state or installed-world writes. No automatic backups.
+  Bidirectional support applies to the updated capacity revisions, not distributed
+  old binaries or Mini. Preserve unrelated dirty Zeus work. See
+  docs/release-capacity-2026-09-27.md for evidence and Android acceptance boundaries.
+
 - User feedback 2026-09-27: fix editor C4/voice visibility and use the real M4A4
   ammo widget as the always-visible HUD editing sample; gestures can enable custom
   positioning directly. Non-CS empty hands belong to vanilla/NMM; custom gloves

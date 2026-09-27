@@ -153,8 +153,9 @@ static class GunSkinRegression {
             var known = registry.GetMethod("IsKnownSchema");
             bool converts = (bool)known.Invoke(null, [noSkins]) && (bool)known.Invoke(null, [noGrowth]) && (bool)known.Invoke(null, [tenLevels]) && (bool)known.Invoke(null, [schema])
                 && !(bool)known.Invoke(null, [schema + 1]) && !(bool)known.Invoke(null, [0]);
-            Check("schema-and-layout", schema == 6 && tenLevels == noGrowth + 1 && noGrowth == noSkins + 1 && layout == 5 && converts,
-                $"record schema {schema} (schema {noSkins} had no finish, {noGrowth} no counter); every earlier schema still converts, a later one is refused; item layout stamp {layout} unchanged");
+            converts &= Enumerable.Range(1, schema).All(s => (bool)known.Invoke(null, [s]));
+            Check("schema-and-layout", ((schema, layout) is (6, 5) or (7, 6)) && tenLevels == noGrowth + 1 && noGrowth == noSkins + 1 && converts,
+                $"record schema {schema} (schema {noSkins} had no finish, {noGrowth} no counter); every earlier schema still converts, a later one is refused; supported item layout {layout}");
         }
         catch (Exception e) { Check("run", false, e.ToString()); }
         return results;

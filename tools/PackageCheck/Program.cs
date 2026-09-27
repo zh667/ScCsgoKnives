@@ -135,6 +135,10 @@ using (ZipArchive zip = ZipFile.OpenRead(scmod)) {
 }
 
 var context = new PackageContext("scmod");
+using(var codecPackage=ZipFile.OpenRead(scmod)) {
+    var codec=codecPackage.GetEntry("ScCsgoResourceCodec.dll");
+    if(codec is not null){using var input=codec.Open();using var bytes=new MemoryStream();input.CopyTo(bytes);bytes.Position=0;context.CodecAssembly=context.LoadFromStream(bytes);}
+}
 if(resourcePack is not null) {
     using var resources=ZipFile.OpenRead(resourcePack);
     using var input=resources.GetEntry("ScCsgoResources.dll").Open();using var bytes=new MemoryStream();input.CopyTo(bytes);bytes.Position=0;
@@ -343,5 +347,6 @@ return failed == 0 ? 0 : 1;
 /// <summary>Loads the mod from the package; everything else falls through to the host.</summary>
 sealed class PackageContext(string name) : AssemblyLoadContext(name, isCollectible: false) {
     internal Assembly ResourceAssembly;
-    protected override Assembly Load(AssemblyName assemblyName) => assemblyName.Name==ResourceAssembly?.GetName().Name ? ResourceAssembly : null;
+    internal Assembly CodecAssembly;
+    protected override Assembly Load(AssemblyName assemblyName) => assemblyName.Name==ResourceAssembly?.GetName().Name ? ResourceAssembly : assemblyName.Name==CodecAssembly?.GetName().Name ? CodecAssembly : null;
 }

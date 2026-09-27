@@ -159,9 +159,10 @@ static class TacticalEnemyRegression {
                 dynamic smoke=states[2];smoke.Effect=true;smoke.Age=5f;smoke.Remaining=10f;smoke.Position=new Vector3(0,61,0);Check(grenade.SmokeBlocksSight(new Vector3(-4,61,0),new Vector3(4,61,0)),"NPC ignores dense smoke");
             });
             Test("death-once-empty-inventory-and-full-registry-fallback",()=>{
-                FreshRegistry();C("ScGunRegistry").GetProperty("Next").SetValue(rf.GetValue(null),1023);var f=World();int material=0;
+                int exhausted=(int)C("GunSpec").GetField("LastId").GetRawConstantValue()+1;
+                FreshRegistry();C("ScGunRegistry").GetProperty("Next").SetValue(rf.GetValue(null),exhausted);var f=World();int material=0;
                 for(int i=0;i<160;i++){var e=Enemy(f.P,1,i);e.Creature.ComponentHealth.Health=0;e.Enemy.Died();int count=f.Drops.Items.Count;e.Enemy.Died();((IUpdateable)e.Enemy).Update(.1f);Check(f.Drops.Items.Count==count&&e.Enemy.State.LootDone&&Enumerable.Range(0,5).All(s=>e.Inv.GetSlotCount(s)==0),"death duplicated reward/left inventory");}
-                Check(f.Drops.Items.Count>50&&f.Drops.Items.All(i=>Terrain.ExtractContents(i.Value)!=701),"full registry drops malformed gun");material=f.Drops.Items.Count(i=>Terrain.ExtractContents(i.Value)==708);Check(material>0&&(int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==1023,"registry wrap/missing material reward");
+                Check(f.Drops.Items.Count>50&&f.Drops.Items.All(i=>Terrain.ExtractContents(i.Value)!=701),"full registry drops malformed gun");material=f.Drops.Items.Count(i=>Terrain.ExtractContents(i.Value)==708);Check(material>0&&(int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==exhausted,"registry wrap/missing material reward");
             });
             Test("rare-gun-drop-real-registry-worn-no-counter",()=>{
                 FreshRegistry();var f=World();

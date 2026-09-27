@@ -51,12 +51,13 @@ public static class ScGunLoadIntegrity {
         void Item(int value, int count, string holder) {
             if (count <= 0 || Terrain.ExtractContents(value) != block) return;
             // Detached XML must not depend on a previous world's static Current registry.
-            int data = Terrain.ExtractData(value), id = (data >> 6) & 1023, variant = data & GunSpec.VariantMask;
-            if ((data & (1 << 16)) != 0 || variant < 0 || variant >= GunSpec.All.Length)
+            int data = Terrain.ExtractData(value);
+            int layout = int.TryParse(Text(gun, "GunDataLayout"), out var savedLayout) ? savedLayout : ScGunEncoding.PreviousLayout;
+            if (!ScGunEncoding.Decode(data, registry, layout, out int id, out int variant))
                 throw new InvalidOperationException($"{holder} 的枪械编码无法确认，原物品已保留");
             if (id is GunSpec.FreshFull or GunSpec.FreshEmpty) return;
             if (count != 1) throw new InvalidOperationException($"{holder} 存在堆叠的枪械实例，无法安全分离，原物品已保留");
-            if (table is null || Text(gun, "GunDataLayout") != "5" && !values.ContainsKey("GunRegistry"))
+            if (table is null || !values.ContainsKey("GunRegistry"))
                 throw new InvalidOperationException("旧枪仍在，但整个枪械记录表或布局来源缺失；不能作为新世界继续分配编号，请恢复完整备份");
             next = Math.Max(next, id + 1); // includes every orphan, including inactive inventories and drops
             if (!registry.TryGetSnapshot(id, out var state) || state.Variant != variant) {

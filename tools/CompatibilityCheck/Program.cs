@@ -88,10 +88,12 @@ foreach(var source in modules)foreach(var target in modules.Where(m=>m!=source))
     T(route+"/pending-kills-quarantine-and-full-watermark",()=>{
         var data=XElement.Parse("<Values><Value Name='Schema' Type='int' Value='6'/><Value Name='Next' Type='int' Value='1023'/><Values Name='Records'><Value Name='900' Type='string' Value='corrupt-preserve-exactly'/></Values><Values Name='PendingKills'><Value Name='Next' Type='string' Value='1'/><Values Name='Entries'/></Values></Values>");
         object reg=source.Call("ScGunRegistry",null,"Load",Read(data),0d);
+        int exhausted=(int)source.Type("GunSpec").GetField("LastId").GetRawConstantValue()+1;
+        data.Elements("Value").Single(e=>(string)e.Attribute("Name")=="Next").SetAttributeValue("Value",exhausted);
         var queue=source.Get(reg,"Kills");queue.GetType().GetMethod("Enqueue").Invoke(queue,[900,0]);
         var saved=(ValuesDictionary)source.Call("ScGunRegistry",reg,"Save",0d);string before=Xml(saved).ToString();
         for(int n=0;n<2;n++){
-            reg=target.Call("ScGunRegistry",null,"Load",Read(Xml(saved)),0d);Require((int)target.Get(reg,"Next")==1023&&(int)target.Get(reg,"QuarantinedCount")==1);
+            reg=target.Call("ScGunRegistry",null,"Load",Read(Xml(saved)),0d);Require((int)target.Get(reg,"Next")==exhausted&&(int)target.Get(reg,"QuarantinedCount")==1);
             Require((int)target.Call("ScGunRegistry",reg,"Allocate",0,0,false,1500,1500,0)==-1);
             saved=(ValuesDictionary)target.Call("ScGunRegistry",reg,"Save",0d);Require(Xml(saved).ToString()==before);
         }

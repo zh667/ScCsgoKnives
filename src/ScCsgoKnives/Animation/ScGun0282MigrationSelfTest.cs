@@ -107,12 +107,12 @@ public static class ScGun0282MigrationSelfTest {
                 return true;
             });
             Test("id-limit-preflight-and-stateless-guns", () => {
-                var source = Fixture(); for (int i = 0; i < 1023; i++) Slots(source).Add(Slot(i, Old(0, 3)));
+                var source = Fixture(); for (int i = 0; i < GunSpec.LastId; i++) Slots(source).Add(Slot(i, Old(0, 3)));
                 var original = new XElement(source);
                 try { ScGun0282Migration.Prepare(source); return false; }
                 catch (InvalidOperationException) { if (!XNode.DeepEquals(source, original)) return false; }
                 foreach (var slot in Slots(source).Elements("Values")) slot.Element("Value").SetAttributeValue("Value", Old(0, 30));
-                var plan = ScGun0282Migration.Prepare(source); return plan.Guns == 1023 && plan.Records == 0;
+                var plan = ScGun0282Migration.Prepare(source); return plan.Guns == GunSpec.LastId && plan.Records == 0;
             });
             Test("legacy-readers-only-in-authorized-source", () => {
                 int v1 = 2 | (3 << 2), v2 = 16384 | 5 | (7 << 6) | 8192;

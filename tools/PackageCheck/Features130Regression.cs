@@ -128,7 +128,7 @@ static class Features130Regression {
                 }
             });
         } finally {TextureAtlasManager.m_subtextures.Clear();foreach(var p in oldAtlas)TextureAtlasManager.m_subtextures[p.Key]=p.Value;current.SetValue(null,oldRegistry);LabelWidget.BitmapFont=font;BlocksManager.BlockTypeToIndex.Clear();foreach(var p in oldTypes)BlocksManager.BlockTypeToIndex[p.Key]=p.Value;BlocksManager.BlockNameToIndex.Clear();foreach(var p in oldNames)BlocksManager.BlockNameToIndex[p.Key]=p.Value;}
-        Test("chicken-native-glb-reader-and-clips",()=>{
+        if(!ResourcePackInput.AgentsAbsent(mod)) Test("chicken-native-glb-reader-and-clips",()=>{
             using var stream=new MemoryStream(Bytes("Assets/Models/ScCsgoKnives/chicken.glb"));var data=GltfLoader.Load(stream);
             Assert(data.Skin is not null&&data.Bones.Count>20&&data.Meshes.Count>0,"missing native skin");
             Assert(data.Animations.Select(a=>a.Name).ToHashSet().SetEquals(new[]{"idle","walk","run"}),"missing source animations");
@@ -150,7 +150,7 @@ static class Features130Regression {
             }
             } finally {AnimationTemplateManager.s_templates.Clear();foreach(var p in oldTemplates)AnimationTemplateManager.s_templates[p.Key]=p.Value;}
         });
-        Test("chicken-native-database-inheritance",()=>{
+        if(!ResourcePackInput.AgentsAbsent(mod)) Test("chicken-native-database-inheritance",()=>{
             if(content is null)throw new Exception("--vanilla-content required");
             var oldDb=DatabaseManager.m_gameDatabase;var oldV=new Dictionary<string,ValuesDictionary>(DatabaseManager.m_valueDictionaries);
             try {

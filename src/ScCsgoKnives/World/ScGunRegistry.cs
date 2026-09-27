@@ -71,14 +71,15 @@ public sealed class ScGunRegistry {
     /// A schema this build does not
     /// know is kept verbatim and disables guns - the item layout stamp (GunSpec.DataLayout) is a separate number
     /// and does not change for a record field.</summary>
-    public const int Schema = 6;
+    public const int Schema = 7;
+    public const int SchemaV5 = 6;
     public const int SchemaStagedKills = 5;
     public const int SchemaThirtyLevels = 4;
     public const int SchemaTenLevels = 3;
     public const int SchemaWithoutSkins = 1;
     public const int SchemaWithoutGrowth = 2;
     /// <summary>Every schema this build reads. Anything else is a format from another version.</summary>
-    public static bool IsKnownSchema(int schema) => schema is Schema or SchemaStagedKills or SchemaThirtyLevels or SchemaTenLevels or SchemaWithoutGrowth or SchemaWithoutSkins;
+    public static bool IsKnownSchema(int schema) => schema is Schema or SchemaV5 or SchemaStagedKills or SchemaThirtyLevels or SchemaTenLevels or SchemaWithoutGrowth or SchemaWithoutSkins;
     /// <summary>The registry of the world being played; set by SubsystemScGunBlockBehavior.Load, cleared on dispose.
     /// Headless tests install their own.</summary>
     public static ScGunRegistry Current;
@@ -92,12 +93,12 @@ public sealed class ScGunRegistry {
     /// world is inferred from its keys: a v5 registry (0.35.0/0.35.1) = compatible, pre-v5 keys (ZeusRechargeAt, GunWear) =
     /// saved by 0.34 or earlier, nothing at all = new.</summary>
     public static WorldStatus Classify(int stamp, bool hasRegistry, bool hasOldKeys) {
-        if (stamp == GunSpec.DataLayout) return WorldStatus.Compatible;
+        if (stamp is GunSpec.DataLayout or ScGunEncoding.PreviousLayout) return WorldStatus.Compatible;
         if (stamp == LegacyStamp) return WorldStatus.Legacy;
         if (stamp != 0) return WorldStatus.Unknown;
         return hasRegistry ? WorldStatus.Compatible : hasOldKeys ? WorldStatus.Legacy : WorldStatus.New;
     }
-    public const int LegacyStamp = GunSpec.DataLayout - 1;
+    public const int LegacyStamp = 4;
     /// <summary>The stamp a world is saved with: a legacy world keeps its legacy stamp on every save.</summary>
     public static int StampFor(bool legacyWorld) => legacyWorld ? LegacyStamp : GunSpec.DataLayout;
     /// <summary>A world last saved by 0.34 or earlier: every gun item in it is left alone and unusable, new ones included,
@@ -108,6 +109,7 @@ public sealed class ScGunRegistry {
     public bool Disabled => LegacyWorld || UnknownSchema;
     /// <summary>The schema the loaded table was written with, for the upgrade report. Schema of a new world is this build's.</summary>
     public int LoadedSchema { get; private set; } = Schema;
+    public bool ExtendedEncodingEnabled { get; private set; } = true;
     /// <summary>Whether this world does counting only or counting plus growth. Owned by the subsystem's save data;
     /// held here so every read of a record's effective numbers can see it.</summary>
     public ScGunGrowthMode GrowthMode = ScGunGrowthMode.Unset;
@@ -123,7 +125,7 @@ public sealed class ScGunRegistry {
     public int Count => m_records.Count;
     public int QuarantinedCount => m_quarantined.Count;
     public bool IsFull => Next > GunSpec.LastId;
-    internal ScGunRecord Get(int id) => !Disabled && id >= GunSpec.FirstId && id <= GunSpec.LastId && m_records.TryGetValue(id, out var record) ? record : null;
+    internal ScGunRecord Get(int id) => !Disabled && ScGunEncoding.IsRecordId(id) && m_records.TryGetValue(id, out var record) ? record : null;
     public bool TryGetSnapshot(int id, out ScGunSnapshot snapshot) {
         var record = Get(id);
         snapshot = record?.Snapshot(id) ?? default;
@@ -136,10 +138,12 @@ public sealed class ScGunRegistry {
     internal int Publish(ScGunRecord record) {
         if (Disabled) return -1;
         if (IsFull) {
-            if (!m_fullLogged) { m_fullLogged = true; KnifeLog.Error($"gun registry full: {GunSpec.LastId} records; new guns cannot be used until a new world"); }
+            if (!m_fullLogged) { m_fullLogged = true; KnifeLog.Error($"gun registry full: {GunSpec.LastId - 1} record slots; allocation refused without reusing identities"); }
             return -1;
         }
-        int id = Next++;
+        int id = Next;
+        Next = ScGunEncoding.NextId(Next + 1);
+        if (id >= ScGunEncoding.FirstExtendedId) ExtendedEncodingEnabled = true;
         m_records[id] = record;
         return id;
     }
@@ -204,17 +208,17 @@ public sealed class ScGunRegistry {
         double remaining = -1;
         bool counter = false; long kills = 0; int applied = 0, pending = ScGunGrowth.NoPending, rules = 0, overflow = 0;
         double cycle = 0; long credit = 0;
-        if (schema is Schema or SchemaStagedKills or SchemaThirtyLevels or SchemaTenLevels) {
+        if (schema is Schema or SchemaV5 or SchemaStagedKills or SchemaThirtyLevels or SchemaTenLevels) {
             var seen = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (string field in raw.Split(',')) {
                 int split = field.IndexOf('=');
                 if (split <= 0 || split == field.Length - 1) return false;
                 if (!seen.TryAdd(field[..split], field[(split + 1)..])) return false;
             }
-            if (seen.Count != Fields3.Length + (schema is Schema or SchemaStagedKills ? 1 : 0)) return false;
+            if (seen.Count != Fields3.Length + (schema is Schema or SchemaV5 or SchemaStagedKills ? 1 : 0)) return false;
             foreach (string name in Fields3) if (!seen.ContainsKey(name)) return false;
             long maxCredit = ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel) * 4;
-            if ((schema is Schema or SchemaStagedKills) && (!seen.TryGetValue("kc",out var rawCredit) || !long.TryParse(rawCredit, ints, Ci, out credit) || credit < 0 || credit > maxCredit)) return false;
+            if ((schema is Schema or SchemaV5 or SchemaStagedKills) && (!seen.TryGetValue("kc",out var rawCredit) || !long.TryParse(rawCredit, ints, Ci, out credit) || credit < 0 || credit > maxCredit)) return false;
             int flag = 0;
             if (!int.TryParse(seen["v"], ints, Ci, out variant) || !int.TryParse(seen["r"], ints, Ci, out rounds)
                 || !int.TryParse(seen["s"], ints, Ci, out sil) || !int.TryParse(seen["d"], ints, Ci, out durability)
@@ -251,7 +255,7 @@ public sealed class ScGunRegistry {
         // allows at its saved level - the public beta's Lv30 capacity becomes this curve's Lv50 - so migration
         // sources are allowed up to the maximum capacity any level can hold; the conversion then clips the surplus
         // into the gun's own reserve.
-        bool migrating = counter && (schema != Schema || rules != ScGunGrowth.RulesVersion);
+        bool migrating = counter && (schema < SchemaV5 || rules != ScGunGrowth.RulesVersion);
         long maxRounds = migrating ? ScGunGrowth.Capacity(variant, ScGunGrowth.MaxLevel) : ScGunGrowth.Capacity(variant, applied);
         if (rounds < 0 || rounds > maxRounds) return false;
         if (max < 1 || durability < 0 || durability > max || revision < 0) return false;
@@ -278,6 +282,7 @@ public sealed class ScGunRegistry {
             return registry;
         }
         registry.LoadedSchema = schema;
+        registry.ExtendedEncodingEnabled = schema == Schema;
         try { registry.Recovery = ScGunRecovery.Load(d.GetValue<ValuesDictionary>("Recovery", null)); }
         catch (Exception e) {
             registry.UnknownSchema = true; registry.m_preserved = d;
@@ -299,23 +304,30 @@ public sealed class ScGunRegistry {
         }
         int next = d.GetValue<int>("Next", GunSpec.FirstId);
         var records = d.GetValue<ValuesDictionary>("Records", null);
+        // An old-schema high key was never a valid extended identity. Do not quarantine it
+        // as schema7 text and accidentally activate it on the next reload.
+        if (schema < Schema && records is not null && records.Keys.Any(k => int.TryParse(k, out int oldId) && oldId >= 1023)) {
+            registry.UnknownSchema = true; registry.m_preserved = d;
+            KnifeLog.Error("Old gun schema contains a reserved/extended ID; original table preserved and refused");
+            return registry;
+        }
         int highest = GunSpec.FirstId - 1;
         if (records is not null) foreach (var pair in records) {
             string raw = pair.Value as string ?? "";
             ScGunRecord record = null;
-            bool ok = int.TryParse(pair.Key, NumberStyles.Integer, Ci, out int id) && id >= GunSpec.FirstId && id <= GunSpec.LastId
+            bool ok = int.TryParse(pair.Key, NumberStyles.Integer, Ci, out int id) && ScGunEncoding.IsRecordId(id) && (schema == Schema || id <= 1022)
                 && TryParseRecord(schema, raw, now, out record);
             if (ok) {
                 // A different record schema, or a record that still carries an older growth rule set, is converted
                 // once to the current rules. A record already on this build's rules is left untouched.
-                if (record.CounterInstalled && (schema != Schema || record.GrowthRulesVersion != ScGunGrowth.RulesVersion))
+                if (record.CounterInstalled && (schema < SchemaV5 || record.GrowthRulesVersion != ScGunGrowth.RulesVersion))
                     ScGunGrowthMigration.Convert(record, now, registry.GrowthMode != ScGunGrowthMode.CountOnly, schema);
                 registry.m_records[id] = record; highest = Math.Max(highest, id);
             }
             else { registry.m_quarantined[pair.Key] = raw; if (int.TryParse(pair.Key, out int bad)) highest = Math.Max(highest, bad); }
         }
         if (registry.m_quarantined.Count > 0) KnifeLog.Warning($"gun registry: {registry.m_quarantined.Count} record(s) failed validation and are kept unusable: {string.Join(",", registry.m_quarantined.Keys.Take(8))}");
-        registry.Next = Math.Clamp(Math.Max(next, highest + 1), GunSpec.FirstId, GunSpec.LastId + 1);
+        registry.Next = ScGunEncoding.NextId((int)Math.Clamp(Math.Max((long)next, (long)highest + 1), GunSpec.FirstId, GunSpec.LastId + 1));
         // Corrupt/quarantined records may later be recovered. Keep their credentials exactly
         // as saved; a missing record is not permission to erase its pending kill history.
         int heldCredits = registry.Kills.Pending.Count(e => !registry.m_records.ContainsKey(e.RecordId));

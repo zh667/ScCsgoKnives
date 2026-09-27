@@ -123,7 +123,7 @@ static class SurvivalPackageIntegration {
         }
         foreach (string kind in new[] {"hegrenade","flashbang","smokegrenade","molotov","incendiary","decoy"}) {
             foreach (string suffix in new[] {"_draw.wav","_pin.wav","_throw.wav"})
-                Check("grenade-audio/"+kind+suffix,zip.GetEntry("Assets/Audio/ScCsgoKnives/grenade_"+kind+suffix) is not null,"referenced by grenade action controller");
+                Check("grenade-audio/"+kind+suffix,(zip.GetEntry("Assets/Audio/ScCsgoKnives/grenade_"+kind+suffix)??zip.GetEntry("Assets/Audio/ScCsgoKnives/grenade_"+kind+suffix.Replace(".wav",".ogg"))) is not null,"referenced by grenade action controller; native WAV or Ogg resource");
             foreach (string suffix in new[] {".png","_normal.png","_orm.png"})
                 Check("grenade-texture/"+kind+suffix,(zip.GetEntry("Assets/Textures/ScCsgoKnives/grenade_"+kind+"_cs2"+suffix) ?? zip.GetEntry("Assets/Textures/ScCsgoKnives/grenade_"+kind+"_cs2"+suffix.Replace(".png",".webp"))) is not null,"base/normal/ORM exists in package");
         }

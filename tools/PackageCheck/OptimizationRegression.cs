@@ -14,10 +14,21 @@ static class OptimizationRegression {
         bool optimized = (string)XElement.Load(markerStream).Attribute("Name") == "Optimized512";
         if (optimized) {
             var images = zip.Entries.Where(e => e.FullName.StartsWith("Assets/Textures/")).ToArray();
-            using var provenanceStream=zip.GetEntry("Assets/ScCsgoDerivedResources.json").Open();
-            using var provenance=System.Text.Json.JsonDocument.Parse(provenanceStream);
-            var expected=provenance.RootElement.EnumerateArray().Where(r=>r.GetProperty("kind").GetString()=="texture")
-                .Select(r=>r.GetProperty("path").GetString().Replace(".png",".webp")).Order().ToArray();
+            string[] expected;
+            if(zip.GetEntry("Assets/ScCsgoDerivedResources.json") is {} provenanceEntry) {
+                using var provenanceStream=provenanceEntry.Open();
+                using var provenance=System.Text.Json.JsonDocument.Parse(provenanceStream);
+                expected=provenance.RootElement.EnumerateArray().Where(r=>r.GetProperty("kind").GetString()=="texture")
+                    .Select(r=>r.GetProperty("path").GetString().Replace(".png",".webp")).Order().ToArray();
+            } else {
+                // Modular Lite publishes its own asset manifest, not the pre-split derivation list.
+                using var splitStream=(zip.GetEntry("Integrations/ScSplit.json")??throw new InvalidDataException("Missing Lite provenance")).Open();
+                using var split=System.Text.Json.JsonDocument.Parse(splitStream);
+                Check("split-core-provenance",split.RootElement.GetProperty("role").GetString()=="core");
+                using var resourceStream=zip.GetEntry("Assets/ScCsgoResources.xml").Open();
+                expected=XElement.Load(resourceStream).Elements("File").Select(e=>(string)e.Attribute("Path"))
+                    .Where(n=>n.StartsWith("Assets/Textures/")).Order().ToArray();
+            }
             if(zip.GetEntry("Assets/ScCsgoTacticalDerivedResources.json") is {} tacticalEntry){
                 using var tacticalStream=tacticalEntry.Open();using var tactical=System.Text.Json.JsonDocument.Parse(tacticalStream);
                 expected=expected.Concat(tactical.RootElement.EnumerateArray().Where(r=>r.GetProperty("kind").GetString()=="texture")

@@ -55,6 +55,10 @@ static class EggFeedbackRegression {
             var egg=(Block)Activator.CreateInstance(eggType);egg.BlockIndex=index;
             BlocksManager.Blocks[index]=egg;BlocksManager.BlockTypeToIndex[eggType]=index;
             Test("native-throw-registration-no-click-spawn",()=>{
+                if(ResourcePackInput.AgentsAbsent(mod)) {
+                    Assert(!egg.IsAimable&&string.IsNullOrEmpty(egg.Behaviors),"egg must remain dormant without optional agents");
+                    return;
+                }
                 Assert(egg.IsAimable&&egg.Behaviors=="ThrowableBlockBehavior","native aim/throw not registered");
                 Assert(egg.ProjectileSpeed==14&&egg.ProjectileDamping==.8f&&egg.ProjectileTipOffset==.1f&&egg.DisintegratesOnHit&&egg.ProjectileStickProbability==0,"native egg ballistics differ");
                 Assert(T("SubsystemScChicken").GetMethod("OnUse").DeclaringType==typeof(SubsystemBlockBehavior),"nearby click handler still intercepts");

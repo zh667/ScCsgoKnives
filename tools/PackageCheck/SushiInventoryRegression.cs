@@ -32,6 +32,7 @@ static class SushiInventoryRegression {
         List<Result> results = [];
         void Check(string name, bool ok, string detail = "") => results.Add(new("sushi-inventory/" + name, ok, detail));
         var registryType = mod.GetType("Game.ScGunRegistry"); var current = registryType.GetField("Current"); object saved = current.GetValue(null);
+        int lastId = (int)mod.GetType("Game.GunSpec").GetField("LastId").GetRawConstantValue();
         var mutation = mod.GetType("Game.ScGunMutation"); var locator = mutation.GetField("HolderLocator"); object oldLocator = locator.GetValue(null);
         try {
             var dlls = new Dictionary<string, byte[]>();
@@ -113,7 +114,7 @@ static class SushiInventoryRegression {
             string skinResult = Apply("Game.ScWeaponSkinning", Quote());
             Check("full-table-existing-gun-skin", skinResult == "Success", skinResult);
             Check("original-ammo-durability-id-preserved", inventory.GetSlotValue(0) == value && (int)rt.GetField("Rounds").GetValue(record) == 19
-                && (int)rt.GetField("Durability").GetValue(record) == 700 && (int)registryType.GetProperty("Next").GetValue(registry) == 1023);
+                && (int)rt.GetField("Durability").GetValue(record) == 700 && (int)registryType.GetProperty("Next").GetValue(registry) == lastId + 1);
             // A real extra holder still fails at capacity; alias support must not turn duplication protection off.
             locator.SetValue(null, (Func<int, string, IEnumerable<string>>)((rid, except) => locate(rid, except).Append("independent-copy:0")));
             object[] duplicateArgs = [inventory, 0, Key(inventory), null];
@@ -129,7 +130,7 @@ static class SushiInventoryRegression {
                 var read = new ValuesDictionary(); read.ApplyOverrides(XElement.Parse(xml.ToString()));
                 registry = registryType.GetMethod("Load").Invoke(null, [read, 0d]); current.SetValue(null, registry);
                 record = registryType.GetMethod("Get", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(registry, [id]);
-                Check("full-table-xml-roundtrip/" + round, (int)registryType.GetProperty("Next").GetValue(registry) == 1023
+                Check("full-table-xml-roundtrip/" + round, (int)registryType.GetProperty("Next").GetValue(registry) == lastId + 1
                     && (int)rt.GetField("Rounds").GetValue(record) == 19 && (int)rt.GetField("Durability").GetValue(record) == 700
                     && (bool)rt.GetField("CounterInstalled").GetValue(record) && (int)rt.GetField("SkinId").GetValue(record) == (int)skin.GetType().GetProperty("PaintId").GetValue(skin));
             }
@@ -151,7 +152,7 @@ static class SushiInventoryRegression {
                     && !(bool)observe.Invoke(selection,[inventory,0,inventory.GetSlotValue(0),true]);
             }
             Check("aug-30-rounds-through-six-boxes-no-redeploy-at-full-table",magazine && (int)rt.GetField("Rounds").GetValue(record)==0
-                && (int)registryType.GetProperty("Next").GetValue(registry)==1023 && (bool)spec.GetField("Automatic").GetValue(aug));
+                && (int)registryType.GetProperty("Next").GetValue(registry)==lastId + 1 && (bool)spec.GetField("Automatic").GetValue(aug));
             var input=(ComponentInput)RuntimeHelpers.GetUninitializedObject(typeof(ComponentInput));player.ComponentInput=input;
             input.m_playerInput=new PlayerInput{Dig=new Ray3(Vector3.Zero,Vector3.UnitZ)};
             var loader=(ModLoader)RuntimeHelpers.GetUninitializedObject(sushiBase.GetType("Sushi.SushiBaseLoader",true));

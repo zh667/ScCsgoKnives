@@ -27,7 +27,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public static bool IsKnown(int value) => GunSpec.IsUsable(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
     public static bool IsOldFormat(int value) => !GunSpec.IsUsable(Terrain.ExtractData(value));
     public static bool HasReliableModel(int value) => ScGunRegistry.Current is { Disabled: false }
-        && !GunSpec.IsForeign(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
+        && !GunSpec.IsForeign(Terrain.ExtractData(value)) && GetVariant(value) >= 0 && GetVariant(value) < s_count;
     static string UnavailableReason(int value) {
         if (!HasReliableModel(value)) return "数据格式或型号无法确认";
         return ScGunRegistry.Current.TryGetSnapshot(GunSpec.GetId(Terrain.ExtractData(value)), out var record)

@@ -641,7 +641,7 @@ public static class SurvivalSelfTest {
             var saved = ScGunRegistry.Current; var full = new ScGunRegistry(); while (!full.IsFull) full.Allocate(0, 0, false, 1); ScGunRegistry.Current = full;
             try {
                 var i = new Inventory(); i.AddSlotItems(0, Gun(0, 30), 1); i.AddSlotItems(1, 900, 3); i.AddSlotItems(2, 950, 2);
-                bool shot = Shoot(i, 0) == ScGunResult.RegistryFull && GunSpec.IsFresh(Data(i, 0)) && GunSpec.GetRounds(Data(i, 0)) == 30 && full.Count == GunSpec.LastId;
+                bool shot = Shoot(i, 0) == ScGunResult.RegistryFull && GunSpec.IsFresh(Data(i, 0)) && GunSpec.GetRounds(Data(i, 0)) == 30 && full.Count == GunSpec.LastId - 1;
                 i.AddSlotItems(3, Gun(0, 0), 1); i.ActiveSlotIndex = 3;
                 bool reload = Reload(i, 3, 900, 1, 30, "player:0:3") == ScGunResult.RegistryFull && i.Counts[1] == 3 && GunSpec.GetRounds(Data(i, 3)) == 0;
                 var m = ScGunMutation.Prepare(i, 0, "player:0:0", out _); bool silencer = m.Commit(r => r.SilencerOff = true) == ScGunResult.RegistryFull && !GunSpec.GetSilencerOff(Data(i, 0));
@@ -753,7 +753,7 @@ public static class SurvivalSelfTest {
         });
         Test("gun-registry-save-and-limits", () => {
             var full = new ScGunRegistry(); int allocated = 0; while (!full.IsFull) { if (full.Allocate(0, 0, false, 1) > 0) allocated++; }
-            bool limit = allocated == GunSpec.LastId && full.Allocate(0, 0, false, 1) == -1 && full.Clone(1) == -1 && full.PeekNextId() == -1 && full.TryGetSnapshot(GunSpec.LastId, out _);
+            bool limit = allocated == GunSpec.LastId - 1 && full.Allocate(0, 0, false, 1) == -1 && full.Clone(1) == -1 && full.PeekNextId() == -1 && full.TryGetSnapshot(GunSpec.LastId, out _);
             var saved = ScGunRegistry.Current; ScGunRegistry.Current = full;
             int partial = GunSpec.MakeData(0, 7); bool fallback = GunSpec.IsFresh(partial) && GunSpec.GetRounds(partial) == 30;
             ScGunRegistry.Current = saved;
@@ -765,7 +765,7 @@ public static class SurvivalSelfTest {
                 && !ScGunBlock.IsKnown(Terrain.MakeBlockValue(512, 0, d)) && ScGunBlock.IsOldFormat(Terrain.MakeBlockValue(512, 0, d)));
             var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, 65858), 1);
             bool refused = Shoot(i, 0) == ScGunResult.Foreign && i.Values[0] == Terrain.MakeBlockValue(512, 0, 65858) && ScGunRegistry.Current.Count == before;
-            return foreign && refused && GunSpec.DataLayout == 5;
+            return foreign && refused && GunSpec.DataLayout == ScGunEncoding.Layout;
         });
         Test("gun-unusable-without-record", () => {
             int before = ScGunRegistry.Current.Count; int d = 49154;
@@ -779,7 +779,8 @@ public static class SurvivalSelfTest {
             var C = ScGunRegistry.WorldStatus.Compatible; var L = ScGunRegistry.WorldStatus.Legacy; var N = ScGunRegistry.WorldStatus.New;
             bool stamped = ScGunRegistry.Classify(5, false, false) == C && ScGunRegistry.Classify(5, true, true) == C
                 && ScGunRegistry.Classify(4, false, false) == L && ScGunRegistry.Classify(4, true, true) == L
-                && ScGunRegistry.Classify(6, true, false) == ScGunRegistry.WorldStatus.Unknown && ScGunRegistry.Classify(3, false, false) == ScGunRegistry.WorldStatus.Unknown;
+                && ScGunRegistry.Classify(GunSpec.DataLayout, true, false) == C
+                && ScGunRegistry.Classify(GunSpec.DataLayout + 1, true, false) == ScGunRegistry.WorldStatus.Unknown && ScGunRegistry.Classify(3, false, false) == ScGunRegistry.WorldStatus.Unknown;
             bool inferred = ScGunRegistry.Classify(0, true, true) == C && ScGunRegistry.Classify(0, true, false) == C
                 && ScGunRegistry.Classify(0, false, true) == L && ScGunRegistry.Classify(0, false, false) == N;
             bool legacy1 = ScGunRegistry.Classify(0, false, true) == L; int stamp1 = ScGunRegistry.StampFor(legacy1);

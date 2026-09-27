@@ -18,6 +18,7 @@ static class SushiSyncInventoryRegression {
         Type T(string n) => mod.GetType("Game." + n, true);
         object Call(string t, string m, params object[] a) => T(t).GetMethod(m).Invoke(null, a);
         var registryType = T("ScGunRegistry"); var current = registryType.GetField("Current");
+        int lastId = (int)T("GunSpec").GetField("LastId").GetRawConstantValue();
         var mutation = T("ScGunMutation"); var locator = mutation.GetField("HolderLocator");
         object saved = current.GetValue(null), oldLocator = locator.GetValue(null);
         var oldTypes = BlocksManager.BlockTypeToIndex.ToArray(); var oldGun = BlocksManager.Blocks[512]; var oldAmmo = BlocksManager.Blocks[900];
@@ -94,10 +95,10 @@ static class SushiSyncInventoryRegression {
                 finally { boxType.GetField("channelIndex").SetValue(a, 0); }
             });
             Check("full-table-sole-old-gun-remains-usable", () => {
-                while (Next() <= 1022) Allocate(); var tx = Prepare(a, out _); return tx != null && Commit(tx) == "Success" && Next() == 1023;
+                while (Next() <= lastId) Allocate(); var tx = Prepare(a, out _); return tx != null && Commit(tx) == "Success" && Next() == lastId + 1;
             });
             Check("full-table-real-independent-copy-refused", () => {
-                Put(other, shared.GetSlotValue(0)); try { var tx = Prepare(a, out _); return tx != null && Commit(tx) == "DuplicateUnresolved" && Next() == 1023; }
+                Put(other, shared.GetSlotValue(0)); try { var tx = Prepare(a, out _); return tx != null && Commit(tx) == "DuplicateUnresolved" && Next() == lastId + 1; }
                 finally { other.RemoveSlotItems(0, 1); }
             });
             Check("full-table-fresh-gun-refused-without-item-loss", () => {
@@ -111,7 +112,7 @@ static class SushiSyncInventoryRegression {
                 var data = (ValuesDictionary)registryType.GetMethod("Save").Invoke(registry, [0d]);
                 registry = registryType.GetMethod("Load").Invoke(null, [Round(data), 0d]); current.SetValue(null, registry); registryType.GetField("RecoveryOwner").SetValue(registry, (Func<IInventory, string>)Owner);
                 shared = newInv; channels[0] = shared; int rid = (int)Call("GunSpec", "GetId", Terrain.ExtractData(value)); var r = Record(rid);
-                return a.GetSlotValue(0) == value && b.GetSlotValue(0) == value && Next() == 1023 && Scan().Length == 1 && (long)rt.GetField("KillCount").GetValue(r) == 19 && (int)rt.GetField("Rounds").GetValue(r) == 19;
+                return a.GetSlotValue(0) == value && b.GetSlotValue(0) == value && Next() == lastId + 1 && Scan().Length == 1 && (long)rt.GetField("KillCount").GetValue(r) == 19 && (int)rt.GetField("Rounds").GetValue(r) == 19;
             });
             Check("refund-never-follows-box-channel-switch", () => {
                 string owner = Owner(a); boxType.GetField("channelIndex").SetValue(a, 7);

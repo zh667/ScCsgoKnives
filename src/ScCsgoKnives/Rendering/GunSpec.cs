@@ -287,22 +287,19 @@ public sealed class GunSpec {
 
     public static GunSpec ForAsset(string assetName) => Array.Find(All, spec => spec.Name == assetName);
 
-    // Item data layout v5 (0.35.0; foreign-format rule since 0.35.2). Terrain.ExtractData sign-extends bit 17, so 17 bits are usable:
-    //   bits 0-5   variant 0-63
-    //   bits 6-15  instance id: 0 = a new gun with a full magazine, 1023 = a new gun with an empty magazine,
-    //              1-1022 = a record in the world's ScGunRegistry (rounds, silencer, exact durability)
-    //   bit 16     never set by v5. Items with it set come from an older layout (v3 set it as a flag, v4's durability codes set it
-    //              too), which cannot be told apart by the bits alone - 0.35.0 tried and turned v4 guns into other models. Such an
-    //              item is "foreign": kept untouched, shown as old-format data, never fired, never written. No automatic conversion.
-    public const int FreshFull = 0, FreshEmpty = 1023, FirstId = 1, LastId = 1022;
+    // Layout 6 preserves the v5 low-16-bit encoding, including template IDs 0/1023.
+    // Tag bit16 + a 16-bit token addresses records 1024..66559. Their model is in the
+    // registry; data bit17 (engine sign extension) is never used. Old-layout bit16
+    // items must pass detached layout/schema validation, never a bits-only migration.
+    public const int FreshFull = 0, FreshEmpty = 1023, FirstId = 1, LastId = ScGunEncoding.LastId;
     public const int VariantMask = 63;
     /// <summary>The layout stamp a world carries once saved by this version; a world without it was last saved by 0.34 or earlier.</summary>
-    public const int DataLayout = 5;
-    public static bool IsForeign(int data) => (data & (1 << 16)) != 0 || (ScGunRegistry.Current?.Disabled ?? false);
-    public static int GetVariant(int data) => data & VariantMask;
-    public static int GetId(int data) => IsForeign(data) ? -1 : (data >> 6) & 1023;
+    public const int DataLayout = ScGunEncoding.Layout;
+    public static bool IsForeign(int data) => ScGunEncoding.Foreign(data, ScGunRegistry.Current);
+    public static int GetVariant(int data) => ScGunEncoding.Variant(data, ScGunRegistry.Current);
+    public static int GetId(int data) => IsForeign(data) ? -1 : ScGunEncoding.Id(data);
     public static bool IsFresh(int data) => !IsForeign(data) && GetId(data) is FreshFull or FreshEmpty;
-    public static int WithId(int variant, int id) => (variant & VariantMask) | ((id & 1023) << 6);
+    public static int WithId(int variant, int id) => ScGunEncoding.Encode(variant, id);
     static int MagazineOf(int variant) => variant >= 0 && variant < All.Length ? All[variant].Magazine : 0;
     /// <summary>The gun's state: a fresh gun's defaults, or its record. False for foreign data, an id without a record, or a record of another model.</summary>
     public static bool TryGetSnapshot(int data, out ScGunSnapshot snapshot) {

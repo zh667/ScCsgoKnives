@@ -217,19 +217,21 @@ try {
     var tacticalAssembly=assemblies[tactical].Single(a=>a.GetName().Name=="ScCsgoTactical");
     var expectedRootAssemblies=new List<string>{"ScCsgoBundle","ScCsgoKnives","ScCsgoResources","ScCsgoTactical"};
     if(core.ModFiles.ContainsKey("ScCsgoVoice.dll"))expectedRootAssemblies.Add("ScCsgoVoice");
+    var expectedTacticalAssemblies=new List<string>{"ScCsgoTactical"};
+    if(tactical.ModFiles.ContainsKey("ScCsgoVoice.dll"))expectedTacticalAssemblies.Add("ScCsgoVoice");
     Check("native scanner sees expected root DLLs",merged?
-        assemblies[core].Select(a=>a.GetName().Name).Order().SequenceEqual(expectedRootAssemblies.Order()):assemblies[tactical].Length==1);
+        assemblies[core].Select(a=>a.GetName().Name).Order().SequenceEqual(expectedRootAssemblies.Order()):assemblies[tactical].Select(a=>a.GetName().Name).Order().SequenceEqual(expectedTacticalAssemblies.Order()));
     Check("tactical has no framework references",tacticalAssembly.GetReferencedAssemblies().All(a=>a.Name is not ("sc-nekomekomodel" or "neorxna" or "ScCsgoAppearance")));
     Check("native dependency declaration",merged?core.modInfo.DependencyRanges.Count==0:tactical.modInfo.DependencyRanges.Count==1&&tactical.modInfo.DependencyRanges.ContainsKey(core.modInfo.PackageName));
     foreach(var mod in mods.Where(m=>!m.IsDisabled))mod.CombineContent();
     if(complete&&mode!="reversed")foreach(var a in assemblies[nmm])nmm.HandleAssembly(a);
     if(merged)foreach(var a in assemblies[core])core.HandleAssembly(a);
-    else tactical.HandleAssembly(tacticalAssembly);
+    else {foreach(var a in assemblies[core])core.HandleAssembly(a);foreach(var a in assemblies[tactical])tactical.HandleAssembly(a);}
     if(complete&&mode=="reversed")foreach(var a in assemblies[nmm])nmm.HandleAssembly(a);
     if(legacy!=null)foreach(var a in assemblies[legacy])legacy.HandleAssembly(a);
     var appearance=ModsManager.ModLoaders.Where(l=>l.GetType().FullName=="Game.AppearanceModLoader").ToArray();
     Check("appearance loader count",appearance.Length==(complete?1:0));
-    Check("tactical gameplay loader survives",tactical.Loaders.Count(l=>l.GetType().Name=="TacticalModLoader")==1&&tactical.BlockTypes.Count>=4);
+    Check("tactical gameplay loader survives",tactical.Loaders.Count(l=>l.GetType().Name=="TacticalModLoader")==1&&new[]{core,tactical}.Distinct().SelectMany(m=>m.BlockTypes).Count(t=>t.Name.StartsWith("ScTactical"))>=4);
     if(merged){
         var loader=core.Loaders.Single(l=>l.GetType().Name=="BundleModLoader");
         Check("alias absent until native assembly loop completes",!ModsManager.GetModEntity("zh667.ScCsgoTactical",out _));

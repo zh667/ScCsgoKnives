@@ -30,7 +30,7 @@ public static class ScGunSaveGuardSelfTest {
             finally { ScGunRegistry.Current = saved; ScGunMutation.HolderLocator = locator; }
         }
         T("unknown-layout-refused-and-source-unchanged", () => {
-            var w = World(6, ScGunRegistry.Schema); var before = w.ToString();
+            var w = World(GunSpec.DataLayout + 1, ScGunRegistry.Schema); var before = w.ToString();
             bool ok = !ScGunSaveGuard.BeforeLoad(w) && w.ToString() != before; // only an explicit error marker is added
             var group = w.Descendants("Values").Single(e => (string)e.Attribute("Name") == "ScGunBlockBehavior");
             var d = new ValuesDictionary(); d.ApplyOverrides(new XElement(group));
@@ -50,7 +50,7 @@ public static class ScGunSaveGuardSelfTest {
             if (!ScGunSaveGuard.BeforeLoad(ScGun0282MigrationSelfTest.Fixture())) return false;
             return true;
         });
-        foreach (var format in new[] { (6, 2), (5, 99), (4, 99), (0, 2), (3, 2) }) {
+        foreach (var format in new[] { (GunSpec.DataLayout + 1, 2), (5, 99), (4, 99), (0, 2), (3, 2) }) {
             int layout = format.Item1, schema = format.Item2;
             T($"subsystem-rejects-load-save-{layout}-{schema}", () => {
                 var input = Dict(layout, schema); var output = Dict(layout, schema);
@@ -71,8 +71,8 @@ public static class ScGunSaveGuardSelfTest {
         });
         T("save-defense-unknown-layout-even-if-ready", () => {
             var subsystem = new SubsystemScGunBlockBehavior();
-            Set(subsystem, "m_saveReady", true); Set(subsystem, "m_worldLayout", 6); Set(subsystem, "m_registry", new ScGunRegistry());
-            var output = Dict(6, 2); string before = Xml(output);
+            Set(subsystem, "m_saveReady", true); Set(subsystem, "m_worldLayout", GunSpec.DataLayout + 1); Set(subsystem, "m_registry", new ScGunRegistry());
+            var output = Dict(GunSpec.DataLayout + 1, 2); string before = Xml(output);
             try { subsystem.Save(output); return false; } catch (InvalidOperationException) { return Xml(output) == before; }
         });
         T("legacy-two-real-subsystem-saves", () => {
@@ -103,7 +103,7 @@ public static class ScGunSaveGuardSelfTest {
                 Set(subsystem, "m_registry", registry); Set(subsystem, "m_time", new SubsystemTime());
                 var saved = new ValuesDictionary(); subsystem.Save(saved);
                 values = new ValuesDictionary(); values.ApplyOverrides(XElement.Parse(Xml(saved)));
-                if (values.GetValue<int>("GunDataLayout") != 5 || values.GetValue<ValuesDictionary>("GunRegistry").GetValue<int>("Schema") != ScGunRegistry.Schema) return false;
+                if (values.GetValue<int>("GunDataLayout") != GunSpec.DataLayout || values.GetValue<ValuesDictionary>("GunRegistry").GetValue<int>("Schema") != ScGunRegistry.Schema) return false;
             }
             return true;
         });
@@ -137,7 +137,7 @@ public static class ScGunSaveGuardSelfTest {
                 var saved = new ValuesDictionary(); subsystem.Save(saved);
                 values = new ValuesDictionary(); values.ApplyOverrides(XElement.Parse(Xml(saved)));
                 ScGunSaveGuard.Validate(values);
-                if (values.GetValue<int>("GunDataLayout") != 5) return false;
+                if (values.GetValue<int>("GunDataLayout") != GunSpec.DataLayout) return false;
                 var reloadedTable = values.GetValue<ValuesDictionary>("GunRegistry");
                 if (reloadedTable.GetValue<int>("Schema") != ScGunRegistry.Schema) return false;
                 registry = ScGunRegistry.Load(reloadedTable, 0);
