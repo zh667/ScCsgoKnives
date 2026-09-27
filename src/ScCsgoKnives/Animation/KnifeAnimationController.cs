@@ -80,7 +80,6 @@ public static class KnifeAnimationController {
     public static KnifeRigPose Update(ComponentFirstPersonModel model, int itemValue) {
         int variant = ResolveVariant(itemValue);
         if (variant < 0) {
-            ScOwnedAudio.StopOwner(model);
             if (s_states.TryGetValue(model, out State oldState)) {
                 oldState.Variant = -1;
                 oldState.Pose = null;
@@ -122,8 +121,7 @@ public static class KnifeAnimationController {
             if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
             state.DrawReadyAt=KnifeClock.Now+CsmcKnifeRig.GetProfileDuration(variant,deploy);
-            ScOwnedAudio.StopOwner(model);
-            PlayDrawSound(variant,model);
+            PlayDrawSound(variant);
             LogActionStart(state, variant);
         }
 
@@ -582,14 +580,14 @@ public static class KnifeAnimationController {
     // The flipping sounds were recorded for a balisong and only fit that knife.
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";
 
-    static void PlayDrawSound(int variant,ComponentFirstPersonModel model) {
+    static void PlayDrawSound(int variant) {
         if (CsmcKnifeRig.IsC4(variant)) { ScPresentationSound.Play("c4_draw"); return; }
         if (CsmcKnifeRig.IsGrenade(variant)) {
             if (variant-CsmcKnifeRig.GrenadeOffset < 6) ScPresentationSound.Play(CsmcKnifeRig.GetAssetName(variant)+"_draw");
             return;
         }
         if (CsmcKnifeRig.IsGun(variant)) return;          // guns: SubsystemScGunBlockBehavior plays their own files when shipped
-        ScPresentationSound.Draw(IsBalisong(variant) ? "butterfly_draw" : "knife_deploy",model);
+        ScPresentationSound.Play(IsBalisong(variant) ? "butterfly_draw" : "knife_deploy");
     }
 
     static void LogActionStart(State state, int variant) {

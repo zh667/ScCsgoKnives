@@ -1,5 +1,19 @@
 # Project conventions
 
+- User correction 2026-09-27 overrides the previous settings/audio redesign:
+  restore pre-efb14b0 settings order and audio paths, keep group number pinned
+  visible at the top, put HUD position editing inside the button-layout editor.
+  User's later correction keeps disabled buttons as dim editor previews exactly
+  as before. Retain grenade/fire and spawn gameplay rules and existing setting
+  values; do not silently reset saves/config. Deliver matching 1.3.0 trio after
+  rollback/UI regression checks; preserve other mods, worlds, Mini and dirty Zeus.
+  Same-turn fire feedback: separate airborne three-second detonation from ground
+  contact; air uses the CS2 air-detonation sound and burst only, ground keeps its
+  existing impact sound and supported fire without the airborne burst.
+  HUD editor has no X/Y sliders: phone two-finger translation/pinch/rotation;
+  desktop drag, wheel scale, Shift+wheel rotate. Save scale/rotation alongside
+  position with old-settings defaults and apply identical transforms in game.
+
 - User-directed 2026-09-27 gameplay/settings: bound own gun/voice/draw audio and
   stop stale knife draw sounds; HUD position in settings; interrupt grenade deploy;
   fire fuse 3s after release plus CS2 airburst; default-on natural enemies after

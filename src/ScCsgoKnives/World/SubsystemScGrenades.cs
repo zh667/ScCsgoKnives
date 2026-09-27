@@ -136,7 +136,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             OriginalPull=pull,OriginalRelease=Cs2Rig.GrenadeReleaseTime(asset,alias),OriginalThrow=Cs2Rig.Duration(asset,alias),
             Timeline=ScGrenadePreparation.Create(m_time.GameTime,pull,Cs2Rig.GrenadeReleaseTime(asset,alias),Cs2Rig.Duration(asset,alias),false,kind==3) };
         KnifeAnimationController.GrenadeAction(player,"pullpin");
-        ScOwnedAudio.Play("Audio/ScCsgoKnives/"+asset+"_pin",1);
+        AudioManager.PlaySound("Audio/ScCsgoKnives/"+asset+"_pin",1,0,0);
         if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] prepare kind={kind} deployInterrupted={interrupted}");
         KnifeLog.Trace($"grenade prepare: {asset} slot {inv.ActiveSlotIndex} previous slot {m_preparing[player].ReturnSlot} low={low} button={fromButton}");
     }
@@ -210,7 +210,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 ScControllerFeedback.Thrown(p);
                 prep.CommittedRevision=ScInventoryTransaction.Revision(p.ComponentMiner.Inventory);
                 KnifeLog.Trace($"grenade release: {ScGrenadeBlock.Assets[prep.Kind]} speed {state.Velocity.Length():0.0} (player {p.ComponentBody.Velocity.Length():0.0}) low={prep.Low} at {pos}");
-                ScOwnedAudio.Play("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1);
+                AudioManager.PlaySound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[prep.Kind]+"_throw",1,0,0);
                 if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] released id={state.Id} kind={state.Kind} fuse={state.Remaining}");
             }
             if (m_time.GameTime>=prep.Timeline.EndAt) {
@@ -345,10 +345,18 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     void Detonate(ScGrenadeState s) => DetonateWithBudget(s, false);
     void DetonateWithBudget(ScGrenadeState s,bool chicken) {
         if (s.Kind is 3 or 4) {
-            if(fireBursts.Count>=24)fireBursts.RemoveAt(0);
-            fireBursts.Add(new FireBurst{Position=s.Position});
-            ScOwnedAudio.World(Project.FindSubsystem<SubsystemAudio>(true),"Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,0,s.Position,6,true);
-            if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] fire-burst id={s.Id} airborne={!s.Grounded} flightAge={s.Age:F2}");
+            if(s.Effect)return;
+            // Contact ignition and the airborne fuse are distinct presentations.
+            // A bottle breaking on the floor must never emit the airborne fireball,
+            // and a timeout in flight must never play the bottle's impact sound.
+            bool airborne=!s.Grounded;
+            if(airborne){
+                if(fireBursts.Count>=24)fireBursts.RemoveAt(0);
+                fireBursts.Add(new FireBurst{Position=s.Position});
+            }
+            string sound=airborne?"grenade_fire_airburst":ScGrenadeBlock.Assets[s.Kind]+"_explode";
+            Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/ScCsgoKnives/"+sound,1,0,s.Position,6,true);
+            if(eventLogs++<24)KnifeLog.Information($"[CS_GRENADE] fire-detonate id={s.Id} kind={s.Kind} trigger={(airborne?"air-fuse":"ground-contact")} flightAge={s.Age:F2} sound={sound} airVisual={airborne}");
             // A bounded airborne timeout may ignite a reachable floor below it,
             // never an unsupported sphere of fire in mid-air.
             var floor=SolidRay(s.Position+Vector3.UnitY*.1f,s.Position-Vector3.UnitY*4);

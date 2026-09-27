@@ -100,7 +100,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     }
     void Play(string kind){
         actions.Start(GunSpec.All[State.Variant].Name,kind=="shot"?ScWeaponActionKind.Shoot:ScWeaponActionKind.Reload,kind=="shot"?"shoot":"reload",time.GameTime,kind=="shot"?.16f:State.ReloadLeft);
-        if(kind=="shot")ScOwnedAudio.World(Project.FindSubsystem<SubsystemAudio>(true),SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Variant],false),.8f,0,Creature.ComponentBody.Position,20,true);
+        if(kind=="shot")Project.FindSubsystem<SubsystemAudio>(true).PlaySound(SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Variant],false),.8f,0,Creature.ComponentBody.Position,20,true);
     }
     void Shoot(){
         var spec=GunSpec.All[State.Variant];var body=Creature.ComponentBody;Vector3 from=body.Position+Vector3.UnitY*1.45f;

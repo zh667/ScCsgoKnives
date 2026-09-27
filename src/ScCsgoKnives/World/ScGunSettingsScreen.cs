@@ -10,7 +10,7 @@ namespace Game;
 public sealed class ScGunSettingsScreen : Screen {
     public const string ScreenName = "ScCsgoGunSettings";
 
-    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials,ScHudPosition Hud,bool Enemies);
+    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials);
     Snapshot m_working;
     bool m_returningFromLayout;
     Screen m_back;
@@ -18,16 +18,11 @@ public sealed class ScGunSettingsScreen : Screen {
     bool m_built;
 
     readonly StackPanelWidget m_content = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
+    readonly StackPanelWidget m_contact = new() { Direction=LayoutDirection.Vertical,HorizontalAlignment=WidgetAlignment.Stretch };
     readonly ScrollPanelWidget m_scroll = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     CheckboxWidget m_buttons, m_killFeed, m_killSound, m_crosshair;
     CheckboxWidget m_buttonOnly, m_simpleMaterials;
     SliderWidget m_width, m_length, m_gap, m_scale, m_dot;
-    SliderWidget m_hudX,m_hudY;
-    CheckboxWidget m_hudCustom,m_enemies;
-    LabelWidget m_hudNote;
-    ButtonWidget m_section;
-    readonly List<Widget> m_advanced=[];
-    bool m_showAdvanced;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     ButtonWidget m_copyGroup;
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
@@ -46,12 +41,11 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly LabelWidget m_title = new() { Text = "CS 枪械 · 模组设置", FontScale = 1.1f, TextAnchor = TextAnchor.HorizontalCenter, DropShadow = true };
     readonly StackPanelWidget m_bar = new() { Direction = LayoutDirection.Horizontal };
     static Snapshot Capture() => new(ScUiSettings.CustomButtons, ScUiSettings.KillFeed, ScUiSettings.KillSound,
-        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials,ScUiSettings.AmmoHud.Copy(),ScUiSettings.NaturalEnemies);
+        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials);
     static void Apply(Snapshot s) {
         ScUiSettings.CustomButtons = s.Buttons; ScUiSettings.KillFeed = s.KillFeed; ScUiSettings.KillSound = s.KillSound;
         ScUiSettings.GunCrosshair = s.Crosshair; ScUiSettings.CrosshairStyle = s.Style; ScUiSettings.CrosshairColor = s.Color;
         ScUiSettings.SimpleMaterials = s.SimpleMaterials;
-        ScUiSettings.AmmoHud=s.Hud.Copy().Normalize();ScUiSettings.NaturalEnemies=s.Enemies;
         ScUiSettings.ButtonOnlyFire = s.ButtonOnly; ScUiSettings.CrosshairShape = s.Shape.Normalize();
     }
 
@@ -60,6 +54,7 @@ public sealed class ScGunSettingsScreen : Screen {
         var frame = ScGunUi.Frame();
         var root = m_root;
         root.Children.Add(m_title);
+        root.Children.Add(m_contact);
         m_scroll.Children.Add(m_content);
         root.Children.Add(m_scroll);
         var bar = m_bar;
@@ -78,7 +73,10 @@ public sealed class ScGunSettingsScreen : Screen {
         bool narrow = w < 650;
         if (m_working is not null && (!m_built || narrow != m_narrow)) Build(narrow);
         m_root.SetWidgetPosition(m_title,new Vector2(12,8)); m_title.Size = new Vector2(w-24,40);
-        m_root.SetWidgetPosition(m_scroll,new Vector2(12,56)); m_scroll.DesiredSize = new Vector2(w-24,Math.Max(60,h-156));
+        float contactHeight=narrow?160:118;
+        m_root.SetWidgetPosition(m_contact,new Vector2(12,50));m_contact.DesiredSize=new Vector2(w-24,contactHeight);
+        float scrollTop=54+contactHeight;
+        m_root.SetWidgetPosition(m_scroll,new Vector2(12,scrollTop)); m_scroll.DesiredSize = new Vector2(w-24,Math.Max(60,h-scrollTop-100));
         float bw = Math.Min(150,(w-48)/3);
         foreach(var b in new[]{m_defaults,m_cancel,m_save}) ((CanvasWidget)b).Size = new Vector2(bw,48);
         m_root.SetWidgetPosition(m_bar,new Vector2((w-3*(bw+12))/2,h-92)); m_bar.DesiredSize = new Vector2(3*(bw+12),48);
@@ -100,24 +98,11 @@ public sealed class ScGunSettingsScreen : Screen {
     void Build(bool narrow) {
         m_narrow = narrow; m_built = true;
         m_content.Children.Clear(); m_colors.Clear();
-        m_advanced.Clear();
-        m_content.Children.Add(ScGunUi.Heading("界面与世界"));
-        m_hudCustom=ScGunUi.Toggle("自定义弹药 HUD 位置",m_working.Hud.Custom);
-        m_hudX=ScGunUi.Slider(0,100,1,m_working.Hud.X*100,"水平位置");
-        m_hudY=ScGunUi.Slider(0,100,1,m_working.Hud.Y*100,"垂直位置");
-        m_hudNote=ScGunUi.Note("");
-        m_content.Children.Add(m_hudCustom);
-        if(narrow){m_content.Children.Add(m_hudX);m_content.Children.Add(m_hudY);}
-        else m_content.Children.Add(ScGunUi.Row(m_hudX,m_hudY,false));
-        m_content.Children.Add(m_hudNote);
-        m_enemies=ScGunUi.Toggle("允许敌对小队自然刷新",m_working.Enemies);m_content.Children.Add(m_enemies);
-        m_content.Children.Add(ScGunUi.Note("默认开启：满 30 个游戏日后才自然刷新。不影响手动信标和已有小队。"));
-        m_section=ScGunUi.Button(m_showAdvanced?"收起说明与工具":"展开说明与工具",250);m_content.Children.Add(m_section);
-        int advancedStart=m_content.Children.Count;
-        m_content.Children.Add(ScGunUi.Heading("玩家交流"));
+        m_contact.Children.Clear();
+        m_contact.Children.Add(ScGunUi.Heading("玩家交流"));
         m_copyGroup = ScGunUi.Button("复制群号", 150);
-        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("交流群：1087216872"), m_copyGroup, narrow));
-        m_content.Children.Add(ScGunUi.Note("点击按钮将群号复制到系统剪贴板，手机和电脑均可使用。"));
+        m_contact.Children.Add(ScGunUi.Row(ScGunUi.Label("交流群：1087216872"), m_copyGroup, narrow));
+        m_contact.Children.Add(ScGunUi.Note("点击按钮将群号复制到系统剪贴板，手机和电脑均可使用。"));
         m_content.Children.Add(ScGunUi.Heading("视角恢复"));
         m_content.Children.Add(m_recoverView);
         m_content.Children.Add(m_agentVoice);
@@ -125,7 +110,6 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Note($"当前基础视野 {SettingsManager.ViewAngle*100:0.##}%、灵敏度 {SettingsManager.LookSensitivity*100:0.##}%。若拿刀或空手仍像开镜，可恢复原版默认值。确认后立即生效并单独保存，不受本页取消影响。"));
         m_content.Children.Add(ScGunUi.Heading("世界占用诊断"));
         m_content.Children.Add(m_worldSize);
-        for(int i=advancedStart;i<m_content.Children.Count;i++){m_advanced.Add(m_content.Children[i]);m_content.Children[i].IsVisible=m_showAdvanced;}
         m_content.Children.Add(ScGunUi.Heading("武器画质"));
         m_simpleMaterials = ScGunUi.Toggle("简化材质（适合手机）", m_working.SimpleMaterials);
         m_content.Children.Add(m_simpleMaterials);
@@ -142,7 +126,7 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Note("仅按钮模式：空白触屏只转动视角。可使用模组开火按钮，或把外部触控按钮映射到开火键／鼠标左键；键盘和手柄保持可用。"));
         m_content.Children.Add(ScGunUi.Note("自定义按键总开关只控制本模组按钮的显示，关闭后仍保留布局和外部按键绑定，不会自动恢复全屏开火。"));
         m_edit = ScGunUi.Button("编辑按键布局", 190);
-        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("位置、大小、透明度、逐键开关"), m_edit, narrow));
+        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("按键与弹药 HUD 的位置布局"), m_edit, narrow));
         m_content.Children.Add(ScGunUi.Note($"当前编辑{(SettingsManager.LeftHandedLayout ? "左手" : "右手")}布局；左右手各自保存，切换不会覆盖另一套。"));
 
         m_content.Children.Add(ScGunUi.Heading("击杀反馈"));
@@ -214,11 +198,7 @@ public sealed class ScGunSettingsScreen : Screen {
         m_working = m_working with { Buttons = m_buttons.IsChecked, KillFeed = m_killFeed.IsChecked,
             KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked,
             SimpleMaterials = m_simpleMaterials.IsChecked, ButtonOnly = m_buttonOnly.IsChecked, Shape = new ScCrosshairShape(m_width.Value, m_length.Value, m_gap.Value, m_scale.Value, m_dot.Value).Normalize(),
-            Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value),
-            Hud=new ScHudPosition{Custom=m_hudCustom.IsChecked,X=m_hudX.Value/100,Y=m_hudY.Value/100},Enemies=m_enemies.IsChecked };
-        m_hudX.IsVisible=m_hudY.IsVisible=m_working.Hud.Custom;
-        m_hudNote.Text=m_working.Hud.Custom?$"屏幕位置：水平 {m_hudX.Value:0}% · 垂直 {m_hudY.Value:0}%；保存后生效。":"自动放在右下角并避让按钮；自定义位置按屏幕比例保存。";
-        if(m_section.IsClicked){m_showAdvanced=!m_showAdvanced;foreach(var w in m_advanced)w.IsVisible=m_showAdvanced;m_section.Text=m_showAdvanced?"收起说明与工具":"展开说明与工具";}
+            Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value) };
         m_fireStatus.Text=!m_working.ButtonOnly?"当前选择：原版触屏开火（全屏操作）。"
             :"当前选择：仅按键开火；支持自带按钮、映射按键及手柄，不要求开启自定义按钮。";
         if (m_style.IsClicked) {
@@ -250,13 +230,13 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
         if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
-        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512",new(),true); m_built = false; return; }
+        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512"); m_built = false; return; }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Leave(m_back); return; }
         if (m_save.IsClicked) {
             var previous = Capture();
             Apply(m_working);
             m_status.Text = ScUiSettings.Save() ? "" : "设置未能写入，磁盘上的上一份配置保持不变。";
-            if (m_status.Text.Length == 0){KnifeLog.Information(FormattableString.Invariant($"[CS_SETTINGS] hudCustom={ScUiSettings.AmmoHud.Custom} hud={ScUiSettings.AmmoHud.X:F2},{ScUiSettings.AmmoHud.Y:F2} naturalEnemies={ScUiSettings.NaturalEnemies} graceDays=30"));Leave(m_back);}
+            if (m_status.Text.Length == 0) Leave(m_back);
             else Apply(previous);
         }
     }

@@ -160,3 +160,14 @@ three death sounds and eight reserve-ammunition SVGs were extracted from the loc
 The GLB keeps source skeletal animation and embeds the opaque albedo; unused zero-weight
 morph targets are omitted. SVGs become transparent 128 px PNGs; decoded audio becomes PCM16 WAV.
 Chicken behavior and explosive death are authored for Survivalcraft, not imported CS2 gameplay.
+
+## Fire airburst audio (1.3.0, 2026-09-27)
+
+`grenade_fire_airburst.wav` is the locally extracted CS2
+`sounds/weapons/molotov/molotov_detonate_air_01.wav`, SHA-256
+`42083aeb9f823a610983b2d7c199a3cb35791da1d9cbb972d09941bef48410cc`.
+Full keeps the original WAV; split Lite uses mono 32 kHz Vorbis q3 (31,982 bytes),
+with no time-stretch or pitch adjustment. This sound is only selected for an
+airborne fuse detonation. Ground contact retains the separate existing Molotov
+or incendiary impact audio. Provenance and payload hashes are recorded in
+`docs/release-settings-rollback-1.3.0-2026-09-27-evidence.json`.
