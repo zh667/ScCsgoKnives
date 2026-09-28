@@ -1,0 +1,55 @@
+// Source-only collaboration, 2026-09-28. First match wins.
+// No (?d): ignored data must never be deleted to remove a parent directory.
+(?i).git
+(?i).stversions
+(?i).stignore.bak*
+(?i).vs
+(?i).idea
+(?i).gradle
+(?i).deps
+(?i)node_modules
+(?i).venv
+(?i)venv
+(?i)__pycache__
+(?i).cache
+(?i)bin
+(?i)obj
+(?i)build
+(?i).tmp
+(?i).tmp-*
+(?i)tmp-cli-output-*
+(?i)GeneratedWorld
+(?i)output
+(?i).env
+(?i).env.local
+(?i).env.*.local
+(?i).env.production*
+(?i).env.development*
+(?i)secrets
+(?i).secrets
+(?i)*.{pem,key,pfx,p12}
+(?i)id_rsa*
+(?i)id_ed25519*
+(?i)/.claude/settings.local.json
+(?i)/.codex/auth.json
+(?i)/local-only
+(?i)/raw-resources
+(?i)/unpacked
+(?i)/build-output
+(?i)/local-backups
+// Native resources, bulk animation data, captures and historical packages.
+(?i)/src/ScCsgoKnives/AnimationData
+(?i)/gec_texture_stream
+(?i)/CAPTURE
+(?i)/photo
+(?i)/PHOTO2
+(?i)/MCCS_VIDEO
+(?i)/SC_VIDEO
+(?i)/csmc_guns
+// Code, project definitions, text descriptors and collaboration evidence.
+// Shader source and mod database descriptors are development inputs.
+(?i)!*.{psh,xdb}
+(?i)!*.{cs,csproj,sln,slnx,props,targets,py,ps1,sh,cmd,bat,md,txt,json,xml,yml,yaml,toml,ini,config,csv,tsv,java,kt,gradle,kts,properties,c,h,cpp,hpp,glsl,vert,frag,vsh,fsh,shader,xaml,resx,html,css,js,ts,tsx,jsx,sql,code,sig,javap,diff,patch,sha256,vmat,vfx,lock}
+(?i)!{LICENSE,NOTICE,OWNER,Dockerfile,Makefile,gradlew,.gitignore,.gitattributes,.editorconfig,.stignore.shared,.env.example}
+// New binary/media/archive types are excluded by default. Review before widening.
+*
