@@ -28,7 +28,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     /// player by itself (32), a candidate value: the user named "nearby" without a number.</summary>
     public const float ProvokeRange=32;
     public static float DisengageRange(TacticalRole role)=>role==TacticalRole.Sniper?44:40;
-    public static float RetaliationRange(TacticalRole role)=>role==TacticalRole.Sniper?64:40;
+    public static float RetaliationRange(TacticalRole role)=>float.PositiveInfinity;
     /// <summary>A summoned squad looks toward the one who summoned it and, once its warning window is over, walks a bounded
     /// search toward that position. It grants no target, and since 2026-10-02 neither does arriving there: the squad is
     /// neutral until one of them is attacked.</summary>
@@ -145,7 +145,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(TargetBody is not null&&Retaliating&&TargetBody.IsAddedToProject&&TargetBody.Entity.FindComponent<ComponentHealth>() is {Health:>0})return;
         Alert(attacker);
     }
-    public void Alert(ComponentBody attacker){if(Friendly(attacker)||attacker.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;if(State is not null)State.Warmup=0;NoteEncounter(attacker,"seen");TargetBody=attacker;Retaliating=true;lastSeen=attacker.Position;lost=RetaliationMemory;aim=0;if(plant>0)AbandonPlant();else Creature.ComponentBody.TargetCrouchFactor=0;}
+    public void Alert(ComponentBody attacker){if(Friendly(attacker)||attacker.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;NoteEncounter(attacker,"seen");TargetBody=attacker;Retaliating=true;lastSeen=attacker.Position;lost=RetaliationMemory;aim=0;seen=false;senseLeft=0;if(plant>0)AbandonPlant();else Creature.ComponentBody.TargetCrouchFactor=0;}
     public void HearNoise(ComponentBody source,Vector3 position,float loudness){
         if(State is null||TargetBody is not null||source is null||Friendly(source)||loudness<.5f||Vector3.DistanceSquared(Creature.ComponentBody.Position,position)>40*40)return;
         // Sound starts a bounded search, never grants a through-wall shooting target.
@@ -197,7 +197,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 ||Vector3.DistanceSquared(body.Position,TargetBody.Position)>limit*limit
                 ||!Retaliating&&Vector3.DistanceSquared(body.Position,Home)>LeashRange*LeashRange)Drop();
         }
-        if(senseLeft<=0){senseLeft=.35f+random.Float(0,.15f);
+        if(senseLeft<=0){senseLeft=State.Role==TacticalRole.Sniper?.15f:.35f+random.Float(0,.15f);
             // Neutral by default: no one is looked for here. A target only comes from an attack (Alert, Provoke).
             seen=TargetBody!=null&&Visible(TargetBody);
             if(seen){lastSeen=TargetBody.Position;lost=Retaliating?RetaliationMemory:ProactiveMemory;}
@@ -214,7 +214,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
             if(zones.FirstOrDefault(z=>z.Bomb&&TacticalDanger.Horizontal(body.Position,z.Center)<z.Radius+TacticalDanger.BombMargin) is {Bomb:true} hold)
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
             else if(TargetBody is null){if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);else if(search>0)path.Stop();else if(Vector3.DistanceSquared(body.Position,Home)>16)Go(Home,.45f,2,160,null);else path.Stop();}
-            else if(!clear||distance>(State.Role==TacticalRole.Close?9:State.Role==TacticalRole.Sniper?40:22))Go(lastSeen,.65f,3,200,TargetBody);
+            else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();
+            else if(!clear||distance>(State.Role==TacticalRole.Close?9:22))Go(lastSeen,.65f,3,200,TargetBody);
             else path.Stop();
         }
         TacticalNavigation.StepAssist(Creature,terrain,path.Destination,ref nextJump,time.GameTime);
@@ -237,12 +238,12 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         TryGrenade(distance);if(throwing is not null)return;
         if(State.Rounds==0){if(State.Reserve>0){State.ReloadLeft=State.Role==TacticalRole.Machine?4:2.8f;Play("reload");}else if(pathLeft<=.1f)Go(body.Position-body.Matrix.Forward*10,.8f,1,160,null);return;}
         if(State.ShotLeft>0||burstPause>0||aim<(State.Role==TacticalRole.Sniper?1.4f:.55f))return;
-        if(State.Role==TacticalRole.Close&&distance>18)return;
+        if(!Retaliating&&State.Role==TacticalRole.Close&&distance>18)return;
         if(!Visible(TargetBody)){seen=false;aim=0;return;}
         NoteEncounter(TargetBody,"engaged");Shoot();State.ShotLeft=Math.Max(ScGunGrowth.ShotInterval(State.Variant,spec.CycleSeconds,0),State.Role==TacticalRole.Sniper?.65f:.12f);
         if(++burst>=(State.Role==TacticalRole.Machine?8:State.Role==TacticalRole.Sniper?1:3)){burst=0;burstPause=State.Role==TacticalRole.Sniper?.6f:.75f;}
     }
-    void Drop(){TargetBody=null;Retaliating=false;aim=0;}
+    void Drop(){TargetBody=null;Retaliating=false;aim=0;seen=false;}
     void Play(string kind){
         actions.Start(GunSpec.All[State.Variant].Name,kind=="shot"?ScWeaponActionKind.Shoot:ScWeaponActionKind.Reload,kind=="shot"?"shoot":"reload",time.GameTime,kind=="shot"?.16f:State.ReloadLeft);
         if(kind=="shot"){string shot=SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Variant],false);
@@ -252,7 +253,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         var spec=GunSpec.All[State.Variant];var body=Creature.ComponentBody;Vector3 from=body.Position+Vector3.UnitY*1.45f;
         float error=State.Role==TacticalRole.Sniper?.15f:.45f;error+=body.Velocity.Length()*.12f;
         var point=TargetBody.BoundingBox.Center()+new Vector3(random.Float(-error,error),random.Float(-error,error),random.Float(-error,error));
-        var direction=Vector3.Normalize(point-from);float range=State.Role==TacticalRole.Sniper?64:State.Role==TacticalRole.Close?18:40;
+        var direction=Vector3.Normalize(point-from);float range=Retaliating?Vector3.Distance(from,point)+2:State.Role==TacticalRole.Sniper?64:State.Role==TacticalRole.Close?18:40;
         State.Rounds--;Play("shot");
         // The balanced Lv0 whole-shot budget (enemy templates have neither skin nor counter growth); against a player
         // the hostile table instead (H2). A shotgun's pellets share the budget, each traced on its own (H1).
