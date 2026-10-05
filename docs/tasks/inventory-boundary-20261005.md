@@ -1,6 +1,8 @@
 # 第二轮安全解耦：库存写入、提交和发布
 
 Status: review — 本轮源码、长期门禁、独立差分与受影响配置验证完成；停止于本轮边界，真实游戏及发行验收另列。
+
+2026-10-06 P2续修：**已补齐并验证长期断言**，仅修改`InventoryBoundaryChecks.cs`及本说明；生产源码/DLL保持不变，不进入下一轮重构。新证据集中在`.tmp/dev-temp/inventory-assertions-20261006/`。下方第二轮历史执行结果保留；P2补充的当前测试身份和独立回退补丁见文末。
 Current writer: 本聊天Windows Codex，唯一写入者；VPS源码会话空闲，worker无任务。
 Scope: 用户采纳`workbench-review-20261005/NEXT-PROMPT.txt`，先补长期门禁，再分步隔离写入回执、提交/修订、槽位发布及记录/ack配合。不得改玩法、协议、锁范围、持久格式、迁移算法或调度；本轮完成即停止，不提交/推送/安装/发包到真实服务器/改原世界。
 
@@ -122,3 +124,44 @@ API返回数量、观察到的变化、网络成功入队是三个事实。入�
 最终清理累计**501,696,786字节**（含补充检查重建后再次被替代的同路径引用，收据逐次记账，不误作不同目录）；最终MP输入保留于`final-mp/mp-refs`，原all的MP副本已被它替代。`verification.json`合并final/all与后续final-core/final-mp的有效产物身份：1741当前输入无漂移、所有有效产物无漂移；all之后仅上述两个测试文件变化，保护基线和生产候选未变。两端Syncthing idle、0 pending/errors、1555文件，无冲突。
 
 `git -c core.autocrlf=false apply --reverse --check .tmp/dev-temp/inventory-boundary-20261005/round-only.patch`和`git diff --check`实际通过；只check没有撤回文件。分步patch用于审查，整体回退以最终round-only.patch和scope哈希为准，遇到后来重叠修改先重新核对。
+
+## 2026-10-06：复审P2长期断言补齐
+
+复审定位正确：上一轮临时新旧轨迹对照能识别早解锁，但长期QualityCheck只记录通知阶段状态，没有实际assert。本次先核对1741项输入全部匹配，分支仍`fix/quality-20261005`、HEAD不变；两端同步idle、0错误，VPS现有会话声明不编辑。`baseline/identity.json`、测试/说明原文快照保存开工边界。实际再次运行旧维护runner：正常核心134/134，审查同一个提前解锁错误核心库存30/30、退出0，确认缺口仍存在。
+
+只强化原有两个用例，**用例数不变**：
+
+- `commit-notification-order-under-lock`：以实际Add完成作为通知阶段起点，排除入锁前Role查询。收集类型化阶段观测，调用返回后断言write→SlotRewritten→epoch推进/TransactionEnded→return→帧末publish；通知阶段均持锁，rewrite之前epoch不变、due未登记，TransactionEnded看到epoch+1，返回后锁释放且due存在，帧末只发布一次最终值。SlotRewritten中实际尝试registry.Save，必须拒绝。
+- `baseline-rewrite-clock-exception-rolls-back`：保留真实Clock异常触发生产catch，收集随后移除替代物→还原原物品→归还材料的实际序列。返回后断言每个补偿步骤持锁、epoch未提前推进、save被拒绝；只有逆操作完成后才推进epoch并登记最终状态；返回释放、帧末发布恢复值。断言不在生产会捕获的回调内执行，失败会到达维护runner。
+
+不对所有Role查询一律要求持锁，也不把日志字符串作为唯一oracle；新观测不写入原inventoryTrace，因此可以继续精确比对原先210条轨迹。
+
+| 实际执行 | 结果 |
+|---|---|
+| 维护入口`check_quality.py --group core` | QualityCheck **134/134**、RequestRules **17/17**，退出0；`core/execution.json`记录实际build/run/count/assemblies。 |
+| 补强后的新旧核心库存 | 当前核心和第二轮开工旧核心各**30/30**，210条轨迹/逐项结果完全相同，未归一化；`verification.json`。正常生产轨迹与本次补强前也相同。 |
+| 审查原早解锁错误DLL | 库存**28/30**、完整核心**132/134**，均退出1；两个新断言分别识别通知及异常恢复丢锁。使用精确相同`12875c…4460`错误DLL，不以另造错误代替审查证据。 |
+| 同一错误DLL进入真实core门禁 | 在独立最小checkout复制未修改的`check_quality.py`与当前测试源码，通过既有CoreDll工程参数加载错误DLL；独立规则17通过，quality-core失败2项、门禁退出1。`gate-mutant/execution.json`实际失败原因和加载hash均核验，不是因缺依赖失败。 |
+| 三个附加错误副本 | Changed提前到SlotRewritten前：失败2项；TransactionEnded早于epoch：失败2项；只有补偿提前Exit：失败1项。均实际构建隔离DLL后执行维护库存runner、退出1。 |
+
+所有命令经Windows dev.ps1：
+
+```powershell
+./tools/dev.ps1 pwsh -NoProfile -File .tmp/dev-temp/inventory-assertions-20261006/capture.ps1
+./tools/dev.ps1 python tools/check_quality.py --group core --out .tmp/dev-temp/inventory-assertions-20261006/core
+./tools/dev.ps1 python .tmp/dev-temp/inventory-assertions-20261006/verify.py
+./tools/dev.ps1 python .tmp/dev-temp/inventory-assertions-20261006/finalize.py
+```
+
+完整实际子命令、预期/实际exit、时间、失败用例及程序集身份在`baseline/execution.json`、`execution.json`、`core/execution.json`和`gate-mutant/execution.json`。错误DLL仅在隔离runtime/checkout内执行，不替换共享bin里的候选核心。单机依赖仍为API1.9.3.1（Survivalcraft DLL SHA `2ef7c1918ea9d09f52a807719909bf28c722bd3a2793eeaf81db0c343b9eb9d3`）。
+
+- 当前生产核心仍为`5da592b77769c54aca383e6f8cb3bf332e16201371c2febc9a7bda72332ea344`；生产输入全部未改。
+- 新QualityCheck runner SHA：`42abe1df6a043df1da1ab694f305837abd3698b2391a86b41d190471770e931b`。
+- 审查原错误核心 SHA：`12875c260102652ada27af769c9f086186c42e68322c59faba7519ff70974460`。
+- 维护测试前后SHA：`3ea5b472c371e175175aa5818e4b9cf4895d3a75d3ed195f6b1fd2328b224e08`→`a31c38cb7037ffb47fc13d45d84abe7025d5e731b7a3e3a8cb739065cfe3a944`。
+
+最终只变测试文件和本说明，`verification.json`核对范围外无漂移。`assertions-only.patch`是相对此次开工的两文件独立补丁；反向`git apply --check`通过（未执行撤回）。要回退P2只逆向该补丁，不对HEAD或第二轮整体patch操作；本次后旧round-only.patch的文档/测试哈希自然不再是当前身份。
+
+清理仅限本次完成验证的runtime、三错误副本构建和门禁checkout，永久删除且可按verify.py重建；逻辑大小1,117,397,701字节，其中runtime多数为硬链接，**不是实际释放磁盘字节数**。保留原候选/旧核心/审查原错误DLL、当前runner、所有JSON/日志/脚本及原文快照；清理后保护文件hash未变。详见`cleanup-receipt.json`。
+
+这次生产代码未改，因此未重复MP、变体和完整资源构建，原身份匹配证据仍是之前执行结果。真实游戏、跨设备MP、Android及发行兼容矩阵仍未验证。本次没有新生产功能结论，也未提交、推送、安装、发布或修改原世界；完成P2即停止。

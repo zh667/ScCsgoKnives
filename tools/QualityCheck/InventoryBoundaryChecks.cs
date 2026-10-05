@@ -37,7 +37,8 @@ static class InventoryBoundaryChecks {
     sealed class Transport : IScNetTransport, IScNetInventorySync {
         ScNetRole m_role=ScNetRole.Host;
         public Func<string> ObserveRole;
-        public ScNetRole Role {get{if(ObserveRole is not null)Trace.Add("role:"+ObserveRole());return m_role;}set=>m_role=value;} public ScNetHandshake Handshake=>ScNetHandshake.Accepted; public string HandshakeDetail=>"fixture";
+        public Action RoleRead;
+        public ScNetRole Role {get{RoleRead?.Invoke();if(ObserveRole is not null)Trace.Add("role:"+ObserveRole());return m_role;}set=>m_role=value;} public ScNetHandshake Handshake=>ScNetHandshake.Accepted; public string HandshakeDetail=>"fixture";
         public IReadOnlyList<ScNetPeer> Peers {get;set;}=[]; public bool IsLocal(ComponentPlayer p)=>true;
         public Func<IInventory,bool> Publishing; public Action Sending;
         public bool Publish(IInventory i){Trace.Add("publish:"+(i is Inventory f?f.Name:"creative")+":"+string.Join(',',Enumerable.Range(0,Math.Min(5,i.SlotsCount)).Select(s=>$"{i.GetSlotValue(s)}/{i.GetSlotCount(s)}")));return Publishing?.Invoke(i)??true;}
@@ -53,6 +54,13 @@ static class InventoryBoundaryChecks {
         public bool SendToServer(ushort op,byte[] payload)=>false;public bool SendTo(ScNetPeer p,ushort op,byte[] payload)=>true;public void Broadcast(ushort op,byte[] payload,ScNetPeer except){}
     }
     static void Need(bool ok,string why){if(!ok)throw new Exception(why);}
+    readonly record struct CommitObservation(string Stage, long Epoch, bool Locked, int Item, int Count, int Materials, bool Due);
+    static CommitObservation Observe(string stage, Inventory inventory) => new(stage, ScInventoryTransaction.Revision(inventory),
+        ScGunMutation.IsCommitting, inventory.GetSlotValue(0), inventory.GetSlotCount(0), inventory.Total(900), ScNetSlots.PublicationDue);
+    static bool SaveRefusedDuringCommit(ScGunRegistry registry) {
+        try { registry.Save(0); return false; }
+        catch (InvalidOperationException e) { return e.Message.Contains("transaction/recovery"); }
+    }
     static string Debt(ScGunRegistry r){var x=new XElement("R");r.Recovery.Save().Save(x);return x.ToString(SaveOptions.DisableFormatting);}
     sealed class Proxy : Inventory {
         public IInventory Backing;
@@ -95,14 +103,57 @@ static class InventoryBoundaryChecks {
             Need(Replace(i),"outer failed");long epoch=ScInventoryTransaction.Revision(i);ScNetSlots.EndOfFrame();Need(!Replace(i)&&ScInventoryTransaction.Revision(i)==epoch&&!ScNetSlots.PublicationDue,"early refusal publishes");
         });
         Case("commit-notification-order-under-lock",(i,r,n)=>{
+            long epoch=ScInventoryTransaction.Revision(i);
+            var observed=new List<CommitObservation>(); bool written=false, saveRefused=false;
+            // Capture inside production callbacks; assert only after return so a production catch cannot hide failures.
+            i.Added=(slot,value,_)=>{if(slot==0&&value==200){written=true;observed.Add(Observe("written",i));}};
+            n.RoleRead=()=>{if(written)observed.Add(Observe("notification",i));};
             n.ObserveRole=()=>$"epoch={ScInventoryTransaction.Revision(i)}:lock={ScGunMutation.IsCommitting}:item={i.GetSlotValue(0)}";
-            ScNet.Clock=()=>{Trace.Add($"rewrite-clock:epoch={ScInventoryTransaction.Revision(i)}:locked={ScGunMutation.IsCommitting}:item={i.GetSlotValue(0)}");return 100;};
-            Need(Replace(i),"successful replacement refused");n.ObserveRole=null;ScNetSlots.EndOfFrame();
+            ScNet.Clock=()=>{
+                observed.Add(Observe("rewrite",i)); saveRefused=SaveRefusedDuringCommit(r);
+                Trace.Add($"rewrite-clock:epoch={ScInventoryTransaction.Revision(i)}:locked={ScGunMutation.IsCommitting}:item={i.GetSlotValue(0)}");return 100;
+            };
+            bool result=Replace(i);
+            n.RoleRead=null;n.ObserveRole=null;observed.Add(Observe("returned",i));
+            n.Publishing=_=>{observed.Add(Observe("published",i));return true;};ScNetSlots.EndOfFrame();
+            Need(result,"successful replacement refused");
+            Need(observed.Count(o=>o.Stage=="written")==1&&observed.Count(o=>o.Stage=="rewrite")==1,"write/rewrite phase missing or duplicated");
+            int rewrite=observed.FindIndex(o=>o.Stage=="rewrite"),returned=observed.FindIndex(o=>o.Stage=="returned");
+            Need(observed[0].Stage=="written"&&rewrite>0&&returned>rewrite,"write/rewrite/return order changed");
+            Need(observed.Take(returned).All(o=>o.Locked),"commit notification ran outside inventory mutex");
+            Need(observed.Take(rewrite+1).All(o=>o.Epoch==epoch&&!o.Due),"epoch/publication advanced before SlotRewritten");
+            var notifications=observed.Skip(rewrite+1).Take(returned-rewrite-1).ToArray();
+            Need(notifications.Length>0&&notifications.All(o=>o.Stage=="notification"&&o.Epoch==epoch+1&&!o.Due),"TransactionEnded must observe the advanced epoch before enqueue");
+            Need(observed.All(o=>o.Item==200&&o.Count==1&&o.Materials==3),"notification observed intermediate inventory");
+            Need(saveRefused,"save accepted during SlotRewritten notification");
+            Need(observed[returned]==new CommitObservation("returned",epoch+1,false,200,1,3,true),"return did not release mutex after publication registration");
+            Need(observed.Last()==new CommitObservation("published",epoch+1,false,200,1,3,false)&&observed.Count(o=>o.Stage=="published")==1,"final frame publication missing, repeated or still locked");
         });
         Case("baseline-rewrite-clock-exception-rolls-back",(i,r,n)=>{
-            ScNet.Clock=()=>throw new IOException("rewrite clock unavailable");
-            Need(!Replace(i)&&i.Total(100)==1&&i.Total(900)==5&&i.Total(200)==0,"baseline notification exception boundary changed");
-            ScNet.Clock=()=>100;ScNetSlots.EndOfFrame();
+            long epoch=ScInventoryTransaction.Revision(i);bool rollingBack=false;
+            var observed=new List<CommitObservation>();var saveRefusals=new List<bool>();
+            i.Removed=(_,_,_)=>{if(rollingBack){observed.Add(Observe("undo-remove",i));saveRefusals.Add(SaveRefusedDuringCommit(r));}};
+            i.Added=(_,_,_)=>{if(rollingBack){observed.Add(Observe("undo-add",i));saveRefusals.Add(SaveRefusedDuringCommit(r));}};
+            n.RoleRead=()=>{if(rollingBack)observed.Add(Observe("notification",i));};
+            ScNet.Clock=()=>{observed.Add(Observe("rewrite",i));rollingBack=true;throw new IOException("rewrite clock unavailable");};
+            bool result=Replace(i);n.RoleRead=null;observed.Add(Observe("returned",i));
+            ScNet.Clock=()=>100;n.Publishing=_=>{observed.Add(Observe("published",i));return true;};ScNetSlots.EndOfFrame();
+            Need(!result&&i.Total(100)==1&&i.Total(900)==5&&i.Total(200)==0,"baseline notification exception boundary changed");
+            int returned=observed.FindIndex(o=>o.Stage=="returned");
+            Need(observed[0]==new CommitObservation("rewrite",epoch,true,200,1,3,false),"rollback began after notification lost mutex or advanced epoch");
+            var undo=observed.Where(o=>o.Stage.StartsWith("undo-")).ToArray();
+            Need(undo.SequenceEqual(new[]{
+                new CommitObservation("undo-remove",epoch,true,0,0,3,false),
+                new CommitObservation("undo-add",epoch,true,100,1,3,false),
+                new CommitObservation("undo-add",epoch,true,100,1,5,false)
+            }),"inverse compensation order, mutex or epoch changed");
+            int lastUndo=observed.FindLastIndex(o=>o.Stage.StartsWith("undo-"));
+            Need(observed.Take(returned).All(o=>o.Locked)&&saveRefusals.Count==3&&saveRefusals.All(blocked=>blocked),"compensation ran unlocked or allowed a save");
+            var notifications=observed.Where(o=>o.Stage=="notification").ToArray();
+            Need(notifications.Length>0&&observed.FindIndex(o=>o.Stage=="notification")>lastUndo
+                &&notifications.All(o=>o.Epoch==epoch+1&&o.Item==100&&o.Count==1&&o.Materials==5&&!o.Due),"rollback advanced/published before inverse writes finished");
+            Need(r.Recovery.Count==0&&observed[returned]==new CommitObservation("returned",epoch+1,false,100,1,5,true),"rollback return retained lock or lost final publication");
+            Need(observed.Last()==new CommitObservation("published",epoch+1,false,100,1,5,false)&&observed.Count(o=>o.Stage=="published")==1,"rollback published an intermediate or locked state");
         });
         foreach(bool failure in new[]{false,true})Case("gun-record-"+failure,(i,r,n)=>{
             BlocksManager.BlockTypeToIndex[typeof(ScGunBlock)]=701;
