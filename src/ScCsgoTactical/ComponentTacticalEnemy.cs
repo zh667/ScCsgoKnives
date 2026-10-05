@@ -40,6 +40,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     bool seen;
     int strafeSide=1;
     float strafeLeft;
+    Vector3 noisePosition;
+    float coverLeft,noiseCooldown;
     ComponentBody lastVoiceTarget;
     // ---- visible actions (r2-c4-completion-20260929) ----
     // A grenade used to appear at once 1.5 m above the feet, inside the thrower's own box, while the enemy kept its gun;
@@ -149,9 +151,9 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     }
     public void Alert(ComponentBody attacker){if(Friendly(attacker)||attacker.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;NoteEncounter(attacker,"seen");TargetBody=attacker;Retaliating=true;lastSeen=attacker.Position;lost=RetaliationMemory;aim=0;seen=false;senseLeft=0;if(plant>0)AbandonPlant();else Creature.ComponentBody.TargetCrouchFactor=0;}
     public void HearNoise(ComponentBody source,Vector3 position,float loudness){
-        if(State is null||TargetBody is not null||source is null||Friendly(source)||loudness<.5f||Vector3.DistanceSquared(Creature.ComponentBody.Position,position)>40*40)return;
-        // Sound starts a bounded search, never grants a through-wall shooting target.
-        lastSeen=position+new Vector3(random.Float(-3,3),0,random.Float(-3,3));search=5;NoteEncounter(source,"heard");
+        // Native position-only gunshots have no source body. Footsteps (.25) and our own squad are ignored.
+        if(State is null||noiseCooldown>0||source is not null&&Friendly(source)||loudness<.5f||Vector3.DistanceSquared(Creature.ComponentBody.Position,position)>40*40)return;
+        noisePosition=position;coverLeft=2.5f;noiseCooldown=3;pathLeft=0;NoteEncounter(source,"heard");
     }
     /// <summary>Encounter observation for the director's bounded log (players only).</summary>
     void NoteEncounter(ComponentBody body,string what){if(State is not null&&body?.Entity.FindComponent<ComponentPlayer>() is not null)director?.Note(State.Squad,what);}
@@ -175,6 +177,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(!IsActive){CancelThrow();if(plant>0)AbandonPlant();return;}dt=Math.Clamp(dt,0,.5f);var body=Creature.ComponentBody;var spec=GunSpec.All[State.Variant];
         State.Warmup=Math.Max(0,State.Warmup-dt);
         State.ShotLeft=Math.Max(0,State.ShotLeft-dt);State.GrenadeLeft=Math.Max(0,State.GrenadeLeft-dt);burstPause=Math.Max(0,burstPause-dt);search=Math.Max(0,search-dt);
+        coverLeft=Math.Max(0,coverLeft-dt);noiseCooldown=Math.Max(0,noiseCooldown-dt);
         if(State.ReloadLeft>0){State.ReloadLeft=Math.Max(0,State.ReloadLeft-dt);if(State.ReloadLeft==0){int n=Math.Min(spec.Magazine-State.Rounds,State.Reserve);State.Rounds+=n;State.Reserve-=n;}return;}
         // Danger outranks blindness and combat: a squad knows its own bombs, and nobody stands in fire on purpose.
         var zones=TacticalDanger.Zones(Project,body.Position,true).ToList();fleeLeft-=dt;
@@ -215,6 +218,12 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(pathLeft<=0){pathLeft=.65f;
             if(zones.FirstOrDefault(z=>z.Bomb&&TacticalDanger.Horizontal(body.Position,z.Center)<z.Radius+TacticalDanger.BombMargin) is {Bomb:true} hold)
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
+            else if(coverLeft>0&&State.Warmup<=0){
+                if(!path.Destination.HasValue||path.IsStuck){
+                    if(TacticalCombatMovement.Cover(terrain,body,noisePosition) is {} cover)Go(cover,.9f,.6f,160,null);
+                    else path.Stop();
+                }
+            }
             else if(TargetBody is null){if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);else if(search>0)path.Stop();else if(Vector3.DistanceSquared(body.Position,Home)>16)Go(Home,.45f,2,160,null);else path.Stop();}
             else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();
             else if(clear&&State.Warmup<=0&&TacticalCombatMovement.IsSmg(spec.Name)&&distance<=24){
