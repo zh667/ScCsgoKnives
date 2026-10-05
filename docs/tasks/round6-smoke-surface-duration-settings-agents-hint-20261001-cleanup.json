@@ -1,0 +1,127 @@
+{
+ "task": "round6-smoke-surface-duration-settings-agents-hint-20261001",
+ "date": "2026-10-01T10:50:24",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r6xCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stages r6a/r6b/r6c (devbuild) build trees": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r6a\\full",
+    ".tmp\\completion-140-20260929\\r6a\\lite",
+    ".tmp\\completion-140-20260929\\r6a\\tree",
+    ".tmp\\completion-140-20260929\\r6b\\full",
+    ".tmp\\completion-140-20260929\\r6b\\lite",
+    ".tmp\\completion-140-20260929\\r6b\\tree",
+    ".tmp\\completion-140-20260929\\r6c\\full",
+    ".tmp\\completion-140-20260929\\r6c\\lite",
+    ".tmp\\completion-140-20260929\\r6c\\tree"
+   ],
+   "bytes": 2553626230,
+   "items": 5718,
+   "missing": [
+    ".tmp\\completion-140-20260929\\r6a\\tools",
+    ".tmp\\completion-140-20260929\\r6a\\assets-full",
+    ".tmp\\completion-140-20260929\\r6a\\resources",
+    ".tmp\\completion-140-20260929\\r6a\\net",
+    ".tmp\\completion-140-20260929\\r6a\\motion",
+    ".tmp\\completion-140-20260929\\r6a\\throw",
+    ".tmp\\completion-140-20260929\\r6a\\ui",
+    ".tmp\\completion-140-20260929\\r6a\\candidate",
+    ".tmp\\completion-140-20260929\\r6b\\tools",
+    ".tmp\\completion-140-20260929\\r6b\\assets-full",
+    ".tmp\\completion-140-20260929\\r6b\\resources",
+    ".tmp\\completion-140-20260929\\r6b\\net",
+    ".tmp\\completion-140-20260929\\r6b\\motion",
+    ".tmp\\completion-140-20260929\\r6b\\throw",
+    ".tmp\\completion-140-20260929\\r6b\\ui",
+    ".tmp\\completion-140-20260929\\r6b\\candidate",
+    ".tmp\\completion-140-20260929\\r6c\\tools",
+    ".tmp\\completion-140-20260929\\r6c\\assets-full",
+    ".tmp\\completion-140-20260929\\r6c\\resources",
+    ".tmp\\completion-140-20260929\\r6c\\net",
+    ".tmp\\completion-140-20260929\\r6c\\motion",
+    ".tmp\\completion-140-20260929\\r6c\\throw",
+    ".tmp\\completion-140-20260929\\r6c\\ui",
+    ".tmp\\completion-140-20260929\\r6c\\candidate"
+   ]
+  },
+  "stage r6x build trees (delivered; logs, reports, net.json, packages.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r6x\\full",
+    ".tmp\\completion-140-20260929\\r6x\\lite",
+    ".tmp\\completion-140-20260929\\r6x\\tools",
+    ".tmp\\completion-140-20260929\\r6x\\tree",
+    ".tmp\\completion-140-20260929\\r6x\\assets-full",
+    ".tmp\\completion-140-20260929\\r6x\\resources",
+    ".tmp\\completion-140-20260929\\r6x\\net",
+    ".tmp\\completion-140-20260929\\r6x\\motion",
+    ".tmp\\completion-140-20260929\\r6x\\throw",
+    ".tmp\\completion-140-20260929\\r6x\\ui"
+   ],
+   "bytes": 1891974505,
+   "items": 4202,
+   "missing": []
+  },
+  "MP/single-player test packages (candidate copies)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r6a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r6a-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r6b-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r6b-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r6x-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r6x-lite.scmod"
+   ],
+   "bytes": 1689569891,
+   "items": 6,
+   "missing": []
+  },
+  "r6a smoke recording/scene/look raw PNG frames (GIF/sheets/JSON kept)": {
+   "paths": [
+    "1766 PNG frames under run/smoke-motion-r6a-*, run/smoke-view-r6a-*, run/smoke-look-*"
+   ],
+   "bytes": 1800068927,
+   "items": 1766,
+   "missing": []
+  },
+  "1.9.3.1 test copy ScreenCapture, live and in the runtime archive (frames already copied into the run folders)": {
+   "paths": [
+    ".tmp\\mp-test-runtime\\sp131\\ScreenCapture",
+    ".tmp\\mp-test-runtime\\_archive\\20261001-103621-smoke-view-r6b-lite-131-20261001-102548\\sp131\\ScreenCapture"
+   ],
+   "bytes": 9265327,
+   "items": 30,
+   "missing": []
+  },
+  "totalBytes": 7944504880,
+  "items": 11722
+ },
+ "kept": [
+  "stages r6a/r6x: logs/, *.json reports, builds.json, source-hashes.json (r6x also net.json, packages.json); earlier stages untouched",
+  ".tmp/mp-m0-20260929/results/*.json; run/camera-fire-r5*, run/m2-r6x-* (logs); run/smoke-motion-r6a-*, run/smoke-view-r6a-*, run/smoke-look-*: *.gif, *.jpg, *.json",
+  ".tmp/mp-m0-20260929/pkg/*.json records; refs/mp; earlier stages' packages untouched",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "e0ccfff98b570f70c312b9b96dabb4fd947eaa9715e55defcf04fdb97194b000",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "4c0d81d0a69a8a476ef79314b96a36142ec2925383c61280353c3e2d21680754",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "0dea4191c1ee4a5c2ce07a11ac75a8afd24982ae9277caeccd10fa1e45179798",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 131324739584,
+  "freePct": 13.13
+ }
+}

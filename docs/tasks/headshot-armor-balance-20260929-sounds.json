@@ -1,0 +1,47 @@
+[
+ {
+  "name": "headshot_noarmor",
+  "source": ".tmp/armor-plan-20260929/cs2-audio/sounds/player/headshot_noarmor_01.wav",
+  "sourceSha256": "4603f30e76d17e17e7300a19ec4adf9b33dcf09ccc9969a631dde4e25b5c10ab",
+  "sourceChannels": 2,
+  "channelCorrelation": 1.0,
+  "rate": 44100,
+  "seconds": 1.05,
+  "peak": 1.0,
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/Hits/headshot_noarmor.ogg",
+  "member": "Assets/Audio/ScCsgoKnives/Hits/headshot_noarmor.ogg",
+  "sha256": "4751b45755388acd6d84b405eb702658df11a50e31a6cce1676aaf99929dc028",
+  "bytes": 14751,
+  "decodedSeconds": 1.05
+ },
+ {
+  "name": "headshot_armor",
+  "source": ".tmp/armor-plan-20260929/cs2-audio/sounds/player/headshot_armor_01.wav",
+  "sourceSha256": "bf8170e13bdf83f4e074e6b5ee324cdda83f9eb9705bae4d0d80f1796d7d523e",
+  "sourceChannels": 2,
+  "channelCorrelation": -0.1841,
+  "rate": 44100,
+  "seconds": 0.9598,
+  "peak": 0.0542,
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/Hits/headshot_armor.ogg",
+  "member": "Assets/Audio/ScCsgoKnives/Hits/headshot_armor.ogg",
+  "sha256": "34e8db4b6d9ab3e71a3c3acf31043219fdfe7d8ee5492336a3aeafe7d8e72f2d",
+  "bytes": 11762,
+  "decodedSeconds": 0.9598
+ },
+ {
+  "name": "kevlar",
+  "source": ".tmp/armor-plan-20260929/cs2-audio/sounds/player/kevlar1.wav",
+  "sourceSha256": "a5a80aeee926412e1d4ca966ebd759d4720867fa6d23aaf87a2f7710296bc69f",
+  "sourceChannels": 1,
+  "channelCorrelation": 1.0,
+  "rate": 44100,
+  "seconds": 0.2369,
+  "peak": 1.0,
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/Hits/kevlar.ogg",
+  "member": "Assets/Audio/ScCsgoKnives/Hits/kevlar.ogg",
+  "sha256": "5cb3a7a7abee5645a2aeb7a456366c9ddcbf4302729230811200e33c8664de44",
+  "bytes": 6050,
+  "decodedSeconds": 0.2369
+ }
+]

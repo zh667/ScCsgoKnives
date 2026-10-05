@@ -47,7 +47,7 @@ bool attributeBenchmark = false;
 bool c4Checkset = false;
 bool creatureAuditOnly=false;
 bool visualCheckset=false;
-bool menuCheckset=false;
+bool menuCheckset=false;bool videoFeedbackCheckset=false;
 bool features130=false;
 bool eggFeedbackOnly=false;
 bool splitChickenOnly=false;
@@ -62,6 +62,7 @@ for (int i = 0; i < args.Length; i++) {
         case "--haptics-package": hapticsPackage=args[++i];break;
         case "--features130-only": features130=true;break;
         case "--menu-checkset": menuCheckset=true;break;
+        case "--video-feedback-checkset": videoFeedbackCheckset=true;break;
         case "--visual-checkset": visualCheckset=true;break;
         case "--creature-audit-only": creatureAuditOnly=true;break;
         case "--lin-gun-package": linGunPackage=args[++i];break;
@@ -165,7 +166,7 @@ if(tacticalPackage is not null){
             block.BlockIndex=pair.Item2;Game.BlocksManager.Blocks[pair.Item2]=block;Game.BlocksManager.BlockTypeToIndex[type]=pair.Item2;
         }
     }
-    var cases=tacticalAiOnly?TacticalEnemyRegression.Run(mod,tactical,scmod,tacticalPackage,false):TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
+    var cases=tacticalAiOnly?TacticalEnemyRegression.Run(mod,tactical,scmod,tacticalPackage,false,vanillaContent).Concat(TacticalCompanionRegression.Run(mod,tactical)).Concat(TacticalFeedbackRegression.Run(mod,tactical)).ToList():TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
     var report=JsonSerializer.Serialize(new{coreSha256=digest,dlcSha256=Sha256(tacticalPackage),failed=cases.Count(c=>!c.Ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.Ok)?1:0;
 }
@@ -190,6 +191,25 @@ if(features130) {
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
 }
+if(videoFeedbackCheckset) {
+    // video-feedback-20260929: core-side regressions of this task, plus the menu set whose cancellation it touches.
+    // The packaged DLL's own third-person and grenade self-tests (grip points, mesh sizes, stance reach, clip timing).
+    var own=new List<(string Name,bool Ok,string Detail)>();
+    try{
+        ThirdPersonExport.ProvideObj(mod, scmod); // as the main suite does: the OBJ-piece guns bake from the package's own files
+        var node=JsonNode.Parse((string)selfTest.GetMethod("RunJson",BindingFlags.Public|BindingFlags.Static).Invoke(null,null));
+        foreach(var c in node["checks"].AsArray()){string n=c["name"].GetValue<string>();
+            if(n.Contains("third-person",StringComparison.OrdinalIgnoreCase)||n.Contains("grenade",StringComparison.OrdinalIgnoreCase)||n.Contains("throw",StringComparison.OrdinalIgnoreCase))own.Add(("self-test/"+n,c["ok"].GetValue<bool>(),c["detail"]?.GetValue<string>()??""));}
+        if(own.Count==0)own.Add(("self-test/third-person-and-grenade",false,"no such self-test found in the packaged DLL"));
+    }catch(Exception e){own.Add(("self-test/run",false,(e.InnerException??e).ToString()));}
+    var cases=RevolverInputRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})
+        .Concat(TrajectoryVisualRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}))
+        .Concat(ThrowPresentationRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}))
+        .Concat(own.Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}))
+        .Concat(MenuActionRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})).ToArray();
+    var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true,Encoder=System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping});
+    if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine($"video-feedback checkset: {cases.Count(c=>!c.ok)} failed of {cases.Length}");foreach(var c in cases.Where(c=>!c.ok))Console.WriteLine("FAIL "+c.name+": "+c.detail.Split('\n')[0]);return cases.Any(c=>!c.ok)?1:0;
+}
 if(menuCheckset) {
     var cases=MenuActionRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToArray();
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
@@ -197,7 +217,9 @@ if(menuCheckset) {
 }
 if(visualCheckset) {
     var cases=CasingRegression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})
-        .Concat(SmokeCoverageRegression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})).ToArray();
+        .Concat(SmokeCoverageRegression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}))
+        .Concat(SmokeViewRegression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}))
+        .Concat(SmokeMotionRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})).ToArray();
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
 }
@@ -217,6 +239,8 @@ void FreshRegistry() => registryType?.GetField("Current").SetValue(null, Activat
 FreshRegistry();
 if (c4Checkset) {
     var cases=C4Regression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToList();
+    FreshRegistry(); cases.AddRange(C4NetSoundRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})); // 2026-10-02 mp-state-consistency
+    FreshRegistry();
     if(sushiInventoryMods is not null)cases.AddRange(SushiInventoryRegression.Run(mod,sushiInventoryMods).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}));
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
@@ -274,6 +298,7 @@ if (vanillaContent is not null) {
 FreshRegistry(); foreach(var c in CreativeRuntimeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in InteractionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in DropGeometryRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+FreshRegistry(); foreach(var c in ProjectileContextRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in OptimizationRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in SwitchAnimationRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 FreshRegistry(); foreach(var c in MobileRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
@@ -295,6 +320,9 @@ foreach(var c in ControlsScopeRegression.Run(mod)) checks.Add(new { name=c.Name,
 foreach(var c in Growth30BoundaryRegression.Run(mod,previousGrowthPackage,ghoulAssembly)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in LiveBackupRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GenericTravelRegression.Run(mod,travelSourceSnapshot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in ItemTravelRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in ShotCadenceRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in QuickThrowRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in SplitResourceRegression.Run(mod,deliveredCore,resourcePack,resourceBaseline,sushiPackage)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 using var thirdPartyDlls = sushiInventoryMods is null ? null : new ThirdPartyDlls(sushiInventoryMods);
 if (thirdPartyDlls is not null) thirdPartyDlls.Load("RecipaediaEX");
@@ -310,6 +338,14 @@ foreach(var c in Features130Regression.Run(mod,scmod,vanillaContent)) checks.Add
 foreach(var c in EggFeedbackRegression.Run(mod,scmod,hapticsPackage)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in SplitChickenRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in SmokeCoverageRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in SmokeViewRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in SmokeMotionRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
+foreach(var c in ResidencyRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail }); // 2026-10-01 memory round
+foreach(var c in AimRayRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail }); // 2026-10-01 first-person eye shot
+foreach(var c in NetIdentityRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail }); // 2026-10-01 Lite and Full in one session
+foreach(var c in NetClientRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail }); // 2026-10-02 mp-user-logs: client-side corrections
+FreshRegistry(); foreach(var c in C4NetSoundRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail }); // 2026-10-02 mp-state-consistency: who hears a C4 plant
+foreach(var c in Cs2WispRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail }); // 2026-10-01 round 9 CS2 sniper wisp and tracer textures
 foreach(var c in CasingRegression.Run(mod,scmod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in DecoyRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 if(linGunPackage is not null)foreach(var c in LinFirstPersonRegression.Run(mod,linGunPackage,vanillaContent))checks.Add(new{name=c.Name,ok=c.Ok,detail=c.Detail});

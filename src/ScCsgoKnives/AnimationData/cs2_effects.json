@@ -64,7 +64,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.03,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -75,7 +80,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -230,7 +240,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.03,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -241,7 +256,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -356,7 +376,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -367,7 +392,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -478,7 +508,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -489,7 +524,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -599,7 +639,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -610,7 +655,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -765,7 +815,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -776,7 +831,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -885,7 +945,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.03,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -896,7 +961,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1006,7 +1076,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.03,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1017,7 +1092,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1130,7 +1210,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -1243,7 +1328,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -1358,7 +1448,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1369,7 +1464,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1480,7 +1580,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1491,7 +1596,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1605,7 +1715,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1616,7 +1731,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1726,7 +1846,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1737,7 +1862,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1847,7 +1977,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1858,7 +1993,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -1968,7 +2108,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -1979,7 +2124,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -2090,7 +2240,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -2101,7 +2256,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -2227,7 +2387,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -2238,7 +2403,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -2348,7 +2518,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -2464,7 +2639,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -2579,7 +2759,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -2590,7 +2775,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -2700,7 +2890,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.03,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -2711,7 +2906,12 @@
       "MinSize": 0.00075,
       "MaxSize": 0.002,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -2821,7 +3021,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -2937,7 +3142,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -3046,7 +3256,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -3057,7 +3272,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -3170,7 +3390,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -3283,7 +3508,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -3393,7 +3623,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -3505,7 +3740,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -3516,7 +3756,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -3625,7 +3870,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -3636,7 +3886,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -3751,7 +4006,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.2,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -3762,7 +4022,12 @@
       "MinSize": 0.001,
       "MaxSize": 0.01,
       "StartFadeSize": 0.015,
-      "EndFadeSize": 0.025
+      "EndFadeSize": 0.025,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],
@@ -3872,7 +4137,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -3988,7 +4258,12 @@
       "MaxSize": 1.0,
       "StartFadeSize": 0.0,
       "EndFadeSize": 0.0,
-      "Renderer": "C_OP_RenderRopes"
+      "Renderer": "C_OP_RenderRopes",
+      "TextureScaleU": 0.75,
+      "TextureOffsetU": 1.0,
+      "TextureScaleV": 4.0,
+      "TextureOffsetV": 1.0,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [
@@ -4097,7 +4372,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.025,
+      "TextureScaleV": -1.5,
+      "TextureOffsetV": 1.1,
+      "ClampUVs": true
      },
      {
       "SourceTexture": "materials/particle/sparks/sparks.vtex",
@@ -4108,7 +4388,12 @@
       "MinSize": 0.0005,
       "MaxSize": 0.005,
       "StartFadeSize": 0.0,
-      "EndFadeSize": 0.0
+      "EndFadeSize": 0.0,
+      "TextureScaleU": 5.0,
+      "TextureOffsetU": 0.4,
+      "TextureScaleV": -1.3,
+      "TextureOffsetV": 0.9,
+      "ClampUVs": true
      }
     ],
     "Unmodelled": [],

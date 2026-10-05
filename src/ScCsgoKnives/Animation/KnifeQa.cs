@@ -65,7 +65,6 @@ public static class KnifeQa {
         KnifeClock.Reset(1f / Fps);
         KnifeClock.Commit = false;
         KnifeAnimationController.QaDraw(model, variant);
-        KnifeLog.Trace($"[ScCsgoKnives] QA: capture run started -> {s_dir} ({s_width}x{s_height} @ {Fps} fps)");
         return true;
     }
 
@@ -127,7 +126,6 @@ public static class KnifeQa {
     }
 
     static void End(string why) {
-        KnifeLog.Trace($"[ScCsgoKnives] QA: capture run ended ({why}) after {s_frame} frames -> {s_dir}");
         Cleanup();
     }
 

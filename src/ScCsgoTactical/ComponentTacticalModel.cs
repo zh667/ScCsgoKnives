@@ -3,7 +3,7 @@ using Engine.Animation;
 using Engine.Graphics;
 namespace Game;
 
-public sealed class ComponentTacticalModel : ComponentCreatureModel {
+public sealed class ComponentTacticalModel : ComponentCreatureModel, IScLogicalPose {
     public override void Load(TemplatesDatabase.ValuesDictionary values,GameEntitySystem.IdToEntityMap entities){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.ModelLoad,values.GetValue("ModelName",""));
         base.Load(values,entities);
@@ -13,9 +13,10 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         using var timing=ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.ModelSet);
         using(ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.AnimationCache))ScActorAnimations.Ensure(model);
         base.SetModel(model);
-        if(changed){lastLivingPose=null;framePose=null;hierarchyModel=null;hierarchy=null;actionModel=null;actions=null;nativeAnimationRequired=false;animatedFrame=-1;}
+        if(changed){ragdoll?.Release();ragdoll=null;ragdollTried=false;lastLivingPose=null;framePose=null;hierarchyModel=null;hierarchy=null;actionModel=null;actions=null;nativeAnimationRequired=false;animatedFrame=-1;}
     }
     Matrix?[] lastLivingPose;
+    TacticalRagdoll ragdoll;bool ragdollTried;Matrix[] ragdollScratch;
     ScAgentActions actions;
     Model actionModel;
     Model hierarchyModel;
@@ -28,7 +29,8 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
     Model animatedModel;
     ScWeaponAction animatedAction;
     int animatedValue;
-    int HeldValue => Entity.FindComponent<ComponentTacticalEnemy>()?.State?.DisplayValue??Entity.FindComponent<ComponentTacticalInventory>()?.GetSlotValue(0)??0;
+    // An enemy is seen holding the grenade or bomb of a running action (r2-c4-completion-20260929), otherwise its gun.
+    int HeldValue => Entity.FindComponent<ComponentTacticalEnemy>() is {State:not null} enemy?enemy.PresentedValue:Entity.FindComponent<ComponentTacticalInventory>()?.GetSlotValue(0)??0;
     ScAgentActions Actions {get {if(actionModel!=Model){using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.ActionsInit);actionModel=Model;actions=new(Model);}return actions;}}
     public ScWeaponAction VisualAction=>Entity.FindComponent<ComponentTacticalEnemy>()?.VisualAction??Entity.FindComponent<ComponentTacticalCompanion>()?.VisualAction??default;
     public override void AnimateCreature(){}
@@ -99,7 +101,8 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
             Array.Copy(framePose,m_boneTransforms,framePose.Length);return;
         }
         base.Animate();
-        if(m_componentCreature.ComponentHealth.Health<=0&&m_boneTransforms[Model.RootBone.Index] is Matrix root){
+        if(m_componentCreature.ComponentHealth.Health<=0&&StepRagdoll()){}
+        else if(m_componentCreature.ComponentHealth.Health<=0&&m_boneTransforms[Model.RootBone.Index] is Matrix root){
             // Freeze the last living pose so the dead state cannot snap to the bind pose.
             if(lastLivingPose!=null)for(int i=0;i<m_boneTransforms.Length;i++)if(i!=Model.RootBone.Index)m_boneTransforms[i]=lastLivingPose[i];
             float t=Math.Clamp(DeathPhase,0,1),ease=t*t*(3-2*t);
@@ -116,7 +119,7 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         }else{
             if(HeldValue!=0&&!ScTacticalShieldBlock.IsShield(HeldValue)){
                 using var apply=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.ActionApply);
-                Actions.ApplyHeld(m_boneTransforms,action,ScThirdPerson.AssetFor(HeldValue,out _));
+                ApplyActions(m_boneTransforms,action);
             }
             if(lastLivingPose?.Length!=m_boneTransforms.Length)lastLivingPose=new Matrix?[m_boneTransforms.Length];Array.Copy(m_boneTransforms,lastLivingPose,m_boneTransforms.Length);
         }
@@ -124,6 +127,51 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         Array.Copy(m_boneTransforms,framePose,framePose.Length);animatedFrame=Time.FrameIndex;animatedDeath=DeathPhase;animatedAlive=alive;animatedModel=Model;animatedAction=action;animatedValue=HeldValue;
     }
     int preparedValue;
+    /// <summary>The held item's pose, a throw or a plant on top of the sampled body (gameplay state only, no clock).</summary>
+    void ApplyActions(Matrix?[] pose,ScWeaponAction action){
+        var enemy=Entity.FindComponent<ComponentTacticalEnemy>();float crouch=Crouch;string asset=ScThirdPerson.AssetFor(HeldValue,out _);
+        if(enemy?.ThrowPhase is {Active:true} throwing&&Actions.ApplyThrowPosed(pose,asset,throwing,crouch)){}
+        else if(enemy?.PlantPhase is {Active:true} plant&&Actions.ApplyPlant(pose,plant,crouch)){}
+        else Actions.ApplyHeld(pose,action,asset);
+    }
+    Model IScLogicalPose.LogicalModel=>Model;
+    /// <summary>This frame's pose for hit tests (headshot-armor-balance-20260929 H1): the controller sampled in its
+    /// current state without advancing it (it advances only when a camera draws this actor), the gameplay actions on
+    /// top, and the entity's current transform on the root exactly as ComponentCreatureModel.Animate composes it. No
+    /// camera is involved, and a hit test never moves the animation. Actors whose animation the engine drives natively
+    /// (root motion, participants) and the dead get none: the physics body fallback.</summary>
+    bool IScLogicalPose.TryLogicalPose(Matrix?[] local){
+        var c=AnimationController;
+        if(Model is null||local.Length!=Model.Bones.Count||c==null||nativeAnimationRequired||c.Layers.Length!=1||m_animationParticipants is {Count:>0}||m_componentCreature.ComponentHealth.Health<=0)return false;
+        Array.Clear(local);
+        if(!DisableAnimation)ScActorSampler.Compute(c,local,true);
+        if(HeldValue!=0&&!ScTacticalShieldBlock.IsShield(HeldValue))ApplyActions(local,VisualAction);
+        var body=m_componentCreature.ComponentBody;int root=Model.RootBone.Index;
+        local[root]=Matrix.CreateFromQuaternion(c.EffectiveRootRotation)*Matrix.CreateTranslation(c.EffectiveRootTranslation)*(local[root]??Model.RootBone.Transform)
+            *Matrix.CreateFromQuaternion(body.Rotation)*Matrix.CreateTranslation(body.Position);
+        return true;
+    }
+    /// <summary>First dead frame: start a jointed corpse from the last living world pose (if the skeleton and the
+    /// per-world budget allow); later frames advance it once and pose the bones. False keeps the old collapse (e.g.
+    /// a corpse loaded from a save, which has no living pose).</summary>
+    bool StepRagdoll(){
+        if(!ragdollTried){
+            ragdollTried=true;
+            if(lastLivingPose is null||lastLivingPose.Length!=m_boneTransforms.Length)return false;
+            ProcessBoneHierarchy(Model.RootBone,Matrix.Identity,AbsoluteBoneTransformsForCamera); // builds the hierarchy order
+            var saved=(Matrix?[])m_boneTransforms.Clone();Array.Copy(lastLivingPose,m_boneTransforms,m_boneTransforms.Length);
+            var world=new Matrix[m_boneTransforms.Length];ProcessBoneHierarchy(Model.RootBone,Matrix.Identity,world);
+            Array.Copy(saved,m_boneTransforms,saved.Length);
+            var body=m_componentCreature.ComponentBody;
+            ragdoll=TacticalRagdoll.TryStart(this,world,(Matrix?[])lastLivingPose.Clone(),hierarchy,body.Velocity,new Vector3(-DeathCauseOffset.X,0,-DeathCauseOffset.Z));
+            ragdollScratch=ragdoll is null?null:new Matrix[m_boneTransforms.Length];
+        }
+        if(ragdoll is null)return false;
+        using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Ragdoll))ragdoll.Advance(Time.FrameDuration);
+        ragdoll.Pose(m_boneTransforms,ragdollScratch);
+        return true;
+    }
+    public override void OnEntityRemoved(){ragdoll?.Release();base.OnEntityRemoved();}
     void Bend(string name,float radians){var bone=Model.FindBone(name,false);if(bone==null)return;var local=m_boneTransforms[bone.Index]??bone.Transform;var position=local.Translation;local.Translation=Vector3.Zero;m_boneTransforms[bone.Index]=Matrix.CreateRotationZ(radians)*local*Matrix.CreateTranslation(position);}
     void RelaxLimb(string name,string childName,Vector3 goal,float amount){
         var bone=Model.FindBone(name,false);var child=Model.FindBone(childName,false);if(bone?.ParentBone==null||child==null)return;
@@ -135,11 +183,32 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         var local=m_boneTransforms[bone.Index]??bone.Transform;var translation=local.Translation;world.Translation=parent.Translation=Vector3.Zero;
         local=world*rotation*Matrix.Invert(parent);local.Translation=translation;m_boneTransforms[bone.Index]=local;
     }
-    public override void SyncAnimationParameters(){base.SyncAnimationParameters();AnimationController?.Parameters.SetFloat("DeathSpeed",1.2f);var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
+    readonly TacticalAirState air=new();
+    /// <summary>Jump/in-air state for the CS2 air clips: airborne only after a short genuine time off the ground
+    /// (smooth steps never flicker), never on ladders, in water or when dead. See <see cref="TacticalAirState"/>.</summary>
+    public static bool Grounded(ComponentCreature creature)=>creature.ComponentBody.StandingOnValue.HasValue||creature.ComponentBody.StandingOnBody is not null
+        ||creature.ComponentBody.ImmersionFactor>.3f||creature.ComponentLocomotion?.LadderValue.HasValue==true||creature.ComponentHealth.Health<=0;
+    public const float AirDebounce=TacticalAirState.Debounce;
+    public TacticalAirState Air=>air;
+    /// <summary>The actor's crouch: an enemy's own (NPC bodies cannot crouch natively, see ComponentTacticalEnemy.Crouching),
+    /// otherwise the body's.</summary>
+    public float Crouch=>Entity.FindComponent<ComponentTacticalEnemy>() is {State:not null} enemy?enemy.CrouchFactor:m_componentCreature.ComponentBody.CrouchFactor;
+    public override void SyncAnimationParameters(){base.SyncAnimationParameters();
+        var motion=m_componentCreature.ComponentBody;air.Advance(Time.FrameIndex,Time.FrameDuration,Grounded(m_componentCreature),motion.Velocity);
+        if(AnimationController?.Parameters is {} parameters)air.Apply(parameters,Crouch>.5f);AnimationController?.Parameters.SetFloat("DeathSpeed",1.2f);var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
     public override void DrawExtras(Camera camera){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Extras);
         base.DrawExtras(camera);if(m_componentCreature.ComponentHealth.Health<=0)return;
-        if(Entity.FindComponent<ComponentTacticalEnemy>()?.State is {} enemy){DrawGun(camera,enemy.DisplayValue);return;}
+        if(Entity.FindComponent<ComponentTacticalEnemy>() is {State:{} enemy} npc){
+            // A thrown grenade or a placed bomb has left the hand; the gun returns with its draw after the action.
+            if(npc.ThrowPhase is {Active:true} t){if(!t.Released)DrawProp(camera,t.Value);return;}
+            if(npc.PlantPhase is {Active:true} p){
+                // The charge committed at this spot starts where the bomb was last drawn (ScC4Handoff).
+                if(!p.Placed&&DrawProp(camera,p.Value) is {} held&&ScThirdPersonWeapon.For("c4") is {} c4)ScC4Handoff.Holding(p.Position,Vector3.Transform(c4.BodyCentre,held),Project.FindSubsystem<SubsystemTime>(true).GameTime);
+                return;
+            }
+            DrawGun(camera,enemy.DisplayValue);return;
+        }
         var inv=Entity.FindComponent<ComponentTacticalInventory>();if(inv is null||inv.GetSlotCount(0)<=0)return;
         int value=inv.GetSlotValue(0);var block=BlocksManager.Blocks[Terrain.ExtractContents(value)];Matrix world;
         bool isShield=ScTacticalShieldBlock.IsShield(value);
@@ -148,6 +217,23 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel {
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var pos=world.Translation;
         var env=new DrawBlockEnvironmentData{DrawBlockMode=DrawBlockMode.ThirdPerson,InWorldMatrix=world,Owner=Entity,SubsystemTerrain=terrain,Light=terrain.Terrain.GetCellLight(Terrain.ToCell(pos.X),Terrain.ToCell(pos.Y),Terrain.ToCell(pos.Z))};
         var matrix=world*camera.ViewMatrix;block.DrawBlock(Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer,value,Color.White,ScTacticalShieldBlock.IsShield(value)?1:block.GetInHandScale(value),ref matrix,env);
+    }
+    /// <summary>A grenade or the C4 in an actor's hand, carried by its world prop bones (as the CT/T player draws them).
+    /// Returns the item's world matrix (null when not drawn).</summary>
+    Matrix? DrawProp(Camera camera,int value){
+        string asset=ScThirdPerson.AssetFor(value,out _);var weapon=asset==null?null:ScThirdPersonWeapon.For(asset);
+        if(weapon is null||!weapon.HasRightGrip)return null;
+        var world=Actions.RootWorld(weapon,AbsoluteBoneTransformsForCamera)*camera.InvertedViewMatrix;
+        var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var p=world.Translation;
+        var env=new DrawBlockEnvironmentData{DrawBlockMode=DrawBlockMode.ThirdPerson,InWorldMatrix=world,Owner=Entity,SubsystemTerrain=terrain,Light=terrain.Terrain.GetCellLight(Terrain.ToCell(p.X),Terrain.ToCell(p.Y),Terrain.ToCell(p.Z))};
+        var renderer=Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer;
+        foreach(var group in weapon.Groups){
+            if(group.Texture=="weapon_molotov_flame"||!Actions.ShowWorldPartFor(asset,group,VisualAction))continue;
+            Texture2D texture;try{texture=ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+group.Texture);}catch(Exception e){KnifeDiagnostics.WarnOnce("npc-prop-"+group.Texture,e.Message);continue;}
+            var part=Actions.WorldPartFor(asset,group,AbsoluteBoneTransformsForCamera);var partView=part.Transform;
+            BlocksManager.DrawMeshBlock(renderer,part.Mesh,texture,Color.White,1,ref partView,env);
+        }
+        return world;
     }
     void DrawGun(Camera camera,int value){
         if(!EffectiveGunStats.TrySnapshotValue(value,out var state))return;

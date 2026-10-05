@@ -68,12 +68,26 @@ static class InteractionRegression {
                     Step(601,false);
                     return Get("ThrowStartedAt")==601 && Math.Abs(Get("ReleaseAt")-601-release)<.0001 && Get("EndAt")>=Get("ReleaseAt");
                 });
-                Test($"early-release-waits-for-pin/{asset}/{low}",()=>{
+                // quick-throw-20261002 (was early-release-waits-for-pin): letting go throws at once, wherever the pull has got to.
+                Test($"early-release-throws-at-once/{asset}/{low}",()=>{
                     float pull=Duration("pullpin");object state=Activator.CreateInstance(timeline,[0d,pull,.1f,.5f]);
                     timeline.GetMethod("Step").Invoke(state,[.1d,false]);
-                    if(!(bool)timeline.GetProperty("ReleaseRequested").GetValue(state) || (bool)timeline.GetProperty("Throwing").GetValue(state))return false;
-                    timeline.GetMethod("Step").Invoke(state,[(double)pull+.001,true]);
-                    return (bool)timeline.GetProperty("Throwing").GetValue(state);
+                    double Get(string property)=>(double)timeline.GetProperty(property).GetValue(state);
+                    return (bool)timeline.GetProperty("Throwing").GetValue(state) && (bool)timeline.GetProperty("Quick").GetValue(state) && Get("ThrowStartedAt")==.1 && Math.Abs(Get("ReleaseAt")-.2)<1e-6
+                        && (int)timeline.GetMethod("Stage").Invoke(state,[.15d])==2 && Math.Abs((float)timeline.GetMethod("Pulled").Invoke(state,[5d])-.1f/pull)<1e-4;
+                });
+                // Asked for while the grenade was still being drawn: no earlier than the draw's end, never later than a full pull.
+                Test($"release-during-the-draw-waits-for-the-draw-only/{asset}/{low}",()=>{
+                    float pull=Duration("pullpin");var create=timeline.GetMethod("Create");
+                    object gated=create.Invoke(null,[10d,pull,.1f,.5f,false,false,.4d]);
+                    void Step(object state,double now,bool pressed)=>timeline.GetMethod("Step").Invoke(state,[now,pressed]);
+                    bool Throwing(object state)=>(bool)timeline.GetProperty("Throwing").GetValue(state);
+                    Step(gated,10.1,false);if(Throwing(gated))return false;
+                    Step(gated,10.39,true);if(Throwing(gated))return false;          // (pressing again does not take the release back)
+                    Step(gated,10.4,true);if(!Throwing(gated)||(double)timeline.GetProperty("ThrowStartedAt").GetValue(gated)!=10.4)return false;
+                    object late=create.Invoke(null,[10d,pull,.1f,.5f,false,false,60d]);
+                    Step(late,10.1,false);Step(late,10d+pull-.001,false);if(Throwing(late))return false;
+                    Step(late,10d+pull,false);return Throwing(late);
                 });
             }
             Test("grenade-icon-fits-slot",()=>{

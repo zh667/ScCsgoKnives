@@ -48,7 +48,6 @@ public static class Cs2SoundVariants {
             }
             foreach ((string cue, int count) in file.Variants) loaded[cue] = count;
             LoadError = null;
-            KnifeLog.Trace($"[ScCsgoKnives] CS2 sound variants: {loaded.Count} cues.");
         }
         catch (Exception e) {
             LoadError = $"{e.GetType().Name}: {e.Message}";

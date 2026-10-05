@@ -1,0 +1,7 @@
+<Mod>
+  <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ScDeathmatch" Guid="38b04019-cbff-504d-8cd3-ae3c73af9cfa" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="5e72be50-c62d-5580-a597-79ca3a2e0eae" Value="Game.SubsystemScDeathmatch" Type="string" />
+    </MemberSubsystemTemplate>
+  </ProjectTemplate>
+</Mod>

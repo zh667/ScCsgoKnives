@@ -14,6 +14,7 @@
   <Entity Name="ScTacticalEnemy" Guid="a144cd74-e08b-5dae-b8c7-23ecd43bbe3e" />
   <Entity Name="ScTacticalHostage" Guid="6bf2f5b3-af56-500c-a9bf-f8ed25c9c2ad" />
   <Entity Name="ScTacticalT" Guid="21174b4a-bbf1-5e13-b9ed-38a4286c58fa" />
+  <Subsystem Name="ScArmor" Guid="e29cebcf-88c6-4370-a759-3de4687ee72b" />
   <Subsystem Name="ScC4" Guid="0ea96ab3-432d-4f71-8e8b-2ebf1996d25d" />
   <Subsystem Name="ScChicken" Guid="4107f04b-71a5-5eb4-a854-70af177d0158" />
   <Subsystem Name="ScCompatibility" Guid="481d798d-3c61-46a1-90d5-106778881fe2" />
@@ -24,5 +25,7 @@
   <Subsystem Name="ScTactical" Guid="cc74fbb5-ae4d-588c-8468-0afa75e0fc58" />
   <Subsystem Name="ScWeaponWorkbench" Guid="b99759b8-3d36-4457-af27-d3e27d018ef8" />
   <Subsystem Name="TacticalBombs" Guid="1a6d387a-4a2a-5425-a8bb-71fb7d2ea39e" />
+  <Subsystem Name="TacticalCompanions" Guid="46bc6693-04ff-5a6f-a3e8-6658bbcc217b" />
   <Subsystem Name="TacticalEnemies" Guid="04fbb30b-9645-5fb2-8d23-d58c15730f28" />
+  <Subsystem Name="TacticalEnemyRules" Guid="4592ed50-e03f-56cd-95d2-5a08441cedf7" />
 </Compatibility>

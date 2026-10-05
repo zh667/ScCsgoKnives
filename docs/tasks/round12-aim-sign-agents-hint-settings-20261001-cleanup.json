@@ -1,0 +1,75 @@
+{
+ "task": "round12-aim-sign-agents-hint-settings-20261001",
+ "date": "2026-10-01T21:53:11",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r12bCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r12b build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r12b\\full",
+    ".tmp\\completion-140-20260929\\r12b\\lite",
+    ".tmp\\completion-140-20260929\\r12b\\tools",
+    ".tmp\\completion-140-20260929\\r12b\\tree",
+    ".tmp\\completion-140-20260929\\r12b\\assets-full",
+    ".tmp\\completion-140-20260929\\r12b\\resources",
+    ".tmp\\completion-140-20260929\\r12b\\net",
+    ".tmp\\completion-140-20260929\\r12b\\motion",
+    ".tmp\\completion-140-20260929\\r12b\\throw",
+    ".tmp\\completion-140-20260929\\r12b\\ui"
+   ],
+   "bytes": 1893280301,
+   "items": 4245,
+   "missing": []
+  },
+  "stage r12a build trees and undelivered candidates (superseded by r12b; logs and reports kept, throw results recorded in the brief)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r12a\\full",
+    ".tmp\\completion-140-20260929\\r12a\\lite",
+    ".tmp\\completion-140-20260929\\r12a\\tools",
+    ".tmp\\completion-140-20260929\\r12a\\tree",
+    ".tmp\\completion-140-20260929\\r12a\\assets-full",
+    ".tmp\\completion-140-20260929\\r12a\\resources",
+    ".tmp\\completion-140-20260929\\r12a\\net",
+    ".tmp\\completion-140-20260929\\r12a\\motion",
+    ".tmp\\completion-140-20260929\\r12a\\throw",
+    ".tmp\\completion-140-20260929\\r12a\\ui",
+    ".tmp\\completion-140-20260929\\r12a\\candidate"
+   ],
+   "bytes": 2494328445,
+   "items": 4248,
+   "missing": []
+  },
+  "totalBytes": 4387608746,
+  "items": 8493
+ },
+ "kept": [
+  "stages r12a, r12b: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/cs2-graphs (decompiled CS2 graphs, small)",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "0817586ebcf58ef98036d6fbc69361c9171425e96b78eb7f218b0be21d367a38",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "78af410c73cfb4124637c0f006abc2c21cf9d98c6e4b985275d69f4726d80d28",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "8ae86da6cf7b5240be685f7421a9732f8c68b66ae00ecf677118ed7967d6774b",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 128887574528,
+  "freePct": 12.89
+ }
+}

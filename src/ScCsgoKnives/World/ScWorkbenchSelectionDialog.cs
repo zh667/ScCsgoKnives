@@ -38,9 +38,16 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
     public Func<object,string> CraftPermission {get;set;}
     Func<object,Dictionary<int,int>> m_materialQuote;
     public void SetMaterialQuote(Func<object,Dictionary<int,int>> quote){m_materialQuote=quote;if(m_selected is not null)Select(m_selected);}
-    bool Craftable => m_selected is ScComponentCrafting.Entry or ScWeaponCrafting.Entry or ScWorkbenchRecipe;
-    int ResultCount() => !m_creative && m_selected is ScWorkbenchRecipe r ? Math.Max(1, r.ResultCount) : 1;
-    Dictionary<int,int> UnitCost() => m_selected switch {ScWorkbenchRecipe r=>r.Materials(),ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
+    bool Craftable => IsCraftable(m_selected);
+    int ResultCount() => ResultCountOf(m_selected, m_creative);
+    Dictionary<int,int> UnitCost() => UnitCostOf(m_selected);
+    // Shared with the server's repeat of a remote client's craft (ScWorkbenchOps): the same recipe numbers.
+    internal static bool IsCraftable(object item) => item is ScComponentCrafting.Entry or ScWeaponCrafting.Entry or ScWorkbenchRecipe;
+    internal static int ResultCountOf(object item, bool creative) => !creative && item is ScWorkbenchRecipe r ? Math.Max(1, r.ResultCount) : 1;
+    internal static Dictionary<int,int> UnitCostOf(object item) => item switch {ScWorkbenchRecipe r=>r.Materials(),ScComponentCrafting.Entry c=>c.Materials(),ScWeaponCrafting.Entry e=>e.Materials(),_=>[]};
+    internal static int LevelOf(object item) => item switch {ScWeaponCrafting.Entry e=>e.Level,ScWorkbenchRecipe r=>r.Level,_=>1};
+    /// <summary>The weapon workbench this dialog was opened at (a remote multiplayer client's crafts name it to the server).</summary>
+    public Point3 Bench {get;set;}
     string CraftReason() => !m_creative && m_selected is ScWorkbenchRecipe {CreativeOnly:true} ? "仅创造模式领取，无生存制作配方。" : CraftPermission?.Invoke(m_selected) is {Length:>0} reason?reason:
         ScCraftBatch.UnavailableBatch(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count,ResultCount());
     void RefreshQuote() {
@@ -108,7 +115,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         ScGunDurability.Class.Shotgun=>"霰弹枪",ScGunDurability.Class.BoltSniper or ScGunDurability.Class.AutoSniper=>"狙击枪",
         ScGunDurability.Class.MachineGun=>"机枪",_=>"电击枪"
     } : item is ScGunSkin or ScKnifeSkinning.Finish ? "涂装" : item is ScKnifeSkinning.Candidate ? "背包刀具" : item is ScWeaponRepair.Candidate or ScWeaponSkinning.Candidate or ScGunCounter.Candidate ? "背包枪械" : "功能";
-    static int ValueOf(object item) => item switch {
+    internal static int ValueOf(object item) => item switch {
         ScWorkbenchRecipe r=>r.Value,
         ScKnifeSkinning.Candidate c=>c.Value, ScKnifeSkinning.Finish f=>f.Value,
         ScComponentCrafting.Entry c=>c.Value, ScWeaponCrafting.Entry e=>e.Value, ScWeaponRepair.Candidate c=>c.Value,ScWeaponSkinning.Candidate c=>c.Value,ScGunCounter.Candidate c=>c.Value,
@@ -218,8 +225,13 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
             if(m_craft.IsClicked && Time.RealTime>=m_craftAfter) {
                 m_craftAfter=Time.RealTime+.35;
                 string reason=CraftReason();
-                bool made=reason.Length==0&&ScCraftBatch.TryCraftBatch(m_inventory,ValueOf(m_selected),m_creative?new Dictionary<int,int>():UnitCost(),m_count,ResultCount());
-                RefreshQuote();m_hint.Text=made?$"已制作 {m_count * ResultCount()} 件":reason.Length>0?reason:"制作未完成；已尝试退款，未退回部分将自动重试。";
+                if(reason.Length>0){RefreshQuote();m_hint.Text=reason;return;}
+                int value=ValueOf(m_selected),count=m_count,results=ResultCount();var unit=m_creative?new Dictionary<int,int>():UnitCost();
+                // Here at once; a remote multiplayer client's craft is made by the server, and the hint follows its answer.
+                if(ScNet.IsRemoteClient)m_hint.Text="正在由服务器制作……";
+                ScNetWorkbench.Run(new ScWorkbenchOp(ScWorkbenchOpKind.Craft,Bench,value,count),
+                    ()=>new ScWorkbenchResult(ScCraftBatch.TryCraftBatch(m_inventory,value,unit,count,results)?1:0),
+                    result=>{RefreshQuote();m_hint.Text=result.Code==1?$"已制作 {count * results} 件":result.Detail is {Length:>0} d?d:"制作未完成；已尝试退款，未退回部分将自动重试。";});
                 return;
             }
         }

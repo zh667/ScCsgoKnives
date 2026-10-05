@@ -1,0 +1,94 @@
+{
+ "task": "deathmatch-addon round 5 (docs/tasks/deathmatch-addon-round5-20261005.md)",
+ "date": "2026-10-05T00:32:18",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "dmr5bCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage dmr5b build trees (delivered; logs, reports, packages.json, dm.json, identity.json, net.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr5b\\full",
+    ".tmp\\completion-140-20260929\\dmr5b\\lite",
+    ".tmp\\completion-140-20260929\\dmr5b\\tools",
+    ".tmp\\completion-140-20260929\\dmr5b\\tree",
+    ".tmp\\completion-140-20260929\\dmr5b\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr5b\\resources",
+    ".tmp\\completion-140-20260929\\dmr5b\\net",
+    ".tmp\\completion-140-20260929\\dmr5b\\motion",
+    ".tmp\\completion-140-20260929\\dmr5b\\throw",
+    ".tmp\\completion-140-20260929\\dmr5b\\old130",
+    ".tmp\\completion-140-20260929\\dmr5b\\dm\\source",
+    ".tmp\\completion-140-20260929\\dmr5b\\dm\\check",
+    ".tmp\\completion-140-20260929\\dmr5b\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dmr5b\\dm\\loadtool"
+   ],
+   "bytes": 2653317914,
+   "items": 5504,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dmr5b\\air"
+   ]
+  },
+  "stage dmr5a (superseded by dmr5b: its four candidate packages and build trees; logs and reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr5a\\candidate\\[API1.9]CS武器1.4.0-全量包.scmod",
+    ".tmp\\completion-140-20260929\\dmr5a\\candidate\\[API1.9]CS武器1.4.0-探员包.scmod",
+    ".tmp\\completion-140-20260929\\dmr5a\\candidate\\[API1.9]CS武器1.4.0-死亡竞赛包.scmod",
+    ".tmp\\completion-140-20260929\\dmr5a\\candidate\\[API1.9]CS武器1.4.0-轻量包.scmod",
+    ".tmp\\completion-140-20260929\\dmr5a\\full",
+    ".tmp\\completion-140-20260929\\dmr5a\\lite",
+    ".tmp\\completion-140-20260929\\dmr5a\\tools",
+    ".tmp\\completion-140-20260929\\dmr5a\\tree",
+    ".tmp\\completion-140-20260929\\dmr5a\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr5a\\resources",
+    ".tmp\\completion-140-20260929\\dmr5a\\net",
+    ".tmp\\completion-140-20260929\\dmr5a\\motion",
+    ".tmp\\completion-140-20260929\\dmr5a\\throw",
+    ".tmp\\completion-140-20260929\\dmr5a\\old130",
+    ".tmp\\completion-140-20260929\\dmr5a\\dm\\source",
+    ".tmp\\completion-140-20260929\\dmr5a\\dm\\check",
+    ".tmp\\completion-140-20260929\\dmr5a\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dmr5a\\dm\\loadtool"
+   ],
+   "bytes": 3254704074,
+   "items": 5508,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dmr5a\\air"
+   ]
+  },
+  "totalBytes": 5908021988,
+  "items": 11012
+ },
+ "kept": [
+  "stage dmr5b and dmr5a: logs/, ui/, *.json reports, packages.json, dm.json, identity.json, net.json, source-hashes.json",
+  ".tmp/mp-m0-20260929/run/dm-*-dmr5a*, dm-*-dmr5b* and results/*.json",
+  ".tmp/cs2-measure-20261004 (the CS2 measurement session: frames, console logs, the user's console.log backup)",
+  ".tmp/dev-temp/cs2-hitbox-20261004 and cs2-hitbox-20261005 (CS2 agent model exports the hitbox table comes from)",
+  "output/ (four packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "81714602c76187133a85cf7847907d0d174ff83129b5b881abf38258dd85c2a8",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "e6b66afdb595dda7a09906874d652797451e62b660f2f1723ffb656744edb324",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "62ecbdf20a8d3fd2701012ca36e96b8b51430cd8a9b4b502910e8d7cc741ec97",
+   "unchanged": true
+  },
+  "死亡竞赛": {
+   "sha256": "6e42ae06a19988b148331707cb0fbb5770132c2be2f9e56a7d10aea7cfe67a57",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 70197850112,
+  "freePct": 7.02
+ }
+}

@@ -1,0 +1,238 @@
+[
+ {
+  "name": "cs2_tracer_add_lut",
+  "sources": {
+   "E:/projects/ScCsgoKnives/src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_tracer_add.png": "43f52915dc735f2986ff398391a69403cf045e8b3493362cd61a27299975ea36",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf": "479ce943334c64987b658c59d715590ae6c919971985929d89f1ac14ff8ec8db"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_tracer_add_lut.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_tracer_add_lut.png",
+  "sha256": "ead6552af4fb113115e0ada0c00e9763c1be454919fb2dd0332168acc552e0c9",
+  "bytes": 3486,
+  "edition": "full",
+  "lookup": [
+   [
+    0.377261,
+    [
+     255,
+     68,
+     21
+    ]
+   ],
+   [
+    0.470284,
+    [
+     255,
+     165,
+     0
+    ]
+   ],
+   [
+    1.0,
+    [
+     255,
+     255,
+     255
+    ]
+   ]
+  ],
+  "valueMax": 1.0
+ },
+ {
+  "name": "cs2_tracer_add_lut",
+  "sources": {
+   "E:/projects/ScCsgoKnives/src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_tracer_add.png": "43f52915dc735f2986ff398391a69403cf045e8b3493362cd61a27299975ea36",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf": "479ce943334c64987b658c59d715590ae6c919971985929d89f1ac14ff8ec8db"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2_tracer_add_lut.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_tracer_add_lut.webp",
+  "sha256": "eee76e3ee5682c93a1e18d4aeb80e0eed2c22543160971e38eb92cd5e5bcce79",
+  "bytes": 2546,
+  "edition": "lite",
+  "lookup": [
+   [
+    0.377261,
+    [
+     255,
+     68,
+     21
+    ]
+   ],
+   [
+    0.470284,
+    [
+     255,
+     165,
+     0
+    ]
+   ],
+   [
+    1.0,
+    [
+     255,
+     255,
+     255
+    ]
+   ]
+  ],
+  "valueMax": 1.0
+ },
+ {
+  "name": "cs2_tracer_blend_lut",
+  "sources": {
+   "E:/projects/ScCsgoKnives/src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_tracer_blend.png": "7819cc01b6bc00c620d50623b889234404a553c281576c731cd9f6f77477952f",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf": "479ce943334c64987b658c59d715590ae6c919971985929d89f1ac14ff8ec8db"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_tracer_blend_lut.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_tracer_blend_lut.png",
+  "sha256": "973ee5fad16b0cdae9fd6e6a4adec421ae252ea37b408e8545d287450095ac94",
+  "bytes": 3494,
+  "edition": "full",
+  "lookup": [
+   [
+    0.571059,
+    [
+     0,
+     0,
+     0
+    ]
+   ],
+   [
+    0.757106,
+    [
+     255,
+     68,
+     21
+    ]
+   ],
+   [
+    0.819121,
+    [
+     255,
+     165,
+     0
+    ]
+   ],
+   [
+    1.0,
+    [
+     255,
+     255,
+     255
+    ]
+   ]
+  ],
+  "valueMax": 1.0
+ },
+ {
+  "name": "cs2_tracer_blend_lut",
+  "sources": {
+   "E:/projects/ScCsgoKnives/src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_tracer_blend.png": "7819cc01b6bc00c620d50623b889234404a553c281576c731cd9f6f77477952f",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_assrifle.vpcf": "479ce943334c64987b658c59d715590ae6c919971985929d89f1ac14ff8ec8db"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2_tracer_blend_lut.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_tracer_blend_lut.webp",
+  "sha256": "19e240a40f1e9ba0e42ccee9285f992a952d934cbdf3579b3edb86c1ba1cad3a",
+  "bytes": 2734,
+  "edition": "lite",
+  "lookup": [
+   [
+    0.571059,
+    [
+     0,
+     0,
+     0
+    ]
+   ],
+   [
+    0.757106,
+    [
+     255,
+     68,
+     21
+    ]
+   ],
+   [
+    0.819121,
+    [
+     255,
+     165,
+     0
+    ]
+   ],
+   [
+    1.0,
+    [
+     255,
+     255,
+     255
+    ]
+   ]
+  ],
+  "valueMax": 1.0
+ },
+ {
+  "name": "cs2_wisp_energy",
+  "sources": {
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/beam_energy_01.png": "a8ea08d29170e825f7d1dc95838ae65fac351a096fdce0e36a3422ddf8cbb027",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_rifle_wisp.vpcf": "c9a4e67933812bfa0a02a0b2d9f56335958d61e7345c32c0f052306165319143"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_wisp_energy.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_wisp_energy.png",
+  "sha256": "2faf32b86d0ad030018a66232852eb5ee06e0a8dcad302a147ce8d0057a4df11",
+  "bytes": 80695,
+  "edition": "full",
+  "size": [
+   256,
+   256
+  ]
+ },
+ {
+  "name": "cs2_wisp_energy",
+  "sources": {
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/beam_energy_01.png": "a8ea08d29170e825f7d1dc95838ae65fac351a096fdce0e36a3422ddf8cbb027",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_rifle_wisp.vpcf": "c9a4e67933812bfa0a02a0b2d9f56335958d61e7345c32c0f052306165319143"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2_wisp_energy.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_wisp_energy.webp",
+  "sha256": "f52de83f4507e0f19f4470a966633369b31f90f1a842cc415863f6a81450ab74",
+  "bytes": 61394,
+  "edition": "lite",
+  "size": [
+   256,
+   256
+  ]
+ },
+ {
+  "name": "cs2_wisp_smoke",
+  "sources": {
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/beam_smoke_01.png": "c2701dc681f7a486529a0afd2a21e08165c4f2cee9d17477952127b51c6847c9",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_rifle_wisp.vpcf": "c9a4e67933812bfa0a02a0b2d9f56335958d61e7345c32c0f052306165319143"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2_wisp_smoke.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_wisp_smoke.png",
+  "sha256": "173f6fa821678f5816d7b744bcc9d70f7c8d0597dc62bae66c5ddce924122985",
+  "bytes": 30604,
+  "edition": "full",
+  "size": [
+   128,
+   256
+  ]
+ },
+ {
+  "name": "cs2_wisp_smoke",
+  "sources": {
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/beam_smoke_01.png": "c2701dc681f7a486529a0afd2a21e08165c4f2cee9d17477952127b51c6847c9",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/definitions/particles/weapons/cs_weapon_fx/weapon_tracers_rifle_wisp.vpcf": "c9a4e67933812bfa0a02a0b2d9f56335958d61e7345c32c0f052306165319143"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2_wisp_smoke.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2_wisp_smoke.webp",
+  "sha256": "80dd939e8ae234b865d75529ab7c299c6a9b6b9ab42b9895a646524aa7afca93",
+  "bytes": 23918,
+  "edition": "lite",
+  "size": [
+   128,
+   256
+  ]
+ }
+]

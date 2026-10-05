@@ -18,13 +18,19 @@ public static class CsPlayerItems {
             ? actions.RootWorld(weapon,human.AbsoluteBoneTransformsForCamera)*camera.InvertedViewMatrix
             : Matrix.CreateFromYawPitchRoll(MathUtils.DegToRad(block.GetInHandRotation(value).Y), MathUtils.DegToRad(block.GetInHandRotation(value).X), MathUtils.DegToRad(block.GetInHandRotation(value).Z)) * handWorld;
         var pos = world.Translation;
+        // The tracer of this player's shot leaves the muzzle drawn here (round 10: ScThirdPerson has no pose for a skinned
+        // player model, so the shot fell back to a fixed gun origin beside the eye).
+        if (weapon?.HasRightGrip == true) ScThirdPerson.ReportMuzzle(human, asset, Vector3.Transform(weapon.Muzzle, world), Vector3.Transform(weapon.MuzzleLeft, world));
+        // The charge committed at the plant spot starts where this bomb was last drawn (ScC4Handoff).
+        if (asset == "c4" && weapon is not null && ScThirdPerson.PlantPhaseOf(human) is { Active: true, Placed: false } plant)
+            ScC4Handoff.Holding(plant.Position, Vector3.Transform(weapon.BodyCentre, world), human.Project.FindSubsystem<SubsystemTime>(true).GameTime);
         var env = new DrawBlockEnvironmentData { DrawBlockMode = DrawBlockMode.ThirdPerson, Owner = human.Entity, InWorldMatrix = world,
             SubsystemTerrain = human.m_subsystemTerrain, Light = human.m_subsystemTerrain.Terrain.GetCellLight(Terrain.ToCell(pos.X), Terrain.ToCell(pos.Y), Terrain.ToCell(pos.Z)) };
         var view = world * camera.ViewMatrix;
         var renderer = human.m_subsystemModelsRenderer.PrimitivesRenderer;
         if (weapon == null) { block.DrawBlock(renderer, value, Color.White, block.GetInHandScale(value), ref view, env); return; }
         bool silencerOff = ScGunBlock.SpecOf(value) is { HasSilencer: true } && GunSpec.GetSilencerOff(Terrain.ExtractData(value));
-        var action=KnifeAnimationController.ReadAction(human.Entity.FindComponent<ComponentFirstPersonModel>());
+        var action=ScNetPresentation.ActionOf(human.Entity);
         foreach (var group in weapon.Groups) {
             if(!actions.ShowWorldPart(weapon,group,action))continue;
             if (group.Silencer && silencerOff) continue;

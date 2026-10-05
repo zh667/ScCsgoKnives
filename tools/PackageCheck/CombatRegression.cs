@@ -107,9 +107,12 @@ static class CombatRegression {
             } finally { for (int i = 0; i < 3; i++) BlocksManager.Blocks[710 + i] = old[i]; }
         });
         Test("held-counter-template-wired-before-gun-routing", () => {
-            var calls = Calls(mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Update")).ToArray();
+            // (Since mpd the per-player part of the update is its own method, called by Update for every player; an
+            // earlier build has it inline.)
+            var behavior = mod.GetType("Game.SubsystemScGunBlockBehavior"); var perPlayer = behavior.GetMethod("UpdatePlayer", BindingFlags.Instance | BindingFlags.NonPublic);
+            var calls = Calls(perPlayer ?? behavior.GetMethod("Update")).ToArray();
             int counter = Array.FindIndex(calls, c => c.DeclaringType.Name == "ScGunCounterTemplateBlock" && c.Name == "Materialize");
-            return counter >= 0
+            return counter >= 0 && (perPlayer is null || Calls(behavior.GetMethod("Update")).Any(c => c.Name == "UpdatePlayer"))
                 && calls.Any(c => c.DeclaringType.Name == "ScGunCounterTemplateBlock" && c.Name == "IsTemplate")
                 && Array.FindIndex(calls, c => c.DeclaringType.Name == "ScGunBlock" && c.Name == "IsKnown") > counter
                 && Array.FindIndex(calls, c => c.Name == "UpdateGun") > counter

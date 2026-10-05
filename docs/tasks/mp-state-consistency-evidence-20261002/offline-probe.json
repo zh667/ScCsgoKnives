@@ -1,0 +1,39 @@
+[
+  {
+    "step": "fresh AK template after predicted shot",
+    "before": 30,
+    "after": 30
+  },
+  {
+    "step": "fresh template, before prediction",
+    "rounds": 20
+  },
+  {
+    "step": "fresh template, after prediction",
+    "rounds": 20
+  },
+  {
+    "step": "stale id 7 after five predicted shots",
+    "rounds": 0,
+    "actualServerId12Rounds": 20
+  },
+  {
+    "step": "server reload update for id 12 cannot reconcile id 7",
+    "rounds": 0,
+    "actualServerId12Rounds": 20
+  },
+  {
+    "step": "expired prediction restores old id 7 to five",
+    "rounds": 5,
+    "actualServerId12Rounds": 20
+  },
+  {
+    "step": "real engine creative slot zero accepts replacement",
+    "slot0": 3146032
+  },
+  {
+    "step": "separate risk: replacing registry without clearing predictions corrupts same-id mirror",
+    "expected": 20,
+    "actual": 5
+  }
+]

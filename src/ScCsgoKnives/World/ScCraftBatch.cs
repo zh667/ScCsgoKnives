@@ -77,6 +77,7 @@ public static class ScCraftBatch {
     }
     public static bool TryCraft(IInventory inventory,int result,IReadOnlyDictionary<int,int> unit,int quantity) => TryCraftBatch(inventory,result,unit,quantity,1);
     public static bool TryCraftBatch(IInventory inventory,int result,IReadOnlyDictionary<int,int> unit,int quantity,int resultCount) {
+        if(ScNet.IsRemoteClient)return false; // a remote multiplayer client's inventory is the server's to change (ScNetWorkbench)
         if(!ScGunMutation.TryEnter())return false;
         var registry=ScGunRegistry.Current;string owner=null;
         object originalStorage=null;

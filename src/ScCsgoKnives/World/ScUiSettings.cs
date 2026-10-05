@@ -67,12 +67,27 @@ public static class ScUiSettings {
 
     public static bool SimpleMaterials;
     public static ScHudPosition AmmoHud=new();
+    /// <summary>The CS protection HUD (current-direction-20260929): its own position, apart from the ammo HUD.</summary>
+    public static ScHudPosition ArmorHud=ScArmorHud.DefaultPosition();
+    public static bool ArmorHudEnabled=true;
+    /// <summary>Defaults for worlds that have no natural-squad rules yet (new worlds, or first load after an update).
+    /// Each world keeps its own rules afterwards; changing these never rewrites another world.</summary>
     public static bool NaturalEnemies=true;
+    public static int EnemyGraceDays=ScEnemySpawnPolicy.GraceDays;
+    public static ScEnemyDensity EnemyDensity=ScEnemyDensity.Standard;
+    public static ScEnemyRules EnemyDefaults=>new ScEnemyRules(NaturalEnemies,EnemyGraceDays,EnemyDensity).Normalize();
     public static bool CustomButtons = true;
     public static bool ButtonOnlyFire;
     public static readonly Dictionary<int,int> C4Fuses=[];
     public static int C4Fuse(int player) => Math.Clamp(C4Fuses.GetValueOrDefault(player,20),5,300);
     public static bool KillFeed = true;
+    /// <summary>CS2-style direction marks when CS damage actually hurts this player; in creative mode the same switch shows
+    /// the weaker preview when a CS attack reached the player and only creative invulnerability kept it from hurting (never
+    /// for blocked, filtered or missed attacks). Round 12 (2026-10-01 user request) merged the former separate creative
+    /// switch into this one; its old file key is ignored.</summary>
+    public static bool DamageIndicator = true;
+    /// <summary>Show the predicted path while preparing one's own throw.</summary>
+    public static bool GrenadePreview = true;
     public static bool KillSound = true;
     public static bool GunCrosshair = true;
     public static string CrosshairStyle = StyleVanilla;
@@ -107,12 +122,12 @@ public static class ScUiSettings {
         foreach (string id in ScGunFunctions.All) set[id] = ScGunFunctions.Default(id, leftHanded);
     }
     public static void ResetAll() {
-        AmmoHud=new();NaturalEnemies=true;
+        AmmoHud=new();ArmorHud=ScArmorHud.DefaultPosition();ArmorHudEnabled=true;NaturalEnemies=true;EnemyGraceDays=ScEnemySpawnPolicy.GraceDays;EnemyDensity=ScEnemyDensity.Standard;
         ScGunBindings.Reset();
         ScGamepadBindings.Keys.Clear(); ScGamepadBindings.Threshold = .5f;
         ResetHand(false); ResetHand(true);
         SimpleMaterials = ScResourcePolicy.Edition == "Optimized512";
-        CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true;
+        CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true; DamageIndicator = true; GrenadePreview = true;
         ButtonOnlyFire = false;
         C4Fuses.Clear();
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
@@ -131,13 +146,19 @@ public static class ScUiSettings {
 
     sealed class File {
         public ScHudPosition AmmoHud {get;set;}=new();
+        public ScHudPosition ArmorHud {get;set;}
+        public bool ArmorHudEnabled {get;set;}=true;
         public bool NaturalEnemies {get;set;}=true;
+        public int EnemyGraceDays {get;set;}=ScEnemySpawnPolicy.GraceDays;
+        public int EnemyDensity {get;set;}=(int)ScEnemyDensity.Standard;
         public int Version { get; set; } = ScUiSettings.Version;
         public bool? SimpleMaterials { get; set; }
         public bool CustomButtonsEnabled { get; set; } = true;
         public bool ButtonOnlyFire { get; set; }
         public Dictionary<int,int> C4Fuses {get;set;}=[];
         public bool KillFeedEnabled { get; set; } = true;
+        public bool DamageIndicatorEnabled { get; set; } = true;
+        public bool GrenadePreviewEnabled { get; set; } = true;
         public bool KillSoundEnabled { get; set; } = true;
         public bool GunCrosshairEnabled { get; set; } = true;
         public string GunCrosshairStyle { get; set; } = StyleVanilla;
@@ -172,7 +193,8 @@ public static class ScUiSettings {
             if (file is null) throw new InvalidDataException("empty settings file");
             if (file.Version != Version) throw new InvalidDataException($"Version {file.Version} is not {Version}");
             SimpleMaterials = file.SimpleMaterials ?? (ScResourcePolicy.Edition == "Optimized512");
-            AmmoHud=(file.AmmoHud??new()).Normalize();NaturalEnemies=file.NaturalEnemies;
+            AmmoHud=(file.AmmoHud??new()).Normalize();ArmorHud=(file.ArmorHud??ScArmorHud.DefaultPosition()).Normalize();ArmorHudEnabled=file.ArmorHudEnabled;NaturalEnemies=file.NaturalEnemies;
+            var enemy=new ScEnemyRules(file.NaturalEnemies,file.EnemyGraceDays,(ScEnemyDensity)file.EnemyDensity).Normalize();EnemyGraceDays=enemy.GraceDays;EnemyDensity=enemy.Density;
             CustomButtons = file.CustomButtonsEnabled;
             ButtonOnlyFire = file.ButtonOnlyFire;
             foreach(var p in file.C4Fuses??[])if(p.Key>=0)C4Fuses[p.Key]=Math.Clamp(p.Value,5,300);
@@ -181,7 +203,7 @@ public static class ScUiSettings {
             ScGamepadBindings.Threshold = float.IsFinite(file.GamepadTriggerThreshold) ? Math.Clamp(file.GamepadTriggerThreshold, .15f, .9f) : .5f;
             foreach (var (id, key) in file.KeyBindings ?? [])
                 if (ScGunFunctions.All.Contains(id) && ScGunBindings.Valid(key)) ScGunBindings.Keys[id] = key;
-            KillFeed = file.KillFeedEnabled;
+            KillFeed = file.KillFeedEnabled; DamageIndicator = file.DamageIndicatorEnabled; GrenadePreview = file.GrenadePreviewEnabled;
             KillSound = file.KillSoundEnabled;
             GunCrosshair = file.GunCrosshairEnabled;
             CrosshairStyle = Array.IndexOf(Styles, file.GunCrosshairStyle) >= 0 ? file.GunCrosshairStyle : StyleVanilla;
@@ -204,11 +226,11 @@ public static class ScUiSettings {
         if (!Writable) return false;
         try {
             var file = new File {
-                AmmoHud=AmmoHud.Copy().Normalize(),NaturalEnemies=NaturalEnemies,
+                AmmoHud=AmmoHud.Copy().Normalize(),ArmorHud=ArmorHud.Copy().Normalize(),ArmorHudEnabled=ArmorHudEnabled,NaturalEnemies=NaturalEnemies,EnemyGraceDays=EnemyDefaults.GraceDays,EnemyDensity=(int)EnemyDefaults.Density,
                 SimpleMaterials = SimpleMaterials,
                 KeyBindings = new(ScGunBindings.Keys),
                 GamepadBindings = new(ScGamepadBindings.Keys), GamepadTriggerThreshold = ScGamepadBindings.Threshold,
-                CustomButtonsEnabled = CustomButtons, KillFeedEnabled = KillFeed, KillSoundEnabled = KillSound,
+                CustomButtonsEnabled = CustomButtons, KillFeedEnabled = KillFeed, KillSoundEnabled = KillSound, DamageIndicatorEnabled = DamageIndicator, GrenadePreviewEnabled = GrenadePreview,
                 ButtonOnlyFire = ButtonOnlyFire,
                 C4Fuses = new(C4Fuses),
                 CrosshairShape = CrosshairShape.Normalize(),
@@ -220,7 +242,6 @@ public static class ScUiSettings {
             }
             Storage.CreateDirectory(Storage.GetDirectoryName(Path));
             WriteAtomic(Storage.GetSystemPath(Path), ScCompatibility.PreserveUiSettings(JsonSerializer.SerializeToUtf8Bytes(file, s_json),Storage.GetSystemPath(Path),ScGunFunctions.All));
-            KnifeLog.Trace("[CS_UI_0413] settings saved and verified: " + Path);
             return true;
         }
         catch (Exception e) {

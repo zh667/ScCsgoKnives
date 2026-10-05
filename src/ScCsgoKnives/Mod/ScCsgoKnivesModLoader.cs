@@ -17,6 +17,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("UpdateInput", this);
         ModsManager.RegisterHook("InventorySlotWidgetMeasureOverride", this);
         ModsManager.RegisterHook("OnCreatureDied", this);
+        ScHitSounds.Initialize(); // current-direction-20260929: projectile protection feedback
+        ModsManager.RegisterHook("DeadBeforeDrops", this); // current-direction-20260929: a player's protection ends with a dropping death
         ModsManager.RegisterHook("OnProjectLoaded", this);
         ModsManager.RegisterHook("ProjectXmlLoad", this);
         ModsManager.RegisterHook("OnProjectXmlSaved", this);
@@ -44,8 +46,15 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("OnScreenEntered", this);
         ModsManager.RegisterHook("ProcessAttackment", this);
         ModsManager.RegisterHook("OnChaseBehaviorAttacked", this);
+        // current-direction-20260929 §6: multiplayer. Standalone on the original engine (nothing else happens); on the
+        // 1.9.3.2_MP engine the separate adapter is loaded after its engine contract checked out.
+        ScNet.RegisterCore();
+        ScNet.Initialize(Entity);
     }
     public override void OnScreenEntered(Screen screen, object[] parameters) {
+        // 2026-10-01 memory round: the first main menu comes after every mod's loading actions; only then are the engine's
+        // copies of the CS packages replaced by re-readable sources (ScLazyContent).
+        if (screen is MainMenuScreen) { ScLazyContent.Install(); ScAgentsPackageHint.OnMainMenu(); }
         // The engine appends mod categories lazily; retry when a screen opens so
         // the creative tab order is correct even when OnLoadingFinished ran
         // before the category list was finalized.
@@ -138,6 +147,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (widget is CreativeInventoryPanel panel) ScCreativeCategoryOrder.Inventory(panel.m_creativeInventoryWidget);
         else if (widget is CreativeInventoryWidget inventory) ScCreativeCategoryOrder.Inventory(inventory);
         if (widget is Screen) PlaceCreativeCategoryAfterWeapons();
+        if (widget is Screen) ScPresentationSound.Tick();
         if (widget is Screen && GameManager.Project is {} project) {
             var players = project.FindSubsystem<SubsystemPlayers>(false);
             var guns = project.FindSubsystem<SubsystemScGunBlockBehavior>(false);
@@ -181,6 +191,13 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer player, Vector3 position) {
         if (player is null) return false;
         var project = player.Project;
+        // A world set up for a mode (deathmatch-addon): no starting gift there; and while the mode's package is absent the
+        // player is told the world is dormant (the data stays as saved).
+        if (ScWorldModes.Dedicated(project)) {
+            if (ScNet.IsLocal(player)) foreach (var dormant in ScWorldModes.Dormant(project))
+                try { player.ComponentGui?.DisplaySmallMessage(ScWorldModes.DormantNotice(dormant), Color.White, true, false); } catch (Exception e) { KnifeDiagnostics.WarnOnce("world-mode-notice", e.Message); }
+            return false;
+        }
         project.FindSubsystem<SubsystemScStarterEquipment>(true).TryGrant(
             project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode, spawnMode,
             player.PlayerData.PlayerIndex, player.PlayerData.SpawnsCount, player.ComponentMiner.Inventory,
@@ -194,9 +211,15 @@ public class ScCsgoKnivesModLoader : ModLoader {
         chase.Project.FindSubsystem<SubsystemScGrenades>()?.ApplyChaseOcclusion(chase);
 
     public override void InventorySlotWidgetMeasureOverride(InventorySlotWidget widget, Vector2 available) => ScInventoryWear.Update(widget);
-    public override void OnProjectLoaded(GameEntitySystem.Project project)=>SubsystemScChicken.RegisterSpawn(project);
+    public override void OnProjectLoaded(GameEntitySystem.Project project){SubsystemScChicken.RegisterSpawn(project);ScMemoryReport.Log("world");}
     public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experienceOrbDrop,ref bool calculateInKill)
         =>health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
+    /// <summary>The world's own death rule decides: a death that drops the inventory ends the player's CS protection; a
+    /// world or mod that keeps the inventory (dropAllItems false when CS is asked) keeps it too.</summary>
+    public override void DeadBeforeDrops(ComponentHealth componentHealth,ref KillParticleSystem killParticleSystem,ref bool dropAllItems) {
+        if(componentHealth?.Entity.FindComponent<ComponentPlayer>() is {} player)
+            componentHealth.Project.FindSubsystem<SubsystemScArmor>(false)?.PlayerDied(player,dropAllItems);
+    }
 
     public override void UpdateInput(ComponentInput input, WidgetInput widgets) {
         ScAgentVoice.FilterInput?.Invoke(input);
@@ -217,6 +240,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (SubsystemScGrenades.Holding(player) && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
         }
+        if (knife && ScNet.IsRemoteClient) ScNet.Trace($"knife hit input operated={operated} skipped={skipped}");
         if (knife && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue);
             operated = true;
@@ -225,6 +249,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void UpdatePlayerInputDig(ComponentPlayer player, bool digging, ref bool operated, ref double interval, bool skipped, out bool skipVanilla) {
         bool knife = SubsystemScKnifeBlockBehavior.HoldingKnife(player);
         skipVanilla = knife || ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue) || SubsystemScGrenades.Holding(player) || Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        if (SubsystemScGrenades.Holding(player) && digging && ScNet.IsRemoteClient) ScNet.Trace($"grenade dig input operated={operated} skipped={skipped}");
         if (SubsystemScGrenades.Holding(player) && digging && !operated && !skipped) {
             player.Project.FindSubsystem<SubsystemScGrenades>(true).RequestThrow(player, !ScMobileControls.UsesTouchInput(player) && player.ComponentInput.PlayerInput.Aim.HasValue); operated = true;
         }
@@ -270,7 +295,11 @@ public class ScCsgoKnivesModLoader : ModLoader {
             player.Project.FindSubsystem<SubsystemScKnifeBlockBehavior>(true).RequestAttack(player, true); operated = true;
         }
     }
-    public override void ProcessAttackment(Attackment attackment) => ScElectricStun.FilterAttack(attackment);
+    public override void ProcessAttackment(Attackment attackment) {
+        ScElectricStun.FilterAttack(attackment);
+        // current-direction-20260929 §3: CS protection against the ordinary physical attacks of other creatures and mods.
+        SubsystemScArmor.BeforeNative(attackment);
+    }
     public override void OnChaseBehaviorAttacked(ComponentChaseBehavior behavior,float before,ref float chaseTime,ref bool hitBody,ref bool playAttackSound) {
         if(ScElectricStun.Active(behavior.Entity)){hitBody=false;playAttackSound=false;}
     }
@@ -286,7 +315,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); }
+    public override void OnProjectDisposed() { ScNetGuns.WorldClosed(); ScNetSlots.Clear(); ScNetPresentation.Clear(); ScPresentationSound.ReleaseAll("world exit"); CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); ScMemoryReport.Log("exit"); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         // Register all base CS supplies in the same workshop catalogue used by
@@ -309,11 +338,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         int counterIndex = BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
         int c4Index = BlocksManager.GetBlockIndex<ScC4Block>(true);
-        Log.Information($"[CS_C4] block={c4Index}, creative={BlocksManager.Blocks[c4Index].GetCreativeValues().Count()}, category={BlocksManager.Blocks[c4Index].GetCategory(ScC4Block.Value)}, name={BlocksManager.Blocks[c4Index].GetDisplayName(null, ScC4Block.Value)}");
         Log.Information($"[ScCsgoKnives] {ModVersion} initialized. block={index}, knives={CsmcKnifeRig.KnifeCount}, creativeValues={values.Length}, gunBlock={gunIndex}, counterTemplateBlock={counterIndex}, guns={GunSpec.All.Length}.");
-        KnifeLog.Trace("[GUN_FOLIAGE] bullet pass-through registry: " + string.Join(", ", BlocksManager.Blocks
-            .Where(b => b is not null && b is not AirBlock && b is not FluidBlock && !ScGunRange.StopsBullet(b))
-            .Select(b => $"{b.BlockIndex}:{b.GetType().FullName}").Distinct()));
 
         // Every creative item must survive the round trip through the block
         // value and land on its own asset. A stale variant clamp left over from
@@ -331,8 +356,6 @@ public class ScCsgoKnivesModLoader : ModLoader {
         }
 
     }
-
-    static int s_lastLoggedValue = int.MinValue;
 
     /// <summary>The vanilla crosshair is a fixed-size quad 50 units ahead, so it grows with the scope's FOV; the scope draws its own.</summary>
     public override void IsCrosshairVisible(ComponentAimingSights componentAimingSights, ref bool isVisible) {
@@ -359,23 +382,15 @@ public class ScCsgoKnivesModLoader : ModLoader {
         itemValue = componentFirstPersonModel.Project.FindSubsystem<SubsystemScGrenades>()?.ViewmodelValue(componentFirstPersonModel.m_componentPlayer,itemValue) ?? itemValue;
         int variant = KnifeAnimationController.ResolveVariant(itemValue);
         if (variant < 0) {
-            KnifeAnimationController.Update(componentFirstPersonModel, itemValue);
+            // A non-CS item drawn here can be vanilla's lagging m_value: a swap animation toward a vanilla block cannot be
+            // cut short, so after scrolling on into a CS item the old block is drawn for up to half a second more. Treating
+            // that as "no CS item" reset the hands every frame and SubsystemScGunBlockBehavior restarted the draw (and its
+            // sound) the next (post-mp-bugs-20260930 §4). The held item itself is followed by that subsystem every frame.
+            if (KnifeQa.Active || !KnifeAnimationController.FollowHeldItemOnly) KnifeAnimationController.Update(componentFirstPersonModel, itemValue);
             return;
         }
 
-        int raw = Terrain.ExtractData(itemValue);
         KnifeRigPose pose = KnifeAnimationController.Update(componentFirstPersonModel, itemValue);
-        // Logged whenever the held value changes, so the hook's view of the item
-        // can be compared against what ScKnifeBlock.DrawBlock sees.
-        if (itemValue != s_lastLoggedValue) {
-            s_lastLoggedValue = itemValue;
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] hook: value={itemValue} (0x{itemValue:X}), data={Terrain.ExtractData(itemValue)}, "
-                + $"rawVariant={raw}, assetCount={CsmcKnifeRig.KnifeCount}, clamped={variant}, "
-                + $"asset={CsmcKnifeRig.GetAssetName(variant)}, poseNull={pose is null}, "
-                + $"activeBlockValue={componentFirstPersonModel.m_componentMiner.ActiveBlockValue}, m_value={componentFirstPersonModel.m_value}."
-            );
-        }
         if (pose is null) return;
 
         // The complete CSMC renderer owns weapon and arms. Returning skip=true

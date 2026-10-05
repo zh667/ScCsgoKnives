@@ -1,0 +1,65 @@
+{
+ "task": "post-mp-bugs-20260930",
+ "date": "2026-09-30",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputReplaced": true,
+  "noRunningWorkerJobs": true
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "totalBytes": 6544487540,
+  "items": 2738,
+  "stage c18 build trees": {
+   "paths": [
+    "c18/full",
+    "c18/lite",
+    "c18/tools",
+    "c18/tree",
+    "c18/assets-full",
+    "c18/resources"
+   ],
+   "bytes": 1779518826
+  },
+  "stage bugs1 build trees": {
+   "paths": [
+    "bugs1/full",
+    "bugs1/lite",
+    "bugs1/tree"
+   ],
+   "bytes": 850668176
+  },
+  "single-player test packages": {
+   "paths": [
+    ".tmp/mp-m0-20260929/pkg/sp-bugs1-full.scmod",
+    ".tmp/mp-m0-20260929/pkg/sp-bugs1-lite.scmod"
+   ],
+   "bytes": 563606500,
+   "hashes": {
+    "sp-bugs1-full.scmod": "6035f8fffc62225d79c7a95a63a1641ef81d556a718d0cba7d9ed89098d5ae4b",
+    "sp-bugs1-lite.scmod": "0cc8724fb7909f444f105697c271cf3d46e52ef3906347fd411dc77f2277aaff"
+   }
+  },
+  "smoke screenshots": "raw per-view frames (sv-*-a/b/c.png) of the 4 smoke-view runs, except those kept below",
+  "recordings": "9 superseded knife-audio WAVs (noisy/partial runs); their envelopes, logs and reports kept",
+  "smoke frames + superseded recordings (bytes)": 3350694038
+ },
+ "kept": {
+  "stage reports": "c18 and bugs1: every *.json report, logs/, source-hashes.json, packages.json, builds.json; c18 motion/, throw/, ui/, hotspots/",
+  "smoke frames": "with-smoke frame of every raised-position view: smoke-view-c15-lite-20260930-115029 and smoke-view-bugs1-lite-03-20260930-120351 (100 files)",
+  "recordings": [
+   "knife-audio-c15-lite-10slots-norain-20260930-114338",
+   "knife-audio-bugs1-lite-10slots-norain-20260930-114704",
+   "knife-audio-c15-lite-named2-20260930-124101",
+   "knife-audio-bugs1-lite-named2-20260930-124427"
+  ],
+  "reports": ".tmp/mp-m0-20260929/results/{knife-audio,smoke-view,attack-journal}-*.json; .tmp/bugs-fix-20260930 (visual checkset reports, comparison image, full receipt)",
+  "not touched": "MP-task stages and packages (c16mp, c17mp, mp14-mp17, dev-mp17 packages, M0/M1-M4 results), runtime role folders and their 3 rotating archives, sources, output/ history"
+ },
+ "fullReceipt": "E:/projects/ScCsgoKnives/.tmp/bugs-fix-20260930/cleanup-receipt.json",
+ "outputAfterCleanup": {
+  "[API1.9]CS武器1.4.0-全量包.scmod": "fc54e2ecc1165a62d399619fbca223ff8228ea9875bd923c49cb0524250e1afd",
+  "[API1.9]CS武器1.4.0-轻量包.scmod": "37607a216dbdf2b97b5e5fb0efd83df7f711cdf53bb5ffdaa5098759753d2cbc",
+  "[API1.9]CS武器1.4.0-探员包.scmod": "234a21816515563ba98e8fd1aac2f5dfd1778c366f37b04b5172c4037fcd0e2d"
+ }
+}

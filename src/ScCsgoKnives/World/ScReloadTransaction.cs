@@ -25,6 +25,15 @@ public sealed class ScReloadTransaction {
     public bool Valid => !Cancelled && Inventory is not null && Inventory.ActiveSlotIndex == Slot
         && ScInventoryTransaction.Revision(Inventory) == Revision && ScInventoryTransaction.IsWeaponSlot(Inventory, Slot) && Inventory.GetSlotValue(Slot) == Expected;
     public void Cancel() => Cancelled = true;
+    /// <summary>Multiplayer client (its reload is shown only, the server reloads): while it runs the server gave this same
+    /// gun its record, so the slot's value went from the fresh gun to the instance (same slot, same model). The reload
+    /// shown goes on with the new value. Any other change is another gun, and the reload stays invalid.</summary>
+    public bool FollowAllocation(int value) {
+        if (Cancelled || value == Expected || Inventory is null || Inventory.GetSlotValue(Slot) != value || Terrain.ExtractContents(value) != Terrain.ExtractContents(Expected)) return false;
+        int was = Terrain.ExtractData(Expected), now = Terrain.ExtractData(value);
+        if (!GunSpec.IsFresh(was) || GunSpec.IsFresh(now) || GunSpec.GetVariant(was) != GunSpec.GetVariant(now)) return false;
+        Expected = value; return true;
+    }
     public bool ModeMatches(bool creative) => creative == (Cost == 0);
     bool Write(int rounds, int cost, int reserveSpent = 0) {
         if (!Valid) { Cancel(); return false; }

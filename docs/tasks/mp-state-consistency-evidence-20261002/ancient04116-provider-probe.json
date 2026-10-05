@@ -1,0 +1,38 @@
+{
+  "providerVersion": "0.41.16",
+  "runner": "actual InventorySnapshot Capture Save Load Apply, actual CS mpc3 \u002B engine1.9.3.1, no world files",
+  "serializedAttributes": [
+    "Slot",
+    "Value",
+    "Count",
+    "BlockType",
+    "Assembly"
+  ],
+  "sourceBlockIndex": 304,
+  "targetBlockIndex": 320,
+  "unknownExtensionPreserved": false,
+  "cases": [
+    {
+      "label": "same-id different gun",
+      "sourceRounds": 7,
+      "targetRecordVariant": 1,
+      "targetRecordRounds": 18,
+      "sourceValue": 1048880,
+      "appliedValue": 1048896,
+      "recordId": 1,
+      "isKnown": false,
+      "roundsRead": 0
+    },
+    {
+      "label": "same-id same gun wrong rounds",
+      "sourceRounds": 7,
+      "targetRecordVariant": 0,
+      "targetRecordRounds": 23,
+      "sourceValue": 1048880,
+      "appliedValue": 1048896,
+      "recordId": 1,
+      "isKnown": true,
+      "roundsRead": 23
+    }
+  ]
+}

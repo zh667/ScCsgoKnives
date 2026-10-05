@@ -3,11 +3,62 @@ using Engine.Graphics;
 using Engine.Media;
 namespace Game;
 
-public enum ScHitPart { Unknown, Body, Head }
+/// <summary>Where a shot landed. Body is the torso or an unspecified part (every fallback hit); Arm and Leg are only
+/// reported by models whose limbs are known (headshot-armor-balance-20260929 H1; appended, values 0-2 unchanged). Neck
+/// and Stomach are CS2's own hit groups, reported only by a world's mode that brings CS2's hitboxes (deathmatch round 5,
+/// ScMode.HitCapsules; appended, values 0-4 unchanged); everything else that reads a part treats them as the torso.</summary>
+public enum ScHitPart { Unknown, Body, Head, Arm, Leg, Neck, Stomach }
+
+/// <summary>One CS2-style hit volume in world space: every point within <paramref name="Radius"/> of the segment from
+/// <paramref name="A"/> to <paramref name="B"/> (a capsule; A == B is a sphere). Nothing outside the capsules is hit:
+/// the gaps between them are misses, as in CS2 (deathmatch round 5).</summary>
+public readonly record struct ScHitCapsule(Vector3 A, Vector3 B, float Radius, ScHitPart Part) {
+    /// <summary>Distance along the ray (unit <paramref name="direction"/>) where it enters the capsule, or null. A ray that
+    /// starts inside enters at 0.</summary>
+    public float? Intersect(Vector3 origin, Vector3 direction) {
+        float r2 = Radius * Radius, best = float.MaxValue;
+        Vector3 ab = B - A, ao = origin - A;
+        float ll = Vector3.Dot(ab, ab);
+        if (ll > 1e-12f) {
+            // the infinite cylinder around AB, kept where the entry lies between the two caps
+            float abd = Vector3.Dot(ab, direction), abao = Vector3.Dot(ab, ao);
+            float a = ll - abd * abd, b = ll * Vector3.Dot(ao, direction) - abao * abd, c = ll * Vector3.Dot(ao, ao) - abao * abao - r2 * ll;
+            if (a > 1e-12f) {
+                float disc = b * b - a * c;
+                if (disc >= 0) {
+                    float t = (-b - MathF.Sqrt(disc)) / a, along = abao + t * abd;
+                    if (along >= 0 && along <= ll) { if (t >= 0) best = t; else if (c <= 0) best = 0; }
+                }
+            }
+        }
+        // the two end spheres
+        float Sphere(Vector3 centre) {
+            Vector3 m = origin - centre; float mb = Vector3.Dot(m, direction), mc = Vector3.Dot(m, m) - r2;
+            if (mc > 0 && mb > 0) return float.MaxValue;
+            float disc = mb * mb - mc;
+            return disc < 0 ? float.MaxValue : Math.Max(0, -mb - MathF.Sqrt(disc));
+        }
+        best = Math.Min(best, Math.Min(Sphere(A), Sphere(B)));
+        return best < float.MaxValue ? best : null;
+    }
+    /// <summary>The nearest capsule along the ray within <paramref name="maxDistance"/>: its part and distance, or Unknown.</summary>
+    public static (ScHitPart Part, float Distance) Resolve(IReadOnlyList<ScHitCapsule> capsules, Vector3 origin, Vector3 direction, float maxDistance) {
+        if (!(direction.LengthSquared() > 1e-12f)) return (ScHitPart.Unknown, -1);
+        Vector3 d = Vector3.Normalize(direction); float scale = direction.Length();
+        ScHitPart part = ScHitPart.Unknown; float best = float.MaxValue;
+        foreach (var capsule in capsules)
+            if (capsule.Intersect(origin, d) is float t && t / scale <= maxDistance && t < best) { best = t; part = capsule.Part; }
+        return part == ScHitPart.Unknown ? (part, -1) : (part, best / scale);
+    }
+}
 
 /// <summary>One drawn mesh of a creature as a hit volume: the mesh's bone-local bounding box and
-/// that bone's absolute (world) matrix, exactly the pair the renderer draws the mesh with.</summary>
-public readonly record struct ScPartBox(BoundingBox Local, Matrix World, bool Head);
+/// that bone's absolute (world) matrix, exactly the pair the renderer draws the mesh with. A non-head box reports
+/// <paramref name="Region"/> (Body unless the model's limbs are known).</summary>
+public readonly record struct ScPartBox(BoundingBox Local, Matrix World, bool Head, ScHitPart Region) {
+    /// <summary>The original three-value form (reflection callers construct it with exactly three arguments).</summary>
+    public ScPartBox(BoundingBox Local, Matrix World, bool Head) : this(Local, World, Head, ScHitPart.Body) { }
+}
 
 /// <summary>Per-model headshot rule. HeadBones names the bones whose meshes count as the head;
 /// Shrink scales those boxes about their centre (1 = the drawn mesh box).</summary>
@@ -76,7 +127,7 @@ public static class ScHeadshot {
         ScHitPart part = ScHitPart.Unknown; float best = float.MaxValue;
         foreach (var box in parts) {
             float? t = Intersect(box, origin, direction);
-            if (t.HasValue && t.Value <= maxDistance && t.Value < best) { best = t.Value; part = box.Head ? ScHitPart.Head : ScHitPart.Body; }
+            if (t.HasValue && t.Value <= maxDistance && t.Value < best) { best = t.Value; part = box.Head ? ScHitPart.Head : box.Region is ScHitPart.Arm or ScHitPart.Leg ? box.Region : ScHitPart.Body; }
         }
         return (part, part == ScHitPart.Unknown ? -1 : best);
     }
@@ -100,10 +151,14 @@ public static class ScHeadshot {
         var parts = new List<ScPartBox>();
         foreach (var mesh in data.Meshes) {
             if (!mesh.IsVisible) continue;
-            bool head = rule.IsHead(data.Bones[mesh.ParentBoneIndex].Name);
-            parts.Add(new(head ? rule.Apply(mesh.BoundingBox) : mesh.BoundingBox, absolute[mesh.ParentBoneIndex], head));
+            string bone = data.Bones[mesh.ParentBoneIndex].Name; bool head = rule.IsHead(bone);
+            parts.Add(new(head ? rule.Apply(mesh.BoundingBox) : mesh.BoundingBox, absolute[mesh.ParentBoneIndex], head, RigidRegion(bone)));
         }
         return parts;
     }
+    /// <summary>Region of a rigid mesh by its bone: the vanilla human's Hand1/Hand2 are arms, Leg1..4 legs, the rest body.</summary>
+    public static ScHitPart RigidRegion(string bone) => bone is null ? ScHitPart.Body
+        : bone.StartsWith("Leg", StringComparison.Ordinal) ? ScHitPart.Leg
+        : bone.StartsWith("Hand", StringComparison.Ordinal) || bone.StartsWith("Arm", StringComparison.Ordinal) ? ScHitPart.Arm : ScHitPart.Body;
     public static bool HasHeadMesh(ModelData data, ScHeadRule rule) => data.Meshes.Any(m => m.IsVisible && rule.IsHead(data.Bones[m.ParentBoneIndex].Name));
 }

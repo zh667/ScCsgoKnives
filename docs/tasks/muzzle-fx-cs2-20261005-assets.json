@@ -1,0 +1,222 @@
+[
+ {
+  "name": "cs2fx_fire_gas_batch_b_top_lin",
+  "sources": {
+   "06_particles/textures/**/fire_gas_batch_b_top (62 frames, linear RGB)": "9cb96ffc64fd5ef7ffee1833d16bc23b5a51dbd5d6c96509519eee08a2fc08e8"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_fire_gas_batch_b_top_lin.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_fire_gas_batch_b_top_lin.png",
+  "sha256": "809d3a3ad3b1c4da433a6e7006f370f86d6d7e936fec73fa87cf3167682f6381",
+  "bytes": 1287813,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_fire_gas_batch_b_top_lin",
+  "sources": {
+   "06_particles/textures/**/fire_gas_batch_b_top (62 frames, linear RGB)": "9cb96ffc64fd5ef7ffee1833d16bc23b5a51dbd5d6c96509519eee08a2fc08e8"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_fire_gas_batch_b_top_lin.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_fire_gas_batch_b_top_lin.webp",
+  "sha256": "c8397ab5a4314c9e1638f77991087333ce3693a0f48d1631e8a171c9955e0629",
+  "bytes": 201794,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_fire_small_sim_b_lin",
+  "sources": {
+   "06_particles/textures/**/fire_small_sim_b (63 frames, linear RGB)": "001afdad5af674842a49eb58630cbc53bc138c3d1e9e74460ac821d61b3e649b"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_fire_small_sim_b_lin.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_fire_small_sim_b_lin.png",
+  "sha256": "03bfd2420003dd17881b313be5b756dab7106299a7c373020e67ea2504fbcb60",
+  "bytes": 1003901,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_fire_small_sim_b_lin",
+  "sources": {
+   "06_particles/textures/**/fire_small_sim_b (63 frames, linear RGB)": "001afdad5af674842a49eb58630cbc53bc138c3d1e9e74460ac821d61b3e649b"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_fire_small_sim_b_lin.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_fire_small_sim_b_lin.webp",
+  "sha256": "4a5777a314253e0aa510d2fe7f7fcb2e1a1cb1d36e751d93e98493d9fc3443fa",
+  "bytes": 171456,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_smokeloop_i_0_sc",
+  "sources": {
+   "06_particles/textures/**/smokeloop_i_0_sc (64 frames)": "7df972a61dae0e44ab79f4a602b13db37bc95d1998f0d30d3f79d0c4c60e0ea5"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc.png",
+  "sha256": "0a2e795f04290d7fa0ad6e5aa804f9a31167529891e23bf10fedf74c418c766a",
+  "bytes": 1421756,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_smokeloop_i_0_sc",
+  "sources": {
+   "06_particles/textures/**/smokeloop_i_0_sc (64 frames)": "7df972a61dae0e44ab79f4a602b13db37bc95d1998f0d30d3f79d0c4c60e0ea5"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc.webp",
+  "sha256": "5b00afb21636a1317a1e27534c9b590c6d11c4cfadf136490aa31f387d0ca6f4",
+  "bytes": 163886,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_smokeloop_i_0_sc_hardedge",
+  "sources": {
+   "06_particles/textures/**/smokeloop_i_0_sc_hardedge (64 frames)": "d52db0e179494de21cc98322788f90e70078fa79c2cefeef7cb8d195cb3b0434"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge.png",
+  "sha256": "50b10d0f471fc3caa4cf5b8e6ade54fada71adf1f4d43f5b1b9d4e81868f6a68",
+  "bytes": 692264,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_smokeloop_i_0_sc_hardedge",
+  "sources": {
+   "06_particles/textures/**/smokeloop_i_0_sc_hardedge (64 frames)": "d52db0e179494de21cc98322788f90e70078fa79c2cefeef7cb8d195cb3b0434"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge.webp",
+  "sha256": "63818356a739d995c0e068a6332b94a96feebb4c7842a4af79a271810afb9150",
+  "bytes": 159056,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_smokeloop_i_0_sc_hardedge_lin",
+  "sources": {
+   "06_particles/textures/**/smokeloop_i_0_sc_hardedge (64 frames, linear RGB)": "d52db0e179494de21cc98322788f90e70078fa79c2cefeef7cb8d195cb3b0434"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge_lin.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge_lin.png",
+  "sha256": "8594f8a8b3c9952bbb9366944c8f7d668c3ca648e4572d9fe8bc0923bb5ecf62",
+  "bytes": 699973,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_smokeloop_i_0_sc_hardedge_lin",
+  "sources": {
+   "06_particles/textures/**/smokeloop_i_0_sc_hardedge (64 frames, linear RGB)": "d52db0e179494de21cc98322788f90e70078fa79c2cefeef7cb8d195cb3b0434"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge_lin.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_smokeloop_i_0_sc_hardedge_lin.webp",
+  "sha256": "62e2dd85527dbcca60347ca5effae87040b47453646f7f137a5aa993b32fd9c0",
+  "bytes": 163078,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_spark_lin",
+  "sources": {
+   "06_particles/textures/**/spark (1 frames, linear RGB)": "40f26247efa28592c0d3f08d2df19c58bcec89d244280fd808d87167fc87056b"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_spark_lin.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_spark_lin.png",
+  "sha256": "1fb3846a8169b47a2fe739be4a5c62d1c9507ace7cc74db853bc9eda264101c9",
+  "bytes": 803,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_spark_lin",
+  "sources": {
+   "06_particles/textures/**/spark (1 frames, linear RGB)": "40f26247efa28592c0d3f08d2df19c58bcec89d244280fd808d87167fc87056b"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_spark_lin.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_spark_lin.webp",
+  "sha256": "0441ae773e4d57e5328e34c8368a80f4a6c300ee4fd85b550b69322dda388d52",
+  "bytes": 308,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_wispy_steam_burst_b",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_burst_b (64 frames)": "372c529be8d30eb44952c4fd16e1579195d1e860d0f85b23de8c7019c4c41255"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b.png",
+  "sha256": "0458686985c47b2f1b758e6c74818377eb00f91de9730e8f79a37186345c9a80",
+  "bytes": 1227589,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_wispy_steam_burst_b",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_burst_b (64 frames)": "372c529be8d30eb44952c4fd16e1579195d1e860d0f85b23de8c7019c4c41255"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b.webp",
+  "sha256": "9862c8923260c418efffd3c0ef9c2df2cae9d5e039522e4365e3af34910baec3",
+  "bytes": 166198,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_wispy_steam_burst_b_lin",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_burst_b (64 frames, linear RGB)": "372c529be8d30eb44952c4fd16e1579195d1e860d0f85b23de8c7019c4c41255"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b_lin.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b_lin.png",
+  "sha256": "441d1ef0b18ea62e4b95973bbb29cd3a0045b11f44eb8ee08d293c505f95a905",
+  "bytes": 1353142,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_wispy_steam_burst_b_lin",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_burst_b (64 frames, linear RGB)": "372c529be8d30eb44952c4fd16e1579195d1e860d0f85b23de8c7019c4c41255"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b_lin.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_burst_b_lin.webp",
+  "sha256": "5cd104c4e97dd1194624aefb8336af06fdb62fefa59b9961d19a1185d80a827b",
+  "bytes": 191124,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_wispy_steam_set",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_set (64 frames)": "b9864724df6446f2338ef6d8341f453288aaa176bf3a9d68d7615d8a0cc7a54b"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_set.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_set.png",
+  "sha256": "868c7cc180160e75d8c0c2155912e70475c9bbb3398e6be986260c50b83975d7",
+  "bytes": 418911,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_wispy_steam_set",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_set (64 frames)": "b9864724df6446f2338ef6d8341f453288aaa176bf3a9d68d7615d8a0cc7a54b"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_wispy_steam_set.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_set.webp",
+  "sha256": "259472ec4d180b487950e9f7a53889ebcc17ce9557155470197bfcb557fb84a7",
+  "bytes": 88370,
+  "edition": "lite"
+ },
+ {
+  "name": "cs2fx_wispy_steam_set_lin",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_set (64 frames, linear RGB)": "b9864724df6446f2338ef6d8341f453288aaa176bf3a9d68d7615d8a0cc7a54b"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_set_lin.png",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_set_lin.png",
+  "sha256": "cdcf2e39c5b8c669cf882be5c22caa4879fedb5d5635daf55e1d6aba24ffe7eb",
+  "bytes": 418461,
+  "edition": "full"
+ },
+ {
+  "name": "cs2fx_wispy_steam_set_lin",
+  "sources": {
+   "06_particles/textures/**/wispy_steam_set (64 frames, linear RGB)": "b9864724df6446f2338ef6d8341f453288aaa176bf3a9d68d7615d8a0cc7a54b"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/cs2fx_wispy_steam_set_lin.webp",
+  "member": "Assets/Textures/ScCsgoKnives/cs2fx_wispy_steam_set_lin.webp",
+  "sha256": "7cb9e1b6d15f514a83871b09e529643d6fa852deec931383d5c76b8a27a0b243",
+  "bytes": 88528,
+  "edition": "lite"
+ }
+]

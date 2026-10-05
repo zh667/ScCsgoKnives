@@ -1,0 +1,65 @@
+{
+ "task": "mpd2-ammo-jitter-20261002 (mp-state-consistency plan section 13)",
+ "date": "2026-10-02T16:11:16",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "mpe1CandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage mpe1 build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpe1\\full",
+    ".tmp\\completion-140-20260929\\mpe1\\lite",
+    ".tmp\\completion-140-20260929\\mpe1\\tools",
+    ".tmp\\completion-140-20260929\\mpe1\\tree",
+    ".tmp\\completion-140-20260929\\mpe1\\assets-full",
+    ".tmp\\completion-140-20260929\\mpe1\\resources",
+    ".tmp\\completion-140-20260929\\mpe1\\net",
+    ".tmp\\completion-140-20260929\\mpe1\\motion",
+    ".tmp\\completion-140-20260929\\mpe1\\throw",
+    ".tmp\\completion-140-20260929\\mpe1\\ui",
+    ".tmp\\completion-140-20260929\\mpe1\\old130"
+   ],
+   "bytes": 2536898247,
+   "items": 4911,
+   "missing": []
+  },
+  "exports made for the VPS-side offline checks (.tmp/dev-temp/mpx-mpe: gz+base64 copies of the mpe1 Lite core, adapter payloads and agents assembly)": {
+   "paths": [
+    ".tmp\\dev-temp\\mpx-mpe"
+   ],
+   "bytes": 4906152,
+   "items": 4,
+   "missing": []
+  },
+  "totalBytes": 2541804399,
+  "items": 4915
+ },
+ "kept": [
+  "stage mpe1: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/mp-feedback-144217-20261002 (the planner's diagnostic runner, traces and the user's video evidence: inputs, not this task's intermediates)",
+  "earlier tasks' stages and test packages: not this task's",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "46befae3d0ef39a669c1f14cda471abf3821000ce70c0dea89777876cbc11dcb",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "ee3e38eb47dcbd6dfd8f2c9e0a5d35539131eb0c872ca2223fdc537a84689440",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "8443c77b7c304b316c48de99924e8c94ba8edfb8b5df84b18c0ca27ee20543ba",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 111101714432,
+  "freePct": 11.11
+ }
+}

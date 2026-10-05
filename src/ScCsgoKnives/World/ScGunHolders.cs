@@ -70,6 +70,10 @@ public static class ScGunHolders {
         }
         return null;
     }
+    /// <summary>Items an optional package keeps outside any live inventory (for example an unloaded companion's
+    /// equipment in its own saved ledger). They hold their gun IDs exactly like pickables: visible to growth,
+    /// duplicate and locator scans, never an inventory a transaction may write. Keyed so re-registration replaces.</summary>
+    public static readonly Dictionary<string, Func<Project, IEnumerable<(string Key, int Value, int Count)>>> DormantSources = new(StringComparer.Ordinal);
     public static IEnumerable<Holder> Scan(Project project, int gunBlockIndex) {
         var seen = new HashSet<string>();
         // Same coverage as API 1.9.3.1 SubsystemItemsScanner, without allocating every unrelated item
@@ -102,6 +106,12 @@ public static class ScGunHolders {
             if (Terrain.ExtractContents(value) != gunBlockIndex || !MatchesRecord(value)) continue;
             int id = GunSpec.GetId(Terrain.ExtractData(value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId) yield return new Holder(id, Key(set, i), null, -1);
+        }
+        // Last in scan order: a live inventory copy of the same record stays the duplicate keeper.
+        foreach (var source in DormantSources.Values.ToArray()) foreach (var item in source(project) ?? []) {
+            if (item.Count <= 0 || Terrain.ExtractContents(item.Value) != gunBlockIndex || !MatchesRecord(item.Value)) continue;
+            int id = GunSpec.GetId(Terrain.ExtractData(item.Value));
+            if (id >= GunSpec.FirstId && id <= GunSpec.LastId && seen.Add(item.Key)) yield return new Holder(id, item.Key, null, -1);
         }
     }
     /// <summary>The API saves both player inventories, but Miner selects only one for the current mode.

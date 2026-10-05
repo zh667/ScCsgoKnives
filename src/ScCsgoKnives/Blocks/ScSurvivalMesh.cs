@@ -17,7 +17,6 @@ public static class ScSurvivalMesh {
         foreach (int i in source.Indices) mesh.Indices.Add(i);
         return mesh;
     }
-    static bool s_logged;
     static Texture2D s_surface;
     /// <summary>Managed thread ids: where Preload ran (the main thread) and where the texture was actually created.</summary>
     public static int MainThread { get; private set; } = -1;
@@ -61,27 +60,6 @@ public static class ScSurvivalMesh {
         if (MainThread < 0) MainThread = Environment.CurrentManagedThreadId;
         _ = Surface;
     }
-    /// <summary>
-    /// Once per session: what the game handed the supply meshes. The 0.26.1 device
-    /// session drew the magazine, shell, four parts and the bench as solid black in
-    /// the inventory; the offline checks could not reproduce it, and Texture2D has no
-    /// read-back here, so the next log has to say which of the inputs is off - the
-    /// texture object (size, format, mips, sRGB), the vertex colour, the light or the
-    /// colour transform.
-    /// </summary>
-    public static void LogFirstDraw(Texture2D texture,BlockMesh mesh,Color color,DrawBlockEnvironmentData env) {
-        if(s_logged) return;
-        s_logged=true;
-        try {
-            string tex=texture is null ? "null"
-                : $"{texture.Width}x{texture.Height} format={texture.ColorFormat} mips={texture.MipLevelsCount} srgb={texture.IsSrgb} sampler={(texture.SamplerState is null ? "none" : "set")}";
-            Color v=mesh.Vertices.Count>0 ? mesh.Vertices[0].Color : Color.Transparent;
-            KnifeLog.Trace($"[ScCsgoKnives] supply mesh first draw: texture {Texture} = {tex}; vertex0 colour ({v.R},{v.G},{v.B},{v.A}) emissive={(mesh.Vertices.Count>0 && mesh.Vertices[0].IsEmissive)}; "
-                + $"colour transform ({color.R},{color.G},{color.B},{color.A}); env light={env?.Light.ToString() ?? "null"} mode={env?.DrawBlockMode.ToString() ?? "null"}; {mesh.Vertices.Count} vertices; "
-                + $"texture created on thread {SurfaceThread} (main thread {MainThread}, dispatched={SurfaceDispatched}, this draw on {Environment.CurrentManagedThreadId}).");
-        }
-        catch(Exception e) { KnifeLog.Trace($"[ScCsgoKnives] supply mesh first draw: could not describe the inputs: {e.Message}"); }
-    }
     // 0..7: supplies; 8..12: legacy/CT/T/three-person/five-person radios.
     public static BlockMesh Build(int kind) => ScSupplyGeometry.Build(kind);
 }
@@ -112,7 +90,6 @@ public abstract class ScSupplyBlock : ScNoDurabilityBlock {
         }
         if(env?.DrawBlockMode == DrawBlockMode.UI) mesh=m_icons[kind];
         Texture2D texture=GetDefaultTexture(value);
-        ScSurvivalMesh.LogFirstDraw(texture,mesh,color,env);
         // UI icons must not inherit the world/slot tint.  On reload the engine
         // can pass a dark lighting colour here (the diagnostic showed 56/71),
         // which multiplies the atlas into a black icon even though the texture

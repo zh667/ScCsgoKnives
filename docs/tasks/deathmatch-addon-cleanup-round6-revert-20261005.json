@@ -1,0 +1,91 @@
+{
+ "task": "deathmatch-addon round 6, the earlier muzzle flash back (docs/tasks/deathmatch-addon-round6-20261005.md §4.5)",
+ "date": "2026-10-05T12:38:14",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "dmr6fCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage dmr6f build trees (delivered; logs, reports, packages.json, dm.json, identity.json, net.json, embedded.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr6f\\full",
+    ".tmp\\completion-140-20260929\\dmr6f\\lite",
+    ".tmp\\completion-140-20260929\\dmr6f\\tools",
+    ".tmp\\completion-140-20260929\\dmr6f\\tree",
+    ".tmp\\completion-140-20260929\\dmr6f\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr6f\\resources",
+    ".tmp\\completion-140-20260929\\dmr6f\\net",
+    ".tmp\\completion-140-20260929\\dmr6f\\motion",
+    ".tmp\\completion-140-20260929\\dmr6f\\throw",
+    ".tmp\\completion-140-20260929\\dmr6f\\old130",
+    ".tmp\\completion-140-20260929\\dmr6f\\dm\\source",
+    ".tmp\\completion-140-20260929\\dmr6f\\dm\\check",
+    ".tmp\\completion-140-20260929\\dmr6f\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dmr6f\\dm\\loadtool"
+   ],
+   "bytes": 2654456952,
+   "items": 5518,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dmr6f\\air"
+   ]
+  },
+  "superseded candidate stage dmr6e (its packages, built on dmr6d's, kept the muzzle sheets as unused members) - everything but logs and json reports": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr6e\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr6e\\baseline",
+    ".tmp\\completion-140-20260929\\dmr6e\\candidate",
+    ".tmp\\completion-140-20260929\\dmr6e\\dm",
+    ".tmp\\completion-140-20260929\\dmr6e\\full",
+    ".tmp\\completion-140-20260929\\dmr6e\\hotspots",
+    ".tmp\\completion-140-20260929\\dmr6e\\lite",
+    ".tmp\\completion-140-20260929\\dmr6e\\motion",
+    ".tmp\\completion-140-20260929\\dmr6e\\net",
+    ".tmp\\completion-140-20260929\\dmr6e\\old130",
+    ".tmp\\completion-140-20260929\\dmr6e\\resources",
+    ".tmp\\completion-140-20260929\\dmr6e\\throw",
+    ".tmp\\completion-140-20260929\\dmr6e\\tools",
+    ".tmp\\completion-140-20260929\\dmr6e\\tree",
+    ".tmp\\completion-140-20260929\\dmr6e\\ui"
+   ],
+   "bytes": 3268319358,
+   "items": 5652,
+   "missing": []
+  },
+  "totalBytes": 5922776310,
+  "items": 11170
+ },
+ "kept": [
+  "stage dmr6f: logs/, ui/, *.json reports, packages.json, dm.json, identity.json, net.json, embedded.json, source-hashes.json; dmr6e: logs/ and *.json",
+  ".tmp/mp-m0-20260929/run/dm-*-dmr6e*, dm-*-dmr6f*, gun-visuals-* (every calibration round's frames) and results/*.json",
+  ".tmp/dev-temp/fx (particle program dump, comparison inputs)",
+  "src/ScCsgoKnives AnimationData/cs2_muzzle_fx.json and the cs2fx_* sheets (generated sources)",
+  ".tmp/cs2-measure-20261004 (the CS2 measurement session: frames, console logs, the user's console.log backup)",
+  ".tmp/dev-temp/cs2-hitbox-20261004 and cs2-hitbox-20261005 (CS2 agent model exports the hitbox table comes from)",
+  "output/ (four packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "23f7a65dd68c8c5be58decce1ab0efdf886649ba008e25d55d08d55542f3bef5",
+   "unchanged": true
+  },
+  "死亡竞赛": {
+   "sha256": "9c05fb7cddb491df65fb3ac3a4be677a7ecc99f5f02a1e407c01ad480c5779ba",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 60154040320,
+  "freePct": 6.01
+ }
+}

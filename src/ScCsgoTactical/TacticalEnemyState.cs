@@ -19,6 +19,14 @@ public sealed class TacticalEnemyState {
     public float ReloadLeft {get;set;}
     public float ShotLeft {get;set;}
     public float GrenadeLeft {get;set;}=12;
+    /// <summary>Seconds a newly summoned challenge squad holds fire and does not start aiming. Ends early when attacked.
+    /// Absent in older saves (0).</summary>
+    public float Warmup {get;set;}
+    /// <summary>Recorded when the squad is created outside creative mode; only such a squad's bomb can pay a defuse
+    /// reward. Absent in older saves (false), so no reward is guessed.</summary>
+    public bool Rewardable {get;set;}
+    /// <summary>"natural" or "manual", recorded at creation. Null in older saves: counted as natural (conservative).</summary>
+    public string Source {get;set;}
     public static readonly string[][] Pools=[
         ["awp","ssg08","scar20","g3sg1"],
         ["ak47","m4a1s","m4a4","famas","galilar","aug","sg556"],
@@ -26,12 +34,14 @@ public sealed class TacticalEnemyState {
         ["m249","negev"],
         ["glock18","usp_silencer","hkp2000","p250","fiveseven","tec9","cz75a","elite","deagle","revolver"]
     ];
-    public static TacticalEnemyState Create(TacticalRole role,string squad,Engine.Random random) {
+    // Distinct names: regressions bind Create by name.
+    public static TacticalEnemyState Create(TacticalRole role,string squad,Engine.Random random)=>CreateWarm(role,squad,random,0);
+    public static TacticalEnemyState CreateWarm(TacticalRole role,string squad,Engine.Random random,float warmup) {
         string[] pool=Pools[(int)role];
         int index=role==TacticalRole.Close?(random.Bool()?random.Int(0,6):random.Int(7,10)):random.Int(0,pool.Length-1);
         int variant=Array.FindIndex(GunSpec.All,g=>g.Name==pool[index]);
         return new(){Squad=squad,Role=role,Variant=variant,Rounds=GunSpec.All[variant].Magazine,Reserve=GunSpec.All[variant].Magazine*3,
-            Grenade=random.Int(0,9) switch {0 or 1=>1,2 or 3=>2,4=>3,5=>4,_=>0},Grenades=random.Int(0,2),Bomb=role==TacticalRole.Demolition};
+            Grenade=random.Int(0,9) switch {0 or 1=>1,2 or 3=>2,4=>3,5=>4,_=>0},Grenades=random.Int(0,2),Bomb=role==TacticalRole.Demolition,Warmup=warmup};
     }
     public string Encode()=>JsonSerializer.Serialize(this);
     public static TacticalEnemyState Decode(string json) {
@@ -39,7 +49,7 @@ public sealed class TacticalEnemyState {
         if(s.Schema!=1||!Enum.IsDefined(s.Role)||string.IsNullOrWhiteSpace(s.Squad)||s.Squad.Length>80||s.Variant<0||s.Variant>=GunSpec.All.Length
             ||!Pools[(int)s.Role].Contains(GunSpec.All[s.Variant].Name)||s.Rounds<0||s.Rounds>GunSpec.All[s.Variant].Magazine||s.Reserve<0||s.Reserve>1000
             ||s.Grenade<0||s.Grenade>4||s.Grenades<0||s.Grenades>2||!float.IsFinite(s.Health+s.ReloadLeft+s.ShotLeft+s.GrenadeLeft)
-            ||s.Health<0||s.Health>1||s.ReloadLeft<0||s.ReloadLeft>10||s.ShotLeft<0||s.ShotLeft>10||s.GrenadeLeft<0||s.GrenadeLeft>60
+            ||s.Source is not (null or "natural" or "manual")||!float.IsFinite(s.Warmup)||s.Warmup<0||s.Warmup>10||s.Health<0||s.Health>1||s.ReloadLeft<0||s.ReloadLeft>10||s.ShotLeft<0||s.ShotLeft>10||s.GrenadeLeft<0||s.GrenadeLeft>60
             ||s.Bomb&&s.Role!=TacticalRole.Demolition)throw new InvalidOperationException("敌方装备存档版本或数值不受支持，拒绝重置。");
         return s;
     }
@@ -58,6 +68,8 @@ public sealed class TacticalDefuseClock {
     public TacticalDefuseClock(bool kit)=>Duration=kit?5:10;
     public float Needed=>Math.Max(0,Duration-Elapsed);
     public bool Enough(float fuse)=>fuse>Needed;
+    /// <summary>A multiplayer client's copy of the server's clock.</summary>
+    public void MirrorElapsed(float elapsed)=>Elapsed=Math.Clamp(elapsed,0,Duration);
     public DefuseResult Advance(float fuseBefore,float dt,bool valid) {
         if(!float.IsFinite(fuseBefore+dt)||dt<0)throw new ArgumentOutOfRangeException(nameof(dt));
         if(!valid)return fuseBefore<=dt?DefuseResult.Exploded:DefuseResult.Cancelled;

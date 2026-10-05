@@ -79,7 +79,6 @@ public abstract class ScWeaponHelpScreen : RecipaediaRecipesScreen {
         base.ArrangeOverride();
         if (m_loggedSize != ActualSize) {
             m_loggedSize = ActualSize;
-            KnifeLog.Trace($"[UI_LAYOUT native-rail-v2] page={GetType().Name} logical={ActualSize} body={Body.GlobalBounds} back={m_nativeBack.GlobalBounds}");
         }
     }
 }

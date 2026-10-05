@@ -14,7 +14,6 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
     static readonly string[] s_names = Enumerable.Range(0, s_count).Select(CsmcKnifeRig.GetAssetName).ToArray();
     sealed record ItemModel(BlockMesh Mesh, Vector3 Min, Vector3 Max);
     readonly ScResourceCache<int, ItemModel> m_models = new("knife-items", 12, 2000);
-    readonly bool[] m_firstPersonLogged = new bool[s_count];
 
     ItemModel Model(int variant) {
         if (m_models.TryGetValue(variant, out var hit)) return hit;
@@ -64,16 +63,6 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce($"knife-item-{variant}", $"Could not build {s_names[variant]} item model: {e.Message}");
             return;
-        }
-        if (environmentData?.DrawBlockMode == DrawBlockMode.FirstPerson && !m_firstPersonLogged[variant]) {
-            m_firstPersonLogged[variant] = true;
-            KnifeLog.Trace($"[ScCsgoKnives] block first-person fallback: value={value} (0x{value:X}), data={Terrain.ExtractData(value)}, variant={variant}, name={s_names[variant]}.");
-            Matrix sizedMatrix = Matrix.CreateScale(size) * matrix;
-            (Vector3 viewMin, Vector3 viewMax) = TransformBounds(model.Min, model.Max, sizedMatrix);
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] first-person {s_names[variant]}: size={size:0.###}, light={environmentData.Light}, "
-                + $"matrix={KnifeDiagnostics.MatrixSummary(matrix)}, viewBounds={FormatBounds(viewMin, viewMax)}."
-            );
         }
         int skin = SkinOf(value);
         string finish = ScKnifeSkinCatalog.Texture(s_names[variant], skin, variant);
@@ -142,24 +131,4 @@ public class ScKnifeBlock : ScNoDurabilityBlock {
         return (min, max);
     }
 
-    static (Vector3 Min, Vector3 Max) TransformBounds(Vector3 min, Vector3 max, Matrix matrix) {
-        Vector3 transformedMin = new(float.PositiveInfinity);
-        Vector3 transformedMax = new(float.NegativeInfinity);
-        for (int x = 0; x < 2; x++) {
-            for (int y = 0; y < 2; y++) {
-                for (int z = 0; z < 2; z++) {
-                    Vector3 p = Vector3.Transform(
-                        new Vector3(x == 0 ? min.X : max.X, y == 0 ? min.Y : max.Y, z == 0 ? min.Z : max.Z),
-                        matrix
-                    );
-                    transformedMin = Vector3.Min(transformedMin, p);
-                    transformedMax = Vector3.Max(transformedMax, p);
-                }
-            }
-        }
-        return (transformedMin, transformedMax);
-    }
-
-    static string FormatBounds(Vector3 min, Vector3 max) =>
-        $"min=({min.X:0.###},{min.Y:0.###},{min.Z:0.###}) max=({max.X:0.###},{max.Y:0.###},{max.Z:0.###})";
 }

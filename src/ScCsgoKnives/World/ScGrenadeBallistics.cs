@@ -33,6 +33,47 @@ public static class ScGrenadeBallistics {
         s.Position=hitPoint-direction*.10f;s.Velocity=-s.Velocity*.3f;
         if(s.Kind==2)s.SmokeBodyBounceUsed=true;
     }
+    /// <summary>Release state shared by the real throw and the preview: aim-point corrected direction from the view,
+    /// the release origin and the launch velocity (player velocity sampled now).</summary>
+    public static (Vector3 Position,Vector3 Velocity) Launch(Vector3 viewPosition,Vector3 viewDirection,Vector3 playerVelocity,bool low,Func<Vector3,Vector3,Vector3?> solidHitPoint)
+        => LaunchFrom(SubsystemScGrenades.ReleaseOrigin(viewPosition),viewPosition,viewDirection,playerVelocity,low,solidHitPoint);
+    /// <summary>As <see cref="Launch"/>, leaving from <paramref name="origin"/> while the aim point is still what the
+    /// view ray shows. In first person origin and view position are the same point and this is exactly Launch; a
+    /// third-person camera aims along its own ray but the grenade leaves the thrower, not the camera behind them.</summary>
+    public static (Vector3 Position,Vector3 Velocity) LaunchFrom(Vector3 origin,Vector3 viewPosition,Vector3 viewDirection,Vector3 playerVelocity,bool low,Func<Vector3,Vector3,Vector3?> solidHitPoint) {
+        Vector3 direction=Direction(viewDirection,low);
+        Vector3 aimTarget=solidHitPoint(viewPosition,viewPosition+direction*48) ?? viewPosition+direction*48;
+        Vector3 pos=origin;
+        Vector3 toTarget=aimTarget-pos; if (toTarget.LengthSquared()>.01f) direction=Vector3.Normalize(toTarget);
+        return (pos,LaunchVelocity(direction,playerVelocity,low));
+    }
+    public enum StepEvent { None, Body, Surface }
+    /// <summary>One flight sub-step (at most 0.02 s) with no side effects: the caller supplies terrain, water and
+    /// body queries and plays the bounce sound when <paramref name="bounceSound"/> is set. The real grenade and the
+    /// preview both use this, so they cannot drift apart.</summary>
+    public static StepEvent Integrate(ScGrenadeState s,float dt,Func<Vector3,Vector3,TerrainRaycastResult?> solid,Func<Vector3,bool> water,
+            Func<Vector3,Vector3,BodyRaycastResult?> bodies,out bool bounceSound) {
+        bounceSound=false;
+        if (s.Grounded && !solid(s.Position,s.Position-Vector3.UnitY*.15f).HasValue) { s.Grounded=false;s.Rested=0; }
+        if (s.Grounded) { s.Rested+=dt;return StepEvent.None; }
+        bool inWater=water(s.Position);
+        s.Velocity+=Vector3.UnitY*(inWater?-3f:-10f)*dt;
+        s.Velocity*=MathF.Exp(-(inWater?3:.08f)*dt);
+        Vector3 next=s.Position+s.Velocity*dt;
+        var hit=solid(s.Position,next);
+        var bodyHit=BodyCollisionAllowed(s)&&bodies is not null?bodies(s.Position,next):null;
+        if (bodyHit.HasValue && (!hit.HasValue || bodyHit.Value.Distance<hit.Value.Distance)) {
+            BounceFromBody(s,bodyHit.Value.HitPoint());return StepEvent.Body;
+        }
+        if (!hit.HasValue) { s.Position=next;return StepEvent.None; }
+        Vector3 normal=CellFace.FaceToVector3(hit.Value.CellFace.Face);
+        s.Position=hit.Value.HitPoint()+normal*.06f;
+        if (s.Kind is not (3 or 4) && s.Velocity.LengthSquared()>1 && s.Age>=s.NextBounceSound) { s.NextBounceSound=s.Age+.15f;bounceSound=true; }
+        s.Velocity=(s.Velocity-2*Vector3.Dot(s.Velocity,normal)*normal)*.48f;
+        if (s.Kind is 3 or 4 && normal.Y>.5f) { s.Grounded=true;s.Velocity=Vector3.Zero; }
+        if (normal.Y>.5f && s.Velocity.LengthSquared()<.5f) { s.Grounded=true;s.Velocity=Vector3.Zero; }
+        return StepEvent.Surface;
+    }
     /// <summary>F02 (user, 2026-09-07): once a throw has finished, go back to the slot the player held
     /// before the grenade slot, whatever it holds now; -1 (stay) when there is no such slot.</summary>
     public static int FollowUpSlot(int slotsCount, int thrownSlot, int previousSlot)

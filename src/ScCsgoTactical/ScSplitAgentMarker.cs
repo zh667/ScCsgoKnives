@@ -12,12 +12,15 @@ public static class ScSplitAgentMarker {
     public static void ValidateCore(){
         var core=ModsManager.Dlls.Values.FirstOrDefault(a=>a.GetName().Name=="ScCsgoKnives");
         if(core?.GetType("Game.ScOptionalAgents")?.GetField("Split")?.GetRawConstantValue() is not true)
-            throw new InvalidOperationException("此探员包需要配套新的1.3.0轻量包，不能与旧全量、轻量或极简包混装。");
+            throw new InvalidOperationException("此探员包需要配套的1.4.0轻量包，不能与旧全量、轻量或极简包混装。");
+        if(core.GetType("Game.ScOptionalAgents")?.GetField("CompanionLedgerProtocol")?.GetRawConstantValue() is not 1
+            ||core.GetType("Game.ScOptionalAgents")?.GetField("FollowupProtocol")?.GetRawConstantValue() is not 1)
+            throw new InvalidOperationException("此探员包需要同批更新的轻量包（同伴远距保存），请同时更新两个文件。");
 #if SC_RESOURCE_ZSTD
         if(core.GetType("Game.ScResourceCompression")?.GetField("Protocol")?.GetRawConstantValue() is not 1)
-            throw new InvalidOperationException("此探员包需要配套的1.3.0无损压缩轻量包，请同时更新两个文件。");
+            throw new InvalidOperationException("此探员包需要配套的1.4.0轻量包，请同时更新两个文件。");
         if(core.GetType("Game.ScResourceTiming")?.GetField("MobileProtocol")?.GetRawConstantValue() is not 4)
-            throw new InvalidOperationException("此探员包需要本次手机优化版1.3.0轻量包，请同时更新两个文件。");
+            throw new InvalidOperationException("此探员包需要配套的1.4.0轻量包，请同时更新两个文件。");
 #endif
     }
 }

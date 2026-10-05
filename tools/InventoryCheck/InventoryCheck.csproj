@@ -7,6 +7,7 @@
     <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
     <Compile Include="../PackageCheck/SushiInventoryRegression.cs" Link="SushiInventoryRegression.cs" />
     <Compile Include="../PackageCheck/SushiSyncInventoryRegression.cs" Link="SushiSyncInventoryRegression.cs" />
+    <Compile Include="../PackageCheck/SushiStackingRegression.cs" Link="SushiStackingRegression.cs" />
     <Compile Include="../BalanceCheck/SourceObj.cs" Link="SourceObj.cs" />
   </ItemGroup>
 </Project>

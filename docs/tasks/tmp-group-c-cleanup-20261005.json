@@ -1,0 +1,1028 @@
+{
+ "task": "old .tmp stages, group C of docs/tasks/tmp-inventory-20261005.md (trimmed)",
+ "date": "2026-10-05T15:57:43",
+ "authority": "user 2026-10-05: 可以 (the C plan: keep what the current build, the compatibility gate and release_140 still read)",
+ "permanence": "permanent deletion (not the recycle bin)",
+ "kept": {
+  "feedback-fixes-130-20260927/agents/source": {
+   "files": 63,
+   "bytes": 35946983
+  },
+  "feedback-fixes-130-20260927/full/agents/source": {
+   "files": 63,
+   "bytes": 153394656
+  },
+  "capacity-fix-20260927/1.0.0/src/ScCsgoKnives/bin/Release/net10.0": {
+   "files": 6,
+   "bytes": 134412298
+  },
+  "capacity-fix-20260927/1.2.0/src/ScCsgoKnives/bin/Release/net10.0": {
+   "files": 6,
+   "bytes": 136939348
+  },
+  "capacity-fix-20260927/lite": {
+   "files": 299,
+   "bytes": 96556394
+  },
+  "capacity-fix-20260927/full": {
+   "files": 296,
+   "bytes": 331384866
+  },
+  "capacity-fix-20260927/recovered-worlds": {
+   "files": 3,
+   "bytes": 10260762
+  },
+  "also": "each tree's logs/ and top-level *.json; .tmp/third-party-refs"
+ },
+ "linksRemovedNotFollowed": [
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  }
+ ],
+ "removed": [
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\actor-ct.log",
+   "bytes": 750
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\actor-t.log",
+   "bytes": 749
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\agents",
+   "bytes": 35921070
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\agents-reference.zip",
+   "bytes": 51492747
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\ai.log",
+   "bytes": 18417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\appearance",
+   "bytes": 64066253
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\appearance.log",
+   "bytes": 1665
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\assemblies",
+   "bytes": 24950272
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\baseline",
+   "bytes": 595138910
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-actor-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-codec-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-compat-runner-CompatibilityCheck.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-load-check-TacticalLoadCheck.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-mobile-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-npc-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-performance-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-resources-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-sampling-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-checks-split-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-full-check-checks-actor-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-full-check-checks-load-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-full-check-checks-mobile-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-full-check-checks-npc-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\build-full-check-checks-sampling-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\candidate",
+   "bytes": 595248840
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\checks",
+   "bytes": 223167
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\codec-software.log",
+   "bytes": 296
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\codec.log",
+   "bytes": 176
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\compat-baselines",
+   "bytes": 391401472
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\compatibility-current.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\compatibility-historical.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\compatibility-mini.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\compatibility-split-full.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\core",
+   "bytes": 79197141
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\core-reference.zip",
+   "bytes": 70971681
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\diagnostics.log",
+   "bytes": 6473
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\encoded",
+   "bytes": 23585649
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture",
+   "bytes": 169093037
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\fixture-union.scmod",
+   "bytes": 122404196
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full",
+   "bytes": 484663457
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-actor-ct.log",
+   "bytes": 626
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-actor-t.log",
+   "bytes": 628
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-ai.log",
+   "bytes": 18417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-appearance.log",
+   "bytes": 1543
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-check",
+   "bytes": 2447143626
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-gate.log",
+   "bytes": 839
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-native.log",
+   "bytes": 1538
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-npc.log",
+   "bytes": 3749
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-both.log",
+   "bytes": 557
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-disabled.log",
+   "bytes": 301
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-neo-only.log",
+   "bytes": 224
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-nmm-only.log",
+   "bytes": 367
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-none.log",
+   "bytes": 220
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-outdated.log",
+   "bytes": 367
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-official-reversed.log",
+   "bytes": 561
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-sampling.log",
+   "bytes": 3156
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-smoke.log",
+   "bytes": 24
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\full-zip.log",
+   "bytes": 36
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\gate.log",
+   "bytes": 838
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\junction.ps1",
+   "bytes": 106
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\local-nmm.log",
+   "bytes": 758
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\native-agents.log",
+   "bytes": 499
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\native-controller.cs",
+   "bytes": 37617
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\native-core.log",
+   "bytes": 265
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\native.log",
+   "bytes": 1508
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\npc",
+   "bytes": 244395
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\npc-rebake",
+   "bytes": 51509144
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\npc.log",
+   "bytes": 3771
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-both.log",
+   "bytes": 758
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-disabled.log",
+   "bytes": 450
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-neo-only.log",
+   "bytes": 373
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-nmm-only.log",
+   "bytes": 516
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-none.log",
+   "bytes": 369
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-outdated.log",
+   "bytes": 516
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\official-reversed.log",
+   "bytes": 762
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\performance",
+   "bytes": 8112
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\resources",
+   "bytes": 50663005
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\resources-native",
+   "bytes": 8934853
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\resources.log",
+   "bytes": 5809
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\runtime",
+   "bytes": 657319112
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\sampling",
+   "bytes": 62284
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\smoke",
+   "bytes": 1054
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\split-sampling.log",
+   "bytes": 3281
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\split-smoke.log",
+   "bytes": 24
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\upstream",
+   "bytes": 14751741
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\zip-agents.log",
+   "bytes": 35
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\zip-core.log",
+   "bytes": 36
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-common-130-20260927\\ZstdSharp-source.zip",
+   "bytes": 5486911
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\actor-ct.log",
+   "bytes": 750
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\actor-t.log",
+   "bytes": 749
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\agents-reference.zip",
+   "bytes": 51497088
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\appearance",
+   "bytes": 64109474
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\appearance.log",
+   "bytes": 2269
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\assemblies",
+   "bytes": 24989696
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\baseline",
+   "bytes": 596988995
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-actor-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-appearance-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-codec-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-compat-runner-CompatibilityCheck.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-features-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-load-check-TacticalLoadCheck.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-mobile-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-npc-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-package-PackageCheck.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-performance-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-resources-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-sampling-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-split-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-checks-textures-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-actor-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-appearance-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-features-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-load-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-mobile-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-npc-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-sampling-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\build-full-check-checks-textures-Check.log",
+   "bytes": 84
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\candidate",
+   "bytes": 596989978
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\checks",
+   "bytes": 1020617
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\codec-software.log",
+   "bytes": 296
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\codec.log",
+   "bytes": 176
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\compat-baselines",
+   "bytes": 391454720
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\compatibility-current.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\compatibility-historical.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\compatibility-mini.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\compatibility-split-full.log",
+   "bytes": 7616
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\core",
+   "bytes": 79248203
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\core-features.log",
+   "bytes": 681
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\core-reference.zip",
+   "bytes": 71132476
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\core-textures.log",
+   "bytes": 2099
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\diagnostics.log",
+   "bytes": 7878
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\encoded",
+   "bytes": 23585649
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\features",
+   "bytes": 840167
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture",
+   "bytes": 169533463
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\fixture-union.scmod",
+   "bytes": 122569087
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full\\appearance",
+   "bytes": 19169
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full\\core",
+   "bytes": 196646764
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full\\resources",
+   "bytes": 134697984
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full\\voice",
+   "bytes": 137330880
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-actor-ct.log",
+   "bytes": 626
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-actor-t.log",
+   "bytes": 628
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-ai.log",
+   "bytes": 21227
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-appearance.log",
+   "bytes": 2007
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-check",
+   "bytes": 2451533153
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-features.log",
+   "bytes": 681
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-gate.log",
+   "bytes": 839
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-native.log",
+   "bytes": 1538
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-npc.log",
+   "bytes": 3874
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-both.log",
+   "bytes": 557
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-disabled.log",
+   "bytes": 301
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-neo-only.log",
+   "bytes": 224
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-nmm-only.log",
+   "bytes": 367
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-none.log",
+   "bytes": 220
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-outdated.log",
+   "bytes": 367
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-official-reversed.log",
+   "bytes": 561
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-sampling.log",
+   "bytes": 3137
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-smoke.log",
+   "bytes": 24
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-textures.log",
+   "bytes": 1966
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\full-zip.log",
+   "bytes": 36
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\gate.log",
+   "bytes": 838
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\junction.ps1",
+   "bytes": 106
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\local-nmm.log",
+   "bytes": 758
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\native-agents.log",
+   "bytes": 499
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\native-core.log",
+   "bytes": 265
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\native.log",
+   "bytes": 1508
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\new-assets",
+   "bytes": 1833307
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\npc",
+   "bytes": 244377
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\npc-rebake",
+   "bytes": 51509144
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\npc.log",
+   "bytes": 4280
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-both.log",
+   "bytes": 758
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-disabled.log",
+   "bytes": 450
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-neo-only.log",
+   "bytes": 373
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-nmm-only.log",
+   "bytes": 516
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-none.log",
+   "bytes": 369
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-outdated.log",
+   "bytes": 516
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\official-reversed.log",
+   "bytes": 762
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\performance",
+   "bytes": 9395
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\resources",
+   "bytes": 50663005
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\resources-native",
+   "bytes": 8934926
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\resources.log",
+   "bytes": 7608
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\runtime",
+   "bytes": 657360985
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\sampling",
+   "bytes": 62274
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\smoke",
+   "bytes": 1054
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\split-ai.log",
+   "bytes": 21227
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\split-sampling.log",
+   "bytes": 3271
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\split-smoke.log",
+   "bytes": 24
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\sushi.log",
+   "bytes": 1534
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\textures",
+   "bytes": 2051
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\upstream",
+   "bytes": 14751741
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\voice",
+   "bytes": 19909749
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\zip-agents.log",
+   "bytes": 35
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\zip-core.log",
+   "bytes": 36
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\feedback-fixes-130-20260927\\ZstdSharp-source.zip",
+   "bytes": 5486911
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\ASSET_SOURCES.md",
+   "bytes": 13763
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\backport.json",
+   "bytes": 1200
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\LICENSE",
+   "bytes": 35149
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\refs",
+   "bytes": 134303744
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\Animation",
+   "bytes": 447506
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\AnimationData",
+   "bytes": 133279347
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\Blocks",
+   "bytes": 59866
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\GlobalUsings.cs",
+   "bytes": 93
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\Mod",
+   "bytes": 22584
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\modinfo.json",
+   "bytes": 779
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\obj",
+   "bytes": 2583726
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\Rendering",
+   "bytes": 427717
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\ScCsgoKnives.csproj",
+   "bytes": 3449
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\Shaders",
+   "bytes": 8815
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\src\\ScCsgoKnives\\World",
+   "bytes": 661623
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.0.0\\THIRD_PARTY_NOTICES.md",
+   "bytes": 2543
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\ASSET_SOURCES.md",
+   "bytes": 15465
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\backport.json",
+   "bytes": 1200
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\LICENSE",
+   "bytes": 35149
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\refs",
+   "bytes": 136797184
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\Animation",
+   "bytes": 455873
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\AnimationData",
+   "bytes": 135663357
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\Blocks",
+   "bytes": 68204
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\GlobalUsings.cs",
+   "bytes": 93
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\Mod",
+   "bytes": 27736
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\modinfo.json",
+   "bytes": 1455
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\obj",
+   "bytes": 2774191
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\Rendering",
+   "bytes": 454580
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\ScCsgoKnives.csproj",
+   "bytes": 3580
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\Shaders",
+   "bytes": 9905
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\src\\ScCsgoKnives\\World",
+   "bytes": 761229
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\1.2.0\\THIRD_PARTY_NOTICES.md",
+   "bytes": 2543
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\baseline",
+   "bytes": 1459157713
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\candidate",
+   "bytes": 1422092559
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\old100",
+   "bytes": 134356480
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\old120",
+   "bytes": 136880640
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\capacity-fix-20260927\\old130",
+   "bytes": 137019392
+  }
+ ],
+ "totalBytes": 15708152860,
+ "outputUnchanged": true,
+ "freeAfter": 168167735296
+}

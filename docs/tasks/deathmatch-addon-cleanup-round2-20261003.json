@@ -1,0 +1,151 @@
+{
+ "task": "deathmatch-addon round 2 (docs/tasks/deathmatch-addon-round2-20261003.md)",
+ "date": "2026-10-03T03:29:17",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "dma3DeathmatchMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages or superseded",
+ "removed": {
+  "stage dma3 build trees (delivered; logs, reports, packages.json, dm.json, identity.json, net.json, source-hashes.json, payload-check worlds kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dma3\\full",
+    ".tmp\\completion-140-20260929\\dma3\\lite",
+    ".tmp\\completion-140-20260929\\dma3\\tools",
+    ".tmp\\completion-140-20260929\\dma3\\tree",
+    ".tmp\\completion-140-20260929\\dma3\\assets-full",
+    ".tmp\\completion-140-20260929\\dma3\\resources",
+    ".tmp\\completion-140-20260929\\dma3\\net",
+    ".tmp\\completion-140-20260929\\dma3\\motion",
+    ".tmp\\completion-140-20260929\\dma3\\throw",
+    ".tmp\\completion-140-20260929\\dma3\\ui",
+    ".tmp\\completion-140-20260929\\dma3\\old130",
+    ".tmp\\completion-140-20260929\\dma3\\dm\\source",
+    ".tmp\\completion-140-20260929\\dma3\\dm\\check",
+    ".tmp\\completion-140-20260929\\dma3\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dma3\\dm\\loadtool"
+   ],
+   "bytes": 2654543626,
+   "items": 5593,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dma3\\air"
+   ]
+  },
+  "stage dma3 core candidates (byte-identical to the packages already in output: verified above)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dma3\\candidate\\[API1.9]CS武器1.4.0-全量包.scmod",
+    ".tmp\\completion-140-20260929\\dma3\\candidate\\[API1.9]CS武器1.4.0-轻量包.scmod",
+    ".tmp\\completion-140-20260929\\dma3\\candidate\\[API1.9]CS武器1.4.0-探员包.scmod"
+   ],
+   "bytes": 601138709,
+   "items": 3,
+   "missing": []
+  },
+  "round-2 TEST-ONLY deathmatch packages and their build (dm_testpkg.py; never delivered)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dm-r1.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dm-r2.scmod",
+    ".tmp\\mp-m0-20260929\\build\\dm-testpkg"
+   ],
+   "bytes": 4448353,
+   "items": 160,
+   "missing": []
+  },
+  "full-size frames of the superseded test-package runs r1/r2 (their frames/preview JPEGs, logs and result JSON stay)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-00-menu-new-world",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-01-after-enable",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-02-corner-1-pending-box",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-03-check-map",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-04-start-refused",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-05-editing-preview-from-above",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-06-editing-preview-first-person",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-07-lobby-menu",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-08-wheel-top",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-09-wheel-rifles",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-10-wheel-ak-drawer",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-11-wheel-pistols",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-12-wheel-loadout-ready",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-13-after-start-menu",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-14-countdown-hud",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-15-alive-hud",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-16-alive-hud-after-protection",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-17-scoreboard-held",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-18-results",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r1-20261003-024114\\frames\\dm-sp-r1-19-layout-editor",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-00-menu-new-world",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-01-after-enable",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-02-corner-1-pending-box",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-03-check-map",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-04-start-refused",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-05-editing-preview-from-above",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-06-editing-preview-first-person",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-07-lobby-menu",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-08-wheel-top",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-09-wheel-rifles",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-10-wheel-ak-drawer",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-11-wheel-pistols",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-12-wheel-loadout-ready",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-13-after-start-menu",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-14-countdown-hud",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-15-alive-hud",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-16-alive-hud-after-protection",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-17-scoreboard-held",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-18-results",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-19-layout-editor",
+    ".tmp\\mp-m0-20260929\\run\\dm-sp-r2-20261003-025604\\frames\\dm-sp-r2-20-layout-editor-slider",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-00-client1-joined",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-01-server-host-editing-after-join",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-02-client1-client-menu-editing",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-03-client1-lobby",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-04-client1-client-entered",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-05-client1-countdown",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-06-server-countdown",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-07-client1-alive-hud",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-08-server-alive-hud",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-09-client1-kill-feed",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-10-server-death-panel",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-11-client1-scoreboard",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-12-server-respawned",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-13-client1-results",
+    ".tmp\\mp-m0-20260929\\run\\dm-mp-r2-20261003-025833\\frames\\dm-mp-r2-14-server-results"
+   ],
+   "bytes": 43520180,
+   "items": 56,
+   "missing": []
+  },
+  "totalBytes": 3303650868,
+  "items": 5812
+ },
+ "kept": [
+  "stage dma3: logs/, *.json reports, packages.json, dm.json, identity.json, net.json, source-hashes.json, dm/world-group-*.xml, dm/load-*.xml",
+  ".tmp/mp-m0-20260929/run/dm-sp-baseline* (the reproduction on the delivered dma2 package), dm-sp-dma3-*, dm-mp-dma3-* (the runs on the delivered candidate), every run's logs, result JSON and preview JPEGs",
+  ".tmp/dev-temp/deathmatch-round2-20261003 (the phone's Game.log read through Explorer, the pixel icon sheet)",
+  "src/ScCsgoDeathmatch/Assets (package sources)",
+  "output/ (four packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "6141ac016fb468392b8d6f0adf011ed4554f9edda7baf5a08438fe85b675d625",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "408d9f35f4ad69f2dfbd5c66a02b089ede362847604dbfdbe38e228783bd43c3",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "e804b11c3d7b7ab3ecbcf0d6ca30f05aeb08446108f8adaf89080c6280ba17b7",
+   "unchanged": true
+  },
+  "死亡竞赛": {
+   "sha256": "766d345fe5eed726752693cfd634b47e37e9be15146bf4bf5d5258f89bb4af97",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 120506703872,
+  "freePct": 12.05
+ }
+}

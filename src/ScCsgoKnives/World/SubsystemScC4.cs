@@ -52,6 +52,16 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
     public int[] DrawOrders => [10];
     public void SetPlantButton(ComponentPlayer player, bool pressed) => buttons[player] = pressed;
     public bool IsPlanting(ComponentPlayer player) => preparations.ContainsKey(player);
+    /// <summary>Armed player charges, read-only, for defusing and danger avoidance by optional packages.</summary>
+    public IReadOnlyList<ScC4Charge> Charges => charges;
+    /// <summary>Blasts shown here recently (read by the two-process tests).</summary>
+    public int BlastCount => blasts.Count;
+    /// <summary>Terminal disarm of one armed charge. Fuse, power and radius stay untouched until then; returns false if
+    /// the charge already exploded or was removed.</summary>
+    public bool Disarm(ScC4Charge charge) {
+        if (!ScNet.IsAuthority || charge is null || charge.Remaining <= 0 || !charges.Remove(charge)) return false;
+        Sound("c4_disarmfinish", charge.Position, 1, 0); return true;
+    }
     public void ConfigureTimer(ComponentPlayer player) {
         if(!ScGunBindings.Available(player)||!ScC4Block.IsValue(player.ComponentMiner.ActiveBlockValue)||IsPlanting(player))return;
         int index=player.PlayerData.PlayerIndex;
@@ -63,6 +73,10 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
             player.ComponentGui.DisplaySmallMessage($"下次 C4：{seconds} 秒",Color.White,false,false);
         }));
     }
+    /// <summary>Read-only presentation of this player's plant (default when none): the same gameplay clock that commits
+    /// the charge. Readers draw with it and change nothing.</summary>
+    public ScPlantPhase PlantPhase(ComponentPlayer player) => player is not null && preparations.TryGetValue(player, out var p)
+        ? new ScPlantPhase(ScC4Block.Value, p.Placed, (float)Math.Max(0, time.GameTime - p.Started), p.AnimationSequence, p.Position) : default;
     public int ViewmodelValue(ComponentPlayer player, int value) => player is not null && preparations.TryGetValue(player, out var p)
         && p.Placed && value == 0 && ReferenceEquals(player.ComponentMiner.Inventory, p.Inventory) && player.ComponentMiner.Inventory.ActiveSlotIndex == p.Slot ? ScC4Block.Value : value;
     public override void Load(ValuesDictionary values) {
@@ -82,9 +96,32 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         var saved = new ValuesDictionary(); for (int i = 0; i < charges.Count; i++) saved.SetValue(i.ToString(), charges[i].Save());
         values.SetValue("Charges", saved);
     }
-    void Sound(string name, Vector3 at, float volume = 1, float pitch = 0) => audio.PlaySound("Audio/ScCsgoKnives/" + name, volume, pitch, at, 32, true);
-    bool Down(ComponentPlayer p) => buttons.GetValueOrDefault(p) || ScGunBindings.Down(p, ScGunFunctions.Plant);
-    static bool Stationary(ComponentPlayer p) => (p.ComponentBody.StandingOnValue.HasValue || p.ComponentBody.StandingOnBody is not null)
+    /// <summary>A C4 world sound: here, and (server) for every multiplayer client except <paramref name="shownBy"/>, whose own
+    /// client already plays its plant. The other clients are told first, so a sample this process cannot play never keeps
+    /// them from hearing it.</summary>
+    void Sound(string name, Vector3 at, float volume = 1, float pitch = 0, ComponentPlayer shownBy = null) {
+        if (ScNet.IsHost) ScNetGrenades.Sound("Audio/ScCsgoKnives/" + name, volume, at, 32, shownBy);
+        if (HeardHere(shownBy is not null, ScNet.IsLocal(shownBy), ScNet.IsHost)) Play(name, volume, pitch, at);
+    }
+    /// <summary>Whether this process plays a plant sound itself. With no owner: always. With an owner (the planter, whose
+    /// client plays its own plant as it happens): the owner's own process, and the host, which stands in the world as a
+    /// listener too. mpb left the host out (it only played what its own player planted), so a host next to a planting
+    /// client heard neither the arming tone, the key presses nor the plant, while the other clients, told by the host, did.
+    /// A client never gets here for another player's plant (it does not run it); it hears the host's message.</summary>
+    public static bool HeardHere(bool hasOwner, bool ownerIsLocal, bool host) => !hasOwner || ownerIsLocal || host;
+    /// <summary>Test diagnostics: every C4 sound this process played itself (name, position). Null in the game.</summary>
+    public static Action<string, Vector3> SoundPlayed;
+    /// <summary>Plays one C4 sample here. A sample that cannot be played (not decodable, no audio output) costs that one
+    /// sound and nothing else: the plant, the charge and its countdown go on.</summary>
+    void Play(string name, float volume, float pitch, Vector3 at) {
+        SoundPlayed?.Invoke(name, at);
+        try { audio.PlaySound("Audio/ScCsgoKnives/" + name, volume, pitch, at, 32, true); }
+        catch (Exception e) { KnifeDiagnostics.WarnOnce("c4-sound-" + name, $"C4 sound {name} could not be played here ({e.GetType().Name}: {e.Message}); the charge is not affected"); }
+    }
+    /// <summary>The plant key: this process's own devices, or (server) what a remote client sent.</summary>
+    bool Down(ComponentPlayer p) => ScNetC4.RemotePlant(p) is { } remote ? remote.Held : buttons.GetValueOrDefault(p) || ScGunBindings.Down(p, ScGunFunctions.Plant);
+    // A remote client's player (server) is moved by its client, not simulated here: its footing is the terrain below it.
+    bool Stationary(ComponentPlayer p) => (ScNet.IsRemoteDriven(p) ? Floor(p, out _) : p.ComponentBody.StandingOnValue.HasValue || p.ComponentBody.StandingOnBody is not null)
         && new Vector2(p.ComponentBody.Velocity.X, p.ComponentBody.Velocity.Z).LengthSquared() < .09f;
     bool Floor(ComponentPlayer p, out Vector3 position) {
         var hit = terrain.Raycast(p.ComponentBody.Position + Vector3.UnitY * .25f, p.ComponentBody.Position - Vector3.UnitY * .7f,
@@ -131,7 +168,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         var attack = new BombAttack(body, owner, point, direction, power) {
             ImpulseFactor = 0, StunTimeSet = 0, StunTimeAdd = 0, AllowImpulseAndStunWhenDamageIsZero = false, AttackSoundVolume = 0
         };
-        ComponentMiner.AttackBody(attack);
+        ScDamageIndicator.AttackBody(attack);
     }
     /// <summary>Fires the C4's split hits as their times arrive; a body that died or left the world is skipped.</summary>
     void ProcessDelayedHits() {
@@ -150,51 +187,106 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
     }
     public void Update(float dt) {
         float elapsed = (float)Math.Max(0, time.GameTime - lastTime); lastTime = time.GameTime;
-        ProcessDelayedHits();
+        bool authority = ScNet.IsAuthority;
+        if (authority) ProcessDelayedHits();
         blasts.RemoveAll(b=>time.GameTime-b.Started>ScC4Blast.Lifetime);
         foreach (var c in charges.ToArray()) {
+            // A remote client counts down and beeps its copy of the server's charge; only the server detonates.
+            if (!authority) { c.Tick(elapsed); if (c.Remaining > 0 && c.NextCue() is string beep) Play(beep, beep == "c4_warning" ? .8f : .9f, 0, c.Position); continue; }
             if (c.Remaining <= 0 || c.Tick(elapsed)) { charges.Remove(c); Detonate(c); continue; }
-            if(c.NextCue() is string cue) Sound(cue,c.Position,cue=="c4_warning"?.8f:.9f,0);
+            if(c.NextCue() is string cue) Play(cue, cue == "c4_warning" ? .8f : .9f, 0, c.Position); // every client beeps its own copy
         }
         foreach (var p in players.ComponentPlayers) {
+            bool local = ScNet.IsLocal(p);
+            if (!local && ScNetC4.RemotePlant(p) is null) continue; // another client's player: its client and the server run its plant
             bool down = Down(p), was = held.GetValueOrDefault(p); held[p] = down;
+            if (local && ScNet.IsRemoteClient) ScNetC4.SendInput(down, ScUiSettings.C4Fuse(p.PlayerData.PlayerIndex));
             bool available = ScGunBindings.Available(p);
             if (!preparations.TryGetValue(p, out var prep)) {
-                if (!down || was || !available || !ScC4Block.IsValue(p.ComponentMiner.ActiveBlockValue) || !Stationary(p)
-                    || KnifeAnimationController.IsBusy(p.Entity.FindComponent<ComponentFirstPersonModel>()) || !Floor(p, out var place)) continue;
-                if (charges.Count >= 16) { p.ComponentGui.DisplaySmallMessage("活动 C4 已达 16 个，未消耗物品。", Color.White, false, false); continue; }
+                // A reserved defuse target (any armed bomb in front) outranks starting a new plant with the same key.
+                if (!down || was || !available || ScWeaponActionGate.Blocks(p) || !ScC4Block.IsValue(p.ComponentMiner.ActiveBlockValue) || !Stationary(p)
+                    || local && KnifeAnimationController.IsBusy(p.Entity.FindComponent<ComponentFirstPersonModel>()) || !Floor(p, out var place)) {
+                    // (The viewmodel's busy state is the planting client's own; the server never draws a remote player's.)
+                    if (!local && down && !was) ScNet.Trace($"c4 P{p.PlayerData.PlayerIndex} start refused: available {available} reserved {ScWeaponActionGate.Blocks(p)} c4 {ScC4Block.IsValue(p.ComponentMiner.ActiveBlockValue)} stationary {Stationary(p)} floor {Floor(p, out _)} v {p.ComponentBody.Velocity}");
+                    continue;
+                }
+                // mp-user-logs-20261002: only the server arms a charge; a client whose CS network layer is not accepted starts
+                // no plant (it would crouch and type for nothing) and is told why.
+                if (local && ScNet.ClientBlocked) { ScNet.TellBlocked(p); continue; }
+                if (!local) ScNet.Trace($"c4 P{p.PlayerData.PlayerIndex} plant started");
+                if (charges.Count >= 16) { ScNetFeedback.Tell(p, "活动 C4 已达 16 个，未消耗物品。", Color.White); continue; }
+                // The fuse is the planter's own choice (a remote client sends its setting with its plant key).
+                int fuse = ScNetC4.RemotePlant(p) is { } remotePlant ? remotePlant.Fuse : ScUiSettings.C4Fuse(p.PlayerData.PlayerIndex);
                 prep = new Preparation { Transaction = new ScThrowTransaction(p.ComponentMiner.Inventory), Inventory = p.ComponentMiner.Inventory, PlayerStart = p.ComponentBody.Position,
-                    Position = VisiblePlantPosition(place), Started = time.GameTime, Slot = p.ComponentMiner.Inventory.ActiveSlotIndex, Fuse=ScUiSettings.C4Fuse(p.PlayerData.PlayerIndex) };
+                    Position = VisiblePlantPosition(place), Started = time.GameTime, Slot = p.ComponentMiner.Inventory.ActiveSlotIndex, Fuse=fuse };
                 prep.PreviousCrouch=p.ComponentBody.TargetCrouchFactor;p.ComponentBody.TargetCrouchFactor=1;
                 preparations[p] = prep; prep.AnimationSequence = KnifeAnimationController.C4Action(p, "plant");
             }
             float age = (float)(time.GameTime - prep.Started);
             if (!ReferenceEquals(p.ComponentMiner.Inventory, prep.Inventory)) { Cancel(p, prep); continue; }
+            KnifeAnimationController.ScrubC4(p, prep.AnimationSequence, age);
             if (prep.Placed) { if (age >= Cs2Rig.Duration("c4", "plant") || !available || p.ComponentMiner.Inventory.ActiveSlotIndex != prep.Slot) Cancel(p, prep); continue; }
-            if (!down || !available || !prep.Transaction.Valid || !Stationary(p) || Vector3.DistanceSquared(prep.PlayerStart, p.ComponentBody.Position) > .04f) { Cancel(p, prep); continue; }
-            if (!progress.TryGetValue(p, out var label)) {
+            if (!down || !available || !prep.Transaction.Valid || !Stationary(p) || Vector3.DistanceSquared(prep.PlayerStart, p.ComponentBody.Position) > .04f) {
+                if (!local) ScNet.Trace($"c4 P{p.PlayerData.PlayerIndex} plant cancelled: down {down} available {available} valid {prep.Transaction.Valid} stationary {Stationary(p)} moved {Vector3.Distance(prep.PlayerStart, p.ComponentBody.Position):0.00}");
+                Cancel(p, prep); continue; }
+            LabelWidget label = null;
+            if (local && !progress.TryGetValue(p, out label)) {
                 label = new LabelWidget { FontScale = .65f, DropShadow = true, IsHitTestVisible = false,
                     HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Far, Margin = new Vector2(0, 96) };
                 progress[p] = label; p.ComponentGui.ControlsContainerWidget.Children.Add(label);
             }
-            label.IsVisible = true; label.Text = $"C4  {Math.Min(100, (int)(age / ScC4Charge.PlantSeconds * 100))}%";
+            if (label is not null) { label.IsVisible = true; label.Text = $"C4  {Math.Min(100, (int)(age / ScC4Charge.PlantSeconds * 100))}%"; }
             var events = Cs2Rig.Events("c4", "plant");
             while (prep.SoundIndex < events.Count && events[prep.SoundIndex].At <= age) {
                 var e = events[prep.SoundIndex++];
-                if (e.Name == "c4.initiate") Sound("c4_initiate", prep.Position, .799805f);
-                else if (e.Name == "c4.keypressquiet") Sound("c4_key_press" + (1 + prep.SoundIndex % 7), prep.Position, .3f);
+                if (e.Name == "c4.initiate") Sound("c4_initiate", prep.Position, .799805f, 0, p);
+                else if (e.Name == "c4.keypressquiet") Sound("c4_key_press" + (1 + prep.SoundIndex % 7), prep.Position, .3f, 0, p);
             }
             if (age < ScC4Charge.PlantSeconds) continue;
+            if (!authority) {
+                // A remote client's own plant: shown as placed; the item and the armed charge are the server's.
+                prep.Placed = true; if (label is not null) label.IsVisible = false; Play("c4_plant", 1, 0, prep.Position);
+                KnifeAnimationController.HideC4Prop(p, prep.AnimationSequence);
+                continue;
+            }
             var charge = new ScC4Charge { Owner = p.PlayerData.PlayerIndex, Position = prep.Position, Fuse=prep.Fuse,Remaining=prep.Fuse, Yaw = MathF.Atan2(p.ComponentBody.Matrix.Forward.X, p.ComponentBody.Matrix.Forward.Z) };
             bool planted = prep.Transaction.Commit(info.WorldSettings.GameMode == GameMode.Creative, () => charges.Count < 16, () => { charges.Add(charge); return true; });
             if (!planted) { Cancel(p, prep); continue; }
-            prep.Placed = true; label.IsVisible = false; Sound("c4_plant", prep.Position);
+            prep.Placed = true; if (label is not null) label.IsVisible = false; Sound("c4_plant", prep.Position, 1, 0, p);
+            KnifeAnimationController.HideC4Prop(p, prep.AnimationSequence);
         }
         foreach (var pair in preparations.ToArray()) if (!players.ComponentPlayers.Contains(pair.Key)) Cancel(pair.Key, pair.Value);
         foreach (var p in held.Keys.Where(p => !players.ComponentPlayers.Contains(p)).ToArray()) {
             held.Remove(p); buttons.Remove(p);
             if (progress.Remove(p, out var label)) label.ParentWidget?.Children.Remove(label);
         }
+        if (authority) ScNetC4.ServerTick(charges);
+    }
+    /// <summary>Client: the server's armed charges (kept object by object, so the countdown beeps carry on).</summary>
+    public void ApplyNetworkCharges(ScNetReader r) {
+        int n = r.Count(64);
+        var next = new List<ScC4Charge>(n);
+        for (int i = 0; i < n; i++) {
+            int owner = r.Int(); Vector3 position = r.Vector3(); float yaw = r.Float(), remaining = r.Float(), fuse = r.Float(), power = r.Float(), radius = r.Float();
+            var c = charges.FirstOrDefault(x => x.Owner == owner && Vector3.DistanceSquared(x.Position, position) < 1e-4f && !next.Contains(x))
+                ?? new ScC4Charge { Owner = owner, Position = position, BeepLeft = 0 };
+            c.Yaw = yaw; c.Fuse = Math.Clamp(fuse, 1, 300); c.Remaining = Math.Clamp(remaining, 0, c.Fuse); c.Power = power; c.Radius = radius;
+            next.Add(c);
+        }
+        charges.Clear(); charges.AddRange(next);
+    }
+    /// <summary>Client: a blast the server reported (its sound arrives with the world sounds).</summary>
+    public void ShowBlast(Vector3 position, float radius) {
+        if (blasts.Count >= 8) blasts.RemoveAt(0);
+        blasts.Add(new ScC4Blast(position, radius, time.GameTime));
+        AddExplosionParticles(position);
+    }
+    void AddExplosionParticles(Vector3 position) {
+        var particles = new ExplosionParticleSystem();
+        var center = new Point3(Terrain.ToCell(position.X), Terrain.ToCell(position.Y), Terrain.ToCell(position.Z));
+        for (int x = -2; x <= 2; x++) for (int y = 0; y <= 3; y++) for (int z = -2; z <= 2; z++)
+            if (x*x + y*y + z*z <= 9) particles.SetExplosionCell(center + new Point3(x,y,z), 1);
+        Project.FindSubsystem<SubsystemParticles>(true).AddParticleSystem(particles);
     }
     void Detonate(ScC4Charge c) {
         if(blasts.Count>=8)blasts.RemoveAt(0);
@@ -203,7 +295,8 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         double started = time.GameTime;
         foreach (var body in bodies.Bodies.ToArray()) {
             var target = body.Entity.FindComponent<ComponentPlayer>();
-            if (target is not null && target.PlayerData.PlayerIndex != c.Owner && !info.WorldSettings.IsFriendlyFireEnabled) continue;
+            // Same rule as grenade areas: other players and recruited allies only under world friendly fire.
+            if (!ScFactions.AreaAllowed(c.Owner, ScFactions.Of(body.Entity), target?.PlayerData?.PlayerIndex ?? -1, info.WorldSettings.IsFriendlyFireEnabled)) continue;
             Vector3 point = body.BoundingBox.Center(), delta = point - c.Position;
             float power = ScC4Charge.DamageAt(delta.Length(), c.Power, c.Radius); if (power <= 0) continue;
             Vector3 direction = delta.LengthSquared() > .0001f ? Vector3.Normalize(delta) : Vector3.UnitY;
@@ -220,7 +313,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
             if (health is not null) {
                 try { expected = Math.Min(before, Math.Max(0, first.CalculateInjuryAmount())); } catch { expected = 0; }
             }
-            ComponentMiner.AttackBody(first);
+            ScDamageIndicator.AttackBody(first);
             if (health is null) continue;
             float dealt = Math.Max(0, before - health.Health);
             bool capped = health.Health > 0 && dealt > 1e-4f && dealt < expected * .5f;
@@ -230,17 +323,14 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
                 delayedHits.Add(new DelayedHit { Body = body, Owner = owner?.Entity, Point = point, Direction = direction, Power = chunk, At = started + i * BlastChunkInterval });
         }
         Sound("c4_explode_close_01", c.Position, 2);
-        var particles = new ExplosionParticleSystem();
-        var center = new Point3(Terrain.ToCell(c.Position.X), Terrain.ToCell(c.Position.Y), Terrain.ToCell(c.Position.Z));
-        for (int x = -2; x <= 2; x++) for (int y = 0; y <= 3; y++) for (int z = -2; z <= 2; z++)
-            if (x*x + y*y + z*z <= 9) particles.SetExplosionCell(center + new Point3(x,y,z), 1);
-        Project.FindSubsystem<SubsystemParticles>(true).AddParticleSystem(particles);
+        AddExplosionParticles(c.Position);
+        if (ScNet.IsHost) ScNetC4.Blast(c.Position, c.Radius);
     }
     public void Draw(Camera camera, int drawOrder) {
         var block = (ScC4Block)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScC4Block>(true)];
         foreach (var c in charges) {
             if (Vector3.DistanceSquared(camera.ViewPosition, c.Position) > 128 * 128) continue;
-            var matrix = Matrix.CreateRotationY(c.Yaw) * Matrix.CreateTranslation(VisiblePlantPosition(c.Position));
+            var matrix = ScC4Handoff.Settled(Matrix.CreateRotationY(c.Yaw) * Matrix.CreateTranslation(VisiblePlantPosition(c.Position)), c.Fuse - c.Remaining, time.GameTime);
             var env = new DrawBlockEnvironmentData { SubsystemTerrain = terrain, Light = 15 };
             block.DrawPlanted(renderer, Color.White, ref matrix, env);
         }

@@ -16,6 +16,25 @@ public static class ScCompatibility {
     public static string ActiveBuild = "1.6.0";
     public static string VerifiedBackup;
     public static XElement Manifest = new("Compatibility", new XAttribute("Protocol", Protocol));
+    static readonly List<XElement> s_registered = [];
+    /// <summary>An optional package names a save group it owns (deathmatch-addon, design §14): a Subsystem, a Component or
+    /// an Entity template. The name travels in the world's capsule from then on, so every build of this family - with or
+    /// without that package, older or newer - keeps the group's saved data exactly as it is while the package is absent
+    /// and hands it back when it returns. Registering again is harmless; nothing is ever unregistered from a world.</summary>
+    public static void RegisterOwned(string kind, string name, string guid = null) {
+        if (kind is not ("Subsystem" or "Component" or "Entity") || string.IsNullOrEmpty(name)) throw new ArgumentException("kind/name");
+        if (s_registered.Any(e => e.Name == kind && (string)e.Attribute("Name") == name)) return;
+        var entry = new XElement(kind, new XAttribute("Name", name));
+        if (guid is not null) entry.SetAttributeValue("Guid", guid);
+        s_registered.Add(entry);
+    }
+    /// <summary>This build's own manifest with what the loaded optional packages registered.</summary>
+    internal static XElement Definitions() {
+        var definitions = new XElement(Manifest);
+        foreach (var entry in s_registered)
+            if (!definitions.Elements(entry.Name).Any(e => (string)e.Attribute("Name") == (string)entry.Attribute("Name"))) definitions.Add(new XElement(entry));
+        return definitions;
+    }
     /// <summary>Historical UI writers retain newer action bindings/layouts and unknown root settings.</summary>
     public static byte[] PreserveUiSettings(byte[] data,string path,IEnumerable<string> knownActions) {
         if(!System.IO.File.Exists(path))return data;
@@ -122,7 +141,7 @@ public static class ScCompatibility {
     }
     internal static void BeforeLoad(XElement source,WorldInfo world) {
         VerifiedBackup=null;
-        var definitions=new XElement(Manifest);
+        var definitions=Definitions();
         definitions.SetAttributeValue("AppearanceAvailable",ModsManager.Dlls.Values.Any(a=>a.GetType("Game.ComponentCsPlayerAppearance") is not null));
         var staged=Prepare(source,ActiveBuild,definitions,id=>DatabaseManager.GameDatabase.Database.FindDatabaseObject(id,DatabaseManager.GameDatabase.EntityTemplateType,false) is not null);
         // User policy: backups are manual. Switching never creates files or requires an old backup path.
@@ -149,6 +168,17 @@ public sealed class SubsystemScCompatibility : Subsystem {
         int version=values.GetValue<int>("Protocol",ScCompatibility.Protocol);
         if(version!=ScCompatibility.Protocol)throw new InvalidOperationException("不支持的双向兼容协议");
         saved=new ValuesDictionary();foreach(var pair in values)if(pair.Key!="Class")saved.SetValue(pair.Key,pair.Value);
+    }
+    /// <summary>The world's capsule as it will be saved (a copy; a world never loaded through the capsule yet has an empty one).</summary>
+    public XElement ReadCapsule(){
+        string raw=saved?.GetValue<string>("Capsule",null);
+        return raw is null?new XElement("Capsule",new XAttribute("Protocol",ScCompatibility.Protocol)):XElement.Parse(raw);
+    }
+    /// <summary>Replaces the capsule that the next save writes. Only additions the family's readers keep belong here
+    /// (ScWorldModes): the manifest and the opaque groups are rebuilt at every load and are not to be edited.</summary>
+    public void WriteCapsule(XElement capsule){
+        if((int?)capsule?.Attribute("Protocol")!=ScCompatibility.Protocol)throw new InvalidOperationException("不支持的双向兼容协议");
+        (saved??=new ValuesDictionary()).SetValue("Capsule",capsule.ToString(SaveOptions.DisableFormatting));
     }
     public override void Save(ValuesDictionary values){
         foreach(var pair in saved)values.SetValue(pair.Key,pair.Value);
@@ -201,7 +231,7 @@ public sealed class ScCompatibilityModLoader : ModLoader {
         ScCompatibility.ActiveBuild=Entity.modInfo.Version;
         Entity.GetFile("Assets/ScCompatibilityManifest.xml",s=>ScCompatibility.Manifest=XElement.Load(s));
         if(ScOptionalAgents.Split && ModsManager.ModList.Any(m=>!m.IsDisabled&&m.ModArchive!=null&&m.modInfo.PackageName=="zh667.ScCsgoTactical") && !ScOptionalAgents.Available)
-            throw new InvalidOperationException("新的轻量包需要配套1.3.0探员包，请先停用旧独立战术拓展。");
+            throw new InvalidOperationException("新的轻量包需要配套1.4.0探员包，请先停用旧独立战术拓展。");
         if((bool?)ScCompatibility.Manifest.Attribute("Legacy")==true&&ModsManager.ModList.Any(m=>!m.IsDisabled&&m.modInfo.PackageName=="zh667.ScCsgoTactical"))
             throw new InvalidOperationException("旧版兼容包只保留战术数据，不能同时启用依赖新版接口的独立战术拓展；请停用独立拓展或换回最新兼容总包。");
         ModsManager.RegisterHook("ProjectXmlLoad",this,-1000);

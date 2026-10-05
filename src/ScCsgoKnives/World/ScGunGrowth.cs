@@ -83,7 +83,7 @@ public static class ScGunGrowth {
         && GunSpec.All[variant].Name is "awp" or "ssg08";
     public static float FireRateMultiplier(int variant, int level) => IsBoltSniper(variant)
         ? 1f + .65f * (.05f * Tier(level, 1) + .05f * Tier(level, 2) + .075f * Tier(level, 3) + .075f * Tier(level, 4))
-        : 1f + (IsAutoSniper(variant) ? .004f : .0065f) * Clamp(level);
+        : 1f + (IsTaser(variant) ? .01f : IsAutoSniper(variant) ? .004f : .0065f) * Clamp(level);
     public static bool IsAutoSniper(int variant) => variant >= 0 && variant < GunSpec.All.Length
         && GunSpec.All[variant].Name is "scar20" or "g3sg1";
     /// <summary>A base fire-rate multiplier when the model is not known is treated as a normal gun.</summary>
@@ -116,13 +116,13 @@ public static class ScGunGrowth {
     }
     public static int RoundHalfUp(double value) => (int)Math.Floor(value + .5);
 
-    /// <summary>Zeus starts at CS2's 30 seconds. Only 65% of the old frequency bonus is retained:
-    /// Lv10 18.1818 s, Lv50 4.37956 s. Saved cycles keep their remaining seconds.</summary>
+    /// <summary>Zeus alone restores the 1.2.0 recharge curve: Lv0/10/20/30/40/50 = 10/5/3/2/1.5/1 seconds.
+    /// Existing saved cycles keep their remaining seconds; new shots use the restored curve.</summary>
     public static float RechargeSeconds(GunSpec spec, int level) {
         if (spec is null || spec.RechargeSeconds <= 0) return 0;
         float factor = 1f - .05f * Tier(level, 0) - .02f * Tier(level, 1) - .01f * Tier(level, 2) - .005f * Tier(level, 3) - .005f * Tier(level, 4);
         // Only new cycles use this scale. Saved RechargeReadyAt/RechargeCycleSeconds are untouched.
-        return spec.RechargeSeconds / (1f + .65f * (1f / factor - 1f));
+        return spec.RechargeSeconds * factor;
     }
 
     /// <summary>Spread and camera recoil are scaled once, on the final angle: 1 - 0.10L, and exactly zero at Lv10.</summary>

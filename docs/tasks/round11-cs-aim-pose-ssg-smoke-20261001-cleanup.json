@@ -1,0 +1,86 @@
+{
+ "task": "round11-cs-aim-pose-ssg-smoke-20261001",
+ "date": "2026-10-01T21:08:20",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r11bCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r11b build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r11b\\full",
+    ".tmp\\completion-140-20260929\\r11b\\lite",
+    ".tmp\\completion-140-20260929\\r11b\\tools",
+    ".tmp\\completion-140-20260929\\r11b\\tree",
+    ".tmp\\completion-140-20260929\\r11b\\assets-full",
+    ".tmp\\completion-140-20260929\\r11b\\resources",
+    ".tmp\\completion-140-20260929\\r11b\\net",
+    ".tmp\\completion-140-20260929\\r11b\\motion",
+    ".tmp\\completion-140-20260929\\r11b\\throw",
+    ".tmp\\completion-140-20260929\\r11b\\ui"
+   ],
+   "bytes": 1893405792,
+   "items": 4242,
+   "missing": []
+  },
+  "stage r11a build trees and undelivered candidates (superseded by r11b; logs, reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r11a\\full",
+    ".tmp\\completion-140-20260929\\r11a\\lite",
+    ".tmp\\completion-140-20260929\\r11a\\tools",
+    ".tmp\\completion-140-20260929\\r11a\\tree",
+    ".tmp\\completion-140-20260929\\r11a\\assets-full",
+    ".tmp\\completion-140-20260929\\r11a\\resources",
+    ".tmp\\completion-140-20260929\\r11a\\net",
+    ".tmp\\completion-140-20260929\\r11a\\motion",
+    ".tmp\\completion-140-20260929\\r11a\\throw",
+    ".tmp\\completion-140-20260929\\r11a\\ui",
+    ".tmp\\completion-140-20260929\\r11a\\candidate"
+   ],
+   "bytes": 2494455731,
+   "items": 4245,
+   "missing": []
+  },
+  "r11a probe copies of the candidates (dev-r11a.json descriptor kept)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r11a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r11a-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r11a-agents.scmod"
+   ],
+   "bytes": 601053206,
+   "items": 3,
+   "missing": []
+  },
+  "totalBytes": 4988914729,
+  "items": 8490
+ },
+ "kept": [
+  "stages r11a, r11b: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/mp-m0-20260929/run/cs-aim-r11a-* (probe frames), results/cs-aim-r11a-full.json, pkg/dev-r11a.json",
+  ".tmp/dev-temp/cs2-graphs (decompiled CS2 graphs, small)",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "d4b4ef32d939d4253f89cbf8ba16ba0c4044505f909f5d0530b1947d37dc4d12",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "867c03c6f9f572a7cbdb68eb0a173c5e29cb443cec33a2a63fc2a7b0c15b3779",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "9328a9799a42af0e8320486b3cddd9d53fdb7b04950ac80acc3986f446832aa2",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 128921833472,
+  "freePct": 12.89
+ }
+}

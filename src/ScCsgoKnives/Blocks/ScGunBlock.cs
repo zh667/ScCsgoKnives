@@ -10,6 +10,12 @@ namespace Game;
 /// </summary>
 public class ScGunBlock : ScNoDurabilityBlock {
     public ScGunBlock() { DefaultCategory = "CS武器"; }
+    /// <summary>One gun, one slot: each instance has its own record (rounds, wear, finish), and a slot holding several
+    /// cannot be used. The answer does not follow the MaxStacking field, which another mod may rewrite for every block
+    /// that has no vanilla durability and cannot be placed (Sushi's stacking options: 1 → 4). Inventories that ask the
+    /// block (the player's, chests, crafting) therefore keep guns apart; a container that computes its own capacity
+    /// afterwards is that container's (see ScInventoryTransaction.IsGunStack).</summary>
+    public override int GetMaxStacking(int value) => 1;
     public override int GetDisplayOrder(int value) => 211;
     public override bool IsEditable_(int value) => false;
     static readonly int s_count = GunSpec.All.Length;
@@ -26,6 +32,13 @@ public class ScGunBlock : ScNoDurabilityBlock {
     /// world's items and ids without a record are kept but unusable.</summary>
     public static bool IsKnown(int value) => GunSpec.IsUsable(Terrain.ExtractData(value)) && GetVariant(value) < s_count;
     public static bool IsOldFormat(int value) => !GunSpec.IsUsable(Terrain.ExtractData(value));
+    /// <summary>A gun whose model this process can draw: a usable one, or - on a multiplayer client only - a listed model
+    /// whose record the server has not sent (yet, or because this client's CS network layer is not accepted). Records
+    /// are the server's; a client's table is a mirror, so "no record here" says nothing about the gun itself. It is drawn
+    /// as the model with its default finish and stays unusable until the record arrives (mp-user-logs-20261002: such guns
+    /// were drawn as their flat inventory icon in the hand, first and third person).</summary>
+    public static bool IsShown(int value) => IsKnown(value) || AwaitsRecord(value);
+    public static bool AwaitsRecord(int value) => ScNet.IsRemoteClient && !IsKnown(value) && HasReliableModel(value);
     public static bool HasReliableModel(int value) => ScGunRegistry.Current is { Disabled: false }
         && !GunSpec.IsForeign(Terrain.ExtractData(value)) && GetVariant(value) >= 0 && GetVariant(value) < s_count;
     static string UnavailableReason(int value) {
@@ -109,6 +122,8 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData) {
         int variant = GetVariant(value);
         if (!IsKnown(value)) {
+            // A client's gun waiting for its record: the model in the world, its slot icon in the inventory.
+            if (AwaitsRecord(value)) { DrawVisual(primitivesRenderer, value, variant, ScGunSkinCatalog.None, color, size, ref matrix, environmentData); return; }
             var icon = HasReliableModel(value) ? LoadTexture(s_names[variant] + "_slot") : null;
             ScInventoryIcon.Draw(primitivesRenderer, value, size, ref matrix, icon ?? ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/survival_unknown"), color, environmentData);
             return;
@@ -161,6 +176,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
+        if (AwaitsRecord(value)) return $"{ScGunNames.Variant(GetVariant(value))} · 等待服务器同步";
         if (!IsKnown(value)) return HasReliableModel(value)
             ? $"{ScGunNames.Variant(GetVariant(value))} · 状态待恢复（{UnavailableReason(value)}）"
             : $"枪械数据异常（{UnavailableReason(value)}，已保留）";
@@ -176,6 +192,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScGunAttributesScreen(value);
 
     public override string GetDescription(int value) {
+        if (AwaitsRecord(value)) return "联机：这把枪的弹药、耐久和涂装由服务器保存，等待服务器同步后才能使用（物品本身没有问题）。";
         if (!IsKnown(value)) return $"{UnavailableReason(value)}，原始物品已保留。需要有效记录或可信备份才能恢复；不会猜测弹药、耐久、涂装或等级。";
         if (LanguageControl.TryGetBlock($"{nameof(ScGunBlock)}:{GetVariant(value)}", "Description", out string result)) return result + ScWeaponCrafting.Help(value) + DurabilityText(value) + CounterText(value);
         return base.GetDescription(value) + ScWeaponCrafting.Help(value) + DurabilityText(value) + CounterText(value);

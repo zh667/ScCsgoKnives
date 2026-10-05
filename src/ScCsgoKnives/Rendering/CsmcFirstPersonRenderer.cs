@@ -319,7 +319,6 @@ public static class CsmcFirstPersonRenderer {
         s_gripOffsetsPart[variant] = inPart;
         s_heldPartUsable[variant] = true;
     }
-    static readonly bool[] s_logged = new bool[s_count];
     // Where each knife's idle left grip lands in view space once corrected; the
     // left elbow is projected down from here so the left arm pivots rather than
     // slides when a clip moves the hand.
@@ -399,7 +398,6 @@ public static class CsmcFirstPersonRenderer {
         }
         return usable;
     }
-    static bool s_handsLogged;
     static bool s_loaded;
 
     // The anchor is stored as a screen position because Survivalcraft's field of
@@ -418,7 +416,6 @@ public static class CsmcFirstPersonRenderer {
     public static void InvalidateProjection() => s_projX = 0f;   // any value the camera cannot report
 
     /// <summary>Lets the composition report print again after a tuning change.</summary>
-    public static void ResetCompositionLog() => Array.Clear(s_compositionNextLog);
 
     /// <summary>
     /// Keeps the view-space anchor in step with the camera. Returns true when it
@@ -444,10 +441,6 @@ public static class CsmcFirstPersonRenderer {
         s_projX = fx;
         s_projY = fy;
         s_handAnchor = ToViewSpace(KnifeTuning.AnchorScreenX, KnifeTuning.AnchorScreenY, KnifeTuning.AnchorDepth);
-        KnifeLog.Trace(
-            $"[ScCsgoKnives] projection changed (fx={fx:0.####}, fy={fy:0.####}, vertical fov={2f * MathF.Atan(1f / fy) * 180f / MathF.PI:0.#}deg); "
-            + $"anchor ({KnifeTuning.AnchorScreenX:0.###},{KnifeTuning.AnchorScreenY:0.###}) resolves to {Format(s_handAnchor)}."
-        );
         return true;
     }
 
@@ -853,7 +846,6 @@ public static class CsmcFirstPersonRenderer {
 
     static readonly Dictionary<string, Part[]> s_cs2Parts = new(StringComparer.Ordinal);
     static readonly Dictionary<string, Texture2D> s_cs2Base = new(StringComparer.Ordinal);
-    static readonly HashSet<string> s_cs2Logged = new(StringComparer.Ordinal);
 
     /// <summary>
     /// The cs2 profile's weapon pass. CS2's viewmodel animation is authored in the
@@ -875,7 +867,7 @@ public static class CsmcFirstPersonRenderer {
         float cs2Time = pose.Looping && cs2Duration > 0f
             ? pose.RequestedTime - cs2Duration * MathF.Floor(pose.RequestedTime / cs2Duration)
             : MathUtils.Clamp(pose.RequestedTime, 0f, MathF.Max(cs2Duration, 0f));
-        Cs2Rig.Pose cs2 = Cs2Rig.Sample(gun, pose.ClipAlias, cs2Time);
+        Cs2Rig.Pose cs2 = KnifeAnimationController.SampleDrawn(firstPerson, gun, pose.ClipAlias, cs2Time, false);
         if(cs2 is not null)cs2=KnifeAnimationController.InspectTransition(firstPerson,cs2);
         if (cs2 is null) {
             KnifeDiagnostics.WarnOnce($"cs2-pose-{gun}", $"No CS2 pose for {gun}/{pose.ClipAlias}; CS2 weapon drawing skipped.");
@@ -909,7 +901,8 @@ public static class CsmcFirstPersonRenderer {
         // the clip's own skeleton - butterfly weights blade, lock and rear - so there
         // is nothing to place as a rigid part. The guns keep the part loop below.
         Cs2SkinnedMesh weapon = Cs2SkinnedMesh.Weapon(gun);
-        if (weapon is not null) {
+        // A planted C4 is drawn on the ground from its commit frame; the hands finish the clip empty.
+        if (weapon is not null && !(CsmcKnifeRig.IsC4(variant) && KnifeAnimationController.HeldPropHidden(firstPerson))) {
             DrawCs2SkinnedWeapon(weapon, cs2, gun, post, projection, camera, in lighting, variant, itemValue,
                 KnifeAnimationController.CurrentClip(firstPerson) is "pullpin" or "holdHigh" or "holdLow" or "throwHigh" or "throwLow");
         }
@@ -964,15 +957,6 @@ public static class CsmcFirstPersonRenderer {
         if (CsmcKnifeRig.IsGun(variant) && (s_smokeUntil > KnifeClock.Now || s_zeusAt >= 0 && Cs2TaserEffect.Applies(gun)))
             QueueFirstPersonEffects(camera, new(cs2, gun, post, projection, Display.Viewport, Time.FrameIndex));
 
-        if (s_cs2Logged.Add(gun)) {
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] cs2 profile active: gun={gun}, clip={cs2.Clip}@{cs2.Time:0.###}s, "
-                + $"parts=[{string.Join(',', s_cs2Parts[gun].Select(p => p.Binding))}], "
-                + $"viewmodel_fov={KnifeTuning.Cs2ViewmodelFov:0.##} (fovY {Cs2Placement.FovYDegrees(KnifeTuning.Cs2ViewmodelFov):0.###}), "
-                + $"offset=({KnifeTuning.Cs2ViewmodelOffsetX:0.##},{KnifeTuning.Cs2ViewmodelOffsetY:0.##},{KnifeTuning.Cs2ViewmodelOffsetZ:0.##}), "
-                + $"root={KnifeDiagnostics.MatrixSummary(root)}."
-            );
-        }
         return true;
     }
 
@@ -1061,18 +1045,19 @@ public static class CsmcFirstPersonRenderer {
         s_cs2MuzzleFovRatio = projection.M11 / world;
         s_cs2MuzzleFrame = Time.FrameIndex;
         var player=camera.GameWidget?.PlayerData?.ComponentPlayer;
-        if(player is not null){var frame=s_casingFrames.GetOrCreateValue(player);frame.Root=root;frame.View=camera.InvertedViewMatrix;frame.Ratio=s_cs2MuzzleFovRatio;frame.Pose=pose;frame.Gun=gun;frame.Frame=Time.FrameIndex;}
+        if(player is not null){var frame=s_casingFrames.GetOrCreateValue(player);frame.Root=root;frame.View=camera.InvertedViewMatrix;frame.Ratio=s_cs2MuzzleFovRatio;frame.Pose=pose;frame.Gun=gun;frame.Frame=Time.FrameIndex;frame.Camera=camera;}
         s_cs2MuzzleBones.Clear();
         if (pose is null) return;
         foreach (string name in MuzzleBoneNames)
             if (pose.HasBone(name)) s_cs2MuzzleBones[name] = pose.GetBoneOrigin(name);
     }
 
-    sealed class CasingFrame {public Matrix Root,View;public float Ratio;public Cs2Rig.Pose Pose;public string Gun;public int Frame;}
+    // A frame belongs to the camera that drew it: after a switch to another camera the last first-person frame is not reused.
+    sealed class CasingFrame {public Matrix Root,View;public float Ratio;public Cs2Rig.Pose Pose;public string Gun;public int Frame;public Camera Camera;}
     static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComponentPlayer,CasingFrame> s_casingFrames=new();
     public static bool TryGetCasingFrame(ComponentPlayer player,string gun,ScCasingEffects.Cue cue,out Matrix transform){
         transform=Matrix.Identity;
-        if(!s_casingFrames.TryGetValue(player,out var f)||f.Gun!=gun||Time.FrameIndex-f.Frame>2||f.Pose is null||!f.Pose.Bones.TryGetValue(cue.Bone,out Matrix bone))return false;
+        if(!s_casingFrames.TryGetValue(player,out var f)||f.Gun!=gun||Time.FrameIndex-f.Frame>2||f.Pose is null||f.Camera!=player.PlayerData?.GameWidget?.ActiveCamera||!f.Pose.Bones.TryGetValue(cue.Bone,out Matrix bone))return false;
         Matrix attachment=Matrix.CreateFromQuaternion(new Quaternion(cue.Rotation[0],cue.Rotation[1],cue.Rotation[2],cue.Rotation[3]))*Matrix.CreateTranslation(new Vector3(cue.Offset[0],cue.Offset[1],cue.Offset[2]));
         Matrix view=attachment*bone*f.Root;
         if(view.Translation.Z>=-.02f)return false;
@@ -1103,7 +1088,7 @@ public static class CsmcFirstPersonRenderer {
     }
     public static bool TryGetPlayerMuzzleWorld(ComponentPlayer player,string gun,bool silenced,out Vector3 world,string bone=null) {
         world=default;
-        if(player is null || !s_casingFrames.TryGetValue(player,out var f)||f.Gun!=gun||Time.FrameIndex-f.Frame>4)return false;
+        if(player is null || !s_casingFrames.TryGetValue(player,out var f)||f.Gun!=gun||Time.FrameIndex-f.Frame>4||f.Camera!=player.PlayerData?.GameWidget?.ActiveCamera)return false;
         var rig=MuzzleRigPoint(gun,silenced,f.Pose,bone);if(rig is null)return false;
         var v=Vector3.Transform(rig.Value,f.Root);if(v.Z>=-.02f)return false;
         v.X*=f.Ratio;v.Y*=f.Ratio;world=Vector3.Transform(v,f.View);return true;
@@ -1291,17 +1276,12 @@ public static class CsmcFirstPersonRenderer {
             s_cs2WeaponBase[bodyMaterial] = baseColor;
         }
         if (baseColor is null) return;
-        double started = Time.RealTime;
         if (!mesh.SetPose(pose, Cs2Placement.Placement())) {
             KnifeDiagnostics.WarnOnce($"cs2-weapon-pose-{asset}",
                 $"No joint of {asset}'s mesh resolved against the clip's skeleton.");
             return;
         }
         mesh.Skin();
-        s_cs2WeaponSkinMillis += (Time.RealTime - started) * 1000.0;
-        s_cs2WeaponName = asset;
-        s_cs2WeaponVertices = mesh.Skinned.Length;
-        s_cs2WeaponTriangles = mesh.Primitives.Sum(p => p.Indices.Length) / 3;
         foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
             string key = ScGrenadeBlock.MaterialKey(asset, part.Material);
             if(asset=="c4" && part.Material=="weapon_c4_digits") {
@@ -1330,7 +1310,6 @@ public static class CsmcFirstPersonRenderer {
     }
 
     static Texture2D s_cs2ArmBase, s_cs2GloveBase;
-    static bool s_cs2ArmsLogged;
     /// <summary>Optional item renderers reuse the real CS2 skinned hands without rendering a base-game weapon.</summary>
     public static bool DrawExtensionArms(ComponentFirstPersonModel firstPerson,Camera camera,string asset,string clip,Matrix post) {
         var pose=Cs2Rig.Sample(asset,clip,0);if(pose is null||Cs2SkinnedMesh.Arms is null)return false;
@@ -1338,11 +1317,6 @@ public static class CsmcFirstPersonRenderer {
         var lighting=KnifePbrRenderer.FirstPersonLighting(camera,light);
         DrawCs2Arms(pose,post,Cs2Placement.Projection(camera),camera,in lighting,0,firstPerson);return true;
     }
-    static double s_cs2SkinMillis;
-    static int s_cs2SkinFrames;
-    static double s_cs2WeaponSkinMillis;
-    static int s_cs2WeaponVertices, s_cs2WeaponTriangles;
-    static string s_cs2WeaponName;
 
     /// <summary>
     /// CS2's arms and the fingerless glove, skinned on the CPU against the same pose
@@ -1376,10 +1350,8 @@ public static class CsmcFirstPersonRenderer {
         s_cs2GloveBase ??= ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/cs2_glove");
         if (s_cs2ArmBase is null || s_cs2GloveBase is null) return;
 
-        double started = Time.RealTime;
         if (!mesh.SetPose(pose, Cs2Placement.Placement())) return;
         mesh.Skin();
-        s_cs2SkinMillis += (Time.RealTime - started) * 1000.0;
 
         foreach (Cs2SkinnedMesh.Primitive part in mesh.Primitives) {
             bool glove = part.Material.StartsWith("glove", StringComparison.OrdinalIgnoreCase);
@@ -1389,27 +1361,6 @@ public static class CsmcFirstPersonRenderer {
                 post, projection, camera.InvertedViewMatrix, in lighting, variant);
         }
 
-        if (++s_cs2SkinFrames >= 120) {
-            // Arms, weapon and combined are reported separately. 0.17.0 timed only the
-            // arms and the log still said "cs2 arms", so the 0.169 ms/frame it showed
-            // was not the cost of the two meshes the knives added.
-            int weaponVertices = s_cs2WeaponVertices, weaponTris = s_cs2WeaponTriangles;
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] cs2 CPU skinning over {s_cs2SkinFrames} frames: "
-                + $"arms {s_cs2SkinMillis / s_cs2SkinFrames:0.###} ms/frame "
-                + $"({mesh.Skinned.Length} vertices, {mesh.Primitives.Sum(p => p.Indices.Length) / 3} triangles); "
-                + $"weapon {s_cs2WeaponSkinMillis / s_cs2SkinFrames:0.###} ms/frame "
-                + $"({s_cs2WeaponName ?? "none"}, {weaponVertices} vertices, {weaponTris} triangles); "
-                + $"combined {(s_cs2SkinMillis + s_cs2WeaponSkinMillis) / s_cs2SkinFrames:0.###} ms/frame."
-            );
-            s_cs2SkinFrames = 0;
-            s_cs2SkinMillis = 0.0;
-            s_cs2WeaponSkinMillis = 0.0;
-        }
-        if (!s_cs2ArmsLogged) {
-            s_cs2ArmsLogged = true;
-            KnifeLog.Trace($"[ScCsgoKnives] cs2 arms drawn: {string.Join(", ", mesh.Primitives.Select(p => p.Material))}.");
-        }
     }
 
     static bool EnsureCs2Assets(string gun) {
@@ -1664,46 +1615,7 @@ public static class CsmcFirstPersonRenderer {
         return new Vector2(view.X * s_projX / depth * 0.5f + 0.5f, 0.5f - view.Y * s_projY / depth * 0.5f);
     }
 
-    const double CompositionLogInterval = 20.0;
-    static readonly double[] s_compositionNextLog = new double[s_count];
 
-    /// <summary>
-    /// Reports the composition in the same screen-space terms the CS:MC references
-    /// were measured in, so the two can be compared without segmenting screenshots.
-    /// Only logged for a settled frame -- mid-swap numbers are not comparable to a
-    /// static reference, which is exactly what made the first round of photos
-    /// impossible to read.
-    /// </summary>
-    [System.Diagnostics.Conditional("SC_CSGO_DIAGNOSTICS")]
-    static void LogComposition(ComponentFirstPersonModel firstPerson, int variant, KnifeRigPose pose, Matrix placement, Matrix post) {
-        if (firstPerson.m_swapAnimationTime > 0f) return;
-        if (!pose.ClipAlias.StartsWith("idle", StringComparison.Ordinal)) return;
-        // Repeats rather than firing once per variant. Logged once, the line lands at
-        // whatever moment the knife first settled -- which in two rounds of logs was
-        // always minutes before the screenshots, so the numbers could never be lined
-        // up against the picture they were supposed to explain.
-        if (Time.RealTime < s_compositionNextLog[variant]) return;
-        s_compositionNextLog[variant] = Time.RealTime + CompositionLogInterval;
-
-        var line = new System.Text.StringBuilder();
-        line.Append($"[ScCsgoKnives] composition {s_assetNames[variant]} (clip={pose.SourceClip}): ");
-        line.Append($"fov={2f * MathF.Atan(1f / s_projY) * 180f / MathF.PI:0.#}deg aspect={s_projY / s_projX:0.###} knifeScale={RigScale(variant) * ReferenceSourceScale / CsmcKnifeRig.GetSourceReferenceScale(variant):0.###} | ");
-        for (int side = 0; side < 2; side++) {
-            bool left = side == 1;
-            string label = left ? "left" : "right";
-            if (left && !s_leftArmUsable[variant]) { line.Append("left arm disabled"); break; }
-            if (!SolveArm(pose, placement * post, post, variant, left, false, out ArmFrame arm)) { line.Append($"{label}=degenerate "); continue; }
-            Vector2? hand = ToScreen(arm.Grip);
-            Vector2? cap = ToScreen(arm.Seat);
-            Vector2? elbow = ToScreen(arm.Elbow);
-            if (hand is null || cap is null || elbow is null) { line.Append($"{label}=behind eye "); continue; }
-            line.Append($"{label}: grip=({hand.Value.X:0.###},{hand.Value.Y:0.###}) cap=({cap.Value.X:0.###},{cap.Value.Y:0.###}) ");
-            line.Append($"lean={arm.Lean:+0.0;-0.0}deg width={arm.ViewWidth * s_projX / (2f * -arm.Grip.Z):0.###} overshoot={OvershootFor(variant, left):0.##}w ");
-            line.Append($"elbow=({elbow.Value.X:0.###},{elbow.Value.Y:0.###}) depth={-arm.Grip.Z:0.###} ");
-        }
-        line.Append("| MCCS m9 photo: grip=(0.710,0.843) cap=(0.699,0.692) lean=+7.5, left grip=(0.326,0.901) cap=(0.381,0.823) lean=-51.5.");
-        KnifeLog.Trace(line.ToString());
-    }
 
     static void DrawHands(ComponentFirstPersonModel firstPerson, Camera camera, Matrix projection, int variant, KnifeRigPose pose, Matrix placement, Matrix post, float light) {
         // placement * post is the space the knife is actually drawn in.
@@ -2141,8 +2053,6 @@ public static class CsmcFirstPersonRenderer {
                 }
             }
             finally { s_measuring = false; }
-            if (holds.Count > 0 && !left)
-                KnifeLog.Trace($"[ScCsgoKnives] {s_assetNames[variant]} holds: " + string.Join(", ", holds.Select(h => $"{h.Key}={MathUtils.RadToDeg(h.Value):0}deg")));
         }
     }
 
@@ -2278,13 +2188,6 @@ public static class CsmcFirstPersonRenderer {
         // hundredfold, which is why 0.5.0 showed no arms at all.
         DrawModel(model, skin, world, camera, projection, light, SamplerState.PointClamp,
             RasterizerState.CullNoneScissor, applyBoneTransform: false);
-        if (!s_handsLogged && !left) {
-            s_handsLogged = true;
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] arms attached: grip={Format(arm.Grip)}, cap={Format(arm.Seat)}, elbow={Format(arm.Elbow)}, lean={arm.Lean:0.#}deg, "
-                + $"reach={arm.Reach:0.###}, width={arm.ViewWidth:0.###}, overshoot={arm.Overshoot:0.###}, skin={skin.Width}x{skin.Height}, meshes={model.Meshes.Count}, light={light:0.###}."
-            );
-        }
     }
 
     static Vector3 ProjectOntoPlane(Vector3 value, Vector3 normal) {
@@ -2298,7 +2201,6 @@ public static class CsmcFirstPersonRenderer {
         return projected / length;
     }
 
-    static string Format(Vector3 value) => $"({value.X:0.###},{value.Y:0.###},{value.Z:0.###})";
 
     static void EnsureLoaded() {
         if (s_loaded) return;
@@ -2469,12 +2371,6 @@ public static class CsmcFirstPersonRenderer {
         MeasureHolds(variant);
         FistSpec fist = s_fist[variant];
         (float leftX, float leftY) = LeftTargetFor(variant);
-        KnifeLog.Trace(
-            $"[ScCsgoKnives] placement {asset}: idleGrip={Format(idleGrip)}, anchor={Format(AnchorFor(variant))}, "
-            + $"knifeScale={scale:0.###} (x{fist.Scale:0.###}), fist lean={LeanFor(variant, false):0.#} overshoot={OvershootFor(variant, false):0.##}w, "
-            + $"leftTarget=({leftX:0.###},{leftY:0.###}) leftLean={LeanFor(variant, true):0.#}, leftHandCorrection={Format(s_leftHandCorrection[variant])}, "
-            + $"inspect rolls the right arm up to {InspectRollDegrees(variant):0}deg from face-on."
-        );
     }
 
     /// <summary>

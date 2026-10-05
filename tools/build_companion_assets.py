@@ -119,6 +119,9 @@ def build(name,src,animation_source):
     if name!='hostage':
         from derive_world_props import derive
         derive(animation_source,doc,raw,wanted)
+        # agent-followup-140 F3: CS2 jump / in-air clips, appended last (same order as actor_air_clips.py incremental mode).
+        from actor_air_clips import derive_air
+        derive_air(animation_source,doc,names,accessor)
     if name=='hostage':
         # Hostage export lacks the agents' axis-conversion root_motion parent. A same-name
         # animation transfer alone rotates the entire hostage onto its side.
@@ -142,7 +145,11 @@ def main():
     records=[build('ct',ct,ct),build('t',t,t),build('hostage',h,t)]
     config={'template':'Simple','rootBoneRotation':180,'modelScale':1,'animations':{n:{'source':n,'speed':1,'loop':True,'blendDuration':.18} for n in ['idle','walk','run','aim','aimwalk','shield','shieldwalk']},
        'states':{'gait':{'layer':'Base','rules':[{'condition':'IsDead','animation':None},{'condition':'[Shield] && [SpeedAbs] > 0.15','animation':'shieldwalk'},{'condition':'Shield','animation':'shield'},{'condition':'[Armed] && [SpeedAbs] > 0.15','animation':'aimwalk'}, {'condition':'Armed','animation':'aim'},{'condition':'[SpeedAbs] > 2.8','animation':'run'},{'condition':'[SpeedAbs] > 0.15','animation':'walk'},{'condition':'true','animation':'idle'}]}}}
-    p=OUT/'Animations';p.mkdir(parents=True,exist_ok=True);(p/'ScTactical.json').write_text(json.dumps(config,indent=2),encoding='utf8')
+    p=OUT/'Animations';p.mkdir(parents=True,exist_ok=True)
+    # The legacy hostage has only the ground gait; CT/T add CS2 jump/in-air states (agent-followup-140 F3).
+    from actor_air_clips import air_config
+    (p/'ScTacticalHostage.json').write_text(json.dumps(config,indent=2),encoding='utf8')
+    (p/'ScTactical.json').write_text(json.dumps(air_config(config),indent=2),encoding='utf8')
     tex=OUT/'Textures/ScCsgoTactical';tex.mkdir(parents=True,exist_ok=True)
     shield=ROOT.parent/'CSMCReverse/local_cs2_analysis/all_weapons/03_legacy_vmodels_materials/materials/models/weapons/v_models/shield/shield_color.png'
     Image.open(shield).convert('RGB').save(tex/'shield.png')

@@ -9,6 +9,12 @@
     <MemberSubsystemTemplate Name="TacticalBombs" Guid="1a6d387a-4a2a-5425-a8bb-71fb7d2ea39e" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="db6bfd08-3d65-5956-a943-314062a63f2d" Value="Game.SubsystemTacticalBombs" Type="string" />
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="TacticalCompanions" Guid="46bc6693-04ff-5a6f-a3e8-6658bbcc217b" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="6de1e09f-27f7-5699-93d0-2f0afa51ca2a" Value="Game.SubsystemTacticalCompanions" Type="string" />
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="TacticalEnemyRules" Guid="4592ed50-e03f-56cd-95d2-5a08441cedf7" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="7b66bfb1-028f-5935-a424-6f49a3dbb518" Value="Game.SubsystemTacticalEnemyRules" Type="string" />
+    </MemberSubsystemTemplate>
   </ProjectTemplate>
   <EntityTemplate Name="ScTacticalHostage" Guid="6bf2f5b3-af56-500c-a9bf-f8ed25c9c2ad" InheritanceParent="bc5be211-c1f8-4e50-9ffb-4fde625d2692">
     <MemberComponentTemplate Name="Body" Guid="40a01fae-9798-5bc7-b307-50f2965e3fb9">
@@ -30,7 +36,7 @@
       <Parameter Name="JumpSpeed" Guid="ca3641cb-e56a-5041-9e16-63add07ef5eb" Value="5" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c556b9c0-c888-515d-b8b8-be69ad315709">
-      <Parameter Name="AttackResilience" Guid="71cd2557-08cd-599b-8414-f93cc05196df" Value="60" Type="float" />
+      <Parameter Name="AttackResilience" Guid="71cd2557-08cd-599b-8414-f93cc05196df" Value="180" Type="float" />
       <Parameter Name="FireResilience" Guid="78feafae-64d6-5056-94f7-09ee28c9e1c8" Value="15" Type="float" />
       <Parameter Name="CorpseDuration" Guid="22b49102-7314-52f7-9792-1dcc2175e7a0" Value="3" Type="float" />
     </MemberComponentTemplate>
@@ -47,7 +53,7 @@
     <MemberComponentTemplate Name="TacticalModel" Guid="9f01917b-9781-55bc-b286-ef20de0d606a" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
       <Parameter Name="Class" Guid="800b2b43-c3cf-5340-a1d6-f1e229315d54" Value="Game.ComponentTacticalModel" Type="string" />
       <Parameter Name="ModelName" Guid="66868cd0-18bc-5c6d-a506-e3db0e28f485" Value="Models/ScCsgoTactical/hostage" Type="string" />
-      <Parameter Name="AnimationConfigPath" Guid="c5fa9054-790f-5b39-aff0-341709f789dd" Value="Animations/ScTactical" Type="string" />
+      <Parameter Name="AnimationConfigPath" Guid="c5fa9054-790f-5b39-aff0-341709f789dd" Value="Animations/ScTacticalHostage" Type="string" />
       <Parameter Name="ModelScale" Guid="6142d5b5-a36b-5422-81a8-c17809fb948c" Value="1" Type="float" />
       <Parameter Name="BoundingSphereRadius" Guid="e89601f2-3259-5766-becd-f5794b746360" Value="2" Type="float" />
       <Parameter Name="TextureOverride" Guid="f373d7b3-6272-570b-a5a8-354912a8bf71" Value="" Type="string" />
@@ -80,7 +86,7 @@
       <Parameter Name="JumpSpeed" Guid="45ed944c-49e3-5932-a52c-17f67bcabead" Value="5" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="b12c6046-c812-57e0-8442-b68853015656">
-      <Parameter Name="AttackResilience" Guid="9248012a-f94a-55b3-9248-16d14c83dd97" Value="60" Type="float" />
+      <Parameter Name="AttackResilience" Guid="9248012a-f94a-55b3-9248-16d14c83dd97" Value="180" Type="float" />
       <Parameter Name="FireResilience" Guid="561823ae-2811-5e77-a79a-57e8c72166ca" Value="15" Type="float" />
       <Parameter Name="CorpseDuration" Guid="138473e0-1be6-5486-80b2-b18748ba9466" Value="3" Type="float" />
     </MemberComponentTemplate>
@@ -130,7 +136,7 @@
       <Parameter Name="JumpSpeed" Guid="0221a0cb-27fa-5ad7-87a2-7c2a24a31273" Value="5" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="8f830bce-d85c-596b-aa03-d616b751de5c">
-      <Parameter Name="AttackResilience" Guid="66f825fb-7aa0-5f15-a34d-3fc8fe252cb9" Value="60" Type="float" />
+      <Parameter Name="AttackResilience" Guid="66f825fb-7aa0-5f15-a34d-3fc8fe252cb9" Value="180" Type="float" />
       <Parameter Name="FireResilience" Guid="60f0d14e-8b78-53ad-ae6f-23839ceed35b" Value="15" Type="float" />
       <Parameter Name="CorpseDuration" Guid="fa3ebe3b-5227-5b5d-9a7f-4fb419275f04" Value="3" Type="float" />
     </MemberComponentTemplate>

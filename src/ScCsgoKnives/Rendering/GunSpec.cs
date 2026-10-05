@@ -280,8 +280,8 @@ public sealed class GunSpec {
             KickPitchDegrees = 0.000f, KickYawDegrees = 0.000f, KickRecoverPerSecond = 0.00f,
             SpreadDegrees = 0.0000f,
             // m_flRange 120 in, i.e. 3.05 m; the rifles' 4096 stay on the default.
-            // One charge; CS2's 30-second recharge, restored with the all-gun Lv0 cadence correction.
-            MuzzleEffects = false, RangeBlocks = 3.05f, RechargeSeconds = 30f,
+            // One charge; Zeus alone restores the published 1.2.0 ten-second base recharge.
+            MuzzleEffects = false, RangeBlocks = 3.05f, RechargeSeconds = 10f,
         },
     ];
 

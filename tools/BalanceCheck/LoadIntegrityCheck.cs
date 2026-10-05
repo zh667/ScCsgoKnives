@@ -58,7 +58,7 @@ static class LoadIntegrityCheck {
                 // The second vdata cycle on pistols without a second firing mode is dormant metadata.
                 if(pair.Item1!="CycleSecondsAlternate" || spec.CycleSecondsAlternate>0)
                     Require(Math.Abs(ScGunGrowth.ShotInterval(variant,pair.Item2,0)-row.GetProperty(pair.Item1).GetDouble())<.00001);
-            if(spec.Name=="taser")Require(Math.Abs(ScGunGrowth.RechargeSeconds(spec,0)-30)<.00001);
+            if(spec.Name=="taser")Require(Math.Abs(ScGunGrowth.RechargeSeconds(spec,0)-10)<.00001);
         });
         string local=".tmp/migration-20260925/World7-Project.bak";
         if(File.Exists(local))T("actual-world7-copy-rejected-unchanged",()=>{
@@ -74,7 +74,7 @@ static class LoadIntegrityCheck {
             });
         }
         T("old-zeus-running-cycles-survive-new-base",()=>{
-            foreach(float cycle in new[]{10f,5f,1f,10f/.65f,1f/.65f}){
+            foreach(float cycle in new[]{30f,30f/1.65f,30f/6.85f,10f,5f,1f,10f/.65f,1f/.65f}){
                 var rows=G("Records",V("7",$"v=34,r=0,s=0,d=71,m=100,n=19,c=0.4,p=0,ct=0,k=0,gl=0,gp=-1,gv=0,rc={cycle.ToString(System.Globalization.CultureInfo.InvariantCulture)},ov=0,kc=0"));
                 var data=new TemplatesDatabase.ValuesDictionary();data.ApplyOverrides(G("GunRegistry",V("Schema",6),V("Next",8),rows));
                 for(int pass=0;pass<2;pass++){

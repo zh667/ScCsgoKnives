@@ -22,7 +22,8 @@ public sealed class ScCombatFeedback {
         return string.IsNullOrWhiteSpace(result) ? "未知" : result;
     }
     public void Record(int outcome, string target, string weapon, float distance, double now) {
-        if (outcome <= 0) return;
+        // Only a hit (1), a kill (2) or a head hit: any other number is not a result and draws nothing.
+        if (Rank(outcome) == 0) return;
         HitAt = now;
         // Bodies hit by one trigger pull report at the same instant: kill > headshot > hit. A later
         // event always replaces the marker, so a kill's red hold never hides the next yellow head hit.

@@ -1,0 +1,22 @@
+{
+  "archive": "D:\\\u4e0b\u8f7d\\AncientWorld_v0.41.16.zip",
+  "archiveSha256": "e88b68f6edaf53b419b89db24ed8dd487734bf0aff0830af30824145f0977a66",
+  "packageSha256": "ccc9b649623025dcf41bc2c4675e4b0151fe96a5af008cc8c7319508d74d6c62",
+  "entries": [
+    {
+      "entry": "Kelly.Survivalcraft.AncientWorld.dll",
+      "bytes": 492544,
+      "sha256": "f9fe4ccfde6550ec01c76adb3dce2b9820c736e2cb3d3ad8f53ad7abb01df5b9"
+    },
+    {
+      "entry": "Kelly.Survivalcraft.AncientWorld.pdb",
+      "bytes": 207104,
+      "sha256": "3353e32bd7f1a707ba48a11d503ecf702436144db2622750c657fa316a70f008"
+    },
+    {
+      "entry": "modinfo.json",
+      "bytes": 522,
+      "sha256": "cb672d555364a2b82bf2b84f13d19a94a41f73557a245d15bec75b0ad4d0c2ce"
+    }
+  ]
+}

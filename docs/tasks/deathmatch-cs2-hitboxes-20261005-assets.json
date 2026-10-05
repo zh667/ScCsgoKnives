@@ -1,0 +1,20 @@
+{
+ "output": "src/ScCsgoDeathmatch/Data/dm_cs2_hitboxes.json",
+ "sha256": "f4df603693a39fbfdc0684efdccfd71cc00544248f40efdd135782a3cafdc89d",
+ "bytes": 5376,
+ "source": {
+  "vpk": "game/csgo/pak01_dir.vpk",
+  "vpkSha256": "a391c450b7b93389aa2b0a1ba1a0a70e2da6eedf9570e90a3b1bdfe062aad1eb",
+  "model": "agents/models/ctm_sas/ctm_sas.vmdl_c",
+  "modelSha256": "7312ab88d05bea67b06f3a945d06dc1e5fc5511d4849bc05bc05aec25380eb22",
+  "steam": [
+   "ClientVersion=2000924",
+   "ServerVersion=2000924",
+   "PatchVersion=1.41.8.8"
+  ]
+ },
+ "models": {
+  "agents/models/ctm_sas/ctm_sas.vmdl_c": "7312ab88d05bea67b06f3a945d06dc1e5fc5511d4849bc05bc05aec25380eb22",
+  "agents/models/tm_phoenix/tm_phoenix.vmdl_c": "3c29d019e52266df983884abf0ab5e6f351d7c5ee2f2f6b9e8bda367e6e044c6"
+ }
+}

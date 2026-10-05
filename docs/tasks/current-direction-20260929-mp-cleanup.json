@@ -1,0 +1,246 @@
+{
+ "task": "current-direction-20260929 MP M1-M4 dev iterations (not output-related)",
+ "dryRunJob": "c2f54c5fd1ac4e2db0cf9042c3ed556c",
+ "deleteJob": "0ba000694d384bdcb7a458854fc6c038",
+ "mode": "deleted",
+ "items": 57,
+ "bytes": 12647121975,
+ "freeAfter": 41366122496,
+ "kept": [
+  "completion-140-20260929/mp08..mp10",
+  "pkg dev-mp08..mp10 + json of all",
+  "pkg test-*-c15+netM0 (M0 evidence)",
+  "build adapter-refs, net-*-mp08..mp10",
+  "run/* logs and results"
+ ],
+ "removed": [
+  {
+   "path": ".tmp/completion-140-20260929/mp01",
+   "bytes": 849646258
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp01-full.scmod",
+   "bytes": 526735526
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp01-lite.scmod",
+   "bytes": 36843440
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp01",
+   "bytes": 20892088
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp01",
+   "bytes": 181137
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp01",
+   "bytes": 26624
+  },
+  {
+   "path": ".tmp/completion-140-20260929/mp02",
+   "bytes": 849722179
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp02-full.scmod",
+   "bytes": 526737358
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp02-lite.scmod",
+   "bytes": 36845291
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp02",
+   "bytes": 20897208
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp02",
+   "bytes": 181137
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp02",
+   "bytes": 26624
+  },
+  {
+   "path": ".tmp/completion-140-20260929/mp03",
+   "bytes": 849937490
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp03-full.scmod",
+   "bytes": 526744560
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp03-lite.scmod",
+   "bytes": 36852712
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp03",
+   "bytes": 20912568
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp03",
+   "bytes": 181137
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp03",
+   "bytes": 26624
+  },
+  {
+   "path": ".tmp/completion-140-20260929/mp04",
+   "bytes": 850125603
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp04-full.scmod",
+   "bytes": 526750501
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp04-lite.scmod",
+   "bytes": 36858419
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp04",
+   "bytes": 20924856
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp04",
+   "bytes": 181137
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp04",
+   "bytes": 26624
+  },
+  {
+   "path": ".tmp/completion-140-20260929/mp05",
+   "bytes": 850348655
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp05-full.scmod",
+   "bytes": 526761970
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp05-lite.scmod",
+   "bytes": 36859807
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp05",
+   "bytes": 20928952
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp05",
+   "bytes": 181137
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp05",
+   "bytes": 26624
+  },
+  {
+   "path": ".tmp/completion-140-20260929/mp06",
+   "bytes": 850407109
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp06-full.scmod",
+   "bytes": 526762520
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp06-lite.scmod",
+   "bytes": 36860402
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp06",
+   "bytes": 20931000
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp06",
+   "bytes": 181137
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp06",
+   "bytes": 26624
+  },
+  {
+   "path": ".tmp/completion-140-20260929/mp07",
+   "bytes": 850438275
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp07-full.scmod",
+   "bytes": 526763648
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/pkg/dev-mp07-lite.scmod",
+   "bytes": 36861385
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-refs-mp07",
+   "bytes": 20931512
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-src-mp07",
+   "bytes": 185700
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/build/net-out-mp07",
+   "bytes": 28160
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/diag-mp06-20260930-003117/server",
+   "bytes": 85554582
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/diag-mp06-20260930-003117/client1",
+   "bytes": 85327405
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/diag-mp06-20260930-003327/server",
+   "bytes": 85598646
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/diag-mp06-20260930-003327/client1",
+   "bytes": 85284544
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/diag-mp06-20260930-003505/server",
+   "bytes": 85738515
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/diag-mp06-20260930-003505/client1",
+   "bytes": 85286416
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/m3t-mp08-full-20260930-010345/client3",
+   "bytes": 575202495
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/m3t-mp08-full-20260930-011540/client3",
+   "bytes": 575185369
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/m3t-mp09-full-20260930-013209/client3",
+   "bytes": 575185663
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/pos-mp06-20260930-002508/server",
+   "bytes": 85676922
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/pos-mp06-20260930-002508/client1",
+   "bytes": 85306491
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/vanilla-20260930-003721/server",
+   "bytes": 48502994
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/vanilla-20260930-003721/client1",
+   "bytes": 48442897
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/vanilla-20260930-003947/server",
+   "bytes": 48625248
+  },
+  {
+   "path": ".tmp/mp-m0-20260929/run/vanilla-20260930-003947/client1",
+   "bytes": 48462070
+  }
+ ]
+}

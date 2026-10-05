@@ -20,6 +20,11 @@ public sealed class ScWeaponActionTimeline {
         asset=weapon; kind=action; clip=alias; started=now; duration=Math.Max(0,seconds); sequence++;
     }
     public void Clear() { asset=null; kind=ScWeaponActionKind.Idle; duration=0; sequence++; }
+    /// <summary>A multiplayer client's copy of an action the server's timeline is running (same weapon, clip, start and
+    /// sequence), advanced on this client's own clock.</summary>
+    public void Mirror(string weapon, ScWeaponActionKind action, string alias, double startedAt, float seconds, long actionSequence) {
+        asset=weapon; kind=action; clip=alias; started=startedAt; duration=Math.Max(0,seconds); sequence=actionSequence;
+    }
     public ScWeaponAction Read(double now) {
         float elapsed=Math.Max(0,(float)(now-started));
         return new(asset,elapsed<duration?kind:ScWeaponActionKind.Idle,clip,sequence,elapsed,duration,elapsed);

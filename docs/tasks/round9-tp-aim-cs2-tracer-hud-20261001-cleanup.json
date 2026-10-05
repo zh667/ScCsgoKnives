@@ -1,0 +1,158 @@
+{
+ "task": "round9-tp-aim-cs2-tracer-hud-20261001",
+ "date": "2026-10-01T19:26:23",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r9gCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r9g build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r9g\\full",
+    ".tmp\\completion-140-20260929\\r9g\\lite",
+    ".tmp\\completion-140-20260929\\r9g\\tools",
+    ".tmp\\completion-140-20260929\\r9g\\tree",
+    ".tmp\\completion-140-20260929\\r9g\\assets-full",
+    ".tmp\\completion-140-20260929\\r9g\\resources",
+    ".tmp\\completion-140-20260929\\r9g\\net",
+    ".tmp\\completion-140-20260929\\r9g\\motion",
+    ".tmp\\completion-140-20260929\\r9g\\throw",
+    ".tmp\\completion-140-20260929\\r9g\\ui"
+   ],
+   "bytes": 1893325968,
+   "items": 4240,
+   "missing": []
+  },
+  "stages r9a-r9f build trees and their undelivered candidates (superseded by r9g; logs and reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r9a\\full",
+    ".tmp\\completion-140-20260929\\r9a\\lite",
+    ".tmp\\completion-140-20260929\\r9a\\tools",
+    ".tmp\\completion-140-20260929\\r9a\\tree",
+    ".tmp\\completion-140-20260929\\r9a\\assets-full",
+    ".tmp\\completion-140-20260929\\r9a\\resources",
+    ".tmp\\completion-140-20260929\\r9a\\net",
+    ".tmp\\completion-140-20260929\\r9a\\motion",
+    ".tmp\\completion-140-20260929\\r9a\\throw",
+    ".tmp\\completion-140-20260929\\r9a\\ui",
+    ".tmp\\completion-140-20260929\\r9a\\candidate",
+    ".tmp\\completion-140-20260929\\r9b\\full",
+    ".tmp\\completion-140-20260929\\r9b\\lite",
+    ".tmp\\completion-140-20260929\\r9b\\tools",
+    ".tmp\\completion-140-20260929\\r9b\\tree",
+    ".tmp\\completion-140-20260929\\r9b\\assets-full",
+    ".tmp\\completion-140-20260929\\r9b\\resources",
+    ".tmp\\completion-140-20260929\\r9b\\net",
+    ".tmp\\completion-140-20260929\\r9b\\motion",
+    ".tmp\\completion-140-20260929\\r9b\\throw",
+    ".tmp\\completion-140-20260929\\r9b\\ui",
+    ".tmp\\completion-140-20260929\\r9b\\candidate",
+    ".tmp\\completion-140-20260929\\r9c\\full",
+    ".tmp\\completion-140-20260929\\r9c\\lite",
+    ".tmp\\completion-140-20260929\\r9c\\tools",
+    ".tmp\\completion-140-20260929\\r9c\\tree",
+    ".tmp\\completion-140-20260929\\r9c\\assets-full",
+    ".tmp\\completion-140-20260929\\r9c\\resources",
+    ".tmp\\completion-140-20260929\\r9c\\net",
+    ".tmp\\completion-140-20260929\\r9c\\motion",
+    ".tmp\\completion-140-20260929\\r9c\\throw",
+    ".tmp\\completion-140-20260929\\r9c\\ui",
+    ".tmp\\completion-140-20260929\\r9c\\candidate",
+    ".tmp\\completion-140-20260929\\r9d\\full",
+    ".tmp\\completion-140-20260929\\r9d\\lite",
+    ".tmp\\completion-140-20260929\\r9d\\tools",
+    ".tmp\\completion-140-20260929\\r9d\\tree",
+    ".tmp\\completion-140-20260929\\r9d\\assets-full",
+    ".tmp\\completion-140-20260929\\r9d\\resources",
+    ".tmp\\completion-140-20260929\\r9d\\net",
+    ".tmp\\completion-140-20260929\\r9d\\motion",
+    ".tmp\\completion-140-20260929\\r9d\\throw",
+    ".tmp\\completion-140-20260929\\r9d\\ui",
+    ".tmp\\completion-140-20260929\\r9d\\candidate",
+    ".tmp\\completion-140-20260929\\r9e\\full",
+    ".tmp\\completion-140-20260929\\r9e\\lite",
+    ".tmp\\completion-140-20260929\\r9e\\tools",
+    ".tmp\\completion-140-20260929\\r9e\\tree",
+    ".tmp\\completion-140-20260929\\r9e\\assets-full",
+    ".tmp\\completion-140-20260929\\r9e\\resources",
+    ".tmp\\completion-140-20260929\\r9e\\net",
+    ".tmp\\completion-140-20260929\\r9e\\motion",
+    ".tmp\\completion-140-20260929\\r9e\\throw",
+    ".tmp\\completion-140-20260929\\r9e\\ui",
+    ".tmp\\completion-140-20260929\\r9e\\candidate",
+    ".tmp\\completion-140-20260929\\r9f\\full",
+    ".tmp\\completion-140-20260929\\r9f\\lite",
+    ".tmp\\completion-140-20260929\\r9f\\tools",
+    ".tmp\\completion-140-20260929\\r9f\\tree",
+    ".tmp\\completion-140-20260929\\r9f\\assets-full",
+    ".tmp\\completion-140-20260929\\r9f\\resources",
+    ".tmp\\completion-140-20260929\\r9f\\net",
+    ".tmp\\completion-140-20260929\\r9f\\motion",
+    ".tmp\\completion-140-20260929\\r9f\\throw",
+    ".tmp\\completion-140-20260929\\r9f\\ui",
+    ".tmp\\completion-140-20260929\\r9f\\candidate"
+   ],
+   "bytes": 14966213518,
+   "items": 25458,
+   "missing": []
+  },
+  "candidate copies used by the r9 probes": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9a-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9a-agents.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9b-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9b-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9b-agents.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9c-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9c-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9c-agents.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9d-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9d-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9d-agents.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9e-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9e-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9e-agents.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9f-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9f-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9f-agents.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9g-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9g-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r9g-agents.scmod"
+   ],
+   "bytes": 4207351105,
+   "items": 21,
+   "missing": []
+  },
+  "totalBytes": 21066890591,
+  "items": 29719
+ },
+ "kept": [
+  "stages r9a-r9g: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/mp-m0-20260929/run/tp-pitch-* (probe frames), results/*.json",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "1c9fd7cfaf8fa575d48ab2f8519bd52531649a0594359074b0e401b74a2335d1",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "ff673e4e78658425c7083fe611b5afbabc98e432d4687910a360e505349d70e0",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "bf5208bb9ad279a0b56721c2fa31deb2ca53db31b2f59683599b9fc7eaf6b01e",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 122511736832,
+  "freePct": 12.25
+ }
+}

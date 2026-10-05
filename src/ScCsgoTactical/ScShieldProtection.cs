@@ -27,7 +27,7 @@ public static class ScShieldProtection {
         int slot=inv.ActiveSlotIndex,value=inv.GetSlotValue(slot);if(!ScTacticalShieldBlock.IsShield(value)||ScTacticalShieldBlock.Wear(value)>=ScTacticalShieldBlock.Life)return false;
         if(inv is ComponentCreativeInventory)return true;
         int replacement=Terrain.ReplaceData(value,Math.Min(ScTacticalShieldBlock.Life,ScTacticalShieldBlock.Wear(value)+(int)Math.Clamp(MathF.Ceiling(damage),1,ScTacticalShieldBlock.Life)));
-        if(inv is ComponentInventoryBase native){var s=native.m_slots[slot];if(s.Count!=1)return false;s.Value=replacement;ScInventoryTransaction.Changed(inv);return true;}
+        if(inv is ComponentInventoryBase native){var s=native.m_slots[slot];if(s.Count!=1)return false;s.Value=replacement;ScNetSlots.Touched(inv);ScInventoryTransaction.Changed(inv);return true;} // a direct slot write: the engine does not announce it (ScNetSlots)
         return false; // Unknown holder stores require an explicit mutation adapter; never grant free protection.
     }
     public static void Filter(Attackment attack) {

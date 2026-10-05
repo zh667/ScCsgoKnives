@@ -1,0 +1,113 @@
+{
+ "cs2": {
+  "PatchVersion": "1.41.8.8",
+  "ClientVersion": "2000922",
+  "pak01_dir": {
+   "bytes": 7698168,
+   "sha256": "fac8ff988ab9a20c3175c33fd4c5196da3798a0ddcea9fe0a5565ab33cffb5a9"
+  }
+ },
+ "tool": "Source2Viewer-CLI.exe",
+ "records": [
+  {
+   "kind": "icon",
+   "name": "headshot",
+   "source": "panorama/images/hud/deathnotice/icon_headshot.vsvg_c",
+   "decodedSha256": "0ce669fdfc510b4463b9cc0a2759671be4c6e2d835676495713a30fa839f3557",
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/kill_headshot.png",
+   "member": "Assets/Textures/ScCsgoDeathmatch/kill_headshot.png",
+   "sha256": "b54eabcd1045bd882cffa721dd9ef722645216e9b5836df1a3a1c09b796cf677",
+   "bytes": 1991,
+   "opaquePixels": 1484
+  },
+  {
+   "kind": "icon",
+   "name": "noscope",
+   "source": "panorama/images/hud/deathnotice/noscope.vsvg_c",
+   "decodedSha256": "44862d353644fc902970ecccf15bee653c4f75a284bb956a8a9e821bb53a7b9c",
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/kill_noscope.png",
+   "member": "Assets/Textures/ScCsgoDeathmatch/kill_noscope.png",
+   "sha256": "92308e6c03cefc2838b55cccaea3bdfc65576d071d277f1239e3339fcbe313d9",
+   "bytes": 2567,
+   "opaquePixels": 1355
+  },
+  {
+   "kind": "icon",
+   "name": "smoke",
+   "source": "panorama/images/hud/deathnotice/smoke_kill.vsvg_c",
+   "decodedSha256": "156eebf34e2ed0337969d829276b7e4f5f987a89faf9dad8e66bef806416ee28",
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/kill_smoke.png",
+   "member": "Assets/Textures/ScCsgoDeathmatch/kill_smoke.png",
+   "sha256": "0fd8ed126b5e6b285394e0532500d983b2fffef16d907e7076c9793a24ee41b9",
+   "bytes": 1926,
+   "opaquePixels": 1572
+  },
+  {
+   "kind": "icon",
+   "name": "penetrate",
+   "source": "panorama/images/hud/deathnotice/penetrate.vsvg_c",
+   "decodedSha256": "4cc7c84aae80072f40fb5ac26c7eff5a4999e0008e982b69bf4c382962eba60d",
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/kill_penetrate.png",
+   "member": "Assets/Textures/ScCsgoDeathmatch/kill_penetrate.png",
+   "sha256": "4728abb962e2b05f23536cb72f8808d0beb3aa837b61012d175b18a44399e937",
+   "bytes": 1274,
+   "opaquePixels": 1300
+  },
+  {
+   "kind": "icon",
+   "name": "blind",
+   "source": "panorama/images/hud/deathnotice/blind_kill.vsvg_c",
+   "decodedSha256": "5a1233c62f605337ced75ec0f3a35f8d03341d3cfe14362f0b3d3f9fd33f4445",
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/kill_blind.png",
+   "member": "Assets/Textures/ScCsgoDeathmatch/kill_blind.png",
+   "sha256": "920c2c3153c52ea3ecb3aed8e06553e65cbda79cad6fe20b4e15bec001c81b50",
+   "bytes": 2126,
+   "opaquePixels": 1397
+  },
+  {
+   "kind": "icon",
+   "name": "suicide",
+   "source": "panorama/images/hud/deathnotice/icon_suicide.vsvg_c",
+   "decodedSha256": "5e6268df5ff2f4e48f45ba52d63dc84942efe6285fc20bda186fd5cc0182b574",
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/kill_suicide.png",
+   "member": "Assets/Textures/ScCsgoDeathmatch/kill_suicide.png",
+   "sha256": "4923b3d0de38cbef173b9d54fc071f92a157d4818fb070612c66fe48adb957fe",
+   "bytes": 2004,
+   "opaquePixels": 1187
+  },
+  {
+   "kind": "sound",
+   "name": "respawn",
+   "source": "sounds/player/pl_respawn.vsnd_c",
+   "decoded": "pl_respawn.wav",
+   "decodedSha256": "c3f24f2e77a92765f7ea740e69e9e5ea98517016b75091212f53b757f20669a7",
+   "sourceChannels": 1,
+   "rate": 44100,
+   "seconds": 1.817,
+   "peak": 0.8618,
+   "target": "src/ScCsgoDeathmatch/Assets/Audio/ScCsgoDeathmatch/respawn.ogg",
+   "member": "Assets/Audio/ScCsgoDeathmatch/respawn.ogg",
+   "sha256": "2981ff784abb90dc512b2774345733ade9bdab0721706619793f3238e651fc3f",
+   "bytes": 18634
+  },
+  {
+   "kind": "sound",
+   "name": "match_end",
+   "source": "sounds/ui/deathmatch_end.vsnd_c",
+   "decoded": "deathmatch_end.wav",
+   "decodedSha256": "3c510581265fd6149e2f88073bb83d5a6300084b62fdfb18812d3adc5c6d6ed9",
+   "sourceChannels": 2,
+   "rate": 44100,
+   "seconds": 2.23,
+   "peak": 0.732,
+   "target": "src/ScCsgoDeathmatch/Assets/Audio/ScCsgoDeathmatch/match_end.ogg",
+   "member": "Assets/Audio/ScCsgoDeathmatch/match_end.ogg",
+   "sha256": "142d22056978d6dc1432fa3303ae3c572919ecd0c296f8f192acc8b63eb38b5f",
+   "bytes": 21183
+  }
+ ],
+ "notImported": [
+  "the white spawn-protection look: no resource of that name in the VPK (rendered by CS2's code); the package draws its own marker",
+  "buy menu / radial menu / scoreboard panorama layouts: Source 2 UI code that does not run here; the wheel and the board are this package's own widgets"
+ ]
+}

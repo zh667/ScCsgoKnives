@@ -17,7 +17,7 @@ public static class ScHeadshotProbe {
         foreach (var mesh in model.Meshes) {
             if (!mesh.IsVisible) continue;
             bool head = rule.IsHead(mesh.ParentBone.Name);
-            yield return new(head ? rule.Apply(mesh.BoundingBox) : mesh.BoundingBox, absolute[mesh.ParentBone.Index], head);
+            yield return new(head ? rule.Apply(mesh.BoundingBox) : mesh.BoundingBox, absolute[mesh.ParentBone.Index], head, ScHeadshot.RigidRegion(mesh.ParentBone.Name));
         }
     }
     public static ScHitPart Resolve(ComponentBody body, Vector3 origin, Vector3 direction, float maxDistance, out float distance, out string reason) {

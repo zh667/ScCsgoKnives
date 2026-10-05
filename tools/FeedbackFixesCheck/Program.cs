@@ -125,12 +125,13 @@ bool done=false;Window.Frame+=()=>{if(done)return;done=true;try{
     }
     foreach(var size in new[]{new Vector2(850,479),new Vector2(360,640)}){
         var screen=new ScGunSettingsScreen{WidgetsHierarchyInput=new WidgetInput()};screen.Enter([]);Layout(screen,size);
-        var contact=(ContainerWidget)Field(screen,"m_contact");var scroll=(ScrollPanelWidget)Field(screen,"m_scroll");
-        var group=contact.AllChildren.OfType<LabelWidget>().Single(l=>l.Text.Contains("1087216872"));var groupAt=group.GlobalBounds.Min;
-        Check("group in fixed root "+size,contact.ParentWidget==Field(screen,"m_root")&&group.GlobalBounds.Min.Y>=0&&group.GlobalBounds.Max.Y<size.Y);
+        // 2026-10-01 user request: the group number is the first row of the scrolling list, not a pinned header.
+        var content=(ContainerWidget)Field(screen,"m_content");var scroll=(ScrollPanelWidget)Field(screen,"m_scroll");
+        var group=content.AllChildren.OfType<LabelWidget>().Single(l=>l.Text.Contains("1087216872"));var groupAt=group.GlobalBounds.Min;
+        Check("group is the first row of the scrolling list "+size,((ContainerWidget)content.Children.First()).AllChildren.Contains(group)&&group.GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y&&group.GlobalBounds.Max.Y<size.Y);
         Check("HUD not on main settings "+size,typeof(ScGunSettingsScreen).GetField("m_hudX",BindingFlags.NonPublic|BindingFlags.Instance)==null);
         Capture(screen,size,"settings");scroll.ScrollPosition=500;Layout(screen,size);
-        Check("group stays visible while scrolling "+size,group.GlobalBounds.Min==groupAt);
+        Check("group scrolls with the list (not pinned) "+size,group.GlobalBounds.Min.Y<groupAt.Y);
         var save=(Widget)Field(screen,"m_save");Check("save on screen "+size,save.GlobalBounds.Max.Y<=size.Y&&save.ActualSize.Y>=48);screen.Leave();
         foreach(bool left in new[]{false,true}){
             SettingsManager.LeftHandedLayout=left;ScUiSettings.AmmoHud=new(){Custom=true,X=.8f,Y=.3f};var savedHud=ScUiSettings.AmmoHud.Copy();

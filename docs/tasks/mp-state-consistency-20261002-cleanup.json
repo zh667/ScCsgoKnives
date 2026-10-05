@@ -1,0 +1,102 @@
+{
+ "task": "mp-state-consistency-20261002",
+ "date": "2026-10-02T04:25:57",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "mpc3CandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage mpc3 build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpc3\\full",
+    ".tmp\\completion-140-20260929\\mpc3\\lite",
+    ".tmp\\completion-140-20260929\\mpc3\\tools",
+    ".tmp\\completion-140-20260929\\mpc3\\tree",
+    ".tmp\\completion-140-20260929\\mpc3\\assets-full",
+    ".tmp\\completion-140-20260929\\mpc3\\resources",
+    ".tmp\\completion-140-20260929\\mpc3\\net",
+    ".tmp\\completion-140-20260929\\mpc3\\motion",
+    ".tmp\\completion-140-20260929\\mpc3\\throw",
+    ".tmp\\completion-140-20260929\\mpc3\\ui"
+   ],
+   "bytes": 2354254923,
+   "items": 4738,
+   "missing": []
+  },
+  "stage mpc2 build trees and undelivered candidates (superseded by mpc3; logs, reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpc2\\full",
+    ".tmp\\completion-140-20260929\\mpc2\\lite",
+    ".tmp\\completion-140-20260929\\mpc2\\tools",
+    ".tmp\\completion-140-20260929\\mpc2\\tree",
+    ".tmp\\completion-140-20260929\\mpc2\\assets-full",
+    ".tmp\\completion-140-20260929\\mpc2\\resources",
+    ".tmp\\completion-140-20260929\\mpc2\\net",
+    ".tmp\\completion-140-20260929\\mpc2\\motion",
+    ".tmp\\completion-140-20260929\\mpc2\\throw",
+    ".tmp\\completion-140-20260929\\mpc2\\ui",
+    ".tmp\\completion-140-20260929\\mpc2\\candidate"
+   ],
+   "bytes": 2955292458,
+   "items": 4741,
+   "missing": []
+  },
+  "stage mpc1 build trees and undelivered candidates (first pass, superseded; logs, reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpc1\\full",
+    ".tmp\\completion-140-20260929\\mpc1\\lite",
+    ".tmp\\completion-140-20260929\\mpc1\\tree",
+    ".tmp\\completion-140-20260929\\mpc1\\resources",
+    ".tmp\\completion-140-20260929\\mpc1\\net",
+    ".tmp\\completion-140-20260929\\mpc1\\candidate"
+   ],
+   "bytes": 2161831818,
+   "items": 2606,
+   "missing": [
+    ".tmp\\completion-140-20260929\\mpc1\\tools",
+    ".tmp\\completion-140-20260929\\mpc1\\assets-full",
+    ".tmp\\completion-140-20260929\\mpc1\\motion",
+    ".tmp\\completion-140-20260929\\mpc1\\throw",
+    ".tmp\\completion-140-20260929\\mpc1\\ui"
+   ]
+  },
+  "exports made for the VPS-side offline checks (.tmp/dev-temp/mpx-mpb: gz+base64 copies of the mpb core/adapter and the two Sushi DLLs; the originals stay in .tmp/dev-temp/mp-feedback-20261002)": {
+   "paths": [
+    ".tmp\\dev-temp\\mpx-mpb"
+   ],
+   "bytes": 2202748,
+   "items": 7,
+   "missing": []
+  },
+  "totalBytes": 7473581947,
+  "items": 12092
+ },
+ "kept": [
+  "stages mpc1, mpc2, mpc3: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/mp-feedback-20261002 (the planner's diagnostic probe, the user's logs and media frames, the mpb DLLs and the two Sushi DLLs: evidence inputs, not this task's intermediates)",
+  "earlier tasks' stages and test packages: not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "e15a6052190a2e420f06876a60d46f3b9611cb7522ee8012a6cab3604edbca37",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "41674d3ab7e92ed951c119a6b80e6ff093c0565ff196711494f143d50b83eeb9",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "9c09b521418fb34b883d0b7154674c412a31beb8711fbf6af996e9a724d86709",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 129728794624,
+  "freePct": 12.97
+ }
+}

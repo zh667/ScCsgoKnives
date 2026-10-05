@@ -18,6 +18,7 @@ string root=Path.GetFullPath(args[0]),output=Path.GetFullPath(args[2]);Directory
 var checks=new List<string>();var rows=new List<object>();
 void Check(string name,bool value){if(!value)throw new Exception(name);checks.Add(name);}
 var sink=new Sink();Log.AddLogSink(sink);
+KnifeLog.Diagnostics=true; // the timings run only with the test diagnostics (release 1.4.0)
 var diagnosticProject=new Project();ScTacticalPerformance.Start(diagnosticProject);
 for(int i=0;i<100;i++){using var trace=ScTacticalPerformance.Spawn(diagnosticProject,"fixture",3);using var timing=ScTacticalPerformance.Measure(diagnosticProject,ScTacticalPerformance.Stage.EntityCreate);trace.Success=i!=99;}
 Check("burst detail is rate limited",sink.Lines.Count(s=>s.Contains("spawn begin"))==1&&sink.Lines.Count(s=>s.Contains("spawn end"))==1);

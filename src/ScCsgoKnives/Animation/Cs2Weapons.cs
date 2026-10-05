@@ -138,6 +138,10 @@ public static class Cs2Weapons {
     /// <summary>Gameplay numbers follow GunNumbers, not GunProfile: the look and the feel switch separately.</summary>
     public static bool Active => KnifeTuning.GunNumbers >= 0.5f && s_file?.Guns is { Count: > 0 };
 
+    /// <summary>The table's own scale: Source units per metre (one block), and the units its range modifier applies per.</summary>
+    public static float UnitsPerMetre => s_file?.UnitsPerMetre ?? 0f;
+    public static float FalloffUnits => s_file?.FalloffUnits ?? 0f;
+
     public static Gun Get(string gun) =>
         gun is not null && s_file?.Guns is not null && s_file.Guns.TryGetValue(gun, out Gun g) ? g : null;
 
@@ -195,9 +199,6 @@ public static class Cs2Weapons {
                 KnifeDiagnostics.WarnOnce("cs2-weapons-format", $"{Resource} is not {ExpectedFormat}.");
                 return null;
             }
-            KnifeLog.Trace("[ScCsgoKnives] CS2 weapon data: " + string.Join("; ", file.Guns.Select(kv =>
-                $"{kv.Key} dmg={kv.Value.Damage:0.#} falloff={kv.Value.RangeModifier:0.##}/500u "
-                + $"spread={kv.Value.SpreadDegrees:0.###}deg kick={kv.Value.KickPitchDegrees:0.###}deg")));
             LoadError = null;
             return file;
         }

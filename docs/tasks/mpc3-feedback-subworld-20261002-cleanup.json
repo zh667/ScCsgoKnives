@@ -1,0 +1,86 @@
+{
+ "task": "mpc3-feedback-subworld-20261002 (mp-state-consistency plan section 12)",
+ "date": "2026-10-02T14:28:00",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "mpd2CandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage mpd2 build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpd2\\full",
+    ".tmp\\completion-140-20260929\\mpd2\\lite",
+    ".tmp\\completion-140-20260929\\mpd2\\tools",
+    ".tmp\\completion-140-20260929\\mpd2\\tree",
+    ".tmp\\completion-140-20260929\\mpd2\\assets-full",
+    ".tmp\\completion-140-20260929\\mpd2\\resources",
+    ".tmp\\completion-140-20260929\\mpd2\\net",
+    ".tmp\\completion-140-20260929\\mpd2\\motion",
+    ".tmp\\completion-140-20260929\\mpd2\\throw",
+    ".tmp\\completion-140-20260929\\mpd2\\ui",
+    ".tmp\\completion-140-20260929\\mpd2\\old130"
+   ],
+   "bytes": 2536573763,
+   "items": 4908,
+   "missing": []
+  },
+  "stage mpd1 build trees and undelivered candidates (first pass of this round, superseded by mpd2; logs, reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpd1\\full",
+    ".tmp\\completion-140-20260929\\mpd1\\lite",
+    ".tmp\\completion-140-20260929\\mpd1\\tools",
+    ".tmp\\completion-140-20260929\\mpd1\\tree",
+    ".tmp\\completion-140-20260929\\mpd1\\assets-full",
+    ".tmp\\completion-140-20260929\\mpd1\\resources",
+    ".tmp\\completion-140-20260929\\mpd1\\net",
+    ".tmp\\completion-140-20260929\\mpd1\\motion",
+    ".tmp\\completion-140-20260929\\mpd1\\throw",
+    ".tmp\\completion-140-20260929\\mpd1\\ui",
+    ".tmp\\completion-140-20260929\\mpd1\\candidate"
+   ],
+   "bytes": 2981835205,
+   "items": 4844,
+   "missing": [
+    ".tmp\\completion-140-20260929\\mpd1\\old130"
+   ]
+  },
+  "exports made for the VPS-side offline checks (.tmp/dev-temp/mpx-mpd: gz+base64 copies of the mpd2 Lite core, adapter payloads and agents assembly)": {
+   "paths": [
+    ".tmp\\dev-temp\\mpx-mpd"
+   ],
+   "bytes": 4905240,
+   "items": 4,
+   "missing": []
+  },
+  "totalBytes": 5523314208,
+  "items": 9756
+ },
+ "kept": [
+  "stages mpd1, mpd2: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/mp-feedback-111155-20261002 and .tmp/dev-temp/ancient-travel-20261002 (the planner's probes, the user's video/log evidence, the AncientWorld DLL and its decompiled source: evidence inputs, not this task's intermediates)",
+  "D:/下载/AncientWorld_v0.41.16.zip (the user's package: read only, untouched)",
+  "earlier tasks' stages and test packages: not this task's",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "7239fc30774781322e1103016388c924efbaeb77dbc9780986d32d2aca631fbc",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "72de5c429768fdd3ec54ebf5df61e64b8cb8adae80182f2c578b656d4cb27109",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "a1b7602d07ab23fd022da43ab31c5536c88fd0e512e5432507e8b38980ad8a25",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 121185984512,
+  "freePct": 12.12
+ }
+}

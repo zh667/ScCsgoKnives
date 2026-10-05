@@ -66,7 +66,6 @@ public sealed class ScGunWorldBackground : Widget {
                 m_worldContext.PrimitivesRenderer3D.Flush(Matrix.Identity);
                 m_worldContext.PrimitivesRenderer2D.Flush();
             });
-            KnifeLog.Trace($"[CS_BACKGROUND_04112] captured {width}x{height}, views={views.Length}, ms={timer.Elapsed.TotalMilliseconds:0.0}; frozen until reopen/resize/reset");
         }
         finally {
             SettingsManager.ViewAngle = oldView; SettingsManager.LookSensitivity = oldSensitivity;

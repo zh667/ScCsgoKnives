@@ -34,8 +34,6 @@ public static class ScGunplaySettings {
                 ScProjectileDefense.Enabled=settings.SubnauticaProjectileDefense;
                 Diagnostics="off"; // Release policy also overrides earlier sampled/summary settings without rewriting player files.
             }
-            KnifeLog.Trace("Gunplay preset: "+(Enabled?"survival v1 (approved 35-gun handling)":"classic (prior GunNumbers respected)"));
-            KnifeLog.Trace("Gunplay diagnostics: "+Diagnostics+"; sampled details are rate-limited, summaries include every completed shot.");
         } catch(Exception e) {
             Enabled=false;Diagnostics="off";KnifeLog.Warning("Cannot load gunplay settings; file preserved, using classic for this session: "+e.Message);
         }

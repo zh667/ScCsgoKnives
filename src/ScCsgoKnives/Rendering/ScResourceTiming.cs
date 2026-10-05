@@ -12,6 +12,7 @@ public static class ScResourceTiming {
         readonly long start,bytes;
         internal Scope(string kind,string resource){this.kind=kind;this.resource=resource;start=Stopwatch.GetTimestamp();bytes=GC.GetAllocatedBytesForCurrentThread();}
         public void Dispose(){
+            if(!KnifeLog.Diagnostics)return;
             double ms=Stopwatch.GetElapsedTime(start).TotalMilliseconds;
             if(ms<10)return;
             lock(seen){

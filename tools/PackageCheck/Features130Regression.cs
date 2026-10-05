@@ -108,12 +108,19 @@ static class Features130Regression {
                 inv.m_slots[0]=0;Call("ScInventoryWear","Update",slot);Assert(!label.IsVisible,"stale percent on empty slot");
                 inv.m_slots[0]=Terrain.MakeBlockValue(3);Call("ScInventoryWear","Update",slot);Assert(!label.IsVisible,"percent on vanilla item");
             });
-            Test("right-hud-compact-magazine-count",()=>{
+            Test("right-hud-icon-above-one-line-rounds-and-magazines",()=>{
+                // 2026-10-01 user requests: the weapon icon above one line "rounds in the gun / magazines carried" (the icon's own
+                // count hidden), no "装填" text.
                 var h=Activator.CreateInstance(T("ScAmmoHud"));var read=Activator.CreateInstance(T("ScAmmoReadout"),["old long text","",false,false,false,"耐久 100%",0]);
-                foreach(var pair in new Dictionary<string,object>{{"Compact",true},{"LoadedText","15"},{"CapacityText","/ 30"},{"Fraction",.5f},{"ReserveCount","23"}})read.GetType().GetProperty(pair.Key).SetValue(read,pair.Value);
-                h.GetType().GetMethod("Show").Invoke(h,[read]);var panel=(StackPanelWidget)Field(h,"Panel");var mag=Field(h,"Magazine");
-                Assert(panel.HorizontalAlignment==WidgetAlignment.Far&&((LabelWidget)Field(h,"Main")).Text=="15 / 30","HUD position/text");
-                Assert(((LabelWidget)Field(mag,"Count")).Text=="23"&&(float)Field(mag,"Fraction")==.5f&&!((LabelWidget)Field(h,"Wear")).IsVisible,"magazine count/fill");
+                foreach(var pair in new Dictionary<string,object>{{"Compact",true},{"LoadedText","15"},{"CapacityText","/ 30"},{"Fraction",.5f},{"ReserveCount","23"},{"Status","装填"}})read.GetType().GetProperty(pair.Key).SetValue(read,pair.Value);
+                h.GetType().GetMethod("Show").Invoke(h,[read]);var panel=(StackPanelWidget)Field(h,"Panel");var mag=(Widget)Field(h,"Magazine");
+                Assert(panel.HorizontalAlignment==WidgetAlignment.Far&&((LabelWidget)Field(h,"Main")).Text=="15 / 23","HUD position/text: "+((LabelWidget)Field(h,"Main")).Text);
+                Assert(mag.IsVisible&&panel.Children.IndexOf(mag)<panel.Children.IndexOf((Widget)Field(h,"Main"))&&!((LabelWidget)Field(mag,"Count")).IsVisible
+                    &&(float)Field(mag,"Fraction")==.5f&&!((LabelWidget)Field(h,"Detail")).IsVisible&&!((LabelWidget)Field(h,"Wear")).IsVisible,"icon above the one line, no count on the icon, no reload text");
+                var zeus=Activator.CreateInstance(T("ScAmmoReadout"),["","",false,true,false,"",0]);
+                foreach(var pair in new Dictionary<string,object>{{"Compact",true},{"LoadedText","3.4"},{"CapacityText","s"},{"Status","充能"}})zeus.GetType().GetProperty(pair.Key).SetValue(zeus,pair.Value);
+                h.GetType().GetMethod("Show").Invoke(h,[zeus]);
+                Assert(((LabelWidget)Field(h,"Main")).Text=="3.4 s"&&!((LabelWidget)Field(h,"Detail")).IsVisible,"Zeus countdown on its one line");
             });
             Test("hud-hidden-touch-pad-does-not-reserve-space",()=>{
                 foreach(var size in new[]{new Vector2(1187,637),new Vector2(850,478),new Vector2(480,850)})foreach(bool shown in new[]{false,true}) {

@@ -1,0 +1,1866 @@
+{
+ "netstate": {
+  "mode": "state cases",
+  "failed": 0,
+  "total": 109,
+  "modules": [
+   "ScCsgoTactical.dll",
+   "ScCsgoAppearance.dll"
+  ],
+  "registeredHandlers": 35,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "9070fa03-159b-4e14-bc00-9328e52dad7d",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": "all passed"
+ },
+ "netstate-targets": {
+  "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+  "failed": 0,
+  "total": 12,
+  "modules": [
+   "ScCsgoTactical.dll",
+   "ScCsgoAppearance.dll"
+  ],
+  "registeredHandlers": 33,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "9070fa03-159b-4e14-bc00-9328e52dad7d",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": "all passed"
+ },
+ "netgunloop": {
+  "mode": "the gun state machine on a client and a server end",
+  "failed": 0,
+  "total": 122,
+  "modules": [
+   "ScCsgoTactical.dll",
+   "ScCsgoAppearance.dll"
+  ],
+  "registeredHandlers": 33,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "9070fa03-159b-4e14-bc00-9328e52dad7d",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>70 ms client, word>90 ms server, x1; weak 30 ms: up>140 ms client, word>160 ms server, x1; strong 150 ms: up>70 ms client, word>90 ms server, x1; weak 400 ms: up>140 ms client, word>150 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps, no transit delay: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>70 ms client, word>80 ms server, x1; weak 30 ms: up>140 ms client, word>150 ms server, x1; strong 150 ms: up>70 ms client, word>80 ms server, x1; weak 400 ms: up>140 ms client, word>140 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>70 ms client, word>100 ms server, x1; weak 30 ms: up>140 ms client, word>160 ms server, x1; strong 150 ms: up>70 ms client, word>90 ms server, x1; weak 400 ms: up>140 ms client, word>150 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>83 ms client, word>100 ms server, x1; weak 30 ms: up>133 ms client, word>146 ms server, x1; strong 150 ms: up>83 ms client, word>93 ms server, x1; weak 400 ms: up>133 ms client, word>150 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 60 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>83 ms client, word>90 ms server, x1; weak 30 ms: up>133 ms client, word>140 ms server, x1; strong 150 ms: up>83 ms client, word>90 ms server, x1; weak 400 ms: up>133 ms client, word>140 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>83 ms client, word>87 ms server, x1; weak 30 ms: up>133 ms client, word>137 ms server, x1; strong 150 ms: up>83 ms client, word>87 ms server, x1; weak 400 ms: up>133 ms client, word>137 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>83 ms client, word>83 ms server, x1; weak 30 ms: up>133 ms client, word>133 ms server, x1; strong 150 ms: up>83 ms client, word>83 ms server, x1; weak 400 ms: up>133 ms client, word>133 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 30 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>83 ms client, word>117 ms server, x1; weak 30 ms: up>133 ms client, word>133 ms server, x1; strong 150 ms: up>83 ms client, word>100 ms server, x1; weak 400 ms: up>133 ms client, word>150 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 144 fps, host 50 fps, 30 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>69 ms client, word>100 ms server, x1; weak 30 ms: up>139 ms client, word>157 ms server, x1; strong 150 ms: up>69 ms client, word>90 ms server, x1; weak 400 ms: up>139 ms client, word>153 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 50 fps, host 100 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>80 ms client, word>72 ms server, x1; weak 30 ms: up>140 ms client, word>142 ms server, x1; strong 150 ms: up>80 ms client, word>72 ms server, x1; weak 400 ms: up>140 ms client, word>142 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>71 ms client, word>91 ms server, x1; weak 30 ms: up>138 ms client, word>161 ms server, x1; strong 150 ms: up>73 ms client, word>90 ms server, x1; weak 400 ms: up>138 ms client, word>140 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>75 ms client, word>95 ms server, x1; weak 30 ms: up>149 ms client, word>140 ms server, x1; strong 150 ms: up>82 ms client, word>86 ms server, x1; weak 400 ms: up>142 ms client, word>153 ms server, x1"
+   },
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": true,
+    "detail": "strong 50 ms: up>70 ms client, word>130 ms server, x1; weak 30 ms: up>140 ms client, word>140 ms server, x1; strong 150 ms: up>70 ms client, word>150 ms server, x1; weak 400 ms: up>140 ms client, word>150 ms server, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 0 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 0 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.711 s, both ends held ready, server throw begins 4 ms after the word, x1; weak: held 1.690 s, both ends held ready, server throw begins 19 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 80 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 0 ms after the word, x1"
+   },
+   {
+    "case": "T03",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: twelve taps of 20-55 ms: when the start and the client's word are taken in the same server frame the throw still begins there and makes one grenade",
+    "ok": true,
+    "detail": "12/12 correspond; start and word in one server frame: 2"
+   },
+   {
+    "case": "T03",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: twelve taps of 20-55 ms: when the start and the client's word are taken in the same server frame the throw still begins there and makes one grenade",
+    "ok": true,
+    "detail": "12/12 correspond; start and word in one server frame: 2"
+   },
+   {
+    "case": "T04",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a press every 0.3 s for 9 s: every throw the client's hand lets go is one grenade on the server, none more, none refused; presses during a throw or its recovery throw nothing",
+    "ok": true,
+    "detail": "client let go 5 times (at 0.24 2.04 3.84 5.64 7.44), server made 5"
+   },
+   {
+    "case": "T04",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: a press every 0.3 s for 9 s: every throw the client's hand lets go is one grenade on the server, none more, none refused; presses during a throw or its recovery throw nothing",
+    "ok": true,
+    "detail": "client let go 5 times (at 0.24 2.06 3.85 5.95 8.04), server made 5"
+   },
+   {
+    "case": "T05",
+    "name": "a release, a cancel and a held word with no throw in hand do nothing; a tap whose start and release are sent again (a frame later, and 0.3 s later, inside its follow-through) is still one grenade",
+    "ok": true,
+    "detail": "stray messages: nothing made, nothing prepared; repeated 2 times: button 0.110-0.160; client: throw begins 0.160, lets go 0.230, ends 0.930; server: prepared 0.180, the client's word arrives 0.210, throw begins 0.220, grenade 0.300 x1; others shown the empty hand from 0.340"
+   },
+   {
+    "case": "T06",
+    "name": "switching to another slot during the pull, the button still down: the throw is taken back on both ends; no grenade is made, none is shown",
+    "ok": true,
+    "detail": "switched 0.820; grenades 0; afterwards the server has no throw, the client has none; button 0.110-1.310; client: throw begins never, lets go never, ends never; server: prepared 0.180, the client's word arrives never, throw begins never, grenade never x0; others shown the empty hand from never"
+   },
+   {
+    "case": "T06",
+    "name": "switching to another slot after a tap of the weak throw, before its release moment: the throw is taken back on both ends; no grenade is made, none is shown",
+    "ok": true,
+    "detail": "switched 0.220; grenades 0; afterwards the server has no throw, the client has none; button 0.110-0.160; client: throw begins 0.160, lets go never, ends never; server: prepared 0.180, the client's word arrives 0.210, throw begins 0.220, grenade never x0; others shown the empty hand from never"
+   },
+   {
+    "case": "T07",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a tap as others see it: the host's copy of that player lets go in the frame the grenade is made; the word relayed to the other clients says the hand is empty within the link's delay and one refresh of the client letting go, and ends with the throw; both ends then hold the slot held before the grenade",
+    "ok": true,
+    "detail": "client lets go 0.230; grenade and host's view 0.300/0.300; relayed word: empty hand 0.300, ended 1.000 :: button 0.110-0.160; client: throw begins 0.160, lets go 0.230, ends 0.930; server: prepared 0.180, the client's word arrives 0.210, throw begins 0.220, grenade 0.300 x1; others shown the empty hand from 0.300"
+   },
+   {
+    "case": "T07",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: a tap as others see it: the host's copy of that player lets go in the frame the grenade is made; the word relayed to the other clients says the hand is empty within the link's delay and one refresh of the client letting go, and ends with the throw; both ends then hold the slot held before the grenade",
+    "ok": true,
+    "detail": "client lets go 0.246; grenade and host's view 0.500/0.500; relayed word: empty hand 0.500, ended 1.183 :: button 0.113-0.163; client: throw begins 0.163, lets go 0.246, ends 0.929; server: prepared 0.367, the client's word arrives 0.413, throw begins 0.417, grenade 0.500 x1; others shown the empty hand from 0.500"
+   }
+  ],
+  "gunCases": {
+   "passed": 94,
+   "failed": [],
+   "detail": "see mpe1-offline-results.json (same cases)"
+  }
+ },
+ "netstate-delivered": {
+  "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+  "failed": 0,
+  "total": 12,
+  "modules": [],
+  "registeredHandlers": 28,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": "all passed"
+ },
+ "netgunloop-delivered": {
+  "mode": "the gun state machine on a client and a server end",
+  "failed": 16,
+  "total": 122,
+  "modules": [],
+  "registeredHandlers": 28,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>990 ms client, word>90 ms server, x1 [button 0.110-0.160; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.180, the client's word arrives 1.130, throw begins 1.140, grenade 1.220 x1; others shown the empty hand from 1.220]; weak 30 ms: up>1080 ms client, word>140 ms server, x1 [button 0.110-0.140; client: throw begins 1.080, lets go 1.220, ends 1.590; server: prepared 0.170, the client's word arrives 1.130, throw begins 1.130, grenade 1.270 x1; others shown the empty hand from 1.330]; strong 150 ms: up>890 ms client, word>90 ms server, x1 [button 0.110-0.260; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.180, the client's "
+   },
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps, no transit delay: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>990 ms client, word>80 ms server, x1 [button 0.110-0.160; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.120, the client's word arrives 1.080, throw begins 1.080, grenade 1.160 x1; others shown the empty hand from 1.160]; weak 30 ms: up>1080 ms client, word>130 ms server, x1 [button 0.110-0.140; client: throw begins 1.080, lets go 1.220, ends 1.590; server: prepared 0.110, the client's word arrives 1.080, throw begins 1.070, grenade 1.210 x1; others shown the empty hand from 1.270]; strong 150 ms: up>890 ms client, word>80 ms server, x1 [button 0.110-0.260; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.120, the client's "
+   },
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>990 ms client, word>170 ms server, x1 [button 0.110-0.160; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.260, the client's word arrives 1.130, throw begins 1.220, grenade 1.300 x1; others shown the empty hand from 1.340]; weak 30 ms: up>1080 ms client, word>80 ms server, x1 [button 0.110-0.140; client: throw begins 1.080, lets go 1.220, ends 1.590; server: prepared 0.170, the client's word arrives 1.190, throw begins 1.130, grenade 1.270 x1; others shown the empty hand from 1.290]; strong 150 ms: up>890 ms client, word>170 ms server, x1 [button 0.110-0.260; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.260, the client's"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>1000 ms client, word>83 ms server, x1 [button 0.100-0.150; client: throw begins 1.067, lets go 1.150, ends 1.833; server: prepared 0.160, the client's word arrives 1.117, throw begins 1.120, grenade 1.200 x1; others shown the empty hand from 1.220]; weak 30 ms: up>1067 ms client, word>153 ms server, x1 [button 0.110-0.144; client: throw begins 1.077, lets go 1.210, ends 1.577; server: prepared 0.180, the client's word arrives 1.127, throw begins 1.140, grenade 1.280 x1; others shown the empty hand from 1.300]; strong 150 ms: up>900 ms client, word>76 ms server, x1 [button 0.100-0.250; client: throw begins 1.067, lets go 1.150, ends 1.833; server: prepared 0.153, the client's"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 60 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>1000 ms client, word>74 ms server, x1 [button 0.110-0.160; client: throw begins 1.076, lets go 1.160, ends 1.843; server: prepared 0.167, the client's word arrives 1.126, throw begins 1.117, grenade 1.200 x1; others shown the empty hand from 1.233]; weak 30 ms: up>1067 ms client, word>124 ms server, x1 [button 0.100-0.133; client: throw begins 1.067, lets go 1.200, ends 1.567; server: prepared 0.157, the client's word arrives 1.117, throw begins 1.107, grenade 1.240 x1; others shown the empty hand from 1.290]; strong 150 ms: up>900 ms client, word>74 ms server, x1 [button 0.110-0.260; client: throw begins 1.076, lets go 1.160, ends 1.843; server: prepared 0.167, the client's"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>1000 ms client, word>71 ms server, x1 [button 0.113-0.163; client: throw begins 1.079, lets go 1.163, ends 1.846; server: prepared 0.367, the client's word arrives 1.329, throw begins 1.317, grenade 1.400 x1; others shown the empty hand from 1.433]; weak 30 ms: up>1067 ms client, word>121 ms server, x1 [button 0.100-0.133; client: throw begins 1.067, lets go 1.200, ends 1.567; server: prepared 0.354, the client's word arrives 1.317, throw begins 1.304, grenade 1.437 x1; others shown the empty hand from 1.487]; strong 150 ms: up>900 ms client, word>71 ms server, x1 [button 0.113-0.263; client: throw begins 1.079, lets go 1.163, ends 1.846; server: prepared 0.367, the client's"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>1000 ms client, word>133 ms server, x1 [button 0.100-0.150; client: throw begins 1.067, lets go 1.150, ends 1.833; server: prepared 0.217, the client's word arrives 1.117, throw begins 1.167, grenade 1.250 x1; others shown the empty hand from 1.367]; weak 30 ms: up>1067 ms client, word>33 ms server, x1 [button 0.100-0.133; client: throw begins 1.067, lets go 1.200, ends 1.567; server: prepared 0.150, the client's word arrives 1.200, throw begins 1.100, grenade 1.233 x1; others shown the empty hand from 1.283]; strong 150 ms: up>900 ms client, word>217 ms server, x1 [button 0.100-0.250; client: throw begins 1.067, lets go 1.150, ends 1.833; server: prepared 0.300, the client'"
+   },
+   {
+    "case": "T01",
+    "name": "client 60 fps, host 30 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>1000 ms client, word>67 ms server, x1 [button 0.100-0.150; client: throw begins 1.067, lets go 1.150, ends 1.833; server: prepared 0.150, the client's word arrives 1.117, throw begins 1.083, grenade 1.183 x1; others shown the empty hand from 1.217]; weak 30 ms: up>1067 ms client, word>100 ms server, x1 [button 0.100-0.133; client: throw begins 1.067, lets go 1.200, ends 1.567; server: prepared 0.150, the client's word arrives 1.117, throw begins 1.083, grenade 1.217 x1; others shown the empty hand from 1.283]; strong 150 ms: up>900 ms client, word>83 ms server, x1 [button 0.100-0.250; client: throw begins 1.067, lets go 1.150, ends 1.833; server: prepared 0.167, the client's"
+   },
+   {
+    "case": "T01",
+    "name": "client 144 fps, host 50 fps, 30 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>993 ms client, word>76 ms server, x1 [button 0.104-0.153; client: throw begins 1.076, lets go 1.146, ends 1.847; server: prepared 0.142, the client's word arrives 1.106, throw begins 1.102, grenade 1.182 x1; others shown the empty hand from 1.202]; weak 30 ms: up>1083 ms client, word>133 ms server, x1 [button 0.104-0.132; client: throw begins 1.076, lets go 1.215, ends 1.576; server: prepared 0.139, the client's word arrives 1.106, throw begins 1.099, grenade 1.239 x1; others shown the empty hand from 1.259]; strong 150 ms: up>896 ms client, word>84 ms server, x1 [button 0.104-0.250; client: throw begins 1.076, lets go 1.146, ends 1.847; server: prepared 0.150, the client's "
+   },
+   {
+    "case": "T01",
+    "name": "client 50 fps, host 100 fps, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>1020 ms client, word>52 ms server, x1 [button 0.120-0.160; client: throw begins 1.100, lets go 1.180, ends 1.880; server: prepared 0.172, the client's word arrives 1.150, throw begins 1.132, grenade 1.202 x1; others shown the empty hand from 1.252]; weak 30 ms: up>-2793700 ms client, word>0 ms server, x0 [button 0.118-0.138; client: throw begins never, lets go never, ends never; server: prepared never, the client's word arrives never, throw begins never, grenade never x0; others shown the empty hand from never]; strong 150 ms: up>900 ms client, word>52 ms server, x1 [button 0.108-0.268; client: throw begins 1.088, lets go 1.168, ends 1.868; server: prepared 0.160, the client"
+   },
+   {
+    "case": "T01",
+    "name": "client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>989 ms client, word>89 ms server, x1 [button 0.103-0.153; client: throw begins 1.075, lets go 1.143, ends 1.847; server: prepared 0.169, the client's word arrives 1.125, throw begins 1.129, grenade 1.213 x1; others shown the empty hand from 1.234]; weak 30 ms: up>1078 ms client, word>127 ms server, x1 [button 0.101-0.131; client: throw begins 1.071, lets go 1.210, ends 1.581; server: prepared 0.151, the client's word arrives 1.121, throw begins 1.106, grenade 1.248 x1; others shown the empty hand from 1.287]; strong 150 ms: up>878 ms client, word>73 ms server, x1 [button 0.102-0.262; client: throw begins 1.070, lets go 1.140, ends 1.838; server: prepared 0.161, the client's "
+   },
+   {
+    "case": "T01",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>976 ms client, word>115 ms server, x1 [button 0.102-0.164; client: throw begins 1.069, lets go 1.140, ends 1.840; server: prepared 0.222, the client's word arrives 1.135, throw begins 1.174, grenade 1.250 x1; others shown the empty hand from 1.294]; weak 30 ms: up>1102 ms client, word>136 ms server, x1 [button 0.115-0.141; client: throw begins 1.098, lets go 1.243, ends 1.615; server: prepared 0.201, the client's word arrives 1.173, throw begins 1.174, grenade 1.309 x1; others shown the empty hand from 1.352]; strong 150 ms: up>895 ms client, word>88 ms server, x1 [button 0.105-0.251; client: throw begins 1.079, lets go 1.146, ends 1.850; server: prepared 0.210, the client's"
+   },
+   {
+    "case": "T01",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: a throw let go before the pull is through (30-400 ms, strong and weak): the client's throw begins in the frame the button goes up; the server makes exactly one grenade, when the client's word arrives plus the throw's own release moment, never held ready first",
+    "ok": false,
+    "detail": "strong 50 ms: up>990 ms client, word>70 ms server, x1 [button 0.110-0.160; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.260, the client's word arrives 1.130, throw begins 1.120, grenade 1.200 x1; others shown the empty hand from 1.240]; weak 30 ms: up>1080 ms client, word>140 ms server, x1 [button 0.110-0.140; client: throw begins 1.080, lets go 1.220, ends 1.590; server: prepared 0.170, the client's word arrives 1.130, throw begins 1.130, grenade 1.270 x1; others shown the empty hand from 1.290]; strong 150 ms: up>890 ms client, word>70 ms server, x1 [button 0.110-0.260; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.160, the client's "
+   },
+   {
+    "case": "T02",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 20 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 0 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 0 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.711 s, both ends held ready, server throw begins 4 ms after the word, x1; weak: held 1.690 s, both ends held ready, server throw begins 19 ms after the word, x1"
+   },
+   {
+    "case": "T02",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: held 1.7 s: both ends pull and hold ready; the server throws nothing until the client's word that its throw has begun, then exactly one",
+    "ok": true,
+    "detail": "strong: held 1.700 s, both ends held ready, server throw begins 80 ms after the word, x1; weak: held 1.700 s, both ends held ready, server throw begins 0 ms after the word, x1"
+   },
+   {
+    "case": "T03",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: twelve taps of 20-55 ms: when the start and the client's word are taken in the same server frame the throw still begins there and makes one grenade",
+    "ok": false,
+    "detail": "0/12 correspond; start and word in one server frame: 0 :: button 0.110-0.130; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.260, the client's word arrives 1.130, throw begins 1.120, grenade 1.200 x1; others shown the empty hand from 1.260 | button 0.110-0.130; client: throw begins never, lets go never, ends never; server: prepared never, the client's word arrives never, throw begins never, grenade never x0; others shown the empty hand from never"
+   },
+   {
+    "case": "T03",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: twelve taps of 20-55 ms: when the start and the client's word are taken in the same server frame the throw still begins there and makes one grenade",
+    "ok": false,
+    "detail": "0/12 correspond; start and word in one server frame: 0 :: button 0.110-0.130; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.260, the client's word arrives 1.130, throw begins 1.220, grenade 1.300 x1; others shown the empty hand from 1.340 | button 0.110-0.130; client: throw begins never, lets go never, ends never; server: prepared never, the client's word arrives never, throw begins never, grenade never x0; others shown the empty hand from never"
+   },
+   {
+    "case": "T04",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a press every 0.3 s for 9 s: every throw the client's hand lets go is one grenade on the server, none more, none refused; presses during a throw or its recovery throw nothing",
+    "ok": false,
+    "detail": "client let go 4 times (at 1.15 3.90 6.85 9.60), server made 3"
+   },
+   {
+    "case": "T04",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: a press every 0.3 s for 9 s: every throw the client's hand lets go is one grenade on the server, none more, none refused; presses during a throw or its recovery throw nothing",
+    "ok": true,
+    "detail": "client let go 4 times (at 0.02 2.66 5.65 8.66), server made 4"
+   },
+   {
+    "case": "T05",
+    "name": "a release, a cancel and a held word with no throw in hand do nothing; a tap whose start and release are sent again (a frame later, and 0.3 s later, inside its follow-through) is still one grenade",
+    "ok": true,
+    "detail": "stray messages: nothing made, nothing prepared; repeated 2 times: button 0.110-0.160; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.180, the client's word arrives 1.130, throw begins 1.140, grenade 1.220 x1; others shown the empty hand from 1.260"
+   },
+   {
+    "case": "T06",
+    "name": "switching to another slot during the pull, the button still down: the throw is taken back on both ends; no grenade is made, none is shown",
+    "ok": true,
+    "detail": "switched 0.820; grenades 0; afterwards the server has no throw, the client has none; button 0.110-1.310; client: throw begins never, lets go never, ends never; server: prepared 0.180, the client's word arrives never, throw begins never, grenade never x0; others shown the empty hand from never"
+   },
+   {
+    "case": "T06",
+    "name": "switching to another slot after a tap of the weak throw, before its release moment: the throw is taken back on both ends; no grenade is made, none is shown",
+    "ok": true,
+    "detail": "switched 0.220; grenades 0; afterwards the server has no throw, the client has none; button 0.110-0.160; client: throw begins never, lets go never, ends never; server: prepared 0.180, the client's word arrives never, throw begins never, grenade never x0; others shown the empty hand from never"
+   },
+   {
+    "case": "T07",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a tap as others see it: the host's copy of that player lets go in the frame the grenade is made; the word relayed to the other clients says the hand is empty within the link's delay and one refresh of the client letting go, and ends with the throw; both ends then hold the slot held before the grenade",
+    "ok": true,
+    "detail": "client lets go 1.150; grenade and host's view 1.220/1.220; relayed word: empty hand 1.220, ended 1.920 :: button 0.110-0.160; client: throw begins 1.080, lets go 1.150, ends 1.850; server: prepared 0.180, the client's word arrives 1.130, throw begins 1.140, grenade 1.220 x1; others shown the empty hand from 1.220"
+   },
+   {
+    "case": "T07",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: a tap as others see it: the host's copy of that player lets go in the frame the grenade is made; the word relayed to the other clients says the hand is empty within the link's delay and one refresh of the client letting go, and ends with the throw; both ends then hold the slot held before the grenade",
+    "ok": true,
+    "detail": "client lets go 1.163; grenade and host's view 1.400/1.400; relayed word: empty hand 1.433, ended 2.100 :: button 0.113-0.163; client: throw begins 1.079, lets go 1.163, ends 1.846; server: prepared 0.367, the client's word arrives 1.329, throw begins 1.317, grenade 1.400 x1; others shown the empty hand from 1.433"
+   }
+  ],
+  "gunCases": {
+   "passed": 94,
+   "failed": [],
+   "detail": "see mpe1-offline-results.json (same cases)"
+  }
+ },
+ "netloop-nocompat": {
+  "failed": 0,
+  "total": 28
+ },
+ "netloop-compat": {
+  "failed": 0,
+  "total": 28
+ },
+ "appnet-full": {
+  "failed": 0,
+  "total": 19
+ },
+ "appnet-lite": {
+  "failed": 0,
+  "total": 19
+ },
+ "c4-full": {
+  "failed": 0,
+  "total": 140,
+  "sets": {
+   "c4/": 73,
+   "c4-net-sound/": 10,
+   "sushi-inventory/": 18,
+   "sushi-sync/": 26,
+   "sushi-stacking/": 13
+  }
+ },
+ "c4-lite": {
+  "failed": 0,
+  "total": 140,
+  "sets": {
+   "c4/": 73,
+   "c4-net-sound/": 10,
+   "sushi-inventory/": 18,
+   "sushi-sync/": 26,
+   "sushi-stacking/": 13
+  }
+ },
+ "main-full": {
+  "failed": 0,
+  "total": 14179,
+  "failedNames": [],
+  "selected": [
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_hegrenade/False",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_hegrenade/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_hegrenade/True",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_hegrenade/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_flashbang/False",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_flashbang/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_flashbang/True",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_flashbang/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_smokegrenade/False",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_smokegrenade/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_smokegrenade/True",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_smokegrenade/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_molotov/False",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_molotov/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_molotov/True",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_molotov/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_incendiary/False",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_incendiary/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_incendiary/True",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_incendiary/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_decoy/False",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_decoy/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_decoy/True",
+    "ok": true,
+    "detail": "early-release-throws-at-once/grenade_decoy/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True",
+    "ok": true,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True"
+   },
+   {
+    "name": "combat/held-counter-template-wired-before-gun-routing",
+    "ok": true,
+    "detail": "held-counter-template-wired-before-gun-routing"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_hegrenade/strong",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.333 (83 ms after the release; release moment of the clip 67 ms; pull 967 ms); action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_hegrenade/weak",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.383 (133 ms after the release; release moment of the clip 133 ms; pull 967 ms); action ended 0.750"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_flashbang/strong",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.333 (83 ms after the release; release moment of the clip 67 ms; pull 967 ms); action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_flashbang/weak",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.383 (133 ms after the release; release moment of the clip 133 ms; pull 967 ms); action ended 0.750"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_smokegrenade/strong",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.333 (83 ms after the release; release moment of the clip 67 ms; pull 967 ms); action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_smokegrenade/weak",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.250 (0 ms after the release; release moment of the clip 0 ms; pull 967 ms); action ended 0.750"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_molotov/strong",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.300 (50 ms after the release; release moment of the clip 33 ms; pull 1133 ms); action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_molotov/weak",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.250 (0 ms after the release; release moment of the clip 0 ms; pull 1133 ms); action ended 0.750"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_incendiary/strong",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.300 (50 ms after the release; release moment of the clip 33 ms; pull 967 ms); action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_incendiary/weak",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.250 (0 ms after the release; release moment of the clip 0 ms; pull 967 ms); action ended 0.750"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_decoy/strong",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.333 (83 ms after the release; release moment of the clip 67 ms; pull 967 ms); action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_decoy/weak",
+    "ok": true,
+    "detail": "button down 0.200, up 0.250, grenade 0.250 (0 ms after the release; release moment of the clip 0 ms; pull 967 ms); action ended 0.750"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_hegrenade/strong",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 83 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_flashbang/weak",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 133 ms after the release; clips pullpin > holdLow > throwLow"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_smokegrenade/strong",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 83 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_molotov/strong",
+    "ok": true,
+    "detail": "pull shown 1.133 s, held ready 1.367 s, grenade 50 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_molotov/weak",
+    "ok": true,
+    "detail": "pull shown 1.133 s, held ready 1.367 s, grenade 0 ms after the release; clips pullpin > holdLow > throwLow"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_incendiary/strong",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 50 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_decoy/weak",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 0 ms after the release; clips pullpin > holdLow > throwLow"
+   },
+   {
+    "name": "quick-throw/held-never-throws-by-itself",
+    "ok": true,
+    "detail": "40 s held: nothing thrown, nothing spent, still held ready"
+   },
+   {
+    "name": "quick-throw/release-at-any-moment-throws-then/strong",
+    "ok": true,
+    "detail": "hold > grenade after the release: 17ms>83ms 33ms>83ms 50ms>83ms 100ms>83ms 149ms>83ms 150ms>83ms 151ms>83ms 200ms>83ms 300ms>83ms 600ms>83ms 950ms>83ms 967ms>83ms 983ms>83ms(ready) 1467ms>83ms(ready) 2000ms>83ms(ready)"
+   },
+   {
+    "name": "quick-throw/release-at-any-moment-throws-then/weak",
+    "ok": true,
+    "detail": "hold > grenade after the release: 17ms>133ms 33ms>133ms 50ms>133ms 100ms>133ms 149ms>133ms 150ms>133ms 151ms>133ms 200ms>133ms 300ms>133ms 600ms>133ms 950ms>133ms 967ms>133ms 983ms>133ms(ready) 1467ms>133ms(ready) 2000ms>133ms(ready)"
+   },
+   {
+    "name": "quick-throw/tap-at-20fps/strong",
+    "ok": true,
+    "detail": "up 0.300, grenade 0.400 (100 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-20fps/weak",
+    "ok": true,
+    "detail": "up 0.300, grenade 0.450 (150 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-30fps/strong",
+    "ok": true,
+    "detail": "up 0.267, grenade 0.367 (100 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-30fps/weak",
+    "ok": true,
+    "detail": "up 0.267, grenade 0.400 (133 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-60fps/strong",
+    "ok": true,
+    "detail": "up 0.267, grenade 0.350 (83 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-60fps/weak",
+    "ok": true,
+    "detail": "up 0.267, grenade 0.400 (133 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-144fps/strong",
+    "ok": true,
+    "detail": "up 0.264, grenade 0.333 (69 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-144fps/weak",
+    "ok": true,
+    "detail": "up 0.264, grenade 0.403 (139 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-uneven-60fps/strong",
+    "ok": true,
+    "detail": "up 0.278, grenade 0.345 (67 ms)"
+   },
+   {
+    "name": "quick-throw/tap-at-uneven-60fps/weak",
+    "ok": true,
+    "detail": "up 0.278, grenade 0.427 (149 ms)"
+   },
+   {
+    "name": "quick-throw/touch-tap-inside-one-frame/strong",
+    "ok": true,
+    "detail": "tapped at 0.200, grenade 0.300"
+   },
+   {
+    "name": "quick-throw/touch-tap-inside-one-frame/weak",
+    "ok": true,
+    "detail": "tapped at 0.200, grenade 0.350"
+   },
+   {
+    "name": "quick-throw/mouse-left-strong-tap-and-hold-throw-alike",
+    "ok": true,
+    "detail": "speed 20.00 and fuse 1.50 s the same for a tap and a hold; tap: 83 ms after the release"
+   },
+   {
+    "name": "quick-throw/mouse-right-weak-tap-and-hold-throw-alike",
+    "ok": true,
+    "detail": "speed 10.00 and fuse 1.50 s the same for a tap and a hold; tap: 133 ms after the release"
+   },
+   {
+    "name": "quick-throw/strong-and-weak-stay-different",
+    "ok": true,
+    "detail": "quick strong 20.00 m/s, quick weak 10.00 m/s"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_hegrenade",
+    "ok": true,
+    "detail": "released 0.333, hand empty, action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_flashbang",
+    "ok": true,
+    "detail": "released 0.333, hand empty, action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_smokegrenade",
+    "ok": true,
+    "detail": "released 0.333, hand empty, action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_molotov",
+    "ok": true,
+    "detail": "released 0.300, hand empty, action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_incendiary",
+    "ok": true,
+    "detail": "released 0.300, hand empty, action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_decoy",
+    "ok": true,
+    "detail": "released 0.333, hand empty, action ended 1.017"
+   },
+   {
+    "name": "quick-throw/tap-in-creative-keeps-the-stack",
+    "ok": true,
+    "detail": "one molotov thrown, stack still 4"
+   },
+   {
+    "name": "quick-throw/taps-in-a-row-throw-one-each-and-none-in-between",
+    "ok": true,
+    "detail": "5 throws from 36 presses in 9 s; between throws 2.000-2.000 s (the throw's action 0.767 s, then the next one is drawn)"
+   },
+   {
+    "name": "quick-throw/switching-away-before-the-release-moment-cancels",
+    "ok": true,
+    "detail": "frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 16 t=0.267 button=0 count=0 shown=empty throw=none flying=0"
+   },
+   {
+    "name": "quick-throw/cancelled-or-dead-before-the-release-throws-nothing",
+    "ok": true,
+    "detail": "cancelled during the pull: nothing; dead between the release of the button and the release moment: nothing"
+   },
+   {
+    "name": "quick-throw/a-tap-while-the-grenade-is-still-drawn-throws-when-it-is-in-hand",
+    "ok": true,
+    "detail": "taken out 0.100, tapped 0.200: the pull begins at once, the grenade leaves at 1.217 (the draw would have ended 1.100; a full pull 1.167)"
+   },
+   {
+    "name": "quick-throw/phase-and-third-person-arm-of-a-quick-throw",
+    "ok": true,
+    "detail": "right arm raise: held throw up to 3.35 rad (cocked 3.35), quick throw at most 1.85; largest step in a frame 0.39 rad (held throw 0.50); pull where the quick throw began 0.05"
+   }
+  ]
+ },
+ "main-lite": {
+  "failed": 0,
+  "total": 14489,
+  "failedNames": [],
+  "selected": [
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_hegrenade/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_hegrenade/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_flashbang/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_flashbang/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_smokegrenade/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_smokegrenade/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_molotov/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_molotov/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_incendiary/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_incendiary/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_decoy/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False",
+    "ok": true
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_decoy/True",
+    "ok": true
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True",
+    "ok": true
+   },
+   {
+    "name": "combat/held-counter-template-wired-before-gun-routing",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_hegrenade/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_hegrenade/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_flashbang/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_flashbang/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_smokegrenade/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_smokegrenade/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_molotov/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_molotov/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_incendiary/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_incendiary/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_decoy/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_decoy/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_hegrenade/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_flashbang/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_smokegrenade/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_molotov/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_molotov/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_incendiary/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_decoy/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/held-never-throws-by-itself",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/release-at-any-moment-throws-then/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/release-at-any-moment-throws-then/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-20fps/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-20fps/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-30fps/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-30fps/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-60fps/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-60fps/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-144fps/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-144fps/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-uneven-60fps/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-at-uneven-60fps/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/touch-tap-inside-one-frame/strong",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/touch-tap-inside-one-frame/weak",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/mouse-left-strong-tap-and-hold-throw-alike",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/mouse-right-weak-tap-and-hold-throw-alike",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/strong-and-weak-stay-different",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_hegrenade",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_flashbang",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_smokegrenade",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_molotov",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_incendiary",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_decoy",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/tap-in-creative-keeps-the-stack",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/taps-in-a-row-throw-one-each-and-none-in-between",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/switching-away-before-the-release-moment-cancels",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/cancelled-or-dead-before-the-release-throws-nothing",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/a-tap-while-the-grenade-is-still-drawn-throws-when-it-is-in-hand",
+    "ok": true
+   },
+   {
+    "name": "quick-throw/phase-and-third-person-arm-of-a-quick-throw",
+    "ok": true
+   }
+  ]
+ },
+ "baseline-main-full": {
+  "failed": 55,
+  "total": 14179,
+  "failedNames": [
+   "interaction/early-release-throws-at-once/grenade_hegrenade/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False",
+   "interaction/early-release-throws-at-once/grenade_hegrenade/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True",
+   "interaction/early-release-throws-at-once/grenade_flashbang/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False",
+   "interaction/early-release-throws-at-once/grenade_flashbang/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True",
+   "interaction/early-release-throws-at-once/grenade_smokegrenade/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False",
+   "interaction/early-release-throws-at-once/grenade_smokegrenade/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True",
+   "interaction/early-release-throws-at-once/grenade_molotov/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False",
+   "interaction/early-release-throws-at-once/grenade_molotov/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True",
+   "interaction/early-release-throws-at-once/grenade_incendiary/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False",
+   "interaction/early-release-throws-at-once/grenade_incendiary/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True",
+   "interaction/early-release-throws-at-once/grenade_decoy/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False",
+   "interaction/early-release-throws-at-once/grenade_decoy/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True",
+   "quick-throw/tap-throws-at-once/grenade_hegrenade/strong",
+   "quick-throw/tap-throws-at-once/grenade_hegrenade/weak",
+   "quick-throw/tap-throws-at-once/grenade_flashbang/strong",
+   "quick-throw/tap-throws-at-once/grenade_flashbang/weak",
+   "quick-throw/tap-throws-at-once/grenade_smokegrenade/strong",
+   "quick-throw/tap-throws-at-once/grenade_smokegrenade/weak",
+   "quick-throw/tap-throws-at-once/grenade_molotov/strong",
+   "quick-throw/tap-throws-at-once/grenade_molotov/weak",
+   "quick-throw/tap-throws-at-once/grenade_incendiary/strong",
+   "quick-throw/tap-throws-at-once/grenade_incendiary/weak",
+   "quick-throw/tap-throws-at-once/grenade_decoy/strong",
+   "quick-throw/tap-throws-at-once/grenade_decoy/weak",
+   "quick-throw/release-at-any-moment-throws-then/strong",
+   "quick-throw/release-at-any-moment-throws-then/weak",
+   "quick-throw/tap-at-20fps/strong",
+   "quick-throw/tap-at-20fps/weak",
+   "quick-throw/tap-at-30fps/strong",
+   "quick-throw/tap-at-30fps/weak",
+   "quick-throw/tap-at-60fps/strong",
+   "quick-throw/tap-at-60fps/weak",
+   "quick-throw/tap-at-144fps/strong",
+   "quick-throw/tap-at-144fps/weak",
+   "quick-throw/tap-at-uneven-60fps/strong",
+   "quick-throw/tap-at-uneven-60fps/weak",
+   "quick-throw/touch-tap-inside-one-frame/strong",
+   "quick-throw/touch-tap-inside-one-frame/weak",
+   "quick-throw/mouse-left-strong-tap-and-hold-throw-alike",
+   "quick-throw/mouse-right-weak-tap-and-hold-throw-alike",
+   "quick-throw/switching-away-before-the-release-moment-cancels",
+   "quick-throw/a-tap-while-the-grenade-is-still-drawn-throws-when-it-is-in-hand",
+   "quick-throw/phase-and-third-person-arm-of-a-quick-throw"
+  ],
+  "selected": [
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_hegrenade/False",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_hegrenade/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_hegrenade/True",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_hegrenade/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_flashbang/False",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_flashbang/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_flashbang/True",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_flashbang/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_smokegrenade/False",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_smokegrenade/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_smokegrenade/True",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_smokegrenade/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_molotov/False",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_molotov/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_molotov/True",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_molotov/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_incendiary/False",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_incendiary/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_incendiary/True",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_incendiary/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_decoy/False",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_decoy/False"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False"
+   },
+   {
+    "name": "interaction/early-release-throws-at-once/grenade_decoy/True",
+    "ok": false,
+    "detail": "early-release-throws-at-once/grenade_decoy/True"
+   },
+   {
+    "name": "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True",
+    "ok": false,
+    "detail": "release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True"
+   },
+   {
+    "name": "combat/held-counter-template-wired-before-gun-routing",
+    "ok": true,
+    "detail": "held-counter-template-wired-before-gun-routing"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_hegrenade/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_hegrenade/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.050 s after the button went up; the throw's own release moment is 0.133 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 78 t=1.300 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_flashbang/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_flashbang/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.050 s after the button went up; the throw's own release moment is 0.133 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 78 t=1.300 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_smokegrenade/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_smokegrenade/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.917 s after the button went up; the throw's own release moment is 0.000 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=1 shown=grenade throw=stage 2 released flying=1 | frame 100 t"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_molotov/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.133 s after the button went up; the throw's own release moment is 0.033 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 80 t=1.333 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 83 t=1.383 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_molotov/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.083 s after the button went up; the throw's own release moment is 0.000 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 80 t=1.333 button=0 count=1 shown=grenade throw=stage 2 released flying=1 | frame 110 t"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_incendiary/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.967 s after the button went up; the throw's own release moment is 0.033 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 73 t=1.217 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_incendiary/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.917 s after the button went up; the throw's own release moment is 0.000 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=1 shown=grenade throw=stage 2 released flying=1 | frame 100 t"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_decoy/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 but"
+   },
+   {
+    "name": "quick-throw/tap-throws-at-once/grenade_decoy/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.917 s after the button went up; the throw's own release moment is 0.000 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=1 shown=grenade throw=stage 2 released flying=1 | frame 100 t"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_hegrenade/strong",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 83 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_flashbang/weak",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 133 ms after the release; clips pullpin > holdLow > throwLow"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_smokegrenade/strong",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 83 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_molotov/strong",
+    "ok": true,
+    "detail": "pull shown 1.133 s, held ready 1.367 s, grenade 50 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_molotov/weak",
+    "ok": true,
+    "detail": "pull shown 1.133 s, held ready 1.367 s, grenade 0 ms after the release; clips pullpin > holdLow > throwLow"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_incendiary/strong",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 50 ms after the release; clips pullpin > holdHigh > throwHigh"
+   },
+   {
+    "name": "quick-throw/hold-keeps-the-pull-and-the-ready-pose/grenade_decoy/weak",
+    "ok": true,
+    "detail": "pull shown 0.967 s, held ready 1.533 s, grenade 0 ms after the release; clips pullpin > holdLow > throwLow"
+   },
+   {
+    "name": "quick-throw/held-never-throws-by-itself",
+    "ok": true,
+    "detail": "40 s held: nothing thrown, nothing spent, still held ready"
+   },
+   {
+    "name": "quick-throw/release-at-any-moment-throws-then/strong",
+    "ok": false,
+    "detail": "System.Exception: held 0.017 s: the grenade left 1.033 s after the release (release moment 0.067 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 13 t=0.217 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 button=0 count"
+   },
+   {
+    "name": "quick-throw/release-at-any-moment-throws-then/weak",
+    "ok": false,
+    "detail": "System.Exception: held 0.017 s: the grenade left 1.083 s after the release (release moment 0.133 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 13 t=0.217 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 78 t=1.300 button=0 count"
+   },
+   {
+    "name": "quick-throw/tap-at-20fps/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.000 s after the release (release moment 0.067 s, a frame 0.050 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 4 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 6 t=0.300 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 24 t=1.200 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 26 t=1.300 button=0 coun"
+   },
+   {
+    "name": "quick-throw/tap-at-20fps/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.050 s after the release (release moment 0.133 s, a frame 0.050 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 4 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 6 t=0.300 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 24 t=1.200 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 27 t=1.350 button=0 coun"
+   },
+   {
+    "name": "quick-throw/tap-at-30fps/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.000 s after the release (release moment 0.067 s, a frame 0.033 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 6 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 8 t=0.267 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 35 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 38 t=1.267 button=0 coun"
+   },
+   {
+    "name": "quick-throw/tap-at-30fps/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.033 s after the release (release moment 0.133 s, a frame 0.033 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 6 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 8 t=0.267 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 35 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 39 t=1.300 button=0 coun"
+   },
+   {
+    "name": "quick-throw/tap-at-60fps/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.983 s after the release (release moment 0.067 s, a frame 0.017 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 16 t=0.267 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 button=0 co"
+   },
+   {
+    "name": "quick-throw/tap-at-60fps/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.033 s after the release (release moment 0.133 s, a frame 0.017 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 16 t=0.267 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 78 t=1.300 button=0 co"
+   },
+   {
+    "name": "quick-throw/tap-at-144fps/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.979 s after the release (release moment 0.067 s, a frame 0.007 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 29 t=0.201 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 38 t=0.264 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 169 t=1.174 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 179 t=1.243 button=0 "
+   },
+   {
+    "name": "quick-throw/tap-at-144fps/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.049 s after the release (release moment 0.133 s, a frame 0.007 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 29 t=0.201 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 38 t=0.264 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 169 t=1.174 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 189 t=1.313 button=0 "
+   },
+   {
+    "name": "quick-throw/tap-at-uneven-60fps/strong",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 0.986 s after the release (release moment 0.067 s, a frame 0.026 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.208 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 16 t=0.278 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 73 t=1.181 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 78 t=1.264 button=0 co"
+   },
+   {
+    "name": "quick-throw/tap-at-uneven-60fps/weak",
+    "ok": false,
+    "detail": "System.Exception: the grenade left 1.049 s after the release (release moment 0.133 s, a frame 0.026 s): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.208 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 16 t=0.278 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 73 t=1.181 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 82 t=1.327 button=0 co"
+   },
+   {
+    "name": "quick-throw/touch-tap-inside-one-frame/strong",
+    "ok": false,
+    "detail": "System.Exception: a tap inside one frame threw at 1.250 (1 grenades): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 13 t=0.217 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 75 t=1.250 button=0 count=1 shown=grenade throw=stage 2 "
+   },
+   {
+    "name": "quick-throw/touch-tap-inside-one-frame/weak",
+    "ok": false,
+    "detail": "System.Exception: a tap inside one frame threw at 1.300 (1 grenades): frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 13 t=0.217 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 count=2 shown=grenade throw=stage 2 flying=0 | frame 78 t=1.300 button=0 count=1 shown=grenade throw=stage 2 "
+   },
+   {
+    "name": "quick-throw/mouse-left-strong-tap-and-hold-throw-alike",
+    "ok": false,
+    "detail": "System.Exception: the mouse tap's grenade left 1.000 s after the release\r"
+   },
+   {
+    "name": "quick-throw/mouse-right-weak-tap-and-hold-throw-alike",
+    "ok": false,
+    "detail": "System.Exception: the mouse tap's grenade left 1.050 s after the release\r"
+   },
+   {
+    "name": "quick-throw/strong-and-weak-stay-different",
+    "ok": true,
+    "detail": "quick strong 20.00 m/s, quick weak 10.00 m/s"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_hegrenade",
+    "ok": true,
+    "detail": "released 1.250, hand empty, action ended 1.933"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_flashbang",
+    "ok": true,
+    "detail": "released 1.250, hand empty, action ended 1.933"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_smokegrenade",
+    "ok": true,
+    "detail": "released 1.250, hand empty, action ended 1.933"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_molotov",
+    "ok": true,
+    "detail": "released 1.383, hand empty, action ended 2.100"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_incendiary",
+    "ok": true,
+    "detail": "released 1.217, hand empty, action ended 1.933"
+   },
+   {
+    "name": "quick-throw/tap-with-the-last-one-leaves-an-empty-hand/grenade_decoy",
+    "ok": true,
+    "detail": "released 1.250, hand empty, action ended 1.933"
+   },
+   {
+    "name": "quick-throw/tap-in-creative-keeps-the-stack",
+    "ok": true,
+    "detail": "one molotov thrown, stack still 4"
+   },
+   {
+    "name": "quick-throw/taps-in-a-row-throw-one-each-and-none-in-between",
+    "ok": true,
+    "detail": "3 throws from 36 presses in 9 s; between throws 2.750-2.750 s (the throw's action 0.767 s, then the next one is drawn)"
+   },
+   {
+    "name": "quick-throw/switching-away-before-the-release-moment-cancels",
+    "ok": false,
+    "detail": "System.Exception: the quick throw was not begun and then cancelled: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 16 t=0.267 button=0 count=0 shown=empty throw=none flying=0\r"
+   },
+   {
+    "name": "quick-throw/cancelled-or-dead-before-the-release-throws-nothing",
+    "ok": true,
+    "detail": "cancelled during the pull: nothing; dead between the release of the button and the release moment: nothing"
+   },
+   {
+    "name": "quick-throw/a-tap-while-the-grenade-is-still-drawn-throws-when-it-is-in-hand",
+    "ok": false,
+    "detail": "System.Exception: taken out at 0.100 (draw 1.000 s), tapped at 0.200: thrown at 1.250, expected about 1.117: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 7 t=0.117 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=stage 0 flying=0 | frame 15 t=0.250 button=0 count=2 shown=grenade throw=stage 0 flying=0 | frame 70 t=1.167 button=0 c"
+   },
+   {
+    "name": "quick-throw/phase-and-third-person-arm-of-a-quick-throw",
+    "ok": false,
+    "detail": "System.Exception: pull reported in the throw: quick 1, held 1\r"
+   }
+  ]
+ },
+ "baseline-main-lite": {
+  "failed": 55,
+  "total": 14489,
+  "failedNames": [
+   "interaction/early-release-throws-at-once/grenade_hegrenade/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/False",
+   "interaction/early-release-throws-at-once/grenade_hegrenade/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_hegrenade/True",
+   "interaction/early-release-throws-at-once/grenade_flashbang/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/False",
+   "interaction/early-release-throws-at-once/grenade_flashbang/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_flashbang/True",
+   "interaction/early-release-throws-at-once/grenade_smokegrenade/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/False",
+   "interaction/early-release-throws-at-once/grenade_smokegrenade/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_smokegrenade/True",
+   "interaction/early-release-throws-at-once/grenade_molotov/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/False",
+   "interaction/early-release-throws-at-once/grenade_molotov/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_molotov/True",
+   "interaction/early-release-throws-at-once/grenade_incendiary/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/False",
+   "interaction/early-release-throws-at-once/grenade_incendiary/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_incendiary/True",
+   "interaction/early-release-throws-at-once/grenade_decoy/False",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/False",
+   "interaction/early-release-throws-at-once/grenade_decoy/True",
+   "interaction/release-during-the-draw-waits-for-the-draw-only/grenade_decoy/True",
+   "quick-throw/tap-throws-at-once/grenade_hegrenade/strong",
+   "quick-throw/tap-throws-at-once/grenade_hegrenade/weak",
+   "quick-throw/tap-throws-at-once/grenade_flashbang/strong",
+   "quick-throw/tap-throws-at-once/grenade_flashbang/weak",
+   "quick-throw/tap-throws-at-once/grenade_smokegrenade/strong",
+   "quick-throw/tap-throws-at-once/grenade_smokegrenade/weak",
+   "quick-throw/tap-throws-at-once/grenade_molotov/strong",
+   "quick-throw/tap-throws-at-once/grenade_molotov/weak",
+   "quick-throw/tap-throws-at-once/grenade_incendiary/strong",
+   "quick-throw/tap-throws-at-once/grenade_incendiary/weak",
+   "quick-throw/tap-throws-at-once/grenade_decoy/strong",
+   "quick-throw/tap-throws-at-once/grenade_decoy/weak",
+   "quick-throw/release-at-any-moment-throws-then/strong",
+   "quick-throw/release-at-any-moment-throws-then/weak",
+   "quick-throw/tap-at-20fps/strong",
+   "quick-throw/tap-at-20fps/weak",
+   "quick-throw/tap-at-30fps/strong",
+   "quick-throw/tap-at-30fps/weak",
+   "quick-throw/tap-at-60fps/strong",
+   "quick-throw/tap-at-60fps/weak",
+   "quick-throw/tap-at-144fps/strong",
+   "quick-throw/tap-at-144fps/weak",
+   "quick-throw/tap-at-uneven-60fps/strong",
+   "quick-throw/tap-at-uneven-60fps/weak",
+   "quick-throw/touch-tap-inside-one-frame/strong",
+   "quick-throw/touch-tap-inside-one-frame/weak",
+   "quick-throw/mouse-left-strong-tap-and-hold-throw-alike",
+   "quick-throw/mouse-right-weak-tap-and-hold-throw-alike",
+   "quick-throw/switching-away-before-the-release-moment-cancels",
+   "quick-throw/a-tap-while-the-grenade-is-still-drawn-throws-when-it-is-in-hand",
+   "quick-throw/phase-and-third-person-arm-of-a-quick-throw"
+  ]
+ },
+ "baseline-vf-full": {
+  "failed": 1,
+  "total": 292,
+  "failedNames": [
+   "throw-presentation/quick-tap-throws-once-at-once"
+  ]
+ },
+ "ai-full": {
+  "failed": 0,
+  "total": 67,
+  "failedNames": []
+ },
+ "ai-lite": {
+  "failed": 0,
+  "total": 67,
+  "failedNames": []
+ },
+ "vf-full": {
+  "failed": 0,
+  "total": 292,
+  "failedNames": []
+ },
+ "vf-lite": {
+  "failed": 0,
+  "total": 292,
+  "failedNames": []
+ },
+ "tactical-full-suite": {
+  "failed": 4,
+  "total": 110,
+  "failedNames": [
+   "optional-package-identity-and-no-bundled-engine",
+   "native-gltf/ct",
+   "native-gltf/t",
+   "npc-full-registry-reload-refuses-without-ammo-loss"
+  ]
+ },
+ "family": {
+  "failed": 0,
+  "total": 246,
+  "failedNames": []
+ },
+ "compat": {
+  "family": true,
+  "native-hooks": true,
+  "native-lite": true,
+  "inventory": true,
+  "integration-full-both": true,
+  "integration-full-reversed": true,
+  "integration-full-none": true,
+  "integration-lite-both": true,
+  "integration-lite-reversed": true,
+  "integration-lite-none": true
+ },
+ "native-hooks": {
+  "failed": 0,
+  "total": 6,
+  "failedNames": []
+ },
+ "native-lite": {
+  "failed": 0,
+  "total": 9,
+  "failedNames": []
+ },
+ "inventory": {
+  "keys": [
+   "cases",
+   "count",
+   "dll",
+   "failed",
+   "passed",
+   "sha256"
+  ]
+ },
+ "packages": {
+  "全量": {
+   "file": "[API1.9]CS武器1.4.0-全量包.scmod",
+   "bytes": 526907702,
+   "sha256": "37cda147612dec3b0d39065936b636798ff7280a4c8d78c93b1b1f21b6a91579",
+   "baselineSha256": "46befae3d0ef39a669c1f14cda471abf3821000ce70c0dea89777876cbc11dcb",
+   "unchangedMembers": 1706
+  },
+  "轻量": {
+   "file": "[API1.9]CS武器1.4.0-轻量包.scmod",
+   "bytes": 35750879,
+   "sha256": "902cbb6fc8b172039bc1de9613ff622861da613fa2a818322a3e491f3799876e",
+   "baselineSha256": "ee3e38eb47dcbd6dfd8f2c9e0a5d35539131eb0c872ca2223fdc537a84689440",
+   "unchangedMembers": 1347
+  },
+  "探员": {
+   "file": "[API1.9]CS武器1.4.0-探员包.scmod",
+   "bytes": 38467939,
+   "sha256": "ad5c7b85aa4741c755690ec0f0a434d7b35adca95272041a12fcc926fbfda174",
+   "baselineSha256": "8443c77b7c304b316c48de99924e8c94ba8edfb8b5df84b18c0ca27ee20543ba",
+   "unchangedMembers": 364
+  }
+ },
+ "net": {
+  "member": "Net/ScCsgoNet.bin",
+  "sha256": "3e7fd3061ca615b85893d66f0b0ae54176d4634de25eae4f42d377a1630cc595",
+  "bytes": 57344,
+  "core": "730ac1d96fb0328cdd9a8d680ea5fbc5d40e9779bc1059431568be0f384ed5fa",
+  "compatMember": "Net/ScCsgoNetCompat.bin",
+  "compatSha256": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+  "compatBytes": 9728,
+  "references": {
+   "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+   "Survivalcraft.CompatNet.dll": "4288904cbbbcbdfcb2dd5d04d3cfc79f942f7339d13be7b64bb23468aceb0102",
+   "Survivalcraft.Multiplayer.dll": "3e0b24efbf51b21372b337cd8f5d12242ec5fc446a90782f2eb4d274124e9cfe",
+   "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+   "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db",
+   "Survivalcraft.Compat23.dll": "96b60590d436b7875158587a87796e7cac6fd45eecbdae8c245d2f7f4ee6b479",
+   "0Harmony.dll": "70e7647876b6c3d874ea99b56627a95d1dce2e1dd791981a002578a2febc9bbd"
+  },
+  "sources": {
+   "ScCsgoNetAdapter.cs": "70c4998c70841a5aa3346801d100b8c5cdce1b4c864d8d54915fa6e65129f177",
+   "ScCsgoNetPlatform.cs": "208ad04b40e94831cb398b38959eb408d7bf528005ae8d9604b07e7ed240946b",
+   "ScCsgoNetCompat.cs": "ae044cef6139bd5409f167e02d775829c5a0f9b59c79c4d8968370df1c47c340"
+  }
+ },
+ "identity": {
+  "identity": "7ce76d15524341ee350c35a39aafa0d5",
+  "files": 304
+ },
+ "vps-packaged-on-user-platform": {
+  "what": "the DLLs taken out of the mpf1 packages, run on the VPS against the user's actual Windows platform assemblies (no game)",
+  "inputs": {
+   "ScCsgoKnives.dll (Lite)": "730ac1d96fb0328cdd9a8d680ea5fbc5d40e9779bc1059431568be0f384ed5fa",
+   "Net/ScCsgoNet.bin": "3e7fd3061ca615b85893d66f0b0ae54176d4634de25eae4f42d377a1630cc595",
+   "Net/ScCsgoNetCompat.bin": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+   "ScCsgoTactical.dll": "2666d0d371facfc3f1cc3a80f073cee52cea1221aff15a7dd3250606210d6e6f"
+  },
+  "gunloop": {
+   "failed": 0,
+   "total": 122,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "9070fa03-159b-4e14-bc00-9328e52dad7d",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {}
+  },
+  "state": {
+   "failed": 0,
+   "total": 109,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "9070fa03-159b-4e14-bc00-9328e52dad7d",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {}
+  },
+  "baseline": {
+   "failed": 0,
+   "total": 12,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "9070fa03-159b-4e14-bc00-9328e52dad7d",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {}
+  },
+  "netloop": {
+   "nocompat": "28 checks, 0 failed",
+   "compat": "28 checks, 0 failed"
+  },
+  "QuickThrowRegression (scratch harness, packaged Lite core)": "49 checks, 0 failed"
+ },
+ "vps-delivered-mpe1-on-user-platform": {
+  "what": "the same checks on the delivered mpe1 Lite core 4e31ef27 + adapter 3e7fd306 (the build before this change): a tap waits out the whole pull",
+  "gunloop": {
+   "failed": 16,
+   "total": 122,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {
+    "T01": 13,
+    "T03": 2,
+    "T04": 1
+   }
+  },
+  "QuickThrowRegression": [
+   "FAIL quick-throw/tap-throws-at-once/grenade_hegrenade/strong :: System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=s",
+   "FAIL quick-throw/tap-throws-at-once/grenade_hegrenade/weak :: System.Exception: the grenade left 1.050 s after the button went up; the throw's own release moment is 0.133 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=sta",
+   "FAIL quick-throw/tap-throws-at-once/grenade_flashbang/strong :: System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=s",
+   "FAIL quick-throw/tap-throws-at-once/grenade_flashbang/weak :: System.Exception: the grenade left 1.050 s after the button went up; the throw's own release moment is 0.133 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=sta",
+   "FAIL quick-throw/tap-throws-at-once/grenade_smokegrenade/strong :: System.Exception: the grenade left 1.000 s after the button went up; the throw's own release moment is 0.067 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade thro",
+   "FAIL quick-throw/tap-throws-at-once/grenade_smokegrenade/weak :: System.Exception: the grenade left 0.917 s after the button went up; the throw's own release moment is 0.000 s: frame 0 t=0.000 button=0 count=2 shown=grenade throw=none flying=0 | frame 12 t=0.200 button=1 count=2 shown=grenade throw=",
+   "... 31 of 49 failed"
+  ]
+ },
+ "harness-note": {
+  "intermittent failure found and diagnosed": "T06 (cancel during the pull) failed in about half of the first runs: the check counted ANY grenade in the client's mirror, and an explosion still running from the previous case was sometimes still listed (the 10-per-second snapshot is paced by the engine's stopwatch, which the harness can only set, not freeze). The check now asks for a grenade made after the throw began. 15 consecutive runs then passed; the product was not changed for it.",
+  "real time": "the engine's stopwatch is moved to the simulated clock at every step; wall time still advances by microseconds within a step"
+ },
+ "cs2-evidence": {
+  "install": "E:/SteamLibrary/steamapps/common/Counter-Strike Global Offensive, steam.inf PatchVersion 1.41.8.8 (VersionDate Sep 30 2026)",
+  "decompiled from the installed pak01_dir.vpk (job 77a488445d164ed19789d5dc385a94ca, read-only)": {
+   "animation/graphs/viewmodel/viewmodel_grenade.vnmgraph": "187627 B sha256 98cb1509f401667922ae7cdd2d3ecedd46a41277c1020588f302b077dba746c3",
+   "scripts/weapons.vdata": "523513 B sha256 3289d4dba65b1ef3f884c389448c8a6c6db8691442c18a7aaddb28434aaf250d",
+   "kept at": "E:/projects/ScCsgoKnives/.tmp/dev-temp/quick-throw-20261002/cs2-current"
+  },
+  "earlier copies (CSMCReverse/local_cs2_analysis, September 2026), same findings": {
+   "viewmodel_grenade.vnmgraph": "1e0af6bec45263641a6747971d6cbda0554bd8d4c7767d6f9aa180f20116fe2d",
+   "weapons.vdata": "fbd0d6f754c234efb24ec5c6b8c335f190e67f17ac7ec98dc2cd2ea2ddb4037e"
+  },
+  "findings": [
+   "attack sub state machine: Charge (clip pull_pin, WPN_ACTION_COMPLETE at time remaining <= 0.2 s), ReadyToThrow (Blend1D low/mid/high by attack_throw_strength, global transition 0.2 s), Throw (Underhand when attack_throw_strength <= 0.33, else Overhand)",
+   "the global transition into Throw has m_flDurationSeconds 0.0 and its only condition is attack_type == attack_grenade_throw: entered from any state, no blend; no node of the graph compares a hold time",
+   "weapons.vdata, all six throwables: m_flCycleTime [0.15, 0.3], m_flDeployDuration 1.0, m_flThrowVelocity 750.0; no key about a tap, a hold, the pin or the pull",
+   "clips: the *.Throw sound event is at frame 2 (overhand; molotov frame 1) or frame 0 (underhand); the pull-pin sound is a duration event that does not continue past its clip",
+   "not read from files: when the entity is created and how long after the draw a throw is allowed (code in server.dll / client.dll, not disassembled)"
+  ]
+ },
+ "jobs": {
+  "all": "2efaa890813948fe92cb0f5cc3a14b39 (mpf-pipeline-mpf1-all-01)",
+  "compat": "850a3b4a7f7b45fabb8457fed7828a63 (mpf-pipeline-mpf1-compat-01)",
+  "deliver": "bd55cf3ed62047d484a31729ae141fdc (mpf1-deliver-do-01)",
+  "readback": "21535ee0519b4817a789d661df68d1f9 (mpf1-readback-01)"
+ },
+ "delivered": {
+  "全量": "37cda147612dec3b0d39065936b636798ff7280a4c8d78c93b1b1f21b6a91579 (526907702 B)",
+  "轻量": "902cbb6fc8b172039bc1de9613ff622861da613fa2a818322a3e491f3799876e (35750879 B)",
+  "探员": "ad5c7b85aa4741c755690ec0f0a434d7b35adca95272041a12fcc926fbfda174 (38467939 B)"
+ }
+}

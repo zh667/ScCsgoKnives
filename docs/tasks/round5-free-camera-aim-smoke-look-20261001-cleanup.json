@@ -1,0 +1,110 @@
+{
+ "task": "round5-free-camera-aim-smoke-look-20261001",
+ "date": "2026-10-01T03:34:09",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r5xCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r5a (devbuild) build trees": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r5a\\full",
+    ".tmp\\completion-140-20260929\\r5a\\lite",
+    ".tmp\\completion-140-20260929\\r5a\\tree"
+   ],
+   "bytes": 851140388,
+   "items": 1902,
+   "missing": [
+    ".tmp\\completion-140-20260929\\r5a\\tools",
+    ".tmp\\completion-140-20260929\\r5a\\assets-full",
+    ".tmp\\completion-140-20260929\\r5a\\resources",
+    ".tmp\\completion-140-20260929\\r5a\\net",
+    ".tmp\\completion-140-20260929\\r5a\\motion",
+    ".tmp\\completion-140-20260929\\r5a\\throw",
+    ".tmp\\completion-140-20260929\\r5a\\ui",
+    ".tmp\\completion-140-20260929\\r5a\\candidate"
+   ]
+  },
+  "stage r5x build trees (delivered; logs, reports, net.json, packages.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r5x\\full",
+    ".tmp\\completion-140-20260929\\r5x\\lite",
+    ".tmp\\completion-140-20260929\\r5x\\tools",
+    ".tmp\\completion-140-20260929\\r5x\\tree",
+    ".tmp\\completion-140-20260929\\r5x\\assets-full",
+    ".tmp\\completion-140-20260929\\r5x\\resources",
+    ".tmp\\completion-140-20260929\\r5x\\net",
+    ".tmp\\completion-140-20260929\\r5x\\motion",
+    ".tmp\\completion-140-20260929\\r5x\\throw",
+    ".tmp\\completion-140-20260929\\r5x\\ui"
+   ],
+   "bytes": 1891876133,
+   "items": 4198,
+   "missing": []
+  },
+  "MP/single-player test packages (candidate copies)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r5a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r5a-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r5x-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r5x-lite.scmod"
+   ],
+   "bytes": 1125947382,
+   "items": 4,
+   "missing": []
+  },
+  "r5a smoke recording/scene/look raw PNG frames (GIF/sheets/JSON kept)": {
+   "paths": [
+    "950 PNG frames under run/smoke-motion-r5a-*, run/smoke-view-r5a-*, run/smoke-look-*"
+   ],
+   "bytes": 1091187015,
+   "items": 950,
+   "missing": []
+  },
+  "1.9.3.1 test copy ScreenCapture, live and in the runtime archive (frames already copied into the run folders)": {
+   "paths": [
+    ".tmp\\mp-test-runtime\\sp131\\ScreenCapture"
+   ],
+   "bytes": 4617568,
+   "items": 15,
+   "missing": []
+  },
+  "totalBytes": 5812703467,
+  "items": 7879,
+  "r5x candidate smoke-view raw PNG frames (sheets/JSON kept; follow-up, missed by the first pattern)": {
+   "bytes": 847934981,
+   "items": 810,
+   "paths": [
+    "810 PNG frames under .tmp/mp-m0-20260929/run/smoke-view-r5x-lite-*"
+   ]
+  }
+ },
+ "kept": [
+  "stages r5a/r5x: logs/, *.json reports, builds.json, source-hashes.json (r5x also net.json, packages.json); earlier stages untouched",
+  ".tmp/mp-m0-20260929/results/*.json; run/camera-fire-r5*, run/m2-r5x-* (logs); run/smoke-motion-r5a-*, run/smoke-view-r5a-*, run/smoke-look-*: *.gif, *.jpg, *.json",
+  ".tmp/mp-m0-20260929/pkg/*.json records; refs/mp; earlier stages' packages untouched",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "6652b73f9129be1d9486475e91d93549bc3f317fe4e5d5fbee5e27755b1bfdd5",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "cfbefd6cf97ee9886cefbb649c39be73f1890b44ec47f5f62c0e8b3b4bc13822",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "8caf671427759efecb774d8df301d9269b2b964f5980cafa89ad7e4ecc797071",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 134135734272,
+  "freePct": 13.41
+ },
+ "followUp": "2026-10-01T03:34:24"
+}

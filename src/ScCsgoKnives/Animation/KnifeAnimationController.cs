@@ -6,6 +6,8 @@ public static class KnifeAnimationController {
     enum ActionKind { Idle, Draw, Inspect, Slash, Shoot, Reload, Attach, Detach, Prepare, Grenade }
 
     sealed class State {
+        /// <summary>Whose hands these are: owner of this action's held sounds (ScPresentationSound).</summary>
+        public ComponentFirstPersonModel Model;
         public int Variant = -1;
         public readonly ScHeldWeaponSelection Selection = new();
         public ActionKind Action;
@@ -24,6 +26,12 @@ public static class KnifeAnimationController {
         public int ReloadLoops = -1;
         public Cs2Rig.ReloadSections Sections;
         public KnifeRigPose Pose;
+        /// <summary>The R8's hammer being drawn: CS2's additive prepare_shoot layered over whatever the hands are
+        /// doing (idle, or the recoil of the previous shot). Its time comes from the gameplay clock each frame.</summary>
+        public bool PrepareLayer;
+        public float PrepareTime;
+        /// <summary>The item this action holds has left the hand (a planted C4): the arms keep playing, the prop is not drawn.</summary>
+        public bool HeldPropHidden;
     }
 
     /// <summary>The length of the action that is running: the looped reload's own sum, else the clip's.</summary>
@@ -71,16 +79,22 @@ public static class KnifeAnimationController {
     public static int ResolveVariant(int itemValue) {
         int contents = Terrain.ExtractContents(itemValue);
         if (contents == BlocksManager.GetBlockIndex<ScKnifeBlock>(true)) return ScKnifeBlock.IsKnown(itemValue) ? ScKnifeBlock.GetVariant(itemValue) : -1;
-        if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.IsKnown(itemValue) ? ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue)) : -1; // old-format data draws no gun
+        // Old-format data draws no gun; a multiplayer client's gun still waiting for the server's record draws its model.
+        if (contents == BlocksManager.GetBlockIndex<ScGunBlock>(true)) return ScGunBlock.IsShown(itemValue) ? ScGunBlock.AssetIndex(ScGunBlock.GetVariant(itemValue)) : -1;
         if (contents == BlocksManager.GetBlockIndex<ScGrenadeBlock>(true)) return ScGrenadeBlock.AssetIndex(itemValue);
         if (ScC4Block.IsValue(itemValue)) return CsmcKnifeRig.C4Index;
         return -1;
     }
 
+    /// <summary>The drawing hook leaves a non-CS item to the per-frame update of the held item (true). Tests switch it off
+    /// once to show the per-frame redraw it prevents (post-mp-bugs-20260930 §4).</summary>
+    public static bool FollowHeldItemOnly = true;
+
     public static KnifeRigPose Update(ComponentFirstPersonModel model, int itemValue) {
         int variant = ResolveVariant(itemValue);
         if (variant < 0) {
             if (s_states.TryGetValue(model, out State oldState)) {
+                if (oldState.Variant >= 0) { ScPresentationSound.Release(model, "no CS item"); NoteSelection(model, oldState, "no CS item", itemValue); }
                 oldState.Variant = -1;
                 oldState.Pose = null;
                 oldState.Selection.Reset();
@@ -88,10 +102,7 @@ public static class KnifeAnimationController {
             return null;
         }
 
-        if (!s_states.TryGetValue(model, out State state)) {
-            state = new State();
-            s_states.Add(model, state);
-        }
+        State state = StateFor(model);
 
         // Inventory/dialogs affect gameplay input, not the visual animation clock.
         // Keep sampling real hands every frame, including a switch made in a menu.
@@ -113,7 +124,6 @@ public static class KnifeAnimationController {
             state.Scoped = false;
             // Whether a knife has a second draw is a property of its rig, not
             // of it being the butterfly.
-            KnifeLog.Trace($"[ScCsgoKnives] controller: state.Variant {state.Variant} -> {variant} (itemValue={itemValue}, rawVariant={ScKnifeBlock.GetVariant(itemValue)}, assetCount={CsmcKnifeRig.KnifeCount}).");
             state.Variant = variant;
             state.PendingInspect = false;
             state.CzFrontRemoved = CsmcKnifeRig.GetAssetName(variant) == "cz75a" && CzConsumed(itemValue);
@@ -121,8 +131,10 @@ public static class KnifeAnimationController {
             if (deploy == "deploy" && !KnifeQa.Active && HasAlias(variant, "deploy2") && s_random.Next(2) == 0) deploy = "deploy2";
             Start(state, ActionKind.Draw, deploy);
             state.DrawReadyAt=KnifeClock.Now+CsmcKnifeRig.GetProfileDuration(variant,deploy);
-            PlayDrawSound(variant);
-            LogActionStart(state, variant);
+            // Only the new item's draw is heard: every older held sound of these hands fades out.
+            ScPresentationSound.Release(model, "switch", keepAction: state.ActionSequence);
+            NoteSelection(model, state, "draw " + deploy, itemValue);
+            PlayDrawSound(state, variant);
         }
 
         // Knife strikes are dispatched by the gameplay subsystem, never inferred from vanilla poke.
@@ -132,7 +144,6 @@ public static class KnifeAnimationController {
             state.CzFrontRemoved=true;
             if (ScGunRegistry.Current is {} registry && !GunSpec.IsFresh(Terrain.ExtractData(itemValue)))
                 s_czConsumed.GetOrCreateValue(registry).Add(GunSpec.GetId(Terrain.ExtractData(itemValue)));
-            KnifeLog.Trace($"[CZ_RELOAD_0416] front detached at Clipout2={Cs2Rig.CzFrontDetachTime(state.ClipAlias):0.###}s; clip={state.ClipAlias}; instance={GunSpec.GetId(Terrain.ExtractData(itemValue))}");
         }
         if (state.Action == ActionKind.Idle) {
             // A pistol idles with the slide back while its magazine is empty and
@@ -163,8 +174,7 @@ public static class KnifeAnimationController {
                 state.PendingInspect = false;
                 Start(state, ActionKind.Inspect, PickInspect(variant));
                 if(CsmcKnifeRig.IsGun(variant)) model.m_componentPlayer?.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.InspectSound(model.m_componentPlayer,state.ClipAlias);
-                LogActionStart(state, variant);
-                if (IsBalisong(variant)) ScPresentationSound.Play("butterfly_inspect");
+                if (IsBalisong(variant)) ScPresentationSound.PlayHeld(model, state.ActionSequence, "butterfly_inspect");
                 state.Pose = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
                 return state.Pose;
             }
@@ -215,8 +225,7 @@ public static class KnifeAnimationController {
         state.InspectFrom=transition;
         state.PendingInspect=false;
         if(CsmcKnifeRig.IsGun(variant))player.Project?.FindSubsystem<SubsystemScGunBlockBehavior>(false)?.InspectSound(player,state.ClipAlias);
-        LogActionStart(state, variant);
-        if (IsBalisong(variant)) ScPresentationSound.Play("butterfly_inspect");
+        if (IsBalisong(variant)) ScPresentationSound.PlayHeld(model, state.ActionSequence, "butterfly_inspect");
         return true;
     }
 
@@ -271,6 +280,12 @@ public static class KnifeAnimationController {
 
     public static bool IsGrenadeDrawing(ComponentFirstPersonModel model)=>model is not null&&s_states.TryGetValue(model,out var s)
         &&CsmcKnifeRig.IsGrenade(s.Variant)&&(s.Action==ActionKind.Draw||KnifeClock.Now<s.DrawReadyAt);
+    /// <summary>Seconds of a grenade's draw still to run in these hands (0: none, or not a grenade).</summary>
+    public static double GrenadeDrawRemaining(ComponentFirstPersonModel model){
+        if(!IsGrenadeDrawing(model)||!s_states.TryGetValue(model,out var s))return 0;
+        double clip=s.Action==ActionKind.Draw?s.StartedAt+ActionDuration(s,s.Variant)-KnifeClock.Now:0;
+        return Math.Max(0,Math.Max(clip,s.DrawReadyAt-KnifeClock.Now));
+    }
     public static bool CanStartGrenade(ComponentFirstPersonModel model,int value){
         int variant=ResolveVariant(value);
         if(variant<0||!CsmcKnifeRig.IsGrenade(variant))return false;
@@ -280,6 +295,17 @@ public static class KnifeAnimationController {
         var model=player.Entity.FindComponent<ComponentFirstPersonModel>();
         if(model is not null&&s_states.TryGetValue(model,out var s)&&s.Action==ActionKind.Grenade&&s.ClipAlias==alias)s.StartedAt=KnifeClock.Now-elapsed;
     }
+    static State C4State(ComponentPlayer player,long sequence){
+        var model=player?.Entity?.FindComponent<ComponentFirstPersonModel>();
+        return sequence>=0&&model is not null&&s_states.TryGetValue(model,out var s)&&s.Variant==CsmcKnifeRig.C4Index&&s.Action==ActionKind.Grenade&&s.ActionSequence==sequence?s:null;
+    }
+    /// <summary>The plant clip follows the gameplay clock (r2-c4-completion-20260929): its time is the seconds since the
+    /// plant began, as the commit, the key presses and the recovery are, not the real-time clock. A paused game or a
+    /// slow frame therefore never lets the hands run ahead of the charge.</summary>
+    public static void ScrubC4(ComponentPlayer player,long sequence,float elapsed){if(C4State(player,sequence) is {} s)s.StartedAt=KnifeClock.Now-Math.Max(0,elapsed);}
+    /// <summary>The charge was committed: from this frame the first-person C4 is on the ground, not in the hand.</summary>
+    public static void HideC4Prop(ComponentPlayer player,long sequence){if(C4State(player,sequence) is {} s)s.HeldPropHidden=true;}
+    public static bool HeldPropHidden(ComponentFirstPersonModel model)=>model is not null&&s_states.TryGetValue(model,out var s)&&s.HeldPropHidden;
     /// <summary>How long a reload of this many shells runs: the looped sum where the rig loops, else the clip.</summary>
     public static float ReloadSeconds(int variant, bool magazineEmpty, int shells) {
         string clip = ReloadClip(variant, magazineEmpty);
@@ -383,13 +409,46 @@ public static class KnifeAnimationController {
     static int Rounds(int variant, int itemValue) =>
         CsmcKnifeRig.IsGun(variant) ? GunSpec.GetRounds(Terrain.ExtractData(itemValue)) : 1;
 
-    /// <summary>The R8's hammer being drawn before its cocked shot (prepare_shoot_*); false when the rig has none.</summary>
-    public static bool TriggerPrepare(ComponentPlayer player) {
+    /// <summary>Seconds of prepare_shoot_revolver after which hammer, trigger and cylinder are fully drawn (measured
+    /// on the shipped clip: the curves are flat from 0.33 s to its end at 0.97 s).</summary>
+    public const float PrepareCockSeconds = 1f/3;
+
+    /// <summary>The R8's hammer starts back (prepare_shoot_*). Presentation only: the cocked shot's timing and
+    /// whether it fires belong to the gun behaviour and never depend on the answer. False when the rig has no such
+    /// clip. The recoil of a shot that is still playing is kept; an inspect gives way, as CS2's WPN_BLOCK_INSPECT does.</summary>
+    public static bool BeginPrepare(ComponentPlayer player) {
         State state = GunState(player, out int variant);
         if (state is null || !HasAlias(variant, "prepareShoot")) return false;
-        Start(state, ActionKind.Prepare, "prepareShoot");
+        state.PendingInspect = false;
+        if (state.Action is ActionKind.Inspect or ActionKind.Prepare) Start(state, ActionKind.Idle, IdleClip(variant, Rounds(variant, player.ComponentMiner.ActiveBlockValue), state.Scoped));
+        state.PrepareLayer = true; state.PrepareTime = 0;
         return true;
     }
+    /// <summary>Progress of the cocking on the gameplay clock. The hammer is fully back when the shot is due: at
+    /// the clip's own speed when the cocking time allows, faster when growth has shortened it.</summary>
+    public static void DrivePrepare(ComponentPlayer player, float elapsed, float cockSeconds) {
+        ComponentFirstPersonModel model = player?.Entity?.FindComponent<ComponentFirstPersonModel>();
+        if (model is null || !s_states.TryGetValue(model, out State state) || !state.PrepareLayer) return;
+        float rate = cockSeconds > 0 ? Math.Max(1, PrepareCockSeconds / cockSeconds) : 1;
+        state.PrepareTime = Math.Max(0, elapsed) * rate;
+    }
+    /// <summary>The hammer falls (the shot) or is let down (released early, menu, switch).</summary>
+    public static void EndPrepare(ComponentPlayer player) {
+        ComponentFirstPersonModel model = player?.Entity?.FindComponent<ComponentFirstPersonModel>();
+        if (model is not null && s_states.TryGetValue(model, out State state)) state.PrepareLayer = false;
+    }
+    public static bool PrepareShown(ComponentFirstPersonModel model, out float clipSeconds) {
+        clipSeconds = 0;
+        if (model is null || !s_states.TryGetValue(model, out State state) || !state.PrepareLayer) return false;
+        clipSeconds = state.PrepareTime; return true;
+    }
+    /// <summary>The CS2 pose to draw: the running clip, with the R8's hammer layer on top while it is being drawn.</summary>
+    public static Cs2Rig.Pose SampleDrawn(ComponentFirstPersonModel model, string gun, string clipAlias, float time, bool looping) =>
+        PrepareShown(model, out float prepare) && Cs2Rig.IsAdditive(gun, "prepareShoot")
+            ? Cs2Rig.SampleOver(gun, clipAlias, time, looping, "prepareShoot", prepare)
+            : Cs2Rig.Sample(gun, clipAlias, time);
+    /// <summary>Kept for callers of the pre-1.4.0 name; see <see cref="BeginPrepare"/>.</summary>
+    public static bool TriggerPrepare(ComponentPlayer player) => BeginPrepare(player);
 
     /// <summary>The behaviour's zoom state, so the idle and the shot can follow the scope.</summary>
     public static void SetScoped(ComponentPlayer player, bool scoped) {
@@ -484,10 +543,7 @@ public static class KnifeAnimationController {
         if (sections is not null && shells > 0) {
             state.Sections = sections;
             state.ReloadLoops = shells;
-            KnifeLog.Trace($"[ScCsgoKnives] CS2 reload: asset={CsmcKnifeRig.GetAssetName(variant)} shells={shells} "
-                + $"intro {sections.LoopStart:0.###}s + {shells} x {sections.LoopLength:0.###}s + outro {sections.End - sections.OutroStart:0.###}s = {sections.Duration(shells):0.###}s");
         }
-        LogActionStart(state, variant);
     }
     public static string ReloadForPlayer(ComponentPlayer player,int variant,bool empty) {
         var model=player?.Entity.FindComponent<ComponentFirstPersonModel>();
@@ -501,7 +557,6 @@ public static class KnifeAnimationController {
         State state = GunState(player, out int variant);
         if (state is null || SilencerClip(variant, attach) is not string clip) return;
         Start(state, attach ? ActionKind.Attach : ActionKind.Detach, clip);
-        LogActionStart(state, variant);
     }
 
     /// <summary>The capture run's hooks (KnifeQa): a deterministic draw and inspect, and where the action stands.</summary>
@@ -556,14 +611,22 @@ public static class KnifeAnimationController {
 
     static State StateFor(ComponentFirstPersonModel model) {
         if (!s_states.TryGetValue(model, out State state)) {
-            state = new State();
+            state = new State { Model = model };
             s_states.Add(model, state);
         }
         return state;
     }
 
     static void Start(State state, ActionKind action, string clipAlias) {
+        // An inspect cut short (a shot, a swing, a reload, another inspect) takes its sounds with it. Every other action
+        // ending early is a switch, which releases everything anyway; an action that ran to its end keeps its tail.
+        if (state.Action == ActionKind.Inspect && state.Model is not null && state.Variant >= 0
+            && KnifeClock.Now - state.StartedAt < ActionDuration(state, state.Variant))
+            ScPresentationSound.Release(state.Model, "inspect cancelled", onlyAction: state.ActionSequence);
+        // The hammer layer rides on idle and on a shot's recoil only; any other action puts it down.
+        if (action is not (ActionKind.Idle or ActionKind.Shoot)) state.PrepareLayer = false;
         state.InspectFrom=null;
+        state.HeldPropHidden=false;
         state.ActionSequence++;
         state.Action = action;
         state.ClipAlias = clipAlias;
@@ -571,50 +634,30 @@ public static class KnifeAnimationController {
         state.Pose = null;
         state.ReloadLoops = -1;
         state.Sections = null;
-        // What the alias actually became. Reading the 0.17.0 log, the only way to
-        // tell a second draw from a silent fallback to idle was to cross the CS:MC
-        // action lines against the rig's clip list by hand.
-        if (state.Variant >= 0 && Cs2Placement.Active(state.Variant)) {
-            string asset = CsmcKnifeRig.GetAssetName(state.Variant);
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] CS2 action: asset={asset} requested={clipAlias} "
-                + $"resolved={Cs2Rig.ResolvedClip(asset, clipAlias) ?? "(none, drawing idle)"} "
-                + $"duration={Cs2Rig.Duration(asset, clipAlias):0.###}s");
-        }
     }
 
 
     // The flipping sounds were recorded for a balisong and only fit that knife.
     static bool IsBalisong(int variant) => CsmcKnifeRig.GetAssetName(variant) == "butterfly";
 
-    static void PlayDrawSound(int variant) {
-        if (CsmcKnifeRig.IsC4(variant)) { ScPresentationSound.Play("c4_draw"); return; }
+    static void PlayDrawSound(State state, int variant) {
+        var owner = state.Model; long action = state.ActionSequence;
+        if (CsmcKnifeRig.IsC4(variant)) { ScPresentationSound.PlayHeld(owner, action, "c4_draw"); return; }
         if (CsmcKnifeRig.IsGrenade(variant)) {
-            if (variant-CsmcKnifeRig.GrenadeOffset < 6) ScPresentationSound.Play(CsmcKnifeRig.GetAssetName(variant)+"_draw");
+            if (variant-CsmcKnifeRig.GrenadeOffset < 6) ScPresentationSound.PlayHeld(owner, action, CsmcKnifeRig.GetAssetName(variant)+"_draw");
             return;
         }
         if (CsmcKnifeRig.IsGun(variant)) return;          // guns: SubsystemScGunBlockBehavior plays their own files when shipped
-        ScPresentationSound.Play(IsBalisong(variant) ? "butterfly_draw" : "knife_deploy");
+        ScPresentationSound.PlayHeld(owner, action, IsBalisong(variant) ? "butterfly_draw" : "knife_deploy");
     }
 
-    static void LogActionStart(State state, int variant) {
-        // Start already logged the CS2 clip and its length; the CS:MC sample below is
-        // for the CS:MC chain, and asking a CS2-only variant for it threw out of the
-        // draw hook in 0.18.1 (the ssg08 stack in the device log).
-        if (CsmcKnifeRig.IsCs2Only(variant)) return;
-        float duration = CsmcKnifeRig.GetDuration(variant, state.ClipAlias);
-        KnifeRigPose initial = CsmcKnifeRig.Sample(variant, state.ClipAlias, 0f);
-        KnifeRigPose middle = CsmcKnifeRig.Sample(variant, state.ClipAlias, duration * 0.5f);
-        KnifeRigPose final = CsmcKnifeRig.Sample(variant, state.ClipAlias, duration);
-        KnifeLog.Trace(
-            $"[ScCsgoKnives] exact CSMC action={state.Action}, variant={variant}, asset={CsmcKnifeRig.GetAssetName(variant)}, "
-            + $"clip={initial.SourceClip}, duration={duration:0.###}s, "
-            + $"initialWeapon={KnifeDiagnostics.MatrixSummary(initial.GetBinding("weapon_hand_r"))}, "
-            + $"middleWeapon={KnifeDiagnostics.MatrixSummary(middle.GetBinding("weapon_hand_r"))}, "
-            + $"hand_r(binding)={Format(initial.GetBindingOrigin("hand_r"))}->{Format(middle.GetBindingOrigin("hand_r"))}->{Format(final.GetBindingOrigin("hand_r"))}, "
-            + $"hand_l(bone)={Format(initial.GetAttachment("hand_l"))}->{Format(middle.GetAttachment("hand_l"))}->{Format(final.GetAttachment("hand_l"))}."
-        );
+    /// <summary>Test diagnostics (ScPresentationSound.Record): what the hands hold now, beside the sounds.</summary>
+    static void NoteSelection(ComponentFirstPersonModel model, State state, string what, int value) {
+        if (!ScPresentationSound.Record) return;
+        var player = model.m_componentPlayer;
+        ScPresentationSound.Note($"select P{player?.PlayerData?.PlayerIndex ?? -1} slot {player?.ComponentMiner?.Inventory?.ActiveSlotIndex ?? -1} "
+            + $"value {value} variant {state.Variant} {(state.Variant >= 0 ? CsmcKnifeRig.GetAssetName(state.Variant) : "-")} action {state.ActionSequence} {what} held {ScPresentationSound.Count(model)}");
     }
 
-    static string Format(Vector3 value) => $"({value.X:0.###},{value.Y:0.###},{value.Z:0.###})";
+
 }

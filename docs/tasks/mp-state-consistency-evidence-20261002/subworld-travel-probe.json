@@ -1,0 +1,8 @@
+{
+  "input": "synthetic XML, actual mpc3 ScGunTravel",
+  "sourceRecord": 1,
+  "targetExistingRecord": 1,
+  "missingTravelMetadataReturnsNoPlan": true,
+  "metadataPreservedImports": 1,
+  "newCarriedRecord": 2
+}

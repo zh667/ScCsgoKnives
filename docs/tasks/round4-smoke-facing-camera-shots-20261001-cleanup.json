@@ -1,0 +1,102 @@
+{
+ "task": "round4-smoke-facing-camera-shots-20261001",
+ "date": "2026-10-01T02:17:15",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r4xCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r4a (devbuild) build trees": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r4a\\full",
+    ".tmp\\completion-140-20260929\\r4a\\lite",
+    ".tmp\\completion-140-20260929\\r4a\\tree"
+   ],
+   "bytes": 851041558,
+   "items": 1898,
+   "missing": [
+    ".tmp\\completion-140-20260929\\r4a\\tools",
+    ".tmp\\completion-140-20260929\\r4a\\assets-full",
+    ".tmp\\completion-140-20260929\\r4a\\resources",
+    ".tmp\\completion-140-20260929\\r4a\\net",
+    ".tmp\\completion-140-20260929\\r4a\\motion",
+    ".tmp\\completion-140-20260929\\r4a\\throw",
+    ".tmp\\completion-140-20260929\\r4a\\ui",
+    ".tmp\\completion-140-20260929\\r4a\\candidate"
+   ]
+  },
+  "stage r4x build trees (delivered; logs, reports, net.json, packages.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r4x\\full",
+    ".tmp\\completion-140-20260929\\r4x\\lite",
+    ".tmp\\completion-140-20260929\\r4x\\tools",
+    ".tmp\\completion-140-20260929\\r4x\\tree",
+    ".tmp\\completion-140-20260929\\r4x\\assets-full",
+    ".tmp\\completion-140-20260929\\r4x\\resources",
+    ".tmp\\completion-140-20260929\\r4x\\net",
+    ".tmp\\completion-140-20260929\\r4x\\motion",
+    ".tmp\\completion-140-20260929\\r4x\\throw",
+    ".tmp\\completion-140-20260929\\r4x\\ui"
+   ],
+   "bytes": 1891789114,
+   "items": 4197,
+   "missing": []
+  },
+  "MP/single-player test packages (candidate copies)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r4a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r4a-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r4x-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r4x-lite.scmod"
+   ],
+   "bytes": 1125944417,
+   "items": 4,
+   "missing": []
+  },
+  "r4a smoke recording/scene raw PNG frames (GIF/sheets/JSON kept)": {
+   "paths": [
+    "6117 PNG frames under run/smoke-motion-r4a-lite-* and run/smoke-view-r4a-lite-*"
+   ],
+   "bytes": 6497292494,
+   "items": 6117,
+   "missing": []
+  },
+  "1.9.3.1 test copy ScreenCapture, live and in the runtime archive (frames already copied into the run folders)": {
+   "paths": [],
+   "bytes": 0,
+   "items": 0,
+   "missing": [
+    ".tmp\\mp-test-runtime\\sp131\\ScreenCapture"
+   ]
+  },
+  "totalBytes": 10366067583,
+  "items": 12216
+ },
+ "kept": [
+  "stages r4a/r4x: logs/, *.json reports, builds.json, source-hashes.json (r4x also net.json, packages.json); round-3 stages untouched",
+  ".tmp/mp-m0-20260929/results/*.json; run/camera-fire-r4*, run/m2-r4x-* (logs); run/smoke-motion-r4a-*, run/smoke-view-r4a-*: *.gif, *.jpg, *.json",
+  ".tmp/mp-m0-20260929/pkg/*.json records; refs/mp; earlier stages' packages untouched",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "c705aa7f6cee80ddc54e42f76ddd1e5ff138cd0bb80cdf6c396abc204ff2e7db",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "73d76dbe9debe94da90b4fa74fe9ee0a8601f3b50a313f80bf1543eb2e77031a",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "8caf671427759efecb774d8df301d9269b2b964f5980cafa89ad7e4ecc797071",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 134166556672,
+  "freePct": 13.41
+ }
+}

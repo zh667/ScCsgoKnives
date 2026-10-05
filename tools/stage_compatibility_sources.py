@@ -7,7 +7,8 @@ SOURCES={
  '1.2.0':('0f78a1b',Path(r'D:\下载\[API1.9]CS武器1.2.0-全量版.scmod'),'b370ad7ff6c7cae0ec4abe584d8389bea813eb790b29dc3c2a4772adca184c95')}
 SHARED=['ScGunEncoding','ScGunKillQueue','ScGunRegistry','ScGunGrowth','ScGunGrowthMigration','ScGunGrowthService','ScGunSaveGuard','ScGunSchemaUpgrade',
         'ScGunLoadIntegrity','ScGunTravel','ScGunHolders','ScGunMutation','ScInventoryIdentity','ScSushiInventory',
-        'ScInventoryTransaction','ScGunRecovery','ScCompatibility','ScGun0282Migration','ScGhoulTestBridge']
+        'ScInventoryTransaction','ScGunRecovery','ScCompatibility','ScGun0282Migration','ScGhoulTestBridge',
+        'ScItemTravel']  # (universal-item-travel-20261002: the registry's transfer ledger and the mapping rule ScGunTravel shares)
 def main():
     p=argparse.ArgumentParser();p.add_argument('version',choices=SOURCES);a=p.parse_args()
     ref,package,digest=SOURCES[a.version];assert hashlib.sha256(package.read_bytes()).hexdigest()==digest

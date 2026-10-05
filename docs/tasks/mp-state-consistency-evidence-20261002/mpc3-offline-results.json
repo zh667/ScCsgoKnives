@@ -1,0 +1,1177 @@
+{
+ "about": "mp-state-consistency-20261002, candidate mpc3: compact copies of the offline results. No game process was started for any of them. See ../../../openspec/changes/weapon-state-consistency/verification.md for what each case does and does not show.",
+ "pipeline": {
+  "request": "mpc-pipeline-mpc3-all-01",
+  "job": "e782e810e54940e189aa903003b8fa26",
+  "stage": ".tmp/completion-140-20260929/mpc3",
+  "failedSteps": [],
+  "platformReferences": "the pinned 1.9.3.2 references of the pipeline (.tmp/mp-m0-20260929/refs/mp); module ids in netstate.platform",
+  "packages": {
+   "全量": {
+    "file": "[API1.9]CS武器1.4.0-全量包.scmod",
+    "bytes": 526889657,
+    "sha256": "e15a6052190a2e420f06876a60d46f3b9611cb7522ee8012a6cab3604edbca37",
+    "baselineSha256": "dc7149930fbc5d991432c186c14569338e671e0f63d6f816b3f2764c6f59ed5b",
+    "unchangedMembers": 1706
+   },
+   "轻量": {
+    "file": "[API1.9]CS武器1.4.0-轻量包.scmod",
+    "bytes": 35732086,
+    "sha256": "41674d3ab7e92ed951c119a6b80e6ff093c0565ff196711494f143d50b83eeb9",
+    "baselineSha256": "1dd379bd2aa56e68c30295d79108f9938b1b0c08c5d17efbcb485338bb8be1ed",
+    "unchangedMembers": 1347
+   },
+   "探员": {
+    "file": "[API1.9]CS武器1.4.0-探员包.scmod",
+    "bytes": 38467933,
+    "sha256": "9c09b521418fb34b883d0b7154674c412a31beb8711fbf6af996e9a724d86709",
+    "baselineSha256": "d0a49c56cd2223452ff68c257305b510a0dc2daaae79ac14fd125eeb7863d347",
+    "unchangedMembers": 364
+   }
+  },
+  "adapter": {
+   "member": "Net/ScCsgoNet.bin",
+   "sha256": "1c67d2c45ce503c6529aea0ab33eb5789e445d2f90fdc3eba30972c54aea3400",
+   "bytes": 57344,
+   "core": "ca054737cedab0b333ebea2cc338da50b110d43f3f0d89a56ba2b25bb843284d",
+   "compatMember": "Net/ScCsgoNetCompat.bin",
+   "compatSha256": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+   "compatBytes": 9728,
+   "references": {
+    "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+    "Survivalcraft.CompatNet.dll": "4288904cbbbcbdfcb2dd5d04d3cfc79f942f7339d13be7b64bb23468aceb0102",
+    "Survivalcraft.Multiplayer.dll": "3e0b24efbf51b21372b337cd8f5d12242ec5fc446a90782f2eb4d274124e9cfe",
+    "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+    "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db",
+    "Survivalcraft.Compat23.dll": "96b60590d436b7875158587a87796e7cac6fd45eecbdae8c245d2f7f4ee6b479",
+    "0Harmony.dll": "70e7647876b6c3d874ea99b56627a95d1dce2e1dd791981a002578a2febc9bbd"
+   }
+  },
+  "identity": {
+   "identity": "76bb41956ac9b1092034e028ef835e10",
+   "files": 303
+  }
+ },
+ "summary": {
+  "netloop-nocompat": {
+   "failed": 0,
+   "total": 28
+  },
+  "netloop-compat": {
+   "failed": 0,
+   "total": 28
+  },
+  "netstate": {
+   "failed": 0,
+   "total": 83
+  },
+  "netstate-targets": {
+   "failed": 0,
+   "total": 9
+  },
+  "netstate-delivered": {
+   "failed": 7,
+   "total": 9
+  },
+  "appnet-full": {
+   "failed": 0,
+   "total": 19
+  },
+  "appnet-lite": {
+   "failed": 0,
+   "total": 19
+  },
+  "c4-full": {
+   "failed": 0,
+   "total": 140,
+   "sets": {
+    "c4/": 73,
+    "c4-net-sound/": 10,
+    "sushi-inventory/": 18,
+    "sushi-sync/": 26,
+    "sushi-stacking/": 13
+   }
+  },
+  "c4-lite": {
+   "failed": 0,
+   "total": 140,
+   "sets": {
+    "c4/": 73,
+    "c4-net-sound/": 10,
+    "sushi-inventory/": 18,
+    "sushi-sync/": 26,
+    "sushi-stacking/": 13
+   }
+  },
+  "main-full": {
+   "failed": 0,
+   "total": 14084
+  },
+  "main-lite": {
+   "failed": 0,
+   "total": 14394
+  },
+  "baseline-main-full": {
+   "failed": 4,
+   "total": 14073,
+   "failedNames": [
+    "ammo-hud/zh-CN/predicted-shots-are-shown-not-stored",
+    "ammo-hud/en-US/predicted-shots-are-shown-not-stored",
+    "net-client/a client's shown reload goes on when the server gives the fresh gun its record",
+    "c4-net-sound/the core has the host-side C4 sound correction"
+   ]
+  },
+  "baseline-main-lite": {
+   "failed": 4,
+   "total": 14383,
+   "failedNames": [
+    "ammo-hud/zh-CN/predicted-shots-are-shown-not-stored",
+    "ammo-hud/en-US/predicted-shots-are-shown-not-stored",
+    "net-client/a client's shown reload goes on when the server gives the fresh gun its record",
+    "c4-net-sound/the core has the host-side C4 sound correction"
+   ]
+  },
+  "baseline-c4-full": {
+   "failed": 1,
+   "total": 74,
+   "failedNames": [
+    "c4-net-sound/the core has the host-side C4 sound correction"
+   ]
+  },
+  "ai-full": {
+   "failed": 0,
+   "total": 66
+  },
+  "ai-lite": {
+   "failed": 0,
+   "total": 66
+  },
+  "vf-full": {
+   "failed": 0,
+   "total": 292
+  },
+  "vf-lite": {
+   "failed": 0,
+   "total": 292
+  },
+  "tactical-full-suite": {
+   "failed": 4,
+   "total": 108,
+   "failedNames": [
+    "optional-package-identity-and-no-bundled-engine",
+    "native-gltf/ct",
+    "native-gltf/t",
+    "npc-full-registry-reload-refuses-without-ammo-loss"
+   ]
+  }
+ },
+ "netstate": {
+  "mode": "state cases",
+  "failed": 0,
+  "total": 83,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "adc857a2-8e2f-45f0-ba6c-2e17a72aaa92",
+  "adapter": "9495a7d3-5064-4598-8284-5e1c5cff4adc",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "setup",
+    "name": "A and B are accepted on protocol 5; the adapter offers the platform's inventory replication",
+    "ok": true,
+    "detail": "2 peers, Accepted, inventory sync True"
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: the client shows its own shot at once (29) without touching a record",
+    "ok": true,
+    "detail": "HUD 29, pending 1, records on A 0"
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: the server fires once and gives the gun its own record",
+    "ok": true,
+    "detail": "shots 1, id 1 (next was 1), rounds 29"
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: in that same frame the server sends the record, then that inventory once, then the shot's confirmation to A",
+    "ok": true,
+    "detail": "cs34>B cs34>A cs32>B cs32>A InventorySync cs42>A"
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: control - a client that gets the record but not the inventory keeps the template",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: A and the watching B hold the server's item in that slot, and its record",
+    "ok": true,
+    "detail": "server 1049276, A 1049276, B 1049276"
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: A reads 29, nothing is left predicted",
+    "ok": true,
+    "detail": "HUD 29, pending 0"
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: standing still it stays so and nothing more is sent",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C01",
+    "name": "slot 0: the next shot sends the record row and the confirmation only, never the inventory again",
+    "ok": true,
+    "detail": "cs32>B cs32>A cs42>A; row message 160 B, the inventory packet was 27819 B for 4010 slots"
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: the client shows its own shot at once (29) without touching a record",
+    "ok": true,
+    "detail": "HUD 29, pending 1, records on A 1"
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: the server fires once and gives the gun its own record",
+    "ok": true,
+    "detail": "shots 1, id 2 (next was 2), rounds 29"
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: in that same frame the server sends the record, then that inventory once, then the shot's confirmation to A",
+    "ok": true,
+    "detail": "cs32>B cs32>A InventorySync cs42>A"
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: control - a client that gets the record but not the inventory keeps the template",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: A and the watching B hold the server's item in that slot, and its record",
+    "ok": true,
+    "detail": "server 2097852, A 2097852, B 2097852"
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: A reads 29, nothing is left predicted",
+    "ok": true,
+    "detail": "HUD 29, pending 0"
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: standing still it stays so and nothing more is sent",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C01",
+    "name": "slot 5: the next shot sends the record row and the confirmation only, never the inventory again",
+    "ok": true,
+    "detail": "cs32>B cs32>A cs42>A; row message 168 B, the inventory packet was 27821 B for 4010 slots"
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: the client shows its own shot at once (29) without touching a record",
+    "ok": true,
+    "detail": "HUD 29, pending 1, records on A 2"
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: the server fires once and gives the gun its own record",
+    "ok": true,
+    "detail": "shots 1, id 3 (next was 3), rounds 29"
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: in that same frame the server sends the record, then that inventory once, then the shot's confirmation to A",
+    "ok": true,
+    "detail": "cs32>B cs32>A InventorySync cs42>A"
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: control - a client that gets the record but not the inventory keeps the template",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: A and the watching B hold the server's item in that slot, and its record",
+    "ok": true,
+    "detail": "server 3146428, A 3146428, B 3146428"
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: A reads 29, nothing is left predicted",
+    "ok": true,
+    "detail": "HUD 29, pending 0"
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: standing still it stays so and nothing more is sent",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C01",
+    "name": "slot 9: the next shot sends the record row and the confirmation only, never the inventory again",
+    "ok": true,
+    "detail": "cs32>B cs32>A cs42>A; row message 168 B, the inventory packet was 27823 B for 4010 slots"
+   },
+   {
+    "case": "C02",
+    "name": "finish 1 (awp): taken in hand it becomes that client's own gun with its finish, with no further action",
+    "ok": true,
+    "detail": "Success; server 4227772, A 4227772, B 4227772; [cs32>B cs32>A InventorySync]"
+   },
+   {
+    "case": "C02",
+    "name": "finish 1: the guns taken before it are unchanged on every end",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C02",
+    "name": "finish 2 (awp): taken in hand it becomes that client's own gun with its finish, with no further action",
+    "ok": true,
+    "detail": "Success; server 5276348, A 5276348, B 5276348; [cs32>B cs32>A InventorySync]"
+   },
+   {
+    "case": "C02",
+    "name": "finish 2: the guns taken before it are unchanged on every end",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C02",
+    "name": "finish 3 (awp): taken in hand it becomes that client's own gun with its finish, with no further action",
+    "ok": true,
+    "detail": "Success; server 6324924, A 6324924, B 6324924; [cs32>B cs32>A InventorySync]"
+   },
+   {
+    "case": "C02",
+    "name": "finish 3: the guns taken before it are unchanged on every end",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C03",
+    "name": "before the server acts A reads 4 (5 less its shot); its copy of the old record still says 5",
+    "ok": true,
+    "detail": "HUD 4, mirror 5"
+   },
+   {
+    "case": "C03",
+    "name": "the server gives the acting copy its own record; the old record keeps its 5 rounds and its wear",
+    "ok": true,
+    "detail": "new id 8, old 5 rounds / 1185 wear, new 4 rounds; [cs32>B cs32>A InventorySync cs42>A]"
+   },
+   {
+    "case": "C03",
+    "name": "A's slot and B's copy of it name the new record",
+    "ok": true,
+    "detail": "A 8, B 8"
+   },
+   {
+    "case": "C03",
+    "name": "after the server's reload A reads the new record's 20",
+    "ok": true,
+    "detail": "HUD 20"
+   },
+   {
+    "case": "C03",
+    "name": "shots the server never confirms fall away: the slot reads the new record's 20 again, never the old record's 5",
+    "ok": true,
+    "detail": "shown 15 while predicting, then HUD 20; mirror old 5, new 20"
+   },
+   {
+    "case": "C04",
+    "name": "slot before record: the gun is not usable and nothing is made up for it",
+    "ok": true,
+    "detail": "A slot id 9, usable False"
+   },
+   {
+    "case": "C04",
+    "name": "while it waits the client sends no trigger and predicts nothing; the server fires nothing",
+    "ok": true,
+    "detail": "shots 0, server rounds 29"
+   },
+   {
+    "case": "C04",
+    "name": "the record arrives: usable, 29, without any further action",
+    "ok": true,
+    "detail": "HUD 29"
+   },
+   {
+    "case": "C04",
+    "name": "a record that does not arrive is asked for after half a second, and the gun then works",
+    "ok": true,
+    "detail": "asked 1, answered 1, HUD 29"
+   },
+   {
+    "case": "C04",
+    "name": "asking is bounded (5 requests over 15 s, then it only waits) and the gun stays unusable",
+    "ok": true,
+    "detail": "5 requests"
+   },
+   {
+    "case": "C05",
+    "name": "two guns given their records in one frame: that inventory is sent once, with both",
+    "ok": true,
+    "detail": "cs32>B cs32>A InventorySync"
+   },
+   {
+    "case": "C05",
+    "name": "the same messages delivered twice more change nothing on any end",
+    "ok": true,
+    "detail": "HUD 29"
+   },
+   {
+    "case": "C05",
+    "name": "an older record row arriving after a newer one is dropped",
+    "ok": true,
+    "detail": "A's record 27, server 27, stale rows 1"
+   },
+   {
+    "case": "C05",
+    "name": "the platform's inventory packet and the CS packet travel on the same channel (0), which the platform sends reliable-ordered: an older snapshot cannot overtake a newer one",
+    "ok": true,
+    "detail": "channels 0/0; delivery method per the platform's NetworkServer.Send / RelayHost.Send (ReliableOrdered)"
+   },
+   {
+    "case": "C05",
+    "name": "a record row that could not be sent stays due and goes out with a later tick; the shot is not fired again",
+    "ok": true,
+    "detail": "failed sends 1; A's record 26, server 26"
+   },
+   {
+    "case": "C06",
+    "name": "a commit that fails after its record was written restores the slot and leaves no record",
+    "ok": true,
+    "detail": "InventoryRejected; server slot fresh True, records 12/12"
+   },
+   {
+    "case": "C06",
+    "name": "what is published is the restored slot, and no record of the abandoned number reaches a client",
+    "ok": true,
+    "detail": "InventorySync"
+   },
+   {
+    "case": "C06",
+    "name": "a gun moved away before the commit: refused, no number used, nothing published",
+    "ok": true,
+    "detail": "StateChanged; []"
+   },
+   {
+    "case": "C06",
+    "name": "an inventory that does not take the new item: refused, the slot keeps the template, no record left behind",
+    "ok": true,
+    "detail": "InventoryRejected"
+   },
+   {
+    "case": "C07",
+    "name": "three shots shown, none confirmed: A reads 17 and its record still says 20",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C07",
+    "name": "the next world's record of the same number reads 20 at once: the prediction belongs to the former world's table",
+    "ok": true,
+    "detail": "HUD 20"
+   },
+   {
+    "case": "C07",
+    "name": "and stays 20 after every time-out",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C07",
+    "name": "a replaced player entity starts with nothing predicted",
+    "ok": true,
+    "detail": "HUD 20"
+   },
+   {
+    "case": "C07",
+    "name": "closing the world drops the prediction and starts another selection",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C07",
+    "name": "a departed connection's trigger is let go and its input sequence forgotten",
+    "ok": true,
+    "detail": "held True, peers 1"
+   },
+   {
+    "case": "C07",
+    "name": "A is accepted again and plays on",
+    "ok": true,
+    "detail": "Accepted"
+   },
+   {
+    "case": "C08",
+    "name": "two of three shown shots confirmed: record 18, one still pending, A reads 17",
+    "ok": true,
+    "detail": "fired 2, mirror 18, pending 1, HUD 17"
+   },
+   {
+    "case": "C08",
+    "name": "the same confirmation again pays nothing off twice",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C08",
+    "name": "the reload's record (20) is kept as the server's; the unconfirmed shot is still only shown",
+    "ok": true,
+    "detail": "mirror 20, HUD 19"
+   },
+   {
+    "case": "C08",
+    "name": "a new shot after the reload is confirmed once: record 19",
+    "ok": true,
+    "detail": "mirror 19, pending 1, HUD 18"
+   },
+   {
+    "case": "C08",
+    "name": "what the server never fired times out: A reads the server's 19, and the record was never written by a prediction",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C09",
+    "name": "a press for gun A while the server holds gun B in that slot fires nothing and costs B nothing",
+    "ok": true,
+    "detail": "shots 0, B 10, stale 1"
+   },
+   {
+    "case": "C09",
+    "name": "still nothing fired; the server corrects that one client's inventory, once",
+    "ok": true,
+    "detail": "shots 0; [InventorySync>A]"
+   },
+   {
+    "case": "C09",
+    "name": "with the corrected slot the client's next press fires gun B",
+    "ok": true,
+    "detail": "A slot id 17, B 9"
+   },
+   {
+    "case": "C09",
+    "name": "a press naming slot 0 while the server's active slot is 1 fires nothing",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C09",
+    "name": "after half a second of the client naming slot 0 the server's active slot follows it; the other clients are told, the owner is not",
+    "ok": true,
+    "detail": "server active slot 0; [ActiveSlotChange]"
+   },
+   {
+    "case": "C09",
+    "name": "and the next press fires the gun in that slot",
+    "ok": true,
+    "detail": "A 9, B 9"
+   },
+   {
+    "case": "C09",
+    "name": "a press queued for gun A is dropped when the next input is for gun B",
+    "ok": true,
+    "detail": "shots 0"
+   },
+   {
+    "case": "C09",
+    "name": "and a press for B fires B",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C09",
+    "name": "a fresh gun's second press, still naming the template, is that same gun's: both shots fire, nothing refused",
+    "ok": true,
+    "detail": "shots 1+1, rounds 28, stale 0"
+   },
+   {
+    "case": "C09",
+    "name": "and A ends on the server's 28",
+    "ok": true,
+    "detail": "HUD 28"
+   },
+   {
+    "case": "C09",
+    "name": "the template's name stops being accepted for that slot after the rewrite window",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C10",
+    "name": "a press released before the server's next frame fires exactly once",
+    "ok": true,
+    "detail": "shots 1"
+   },
+   {
+    "case": "C10",
+    "name": "the same messages delivered again are ignored: no second shot",
+    "ok": true,
+    "detail": "repeats 2"
+   },
+   {
+    "case": "C10",
+    "name": "a held trigger stops within the lease once the client goes silent; the magazine is not emptied",
+    "ok": true,
+    "detail": "10 shots in 0.92 s, then none for 3.1 s; 19 rounds left"
+   },
+   {
+    "case": "C10",
+    "name": "when its input resumes the trigger holds again, one shot a frame of the gun's own cadence, none made up for the silence",
+    "ok": true,
+    "detail": "first frame 1 shot"
+   },
+   {
+    "case": "C10",
+    "name": "the plant key: renewed every quarter second it stays held for 3 s; a second of silence releases it (the plant is then cancelled like any release)",
+    "ok": true,
+    "detail": "held True, renewed True, after silence held False"
+   },
+   {
+    "case": "C10",
+    "name": "a held throw: a second of silence ends the hold once (the throw is cancelled, nothing thrown or taken)",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C11",
+    "name": "a gun moved to another slot keeps its record and number: the shot there uses no new id and sends no inventory",
+    "ok": true,
+    "detail": "id 20, next 21/21; [cs32>B cs32>A cs42>A]"
+   },
+   {
+    "case": "C12",
+    "name": "a client of CS network protocol 4 is refused with that reason; its CS weapons stay off",
+    "ok": true,
+    "detail": "服务器拒绝：CS 网络协议 zh667.ScCsgoKnives/net/4 与服务器 zh667.ScCsgoKnives/net/5 不同，CS 武器已停用"
+   },
+   {
+    "case": "C12",
+    "name": "a refused client sends no gun input",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "case": "C12",
+    "name": "the present protocol is accepted again",
+    "ok": true,
+    "detail": ""
+   }
+  ]
+ },
+ "netstate-targets": {
+  "mode": "baseline target assertions (expected to fail on mpb, pass on the present build)",
+  "failed": 0,
+  "total": 9,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "adc857a2-8e2f-45f0-ba6c-2e17a72aaa92",
+  "adapter": "9495a7d3-5064-4598-8284-5e1c5cff4adc",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "setup",
+    "name": "two clients accepted",
+    "ok": true,
+    "detail": "2 peers"
+   },
+   {
+    "case": "C01",
+    "name": "T1 after the server gave the fresh AK its record, the client's slot holds the same item as the server's",
+    "ok": true,
+    "detail": "server slot id 1, client slot id 1; packets [cs32>B cs32>A InventorySync cs34>B cs34>A]"
+   },
+   {
+    "case": "C01",
+    "name": "T1 and so does the watching client's copy of that inventory",
+    "ok": true,
+    "detail": "B's copy id 1"
+   },
+   {
+    "case": "C01",
+    "name": "T2 the client's ammo readout shows the server's rounds (29), not the template's 30",
+    "ok": true,
+    "detail": "HUD 29, server 29"
+   },
+   {
+    "case": "C03",
+    "name": "T3 the server separated the copy: record 7 keeps 5 rounds, the client's gun is record 12 with 20 after its reload",
+    "ok": true,
+    "detail": "shot Success, reload Success, new id 12, server 7=5 12=20"
+   },
+   {
+    "case": "C03",
+    "name": "T3 a prediction never changes the client's copy of record 7",
+    "ok": true,
+    "detail": "client's record 7 read 5 while 5 shots were predicted"
+   },
+   {
+    "case": "C03",
+    "name": "T3 the client's slot is bound to record 12",
+    "ok": true,
+    "detail": "client slot id 12"
+   },
+   {
+    "case": "C03",
+    "name": "T3 after every prediction timed out the readout is record 12's 20 rounds, and record 7 is still the server's 5",
+    "ok": true,
+    "detail": "HUD 20, client's record 7 = 5"
+   },
+   {
+    "case": "C07",
+    "name": "T4 a prediction left over from the former world does not change the new world's record 7",
+    "ok": true,
+    "detail": "row parsed True, new world's record 7 = 20, HUD 20"
+   }
+  ]
+ },
+ "netstate-delivered": {
+  "mode": "baseline target assertions (expected to fail on mpb, pass on the present build)",
+  "failed": 7,
+  "total": 9,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "a90544a1-1fec-4eba-8c81-fe270aafc162",
+  "adapter": "0a2ebc8a-8875-4bc5-86c2-7cb1fd216adc",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "setup",
+    "name": "two clients accepted",
+    "ok": true,
+    "detail": "2 peers"
+   },
+   {
+    "case": "C01",
+    "name": "T1 after the server gave the fresh AK its record, the client's slot holds the same item as the server's",
+    "ok": false,
+    "detail": "server slot id 1, client slot id 0; packets [cs32>B cs32>A cs34>B cs34>A]"
+   },
+   {
+    "case": "C01",
+    "name": "T1 and so does the watching client's copy of that inventory",
+    "ok": false,
+    "detail": "B's copy id 0"
+   },
+   {
+    "case": "C01",
+    "name": "T2 the client's ammo readout shows the server's rounds (29), not the template's 30",
+    "ok": false,
+    "detail": "HUD 30, server 29"
+   },
+   {
+    "case": "C03",
+    "name": "T3 the server separated the copy: record 7 keeps 5 rounds, the client's gun is record 12 with 20 after its reload",
+    "ok": true,
+    "detail": "shot Success, reload Success, new id 12, server 7=5 12=20"
+   },
+   {
+    "case": "C03",
+    "name": "T3 a prediction never changes the client's copy of record 7",
+    "ok": false,
+    "detail": "client's record 7 read 0 while 5 shots were predicted"
+   },
+   {
+    "case": "C03",
+    "name": "T3 the client's slot is bound to record 12",
+    "ok": false,
+    "detail": "client slot id 7"
+   },
+   {
+    "case": "C03",
+    "name": "T3 after every prediction timed out the readout is record 12's 20 rounds, and record 7 is still the server's 5",
+    "ok": false,
+    "detail": "HUD 5, client's record 7 = 5"
+   },
+   {
+    "case": "C07",
+    "name": "T4 a prediction left over from the former world does not change the new world's record 7",
+    "ok": false,
+    "detail": "row parsed True, new world's record 7 = 5, HUD 5"
+   }
+  ],
+  "note": "the SAME nine target assertions run against the mpb Lite package that was in output/ (sha256 1dd379bd...): the seven failures are the faults the user reported, reproduced; this is not a result of the candidate"
+ },
+ "c4-lite": {
+  "packageSha256": "41674d3ab7e92ed951c119a6b80e6ff093c0565ff196711494f143d50b83eeb9",
+  "dllSha256": "ca054737cedab0b333ebea2cc338da50b110d43f3f0d89a56ba2b25bb843284d",
+  "failed": 0,
+  "total": 140,
+  "sets": {
+   "c4/": 73,
+   "c4-net-sound/": 10,
+   "sushi-inventory/": 18,
+   "sushi-sync/": 26,
+   "sushi-stacking/": 13
+  },
+  "checks": [
+   {
+    "name": "c4-net-sound/who plays a plant sound: no owner always; the owner's own process; the host for anyone's plant; never a client for another's",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "c4-net-sound/single player: one arming tone, the key presses and one plant sound",
+    "ok": true,
+    "detail": "initiate 1, keys 7, plant 1"
+   },
+   {
+    "name": "c4-net-sound/a client plants: the host itself plays the arming tone, every key press and the plant sound, once each",
+    "ok": true,
+    "detail": "initiate 1, keys 7, plant 1; charges 1"
+   },
+   {
+    "name": "c4-net-sound/a client plants: the server tells the other clients each sound once and leaves the planter out (it plays its own)",
+    "ok": true,
+    "detail": "initiate 1, keys 7, plant 1; planter left out of 9/9"
+   },
+   {
+    "name": "c4-net-sound/the host plants: it plays each sound once and tells every client",
+    "ok": true,
+    "detail": "initiate 1, keys 7, plant 1; sent initiate 1, keys 7, plant 1"
+   },
+   {
+    "name": "c4-net-sound/the planting client plays its own plant once and sends no sound; the charge and the item stay the server's",
+    "ok": true,
+    "detail": "initiate 1, keys 7, plant 1; plant-key messages 1"
+   },
+   {
+    "name": "c4-net-sound/a cancelled plant plays and sends nothing more, arms nothing and keeps the item",
+    "ok": true,
+    "detail": "sounds 5->5, messages 5->5"
+   },
+   {
+    "name": "c4-net-sound/a new plant after it starts from its arming tone and completes",
+    "ok": true,
+    "detail": "initiate 2, keys 11, plant 1"
+   },
+   {
+    "name": "c4-net-sound/a client that goes silent mid-plant: the plant is cancelled, nothing armed, the item kept",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "c4-net-sound/with no usable audio here the plant still completes, the other clients are still told every sound, and the charge keeps counting down",
+    "ok": true,
+    "detail": "charges after plant 1, messages 9, fuse 30 s: 13.2 s left at 20 s"
+   },
+   {
+    "name": "sushi-inventory/actual-dlls",
+    "ok": true,
+    "detail": "SushiTool.dll SHA256=78C6984F244AB304C5320156FB74580DA0ADCBA006F429CDE2CBD9C502CFCEC8; SushiBase.dll SHA256=55D1A7C388BC9D4E96B6BC534428041700CC49418A854C979040D967C35E8355"
+   },
+   {
+    "name": "sushi-stacking/S01 the condition: with Sushi's two stacking options on, its load-time tweak rewrites the CS gun block's stacking field (1 -> 4)",
+    "ok": true,
+    "detail": "options off 1, field after the tweak 4"
+   },
+   {
+    "name": "sushi-stacking/S01 the CS gun block answers 1 whatever the field says, so the player's inventory, chests and crafting keep guns apart (an instance and a fresh gun alike)",
+    "ok": true,
+    "detail": "block 1/1, ComponentInventory capacity 1/1"
+   },
+   {
+    "name": "sushi-stacking/S01 KNOWN GAP (provider-controlled): Sushi's own storage still takes 4 identical CS guns in one slot",
+    "ok": true,
+    "detail": "SushiSyncInventory.GetSlotCapacity = 4"
+   },
+   {
+    "name": "sushi-stacking/S01 the capability record says so: Sushi loaded, both mappings verified, stacking raised",
+    "ok": true,
+    "detail": "SushiBase 1.0.0.0 cb8b49c29ea6411199aaa047958c3797; SushiTool 1.0.0.0 c202ac91b906480ba0a2de7ecfcce144; personal box -> the player's own inventory: mapped; sync box -> its shared channel: mapped; Sushi's stacking options are on (the gun block's stacking field reads 4): CS guns still stack 1 wherever the block is asked (player, chests, crafting); Sushi's own boxes, shared channels and machines comp"
+   },
+   {
+    "name": "sushi-stacking/S02 a slot holding two guns of one record cannot be used and is left whole: refused as 'stacked', with a sentence that says what to do",
+    "ok": true,
+    "detail": "Stacked; \"这一格叠放了多把枪，无法直接使用；请把它们分到不同的格子（数量和每把枪的状态都会保留）\""
+   },
+   {
+    "name": "sushi-stacking/S02 spread out, the second copy gets its own record on first use; the original keeps its number, rounds and kills; nothing is lost",
+    "ok": true,
+    "detail": "Success; ids 1/2, kills 37/0"
+   },
+   {
+    "name": "sushi-stacking/S02 with no free record number the copies are kept as they are (refused, nothing truncated or overwritten)",
+    "ok": true,
+    "detail": "DuplicateUnresolved"
+   },
+   {
+    "name": "sushi-stacking/S05 Sushi's store-all, sort and take-all move both same-named guns whole: each keeps its own number, rounds and wear, counts are conserved, no number is used",
+    "ok": true,
+    "detail": "store True, sort True, take True; next id 3"
+   },
+   {
+    "name": "sushi-stacking/S05 Sushi's same-items store never merges two guns by their name: they stay two items with their own records",
+    "ok": true,
+    "detail": "ran; box holds 1x1,2x1"
+   },
+   {
+    "name": "sushi-stacking/S05 Sushi's even spread leaves two different guns as they are",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "sushi-stacking/S02 a stack of fresh guns from before is not truncated: sorted into separate slots where there is room, left whole where there is not",
+    "ok": true,
+    "detail": "with room 1,1,1; without 3"
+   },
+   {
+    "name": "sushi-stacking/S02 and that stack is refused as 'stacked' until spread out",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "name": "sushi-stacking/S05 a reload started for one gun does nothing to the gun that replaced it in the hand: no magazine taken, neither record changed",
+    "ok": true,
+    "detail": "valid before True, after False; discard False, insert False; magazines 5, rounds 3/9"
+   }
+  ]
+ },
+ "main-lite-network-checks": [
+  {
+   "name": "ammo-hud/zh-CN/predicted-shots-are-shown-not-stored",
+   "ok": true
+  },
+  {
+   "name": "ammo-hud/en-US/predicted-shots-are-shown-not-stored",
+   "ok": true
+  },
+  {
+   "name": "net-identity/Full and Lite + agents of one release accept each other (same identity, agents on both sides)",
+   "ok": true
+  },
+  {
+   "name": "net-identity/Full and Lite without agents on both sides accept each other",
+   "ok": true
+  },
+  {
+   "name": "net-identity/another release is refused, naming the release",
+   "ok": true
+  },
+  {
+   "name": "net-identity/agents on the server only: refused, asking for the agents package",
+   "ok": true
+  },
+  {
+   "name": "net-identity/agents on the client only: refused, explaining the server has none",
+   "ok": true
+  },
+  {
+   "name": "net-identity/agents of another release: refused",
+   "ok": true
+  },
+  {
+   "name": "net-identity/two different development builds are refused as before (exact module)",
+   "ok": true
+  },
+  {
+   "name": "net-identity/this core carries a release gameplay identity (built by the release pipeline)",
+   "ok": true
+  },
+  {
+   "name": "net-identity/an unstamped assembly is identified by its exact module",
+   "ok": true
+  },
+  {
+   "name": "net-client/single player: a gun without its record is not usable, not shown as a model, not awaiting anything",
+   "ok": true
+  },
+  {
+   "name": "net-client/single player: a fresh gun is unchanged",
+   "ok": true
+  },
+  {
+   "name": "net-client/server: a gun without its record is still refused (records are the server's own)",
+   "ok": true
+  },
+  {
+   "name": "net-client/client, handshake failed: the gun is shown as its model and stays unusable",
+   "ok": true
+  },
+  {
+   "name": "net-client/client: the finish of a pending gun is the default one (nothing is guessed)",
+   "ok": true
+  },
+  {
+   "name": "net-client/client: an id whose model is only in the record cannot be shown either",
+   "ok": true
+  },
+  {
+   "name": "net-client/client: its name says it waits for the server, not that the save is damaged",
+   "ok": true
+  },
+  {
+   "name": "net-client/client, accepted: the same until the server's row arrives",
+   "ok": true
+  },
+  {
+   "name": "net-client/client: once the record exists the gun is usable and no longer awaiting",
+   "ok": true
+  },
+  {
+   "name": "net-client/a client's shown reload goes on when the server gives the fresh gun its record",
+   "ok": true
+  },
+  {
+   "name": "net-client/but not when the slot then holds another gun (an instance replaced by an instance)",
+   "ok": true
+  },
+  {
+   "name": "net-client/nor for another model in that slot",
+   "ok": true
+  },
+  {
+   "name": "net-client/a client without an accepted handshake sends no game message",
+   "ok": true
+  },
+  {
+   "name": "net-client/a blocked client's knife swing and throw report that nothing was sent",
+   "ok": true
+  },
+  {
+   "name": "net-client/an accepted client's knife swing and throw are sent",
+   "ok": true
+  },
+  {
+   "name": "net-client/the blocked message is a sentence for the player",
+   "ok": true
+  },
+  {
+   "name": "net-client/an action survives the wire",
+   "ok": true
+  },
+  {
+   "name": "net-client/an out-of-range action is clamped on read",
+   "ok": true
+  },
+  {
+   "name": "net-client/a throw phase survives the wire",
+   "ok": true
+  },
+  {
+   "name": "net-client/a throw of something that is no throwable is not shown",
+   "ok": true
+  },
+  {
+   "name": "net-client/a plant phase survives the wire",
+   "ok": true
+  },
+  {
+   "name": "net-client/a truncated message is refused",
+   "ok": true
+  },
+  {
+   "name": "net-client/the owner sends an action once, when it changes",
+   "ok": true
+  },
+  {
+   "name": "net-client/a new action is sent",
+   "ok": true
+  },
+  {
+   "name": "net-client/a blocked client sends no presentation",
+   "ok": true
+  },
+  {
+   "name": "net-client/the host's own action is broadcast to the accepted clients",
+   "ok": true
+  },
+  {
+   "name": "net-client/a host without clients sends nothing",
+   "ok": true
+  },
+  {
+   "name": "net-client/a throw phase is sent while it runs and once when it ends",
+   "ok": true
+  },
+  {
+   "name": "net-client/an observer keeps the other player's action",
+   "ok": true
+  },
+  {
+   "name": "net-client/third-person poses read that action for the observed player",
+   "ok": true
+  },
+  {
+   "name": "net-client/a message about the player this process owns never replaces its own action",
+   "ok": true
+  },
+  {
+   "name": "net-client/an observer shows the other player's throw and plant phases",
+   "ok": true
+  },
+  {
+   "name": "net-client/a phase that is no longer refreshed is dropped",
+   "ok": true
+  },
+  {
+   "name": "net-client/single player: no session, nothing is read from the network state",
+   "ok": true
+  },
+  {
+   "name": "net-client/the server keeps a client's action for its own view and relays it",
+   "ok": true
+  },
+  {
+   "name": "net-client/the relay leaves out the client the action came from",
+   "ok": true
+  },
+  {
+   "name": "net-client/a malformed presentation is dropped, not relayed",
+   "ok": true
+  },
+  {
+   "name": "net-client/a client cannot flood the relay",
+   "ok": true
+  }
+ ],
+ "vpsOnUsersActualPlatform": {
+  "about": "the packaged mpc3 Lite core and adapter (pulled from the candidate package) run on the VPS against the user's ACTUAL Windows 1.9.3.2 platform DLLs (Survivalcraft 7856ec63..., Multiplayer aa6136c5..., CompatNet b0330dd8...)",
+  "core": "ca054737cedab0b333ebea2cc338da50b110d43f3f0d89a56ba2b25bb843284d",
+  "adapter": "1c67d2c45ce503c6529aea0ab33eb5789e445d2f90fdc3eba30972c54aea3400",
+  "platform": {
+   "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+   "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+  },
+  "results": {
+   "netstate": {
+    "failed": 0,
+    "total": 83
+   },
+   "netstate-targets": {
+    "failed": 0,
+    "total": 9
+   },
+   "netloop-nocompat": {
+    "failed": 0,
+    "total": 28
+   },
+   "netloop-compat": {
+    "failed": 0,
+    "total": 28
+   }
+  }
+ }
+}

@@ -15,7 +15,10 @@ public sealed class AppearanceModLoader : ModLoader {
     public override void __ModInitialize(){
         ModsManager.RegisterHook("OnPlayerModelWidgetMeasureOverride",this,100);
         ModsManager.RegisterHook("OnModelCalculateBones",this,-100);
+        ModsManager.RegisterHook("OnProjectDisposed",this);
+        ScNetAppearance.Register();
     }
+    public override void OnProjectDisposed()=>ScNetAppearance.Clear();
     public override void OnModelCalculateBones(ComponentModel model,Camera camera,out bool skip){
         skip=false;CsNeoBoneBuffer.Ensure(model);
     }

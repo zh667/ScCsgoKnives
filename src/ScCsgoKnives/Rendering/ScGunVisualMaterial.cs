@@ -20,8 +20,7 @@ public static class ScGunVisualMaterial {
         var texture = Resolve(asset, skin, Try, out material);
         if (skin != 0) {
             string wanted = ScGunSkinCatalog.Material(asset, skin);
-            if (texture is null || material != wanted) KnifeLog.Warning($"gun skin texture unavailable: {asset} paint {skin}, requested {wanted}, resolved {material}");
-            else KnifeLog.Trace($"gun skin material loaded: {asset} paint {skin} -> {material}");
+            if (texture is null || material != wanted) KnifeDiagnostics.WarnOnce($"skin-{asset}-{skin}", $"gun skin texture unavailable: {asset} paint {skin}, requested {wanted}, resolved {material}");
         }
         if (texture is not null) s_cache[(asset, skin)] = (texture, material);
         return texture;

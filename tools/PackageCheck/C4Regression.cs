@@ -13,6 +13,9 @@ static class C4Regression {
         public override TerrainRaycastResult? Raycast(Vector3 start, Vector3 end, bool interaction, bool air, Func<int,float,bool> action) =>
             new TerrainRaycastResult { Ray=new Ray3(start,-Vector3.UnitY),Distance=.25f,Value=1,CellFace=new CellFace(0,0,0,4) };
     }
+    // Collision shapes of a half slab and of a stair step (lower half full, upper half on the +Z side).
+    sealed class Slab : DirtBlock { public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain t,int value)=>[new BoundingBox(Vector3.Zero,new Vector3(1,.5f,1))]; }
+    sealed class Step : DirtBlock { public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain t,int value)=>[new BoundingBox(Vector3.Zero,new Vector3(1,.5f,1)),new BoundingBox(new Vector3(0,.5f,.5f),Vector3.One)]; }
     sealed class AudioProbe : SubsystemAudio {
         public readonly List<string> Sounds=[];
         public readonly List<float> BeepPitches=[];
@@ -207,6 +210,103 @@ static class C4Regression {
                     system.Dispose();return true;
                 } finally { window.SetValue(null,oldWindow);ScreensManager.CurrentScreen=oldScreen;ScreensManager.RootWidget=oldRoot;ScreensManager.m_animationData=oldAnimation;LabelWidget.BitmapFont=oldFont; }
             });
+            // r2-c4-completion-20260929: one gameplay clock for the plant. Frame by frame, the snapshot, the first-person clip
+            // time, the prop in the hand and the charge on the ground must agree, however fast real time runs meanwhile
+            // (a paused or slow frame used to let the real-time clip run ahead of the 3.2 s commit).
+            // current-direction-20260929: "pause" freezes the game clock for 1.5 s of real time in the middle of the plant (the
+            // game paused: updates with dt 0, real time running on).
+            foreach(var (scenario,fps,realRate) in new[]{("survival",30d,1d),("survival",60d,1d),("survival",120d,1d),("survival",8d,1d),("survival",60d,.25d),("survival",60d,3d),("creative",60d,1d),("death",60d,1d),("pause",60d,1d),("pause",30d,1d)})
+            Test($"plant-one-clock/{scenario}/{fps}fps/real-x{realRate}",()=>{
+                var window=typeof(Window).GetField("m_state",BindingFlags.Static|BindingFlags.NonPublic);
+                var oldWindow=window.GetValue(null);var oldScreen=ScreensManager.CurrentScreen;var oldRoot=ScreensManager.RootWidget;var oldAnimation=ScreensManager.m_animationData;var oldFont=LabelWidget.m_bitmapFont;
+                var clock=mod.GetType("Game.KnifeClock");var vf=clock.GetField("Virtual");var tf=clock.GetField("VirtualNow");var oldV=vf.GetValue(null);var oldT=tf.GetValue(null);
+                T Blank<T>()=>(T)RuntimeHelpers.GetUninitializedObject(typeof(T));
+                var log=new List<string>();void Fail(string why)=>throw new Exception(why+" | "+string.Join(" | ",log.TakeLast(12)));const double ScPlant=3.2;
+                try {
+                    vf.SetValue(null,true);tf.SetValue(null,500d);
+                    window.SetValue(null,Enum.Parse(window.FieldType,"Active"));ScreensManager.CurrentScreen=null;ScreensManager.m_animationData=null;ScreensManager.RootWidget=new CanvasWidget();
+                    LabelWidget.BitmapFont=Blank<BitmapFont>();
+                    foreach(var name in new[]{"ScKnifeBlock","ScGunBlock","ScGrenadeBlock"})BlocksManager.BlockTypeToIndex[mod.GetType("Game."+name)]=710+Array.IndexOf(new[]{"ScKnifeBlock","ScGunBlock","ScGrenadeBlock"},name);
+                    var project=new Project();var time=new SubsystemTime();var audio=new AudioProbe();var players=new SubsystemPlayers();
+                    var world=Blank<WorldSettings>();world.GameMode=scenario=="creative"?GameMode.Creative:GameMode.Survival;var info=Blank<SubsystemGameInfo>();info.WorldSettings=world;
+                    var system=(Subsystem)Activator.CreateInstance(mod.GetType("Game.SubsystemScC4"));
+                    foreach(var s in new Subsystem[]{time,audio,players,info,new FloorTerrain(),new SubsystemBodies(),new SubsystemParticles(),system}) { s.m_project=project;project.m_subsystems.Add(s); }
+                    var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.PlayerData.PlayerIndex=1;
+                    var widget=Blank<GameWidget>();widget.GuiWidget=new CanvasWidget();widget.WidgetsHierarchyInput=new WidgetInput(WidgetInputDevice.Keyboard);player.PlayerData.m_gameWidget=widget;
+                    player.ComponentGui=Blank<ComponentGui>();player.ComponentGui.m_modalPanelContainerWidget=new CanvasWidget();player.ComponentGui.ControlsContainerWidget=new CanvasWidget();
+                    player.ComponentHealth=new ComponentHealth{Health=1};player.ComponentBody=new ComponentBody{StandingOnValue=1,CanCrouch=true};player.ComponentMiner=Blank<ComponentMiner>();
+                    var inv=new ComponentInventory();for(int i=0;i<3;i++)inv.m_slots.Add(new());inv.AddSlotItems(0,value,1);player.ComponentMiner.Inventory=inv;player.ComponentMiner.ComponentPlayer=player;
+                    var entity=Blank<Entity>();player.m_entity=entity;entity.m_project=project;var model=Blank<ComponentFirstPersonModel>();model.m_componentPlayer=player;entity.m_components=[model];players.m_componentPlayers.Add(player);
+                    var human=Blank<ComponentHumanModel>();human.m_entity=entity;human.m_componentMiner=player.ComponentMiner;human.m_componentPlayer=player;
+                    system.Load(new ValuesDictionary());
+                    var phaseOf=system.GetType().GetMethod("PlantPhase");var presented=mod.GetType("Game.ScThirdPerson").GetMethod("PresentedValue");
+                    int Charges(){var saved=new ValuesDictionary();system.Save(saved);return saved.GetValue<ValuesDictionary>("Charges").Count;}
+                    system.GetType().GetMethod("SetPlantButton").Invoke(system,[player,true]);
+                    double commit=-1;int frames=(int)Math.Ceiling(4.3*fps);int pauseAt=(int)(1.5*fps),pauseFrames=scenario=="pause"?(int)(1.5*fps):0;
+                    for(int i=0;i<=frames+pauseFrames;i++){
+                        bool paused=i>pauseAt&&i<=pauseAt+pauseFrames;
+                        double t=(i-Math.Clamp(i-pauseAt,0,pauseFrames))/fps;time.m_gameTime=t;tf.SetValue(null,500d+i/fps*realRate);
+                        if(scenario=="death"&&t>=2)player.ComponentHealth.Health=0;
+                        ((IUpdateable)system).Update(paused?0f:(float)(1/fps));
+                        int held=(int)system.GetType().GetMethod("ViewmodelValue").Invoke(system,[player,player.ComponentMiner.ActiveBlockValue]);
+                        var pose=Call("KnifeAnimationController","Update",model,held);
+                        var phase=phaseOf.Invoke(system,[player]);bool active=(bool)phase.GetType().GetProperty("Active").GetValue(phase);
+                        bool placed=active&&(bool)phase.GetType().GetProperty("Placed").GetValue(phase);float seconds=active?(float)phase.GetType().GetProperty("Seconds").GetValue(phase):-1;
+                        bool hidden=(bool)Call("KnifeAnimationController","HeldPropHidden",model);
+                        object[] args=[human,null];int third=(int)presented.Invoke(null,args);
+                        string clip=pose is null?null:(string)pose.GetType().GetProperty("ClipAlias").GetValue(pose);float clipTime=pose is null?-1:(float)pose.GetType().GetProperty("RequestedTime").GetValue(pose);
+                        int charges=Charges();
+                        log.Add($"f{i} t={t:0.000} phase={(active?(placed?"placed":"operating")+$" {seconds:0.000}":"none")} clip={clip}@{clipTime:0.000} hidden={hidden} slot={inv.GetSlotCount(0)} third={(third==value?"c4":third.ToString())} charges={charges} crouch={player.ComponentBody.TargetCrouchFactor}");
+                        if(scenario=="death"){
+                            if(t>=2&&(active||charges!=0||inv.GetSlotCount(0)!=1||player.ComponentBody.TargetCrouchFactor!=0))Fail("a plant continued after death");
+                            continue;
+                        }
+                        if(active&&Math.Abs(seconds-t)>1e-4f)Fail("the plant phase is not the gameplay clock");
+                        if(active&&clip=="plant"&&Math.Abs(clipTime-seconds)>1e-3f)Fail($"first-person clip at {clipTime:0.000} s while the plant is at {seconds:0.000} s");
+                        if(t<ScPlant&&(charges!=0||placed||hidden))Fail("placed before 3.2 s");
+                        if(t>=ScPlant&&commit<0){commit=t;if(charges!=1||!placed||!hidden)Fail("the commit frame does not agree: charge, phase and hidden prop");}
+                        if(commit>=0&&t<4.0&&(!placed||!hidden||third!=value||charges!=1))Fail("during the recovery the hand must be empty and the C4 still presented, with exactly one charge");
+                        if(t>=4.0+1/fps&&active)Fail("the plant did not end at 4 s");
+                    }
+                    if(scenario=="death")return true;
+                    if(commit<0||Charges()!=1)Fail("no charge committed");
+                    if(inv.GetSlotCount(0)!=(scenario=="creative"?1:0))Fail("wrong stack after the plant");
+                    if((bool)Call("KnifeAnimationController","HeldPropHidden",model))Fail("the prop stays hidden after the action ended");
+                    if(player.ComponentBody.TargetCrouchFactor!=0)Fail("crouch not restored");
+                    system.Dispose();return true;
+                } finally { window.SetValue(null,oldWindow);ScreensManager.CurrentScreen=oldScreen;ScreensManager.RootWidget=oldRoot;ScreensManager.m_animationData=oldAnimation;LabelWidget.BitmapFont=oldFont;vf.SetValue(null,oldV);tf.SetValue(null,oldT); }
+            });
+            // current-direction-20260929: the plant floor and the charge's resting height on real terrain cells and the engine's
+            // own ray: ground, a snow layer (walked through, the charge lifted onto it), a half slab, both levels of a stair and
+            // a ledge (the centre over a drop: no floor, no floating charge).
+            foreach(var (surface,feet,atZ) in new[]{("ground",61f,.5f),("snow",61f,.5f),("half-slab",60.5f,.5f),("stairs-low",60.5f,.25f),("stairs-high",61f,.75f),("ledge",61f,.5f)})Test("plant-floor-real-terrain/"+surface,()=>{
+                T Blank<T>()=>(T)RuntimeHelpers.GetUninitializedObject(typeof(T));
+                var saved=(BlocksManager.Blocks[0],BlocksManager.Blocks[2],BlocksManager.Blocks[61],BlocksManager.Blocks[740],BlocksManager.Blocks[741]);
+                try{
+                    BlocksManager.Blocks[0]=new AirBlock{BlockIndex=0,IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};BlocksManager.Blocks[61]=new SnowBlock{BlockIndex=61,IsCollidable=false};
+                    BlocksManager.Blocks[740]=new Slab{BlockIndex=740,IsCollidable=true};BlocksManager.Blocks[741]=new Step{BlockIndex=741,IsCollidable=true};
+                    var project=new Project();var time=new SubsystemTime();var info=Blank<SubsystemGameInfo>();var world=Blank<WorldSettings>();world.GameMode=GameMode.Survival;info.WorldSettings=world;
+                    var terrain=new SubsystemTerrain{Terrain=new Terrain()};terrain.Terrain.AllocateChunk(0,0).State=TerrainChunkState.Valid;
+                    var system=(Subsystem)Activator.CreateInstance(mod.GetType("Game.SubsystemScC4"));
+                    foreach(var sub in new Subsystem[]{time,new AudioProbe(),new SubsystemPlayers(),info,terrain,new SubsystemBodies(),new SubsystemParticles(),system}){sub.m_project=project;project.m_subsystems.Add(sub);}
+                    system.Load(new ValuesDictionary());
+                    var t=terrain.Terrain;
+                    for(int x=0;x<16;x++)for(int z=0;z<16;z++)t.SetCellValueFast(x,59,z,2);
+                    if(surface is "ground" or "snow" or "stairs-high")t.SetCellValueFast(8,60,8,2);
+                    if(surface=="snow")t.SetCellValueFast(8,61,8,61);
+                    if(surface=="half-slab")t.SetCellValueFast(8,60,8,740);
+                    if(surface is "stairs-low" or "stairs-high")t.SetCellValueFast(8,60,8,741);
+                    if(surface=="ledge"){for(int y=55;y<60;y++)t.SetCellValueFast(8,y,8,0);t.SetCellValueFast(9,60,8,2);}
+                    var player=Blank<ComponentPlayer>();player.ComponentBody=new ComponentBody{Position=new Vector3(8.5f,feet,8+atZ)};
+                    object[] args=[player,null];bool floor=(bool)system.GetType().GetMethod("Floor",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(system,args);var at=(Vector3)args[1];
+                    if(surface=="ledge")return !floor;
+                    if(!floor||Math.Abs(at.Y-feet)>1e-3f)throw new Exception($"{surface}: floor {floor} at {at.Y} instead of {feet}");
+                    var visible=(Vector3)system.GetType().GetMethod("VisiblePlantPosition").Invoke(system,[at]);
+                    float lift=surface=="snow"?BlocksManager.Blocks[61].GetCustomCollisionBoxes(terrain,61).Max(b=>b.Max.Y):0;
+                    if(Math.Abs(visible.Y-(feet+lift+.01f))>1e-3f||lift>.25f)throw new Exception($"{surface}: charge rests at {visible.Y} instead of {feet+lift+.01f} (snow layer {lift})");
+                    return true;
+                }finally{(BlocksManager.Blocks[0],BlocksManager.Blocks[2],BlocksManager.Blocks[61],BlocksManager.Blocks[740],BlocksManager.Blocks[741])=saved;}
+            });
             foreach(string mode in new[]{"success","creative","cancel","moved","capacity","spawn-false","spawn-throws"}) Test("atomic-plant/"+mode,()=>{
                 var inv=new ComponentInventory();for(int i=0;i<3;i++)inv.m_slots.Add(new());inv.AddSlotItems(0,value,1);
                 var tx=Activator.CreateInstance(mod.GetType("Game.ScThrowTransaction"),inv);
@@ -217,6 +317,23 @@ static class C4Regression {
                 })]);
                 bool result=false;try{result=Commit();}catch(TargetInvocationException){if(mode!="spawn-throws")throw;}
                 return result==(mode is "success" or "creative") && !Commit() && spawns==(result?1:0) && inv.GetSlotCount(0)==(mode=="success"?0:1);
+            });
+            // r2-c4-completion-20260929: CS2's plant leaves the bomb ~0.17 m up; the committed charge starts where the held
+            // bomb was last drawn and settles onto its own pose (presentation only).
+            Test("handoff-settles-from-the-held-bomb",()=>{
+                var h=mod.GetType("Game.ScC4Handoff");var holding=h.GetMethod("Holding");var settled=h.GetMethod("Settled");float settle=(float)h.GetField("SettleSeconds").GetRawConstantValue();
+                var planted=Matrix.CreateRotationY(.7f)*Matrix.CreateTranslation(100,64,100);
+                Matrix At(float age,double now)=>(Matrix)settled.Invoke(null,[planted,age,now]);
+                if(At(0,50)!=planted||At(.05f,50.05)!=planted)throw new Exception("a charge with no recorded hold did not appear at its spot");
+                var held=new Vector3(100.3f,64.2f,100.1f);holding.Invoke(null,[new Vector3(100,64,100),held,49.95]);
+                var start=At(0,50);var mid=At(settle/2,50+settle/2);var end=At(settle,50+settle);
+                float d0=Vector3.Distance(start.Translation,planted.Translation),d1=Vector3.Distance(mid.Translation,planted.Translation);
+                bool rotationKept=Vector3.Distance(start.Right,planted.Right)<1e-5f&&Vector3.Distance(start.Up,planted.Up)<1e-5f;
+                if(!(d0>.1f&&d1<d0&&d1>0&&end==planted&&rotationKept))throw new Exception($"settle from the held bomb: start {d0:0.000} m, middle {d1:0.000} m, end {(end==planted?"on":"off")} the planted pose, rotation kept {rotationKept}");
+                holding.Invoke(null,[new Vector3(300,64,300),held,99.95]);
+                if(At(0,52)!=planted)throw new Exception("a hold recorded 2 s before the plant was used");
+                if((Matrix)settled.Invoke(null,[Matrix.CreateTranslation(103,64,100),0f,50.0])!=Matrix.CreateTranslation(103,64,100))throw new Exception("a hold 3 m away was used");
+                return true;
             });
             Test("old-plant-cancel-does-not-cancel-new-action",()=>{
                 T Blank<T>()=>(T)RuntimeHelpers.GetUninitializedObject(typeof(T));

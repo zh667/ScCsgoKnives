@@ -1,0 +1,57 @@
+{
+ "task": "round12-aim-sign-agents-hint-settings-20261001",
+ "date": "2026-10-01T22:23:27",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r12cCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r12c build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r12c\\full",
+    ".tmp\\completion-140-20260929\\r12c\\lite",
+    ".tmp\\completion-140-20260929\\r12c\\tools",
+    ".tmp\\completion-140-20260929\\r12c\\tree",
+    ".tmp\\completion-140-20260929\\r12c\\assets-full",
+    ".tmp\\completion-140-20260929\\r12c\\resources",
+    ".tmp\\completion-140-20260929\\r12c\\net",
+    ".tmp\\completion-140-20260929\\r12c\\motion",
+    ".tmp\\completion-140-20260929\\r12c\\throw",
+    ".tmp\\completion-140-20260929\\r12c\\ui"
+   ],
+   "bytes": 1893099730,
+   "items": 4245,
+   "missing": []
+  },
+  "totalBytes": 1893099730,
+  "items": 4245
+ },
+ "kept": [
+  "stages r12a, r12b, r12c: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/cs2-graphs (decompiled CS2 graphs, small)",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "7d11e59c7884619eaccd0f2d2ce0cb7237549fea62ef9183f323901d26c9d47b",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "05947864b94366266132193e2eb14c070ea1cdd2aabeb64a4574243e32b641a5",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "5eab74d46dabb9e136043702ae00b42605fd1d9c5104cb3c9a3449573d6c1a37",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 128866390016,
+  "freePct": 12.88
+ }
+}

@@ -1,0 +1,111 @@
+{
+ "task": "memory-residency-20261001",
+ "date": "2026-10-01T14:01:54",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r7aCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage m1 (devbuild) build trees": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\m1\\full",
+    ".tmp\\completion-140-20260929\\m1\\lite",
+    ".tmp\\completion-140-20260929\\m1\\tree"
+   ],
+   "bytes": 851560724,
+   "items": 1917,
+   "missing": [
+    ".tmp\\completion-140-20260929\\m1\\tools",
+    ".tmp\\completion-140-20260929\\m1\\assets-full",
+    ".tmp\\completion-140-20260929\\m1\\resources",
+    ".tmp\\completion-140-20260929\\m1\\net",
+    ".tmp\\completion-140-20260929\\m1\\motion",
+    ".tmp\\completion-140-20260929\\m1\\throw",
+    ".tmp\\completion-140-20260929\\m1\\ui",
+    ".tmp\\completion-140-20260929\\m1\\candidate"
+   ]
+  },
+  "stage r7a build trees (delivered; logs, reports, net.json, packages.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r7a\\full",
+    ".tmp\\completion-140-20260929\\r7a\\lite",
+    ".tmp\\completion-140-20260929\\r7a\\tools",
+    ".tmp\\completion-140-20260929\\r7a\\tree",
+    ".tmp\\completion-140-20260929\\r7a\\assets-full",
+    ".tmp\\completion-140-20260929\\r7a\\resources",
+    ".tmp\\completion-140-20260929\\r7a\\net",
+    ".tmp\\completion-140-20260929\\r7a\\motion",
+    ".tmp\\completion-140-20260929\\r7a\\throw",
+    ".tmp\\completion-140-20260929\\r7a\\ui"
+   ],
+   "bytes": 1892589008,
+   "items": 4214,
+   "missing": []
+  },
+  "single-player/MP test packages (dev builds and candidate copies)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\sp-m1-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-m1-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r7a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r7a-lite.scmod"
+   ],
+   "bytes": 1126000364,
+   "items": 4,
+   "missing": []
+  },
+  "Android 1.9.2.2 engine extraction (assemblies from the APK's assembly store; reproducible from the APK)": {
+   "paths": [
+    ".tmp\\dev-temp\\apk-engine-1922"
+   ],
+   "bytes": 13430549,
+   "items": 1630,
+   "missing": []
+  },
+  "memory/residency run PNG captures (preview JPGs, JSON and logs kept)": {
+   "paths": [
+    "24 PNG captures under run/residency-*, run/memory-*"
+   ],
+   "bytes": 26322766,
+   "items": 24,
+   "missing": []
+  },
+  "1.9.3.1 test copy ScreenCapture, live and in the runtime archive (frames already copied into the run folders)": {
+   "paths": [],
+   "bytes": 0,
+   "items": 0,
+   "missing": [
+    ".tmp\\mp-test-runtime\\sp131\\ScreenCapture"
+   ]
+  },
+  "totalBytes": 3909903411,
+  "items": 7789
+ },
+ "kept": [
+  "stages m1/r7a: logs/, *.json reports, builds.json, source-hashes.json (r7a also net.json, packages.json); earlier stages untouched",
+  ".tmp/mp-m0-20260929/results/*.json (memory-*, residency-*, agents-hint-*, camera-fire, probe); run/*: *.jpg, *.json, *.log",
+  ".tmp/mp-m0-20260929/pkg/*.json records; refs/mp; earlier stages' packages untouched",
+  ".tmp/memory-review-20261001/ (Windows review evidence)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "9f1df6c904ebf9e2727c2974eba77ac5a2e0844c11f92fe4c956350fb4b2cd7e",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "a96805ecb6b6ee0d406f8f715bbf2f5a5598d1bfd77e8a55a9efd66ab422b1ce",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "0dea4191c1ee4a5c2ce07a11ac75a8afd24982ae9277caeccd10fa1e45179798",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 123091943424,
+  "freePct": 12.31
+ }
+}

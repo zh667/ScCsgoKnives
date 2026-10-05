@@ -17,6 +17,7 @@ public static class ScTexturePreparation {
         typeof(ContentManager).GetField("Caches",BindingFlags.Static|BindingFlags.NonPublic)?.GetValue(null) as IDictionary<string,List<object>>;
     static readonly string[] suffixes=[".astc",".astcsrgb",".webp",".png",".jpg",".jpeg"];
     public static int PendingCount=>pending.Count;
+    public static long ReservedBytes{get{lock(budgetLock)return reserved;}}
     public static long Started,Ready,Skipped;
     public static double WaitMilliseconds,UploadMilliseconds;
     sealed class Ticket(string key,long bytes){

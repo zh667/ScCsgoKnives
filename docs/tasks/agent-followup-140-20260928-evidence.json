@@ -1,0 +1,122 @@
+{
+  "scope": "Read-only 1.4.0 followup planning; no runtime edits, no gameplay/performance acceptance",
+  "package": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Mods\\[API1.9]CS武器1.4.0-全量包.scmod",
+  "packageSha256": "34f11870f152cae665d363c7f4ff0dcfe9f2041cd9ff88a8c7bc53eb3a22957e",
+  "packageBytes": 524476677,
+  "assets": {
+    "Assets/Animations/ScTactical.json": {
+      "bytes": 1804,
+      "sha256": "76256aad020e43fb2e25d3f75e03c4116becaf5492d2972f1285b36cc88f4b4b"
+    },
+    "Assets/Models/ScCsgoTactical/ct.glb": {
+      "bytes": 4519828,
+      "sha256": "3413f08276be4e319a4cdf83e14007a9c64a1395e7617e0f2dc238c90951f110"
+    },
+    "Assets/Models/ScCsgoTactical/t.glb": {
+      "bytes": 6690252,
+      "sha256": "5bf6c391ecd12e8f5a2c3f4340b49186d278dc4eb8f5a815c07eed3c0c96b1b5"
+    },
+    "Assets/Animations/ScCsgoTactical/ct.scanim": {
+      "bytes": 20210620,
+      "sha256": "12aa671a5ecc5343403e06fb414ac41d920609ea0676b49ea3e16c29965fcdf1"
+    },
+    "Assets/Animations/ScCsgoTactical/t.scanim": {
+      "bytes": 19026497,
+      "sha256": "d98e766337f39d262281c7e0bde11fd6088214dd4f5be72691dc2d1fa6cbe671"
+    },
+    "ScCsgoKnives.dll": {
+      "bytes": 2327552,
+      "sha256": "b1e737921e7ef5c374664208b9596c8d52cb50212ea86a140421cba8b6c26978"
+    },
+    "ScCsgoTactical.dll": {
+      "bytes": 5408256,
+      "sha256": "5bef8ff7098f68cf12f4e30fc05a027c903e298f1f6c971198c593fe3f54d517"
+    },
+    "Integrations/ScCsgoAppearance.bin": {
+      "bytes": 21504,
+      "sha256": "7b5c7cbafb452056bea1fa20dd3695f98139c003342267e32b9c2f2642fe4f6a"
+    }
+  },
+  "packagedGait": [
+    "idle",
+    "walk",
+    "run",
+    "aim",
+    "aimwalk",
+    "shield",
+    "shieldwalk"
+  ],
+  "rawModels": [
+    {
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\cs2-companions-audit-20260920\\export\\agents\\models\\ctm_sas\\ctm_sas.glb",
+      "sha256": "064a9d9f433e76419af7d9c29a30a310c70be8f7c829125ddbde89780797677d",
+      "clipCount": 2062,
+      "airClipCount": 72,
+      "airExamples": [
+        "animation/anims/world/knife/_default_knife/inair_stand_knife",
+        "animation/anims/world/knife/_default_knife/inair_n_knife",
+        "animation/anims/world/knife/_default_knife/inair_e_knife",
+        "animation/anims/world/knife/_default_knife/inair_s_knife",
+        "animation/anims/world/knife/_default_knife/inair_w_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_stand_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_n_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_e_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_s_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_w_knife",
+        "animation/anims/world/knife/_default_knife/jump_stand_knife",
+        "animation/anims/world/knife/_default_knife/jump_n_knife"
+      ]
+    },
+    {
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\cs2-companions-audit-20260920\\export\\agents\\models\\tm_phoenix\\tm_phoenix.glb",
+      "sha256": "abaf23a7a2838101f32708e3fc6687530b4bf808586fcd839b67cfb9c5f5b313",
+      "clipCount": 2062,
+      "airClipCount": 72,
+      "airExamples": [
+        "animation/anims/world/knife/_default_knife/inair_stand_knife",
+        "animation/anims/world/knife/_default_knife/inair_n_knife",
+        "animation/anims/world/knife/_default_knife/inair_e_knife",
+        "animation/anims/world/knife/_default_knife/inair_s_knife",
+        "animation/anims/world/knife/_default_knife/inair_w_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_stand_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_n_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_e_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_s_knife",
+        "animation/anims/world/knife/_default_knife/inair_crouch_w_knife",
+        "animation/anims/world/knife/_default_knife/jump_stand_knife",
+        "animation/anims/world/knife/_default_knife/jump_n_knife"
+      ]
+    }
+  ],
+  "sources": {
+    "src/ScCsgoKnives/World/ScGunSettingsScreen.cs": "fb5359653dbc07a39177799f9509e35b160926bb184117d66f86c2136f32720f",
+    "src/ScCsgoKnives/World/ScUiSettings.cs": "951cda9cecb3d5eb24a5a6eec4e7e52c2a3825ded0aff45b3a78751e9d173c81",
+    "src/ScCsgoKnives/World/ScExtraSettings.cs": "8aa2d47379d5d88616cb7e4064fbeb1dfcedbaf0a0e3405a3a926367366007db",
+    "src/ScCsgoKnives/World/ScGrenadeBallistics.cs": "e5fab15e37b50399cb85eeea98d1acffc69b2a31776f762ac90e4ad2c84dc000",
+    "src/ScCsgoKnives/World/SubsystemScGrenades.cs": "f8ac2f7100eec5e00b62055a0589e83bc7975ef5d6347a239b6e1005b81a4807",
+    "src/ScCsgoTactical/SubsystemTacticalEnemies.cs": "a66292332811181fcb0b8c4bf6778489b87b765e09623f007353ee8357ad7cd0",
+    "src/ScCsgoTactical/ComponentTacticalEnemy.cs": "a8e340fbbe97c242b63c9e63a71f25d49ef453eb43de52a674a3668e7501d5d7",
+    "src/ScCsgoTactical/ComponentTacticalCompanion.cs": "cfce642cca08ba1f226ba2ef95a0144f5a8fe7fbde99fb93d213c17bed9d2e6e",
+    "src/ScCsgoTactical/ComponentTacticalModel.cs": "e2477c5725732330f2d8b6b022f8f074b77bbecdcfd7cf4f2587e9bc32eeccdd",
+    "src/ScCsgoTactical/TacticalDanger.cs": "9b96702e425c66232e851a3850c57486aca4cfa22e798d8191c7f35ef781d3be",
+    "src/ScCsgoTactical/SubsystemTacticalCompanions.cs": "c25d636c8e191766ed5aab6bb1454dc1b0510f246c942cf1da8107172c63c573",
+    "src/ScCsgoAppearance/ComponentCsPlayerAppearance.cs": "6e7e6313e2edb7b4547c984b32edf1711c33bfe3798d30b95a6946e75815d224",
+    "src/ScCsgoVoice/AgentVoice.cs": "b8a96354d7c51128bb9db9a3d3a068864f8f5d458fbacde8acc19d8c9f8d882a",
+    "tools/build_companion_assets.py": "a71cbf35c6288a08bad05497bc5438295f9acf9502a1091dc726d75b68750f33"
+  },
+  "cs2Ui": {
+    "cs2-ui\\panorama\\layout\\hud\\huddamageindicator.xml": "ec269f387a7486f82065f3ba7a3c25381d4ba3cf75e56b00ba67641d314b71b9",
+    "cs2-ui\\panorama\\styles\\hud\\huddamageindicator.css": "92594bca4cc2f006f3301ac883615d910b8ff862d7584796d74196579a0ed144"
+  },
+  "spawn": {
+    "enabledDefault": true,
+    "elapsedDaysThreshold": 30,
+    "settingsUiBound": false,
+    "densityControl": false,
+    "daysControl": false,
+    "acquireRangeSniper": 64,
+    "acquireRangeOthers": 40
+  },
+  "performance": "Static risk audit only; no measured stall",
+  "realGame": false
+}

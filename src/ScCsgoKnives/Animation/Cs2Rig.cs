@@ -234,7 +234,6 @@ public static class Cs2Rig {
             ByAlias = p.Value.Clips.Values.Where(c => !string.IsNullOrEmpty(c.Alias))
                 .GroupBy(c => c.Alias, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal)
         }, StringComparer.Ordinal);
-        KnifeLog.Trace($"[CS_ATTR_0414] clip metadata: {result.Count} assets, {watch.Elapsed.TotalMilliseconds:0.0} ms; no skeletal curves loaded");
         return result;
     });
     // Metadata uses the exact same alias/fallback/event logic as full animation sampling. Its source
@@ -344,7 +343,29 @@ public static class Cs2Rig {
             if (baseClip is not null && baseClip.Duration > 0f)
                 baseTime = time - baseClip.Duration * MathF.Floor(time / baseClip.Duration);
         }
+        return Compose(asset, gun, clip, time, baseClip, baseTime, clip.SourceName, time);
+    }
 
+    /// <summary>
+    /// An additive clip layered over any other clip, each at its own time: the R8's hammer
+    /// being drawn (prepare_shoot, additive in CS2) while the previous shot's recoil is
+    /// still playing. The pose reports the base clip, which is what part visibility and
+    /// the muzzle follow. A layer that is missing or not additive gives the base pose.
+    /// </summary>
+    public static Pose SampleOver(string gun, string baseAlias, float baseTime, bool baseLooping, string layerAlias, float layerTime) {
+        Asset asset = Get(gun);
+        if (asset is null) return null;
+        Clip under = ResolveOrIdle(asset, baseAlias);
+        if (under is null) return null;
+        baseTime = baseLooping && under.Duration > 0f ? baseTime - under.Duration * MathF.Floor(baseTime / under.Duration)
+                                                      : MathUtils.Clamp(baseTime, 0f, Math.Max(0f, under.Duration));
+        Clip layer = Resolve(asset, layerAlias);
+        if (layer?.Additive is null || under.Additive is not null) return Sample(gun, baseAlias, baseTime);
+        layerTime = MathUtils.Clamp(layerTime, 0f, Math.Max(0f, layer.Duration));
+        return Compose(asset, gun, layer, layerTime, under, baseTime, under.SourceName, baseTime);
+    }
+
+    static Pose Compose(Asset asset, string gun, Clip clip, float time, Clip baseClip, float baseTime, string reportedClip, float reportedTime) {
         List<SkeletonBone> skeleton = asset.File.Skeleton;
         Matrix[] absolute = new Matrix[skeleton.Count];
         Matrix[] local = new Matrix[skeleton.Count];
@@ -364,7 +385,7 @@ public static class Cs2Rig {
                 * absolute[binding.BoneIndex]
                 * ReadMatrix(binding.LeftMatrix);
         }
-        return new Pose { Gun = gun, Clip = clip.SourceName, Time = time, Parts = parts, Bones = bones };
+        return new Pose { Gun = gun, Clip = reportedClip, Time = reportedTime, Parts = parts, Bones = bones };
 
         Matrix Calculate(int index) {
             if (done[index]) return absolute[index];
@@ -508,13 +529,6 @@ public static class Cs2Rig {
             Normalization = normalization,
             InverseNormalization = Matrix.Invert(normalization)
         };
-        KnifeLog.Trace(
-            $"[ScCsgoKnives] CS2 rig {gun}: bones={file.Skeleton.Count}, clips=[{string.Join(',', file.Clips.Keys)}], "
-            + (file.MeshParts is { Length: > 0 }
-                ? $"parts=[{string.Join(',', file.MeshParts)}]"
-                : $"skinned={file.Skinned ?? "none"}")
-            + $", units={file.Units}."
-        );
         return asset;
     }
 }

@@ -1,0 +1,213 @@
+{
+  "wonderful": {
+    "path": "D:\\下载\\[API1.9.3]美好时代V1.9.3a.scmod",
+    "sha256": "e9dc7624a8c8e129e79730974b74fa0a2314dcb8231c468721054b843ff01a20",
+    "metadata": {
+      "Name": "美好时代(Wonderful Era)",
+      "Version": "1.9.3",
+      "ApiVersion": "1.9.3",
+      "Description": "这是一个集休闲、冒险的扩展模组。模组集合了许多休闲玩法，包括钓鱼、养殖、农业、现代载具等养生项目；同时也涵盖了许多冒险玩法：你能够寻找各类遗址，会挑战眼睛蛇、超雄雪人、海盗团伙、沙漠法老等强劲生物，大大增加你的生存挑战。快来运用你的聪明才智在此创建美好的时代吧！",
+      "ScVersion": "2.4.0.0",
+      "Link": "https://space.bilibili.com/430839642/lists/6082971",
+      "Author": "Tp16b",
+      "PackageName": "Tp.WonderfulEra",
+      "LoadOrder": 10000,
+      "Dependencies": {
+        "Tp.Accessory": "[1.2.1,)",
+        "Tp.BuildingGeneration": "[1.2.0,)"
+      }
+    }
+  },
+  "packages": [
+    {
+      "role": "全量",
+      "sha256": "0e621ed2c7ccab9ec178b4f4a3b9a516a77b678cd404b3ff28fdf1dfce4e38d2",
+      "bytes": 526658569
+    },
+    {
+      "role": "轻量",
+      "sha256": "31baa9dbd5c51e05a7147441aa7327d83d76fba05cb2ce3544906dd9cc8242a2",
+      "bytes": 35541450
+    },
+    {
+      "role": "探员",
+      "sha256": "2a397b49b32b29d01566398a2c43e3ce9ad05a569bd9396441843847bbeb0208",
+      "bytes": 38457503
+    }
+  ],
+  "reports": [
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m1-mp17-full.json",
+      "sha256": "dbcd82cb48f60e344fef18ff02d5983c5426656e0f446fa400cd7a308bcdfc08",
+      "checkCount": 28,
+      "failed": 0,
+      "package": {
+        "dev-mp17-full.scmod": "1b7d5bcb474c2f849ffdb3bc709f1a08ca77fd0b12c6837a6aaeb701fe07320c"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m1-mp17-lite.json",
+      "sha256": "9478135502212f1242c6841506b2899f745488eda271330c1c36365c7cef48b9",
+      "checkCount": 28,
+      "failed": 0,
+      "package": {
+        "dev-mp17-lite.scmod": "adfe1018fea3ed0b125efdc6ca7a258868080fa2e34b51c9333c6717616d85ed"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m2-mp17-lite.json",
+      "sha256": "4307d1512bdef621f5a7e5aac7c435e34c89f6fff27f03b661084fb95c51e829",
+      "checkCount": 31,
+      "failed": 0,
+      "package": {
+        "dev-mp17-lite.scmod": "adfe1018fea3ed0b125efdc6ca7a258868080fa2e34b51c9333c6717616d85ed"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m2b-mp17-lite.json",
+      "sha256": "57dc31e9079a2376a03f2c20e626a752662eab005bbb548c7d5be3db74a1773e",
+      "checkCount": 45,
+      "failed": 0,
+      "package": {
+        "dev-mp17-lite.scmod": "adfe1018fea3ed0b125efdc6ca7a258868080fa2e34b51c9333c6717616d85ed"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m3-mp17-lite.json",
+      "sha256": "245ea8a725b1d9e3fdaedc23e863774422b6997133483e506a6d8b0d057ddc95",
+      "checkCount": 17,
+      "failed": 0,
+      "package": {
+        "dev-mp17-lite.scmod": "adfe1018fea3ed0b125efdc6ca7a258868080fa2e34b51c9333c6717616d85ed"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m3t-mp17-full.json",
+      "sha256": "242192df9ac492eaacfa5e6aed527e20e5051ee409b6fbb55471a42d04ee28b2",
+      "checkCount": 48,
+      "failed": 0,
+      "package": {
+        "dev-mp17-full.scmod": "1b7d5bcb474c2f849ffdb3bc709f1a08ca77fd0b12c6837a6aaeb701fe07320c"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m4-mp17-full.json",
+      "sha256": "1284128849270210d4da4e7743ab77d3c6ee7d8fbac72590ad5be09b5364f55c",
+      "checkCount": 25,
+      "failed": 0,
+      "package": {
+        "dev-mp17-full.scmod": "1b7d5bcb474c2f849ffdb3bc709f1a08ca77fd0b12c6837a6aaeb701fe07320c",
+        "dev-mp17-lite.scmod": "adfe1018fea3ed0b125efdc6ca7a258868080fa2e34b51c9333c6717616d85ed"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\mp-m0-20260929\\results\\m4-mp17-lite.json",
+      "sha256": "f203bc31854c5c170ab237ba4cfe814fc380cbdc4cdef4794a887f1bcfd7df2f",
+      "checkCount": 25,
+      "failed": 0,
+      "package": {
+        "dev-mp17-lite.scmod": "adfe1018fea3ed0b125efdc6ca7a258868080fa2e34b51c9333c6717616d85ed",
+        "dev-mp17-full.scmod": "1b7d5bcb474c2f849ffdb3bc709f1a08ca77fd0b12c6837a6aaeb701fe07320c"
+      },
+      "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504"
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\main-full.json",
+      "sha256": "0a3403c507b075675d6de7095c2bcca12aa254e0bfbb72be842cfec1d86f8f74",
+      "summary": {
+        "failed": 0
+      }
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\main-lite.json",
+      "sha256": "d1059518ae0ee5c2f3adf7a36fda3bf9c784cfd309726264444f8088db151a31",
+      "summary": {
+        "failed": 0
+      }
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\vf-full.json",
+      "sha256": "e1a0ab7f5f8c75dfb4abed86b7ad7eb5388bd5b21a95db19bb9f48c9f8177de1",
+      "summary": {
+        "failed": 0
+      }
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\vf-lite.json",
+      "sha256": "4b46765ee425fe1ba5ae7ff15214c0e132df94bd935a94b254d4e536b0645981",
+      "summary": {
+        "failed": 0
+      }
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\ai-full.json",
+      "sha256": "6d9c3f56854b8a80e1e48c225497de4fd6ead85bb070cbef53a19620cca5d110",
+      "summary": {
+        "failed": 0
+      }
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\ai-lite.json",
+      "sha256": "09d88bfd010b9c4102785c4c3c054fdae2d9ec96ffbc70827dc140e6e4fdda3f",
+      "summary": {
+        "failed": 0
+      }
+    },
+    {
+      "file": ".tmp\\completion-140-20260929\\c17mp\\tactical-full-suite.json",
+      "sha256": "291934905e3a11c59de23a4d253102c0eb37b26a25f011a66adf13ff973f6dcb",
+      "summary": {
+        "failed": 4
+      }
+    }
+  ],
+  "installedFull": {
+    "sha256": "0e621ed2c7ccab9ec178b4f4a3b9a516a77b678cd404b3ff28fdf1dfce4e38d2",
+    "path": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Mods\\[API1.9]CS武器1.4.0-全量包.scmod"
+  },
+  "media": {
+    "path": "D:\\文档\\Tencent Files\\3257696116\\nt_qq\\nt_data\\Video\\2026-09\\Ori\\11367441f0e596ce25048916629f8743.mp4",
+    "sha256": "4c64509f0f563a074eab58ac172a01c74c0efd9328e6f3ce991d3a640d274673",
+    "duration": 12.64,
+    "frames": 361
+  },
+  "sourceHashes": {
+    "src/ScCsgoKnives/World/ScPresentationSound.cs": "5e3a68e59dedf5228531983c017d7365bb4d4dabacab3eb3a960f620da8fd577",
+    "src/ScCsgoKnives/Animation/KnifeAnimationController.cs": "ce30e59c701cb0eac29928216a095dd4673002f4e36784cfd0d102cba06f8038",
+    "src/ScCsgoKnives/World/ScGrenadeVisuals.cs": "cf642027af40e32f460b9608529e8e7d68fe53ac6341909ef2c6a2c6a1c4529b",
+    "src/ScCsgoKnives/World/SubsystemScGrenades.cs": "10d9a7b8438bc875bbc16d4c599d9112f8cb8851868c6496999042393518d2ed",
+    "src/ScCsgoKnives/World/ScSmokeVolume.cs": "72441df82a35b7d21b3aa9ffa6d63959ca8c8e1fc0890c8c5a0d6dc2209af34a",
+    "src/ScCsgoKnives/World/ScSurvivalBalance.cs": "c239eee3c527375fa2cb801715097da90e2ac73f25a0dabc49057b5539d84560",
+    "src/ScCsgoKnives/World/ScProjectileDefense.cs": "278c67ca1a697d16cb8bc72781aa62b15caa3dd26308d09e180b705604b679c8",
+    "src/ScCsgoKnives/World/ScGunHitTest.cs": "090d6bf5b1f539ddeb04c5652c04f60f358fa8af6c1e98280824f090f3356597"
+  },
+  "sameAsC15Source": {
+    "src/ScCsgoKnives/World/ScPresentationSound.cs": true,
+    "src/ScCsgoKnives/Animation/KnifeAnimationController.cs": true,
+    "src/ScCsgoKnives/World/ScGrenadeVisuals.cs": true,
+    "src/ScCsgoKnives/World/SubsystemScGrenades.cs": false,
+    "src/ScCsgoKnives/World/ScSmokeVolume.cs": true,
+    "src/ScCsgoKnives/World/ScSurvivalBalance.cs": true,
+    "src/ScCsgoKnives/World/ScProjectileDefense.cs": true,
+    "src/ScCsgoKnives/World/ScGunHitTest.cs": false
+  },
+  "c17CurrentSourceDrift": [],
+  "drawAudioFiles": [
+    "Assets/Audio/ScCsgoKnives/butterfly_draw.ogg",
+    "Assets/Audio/ScCsgoKnives/knife_deploy.ogg"
+  ],
+  "scope": "Read-only review; no product changes or gameplay runtime reproduction",
+  "observations": {
+    "smoke": "Camera-facing axes and world density mismatch confirmed statically; exact visual exploit not yet reproduced",
+    "projectile": "Delivered c15 BulletAttack supplies null Projectile; new creature mod/version not available locally",
+    "audio": "Unowned non-looping sound per deploy; no cancellation; 0.614667s ordinary / 0.704s butterfly; actual scrolling audio not recorded",
+    "mp": "247/247 report checks; controlled loopback with documented platform test workarounds; no production network layer"
+  }
+}

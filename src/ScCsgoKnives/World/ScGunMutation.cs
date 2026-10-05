@@ -1,7 +1,7 @@
 using System.Threading;
 namespace Game;
 
-public enum ScGunResult { Success, Foreign, MissingRecord, StateChanged, InsufficientMaterials, RegistryFull, InventoryRejected, Invalid, DuplicateUnresolved, Busy, RecoveryPending, ModelMismatch }
+public enum ScGunResult { Success, Foreign, MissingRecord, StateChanged, InsufficientMaterials, RegistryFull, InventoryRejected, Invalid, DuplicateUnresolved, Busy, RecoveryPending, ModelMismatch, RemoteClient, Stacked }
 
 /// <summary>World-bound gun transaction with measured receipts, inverse rollback and durable compensation.</summary>
 public sealed class ScGunMutation {
@@ -41,7 +41,14 @@ public sealed class ScGunMutation {
     public static ScGunMutation Prepare(IInventory inventory, int slot, string holder, out ScGunResult why) {
         var registry = ScGunRegistry.Current;
         why = ScGunResult.Invalid;
-        if (registry is null || ScInventoryIdentity.Inventory(inventory) is null || slot < 0 || slot >= inventory.SlotsCount || !ScInventoryTransaction.IsWeaponSlot(inventory, slot)) return null;
+        if (registry is null || ScInventoryIdentity.Inventory(inventory) is null || slot < 0 || slot >= inventory.SlotsCount) return null;
+        if (!ScInventoryTransaction.IsWeaponSlot(inventory, slot)) {
+            // Several guns in one slot (another mod raised the stacking of its own containers, or copies were dropped onto each
+            // other): one record cannot stand for a stack. Nothing is taken, truncated or guessed; the player is told to
+            // spread them out, after which each copy is an ordinary gun (a real copy gets its own record on first use).
+            if (ScInventoryTransaction.IsGunStack(inventory, slot)) why = ScGunResult.Stacked;
+            return null;
+        }
         int value = inventory.GetSlotValue(slot), data = Terrain.ExtractData(value);
         if (ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value)) {
             if (registry.Disabled) { why = ScGunResult.Foreign; return null; }
@@ -90,6 +97,8 @@ public sealed class ScGunMutation {
         && (m_registry.RecoveryOwner is null || Holder == ScGunHolders.Key(Inventory, Slot));
 
     public ScGunResult Commit(Action<ScGunRecord> change, int ammo = 0, int cost = 0, IReadOnlyDictionary<int, int> materials = null) {
+        // A remote multiplayer client's table is the server's mirror: every change is the server's to make.
+        if (ScNet.IsRemoteClient) return Fail(ScGunResult.RemoteClient, "remote multiplayer client: the server owns gun records");
         if (!TryEnter()) return Fail(ScGunResult.Busy, "another gun commit/recovery is in progress");
         var journal = new ScGunInventoryJournal(Inventory);
         int published = -1;
@@ -169,6 +178,10 @@ public sealed class ScGunMutation {
             Expected = replacement;
             AfterRecordWrite?.Invoke();
             if (!StorageUnchanged()) throw new InvalidOperationException("Inventory storage changed during commit");
+            // Committed. Multiplayer host: the slot this transaction rewrote is told to the clients after its record
+            // (ScNetSlots, through Changed), and an input still naming the former value of that slot stays valid for the
+            // player holding it (ScNetGuns). Neither can undo the transaction.
+            if (needsId) ScNetGuns.SlotRewritten(Inventory, Slot, originalExpected, replacement);
             ScInventoryTransaction.Changed(Inventory);
             if (KillToComplete is not null) m_registry.Kills.Complete(KillToComplete.EventId);
             return ScGunResult.Success;
@@ -213,6 +226,8 @@ public sealed class ScGunMutation {
         ScGunResult.RecoveryPending => "有物品尚未归还，补偿已保留；确认原库存后重试，无法确认时需核验恢复",
         ScGunResult.DuplicateUnresolved => "这把枪与另一把共用记录，且状态表已满，无法分离",
         ScGunResult.Busy => "正在处理另一次枪械操作",
+        ScGunResult.RemoteClient => "联机时由服务器处理这项操作",
+        ScGunResult.Stacked => "这一格叠放了多把枪，无法直接使用；请把它们分到不同的格子（数量和每把枪的状态都会保留）",
         _ => "无效操作"
     };
 }

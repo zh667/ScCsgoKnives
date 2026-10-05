@@ -1,0 +1,372 @@
+{
+ "task": "old .tmp stages, group B of docs/tasks/tmp-inventory-20261005.md",
+ "date": "2026-10-05T15:38:32",
+ "authority": "user 2026-10-05: B直接删",
+ "permanence": "permanent deletion (not the recycle bin)",
+ "kept": "groups A and C of the inventory, current work (completion-140-20260929, mp-m0-20260929, mp-test-runtime, dev-temp, cs2-measure-20261004, tracer-sample-20261005), output/",
+ "consequence": "the 1.3.0-and-earlier one-off scripts that read these stages (prepare_*/package_*/check_*/build_minimal_* etc.) can no longer run",
+ "linksRemovedNotFollowed": [
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\tools",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\.tmp\\nmm-player-appearance-audit-20260920",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\src\\ScCsgoAppearance\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\src\\ScCsgoKnives\\Assets"
+  },
+  {
+   "link": "E:\\projects\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\src\\ScCsgoTactical\\Assets",
+   "target": "\\\\?\\E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\src\\ScCsgoKnives\\Assets"
+  }
+ ],
+ "linkTargetsUnchanged": {
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\codec-release-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\lite-smooth-20260926\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\nmm-player-appearance-audit-20260920": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927\\full-check\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\.tmp\\split-lite-130-20260926\\fixture\\src\\ScCsgoKnives\\Assets": null,
+  "E:\\Obsidian Document\\Document1\\ScCsgoKnives\\tools": null
+ },
+ "removed": [
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\agentfb-20260928",
+   "bytes": 27747479120,
+   "files": 137699
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mobile-resources-130-20260927",
+   "bytes": 6115107634,
+   "files": 11024
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\gameplay-audio-130-20260927",
+   "bytes": 6110338063,
+   "files": 11106
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\settings-rollback-130-20260927",
+   "bytes": 5643012871,
+   "files": 11123
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\codec-release-130-20260927",
+   "bytes": 2090835518,
+   "files": 6195
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\split-lite-130-20260926",
+   "bytes": 3595091084,
+   "files": 9510
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\lite-smooth-20260926",
+   "bytes": 4076634527,
+   "files": 10062
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\minimal-inspect40-130-20260926",
+   "bytes": 713036446,
+   "files": 1838
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\minimal-130-20260926",
+   "bytes": 671070046,
+   "files": 3111
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\minimal-quality40-130-20260926",
+   "bytes": 279801390,
+   "files": 1614
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\minimal-quality-130-20260926",
+   "bytes": 152945677,
+   "files": 1677
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\minimal-extra-reduction-20260926",
+   "bytes": 53875032,
+   "files": 833
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\split-lossless-20260927",
+   "bytes": 413138149,
+   "files": 1999
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\zeus-172",
+   "bytes": 1907496773,
+   "files": 28
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\package-names-20260927",
+   "bytes": 1422111700,
+   "files": 19
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\nmm-official-audit-20260926",
+   "bytes": 1294945481,
+   "files": 90
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\crowd-smooth-20260926",
+   "bytes": 1117781949,
+   "files": 1123
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\crowd-opt-20260926",
+   "bytes": 1088103806,
+   "files": 1124
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\crowd-perf-20260926",
+   "bytes": 1058658548,
+   "files": 1122
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\lite-actor",
+   "bytes": 121051528,
+   "files": 12
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\standalone110-derived",
+   "bytes": 397426606,
+   "files": 975
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\standalone111-derived",
+   "bytes": 397408173,
+   "files": 975
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\standalone114-derived",
+   "bytes": 397299240,
+   "files": 975
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\standalone121-derived",
+   "bytes": 397999363,
+   "files": 991
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\bundle150-derived",
+   "bytes": 398282799,
+   "files": 1035
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\bundle150-lossless",
+   "bytes": 291787170,
+   "files": 1423
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\bundle150-render",
+   "bytes": 80499428,
+   "files": 8
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\public-version-130",
+   "bytes": 585019333,
+   "files": 2
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\compat-version-20260926",
+   "bytes": 386833589,
+   "files": 14
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\video-fix-140-20260929",
+   "bytes": 427544875,
+   "files": 8268
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\monolithic-old-split",
+   "bytes": 660220917,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\replaced-resource100-formal",
+   "bytes": 574455745,
+   "files": 2
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\superseded-c4-111",
+   "bytes": 442504004,
+   "files": 2
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\compression-audit",
+   "bytes": 720455114,
+   "files": 3273
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\ContactProbe",
+   "bytes": 632268698,
+   "files": 1441
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\tactical-111-installed-gpu",
+   "bytes": 567029646,
+   "files": 1427
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\appearance-installed-check",
+   "bytes": 160368839,
+   "files": 81
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\syncbox-audit-20260924",
+   "bytes": 158094714,
+   "files": 250
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\registry-audit-76a7f56fe2904bde96a8729d4331a396",
+   "bytes": 140684306,
+   "files": 30
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\thirdperson-world-prop-check",
+   "bytes": 56117700,
+   "files": 1034
+  }
+ ],
+ "totalBytes": 73544815601,
+ "outputUnchanged": true,
+ "freeAfter": 153389588480
+}

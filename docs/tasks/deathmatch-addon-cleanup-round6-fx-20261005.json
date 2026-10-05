@@ -1,0 +1,127 @@
+{
+ "task": "deathmatch-addon round 6 R6-5, muzzle effects (docs/tasks/deathmatch-addon-round6-20261005.md §4)",
+ "date": "2026-10-05T05:54:27",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "dmr6dCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage dmr6d build trees (delivered; logs, reports, packages.json, dm.json, identity.json, net.json, embedded.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr6d\\full",
+    ".tmp\\completion-140-20260929\\dmr6d\\lite",
+    ".tmp\\completion-140-20260929\\dmr6d\\tools",
+    ".tmp\\completion-140-20260929\\dmr6d\\tree",
+    ".tmp\\completion-140-20260929\\dmr6d\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr6d\\resources",
+    ".tmp\\completion-140-20260929\\dmr6d\\net",
+    ".tmp\\completion-140-20260929\\dmr6d\\motion",
+    ".tmp\\completion-140-20260929\\dmr6d\\throw",
+    ".tmp\\completion-140-20260929\\dmr6d\\old130",
+    ".tmp\\completion-140-20260929\\dmr6d\\dm\\source",
+    ".tmp\\completion-140-20260929\\dmr6d\\dm\\check",
+    ".tmp\\completion-140-20260929\\dmr6d\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dmr6d\\dm\\loadtool"
+   ],
+   "bytes": 2672862045,
+   "items": 5543,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dmr6d\\air"
+   ]
+  },
+  "superseded candidate stage dmr6b (gates failed: a bloom-only texture without frames, a 576x512 Lite sheet; its runs stopped) - everything but logs and json reports": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr6b\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr6b\\baseline",
+    ".tmp\\completion-140-20260929\\dmr6b\\candidate",
+    ".tmp\\completion-140-20260929\\dmr6b\\dm",
+    ".tmp\\completion-140-20260929\\dmr6b\\full",
+    ".tmp\\completion-140-20260929\\dmr6b\\hotspots",
+    ".tmp\\completion-140-20260929\\dmr6b\\lite",
+    ".tmp\\completion-140-20260929\\dmr6b\\motion",
+    ".tmp\\completion-140-20260929\\dmr6b\\net",
+    ".tmp\\completion-140-20260929\\dmr6b\\old130",
+    ".tmp\\completion-140-20260929\\dmr6b\\resources",
+    ".tmp\\completion-140-20260929\\dmr6b\\throw",
+    ".tmp\\completion-140-20260929\\dmr6b\\tools",
+    ".tmp\\completion-140-20260929\\dmr6b\\tree",
+    ".tmp\\completion-140-20260929\\dmr6b\\ui"
+   ],
+   "bytes": 3292241102,
+   "items": 5681,
+   "missing": []
+  },
+  "superseded candidate stage dmr6c (gates failed: a second texture without frames; its runs stopped) - everything but logs and json reports": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dmr6c\\assets-full",
+    ".tmp\\completion-140-20260929\\dmr6c\\baseline",
+    ".tmp\\completion-140-20260929\\dmr6c\\candidate",
+    ".tmp\\completion-140-20260929\\dmr6c\\dm",
+    ".tmp\\completion-140-20260929\\dmr6c\\full",
+    ".tmp\\completion-140-20260929\\dmr6c\\hotspots",
+    ".tmp\\completion-140-20260929\\dmr6c\\lite",
+    ".tmp\\completion-140-20260929\\dmr6c\\motion",
+    ".tmp\\completion-140-20260929\\dmr6c\\net",
+    ".tmp\\completion-140-20260929\\dmr6c\\old130",
+    ".tmp\\completion-140-20260929\\dmr6c\\resources",
+    ".tmp\\completion-140-20260929\\dmr6c\\throw",
+    ".tmp\\completion-140-20260929\\dmr6c\\tools",
+    ".tmp\\completion-140-20260929\\dmr6c\\tree",
+    ".tmp\\completion-140-20260929\\dmr6c\\ui"
+   ],
+   "bytes": 3286796758,
+   "items": 5677,
+   "missing": []
+  },
+  "dev stage fxh (the last calibration round before the candidates) - everything but logs and json reports": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\fxh\\baseline",
+    ".tmp\\completion-140-20260929\\fxh\\candidate",
+    ".tmp\\completion-140-20260929\\fxh\\full",
+    ".tmp\\completion-140-20260929\\fxh\\lite",
+    ".tmp\\completion-140-20260929\\fxh\\net",
+    ".tmp\\completion-140-20260929\\fxh\\resources",
+    ".tmp\\completion-140-20260929\\fxh\\tree"
+   ],
+   "bytes": 1755456131,
+   "items": 2289,
+   "missing": []
+  },
+  "totalBytes": 11007356036,
+  "items": 19190
+ },
+ "kept": [
+  "stage dmr6d: logs/, ui/, *.json reports, packages.json, dm.json, identity.json, net.json, embedded.json, source-hashes.json; dmr6b, dmr6c, fxa-fxh: logs/ and *.json",
+  ".tmp/mp-m0-20260929/run/dm-*-dmr6d*, gun-visuals-* (every calibration round's frames) and results/*.json",
+  ".tmp/dev-temp/fx (particle program dump, comparison inputs)",
+  "src/ScCsgoKnives AnimationData/cs2_muzzle_fx.json and the cs2fx_* sheets (generated sources)",
+  ".tmp/cs2-measure-20261004 (the CS2 measurement session: frames, console logs, the user's console.log backup)",
+  ".tmp/dev-temp/cs2-hitbox-20261004 and cs2-hitbox-20261005 (CS2 agent model exports the hitbox table comes from)",
+  "output/ (four packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "62294248f607463d8fe049f4be6074da4a4f23ed738a2d24dadb226db6bfa552",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "fe9abd3e847853693accece0e84088ec8f56bd46751b3245511de0bf1c4cb9a8",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "4bf17317887cf2dc3a46a8d9f0896fea83b9237768916bcdacf6dc37e38c04d6",
+   "unchanged": true
+  },
+  "死亡竞赛": {
+   "sha256": "a0864d6f867a7b8ef7cfd80d6e97c044015b5c8b7c5722bcd2e80323fd2d3eaa",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 63103610880,
+  "freePct": 6.31
+ }
+}

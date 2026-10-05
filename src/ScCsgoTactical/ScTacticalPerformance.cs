@@ -8,13 +8,14 @@ namespace Game;
 
 // Diagnostic timings are inclusive CPU wall times, not GPU timers. No world data or files.
 public static class ScTacticalPerformance {
-    public const string Revision="feedback-ui-hands-20260927";
+    public const string Revision="agent-followup-140-20260928";
     public enum Stage { Placement, EntityCreate, Configure, AddEntity, ModelLoad, ModelSet,
-        AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, ActionApply, WeaponPrepare, Count }
+        AnimationCache, ActionsInit, EnemyAI, CompanionAI, Animate, AnimationUpdate, AnimationSample, Bones, Extras, WeaponResolve, WeaponBuild, WeaponDraw, WeaponUpload, WeaponSubmit, Director, ActionApply, WeaponPrepare, Ragdoll, Wake, Count }
     static readonly ConditionalWeakTable<Project,Session> sessions=new();
-    static Session For(Project project)=>project==null?null:sessions.GetValue(project,_=>new Session());
+    // Timings run only for the test tools (KnifeLog.Diagnostics): no session, no counters, no report in players' games.
+    static Session For(Project project)=>project==null||!KnifeLog.Diagnostics?null:sessions.GetValue(project,_=>new Session());
     public static Scope Measure(Project project,Stage stage,string resource=null)=>new(For(project),stage,resource);
-    public static void Start(Project project){For(project);Log.Information($"[CS_PERF] build={Revision}; tacticalMvid={typeof(ScTacticalPerformance).Module.ModuleVersionId}; interval=10s; timings=inclusive CPU wall ms; engineFrame includes non-CS work/vsync; GPU not measured");}
+    public static void Start(Project project){if(For(project)==null)return;Log.Information($"[CS_PERF] build={Revision}; tacticalMvid={typeof(ScTacticalPerformance).Module.ModuleVersionId}; interval=10s; timings=inclusive CPU wall ms; engineFrame includes non-CS work/vsync; GPU not measured");}
     public static void Frame(Project project,int enemies,int companions)=>For(project)?.Frame(Time.FrameIndex,Time.FrameDuration*1000,Time.CpuFrameDuration*1000,enemies,companions);
     public static void Finish(Project project){if(project!=null&&sessions.TryGetValue(project,out var s)){s.Report(true);sessions.Remove(project);}}
     public static SpawnTrace Spawn(Project project,string kind,int count)=>new(For(project),kind,count);

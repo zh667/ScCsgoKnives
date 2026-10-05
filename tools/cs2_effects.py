@@ -32,7 +32,9 @@ import cs2_kv3
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "src/ScCsgoKnives/AnimationData"
-ANALYSIS = Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"
+# the CS2 analysis tree: Windows' E:/projects/CSMCReverse where it exists (the resource tree stays there), the old VPS layout otherwise
+ANALYSIS = next((p for p in [Path(r"E:/projects/CSMCReverse/local_cs2_analysis/all_weapons"), Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons"] if p.exists()),
+                Path.home() / "workspaces/CSMCReverse/local_cs2_analysis/all_weapons")
 VDATA = ANALYSIS / "01_weapon_data/firearm_blocks"
 PARTICLES = ANALYSIS / "06_particles/definitions"
 
@@ -145,6 +147,19 @@ def literal(node):
     return None
 
 
+def texture_controls(c: dict) -> dict:
+    """A trail or rope texture's m_TextureControls: the final scale and offset of U (across a trail) and V (along a trail, whose
+    renderer clamps V; the source streaks run down their rows), and whether they clamp. The AK's ScaleV -1.5 / OffsetV 1.2 lay the
+    streak from just behind the round to 0.8 of the trail (round 9 had left the controls out; the first 2026-10-05 sample read U
+    as the along axis)."""
+    def num(v, d):
+        v = literal(v) if isinstance(v, dict) else v
+        return float(v) if isinstance(v, (int, float)) else d
+    return {"TextureScaleU": num(c.get("m_flFinalTextureScaleU"), 1.0), "TextureOffsetU": num(c.get("m_flFinalTextureOffsetU"), 0.0),
+            "TextureScaleV": num(c.get("m_flFinalTextureScaleV"), 1.0), "TextureOffsetV": num(c.get("m_flFinalTextureOffsetV"), 0.0),
+            "ClampUVs": bool(c.get("m_bClampUVs"))}
+
+
 def read_flash(path: Path) -> dict:
     """One flash system's envelope.
 
@@ -157,7 +172,7 @@ def read_flash(path: Path) -> dict:
     if not path.exists():
         return {"Missing": str(path)}
     doc = cs2_kv3.load(path)
-    out = {"Source": str(path.relative_to(ANALYSIS)), "Unmodelled": []}
+    out = {"Source": path.relative_to(ANALYSIS).as_posix(), "Unmodelled": []}
 
     for op in doc.get("m_Emitters") or []:
         if op.get("_class") == "C_OP_InstantaneousEmitter":
@@ -330,10 +345,10 @@ def read_tracer(path: str) -> dict:
             out["LengthScaleInput"] = [op.get("m_flInputMin", 0.0), op.get("m_flInputMax", 0.0)]
             out["LengthScaleOutput"] = [op.get("m_flOutputMin", 1.0), op.get("m_flOutputMax", 1.0)]
         elif cls == "C_OP_RenderTrails":
-            texture = None
+            texture = None; controls = {}
             for t in op.get("m_vecTexturesInput") or []:
                 if t.get("m_hTexture"):
-                    texture = t["m_hTexture"]
+                    texture = t["m_hTexture"]; controls = t.get("m_TextureControls") or {}
             entry = {
                 "SourceTexture": texture,
                 "Texture": TRACER_TEXTURES.get(texture),
@@ -345,16 +360,11 @@ def read_tracer(path: str) -> dict:
                 "StartFadeSize": float(op.get("m_flStartFadeSize", 0.0) or 0.0),
                 "EndFadeSize": float(op.get("m_flEndFadeSize", 0.0) or 0.0),
             }
+            entry.update(texture_controls(controls))
             if entry["Texture"] is None:
                 out["Unmodelled"].append("no baked texture for %s" % texture)
             out["MaxLength"] = op.get("m_flMaxLength")
             out["Passes"].append(entry)
-            # U tiles five times along the trail. The frames the bake ships already
-            # carry one head-to-tail ramp along that axis, so tiling would repeat the
-            # ramp five times down the trail; the ribbon draws the ramp once instead.
-            u = literal(op.get("m_flFinalTextureScaleU"))
-            if u not in (None, 1.0):
-                out["Unmodelled"].append("m_flFinalTextureScaleU=%g (would repeat the baked head/tail ramp)" % u)
         elif cls == "C_OP_RenderRopes":
             # weapon_tracers_smg does not move a particle: C_INIT_CreateSequentialPathV2
             # lays six of them from the muzzle (CP0) to the hit (CP1) and the renderer
@@ -365,10 +375,10 @@ def read_tracer(path: str) -> dict:
             # The rope names two textures: the streak, and a UV-distortion normal map
             # (m_nTextureType SPRITECARD_TEXTURE_UVDISTORTION). The streak is the one
             # with no type, Source's default colour slot.
-            texture = None
+            texture = None; controls = {}
             for t in op.get("m_vecTexturesInput") or []:
                 if t.get("m_hTexture") and not t.get("m_nTextureType"):
-                    texture = t["m_hTexture"]
+                    texture = t["m_hTexture"]; controls = t.get("m_TextureControls") or {}
                     break
             if op.get("m_bOnlyRenderInEffectsBloomPass"):
                 out["Unmodelled"].append("bloom-only second rope pass")
@@ -398,6 +408,7 @@ def read_tracer(path: str) -> dict:
                 "StartFadeSize": 0.0, "EndFadeSize": 0.0,
                 "Renderer": "C_OP_RenderRopes",
             }
+            entry.update(texture_controls(controls))
             if entry["Texture"] is None:
                 out["Unmodelled"].append("no baked texture for %s" % texture)
             out["Passes"].append(entry)

@@ -1,0 +1,94 @@
+{
+ "task": "deathmatch-addon (openspec/changes/deathmatch-addon)",
+ "date": "2026-10-03T01:46:47",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "dma2CandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage dma2 build trees (delivered; logs, reports, net.json, packages.json, dm.json, source-hashes.json, the payload check's world-group and round-trip worlds kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dma2\\full",
+    ".tmp\\completion-140-20260929\\dma2\\lite",
+    ".tmp\\completion-140-20260929\\dma2\\tools",
+    ".tmp\\completion-140-20260929\\dma2\\tree",
+    ".tmp\\completion-140-20260929\\dma2\\assets-full",
+    ".tmp\\completion-140-20260929\\dma2\\resources",
+    ".tmp\\completion-140-20260929\\dma2\\net",
+    ".tmp\\completion-140-20260929\\dma2\\motion",
+    ".tmp\\completion-140-20260929\\dma2\\throw",
+    ".tmp\\completion-140-20260929\\dma2\\ui",
+    ".tmp\\completion-140-20260929\\dma2\\old130",
+    ".tmp\\completion-140-20260929\\dma2\\dm\\source",
+    ".tmp\\completion-140-20260929\\dma2\\dm\\check",
+    ".tmp\\completion-140-20260929\\dma2\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dma2\\dm\\loadtool"
+   ],
+   "bytes": 2654204850,
+   "items": 5375,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dma2\\air"
+   ]
+  },
+  "stage dma1 (superseded: its gates failed on a defect fixed in dma2; nothing of it was delivered; logs and reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\dma1\\full",
+    ".tmp\\completion-140-20260929\\dma1\\lite",
+    ".tmp\\completion-140-20260929\\dma1\\tools",
+    ".tmp\\completion-140-20260929\\dma1\\tree",
+    ".tmp\\completion-140-20260929\\dma1\\assets-full",
+    ".tmp\\completion-140-20260929\\dma1\\resources",
+    ".tmp\\completion-140-20260929\\dma1\\net",
+    ".tmp\\completion-140-20260929\\dma1\\motion",
+    ".tmp\\completion-140-20260929\\dma1\\throw",
+    ".tmp\\completion-140-20260929\\dma1\\ui",
+    ".tmp\\completion-140-20260929\\dma1\\old130",
+    ".tmp\\completion-140-20260929\\dma1\\dm\\source",
+    ".tmp\\completion-140-20260929\\dma1\\dm\\check",
+    ".tmp\\completion-140-20260929\\dma1\\dm\\abi",
+    ".tmp\\completion-140-20260929\\dma1\\candidate"
+   ],
+   "bytes": 3236521505,
+   "items": 5297,
+   "missing": [
+    ".tmp\\completion-140-20260929\\dma1\\air",
+    ".tmp\\completion-140-20260929\\dma1\\dm\\loadtool"
+   ]
+  },
+  "totalBytes": 5890726355,
+  "items": 10672
+ },
+ "kept": [
+  "stage dma2 and dma1: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, dm.json, baseline/, hotspots/, dm/world-group-*.xml, dm/load-*.xml",
+  ".tmp/dev-temp/deathmatch-20261003/cs2 (the eight CS2 members decoded for the icons and sounds: the provenance the import rests on)",
+  ".tmp/dev-temp/deathmatch-20261002 (the planner's CS2 reference files)",
+  "src/ScCsgoDeathmatch/Assets (the imported icons and sounds: package sources)",
+  "earlier tasks' stages and test packages: not this task's",
+  "output/ (four delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "6141ac016fb468392b8d6f0adf011ed4554f9edda7baf5a08438fe85b675d625",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "408d9f35f4ad69f2dfbd5c66a02b089ede362847604dbfdbe38e228783bd43c3",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "e804b11c3d7b7ab3ecbcf0d6ca30f05aeb08446108f8adaf89080c6280ba17b7",
+   "unchanged": true
+  },
+  "死亡竞赛": {
+   "sha256": "3c4bdc991af53e3017a9b58586fc1770c53381f22a4dab6e02b0df9595b45358",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 120517844992,
+  "freePct": 12.05
+ }
+}

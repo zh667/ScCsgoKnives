@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- mp-user-logs-20261002: offline checks of the CS appearance integration's multiplayer corrections against the REAL
+       third-party assemblies (NekoMeko Model 1.1, Neorxna 1.4; read-only references collected into $(Refs) with the built
+       ScCsgoAppearance / ScCsgoTactical / ScCsgoKnives / ScCsgoResources DLLs). No game, no GPU. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);CS1701;CS1702;MSB3277</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(Refs)/*.dll" />
+    <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
+  </ItemGroup>
+</Project>

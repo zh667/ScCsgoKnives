@@ -10,7 +10,7 @@ static class BalanceRegression {
         // Current user correction supersedes the historical plan's RPM only. Keep that evidence immutable.
         double ExpectedRpm(string name, float cycle, int l) {
             int Tier(int i)=>Math.Clamp(l-i*10,0,10);
-            if(name=="taser")return 2*(1+.65*(1/(1-.05*Tier(0)-.02*Tier(1)-.01*Tier(2)-.005*Tier(3)-.005*Tier(4))-1));
+            if(name=="taser")return 6/(1-.05*Tier(0)-.02*Tier(1)-.01*Tier(2)-.005*Tier(3)-.005*Tier(4));
             double multiplier=name is "awp" or "ssg08" ? 1+.65*(.05*Tier(1)+.05*Tier(2)+.075*Tier(3)+.075*Tier(4))
                 : 1+(name is "scar20" or "g3sg1" ? .004 : .0065)*l;
             return 60/cycle*multiplier;

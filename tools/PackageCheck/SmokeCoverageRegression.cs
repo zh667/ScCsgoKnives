@@ -18,13 +18,15 @@ static class SmokeCoverageRegression {
         void Set(string n,object v)=>state.GetType().GetField(n).SetValue(state,v);
         Set("Kind",2);Set("Effect",true);Set("Age",2f);Set("Remaining",12f);
         var visuals=mod.GetType("Game.ScGrenadeVisuals");
+        int smoothKey=(int)visuals.GetField("SmoothPuffKey").GetValue(null);
+        var smoothAlpha=(Func<int,float,float,float>)Delegate.CreateDelegate(typeof(Func<int,float,float,float>),visuals.GetMethod("SmoothPuffAlpha"));
         foreach(bool overhead in new[]{false,true}) {
             Vector3 right=Vector3.UnitX,up=overhead?Vector3.UnitZ:Vector3.UnitY;
             var sprites=((IEnumerable)visuals.GetMethod("Smoke").Invoke(null,[state,5f])).Cast<object>().ToArray();
             var mapped=sprites.Select(s=>{
                 object P(string n)=>s.GetType().GetProperty(n).GetValue(s);
                 var axes=((Vector3,Vector3))visuals.GetMethod("SmokeAxes").Invoke(null,[s,state,right,up]);
-                Vector3 p=(Vector3)P("Position");return new {x=Vector3.Dot(p,right),y=Vector3.Dot(p,up),rx=Vector3.Dot(axes.Item1,right),ry=Vector3.Dot(axes.Item1,up),ux=Vector3.Dot(axes.Item2,right),uy=Vector3.Dot(axes.Item2,up),frame=(int)P("Frame"),alpha=((Color)P("Color")).A/255f};
+                Vector3 p=(Vector3)P("Position");return new {x=Vector3.Dot(p,right),y=Vector3.Dot(p,up),rx=Vector3.Dot(axes.Item1,right),ry=Vector3.Dot(axes.Item1,up),ux=Vector3.Dot(axes.Item2,right),uy=Vector3.Dot(axes.Item2,up),frame=(int)P("Frame"),texture=(int)P("Texture"),alpha=((Color)P("Color")).A/255f};
             }).ToArray();
             float Opacity(float x,float y) {
                 float clear=1;
@@ -32,6 +34,7 @@ static class SmokeCoverageRegression {
                     float dx=x-s.x,dy=y-s.y,det=s.rx*s.uy-s.ry*s.ux;
                     float u=(dx*s.uy-dy*s.ux)/det*.5f+.5f,v=.5f-(dy*s.rx-dx*s.ry)/det*.5f;
                     if(u<0||u>1||v<0||v>1)continue;
+                    if(s.texture==smoothKey){clear*=1-smoothAlpha(s.frame,u,v)*s.alpha;continue;}
                     int tx=Math.Clamp((int)((s.frame%4*.25f+.004f+u*.242f)*atlas.Width),0,atlas.Width-1);
                     int ty=Math.Clamp((int)((s.frame/4*.25f+.004f+v*.242f)*atlas.Height),0,atlas.Height-1);
                     clear*=1-atlas.Pixels[ty*atlas.Width+tx].A/255f*s.alpha;

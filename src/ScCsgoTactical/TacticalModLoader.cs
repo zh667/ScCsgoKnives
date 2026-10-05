@@ -8,7 +8,12 @@ public sealed class TacticalModLoader : ModLoader {
 #if SC_SPLIT
         ScSplitAgentMarker.ValidateCore();
 #endif
-        TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops"})ModsManager.RegisterHook(hook,this);}
+        RegisterFactions();TacticalArmorTargets.Register();TacticalNet.Register();
+        TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops","OnScreenEntered"})ModsManager.RegisterHook(hook,this);}
+    /// <summary>The prerequisite-mod hint on the main menu (TacticalPrerequisites).</summary>
+    public override void OnScreenEntered(Screen screen,object[] screenParameters){if(screen is MainMenuScreen)TacticalPrerequisites.OnMainMenu();}
+    /// <summary>Recruited companions are allies and squad members are enemies, whatever CT/T model they wear.</summary>
+    public static void RegisterFactions()=>ScFactions.Resolvers["zh667.ScCsgoTactical"]=e=>e.FindComponent<ComponentTacticalCompanion>() is not null?ScFactions.Side.Ally:e.FindComponent<ComponentTacticalEnemy>() is not null?ScFactions.Side.Enemy:null;
     public override void OnAnimateModel(ComponentModel model,out bool skip)=>skip=model is ComponentTacticalModel tactical&&tactical.TrySampleAnimation();
     public override void OnProjectLoaded(GameEntitySystem.Project project){ScTacticalWarmup.PrepareShader();project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Register();ScWeaponPreparation.Restore(project);}
     public override void OnSaveSpawnData(ComponentSpawn spawn,SpawnEntityData data)=>SubsystemTacticalEnemies.SaveSpawn(spawn,data);
@@ -61,7 +66,8 @@ public sealed class TacticalModLoader : ModLoader {
     public override void ProcessAttackment(Attackment attack){
         if(attack?.Target?.Project is {} project&&attack.AttackPower>0){var attacker=attack.Attacker?.FindComponent<ComponentBody>();
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);
-            attack.Target.FindComponent<ComponentTacticalEnemy>()?.Alert(attacker);
+            // The one that was hit turns on its attacker, and so does everyone of its kind nearby (user rule 2026-10-02).
+            if(attack.Target.FindComponent<ComponentTacticalEnemy>() is {} hit){hit.Alert(attacker);project.FindSubsystem<SubsystemTacticalEnemies>(false)?.Provoked(hit,attacker);}
             if(attack.Target.FindComponent<ComponentPlayer>() is {} player&&project.FindSubsystem<SubsystemScTactical>(false) is {} tactical)foreach(var c in tactical.Companions)if(c.OwnedBy(player))c.Alert(attacker);
             if(attack.Attacker?.FindComponent<ComponentPlayer>() is {} owner&&project.FindSubsystem<SubsystemScTactical>(false) is {} squad)foreach(var c in squad.Companions)if(c.OwnedBy(owner))c.Alert(attack.Target.FindComponent<ComponentBody>());
         }
@@ -72,7 +78,8 @@ public sealed class TacticalModLoader : ModLoader {
     public override void OnPlayerInputHit(ComponentPlayer p,ref bool operated,ref double interval,ref float range,bool skipped,out bool skipVanilla){skipVanilla=ScWeaponActionGate.Blocks(p)||ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla){range=0;operated=true;}}
     public override void UpdatePlayerInputDig(ComponentPlayer p,bool digging,ref bool operated,ref double interval,bool skipped,out bool skipVanilla){skipVanilla=ScWeaponActionGate.Blocks(p)||ScTacticalShieldBlock.IsShield(p.ComponentMiner.ActiveBlockValue);if(skipVanilla)operated=true;}
     public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experience,ref bool kills){
-        if(injury?.Attackment?.Attacker is {} attacker&&attacker!=health.Entity){
+        // A multiplayer client replays deaths the server already handled (and whose callouts it sends).
+        if(ScNet.IsAuthority&&injury?.Attackment?.Attacker is {} attacker&&attacker!=health.Entity){
             if(attacker.FindComponent<ComponentTacticalEnemy>()!=null)ScAgentVoice.Emit(attacker,"t","kill");
             else if(attacker.FindComponent<ComponentTacticalCompanion>()!=null)ScAgentVoice.Emit(attacker,attacker.ValuesDictionary?.DatabaseObject?.Name switch{"ScTacticalCT"=>"ct","ScTacticalT"=>"t",_=>null},"kill");
         }

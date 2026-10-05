@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- current-direction-20260929 §6 M0 prototype only. Compiled against the 1.9.3.2_MP engine build (the managed DLLs
+       collected by tools/MpM0/m0.py into $(Refs): Survivalcraft/Engine/EntitySystem, the CompatNet and Multiplayer
+       internal mods, the probe and the core). Shipped renamed as Net/ScCsgoNet.bin, never as a root DLL. -->
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Game</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ScCsgoNet</AssemblyName>
+    <Deterministic>true</Deterministic>
+    <LangVersion>preview</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <DebugType>none</DebugType>
+    <!-- The engine and our core reference the same assembly names at nearby versions. -->
+    <NoWarn>$(NoWarn);CS1701;CS1702;MSB3277</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(Refs)/*.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

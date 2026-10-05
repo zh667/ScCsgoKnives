@@ -1,0 +1,527 @@
+{
+ "cs2": "1.41.8.8 insecure, 2026-10-04; aim_botz (rows 1-5, bots with armour, no helmet) and aim_map (rows 6-, a bot placed with bot_place facing the shooter, no armour)",
+ "commands": "log on; sv_logecho 1; mp_logdetail 3; weapon_accuracy_nospread 1; bot_stop 1; bot_dont_shoot 1; mp_free_armor 0 (aim_map); one round per round (endround between) in the sweep",
+ "expectedFromVdata": "AK-47 m_nDamage 36 x m_flRangeModifier 0.98^(distance/500) x hit group (head 4, stomach 1.25, legs 0.75, others 1) x armour (0.775 = m_flArmorRatio 1.55 / 2 where covered), truncated",
+ "attacked": [
+  {
+   "time": "10/04/2026 - 22:50:17",
+   "attacker": "-332 122 0",
+   "victim": "Aim Botz Miguel<10><BOT><TERRORIST>",
+   "victimAt": "-1153 830 0",
+   "weapon": "ak47",
+   "damage": 26,
+   "armourDamage": 3,
+   "healthLeft": 74,
+   "armourLeft": 97,
+   "hitgroup": "chest",
+   "horizontalDistance": 1084.1,
+   "expectedFromVdata": 26,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 22:50:19",
+   "attacker": "-328 244 0",
+   "victim": "Aim Botz Miguel<10><BOT><TERRORIST>",
+   "victimAt": "-1153 830 0",
+   "weapon": "ak47",
+   "damage": 25,
+   "armourDamage": 0,
+   "healthLeft": 48,
+   "armourLeft": 97,
+   "hitgroup": "left leg",
+   "horizontalDistance": 1011.9,
+   "expectedFromVdata": 25,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 22:50:19",
+   "attacker": "-328 244 0",
+   "victim": "Aim Botz Miguel<10><BOT><TERRORIST>",
+   "victimAt": "-1153 830 0",
+   "weapon": "ak47",
+   "damage": 26,
+   "armourDamage": 3,
+   "healthLeft": 21,
+   "armourLeft": 94,
+   "hitgroup": "chest",
+   "horizontalDistance": 1011.9,
+   "expectedFromVdata": 26,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 22:50:19",
+   "attacker": "-329 243 0",
+   "victim": "Aim Botz Miguel<10><BOT><TERRORIST>",
+   "victimAt": "-1153 830 0",
+   "weapon": "ak47",
+   "damage": 25,
+   "armourDamage": 0,
+   "healthLeft": 0,
+   "armourLeft": 94,
+   "hitgroup": "right leg",
+   "horizontalDistance": 1011.7,
+   "expectedFromVdata": 25,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 22:50:21",
+   "attacker": "-328 244 0",
+   "victim": "Aim Botz Telsen<7><BOT><TERRORIST>",
+   "victimAt": "-832 1152 0",
+   "weapon": "ak47",
+   "damage": 138,
+   "armourDamage": 0,
+   "healthLeft": 0,
+   "armourLeft": 100,
+   "hitgroup": "head",
+   "horizontalDistance": 1038.5,
+   "expectedFromVdata": 138,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:06:55",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "-343 -233 56",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 643.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:07:23",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "-343 -233 56",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 30,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 643.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:07:25",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "-343 -233 56",
+   "weapon": "ak47",
+   "damage": 43,
+   "armourDamage": 0,
+   "healthLeft": 0,
+   "armourLeft": 0,
+   "hitgroup": "stomach",
+   "horizontalDistance": 643.0,
+   "expectedFromVdata": 43,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:00",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "neck",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:09",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "neck",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:17",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:26",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:34",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:43",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:11:51",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:00",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:08",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:17",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:25",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:34",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:42",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:42",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 29,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:51",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:12:59",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 35,
+   "armourDamage": 0,
+   "healthLeft": 65,
+   "armourLeft": 0,
+   "hitgroup": "chest",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 35,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:13:08",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Mayer<5><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 44,
+   "armourDamage": 0,
+   "healthLeft": 56,
+   "armourLeft": 0,
+   "hitgroup": "stomach",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 44,
+   "agrees": true
+  },
+  {
+   "time": "10/04/2026 - 23:13:16",
+   "attacker": "300 -233 50",
+   "victim": "Aim Botz Efe<4><BOT><TERRORIST>",
+   "victimAt": "126 -233 52",
+   "weapon": "ak47",
+   "damage": 44,
+   "armourDamage": 0,
+   "healthLeft": 56,
+   "armourLeft": 0,
+   "hitgroup": "stomach",
+   "horizontalDistance": 174.0,
+   "expectedFromVdata": 44,
+   "agrees": true
+  }
+ ],
+ "sweep": {
+  "geometry": "shooter eye 60.71 units above the bot's feet, 174 units away, pitch stepped as listed, one nospread round each; rows 1-3 of aim_map in 'attacked' came from an earlier aim, the rest are the sweep's in order (pitch 3.5 fired twice)",
+  "rows": [
+   {
+    "pitch": -3,
+    "hits": 0
+   },
+   {
+    "pitch": -2,
+    "hits": 0
+   },
+   {
+    "pitch": -1.5,
+    "hits": 0
+   },
+   {
+    "pitch": -1,
+    "hits": 0
+   },
+   {
+    "pitch": -0.5,
+    "hits": 0
+   },
+   {
+    "pitch": 0,
+    "hits": 1
+   },
+   {
+    "pitch": 0.25,
+    "hits": 1
+   },
+   {
+    "pitch": 0.5,
+    "hits": 1
+   },
+   {
+    "pitch": 0.75,
+    "hits": 1
+   },
+   {
+    "pitch": 1,
+    "hits": 1
+   },
+   {
+    "pitch": 1.25,
+    "hits": 1
+   },
+   {
+    "pitch": 1.5,
+    "hits": 1
+   },
+   {
+    "pitch": 1.75,
+    "hits": 1
+   },
+   {
+    "pitch": 2,
+    "hits": 1
+   },
+   {
+    "pitch": 2.25,
+    "hits": 1
+   },
+   {
+    "pitch": 2.5,
+    "hits": 1
+   },
+   {
+    "pitch": 3,
+    "hits": 1
+   },
+   {
+    "pitch": 3.5,
+    "hits": 2
+   },
+   {
+    "pitch": 4,
+    "hits": 1
+   },
+   {
+    "pitch": 5,
+    "hits": 1
+   },
+   {
+    "pitch": 6,
+    "hits": 1
+   },
+   {
+    "pitch": 7,
+    "hits": 1
+   },
+   {
+    "pitch": 8,
+    "hits": 0
+   },
+   {
+    "pitch": 9,
+    "hits": 0
+   },
+   {
+    "pitch": 10,
+    "hits": 0
+   },
+   {
+    "pitch": 11,
+    "hits": 0
+   },
+   {
+    "pitch": 12,
+    "hits": 0
+   },
+   {
+    "pitch": 14,
+    "hits": 0
+   },
+   {
+    "pitch": 16,
+    "hits": 0
+   },
+   {
+    "pitch": 18,
+    "hits": 0
+   },
+   {
+    "pitch": 20,
+    "hits": 0
+   }
+  ],
+  "readAs": "-3..-0.5 nothing (the bot's head off the centre line in its aiming pose), 0 and 0.25 neck, 0.5-5 chest, 6-7 stomach, 8-20 nothing (between the legs)"
+ }
+}

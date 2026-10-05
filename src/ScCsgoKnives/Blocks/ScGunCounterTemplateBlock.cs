@@ -32,6 +32,8 @@ public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
         if (entry < 0 || entry >= Entries.Length || level > ScGunGrowth.MaxLevel) return false;
         (variant, skin) = Entries[entry]; return true;
     }
+    /// <summary>As ScGunBlock: taken in hand it becomes one gun with its own record, so it never stacks.</summary>
+    public override int GetMaxStacking(int value) => 1;
     public static bool IsTemplate(int value) => BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunCounterTemplateBlock), out int index)
         && Terrain.ExtractContents(value) == index;
     public static bool TrySnapshot(int value, out ScGunSnapshot snapshot) {

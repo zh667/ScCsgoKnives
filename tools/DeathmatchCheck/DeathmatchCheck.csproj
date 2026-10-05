@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- deathmatch-addon: the package's rules without a game - the match state machine, the armoury ledger, the spawn
+       selection, the health/armour settlement against hand-computed values, the CS2 profile against values copied from
+       the vdata by hand. No engine world is created; what needs one is in NetLoopCheck (dmloop) and TacticalLoadCheck. -->
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>preview</LangVersion></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/ScCsgoDeathmatch/ScCsgoDeathmatch.csproj"/></ItemGroup>
+</Project>

@@ -60,5 +60,7 @@ public static class ScWorkbenchExtension {
         // remain available; do not mistake vanilla creative eggs for laid eggs.
         if (ScOptionalAgents.Available) Add("chicken-egg", "CS 小鸡生成蛋", "生物", () => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)), 2,
             [], creativeOnly:true);
+        // current-direction-20260929 §1: the player's body/head protection values (make, configure, view, repair).
+        ScArmorWorkbench.Register();
     }
 }

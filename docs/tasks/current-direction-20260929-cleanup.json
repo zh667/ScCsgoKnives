@@ -1,0 +1,339 @@
+{
+ "task": "current-direction-20260929 (c09-c10 unreleased armour-item candidates, c11-c13 numeric protection rounds)",
+ "mode": "delete",
+ "deleted": [
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\candidate",
+   "bytes": 601694610,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\clips",
+   "bytes": 150939040,
+   "files": 10
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\full",
+   "bytes": 766191915,
+   "files": 433
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\lite",
+   "bytes": 179065927,
+   "files": 438
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\resources",
+   "bytes": 57510958,
+   "files": 20
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\tools",
+   "bytes": 646284422,
+   "files": 341
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\tree",
+   "bytes": 90906329,
+   "files": 1097
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c09\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\candidate",
+   "bytes": 601424097,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\clips",
+   "bytes": 150939040,
+   "files": 10
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\full",
+   "bytes": 766191937,
+   "files": 433
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\lite",
+   "bytes": 179065949,
+   "files": 438
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\resources",
+   "bytes": 57574960,
+   "files": 25
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\tools",
+   "bytes": 646284422,
+   "files": 341
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\tree",
+   "bytes": 90908512,
+   "files": 1097
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c10\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c11\\candidate",
+   "bytes": 600627504,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c11\\full",
+   "bytes": 766251568,
+   "files": 431
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c11\\lite",
+   "bytes": 179126092,
+   "files": 436
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c11\\resources",
+   "bytes": 56814314,
+   "files": 13
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c11\\tree",
+   "bytes": 72070242,
+   "files": 1011
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c11\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\candidate",
+   "bytes": 600627409,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\full",
+   "bytes": 766249804,
+   "files": 431
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\lite",
+   "bytes": 179124328,
+   "files": 436
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\resources",
+   "bytes": 56814314,
+   "files": 13
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\tree",
+   "bytes": 109967668,
+   "files": 1171
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c12\\old130",
+   "bytes": 137021952,
+   "files": 2
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\candidate",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\full",
+   "bytes": 766257961,
+   "files": 431
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\lite",
+   "bytes": 179132485,
+   "files": 436
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\resources",
+   "bytes": 56814314,
+   "files": 13
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\tools",
+   "bytes": 646337670,
+   "files": 341
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\tree",
+   "bytes": 109981454,
+   "files": 1171
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c13\\old130",
+   "bytes": 137021952,
+   "files": 2
+  }
+ ],
+ "bytes": 10572442051,
+ "permanent": "yes (rebuildable stage copies, packages and builds; not a recycle bin)",
+ "freeBeforeGB": 33.81,
+ "freeAfterGB": 43.68,
+ "keptPerStage": {
+  "c09": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "c4-full.json",
+   "c4-lite.json",
+   "checks.json",
+   "clips.json",
+   "hotspots",
+   "logs",
+   "main-full.json",
+   "main-lite.json",
+   "motion",
+   "native-full.json",
+   "packages.json",
+   "source-hashes.json",
+   "split-agents.json",
+   "split-core.json",
+   "tactical-full-suite.json",
+   "throw",
+   "ui",
+   "vf-full.json",
+   "vf-lite.json"
+  ],
+  "c10": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "c4-full.json",
+   "c4-lite.json",
+   "checks.json",
+   "clips.json",
+   "hotspots",
+   "logs",
+   "main-full.json",
+   "main-lite.json",
+   "motion",
+   "native-full.json",
+   "packages.json",
+   "source-hashes.json",
+   "split-agents.json",
+   "split-core.json",
+   "tactical-full-suite.json",
+   "throw",
+   "ui",
+   "vf-full.json",
+   "vf-lite.json"
+  ],
+  "c11": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "clips.json",
+   "logs",
+   "packages.json",
+   "source-hashes.json"
+  ],
+  "c12": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "c4-full.json",
+   "c4-lite.json",
+   "clips.json",
+   "compat.json",
+   "family.json",
+   "integration-full-both.json",
+   "integration-full-none.json",
+   "integration-full-reversed.json",
+   "integration-lite-both.json",
+   "integration-lite-none.json",
+   "integration-lite-reversed.json",
+   "inventory.json",
+   "logs",
+   "main-full.json",
+   "main-lite.json",
+   "native-hooks.json",
+   "native-lite.json",
+   "old130.json",
+   "packages.json",
+   "source-hashes.json"
+  ],
+  "c13": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "c4-full.json",
+   "c4-lite.json",
+   "checks.json",
+   "clips.json",
+   "compat.json",
+   "family.json",
+   "hotspots",
+   "integration-full-both.json",
+   "integration-full-none.json",
+   "integration-full-reversed.json",
+   "integration-lite-both.json",
+   "integration-lite-none.json",
+   "integration-lite-reversed.json",
+   "inventory.json",
+   "logs",
+   "main-full.json",
+   "main-lite.json",
+   "motion",
+   "native-full.json",
+   "native-hooks.json",
+   "native-lite.json",
+   "old130.json",
+   "packages.json",
+   "source-hashes.json",
+   "split-agents.json",
+   "split-core.json",
+   "tactical-full-suite.json",
+   "throw",
+   "ui",
+   "vf-full.json",
+   "vf-lite.json"
+  ]
+ },
+ "keptCache": {
+  "clips-e32b553d5c3477bb": 56815154
+ },
+ "delivered": {
+  "全量": "0bfa61e523c8dc1ba67faf98e4ea8ef3bada4fe3781b8c9b34028a6567826abf",
+  "轻量": "f2eff2bbe0a4ab9dee5c5bb744e2b2810c84952eea53ae6b0c83f3aab06f896a",
+  "探员": "ee92acfe43fe612546b37e8357c5210ac2ffcf92bbf06acc16c8de7b98976e8c"
+ },
+ "kept": "reports (*.json), logs, motion/throw/hotspots/ui renders and reports, source-hashes.json, packages.json; the clip cache (keyed by input hash, reused by the next round); output packages; release-140, dense/export and CS2 sources; the archived armour-item assets (.tmp/archive/armor-item-c10-20260929); earlier task stages untouched"
+}

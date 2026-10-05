@@ -49,7 +49,7 @@ try {
     Check("one persistent tactical identity",ModsManager.ModList.Count(m=>m.modInfo.PackageName=="zh667.ScCsgoTactical")==1);
     var identity=ModsManager.ModList.Single(m=>m.modInfo.PackageName=="zh667.ScCsgoTactical");
     Check("inactive alias never supplies gameplay",enabled||identity.ModArchive==null&&identity.BlockTypes.Count==0&&identity.Loaders.Count==0);
-    Check("public identity version stays 1.3.0",identity.modInfo.Version=="1.3.0");
+    Check("public identity version matches the core package",identity.modInfo.Version==core.modInfo.Version);
     var used=new SubsystemUsedMods();var saved=new ValuesDictionary();used.Save(saved);
     for(int round=0;round<2;round++){var x=new XElement("Values");saved.Save(x);saved=new ValuesDictionary();saved.ApplyOverrides(XElement.Parse(x.ToString()));Check("native UsedMods survives XML "+round,saved.GetValue<int>("ModsCount")==2);}
     using var content=System.IO.Compression.ZipFile.OpenRead(args[2]);using var stream=content.Entries.Single(e=>e.FullName.EndsWith("Database.xml")).Open();var database=XElement.Load(stream);

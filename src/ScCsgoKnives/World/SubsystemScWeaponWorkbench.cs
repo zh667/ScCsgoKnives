@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Engine;
 namespace Game;
 
@@ -8,11 +9,32 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
     internal static Dialog NoticeDialog(string title, string detail, Action back) =>
         new ScWorkbenchConfirmDialog(title, detail, "返回", null, _ => back());
     public override int[] HandledBlocks => [BlocksManager.GetBlockIndex<ScWeaponWorkbenchBlock>(true)];
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComponentPlayer, StrongBox<Point3>> s_benches = new();
+    /// <summary>The workbench this player last opened here (commits sent by a remote multiplayer client name it).</summary>
+    public static Point3 BenchOf(ComponentPlayer player) => player is not null && s_benches.TryGetValue(player, out var box) ? box.Value : default;
+    /// <summary>Creative: turns the hotbar's finish and counter templates into real guns (done by the authority).</summary>
+    internal static void MaterializeHotbar(ComponentPlayer player) {
+        var inventory = player?.ComponentMiner?.Inventory;
+        if (inventory is null) return;
+        int count = Math.Min(10, inventory.SlotsCount);
+        for (int slot = 0; slot < count; slot++) {
+            int value = inventory.GetSlotValue(slot);
+            string holder = ScGunHolders.PlayerKey(player, slot);
+            if (ScGunSkinTemplateBlock.IsTemplate(value)) ScGunSkinTemplateBlock.Materialize(inventory, slot, holder);
+            else if (ScGunCounterTemplateBlock.IsTemplate(value)) ScGunCounterTemplateBlock.Materialize(inventory, slot, holder);
+        }
+    }
     public override bool OnInteract(TerrainRaycastResult hit, ComponentMiner miner) {
         ComponentPlayer player = miner.ComponentPlayer;
         if (player is null) return false;
+        // Multiplayer: the server repeats a remote client's interaction (the client itself only sends it) and tells that client
+        // to show its own workbench; its commits come back through ScNetWorkbench.
+        if (!ScNet.IsLocal(player)) { if (ScNet.IsRemoteDriven(player)) ScNetWorkbench.OpenOnClient(player, hit); return true; }
         var terrain = Project.FindSubsystem<SubsystemTerrain>(true);
         Point3 position = new(hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z);
+        s_benches.AddOrUpdate(player, new StrongBox<Point3>(position));
+        ScWorkbenchOp Op(ScWorkbenchOpKind kind, int value = 0, int quantity = 1, int slot = -1, int expected = 0, int revision = -1, int arg = 0) =>
+            new(kind, position, value, quantity, slot, expected, revision, arg);
         bool Available() => player.ComponentHealth.Health > 0 && Vector3.Distance(player.ComponentBody.Position, new Vector3(position)) < 6
             && Terrain.ExtractContents(terrain.Terrain.GetCellValue(position.X, position.Y, position.Z)) == HandledBlocks[0];
         bool Creative() => Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative;
@@ -21,20 +43,11 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
         string ValueName(int value) => BlocksManager.Blocks[Terrain.ExtractContents(value)].GetDisplayName(terrain, value);
         string MaterialLines(IReadOnlyDictionary<int, int> materials) => string.Join("\n", materials.Select(m => $"{ValueName(m.Key)} ×{m.Value}（现有 {ScInventoryTransaction.Count(miner.Inventory, m.Key)}）"));
         void Notice(string title, string detail, Action back) {
-            KnifeLog.Trace($"workbench notice: mode={(Creative()?"creative":"survival")} page={title} reason={detail}");
             DialogsManager.ShowDialog(player.GuiWidget, NoticeDialog(title,detail,back));
         }
         void MaterializeCreativeShortcutGuns() {
             if (!Creative() || miner.Inventory is null) return;
-            int count = Math.Min(10, miner.Inventory.SlotsCount);
-            for (int slot = 0; slot < count; slot++) {
-                int value = miner.Inventory.GetSlotValue(slot);
-                string holder = ScGunHolders.PlayerKey(player, slot);
-                if (ScGunSkinTemplateBlock.IsTemplate(value))
-                    ScGunSkinTemplateBlock.Materialize(miner.Inventory, slot, holder);
-                else if (ScGunCounterTemplateBlock.IsTemplate(value))
-                    ScGunCounterTemplateBlock.Materialize(miner.Inventory, slot, holder);
-            }
+            ScNetWorkbench.Run(Op(ScWorkbenchOpKind.MaterializeHotbar), () => { MaterializeHotbar(player); return new(1); }, _ => { });
         }
         var navigation = new Dictionary<string,ScWorkbenchSelectionDialog.Navigation>();
         Dialog Selection(string title, System.Collections.IEnumerable items, float rowHeight, Func<object,string> label, Action<object> selected,Func<object,Dictionary<int,int>> materialQuote=null) {
@@ -43,7 +56,6 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
             dialog=new ScWorkbenchSelectionDialog(title,items,rowHeight,label,item=>{
                 navigation[title]=dialog.CaptureNavigation();
                 bool available=Available();
-                KnifeLog.Trace($"workbench select: mode={(Creative()?"creative":"survival")} page={title} item={label(item)} inventory={miner.Inventory?.GetType().Name} slots={miner.Inventory?.SlotsCount} available={available}");
                 if(available)selected(item);
                 else Notice("装配台暂不可用","你已离装配台太远、装配台已被移除，或角色已无法操作。请靠近有效的装配台后重新打开。",()=>{});
             },miner.Inventory,Creative());
@@ -52,6 +64,7 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 return !ReferenceEquals(selectedInventory,miner.Inventory)||selectedCreative!=Creative()?"背包或模式已切换，请重新打开装配台。":!Available()?"装配台暂不可用，请靠近后操作。":!Creative()
                     && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level<level?$"需要人物等级 {level}。":"";
             };
+            dialog.Bench=position;
             if(materialQuote is not null)dialog.SetMaterialQuote(materialQuote);
             dialog.RestoreNavigation(navigation.GetValueOrDefault(title));
             if(title!= "武器装配台 · 组装 / 维修 / 涂装 / 计数器")dialog.BackAction=title.EndsWith("· 选择涂装",StringComparison.Ordinal)?ShowSkinGuns:ShowList;
@@ -86,8 +99,9 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(component.Name,
                             "产出 1 件\n" + MaterialLines(cost), "制作", "返回", answer => {
                                 if (answer == MessageDialogButton.Button1 && Available()) {
-                                    bool made = ScWeaponCrafting.TryCraft(miner.Inventory, component.Value, Creative() ? new Dictionary<int,int>() : cost);
-                                    Notice(made ? "制作完成" : "制作未完成", made ? component.Name + " ×1" : "材料不足、库存已变化或没有成品空位。", ShowList);
+                                    ScNetWorkbench.Run(Op(ScWorkbenchOpKind.Craft, component.Value),
+                                        () => new(ScWeaponCrafting.TryCraft(miner.Inventory, component.Value, Creative() ? new Dictionary<int,int>() : cost) ? 1 : 0),
+                                        r => Notice(r.Code == 1 ? "制作完成" : "制作未完成", r.Code == 1 ? component.Name + " ×1" : r.Detail is { Length: > 0 } d ? d : "材料不足、库存已变化或没有成品空位。", ShowList));
                                 } else ShowList();
                             }));
                         return;
@@ -109,8 +123,10 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(Name(entry), detail, "组装", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
                             bool levelOk = Creative() || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= entry.Level;
-                            bool crafted = levelOk && ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, Creative() ? new Dictionary<int, int>() : materials);
-                            Notice(crafted ? "组装完成" : "组装未完成", crafted ? "组装完成：" + Name(entry) : levelOk ? "材料不足或没有成品空位，未扣除材料。" : $"制作需要等级 {entry.Level}，未扣除材料。", ShowList);
+                            if (!levelOk) { Notice("组装未完成", $"制作需要等级 {entry.Level}，未扣除材料。", ShowList); return; }
+                            ScNetWorkbench.Run(Op(ScWorkbenchOpKind.Craft, entry.Value),
+                                () => new(ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, Creative() ? new Dictionary<int, int>() : materials) ? 1 : 0),
+                                r => Notice(r.Code == 1 ? "组装完成" : "组装未完成", r.Code == 1 ? "组装完成：" + Name(entry) : r.Detail is { Length: > 0 } d ? d : "材料不足或没有成品空位，未扣除材料。", ShowList));
                             return;
                         }
                         ShowList();
@@ -131,8 +147,9 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog($"设置 {ValueName(gun.Value)} 为 Lv{level}",
                         "仅修改快捷栏中的这一把枪；弹药、涂装、消音器和耐久按等级规则保留。不会创建新枪或改变枪械编号。", "应用", "返回", answer => {
                             if (answer == MessageDialogButton.Button1 && Available()) {
-                                var result = ScGunGrowthService.SetCreativeLevel(miner.Inventory, gun.Slot, ScGunHolders.PlayerKey(player, gun.Slot), level, Project.FindSubsystem<SubsystemTime>(true).GameTime);
-                                Notice(result == ScGunResult.Success ? "等级已设置" : "等级设置失败", result == ScGunResult.Success ? $"{ValueName(gun.Value)} 已设置为 Lv{level}。" : "枪械状态已变化，未修改。", ShowList);
+                                ScNetWorkbench.Run(Op(ScWorkbenchOpKind.CreativeLevel, slot: gun.Slot, expected: gun.Value, arg: level),
+                                    () => new((int)ScGunGrowthService.SetCreativeLevel(miner.Inventory, gun.Slot, ScGunHolders.PlayerKey(player, gun.Slot), level, Project.FindSubsystem<SubsystemTime>(true).GameTime)),
+                                    r => Notice(r.Code == (int)ScGunResult.Success ? "等级已设置" : "等级设置失败", r.Code == (int)ScGunResult.Success ? $"{ValueName(gun.Value)} 已设置为 Lv{level}。" : "枪械状态已变化，未修改。", ShowList));
                             } else DialogsManager.ShowDialog(player.GuiWidget, SelectionLevels(gun));
                         }));
                 });
@@ -160,10 +177,13 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         + "\n按实际缺损计算，最后一次向上取整；轻微磨损建议积攒后再修。\n只恢复耐久，不改变余弹、消音器和型号。";
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(ValueName(c.Value), detail, "维修", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
-                            var result = ScWeaponRepair.TryRepair(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
-                            KnifeLog.Trace($"gun repair: {ValueName(c.Value)} slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.Durability}/{quote.Full} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
-                            Notice(result == ScGunResult.Success ? "维修完成" : "维修未完成", result == ScGunResult.Success ? "维修完成：" + ValueName(c.Value)
-                                : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。", ShowRepair);
+                            ScNetWorkbench.Run(Op(ScWorkbenchOpKind.Repair, slot: quote.Slot, expected: c.Value, revision: quote.Revision),
+                                () => new((int)ScWeaponRepair.TryRepair(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot))),
+                                r => {
+                                    var result = (ScGunResult)Math.Max(0, r.Code);
+                                    Notice(r.Code == (int)ScGunResult.Success ? "维修完成" : "维修未完成", r.Code == (int)ScGunResult.Success ? "维修完成：" + ValueName(c.Value)
+                                        : r.Code < 0 ? r.Detail : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。", ShowRepair);
+                                });
                             return;
                         }
                         ShowRepair();
@@ -195,8 +215,9 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         +"\n"+(free?"创造模式：免费":MaterialLines(quote.Cost))+"\n仅改变这一把刀的外观，型号与伤害不变。";
                     DialogsManager.ShowDialog(player.GuiWidget,new ScWorkbenchConfirmDialog("刀具涂装",detail,"更换","返回",button=>{
                         if(button==MessageDialogButton.Button1 && Available()) {
-                            bool ok=ScKnifeSkinning.Apply(miner.Inventory,quote,Creative());
-                            Notice(ok?"涂装完成":"涂装未完成",ok?"刀具外观已更换。":"材料、背包或模式发生变化；请重新选择。失败交易会回滚，无法放回的物品保留在恢复队列。",ShowSkinGuns);
+                            ScNetWorkbench.Run(Op(ScWorkbenchOpKind.KnifeSkin,slot:knife.Slot,expected:knife.Value,arg:finish.Skin),
+                                ()=>new(ScKnifeSkinning.Apply(miner.Inventory,quote,Creative())?1:0),
+                                r=>Notice(r.Code==1?"涂装完成":"涂装未完成",r.Code==1?"刀具外观已更换。":r.Detail is {Length:>0} d?d:"材料、背包或模式发生变化；请重新选择。失败交易会回滚，无法放回的物品保留在恢复队列。",ShowSkinGuns));
                         } else ShowSkinGuns();
                     }));
                 }));
@@ -226,11 +247,15 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         + (skin is { Approximate: true } ? "\n说明：官方 light 图标与本地烘焙材质；磨损和珠光效果不保证与 CS2 完全一致。" : "");
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(skin?.Name ?? "原厂外观", detail, "更换", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
-                            var result = ScWeaponSkinning.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot));
-                            KnifeLog.Information($"[GUN_WORKBENCH] skin: slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.FromSkinId} -> {skin?.PaintId ?? 0} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
-                            Notice(result == ScGunResult.Success ? "涂装完成" : "涂装未完成", result == ScGunResult.Success ? "涂装完成：" + (skin?.Name ?? "原厂外观")
-                                : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
-                                ShowSkinGuns);
+                            ScNetWorkbench.Run(Op(ScWorkbenchOpKind.GunSkin, slot: quote.Slot, expected: gun.Value, revision: quote.Revision, arg: skin?.PaintId ?? 0),
+                                () => new((int)ScWeaponSkinning.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot))),
+                                r => {
+                                    var result = (ScGunResult)Math.Max(0, r.Code);
+                                    KnifeLog.Diagnostic($"[GUN_WORKBENCH] skin: slot {quote.Slot} record {quote.Id} rev {quote.Revision} {quote.FromSkinId} -> {skin?.PaintId ?? 0} cost {string.Join(",", quote.Cost.Select(m => m.Value))} -> {result}");
+                                    Notice(r.Code == (int)ScGunResult.Success ? "涂装完成" : "涂装未完成", r.Code == (int)ScGunResult.Success ? "涂装完成：" + (skin?.Name ?? "原厂外观")
+                                        : r.Code < 0 ? r.Detail : result == ScGunResult.StateChanged ? "枪械状态已变化，报价作废，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
+                                        ShowSkinGuns);
+                                });
                             return;
                         }
                         ShowSkinGuns();
@@ -274,12 +299,16 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                         + (registry.GrowthMode == ScGunGrowthMode.CountAndGrow ? "\n本世界规则：计数 + 成长（等级上限 Lv50，击杀门槛逐级提高；狙击枪 ×0.6、电击枪 ×0.3、机枪 ×1.5）。" : "\n本世界规则：仅计数，不提供成长加成。");
                     DialogsManager.ShowDialog(player.GuiWidget, new ScWorkbenchConfirmDialog(ValueName(c.Value), detail, "安装", "返回", button => {
                         if (button == MessageDialogButton.Button1 && Available()) {
-                            var result = levelOk ? ScGunCounter.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot)) : ScGunResult.InsufficientMaterials;
-                            KnifeLog.Information($"[GUN_WORKBENCH] counter install: slot {quote.Slot} record {quote.Id} rev {quote.Revision} -> {result}");
-                            Notice(result == ScGunResult.Success ? "安装完成" : "安装未完成", result == ScGunResult.Success ? "计数器已安装：" + ValueName(c.Value)
-                                : !levelOk ? $"安装需要等级 {ScGunGrowth.InstallLevel}，未扣除材料。"
-                                : result == ScGunResult.StateChanged ? "枪械状态已变化，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
-                                ShowCounterGuns);
+                            if (!levelOk) { Notice("安装未完成", $"安装需要等级 {ScGunGrowth.InstallLevel}，未扣除材料。", ShowCounterGuns); return; }
+                            ScNetWorkbench.Run(Op(ScWorkbenchOpKind.Counter, slot: quote.Slot, expected: c.Value, revision: quote.Revision),
+                                () => new((int)ScGunCounter.Apply(miner.Inventory, quote, ScGunHolders.PlayerKey(player, quote.Slot))),
+                                r => {
+                                    var result = (ScGunResult)Math.Max(0, r.Code);
+                                    KnifeLog.Diagnostic($"[GUN_WORKBENCH] counter install: slot {quote.Slot} record {quote.Id} rev {quote.Revision} -> {result}");
+                                    Notice(r.Code == (int)ScGunResult.Success ? "安装完成" : "安装未完成", r.Code == (int)ScGunResult.Success ? "计数器已安装：" + ValueName(c.Value)
+                                        : r.Code < 0 || r.Detail.Length > 0 ? r.Detail : result == ScGunResult.StateChanged ? "枪械状态已变化，请重新选择。" : ScGunMutation.Explain(result) + "，未扣除材料。",
+                                        ShowCounterGuns);
+                                });
                             return;
                         }
                         ShowCounterGuns();
@@ -294,12 +323,17 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                 $"选择本世界的计数器规则。选定后不可在游戏中切换。\n\n计数 + 成长：等级上限 Lv50，击杀门槛逐级提高（满级累计 {ScGunGrowth.KillsFor(ScGunGrowth.MaxLevel)} 杀；狙击枪 ×0.6、电击枪 ×0.3、机枪 ×1.5）；伤害、射速、射程、弹匣、耐久上限与充能随等级提升。\n仅计数：只记录并显示击杀数，不改变任何战斗数值。",
                 "计数 + 成长", "仅计数", button => {
                     var mode = button == MessageDialogButton.Button1 ? ScGunGrowthMode.CountAndGrow : ScGunGrowthMode.CountOnly;
-                    var registry = ScGunRegistry.Current;
-                    if (registry is not null && registry.GrowthMode == ScGunGrowthMode.Unset) {
+                    ScNetWorkbench.Run(Op(ScWorkbenchOpKind.GrowthMode, arg: (int)mode), () => {
+                        var registry = ScGunRegistry.Current;
+                        if (registry is null || registry.GrowthMode != ScGunGrowthMode.Unset) return new(0);
                         registry.GrowthMode = mode;
                         KnifeLog.Information("gun counter world rule set to " + mode);
-                    }
-                    then();
+                        return new(1);
+                    }, r => {
+                        // A remote client's mirror takes the server's rule at once, so the next page does not ask again.
+                        if (r.Code == 1 && ScNet.IsRemoteClient && ScGunRegistry.Current is { GrowthMode: ScGunGrowthMode.Unset } mirror) mirror.GrowthMode = mode;
+                        then();
+                    });
                 }));
         }
         ShowList(); return true;

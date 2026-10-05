@@ -42,34 +42,67 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
     public static bool HoldingKnife(ComponentPlayer player) => Terrain.ExtractContents(player.ComponentMiner.ActiveBlockValue) == BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
     static bool CanOperate(ComponentPlayer player) => ScGunBindings.Available(player);
     public void RequestAttack(ComponentPlayer player, bool heavy) {
-        if (!HoldingKnife(player) || !CanOperate(player)) return;
+        bool remote = ScNet.IsRemoteDriven(player);
+        if (!HoldingKnife(player) || !CanOperate(player)) { if (remote || ScNet.IsRemoteClient) ScNet.Trace($"knife P{player.PlayerData.PlayerIndex} refused: holding {HoldingKnife(player)} available {CanOperate(player)}"); return; }
+        // mp-user-logs-20261002: a client whose CS network layer is not accepted cannot have the server strike. It shows
+        // no swing that hits nothing (the knife "did no damage") and is told why instead.
+        if (!remote && ScNet.IsLocal(player) && ScNet.ClientBlocked) { ScNet.Trace("knife refused: client blocked"); ScNet.TellBlocked(player); return; }
         var state = State(player);
-        if (state.HitAt >= 0 || m_time.GameTime < state.Next) return;
-        if (!KnifeAnimationController.TriggerKnifeAttack(player, heavy)) return;
+        if (state.HitAt >= 0 || m_time.GameTime < state.Next) { if (remote || ScNet.IsRemoteClient) ScNet.Trace($"knife P{player.PlayerData.PlayerIndex} refused: cadence"); return; }
+        // The swing's viewmodel is the swinging client's: the server never draws a remote player's first-person model, so
+        // its animation state there is not a gate (the client checked its own before sending; the cadence below still holds).
+        if (!remote && !KnifeAnimationController.TriggerKnifeAttack(player, heavy)) { if (ScNet.IsRemoteClient) ScNet.Trace("knife: viewmodel not ready"); return; }
         if (!state.Start(m_time.GameTime, heavy)) return;
+        if (remote) ScNet.Trace($"knife P{player.PlayerData.PlayerIndex} swing heavy={heavy}");
         state.Inventory = player.ComponentMiner.Inventory;
         state.Slot = state.Inventory.ActiveSlotIndex;
         state.Value = player.ComponentMiner.ActiveBlockValue;
         state.Revision = ScInventoryTransaction.Revision(state.Inventory);
+        // Multiplayer: a remote client shows its swing and the server strikes (same timing, from this aim).
+        if (ScNet.IsRemoteClient && ScNet.IsLocal(player)) {
+            bool sent = ScNetGuns.SendKnife(heavy, true, ViewRay(player)); ScNet.Trace($"knife swing sent heavy={heavy}: {sent}");
+            // The request did not leave (the connection is closing): the strike will not happen, so its timeline is dropped.
+            if (!sent) { state.Cancel(); ScNet.TellBlocked(player); }
+        }
+    }
+    /// <summary>Where this player looks: its camera here, or (server) the aim its remote client sent.</summary>
+    static Ray3 ViewRay(ComponentPlayer player) {
+        if (ScNetGuns.RemoteInput(player) is { HasAim: true } remote) return remote.Aim;
+        Camera camera = player.GameWidget?.ActiveCamera;
+        Ray3 view = camera is not null ? new Ray3(camera.ViewPosition, camera.ViewDirection)
+            : new Ray3(player.ComponentCreatureModel.EyePosition, Matrix.CreateFromQuaternion(player.ComponentCreatureModel.EyeRotation).Forward);
+        // The strike leaves the character's eye along the view's direction; a camera away from the eye only says where it points.
+        return ScAimRay.Resolve(player, view, melee: true);
     }
     public void Update(float dt) {
         KnifeQa.Step();
         foreach (var player in m_players.ComponentPlayers) {
-            UpdateButtons(player);
+            // Buttons and keys are this process's own players'; a remote client's player (server) acts from its messages.
+            bool local = ScNet.IsLocal(player);
+            if (!local && ScNetGuns.RemoteInput(player) is null) continue;
+            if (local) UpdateButtons(player);
             bool knife = HoldingKnife(player);
             var state = State(player);
             if (!knife || !CanOperate(player) || state.Inventory != player.ComponentMiner.Inventory
                 || state.Slot != state.Inventory?.ActiveSlotIndex || state.Value != player.ComponentMiner.ActiveBlockValue
-                || state.Revision != ScInventoryTransaction.Revision(state.Inventory)) { state.Cancel(); continue; }
+                || state.Revision != ScInventoryTransaction.Revision(state.Inventory)) {
+                if (!local && state.HitAt >= 0) ScNet.Trace($"knife P{player.PlayerData.PlayerIndex} cancelled: knife {knife} available {CanOperate(player)} slot {state.Slot}/{state.Inventory?.ActiveSlotIndex} value {state.Value == player.ComponentMiner.ActiveBlockValue}");
+                state.Cancel(); continue; }
             if (!state.TakeHit(m_time.GameTime)) continue;
-            Camera camera = player.GameWidget.ActiveCamera;
-            Ray3 ray = new(camera.ViewPosition, camera.ViewDirection);
+            Ray3 ray = ViewRay(player);
             var hit = player.ComponentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, ScKnifeStrike.Range(state.Heavy));
+            if (!local) ScNet.Trace($"knife P{player.PlayerData.PlayerIndex} strike: {(hit.HasValue ? hit.Value.ComponentBody.Entity?.Id.ToString() ?? "?" : "nothing")} at {hit?.Distance:0.00} range {ScKnifeStrike.Range(state.Heavy):0.00}");
             if (hit.HasValue) {
                 float power = ScKnifeStrike.Power(state.Heavy) * player.ComponentMiner.StrengthFactor;
-                ScSurvivalBalance.Attack(hit.Value.ComponentBody, player, hit.Value.HitPoint(), ray.Direction, power, m_time.GameTime, melee: true);
-                KnifeAnimationController.KnifeHitPose(player, state.Heavy);
-                ScControllerFeedback.KnifeHit(player,state.Heavy);
+                // Damage is the authority's; a remote client's own swing only shows the hit pose.
+                if (ScNet.IsAuthority && ScModes.AcceptAttack(player, ScAttackKind.Knife)) {
+                    int knifeValue = player.ComponentMiner.ActiveBlockValue;
+                    var facts = new ScAttackFacts { Kind = ScAttackKind.Knife, WeaponValue = knifeValue, Weapon = "knife_" + ScKnifeBlock.GetAssetName(ScKnifeBlock.GetVariant(knifeValue)),
+                        AttackerPlayer = player.PlayerData?.PlayerIndex ?? -1, Heavy = state.Heavy, Distance = hit.Value.Distance,
+                        AttackerBlind = Project.FindSubsystem<SubsystemScGrenades>(false)?.IsBodyBlinded(player.ComponentBody) == true };
+                    ScSurvivalBalance.AttackWith(hit.Value.ComponentBody, player, hit.Value.HitPoint(), ray.Direction, power, m_time.GameTime, true, false, false, null, null, facts);
+                }
+                if (local) { KnifeAnimationController.KnifeHitPose(player, state.Heavy); ScControllerFeedback.KnifeHit(player,state.Heavy); }
             }
         }
     }
@@ -152,7 +185,6 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
         m_inspectHeld[player] = false;
         if ((knife || gun || grenade || c4) && inspectPressed && !(c4 && Project.FindSubsystem<SubsystemScC4>()?.IsPlanting(player) == true)) {
             if (knife) State(player).Cancel();
-            KnifeLog.Information($"[GUN_INPUT] inspect edge player={player.PlayerData.PlayerIndex} kind={(knife ? "knife" : gun ? "gun" : "grenade")} source={(touchInspect ? "touch" : "mapped")}");
             KnifeAnimationController.TriggerInspect(player);
         }
     }

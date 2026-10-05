@@ -1,0 +1,124 @@
+{
+ "task": "round3-fire-smoke-projectile-mp-20260930",
+ "date": "2026-09-30T20:57:24",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r3kCandidatesMoved": true,
+  "mode": "do",
+  "dryRunJob": "r3-cleanup-final-dryrun-01"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "earlierReceipts": [
+  "round3-fire-smoke-projectile-mp-20260930-cleanup-early.json",
+  "round3-fire-smoke-projectile-mp-20260930-cleanup-early-2.json"
+ ],
+ "removed": {
+  "stages r3h/r3i/r3j build trees and their superseded candidates": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r3h\\full",
+    ".tmp\\completion-140-20260929\\r3h\\lite",
+    ".tmp\\completion-140-20260929\\r3h\\tools",
+    ".tmp\\completion-140-20260929\\r3h\\tree",
+    ".tmp\\completion-140-20260929\\r3h\\assets-full",
+    ".tmp\\completion-140-20260929\\r3h\\resources",
+    ".tmp\\completion-140-20260929\\r3h\\net",
+    ".tmp\\completion-140-20260929\\r3h\\motion",
+    ".tmp\\completion-140-20260929\\r3h\\throw",
+    ".tmp\\completion-140-20260929\\r3h\\ui",
+    ".tmp\\completion-140-20260929\\r3h\\candidate",
+    ".tmp\\completion-140-20260929\\r3i\\full",
+    ".tmp\\completion-140-20260929\\r3i\\lite",
+    ".tmp\\completion-140-20260929\\r3i\\tools",
+    ".tmp\\completion-140-20260929\\r3i\\tree",
+    ".tmp\\completion-140-20260929\\r3i\\assets-full",
+    ".tmp\\completion-140-20260929\\r3i\\resources",
+    ".tmp\\completion-140-20260929\\r3i\\net",
+    ".tmp\\completion-140-20260929\\r3i\\motion",
+    ".tmp\\completion-140-20260929\\r3i\\throw",
+    ".tmp\\completion-140-20260929\\r3i\\ui",
+    ".tmp\\completion-140-20260929\\r3i\\candidate",
+    ".tmp\\completion-140-20260929\\r3j\\full",
+    ".tmp\\completion-140-20260929\\r3j\\lite",
+    ".tmp\\completion-140-20260929\\r3j\\tools",
+    ".tmp\\completion-140-20260929\\r3j\\tree",
+    ".tmp\\completion-140-20260929\\r3j\\assets-full",
+    ".tmp\\completion-140-20260929\\r3j\\resources",
+    ".tmp\\completion-140-20260929\\r3j\\net",
+    ".tmp\\completion-140-20260929\\r3j\\motion",
+    ".tmp\\completion-140-20260929\\r3j\\throw",
+    ".tmp\\completion-140-20260929\\r3j\\ui",
+    ".tmp\\completion-140-20260929\\r3j\\candidate"
+   ],
+   "bytes": 7477451885,
+   "items": 12591,
+   "missing": []
+  },
+  "stage r3k build trees (delivered; logs, reports, net.json, packages.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r3k\\full",
+    ".tmp\\completion-140-20260929\\r3k\\lite",
+    ".tmp\\completion-140-20260929\\r3k\\tools",
+    ".tmp\\completion-140-20260929\\r3k\\tree",
+    ".tmp\\completion-140-20260929\\r3k\\assets-full",
+    ".tmp\\completion-140-20260929\\r3k\\resources",
+    ".tmp\\completion-140-20260929\\r3k\\net",
+    ".tmp\\completion-140-20260929\\r3k\\motion",
+    ".tmp\\completion-140-20260929\\r3k\\throw",
+    ".tmp\\completion-140-20260929\\r3k\\ui"
+   ],
+   "bytes": 1891706655,
+   "items": 4194,
+   "missing": []
+  },
+  "MP test packages (candidate copies)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3h-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3h-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3i-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3i-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3j-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3j-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3k-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3k-lite.scmod"
+   ],
+   "bytes": 2249323598,
+   "items": 8,
+   "missing": []
+  },
+  "r3f smoke recording raw frames (GIF/sheets/JSON kept)": {
+   "paths": [
+    "774 PNG frames under .tmp\\mp-m0-20260929\\run\\smoke-motion-r3f-lite-20260930-165628"
+   ],
+   "bytes": 729113379,
+   "items": 774,
+   "missing": []
+  },
+  "totalBytes": 12347595517,
+  "items": 17567
+ },
+ "kept": [
+  "stages r3a/r3b/r3c/r3e/r3f/r3g/r3h/r3i/r3j/r3k: logs/, *.json reports, builds.json, source-hashes.json (r3g..r3k also net.json, packages.json)",
+  ".tmp/mp-m0-20260929/results/*.json; run/camera-fire-*, run/platform-*, run/m*-r3*-* (logs); run/smoke-motion-*: frames-*.gif, sheet-*.jpg, crops/masks jpg, *.json",
+  ".tmp/mp-m0-20260929/pkg/*.json records; refs/mp (pinned platform references); earlier stages' MP packages (c16mp/c17mp/mp14-17) untouched",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "6f0c1ac11b30d236301283d5a701cad48fe23c4686d60d43babf80b7c692794f",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "8de09dafe6f593b73cc3bbcc2ab55ba08ef7687104bfb89ce2ea603070437e0b",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "8caf671427759efecb774d8df301d9269b2b964f5980cafa89ad7e4ecc797071",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 24014630912,
+  "freePct": 2.4
+ }
+}

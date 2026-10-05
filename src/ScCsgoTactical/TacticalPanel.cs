@@ -10,6 +10,7 @@ public sealed class TacticalPanel : CanvasWidget {
     readonly GridPanelWidget inventoryGrid,commandGrid;
     readonly int playerSlots;
     readonly BevelledButtonWidget[] commandButtons;
+    int givenCount,givenHeld;
     public TacticalPanel(ComponentPlayer p,ComponentTacticalCompanion c){
         player=p;companion=c;c.PanelOpen=true;Size=new Vector2(620,520);HorizontalAlignment=WidgetAlignment.Center;VerticalAlignment=WidgetAlignment.Center;
         Children.Add(ScGunUi.Frame());var scroll=new TacticalInventoryScroll{Direction=LayoutDirection.Vertical,ScrollPosition=0,ScrollSpeed=0};Children.Add(scroll);
@@ -25,7 +26,10 @@ public sealed class TacticalPanel : CanvasWidget {
         var inventory=p.ComponentMiner.Inventory;int count=inventory is ComponentCreativeInventory?10:inventory.SlotsCount;
         playerSlots=count;inventoryGrid=Grid(inventory,0,count,8);body.Children.Add(inventoryGrid);
         dismiss=ScGunUi.Button("收空装备后解散",240);body.Children.Add(dismiss);
+        (givenCount,givenHeld)=Equipment();
+        ScAgentVoice.Emit(c.Entity,c.VoiceRole,"affirmative"); // once per successful open; the voice scheduler drops repeats
     }
+    (int Count,int Held) Equipment()=>(Enumerable.Range(0,companion.Inventory.SlotsCount).Sum(companion.Inventory.GetSlotCount),companion.Inventory.GetSlotCount(0)>0?companion.Inventory.GetSlotValue(0):0);
     public override void MeasureOverride(Vector2 available){
         float width=Math.Max(340,Math.Min(620,available.X));Size=new Vector2(width,Math.Min(520,available.Y));
         int columns=Math.Clamp((int)((width-24)/64),5,8);inventoryGrid.ColumnsCount=columns;inventoryGrid.RowsCount=(playerSlots+columns-1)/columns;
@@ -38,12 +42,16 @@ public sealed class TacticalPanel : CanvasWidget {
     public override void Update(){
         if(!companion.IsAddedToProject||companion.DeathHandled||!companion.OwnedBy(player)||player.ComponentHealth.Health<=0||Vector3.DistanceSquared(player.ComponentBody.Position,companion.Creature.ComponentBody.Position)>36||close.IsClicked){Exit();return;}
         companion.PanelOpen=true;status.Text=$"生命 {companion.Creature.ComponentHealth.Health*100:0}%   {companion.Order switch {TacticalOrder.Guard=>"守在这里",TacticalOrder.Cover=>"前方掩护",_=>"跟随"}}   {(companion.CeaseFire?"停火":"主动攻击")}";
-        if(follow.IsClicked)companion.Command(TacticalOrder.Follow);if(guard.IsClicked)companion.Command(TacticalOrder.Guard);if(cover.IsClicked)companion.Command(TacticalOrder.Cover);
-        if(cease.IsClicked)companion.CeaseFire=!companion.CeaseFire;cease.Text=companion.CeaseFire?"允许攻击":"停火";
+        // Orders apply here, or (multiplayer client) go to the server, which runs the companion; its state comes back.
+        TacticalNet.PanelOpen(player,companion);
+        if(follow.IsClicked)TacticalNet.Order(player,companion,TacticalNet.Command.Follow);if(guard.IsClicked)TacticalNet.Order(player,companion,TacticalNet.Command.Guard);if(cover.IsClicked)TacticalNet.Order(player,companion,TacticalNet.Command.Cover);
+        if(cease.IsClicked)TacticalNet.Order(player,companion,TacticalNet.Command.ToggleCeaseFire);cease.Text=companion.CeaseFire?"允许攻击":"停火";
         dismiss.IsEnabled=Enumerable.Range(0,companion.Inventory.SlotsCount).All(i=>companion.Inventory.GetSlotCount(i)==0);
-        if(dismiss.IsClicked&&dismiss.IsEnabled){Exit();companion.Project.RemoveEntity(companion.Entity,true);}
+        // Thanks only after items actually arrived (a completed drop into the companion's slots), not per frame.
+        var now=Equipment();if(now.Count>givenCount||now.Held!=0&&now.Held!=givenHeld)ScAgentVoice.Emit(companion.Entity,companion.VoiceRole,"thanks");(givenCount,givenHeld)=now;
+        if(dismiss.IsClicked&&dismiss.IsEnabled){Exit();TacticalNet.Order(player,companion,TacticalNet.Command.Dismiss);}
     }
-    void Exit(){companion.PanelOpen=false;if(player.ComponentGui.ModalPanelWidget==this)player.ComponentGui.ModalPanelWidget=null;}
+    void Exit(){companion.PanelOpen=false;TacticalNet.PanelClosed(player,companion);if(player.ComponentGui.ModalPanelWidget==this)player.ComponentGui.ModalPanelWidget=null;}
 }
 
 // A gesture starting on an item belongs to native inventory drag/drop, not to scrolling.

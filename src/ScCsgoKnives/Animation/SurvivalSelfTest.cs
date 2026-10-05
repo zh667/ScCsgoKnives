@@ -706,7 +706,7 @@ public static class SurvivalSelfTest {
             var c = new Inventory(); c.AddSlotItems(0, Gun(0, 30), 1);
             bool creative = Shoot(c, 0, creative: true) == ScGunResult.Success && Dur(c, 0) == 1500 && GunSpec.GetRounds(Data(c, 0)) == 29;
             var z = new Inventory(); z.AddSlotItems(0, Gun(taser, 1), 1);
-            bool zeus = Shoot(z, 0) == ScGunResult.Success && GunSpec.GetRounds(Data(z, 0)) == 0 && Dur(z, 0) == 99 && GunSpec.TryGetSnapshot(Data(z, 0), out var zs) && Math.Abs(zs.RechargeReadyAt - 130) < 1e-6;
+            bool zeus = Shoot(z, 0) == ScGunResult.Success && GunSpec.GetRounds(Data(z, 0)) == 0 && Dur(z, 0) == 99 && GunSpec.TryGetSnapshot(Data(z, 0), out var zs) && Math.Abs(zs.RechargeReadyAt - 110) < 1e-6;
             return lastPoint && creative && zeus;
         });
         Test("m4-t10-zeus-per-instance", () => {
@@ -828,6 +828,36 @@ public static class SurvivalSelfTest {
             bool reach = Math.Abs((fist - shoulder).Length() - 20.5f * .0241f) < .05f && Vector3.Dot(fist - shoulder, forward) > .2f; // the raised arm reaches forward
             return height && reach && ScGrenadeState.Finite(fist);
         });
+        Test("third-person-throwable-hold", () => {
+            // The vanilla arm box in hand-bone units (0.0241 m each); a 6 cm ball and a 25 cm bottle in weapon-local metres.
+            var arm = new BoundingBox(new Vector3(0, -3.06f, -22.38f), new Vector3(4.82f, 3.06f, 2.45f)); const float metres = .0241f;
+            Vector3 fist = ScThirdPersonMath.HandEndFromBox(arm);
+            Matrix upright = Matrix.CreateScale(1 / metres) * Matrix.CreateRotationX(MathF.PI / 2 - ScThirdPersonStance.Grenade.RightRaise) * Matrix.CreateTranslation(fist); // held point at the fist
+            Vector3[] Box(Vector3 half, Vector3 centre) => (from x in new[] { -1, 1 } from y in new[] { -1, 1 } from z in new[] { -1, 1 } select centre + new Vector3(x * half.X, y * half.Y, z * half.Z)).ToArray();
+            bool Inside(Vector3 p) => p.X > arm.Min.X && p.X < arm.Max.X && p.Y > arm.Min.Y && p.Y < arm.Max.Y && p.Z > arm.Min.Z && p.Z < arm.Max.Z;
+            Vector3[] Placed(Vector3[] body, Matrix hold) => body.Select(p => Vector3.Transform(p, hold)).ToArray();
+            var ball = Box(new Vector3(.03f), Vector3.Zero);
+            bool swallowed = Placed(ball, upright).All(Inside);                                   // the defect: centred on the fist it cannot be seen
+            var held = Placed(ball, ScThirdPersonMath.HoldFromBox(arm, upright, metres, ball));
+            float sunk = held.Max(p => p.Z) - arm.Min.Z, tall = held.Max(p => p.Z) - held.Min(p => p.Z);
+            bool shown = held.Count(p => !Inside(p)) >= 4 && Math.Abs(sunk - ScThirdPersonMath.SinkIntoFist * tall) < 1e-2f && tall < 4.82f && Math.Abs(held.Average(p => p.X) - fist.X) < 1e-3f;
+            // The bottle: base at the held point, standing up. Upright it runs up inside the forearm; held, it lies across the fist.
+            var bottle = Box(new Vector3(.035f, .125f, .035f), new Vector3(0, .125f, 0));
+            bool inForearm = Placed(bottle, upright).Count(Inside) >= 4;
+            var across = Placed(bottle, ScThirdPersonMath.HoldFromBox(arm, upright, metres, bottle));
+            float behind = (arm.Min.Y - across.Min(p => p.Y)) * metres, ahead = (across.Max(p => p.Y) - arm.Max.Y) * metres, below = (arm.Min.Z - across.Min(p => p.Z)) * metres;
+            bool through = behind > .01f && ahead > .05f && below > .05f && Math.Abs(across.Max(p => p.Z) - arm.Min.Z - ScThirdPersonMath.SinkIntoFist * .07f / metres) < 1e-2f
+                && Math.Abs((across.Max(p => p.Y) - across.Min(p => p.Y)) * metres - .25f) < 1e-3f;      // full size, not rescaled
+            // The viewmodel's idle pose holds the bottle tilted; across the fist it still lies along its own length.
+            var tilted = bottle.Select(p => Vector3.Transform(p, Matrix.CreateRotationX(.6f) * Matrix.CreateRotationZ(.25f))).ToArray();
+            var laid = Placed(tilted, ScThirdPersonMath.HoldFromBox(arm, upright, metres, tilted));
+            Vector3 span = (new Vector3(laid.Max(p => p.X), laid.Max(p => p.Y), laid.Max(p => p.Z)) - new Vector3(laid.Min(p => p.X), laid.Min(p => p.Y), laid.Min(p => p.Z))) * metres;
+            through &= Math.Abs(span.Y - .25f) < .01f && span.X < .1f && span.Z < .1f && (arm.Min.Y - laid.Min(p => p.Y)) * metres > .01f && (laid.Max(p => p.Y) - arm.Max.Y) * metres > .05f;
+            bool untouched = ScThirdPersonMath.HoldFromBox(arm, upright, metres, []) == upright
+                && ScThirdPersonMath.HoldFromBox(arm, upright * Matrix.CreateTranslation(0, 0, -9), metres, ball) == upright * Matrix.CreateTranslation(0, 0, -9); // already clear of the arm
+            if (!(swallowed && shown && inForearm && through && untouched)) throw new InvalidOperationException($"swallowed {swallowed} shown {shown} (sunk {sunk}) inForearm {inForearm} through {through} (behind {behind} ahead {ahead} below {below}) untouched {untouched}");
+            return true;
+        });
         Test("workbench-no-inherited-index", () => typeof(ScWeaponWorkbenchBlock).GetFields().All(f => f.Name != "Index"));
         Test("unknown-gun-preserved", () => ScGunBlock.AssetIndex(63) == -1 && ScGunBlock.AssetIndex(42) == -1 && GunSpec.GetVariant(GunSpec.WithId(42, 5)) == 42 && GunSpec.GetId(GunSpec.WithId(42, 5)) == 5);
         Test("throw-once", () => { var i=Setup(0,1);var tx=new ScThrowTransaction(i);int spawned=0;return tx.Commit(false,()=>true,()=>{spawned++;return true;}) && !tx.Commit(false,()=>true,()=>true) && spawned==1 && i.Counts[0]==0; });
@@ -849,7 +879,9 @@ public static class SurvivalSelfTest {
             s.Remaining=0;return blocked && !near && !ScSmokeVolume.Blocks([s],new Vector3(-5,0,0),new Vector3(5,0,0));
         });
         Test("smoke-save-no-reset",()=> {var s=ScGrenadeState.Load(new ScGrenadeState {Kind=2,Effect=true,Age=8,Remaining=7}.Save());return s.Effect && s.Age==8 && s.Remaining==7;});
-        Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==32 && ScSmokeVolume.SpriteCount(20)==24 && ScSmokeVolume.SpriteCount(50)==16 && 12*ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count<=768);
+        Test("smoke-render-budget",()=>ScSmokeVolume.SpriteCount(0)==ScSmokeVolume.SpriteCount(20) && ScSmokeVolume.SpriteCount(20)==ScSmokeVolume.SpriteCount(50)
+            && 12*ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Count<=12*ScGrenadeVisuals.SmokePuffCount
+            && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Sum(p=>4*p.Width*p.Height)<=(ScResourcePolicy.Lite?700:1400));
         Test("fire-overlap-budget",()=> {
             var a=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var b=new ScGrenadeState {Kind=4,Effect=true,Remaining=7};
             return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==6 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1.5f;

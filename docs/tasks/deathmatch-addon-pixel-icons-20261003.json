@@ -1,0 +1,1277 @@
+{
+ "method": "rasterised at 16x, area-reduced to the target height, cut at 45% coverage; white with binary alpha",
+ "records": [
+  {
+   "kind": "equipment",
+   "name": "ak47",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/ak47.svg",
+   "sourceSha256": "d0f98522d69a90d2dae644e29e114e9520ec7186e0cd462f1541ab0ef3289bfe",
+   "size": [
+    48,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/ak47.png",
+   "sha256": "8dfd95e13b4552eb09c18f9b5945f1bbf44bcf6c457a7395127649364ca94c1f"
+  },
+  {
+   "kind": "equipment",
+   "name": "ammobox",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/ammobox.svg",
+   "sourceSha256": "e2b141da4f8a74b1bb09a57ec97ded1fd15deab20cf09486db9f4286f71555e0",
+   "size": [
+    19,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/ammobox.png",
+   "sha256": "b76e655af73d721e9e9c770c8d8af818ef6cddafbbea385186056318c8cf0f53"
+  },
+  {
+   "kind": "equipment",
+   "name": "ammobox_threepack",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/ammobox_threepack.svg",
+   "sourceSha256": "dd91da50e8c523cabb6e7541ad257ce789d97c4db066e541dad65d95ccb3bcaf",
+   "size": [
+    23,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/ammobox_threepack.png",
+   "sha256": "8cebd108eea01fe301bbb19e45c96c8e682fd75171a91f034222d419f4ec3c8a"
+  },
+  {
+   "kind": "equipment",
+   "name": "armor",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/armor.svg",
+   "sourceSha256": "57e008aba6c52c6f8dc61f78599932072ec2f2101dcab754f75e7f0ac7d6d711",
+   "size": [
+    11,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/armor.png",
+   "sha256": "b0b6dcae9b02395c88d15e3ec5b712808977f15e219c825a63ccaed641c0a7d6"
+  },
+  {
+   "kind": "equipment",
+   "name": "armor_helmet",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/armor_helmet.svg",
+   "sourceSha256": "bd10d6837ee1f23ab505c68aacf93e0d6dbd4b6c6021ccbd9325ac740b4881d0",
+   "size": [
+    22,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/armor_helmet.png",
+   "sha256": "2913c8ea7ec711618e73fd032e9c32015f57827164818d7df21e7e80d31b884b"
+  },
+  {
+   "kind": "equipment",
+   "name": "assaultsuit",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/assaultsuit.svg",
+   "sourceSha256": "5763538a7a5fc0ecb8adb059ea6f81b79bf211b6039f9f2327493468cd62772a",
+   "size": [
+    20,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/assaultsuit.png",
+   "sha256": "d70e509d94c9df7678e3d2d5fe33ab24123f58dba88966e39f6a0fc57154e4a0"
+  },
+  {
+   "kind": "equipment",
+   "name": "assaultsuit_helmet_only",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/assaultsuit_helmet_only.svg",
+   "sourceSha256": "61a827021257dabfc335afb07e3dce963d366ffcec5ff474947ade25ccce31d4",
+   "size": [
+    20,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/assaultsuit_helmet_only.png",
+   "sha256": "bb9f43f8b0017af1d5c397e0b1e1e900083e2eabae421de7cc57e63a95ba0521"
+  },
+  {
+   "kind": "equipment",
+   "name": "aug",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/aug.svg",
+   "sourceSha256": "145aa54e61b616544e86ec895ba303c7a6480a197c6176a07265f5f234b5bc52",
+   "size": [
+    34,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/aug.png",
+   "sha256": "0432a120eb9fff906086bde3887779abe048fdfa1f28713a0355fd7fdd89c619"
+  },
+  {
+   "kind": "equipment",
+   "name": "awp",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/awp.svg",
+   "sourceSha256": "21e1c6ccbef3a93bc5e984587fa97a0de64417646a48a789864d0e5731a625d6",
+   "size": [
+    74,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/awp.png",
+   "sha256": "2e15559c533f17cc17260a74daa9c8be1339b48000c8e61e9d7e9c19556e9e0d"
+  },
+  {
+   "kind": "equipment",
+   "name": "bayonet",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/bayonet.svg",
+   "sourceSha256": "2dfdb1d3e1e2f9f3374d49cd7589b4fc450cfc91111e0670d5739327e82d2a86",
+   "size": [
+    65,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/bayonet.png",
+   "sha256": "e1157c0405c86b01c6777a420d8e1e1f581f6b14f9f46bea79bf6c9389d5c7c3"
+  },
+  {
+   "kind": "equipment",
+   "name": "bizon",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/bizon.svg",
+   "sourceSha256": "ae6259ba48323e132d37a2df13d162101898c35b3a1873e1b8913c8c193f9905",
+   "size": [
+    45,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/bizon.png",
+   "sha256": "97e5ae7b42b9d2ea85a7bf2a2dc0ed88e11e983af99bd63ffe4b0cc87167621b"
+  },
+  {
+   "kind": "equipment",
+   "name": "c4",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/c4.svg",
+   "sourceSha256": "4ccfa5c0b98f54e3815f92779814d5ef3ddb6f01d2f3ccebd049372efb2ee310",
+   "size": [
+    10,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/c4.png",
+   "sha256": "c81fe85204e4011a2227f28107c1bc770acbe937cdef335a9da75d006bfce5e3"
+  },
+  {
+   "kind": "equipment",
+   "name": "clothing_hands",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/clothing_hands.svg",
+   "sourceSha256": "f3f30a156fdd1d25d081a89c91b1c5531aa169b3258c69e9583388835406c48a",
+   "size": [
+    15,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/clothing_hands.png",
+   "sha256": "5814fa66a4dfdce32e0073c1e10d3b08ffac65fd25587624ec3f9eaf9a7c17a0"
+  },
+  {
+   "kind": "equipment",
+   "name": "customplayer",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/customplayer.svg",
+   "sourceSha256": "b315b00a57f83675312466bc5cc46d9795d4948322a369632bb430f4386a2abe",
+   "size": [
+    7,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/customplayer.png",
+   "sha256": "0dc40e4901c3fd2956b5ecbbf4992e0ae21f3c07f9da86b27dc07db6cbcf56a7"
+  },
+  {
+   "kind": "equipment",
+   "name": "cz75a",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/cz75a.svg",
+   "sourceSha256": "bc0fdaf5d7806adca94a9d4224d73d4819a6966ec989570682ffa62febcff89b",
+   "size": [
+    22,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/cz75a.png",
+   "sha256": "2b43047b7d2d628c88b965c4063a0f96a4fa93d555a7b7ded97582b65396f3a2"
+  },
+  {
+   "kind": "equipment",
+   "name": "deagle",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/deagle.svg",
+   "sourceSha256": "5ab139d7151ceaa530deb352a08146ce625ce5a9f0fcf1b8554c57c42999b950",
+   "size": [
+    25,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/deagle.png",
+   "sha256": "eb86a090f8137ee15ed5ed3a72ab00d65580af3b0cf7e00adb93a8186915c54f"
+  },
+  {
+   "kind": "equipment",
+   "name": "decoy",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/decoy.svg",
+   "sourceSha256": "2d49015e12f7ad1217d89509fedd5801e0103c646a22d144509004147a3b67b0",
+   "size": [
+    12,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/decoy.png",
+   "sha256": "f5406f545bcdae46714e38051dea59bd09b9619534ccfac8814f95c2c0395408"
+  },
+  {
+   "kind": "equipment",
+   "name": "defuser",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/defuser.svg",
+   "sourceSha256": "9810a89c92279b7eeeb1837d16a0a9a7a782114fb8e23aeb5d48872146bdf3be",
+   "size": [
+    16,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/defuser.png",
+   "sha256": "b571b665798415674ea0e8336ea790b7b2c52337981f01171c5bbd256bedccb1"
+  },
+  {
+   "kind": "equipment",
+   "name": "disconnect",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/disconnect.svg",
+   "sourceSha256": "910f6f369d70b385fb5f9cf1aaa98624035459181934fb7e30ac24cd45fb6f03",
+   "size": [
+    17,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/disconnect.png",
+   "sha256": "9150d4f7535d3950137c75ee3906ceca1e0e57a6560ffd92cc4522c1361bc266"
+  },
+  {
+   "kind": "equipment",
+   "name": "dronegun",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/dronegun.svg",
+   "sourceSha256": "6a71bec1b76dca85e5307e2a909e47ab4c2b41385a544cae397d11e0892787f4",
+   "size": [
+    17,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/dronegun.png",
+   "sha256": "9e1ea88ce74764c5c6b78df43f26137329ef0ee71f5cb7dcc0c701265f16bf11"
+  },
+  {
+   "kind": "equipment",
+   "name": "elite",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/elite.svg",
+   "sourceSha256": "f8e43a50d1b21bc30843c61b543bd965d108010d5f4998e6ffa44a9f96b3630f",
+   "size": [
+    41,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/elite.png",
+   "sha256": "e5ee69a19a1195038eaaf0d0903857ee7e24626cab6594530a9d7f1bc7d34ba1"
+  },
+  {
+   "kind": "equipment",
+   "name": "famas",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/famas.svg",
+   "sourceSha256": "ba5d5bed81d8efd6fcd049d8400c5a78a587a9f62f0585910b4cff593d8030ec",
+   "size": [
+    38,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/famas.png",
+   "sha256": "7c8fe83323f347130b982fe69a9e0b864534922afa42ec865268b73e65743719"
+  },
+  {
+   "kind": "equipment",
+   "name": "firebomb",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/firebomb.svg",
+   "sourceSha256": "c552e3193d26445e2811bb69ddbd55c64caa3e9a9cc7fbf9324beff8cb9e12a4",
+   "size": [
+    10,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/firebomb.png",
+   "sha256": "a55bad7401be3872b92ba3185fbb55960c7683fe4967f7935979bceb6905d47c"
+  },
+  {
+   "kind": "equipment",
+   "name": "fiveseven",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/fiveseven.svg",
+   "sourceSha256": "7b9aa3b6fdb84329a43e537dff69275b224d548cbd73e7eb1272fa973322dcda",
+   "size": [
+    19,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/fiveseven.png",
+   "sha256": "01e1ab9c27f27677e52a8e0fef9cc3b67681ddc0283f228279e90ac103445ab7"
+  },
+  {
+   "kind": "equipment",
+   "name": "flair0",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/flair0.svg",
+   "sourceSha256": "c3eb9e115820a081d46fdb738cea10aaf28b2a08dd182b776456ef3491811ee6",
+   "size": [
+    11,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/flair0.png",
+   "sha256": "146327b9424d95225afa7ae17f25cf3e76e404ad8456505756e63efe405adc5f"
+  },
+  {
+   "kind": "equipment",
+   "name": "flashbang",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/flashbang.svg",
+   "sourceSha256": "bccb65a3452c6695a342654566510e6f20352d4449740ad477c2a4eeea3d3645",
+   "size": [
+    13,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/flashbang.png",
+   "sha256": "4364157ae9f8cb3025afc4bee7e35a1bfe4f98740edd939e5f21c976acd79eb9"
+  },
+  {
+   "kind": "equipment",
+   "name": "flashbang_assist",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/flashbang_assist.svg",
+   "sourceSha256": "d539c69c5124a692478f1ae52c566663c88a1615dd909a96a73773f55d9342d0",
+   "size": [
+    15,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/flashbang_assist.png",
+   "sha256": "c138ef98eebb87ed2afa618b5ec05cb560bfacf1c2cdeb9cd20741f1fc8da453"
+  },
+  {
+   "kind": "equipment",
+   "name": "g3sg1",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/g3sg1.svg",
+   "sourceSha256": "a4806843e5010f9cdf6349b58998a976703ec65d44b0862ddaf78673609d583a",
+   "size": [
+    53,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/g3sg1.png",
+   "sha256": "1df4f4afe8d9be4738ca31088658a134b7cf97c9e0483e6c37f15cf20eebeded"
+  },
+  {
+   "kind": "equipment",
+   "name": "galilar",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/galilar.svg",
+   "sourceSha256": "935b679077b5a6ea4264e66541260fb905a058f5b999e82191b79e1d94452c56",
+   "size": [
+    49,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/galilar.png",
+   "sha256": "874a76387379930b684bb340aee8b47f666198e524eb5c7c0b9eb55125404697"
+  },
+  {
+   "kind": "equipment",
+   "name": "glock",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/glock.svg",
+   "sourceSha256": "0ca4c81b4888d84e54e699cc4831a69992005e246dc24ffb9aa52cade6133692",
+   "size": [
+    22,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/glock.png",
+   "sha256": "9d3e43e0d41c8ffecfcd85b9388d5b86be37016f9eccdf9668b0a0046308b33a"
+  },
+  {
+   "kind": "equipment",
+   "name": "grenadepack",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/grenadepack.svg",
+   "sourceSha256": "3d31e8e3cd3c275de9c942f0f5f2f3a4e619c231a10ed50e3a9ac2214526b6bd",
+   "size": [
+    16,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/grenadepack.png",
+   "sha256": "51c486ab8f3c7109601313746135841474c1b4bef20ae7503dd9e40e4c1bf0d4"
+  },
+  {
+   "kind": "equipment",
+   "name": "grenadepack2",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/grenadepack2.svg",
+   "sourceSha256": "1f877adcb33effad2203ae660cdfaa8512984f074858e1558a906f976535b673",
+   "size": [
+    13,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/grenadepack2.png",
+   "sha256": "c44890b9fe091f8d9d8363226dddde2253f008ec952a2245062b194a52659ee2"
+  },
+  {
+   "kind": "equipment",
+   "name": "healthshot",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/healthshot.svg",
+   "sourceSha256": "340dd961ee5096e41860e1d3bc065043ccfdafb1b36c311522ce00b1823397ec",
+   "size": [
+    19,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/healthshot.png",
+   "sha256": "256a76a62bb7e7e43b8468e16339da926d42b906da0e99b93fecc20ad954e520"
+  },
+  {
+   "kind": "equipment",
+   "name": "heavy_armor",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/heavy_armor.svg",
+   "sourceSha256": "22d52bb8f084aede00bad522c532d71f74d89137abef62d783699477b2fdfd1d",
+   "size": [
+    20,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/heavy_armor.png",
+   "sha256": "37700760c58ee69001624c8d313848b8d54ef29337436d16f0b559f435cf6995"
+  },
+  {
+   "kind": "equipment",
+   "name": "hegrenade",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/hegrenade.svg",
+   "sourceSha256": "8c33330ea8db7626d62fd6cd60139e2242be9e4b5adde54a5d43a967c462e479",
+   "size": [
+    11,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/hegrenade.png",
+   "sha256": "506c256b0fa2285f9d50e794430747f574d73dee1115817deeeda8047ddac992"
+  },
+  {
+   "kind": "equipment",
+   "name": "helmet",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/helmet.svg",
+   "sourceSha256": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529",
+   "size": [
+    13,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/helmet.png",
+   "sha256": "5411c409dcdf7e0775430493f8129b3b11065acd435d6f010d3aa689987bff68"
+  },
+  {
+   "kind": "equipment",
+   "name": "hkp2000",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/hkp2000.svg",
+   "sourceSha256": "66fe96c04579615f3491d662770511785d57557c2bcc21ac81dddfc0ba65238a",
+   "size": [
+    18,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/hkp2000.png",
+   "sha256": "33ccaa8d7be85862e1026f084af205082ae84078e30d0a9df822456ea41e7927"
+  },
+  {
+   "kind": "equipment",
+   "name": "incgrenade",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/incgrenade.svg",
+   "sourceSha256": "7c87dec72d1c0c622ba248fa88a6cd75f91671086a995e6a72201c9404a205d2",
+   "size": [
+    6,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/incgrenade.png",
+   "sha256": "0b09feba23bbf138c577bb58337405db512c4a244dbfd2299f825fb53405c77f"
+  },
+  {
+   "kind": "equipment",
+   "name": "inferno",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/inferno.svg",
+   "sourceSha256": "80d8a8d339b5fd2560705c0410f7c74101279a4fba9186e86712adcfcb3cd229",
+   "size": [
+    15,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/inferno.png",
+   "sha256": "fe379b0df8dc0c19ceeb08aadf22fd2a2df8775f5693002c579836b9d4e290ee"
+  },
+  {
+   "kind": "equipment",
+   "name": "kevlar",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/kevlar.svg",
+   "sourceSha256": "77a0cbfea4fdd74bf0cf2785f4f373291c2a67de2d775326cf9087c0ec8c377e",
+   "size": [
+    11,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kevlar.png",
+   "sha256": "b0b6dcae9b02395c88d15e3ec5b712808977f15e219c825a63ccaed641c0a7d6"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife.svg",
+   "sourceSha256": "865edd79e600f5812dbaf910438af1f4ca2fb74a75fa815cc00d95802de25185",
+   "size": [
+    61,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife.png",
+   "sha256": "4f0ab709cd5f90148e858072b7688b811a362ab70fa9bf733149bc3f33f210cd"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_bowie",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_bowie.svg",
+   "sourceSha256": "4045c643ee98ed91a02ec90780e35ce38045c9aacb4cfa294a6d80588cb02e5c",
+   "size": [
+    69,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_bowie.png",
+   "sha256": "3a7663b22a2cc4b108c56decf039e4a117de49d3026c6164ee4434fc607de14f"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_butterfly",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_butterfly.svg",
+   "sourceSha256": "efe285cdfd79b518544ccf6fc0203b8c25517c4ae36f27d640caff37c1db34fc",
+   "size": [
+    80,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_butterfly.png",
+   "sha256": "a8439fbe3bf8868e2c8e314abc406c350a5fbe173a7f5250a899450320f5b7cd"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_canis",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_canis.svg",
+   "sourceSha256": "e67136c2bf4fe95c637fa5ef897ec22852419f7326a7a4b9a77d488b1faf675a",
+   "size": [
+    83,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_canis.png",
+   "sha256": "020d28782bf5302f8214b45e31e9aa853da93916ef4f834f806becc8596e391c"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_cord",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_cord.svg",
+   "sourceSha256": "1ca8f25a7272c9ac68938409a23eb5e5cd6667d8c46167e1217ef7f34ff892ac",
+   "size": [
+    115,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_cord.png",
+   "sha256": "9d673e456ce3937ca8b399dd220bebd7375f38262533c82decd6b0c1e4c83125"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_css",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_css.svg",
+   "sourceSha256": "a5a8ae19f0d669524f63697b3364e3405dc0e233343b62fa3ed8eaed2a64dcd9",
+   "size": [
+    83,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_css.png",
+   "sha256": "187872abc0ca6cec9b026a0ceefa80b2a305bbc6f80186214e6e3d0bacae9b3b"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_falchion",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_falchion.svg",
+   "sourceSha256": "ae2f359bed8616c1d84e02c39211888a2ad2ca403e0fd6a9702a11d06e0223cc",
+   "size": [
+    62,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_falchion.png",
+   "sha256": "79dd7d1e7c108edfc1f3c0fb650b3129c60ae3cf0868d1fc35f96d8822fc5ff9"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_flip",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_flip.svg",
+   "sourceSha256": "60d0c80a50a1c0bc868022a66b0dcf04f1581a15374f44bf7fb9e60b13a276de",
+   "size": [
+    74,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_flip.png",
+   "sha256": "21b8a3759118b2ab5aca528b80a2090964fab749512cc134bd9d530ccc14e2d5"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_gut",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_gut.svg",
+   "sourceSha256": "fd99f93a3f13ce2ea0707ecec0782b64df15800ddcdc48923f021450886e7b17",
+   "size": [
+    74,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_gut.png",
+   "sha256": "615f9437ae1a64d64a659fc96da8b537a57e3ea6702884314d65bf6df6e40e30"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_gypsy_jackknife",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_gypsy_jackknife.svg",
+   "sourceSha256": "79fd9c5895ecd945a98f90c6da25d07bf564be0d1b0c75bbf92c8675c152161f",
+   "size": [
+    69,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_gypsy_jackknife.png",
+   "sha256": "3eb9f973b0b59dfd85944e4eeef56fdfaf5976538812d02fe0e142f0404284eb"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_karambit",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_karambit.svg",
+   "sourceSha256": "6331908a5dd5b8133619910a8435bd4f466a9332d82971eb8cacc005637d00e2",
+   "size": [
+    37,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_karambit.png",
+   "sha256": "90c8be237469d26b0ae1a27b89632980fd9bfa8e32ef50ddc1422bb4696df476"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_kukri",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_kukri.svg",
+   "sourceSha256": "6da3005441cf3b8070c191cf0c65249dae59dd7b7d6ba91043f621467c889bb3",
+   "size": [
+    72,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_kukri.png",
+   "sha256": "eaf6dce2e6da8fb21d4b49522bbc8f0a65667fffd3bd3be33c318d14d36ca208"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_m9_bayonet",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_m9_bayonet.svg",
+   "sourceSha256": "24f15d95965434cd9335868ede8c0dcae120e7fcea028179e5039daeaac81ac8",
+   "size": [
+    53,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_m9_bayonet.png",
+   "sha256": "23810177721a604fa0ef09741417579ff5523dea485a5b3ebdf1dd7469ab916a"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_outdoor",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_outdoor.svg",
+   "sourceSha256": "408f30849b86d7bf5a8ac190bf3588943b660df88d9dc8c4ad8bbb57a66fe395",
+   "size": [
+    68,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_outdoor.png",
+   "sha256": "55a8223ba5b2dec04390ee3fe367ae72802326d3c24201c384cfdee6f9d55727"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_push",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_push.svg",
+   "sourceSha256": "673892df666df0e5d1cbc470e00a19b123e9d05539ee10d063483d2c1cbe1645",
+   "size": [
+    48,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_push.png",
+   "sha256": "29cbb3c51d4c63e6cc69b95bdd7e0009e3ffb444377504ff9f339586acacf408"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_skeleton",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_skeleton.svg",
+   "sourceSha256": "e9d657fa897d5976d9ceff048687e73a2097d76f96b12556c17d353703e31847",
+   "size": [
+    77,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_skeleton.png",
+   "sha256": "4c393c553d3b2a38bb737633b6aff38b3604716f1a0de3693d15634b4a42a98d"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_stiletto",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_stiletto.svg",
+   "sourceSha256": "10f28d76011b29fa9bae8e539df3c6c8448bf6fc8f6e2f3f820471412e2f95f5",
+   "size": [
+    114,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_stiletto.png",
+   "sha256": "788b03c400cc1243479c3b6e438e4f7367af2fd5808b4bea95e252475bb646e9"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_survival_bowie",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_survival_bowie.svg",
+   "sourceSha256": "7a6373010cb3e0f7426be334e01ae19beb684399b48ca2c5196be6ae72c38222",
+   "size": [
+    69,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_survival_bowie.png",
+   "sha256": "dda7c3fa32672888b17604b869f454248d7b38800de91b27fcb43930da5afdd7"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_t",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_t.svg",
+   "sourceSha256": "0eeccd8864c3398a05fa09817a86d93bb359d7f63b97155945da9f8c1cf9eae7",
+   "size": [
+    62,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_t.png",
+   "sha256": "7ca60a0b4721770b024fb5e751ae66308ee13c49753359bd802e395e97ee30c4"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_tactical",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_tactical.svg",
+   "sourceSha256": "2b115d5911c397c20fb3c7130c392ec27498c3b6b00fd59015bcd74ae40f6d02",
+   "size": [
+    67,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_tactical.png",
+   "sha256": "01fbc9afb36f13aec40ab70451eb46d9931f9516a6719d2d858e8233ff1faf3c"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_twinblade",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_twinblade.svg",
+   "sourceSha256": "ac5ae164dd93119fcb8a5bfad7cea06f5c7a9d61710eefef0991af3e9d86e9c6",
+   "size": [
+    54,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_twinblade.png",
+   "sha256": "492eeefe617bd8fb4aec545eed221763344711c5745aad6f7c6229755c7531ab"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_ursus",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_ursus.svg",
+   "sourceSha256": "9adbc60d84e303ff08c159330db3e31ae8c350292b9c261289e34b14bec7db63",
+   "size": [
+    78,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_ursus.png",
+   "sha256": "28180cbd7ee19e878871e66263e4f3ab6018269d8e8db91489c30aa5aa4d4883"
+  },
+  {
+   "kind": "equipment",
+   "name": "knife_widowmaker",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knife_widowmaker.svg",
+   "sourceSha256": "5c6d3a1a62f0cf2321cd6243ccf27e8512935d86154d91cdb6ae5e78ceb8f0c7",
+   "size": [
+    40,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knife_widowmaker.png",
+   "sha256": "a6b383427bf3f58ac18f767147d81f8951270c3f686aa66ad5d3a4d049f5d403"
+  },
+  {
+   "kind": "equipment",
+   "name": "knifegg",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/knifegg.svg",
+   "sourceSha256": "e06db25069dcd0373c83cc919b367aeec5c236ad82ebf6cd17bdbc8261e6b012",
+   "size": [
+    61,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/knifegg.png",
+   "sha256": "209ef66e68c15749183fbc2edc4ec1dbdc2a09bb97577f32d0fdeaaa5bee22a2"
+  },
+  {
+   "kind": "equipment",
+   "name": "m249",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/m249.svg",
+   "sourceSha256": "7c1b49390f87bdf8ce3f4b1fa0f54ef058b42b52ece09c6e4da92b5cd5f49787",
+   "size": [
+    49,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/m249.png",
+   "sha256": "fa7b58b64dbcae68e747e1b5998964c3514ceb735527ee63b8c1b474a48abae5"
+  },
+  {
+   "kind": "equipment",
+   "name": "m4a1",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/m4a1.svg",
+   "sourceSha256": "4e80e247608b65016e4606c00f49d55492a0f1dc34e71a6b7c7ca88d27cdc650",
+   "size": [
+    43,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/m4a1.png",
+   "sha256": "2f2b565ff2a01b269767fc79ad8b5a970d3af431a9b02e6dd078ba228f97312f"
+  },
+  {
+   "kind": "equipment",
+   "name": "m4a1_silencer",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/m4a1_silencer.svg",
+   "sourceSha256": "3565857c155b80c0d2289454c1f63c231994229b3e4b347ab594e67203f65035",
+   "size": [
+    56,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/m4a1_silencer.png",
+   "sha256": "20d6650af98c19effdfbb7777070f4f02460a9474906339e92fbe07f6070bd6f"
+  },
+  {
+   "kind": "equipment",
+   "name": "m4a1_silencer_off",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/m4a1_silencer_off.svg",
+   "sourceSha256": "ccc44d5f7c5b33704b24ada16f17420fbe471416454a0ac1e2e471e85f8bc341",
+   "size": [
+    44,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/m4a1_silencer_off.png",
+   "sha256": "117c5507ac8b50bc3b9196d76c9c48f57a3eecba41cac96d1b92899c2b4d961e"
+  },
+  {
+   "kind": "equipment",
+   "name": "mac10",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/mac10.svg",
+   "sourceSha256": "2aafac43011b01bf92f05729bacd09dc939ed492b06e3b6f0a4c33b200d37362",
+   "size": [
+    20,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/mac10.png",
+   "sha256": "319d16124ee6532f1557c247504dc3849c9babfaeac8e76f18b696e7c11dc243"
+  },
+  {
+   "kind": "equipment",
+   "name": "mag7",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/mag7.svg",
+   "sourceSha256": "6c6324b36f5ba9512ea32334222f4a84e4c8f00efe3e7bd0bcd32aeacd5ea272",
+   "size": [
+    38,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/mag7.png",
+   "sha256": "e601237fdcc4e493b035be6e7338194bf952607a0daf342cb1e6c4570cb127ae"
+  },
+  {
+   "kind": "equipment",
+   "name": "melee",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/melee.svg",
+   "sourceSha256": "598b1da2d938142a01bae59f44d37e0a13a31a95851400eadb025b3362532e9c",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/melee.png",
+   "sha256": "2d03706c643dc068eb986195a93671f54186dba0860e9c2925998fe73b43b56e"
+  },
+  {
+   "kind": "equipment",
+   "name": "molotov",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/molotov.svg",
+   "sourceSha256": "bb4b5a04eefa1f4cbe7312969a09d2dc70dd2c2cc02b9938fa8e48c0ea4a2a4d",
+   "size": [
+    10,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/molotov.png",
+   "sha256": "a55bad7401be3872b92ba3185fbb55960c7683fe4967f7935979bceb6905d47c"
+  },
+  {
+   "kind": "equipment",
+   "name": "movelinear",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/movelinear.svg",
+   "sourceSha256": "5d7c90f8fafb2b3a43061238c7f8c171e4c35216a9a344d4c472507ee5c087b8",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/movelinear.png",
+   "sha256": "c13757374b60a3f9ec7064815c6afe8772369cfa93171af2ae34b833ae6358d6"
+  },
+  {
+   "kind": "equipment",
+   "name": "mp5sd",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/mp5sd.svg",
+   "sourceSha256": "293459424fa4f707e2633db6e25897f34a12795bee702fc6caaf5e83902593d2",
+   "size": [
+    34,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/mp5sd.png",
+   "sha256": "4714705e82278c78286d223a07fd5112aaea8bcc74e67b6464af0871510de88f"
+  },
+  {
+   "kind": "equipment",
+   "name": "mp7",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/mp7.svg",
+   "sourceSha256": "21d90992afa8a726542e861a4dfb07a154a36a06c875d3096709944a85768813",
+   "size": [
+    23,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/mp7.png",
+   "sha256": "3ebb164084789282b8e92f32b40d54290576f7b0aac6b7c11f6d5b0d4d48db9f"
+  },
+  {
+   "kind": "equipment",
+   "name": "mp9",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/mp9.svg",
+   "sourceSha256": "6e62964b1ebe9e50c2584a771e24eaa4c6f63fc5204648c3d178fb81a938c799",
+   "size": [
+    35,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/mp9.png",
+   "sha256": "19c1c2b2b2e7a1d7177160c59f09903ae27f6a1e9a886eaa2636606386350259"
+  },
+  {
+   "kind": "equipment",
+   "name": "negev",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/negev.svg",
+   "sourceSha256": "743eccc4dace49146e82a68c1dcd333a9b5be30aa08aba3c86db7fca9a360dc0",
+   "size": [
+    35,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/negev.png",
+   "sha256": "f0aa5ca6cbcc96ff82d695573cb10939de85af96f1835cbdae4202af584414cc"
+  },
+  {
+   "kind": "equipment",
+   "name": "nova",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/nova.svg",
+   "sourceSha256": "9a2d5e7db9dcf0211a588d73f6dbbfbff22d79d0a858bb8cc34b6de5302c6467",
+   "size": [
+    67,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/nova.png",
+   "sha256": "95010d1571bb2493d6169673fa63f6341e9ffe0f41f8e1109cbf0a46aa74bc98"
+  },
+  {
+   "kind": "equipment",
+   "name": "p2000",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/p2000.svg",
+   "sourceSha256": "53f73f1453039e9b2f39d566a27df3a9151a2da6416e46305f2f4bd090a782df",
+   "size": [
+    18,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/p2000.png",
+   "sha256": "93ee135b4d534543d1eb3d3fa8256a3658e1f5fdb97cbe048e38458156ec4750"
+  },
+  {
+   "kind": "equipment",
+   "name": "p250",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/p250.svg",
+   "sourceSha256": "df86b3b3a4f2168610dfcde2796577f9aaa4049ad23f9b7cca60b8d78c4ee0ea",
+   "size": [
+    18,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/p250.png",
+   "sha256": "c53c49cdad43c4e96d13dee530cb31a6aa39964ce5578ffcc2cbf17626e86170"
+  },
+  {
+   "kind": "equipment",
+   "name": "p90",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/p90.svg",
+   "sourceSha256": "13d3a3fa692b16c280f08cceba7bad8bf89225526a70e9be10a00cd0c64c4057",
+   "size": [
+    35,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/p90.png",
+   "sha256": "42b2c0d60cfbe6611cbe4a1eab3f10396a20628e2a420bd434e85168e4264fc7"
+  },
+  {
+   "kind": "equipment",
+   "name": "planted_c4",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/planted_c4.svg",
+   "sourceSha256": "fa96cc9eefa17acb6e0e8891f76b50c9b3c3964d171e4e0125bd31c9617dae31",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/planted_c4.png",
+   "sha256": "9a2aa77cf30a8bdcfa75982f87f7115e807bd5681695b1a4d512d8c34b0eb5d2"
+  },
+  {
+   "kind": "equipment",
+   "name": "prop_exploding_barrel",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/prop_exploding_barrel.svg",
+   "sourceSha256": "fa96cc9eefa17acb6e0e8891f76b50c9b3c3964d171e4e0125bd31c9617dae31",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/prop_exploding_barrel.png",
+   "sha256": "9a2aa77cf30a8bdcfa75982f87f7115e807bd5681695b1a4d512d8c34b0eb5d2"
+  },
+  {
+   "kind": "equipment",
+   "name": "revolver",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/revolver.svg",
+   "sourceSha256": "e0c5ba5ba7b0cdad3b775dd345ec7cb34243346fb84645e2e17ea8a39194a855",
+   "size": [
+    26,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/revolver.png",
+   "sha256": "e36ee02db7ab7b9187d6030f5e8e54879fe52a39721dd347595a14367213c1bc"
+  },
+  {
+   "kind": "equipment",
+   "name": "sawedoff",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/sawedoff.svg",
+   "sourceSha256": "45a3f55fa526d6948033d99a50cd965b7ecfa6c3eb810785f3d74ffb5556b061",
+   "size": [
+    67,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/sawedoff.png",
+   "sha256": "3e56904caf25affc6f83436f88b7a1f5c6c14ce0bd975d59a15303ebbf3c6c9e"
+  },
+  {
+   "kind": "equipment",
+   "name": "scar20",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/scar20.svg",
+   "sourceSha256": "177b6a4490be9a2d456f9cc933ae7aa14b7ff6d7fb858473fb7cae019a790b0e",
+   "size": [
+    53,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/scar20.png",
+   "sha256": "61517933728cf5bded1068a9cdd5b6ced626cc5156d99f3823945a07330ddab2"
+  },
+  {
+   "kind": "equipment",
+   "name": "sg556",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/sg556.svg",
+   "sourceSha256": "6c0105235017802611d302d11bac4bdf9e83e9edeb6b5d91bbf449052128d3f3",
+   "size": [
+    40,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/sg556.png",
+   "sha256": "556669430860d4dd3284c9dafe3d667263edf61b016f09807ed18d65d21c04f3"
+  },
+  {
+   "kind": "equipment",
+   "name": "smokegrenade",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/smokegrenade.svg",
+   "sourceSha256": "fdf505befaa9d3dbf04d27204088b93e5941ba62ed8744e9675c907aa69056f9",
+   "size": [
+    6,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/smokegrenade.png",
+   "sha256": "1e7128efe5d82c35f922672f458605691f060ee7785176486ef09443448df9eb"
+  },
+  {
+   "kind": "equipment",
+   "name": "spray0",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/spray0.svg",
+   "sourceSha256": "f8eb49ff4533a8952a14ff536c1cb522358aef32621493e9caab99d633a23cf3",
+   "size": [
+    7,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/spray0.png",
+   "sha256": "5e281d35df03f9ba3805c503182c5c9b2cd3be443ce5b84a1e1aeb2406cb4181"
+  },
+  {
+   "kind": "equipment",
+   "name": "ssg08",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/ssg08.svg",
+   "sourceSha256": "82bbb1b093f405a26f87c2e85d07909267814f117ce7a9035ef4ee3e23fd2ced",
+   "size": [
+    55,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/ssg08.png",
+   "sha256": "02c6c45e4e5a3eddbe0e7ebda185acb5b32a6e301cdcf2fa7fe4fc85d09eac50"
+  },
+  {
+   "kind": "equipment",
+   "name": "stomp_damage",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/stomp_damage.svg",
+   "sourceSha256": "56f56fe5418f902296de14d9d0770d458b560e454e058f203a90e4dd823c43a8",
+   "size": [
+    22,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/stomp_damage.png",
+   "sha256": "30b7a31a4bff515defb5b541e213a1e268375873c84cbf40dcda17f9ca955a18"
+  },
+  {
+   "kind": "equipment",
+   "name": "taser",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/taser.svg",
+   "sourceSha256": "a3e119853a03ebbb0267ff7721246c5ae5132dd6b325ec21d74638dc72a7b7ec",
+   "size": [
+    19,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/taser.png",
+   "sha256": "29b6ef7f343b7b7567ef124a5af0230ac5f3ecbddc77f74660fab45b34276644"
+  },
+  {
+   "kind": "equipment",
+   "name": "tec9",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/tec9.svg",
+   "sourceSha256": "dce734f0a08b42aa6ebb7946d1c3653823c4c70da99d05f2b23afa6ba80b27a6",
+   "size": [
+    24,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/tec9.png",
+   "sha256": "255783e484e7311a17e764458702bdaa6150c0e36b3d535b790e7225aec113f2"
+  },
+  {
+   "kind": "equipment",
+   "name": "trigger_hurt",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/trigger_hurt.svg",
+   "sourceSha256": "bdd3edc2c08d461a950b33325066965bcabb854f82393aec13c646914a22394e",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/trigger_hurt.png",
+   "sha256": "32e83f9213b07cbb9a9324f8d5ecd19c971820b8383201c05642527ea8c2b307"
+  },
+  {
+   "kind": "equipment",
+   "name": "ump45",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/ump45.svg",
+   "sourceSha256": "db234c16c85e5f7aa81821cdd41303857783673ca96792072c9ba51205108124",
+   "size": [
+    39,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/ump45.png",
+   "sha256": "c1f9531ad72bc1205c03d49b2d5657561b0dc341b8e91bac779e1742d111c84e"
+  },
+  {
+   "kind": "equipment",
+   "name": "usp_silencer",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/usp_silencer.svg",
+   "sourceSha256": "6f2693049050b883cbabeac89437fbcb8504520ec779156d4f7877e077ec3d7c",
+   "size": [
+    38,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/usp_silencer.png",
+   "sha256": "db15d3dedb80483690dbf7ce677a44f1ca3073d152fb305618945e08db427744"
+  },
+  {
+   "kind": "equipment",
+   "name": "usp_silencer_off",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/usp_silencer_off.svg",
+   "sourceSha256": "6ea28119e8c9fedfe46d354389810200e2f9803eecc3c4e9c6a21ad290a2567d",
+   "size": [
+    20,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/usp_silencer_off.png",
+   "sha256": "a7c7fc2289bb603f023fd611dae3a6ff8890b9e2e60a2a28b7c981494058bd47"
+  },
+  {
+   "kind": "equipment",
+   "name": "world",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/world.svg",
+   "sourceSha256": "bdd3edc2c08d461a950b33325066965bcabb854f82393aec13c646914a22394e",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/world.png",
+   "sha256": "32e83f9213b07cbb9a9324f8d5ecd19c971820b8383201c05642527ea8c2b307"
+  },
+  {
+   "kind": "equipment",
+   "name": "worldent",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/worldent.svg",
+   "sourceSha256": "bdd3edc2c08d461a950b33325066965bcabb854f82393aec13c646914a22394e",
+   "size": [
+    14,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/worldent.png",
+   "sha256": "32e83f9213b07cbb9a9324f8d5ecd19c971820b8383201c05642527ea8c2b307"
+  },
+  {
+   "kind": "equipment",
+   "name": "xm1014",
+   "source": ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment/xm1014.svg",
+   "sourceSha256": "ec202a1ccdda27830262f764ac741eba5349211eb72776e4f8e65e78ec0ccea5",
+   "size": [
+    64,
+    14
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/xm1014.png",
+   "sha256": "6641907e53022470a3603c25a459150a57d4e33992a2dedd2e9373d9a33aae99"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "headshot",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/icon_headshot.svg",
+   "sourceSha256": "0ce669fdfc510b4463b9cc0a2759671be4c6e2d835676495713a30fa839f3557",
+   "size": [
+    14,
+    12
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kill_headshot.png",
+   "sha256": "e11ca9619b3227b0e2fe77cb421b6fc3eac496725073e5958dbba6b8085eff5f"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "noscope",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/noscope.svg",
+   "sourceSha256": "44862d353644fc902970ecccf15bee653c4f75a284bb956a8a9e821bb53a7b9c",
+   "size": [
+    12,
+    12
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kill_noscope.png",
+   "sha256": "9d889111e72e486ae47112c7b83c11323cff091cdc3d175263acee1f06f7f4f5"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "smoke",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/smoke_kill.svg",
+   "sourceSha256": "156eebf34e2ed0337969d829276b7e4f5f987a89faf9dad8e66bef806416ee28",
+   "size": [
+    18,
+    12
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kill_smoke.png",
+   "sha256": "de8dfaf70ad0ac12435078b43186810434d2fc4f29f585d4ac07b1745e867831"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "penetrate",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/penetrate.svg",
+   "sourceSha256": "4cc7c84aae80072f40fb5ac26c7eff5a4999e0008e982b69bf4c382962eba60d",
+   "size": [
+    11,
+    12
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kill_penetrate.png",
+   "sha256": "89134b88a2fd0319b83203c6c98839e247348eb452560964dea1e03e77c3b6cb"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "blind",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/blind_kill.svg",
+   "sourceSha256": "5a1233c62f605337ced75ec0f3a35f8d03341d3cfe14362f0b3d3f9fd33f4445",
+   "size": [
+    13,
+    12
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kill_blind.png",
+   "sha256": "f04e6fd957ce993d584f43940fac78b17a22e270c685c2902b06638a4faf4fb8"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "suicide",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/icon_suicide.svg",
+   "sourceSha256": "5e6268df5ff2f4e48f45ba52d63dc84942efe6285fc20bda186fd5cc0182b574",
+   "size": [
+    18,
+    12
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/px/kill_suicide.png",
+   "sha256": "e241543a269ef5be49882106424cbb6d87d626f34a7d79b391bf18bcf2522258"
+  }
+ ]
+}

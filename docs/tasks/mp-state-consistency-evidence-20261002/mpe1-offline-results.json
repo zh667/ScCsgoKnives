@@ -1,0 +1,1759 @@
+{
+ "netstate": {
+  "mode": "state cases",
+  "failed": 0,
+  "total": 109,
+  "modules": [
+   "ScCsgoTactical.dll",
+   "ScCsgoAppearance.dll"
+  ],
+  "registeredHandlers": 35,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": "all passed (names as in mpd2-offline-results.json; four more since)"
+ },
+ "netstate-targets": {
+  "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+  "failed": 0,
+  "total": 12,
+  "modules": [
+   "ScCsgoTactical.dll",
+   "ScCsgoAppearance.dll"
+  ],
+  "registeredHandlers": 33,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": "all passed (names as in mpd2-offline-results.json; four more since)"
+ },
+ "netgunloop": {
+  "mode": "the gun state machine on a client and a server end",
+  "failed": 0,
+  "total": 95,
+  "modules": [
+   "ScCsgoTactical.dll",
+   "ScCsgoAppearance.dll"
+  ],
+  "registeredHandlers": 33,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "setup",
+    "name": "A and B are accepted; the handlers are those of the game's own registration (core, then the optional packages given)",
+    "ok": true,
+    "detail": "2 peers; 33 handlers; packages: ScCsgoTactical; replaced [] refused []"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+    "ok": true,
+    "detail": "server fired 12; client readout 18, its record 18, pending 0"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+    "ok": true,
+    "detail": "hit messages 0, marker kind 0, kill lines 0"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+    "ok": true,
+    "detail": "readout: 29x6 28x6 27x6 26x6 25x6 24x6 23x6 22x6 21x6 20x6 19x6 18x36 | pending: 1x6 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x6 0x27"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+    "ok": true,
+    "detail": "give-ups 0, dropped 0, most pending 2 (delay 3+3 frames)"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+    "ok": true,
+    "detail": "server fired 12; client readout 18, its record 18, pending 0"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+    "ok": true,
+    "detail": "hit messages 0, marker kind 0, kill lines 0"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+    "ok": true,
+    "detail": "readout: 29x6 28x6 27x6 26x6 25x6 24x6 23x6 22x6 21x6 20x6 19x6 18x36 | pending: 1x6 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x6 0x27"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+    "ok": true,
+    "detail": "give-ups 0, dropped 0, most pending 2 (delay 3+3 frames)"
+   },
+   {
+    "case": "G02",
+    "name": "six taps: six shots on the server, the readout goes down by one at each tap and never back up; nothing pending, no time-out, no hit shown",
+    "ok": true,
+    "detail": "server 24; readout: 29x15 28x15 27x15 26x15 25x15 24x35"
+   },
+   {
+    "case": "G03",
+    "name": "a hit the server reports reaches the shooter's screen as that",
+    "ok": true,
+    "detail": "hit: marker 1, kill lines 0"
+   },
+   {
+    "case": "G03",
+    "name": "a head hit the server reports reaches the shooter's screen as that",
+    "ok": true,
+    "detail": "head hit: marker 3, kill lines 0"
+   },
+   {
+    "case": "G03",
+    "name": "a kill the server reports reaches the shooter's screen as that",
+    "ok": true,
+    "detail": "kill: marker 2, kill lines 1"
+   },
+   {
+    "case": "G03",
+    "name": "three results, three messages",
+    "ok": true,
+    "detail": "3"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: the client shows its last round and starts reloading while the server still holds 1; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 1 left (client: 1 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x78 | record: 1x6 0x72"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#1 Accepted, #1 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 28; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: the client shows its last round and starts reloading while the server still holds 3; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 3 left (client: 4 shots not settled) when the client showed 0; server rounds: 8x15 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x86 | record: 4x2 3x6 2x6 1x6 0x66"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#2 Accepted, #2 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 26; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: the client shows its last round and starts reloading while the server still holds 2; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 2 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x12 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x91 | record: 5x1 4x6 3x6 2x6 1x6 0x66"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#3 Accepted, #3 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 27, client record 30, readout 25; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: the client shows its last round and starts reloading while the server still holds 1; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 1 left (client: 2 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x69 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x80 | record: 2x2 1x6 0x72"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#4 Accepted, #4 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 28; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: the client shows its last round and starts reloading while the server still holds 2; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 2 left (client: 4 shots not settled) when the client showed 0; server rounds: 8x12 7x4 6x8 5x4 4x8 3x4 2x8 1x4 0x72 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x91 | record: 4x3 3x8 2x8 0x72"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#5 Accepted, #5 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 26; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "the trigger let go as the client shows 0 while a slow host still has rounds (the reported \"server 2, client 0\"): the reload the client shows is performed by the server and ends with a full magazine on both ends, never with the rounds that were left",
+    "ok": true,
+    "detail": "server had 1 when the client showed 0; server said: #6 Accepted, #6 Completed; end: server 30, readout 30; server rounds: 8x7 7x8 6x4 5x8 4x4 3x8 2x4 1x8 0x72 30x84; readout: 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x92 30x73"
+   },
+   {
+    "case": "G05",
+    "name": "a reload by the key with rounds left: shown at once on the client, performed by the server (accepted, completed), full on both ends",
+    "ok": true,
+    "detail": "25 rounds before; server said: #7 Accepted, #7 Completed; end: server 30, readout 30"
+   },
+   {
+    "case": "G05",
+    "name": "during it the readout is the server's rounds, then the full magazine: nothing else",
+    "ok": true,
+    "detail": "readout: 25x75 30x78"
+   },
+   {
+    "case": "G06",
+    "name": "a reload the server refuses (it holds another slot for that player): the client's reload is taken back when the word arrives, long before its animation would end; the rounds stay the server's",
+    "ok": true,
+    "detail": "taken back after 7 frames; server said: #8 Refused; readout 25, the server's record 25"
+   },
+   {
+    "case": "G06",
+    "name": "and once the server holds that gun again, the next reload is performed and completes",
+    "ok": true,
+    "detail": "#9 Accepted, #9 Completed"
+   },
+   {
+    "case": "G07",
+    "name": "switching away during a reload cancels it on both ends: the server says so, no round is added, and the gun reads the server's rounds when taken out again",
+    "ok": true,
+    "detail": "server said: #10 Accepted, #10 Cancelled; rounds before 25, server 25, readout 25"
+   },
+   {
+    "case": "G08",
+    "name": "a reload the server begins by itself is shown on the client and ends with the server's magazine there too",
+    "ok": true,
+    "detail": "server said: #0 Accepted, #0 Completed; end: server 30, readout 29"
+   },
+   {
+    "case": "G09",
+    "name": "50 ms each way: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+    "ok": true,
+    "detail": "record #15; server 27; readout: 29x18 28x18 27x48"
+   },
+   {
+    "case": "G09",
+    "name": "50 ms each way: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+    "ok": true,
+    "detail": "server said: #11 Accepted, #11 Completed; end: server 30, readout 30; readout through the reload: 0x73"
+   },
+   {
+    "case": "G09",
+    "name": "a slow host, 150/100 ms: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+    "ok": true,
+    "detail": "record #16; server 27; readout: 29x18 28x18 27x48"
+   },
+   {
+    "case": "G09",
+    "name": "a slow host, 150/100 ms: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+    "ok": true,
+    "detail": "server said: #12 Accepted, #12 Completed; end: server 30, readout 30; readout through the reload: 0x88"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, no transit delay: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, no transit delay: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: each shot is executed within 125 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 20.0 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 20.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 67, executed 67, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -16.7 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 67, executed 67, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -16.7 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: each shot is executed within 125 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 33.3 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 16.7 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 30 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 30 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 144 fps, host 50 fps, 30 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 67, executed 67, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 144 fps, host 50 fps, 30 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 80.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 50 fps, host 100 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 63, executed 63, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 50 fps, host 100 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -13.5 ms; smallest gap between executed shots 79.2 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: each shot is executed within 125 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 37.4 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 66, executed 66, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: each shot is executed within 125 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 20.0 ms; latest execution after the release was taken 0.0 ms; smallest gap between executed shots 20.0 ms (cadence 100.0 ms, allowance 125 ms)"
+   },
+   {
+    "case": "G11",
+    "name": "five shots claimed at once without the time for them: the server executes only what the gun's cadence and its stated allowance permit, says the rest did not happen, and the client's readout comes back to the server's rounds",
+    "ok": true,
+    "detail": "claimed 5, executed 3 (at most 3), skipped 2; server rounds 30->27, readout ends 27"
+   },
+   {
+    "case": "G11",
+    "name": "a held trigger claiming two shots for every one the gun can fire: the server fires at the gun's cadence, the excess is said not to have happened, nothing extra is spent",
+    "ok": true,
+    "detail": "claimed 20, executed 12 in 1.0 s (at most 13), skipped 8; readout ends 18, server 18"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client 100 fps, host 50 fps, 50 ms each way: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": true,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 0, executed 0, skipped 0; hold 0.512: shown 0, executed 0, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client 60 fps, host 50 fps, 50 ms each way: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": true,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 1, executed 1, skipped 0; hold 0.512: shown 0, executed 0, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": true,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 0, executed 0, skipped 0; hold 0.512: shown 0, executed 0, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": true,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 0, executed 0, skipped 0; hold 0.512: shown 1, executed 1, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "FAMAS in burst mode, client 100 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "FAMAS in burst mode, client 60 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "FAMAS in burst mode, client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "Glock-18 in burst mode, client 100 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "Glock-18 in burst mode, client 60 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "Glock-18 in burst mode, client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client 100 fps, host 50 fps, 50 ms each way: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": true,
+    "detail": "hold 1.500: shown 4, executed 4, skipped 0; hold 1.500: shown 6, executed 6, skipped 0; hold 1.500: shown 6, executed 6, skipped 0"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client 60 fps, host 50 fps, 50 ms each way: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": true,
+    "detail": "hold 1.500: shown 4, executed 4, skipped 0; hold 1.500: shown 6, executed 6, skipped 0; hold 1.500: shown 6, executed 6, skipped 0"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": true,
+    "detail": "hold 1.500: shown 4, executed 4, skipped 0; hold 1.500: shown 6, executed 6, skipped 0; hold 1.500: shown 6, executed 6, skipped 0"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": true,
+    "detail": "hold 1.500: shown 4, executed 4, skipped 0; hold 1.500: shown 7, executed 7, skipped 0; hold 1.500: shown 6, executed 6, skipped 0"
+   },
+   {
+    "case": "G15",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: switching to another gun with the trigger down: the shots shown with the first gun before the switch are the rounds the server took from it, the shots shown with the second are the rounds taken from that one, and no shot of one gun is executed from the other; neither readout rises",
+    "ok": true,
+    "detail": "first gun: shown 4, rounds taken on the server 4; second gun: shown 11, taken 11; skipped 0; readout of the gun in hand ends 19, server 19"
+   },
+   {
+    "case": "G15",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a menu opened with the trigger down: the shots shown before it are the server's, none after",
+    "ok": true,
+    "detail": "hold 0.900: shown 4, executed 4, skipped 0"
+   },
+   {
+    "case": "G15",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: switching to another gun with the trigger down: the shots shown with the first gun before the switch are the rounds the server took from it, the shots shown with the second are the rounds taken from that one, and no shot of one gun is executed from the other; neither readout rises",
+    "ok": true,
+    "detail": "first gun: shown 4, rounds taken on the server 4; second gun: shown 11, taken 11; skipped 0; readout of the gun in hand ends 19, server 19"
+   },
+   {
+    "case": "G15",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: a menu opened with the trigger down: the shots shown before it are the server's, none after",
+    "ok": true,
+    "detail": "hold 0.900: shown 4, executed 4, skipped 0"
+   },
+   {
+    "case": "G15",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: switching to another gun with the trigger down: the shots shown with the first gun before the switch are the rounds the server took from it (or all but the one reported in the very frame of the switch), the shots shown with the second are the rounds taken from that one, and no shot of one gun is executed from the other; neither readout rises",
+    "ok": true,
+    "detail": "first gun: shown 4, rounds taken on the server 3; second gun: shown 11, taken 11; skipped 1; readout of the gun in hand ends 19, server 19"
+   },
+   {
+    "case": "G15",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: a menu opened with the trigger down: the shots shown before it are the server's, none after",
+    "ok": true,
+    "detail": "hold 0.900: shown 4, executed 4, skipped 0"
+   },
+   {
+    "case": "G16",
+    "name": "the client's connection goes away while it fires: the server fires nothing more for that player, from the frame it sees the connection gone",
+    "ok": true,
+    "detail": "executed before 4, after 0; server rounds 26; peers 1"
+   },
+   {
+    "case": "G16",
+    "name": "accepted again, the next burst corresponds shot for shot",
+    "ok": true,
+    "detail": "hold 0.550: shown 6, executed 6, skipped 0"
+   }
+  ]
+ },
+ "netstate-delivered": {
+  "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+  "failed": 0,
+  "total": 12,
+  "modules": [],
+  "registeredHandlers": 28,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "c84f7297-1ed6-4900-b265-15a4f2865698",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": "all passed (names as in mpd2-offline-results.json; four more since)"
+ },
+ "netgunloop-delivered": {
+  "mode": "the gun state machine on a client and a server end",
+  "failed": 32,
+  "total": 95,
+  "modules": [],
+  "registeredHandlers": 28,
+  "platform": {
+   "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+   "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+  },
+  "core": "c84f7297-1ed6-4900-b265-15a4f2865698",
+  "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+  "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+  "checks": [
+   {
+    "case": "setup",
+    "name": "A and B are accepted; the handlers are those of the game's own registration (core, then the optional packages given)",
+    "ok": true,
+    "detail": "2 peers; 28 handlers; packages: none; replaced [] refused []"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+    "ok": true,
+    "detail": "server fired 12; client readout 18, its record 18, pending 0"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+    "ok": true,
+    "detail": "hit messages 0, marker kind 0, kill lines 0"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+    "ok": true,
+    "detail": "readout: 29x6 28x6 27x6 26x6 25x6 24x6 23x6 22x6 21x6 20x6 19x6 18x36 | pending: 1x6 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x6 0x27"
+   },
+   {
+    "case": "G01",
+    "name": "fire button: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+    "ok": true,
+    "detail": "give-ups 0, dropped 0, most pending 2 (delay 3+3 frames)"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+    "ok": true,
+    "detail": "server fired 12; client readout 18, its record 18, pending 0"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+    "ok": true,
+    "detail": "hit messages 0, marker kind 0, kill lines 0"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+    "ok": true,
+    "detail": "readout: 29x6 28x6 27x6 26x6 25x6 24x6 23x6 22x6 21x6 20x6 19x6 18x36 | pending: 1x6 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x6 0x27"
+   },
+   {
+    "case": "G01",
+    "name": "mouse: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+    "ok": true,
+    "detail": "give-ups 0, dropped 0, most pending 2 (delay 3+3 frames)"
+   },
+   {
+    "case": "G02",
+    "name": "six taps: six shots on the server, the readout goes down by one at each tap and never back up; nothing pending, no time-out, no hit shown",
+    "ok": true,
+    "detail": "server 24; readout: 29x15 28x15 27x15 26x15 25x15 24x35"
+   },
+   {
+    "case": "G03",
+    "name": "a hit the server reports reaches the shooter's screen as that",
+    "ok": true,
+    "detail": "hit: marker 1, kill lines 0"
+   },
+   {
+    "case": "G03",
+    "name": "a head hit the server reports reaches the shooter's screen as that",
+    "ok": true,
+    "detail": "head hit: marker 3, kill lines 0"
+   },
+   {
+    "case": "G03",
+    "name": "a kill the server reports reaches the shooter's screen as that",
+    "ok": true,
+    "detail": "kill: marker 2, kill lines 1"
+   },
+   {
+    "case": "G03",
+    "name": "three results, three messages",
+    "ok": true,
+    "detail": "3"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: the client shows its last round and starts reloading while the server still holds 1; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 1 left (client: 1 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x78 | record: 1x6 0x72"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#0 Accepted, #1 Accepted, #1 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "50 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 28; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: the client shows its last round and starts reloading while the server still holds 3; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 3 left (client: 4 shots not settled) when the client showed 0; server rounds: 8x15 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x86 | record: 4x2 3x6 2x6 1x6 0x66"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#0 Accepted, #2 Accepted, #2 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "250 ms to the server: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 26; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: the client shows its last round and starts reloading while the server still holds 2; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 2 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x12 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x91 | record: 5x1 4x6 3x6 2x6 1x6 0x66"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#0 Accepted, #3 Accepted, #3 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "200 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 27, client record 30, readout 25; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: the client shows its last round and starts reloading while the server still holds 1; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 1 left (client: 2 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x69 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x80 | record: 2x2 1x6 0x72"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#4 Accepted, #4 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a third of the client's frame rate: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 28; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: the client shows its last round and starts reloading while the server still holds 4; the server fires every shot that client showed, and only then reloads",
+    "ok": true,
+    "detail": "server had 4 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x12 7x8 6x8 5x8 4x8 3x8 2x8 1x8 0x72 30x2"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+    "ok": true,
+    "detail": "readout: 0x107 | record: 5x3 4x8 3x8 2x8 1x8 0x72"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+    "ok": true,
+    "detail": "#5 Accepted, #5 Completed"
+   },
+   {
+    "case": "G04",
+    "name": "a host at a quarter of the frame rate, 150/100 ms: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+    "ok": true,
+    "detail": "server 29, client record 30, readout 26; give-ups 0"
+   },
+   {
+    "case": "G04",
+    "name": "the trigger let go as the client shows 0 while a slow host still has rounds (the reported \"server 2, client 0\"): the reload the client shows is performed by the server and ends with a full magazine on both ends, never with the rounds that were left",
+    "ok": true,
+    "detail": "server had 3 when the client showed 0; server said: #6 Accepted, #6 Completed; end: server 30, readout 30; server rounds: 8x7 7x8 6x8 5x8 4x8 3x8 2x72 30x84; readout: 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x20 2x64 30x77"
+   },
+   {
+    "case": "G05",
+    "name": "a reload by the key with rounds left: shown at once on the client, performed by the server (accepted, completed), full on both ends",
+    "ok": true,
+    "detail": "25 rounds before; server said: #7 Accepted, #7 Completed; end: server 30, readout 30"
+   },
+   {
+    "case": "G05",
+    "name": "during it the readout is the server's rounds, then the full magazine: nothing else",
+    "ok": true,
+    "detail": "readout: 25x73 30x80"
+   },
+   {
+    "case": "G06",
+    "name": "a reload the server refuses (it holds another slot for that player): the client's reload is taken back when the word arrives, long before its animation would end; the rounds stay the server's",
+    "ok": true,
+    "detail": "taken back after 7 frames; server said: #8 Refused; readout 25, the server's record 25"
+   },
+   {
+    "case": "G06",
+    "name": "and once the server holds that gun again, the next reload is performed and completes",
+    "ok": true,
+    "detail": "#9 Accepted, #9 Completed"
+   },
+   {
+    "case": "G07",
+    "name": "switching away during a reload cancels it on both ends: the server says so, no round is added, and the gun reads the server's rounds when taken out again",
+    "ok": true,
+    "detail": "server said: #10 Accepted, #10 Cancelled; rounds before 25, server 25, readout 25"
+   },
+   {
+    "case": "G08",
+    "name": "a reload the server begins by itself is shown on the client and ends with the server's magazine there too",
+    "ok": true,
+    "detail": "server said: #0 Accepted, #0 Completed; end: server 29, readout 29"
+   },
+   {
+    "case": "G09",
+    "name": "50 ms each way: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+    "ok": true,
+    "detail": "record #15; server 27; readout: 29x18 28x18 27x48"
+   },
+   {
+    "case": "G09",
+    "name": "50 ms each way: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+    "ok": true,
+    "detail": "server said: #0 Accepted, #11 Accepted, #11 Completed; end: server 30, readout 30; readout through the reload: 0x77"
+   },
+   {
+    "case": "G09",
+    "name": "a slow host, 150/100 ms: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+    "ok": true,
+    "detail": "record #16; server 27; readout: 29x18 28x18 27x48"
+   },
+   {
+    "case": "G09",
+    "name": "a slow host, 150/100 ms: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+    "ok": true,
+    "detail": "server said: #12 Accepted, #12 Completed; end: server 30, readout 30; readout through the reload: 0x91"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 63, executed 57, skipped 6, readout rises 6 in 6 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.800 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.080 0.200 0.320 0.440 0.560] skipped at [0.680x1] | hold 0.600: shown 6, executed 5, skipped 1, readout rose 19->20 at 0.820 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.080 0.200 0.320 0.440 0.560] skipped at [0.680x1] | hold 0.347: shown 4, executed 3, skipped 1, readout rose 23->24 at 0.510 shown at [0.010 0.120 0.230 0.340] executed at [0.070 0.190 0.310] skipped at [0.410x1] :: first three: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.800; hold"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 40.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 120.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, no transit delay: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 63, executed 57, skipped 6, readout rises 6 in 6 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.690 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.020 0.140 0.260 0.380 0.500] skipped at [0.620x1] | hold 0.600: shown 6, executed 5, skipped 1, readout rose 19->20 at 0.710 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.020 0.140 0.260 0.380 0.500] skipped at [0.620x1] | hold 0.347: shown 4, executed 3, skipped 1, readout rose 23->24 at 0.380 shown at [0.010 0.120 0.230 0.340] executed at [0.010 0.130 0.250] skipped at [0.350x1] :: first three: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.690; hold"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, no transit delay: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 40.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 120.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 63, executed 61, skipped 5, readout rises 5 in 5 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.870 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.160 0.280 0.400 0.520 0.640] skipped at [0.680x1] | hold 0.500: shown 5, executed 4, skipped 1, readout rose 14->15 at 0.790 shown at [0.010 0.120 0.230 0.340 0.450] executed at [0.160 0.280 0.400 0.520] skipped at [0.580x1] | hold 0.339: shown 3, executed 4, skipped 0 shown at [0.010 0.120 0.230] executed at [0.080 0.200 0.320 0.440] :: first three: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.870; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, ex"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches: each shot is executed within 0 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 100.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 120.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 66, executed 58, skipped 8, readout rises 8 in 8 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.750 shown at [0.017 0.117 0.217 0.317 0.417 0.517] executed at [0.080 0.200 0.320 0.440 0.560] skipped at [0.660x1] | hold 0.600: shown 6, executed 5, skipped 1, readout rose 19->20 at 0.784 shown at [0.000 0.100 0.200 0.300 0.400 0.500] executed at [0.060 0.180 0.300 0.420 0.540] skipped at [0.660x1] | hold 0.331: shown 4, executed 3, skipped 1, readout rose 11->12 at 0.550 shown at [0.000 0.100 0.200 0.300] executed at [0.060 0.180 0.300] skipped at [0.400x1] :: first three: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.750; hold"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 60.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 120.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 67, executed 67, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report -16.7 ms; latest execution after the release was taken -16.7 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": true,
+    "detail": "shown 67, executed 67, skipped 0, readout rises 0 in 0 of 15 bursts :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, 250 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report -16.7 ms; latest execution after the release was taken -16.7 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 66, executed 64, skipped 5, readout rises 4 in 4 of 15 bursts :: hold 0.347: shown 4, executed 5, skipped 0 shown at [0.017 0.117 0.217 0.317] executed at [0.067 0.167 0.267 0.367 0.467] | hold 0.356: shown 4, executed 2, skipped 2, readout rose 17->19 at 0.617 shown at [0.017 0.117 0.217 0.317] executed at [0.217 0.317] skipped at [0.417x2] | hold 0.381: shown 4, executed 6, skipped 0 shown at [0.017 0.117 0.217 0.317] executed at [0.067 0.167 0.267 0.367 0.467 0.567] :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: each shot is executed within 0 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 133.3 ms; latest execution after the release was taken -16.7 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 30 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 66, executed 65, skipped 1, readout rises 1 in 1 of 15 bursts :: hold 0.422: shown 5, executed 4, skipped 1, readout rose 17->18 at 0.600 shown at [0.017 0.117 0.217 0.317 0.417] executed at [0.083 0.183 0.283 0.383] skipped at [0.483x1] :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 60 fps, host 30 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report 0.0 ms; latest execution after the release was taken -33.3 ms; smallest gap between executed shots 100.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 144 fps, host 50 fps, 30 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 65, executed 57, skipped 8, readout rises 8 in 8 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.722 shown at [0.007 0.111 0.215 0.319 0.424 0.528] executed at [0.047 0.167 0.287 0.407 0.527] skipped at [0.647x1] | hold 0.600: shown 6, executed 5, skipped 1, readout rose 19->20 at 0.743 shown at [0.007 0.111 0.215 0.319 0.424 0.528] executed at [0.048 0.168 0.288 0.408 0.528] skipped at [0.648x1] | hold 0.331: shown 4, executed 3, skipped 1, readout rose 11->12 at 0.528 shown at [0.007 0.111 0.215 0.319] executed at [0.055 0.175 0.295] skipped at [0.375x1] :: first three: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.722; hold"
+   },
+   {
+    "case": "G10",
+    "name": "client 144 fps, host 50 fps, 30 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 60.0 ms; latest execution after the release was taken -20.0 ms; smallest gap between executed shots 120.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 50 fps, host 100 fps, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 57, executed 63, skipped 0, readout rises 0 in 0 of 15 bursts :: hold 0.600: shown 5, executed 6, skipped 0 shown at [0.020 0.140 0.260 0.380 0.500] executed at [0.072 0.182 0.292 0.402 0.512 0.622] | hold 0.600: shown 5, executed 6, skipped 0 shown at [0.020 0.140 0.260 0.380 0.500] executed at [0.072 0.182 0.292 0.402 0.512 0.622] | hold 0.347: shown 3, executed 4, skipped 0 shown at [0.008 0.128 0.248] executed at [0.060 0.170 0.280 0.390] :: first three: hold 0.600: shown 5, executed 6, skipped 0; hold 0.600: shown 5, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client 50 fps, host 100 fps, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": true,
+    "detail": "longest wait after a report -20.0 ms; latest execution after the release was taken -10.0 ms; smallest gap between executed shots 110.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 65, executed 64, skipped 1, readout rises 1 in 1 of 15 bursts :: hold 0.331: shown 4, executed 3, skipped 1, readout rose 9->10 at 0.530 shown at [0.009 0.118 0.221 0.321] executed at [0.073 0.195 0.314] skipped at [0.390x1] :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 6, skipped 0; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: each shot is executed in the server frame its report arrives, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 38.9 ms; latest execution after the release was taken -15.8 ms; smallest gap between executed shots 100.2 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 62, executed 63, skipped 2, readout rises 2 in 2 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 18->19 at 0.823 shown at [0.015 0.124 0.241 0.357 0.472 0.573] executed at [0.125 0.245 0.357 0.459 0.566] skipped at [0.667x1] | hold 0.331: shown 3, executed 4, skipped 0 shown at [0.014 0.123 0.224] executed at [0.098 0.212 0.315 0.416] | hold 0.356: shown 3, executed 4, skipped 0 shown at [0.020 0.135 0.252] executed at [0.050 0.161 0.281 0.393] :: first three: hold 0.600: shown 6, executed 6, skipped 0; hold 0.600: shown 6, executed 5, skipped 1, readout rose 18->19 at 0.823; hold 0.500: shown 5, executed 5, skipped 0"
+   },
+   {
+    "case": "G10",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: each shot is executed within 0 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 49.7 ms; latest execution after the release was taken -19.0 ms; smallest gap between executed shots 100.3 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: 15 short bursts, released at every phase of the shot interval: the server executes exactly the shots the client showed - none marked as not fired, the readout never rises after the trigger goes up",
+    "ok": false,
+    "detail": "shown 63, executed 50, skipped 13, readout rises 13 in 13 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.780 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.080 0.200 0.360 0.480 0.600] skipped at [0.660x1] | hold 0.600: shown 6, executed 5, skipped 1, readout rose 19->20 at 0.920 shown at [0.010 0.120 0.230 0.340 0.450 0.560] executed at [0.060 0.180 0.300 0.420 0.540] skipped at [0.740x1] | hold 0.500: shown 5, executed 4, skipped 1, readout rose 15->16 at 0.740 shown at [0.010 0.120 0.230 0.340 0.450] executed at [0.060 0.180 0.300 0.420] skipped at [0.560x1] :: first three: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25"
+   },
+   {
+    "case": "G10",
+    "name": "client 100 fps, host 50 fps stalling 120 ms every 23rd frame (inputs arrive in batches), 50 ms each way: each shot is executed within 0 ms of its report, none later than that after the release was taken; and never faster than the gun's cadence",
+    "ok": false,
+    "detail": "longest wait after a report 120.0 ms; latest execution after the release was taken -40.0 ms; smallest gap between executed shots 120.0 ms (cadence 100.0 ms, allowance 0 ms)"
+   },
+   {
+    "case": "G11",
+    "name": "five shots claimed at once without the time for them: the server executes only what the gun's cadence and its stated allowance permit, says the rest did not happen, and the client's readout comes back to the server's rounds",
+    "ok": false,
+    "detail": "claimed 5, executed 0 (at most 1), skipped 5; server rounds 30->30, readout ends 30"
+   },
+   {
+    "case": "G11",
+    "name": "a held trigger claiming two shots for every one the gun can fire: the server fires at the gun's cadence, the excess is said not to have happened, nothing extra is spent",
+    "ok": true,
+    "detail": "claimed 20, executed 9 in 1.0 s (at most 11), skipped 11; readout ends 21, server 21"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client 100 fps, host 50 fps, 50 ms each way: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": true,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 0, executed 0, skipped 0; hold 0.512: shown 0, executed 0, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client 60 fps, host 50 fps, 50 ms each way: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": false,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 1, executed 0, skipped 1, readout rose 7->8 at 0.750; hold 0.512: shown 0, executed 0, skipped 0; hold 0.530: shown 1, executed 0, skipped 1, readout rose 7->8 at 0.750; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0 :: hold 0.505: shown 1, executed 0, skipped 1, readout rose 7->8 at 0.750 shown at [0.500] executed at [] skipped at [0.580x1] | hold 0.530: shown 1, executed 0, skipped 1, readout rose 7->8 at 0.750 shown at [0.517] executed at [] skipped at [0.600x1]"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": false,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 1, skipped 0; hold 0.505: shown 0, executed 0, skipped 0; hold 0.512: shown 0, executed 1, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0 :: hold 0.480: shown 0, executed 1, skipped 0 shown at [] executed at [0.567] | hold 0.512: shown 0, executed 1, skipped 0 shown at [] executed at [0.667]"
+   },
+   {
+    "case": "G12",
+    "name": "R8, client ~100 fps, host ~50 fps, frame times varying by 35%, 50 ms each way: the trigger let go before, at and just after the hammer falls, and held for two shots: the server commits the cocked shot exactly when the client showed it, never one the client did not show",
+    "ok": true,
+    "detail": "hold 0.420: shown 0, executed 0, skipped 0; hold 0.480: shown 0, executed 0, skipped 0; hold 0.505: shown 0, executed 0, skipped 0; hold 0.512: shown 1, executed 1, skipped 0; hold 0.530: shown 1, executed 1, skipped 0; hold 0.580: shown 1, executed 1, skipped 0; hold 1.200: shown 2, executed 2, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "FAMAS in burst mode, client 100 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "FAMAS in burst mode, client 60 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "FAMAS in burst mode, client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "Glock-18 in burst mode, client 100 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "Glock-18 in burst mode, client 60 fps, host 50 fps, 50 ms each way: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G13",
+    "name": "Glock-18 in burst mode, client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: each burst is three rounds on both ends, whatever the length of the press",
+    "ok": true,
+    "detail": "hold 0.030: shown 3, executed 3, skipped 0; hold 0.090: shown 3, executed 3, skipped 0; hold 0.160: shown 3, executed 3, skipped 0; hold 0.300: shown 3, executed 3, skipped 0"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client 100 fps, host 50 fps, 50 ms each way: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": false,
+    "detail": "hold 1.500: shown 4, executed 4, skipped 0; hold 1.500: shown 6, executed 4, skipped 2, readout rose 3->4 at 1.100,2->3 at 1.580; hold 1.500: shown 6, executed 6, skipped 0 :: hold 1.500: shown 6, executed 4, skipped 2, readout rose 3->4 at 1.100,2->3 at 1.580 shown at [0.010 0.460 0.690 0.920 1.150 1.380] executed at [0.080 0.520 0.760 1.220] skipped at [1.000x1 1.460x1]"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client 60 fps, host 50 fps, 50 ms each way: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": false,
+    "detail": "hold 1.500: shown 4, executed 4, skipped 0; hold 1.500: shown 5, executed 4, skipped 1, readout rose 2->3 at 1.533; hold 1.500: shown 6, executed 6, skipped 0 :: hold 1.500: shown 5, executed 4, skipped 1, readout rose 2->3 at 1.533 shown at [0.017 0.467 0.700 1.150 1.383] executed at [0.080 0.520 0.760 1.220] skipped at [1.460x1]"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client 60 fps, host 60 fps, delay rising by 150 ms in ordered bunches: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": false,
+    "detail": "hold 1.500: shown 4, executed 5, skipped 0; hold 1.500: shown 5, executed 4, skipped 1, readout rose 4->5 at 0.917; hold 1.500: shown 6, executed 4, skipped 2, readout rose 4->5 at 0.650,2->3 at 1.450 :: hold 1.500: shown 4, executed 5, skipped 0 shown at [0.017 0.417 0.833 1.233] executed at [0.217 0.467 0.983 1.283 1.600] | hold 1.500: shown 5, executed 4, skipped 1, readout rose 4->5 at 0.917 shown at [0.017 0.467 0.700 1.150 1.383] executed at [0.150 0.667 0.967 1.350] skipped at [0.767x1] | hold 1.500: shown 6, executed 4, skipped 2, readout rose 4->5 at 0.650,2->3 at 1.450 shown at [0.017 0.267 0.517 0.767 1.033 1.283] executed at [0.067 0.467 0.817 1.183] skipped at [0.583x1 1.350x1]"
+   },
+   {
+    "case": "G14",
+    "name": "Desert Eagle tapped slightly faster than, at and slightly slower than its cadence, client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: every shot the client showed is the server's, none more, none fewer, and none faster than the cadence",
+    "ok": false,
+    "detail": "hold 1.500: shown 4, executed 5, skipped 0; hold 1.500: shown 6, executed 5, skipped 1, readout rose 5->6 at 0.411; hold 1.500: shown 6, executed 6, skipped 0 :: hold 1.500: shown 4, executed 5, skipped 0 shown at [0.005 0.411 0.821 1.236] executed at [0.112 0.532 0.904 1.166 1.515] | hold 1.500: shown 6, executed 5, skipped 1, readout rose 5->6 at 0.411 shown at [0.005 0.239 0.478 0.926 1.154 1.380] executed at [0.133 0.547 0.969 1.223 1.465] skipped at [0.319x1]"
+   },
+   {
+    "case": "G15",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: switching to another gun with the trigger down: the shots shown with the first gun before the switch are the rounds the server took from it, the shots shown with the second are the rounds taken from that one, and no shot of one gun is executed from the other; neither readout rises",
+    "ok": false,
+    "detail": "first gun: shown 4, rounds taken on the server 3; second gun: shown 10, taken 9; skipped 1; readout of the gun in hand ends 21, server 21"
+   },
+   {
+    "case": "G15",
+    "name": "client 100 fps, host 50 fps, 50 ms each way: a menu opened with the trigger down: the shots shown before it are the server's, none after",
+    "ok": false,
+    "detail": "hold 0.900: shown 4, executed 3, skipped 1, readout rose 26->27 at 0.500 :: shown at [0.010 0.120 0.230 0.340] executed at [0.080 0.200 0.320] skipped at [0.420x1]"
+   },
+   {
+    "case": "G15",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: switching to another gun with the trigger down: the shots shown with the first gun before the switch are the rounds the server took from it, the shots shown with the second are the rounds taken from that one, and no shot of one gun is executed from the other; neither readout rises",
+    "ok": false,
+    "detail": "first gun: shown 4, rounds taken on the server 3; second gun: shown 11, taken 9; skipped 2; readout of the gun in hand ends 21, server 21"
+   },
+   {
+    "case": "G15",
+    "name": "client 60 fps, host 50 fps, 50 ms each way: a menu opened with the trigger down: the shots shown before it are the server's, none after",
+    "ok": false,
+    "detail": "hold 0.900: shown 4, executed 3, skipped 1, readout rose 26->27 at 0.517 :: shown at [0.017 0.117 0.217 0.317] executed at [0.080 0.200 0.320] skipped at [0.400x1]"
+   },
+   {
+    "case": "G15",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: switching to another gun with the trigger down: the shots shown with the first gun before the switch are the rounds the server took from it (or all but the one reported in the very frame of the switch), the shots shown with the second are the rounds taken from that one, and no shot of one gun is executed from the other; neither readout rises",
+    "ok": false,
+    "detail": "first gun: shown 4, rounds taken on the server 4; second gun: shown 10, taken 9; skipped 1; readout of the gun in hand ends 21, server 21"
+   },
+   {
+    "case": "G15",
+    "name": "client ~60 fps, host ~50 fps, frame times varying by 35%, delay 20-120 ms in order: a menu opened with the trigger down: the shots shown before it are the server's, none after",
+    "ok": true,
+    "detail": "hold 0.900: shown 4, executed 4, skipped 0"
+   },
+   {
+    "case": "G16",
+    "name": "the client's connection goes away while it fires: the server fires nothing more for that player, from the frame it sees the connection gone",
+    "ok": true,
+    "detail": "executed before 4, after 0; server rounds 26; peers 1"
+   },
+   {
+    "case": "G16",
+    "name": "accepted again, the next burst corresponds shot for shot",
+    "ok": true,
+    "detail": "hold 0.550: shown 5, executed 5, skipped 0"
+   }
+  ]
+ },
+ "netloop-nocompat": {
+  "failed": 0,
+  "total": 28
+ },
+ "netloop-compat": {
+  "failed": 0,
+  "total": 28
+ },
+ "appnet-full": {
+  "failed": 0,
+  "total": 19
+ },
+ "appnet-lite": {
+  "failed": 0,
+  "total": 19
+ },
+ "c4-full": {
+  "failed": 0,
+  "total": 140,
+  "sets": {
+   "c4/": 73,
+   "c4-net-sound/": 10,
+   "sushi-inventory/": 18,
+   "sushi-sync/": 26,
+   "sushi-stacking/": 13
+  }
+ },
+ "c4-lite": {
+  "failed": 0,
+  "total": 140,
+  "sets": {
+   "c4/": 73,
+   "c4-net-sound/": 10,
+   "sushi-inventory/": 18,
+   "sushi-sync/": 26,
+   "sushi-stacking/": 13
+  }
+ },
+ "main-full": {
+  "failed": 0,
+  "total": 14118,
+  "failedNames": [],
+  "selected": [
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/20fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/30fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/50fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-120.0 ms, mean 100.80 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/60fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/100fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-110.0 ms, mean 100.40 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/144fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 97.2-104.2 ms, mean 100.28 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-with-uneven-frames",
+    "ok": true,
+    "detail": "26 shots; gaps 81.1-111.9 ms, mean 100.68 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/5fps",
+    "ok": true,
+    "detail": "10 shots in 2 s at 5 fps; gaps 200.0-200.0 ms, mean 200.00 ms; never two in a frame, none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/8fps",
+    "ok": true,
+    "detail": "16 shots in 2 s at 8 fps; gaps 125.0-125.0 ms, mean 125.00 ms; never two in a frame, none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/12fps",
+    "ok": true,
+    "detail": "12 shots in 2 s at 12 fps; gaps 166.7-166.7 ms, mean 166.67 ms; never two in a frame, none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/a-pause-banks-nothing",
+    "ok": true,
+    "detail": "after a 0.86 s pause the second press starts its own schedule: 5 shots, gaps 100.0-100.0 ms, mean 100.00 ms"
+   },
+   {
+    "name": "shot-cadence/single-shots-tapped-faster-than-the-cadence",
+    "ok": true,
+    "detail": "6 shots from taps every 150 ms; gaps 300.0-300.0 ms, mean 300.00 ms (cadence 225.0 ms): none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/burst-cycle-keeps-its-time/famas",
+    "ok": true,
+    "detail": "4 bursts of three; burst to burst gaps 550.0-560.0 ms, mean 553.33 ms (cycle 550.0 ms)"
+   },
+   {
+    "name": "shot-cadence/burst-cycle-keeps-its-time/glock18",
+    "ok": true,
+    "detail": "4 bursts of three; burst to burst gaps 540.0-540.0 ms, mean 540.00 ms (cycle 500.0 ms; a press every 90 ms)"
+   }
+  ]
+ },
+ "main-lite": {
+  "failed": 0,
+  "total": 14428,
+  "failedNames": [],
+  "selected": [
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/20fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/30fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/50fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-120.0 ms, mean 100.80 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/60fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/100fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-110.0 ms, mean 100.40 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/144fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 97.2-104.2 ms, mean 100.28 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-with-uneven-frames",
+    "ok": true,
+    "detail": "26 shots; gaps 81.1-111.9 ms, mean 100.68 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/5fps",
+    "ok": true,
+    "detail": "10 shots in 2 s at 5 fps; gaps 200.0-200.0 ms, mean 200.00 ms; never two in a frame, none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/8fps",
+    "ok": true,
+    "detail": "16 shots in 2 s at 8 fps; gaps 125.0-125.0 ms, mean 125.00 ms; never two in a frame, none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/12fps",
+    "ok": true,
+    "detail": "12 shots in 2 s at 12 fps; gaps 166.7-166.7 ms, mean 166.67 ms; never two in a frame, none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/a-pause-banks-nothing",
+    "ok": true,
+    "detail": "after a 0.86 s pause the second press starts its own schedule: 5 shots, gaps 100.0-100.0 ms, mean 100.00 ms"
+   },
+   {
+    "name": "shot-cadence/single-shots-tapped-faster-than-the-cadence",
+    "ok": true,
+    "detail": "6 shots from taps every 150 ms; gaps 300.0-300.0 ms, mean 300.00 ms (cadence 225.0 ms): none closer than the cadence less 50 ms"
+   },
+   {
+    "name": "shot-cadence/burst-cycle-keeps-its-time/famas",
+    "ok": true,
+    "detail": "4 bursts of three; burst to burst gaps 550.0-560.0 ms, mean 553.33 ms (cycle 550.0 ms)"
+   },
+   {
+    "name": "shot-cadence/burst-cycle-keeps-its-time/glock18",
+    "ok": true,
+    "detail": "4 bursts of three; burst to burst gaps 540.0-540.0 ms, mean 540.00 ms (cycle 500.0 ms; a press every 90 ms)"
+   }
+  ]
+ },
+ "baseline-main-full": {
+  "failed": 5,
+  "total": 14118,
+  "failedNames": [
+   "shot-cadence/held-automatic-keeps-the-guns-cadence/50fps",
+   "shot-cadence/held-automatic-keeps-the-guns-cadence/100fps",
+   "shot-cadence/held-automatic-keeps-the-guns-cadence/144fps",
+   "shot-cadence/held-automatic-with-uneven-frames",
+   "shot-cadence/burst-cycle-keeps-its-time/famas"
+  ],
+  "selected": [
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/20fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/30fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/50fps",
+    "ok": false,
+    "detail": "System.Exception: 22 shots in 2.55 s (the cadence gives 26): gaps 120.0-120.0 ms, mean 120.00 ms\r"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/60fps",
+    "ok": true,
+    "detail": "26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/100fps",
+    "ok": false,
+    "detail": "System.Exception: 24 shots in 2.55 s (the cadence gives 26): gaps 110.0-110.0 ms, mean 110.00 ms\r"
+   },
+   {
+    "name": "shot-cadence/held-automatic-keeps-the-guns-cadence/144fps",
+    "ok": false,
+    "detail": "System.Exception: shot 3 at 0.2083 s, due 0.2000 (a frame is 0.0069)\r"
+   },
+   {
+    "name": "shot-cadence/held-automatic-with-uneven-frames",
+    "ok": false,
+    "detail": "System.Exception: 24 shots; gaps 100.8-122.1 ms, mean 110.25 ms\r"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/5fps",
+    "ok": true,
+    "detail": "10 shots in 2 s at 5 fps; gaps 200.0-200.0 ms, mean 200.00 ms; never two in a frame, none closer than the cadence less 0 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/8fps",
+    "ok": true,
+    "detail": "16 shots in 2 s at 8 fps; gaps 125.0-125.0 ms, mean 125.00 ms; never two in a frame, none closer than the cadence less 0 ms"
+   },
+   {
+    "name": "shot-cadence/slow-frames-catch-nothing-up/12fps",
+    "ok": true,
+    "detail": "12 shots in 2 s at 12 fps; gaps 166.7-166.7 ms, mean 166.67 ms; never two in a frame, none closer than the cadence less 0 ms"
+   },
+   {
+    "name": "shot-cadence/a-pause-banks-nothing",
+    "ok": true,
+    "detail": "after a 0.86 s pause the second press starts its own schedule: 5 shots, gaps 100.0-100.0 ms, mean 100.00 ms"
+   },
+   {
+    "name": "shot-cadence/single-shots-tapped-faster-than-the-cadence",
+    "ok": true,
+    "detail": "6 shots from taps every 150 ms; gaps 300.0-300.0 ms, mean 300.00 ms (cadence 225.0 ms): none closer than the cadence less 0 ms"
+   },
+   {
+    "name": "shot-cadence/burst-cycle-keeps-its-time/famas",
+    "ok": false,
+    "detail": "System.Exception: burst starts gaps 560.0-560.0 ms, mean 560.00 ms; cycle 550.0 ms\r"
+   },
+   {
+    "name": "shot-cadence/burst-cycle-keeps-its-time/glock18",
+    "ok": true,
+    "detail": "4 bursts of three; burst to burst gaps 540.0-540.0 ms, mean 540.00 ms (cycle 500.0 ms; a press every 90 ms)"
+   }
+  ]
+ },
+ "baseline-main-lite": {
+  "failed": 5,
+  "total": 14428,
+  "failedNames": [
+   "shot-cadence/held-automatic-keeps-the-guns-cadence/50fps",
+   "shot-cadence/held-automatic-keeps-the-guns-cadence/100fps",
+   "shot-cadence/held-automatic-keeps-the-guns-cadence/144fps",
+   "shot-cadence/held-automatic-with-uneven-frames",
+   "shot-cadence/burst-cycle-keeps-its-time/famas"
+  ]
+ },
+ "ai-full": {
+  "failed": 0,
+  "total": 67,
+  "failedNames": []
+ },
+ "ai-lite": {
+  "failed": 0,
+  "total": 67,
+  "failedNames": []
+ },
+ "vf-full": {
+  "failed": 0,
+  "total": 292,
+  "failedNames": []
+ },
+ "vf-lite": {
+  "failed": 0,
+  "total": 292,
+  "failedNames": []
+ },
+ "tactical-full-suite": {
+  "failed": 4,
+  "total": 110,
+  "failedNames": [
+   "optional-package-identity-and-no-bundled-engine",
+   "native-gltf/ct",
+   "native-gltf/t",
+   "npc-full-registry-reload-refuses-without-ammo-loss"
+  ]
+ },
+ "family": {
+  "failed": 0,
+  "total": 246,
+  "failedNames": []
+ },
+ "compat": {
+  "family": true,
+  "native-hooks": true,
+  "native-lite": true,
+  "inventory": true,
+  "integration-full-both": true,
+  "integration-full-reversed": true,
+  "integration-full-none": true,
+  "integration-lite-both": true,
+  "integration-lite-reversed": true,
+  "integration-lite-none": true
+ },
+ "native-hooks": {
+  "failed": 0,
+  "total": 6,
+  "failedNames": []
+ },
+ "native-lite": {
+  "failed": 0,
+  "total": 9,
+  "failedNames": []
+ },
+ "inventory": {
+  "keys": [
+   "cases",
+   "count",
+   "dll",
+   "failed",
+   "passed",
+   "sha256"
+  ]
+ },
+ "packages": {
+  "全量": {
+   "file": "[API1.9]CS武器1.4.0-全量包.scmod",
+   "bytes": 526907327,
+   "sha256": "46befae3d0ef39a669c1f14cda471abf3821000ce70c0dea89777876cbc11dcb",
+   "baselineSha256": "7239fc30774781322e1103016388c924efbaeb77dbc9780986d32d2aca631fbc",
+   "unchangedMembers": 1706
+  },
+  "轻量": {
+   "file": "[API1.9]CS武器1.4.0-轻量包.scmod",
+   "bytes": 35750517,
+   "sha256": "ee3e38eb47dcbd6dfd8f2c9e0a5d35539131eb0c872ca2223fdc537a84689440",
+   "baselineSha256": "72de5c429768fdd3ec54ebf5df61e64b8cb8adae80182f2c578b656d4cb27109",
+   "unchangedMembers": 1347
+  },
+  "探员": {
+   "file": "[API1.9]CS武器1.4.0-探员包.scmod",
+   "bytes": 38467957,
+   "sha256": "8443c77b7c304b316c48de99924e8c94ba8edfb8b5df84b18c0ca27ee20543ba",
+   "baselineSha256": "a1b7602d07ab23fd022da43ab31c5536c88fd0e512e5432507e8b38980ad8a25",
+   "unchangedMembers": 364
+  }
+ },
+ "net": {
+  "member": "Net/ScCsgoNet.bin",
+  "sha256": "3e7fd3061ca615b85893d66f0b0ae54176d4634de25eae4f42d377a1630cc595",
+  "bytes": 57344,
+  "core": "4e31ef276f45cb7d73e4aea6b98d21032754381a6d9b19e3b7a812136d5c1a47",
+  "compatMember": "Net/ScCsgoNetCompat.bin",
+  "compatSha256": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+  "compatBytes": 9728,
+  "references": {
+   "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+   "Survivalcraft.CompatNet.dll": "4288904cbbbcbdfcb2dd5d04d3cfc79f942f7339d13be7b64bb23468aceb0102",
+   "Survivalcraft.Multiplayer.dll": "3e0b24efbf51b21372b337cd8f5d12242ec5fc446a90782f2eb4d274124e9cfe",
+   "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+   "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db",
+   "Survivalcraft.Compat23.dll": "96b60590d436b7875158587a87796e7cac6fd45eecbdae8c245d2f7f4ee6b479",
+   "0Harmony.dll": "70e7647876b6c3d874ea99b56627a95d1dce2e1dd791981a002578a2febc9bbd"
+  },
+  "sources": {
+   "ScCsgoNetAdapter.cs": "70c4998c70841a5aa3346801d100b8c5cdce1b4c864d8d54915fa6e65129f177",
+   "ScCsgoNetPlatform.cs": "208ad04b40e94831cb398b38959eb408d7bf528005ae8d9604b07e7ed240946b",
+   "ScCsgoNetCompat.cs": "ae044cef6139bd5409f167e02d775829c5a0f9b59c79c4d8968370df1c47c340"
+  }
+ },
+ "identity": {
+  "identity": "50e65beb38b074c66696ff6563e1adc4",
+  "files": 304
+ },
+ "vps-packaged-on-user-platform": {
+  "what": "the DLLs taken out of the mpe1 packages, run on the VPS against the user's actual Windows platform assemblies (no game): NetLoopCheck gunloop / state / baseline, and the transport loop with and without CompatNet",
+  "inputs": {
+   "ScCsgoKnives.dll (Lite)": "4e31ef276f45cb7d73e4aea6b98d21032754381a6d9b19e3b7a812136d5c1a47",
+   "Net/ScCsgoNet.bin": "3e7fd3061ca615b85893d66f0b0ae54176d4634de25eae4f42d377a1630cc595",
+   "Net/ScCsgoNetCompat.bin": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+   "ScCsgoTactical.dll": "c4153adbfa86e7490993c2c3f85cf8d89e82ad685a0cf75321605d319b2d40d4"
+  },
+  "gunloop": {
+   "failed": 0,
+   "total": 95,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {}
+  },
+  "state": {
+   "failed": 0,
+   "total": 109,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {}
+  },
+  "baseline": {
+   "failed": 0,
+   "total": 12,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "8e0232da-2757-4bf3-b68b-742fed834b07",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {}
+  },
+  "netloop": {
+   "nocompat": "28 checks, 0 failed",
+   "compat": "28 checks, 0 failed"
+  }
+ },
+ "vps-delivered-mpd2-on-user-platform": {
+  "what": "the same extended gun loop on the delivered mpd2 Lite core 0be510de + adapter 3e7fd306, user's platform assemblies: the fault reproduced before the fix",
+  "gunloop": {
+   "failed": 32,
+   "total": 95,
+   "platform": {
+    "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+    "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+   },
+   "core": "c84f7297-1ed6-4900-b265-15a4f2865698",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "failedByCase": {
+    "G10": 20,
+    "G11": 1,
+    "G12": 2,
+    "G14": 4,
+    "G15": 5
+   }
+  }
+ },
+ "vps-experiment-schedule-only": {
+  "what": "scratch copy only, never built into a package: the stable shot schedule and end-of-frame input kept, the count-driven execution on the server switched off. Shows that correcting the schedule alone does not remove the rise",
+  "failed": 28,
+  "total": 95,
+  "failedByCase": {
+   "G04": 2,
+   "G09": 1,
+   "G10": 16,
+   "G11": 1,
+   "G12": 2,
+   "G14": 2,
+   "G15": 4
+  },
+  "g10": [
+   {
+    "name": "client 100 fps, host 50 fps, 50 ms each way: 15 short bursts, released",
+    "detail": "shown 66, executed 63, skipped 3, readout rises 3 in 3 of 15 bursts :: hold 0.331: shown 4, executed 3, skipped 1, readout rose 9->10 at 0.600 shown at [0.010 0.120 0.220 0.320] executed at [0.080 0.200 0.300] skipped at [0.520x1] | hold 0.339: shown 4, execut"
+   },
+   {
+    "name": "client 100 fps, host 50 fps, no transit delay: 15 short bursts, releas",
+    "detail": "shown 66, executed 63, skipped 3, readout rises 3 in 3 of 15 bursts :: hold 0.331: shown 4, executed 3, skipped 1, readout rose 9->10 at 0.490 shown at [0.010 0.120 0.220 0.320] executed at [0.020 0.140 0.240] skipped at [0.460x1] | hold 0.339: shown 4, execut"
+   },
+   {
+    "name": "client 100 fps, host 50 fps, delay rising by 90 ms in ordered bunches:",
+    "detail": "shown 66, executed 68, skipped 1, readout rises 1 in 1 of 15 bursts :: hold 0.600: shown 6, executed 5, skipped 1, readout rose 24->25 at 0.920 shown at [0.010 0.120 0.220 0.320 0.420 0.520] executed at [0.160 0.280 0.380 0.480 0.580] skipped at [0.760x1] | ho"
+   },
+   {
+    "name": "client 60 fps, host 50 fps, 50 ms each way: 15 short bursts, released ",
+    "detail": "shown 66, executed 64, skipped 2, readout rises 2 in 2 of 15 bursts :: hold 0.347: shown 4, executed 3, skipped 1, readout rose 22->23 at 0.600 shown at [0.017 0.117 0.217 0.317] executed at [0.086 0.206 0.306] skipped at [0.526x1] | hold 0.422: shown 5, execu"
+   }
+  ]
+ },
+ "vps-single-player-cadence-on-mpd2": {
+  "what": "ShotCadenceRegression against the delivered mpd2 core (scratch harness on the VPS; the pipeline's baseline-main-* runs show the same five failures on the real packages)",
+  "lines": [
+   "PASS shot-cadence/held-automatic-keeps-the-guns-cadence/20fps :: 26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)",
+   "PASS shot-cadence/held-automatic-keeps-the-guns-cadence/30fps :: 26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)",
+   "FAIL shot-cadence/held-automatic-keeps-the-guns-cadence/50fps :: System.Exception: 22 shots in 2.55 s (the cadence gives 26): gaps 120.0-120.0 ms, mean 120.00 ms",
+   "PASS shot-cadence/held-automatic-keeps-the-guns-cadence/60fps :: 26 shots in 2.55 s; gaps 100.0-100.0 ms, mean 100.00 ms (cadence 100.0 ms)",
+   "FAIL shot-cadence/held-automatic-keeps-the-guns-cadence/100fps :: System.Exception: 24 shots in 2.55 s (the cadence gives 26): gaps 110.0-110.0 ms, mean 110.00 ms",
+   "FAIL shot-cadence/held-automatic-keeps-the-guns-cadence/144fps :: System.Exception: shot 3 at 0.2083 s, due 0.2000 (a frame is 0.0069)",
+   "FAIL shot-cadence/held-automatic-with-uneven-frames :: System.Exception: 24 shots; gaps 100.8-122.1 ms, mean 110.25 ms",
+   "PASS shot-cadence/slow-frames-catch-nothing-up/5fps :: 10 shots in 2 s at 5 fps; gaps 200.0-200.0 ms, mean 200.00 ms; never two in a frame, none closer than the cadence less 0 ms",
+   "PASS shot-cadence/slow-frames-catch-nothing-up/8fps :: 16 shots in 2 s at 8 fps; gaps 125.0-125.0 ms, mean 125.00 ms; never two in a frame, none closer than the cadence less 0 ms",
+   "PASS shot-cadence/slow-frames-catch-nothing-up/12fps :: 12 shots in 2 s at 12 fps; gaps 166.7-166.7 ms, mean 166.67 ms; never two in a frame, none closer than the cadence less 0 ms",
+   "PASS shot-cadence/a-pause-banks-nothing :: after a 0.86 s pause the second press starts its own schedule: 5 shots, gaps 100.0-100.0 ms, mean 100.00 ms",
+   "PASS shot-cadence/single-shots-tapped-faster-than-the-cadence :: 6 shots from taps every 150 ms; gaps 300.0-300.0 ms, mean 300.00 ms (cadence 225.0 ms): none closer than the cadence less 0 ms",
+   "FAIL shot-cadence/burst-cycle-keeps-its-time/famas :: System.Exception: burst starts gaps 560.0-560.0 ms, mean 560.00 ms; cycle 550.0 ms",
+   "PASS shot-cadence/burst-cycle-keeps-its-time/glock18 :: 4 bursts of three; burst to burst gaps 540.0-540.0 ms, mean 540.00 ms (cycle 500.0 ms; a press every 90 ms)"
+  ]
+ },
+ "jobs": {
+  "all": "24bc5a5c76e1480690a08fecebfff6d4 (mpe-pipeline-mpe1-all-01)",
+  "compat": "32bda87c83d74210a5ec659485e50ad8 (mpe-pipeline-mpe1-compat-01)",
+  "deliver": "mpe1-deliver-do-01",
+  "readback": "90c7ff7c9d1d4fa8a9c21225f05a4a75 (mpe1-readback-01)"
+ },
+ "delivered": {
+  "全量": "46befae3d0ef39a669c1f14cda471abf3821000ce70c0dea89777876cbc11dcb (526907327 B)",
+  "轻量": "ee3e38eb47dcbd6dfd8f2c9e0a5d35539131eb0c872ca2223fdc537a84689440 (35750517 B)",
+  "探员": "8443c77b7c304b316c48de99924e8c94ba8edfb8b5df84b18c0ca27ee20543ba (38467957 B)"
+ }
+}

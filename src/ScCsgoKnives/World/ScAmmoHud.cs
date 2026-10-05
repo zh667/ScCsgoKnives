@@ -25,7 +25,11 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
         return (string.Format(CultureInfo.InvariantCulture, text("Durability"), ScGunDurability.PercentText(data).TrimEnd('%')), ScGunDurability.IsLow(data) ? 1 : 0);
     }
     public static ScAmmoReadout Read(GunSpec gun, int value, IInventory inventory, bool creative,
-        double rechargeRemaining, bool reloading, Func<string, string> text = null) {
+        double rechargeRemaining, bool reloading, Func<string, string> text = null) => ReadPredicted(gun, value, inventory, creative, rechargeRemaining, reloading, 0, text);
+    /// <summary>The readout with <paramref name="predictedShots"/> taken off the loaded rounds: a multiplayer client's own
+    /// shots the server has not counted yet (ScNetGuns.PendingShots). The record itself keeps the server's value.</summary>
+    public static ScAmmoReadout ReadPredicted(GunSpec gun, int value, IInventory inventory, bool creative,
+        double rechargeRemaining, bool reloading, int predictedShots, Func<string, string> text = null) {
         text ??= key => LanguageControl.Get("ScCsgoKnives", "AmmoHud", key);
         string Format(string key, params object[] args) => string.Format(CultureInfo.InvariantCulture, text(key), args);
         int data = Terrain.ExtractData(value);
@@ -35,7 +39,7 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
         int level = loaded.CounterInstalled ? loaded.Level : 0;
         int capacity = ScGunGrowth.Capacity(GunSpec.GetVariant(data), level);
         float cycle = ScGunGrowth.RechargeSeconds(gun, level);
-        int rounds = Math.Clamp(GunSpec.GetRounds(data), 0, capacity);
+        int rounds = Math.Clamp(GunSpec.GetRounds(data) - Math.Max(0, predictedShots), 0, capacity);
         var (wear, wearState) = WearOf(value, text);
         if (gun.RechargeSeconds > 0) {
             if (rounds > 0) return new(text("Ready"), text("SingleCharge"), false, false, false, wear, wearState) {
@@ -71,7 +75,11 @@ public sealed record ScAmmoReadout(string Main, string Detail, bool Empty, bool 
     }
 }
 
-/// <summary>Passive lower-right ammunition readout, independent of the touch overlay.</summary>
+/// <summary>Passive lower-right ammunition readout, independent of the touch overlay: the weapon icon (filled by the loaded
+/// fraction) above one line "rounds in the gun / magazines (or shells) carried" (2026-10-01 user requests: "枪械HUD 可以改成
+/// ”子弹剩余装弹量 /总弹夹数“的格式，只保留这一行，然后字号大些（也不要太大，略微大一点点）。装填的时候也不用特意加个“装填”文字", then
+/// "怎么把枪的图标删了，上面是图标，下面是这个剩余子弹 / 携带弹匣"); the icon's own count is not shown (the line carries it); no status
+/// line. The Zeus keeps its single line (ready 1 / 1, or the charge countdown).</summary>
 public sealed class ScAmmoHud : IDisposable {
     public readonly StackPanelWidget Panel = new() {
         Name = "ScAmmoHud", Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Far,
@@ -131,7 +139,7 @@ public sealed class ScAmmoHud : IDisposable {
         Panel.Children.Add(Magazine);Panel.Children.Add(Main); Panel.Children.Add(Detail); Panel.Children.Add(Wear);
         ApplyDeviceScale(ScMobileControls.IsMobileDevice);
     }
-    public void ApplyDeviceScale(bool mobile) { Main.FontScale=mobile?.56f:.65f;Detail.FontScale=mobile?.38f:.42f;Wear.FontScale=mobile?.42f:.48f; }
+    public void ApplyDeviceScale(bool mobile) { Main.FontScale=mobile?.62f:.72f;Detail.FontScale=mobile?.38f:.42f;Wear.FontScale=mobile?.42f:.48f; }
     public bool Attach(ComponentGui gui) {
         host = gui.ControlsContainerWidget;
         if (host is null) return false;
@@ -139,9 +147,12 @@ public sealed class ScAmmoHud : IDisposable {
         return true;
     }
     public void Show(ScAmmoReadout readout) {
-        Main.Text = readout.Compact ? readout.LoadedText+" "+readout.CapacityText : readout.Main;
-        Magazine.Fraction=readout.Fraction;Magazine.Icon=readout.WeaponIcon;Magazine.Count.Text=readout.ReserveCount;Magazine.IsVisible=readout.Compact;
-        Detail.Text = readout.Compact ? readout.Status ?? "" : readout.Detail;
+        // The icon above one line: rounds / magazines carried; no status ("装填", "充能") line.
+        Main.Text = !readout.Compact ? readout.Main
+            : string.IsNullOrEmpty(readout.ReserveCount) ? readout.LoadedText + " " + readout.CapacityText
+            : readout.LoadedText + " / " + readout.ReserveCount;
+        Magazine.Fraction=readout.Fraction;Magazine.Icon=readout.WeaponIcon;Magazine.Count.Text=readout.ReserveCount;Magazine.Count.IsVisible=false;Magazine.IsVisible=readout.Compact;
+        Detail.Text = readout.Compact ? "" : readout.Detail;
         Detail.IsVisible = !string.IsNullOrEmpty(Detail.Text);
         Main.Color = readout.Charging ? new Color(255, 210, 120) : readout.Empty ? new Color(255, 120, 110) : Color.White;
         Detail.Color = readout.Insufficient ? new Color(255, 190, 120) : new Color(215, 215, 215);

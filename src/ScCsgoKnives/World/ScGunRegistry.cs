@@ -152,6 +152,21 @@ public sealed class ScGunRegistry {
         int max = maxDurability > 0 ? maxDurability : ScGunDurability.Full(variant);
         return Publish(new ScGunRecord { Variant = variant, Rounds = Math.Max(0, rounds), SilencerOff = silencerOff, Durability = Math.Clamp(durability, 0, max), MaxDurability = max, SkinId = skinId });
     }
+    /// <summary>A mode's own stock gun back to its issue state (deathmatch-addon, design §6): full magazine, full
+    /// durability, charge ready, the given paint and silencer, no holder. The id and the model never change, and only a
+    /// record with no counter, no kills and no growth can be restocked - never a gun a player has grown. False (and
+    /// nothing changed) for anything else.</summary>
+    public bool Restock(int id, int variant, int skinId, bool silencerOff) {
+        var record = Get(id);
+        if (record is null || record.Variant != variant || record.CounterInstalled || record.KillCount != 0 || record.AppliedGrowthLevel != 0
+            || record.GrowthKillCredit != 0 || record.PendingGrowthLevel != ScGunGrowth.NoPending) return false;
+        if (skinId != ScGunSkinCatalog.None && !ScGunSkinCatalog.Fits(ScGunSkinCatalog.Find(skinId), variant)) return false;
+        if (record.Revision == int.MaxValue) return false;
+        record.Rounds = ScGunGrowth.Capacity(variant, 0); record.Durability = record.MaxDurability; record.SkinId = skinId; record.SilencerOff = silencerOff;
+        record.RechargeReadyAt = -1; record.RechargeCycleSeconds = 0; record.ReserveOverflowRounds = 0; record.Holder = null;
+        record.Revision++;
+        return true;
+    }
     /// <summary>A record that was published but could not be tied to its item: kept as text under its id so the watermark stands, never reused.</summary>
     internal void Abandon(int id, string reason) {
         if (!m_records.Remove(id, out var record)) return;
@@ -167,6 +182,51 @@ public sealed class ScGunRegistry {
         ScGunGrowth.StripGrowth(copy);
         return Publish(copy);
     }
+
+    // ---- multiplayer mirror (ScNetMirror): the server sends rows in the save format and a remote client replaces its
+    // copy. A client never commits, so these are the only writes its table sees after it joined.
+    public IEnumerable<KeyValuePair<int, int>> NetworkRevisions => m_records.Select(p => new KeyValuePair<int, int>(p.Key, p.Value.Revision));
+    public string NetworkRow(int id, double now) => m_records.TryGetValue(id, out var record) ? Format(record, now) : null;
+    /// <summary>Client: the server's row for <paramref name="id"/> (null: the record is gone). False for a row that does not parse.</summary>
+    public bool ApplyNetworkRow(int id, string row, double now) {
+        if (!ScGunEncoding.IsRecordId(id)) return false;
+        if (row is null) return m_records.Remove(id);
+        if (!TryParseRecord(Schema, row, now, out var record)) return false;
+        // The server's revision of a record only rises. A row older than the one held (a repeat that arrives after a newer
+        // row) is read and dropped; it never puts a former state back.
+        if (m_records.TryGetValue(id, out var held) && held.Revision > record.Revision) { NetworkRowsStale++; return true; }
+        m_records[id] = record; m_quarantined.Remove(id.ToString(Ci));
+        if (id >= Next) Next = ScGunEncoding.NextId(id + 1);
+        return true;
+    }
+    /// <summary>Client: rows ignored because the mirror already held a newer revision of that record.</summary>
+    public int NetworkRowsStale { get; private set; }
+
+    // ---- carried guns (ScItemTravel): records written into this table from another world's
+    /// <summary>This world's transfer ledger: set by the gun subsystem that loaded the world, null in a table that
+    /// takes no transfers (a proof table, a historical build's own subsystem).</summary>
+    public ScTravelLedger Travel;
+    /// <summary>Reads one row of the current schema under the rules Load applies to a saved row: every field checked,
+    /// nothing defaulted, an older growth rule set converted once.</summary>
+    public static bool TryReadRow(string row, double now, ScGunGrowthMode mode, out ScGunRecord record) {
+        record = null;
+        if (row is null || !TryParseRecord(Schema, row, now, out record)) { record = null; return false; }
+        if (record.CounterInstalled && record.GrowthRulesVersion != ScGunGrowth.RulesVersion) ScGunGrowthMigration.Convert(record, now, mode != ScGunGrowthMode.CountOnly, Schema);
+        return true;
+    }
+    /// <summary>A carried record under the next free number (-1: none left).</summary>
+    internal int ImportNew(ScGunRecord record) { record.Holder = null; return Publish(record); }
+    /// <summary>A carried record back over the one it left here. Its revision is kept above the one held, so a mirror
+    /// that still has the former row takes the returning one.</summary>
+    internal bool ImportOver(int id, ScGunRecord record) {
+        if (Disabled || !m_records.TryGetValue(id, out var held)) return false;
+        record.Holder = null;
+        if (record.Revision <= held.Revision) record.Revision = held.Revision + 1;
+        m_records[id] = record;
+        return true;
+    }
+    /// <summary>Puts back exactly what <see cref="ImportOver"/> replaced (an import that failed part-way).</summary>
+    internal void ImportUndo(int id, ScGunRecord before) { if (!Disabled) m_records[id] = before; }
 
     static readonly CultureInfo Ci = CultureInfo.InvariantCulture;
     static string Number(double value) => value.ToString("0.###", Ci);

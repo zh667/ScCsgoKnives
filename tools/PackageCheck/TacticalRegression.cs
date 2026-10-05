@@ -265,6 +265,34 @@ static class TacticalRegression {
                 int gun=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,20,false]));f.Inventory.AddSlotItems(0,gun,1);bodies.RemoveBody(predator.ComponentBody);Update(5);
                 Require(ReferenceEquals(threat.GetValue(f.Npc),modCreature.ComponentBody)&&audio.Shots==1&&modCreature.ComponentHealth.Health<1,"native mod chase hostile not acquired and fired on");
             });
+            // mpc3-feedback-subworld-20261002 (N1/N3): the squads are neutral until attacked, and a companion must not be the
+            // one who starts the fight. It used to take every squad member for a hostile on sight.
+            Test("npc-leaves-neutral-squads-alone-until-they-turn-on-its-owner-or-it",()=>{
+                registryField.SetValue(null,Activator.CreateInstance(C("ScGunRegistry")));var f=Npc();var p=f.Npc.Project;var bodies=p.FindSubsystem<SubsystemBodies>(true);var audio=(AudioProbe)p.FindSubsystem<SubsystemAudio>(true);
+                f.Creature.m_killVerbs=["shot"];f.Creature.ComponentBody.Mass=75;f.Owner.Category=CreatureCategory.LandOther;f.Owner.m_killVerbs=["hit"];f.Owner.ComponentBody.Mass=75;
+                var tactical=(Subsystem)Activator.CreateInstance(T("SubsystemScTactical"));tactical.m_project=p;p.m_subsystems.Add(tactical);tactical.OnEntityAdded(f.Npc.Entity);
+                // A squad member 8 m away in plain view (classified as a predator, to show that its kind is what decides).
+                var body=new ComponentBody{Position=new Vector3(0,0,-8),BoxSize=new Vector3(.7f,1.8f,.7f),Mass=75};var health=new HealthProbe{Health=1,AttackResilience=1000,AttackResilienceFactor=1};
+                var creature=new ComponentCreature{ComponentBody=body,ComponentHealth=health,Category=CreatureCategory.LandPredator,m_killVerbs=["shot"]};health.m_componentCreature=creature;
+                var enemy=(Component)Activator.CreateInstance(T("ComponentTacticalEnemy"));T("ComponentTacticalEnemy").GetField("Creature").SetValue(enemy,creature);Entity(p,body,health,creature,enemy);bodies.AddBody(body);
+                var aimed=T("ComponentTacticalEnemy").GetField("TargetBody");var threat=T("ComponentTacticalCompanion").GetField("threat",BindingFlags.Instance|BindingFlags.NonPublic);
+                int gun=Terrain.MakeBlockValue(701,0,(int)C("GunSpec").GetMethod("MakeData").Invoke(null,[0,20,false]));f.Inventory.AddSlotItems(0,gun,1);
+                double clock=0;void Run(double seconds){for(double end=clock+seconds;clock<end;clock+=.1){f.Time.m_gameTime=clock;((IUpdateable)f.Npc).Update(.1f);}}
+                Run(6);Require(threat.GetValue(f.Npc)==null&&audio.Shots==0&&health.Health==1,"a companion opened fire on a neutral squad member in plain view");
+                // It has turned on someone who is not this companion's owner: still not this companion's fight.
+                var stranger=new ComponentBody{Position=new Vector3(12,0,-8),BoxSize=new Vector3(.7f,1.8f,.7f),Mass=75};Entity(p,stranger,new HealthProbe{Health=1});bodies.AddBody(stranger);
+                aimed.SetValue(enemy,stranger);Run(3);Require(threat.GetValue(f.Npc)==null&&audio.Shots==0,"a companion joined a fight that is not its owner's");
+                // It turns on the owner: the companion defends.
+                aimed.SetValue(enemy,f.Owner.ComponentBody);Run(4);
+                Require(ReferenceEquals(threat.GetValue(f.Npc),body)&&audio.Shots>=1&&health.Health<1,"a companion did not defend its owner against a squad member that turned on the owner");
+                // Neutral again (it let go), then it turns on the companion itself.
+                aimed.SetValue(enemy,null);threat.SetValue(f.Npc,null);int shots=audio.Shots;Run(3);Require(threat.GetValue(f.Npc)==null&&audio.Shots==shots,"a companion kept attacking a squad member that had let go");
+                aimed.SetValue(enemy,f.Creature.ComponentBody);Run(3);Require(ReferenceEquals(threat.GetValue(f.Npc),body),"a companion did not answer a squad member that turned on it");
+                // Neutral again: the owner starts the fight, and the companion joins through the engine's attack hook.
+                aimed.SetValue(enemy,null);threat.SetValue(f.Npc,null);Run(1);Require(threat.GetValue(f.Npc)==null,"not neutral before the owner's attack");
+                var loader=(ModLoader)Activator.CreateInstance(T("TacticalModLoader"));loader.ProcessAttackment(new MeleeAttackment(body,f.Owner.Entity,body.Position,Vector3.UnitZ,2));
+                Require(ReferenceEquals(threat.GetValue(f.Npc),body)&&ReferenceEquals(aimed.GetValue(enemy),f.Owner.ComponentBody),"the owner's attack on a squad member did not bring the companion in, or the member did not turn on its attacker");
+            });
             Test("npc-stationary-aim-converges-without-forced-body-rotation",()=>{
                 var f=Npc();var body=f.Creature.ComponentBody;f.Inventory.AddSlotItems(0,705,1);f.Owner.ComponentBody.Position=body.Position;f.Owner.ComponentBody.Rotation=Quaternion.CreateFromAxisAngle(Vector3.UnitY,1.8f);
                 var command=T("ComponentTacticalCompanion").GetMethod("Command");command.Invoke(f.Npc,[Enum.ToObject(T("TacticalOrder"),1)]);
@@ -363,7 +391,26 @@ static class TacticalRegression {
                 var returned=new ComponentInventory();returned.m_slots.Add(new ComponentInventoryBase.Slot());Entity(project,returned);Require(inv.RemoveSlotItems(0,1)==1,"cannot recover gun");returned.AddSlotItems(0,recordValue,1);Require(returned.GetSlotValue(0)==recordValue&&inv.GetSlotCount(0)==0,"recovering equipment copied or changed identity");
             });
             Test("all-35-gun-shot-audio-exists-in-core",()=>{using var coreZip=ZipFile.OpenRead(corePath);foreach(var spec in (Array)C("GunSpec").GetField("All").GetValue(null))foreach(bool silenced in new[]{false,true}){string path=(string)C("SubsystemScGunBlockBehavior").GetMethod("ExtensionShotSound").Invoke(null,[spec,silenced]);Require(coreZip.GetEntry("Assets/"+path+".ogg")!=null,"missing "+path);}});
-            result.AddRange(TacticalEnemyRegression.Run(core,dlc,corePath,dlcPath));
+            // Round 12 (2026-10-01, user: "第一人称视角抬头看天，切换第三人称却是人物头埋地"): the CS appearance's aim pitch turns about
+            // LiftAxis; a positive angle must lift the front, for any skeleton orientation (r11b's sign lifted the back).
+            Test("aim-pitch-lift-axis-lifts-the-front",()=>{
+                var lift=T("ScAgentActions").GetMethod("LiftAxis",BindingFlags.Public|BindingFlags.Static);
+                foreach(var (up,front) in new[]{(Vector3.UnitY,-Vector3.UnitZ),(Vector3.UnitY,Vector3.UnitZ),(Vector3.UnitY,Vector3.UnitX),(Vector3.UnitZ,Vector3.UnitX),(Vector3.UnitZ,-Vector3.UnitY),
+                    (Vector3.Normalize(new Vector3(.1f,1,-.2f)),Vector3.Normalize(new Vector3(.6f,.3f,-.7f))),(Vector3.UnitY,Vector3.Normalize(new Vector3(-.5f,-.4f,.8f)))}){
+                    var axis=(Vector3)lift.Invoke(null,[up,front]);
+                    Vector3 flat=Vector3.Normalize(front-up*Vector3.Dot(front,up));
+                    Require(Math.Abs(axis.Length()-1)<1e-4f&&Math.Abs(Vector3.Dot(axis,up))<1e-4f&&Math.Abs(Vector3.Dot(axis,flat))<1e-4f,$"axis {axis} not horizontal and square to the front (up {up}, front {front})");
+                    foreach(float angle in new[]{.3f,1.2f}){
+                        Vector3 turned=Vector3.TransformNormal(flat,Matrix.CreateFromAxisAngle(axis,angle));
+                        Require(Math.Abs(Vector3.Dot(turned,up)-MathF.Sin(angle))<1e-3f,$"+{angle} rad does not lift the front (up {up}, front {front}: {Vector3.Dot(turned,up):0.000})");
+                        Require(Vector3.Dot(Vector3.TransformNormal(flat,Matrix.CreateFromAxisAngle(axis,-angle)),up)<-.25f,$"-{angle} rad does not lower the front (up {up}, front {front})");
+                    }
+                }
+                Require((Vector3)lift.Invoke(null,[Vector3.UnitY,Vector3.UnitY])==Vector3.Zero,"a vertical front has no lift axis");
+            });
+            result.AddRange(TacticalEnemyRegression.Run(core,dlc,corePath,dlcPath,true,content));
+            result.AddRange(TacticalCompanionRegression.Run(core,dlc));
+            result.AddRange(TacticalFeedbackRegression.Run(core,dlc));
             result.AddRange(TacticalDefuseRegression.Run(core,dlc,content));
         }finally{registryField.SetValue(null,oldRegistry);BlocksManager.BlockTypeToIndex.Clear();foreach(var p in savedIndices)BlocksManager.BlockTypeToIndex[p.Key]=p.Value;Array.Copy(oldBlocks,BlocksManager.Blocks,oldBlocks.Length);}
         return result;

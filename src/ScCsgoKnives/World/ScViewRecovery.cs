@@ -34,7 +34,6 @@ public static class ScViewRecovery {
             SettingsManager.SaveSettings();
             using var stream=Storage.OpenFile(ModsManager.SettingPath,OpenFileMode.Read);
             if(!SavedDefaults(XElement.Load(stream))) throw new System.IO.IOException("saved view values do not match");
-            KnifeLog.Information("[CS_VIEW_RECOVERY_0417] saved values verified: "+ModsManager.SettingPath);
             return "视野及灵敏度已恢复并保存。";
         } catch(Exception e) {
             KnifeLog.Warning("[CS_VIEW_RECOVERY_0417] save not verified: "+e.Message);

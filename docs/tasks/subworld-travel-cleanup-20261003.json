@@ -1,0 +1,101 @@
+{
+ "task": "subworld-travel-generic-20261003 (docs/tasks/subworld-travel-generic-20261003.md)",
+ "date": "2026-10-03T10:50:47",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "sw2CandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages or a copy of an untouched original",
+ "removed": {
+  "stage sw2 build trees (delivered; logs, reports, packages.json, dm.json, identity.json, net.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\sw2\\full",
+    ".tmp\\completion-140-20260929\\sw2\\lite",
+    ".tmp\\completion-140-20260929\\sw2\\tools",
+    ".tmp\\completion-140-20260929\\sw2\\tree",
+    ".tmp\\completion-140-20260929\\sw2\\assets-full",
+    ".tmp\\completion-140-20260929\\sw2\\resources",
+    ".tmp\\completion-140-20260929\\sw2\\net",
+    ".tmp\\completion-140-20260929\\sw2\\motion",
+    ".tmp\\completion-140-20260929\\sw2\\throw",
+    ".tmp\\completion-140-20260929\\sw2\\ui",
+    ".tmp\\completion-140-20260929\\sw2\\old130",
+    ".tmp\\completion-140-20260929\\sw2\\dm\\source",
+    ".tmp\\completion-140-20260929\\sw2\\dm\\check",
+    ".tmp\\completion-140-20260929\\sw2\\dm\\abi",
+    ".tmp\\completion-140-20260929\\sw2\\dm\\loadtool"
+   ],
+   "bytes": 2655011595,
+   "items": 5597,
+   "missing": [
+    ".tmp\\completion-140-20260929\\sw2\\air"
+   ]
+  },
+  "stage sw1 (superseded, never delivered; logs and reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\sw1\\full",
+    ".tmp\\completion-140-20260929\\sw1\\lite",
+    ".tmp\\completion-140-20260929\\sw1\\tools",
+    ".tmp\\completion-140-20260929\\sw1\\tree",
+    ".tmp\\completion-140-20260929\\sw1\\assets-full",
+    ".tmp\\completion-140-20260929\\sw1\\resources",
+    ".tmp\\completion-140-20260929\\sw1\\net",
+    ".tmp\\completion-140-20260929\\sw1\\motion",
+    ".tmp\\completion-140-20260929\\sw1\\throw",
+    ".tmp\\completion-140-20260929\\sw1\\ui",
+    ".tmp\\completion-140-20260929\\sw1\\old130",
+    ".tmp\\completion-140-20260929\\sw1\\dm\\source",
+    ".tmp\\completion-140-20260929\\sw1\\dm\\check",
+    ".tmp\\completion-140-20260929\\sw1\\dm\\abi",
+    ".tmp\\completion-140-20260929\\sw1\\dm\\loadtool",
+    ".tmp\\completion-140-20260929\\sw1\\candidate"
+   ],
+   "bytes": 3256336183,
+   "items": 5600,
+   "missing": [
+    ".tmp\\completion-140-20260929\\sw1\\air"
+   ]
+  },
+  "harness copies of the third-party sub-world mods (originals D:/下载/AncientWorld_v0.41.16.zip and [API1.9.2.1]Ghoul尸鬼-v2.0.scmod untouched)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\ancient-0.41.16.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\ghoul-2.0.scmod"
+   ],
+   "bytes": 269423251,
+   "items": 2,
+   "missing": []
+  },
+  "totalBytes": 6180771029,
+  "items": 11199
+ },
+ "kept": [
+  "stage sw2 and sw1: logs/, *.json reports, packages.json, dm.json, identity.json, net.json, source-hashes.json",
+  ".tmp/mp-m0-20260929/run/subworld-* (logs, frames) and results/subworld-*.json",
+  ".tmp/dev-temp/subworld-providers-20261003 (the two decompiled providers: the evidence of how each carries the player)",
+  "output/ (four packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "3347c64c5ee6e2130ac8feee0fe95ab6c1ef9f64099c8f677f3128f66cd857fd",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "f9551477663775822f205beb3b9a6618b59a8f3c76b559a9f54ce47e918a7484",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "d478349e96b6a5938675e54ea80633369c484e52e0c28d9521f862678edae507",
+   "unchanged": true
+  },
+  "死亡竞赛": {
+   "sha256": "312125cd959722ba8aea9dc0b2dba3fa110bd76fa1b2680af763d4b06461baed",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 107289374720,
+  "freePct": 10.73
+ }
+}

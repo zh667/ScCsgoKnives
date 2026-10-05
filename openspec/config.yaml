@@ -1,0 +1,24 @@
+schema: spec-driven
+context: |
+  ScCsgoKnives is an existing C# Survivalcraft mod with a standalone core and optional multiplayer adapter.
+  Read AGENTS.md and the applicable docs/agent-guide before implementation.
+  Windows: E:/projects/ScCsgoKnives. VPS: /home/dev/source-sync/ScCsgoKnives.
+  Preserve layout 6 / schema 7, item IDs, existing saves, unrelated dirty changes and server authority.
+  Build and offline verification on Windows use tools/dev.ps1 through the existing worker.
+  Standalone evidence uses API 1.9.3.1; multiplayer evidence uses the actual MP binaries.
+  A spec is intended behavior, not evidence that a feature is implemented or accepted.
+  Planning files do not grant installation, original-world writes, third-party patching or messaging permission.
+  Current multiplayer follow-up entry: docs/tasks/mp-state-consistency-plan-20261002.md.
+rules:
+  proposal:
+    - Separate user requirements, observed failures, hypotheses and recommended design decisions.
+    - State the boundary of CS-owned fixes versus platform/provider work.
+  specs:
+    - Use SHALL requirements with explicit WHEN/THEN scenarios.
+    - Cover the real actors, item identities and failure ordering; no purely cosmetic substitutes.
+  design:
+    - Include source entry points, state transitions, rollback and rejected alternatives.
+    - Preserve saved identities and avoid pretending offline checks establish Android compatibility.
+  tasks:
+    - Keep implementation tasks unchecked until completed with evidence.
+    - Track candidate delivery separately from runtime/user acceptance.

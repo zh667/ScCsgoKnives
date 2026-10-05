@@ -8,7 +8,7 @@ namespace Game;
 public static class ScTacticalWarmup {
     static void Run(string stage,Action action){
         long bytes=GC.GetAllocatedBytesForCurrentThread();var clock=Stopwatch.StartNew();
-        try{action();Log.Information(FormattableString.Invariant($"[CS_PERF] warmup stage={stage} ms={clock.Elapsed.TotalMilliseconds:F2} allocKB={(GC.GetAllocatedBytesForCurrentThread()-bytes)/1024d:F1}"));}
+        try{action();KnifeLog.Diagnostic(FormattableString.Invariant($"[CS_PERF] warmup stage={stage} ms={clock.Elapsed.TotalMilliseconds:F2} allocKB={(GC.GetAllocatedBytesForCurrentThread()-bytes)/1024d:F1}"));}
         catch(Exception e){KnifeDiagnostics.WarnOnce("warmup-"+stage,$"CS warmup {stage}: {e.Message}; native lazy loading remains available.");}
     }
     public static void Add(List<Action> actions){

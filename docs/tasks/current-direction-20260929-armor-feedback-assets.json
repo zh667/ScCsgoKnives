@@ -1,0 +1,89 @@
+[
+ {
+  "name": "helmet_dink",
+  "sources": {
+   "E:/projects/ScCsgoKnives/.tmp/hud-armor-mp-20260929/cs2/sounds/player/headshot_armor_e1.wav": "fe5305c7e1496b4f9d1bfd52dbb43696bbdd20fad2a895a4b84c482938675610"
+  },
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoKnives/Hits/helmet_dink.ogg",
+  "member": "Assets/Audio/ScCsgoKnives/Hits/helmet_dink.ogg",
+  "sha256": "d3b7185b71aa1a7e3f3c8693197913f215182570690ccdb641e5f89b0976d0a5",
+  "bytes": 7242,
+  "edition": "both",
+  "channels": 2,
+  "channelCorrelation": 0.9857,
+  "rate": 44100,
+  "seconds": 0.4044,
+  "peak": 0.4947,
+  "rms": 0.2441
+ },
+ {
+  "name": "helmet_spark",
+  "sources": {
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/sparks/sparks_seq0.png": "5f2c35c80511ed0b3541d53b200c9ac894e1dadc2284dd6b031d6ec8bfb92b58",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/sparks/sparks_seq3.png": "33d1e58f46595d2fa3782af13bfada2304140cca0a78ad374c19d95de2070908",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/effects/yellowflare.png": "bd50590d5e5dc82ad72a1f4ab8f4cfd37b70b22448a95dbb661ea20d454221a3"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/Hits/helmet_spark.png",
+  "member": "Assets/Textures/ScCsgoKnives/Hits/helmet_spark.png",
+  "sha256": "f8946dd390bc405b07462d8e147fb3c7fe67c318d032b8f19ce400e618944736",
+  "bytes": 4647,
+  "edition": "full"
+ },
+ {
+  "name": "helmet_spark",
+  "sources": {
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/sparks/sparks_seq0.png": "5f2c35c80511ed0b3541d53b200c9ac894e1dadc2284dd6b031d6ec8bfb92b58",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/particle/sparks/sparks_seq3.png": "33d1e58f46595d2fa3782af13bfada2304140cca0a78ad374c19d95de2070908",
+   "E:/projects/CSMCReverse/local_cs2_analysis/all_weapons/06_particles/textures/materials/effects/yellowflare.png": "bd50590d5e5dc82ad72a1f4ab8f4cfd37b70b22448a95dbb661ea20d454221a3"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/Hits/helmet_spark.webp",
+  "member": "Assets/Textures/ScCsgoKnives/Hits/helmet_spark.webp",
+  "sha256": "991ef5215992232bffd4af7767472433f5912f1575c74260205f20fda3690884",
+  "bytes": 1966,
+  "edition": "lite"
+ },
+ {
+  "name": "hud_armor",
+  "sources": {
+   "E:/projects/ScCsgoKnives/.tmp/hud-armor-mp-20260929/cs2/panorama/images/hud/armor.svg": "e594e572d753d71463e12de804d1b0f026e4734ef835a82a822d887aa250b482"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_armor.png",
+  "member": "Assets/Textures/ScCsgoKnives/hud_armor.png",
+  "sha256": "8e27c876aea663862fb4c4a2512a0d5ee2d2c024afb0951bf07ae89328e9a204",
+  "bytes": 2034,
+  "edition": "full"
+ },
+ {
+  "name": "hud_armor",
+  "sources": {
+   "E:/projects/ScCsgoKnives/.tmp/hud-armor-mp-20260929/cs2/panorama/images/hud/armor.svg": "e594e572d753d71463e12de804d1b0f026e4734ef835a82a822d887aa250b482"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/hud_armor.webp",
+  "member": "Assets/Textures/ScCsgoKnives/hud_armor.webp",
+  "sha256": "1da83ca90e7c704f30b4b0afdb8fd489330c0a9e56dfe4441893b11a89b83d99",
+  "bytes": 1198,
+  "edition": "lite"
+ },
+ {
+  "name": "hud_helmet",
+  "sources": {
+   "E:/projects/ScCsgoKnives/.tmp/hud-armor-mp-20260929/cs2/panorama/images/icons/equipment/helmet.svg": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_helmet.png",
+  "member": "Assets/Textures/ScCsgoKnives/hud_helmet.png",
+  "sha256": "f468e87a717fa6ef505a4b6b614016fe93dd4849c576e346ff1d8cba5e6654cb",
+  "bytes": 3158,
+  "edition": "full"
+ },
+ {
+  "name": "hud_helmet",
+  "sources": {
+   "E:/projects/ScCsgoKnives/.tmp/hud-armor-mp-20260929/cs2/panorama/images/icons/equipment/helmet.svg": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/hud_helmet.webp",
+  "member": "Assets/Textures/ScCsgoKnives/hud_helmet.webp",
+  "sha256": "f0bac8ed67bfac8e158eca6c9f74e54a4985d6293652e5eed3b883ab26c4a40c",
+  "bytes": 1758,
+  "edition": "lite"
+ }
+]

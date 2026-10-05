@@ -9,7 +9,8 @@ using System.Collections;
 using System.Security.Cryptography;
 
 Engine.Dispatcher.Initialize();
-if(args.Length!=4)throw new ArgumentException("CompatibilityCheck <1.0-compat.dll> <1.2-compat.dll> <latest.dll> <report.json>");
+if(args.Length==5 && args[0]=="--zeus") return ZeusBalanceRegression.Run(args[1],args[2],args[3],args[4]);
+if(args.Length is not (4 or 5))throw new ArgumentException("CompatibilityCheck <1.0-compat.dll> <1.2-compat.dll> <latest.dll> <report.json> [<1.3.0.dll>]");
 var checks=new List<object>();int failed=0;
 void T(string name,Action test){try{test();checks.Add(new{name,ok=true});}catch(Exception e){failed++;checks.Add(new{name,ok=false,detail=e.GetBaseException().ToString()});Console.WriteLine("FAIL "+name+": "+e.GetBaseException().Message);}}
 void Require(bool b,string m="assertion failed"){if(!b)throw new Exception(m);}
@@ -17,6 +18,29 @@ XElement Xml(ValuesDictionary v){var x=new XElement("Values");v.Save(x);return x
 ValuesDictionary Read(XElement x){var v=new ValuesDictionary();v.ApplyOverrides(new XElement(x));return v;}
 var modules=args.Take(3).Select((p,i)=>new Module(p,i.ToString())).ToArray();
 var latest=modules[2];
+// current-direction-20260929: further older readers (the 1.3.0 core) join only the protection-values round trip.
+var readers=modules.Take(2).Concat(args.Length==5?[new Module(args[4],"3")]:[]).ToArray();
+XElement Doc(object plan)=>(XElement)plan.GetType().GetProperty("Document").GetValue(plan);
+foreach(var reader in readers)T(reader.Name+"/protection-values-survive-older-reader-two-rounds",()=>{
+    // The older reader has no ScArmor subsystem: the engine makes subsystems only from templates, so the group is
+    // ignored on load and absent from its save; the compatibility capsule (listed by the newer manifest) puts it back.
+    var manifest=new XElement("Compatibility",new XAttribute("Protocol",1),new XElement("Subsystem",new XAttribute("Name","ScArmor"),new XAttribute("Guid","e29cebcf-88c6-4370-a759-3de4687ee72b")));
+    var store=(Subsystem)latest.New("SubsystemScArmor");var values=new ValuesDictionary();values.SetValue("Schema",1);var wearers=new ValuesDictionary();
+    wearers.SetValue("player-0","1|1,37,150|1,5,100");wearers.SetValue("enemy-0123456789abcdef0123456789abcdef-3","1|1,0,150|1,60,100");
+    wearers.SetValue("companion-4242","1|1,148,150,500|1,1,100,700"); // exact (fractional) wear of a companion
+    values.SetValue("Wearers",wearers);
+    store.Load(values);var saved=new ValuesDictionary();store.Save(saved);var group=Xml(saved);group.SetAttributeValue("Name","ScArmor");
+    var doc=Doc(latest.Call("ScCompatibility",null,"Prepare",new XElement("Project",new XElement("Subsystems",group),new XElement("Entities",new XAttribute("NextID",1))),"latest",manifest,(Func<Guid,bool>)(_=>true)));
+    for(int round=0;round<2;round++){
+        doc=Doc(reader.Call("ScCompatibility",null,"Prepare",XElement.Parse(doc.ToString()),reader.Name,new XElement("Compatibility",new XAttribute("Protocol",1)),(Func<Guid,bool>)(_=>true)));
+        doc.Element("Subsystems").Elements().Where(e=>(string)e.Attribute("Name")=="ScArmor").Remove();
+        reader.Call("ScCompatibility",null,"PreserveOpaque",doc);
+        Require(doc.Element("Subsystems").Elements().Count(e=>(string)e.Attribute("Name")=="ScArmor")==1,"the older reader's save lost the protection values");
+    }
+    doc=Doc(latest.Call("ScCompatibility",null,"Prepare",XElement.Parse(doc.ToString()),"latest",manifest,(Func<Guid,bool>)(_=>true)));
+    var back=(Subsystem)latest.New("SubsystemScArmor");back.Load(Read(doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScArmor")));
+    var again=new ValuesDictionary();back.Save(again);Require(Xml(again).ToString()==Xml(saved).ToString(),"protection values changed after two older-reader rounds: "+Xml(again));
+});
 foreach(var source in modules)foreach(var target in modules.Where(m=>m!=source)){
     string route=source.Name+"->"+target.Name;
     for(int variant=0;variant<35;variant++){
@@ -87,9 +111,9 @@ foreach(var source in modules)foreach(var target in modules.Where(m=>m!=source))
     });
     T(route+"/pending-kills-quarantine-and-full-watermark",()=>{
         var data=XElement.Parse("<Values><Value Name='Schema' Type='int' Value='6'/><Value Name='Next' Type='int' Value='1023'/><Values Name='Records'><Value Name='900' Type='string' Value='corrupt-preserve-exactly'/></Values><Values Name='PendingKills'><Value Name='Next' Type='string' Value='1'/><Values Name='Entries'/></Values></Values>");
-        object reg=source.Call("ScGunRegistry",null,"Load",Read(data),0d);
         int exhausted=(int)source.Type("GunSpec").GetField("LastId").GetRawConstantValue()+1;
         data.Elements("Value").Single(e=>(string)e.Attribute("Name")=="Next").SetAttributeValue("Value",exhausted);
+        object reg=source.Call("ScGunRegistry",null,"Load",Read(data),0d);
         var queue=source.Get(reg,"Kills");queue.GetType().GetMethod("Enqueue").Invoke(queue,[900,0]);
         var saved=(ValuesDictionary)source.Call("ScGunRegistry",reg,"Save",0d);string before=Xml(saved).ToString();
         for(int n=0;n<2;n++){
@@ -130,7 +154,8 @@ foreach(var mod in modules){
     });
     T(mod.Name+"/preserves-all-later-item-type-identities",()=>{
         foreach(string name in new[]{"ScC4Block","ScChickenEggBlock","ScTacticalShieldBlock","ScTacticalBeaconBlock","ScTacticalDefuserBlock","ScTacticalSquadBlock"}){
-            if(mod==latest&&name.StartsWith("ScTactical"))continue; // supplied by the bundled tactical assembly
+            // A previous modern release also supplies these through its bundled tactical assembly.
+            if((mod==latest||File.Exists(Path.Combine(Path.GetDirectoryName(mod.Path),"ScCsgoTactical.dll")))&&name.StartsWith("ScTactical"))continue;
             var type=mod.Type(name);Require(typeof(Block).IsAssignableFrom(type));
             var block=(Block)Activator.CreateInstance(type);
             if(type.BaseType.Name=="ScCompatibilityItemBlock")Require(!block.IsPlaceable&&block.GetDamage(1234)==0&&block.SetDamage(1234,99)==1234&&!block.GetCreativeValues().Any());

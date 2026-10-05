@@ -118,6 +118,23 @@ public static class Cs2Effects {
         public float StartFadeSize { get; set; }
         [JsonPropertyName("EndFadeSize")]
         public float EndFadeSize { get; set; }
+        /// <summary>
+        /// The texture's m_TextureControls (tools/cs2_effects.py): the final scale and offset of U across a trail, of V along
+        /// it (C_OP_RenderTrails clamps V), and whether they clamp. A trail's V runs from its head (0) back to its tail (1);
+        /// the AK's ScaleV -1.5 / OffsetV 1.2 with the clamp lay the streak from just behind the round, bright tip first, to
+        /// 0.8 of the trail, which matches CS2's first-person frames (a dash 50-90 px of 540 ending at the impact). The first
+        /// tracers sample (2026-10-05) took U as the along axis and squeezed the streak into a fifth of the trail.
+        /// </summary>
+        [JsonPropertyName("TextureScaleU")]
+        public float TextureScaleU { get; set; } = 1f;
+        [JsonPropertyName("TextureOffsetU")]
+        public float TextureOffsetU { get; set; }
+        [JsonPropertyName("TextureScaleV")]
+        public float TextureScaleV { get; set; } = 1f;
+        [JsonPropertyName("TextureOffsetV")]
+        public float TextureOffsetV { get; set; }
+        [JsonPropertyName("ClampUVs")]
+        public bool ClampUVs { get; set; }
 
         /// <summary>
         /// Both of CS2's tracer blend modes land on the engine's additive state.
@@ -177,6 +194,9 @@ public static class Cs2Effects {
         public float EndAlpha { get; set; }
         [JsonPropertyName("LengthScaleInput")]
         public float[] LengthScaleInput { get; set; }
+        /// <summary>The SMG rope's C_OP_ColorInterpolate: its colour at the start, turning to its own over its flight.</summary>
+        [JsonPropertyName("ColorFade")]
+        public int[] ColorFade { get; set; }
         [JsonPropertyName("LengthScaleOutput")]
         public float[] LengthScaleOutput { get; set; }
         [JsonPropertyName("Passes")]
@@ -333,12 +353,6 @@ public static class Cs2Effects {
             }
             foreach ((string gun, Gun g) in file.Guns) loaded[gun] = g;
             LoadError = null;
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] CS2 effects: " + string.Join("; ", loaded.Select(kv =>
-                    $"{kv.Key} muzzle0=({kv.Value.MuzzlePos0?[0]:0.###},{kv.Value.MuzzlePos0?[1]:0.###},{kv.Value.MuzzlePos0?[2]:0.###})"
-                    + $" flash={kv.Value.Flash?.Count ?? 0}"
-                    + $" tracer every {(kv.Value.TracerFrequency is > 0f ? (int)MathF.Round(kv.Value.TracerFrequency.Value) : 0)}"))
-            );
         }
         catch (Exception e) {
             LoadError = $"{e.GetType().Name}: {e.Message}";

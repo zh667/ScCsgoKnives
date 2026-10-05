@@ -1,0 +1,464 @@
+{
+ "case": "dm-phone-dmr3g",
+ "host": "3556",
+ "packages": {
+  "Survivalcraft.TestAutomation.scmod": "51c47d44ecb459cb8cd0a33ef3b80fd7db04bf87cd9b6250426b4aaaee763658",
+  "[API1.9]CS武器1.4.0-全量包.scmod": "11c4148bcb497f14dc4fb7df3a959099c653467632c8d92bb14d105cbf5454cf",
+  "[API1.9]CS武器1.4.0-死亡竞赛包.scmod": "0e56aae4c6184a06df16850e41973f764b53c9b56907321f1ee33a1f7b7c78d3"
+ },
+ "steps": [
+  {
+   "t": 16.5,
+   "side": "client1",
+   "step": "join code (attempt 1)",
+   "value": "typed 3556"
+  },
+  {
+   "t": 18.9,
+   "side": "client1",
+   "step": "the platform's answer",
+   "value": "BulletinDialog: 社区公告 / \n                新增手动添加/选择社区服务器的功能，并更新中文社区默认网址\n新增网页版，性能约为各系统专用版的一半\n更多信息详见https://gitee.com/SC-SPM/SurvivalcraftApi/releases/tag/API_1.9\n             / 公告发布时间: 2026-03-15 / 发布 / 修改 / Ok || MessageDialog: CS武器 · 探员：缺少前置模组 / 切换 T/CT 玩家外观需要前置模组 NekoMeko Model 1.1 和 Neorxna 1.4。\n当前：NekoMeko Model 1.1 未安装；Neorxna 1.4 未安装。\n未安装不影响同伴、敌队、盾牌、拆弹和探员语音等其他功能，本模组也不会被禁用；安装后重启游戏即可切换外观。 / 知道了 / 不再提示"
+  },
+  {
+   "t": 24.3,
+   "side": "client1",
+   "step": "join code (attempt 2)",
+   "value": "typed 3556"
+  },
+  {
+   "t": 28.7,
+   "side": "client1",
+   "step": "handshake",
+   "value": "Accepted"
+  },
+  {
+   "t": 29.1,
+   "side": "client1",
+   "step": "settings",
+   "value": "gui in screenshots"
+  },
+  {
+   "t": 29.3,
+   "side": "client1",
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 29.5,
+   "side": "client1",
+   "step": "joined",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 6,
+    "me": "Preparing entered=False life=0 hp=0 ap=0",
+    "rows": "1:扎卡里 Preparing K0 D0 A0 spectating | 0:沃尔特 Preparing K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.8 65.0 -155.3"
+   }
+  },
+  {
+   "t": 30.4,
+   "side": "client1",
+   "step": "frame joined",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-00-client1-joined"
+  },
+  {
+   "t": 30.5,
+   "side": "client1",
+   "step": "phase while waiting for Lobby",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 6,
+    "me": "Preparing entered=False life=0 hp=0 ap=0",
+    "rows": "1:扎卡里 Preparing K0 D0 A0 spectating | 0:沃尔特 Preparing K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.8 65.0 -155.3"
+   }
+  },
+  {
+   "t": 33.4,
+   "side": "client1",
+   "step": "frame lobby",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-01-client1-lobby"
+  },
+  {
+   "t": 36.1,
+   "side": "client1",
+   "step": "wheel sector 2",
+   "value": "656 451 手枪|冲锋枪|步枪与狙击|霰弹与机枪|刀具|装备"
+  },
+  {
+   "t": 37.3,
+   "side": "client1",
+   "step": "wheel sector 0",
+   "value": "508 195 AK-47|M4A1-S|AWP|M4A4|法玛斯|SSG 08|加利尔 AR|SCAR-20"
+  },
+  {
+   "t": 38.7,
+   "side": "client1",
+   "step": "clicked '原厂外观'",
+   "value": "882,161 inside=True window 1536x825"
+  },
+  {
+   "t": 39.9,
+   "side": "client1",
+   "step": "clicked '确认'",
+   "value": "932,640 inside=True window 1536x825"
+  },
+  {
+   "t": 41.9,
+   "side": "client1",
+   "step": "clicked '入场'",
+   "value": "1141,640 inside=True window 1536x825"
+  },
+  {
+   "t": 42.7,
+   "side": "client1",
+   "step": "frame entered",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-02-client1-entered"
+  },
+  {
+   "t": 42.8,
+   "side": "client1",
+   "step": "entered",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 6,
+    "me": "Preparing entered=True life=0 hp=0 ap=0",
+    "rows": "1:扎卡里 Preparing K0 D0 A0 | 0:沃尔特 Preparing K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.8 65.0 -155.3"
+   }
+  },
+  {
+   "t": 43.0,
+   "side": "client1",
+   "step": "phase while waiting for Running",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 6,
+    "me": "Preparing entered=True life=0 hp=0 ap=0",
+    "rows": "1:扎卡里 Preparing K0 D0 A0 | 0:沃尔特 Preparing K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.8 65.0 -155.3"
+   }
+  },
+  {
+   "t": 53.5,
+   "side": "client1",
+   "step": "phase while waiting for Running",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Countdown",
+    "match": 6,
+    "me": "Preparing entered=True life=0 hp=0 ap=0",
+    "rows": "1:扎卡里 Preparing K0 D0 A0 | 0:沃尔特 Preparing K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.8 65.0 -155.3"
+   }
+  },
+  {
+   "t": 59.9,
+   "side": "client1",
+   "step": "phase while waiting for Running",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Running",
+    "match": 7,
+    "me": "SpawnPending entered=True life=1 hp=0 ap=0",
+    "rows": "1:扎卡里 SpawnPending K0 D0 A0 | 0:沃尔特 SpawnProtected K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-137.3 65.0 -153.4"
+   }
+  },
+  {
+   "t": 62.2,
+   "side": "client1",
+   "step": "frame running",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-03-client1-running"
+  },
+  {
+   "t": 62.4,
+   "side": "client1",
+   "step": "equip",
+   "value": "0:ScGunBlock data=64 variant=0 sprite=True | ak47 sprite=True"
+  },
+  {
+   "t": 66.5,
+   "side": "client1",
+   "step": "the phone's player",
+   "value": 0
+  },
+  {
+   "t": 66.6,
+   "side": "client1",
+   "step": "aim 0",
+   "value": "-137.25609 66.54875 -153.43156 -0.9589392 -0.09439513 0.26744187"
+  },
+  {
+   "t": 69.6,
+   "side": "client1",
+   "step": "after burst 0",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Running",
+    "match": 7,
+    "me": "Alive entered=True life=1 hp=100 ap=100",
+    "rows": "1:扎卡里 Alive K1 D0 A0 | 0:沃尔特 SpawnPending K0 D1 A0",
+    "feed": "扎卡里 > 沃尔特 ak47",
+    "result": "-",
+    "slots": "1048880,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-137.3 65.0 -153.4"
+   }
+  },
+  {
+   "t": 71.2,
+   "side": "client1",
+   "step": "frame kill-feed",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-04-client1-kill-feed"
+  },
+  {
+   "t": 73.0,
+   "side": "client1",
+   "step": "frame scoreboard",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-05-client1-scoreboard"
+  },
+  {
+   "t": 75.3,
+   "side": "client1",
+   "step": "the phone's player died again (D2)",
+   "value": "0:沃尔特 DeathView K0 D2 A0"
+  },
+  {
+   "t": 86.6,
+   "side": "client1",
+   "step": "the phone's player died again (D3)",
+   "value": "0:沃尔特 DeathView K0 D3 A0"
+  },
+  {
+   "t": 97.9,
+   "side": "client1",
+   "step": "the phone's player died again (D4)",
+   "value": "0:沃尔特 DeathView K0 D4 A0"
+  },
+  {
+   "t": 111.4,
+   "side": "client1",
+   "step": "the phone's player died again (D5)",
+   "value": "0:沃尔特 DeathView K0 D5 A0"
+  },
+  {
+   "t": 122.7,
+   "side": "client1",
+   "step": "the phone's player died again (D6)",
+   "value": "0:沃尔特 DeathView K0 D6 A0"
+  },
+  {
+   "t": 134.0,
+   "side": "client1",
+   "step": "the phone's player died again (D7)",
+   "value": "0:沃尔特 DeathView K0 D7 A0"
+  },
+  {
+   "t": 145.2,
+   "side": "client1",
+   "step": "the phone's player died again (D8)",
+   "value": "0:沃尔特 DeathView K0 D8 A0"
+  },
+  {
+   "t": 156.5,
+   "side": "client1",
+   "step": "the phone's player died again (D9)",
+   "value": "0:沃尔特 DeathView K0 D9 A0"
+  },
+  {
+   "t": 167.8,
+   "side": "client1",
+   "step": "the phone's player died again (D10)",
+   "value": "0:沃尔特 DeathView K0 D10 A0"
+  },
+  {
+   "t": 179.1,
+   "side": "client1",
+   "step": "the phone's player died again (D11)",
+   "value": "0:沃尔特 DeathView K0 D11 A0"
+  },
+  {
+   "t": 190.3,
+   "side": "client1",
+   "step": "the phone's player died again (D12)",
+   "value": "0:沃尔特 DeathView K0 D12 A0"
+  },
+  {
+   "t": 199.5,
+   "side": "client1",
+   "step": "phase while waiting for Results",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Running",
+    "match": 7,
+    "me": "Alive entered=True life=1 hp=100 ap=100",
+    "rows": "1:扎卡里 Alive K12 D0 A0 | 0:沃尔特 Alive K0 D12 A0",
+    "feed": "扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47",
+    "result": "-",
+    "slots": "1048880,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-137.3 65.0 -153.4"
+   }
+  },
+  {
+   "t": 216.4,
+   "side": "client1",
+   "step": "phase while waiting for Results",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Results",
+    "match": 7,
+    "me": "Preparing entered=True life=1 hp=100 ap=100",
+    "rows": "1:扎卡里 Preparing K12 D0 A0 | 0:沃尔特 Preparing K0 D12 A0",
+    "feed": "扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47",
+    "result": "result",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.3 65.0 -155.3"
+   }
+  },
+  {
+   "t": 218.2,
+   "side": "client1",
+   "step": "frame results",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-06-client1-results"
+  },
+  {
+   "t": 218.3,
+   "side": "client1",
+   "step": "results",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Results",
+    "match": 7,
+    "me": "Preparing entered=True life=1 hp=100 ap=100",
+    "rows": "1:扎卡里 Preparing K12 D0 A0 | 0:沃尔特 Preparing K0 D12 A0",
+    "feed": "扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47 | 扎卡里 > 沃尔特 ak47",
+    "result": "result",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-139.3 65.0 -155.3"
+   }
+  }
+ ],
+ "checks": [
+  {
+   "check": "the computer is accepted by the phone's CS layer",
+   "ok": true,
+   "detail": "Client | peers 0 | Accepted | accepted by server core 1.4.0 build 2d34001a2b51b723937742e0eafcd1ae (lite + agents)"
+  },
+  {
+   "check": "the computer's shots killed the phone's player (the client's feed has the kill)",
+   "ok": true,
+   "detail": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Running",
+    "match": 7,
+    "me": "Alive entered=True life=1 hp=100 ap=100",
+    "rows": "1:扎卡里 Alive K1 D0 A0 | 0:沃尔特 SpawnProtected K0 D1 A0",
+    "feed": "扎卡里 > 沃尔特 ak47",
+    "result": "-",
+    "slots": "1048880,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-137.3 65.0 -153.4"
+   }
+  }
+ ],
+ "frames": [
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-00-client1-joined",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-01-client1-lobby",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-02-client1-entered",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-03-client1-running",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-04-client1-kill-feed",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-05-client1-scoreboard",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-phone-dmr3g-20261004-192504\\frames\\dm-mp-dmr3g-06-client1-results"
+ ],
+ "gameErrors": [],
+ "netLines": [
+  "[19:25:18.609] [Information] [ScCsgoNet] adapter attached (packet 197, protocol 7)",
+  "[19:25:18.611] [Information] [ScCsgoNet] platform verified (d5c1a418/52747411/b3822a2d); terrain: reconciliation on (verify by hash after each chunk list, bounded resend)",
+  "[19:25:18.613] [Information] [ScCsgoNet] CompatNet corrections: command gate: installed",
+  "[19:25:18.614] [Information] [ScCsgoNet] Game.NetworkManager present",
+  "[19:25:18.614] [Information] [ScCsgoNet] mods: survivalcraft 1.9.3.2, compat23 1.0.0, network 1.0.0, compatnet 1.0.0, fastdebug 1.0.0, Survivalcraft.TestAutomation 1.0, zh667.ScCsgoKnives 1.4.0, zh667.ScCsgoDeathmatch 1.0.0",
+  "[19:25:18.614] [Information] [ScCsgoNet] transport contract: 35 members checked, 0 differences",
+  "[19:25:18.614] [Information] [ScCsgoNet] adapter ScCsgoNet 564c664d-96a9-4256-9030-80eb5797c46d loaded from Net/ScCsgoNet.bin",
+  "[19:25:18.614] [Information] [ScCsgoNet] CompatNet contract: 15 members checked, 0 differences",
+  "[19:25:18.614] [Information] [ScCsgoNet] decision: multiplayer engine: transport contract matched, adapter attached; CompatNet command gate: installed",
+  "[19:25:19.625] [Information] [ScCsgoNet] packet 197 registered on the Multiplayer packet table",
+  "[19:25:32.661] [Information] [ScCsgoNet] client: op 1 {\"Protocol\":\"zh667.ScCsgoKnives/net\",\"Version\":7,\"Layout\":6,\"Schema\":7,\"ModVersion\":\"1.4.0\",\"CoreBuild\":\"2d34001a2b51b723937742e0eafcd1ae\",\"Request\":1,\"Agents\":\"2d34001a2b51b723937742e0eafcd1ae\",\"Edition\":\"full\",\"Mode\":\"zh667.ScCsgoDeathmatch/deathmatch#be2abe329387ba0efbd622bbc08b4088#f5c28fefc9bf99b4\"} sent",
+  "[19:25:33.056] [Information] [ScCsgoNet] client: hello 1 accepted by server core 1.4.0 build 2d34001a2b51b723937742e0eafcd1ae (lite + agents)"
+ ]
+}

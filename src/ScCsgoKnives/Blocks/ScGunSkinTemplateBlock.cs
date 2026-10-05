@@ -14,6 +14,8 @@ public sealed class ScGunSkinTemplateBlock : ScNoDurabilityBlock {
     }
     public override int GetDisplayOrder(int value) => 215;
     public override IEnumerable<int> GetCreativeValues() => ScGunSkinCatalog.Available.Select(s => Terrain.MakeBlockValue(BlockIndex, 0, s.PaintId));
+    /// <summary>As ScGunBlock: taken in hand it becomes one gun with its own record, so it never stacks.</summary>
+    public override int GetMaxStacking(int value) => 1;
     public static bool IsTemplate(int value) => BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunSkinTemplateBlock), out int index) && Terrain.ExtractContents(value) == index;
     public static bool TrySnapshot(int value, out ScGunSnapshot snapshot) {
         snapshot = default;

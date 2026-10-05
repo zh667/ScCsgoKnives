@@ -1,0 +1,47 @@
+{
+ "task": "round3-fire-smoke-projectile-mp-20260930",
+ "stage": "early trim 2 (before delivery)",
+ "date": "2026-09-30T18:33:58",
+ "removed": {
+  "stage r3f build trees": {
+   "bytes": 850989807,
+   "items": 1898,
+   "paths": [
+    ".tmp\\completion-140-20260929\\r3f\\full",
+    ".tmp\\completion-140-20260929\\r3f\\lite",
+    ".tmp\\completion-140-20260929\\r3f\\tree"
+   ],
+   "missing": []
+  },
+  "r3f test packages (dev-r3f with adapter; sp-r3f used by camera/smoke tests, hashes in results/*.json)": {
+   "bytes": 1127265254,
+   "items": 4,
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3f-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3f-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3f-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3f-lite.scmod"
+   ],
+   "missing": []
+  },
+  "adapter dev build dirs r3f": {
+   "bytes": 21236455,
+   "items": 79,
+   "paths": [
+    ".tmp\\mp-m0-20260929\\build\\net-out-r3f",
+    ".tmp\\mp-m0-20260929\\build\\net-refs-r3f",
+    ".tmp\\mp-m0-20260929\\build\\net-src-r3f"
+   ],
+   "missing": []
+  },
+  "totalBytes": 1999491516,
+  "items": 1981
+ },
+ "diskBefore": {
+  "free": 17752326144
+ },
+ "diskAfter": {
+  "free": 19756044288,
+  "freePct": 1.98
+ }
+}

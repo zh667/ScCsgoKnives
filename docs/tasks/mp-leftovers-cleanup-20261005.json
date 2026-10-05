@@ -1,0 +1,437 @@
+{
+ "task": "leftovers of the earlier multiplayer rounds (current-direction MP M1-M4, mpb..mpf)",
+ "date": "2026-10-05T15:20:02",
+ "authority": "user 2026-10-05: 第一项直接删吧 (old MP stages c16mp/c17mp/mp08-mp17 and pkg/dev-mp* test packages)",
+ "permanence": "permanent deletion (not the recycle bin); rebuildable dev iterations of delivered work",
+ "kept": [
+  "each stage's logs/ and *.json reports",
+  "pkg/*.json",
+  "mp-m0-20260929 results/, run/ logs, build/, src/, refs/",
+  "output/ (unchanged)"
+ ],
+ "removed": [
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\candidate",
+   "bytes": 600736158,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\full",
+   "bytes": 767136381,
+   "files": 444
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\hotspots",
+   "bytes": 30855,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\lite",
+   "bytes": 180011945,
+   "files": 449
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\motion",
+   "bytes": 39460884,
+   "files": 793
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\resources",
+   "bytes": 56824555,
+   "files": 19
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\throw",
+   "bytes": 48557548,
+   "files": 883
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\tools",
+   "bytes": 646867126,
+   "files": 341
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\tree",
+   "bytes": 72565616,
+   "files": 1044
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c16mp\\ui",
+   "bytes": 2591545,
+   "files": 112
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\candidate",
+   "bytes": 600738112,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\full",
+   "bytes": 767150487,
+   "files": 444
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\hotspots",
+   "bytes": 30872,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\lite",
+   "bytes": 180027075,
+   "files": 449
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\motion",
+   "bytes": 39460884,
+   "files": 793
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\resources",
+   "bytes": 56824555,
+   "files": 19
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\throw",
+   "bytes": 48557548,
+   "files": 883
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\tools",
+   "bytes": 646875318,
+   "files": 341
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\tree",
+   "bytes": 72609147,
+   "files": 1047
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c17mp\\ui",
+   "bytes": 2595561,
+   "files": 112
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp08\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp08\\full",
+   "bytes": 623760325,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp08\\lite",
+   "bytes": 154063550,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp08\\tree",
+   "bytes": 72551836,
+   "files": 1044
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp09\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp09\\full",
+   "bytes": 623763696,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp09\\lite",
+   "bytes": 154066921,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp09\\tree",
+   "bytes": 72559471,
+   "files": 1044
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp10\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp10\\full",
+   "bytes": 623766968,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp10\\lite",
+   "bytes": 154069169,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp10\\tree",
+   "bytes": 72562643,
+   "files": 1044
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp11\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp11\\full",
+   "bytes": 623767219,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp11\\lite",
+   "bytes": 154069420,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp11\\tree",
+   "bytes": 72563439,
+   "files": 1044
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp12\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp12\\full",
+   "bytes": 623770442,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp12\\lite",
+   "bytes": 154072643,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp12\\tree",
+   "bytes": 72565362,
+   "files": 1044
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp13\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp13\\full",
+   "bytes": 623773189,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp13\\lite",
+   "bytes": 154076414,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp13\\tree",
+   "bytes": 72593704,
+   "files": 1046
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp14\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp14\\full",
+   "bytes": 623773457,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp14\\lite",
+   "bytes": 154076682,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp14\\tree",
+   "bytes": 72593972,
+   "files": 1046
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp15\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp15\\full",
+   "bytes": 623776000,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp15\\lite",
+   "bytes": 154079225,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp15\\tree",
+   "bytes": 72598750,
+   "files": 1047
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp16\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp16\\full",
+   "bytes": 623782217,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp16\\lite",
+   "bytes": 154085442,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp16\\tree",
+   "bytes": 72602893,
+   "files": 1047
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp17\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp17\\full",
+   "bytes": 623782500,
+   "files": 413
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp17\\lite",
+   "bytes": 154085725,
+   "files": 417
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\mp17\\tree",
+   "bytes": 72607065,
+   "files": 1047
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp08-full.scmod",
+   "bytes": 526764401,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp08-lite.scmod",
+   "bytes": 36861664,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp09-full.scmod",
+   "bytes": 526764689,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp09-lite.scmod",
+   "bytes": 36862012,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp10-full.scmod",
+   "bytes": 526764927,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp10-lite.scmod",
+   "bytes": 36862170,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp11-full.scmod",
+   "bytes": 526765053,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp11-lite.scmod",
+   "bytes": 36862170,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp12-full.scmod",
+   "bytes": 526765152,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp12-lite.scmod",
+   "bytes": 36862138,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp13-full.scmod",
+   "bytes": 526765883,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp13-lite.scmod",
+   "bytes": 36862808,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp14-full.scmod",
+   "bytes": 526765863,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp14-lite.scmod",
+   "bytes": 36862781,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp15-full.scmod",
+   "bytes": 526766048,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp15-lite.scmod",
+   "bytes": 36862941,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp16-full.scmod",
+   "bytes": 526766236,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp16-lite.scmod",
+   "bytes": 36862985,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp17-full.scmod",
+   "bytes": 526766296,
+   "files": 1
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\pkg\\dev-mp17-lite.scmod",
+   "bytes": 36863009,
+   "files": 1
+  }
+ ],
+ "totalBytes": 19081671005,
+ "outputUnchanged": true,
+ "freeAfter": 79656689664
+}

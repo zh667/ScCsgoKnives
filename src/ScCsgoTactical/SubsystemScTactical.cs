@@ -7,7 +7,7 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
     public string GloveFor(int player)=>gloves.GetValueOrDefault(player,"");
     public void SetGlove(int player,string key){if(TacticalArms.ValidGlove(key))gloves[player]=key;}
     public override void Load(TemplatesDatabase.ValuesDictionary values){
-        base.Load(values);
+        base.Load(values);TacticalModLoader.RegisterFactions();
         foreach(var pair in values.GetValue<TemplatesDatabase.ValuesDictionary>("PlayerGloves",new()))
             if(int.TryParse(pair.Key,out int index)&&pair.Value is string key)gloves[index]=key;
     }
@@ -24,19 +24,30 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
     public override int[] HandledBlocks=>[BlocksManager.GetBlockIndex<ScTacticalBeaconBlock>(true),BlocksManager.GetBlockIndex<ScTacticalSquadBlock>(true)];
     public override bool OnUse(Ray3 ray,ComponentMiner miner){
         var player=miner.Entity.FindComponent<ComponentPlayer>();if(player is null)return false;
+        // Multiplayer: 1.9.3.2_MP clients never run a use themselves (they send it and the server repeats it for their player),
+        // so this runs on the server for every player; its notices go to the player's own client.
+        if(ScNet.IsRemoteClient)return true;
+        if(ScNet.IsRemoteDriven(player))ScNet.Trace($"beacon P{player.PlayerData.PlayerIndex} use value {miner.ActiveBlockValue}");
+        return Use(ray,miner);
+    }
+    /// <summary>A beacon use by <paramref name="miner"/>'s player (single player, or the server for any player).</summary>
+    public bool Use(Ray3 ray,ComponentMiner miner){
+        var player=miner.Entity.FindComponent<ComponentPlayer>();if(player is null)return false;
         var inv=miner.Inventory;int slot=inv.ActiveSlotIndex,value=inv.GetSlotValue(slot);
         if(Terrain.ExtractContents(value)==HandledBlocks[1]){
             var target=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,12);
+            if(ScNet.IsRemoteDriven(player))ScNet.Trace($"squad beacon P{player.PlayerData.PlayerIndex} ray {ray.Position} {ray.Direction} hit {(target.HasValue?target.Value.CellFace.ToString()+" d "+target.Value.Distance.ToString("0.00"):"none")}");
             if(!target.HasValue||target.Value.CellFace.Face!=4){Message(player,"对准 12 格内的开阔地面召唤敌队。");return true;}
             var ground=target.Value.CellFace;int count=Terrain.ExtractData(value)==1?5:3;
             var director=Project.FindSubsystem<SubsystemTacticalEnemies>(true);
             bool made=ScCraftBatch.TryUseItem(inv,slot,value,()=>director.SpawnManual(new Point3(ground.X,ground.Y,ground.Z),count)==count);
-            Message(player,made?$"已生成 {count} 人敌对 T 小队。":string.IsNullOrEmpty(director.ManualFailure)?"召唤未完成，请检查背包或待恢复物品。":"未生成："+director.ManualFailure);return true;
+            Message(player,made?$"已在 {SubsystemTacticalEnemies.ManualNear:0}～{SubsystemTacticalEnemies.ManualFar:0} 格外生成 {count} 人敌对 T 小队，{SubsystemTacticalEnemies.ManualWarmup:0} 秒后开始交战。":string.IsNullOrEmpty(director.ManualFailure)?"召唤未完成，请检查背包或待恢复物品。":"未生成："+director.ManualFailure);return true;
         }
         if(Terrain.ExtractContents(value)!=HandledBlocks[0])return false;
         int kind=Terrain.ExtractData(value);if(kind==3){Repair(player);return true;}if(kind<0||kind>2)return true;
         if(kind==0){Message(player,"救援同伴已移除，此旧信标不再召唤。已有同伴可取回装备后解散。");return true;}
         var hit=miner.Raycast<TerrainRaycastResult>(ray,RaycastMode.Interaction,true,false,false,5);
+        if(ScNet.IsRemoteDriven(player))ScNet.Trace($"beacon P{player.PlayerData.PlayerIndex} ray {ray.Position} {ray.Direction} hit {(hit.HasValue?hit.Value.CellFace.ToString()+" d "+hit.Value.Distance.ToString("0.00"):"none")}");
         if(!hit.HasValue||hit.Value.CellFace.Face!=4){Message(player,"请对准 5 格内有足够空间的地面上表面。");return true;}
         var cell=hit.Value.CellFace;var pos=new Vector3(cell.X+.5f,cell.Y+1.05f,cell.Z+.5f);
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);for(int y=0;y<2;y++)if(BlocksManager.Blocks[Terrain.ExtractContents(terrain.Terrain.GetCellValue(cell.X,cell.Y+1+y,cell.Z))].IsCollidable){Message(player,"上方空间不足。");return true;}
@@ -57,7 +68,7 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
         ScInventoryTransaction.Changed(inv);Message(player,"同伴已加入。对准它按 E／交互键管理装备和指令。");
         return true;
     }
-    static void Message(ComponentPlayer p,string text)=>p.ComponentGui.DisplaySmallMessage(text,Color.White,false,false);
+    static void Message(ComponentPlayer p,string text)=>TacticalNet.Tell(p,text);
     static void Repair(ComponentPlayer player){
         var inv=player.ComponentMiner.Inventory;
         if(inv is not ComponentInventoryBase slots){Message(player,"创造模式请直接取用新盾牌。");return;}
@@ -65,14 +76,32 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
             int v=inv.GetSlotValue(i);if(inv.GetSlotCount(i)!=1||!ScTacticalShieldBlock.IsShield(v)||ScTacticalShieldBlock.Wear(v)<=0)continue;
             int active=inv.ActiveSlotIndex;if(active==i||inv.GetSlotCount(active)<=0)return;
             // Both slots belong to the same ordinary inventory, with no callbacks between the two writes.
-            slots.m_slots[active].Count--;slots.m_slots[i].Value=Terrain.ReplaceData(v,Math.Max(0,ScTacticalShieldBlock.Wear(v)-1000));ScInventoryTransaction.Changed(inv);Message(player,"防爆盾已维修。");return;
+            int repaired=Terrain.ReplaceData(v,Math.Max(0,ScTacticalShieldBlock.Wear(v)-1000));
+            // Multiplayer: through the inventory's own slot calls, which the engine sends to the owner's client.
+            if(ScNet.IsHost){slots.RemoveSlotItems(active,1);slots.RemoveSlotItems(i,1);slots.AddSlotItems(i,repaired,1);}
+            else{slots.m_slots[active].Count--;slots.m_slots[i].Value=repaired;}
+            ScInventoryTransaction.Changed(inv);Message(player,"防爆盾已维修。");return;
         }
         Message(player,"请把受损盾牌放入快捷栏。");
     }
+    static readonly Dictionary<int,(int Entity,double At)> dismissConfirm=[];
     public static bool Open(ComponentPlayer player){
-        if(player is null||!ScGunBindings.Available(player))return false;
+        // The panel is the reading player's own: a remote client opens it on its client (orders go through TacticalNet).
+        if(player is null||!ScNet.IsLocal(player)||!ScGunBindings.Available(player))return false;
         var camera=player.GameWidget.ActiveCamera;var hit=player.ComponentMiner.Raycast<BodyRaycastResult>(new Ray3(camera.ViewPosition,camera.ViewDirection),RaycastMode.Interaction,true,true,false,3);
         var c=hit?.ComponentBody.Entity.FindComponent<ComponentTacticalCompanion>();if(c is null||c.DeathHandled)return false;
+        if(c.OwnerMissing){
+            // Never auto-claimed. An empty ownerless shell (lost by an old build's unload) may be removed after confirmation.
+            bool empty=Enumerable.Range(0,c.Inventory.SlotsCount).All(i=>c.Inventory.GetSlotCount(i)==0);
+            double now=player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
+            var pending=dismissConfirm.GetValueOrDefault(player.PlayerData.PlayerIndex,(Entity:-1,At:double.NegativeInfinity));
+            if(empty&&pending.Entity==c.Entity.Id&&now>=pending.At+.6&&now<=pending.At+3){
+                dismissConfirm.Remove(player.PlayerData.PlayerIndex);
+                if(ScNet.IsRemoteClient){TacticalNet.Order(player,c,TacticalNet.Command.RemoveOwnerless);return true;}
+                c.EndArmor();player.Project.RemoveEntity(c.Entity,true);Message(player,"已移除无主同伴。");return true;}
+            // A held interaction repeats; only a separate second press after a short pause confirms.
+            if(empty&&!(pending.Entity==c.Entity.Id&&now<pending.At+.6))dismissConfirm[player.PlayerData.PlayerIndex]=(c.Entity.Id,now);
+            Message(player,empty?"这名同伴缺少主人记录（旧版远距卸载时丢失），无法认领。3 秒内再次交互可移除这个空装备的无主同伴。":"这名同伴缺少主人记录，无法认领或管理。");return true;}
         if(!c.OwnedBy(player)){Message(player,"这是其他玩家的同伴。");return true;}
         player.ComponentGui.ModalPanelWidget=new TacticalPanel(player,c);return true;
     }

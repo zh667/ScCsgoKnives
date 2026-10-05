@@ -1,0 +1,904 @@
+{
+ "case": "dm-mp-dmr3gla",
+ "engine": "1.9.3.2_MP",
+ "packages": {
+  "Survivalcraft.TestAutomation.scmod": "51c47d44ecb459cb8cd0a33ef3b80fd7db04bf87cd9b6250426b4aaaee763658",
+  "[API1.9]CS武器1.4.0-轻量包.scmod": "4f2cb698afc431cc996d385f17b0c69a63d7eeae72eaeebc71f955d0874914ae",
+  "[API1.9]CS武器1.4.0-探员包.scmod": "ae174abbdb40b7f24844383652e4edd5027397f5d2714987d32cf3d887744f9d",
+  "[API1.9]CS武器1.4.0-死亡竞赛包.scmod": "0e56aae4c6184a06df16850e41973f764b53c9b56907321f1ee33a1f7b7c78d3",
+  "[API1.9]CS武器1.4.0-全量包.scmod": "11c4148bcb497f14dc4fb7df3a959099c653467632c8d92bb14d105cbf5454cf"
+ },
+ "host": [
+  "Survivalcraft.TestAutomation.scmod",
+  "[API1.9]CS武器1.4.0-轻量包.scmod",
+  "[API1.9]CS武器1.4.0-探员包.scmod",
+  "[API1.9]CS武器1.4.0-死亡竞赛包.scmod"
+ ],
+ "client": [
+  "Survivalcraft.TestAutomation.scmod",
+  "[API1.9]CS武器1.4.0-全量包.scmod",
+  "[API1.9]CS武器1.4.0-死亡竞赛包.scmod"
+ ],
+ "mpBuild": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+ "steps": [
+  {
+   "t": 14.7,
+   "side": "server",
+   "step": "creative world",
+   "value": "Creative"
+  },
+  {
+   "t": 17.9,
+   "side": "server",
+   "step": "settings",
+   "value": "gui in screenshots"
+  },
+  {
+   "t": 18.1,
+   "side": "server",
+   "step": "arena",
+   "value": "-72 71 -31"
+  },
+  {
+   "t": 20.0,
+   "side": "server",
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 22.3,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 23.7,
+   "side": "server",
+   "step": "clicked '把本世界启用为竞技世界'",
+   "value": "921,167 inside=True window 1536x825"
+  },
+  {
+   "t": 24.0,
+   "side": "server",
+   "step": "after enable",
+   "value": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Editing",
+    "match": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0",
+    "rows": "0:巴西尔 Preparing K0 D0 A0 spectating",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-71.5 71.0 -30.5"
+   }
+  },
+  {
+   "t": 27.6,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 29.0,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 30.3,
+   "side": "server",
+   "step": "clicked '角点 1'",
+   "value": "695,167 inside=True window 1536x825"
+  },
+  {
+   "t": 33.6,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 34.9,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 36.1,
+   "side": "server",
+   "step": "clicked '角点 2'",
+   "value": "921,167 inside=True window 1536x825"
+  },
+  {
+   "t": 39.5,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 40.7,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 42.0,
+   "side": "server",
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 45.3,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 46.6,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 47.8,
+   "side": "server",
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 51.2,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 52.4,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 53.7,
+   "side": "server",
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 57.0,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 58.3,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 59.5,
+   "side": "server",
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 62.9,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 64.1,
+   "side": "server",
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 65.4,
+   "side": "server",
+   "step": "clicked '准备/观战点'",
+   "value": "1147,167 inside=True window 1536x825"
+  },
+  {
+   "t": 67.9,
+   "side": "server",
+   "step": "button '检查地图' not found",
+   "value": "no modal"
+  },
+  {
+   "t": 68.1,
+   "side": "server",
+   "step": "host state",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-71.5 71.0 -18.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 82.2,
+   "side": "client1",
+   "step": "handshake",
+   "value": "Accepted"
+  },
+  {
+   "t": 82.8,
+   "side": "client1",
+   "step": "settings",
+   "value": "gui in screenshots"
+  },
+  {
+   "t": 83.1,
+   "side": "client1",
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 83.7,
+   "side": "client1",
+   "step": "client joined",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Editing",
+    "match": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0",
+    "rows": "1:沃尔特 Preparing K0 D0 A0 spectating | 0:巴西尔 Preparing K0 D0 A0 spectating",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-94.5 66.0 -45.5"
+   }
+  },
+  {
+   "t": 85.0,
+   "side": "client1",
+   "step": "frame joined",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-00-client1-joined"
+  },
+  {
+   "t": 86.0,
+   "side": "server",
+   "step": "frame host-editing-after-join",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-01-server-host-editing-after-join"
+  },
+  {
+   "t": 88.1,
+   "side": "client1",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 89.2,
+   "side": "client1",
+   "step": "frame client-menu-editing",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-02-client1-client-menu-editing"
+  },
+  {
+   "t": 91.9,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 93.1,
+   "side": "server",
+   "step": "clicked '比赛'",
+   "value": "934,102 inside=True window 1536x825"
+  },
+  {
+   "t": 94.6,
+   "side": "server",
+   "step": "clicked '开始比赛'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 94.7,
+   "side": "server",
+   "step": "refusal",
+   "value": "不能开始：先点“开放大厅”，大家配装（B）并点“入场”后再开始"
+  },
+  {
+   "t": 96.2,
+   "side": "server",
+   "step": "clicked '开放大厅'",
+   "value": "921,231 inside=True window 1536x825"
+  },
+  {
+   "t": 96.9,
+   "side": "client1",
+   "step": "client after lobby",
+   "value": "{\"index\":1,\"enabled\":true,\"phase\":\"Lobby\",\"match\":0,\"me\":\"Preparing entered=False life=0 hp=0 ap=0\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Preparing K0 D0 A0 spectating | 0:\\u5DF4\\u897F\\u5C14 Preparing K0 D0 A0 spectating\",\"feed\":\"\",\"result\":\"-\",\"slots\":\"-,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-71.5 71.0 -18.5\"}"
+  },
+  {
+   "t": 99.3,
+   "side": "client1",
+   "step": "frame lobby",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-03-client1-lobby"
+  },
+  {
+   "t": 99.4,
+   "side": "client1",
+   "step": "client at lobby",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0",
+    "rows": "1:沃尔特 Preparing K0 D0 A0 spectating | 0:巴西尔 Preparing K0 D0 A0 spectating",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-71.5 71.0 -18.5"
+   }
+  },
+  {
+   "t": 102.2,
+   "side": "client1",
+   "step": "wheel sector 2",
+   "value": "656 451 手枪|冲锋枪|步枪与狙击|霰弹与机枪|刀具|装备"
+  },
+  {
+   "t": 103.4,
+   "side": "client1",
+   "step": "wheel sector 0",
+   "value": "508 195 AK-47|M4A1-S|AWP|M4A4|法玛斯|SSG 08|加利尔 AR|SCAR-20"
+  },
+  {
+   "t": 104.7,
+   "side": "client1",
+   "step": "clicked '原厂外观'",
+   "value": "882,161 inside=True window 1536x825"
+  },
+  {
+   "t": 106.0,
+   "side": "client1",
+   "step": "clicked '确认'",
+   "value": "932,640 inside=True window 1536x825"
+  },
+  {
+   "t": 108.0,
+   "side": "client1",
+   "step": "clicked '入场'",
+   "value": "1141,640 inside=True window 1536x825"
+  },
+  {
+   "t": 108.9,
+   "side": "client1",
+   "step": "frame client-entered",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-04-client1-client-entered"
+  },
+  {
+   "t": 109.0,
+   "side": "client1",
+   "step": "client entered",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 0,
+    "me": "Preparing entered=True life=0 hp=0 ap=0",
+    "rows": "1:沃尔特 Preparing K0 D0 A0 | 0:巴西尔 Preparing K0 D0 A0 spectating",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-71.5 71.0 -18.5"
+   }
+  },
+  {
+   "t": 111.7,
+   "side": "server",
+   "step": "wheel sector 0",
+   "value": "508 195 手枪|冲锋枪|步枪与狙击|霰弹与机枪|刀具|装备"
+  },
+  {
+   "t": 112.9,
+   "side": "server",
+   "step": "wheel sector 0",
+   "value": "508 195 沙漠之鹰|格洛克 18|USP-S|FN57|P2000|P250|Tec-9|CZ75"
+  },
+  {
+   "t": 114.2,
+   "side": "server",
+   "step": "clicked '原厂外观'",
+   "value": "882,161 inside=True window 1536x825"
+  },
+  {
+   "t": 115.4,
+   "side": "server",
+   "step": "clicked '确认'",
+   "value": "932,640 inside=True window 1536x825"
+  },
+  {
+   "t": 117.4,
+   "side": "server",
+   "step": "clicked '入场'",
+   "value": "1141,640 inside=True window 1536x825"
+  },
+  {
+   "t": 117.5,
+   "side": "server",
+   "step": "host entered",
+   "value": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Lobby",
+    "match": 0,
+    "me": "Preparing entered=True life=0 hp=0 ap=0",
+    "rows": "1:沃尔特 Preparing K0 D0 A0 | 0:巴西尔 Preparing K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-72.0 71.0 -18.5"
+   }
+  },
+  {
+   "t": 117.6,
+   "side": "server",
+   "step": "host state before start",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=True life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-72.0 71.0 -18.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 119.7,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 121.0,
+   "side": "server",
+   "step": "clicked '比赛'",
+   "value": "934,102 inside=True window 1536x825"
+  },
+  {
+   "t": 122.5,
+   "side": "server",
+   "step": "clicked '开始比赛'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 122.6,
+   "side": "server",
+   "step": "host message",
+   "value": null
+  },
+  {
+   "t": 124.1,
+   "side": "client1",
+   "step": "frame countdown",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-05-client1-countdown"
+  },
+  {
+   "t": 125.0,
+   "side": "server",
+   "step": "frame countdown",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-06-server-countdown"
+  },
+  {
+   "t": 127.0,
+   "side": "client1",
+   "step": "client after countdown",
+   "value": "{\"index\":1,\"enabled\":true,\"phase\":\"Running\",\"match\":1,\"me\":\"SpawnPending entered=True life=1 hp=0 ap=0\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 SpawnPending K0 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 SpawnProtected K0 D0 A0\",\"feed\":\"\",\"result\":\"-\",\"slots\":\"-,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-74.5 71.0 -23.5\"}"
+  },
+  {
+   "t": 129.3,
+   "side": "client1",
+   "step": "client alive",
+   "value": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "SpawnProtected entered=True life=1 hp=100 ap=100",
+    "rows": "1:沃尔特 SpawnProtected K0 D0 A0 | 0:巴西尔 SpawnProtected K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "2097456,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-74.5 71.0 -23.5"
+   }
+  },
+  {
+   "t": 129.4,
+   "side": "server",
+   "step": "host alive",
+   "value": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "SpawnProtected entered=True life=1 hp=100 ap=100",
+    "rows": "1:沃尔特 SpawnProtected K0 D0 A0 | 0:巴西尔 SpawnProtected K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,1098032,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-68.5 71.0 -23.5"
+   }
+  },
+  {
+   "t": 129.5,
+   "side": "client1",
+   "step": "equip sprites",
+   "value": "0:ScGunBlock data=128 variant=0 sprite=True | ak47 sprite=True"
+  },
+  {
+   "t": 130.5,
+   "side": "client1",
+   "step": "frame alive-hud",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-07-client1-alive-hud"
+  },
+  {
+   "t": 131.3,
+   "side": "server",
+   "step": "frame alive-hud",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-08-server-alive-hud"
+  },
+  {
+   "t": 137.5,
+   "side": "server",
+   "step": "host before the shots",
+   "value": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "Alive entered=True life=1 hp=100 ap=100",
+    "rows": "1:沃尔特 Alive K0 D0 A0 | 0:巴西尔 Alive K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,1098032,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-68.5 71.0 -23.5"
+   }
+  },
+  {
+   "t": 137.6,
+   "side": "client1",
+   "step": "aim 0",
+   "value": "-68.5 72.54875 -25.5 0 -0.24880031 0.96855474"
+  },
+  {
+   "t": 140.3,
+   "side": "server",
+   "step": "host after burst 0",
+   "value": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "SpawnProtected entered=True life=2 hp=100 ap=100",
+    "rows": "1:沃尔特 Alive K1 D0 A0 | 0:巴西尔 SpawnProtected K0 D1 A0",
+    "feed": "沃尔特 > 巴西尔 ak47",
+    "result": "-",
+    "slots": "-,1098032,-,-,-,-,-,-,-,-",
+    "active": 1,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-74.5 71.0 -33.5"
+   }
+  },
+  {
+   "t": 142.1,
+   "side": "client1",
+   "step": "frame kill-feed",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-09-client1-kill-feed"
+  },
+  {
+   "t": 143.0,
+   "side": "server",
+   "step": "frame death-panel",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-10-server-death-panel"
+  },
+  {
+   "t": 143.2,
+   "side": "client1",
+   "step": "client view after the kill",
+   "value": "{\"index\":1,\"enabled\":true,\"phase\":\"Running\",\"match\":1,\"me\":\"Alive entered=True life=1 hp=100 ap=100\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Alive K1 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 SpawnProtected K0 D1 A0\",\"feed\":\"\\u6C83\\u5C14\\u7279 \\u003E \\u5DF4\\u897F\\u5C14 ak47\",\"result\":\"-\",\"slots\":\"2097456,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-68.5 71.0 -25.5\"}"
+  },
+  {
+   "t": 145.1,
+   "side": "client1",
+   "step": "frame scoreboard",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-11-client1-scoreboard"
+  },
+  {
+   "t": 145.6,
+   "side": "server",
+   "step": "host after respawn",
+   "value": "{\"index\":0,\"enabled\":true,\"phase\":\"Running\",\"match\":1,\"me\":\"Alive entered=True life=2 hp=100 ap=100\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Alive K1 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 Alive K0 D1 A0\",\"feed\":\"\\u6C83\\u5C14\\u7279 \\u003E \\u5DF4\\u897F\\u5C14 ak47\",\"result\":\"-\",\"slots\":\"-,1098032,-,-,-,-,-,-,-,-\",\"active\":1,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-74.5 71.0 -33.5\"}"
+  },
+  {
+   "t": 146.6,
+   "side": "server",
+   "step": "frame respawned",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-12-server-respawned"
+  },
+  {
+   "t": 148.6,
+   "side": "server",
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 149.9,
+   "side": "server",
+   "step": "clicked '比赛'",
+   "value": "934,90 inside=True window 1536x825"
+  },
+  {
+   "t": 151.5,
+   "side": "server",
+   "step": "clicked '结束本局'",
+   "value": "695,220 inside=True window 1536x825"
+  },
+  {
+   "t": 152.2,
+   "side": "client1",
+   "step": "client after stop",
+   "value": "{\"index\":1,\"enabled\":true,\"phase\":\"Results\",\"match\":1,\"me\":\"Preparing entered=True life=1 hp=100 ap=100\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Preparing K1 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 Preparing K0 D1 A0\",\"feed\":\"\\u6C83\\u5C14\\u7279 \\u003E \\u5DF4\\u897F\\u5C14 ak47\",\"result\":\"result\",\"slots\":\"-,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-71.5 71.0 -18.5\"}"
+  },
+  {
+   "t": 154.1,
+   "side": "client1",
+   "step": "frame results",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-13-client1-results"
+  },
+  {
+   "t": 155.0,
+   "side": "server",
+   "step": "frame results",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-14-server-results"
+  }
+ ],
+ "checks": [
+  {
+   "check": "arena built through the host's menu",
+   "ok": true,
+   "detail": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-71.5 71.0 -18.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "check": "client accepted by the CS layer",
+   "ok": true,
+   "detail": "Client | peers 0 | Accepted | accepted by server core 1.4.0 build 2d34001a2b51b723937742e0eafcd1ae (lite + agents)"
+  },
+  {
+   "check": "client sees the arena world",
+   "ok": true,
+   "detail": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Editing",
+    "match": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0",
+    "rows": "1:沃尔特 Preparing K0 D0 A0 spectating | 0:巴西尔 Preparing K0 D0 A0 spectating",
+    "feed": "",
+    "result": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-94.5 66.0 -45.5"
+   }
+  },
+  {
+   "check": "client told the lobby is open",
+   "ok": true,
+   "detail": "{\"index\":1,\"enabled\":true,\"phase\":\"Lobby\",\"match\":0,\"me\":\"Preparing entered=False life=0 hp=0 ap=0\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Preparing K0 D0 A0 spectating | 0:\\u5DF4\\u897F\\u5C14 Preparing K0 D0 A0 spectating\",\"feed\":\"\",\"result\":\"-\",\"slots\":\"-,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-71.5 71.0 -18.5\"}"
+  },
+  {
+   "check": "client sees the match running",
+   "ok": true,
+   "detail": "{\"index\":1,\"enabled\":true,\"phase\":\"Running\",\"match\":1,\"me\":\"SpawnPending entered=True life=1 hp=0 ap=0\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 SpawnPending K0 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 SpawnProtected K0 D0 A0\",\"feed\":\"\",\"result\":\"-\",\"slots\":\"-,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-74.5 71.0 -23.5\"}"
+  },
+  {
+   "check": "client alive with the bought rifle",
+   "ok": true,
+   "detail": {
+    "index": 1,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "SpawnProtected entered=True life=1 hp=100 ap=100",
+    "rows": "1:沃尔特 SpawnProtected K0 D0 A0 | 0:巴西尔 SpawnProtected K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "2097456,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-74.5 71.0 -23.5"
+   }
+  },
+  {
+   "check": "host alive with the bought pistol",
+   "ok": true,
+   "detail": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "SpawnProtected entered=True life=1 hp=100 ap=100",
+    "rows": "1:沃尔特 SpawnProtected K0 D0 A0 | 0:巴西尔 SpawnProtected K0 D0 A0",
+    "feed": "",
+    "result": "-",
+    "slots": "-,1098032,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-68.5 71.0 -23.5"
+   }
+  },
+  {
+   "check": "the client's shots killed the host (server)",
+   "ok": true,
+   "detail": {
+    "index": 0,
+    "enabled": true,
+    "phase": "Running",
+    "match": 1,
+    "me": "SpawnProtected entered=True life=2 hp=100 ap=100",
+    "rows": "1:沃尔特 Alive K1 D0 A0 | 0:巴西尔 SpawnProtected K0 D1 A0",
+    "feed": "沃尔特 > 巴西尔 ak47",
+    "result": "-",
+    "slots": "-,1098032,-,-,-,-,-,-,-,-",
+    "active": 1,
+    "modal": null,
+    "camera": "FppCamera",
+    "health": 1,
+    "pos": "-74.5 71.0 -33.5"
+   }
+  },
+  {
+   "check": "client's feed shows the kill",
+   "ok": true,
+   "detail": "{\"index\":1,\"enabled\":true,\"phase\":\"Running\",\"match\":1,\"me\":\"Alive entered=True life=1 hp=100 ap=100\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Alive K1 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 SpawnProtected K0 D1 A0\",\"feed\":\"\\u6C83\\u5C14\\u7279 \\u003E \\u5DF4\\u897F\\u5C14 ak47\",\"result\":\"-\",\"slots\":\"2097456,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-68.5 71.0 -25.5\"}"
+  },
+  {
+   "check": "host respawned",
+   "ok": true,
+   "detail": "{\"index\":0,\"enabled\":true,\"phase\":\"Running\",\"match\":1,\"me\":\"Alive entered=True life=2 hp=100 ap=100\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Alive K1 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 Alive K0 D1 A0\",\"feed\":\"\\u6C83\\u5C14\\u7279 \\u003E \\u5DF4\\u897F\\u5C14 ak47\",\"result\":\"-\",\"slots\":\"-,1098032,-,-,-,-,-,-,-,-\",\"active\":1,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-74.5 71.0 -33.5\"}"
+  },
+  {
+   "check": "client shown the results",
+   "ok": true,
+   "detail": "{\"index\":1,\"enabled\":true,\"phase\":\"Results\",\"match\":1,\"me\":\"Preparing entered=True life=1 hp=100 ap=100\",\"rows\":\"1:\\u6C83\\u5C14\\u7279 Preparing K1 D0 A0 | 0:\\u5DF4\\u897F\\u5C14 Preparing K0 D1 A0\",\"feed\":\"\\u6C83\\u5C14\\u7279 \\u003E \\u5DF4\\u897F\\u5C14 ak47\",\"result\":\"result\",\"slots\":\"-,-,-,-,-,-,-,-,-,-\",\"active\":0,\"modal\":null,\"camera\":\"FppCamera\",\"health\":1,\"pos\":\"-71.5 71.0 -18.5\"}"
+  }
+ ],
+ "frames": [
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-00-client1-joined",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-01-server-host-editing-after-join",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-02-client1-client-menu-editing",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-03-client1-lobby",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-04-client1-client-entered",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-05-client1-countdown",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-06-server-countdown",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-07-client1-alive-hud",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-08-server-alive-hud",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-09-client1-kill-feed",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-10-server-death-panel",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-11-client1-scoreboard",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-12-server-respawned",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-13-client1-results",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-mp-dmr3gla-20261004-191956\\frames\\dm-mp-dmr3gla-14-server-results"
+ ],
+ "gameErrors": {
+  "server": [],
+  "client": []
+ },
+ "dmLog": {
+  "server": [
+   "[19:20:19.535] [Information] [CS_DM] arena enabled",
+   "[19:20:26.067] [Information] [CS_DM] corner 1 at -76,71,-35",
+   "[19:20:31.921] [Information] [CS_DM] corner 2 at -68,71,-23",
+   "[19:20:31.922] [Information] [CS_DM] arena revision 1: region -76,71,-35..-68,75,-23, lobby False, spawns 0",
+   "[19:20:37.741] [Information] [CS_DM] arena revision 2: region -76,71,-35..-68,75,-23, lobby False, spawns 1",
+   "[19:20:43.628] [Information] [CS_DM] arena revision 3: region -76,71,-35..-68,75,-23, lobby False, spawns 2",
+   "[19:20:49.475] [Information] [CS_DM] arena revision 4: region -76,71,-35..-68,75,-23, lobby False, spawns 3",
+   "[19:20:55.309] [Information] [CS_DM] arena revision 5: region -76,71,-35..-68,75,-23, lobby False, spawns 4",
+   "[19:21:01.156] [Information] [CS_DM] arena revision 6: region -76,71,-35..-68,75,-23, lobby True, spawns 4",
+   "[19:21:30.164] [Information] [CS_DM] start refused: nobody entered",
+   "[19:21:31.759] [Information] [CS_DM] phase Lobby, match 0",
+   "[19:21:58.068] [Information] [CS_DM] match 1 countdown, 2 entered",
+   "[19:21:58.069] [Information] [CS_DM] phase Countdown, match 0",
+   "[19:22:03.308] [Information] [CS_DM] phase Running, match 1",
+   "[19:22:03.314] [Information] [CS_DM] life 1 of local:0 at spawn #4: {\"Primary\":null,\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+   "[19:22:03.487] [Information] [CS_DM] life 1 of 174072680361409a952d3450cb0136f9 at spawn #3: {\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+   "[19:22:14.622] [Information] [CS_DM] kill #1: 174072680361409a952d3450cb0136f9 -> local:0 (Kill, ak47)",
+   "[19:22:16.628] [Information] [CS_DM] life 2 of local:0 at spawn #1: {\"Primary\":null,\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+   "[19:22:26.900] [Information] [CS_DM] phase Results (stopped), match 1"
+  ],
+  "client": []
+ }
+}

@@ -18,6 +18,9 @@
     <MemberSubsystemTemplate Name="ScStarterEquipment" Guid="78a906d2-bf71-4739-b096-7398c6d4c3da" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="e7dde55c-3916-4b0f-a8ca-4e116e68bab8" Value="Game.SubsystemScStarterEquipment" Type="string" />
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="ScArmor" Guid="e29cebcf-88c6-4370-a759-3de4687ee72b" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="f9825e0c-f87d-469a-ad03-b149142c7bce" Value="Game.SubsystemScArmor" Type="string" />
+    </MemberSubsystemTemplate>
   </ProjectTemplate>
   <EntityTemplate Name="AICreature" Guid="3f077159-f492-419b-859a-bb051de6339f">
     <MemberComponentTemplate Name="ScDecoyBehavior" Guid="185134db-5aeb-4b96-9181-6dc726728f52" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">

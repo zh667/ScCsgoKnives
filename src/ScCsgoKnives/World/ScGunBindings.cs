@@ -10,20 +10,33 @@ public static class ScGunBindings {
     public static void Reset() { Keys.Clear(); foreach (string id in ScGunFunctions.All) Keys[id] = Default(id); }
     public static string Get(string id) => Keys.GetValueOrDefault(id, Default(id));
     public static bool Valid(string text) => text == "" || Enum.TryParse<Key>(text, out var key) && Enum.IsDefined(key) && key is not (Key.Null or Key.Escape or Key.Back);
-    public static bool Available(ComponentPlayer p) => ContextAvailable(p) && !ScWeaponActionGate.Blocks(p);
-    public static bool ContextAvailable(ComponentPlayer p) => Window.IsActive && !ScWeaponTouchPanel.MenuActive
+    /// <summary>Whether this player may act now. For a remote multiplayer client's player (on the server) that is what its
+    /// client reported: its window, menus and dialogs are its own.</summary>
+    public static bool Available(ComponentPlayer p) => ScNetGuns.RemoteInput(p) is { } remote ? remote.Available && p.ComponentHealth.Health > 0 : ContextAvailable(p) && !ScWeaponActionGate.Blocks(p);
+    public static bool ContextAvailable(ComponentPlayer p) => ScNetGuns.RemoteInput(p) is { } remote ? remote.Context && p.ComponentHealth.Health > 0 : Window.IsActive && !ScWeaponTouchPanel.MenuActive && ControlAllowed(p)
         && (ScreensManager.CurrentScreen is null || ReferenceEquals(ScreensManager.CurrentScreen, ScreensManager.FindScreen<Screen>("Game")))
         && !ScreensManager.IsAnimating && p.ComponentHealth.Health > 0 && p.ComponentGui.ModalPanelWidget is null
         && !DialogsManager.HasDialogs(p.GuiWidget) && !DialogsManager.HasDialogs(ScreensManager.RootWidget);
+    /// <summary>The engine's own condition for a player's attack input (ComponentInput.Update): a camera that gives the
+    /// character control (first/third person, orbit, fixed; not the free-flight, death or intro cameras), a player ready
+    /// to play and awake. The mod's own buttons and key bindings obey it too (post-mp-bugs-20260930 review B): none of
+    /// them reaches the character from a camera that is not the character's, and an action already under way (the R8's
+    /// hammer, a burst) is dropped, not banked. A player with no camera at all (headless checks) is not restricted.</summary>
+    public static bool ControlAllowed(ComponentPlayer p) =>
+        (p.PlayerData?.GameWidget?.ActiveCamera is not { } camera || (camera.IsEntityControlEnabled && Ready(p.PlayerData)))
+        && !(p.ComponentSleep?.SleepFactor > 0);
+    // PlayerData.IsReadyForPlaying reads the player's state machine; a player data without one (headless checks) is not restricted.
+    static bool Ready(PlayerData data) => data.m_stateMachine is null || data.IsReadyForPlaying;
+    // Devices belong to the players this process reads (every player outside multiplayer).
     public static bool Down(ComponentPlayer p, string id, bool once = false) {
-        if (!Available(p)) return false;
+        if (!ScNet.IsLocal(p) || !Available(p)) return false;
         return ScGamepadBindings.Down(p, id, once) || KeyboardDown(p, id, once);
     }
-    public static bool KeyboardDown(ComponentPlayer p, string id, bool once = false) => Available(p)
+    public static bool KeyboardDown(ComponentPlayer p, string id, bool once = false) => ScNet.IsLocal(p) && Available(p)
         && Enum.TryParse<Key>(Get(id), out var key) && key != Key.Null
         && (once ? p.GameWidget.Input.IsKeyDownOnce(key) : p.GameWidget.Input.IsKeyDown(key));
     public static bool NumberDown(ComponentPlayer p, int number) {
-        if(number<0||number>9||!Available(p))return false;
+        if(number<0||number>9||!ScNet.IsLocal(p)||!Available(p))return false;
         return p.GameWidget.Input.IsKeyDownOnce((Key)((int)Key.Number0+number));
     }
     // Secondary actions are mutually exclusive across guns. Other shared keys would trigger two actions.

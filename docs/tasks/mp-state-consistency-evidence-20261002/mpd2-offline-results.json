@@ -1,0 +1,1873 @@
+{
+ "candidate": "mpd2",
+ "date": "2026-10-02",
+ "note": "offline checks only (no game process was started); see openspec/changes/weapon-state-consistency/verification.md sections 10 and 6 (R7-R12) for what each number does and does not prove",
+ "jobs": {
+  "pipelineAll": "4b3e99aaa55a4f0a96e718cacf3f1a58 (request mpd-pipeline-mpd2-all-01)",
+  "pipelineCompat": "fa1014e3e8314510932d7dbef1bd9398 (request mpd-pipeline-mpd2-compat-01)",
+  "deliver": "e5db627794e64a1bb9d400631950a1bb",
+  "firstPassMpd1": "c5db0c9acd8948a9bd2cc7b6d866eb95 (failed steps: gates - one IL-order check that did not follow UpdatePlayer; compat - InventoryCheck tool lacked a linked source; both fixed, superseded by mpd2)"
+ },
+ "inputs": {
+  "ancientWorldZipSha256": "e88b68f6edaf53b419b89db24ed8dd487734bf0aff0830af30824145f0977a66",
+  "ancientWorldDllSha256": "f9fe4ccfde6550ec01c76adb3dce2b9820c736e2cb3d3ad8f53ad7abb01df5b9",
+  "deliveredBaseline": "mpc3 Lite 41674d3a... (core ca054737, adapter 1c67d2c4)"
+ },
+ "packagedAssemblies": {
+  "liteCore": "0be510de72c75d9668636b066b08437535ae656ca98b9365443d8d8fe4583eed",
+  "adapter": "3e7fd3061ca615b85893d66f0b0ae54176d4634de25eae4f42d377a1630cc595",
+  "adapterCompat": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+  "agentsTactical": "16d66ebecfa285f2466d93832301bb3d544311a8847a2d7302d75bfbc133a555"
+ },
+ "vpsOnUsersActualPlatform": {
+  "platform": {
+   "Survivalcraft.dll": "7856ec634fedf319...",
+   "Survivalcraft.Multiplayer.dll": "aa6136c507cfbf29...",
+   "Survivalcraft.CompatNet.dll": "b0330dd8b244e8c8..."
+  },
+  "modules": [
+   "ScCsgoTactical.dll (packaged, agents)"
+  ],
+  "results": {
+   "netloop-nocompat": {
+    "total": 28,
+    "failed": 0,
+    "platform": {
+     "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+     "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d",
+     "Survivalcraft.CompatNet": "not loaded"
+    },
+    "modules": null
+   },
+   "netloop-compat": {
+    "total": 28,
+    "failed": 0,
+    "platform": {
+     "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+     "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d",
+     "Survivalcraft.CompatNet": "24f856fb-8c44-44b8-a409-7b46f973aa9c"
+    },
+    "modules": null
+   },
+   "netstate": {
+    "total": 109,
+    "failed": 0,
+    "platform": {
+     "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+     "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+    },
+    "modules": [
+     "ScCsgoTactical.dll"
+    ]
+   },
+   "netstate-targets": {
+    "total": 12,
+    "failed": 0,
+    "platform": {
+     "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+     "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+    },
+    "modules": [
+     "ScCsgoTactical.dll"
+    ]
+   },
+   "netgunloop": {
+    "total": 45,
+    "failed": 0,
+    "platform": {
+     "Survivalcraft": "ca4dabc9-5e8d-4da9-b59b-ba4f7c0b5062",
+     "Survivalcraft.Multiplayer": "448d2b2c-7611-4a48-99fa-d9233165e15d"
+    },
+    "modules": [
+     "ScCsgoTactical.dll"
+    ]
+   }
+  }
+ },
+ "pipeline": {
+  "netstate": {
+   "mode": "state cases",
+   "failed": 0,
+   "total": 109,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoAppearance.dll"
+   ],
+   "registeredHandlers": 35,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "c84f7297-1ed6-4900-b265-15a4f2865698",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "setup",
+     "name": "A and B are accepted on protocol 6; the adapter offers the platform's inventory replication",
+     "ok": true,
+     "detail": "2 peers, Accepted, inventory sync True"
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: the client shows its own shot at once (29) without touching a record",
+     "ok": true,
+     "detail": "HUD 29, pending 1, records on A 0"
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: the server fires once and gives the gun its own record",
+     "ok": true,
+     "detail": "shots 1, id 1 (next was 1), rounds 29"
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: in that same frame the server sends the record and, in that same message to A, the shot's confirmation; then that inventory once",
+     "ok": true,
+     "detail": "cs34>B cs34>A cs32>B cs32>A InventorySync; confirmation: 1 row, fired 1, skipped 0, for item id 1"
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: no packet of the batch carries a confirmation without its record row or to anyone but A",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: control - a client that gets the record but not the inventory keeps the template",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: A and the watching B hold the server's item in that slot, and its record",
+     "ok": true,
+     "detail": "server 1049276, A 1049276, B 1049276"
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: A reads 29, nothing is left predicted",
+     "ok": true,
+     "detail": "HUD 29, pending 0"
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: standing still it stays so and nothing more is sent",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 0: the next shot sends the record row with its confirmation only, never the inventory again",
+     "ok": true,
+     "detail": "cs32>B cs32>A; row message 174 B, the inventory packet was 27819 B for 4010 slots"
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: the client shows its own shot at once (29) without touching a record",
+     "ok": true,
+     "detail": "HUD 29, pending 1, records on A 1"
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: the server fires once and gives the gun its own record",
+     "ok": true,
+     "detail": "shots 1, id 2 (next was 2), rounds 29"
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: in that same frame the server sends the record and, in that same message to A, the shot's confirmation; then that inventory once",
+     "ok": true,
+     "detail": "cs32>B cs32>A InventorySync; confirmation: 1 row, fired 1, skipped 0, for item id 2"
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: no packet of the batch carries a confirmation without its record row or to anyone but A",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: control - a client that gets the record but not the inventory keeps the template",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: A and the watching B hold the server's item in that slot, and its record",
+     "ok": true,
+     "detail": "server 2097852, A 2097852, B 2097852"
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: A reads 29, nothing is left predicted",
+     "ok": true,
+     "detail": "HUD 29, pending 0"
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: standing still it stays so and nothing more is sent",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 5: the next shot sends the record row with its confirmation only, never the inventory again",
+     "ok": true,
+     "detail": "cs32>B cs32>A; row message 184 B, the inventory packet was 27821 B for 4010 slots"
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: the client shows its own shot at once (29) without touching a record",
+     "ok": true,
+     "detail": "HUD 29, pending 1, records on A 2"
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: the server fires once and gives the gun its own record",
+     "ok": true,
+     "detail": "shots 1, id 3 (next was 3), rounds 29"
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: in that same frame the server sends the record and, in that same message to A, the shot's confirmation; then that inventory once",
+     "ok": true,
+     "detail": "cs32>B cs32>A InventorySync; confirmation: 1 row, fired 1, skipped 0, for item id 3"
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: no packet of the batch carries a confirmation without its record row or to anyone but A",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: control - a client that gets the record but not the inventory keeps the template",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: A and the watching B hold the server's item in that slot, and its record",
+     "ok": true,
+     "detail": "server 3146428, A 3146428, B 3146428"
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: A reads 29, nothing is left predicted",
+     "ok": true,
+     "detail": "HUD 29, pending 0"
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: standing still it stays so and nothing more is sent",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C01",
+     "name": "slot 9: the next shot sends the record row with its confirmation only, never the inventory again",
+     "ok": true,
+     "detail": "cs32>B cs32>A; row message 182 B, the inventory packet was 27823 B for 4010 slots"
+    },
+    {
+     "case": "C02",
+     "name": "finish 1 (awp): taken in hand it becomes that client's own gun with its finish, with no further action",
+     "ok": true,
+     "detail": "Success; server 4227772, A 4227772, B 4227772; [cs32>B cs32>A InventorySync]"
+    },
+    {
+     "case": "C02",
+     "name": "finish 1: the guns taken before it are unchanged on every end",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C02",
+     "name": "finish 2 (awp): taken in hand it becomes that client's own gun with its finish, with no further action",
+     "ok": true,
+     "detail": "Success; server 5276348, A 5276348, B 5276348; [cs32>B cs32>A InventorySync]"
+    },
+    {
+     "case": "C02",
+     "name": "finish 2: the guns taken before it are unchanged on every end",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C02",
+     "name": "finish 3 (awp): taken in hand it becomes that client's own gun with its finish, with no further action",
+     "ok": true,
+     "detail": "Success; server 6324924, A 6324924, B 6324924; [cs32>B cs32>A InventorySync]"
+    },
+    {
+     "case": "C02",
+     "name": "finish 3: the guns taken before it are unchanged on every end",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C03",
+     "name": "before the server acts A reads 4 (5 less its shot); its copy of the old record still says 5",
+     "ok": true,
+     "detail": "HUD 4, mirror 5"
+    },
+    {
+     "case": "C03",
+     "name": "the server gives the acting copy its own record; the old record keeps its 5 rounds and its wear",
+     "ok": true,
+     "detail": "new id 8, old 5 rounds / 1185 wear, new 4 rounds; [cs32>B cs32>A InventorySync]"
+    },
+    {
+     "case": "C03",
+     "name": "A's slot and B's copy of it name the new record",
+     "ok": true,
+     "detail": "A 8, B 8"
+    },
+    {
+     "case": "C03",
+     "name": "after the server's reload A reads the new record's 20",
+     "ok": true,
+     "detail": "HUD 20"
+    },
+    {
+     "case": "C03",
+     "name": "shots the server will not fire are settled by its word, with no time passing: the slot reads the new record's 20 again, never the old record's 5",
+     "ok": true,
+     "detail": "shown 15 while predicting, then HUD 20; mirror old 5, new 20; [cs32>A] skipped 5"
+    },
+    {
+     "case": "C04",
+     "name": "slot before record: the gun is not usable and nothing is made up for it",
+     "ok": true,
+     "detail": "A slot id 9, usable False"
+    },
+    {
+     "case": "C04",
+     "name": "while it waits the client sends no trigger and predicts nothing; the server fires nothing",
+     "ok": true,
+     "detail": "shots 0, server rounds 29"
+    },
+    {
+     "case": "C04",
+     "name": "the record arrives: usable, 29, without any further action",
+     "ok": true,
+     "detail": "HUD 29"
+    },
+    {
+     "case": "C04",
+     "name": "a record that does not arrive is asked for after half a second, and the gun then works",
+     "ok": true,
+     "detail": "asked 1, answered 1, HUD 29"
+    },
+    {
+     "case": "C04",
+     "name": "asking is bounded (5 requests over 15 s, then it only waits) and the gun stays unusable",
+     "ok": true,
+     "detail": "5 requests"
+    },
+    {
+     "case": "C05",
+     "name": "two guns given their records in one frame: that inventory is sent once, with both",
+     "ok": true,
+     "detail": "cs32>B cs32>A InventorySync"
+    },
+    {
+     "case": "C05",
+     "name": "the same messages delivered twice more change nothing on any end",
+     "ok": true,
+     "detail": "HUD 29"
+    },
+    {
+     "case": "C05",
+     "name": "an older record row arriving after a newer one is dropped",
+     "ok": true,
+     "detail": "A's record 27, server 27, stale rows 1"
+    },
+    {
+     "case": "C05",
+     "name": "the platform's inventory packet and the CS packet travel on the same channel (0), which the platform sends reliable-ordered: an older snapshot cannot overtake a newer one",
+     "ok": true,
+     "detail": "channels 0/0; delivery method per the platform's NetworkServer.Send / RelayHost.Send (ReliableOrdered)"
+    },
+    {
+     "case": "C05",
+     "name": "a record row that could not be sent stays due and goes out with a later tick; the shot is not fired again",
+     "ok": true,
+     "detail": "failed sends 1; A's record 26, server 26"
+    },
+    {
+     "case": "C06",
+     "name": "a commit that fails after its record was written restores the slot and leaves no record",
+     "ok": true,
+     "detail": "InventoryRejected; server slot fresh True, records 12/12"
+    },
+    {
+     "case": "C06",
+     "name": "what is published is the restored slot, and no record of the abandoned number reaches a client",
+     "ok": true,
+     "detail": "InventorySync"
+    },
+    {
+     "case": "C06",
+     "name": "a gun moved away before the commit: refused, no number used, nothing published",
+     "ok": true,
+     "detail": "StateChanged; []"
+    },
+    {
+     "case": "C06",
+     "name": "an inventory that does not take the new item: refused, the slot keeps the template, no record left behind",
+     "ok": true,
+     "detail": "InventoryRejected"
+    },
+    {
+     "case": "C07",
+     "name": "three shots shown, none confirmed: A reads 17 and its record still says 20",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C07",
+     "name": "the next world's record of the same number reads 20 at once: the prediction belongs to the former world's table",
+     "ok": true,
+     "detail": "HUD 20"
+    },
+    {
+     "case": "C07",
+     "name": "and stays 20 after every time-out",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C07",
+     "name": "a replaced player entity starts with nothing predicted",
+     "ok": true,
+     "detail": "HUD 20"
+    },
+    {
+     "case": "C07",
+     "name": "closing the world drops the prediction and starts another selection",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C07",
+     "name": "a departed connection's trigger is let go and its input sequence forgotten",
+     "ok": true,
+     "detail": "held True, peers 1"
+    },
+    {
+     "case": "C07",
+     "name": "A is accepted again and plays on",
+     "ok": true,
+     "detail": "Accepted"
+    },
+    {
+     "case": "C08",
+     "name": "two of three shown shots confirmed: record 18, one still pending, A reads 17",
+     "ok": true,
+     "detail": "fired 2, mirror 18, pending 1, HUD 17"
+    },
+    {
+     "case": "C08",
+     "name": "the same confirmations again, in any order, pay nothing off twice",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C08",
+     "name": "the reload's rounds and the word that the third shot will not be fired arrive in one message: A reads the server's 20, never 19 or 21",
+     "ok": true,
+     "detail": "[cs32>B cs32>A] fired 2 skipped 1; mirror 20, HUD 20, pending 0"
+    },
+    {
+     "case": "C08",
+     "name": "a new shot after the reload is confirmed once: record 19",
+     "ok": true,
+     "detail": "mirror 19, pending 0, HUD 19"
+    },
+    {
+     "case": "C08",
+     "name": "nothing here was settled by a time-out, and the record was never written by a prediction",
+     "ok": true,
+     "detail": "give-ups 0"
+    },
+    {
+     "case": "C09",
+     "name": "a press for gun A while the server holds gun B in that slot fires nothing and costs B nothing",
+     "ok": true,
+     "detail": "shots 0, B 10, stale 1"
+    },
+    {
+     "case": "C09",
+     "name": "still nothing fired; the server corrects that one client's inventory, once",
+     "ok": true,
+     "detail": "shots 0; [InventorySync>A]"
+    },
+    {
+     "case": "C09",
+     "name": "with the corrected slot the client's next press fires gun B",
+     "ok": true,
+     "detail": "A slot id 17, B 9"
+    },
+    {
+     "case": "C09",
+     "name": "a press naming slot 0 while the server's active slot is 1 fires nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C09",
+     "name": "after half a second of the client naming slot 0 the server's active slot follows it; the other clients are told, the owner is not",
+     "ok": true,
+     "detail": "server active slot 0; [ActiveSlotChange]"
+    },
+    {
+     "case": "C09",
+     "name": "and the next press fires the gun in that slot",
+     "ok": true,
+     "detail": "A 9, B 9"
+    },
+    {
+     "case": "C09",
+     "name": "a press queued for gun A is dropped when the next input is for gun B",
+     "ok": true,
+     "detail": "shots 0"
+    },
+    {
+     "case": "C09",
+     "name": "and a press for B fires B",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C09",
+     "name": "a fresh gun's second press, still naming the template, is that same gun's: both shots fire, nothing refused",
+     "ok": true,
+     "detail": "shots 1+1, rounds 28, stale 0"
+    },
+    {
+     "case": "C09",
+     "name": "and A ends on the server's 28",
+     "ok": true,
+     "detail": "HUD 28"
+    },
+    {
+     "case": "C09",
+     "name": "the template's name stops being accepted for that slot after the rewrite window",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C10",
+     "name": "a press released before the server's next frame fires exactly once",
+     "ok": true,
+     "detail": "shots 1"
+    },
+    {
+     "case": "C10",
+     "name": "the same messages delivered again are ignored: no second shot",
+     "ok": true,
+     "detail": "repeats 4"
+    },
+    {
+     "case": "C10",
+     "name": "a held trigger stops within the lease once the client goes silent; the magazine is not emptied",
+     "ok": true,
+     "detail": "10 shots in 0.92 s, then none for 3.1 s; 19 rounds left"
+    },
+    {
+     "case": "C10",
+     "name": "when its input resumes the trigger holds again, one shot a frame of the gun's own cadence, none made up for the silence",
+     "ok": true,
+     "detail": "first frame 1 shot"
+    },
+    {
+     "case": "C10",
+     "name": "the plant key: renewed every quarter second it stays held for 3 s; a second of silence releases it (the plant is then cancelled like any release)",
+     "ok": true,
+     "detail": "held True, renewed True, after silence held False"
+    },
+    {
+     "case": "C10",
+     "name": "a held throw: a second of silence ends the hold once (the throw is cancelled, nothing thrown or taken)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C11",
+     "name": "a gun moved to another slot keeps its record and number: the shot there uses no new id and sends no inventory",
+     "ok": true,
+     "detail": "id 20, next 21/21; [cs32>B cs32>A]"
+    },
+    {
+     "case": "C14",
+     "name": "thirty shots at nothing, all confirmed by the server: the client is told of no hit, no message was dropped or left unread",
+     "ok": true,
+     "detail": "fired 30, hit messages 0, dropped 0, unread 0, HUD 0"
+    },
+    {
+     "case": "C14",
+     "name": "a hit, a kill and a head hit the server reports are each taken by the client",
+     "ok": true,
+     "detail": "taken 3"
+    },
+    {
+     "case": "C14",
+     "name": "10 payloads that are not a hit confirmation (a misrouted shot confirmation, outcomes outside 1-3, trailing or missing bytes, impossible distances) are each dropped, none shown",
+     "ok": true,
+     "detail": "10 dropped"
+    },
+    {
+     "case": "C14",
+     "name": "a damage mark, a notice, a reload word and a record message with wrong or extra bytes are dropped whole",
+     "ok": true,
+     "detail": "dropped 6 of 6"
+    },
+    {
+     "case": "C15",
+     "name": "eight taps with the answers three frames late and in groups: every frame the readout is 30 less the shots shown (the record less what is not settled yet), never jumping; it ends on 22 with nothing pending and no time-out",
+     "ok": true,
+     "detail": "HUD/record/pending per frame: 29/30/1 28/30/2 27/30/3 26/30/4 25/30/5 24/30/6 23/30/7 22/26/4 22/26/4 22/26/4 22/26/4 22/22/0"
+    },
+    {
+     "case": "C15",
+     "name": "a shot the server never answered is given up after 5 s (counted, logged); the old answer arriving after a new shot settles the old shot only: the new one stays pending and the readout is the server's 21 less it",
+     "ok": true,
+     "detail": "gave up 1; before the late answer HUD 21 pending 1; after it HUD 20 pending 1 record 21"
+    },
+    {
+     "case": "C15",
+     "name": "the new shot is then confirmed by its own answer: 20, nothing pending",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C15",
+     "name": "an answer for the former selection (the gun put away and taken out again) settles nothing of the present one",
+     "ok": true,
+     "detail": "pending 1, record 19, HUD 18"
+    },
+    {
+     "case": "C15",
+     "name": "and the present selection's own answer settles it",
+     "ok": true,
+     "detail": "pending 0, HUD 18, server 18"
+    },
+    {
+     "case": "C15",
+     "name": "a shot only the server fired: the readout follows the record (17), nothing pending and nothing negative",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C15",
+     "name": "the next shown shot is counted as a new one and confirmed once",
+     "ok": true,
+     "detail": "pending before 1, after 0, HUD 16"
+    },
+    {
+     "case": "C16",
+     "name": "a reload the client starts reaches the server once, with its id, in the client's input",
+     "ok": true,
+     "detail": "request 1, server has 1"
+    },
+    {
+     "case": "C16",
+     "name": "the server's words (accepted, completed) reach that client in order, with the server's rounds",
+     "ok": true,
+     "detail": "#1 Accepted 2 #1 Completed 2"
+    },
+    {
+     "case": "C16",
+     "name": "a reload asked for a gun the server does not hold in hand is refused by name, not left unanswered",
+     "ok": true,
+     "detail": "#2 Refused"
+    },
+    {
+     "case": "C16",
+     "name": "a reload request dropped with an expired input lease is refused, not forgotten",
+     "ok": true,
+     "detail": "#3 Refused"
+    },
+    {
+     "case": "C17",
+     "name": "on a platform build the adapter has not verified, an accepted player is shown no notice about it; the build ids and the state of the corrections stay in the log line",
+     "ok": true,
+     "detail": "verified False; notice: none; log: platform unverified (d5c1a418/no CompatNet/b3822a2d); CompatNet corrections: absent; terrain: reconciliation on (verify by hash after each chunk list, bounded resend)"
+    },
+    {
+     "case": "C17",
+     "name": "the notices that say something does not work are still there: a correction that could not be enabled, and (C12) a refused protocol",
+     "ok": true,
+     "detail": "CompatNet False, corrections: absent"
+    },
+    {
+     "case": "C12",
+     "name": "a client of CS network protocol 5 (mpc3) is refused with that reason; its CS weapons stay off",
+     "ok": true,
+     "detail": "服务器拒绝：CS 网络协议 zh667.ScCsgoKnives/net/5 与服务器 zh667.ScCsgoKnives/net/6 不同，CS 武器已停用"
+    },
+    {
+     "case": "C12",
+     "name": "a refused client sends no gun input",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C12",
+     "name": "the present protocol is accepted again",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C13",
+     "name": "every message number the core and the optional packages declare is declared once",
+     "ok": true,
+     "detail": "35 numbers in 9 modules (ScCsgoTactical,ScCsgoAppearance); twice: []"
+    },
+    {
+     "case": "C13",
+     "name": "the game's own registration (ScNet.RegisterCore, then each package's loader call) refused nothing and replaced nothing",
+     "ok": true,
+     "detail": "refused [], replaced []"
+    },
+    {
+     "case": "C13",
+     "name": "no number is handled in both directions, and every handled number is a declared one",
+     "ok": true,
+     "detail": "35 handlers; undeclared: []"
+    },
+    {
+     "case": "C13",
+     "name": "the hit feedback, the gun input, the reload word and the record message each keep their own handler",
+     "ok": true,
+     "detail": "32:ScNetMirror.ApplyRecords 33:ScNetMirror.ApplyArmor 34:ScNetMirror.ApplyRegistry 35:ScNetMirror.AnswerWant 37:ScNetGuns.ReceiveReload 40:ScNetGuns.ReceiveInput 41:ScNetGuns.ReceiveShot 42:ScNetFeedback.ReceiveHit 43:Sc"
+    },
+    {
+     "case": "C13",
+     "name": "registering again (a second initialisation) is the same registration: nothing refused, nothing added",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "C13",
+     "name": "another handler for a taken number is refused and recorded, in the same direction and in the other one; the first handler stands",
+     "ok": true,
+     "detail": "op 42 (server to client): StateLoop+Cases+<>c.<C13>b__43_8 refused, the number belongs to Game.ScNetFeedback.ReceiveHit | op 32 (client to server): StateLoop+Cases+<>c.<C13>b__43_9 refused, the number belongs to Game.ScN"
+    }
+   ]
+  },
+  "netstate-targets": {
+   "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+   "failed": 0,
+   "total": 12,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoAppearance.dll"
+   ],
+   "registeredHandlers": 33,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "c84f7297-1ed6-4900-b265-15a4f2865698",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "setup",
+     "name": "two clients accepted",
+     "ok": true,
+     "detail": "2 peers"
+    },
+    {
+     "case": "R07",
+     "name": "T5 no message number has two meanings: every module's declared numbers differ and no handler was replaced or refused in the game's own registration",
+     "ok": true,
+     "detail": "declared twice: []; replaced: []; refused: []; 33 handlers"
+    },
+    {
+     "case": "R07",
+     "name": "T6 a shot at nothing that the server confirmed tells the client of no hit",
+     "ok": true,
+     "detail": "hit messages taken by the client: 0; packets [cs32>B cs32>A InventorySync cs34>B cs34>A]"
+    },
+    {
+     "case": "R08",
+     "name": "T7 the confirmation settles the shown shot at once: nothing pending, the readout is the server's 29 with no time-out",
+     "ok": true,
+     "detail": "pending 0, HUD 29, server 29"
+    },
+    {
+     "case": "C01",
+     "name": "T1 after the server gave the fresh AK its record, the client's slot holds the same item as the server's",
+     "ok": true,
+     "detail": "server slot id 1, client slot id 1; packets [cs32>B cs32>A InventorySync cs34>B cs34>A]"
+    },
+    {
+     "case": "C01",
+     "name": "T1 and so does the watching client's copy of that inventory",
+     "ok": true,
+     "detail": "B's copy id 1"
+    },
+    {
+     "case": "C01",
+     "name": "T2 the client's ammo readout shows the server's rounds (29), not the template's 30",
+     "ok": true,
+     "detail": "HUD 29, server 29"
+    },
+    {
+     "case": "C03",
+     "name": "T3 the server separated the copy: record 7 keeps 5 rounds, the client's gun is record 12 with 20 after its reload",
+     "ok": true,
+     "detail": "shot Success, reload Success, new id 12, server 7=5 12=20"
+    },
+    {
+     "case": "C03",
+     "name": "T3 a prediction never changes the client's copy of record 7",
+     "ok": true,
+     "detail": "client's record 7 read 5 while 5 shots were predicted"
+    },
+    {
+     "case": "C03",
+     "name": "T3 the client's slot is bound to record 12",
+     "ok": true,
+     "detail": "client slot id 12"
+    },
+    {
+     "case": "C03",
+     "name": "T3 after every prediction timed out the readout is record 12's 20 rounds, and record 7 is still the server's 5",
+     "ok": true,
+     "detail": "HUD 20, client's record 7 = 5"
+    },
+    {
+     "case": "C07",
+     "name": "T4 a prediction left over from the former world does not change the new world's record 7",
+     "ok": true,
+     "detail": "row parsed True, new world's record 7 = 20, HUD 20"
+    }
+   ]
+  },
+  "netgunloop": {
+   "mode": "the gun state machine on a client and a server end",
+   "failed": 0,
+   "total": 45,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoAppearance.dll"
+   ],
+   "registeredHandlers": 33,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "c84f7297-1ed6-4900-b265-15a4f2865698",
+   "adapter": "7f7af49f-d3c1-4b99-9cc8-0c99060a1e2d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "setup",
+     "name": "A and B are accepted; the handlers are those of the game's own registration (core, then the optional packages given)",
+     "ok": true,
+     "detail": "2 peers; 33 handlers; packages: ScCsgoTactical; replaced [] refused []"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+     "ok": true,
+     "detail": "server fired 12; client readout 18, its record 18, pending 0"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+     "ok": true,
+     "detail": "hit messages 0, marker kind 0, kill lines 0"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+     "ok": true,
+     "detail": "readout: 29x6 28x6 27x6 26x6 25x6 24x6 23x6 22x6 21x6 20x6 19x6 18x36 | pending: 1x6 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x6 0x27"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+     "ok": true,
+     "detail": "give-ups 0, dropped 0, most pending 2 (delay 3+3 frames)"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+     "ok": true,
+     "detail": "server fired 12; client readout 18, its record 18, pending 0"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+     "ok": true,
+     "detail": "hit messages 0, marker kind 0, kill lines 0"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+     "ok": true,
+     "detail": "readout: 29x6 28x6 27x6 26x6 25x6 24x6 23x6 22x6 21x6 20x6 19x6 18x36 | pending: 1x6 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x3 2x3 1x6 0x27"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+     "ok": true,
+     "detail": "give-ups 0, dropped 0, most pending 2 (delay 3+3 frames)"
+    },
+    {
+     "case": "G02",
+     "name": "six taps: six shots on the server, the readout goes down by one at each tap and never back up; nothing pending, no time-out, no hit shown",
+     "ok": true,
+     "detail": "server 24; readout: 29x15 28x15 27x15 26x15 25x15 24x35"
+    },
+    {
+     "case": "G03",
+     "name": "a hit the server reports reaches the shooter's screen as that",
+     "ok": true,
+     "detail": "hit: marker 1, kill lines 0"
+    },
+    {
+     "case": "G03",
+     "name": "a head hit the server reports reaches the shooter's screen as that",
+     "ok": true,
+     "detail": "head hit: marker 3, kill lines 0"
+    },
+    {
+     "case": "G03",
+     "name": "a kill the server reports reaches the shooter's screen as that",
+     "ok": true,
+     "detail": "kill: marker 2, kill lines 1"
+    },
+    {
+     "case": "G03",
+     "name": "three results, three messages",
+     "ok": true,
+     "detail": "3"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: the client shows its last round and starts reloading while the server still holds 1; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 1 left (client: 1 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x78 | record: 1x6 0x72"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": true,
+     "detail": "#0 Accepted, #1 Accepted, #1 Completed"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": true,
+     "detail": "server 29, client record 30, readout 28; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: the client shows its last round and starts reloading while the server still holds 3; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 3 left (client: 4 shots not settled) when the client showed 0; server rounds: 8x15 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x86 | record: 4x2 3x6 2x6 1x6 0x66"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": true,
+     "detail": "#0 Accepted, #2 Accepted, #2 Completed"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": true,
+     "detail": "server 29, client record 30, readout 26; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: the client shows its last round and starts reloading while the server still holds 2; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 2 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x12 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x91 | record: 5x1 4x6 3x6 2x6 1x6 0x66"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": true,
+     "detail": "#0 Accepted, #3 Accepted, #3 Completed"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": true,
+     "detail": "server 27, client record 30, readout 25; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: the client shows its last round and starts reloading while the server still holds 1; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 1 left (client: 2 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x69 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x80 | record: 2x2 1x6 0x72"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": true,
+     "detail": "#4 Accepted, #4 Completed"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": true,
+     "detail": "server 29, client record 30, readout 28; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: the client shows its last round and starts reloading while the server still holds 4; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 4 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x12 7x8 6x8 5x8 4x8 3x8 2x8 1x8 0x72 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x107 | record: 5x3 4x8 3x8 2x8 1x8 0x72"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": true,
+     "detail": "#5 Accepted, #5 Completed"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": true,
+     "detail": "server 29, client record 30, readout 26; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "the trigger let go as the client shows 0 while a slow host still has rounds (the reported \"server 2, client 0\"): the reload the client shows is performed by the server and ends with a full magazine on both ends, never with the rounds that were left",
+     "ok": true,
+     "detail": "server had 3 when the client showed 0; server said: #6 Accepted, #6 Completed; end: server 30, readout 30; server rounds: 8x7 7x8 6x8 5x8 4x8 3x8 2x72 30x84; readout: 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x20 2x64 30x77"
+    },
+    {
+     "case": "G05",
+     "name": "a reload by the key with rounds left: shown at once on the client, performed by the server (accepted, completed), full on both ends",
+     "ok": true,
+     "detail": "25 rounds before; server said: #7 Accepted, #7 Completed; end: server 30, readout 30"
+    },
+    {
+     "case": "G05",
+     "name": "during it the readout is the server's rounds, then the full magazine: nothing else",
+     "ok": true,
+     "detail": "readout: 25x73 30x80"
+    },
+    {
+     "case": "G06",
+     "name": "a reload the server refuses (it holds another slot for that player): the client's reload is taken back when the word arrives, long before its animation would end; the rounds stay the server's",
+     "ok": true,
+     "detail": "taken back after 7 frames; server said: #8 Refused; readout 25, the server's record 25"
+    },
+    {
+     "case": "G06",
+     "name": "and once the server holds that gun again, the next reload is performed and completes",
+     "ok": true,
+     "detail": "#9 Accepted, #9 Completed"
+    },
+    {
+     "case": "G07",
+     "name": "switching away during a reload cancels it on both ends: the server says so, no round is added, and the gun reads the server's rounds when taken out again",
+     "ok": true,
+     "detail": "server said: #10 Accepted, #10 Cancelled; rounds before 25, server 25, readout 25"
+    },
+    {
+     "case": "G08",
+     "name": "a reload the server begins by itself is shown on the client and ends with the server's magazine there too",
+     "ok": true,
+     "detail": "server said: #0 Accepted, #0 Completed; end: server 29, readout 29"
+    },
+    {
+     "case": "G09",
+     "name": "50 ms each way: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+     "ok": true,
+     "detail": "record #15; server 27; readout: 29x18 28x18 27x48"
+    },
+    {
+     "case": "G09",
+     "name": "50 ms each way: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+     "ok": true,
+     "detail": "server said: #0 Accepted, #11 Accepted, #11 Completed; end: server 30, readout 30; readout through the reload: 0x77"
+    },
+    {
+     "case": "G09",
+     "name": "a slow host, 150/100 ms: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+     "ok": true,
+     "detail": "record #16; server 27; readout: 29x18 28x18 27x48"
+    },
+    {
+     "case": "G09",
+     "name": "a slow host, 150/100 ms: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+     "ok": true,
+     "detail": "server said: #12 Accepted, #12 Completed; end: server 30, readout 30; readout through the reload: 0x91"
+    }
+   ]
+  },
+  "netstate-delivered": {
+   "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+   "failed": 3,
+   "total": 12,
+   "modules": [],
+   "registeredHandlers": 27,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "adc857a2-8e2f-45f0-ba6c-2e17a72aaa92",
+   "adapter": "9495a7d3-5064-4598-8284-5e1c5cff4adc",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "setup",
+     "name": "two clients accepted",
+     "ok": true,
+     "detail": "2 peers"
+    },
+    {
+     "case": "R07",
+     "name": "T5 no message number has two meanings: every module's declared numbers differ and no handler was replaced or refused in the game's own registration",
+     "ok": false,
+     "detail": "declared twice: [42 = ScNetFeedback.OpHit = ScNetGuns.OpShotAck]; replaced: [server to client 42: ScNetGuns.ReceiveShotAck replaced by ScNetFeedback.ReceiveHit (ScNetFeedback)]; refused: []; 27 handlers"
+    },
+    {
+     "case": "R07",
+     "name": "T6 a shot at nothing that the server confirmed tells the client of no hit",
+     "ok": false,
+     "detail": "hit messages taken by the client: 1; packets [cs32>B cs32>A InventorySync cs42>A cs34>B cs34>A]"
+    },
+    {
+     "case": "R08",
+     "name": "T7 the confirmation settles the shown shot at once: nothing pending, the readout is the server's 29 with no time-out",
+     "ok": false,
+     "detail": "pending 1, HUD 28, server 29"
+    },
+    {
+     "case": "C01",
+     "name": "T1 after the server gave the fresh AK its record, the client's slot holds the same item as the server's",
+     "ok": true,
+     "detail": "server slot id 1, client slot id 1; packets [cs32>B cs32>A InventorySync cs42>A cs34>B cs34>A]"
+    },
+    {
+     "case": "C01",
+     "name": "T1 and so does the watching client's copy of that inventory",
+     "ok": true,
+     "detail": "B's copy id 1"
+    },
+    {
+     "case": "C01",
+     "name": "T2 the client's ammo readout shows the server's rounds (29), not the template's 30",
+     "ok": true,
+     "detail": "HUD 29, server 29"
+    },
+    {
+     "case": "C03",
+     "name": "T3 the server separated the copy: record 7 keeps 5 rounds, the client's gun is record 12 with 20 after its reload",
+     "ok": true,
+     "detail": "shot Success, reload Success, new id 12, server 7=5 12=20"
+    },
+    {
+     "case": "C03",
+     "name": "T3 a prediction never changes the client's copy of record 7",
+     "ok": true,
+     "detail": "client's record 7 read 5 while 5 shots were predicted"
+    },
+    {
+     "case": "C03",
+     "name": "T3 the client's slot is bound to record 12",
+     "ok": true,
+     "detail": "client slot id 12"
+    },
+    {
+     "case": "C03",
+     "name": "T3 after every prediction timed out the readout is record 12's 20 rounds, and record 7 is still the server's 5",
+     "ok": true,
+     "detail": "HUD 20, client's record 7 = 5"
+    },
+    {
+     "case": "C07",
+     "name": "T4 a prediction left over from the former world does not change the new world's record 7",
+     "ok": true,
+     "detail": "row parsed True, new world's record 7 = 20, HUD 20"
+    }
+   ]
+  },
+  "netgunloop-delivered": {
+   "mode": "the gun state machine on a client and a server end",
+   "failed": 31,
+   "total": 45,
+   "modules": [],
+   "registeredHandlers": 27,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "adc857a2-8e2f-45f0-ba6c-2e17a72aaa92",
+   "adapter": "9495a7d3-5064-4598-8284-5e1c5cff4adc",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "setup",
+     "name": "A and B are accepted; the handlers are those of the game's own registration (core, then the optional packages given)",
+     "ok": false,
+     "detail": "2 peers; 27 handlers; packages: none; replaced [server to client 42: ScNetGuns.ReceiveShotAck replaced by ScNetFeedback.ReceiveHit (ScNetFeedback)] refused []"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+     "ok": false,
+     "detail": "server fired 12; client readout 13, its record 18, pending 5"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+     "ok": false,
+     "detail": "hit messages 12, marker kind 3, kill lines 0"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+     "ok": false,
+     "detail": "readout: 29x6 28x3 27x3 26x3 25x3 24x3 23x3 22x3 21x3 20x3 19x3 18x3 17x3 16x3 15x3 14x3 13x3 12x3 11x6 10x6 9x3 10x3 9x3 10x6 11x6 12x6 13x6 | pending: 1x6 2x6 3x6 4x6 5x6 6x6 7x6 8x6 9x6 10x18 9x6 8x6 7x6 6x6 5x6"
+    },
+    {
+     "case": "G01",
+     "name": "fire button: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+     "ok": false,
+     "detail": "give-ups 0, dropped 0, most pending 10 (delay 3+3 frames)"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: 1.2 s of automatic fire at nothing: the server fires what the client showed, and both end on the same rounds with nothing pending",
+     "ok": false,
+     "detail": "server fired 12; client readout 13, its record 18, pending 5"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: not one hit is shown for shots at nothing: no hit message, no marker, no kill line",
+     "ok": false,
+     "detail": "hit messages 12, marker kind 4, kill lines 0"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: while firing, the readout only ever counts down, one shot at a time, and always equals the server's record less the client's own unsettled shots",
+     "ok": false,
+     "detail": "readout: 29x6 28x3 27x3 26x3 25x3 24x3 23x3 22x3 21x3 20x3 19x3 18x3 17x3 16x3 15x3 14x3 13x3 12x3 11x6 10x6 9x3 10x3 9x3 10x6 11x6 12x6 13x6 | pending: 1x6 2x6 3x6 4x6 5x6 6x6 7x6 8x6 9x6 10x18 9x6 8x6 7x6 6x6 5x6"
+    },
+    {
+     "case": "G01",
+     "name": "mouse: every shot was settled by the server's word: none by a time-out, no message dropped, at most the shots in flight pending",
+     "ok": false,
+     "detail": "give-ups 0, dropped 0, most pending 10 (delay 3+3 frames)"
+    },
+    {
+     "case": "G02",
+     "name": "six taps: six shots on the server, the readout goes down by one at each tap and never back up; nothing pending, no time-out, no hit shown",
+     "ok": false,
+     "detail": "server 24; readout: 29x9 28x6 27x12 26x3 25x9 24x6 23x12 22x12 21x18 20x3 21x15 22x5"
+    },
+    {
+     "case": "G03",
+     "name": "a hit the server reports reaches the shooter's screen as that",
+     "ok": true,
+     "detail": "hit: marker 1, kill lines 0"
+    },
+    {
+     "case": "G03",
+     "name": "a head hit the server reports reaches the shooter's screen as that",
+     "ok": true,
+     "detail": "head hit: marker 3, kill lines 0"
+    },
+    {
+     "case": "G03",
+     "name": "a kill the server reports reaches the shooter's screen as that",
+     "ok": true,
+     "detail": "kill: marker 2, kill lines 1"
+    },
+    {
+     "case": "G03",
+     "name": "three results, three messages",
+     "ok": true,
+     "detail": "3"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: the client shows its last round and starts reloading while the server still holds 4; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 4 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x96 | record: 4x6 3x6 2x6 1x6 0x72"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": false,
+     "detail": "the server said nothing"
+    },
+    {
+     "case": "G04",
+     "name": "50 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": false,
+     "detail": "server 29, client record 30, readout 26; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: the client shows its last round and starts reloading while the server still holds 5; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 5 left (client: 6 shots not settled) when the client showed 0; server rounds: 8x15 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x101 | record: 6x5 5x6 4x6 3x6 2x6 1x6 0x66"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": false,
+     "detail": "the server said nothing"
+    },
+    {
+     "case": "G04",
+     "name": "250 ms to the server: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": false,
+     "detail": "server 29, client record 30, readout 25; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: the client shows its last round and starts reloading while the server still holds 4; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 4 left (client: 6 shots not settled) when the client showed 0; server rounds: 8x12 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x67 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x102 | record: 6x6 5x6 4x6 3x6 2x6 1x6 0x66"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": false,
+     "detail": "the server said nothing"
+    },
+    {
+     "case": "G04",
+     "name": "200 ms each way: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": false,
+     "detail": "server 29, client record 30, readout 26; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: the client shows its last round and starts reloading while the server still holds 4; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 4 left (client: 5 shots not settled) when the client showed 0; server rounds: 8x3 7x6 6x6 5x6 4x6 3x6 2x6 1x6 0x69 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x98 | record: 5x2 4x6 3x6 2x6 1x6 0x72"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": false,
+     "detail": "the server said nothing"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a third of the client's frame rate: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": false,
+     "detail": "server 29, client record 30, readout 25; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: the client shows its last round and starts reloading while the server still holds 5; the server fires every shot that client showed, and only then reloads",
+     "ok": true,
+     "detail": "server had 5 left (client: 6 shots not settled) when the client showed 0; server rounds: 8x9 7x8 6x8 5x8 4x8 3x8 2x8 1x8 0x72 30x2"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: from the moment it shows 0 until the server's full magazine arrives the readout stays 0: it never jumps back to the rounds the server had left",
+     "ok": true,
+     "detail": "readout: 0x116 | record: 6x4 5x8 4x8 3x8 2x8 1x8 0x72"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: the client asked once; the server says what became of it - accepted, then completed - and refuses or cancels nothing",
+     "ok": false,
+     "detail": "the server said nothing"
+    },
+    {
+     "case": "G04",
+     "name": "a host at a quarter of the frame rate, 150/100 ms: the reload ends with the server's full magazine on both ends (and the held trigger fires on from it), nothing settled by a time-out, nothing shown as a hit",
+     "ok": false,
+     "detail": "server 29, client record 30, readout 23; give-ups 0"
+    },
+    {
+     "case": "G04",
+     "name": "the trigger let go as the client shows 0 while a slow host still has rounds (the reported \"server 2, client 0\"): the reload the client shows is performed by the server and ends with a full magazine on both ends, never with the rounds that were left",
+     "ok": false,
+     "detail": "server had 5 when the client showed 0; server said: nothing; end: server 4, readout 4; server rounds: 8x9 7x8 6x8 5x8 4x599; readout: 7x6 6x6 5x6 4x2 3x4 2x4 1x2 0x42 1x6 2x6 3x6 4x542"
+    },
+    {
+     "case": "G05",
+     "name": "a reload by the key with rounds left: shown at once on the client, performed by the server (accepted, completed), full on both ends",
+     "ok": false,
+     "detail": "25 rounds before; server said: nothing; end: server 30, readout 30"
+    },
+    {
+     "case": "G05",
+     "name": "during it the readout is the server's rounds, then the full magazine: nothing else",
+     "ok": false,
+     "detail": "readout: 20x10 21x6 22x6 23x6 24x6 25x39 30x74"
+    },
+    {
+     "case": "G06",
+     "name": "a reload the server refuses (it holds another slot for that player): the client's reload is taken back when the word arrives, long before its animation would end; the rounds stay the server's",
+     "ok": false,
+     "detail": "taken back after 61 frames; server said: nothing; readout 25, the server's record 25"
+    },
+    {
+     "case": "G06",
+     "name": "and once the server holds that gun again, the next reload is performed and completes",
+     "ok": false,
+     "detail": "nothing"
+    },
+    {
+     "case": "G07",
+     "name": "switching away during a reload cancels it on both ends: the server says so, no round is added, and the gun reads the server's rounds when taken out again",
+     "ok": false,
+     "detail": "server said: nothing; rounds before 25, server 25, readout 25"
+    },
+    {
+     "case": "G08",
+     "name": "a reload the server begins by itself is shown on the client and ends with the server's magazine there too",
+     "ok": false,
+     "detail": "server said: nothing; end: server 29, readout 29"
+    },
+    {
+     "case": "G09",
+     "name": "50 ms each way: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+     "ok": false,
+     "detail": "record #15; server 27; readout: 29x6 28x12 27x9 26x9 25x9 24x15 25x18 26x6"
+    },
+    {
+     "case": "G09",
+     "name": "50 ms each way: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+     "ok": false,
+     "detail": "server said: nothing; end: server 30, readout 30; readout through the reload: 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x3 1x3 0x66"
+    },
+    {
+     "case": "G09",
+     "name": "a slow host, 150/100 ms: a fresh gun's first three shots: one record on the server, the client's slot follows it, the readout goes 30, 29, 28, 27 and never back",
+     "ok": false,
+     "detail": "record #16; server 27; readout: 29x17 28x1 27x18 26x2 25x18 24x4 25x18 26x6"
+    },
+    {
+     "case": "G09",
+     "name": "a slow host, 150/100 ms: emptied under a held trigger, its first reload is performed by the server and ends with a full magazine on both ends; the readout stays 0 until it arrives; nothing by a time-out, no hit shown",
+     "ok": false,
+     "detail": "server said: nothing; end: server 30, readout 30; readout through the reload: 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x4 1x2 0x72"
+    }
+   ]
+  },
+  "netloop-nocompat": {
+   "failed": 0,
+   "total": 28
+  },
+  "netloop-compat": {
+   "failed": 0,
+   "total": 28
+  },
+  "appnet-full": {
+   "failed": 0,
+   "total": 19
+  },
+  "appnet-lite": {
+   "failed": 0,
+   "total": 19
+  },
+  "c4-full": {
+   "failed": 0,
+   "total": 140,
+   "sets": {
+    "c4/": 73,
+    "c4-net-sound/": 10,
+    "sushi-inventory/": 18,
+    "sushi-sync/": 26,
+    "sushi-stacking/": 13
+   }
+  },
+  "c4-lite": {
+   "failed": 0,
+   "total": 140,
+   "sets": {
+    "c4/": 73,
+    "c4-net-sound/": 10,
+    "sushi-inventory/": 18,
+    "sushi-sync/": 26,
+    "sushi-stacking/": 13
+   }
+  },
+  "main-full": {
+   "failed": 0,
+   "total": 14104,
+   "failedNames": [],
+   "selected": [
+    {
+     "name": "combat/held-counter-template-wired-before-gun-routing",
+     "ok": true,
+     "detail": "held-counter-template-wired-before-gun-routing"
+    },
+    {
+     "name": "item-travel/same-number-other-model-in-the-destination",
+     "ok": true,
+     "detail": "main #1 AK 7 rounds -> sub #2 (block 304 -> 320); sub's own #1 Glock keeps 18"
+    },
+    {
+     "name": "item-travel/same-number-same-model-in-the-destination-keeps-the-carried-state",
+     "ok": true,
+     "detail": "carried AK: 7 rounds under a new number; the destination's own AK #1 still 23 (the unbridged value read 23)"
+    },
+    {
+     "name": "item-travel/whole-state-carried",
+     "ok": true,
+     "detail": "rows equal for an AK with counter/level/kills/reserve and a charging Zeus; envelope 960 chars"
+    },
+    {
+     "name": "item-travel/round-trip-gun-born-in-the-main-world",
+     "ok": true,
+     "detail": "main #1 -> sub #3 -> main #1 -> sub #3; no number spent on either return, state follows the gun (30 -> 12 -> 30)"
+    },
+    {
+     "name": "item-travel/round-trip-gun-born-in-the-sub-world",
+     "ok": true,
+     "detail": "sub #1 -> main #4 -> sub #1, 9 -> 2 rounds"
+    },
+    {
+     "name": "item-travel/return-to-a-world-whose-identity-table-was-dropped",
+     "ok": true,
+     "detail": "home to #2 with 4 rounds, no number spent"
+    },
+    {
+     "name": "item-travel/an-ordinary-move-leaves-one-usable-gun",
+     "ok": true,
+     "detail": "after there and back: one record and one holder in main; the sub world keeps an unreferenced record, no item"
+    },
+    {
+     "name": "item-travel/destination-holder-of-the-same-identity-refuses",
+     "ok": true,
+     "detail": "refused (目标世界同身份枪仍被其他容器持有，拒绝覆盖); the record in the chest keeps 30 rounds"
+    },
+    {
+     "name": "item-travel/returning-identity-of-another-model-refuses",
+     "ok": true,
+     "detail": "refused: never written over a record of another model"
+    },
+    {
+     "name": "item-travel/full-table-growth-conflict-and-busy-table-refuse-unchanged",
+     "ok": true,
+     "detail": "RegistryFull, GrowthConflict, RegistryUnavailable"
+    },
+    {
+     "name": "item-travel/unknown-version-namespace-schema-and-damaged-text-refuse-unchanged",
+     "ok": true,
+     "detail": "a later version: UnsupportedVersion; another namespace: BadEnvelope; no text: BadEnvelope; not JSON: BadEnvelope; one round changed: Corrupt; cut short: BadEnvelope; a later record schema: UnsupportedData; a row that does not parse: Corrupt"
+    },
+    {
+     "name": "item-travel/export-refuses-what-cannot-be-carried-as-it-is",
+     "ok": true,
+     "detail": "Stacked, DuplicateCarried, MissingRecord, PendingObligations, NothingCarried"
+    },
+    {
+     "name": "item-travel/the-same-transfer-again-changes-nothing",
+     "ok": true,
+     "detail": "repeat: same mapping, nothing written (the gun keeps the 6 rounds it has there); a reused transfer id with other contents refused"
+    },
+    {
+     "name": "item-travel/restart-after-commit-and-crash-before-save",
+     "ok": true,
+     "detail": "saved-then-restarted: repeat with the same mapping, then completed and remembered; crash before the save: imported afresh with the same result; old values restored: completion refused (恢复后的库存里枪 #2 有 0 把（应为 1）：物品与记录未一致恢复，旅程未标记完成)"
+    },
+    {
+     "name": "item-travel/a-build-that-does-not-know-the-receipts-key-loads-the-world-and-loses-only-the-repeat-protection",
+     "ok": true,
+     "detail": "the table's schema and rows are untouched by the new key; without it a repeat is imported over the same number (no duplicate)"
+    },
+    {
+     "name": "item-travel/two-travellers-are-separate-transfers",
+     "ok": true,
+     "detail": "two envelopes, two numbers, two receipts"
+    },
+    {
+     "name": "item-travel/same-world-is-not-a-transfer",
+     "ok": true,
+     "detail": "a move inside one world maps every value to itself and spends no number"
+    },
+    {
+     "name": "item-travel/saved-xml-importer-and-live-importer-share-identities-and-the-rule",
+     "ok": true,
+     "detail": "identity 90E20F3C28EF... equal on both paths; live import -> #2, saved-XML import of the same gun -> #2, no further number"
+    },
+    {
+     "name": "item-travel/provider-entry-points-use-only-engine-and-base-types",
+     "ok": true,
+     "detail": "Boolean CanExport(IInventory, String&) | Boolean CanImport(IInventory, String, String&) | Boolean Complete(IInventory, String, String&) | Boolean Import(IInventory, String, Dictionary`2&, String&) | String Export(IInventory, String, String&)"
+    },
+    {
+     "name": "item-travel/ancient-world-0.41.16-real-assembly",
+     "ok": true,
+     "detail": "package e88b68f6edaf53b4, dll f9fe4ccfde6550ec (0.41.16): another model under the same number (18 rounds there): as shipped -> #1, usable False, reads 0; with the three calls -> #2, usable, reads 7 || the same model under the same number (23 rounds there): as shipped -> #1, usable True, reads 23; with the three calls -> #2, usable, reads 7; its own inventory XML drops an unknown Extensions element"
+    }
+   ]
+  },
+  "main-lite": {
+   "failed": 0,
+   "total": 14414,
+   "failedNames": []
+  },
+  "baseline-main-full": {
+   "failed": 1,
+   "total": 14085,
+   "failedNames": [
+    "item-travel/core-entry-points"
+   ],
+   "selected": [
+    {
+     "name": "combat/held-counter-template-wired-before-gun-routing",
+     "ok": true,
+     "detail": "held-counter-template-wired-before-gun-routing"
+    },
+    {
+     "name": "item-travel/core-entry-points",
+     "ok": false,
+     "detail": "this build has no Game.ScItemTravel / ScGunTravelApi"
+    }
+   ]
+  },
+  "baseline-main-lite": {
+   "failed": 1,
+   "total": 14395,
+   "failedNames": [
+    "item-travel/core-entry-points"
+   ]
+  },
+  "ai-full": {
+   "failed": 0,
+   "total": 67,
+   "failedNames": [],
+   "selected": [
+    {
+     "name": "enemy/natural-placement-band-cover-view-patrol-and-refusals",
+     "ok": true,
+     "detail": "offer ahead in view -> side 36.0 blocks, out of view, patrol to 18; only ahead dry -> in open view at 36.0, warning 3 s; all-water band refused as placement:fluid (itemised); footing: snow, grass, under canopy accepted; roof, overhang, water, cactus, fire refused; walled and uneven members, occupied anchor refused; native offers beyond the 60-block sleep radius: 25/200 (old placement put those squads to sleep at once); members now 33.3-45.6 blocks; at the patrol home: neutral for 10 s in view of the player; attacke"
+    },
+    {
+     "name": "enemy/neutral-until-attacked-then-bounded-retaliation-and-release",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/one-attacked-all-within-32-take-the-same-attacker-once",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/summoned-squad-faces-its-summoner-and-stays-neutral-until-attacked",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/farthest-summon-distance-inside-the-provoke-and-retaliation-ranges",
+     "ok": true,
+     "detail": ""
+    }
+   ]
+  },
+  "ai-lite": {
+   "failed": 0,
+   "total": 67,
+   "failedNames": []
+  },
+  "vf-full": {
+   "failed": 0,
+   "total": 292,
+   "failedNames": []
+  },
+  "vf-lite": {
+   "failed": 0,
+   "total": 292,
+   "failedNames": []
+  },
+  "tactical-full-suite": {
+   "failed": 4,
+   "total": 110,
+   "failedNames": [
+    "optional-package-identity-and-no-bundled-engine",
+    "native-gltf/ct",
+    "native-gltf/t",
+    "npc-full-registry-reload-refuses-without-ammo-loss"
+   ],
+   "selected": [
+    {
+     "name": "npc-leaves-neutral-squads-alone-until-they-turn-on-its-owner-or-it",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/natural-placement-band-cover-view-patrol-and-refusals",
+     "ok": true,
+     "detail": "offer ahead in view -> side 36.0 blocks, out of view, patrol to 18; only ahead dry -> in open view at 36.0, warning 3 s; all-water band refused as placement:fluid (itemised); footing: snow, grass, under canopy accepted; roof, overhang, water, cactus, fire refused; walled and uneven members, occupied anchor refused; native offers beyond the 60-block sleep radius: 25/200 (old placement put those squads to sleep at once); members now 33.3-45.6 blocks; at the patrol home: neutral for 10 s in view of the player; attacke"
+    },
+    {
+     "name": "enemy/neutral-until-attacked-then-bounded-retaliation-and-release",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/one-attacked-all-within-32-take-the-same-attacker-once",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/summoned-squad-faces-its-summoner-and-stays-neutral-until-attacked",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "enemy/farthest-summon-distance-inside-the-provoke-and-retaliation-ranges",
+     "ok": true,
+     "detail": ""
+    }
+   ]
+  },
+  "family": {
+   "failed": 0,
+   "total": 246,
+   "failedNames": []
+  },
+  "compat": {
+   "family": true,
+   "native-hooks": true,
+   "native-lite": true,
+   "inventory": true,
+   "integration-full-both": true,
+   "integration-full-reversed": true,
+   "integration-full-none": true,
+   "integration-lite-both": true,
+   "integration-lite-reversed": true,
+   "integration-lite-none": true
+  },
+  "native-hooks": {
+   "failed": 0,
+   "total": 6,
+   "failedNames": []
+  },
+  "native-lite": {
+   "failed": 0,
+   "total": 9,
+   "failedNames": []
+  },
+  "inventory": {
+   "keys": [
+    "cases",
+    "count",
+    "dll",
+    "failed",
+    "passed",
+    "sha256"
+   ]
+  },
+  "packages": {
+   "全量": {
+    "file": "[API1.9]CS武器1.4.0-全量包.scmod",
+    "bytes": 526906594,
+    "sha256": "7239fc30774781322e1103016388c924efbaeb77dbc9780986d32d2aca631fbc",
+    "baselineSha256": "e15a6052190a2e420f06876a60d46f3b9611cb7522ee8012a6cab3604edbca37",
+    "unchangedMembers": 1706
+   },
+   "轻量": {
+    "file": "[API1.9]CS武器1.4.0-轻量包.scmod",
+    "bytes": 35749845,
+    "sha256": "72de5c429768fdd3ec54ebf5df61e64b8cb8adae80182f2c578b656d4cb27109",
+    "baselineSha256": "41674d3ab7e92ed951c119a6b80e6ff093c0565ff196711494f143d50b83eeb9",
+    "unchangedMembers": 1347
+   },
+   "探员": {
+    "file": "[API1.9]CS武器1.4.0-探员包.scmod",
+    "bytes": 38467945,
+    "sha256": "a1b7602d07ab23fd022da43ab31c5536c88fd0e512e5432507e8b38980ad8a25",
+    "baselineSha256": "9c09b521418fb34b883d0b7154674c412a31beb8711fbf6af996e9a724d86709",
+    "unchangedMembers": 364
+   }
+  },
+  "net": {
+   "member": "Net/ScCsgoNet.bin",
+   "sha256": "3e7fd3061ca615b85893d66f0b0ae54176d4634de25eae4f42d377a1630cc595",
+   "bytes": 57344,
+   "core": "0be510de72c75d9668636b066b08437535ae656ca98b9365443d8d8fe4583eed",
+   "compatMember": "Net/ScCsgoNetCompat.bin",
+   "compatSha256": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+   "compatBytes": 9728,
+   "references": {
+    "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+    "Survivalcraft.CompatNet.dll": "4288904cbbbcbdfcb2dd5d04d3cfc79f942f7339d13be7b64bb23468aceb0102",
+    "Survivalcraft.Multiplayer.dll": "3e0b24efbf51b21372b337cd8f5d12242ec5fc446a90782f2eb4d274124e9cfe",
+    "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+    "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db",
+    "Survivalcraft.Compat23.dll": "96b60590d436b7875158587a87796e7cac6fd45eecbdae8c245d2f7f4ee6b479",
+    "0Harmony.dll": "70e7647876b6c3d874ea99b56627a95d1dce2e1dd791981a002578a2febc9bbd"
+   },
+   "sources": {
+    "ScCsgoNetAdapter.cs": "70c4998c70841a5aa3346801d100b8c5cdce1b4c864d8d54915fa6e65129f177",
+    "ScCsgoNetPlatform.cs": "208ad04b40e94831cb398b38959eb408d7bf528005ae8d9604b07e7ed240946b",
+    "ScCsgoNetCompat.cs": "ae044cef6139bd5409f167e02d775829c5a0f9b59c79c4d8968370df1c47c340"
+   }
+  },
+  "identity": {
+   "identity": "08400e52af609988ea03eb27183c1d15",
+   "files": 304
+  }
+ }
+}

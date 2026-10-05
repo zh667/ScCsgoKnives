@@ -53,6 +53,7 @@ static class SushiInventoryRegression {
             var sushiBase = Load("SushiBase.dll"); var sushiTool = Load("SushiTool.dll");
             Check("actual-dlls", true, string.Join("; ", dlls.Select(d => d.Key + " SHA256=" + Convert.ToHexString(SHA256.HashData(d.Value)))));
             results.AddRange(SushiSyncInventoryRegression.Run(mod, sushiBase, sushiTool));
+            results.AddRange(SushiStackingRegression.Run(mod, sushiBase, sushiTool).Select(r => new Result(r.Name, r.Ok, r.Detail))); // 2026-10-02 mp-state-consistency: stacking and bulk moves
             var total = RuntimeHelpers.GetUninitializedObject(sushiBase.GetType("Sushi.SubsystemSushiTotal", true));
             var miner = (ComponentMiner)RuntimeHelpers.GetUninitializedObject(typeof(ComponentMiner));
             var inventory = new Inventory(); miner.Inventory = inventory;

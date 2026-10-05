@@ -44,6 +44,118 @@
       "speed": 1,
       "loop": true,
       "blendDuration": 0.18
+    },
+    "jump": {
+      "source": "jump",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "jumprun": {
+      "source": "jumprun",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "air": {
+      "source": "air",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12,
+      "endPhase": 0.9
+    },
+    "airrun": {
+      "source": "airrun",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12,
+      "endPhase": 0.9
+    },
+    "crouchjump": {
+      "source": "crouchjump",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "crouchair": {
+      "source": "crouchair",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "aimjump": {
+      "source": "aimjump",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "aimjumprun": {
+      "source": "aimjumprun",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "aimair": {
+      "source": "aimair",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12,
+      "endPhase": 0.9
+    },
+    "aimairrun": {
+      "source": "aimairrun",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12,
+      "endPhase": 0.9
+    },
+    "aimcrouchjump": {
+      "source": "aimcrouchjump",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "aimcrouchair": {
+      "source": "aimcrouchair",
+      "speed": 1,
+      "loop": false,
+      "preservePose": true,
+      "blendDuration": 0.12
+    },
+    "crouch": {
+      "source": "crouch",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "crouchwalk": {
+      "source": "crouchwalk",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "aimcrouch": {
+      "source": "aimcrouch",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
+    },
+    "aimcrouchwalk": {
+      "source": "aimcrouchwalk",
+      "speed": 1,
+      "loop": true,
+      "blendDuration": 0.18
     }
   },
   "states": {
@@ -53,6 +165,85 @@
         {
           "condition": "IsDead",
           "animation": null
+        },
+        {
+          "condition": "[Airborne]",
+          "rules": [
+            {
+              "condition": "[Armed]",
+              "rules": [
+                {
+                  "condition": "[Crouch] && [AirRising]",
+                  "animation": "aimcrouchjump"
+                },
+                {
+                  "condition": "[Crouch]",
+                  "animation": "aimcrouchair"
+                },
+                {
+                  "condition": "[AirRising] && [AirMoving]",
+                  "animation": "aimjumprun"
+                },
+                {
+                  "condition": "[AirRising]",
+                  "animation": "aimjump"
+                },
+                {
+                  "condition": "[AirMoving]",
+                  "animation": "aimairrun"
+                },
+                {
+                  "condition": "true",
+                  "animation": "aimair"
+                }
+              ]
+            },
+            {
+              "condition": "[Crouch] && [AirRising]",
+              "animation": "crouchjump"
+            },
+            {
+              "condition": "[Crouch]",
+              "animation": "crouchair"
+            },
+            {
+              "condition": "[AirRising] && [AirMoving]",
+              "animation": "jumprun"
+            },
+            {
+              "condition": "[AirRising]",
+              "animation": "jump"
+            },
+            {
+              "condition": "[AirMoving]",
+              "animation": "airrun"
+            },
+            {
+              "condition": "true",
+              "animation": "air"
+            }
+          ]
+        },
+        {
+          "condition": "[Crouch]",
+          "rules": [
+            {
+              "condition": "[Armed] && [SpeedAbs] > 0.15",
+              "animation": "aimcrouchwalk"
+            },
+            {
+              "condition": "[Armed]",
+              "animation": "aimcrouch"
+            },
+            {
+              "condition": "[SpeedAbs] > 0.15",
+              "animation": "crouchwalk"
+            },
+            {
+              "condition": "true",
+              "animation": "crouch"
+            }
+          ]
         },
         {
           "condition": "[Shield] && [SpeedAbs] > 0.15",

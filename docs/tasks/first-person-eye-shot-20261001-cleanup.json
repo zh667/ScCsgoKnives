@@ -1,0 +1,65 @@
+{
+ "task": "first-person-eye-shot-20261001",
+ "date": "2026-10-01T16:50:24",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r8aCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r8a build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r8a\\full",
+    ".tmp\\completion-140-20260929\\r8a\\lite",
+    ".tmp\\completion-140-20260929\\r8a\\tools",
+    ".tmp\\completion-140-20260929\\r8a\\tree",
+    ".tmp\\completion-140-20260929\\r8a\\assets-full",
+    ".tmp\\completion-140-20260929\\r8a\\resources",
+    ".tmp\\completion-140-20260929\\r8a\\net",
+    ".tmp\\completion-140-20260929\\r8a\\motion",
+    ".tmp\\completion-140-20260929\\r8a\\throw",
+    ".tmp\\completion-140-20260929\\r8a\\ui"
+   ],
+   "bytes": 1892710599,
+   "items": 4218,
+   "missing": []
+  },
+  "candidate copies for 1.9.3.1/MP tests (not used: the user tests in game)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r8a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r8a-lite.scmod"
+   ],
+   "bytes": 562360997,
+   "items": 2,
+   "missing": []
+  },
+  "totalBytes": 2455071596,
+  "items": 4220
+ },
+ "kept": [
+  "stage r8a: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, baseline/, hotspots/",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "25cb7224194a793d848cf4927fba70012047a7fe3c2ed7467fa0b800e536d58b",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "7d8e690592725471affa5f223b675bfb72442346f8d2043c054c1f3770267fcf",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "0dea4191c1ee4a5c2ce07a11ac75a8afd24982ae9277caeccd10fa1e45179798",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 131094708224,
+  "freePct": 13.11
+ }
+}

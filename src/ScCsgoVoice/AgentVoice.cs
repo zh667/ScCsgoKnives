@@ -13,6 +13,8 @@ public sealed class AgentVoiceOptions {
     public float Volume {get;set;}=.7f;
     public bool PlayerEnabled {get;set;}=true;
     public bool NpcEnabled {get;set;}=true;
+    /// <summary>Automatic player callouts after a committed throw. Missing in older settings files: on.</summary>
+    public bool PlayerAutoEnabled {get;set;}=true;
     public bool Captions {get;set;}=true;
     public List<string> Favorites {get;set;}=[];
     [JsonExtensionData] public Dictionary<string,JsonElement> Unknown {get;set;}
@@ -87,7 +89,7 @@ sealed class VoiceHud : IDisposable {
 /// <summary>One scheduler per world; no voice queue or random clocks are written to saves.</summary>
 public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
     sealed class Speaker {public double Next,Ambient;public float Health;public readonly Queue<string> Recent=[];public readonly Dictionary<string,double> Last=[];}
-    sealed record Pending(Entity Entity,string Role,string Action,double At,double Expires,AgentVoiceClip Exact=null,bool Manual=false);
+    sealed record Pending(Entity Entity,string Role,string Action,double At,double Expires,AgentVoiceClip Exact=null,bool Manual=false,bool PlayerAuto=false);
     readonly Dictionary<Entity,Speaker> speakers=new(ReferenceEqualityComparer.Instance);
     readonly Dictionary<ComponentPlayer,VoiceHud> huds=[];
     static readonly (string Label, string[] Events)[] Commands = [
@@ -101,10 +103,22 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
     readonly List<(Vector3 Position,double Until,bool Manual)> playing=[];
     readonly Engine.Random random=new();
     SubsystemTime time;SubsystemPlayers players;SubsystemAudio audio;
-    double nextScan;int revision;bool enabled;
+    double nextScan;int revision;bool enabled,playerEvents;
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
-    public override void Load(ValuesDictionary values){time=Project.FindSubsystem<SubsystemTime>(true);players=Project.FindSubsystem<SubsystemPlayers>(true);audio=Project.FindSubsystem<SubsystemAudio>(true);enabled=AgentVoiceModLoader.Supported;if(enabled)Subscribe();revision=AgentVoiceOptions.Revision;}
+    public override void Load(ValuesDictionary values){time=Project.FindSubsystem<SubsystemTime>(true);players=Project.FindSubsystem<SubsystemPlayers>(true);audio=Project.FindSubsystem<SubsystemAudio>(true);enabled=AgentVoiceModLoader.Supported;if(enabled)Subscribe();revision=AgentVoiceOptions.Revision;
+        // Older cores have no player callout event; the voice package then keeps its previous behaviour.
+        playerEvents=enabled&&typeof(ScAgentVoice).GetField("PlayerEventsVersion")?.GetRawConstantValue() is 1;if(playerEvents)SubscribePlayer();}
     [MethodImpl(MethodImplOptions.NoInlining)] void Subscribe()=>ScAgentVoice.Event+=Receive;
+    [MethodImpl(MethodImplOptions.NoInlining)] void SubscribePlayer()=>ScAgentVoice.PlayerEvent+=ReceivePlayer;
+    [MethodImpl(MethodImplOptions.NoInlining)] void UnsubscribePlayer()=>ScAgentVoice.PlayerEvent-=ReceivePlayer;
+    /// <summary>Automatic player callout: own switch, manual-voice cooldowns and repeat guards, never queued twice.</summary>
+    void ReceivePlayer(Entity entity,string role,string action){
+        var o=AgentVoiceOptions.Current;
+        if(entity.Project!=Project||!o.PlayerEnabled||!o.PlayerAutoEnabled||role is not("ct" or "t")||pending.Count>=24)return;
+        var s=State(entity);double now=time.GameTime;string key=Map(action);
+        if(now<s.Next||pending.Any(p=>ReferenceEquals(p.Entity,entity))||s.Last.TryGetValue("event:"+key,out var prior)&&now-prior<3)return;
+        s.Last["event:"+key]=now;pending.Add(new(entity,role,key,now,now+1.5,null,false,true));
+    }
     Speaker State(Entity entity){if(!speakers.TryGetValue(entity,out var s))speakers[entity]=s=new(){Health=entity.FindComponent<ComponentHealth>()?.Health??1,Ambient=time.GameTime+random.Float(18,32)};return s;}
     static string Role(Entity e)=>e.ValuesDictionary?.DatabaseObject?.Name switch {"ScTacticalCT"=>"ct","ScTacticalT" or "ScTacticalEnemy"=>"t",_=>null};
     static bool Alive(Entity e)=>e.IsAddedToProject&&e.FindComponent<ComponentHealth>() is {Health:>0};
@@ -160,7 +174,7 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
         }
     }
     [MethodImpl(MethodImplOptions.NoInlining)] void Unsubscribe()=>ScAgentVoice.Event-=Receive;
-    public override void Dispose(){if(enabled)Unsubscribe();foreach(var h in huds.Values)h.Dispose();huds.Clear();pending.Clear();speakers.Clear();playing.Clear();base.Dispose();}
+    public override void Dispose(){if(enabled)Unsubscribe();if(playerEvents)UnsubscribePlayer();foreach(var h in huds.Values)h.Dispose();huds.Clear();pending.Clear();speakers.Clear();playing.Clear();base.Dispose();}
     public void Update(float dt){if(enabled)Tick();}
     [MethodImpl(MethodImplOptions.NoInlining)] void Tick(){
         double now=time.GameTime;var options=AgentVoiceOptions.Current;
@@ -185,20 +199,21 @@ public sealed class SubsystemScAgentVoice:Subsystem,IUpdateable {
             }
             foreach(var e in speakers.Keys.Where(e=>!e.IsAddedToProject).ToArray())speakers.Remove(e);
         }
-        foreach(var p in pending.OrderByDescending(p=>p.Manual).ToArray()){
+        foreach(var p in pending.OrderByDescending(p=>p.Manual).ThenByDescending(p=>p.PlayerAuto).ToArray()){
             if(now<p.At)continue;
-            if(now>p.Expires||!Alive(p.Entity)||p.Manual&&!options.PlayerEnabled||!p.Manual&&!options.NpcEnabled){pending.Remove(p);continue;}
-            if(p.Manual&&p.Entity.FindComponent<ComponentPlayer>() is {} owner&&!ScGunBindings.Available(owner))continue;
-            var body=p.Entity.FindComponent<ComponentBody>();if(body is null){pending.Remove(p);continue;}var pos=body.Position+Vector3.UnitY*1.5f;float max=p.Manual?24:32;
+            bool player=p.Manual||p.PlayerAuto;
+            if(now>p.Expires||!Alive(p.Entity)||player&&!options.PlayerEnabled||p.PlayerAuto&&!options.PlayerAutoEnabled||!player&&!options.NpcEnabled){pending.Remove(p);continue;}
+            if(player&&p.Entity.FindComponent<ComponentPlayer>() is {} owner&&!ScGunBindings.Available(owner))continue;
+            var body=p.Entity.FindComponent<ComponentBody>();if(body is null){pending.Remove(p);continue;}var pos=body.Position+Vector3.UnitY*1.5f;float max=player?24:32;
             if(!players.ComponentPlayers.Any(x=>Vector3.DistanceSquared(x.ComponentBody.Position,pos)<=max*max)||options.Volume<=0){pending.Remove(p);continue;}
-            if(playing.Count>=2||!p.Manual&&playing.Any(s=>Vector3.DistanceSquared(s.Position,pos)<30*30)){pending.Remove(p);continue;}
+            if(playing.Count>=2||!player&&playing.Any(s=>Vector3.DistanceSquared(s.Position,pos)<30*30)){pending.Remove(p);continue;}
             var s=State(p.Entity);if(now<s.Next){pending.Remove(p);continue;}
             AgentVoiceClip[] candidates=AgentVoiceModLoader.Clips.Where(c=>c.Language==options.Language&&c.Role==p.Role&&c.Event==p.Action&&!s.Recent.Contains(c.Id)&&(!s.Last.TryGetValue(c.Id,out var last)||now-last>=15)).ToArray();
             if(candidates.Length==0&&s.Recent.Count>0)candidates=AgentVoiceModLoader.Clips.Where(c=>c.Language==options.Language&&c.Role==p.Role&&c.Event==p.Action&&c.Id!=s.Recent.Last()&&(!s.Last.TryGetValue(c.Id,out var last)||now-last>=15)).ToArray();
             var clip=p.Exact is { } exact&&exact.Language==options.Language?exact:candidates.Length>0?candidates[random.Int(0,candidates.Length-1)]:null;
             pending.Remove(p);if(clip is null)continue;
             try{audio.PlaySound(clip.Resource,options.Volume,0,pos,3,false);
-                s.Next=now+(p.Manual?1.2:3);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,p.Manual));
+                s.Next=now+(player?1.2:3);s.Last[clip.Id]=now;s.Recent.Enqueue(clip.Id);while(s.Recent.Count>3)s.Recent.Dequeue();playing.Add((pos,now+clip.Duration,player));
             }catch(Exception ex){KnifeDiagnostics.WarnOnce("agent-voice-"+clip.Resource,ex.Message);}
         }
     }
@@ -209,11 +224,11 @@ public static class AgentVoiceMenus {
     static void Notice(ContainerWidget parent,string text)=>DialogsManager.ShowDialog(parent,new MessageDialog("探员语音",text,"知道了",null,null));
     public static void Settings(ContainerWidget parent){
         var o=AgentVoiceOptions.Current;
-        Select(parent,"探员语音 · 设置即时保存",new object[]{"language","volume","player","npc","preview"},x=>(string)x switch{
-            "language"=>"语言："+(o.Language=="zh"?"中文":"英文"),"volume"=>$"音量：{o.Volume:P0}","player"=>"玩家主动语音："+(o.PlayerEnabled?"开":"关"),"npc"=>"NPC自动语音："+(o.NpcEnabled?"开":"关"),_=>"本地试听（不在世界中喊话）"},x=>{
+        Select(parent,"探员语音 · 设置即时保存",new object[]{"language","volume","player","player-auto","npc","preview"},x=>(string)x switch{
+            "language"=>"语言："+(o.Language=="zh"?"中文":"英文"),"volume"=>$"音量：{o.Volume:P0}","player"=>"玩家主动语音："+(o.PlayerEnabled?"开":"关"),"player-auto"=>"玩家投掷自动喊话："+(o.PlayerAutoEnabled?"开":"关"),"npc"=>"NPC自动语音："+(o.NpcEnabled?"开":"关"),_=>"本地试听（不在世界中喊话）"},x=>{
             string key=(string)x;
             if(key=="preview"){Select(parent,"选择试听声线",new object[]{"ct","t"},x=>(string)x=="ct"?"CT · SAS":"T · Phoenix",r=>Categories(parent,(string)r,null,true));return;}
-            bool saved=AgentVoiceOptions.Change(v=>{switch(key){case "language":v.Language=v.Language=="zh"?"en":"zh";break;case "volume":v.Volume=v.Volume>=.99f?0:Math.Min(1,v.Volume+.1f);break;case "player":v.PlayerEnabled=!v.PlayerEnabled;break;case "npc":v.NpcEnabled=!v.NpcEnabled;break;}});
+            bool saved=AgentVoiceOptions.Change(v=>{switch(key){case "language":v.Language=v.Language=="zh"?"en":"zh";break;case "volume":v.Volume=v.Volume>=.99f?0:Math.Min(1,v.Volume+.1f);break;case "player":v.PlayerEnabled=!v.PlayerEnabled;break;case "player-auto":v.PlayerAutoEnabled=!v.PlayerAutoEnabled;break;case "npc":v.NpcEnabled=!v.NpcEnabled;break;}});
             if(saved)Settings(parent);else Notice(parent,"设置无法保存，原配置已保留。");
         });
     }

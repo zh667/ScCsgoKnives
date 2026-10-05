@@ -1,0 +1,578 @@
+{
+  "task": "headshot-armor-balance-20260929",
+  "scope": "Read-only mod clothing/recipe archive inspection plus current source and native API source; proposed balance is not gameplay measured.",
+  "sources": [
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "sha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a"
+    },
+    {
+      "file": "[API1.8]主角身体属性提升1.21.scmod",
+      "sha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "sha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c"
+    },
+    {
+      "file": "[API1.9]服饰配件V1.2.1.scmod",
+      "sha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18"
+    },
+    {
+      "file": "Content.zip",
+      "sha256": "0ca9c38bf35c773cf5045698fd1b660a93aa796db6a8f30058c514371e9ece05"
+    }
+  ],
+  "clothing": [
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "member": "ExtraClothing.clo",
+      "tag": "ClothingData",
+      "Index": "38",
+      "DisplayName": "[ClothingBlock:38]",
+      "Description": "[ClothingBlock:38]",
+      "Slot": "Head",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "300",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.2",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "1",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/SteelHelmet",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "member": "ExtraClothing.clo",
+      "tag": "ClothingData",
+      "Index": "39",
+      "DisplayName": "[ClothingBlock:39]",
+      "Description": "[ClothingBlock:39]",
+      "Slot": "Torso",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "400",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "4",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/SteelChestPlate",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "member": "ExtraClothing.clo",
+      "tag": "ClothingData",
+      "Index": "40",
+      "DisplayName": "[ClothingBlock:40]",
+      "Description": "[ClothingBlock:40]",
+      "Slot": "Legs",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "400",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "4",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/SteelLeggings",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "member": "ExtraClothing.clo",
+      "tag": "ClothingData",
+      "Index": "41",
+      "DisplayName": "[ClothingBlock:41]",
+      "Description": "[ClothingBlock:41]",
+      "Slot": "Feet",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "300",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1.4",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.2",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "1",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/SteelBoots",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "member": "ExtraClothing.clo",
+      "tag": "ClothingData",
+      "Index": "42",
+      "DisplayName": "[ClothingBlock:42]",
+      "Description": "[ClothingBlock:42]",
+      "Slot": "Torso",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "200",
+      "Insulation": "0.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "3",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/SteelChainMail",
+      "ImpactSoundsFolder": "Audio/Impacts/Soft"
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "member": "ExtraClothing.clo",
+      "tag": "ClothingData",
+      "Index": "50",
+      "DisplayName": "[ClothingBlock:50]",
+      "Description": "[ClothingBlock:50]",
+      "Slot": "Torso",
+      "ArmorProtection": "0.2",
+      "Sturdiness": "600",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1.0",
+      "SteedMovementSpeedFactor": "1.0",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "4",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/RadarBackpack",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "member": "Assets/saghouls.clo",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "90",
+      "DisplayName": "[ClothingBlock:90]",
+      "Description": "[ClothingBlock:90]",
+      "Slot": "Head",
+      "ArmorProtection": "1",
+      "Sturdiness": "infinity",
+      "Insulation": "111",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.0",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "66",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/3",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "member": "Assets/saghouls.clo",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "91",
+      "DisplayName": "[ClothingBlock:91]",
+      "Description": "[ClothingBlock:91]",
+      "Slot": "Legs",
+      "ArmorProtection": "1",
+      "Sturdiness": "infinity",
+      "Insulation": "222",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.0",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "66",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/1",
+      "ImpactSoundsFolder": "Audio/Impacts/Soft"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "member": "Assets/saghouls.clo",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "92",
+      "DisplayName": "[ClothingBlock:92]",
+      "Description": "[ClothingBlock:92]",
+      "Slot": "Torso",
+      "ArmorProtection": "1",
+      "Sturdiness": "infinity",
+      "Insulation": "222",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.0",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "66",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/2",
+      "ImpactSoundsFolder": "Audio/Impacts/Soft"
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "member": "Assets/saghouls.clo",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "93",
+      "DisplayName": "[ClothingBlock:93]",
+      "Description": "[ClothingBlock:93]",
+      "Slot": "Feet",
+      "ArmorProtection": "1",
+      "Sturdiness": "infinity",
+      "Insulation": "111",
+      "MovementSpeedFactor": "1.5",
+      "SteedMovementSpeedFactor": "2",
+      "DensityModifier": "0.0",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "66",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/0",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "11",
+      "DisplayName": "[ClothingBlock:11]",
+      "Description": "[ClothingBlock:11]",
+      "Slot": "Head",
+      "ArmorProtection": "0.5",
+      "Sturdiness": "40",
+      "Insulation": "8.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.0",
+      "IsOuter": "True",
+      "CanBeDyed": "True",
+      "Layer": "1",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/LeatherHat",
+      "ImpactSoundsFolder": "Audio/Impacts/Soft"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "5",
+      "DisplayName": "[ClothingBlock:5]",
+      "Description": "[ClothingBlock:5]",
+      "Slot": "Torso",
+      "ArmorProtection": "0.5",
+      "Sturdiness": "40",
+      "Insulation": "4.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.0",
+      "IsOuter": "False",
+      "CanBeDyed": "True",
+      "Layer": "2",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/LeatherJerkin",
+      "ImpactSoundsFolder": "Audio/Impacts/Soft"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "33",
+      "DisplayName": "[ClothingBlock:33]",
+      "Description": "[ClothingBlock:33]",
+      "Slot": "Head",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "60",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "1",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/CopperHelmet",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "34",
+      "DisplayName": "[ClothingBlock:34]",
+      "Description": "[ClothingBlock:34]",
+      "Slot": "Torso",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "60",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "0.95",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "1.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "4",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/CopperChestPlate",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "10",
+      "DisplayName": "[ClothingBlock:10]",
+      "Description": "[ClothingBlock:10]",
+      "Slot": "Head",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "100",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "1",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/IronHelmet",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "3",
+      "DisplayName": "[ClothingBlock:3]",
+      "Description": "[ClothingBlock:3]",
+      "Slot": "Torso",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "100",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "0.95",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "1.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "4",
+      "PlayerLevelRequired": "1",
+      "TextureName": "Textures/Clothing/IronChestPlate",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "21",
+      "DisplayName": "[ClothingBlock:21]",
+      "Description": "[ClothingBlock:21]",
+      "Slot": "Head",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "200",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.2",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "1",
+      "PlayerLevelRequired": "2",
+      "TextureName": "Textures/Clothing/DiamondHelmet",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    },
+    {
+      "file": "Content.zip",
+      "member": "Assets/Clothes.xml",
+      "tag": "ClothingData",
+      "Class": "Game.ClothingData",
+      "Index": "19",
+      "DisplayName": "[ClothingBlock:19]",
+      "Description": "[ClothingBlock:19]",
+      "Slot": "Torso",
+      "ArmorProtection": "1.0",
+      "Sturdiness": "200",
+      "Insulation": "2.0",
+      "MovementSpeedFactor": "1",
+      "SteedMovementSpeedFactor": "1",
+      "DensityModifier": "0.5",
+      "IsOuter": "True",
+      "CanBeDyed": "False",
+      "Layer": "4",
+      "PlayerLevelRequired": "2",
+      "TextureName": "Textures/Clothing/DiamondChestPlate",
+      "ImpactSoundsFolder": "Audio/Impacts/Metal"
+    }
+  ],
+  "recipes": [
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "result": "ClothingBlock:93",
+      "level": "4",
+      "ingredients": {
+        "LargeSoulsResidueBlock": 4,
+        "clothing:22": 1
+      }
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "result": "ClothingBlock:91",
+      "level": "4",
+      "ingredients": {
+        "LargeSoulsResidueBlock": 4,
+        "clothing:20": 1
+      }
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "result": "ClothingBlock:92",
+      "level": "4",
+      "ingredients": {
+        "LargeSoulsResidueBlock": 4,
+        "clothing:19": 1
+      }
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "result": "ClothingBlock:90",
+      "level": "4",
+      "ingredients": {
+        "LargeSoulsResidueBlock": 4,
+        "clothing:21": 1
+      }
+    },
+    {
+      "file": "Content.zip",
+      "result": "ClothingBlock:33",
+      "level": "2",
+      "ingredients": {
+        "copperingot": 3,
+        "clothing:11": 1
+      }
+    },
+    {
+      "file": "Content.zip",
+      "result": "ClothingBlock:34",
+      "level": "2",
+      "ingredients": {
+        "copperingot": 4,
+        "clothing:5": 1
+      }
+    },
+    {
+      "file": "Content.zip",
+      "result": "ClothingBlock:10",
+      "level": "3",
+      "ingredients": {
+        "ironingot": 3,
+        "clothing:11": 1
+      }
+    },
+    {
+      "file": "Content.zip",
+      "result": "ClothingBlock:3",
+      "level": "3",
+      "ingredients": {
+        "ironingot": 4,
+        "clothing:5": 1
+      }
+    },
+    {
+      "file": "Content.zip",
+      "result": "ClothingBlock:21",
+      "level": "4",
+      "ingredients": {
+        "diamond": 3,
+        "clothing:10": 1
+      }
+    },
+    {
+      "file": "Content.zip",
+      "result": "ClothingBlock:19",
+      "level": "4",
+      "ingredients": {
+        "diamond": 4,
+        "clothing:3": 1
+      }
+    }
+  ],
+  "headshot": {
+    "skinnedFallback": true,
+    "playerHeadMultiplier": 2,
+    "taserHeadMultiplier": 1
+  },
+  "currentEnemyPower": {
+    "ak47": 15,
+    "m4a4": 15,
+    "awp": 57,
+    "ssg08": 39,
+    "nova": 54,
+    "ordinaryPistol": 10.5
+  },
+  "unarmoredExample": {
+    "playerBaseResilience": 10,
+    "survivalFactor": 1.25,
+    "level": 1,
+    "healthy": true,
+    "maleClassFactor": 1,
+    "femaleClassFactor": 0.8,
+    "effectiveMale": 12.5,
+    "effectiveFemale": 10,
+    "akMaleFraction": 1.2,
+    "akFemaleFraction": 1.5
+  },
+  "proposal": {
+    "enemyToPlayerBase": {
+      "pistol": 1.8,
+      "heavyPistol": 3,
+      "smg": 1.4,
+      "rifle": 2.2,
+      "machine": 1.8,
+      "autoSniper": 3,
+      "ssg08": 4,
+      "awp": 5.5,
+      "pumpShotgun": 4.2,
+      "xm1014": 3.2
+    },
+    "vest": {
+      "bulletAbsorb": 0.5,
+      "budget": 150,
+      "recipe": {
+        "ironingot": 8,
+        "copperingot": 4,
+        "canvas": 6,
+        "leather": 4
+      },
+      "playerLevel": 3
+    },
+    "helmet": {
+      "bulletAbsorb": 0.6,
+      "budget": 100,
+      "recipe": {
+        "ironingot": 6,
+        "copperingot": 2,
+        "canvas": 2,
+        "leather": 2
+      },
+      "playerLevel": 3
+    }
+  },
+  "limitations": [
+    "Third-party runtime hooks not all executed",
+    "Industrial crafted recipe prices not reconstructed",
+    "Audio samples exported but not listened/accepted",
+    "Damage values are code/formula examples, not measured player health in the reported encounter",
+    "No product implementation, package replacement, installation or world edits"
+  ]
+}

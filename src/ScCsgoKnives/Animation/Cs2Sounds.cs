@@ -77,10 +77,6 @@ public static class Cs2Sounds {
                 if (cues.Count != 0) loaded[key] = cues.ToArray();
             }
             LoadError = null;
-            KnifeLog.Trace(
-                $"[ScCsgoKnives] CS2 sound timings: {loaded.Count} clips playable, "
-                + $"{loaded.Values.Sum(c => c.Length)} cues, {dropped} cues have no shipped audio."
-            );
         }
         catch (Exception e) {
             LoadError = $"{e.GetType().Name}: {e.Message}";

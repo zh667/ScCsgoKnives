@@ -1,0 +1,24 @@
+{
+  "package": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1\\Mods\\[1SlowerCreatureSpawnsMod.scmod",
+  "sha256": "101886580c11f5e7167c975765a0b0318da7b42b9ba63a4abeb788cae5c2965b",
+  "multiplier": 0.1,
+  "beforeTotal": 26,
+  "afterTotal": 2,
+  "afterArea": 1,
+  "emptyWorldThreeMemberAllowed": false,
+  "emptyWorldFiveMemberAllowed": false,
+  "note": "Isolated native API process: installed Slower OnLoadingFinished called. The CS whole-squad capacity inequality is evaluated, not a live world spawn.",
+  "logSnapshotSha256": "d54e0b6c2de4bc3105dab015e57b5d0a951b711d0da40b38d88f83e72856aba8",
+  "logEvidence": [
+    {
+      "line": 13705,
+      "time": "00:22:01.678",
+      "rules": "natural=True graceDays=0 density=Dense"
+    },
+    {
+      "line": 14113,
+      "time": "00:31:31.907",
+      "rules": "natural=True graceDays=0 density=Dense"
+    }
+  ]
+}

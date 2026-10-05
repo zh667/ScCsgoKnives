@@ -17,7 +17,30 @@ public sealed class ScHudPosition {
     }
     public Matrix Transform(Vector2 size)=>Matrix.CreateTranslation(-size.X/2,-size.Y/2,0)*Matrix.CreateScale(Scale)*Matrix.CreateRotationZ(Rotation)*Matrix.CreateTranslation(size.X/2,size.Y/2,0);
 }
+public enum ScEnemyDensity { Sparse, Standard, Dense }
+/// <summary>Natural enemy-squad rules of one world. The start is counted in accumulated game time (whole in-game days
+/// of the engine's current DayDuration), never the calendar day shown. Density changes frequency/space limits only.</summary>
+public readonly record struct ScEnemyRules(bool Natural,int GraceDays,ScEnemyDensity Density) {
+    public const int MaxGraceDays=365;
+    public static readonly ScEnemyRules Default=new(true,ScEnemySpawnPolicy.GraceDays,ScEnemyDensity.Standard);
+    public ScEnemyRules Normalize()=>new(Natural,Math.Clamp(GraceDays,0,MaxGraceDays),Enum.IsDefined(Density)?Density:ScEnemyDensity.Standard);
+}
+/// <summary>Implemented by the agents package; null while it is not installed (the Lite core alone).</summary>
+public static class ScEnemyRulesBridge {
+    public static Func<GameEntitySystem.Project,ScEnemyRules?> Read;
+    public static Func<GameEntitySystem.Project,ScEnemyRules,bool> Write;
+    /// <summary>Progress of the given rules in the given world, for display only.</summary>
+    public static Func<GameEntitySystem.Project,ScEnemyRules,string> Progress;
+}
 public static class ScEnemySpawnPolicy {
     public const int GraceDays=30;
-    public static bool Allows(bool enabled,double elapsed,double daySeconds)=>enabled&&double.IsFinite(elapsed)&&double.IsFinite(daySeconds)&&daySeconds>0&&elapsed>=GraceDays*daySeconds;
+    public static bool Allows(bool enabled,double elapsed,double daySeconds)=>AllowsAfter(enabled,elapsed,daySeconds,GraceDays);
+    public static bool AllowsAfter(bool enabled,double elapsed,double daySeconds,int graceDays)=>enabled&&double.IsFinite(elapsed)&&double.IsFinite(daySeconds)&&daySeconds>0&&graceDays>=0&&elapsed>=graceDays*daySeconds;
+    /// <summary>Game seconds still to wait; the same function the gate uses, so the display never disagrees with it.</summary>
+    public static double RemainingSeconds(double elapsed,double daySeconds,int graceDays)=>!double.IsFinite(elapsed)||!double.IsFinite(daySeconds)||daySeconds<=0?double.PositiveInfinity:Math.Max(0,Math.Max(0,graceDays)*daySeconds-elapsed);
+    /// <summary>First-pass density table (experimental values): natural members cap, game seconds between natural
+    /// squads, minimum spacing between natural squads. Even Sparse fits one five-member squad.</summary>
+    public static (int Cap,float Cooldown,float Spacing) Limits(ScEnemyDensity density)=>density switch{
+        ScEnemyDensity.Sparse=>(5,120,128),ScEnemyDensity.Dense=>(15,40,72),_=>(10,60,96)};
+    public static string Label(ScEnemyDensity density)=>density switch{ScEnemyDensity.Sparse=>"稀少",ScEnemyDensity.Dense=>"较多",_=>"标准"};
 }

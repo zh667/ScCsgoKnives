@@ -1,0 +1,41 @@
+{
+  "assembly": "87ca08ca7d0c81a15a66e1316a13eeb100f3f7e8387b8c42245fde3754dac197",
+  "bytes": 323584,
+  "identity": "be2abe329387ba0efbd622bbc08b4088",
+  "core": "fee68182d9ada6c17f24ef51bebafe16d8fdcf6d148af0241dfb3fe71fc23da3",
+  "profile": "d3cac5abe37bbb7bb225f5e633570b141c469478836776ef4f1a176c755b417c",
+  "cs2": {
+    "ClientVersion": "2000922",
+    "ServerVersion": "2000922",
+    "PatchVersion": "1.41.8.8",
+    "VersionDate": "Sep 30 2026",
+    "VersionTime": "16:29:50"
+  },
+  "sources": {
+    "Arena/DmArena.cs": "c242ce7d191f76bd2fe9f31611734f75e6c7d40ce1035b120fefacf1763971e1",
+    "Assets/ScDeathmatch.xdb": "b410539d637287f1048940af3aca850fff3d4820026565523d1a79d6af7be248",
+    "Combat/DmCombat.cs": "6377d4424d24ac7f3b98a5d81550443867f1cc021181e42a5bcbccd174db3fda",
+    "Combat/DmWeapons.cs": "ba2f418dd75b3df453a4ad1da6cb8cbb3c7ab56bc056de3d134899fb1a3cf3c6",
+    "Data/dm_cs2_profile.json": "d3cac5abe37bbb7bb225f5e633570b141c469478836776ef4f1a176c755b417c",
+    "DeathmatchModLoader.cs": "1591114137297224ac36204ab165354588c45f2933593a281a34809cfbc54434",
+    "Events/DmKill.cs": "f16c74fa3f161b7901ca047c41f1919ec7e233862738bc376b5c482c4f2d2663",
+    "GlobalUsings.cs": "693a07c70fb4c0aea4d55d9a3677a7660711e699aacab75d99727a06d5756d7c",
+    "Loadouts/DmArmory.cs": "180cb68c100f0407749d453767af5827fef7b377363128f762a878ef35627454",
+    "Loadouts/DmLoadout.cs": "a9157bab3c0261b3718f6b4bc8cccaf2b6598108ff40a8ee5d8951a705094aa7",
+    "Net/DmNet.cs": "4d39547c9794b87a411c34eb8bc58a8f4febd6f4b35a5cd3ede79249aa0ceed9",
+    "Respawn/DmDeathCamera.cs": "c1039d3131d7485751f0d4d988c1836c56ab8f31e471106aa0e93f487b9f0ead",
+    "Respawn/DmSpawnSelector.cs": "3f9f4766945b0674436b46c764abc35d09be611e738a89d818d44b3955df303b",
+    "Session/DmMatch.cs": "95e140ff4ebf7c6f585f0eea60d30455da97154da2e21555497e13fe1c6deb6a",
+    "Session/DmMode.cs": "df9cb6f8e82fce8997eecd7d698341c0fd31c4650dc25f16b17ef5c04c2c3f12",
+    "Session/DmRules.cs": "551ff11bf83fa52801bb7260269f1e6313c71d5b82531094ede0934bb7a5bfc9",
+    "Session/SubsystemScDeathmatch.cs": "1d6226f58b16e159e8bd839986f538672b4086692f6fb66fc7d164711dd33cd1",
+    "UI/DmArt.cs": "0e44a5adc4a97ad3664757056993f29efa971e0e6eced43dd92b1dfbd6555c2f",
+    "UI/DmFit.cs": "ae116c00172aa592a5d460792cd1c87a2537b4bc6e125e9d2b469a501b099d78",
+    "UI/DmHud.cs": "b1301e360738dfa27f4ba815705bf08a92cc9f50443e53545d6370676e904416",
+    "UI/DmMenu.cs": "80287c98b2e117988ca433062a77f18b37e3df64911ee3dfdf4f6d7ee2c292e2",
+    "UI/DmPixel.cs": "ee1e876441668aed652b40975b88608c19d5fb2abc10b747b4937327dd6a3ad0",
+    "UI/DmUiSettings.cs": "2e4a1fd8c2041edafa64b57bfeda0493e486df88cda753998c54c033f1fdd13c",
+    "UI/DmWheel.cs": "b0610193c4bc19b88731a4bab15b14fc4661254cf4eb0e3317ff8a780a0558ba",
+    "modinfo.json": "580dae22caae672592a7295f7e20a2652620792acee07884ab45f19636506f40"
+  }
+}

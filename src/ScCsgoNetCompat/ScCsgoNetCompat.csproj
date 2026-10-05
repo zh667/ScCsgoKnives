@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- mp-user-logs-20261002: the optional part of the multiplayer adapter that needs the platform's CompatNet internal
+       mod (the command-adapter freeze gate). Compiled against the 1.9.3.2 engine, CompatNet and the core; shipped as
+       Net/ScCsgoNetCompat.bin and loaded by the core only when CompatNet exists and its contract matches, so a platform
+       without CompatNet (the Android build) still gets the transport (Net/ScCsgoNet.bin, which names no CompatNet type). -->
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Game</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ScCsgoNetCompat</AssemblyName>
+    <Deterministic>true</Deterministic>
+    <LangVersion>preview</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <DebugType>none</DebugType>
+    <!-- The engine and our core reference the same assembly names at nearby versions; the engine is Windows-only. -->
+    <NoWarn>$(NoWarn);CS1701;CS1702;MSB3277;CA1416</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(Refs)/*.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

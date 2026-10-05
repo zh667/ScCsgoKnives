@@ -14,12 +14,23 @@ namespace Game;
 /// testing at all, and the drag is read from the screen itself, so no combat action exists to trigger.</summary>
 public sealed class ScGunLayoutScreen : Screen {
     public const string ScreenName = "ScCsgoGunLayout";
-    public const string HudId="ammo_hud";
-    static readonly string[] Entries=[..ScGunFunctions.All,HudId];
-    ScHudPosition m_hud=new();
+    public const string HudId="ammo_hud",ArmorHudId="armor_hud";
+    static readonly string[] Entries=[..ScGunFunctions.All,HudId,ArmorHudId];
+    ScHudPosition m_hud=new(),m_armor=ScArmorHud.DefaultPosition();
     readonly CanvasWidget m_hudProxy=new(){Size=new Vector2(116,76),IsHitTestVisible=false,IsVisible=false};
+    readonly CanvasWidget m_armorProxy=new(){Size=ScArmorHud.Size,IsHitTestVisible=false,IsVisible=false};
     readonly ScAmmoHud m_hudSample=new();
+    readonly ScArmorHud m_armorSample=new();
+    /// <summary>The HUD being edited (ammo or protection), each with its own saved position (current-direction-20260929).</summary>
+    static bool IsHud(string id)=>id is HudId or ArmorHudId;
+    bool EditingHud=>IsHud(m_selected);
+    ScHudPosition Pos{get=>m_selected==ArmorHudId?m_armor:m_hud;set{if(m_selected==ArmorHudId)m_armor=value;else m_hud=value;}}
+    CanvasWidget Proxy=>m_selected==ArmorHudId?m_armorProxy:m_hudProxy;
     CheckboxWidget m_hudCustom;
+    /// <summary>Round 12 (2026-10-01 user request): the armor HUD is shown or hidden here, beside its position, like a
+    /// button; the mod settings page no longer has its own switch. Edited on a copy like the layout.</summary>
+    CheckboxWidget m_armorShown;
+    bool m_armorEnabled=true;
     readonly ScHudGesture m_hudGesture=new();
 
     Screen m_back;
@@ -46,7 +57,7 @@ public sealed class ScGunLayoutScreen : Screen {
     CheckboxWidget m_enabled;
     SliderWidget m_size, m_background, m_foreground;
     ButtonWidget m_next, m_side, m_collapse, m_resetOne, m_resetAll, m_cancel, m_save;
-    readonly ButtonWidget m_choose=ScGunUi.Button("选择按键或弹药 HUD",250);
+    readonly ButtonWidget m_choose=ScGunUi.Button("选择按键或 HUD",250);
     readonly ScGunWorldBackground m_worldBackground = new();
 
     public ScGunLayoutScreen() {
@@ -59,8 +70,11 @@ public sealed class ScGunLayoutScreen : Screen {
             m_proxies[id] = proxy;
             m_preview.Children.Add(proxy);
         }
-        m_preview.Children.Add(m_hudProxy);
-        m_hudSample.Show(new ScAmmoReadout("","",false,false,false){Compact=true,LoadedText="46",CapacityText="/ 46",WeaponIcon="m4a4",ReserveCount="∞",Fraction=1});
+        m_preview.Children.Add(m_hudProxy);m_preview.Children.Add(m_armorProxy);
+        m_armorSample.Panel.HorizontalAlignment=WidgetAlignment.Center;m_armorSample.Panel.VerticalAlignment=WidgetAlignment.Center;
+        m_armorSample.Display(new ScArmorReadout(true,150,true,62));
+        m_armorProxy.Children.Add(m_armorSample.Panel);
+        m_hudSample.Show(new ScAmmoReadout("","",false,false,false){Compact=true,LoadedText="30",CapacityText="/ 30",WeaponIcon="m4a4",ReserveCount="3",Fraction=1});
         m_hudSample.Panel.Margin=Vector2.Zero;
         m_hudSample.Panel.HorizontalAlignment=WidgetAlignment.Center;
         m_hudSample.Panel.VerticalAlignment=WidgetAlignment.Center;
@@ -82,11 +96,10 @@ public sealed class ScGunLayoutScreen : Screen {
     public override void Enter(object[] parameters) {
         m_worldBackground.ResetCapture();
         ScWeaponTouchPanel.SuppressAll(true);
-        KnifeLog.Trace("[CS_UI_0413] layout enter: isolated background, live touch suppressed");
         m_back = ScreensManager.PreviousScreen;
         m_leftHanded = SettingsManager.LeftHandedLayout;
         m_working = ScUiSettings.CopyHand(m_leftHanded);
-        m_hud=ScUiSettings.AmmoHud.Copy();
+        m_hud=ScUiSettings.AmmoHud.Copy();m_armor=ScUiSettings.ArmorHud.Copy();m_armorEnabled=ScUiSettings.ArmorHudEnabled;
         m_hudGesture.Reset();
         m_selected = ScGunFunctions.Reload;
         m_dragging = null;
@@ -111,6 +124,8 @@ public sealed class ScGunLayoutScreen : Screen {
         m_choose.ParentWidget?.Children.Remove(m_choose);m_controls.Children.Add(m_choose);
         m_enabled = ScGunUi.Toggle("显示此按键", true);
         m_controls.Children.Add(m_enabled);
+        m_armorShown=ScGunUi.Toggle("显示护甲 HUD",m_armorEnabled);
+        m_controls.Children.Add(m_armorShown);
         m_hudCustom=ScGunUi.Toggle("自定义位置（关闭为自动）",false);
         m_controls.Children.Add(m_hudCustom);
         m_size = ScGunUi.Slider(.5f, 2f, .05f, 1f, "大小");
@@ -148,17 +163,20 @@ public sealed class ScGunLayoutScreen : Screen {
         base.MeasureOverride(availableSize);
     }
 
-    public bool PreviewVisible(string id) => id==HudId?m_selected==HudId:
+    public bool PreviewVisible(string id) => IsHud(id)?m_selected==id:
         id==m_selected||id==ScGunFunctions.Voice||Concurrent.FirstOrDefault(g=>g.Contains(m_selected))?.Contains(id)==true;
 
     ScButtonLayout Selected => ScUiSettings.Layout(m_working, m_selected, m_leftHanded);
     void LoadSelected() {
-        bool hud=m_selected==HudId;
+        bool hud=EditingHud;
         m_enabled.IsVisible=m_size.IsVisible=m_background.IsVisible=m_foreground.IsVisible=!hud;
         m_hudGesture.Reset();m_dragging=null;m_hudCustom.IsVisible=hud;
+        m_armorShown.IsVisible=m_selected==ArmorHudId;m_armorShown.IsChecked=m_armorEnabled;
         if(hud){
-            m_title.Text="弹药 HUD · 屏幕位置";
-            m_hudCustom.IsChecked=m_hud.Custom;
+            m_title.Text=m_selected==ArmorHudId?"护甲 HUD · 屏幕位置":"弹药 HUD · 屏幕位置";
+            // The protection HUD defaults to the lower left: keep the panel on the right while it is edited.
+            if(m_selected==ArmorHudId)m_panel.HorizontalAlignment=WidgetAlignment.Far;
+            m_hudCustom.IsChecked=Pos.Custom;
             return;
         }
         var layout = Selected;
@@ -198,8 +216,9 @@ public sealed class ScGunLayoutScreen : Screen {
         if (!m_built) return;
         m_panel.IsVisible = !m_collapsed;
         m_expand.IsVisible = m_collapsed;
-        if(m_selected==HudId){
-            m_hud.Custom=m_hudCustom.IsChecked;m_hud.Normalize();
+        if(EditingHud){
+            Pos.Custom=m_hudCustom.IsChecked;Pos.Normalize();
+            if(m_selected==ArmorHudId)m_armorEnabled=m_armorShown.IsChecked;
         }else{
             var layout=Selected;layout.Enabled=m_enabled.IsChecked;
             layout.Scale=m_size.Value;layout.Background=m_background.Value;layout.Foreground=m_foreground.Value;layout.Normalize();
@@ -207,7 +226,7 @@ public sealed class ScGunLayoutScreen : Screen {
         if(m_choose.IsClicked) {
             m_dragging=null;
             DialogsManager.ShowDialog(this,new ListSelectionDialog("选择按键或 HUD",Entries,56,
-                item=>(string)item==HudId?"弹药 HUD（位置）":ScGunFunctions.Label((string)item)+(ScUiSettings.Layout(m_working,(string)item,m_leftHanded).Enabled?"":"（已隐藏）"),
+                item=>(string)item==HudId?"弹药 HUD（位置）":(string)item==ArmorHudId?"护甲 HUD（位置）"+(m_armorEnabled?"":"（已隐藏）"):ScGunFunctions.Label((string)item)+(ScUiSettings.Layout(m_working,(string)item,m_leftHanded).Enabled?"":"（已隐藏）"),
                 item=>{m_selected=(string)item;LoadSelected();}));return;
         }
         if(DialogsManager.HasDialogs(this)){m_dragging=null;return;}
@@ -225,10 +244,11 @@ public sealed class ScGunLayoutScreen : Screen {
                 if (!l.Enabled) proxy.Color = new Color((byte)150, (byte)150, (byte)150, (byte)90);
                 if (id == m_selected) proxy.BevelColor = ScGunUi.Accent;
             }
-            m_hudProxy.IsVisible=PreviewVisible(HudId);
-            m_preview.SetWidgetPosition(m_hudProxy,HudCorner(area));
-            m_hudProxy.RenderTransform=m_hud.Custom?m_hud.Transform(m_hudProxy.Size):Matrix.Identity;
-            m_warning.Text=m_selected==HudId?"M4A4 弹药 HUD 示例。手机：双指移动、捏合缩放、转动旋转。电脑：拖动移动，滚轮缩放，Shift＋滚轮旋转。直接操作即可启用自定义；面板挡住时先收起。":FindOverlap(area);
+            m_hudProxy.IsVisible=PreviewVisible(HudId);m_armorProxy.IsVisible=PreviewVisible(ArmorHudId);
+            // A hidden armor HUD keeps the dim editor preview of a switched-off button.
+            m_armorProxy.ColorTransform=m_armorEnabled?Color.White:new Color((byte)150,(byte)150,(byte)150,(byte)90);
+            if(EditingHud){m_preview.SetWidgetPosition(Proxy,HudCorner(area));Proxy.RenderTransform=Pos.Custom?Pos.Transform(Proxy.Size):Matrix.Identity;}
+            m_warning.Text=EditingHud?(m_selected==ArmorHudId?"护甲 HUD 示例（头部 62/100、躯干 150/150）。":"M4A4 弹药 HUD 示例。")+"手机：双指移动、捏合缩放、转动旋转。电脑：拖动移动，滚轮缩放，Shift＋滚轮旋转。直接操作即可启用自定义；面板挡住时先收起。":FindOverlap(area);
         }
 
         if (m_collapse.IsClicked) { m_collapsed = !m_collapsed; m_collapse.Text = m_collapsed ? "展开面板" : "收起面板"; }
@@ -240,21 +260,21 @@ public sealed class ScGunLayoutScreen : Screen {
             m_selected = Entries[(Math.Max(0, index) + 1) % Entries.Length];
             LoadSelected();
         }
-        if (m_resetOne.IsClicked) { if(m_selected==HudId)m_hud=new();else m_working[m_selected] = ScGunFunctions.Default(m_selected, m_leftHanded); LoadSelected(); }
+        if (m_resetOne.IsClicked) { if(m_selected==HudId)m_hud=new();else if(m_selected==ArmorHudId){m_armor=ScArmorHud.DefaultPosition();m_armorEnabled=true;}else m_working[m_selected] = ScGunFunctions.Default(m_selected, m_leftHanded); LoadSelected(); }
         if (m_resetAll.IsClicked) {
             foreach (string id in ScGunFunctions.All) m_working[id] = ScGunFunctions.Default(id, m_leftHanded);
-            m_hud=new();
+            m_hud=new();m_armor=ScArmorHud.DefaultPosition();m_armorEnabled=true;
             LoadSelected();
         }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Back(); return; }
         if (m_save.IsClicked) {
             var original = ScUiSettings.CopyHand(m_leftHanded);
-            var originalHud=ScUiSettings.AmmoHud.Copy();
+            var originalHud=ScUiSettings.AmmoHud.Copy();var originalArmor=ScUiSettings.ArmorHud.Copy();bool originalArmorShown=ScUiSettings.ArmorHudEnabled;
             ScUiSettings.ReplaceHand(m_leftHanded, m_working);
-            ScUiSettings.AmmoHud=m_hud.Copy();
+            ScUiSettings.AmmoHud=m_hud.Copy();ScUiSettings.ArmorHud=m_armor.Copy();ScUiSettings.ArmorHudEnabled=m_armorEnabled;
             if (!ScUiSettings.Save()) {
                 ScUiSettings.ReplaceHand(m_leftHanded, original);
-                ScUiSettings.AmmoHud=originalHud;
+                ScUiSettings.AmmoHud=originalHud;ScUiSettings.ArmorHud=originalArmor;ScUiSettings.ArmorHudEnabled=originalArmorShown;
                 m_warning.Text = "布局未能写入，上一份配置保持不变。";
             }
             else Back();
@@ -269,19 +289,19 @@ public sealed class ScGunLayoutScreen : Screen {
     }
 
     void Drag(Vector2 area) {
-        if(m_selected==HudId){
-            if(!m_hud.Custom){
-                var center=HudCorner(area)+m_hudProxy.Size/2;
-                m_hud.X=center.X/area.X;m_hud.Y=center.Y/area.Y;m_hud.Scale=1;m_hud.Rotation=0;
+        if(EditingHud){
+            if(!Pos.Custom){
+                var center=HudCorner(area)+Proxy.Size/2;
+                Pos.X=center.X/area.X;Pos.Y=center.Y/area.Y;Pos.Scale=1;Pos.Rotation=0;
             }
-            if(m_hudGesture.Step(Input.TouchLocations,m_hud,area,m_hudProxy.Size,m_preview.ScreenToWidget,p=>!OverPanel(p)&&!OverExpand(p))){EnableHud();m_dragging=null;return;}
+            if(m_hudGesture.Step(Input.TouchLocations,Pos,area,Proxy.Size,m_preview.ScreenToWidget,p=>!OverPanel(p)&&!OverExpand(p))){EnableHud();m_dragging=null;return;}
             if(Input.Scroll is Vector3 wheel){
                 var pos=new Vector2(wheel.X,wheel.Y);
                 if(!OverPanel(pos)&&HudHit(m_preview.ScreenToWidget(pos),area)){
                     EnableHud();
-                    if(Input.IsKeyDown(Key.Shift))m_hud.Rotation+=wheel.Z*MathF.PI/36;
-                    else m_hud.Scale*=MathF.Pow(1.1f,wheel.Z);
-                    m_hud.Normalize();
+                    if(Input.IsKeyDown(Key.Shift))Pos.Rotation+=wheel.Z*MathF.PI/36;
+                    else Pos.Scale*=MathF.Pow(1.1f,wheel.Z);
+                    Pos.Normalize();
                 }
             }
         }else m_hudGesture.Reset();
@@ -293,15 +313,15 @@ public sealed class ScGunLayoutScreen : Screen {
         }
         if (m_dragging is null && OverPanel(press.Value)) return;
         Vector2 point = m_preview.ScreenToWidget(press.Value);
-        if(m_selected==HudId){
+        if(EditingHud){
             var corner=HudCorner(area);
             if(m_dragging==null){
                 if(!HudHit(point,area))return;
                 EnableHud();
-                m_dragging=HudId;m_dragOffset=point-corner;return;
+                m_dragging=m_selected;m_dragOffset=point-corner;return;
             }
-            m_hud.X=Math.Clamp((point.X-m_dragOffset.X+m_hudProxy.Size.X/2)/area.X,0,1);
-            m_hud.Y=Math.Clamp((point.Y-m_dragOffset.Y+m_hudProxy.Size.Y/2)/area.Y,0,1);
+            Pos.X=Math.Clamp((point.X-m_dragOffset.X+Proxy.Size.X/2)/area.X,0,1);
+            Pos.Y=Math.Clamp((point.Y-m_dragOffset.Y+Proxy.Size.Y/2)/area.Y,0,1);
             return;
         }
         if (m_dragging is null) {
@@ -323,12 +343,12 @@ public sealed class ScGunLayoutScreen : Screen {
     }
 
     bool OverExpand(Vector2 p){var local=m_expand.ScreenToWidget(p);return m_collapsed&&local.X>=0&&local.Y>=0&&local.X<=m_expand.ActualSize.X&&local.Y<=m_expand.ActualSize.Y;}
-    void EnableHud(){m_hud.Custom=true;m_hudCustom.IsChecked=true;}
-    Vector2 HudCorner(Vector2 area)=>m_hud.Custom?m_hud.Position(area,m_hudProxy.Size):ScAmmoHud.FindCorner(area,m_hudProxy.Size,[]);
+    void EnableHud(){Pos.Custom=true;m_hudCustom.IsChecked=true;}
+    Vector2 HudCorner(Vector2 area)=>Pos.Custom?Pos.Position(area,Proxy.Size):m_selected==ArmorHudId?ScArmorHud.FindCorner(area,Proxy.Size,[]):ScAmmoHud.FindCorner(area,Proxy.Size,[]);
     bool HudHit(Vector2 point,Vector2 area){
-        var center=HudCorner(area)+m_hudProxy.Size/2;
-        var local=Vector2.Transform(point-center,Matrix.CreateRotationZ(-m_hud.Rotation))/m_hud.Scale;
-        return MathF.Abs(local.X)<=m_hudProxy.Size.X/2&&MathF.Abs(local.Y)<=m_hudProxy.Size.Y/2;
+        var center=HudCorner(area)+Proxy.Size/2;
+        var local=Vector2.Transform(point-center,Matrix.CreateRotationZ(-Pos.Rotation))/Pos.Scale;
+        return MathF.Abs(local.X)<=Proxy.Size.X/2&&MathF.Abs(local.Y)<=Proxy.Size.Y/2;
     }
 
     void Back() => ScreensManager.SwitchScreen(m_back ?? ScreensManager.FindScreen<Screen>(ScGunSettingsScreen.ScreenName) ?? ScreensManager.FindScreen<Screen>("Settings"));

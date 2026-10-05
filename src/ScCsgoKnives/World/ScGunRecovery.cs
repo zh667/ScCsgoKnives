@@ -31,6 +31,17 @@ public sealed class ScGunRecovery {
         m_batches.Add(batch);
         KnifeLog.Error($"gun recovery {batch.Id}: {batch.Steps.Count} pending step(s) for {owner}; saved with this world and retried when the inventory accepts them");
     }
+    /// <summary>A durable one-time grant (for example a gameplay reward): saved with the world in the same state as
+    /// the event that earned it and delivered by the regular retry when the owner's inventory has room.</summary>
+    public long Grant(string owner, IEnumerable<(int Value, int Count)> items, string reason) {
+        if (string.IsNullOrWhiteSpace(owner)) return 0;
+        var batch = new Batch { Id = m_next++, Owner = owner };
+        batch.Steps.AddRange(items.Where(i => i.Count > 0).Select(i => new ScGunUndo { Slot = -1, Value = i.Value, Count = i.Count }));
+        if (batch.Steps.Count == 0) return 0;
+        m_batches.Add(batch);
+        KnifeLog.Information($"grant {batch.Id} for {owner}: {reason}; {batch.Steps.Count} item stack(s) pending delivery");
+        return batch.Id;
+    }
     static int Quantity(IInventory inventory, int slot, int value) => inventory.GetSlotValue(slot) == value ? inventory.GetSlotCount(slot) : 0;
 
     static void ReturnAt(IInventory inventory, int slot, ScGunUndo step) {
@@ -97,7 +108,11 @@ public sealed class ScGunRecovery {
                             "[GUN_RECOVERY] Sushi refund retained: original backing inventory cannot be proven after reload/removal or from a legacy proxy receipt. Requires verified recovery; no refund sent to a guessed player/channel.");
                     continue; // absent/ambiguous destination: keep the durable claim
                 }
+                // Published only when a step was actually applied: a claim that stays blocked is retried every second and
+                // must not resend the inventory each time.
+                long owed = batch.Steps.Sum(s => Math.Abs((long)s.Count)) + batch.Steps.Count;
                 bool done = Apply(inventory, batch.Steps);
+                if (batch.Steps.Sum(s => Math.Abs((long)s.Count)) + batch.Steps.Count != owed) ScNetSlots.Touched(inventory);
                 ScInventoryTransaction.Changed(inventory);
                 if (!done) continue;
                 m_batches.Remove(batch); completed++;
@@ -152,9 +167,12 @@ public sealed class ScGunRecovery {
 internal sealed class ScGunInventoryJournal(IInventory inventory) {
     readonly List<ScGunUndo> m_undo = [];
     static int Quantity(IInventory inv, int slot, int value) => inv.GetSlotValue(slot) == value ? inv.GetSlotCount(slot) : 0;
+    // Every journaled slot write is noted for the multiplayer slot publication (ScNetSlots): it goes out when the
+    // transaction ends, with its final state, whether it committed or was rolled back.
     public void RemoveExact(int slot, int value, int amount) {
         int before = Quantity(inventory, slot, value), reported = 0, removed = 0;
         if (amount <= 0 || before < amount) throw new InvalidOperationException("Inventory deduction no longer available");
+        ScNetSlots.Touched(inventory);
         try { reported = inventory.RemoveSlotItems(slot, amount); }
         finally {
             removed = Math.Max(0, before - Quantity(inventory, slot, value));
@@ -165,6 +183,7 @@ internal sealed class ScGunInventoryJournal(IInventory inventory) {
     public void AddExact(int slot, int value, int amount) {
         int before = Quantity(inventory, slot, value), added = 0;
         if (inventory.GetSlotCount(slot) > 0 && inventory.GetSlotValue(slot) != value) throw new InvalidOperationException("Replacement slot occupied");
+        ScNetSlots.Touched(inventory);
         try { inventory.AddSlotItems(slot, value, amount); }
         finally {
             added = Math.Max(0, Quantity(inventory, slot, value) - before);
@@ -173,6 +192,7 @@ internal sealed class ScGunInventoryJournal(IInventory inventory) {
         if (added != amount) throw new InvalidOperationException("Inventory accepted an unexpected amount");
     }
     public void ReplaceCreative(int slot, int expected, int replacement) {
+        ScNetSlots.Touched(inventory);
         try { inventory.AddSlotItems(slot, replacement, 1); }
         finally {
             if (inventory.GetSlotValue(slot) == replacement && replacement != expected)
@@ -188,5 +208,7 @@ internal sealed class ScGunInventoryJournal(IInventory inventory) {
     }
     public void DeferRollback(ScGunRecovery recovery,string owner) {
         m_undo.Reverse();recovery.Enqueue(owner,m_undo);m_undo.Clear();
+        // Nothing is written back now; what the failed transaction left in the slots is still the server's state.
+        ScNetSlots.Changed(inventory);
     }
 }

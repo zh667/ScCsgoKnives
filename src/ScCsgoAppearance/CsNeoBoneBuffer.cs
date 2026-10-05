@@ -21,6 +21,5 @@ public static class CsNeoBoneBuffer {
         // The setter is internal in official Neo 1.4; use only this named property.
         // Do not alias a private obfuscated field or replace any third-party method.
         property.SetValue(rigid,expanded);
-        KnifeLog.Information($"[CS_NEO] bone-buffer resized old={previous?.Length??0} new={needed} modelBones={model.Bones.Count}");
     }
 }

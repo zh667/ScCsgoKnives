@@ -1,0 +1,101 @@
+{
+ "task": "memory-residency-20261001",
+ "date": "2026-10-01T15:54:33",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r7bCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r7b build trees (delivered; logs, reports, net.json, packages.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r7b\\full",
+    ".tmp\\completion-140-20260929\\r7b\\lite",
+    ".tmp\\completion-140-20260929\\r7b\\tools",
+    ".tmp\\completion-140-20260929\\r7b\\tree",
+    ".tmp\\completion-140-20260929\\r7b\\assets-full",
+    ".tmp\\completion-140-20260929\\r7b\\resources",
+    ".tmp\\completion-140-20260929\\r7b\\net",
+    ".tmp\\completion-140-20260929\\r7b\\motion",
+    ".tmp\\completion-140-20260929\\r7b\\throw",
+    ".tmp\\completion-140-20260929\\r7b\\ui"
+   ],
+   "bytes": 1892643708,
+   "items": 4216,
+   "missing": []
+  },
+  "candidate copies for MP/1.9.3.1 tests": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r7b-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r7b-lite.scmod"
+   ],
+   "bytes": 562360770,
+   "items": 2,
+   "missing": []
+  },
+  "phone install staging copies (ASCII-named package copies pushed to the phone; reproducible from output/)": {
+   "paths": [
+    ".tmp\\dev-temp\\phone\\pkg",
+    ".tmp\\dev-temp\\phone\\pkg-r7b"
+   ],
+   "bytes": 1201650594,
+   "items": 8,
+   "missing": []
+  },
+  "desktop heap dump (report.txt kept)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\run\\gcdump-r7a-lite-agents-20261001-151022\\heap.gcdump"
+   ],
+   "bytes": 21226959,
+   "items": 1,
+   "missing": []
+  },
+  "r7b residency and phone PNG captures (preview JPGs, meminfo, logs, JSON kept)": {
+   "paths": [
+    "71 PNG captures under run/residency-r7b*, phone session folders"
+   ],
+   "bytes": 94543721,
+   "items": 71,
+   "missing": []
+  },
+  "1.9.3.1 test copy ScreenCapture, live and in the runtime archive (frames already copied into the run folders)": {
+   "paths": [
+    ".tmp\\mp-test-runtime\\_archive\\20261001-154815-residency-r7b-full-b-20261001-154651\\sp131\\ScreenCapture"
+   ],
+   "bytes": 7763233,
+   "items": 6,
+   "missing": [
+    ".tmp\\mp-test-runtime\\sp131\\ScreenCapture"
+   ]
+  },
+  "totalBytes": 3780188985,
+  "items": 4304
+ },
+ "kept": [
+  "stage r7b: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json; earlier stages untouched",
+  ".tmp/phone-backup-20261001 (the player's own 1.3.0 packages and settings from the phone: protected originals)",
+  ".tmp/dev-temp/phone/*/ (meminfo-*.txt, Game logs, preview JPGs), phonelib.py",
+  ".tmp/dev-temp/tools (dotnet-gcdump), .tmp/mp-m0-20260929/results/*.json, run/*: *.jpg, *.json, *.log, report.txt",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "a710dd19fac61a87c9f1eafe49d053ff964436ff265fce03262ee2df6998b119",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "206f9298b78255850f551742f978cec72062ee0344a82ff40d3ba80ab71f03ee",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "0dea4191c1ee4a5c2ce07a11ac75a8afd24982ae9277caeccd10fa1e45179798",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 131123404800,
+  "freePct": 13.11
+ }
+}

@@ -36,6 +36,6 @@ public static class ScWeaponPreparation {
             foreach(var g in geometry.Groups)if(g.Texture!=asset+"_hd")ScTexturePreparation.Load("Textures/ScCsgoKnives/"+g.Texture);
             ScNpcWeaponRenderer.PrepareGeometry(geometry,project);
         }
-        Log.Information(FormattableString.Invariant($"[CS_PERF] restored-weapons count={equipped.Length} ms={clock.Elapsed.TotalMilliseconds:F2} texturesReady={ScTexturePreparation.Ready} textureWaitMs={ScTexturePreparation.WaitMilliseconds:F2} uploadMs={ScTexturePreparation.UploadMilliseconds:F2}"));
+        KnifeLog.Diagnostic(FormattableString.Invariant($"[CS_PERF] restored-weapons count={equipped.Length} ms={clock.Elapsed.TotalMilliseconds:F2} texturesReady={ScTexturePreparation.Ready} textureWaitMs={ScTexturePreparation.WaitMilliseconds:F2} uploadMs={ScTexturePreparation.UploadMilliseconds:F2}"));
     }
 }

@@ -1,0 +1,180 @@
+{
+ "task": "tracer sample AK/AWP/P90 + rope guns to dashes (docs/tasks/deathmatch-addon-round6-20261005.md §4.6)",
+ "date": "2026-10-05T15:07:04",
+ "trigger": "user 2026-10-05: 我看你每次都记录那么多，图片什么的，过往的有没有及时清理",
+ "mode": "do",
+ "permanence": "permanent deletion (not the recycle bin); stages are rebuildable from recorded sources, frames are derived test captures",
+ "removed": {
+  "superseded tracer dev stages tra..trh (tri is the current test build; every stage is rebuilt from the recorded sources by completion_140)": [
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\tra",
+    "bytes": 1726341427,
+    "files": 2281
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\trb",
+    "bytes": 1683855994,
+    "files": 2122
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\trc",
+    "bytes": 1726347628,
+    "files": 2281
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\trd",
+    "bytes": 1726349405,
+    "files": 2281
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\tre",
+    "bytes": 1726356053,
+    "files": 2281
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\trf",
+    "bytes": 1726362586,
+    "files": 2281
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\trg",
+    "bytes": 1726364650,
+    "files": 2281
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\trh",
+    "bytes": 1726365455,
+    "files": 2281
+   }
+  ],
+  "raw frames of the tracer probes (results/tracer-probe-*.json and the sample sheets in .tmp/tracer-sample-20261005 stay)": [
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-dmr6f-20261005-123910\\frames",
+    "bytes": 301703202,
+    "files": 306
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-dmr6f2-20261005-125315\\frames",
+    "bytes": 125866316,
+    "files": 135
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-dmr6f3-20261005-125719\\frames",
+    "bytes": 195467244,
+    "files": 178
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-tra-20261005-131416\\frames",
+    "bytes": 260646116,
+    "files": 268
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-trc-20261005-132747\\frames",
+    "bytes": 205387360,
+    "files": 254
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-trd-20261005-134009\\frames",
+    "bytes": 1416714634,
+    "files": 2306
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-tre-20261005-135246\\frames",
+    "bytes": 1115087431,
+    "files": 2610
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-trf-20261005-140140\\frames",
+    "bytes": 1026704988,
+    "files": 2195
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-trg-20261005-140939\\frames",
+    "bytes": 1026071088,
+    "files": 2263
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-trh-20261005-141658\\frames",
+    "bytes": 926574579,
+    "files": 2070
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\tracer-probe-tri-20261005-144237\\frames",
+    "bytes": 1194943209,
+    "files": 2149
+   }
+  ],
+  "raw frames of the rejected R6-5 CS2 muzzle-FX calibration rounds fxa..fxh, dmr6d, dmr6e (comparison sheets .tmp/cs2-measure-20261004/visual/fx-*.jpg stay)": [
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-dmr6d-20261005-053221\\frames",
+    "bytes": 1145814270,
+    "files": 11430
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-dmr6e-20261005-120834\\frames",
+    "bytes": 18311188,
+    "files": 153
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-dmr6e-20261005-121043\\frames",
+    "bytes": 215077938,
+    "files": 2401
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxa-20261005-030505\\frames",
+    "bytes": 268440224,
+    "files": 2700
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxb-20261005-031552\\frames",
+    "bytes": 294248340,
+    "files": 2781
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxc-20261005-032940\\frames",
+    "bytes": 234877703,
+    "files": 2570
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxd-20261005-034112\\frames",
+    "bytes": 284433789,
+    "files": 2771
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxe-20261005-035601\\frames",
+    "bytes": 283795591,
+    "files": 2695
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxf-20261005-040617\\frames",
+    "bytes": 270099349,
+    "files": 2781
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxg-20261005-041901\\frames",
+    "bytes": 250394536,
+    "files": 2782
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxh-20261005-043046\\frames",
+    "bytes": 299854866,
+    "files": 2788
+   },
+   {
+    "path": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\gun-visuals-slow-fxhrest-20261005-043729\\frames",
+    "bytes": 918887134,
+    "files": 9090
+   }
+  ]
+ },
+ "kept": [
+  "stage tri (current test packages)",
+  "results/tracer-probe-*.json, every run folder's logs and non-frame files",
+  ".tmp/tracer-sample-20261005 sheets",
+  ".tmp/cs2-measure-20261004 (CS2 reference frames and comparison sheets)",
+  "gun-visuals-dmr5b / -slow-dmr5b / -slow-dmr6f frames (delivered rounds' visual evidence)"
+ ],
+ "outputUnchanged": true,
+ "totalBytes": 26047744293,
+ "freeAfter": 60509552640
+}

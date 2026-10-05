@@ -1,0 +1,736 @@
+{
+  "scope": "Read-only delivered c13 review, local CS2 resource extraction, unchanged mod-XDB reuse and MP source audit; no MP build/session or full mod-hook gameplay acceptance",
+  "packages": [
+    {
+      "role": "全量",
+      "bytes": 526641811,
+      "sha256": "0bfa61e523c8dc1ba67faf98e4ea8ef3bada4fe3781b8c9b34028a6567826abf"
+    },
+    {
+      "role": "轻量",
+      "bytes": 35529367,
+      "sha256": "f2eff2bbe0a4ab9dee5c5bb744e2b2810c84952eea53ae6b0c83f3aab06f896a"
+    },
+    {
+      "role": "探员",
+      "bytes": 38456949,
+      "sha256": "ee92acfe43fe612546b37e8357c5210ac2ffcf92bbf06acc16c8de7b98976e8c"
+    }
+  ],
+  "c13Reports": [
+    {
+      "name": "ai-full",
+      "failed": 0,
+      "count": 64,
+      "sha256": "6fe2bd85650200df4da916aa543dc5a4df2e3b4417f6cd4f73358a1e6061f78d"
+    },
+    {
+      "name": "ai-lite",
+      "failed": 0,
+      "count": 64,
+      "sha256": "044796aa43d71a12711006418bedca7bb7287b9527881189764b7cde3ff26afe"
+    },
+    {
+      "name": "main-full",
+      "failed": 0,
+      "count": 13911,
+      "sha256": "3b40e3cfe0e115dbab8674244a227d19e9ce7bd28842253527c022976400f749"
+    },
+    {
+      "name": "main-lite",
+      "failed": 0,
+      "count": 14214,
+      "sha256": "863ce9b7deb658a1d057d9210af1d2cfad35185d23a32a31149e8410ed1bce04"
+    },
+    {
+      "name": "family",
+      "failed": 0,
+      "count": 246,
+      "sha256": "d1b0266c7da78f55c3dc30a637677a69e2ab4588c79ec876137eead23e972386"
+    },
+    {
+      "name": "c4-full",
+      "failed": 0,
+      "count": 73,
+      "sha256": "96dbf11d20a49cfb681159cbe55b275e7f392d71fdc07c25c3f5c4dbb157b49f"
+    },
+    {
+      "name": "c4-lite",
+      "failed": 0,
+      "count": 73,
+      "sha256": "57ca0fd765f78864f8ececb757bed1b2b304365dc0948f20a58d970b2d43de60"
+    },
+    {
+      "name": "tactical-full-suite",
+      "failed": 4,
+      "count": 105,
+      "sha256": "d4c33a2d55653255ba59f577ccc51a8c11bb5cefe0e0574dbb73ac3ddd676a18"
+    }
+  ],
+  "mpRoot": "D:\\下载\\SurvivalcraftApi-API_1.9.3.2_MP\\SurvivalcraftApi-API_1.9.3.2_MP",
+  "mpSources": {
+    "Survivalcraft/Managers/NetworkManager.cs": "7844bf8b40903eef2e217fdc877a04682790ed66979e9a157f93ebae71129a6a",
+    "Survivalcraft/ModsManager/ModsManager.cs": "efe3694a5f01adb9c39cbe3f5ea7da7610405e64470a719b4892dbc92b330781",
+    "Survivalcraft/ModsManager/ModLoader.cs": "695eb2735d9eb2877db3fcd8a08fd8c59220db5933290c9d36cb27795a8e34d5",
+    "Survivalcraft/ModsManager/ModEntity.cs": "21fc55eb7e0cf349d9a46e67a513f128e71fbfc42252232872608abf752aea2c",
+    "Survivalcraft/Game/IInventory.cs": "26f4672a8dc0b6aba6c33a19485031049c691691382490149633c8cdea78b9a6",
+    "Survivalcraft/Component/ComponentHealth.cs": "03af362d5b5a7af7cb3c534ffa765143cdb9a9eba0fe7c78094c21e3f87b6a4d",
+    "Survivalcraft/Component/ComponentInventoryBase.cs": "69eaed2d11eb18899112fc840bc3e22a6876fb50f3f52ccba28914b76ba334dd",
+    "Survivalcraft.Multiplayer/NetworkModLoader.cs": "5f7084141effafb6a98e5b76fc65f5c18f030f70cc69adcd639cfd1b9956e51d",
+    "Survivalcraft.Multiplayer/Network/PacketManager.cs": "d37df2b0a8f4ed206fd88fbe1841ebc4188a2fdca43dd2d9e92b5fdcf85e8fb1",
+    "Survivalcraft.Multiplayer/Network/Packet/Base/PlayerPacketBase.cs": "036e5b2f34aeb6507eeefac3fc5aefaba88503fe9f571291c912c651800669c7",
+    "Survivalcraft.Multiplayer/Network/Packet/Connect/ConnectPacket.cs": "8c7725f900c3cc2d096dd4d40fc26a7497cc9f45c17006062208f4937f370eda",
+    "Survivalcraft.Multiplayer/Network/Packet/Inventory/InventorySyncPacket.cs": "6b7f09754d4a089210918793f1a84d3f6671f41f14f85d952d2d36c199c51620",
+    "Survivalcraft.Multiplayer/Network/Packet/Health/InjureEventPacket.cs": "36020a866b648f1d0942c58bb1b84915b5665c3bfb6d946e6029bf966a9d3387",
+    "Survivalcraft.Multiplayer/Network/SubsystemNetwork.cs": "050dcf4ef6da7678f813ad2894c6700e938d76560a1719076e3a0b05c456afb4",
+    "Survivalcraft.CompatNet/CompatNetCore.cs": "ea2a9217e563c717d1196ae631db098afebafe55c1e04651bfa841e2ab2de973",
+    "Survivalcraft.CompatNet/CompatNetPacket.cs": "76cded17e4f89c4ebc90af364404f637ab134fa25c571e2c9ef26b2d7935fb70",
+    "Survivalcraft.CompatNet/ICompatNetAdapter.cs": "5d8b3ff8aaf10ffcdf94637f0077ebc1c14aaa0433fb51f28ce93310b3b81f15",
+    "Survivalcraft.CompatNet/Compats/Gunsmod/GunCompatNetAdapter.cs": "1ffea08baa8953a36d7fbb45e774d44289f1972f232b97fffffa4de6f1cb5d49"
+  },
+  "mpCompiledGameDllPresent": false,
+  "cs2Assets": {
+    "cs2\\panorama\\images\\hud\\armor.svg": {
+      "bytes": 9445,
+      "sha256": "e594e572d753d71463e12de804d1b0f026e4734ef835a82a822d887aa250b482"
+    },
+    "cs2\\panorama\\images\\hud\\armor_helmet.svg": {
+      "bytes": 12850,
+      "sha256": "56b49a4d60cc68527cdaf4d108bd20627bba87d2d7fe4d7aefaf625e7f6ffdd0"
+    },
+    "cs2\\panorama\\images\\icons\\equipment\\helmet.svg": {
+      "bytes": 2536,
+      "sha256": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529"
+    },
+    "cs2\\panorama\\layout\\hud\\hudhealthbars.xml": {
+      "bytes": 645,
+      "sha256": "d2dc83563437f7cd1ea19e24636762f2435d1e20ebe474dbee1a67e656d2f808"
+    },
+    "cs2\\panorama\\styles\\hud\\hudhealthbars.css": {
+      "bytes": 1185,
+      "sha256": "02ccf81c4f4f285d5be44bac2a5b2aae075d887e843401bf3146523c9486a6d4"
+    },
+    "cs2\\particles\\entity\\grenade_path_snap.vsnap": {
+      "bytes": 2757,
+      "sha256": "84cb6066cf12bc4c99c806ae6780e00989f86f078cb998422ae4667592a7d860"
+    },
+    "cs2\\particles\\impact_fx\\impact_helmet_headshot.vpcf": {
+      "bytes": 4102,
+      "sha256": "c71d993cfd5f0639138df402fc2b8a1c746cf796eabc1db86ba522981225aea6"
+    },
+    "cs2\\particles\\impact_fx\\impact_helmet_headshot_glow.vpcf": {
+      "bytes": 5664,
+      "sha256": "d8fdd4ec4e4aaa461cebe17f2f0b7bb8fd92e09557517979f3548504286fb8c4"
+    },
+    "cs2\\particles\\impact_fx\\impact_helmet_headshot_spark.vpcf": {
+      "bytes": 2940,
+      "sha256": "176b8ab2d4d51ecb2298e13cb108f862024055a62ea5e2dc6a844b9df9464501"
+    },
+    "cs2\\particles\\ui\\annotation\\ui_annotation_grenade_destination.vpcf": {
+      "bytes": 56170,
+      "sha256": "04b91799f7d71cecb7bab3d19377c12930a7466ce98bf373c45485013c09d63f"
+    },
+    "cs2\\soundevents\\game_sounds_player.vsndevts": {
+      "bytes": 120210,
+      "sha256": "35b2ca5d4be176b7690a94521f8278a8456ff3b91142d7acf013d0af4cf89409"
+    },
+    "cs2\\sounds\\player\\headshot_armor_e1.wav": {
+      "bytes": 71388,
+      "sha256": "fe5305c7e1496b4f9d1bfd52dbb43696bbdd20fad2a895a4b84c482938675610"
+    }
+  },
+  "headshotEvents": [
+    {
+      "event": "Player.DeathHeadShot.AttackerFeedback",
+      "volume": "0.4",
+      "files": [
+        "sounds/player/headshot_noarmor_01.vsnd",
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_03.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShotArmor.AttackerFeedback",
+      "volume": "0.0",
+      "files": [
+        "sounds/player/headshot_armor_01.vsnd"
+      ],
+      "children": [
+        "Player.DeathHeadShot.AttackerFeedback.Flesh",
+        "Player.DeathHeadShot.AttackerFeedback.Dink"
+      ]
+    },
+    {
+      "event": "Player.DamageHeadShotArmor.AttackerFeedback",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/headshot_armor_e1.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.AttackerFeedback.Flesh",
+      "volume": "0.3",
+      "files": [
+        "sounds/player/headshot_armor_flesh.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.AttackerFeedback.Dink",
+      "volume": "0.6",
+      "files": [
+        "sounds/player/headshot_armor_e1.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.Flesh",
+      "volume": "0.2",
+      "files": [
+        "sounds/player/headshot_armor_flesh.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.Dink",
+      "volume": "0.7",
+      "files": [
+        "sounds/player/headshot_armor_e1.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DamageHeadShot.AttackerFeedback",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/headshot_noarmor_01.vsnd",
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_03.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DamageHeadShot.Onlooker",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/headshot_noarmor_01.vsnd",
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_03.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DamageHeadShot.Victim",
+      "volume": "0.49",
+      "files": [
+        "sounds/player/headshot_noarmor_01.vsnd",
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_03.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DamageHeadShotArmor.Onlooker",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/headshot_armor_e1.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DamageHeadShotArmor.Victim",
+      "volume": "0.75",
+      "files": [
+        "sounds/player/headshot_armor_e1.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.Victim",
+      "volume": "0.55",
+      "files": [
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.Onlooker",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/headshot_noarmor_01.vsnd",
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_03.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShotArmor.Onlooker",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/player_damagebody_05.vsnd",
+        "sounds/player/player_damagebody_06.vsnd",
+        "sounds/player/player_damagebody_07.vsnd"
+      ],
+      "children": [
+        "Player.DeathHeadShot.Flesh",
+        "Player.DeathHeadShot.Dink"
+      ]
+    },
+    {
+      "event": "Player.DeathHeadShotArmor.Victim",
+      "volume": "0.7",
+      "files": [
+        "sounds/player/player_damagebody_05.vsnd",
+        "sounds/player/player_damagebody_06.vsnd",
+        "sounds/player/player_damagebody_07.vsnd"
+      ],
+      "children": [
+        "Player.DeathHeadShot.Victim.Flesh",
+        "Player.DeathHeadShot.Victim.Dink"
+      ]
+    },
+    {
+      "event": "Player.DeathHeadShotArmor.Spectator",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/player_damagebody_05.vsnd",
+        "sounds/player/player_damagebody_06.vsnd",
+        "sounds/player/player_damagebody_07.vsnd"
+      ],
+      "children": [
+        "Player.DeathHeadShot.Flesh",
+        "Player.DeathHeadShot.Dink"
+      ]
+    },
+    {
+      "event": "Player.DeathHeadShot.Spectator",
+      "volume": "0.5",
+      "files": [
+        "sounds/player/headshot_noarmor_01.vsnd",
+        "sounds/player/headshot_noarmor_02.vsnd",
+        "sounds/player/headshot_noarmor_03.vsnd",
+        "sounds/player/headshot_noarmor_04.vsnd",
+        "sounds/player/headshot_noarmor_05.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.Victim.Dink",
+      "volume": "0.7",
+      "files": [
+        "sounds/player/headshot_armor_e1.vsnd"
+      ],
+      "children": []
+    },
+    {
+      "event": "Player.DeathHeadShot.Victim.Flesh",
+      "volume": "0.2",
+      "files": [
+        "sounds/player/headshot_armor_flesh.vsnd"
+      ],
+      "children": []
+    }
+  ],
+  "installedMods": [
+    {
+      "file": "11111.scmod",
+      "currentSha256": "a445c3bdc7bbfab2cec0ca8b880ac8e811379bf15a33cefcbf23c3046bf5632d",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[1工业时代2-1.0.0.2.scmod",
+      "currentSha256": "e66dd3c6d578dabfe9594537aed2d82a408b9911a595415b732398c25cb9646a",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.8.1.3]命令方块4.1.7.scmod",
+      "currentSha256": "07cd2a8e714fed2676445affde71bacb1a0f45cbcf6bf6216acce47764f0085a",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.8.2.3]循环电路板v1.02.scmod",
+      "currentSha256": "a5cc0532d7f5a5f95a058f4e465aa8808fda0c7a36813ea97707fff10c9df4c2",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.8]主角身体属性提升1.21.scmod",
+      "currentSha256": "0cfd791d5e4c9c6d3f9755ea7e8f77adbb446217f7324102bee6ff3843ff651a",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.8]生存开透视角.scmod",
+      "currentSha256": "dc2984daaa8fe21f9608343a18b33516474db925e22207390b3c7a493ce372d4",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9+]ScbbsPlus社区扩展v1.4.3.scmod",
+      "currentSha256": "2960b313e3a444a7dcd20e7a6b9d5fb681a9b0d3a6b2fa7bab879e07d4fde74e",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.1.3]HDR天幕v1.0.2公测版.scmod",
+      "currentSha256": "7c83391726a9d736d85ee283cf9cfd8f3f8ff78f233a46a694495f4ed8ad3698",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "currentSha256": "6c0a1d7eec67a612ebbdf51908e3a16de80f126bc753cab3090c255600fb3a3c",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.2.1]Neorxna-v1.4 (2).scmod",
+      "currentSha256": "1efefcb5b9cff41a68cb39580908cdf524db5cfd0ffbc0d41a90aad65a3317c6",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.2]工业时代2x泰拉工作台 v1.0.scmod",
+      "currentSha256": "2ed04ff9480ecce73bd99957a04fa68a4b21f47e1c73d336db88768a07e939f7",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.2]泰拉工作台 Terraria Crafting Table  v1.1.1.scmod",
+      "currentSha256": "54f50ca6cf1a6eb86a253f8ddb2b235d1aba76633ce18831c5a0e0abb05bedbb",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.3]工业时代2：Neorxna信息显示增强v1.2.scmod",
+      "currentSha256": "d41c1bcb6c062776711e3f964cc11ee209a030f7c1dd04d3733ba966e185c90a",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.3]工业时代2：筛子_v1.1 内测.scmod",
+      "currentSha256": "540541303aac96b8d6f4f3d38696f2afa8b0dec05edfba0687fa5e625f4c37f4",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.3]杂交工艺v1.2.0-beta.3内测版(勿外传).scmod",
+      "currentSha256": "6785c2865728ee47472d46e07417c91bd98234375172ee1206d6a5f055f21543",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9.3]深海迷航V1.2.2.scmod",
+      "currentSha256": "6484157cfd4cae63a764c7c18d0b52cdf0df93dc875fa4f7199d48a17eed8551",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9]NekoMeko Model-v1.1.scmod",
+      "currentSha256": "12a659a67676640203277b9ad862d91e3116c4b3e3db84f35fdf9e0003cdeafc",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9]服饰配件V1.2.1.scmod",
+      "currentSha256": "61b15968b816dd28984cfd775f5ccbaa42f1c2707b7813b5cdd11124304d9b18",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9]构千形V1.2.1.scmod",
+      "currentSha256": "d67d0bd29fd3cf479512f0c70ecbd10eaee31e402471247939545950af09bfaf",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9]玲兰科技v3.0.4(需玲兰辅助).scmod",
+      "currentSha256": "a2eda34cdb6e15d42c594c83e2bdbc1668bec06b39450d89ddb8727664b2dfd6",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[API1.9]玲兰辅助v3.0.3.scmod",
+      "currentSha256": "40ea58b5d6ff453065f290c250af19cac98ad4cd7313944ec370fc69b0df7a24",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "currentSha256": "336de65c0a70a4731e1a93902d3caee358871ec4add933d0ef3c0d1c0a59dbc5",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "[工业时代附属]物流-1.0.0.1.scmod",
+      "currentSha256": "f64e951bb2e98f104c8c6ed4c7ed7655a2ab3f9d6f1535fc7ad632ae39b00e57",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "mod.scmod",
+      "currentSha256": "52756ff4d9f29db8a80226bdc9fdc73ae80ab16ec04863f6c82bdcf55e132788",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "NoAutoWakeUpMod.scmod",
+      "currentSha256": "a79a858d28cdecbd830a3ec26b70bf9c65a8e19f4a384888cb84f6042fff2fd3",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "RecipaediaEX-2.0.0.1.scmod",
+      "currentSha256": "9279123c11167a77ac430f0b402431b9c44773efe22c5ba574f3e2529104365d",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "SneakPlaceMod.scmod",
+      "currentSha256": "63eb9f279827a47c9e8e3f0901f6643c2c29cfdcfbf1f51ea35199822c17ea76",
+      "matchesPriorXdbAudit": true
+    },
+    {
+      "file": "化肥.scmod",
+      "currentSha256": "e0155235c77a155ff4c871c013095691bf9210b7490538dc2e0d9b854bb436d7",
+      "matchesPriorXdbAudit": true
+    }
+  ],
+  "declaredCreatureParameters": [
+    {
+      "mod": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "entity": "SAGhoul_Weak_01",
+      "declared": [
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "35"
+        },
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "mod": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "entity": "SAGhoul_Strong_01",
+      "declared": [
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "70"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "30"
+        },
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "mod": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "entity": "SAGhoul_Bear",
+      "declared": [
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "5"
+        },
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "360"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "255"
+        }
+      ]
+    },
+    {
+      "mod": "[API1.9.2.1]Ghoul尸鬼-v2.0.scmod",
+      "entity": "SAGhoul_Monster",
+      "declared": [
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "260"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "30"
+        },
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "mod": "[API1.9.3]深海迷航V1.2.2.scmod",
+      "entity": "Kraken",
+      "declared": [
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "4096"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "999"
+        },
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "64"
+        }
+      ]
+    },
+    {
+      "mod": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "entity": "SirenHeadDisguise",
+      "declared": [
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "1024"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "600"
+        }
+      ]
+    },
+    {
+      "mod": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "entity": "SirenHead",
+      "declared": [
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "1024"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "400"
+        },
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "20"
+        }
+      ]
+    },
+    {
+      "mod": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "entity": "DonkeyMan",
+      "declared": [
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "6"
+        },
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "91"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "100"
+        }
+      ]
+    },
+    {
+      "mod": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "entity": "Fenrir",
+      "declared": [
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "16"
+        },
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "1600"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "infinity"
+        }
+      ]
+    },
+    {
+      "mod": "[内测1,勿外传][API1.9.3]恶灵传说V2.1.scmod",
+      "entity": "CartoonCat1",
+      "declared": [
+        {
+          "component": "Miner",
+          "name": "AttackPower",
+          "value": "5"
+        },
+        {
+          "component": "Health",
+          "name": "AttackResilience",
+          "value": "200"
+        },
+        {
+          "component": "Health",
+          "name": "FireResilience",
+          "value": "200"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "XDB rows are explicit values, not full inheritance/runtime hooks",
+    "grenade_target material decompile hit unsupported VCS72 in local Source2Viewer20; no direct practice-beam runtime implementation verified",
+    "No live network test",
+    "No audio listening acceptance",
+    "Protection against non-CS attacks not implemented in c13"
+  ],
+  "reviewDate": "2026-09-29",
+  "docOnly": true,
+  "audioAnalysis": {
+    "listeningAccepted": false,
+    "measurement": "Decoded original stereo PCM, whole-file normalized absolute peak and RMS; not in-game loudness",
+    "e1": {
+      "seconds": 0.404444444,
+      "peak": 0.494995117,
+      "RMS": 0.245026362
+    },
+    "old01": {
+      "seconds": 0.959773243,
+      "peak": 0.064086914,
+      "RMS": 0.009716803
+    }
+  },
+  "syncSnapshot": {
+    "localState": "idle",
+    "localNeedItems": 0,
+    "pullErrors": 0,
+    "remoteCompletion": 100,
+    "remoteNeedItems": 0,
+    "remoteNeedDeletes": 0,
+    "remoteState": "valid",
+    "writerStopped": "Not independently verified; user reports VPS completion; docs only on Windows, recheck before source edits"
+  },
+  "confirmedGaps": [
+    "No armor HUD",
+    "Companion lacks armor key/management",
+    "Non-CS damage bypasses numerical armor",
+    "No helmet spark connected",
+    "Current old01 import differs from CS2 DamageHeadShotArmor.AttackerFeedback Dink e1 sample"
+  ],
+  "hypotheses": [
+    "Artificial right/down offset fading along predicted trajectory may contribute to awkward visual appearance; requires identical-input A/B",
+    "Same package with optional isolated MP adapter may preserve standalone loading; binary and two-client proof required"
+  ]
+}

@@ -4,7 +4,8 @@ namespace Game;
 public static class ScSmokeVolume {
     // CS2's smoke reaches its working volume quickly, holds that volume, then fades as a
     // turbulent cloud. It does not visibly collapse into a small ball during dissipation.
-    public const float Radius=3.75f, HalfHeight=2.8f, GroundCenter=.7f, Lifetime=18, GrowthSeconds=.72f, DissipationSeconds=1.25f;
+    // Lifetime: 20 s from the bloom to the end of the fade (2026-10-01 user request; was 18).
+    public const float Radius=3.75f, HalfHeight=2.8f, GroundCenter=.7f, Lifetime=20, GrowthSeconds=.72f, DissipationSeconds=1.25f;
     // A ground-cut dome: wide at foot level rather than a sphere touching the floor at one point.
     public static Vector3 Center(ScGrenadeState s) => s.Position+Vector3.UnitY*GroundCenter;
     public static float Growth(ScGrenadeState s) {
@@ -54,6 +55,7 @@ public static class ScSmokeVolume {
             return clear is null || clear(s.Position+Vector3.UnitY*.1f,point);
         });
     }
-    /// <summary>Per-shell sprite count by distance (×2 shells). Far counts rose in 0.32.0 so a distant sphere still overlaps enough to occlude.</summary>
-    public static int SpriteCount(float distance) => distance<18?32:distance<40?24:16;
+    /// <summary>Historical per-shell count by distance. The cloud no longer changes with distance
+    /// (ScGrenadeVisuals.SmokePuffCount); kept for tools that read it.</summary>
+    public static int SpriteCount(float distance) => ScGrenadeVisuals.SmokePuffCount/(ScResourcePolicy.Lite?1:2);
 }

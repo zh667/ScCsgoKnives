@@ -1,0 +1,1127 @@
+{
+ "case": "dm-sp-dmr3g",
+ "packages": {
+  "[API1.9]CS武器1.4.0-轻量包.scmod": "4f2cb698afc431cc996d385f17b0c69a63d7eeae72eaeebc71f955d0874914ae",
+  "[API1.9]CS武器1.4.0-死亡竞赛包.scmod": "0e56aae4c6184a06df16850e41973f764b53c9b56907321f1ee33a1f7b7c78d3"
+ },
+ "steps": [
+  {
+   "t": 13.5,
+   "step": "creative world",
+   "value": "Creative"
+  },
+  {
+   "t": 15.1,
+   "step": "player",
+   "value": "True"
+  },
+  {
+   "t": 15.6,
+   "step": "settings",
+   "value": "gui in screenshots"
+  },
+  {
+   "t": 17.8,
+   "step": "arena",
+   "value": "-143 73 49"
+  },
+  {
+   "t": 27.3,
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 28.3,
+   "step": "in the world",
+   "value": {
+    "enabled": false,
+    "frozen": null,
+    "phase": "-",
+    "view": "Editing",
+    "match": -1,
+    "region": false,
+    "lobby": false,
+    "spawns": 0,
+    "me": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 49.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 28.5,
+   "step": "hud",
+   "value": "feed-, timer-, protect-, death-, edit-, scores-, buy-, board-, menu-"
+  },
+  {
+   "t": 30.4,
+   "step": "F6",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 30.4,
+   "step": "menu opened",
+   "value": {
+    "enabled": false,
+    "frozen": null,
+    "phase": "-",
+    "view": "Editing",
+    "match": -1,
+    "region": false,
+    "lobby": false,
+    "spawns": 0,
+    "me": "-",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": "先点“把本世界启用为竞技世界”。",
+    "pos": "-142.5 73.0 49.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 31.4,
+   "step": "frame menu-new-world",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-00-menu-new-world"
+  },
+  {
+   "t": 32.6,
+   "step": "clicked '把本世界启用为竞技世界'",
+   "value": "921,167 inside=True window 1536x825"
+  },
+  {
+   "t": 32.6,
+   "step": "after enable",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": false,
+    "lobby": false,
+    "spawns": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": "已启用：本世界现在是死亡竞赛专用世界。接下来设两个角点、复活点和准备点",
+    "pos": "-142.5 73.0 49.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoRegion#0"
+   }
+  },
+  {
+   "t": 33.4,
+   "step": "frame after-enable",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-01-after-enable"
+  },
+  {
+   "t": 33.4,
+   "step": "hud",
+   "value": "feed-, timer-, protect-, death-, edit-, scores-, buy-, board-, menu-"
+  },
+  {
+   "t": 36.7,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 37.8,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 38.9,
+   "step": "clicked '角点 1'",
+   "value": "695,167 inside=True window 1536x825"
+  },
+  {
+   "t": 38.9,
+   "step": "corner 1",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": false,
+    "lobby": false,
+    "spawns": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-146.5 73.0 45.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoRegion#0"
+   }
+  },
+  {
+   "t": 41.0,
+   "step": "frame corner-1-pending-box",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-02-corner-1-pending-box"
+  },
+  {
+   "t": 42.9,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 43.9,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 45.0,
+   "step": "clicked '角点 2'",
+   "value": "921,167 inside=True window 1536x825"
+  },
+  {
+   "t": 45.0,
+   "step": "corner 2",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": false,
+    "spawns": 0,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-138.5 73.0 57.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoLobby#0 / TooFewSpawns#0"
+   }
+  },
+  {
+   "t": 48.1,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 49.1,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 50.2,
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 50.2,
+   "step": "spawn 1",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": false,
+    "spawns": 1,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-145.5 73.0 46.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoLobby#0 / TooFewSpawns#0"
+   }
+  },
+  {
+   "t": 53.3,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 54.3,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 55.4,
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 55.4,
+   "step": "spawn 2",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": false,
+    "spawns": 2,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-139.5 73.0 46.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoLobby#0 / SpawnsClustered#0"
+   }
+  },
+  {
+   "t": 58.4,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 59.5,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 60.6,
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 60.6,
+   "step": "spawn 3",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": false,
+    "spawns": 3,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-145.5 73.0 56.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoLobby#0"
+   }
+  },
+  {
+   "t": 63.6,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 64.7,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 65.8,
+   "step": "clicked '添加复活点'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 65.8,
+   "step": "spawn 4",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": false,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-139.5 73.0 56.5",
+    "health": 1,
+    "fly": false,
+    "issues": "NoLobby#0"
+   }
+  },
+  {
+   "t": 68.8,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 69.9,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 71.0,
+   "step": "clicked '准备/观战点'",
+   "value": "1147,167 inside=True window 1536x825"
+  },
+  {
+   "t": 71.0,
+   "step": "lobby",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 72.8,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 73.9,
+   "step": "clicked '地图'",
+   "value": "1060,102 inside=True window 1536x825"
+  },
+  {
+   "t": 75.0,
+   "step": "clicked '检查地图'",
+   "value": "1147,231 inside=True window 1536x825"
+  },
+  {
+   "t": 75.0,
+   "step": "check map",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": "地图检查通过：4 个复活点可用",
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 75.8,
+   "step": "frame check-map",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-03-check-map"
+  },
+  {
+   "t": 76.8,
+   "step": "clicked '比赛'",
+   "value": "934,102 inside=True window 1536x825"
+  },
+  {
+   "t": 78.1,
+   "step": "clicked '开始比赛'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 78.1,
+   "step": "start before anyone entered (refused)",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Editing",
+    "view": "Editing",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": "不能开始：先点“开放大厅”，大家配装（B）并点“入场”后再开始",
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 78.9,
+   "step": "frame start-refused",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-04-start-refused"
+  },
+  {
+   "t": 79.0,
+   "step": "camera",
+   "value": "fly"
+  },
+  {
+   "t": 81.0,
+   "step": "frame editing-preview-from-above",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-05-editing-preview-from-above"
+  },
+  {
+   "t": 83.4,
+   "step": "frame editing-preview-first-person",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-06-editing-preview-first-person"
+  },
+  {
+   "t": 83.4,
+   "step": "hud",
+   "value": "feed-, timer-, protect-, death-, edit+, scores-, buy-, board-, menu-"
+  },
+  {
+   "t": 85.2,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 86.3,
+   "step": "clicked '比赛'",
+   "value": "934,102 inside=True window 1536x825"
+  },
+  {
+   "t": 87.3,
+   "step": "clicked '开放大厅'",
+   "value": "921,231 inside=True window 1536x825"
+  },
+  {
+   "t": 87.3,
+   "step": "after open lobby",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": "大厅已开放：所有玩家回到准备点，竞技规则生效",
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 88.1,
+   "step": "frame lobby-menu",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-07-lobby-menu"
+  },
+  {
+   "t": 90.0,
+   "step": "wheel opened",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmWheelPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 90.7,
+   "step": "frame wheel-top",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-08-wheel-top"
+  },
+  {
+   "t": 91.8,
+   "step": "wheel sector 2",
+   "value": "656 451 手枪|冲锋枪|步枪与狙击|霰弹与机枪|刀具|装备"
+  },
+  {
+   "t": 92.5,
+   "step": "frame wheel-rifles",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-09-wheel-rifles"
+  },
+  {
+   "t": 93.5,
+   "step": "wheel sector 0",
+   "value": "508 195 AK-47|M4A1-S|AWP|M4A4|法玛斯|SSG 08|加利尔 AR|SCAR-20"
+  },
+  {
+   "t": 94.3,
+   "step": "frame wheel-ak-drawer",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-10-wheel-ak-drawer"
+  },
+  {
+   "t": 95.3,
+   "step": "clicked '原厂外观'",
+   "value": "882,161 inside=True window 1536x825"
+  },
+  {
+   "t": 95.3,
+   "step": "ak chosen",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmWheelPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 96.4,
+   "step": "wheel centre (back)",
+   "value": null
+  },
+  {
+   "t": 97.4,
+   "step": "wheel sector 0",
+   "value": "508 195 手枪|冲锋枪|步枪与狙击|霰弹与机枪|刀具|装备"
+  },
+  {
+   "t": 98.1,
+   "step": "frame wheel-pistols",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-11-wheel-pistols"
+  },
+  {
+   "t": 99.1,
+   "step": "wheel sector 0",
+   "value": "508 195 沙漠之鹰|格洛克 18|USP-S|FN57|P2000|P250|Tec-9|CZ75"
+  },
+  {
+   "t": 100.2,
+   "step": "clicked '原厂外观'",
+   "value": "882,161 inside=True window 1536x825"
+  },
+  {
+   "t": 100.2,
+   "step": "pistol chosen",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":null,\"Secondary\":null,\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmWheelPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 100.9,
+   "step": "frame wheel-loadout-ready",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-12-wheel-loadout-ready"
+  },
+  {
+   "t": 102.0,
+   "step": "clicked '确认'",
+   "value": "932,640 inside=True window 1536x825"
+  },
+  {
+   "t": 102.0,
+   "step": "confirmed",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=False life=0 hp=0 ap=0 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmWheelPanel",
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 103.8,
+   "step": "clicked '入场'",
+   "value": "1141,640 inside=True window 1536x825"
+  },
+  {
+   "t": 103.8,
+   "step": "entered",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Lobby",
+    "view": "Lobby",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=True life=0 hp=0 ap=0 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 105.6,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 106.7,
+   "step": "clicked '比赛'",
+   "value": "934,102 inside=True window 1536x825"
+  },
+  {
+   "t": 108.2,
+   "step": "clicked '开始比赛'",
+   "value": "695,231 inside=True window 1536x825"
+  },
+  {
+   "t": 108.2,
+   "step": "after start",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Countdown",
+    "view": "Countdown",
+    "match": 0,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=True life=0 hp=0 ap=0 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 109.0,
+   "step": "frame after-start-menu",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-13-after-start-menu"
+  },
+  {
+   "t": 110.9,
+   "step": "frame countdown-hud",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-14-countdown-hud"
+  },
+  {
+   "t": 110.9,
+   "step": "hud",
+   "value": "feed-, timer+, protect-, death-, edit-, scores-, buy-, board-, menu-"
+  },
+  {
+   "t": 117.4,
+   "step": "after countdown",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Running",
+    "view": "Running",
+    "match": 1,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Alive entered=True life=1 hp=100 ap=100 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "1048880,2146608,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-145.5 73.0 46.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 117.5,
+   "step": "equip sprites",
+   "value": "0:ScGunBlock data=64 variant=0 sprite=True; 1:ScGunBlock data=131 variant=3 sprite=True | ak47 sprite=True"
+  },
+  {
+   "t": 117.6,
+   "step": "health and armour shown",
+   "value": "bar shown 1.00 | armour helmet=100/100 armor=100/100"
+  },
+  {
+   "t": 118.6,
+   "step": "frame alive-hud",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-15-alive-hud"
+  },
+  {
+   "t": 118.6,
+   "step": "hud",
+   "value": "feed-, timer+, protect-, death-, edit-, scores-, buy-, board-, menu-"
+  },
+  {
+   "t": 118.7,
+   "step": "health set to 37",
+   "value": "set"
+  },
+  {
+   "t": 119.9,
+   "step": "health 37 shown",
+   "value": "bar shown 1.00 | armour helmet=100/100 armor=100/100"
+  },
+  {
+   "t": 120.8,
+   "step": "frame health-37",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-16-health-37"
+  },
+  {
+   "t": 124.9,
+   "step": "protection over",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Running",
+    "view": "Running",
+    "match": 1,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Alive entered=True life=1 hp=100 ap=100 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "1048880,2146608,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-145.5 73.0 46.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 125.9,
+   "step": "frame alive-hud-after-protection",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-17-alive-hud-after-protection"
+  },
+  {
+   "t": 126.9,
+   "step": "drop attempt",
+   "value": {
+    "before": "1048880,2146608,-,-,-,-,-,-,-,-",
+    "after": "1048880,2146608,-,-,-,-,-,-,-,-"
+   }
+  },
+  {
+   "t": 128.6,
+   "step": "frame scoreboard-held",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-18-scoreboard-held"
+  },
+  {
+   "t": 130.8,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 131.9,
+   "step": "clicked '比赛'",
+   "value": "934,90 inside=True window 1536x825"
+  },
+  {
+   "t": 133.4,
+   "step": "clicked '结束本局'",
+   "value": "695,220 inside=True window 1536x825"
+  },
+  {
+   "t": 133.4,
+   "step": "after stop",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Results",
+    "view": "Results",
+    "match": 1,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=True life=1 hp=100 ap=100 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": null,
+    "screen": "GameScreen",
+    "camera": "FppCamera",
+    "message": null,
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 135.2,
+   "step": "frame results",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-19-results"
+  },
+  {
+   "t": 137.0,
+   "step": "menu",
+   "value": "DmMenuPanel"
+  },
+  {
+   "t": 138.1,
+   "step": "clicked '设置'",
+   "value": "1187,102 inside=True window 1536x825"
+  },
+  {
+   "t": 139.9,
+   "step": "clicked '编辑 HUD 布局'",
+   "value": "808,167 inside=True window 1536x825"
+  },
+  {
+   "t": 139.9,
+   "step": "layout editor",
+   "value": {
+    "enabled": true,
+    "frozen": null,
+    "phase": "Results",
+    "view": "Results",
+    "match": 1,
+    "region": true,
+    "lobby": true,
+    "spawns": 4,
+    "me": "Preparing entered=True life=1 hp=100 ap=100 desired={\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+    "slots": "-,-,-,-,-,-,-,-,-,-",
+    "active": 0,
+    "modal": "DmMenuPanel",
+    "screen": "DmLayoutScreen",
+    "camera": "FppCamera",
+    "message": "",
+    "pos": "-142.5 73.0 61.5",
+    "health": 1,
+    "fly": false,
+    "issues": ""
+   }
+  },
+  {
+   "t": 140.7,
+   "step": "frame layout-editor",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-20-layout-editor"
+  },
+  {
+   "t": 140.8,
+   "step": "layout sliders",
+   "value": "153 536 251 0.90 | 153 536 313 0.00 | 153 536 375 1.00"
+  },
+  {
+   "t": 141.8,
+   "step": "layout sliders after a press",
+   "value": "153 536 251 1.80 | 153 536 313 0.00 | 153 536 375 1.00"
+  },
+  {
+   "t": 142.6,
+   "step": "frame layout-editor-slider",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-21-layout-editor-slider"
+  }
+ ],
+ "frames": [
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-00-menu-new-world",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-01-after-enable",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-02-corner-1-pending-box",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-03-check-map",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-04-start-refused",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-05-editing-preview-from-above",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-06-editing-preview-first-person",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-07-lobby-menu",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-08-wheel-top",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-09-wheel-rifles",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-10-wheel-ak-drawer",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-11-wheel-pistols",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-12-wheel-loadout-ready",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-13-after-start-menu",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-14-countdown-hud",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-15-alive-hud",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-16-health-37",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-17-alive-hud-after-protection",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-18-scoreboard-held",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-19-results",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-20-layout-editor",
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\run\\dm-sp-dmr3g-20261004-193009\\frames\\dm-sp-dmr3g-21-layout-editor-slider"
+ ],
+ "engine": {
+  "engine": "1.9.3.1",
+  "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131",
+  "exe": "37c5f9bba3546e762d44737778b9ad7f35aa5fa6121b87a1192bddea8e8ef884",
+  "dll": {
+   "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+   "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+   "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+  },
+  "mods": {
+   "ScTestAutomation131.scmod": "92c535e74258e57b649813749f3485484e56447ad0dc3c702439e031de7df4da",
+   "[API1.9]CS武器1.4.0-轻量包.scmod": "4f2cb698afc431cc996d385f17b0c69a63d7eeae72eaeebc71f955d0874914ae",
+   "[API1.9]CS武器1.4.0-死亡竞赛包.scmod": "0e56aae4c6184a06df16850e41973f764b53c9b56907321f1ee33a1f7b7c78d3"
+  }
+ },
+ "gameErrors": [],
+ "dmLog": [
+  "19:30:37.969 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:30:38.143 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var gw = pl.GuiWidget as Game.ContainerWidget; var root = gw?.AllChildren.OfType<Game.DmElement>().ToList(); if (root == null) return \"no gui\"; return string.Join(\", \", root.Select(e => e.Id + (e.IsVisible ? \"+\" : \"-\")));",
+  "19:30:40.104 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:30:41.495 [Information] [CS_DM] arena enabled",
+  "19:30:42.295 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:30:43.090 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var gw = pl.GuiWidget as Game.ContainerWidget; var root = gw?.AllChildren.OfType<Game.DmElement>().ToList(); if (root == null) return \"no gui\"; return string.Join(\", \", root.Select(e => e.Id + (e.IsVisible ? \"+\" : \"-\")));",
+  "19:30:47.756 [Information] [CS_DM] corner 1 at -147,73,45",
+  "19:30:48.555 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:30:53.916 [Information] [CS_DM] corner 2 at -139,73,57",
+  "19:30:53.917 [Information] [CS_DM] arena revision 1: region -147,73,45..-139,77,57, lobby False, spawns 0",
+  "19:30:54.714 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:30:59.111 [Information] [CS_DM] arena revision 2: region -147,73,45..-139,77,57, lobby False, spawns 1",
+  "19:30:59.909 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:04.305 [Information] [CS_DM] arena revision 3: region -147,73,45..-139,77,57, lobby False, spawns 2",
+  "19:31:05.103 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:09.492 [Information] [CS_DM] arena revision 4: region -147,73,45..-139,77,57, lobby False, spawns 3",
+  "19:31:10.290 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:14.686 [Information] [CS_DM] arena revision 5: region -147,73,45..-139,77,57, lobby False, spawns 4",
+  "19:31:15.485 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:19.875 [Information] [CS_DM] arena revision 6: region -147,73,45..-139,77,57, lobby True, spawns 4",
+  "19:31:20.679 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:24.672 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:26.812 [Information] [CS_DM] start refused: nobody entered",
+  "19:31:27.811 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:33.047 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var gw = pl.GuiWidget as Game.ContainerWidget; var root = gw?.AllChildren.OfType<Game.DmElement>().ToList(); if (root == null) return \"no gui\"; return string.Join(\", \", root.Select(e => e.Id + (e.IsVisible ? \"+\" : \"-\")));",
+  "19:31:36.243 [Information] [CS_DM] phase Lobby, match 0",
+  "19:31:37.040 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:39.644 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:45.035 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:45.127 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var root = pl.ComponentGui.ModalPanelWidget as Game.ContainerWidget; var w = root?.AllChildren.OfType<Game.DmWheelWidget>().FirstOrDefault(); if (w == null) return \"no wheel\"; var p = w.WidgetToScreen(new Engine.Vector2(Game.DmWheelWidget.Radius + 10f)); return System.FormattableString.Invariant($\"{p.X:0} {p.Y:0}\");",
+  "19:31:49.881 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:51.707 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:53.491 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:31:56.687 [Information] [CS_DM] match 1 countdown, 1 entered",
+  "19:31:56.692 [Information] [CS_DM] phase Countdown, match 0",
+  "19:31:57.887 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:00.609 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var gw = pl.GuiWidget as Game.ContainerWidget; var root = gw?.AllChildren.OfType<Game.DmElement>().ToList(); if (root == null) return \"no gui\"; return string.Join(\", \", root.Select(e => e.Id + (e.IsVisible ? \"+\" : \"-\")));",
+  "19:32:02.002 [Information] [CS_DM] phase Running, match 1",
+  "19:32:02.007 [Information] [CS_DM] life 1 of local:2 at spawn #1: {\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]}",
+  "19:32:07.116 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:07.230 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var inv = pl.ComponentMiner.Inventory; return string.Join(\"; \", Enumerable.Range(0, 10).Where(i => inv.GetSlotCount(i) > 0).Select(i => { int v = inv.GetSlotValue(i); var b = Game.BlocksManager.Blocks[Game.Terrain.ExtractContents(v)]; return i + \":\" + b.GetType().Name + \" data=\" + Game.Terrain.ExtractData(v) + \" variant=\" + (b is Game.ScGunBlock ? Game.ScGunBlock.GetVariant(v) : -9) + \" sprite=\" + (Game.DmPx.ItemSprite(v) != null); })) + \" | ak47 sprite=\" + (Game.DmPx.Sprite(\"ak47\") != null);",
+  "19:32:08.276 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var gw = pl.GuiWidget as Game.ContainerWidget; var root = gw?.AllChildren.OfType<Game.DmElement>().ToList(); if (root == null) return \"no gui\"; return string.Join(\", \", root.Select(e => e.Id + (e.IsVisible ? \"+\" : \"-\")));",
+  "19:32:08.359 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var p = dm.StateOf(pl); p.Health = 37; return \"set\";",
+  "19:32:10.600 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; dm.StateOf(pl).Health = 100; return \"restored\";",
+  "19:32:14.603 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:15.554 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:16.561 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:21.859 [Information] [CS_DM] phase Results (stopped), match 1",
+  "19:32:23.047 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:28.079 [Verbose] Entered screen \"ScCsgoDeathmatchLayout\"",
+  "19:32:29.574 [Information] Command executed: FUNC var project = Game.GameManager.Project; var players = project.FindSubsystem<Game.SubsystemPlayers>(true); var mainProp = players.GetType().GetProperty(\"MainPlayer\"); var pl = mainProp != null ? (Game.ComponentPlayer)mainProp.GetValue(players) : (players.PlayersData.Count > 0 ? players.PlayersData[0].ComponentPlayer : null); if (pl == null) return \"no main player\"; var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return \"no deathmatch subsystem\"; var m = dm.Match; var me = dm.Enabled ? dm.StateOf(pl) : null; var inv = pl.ComponentMiner.Inventory; var modal = pl.ComponentGui.ModalPanelWidget; string message = null; if (modal != null) { var f = modal.GetType().GetField(\"m_message\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); if (f?.GetValue(modal) is Game.LabelWidget l) message = l.Text; } return System.Text.Json.JsonSerializer.Serialize(new { enabled = dm.Enabled, frozen = dm.Frozen, phase = m == null ? \"-\" : m.Phase.ToString(), view = dm.View.Phase.ToString(), match = m == null ? -1 : m.MatchId,   region = dm.Arena.HasRegion, lobby = dm.Arena.HasLobby, spawns = dm.Arena.Spawns.Count,   me = me == null ? \"-\" : me.Phase + \" entered=\" + me.Entered + \" life=\" + me.LifeId + \" hp=\" + me.Health + \" ap=\" + me.Armour + \" desired=\" + me.Desired.Encode(),   slots = string.Join(\",\", Enumerable.Range(0, 10).Select(i => inv.GetSlotCount(i) > 0 ? inv.GetSlotValue(i).ToString() : \"-\")), active = inv.ActiveSlotIndex,   modal = modal?.GetType().Name, screen = Game.ScreensManager.CurrentScreen?.GetType().Name, camera = pl.GameWidget.ActiveCamera.GetType().Name, message,   pos = System.FormattableString.Invariant($\"{pl.ComponentBody.Position.X:0.0} {pl.ComponentBody.Position.Y:0.0} {pl.ComponentBody.Position.Z:0.0}\"), health = pl.ComponentHealth.Health,   fly = pl.ComponentLocomotion.IsCreativeFlyEnabled, issues = dm.Enabled ? string.Join(\" / \", dm.ArenaIssues().Select(i => i.Code + \"#\" + i.SpawnId)) : \"\" });",
+  "19:32:30.450 [Information] Command executed: FUNC var screen = Game.ScreensManager.CurrentScreen as Game.ContainerWidget; if (screen == null) return \"no screen\"; var sliders = screen.AllChildren.OfType<Game.DmPixelSlider>().ToList(); return string.Join(\" | \", sliders.Select(s => { var b = s.GlobalBounds; return System.FormattableString.Invariant($\"{b.Min.X:0} {b.Max.X:0} {(b.Min.Y + b.Max.Y) / 2:0} {s.Value:0.00}\"); }));",
+  "19:32:31.505 [Information] Command executed: FUNC var screen = Game.ScreensManager.CurrentScreen as Game.ContainerWidget; if (screen == null) return \"no screen\"; var sliders = screen.AllChildren.OfType<Game.DmPixelSlider>().ToList(); return string.Join(\" | \", sliders.Select(s => { var b = s.GlobalBounds; return System.FormattableString.Invariant($\"{b.Min.X:0} {b.Max.X:0} {(b.Min.Y + b.Max.Y) / 2:0} {s.Value:0.00}\"); }));"
+ ]
+}

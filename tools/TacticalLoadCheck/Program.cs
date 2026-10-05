@@ -34,6 +34,89 @@ if(args.Length==5&&args[0]=="--voice-native"){
     File.WriteAllText(args[4],JsonSerializer.Serialize(new{failed=voiceFailures,checks=voiceChecks},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine($"voice-native {voiceChecks.Count}, failed={voiceFailures}");return voiceFailures;
 }
 
+// deathmatch-addon task 1.4 (design §14): a world that carries the deathmatch package's save group and mode marker, taken
+// through the game's own load and save hooks in three separate processes - with the package, WITHOUT it (the released
+// core alone), and with it again. Each process loads the packages natively (archive, assemblies, loaders, database) and
+// has no compile-time reference to any of them. What is asserted: the load hooks never refuse the world, the engine's
+// own project parser accepts the unknown group, the group and the marker come out of every save exactly as they went
+// in, and without the package the world says which mode it belongs to. What it is NOT: a game loading that world on
+// screen (the user's test).
+// Usage: --dm-payload <core.scmod> <Content.zip> <deathmatch.scmod | -> <world in.xml> <group.xml | -> <world out.xml> <report.json>
+if(args.Length==8&&args[0]=="--dm-payload") {
+    Dispatcher.Initialize();var cases=new List<object>();int failure=0;bool withDm=args[3]!="-";
+    void Require(string name,bool ok,string detail=""){cases.Add(new{name,ok,detail});if(!ok)throw new Exception(name+" "+detail);}
+    try {
+        var mods=new List<ModEntity>();
+        foreach(string path in withDm?new[]{args[1],args[3]}:new[]{args[1]}){var m=new HeadlessMod{ModArchive=Game.ZipArchive.Open(File.OpenRead(path))};m.InitResources();ModsManager.ModList.Add(m);mods.Add(m);}
+        var loaded=mods.ToDictionary(m=>m,m=>m.GetAssemblies());
+        foreach(var a in loaded.Values.SelectMany(a=>a))ModsManager.Dlls[a.FullName]=a;
+        AppDomain.CurrentDomain.AssemblyResolve+=(_,e)=>ModsManager.Dlls.GetValueOrDefault(e.Name);
+        foreach(var m in mods)foreach(var a in loaded[m])m.HandleAssembly(a);
+        using var vanilla=System.IO.Compression.ZipFile.OpenRead(args[2]);
+        using var databaseStream=vanilla.Entries.Single(e=>e.FullName.EndsWith("Database.xml")).Open();var database=XElement.Load(databaseStream);
+        foreach(var m in mods)m.LoadXdb(ref database);DatabaseManager.LoadDataBaseFromXml(database);
+        var core=ModsManager.Dlls.Values.Single(a=>a.GetName().Name=="ScCsgoKnives");
+        bool template=database.Descendants("MemberSubsystemTemplate").Any(e=>(string)e.Attribute("Name")=="ScDeathmatch");
+        Require(withDm?"with the package: the database has the ScDeathmatch subsystem and its class resolves to the package's assembly":"without the package: the database has no ScDeathmatch subsystem and no deathmatch assembly is loaded",
+            withDm?template&&TypeCache.FindType("Game.SubsystemScDeathmatch",true,true).Assembly.GetName().Name=="ScCsgoDeathmatch":!template&&ModsManager.Dlls.Values.All(a=>a.GetName().Name!="ScCsgoDeathmatch"));
+        ContentManager.AddContentReader(new Game.IContentReader.XmlReader());
+        mods[0].GetFile("Assets/ScCsgoResources.xml",s=>{var copy=new MemoryStream();s.CopyTo(copy);copy.Position=0;var contentInfo=new ContentInfo("ScCsgoResources.xml");contentInfo.SetContentStream(copy);ContentManager.Add(contentInfo);});
+        XElement Group(XElement parent,string name)=>parent.Elements("Values").SingleOrDefault(e=>(string)e.Attribute("Name")==name);
+        string Field(XElement group,string name)=>(string)group?.Elements("Value").SingleOrDefault(e=>(string)e.Attribute("Name")==name)?.Attribute("Value");
+        var doc=XElement.Load(args[4]);var subs=doc.Element("Subsystems");
+        XElement payload=args[5]!="-"?XElement.Load(args[5]):null;
+        if(payload!=null){Group(subs,"ScDeathmatch")?.Remove();subs.Add(new XElement(payload));}     // the group as the package's own Save wrote it (dmloop)
+        var original=new XElement(Group(subs,"ScDeathmatch")??throw new Exception("the world has no ScDeathmatch group"));
+        var dir=Directory.CreateTempSubdirectory("dm-payload-");
+        var info=(WorldInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(WorldInfo));info.DirectoryName=dir.FullName;
+        var hooks=ModsManager.m_tempModHooks["ProjectXmlLoad"].UnorderedItems.OrderBy(i=>i.Priority).Select(i=>i.Element).ToArray();
+        foreach(var hook in hooks)hook.ProjectXmlLoad(doc,info,null);
+        Require("the game's load hooks accept the world (no refusal, no file written)",Group(doc.Element("Subsystems"),"ScGunBlockBehavior")!=null&&Directory.GetFiles(dir.FullName).Length==0);
+        subs=doc.Element("Subsystems");var state=Group(subs,"ScCompatibility");var capsule=XElement.Parse(Field(state,"Capsule"));
+        Require("the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",capsule.Element("Compatibility").Elements("Subsystem").Any(e=>(string)e.Attribute("Name")=="ScDeathmatch"));
+        var kept=capsule.Element("Opaque").Elements("Subsystem").Select(e=>e.Element("Values")).SingleOrDefault(e=>(string)e.Attribute("Name")=="ScDeathmatch");
+        Require("the capsule holds the group exactly as it was saved",kept!=null&&XNode.DeepEquals(kept,original));
+        // the engine's own parser of a saved world: a group without a subsystem template is carried as plain values and no
+        // subsystem is made of it (GameEntitySystem.Project instantiates only template-backed groups)
+        // (the fixture world is a trimmed Project.xml without the root's template reference; a real one names the game's project template)
+        var forParser=new XElement(doc);var projectTemplate=database.Descendants("ProjectTemplate").First();
+        if(forParser.Attribute("Guid")==null&&forParser.Attribute("Name")==null)forParser.SetAttributeValue("Guid",(string)projectTemplate.Attribute("Guid"));
+        var parsed=new GameEntitySystem.ProjectData(DatabaseManager.GameDatabase,forParser,null,true);
+        var parsedGroup=parsed.ValuesDictionary.GetValue<ValuesDictionary>("ScDeathmatch",null);
+        Require(withDm?"the engine's project parser binds the group to the package's subsystem":"the engine's project parser accepts the unknown group and binds no subsystem to it",
+            parsedGroup!=null&&(parsedGroup.DatabaseObject!=null)==withDm&&parsedGroup.GetValue<int>("Schema")==int.Parse(Field(original,"Schema")));
+        var modesType=core.GetType("Game.ScWorldModes",true);var compatType=core.GetType("Game.SubsystemScCompatibility",true);
+        System.Collections.IList Modes(XElement c)=>(System.Collections.IList)System.Linq.Enumerable.ToList((IEnumerable<object>)modesType.GetMethod("Read").Invoke(null,[c]));
+        // ---- what a save writes: the compatibility subsystem's own Save; the deathmatch group only when its subsystem exists
+        var compat=(GameEntitySystem.Subsystem)Activator.CreateInstance(compatType);var compatValues=new ValuesDictionary();compatValues.ApplyOverrides(state);compat.Load(compatValues);
+        if(withDm&&payload!=null) {
+            // the package marks the world when the host enables the arena (ScWorldModes.Mark writes this element into the capsule)
+            var marked=(XElement)compatType.GetMethod("ReadCapsule").Invoke(compat,null);marked.Element("Modes")?.Remove();
+            marked.Add(new XElement("Modes",new XElement("Mode",new XAttribute("Id","zh667.ScCsgoDeathmatch/deathmatch"),new XAttribute("Name","死亡竞赛"),new XAttribute("Required",true))));
+            compatType.GetMethod("WriteCapsule").Invoke(compat,[marked]);
+        }
+        var writtenValues=new ValuesDictionary();compat.Save(writtenValues);var written=new XElement("Values",new XAttribute("Name","ScCompatibility"));writtenValues.Save(written);
+        var saved=new XElement(doc);var savedSubs=saved.Element("Subsystems");Group(savedSubs,"ScCompatibility").ReplaceWith(written);
+        if(!withDm)Group(savedSubs,"ScDeathmatch").Remove();                    // no subsystem, so the engine writes no such group
+        foreach(var hook in ModsManager.m_tempModHooks["OnProjectXmlSaved"].UnorderedItems.OrderBy(i=>i.Priority).Select(i=>i.Element))hook.OnProjectXmlSaved(saved);
+        var after=Group(saved.Element("Subsystems"),"ScDeathmatch");
+        Require(withDm?"with the package the saved world carries the group":"without the package the save puts the group back exactly as it was: nothing lost, nothing reset",after!=null&&XNode.DeepEquals(after,original));
+        var savedCapsule=XElement.Parse(Field(Group(saved.Element("Subsystems"),"ScCompatibility"),"Capsule"));var modes=Modes(savedCapsule);
+        Require("the saved world carries the mode marker: a dedicated deathmatch world",modes.Count==1&&(string)modes[0].GetType().GetProperty("Id").GetValue(modes[0])=="zh667.ScCsgoDeathmatch/deathmatch"&&(bool)modes[0].GetType().GetProperty("Required").GetValue(modes[0]));
+        if(!withDm) {
+            string notice=(string)modesType.GetMethod("DormantNotice").Invoke(null,[modes[0]]);
+            Require("without the package the world names its mode and says the data is kept and the mode is dormant",notice.Contains("死亡竞赛")&&notice.Contains("保留"),notice);
+        }
+        // (the core's own save hook adds travel metadata beside the registry; the registry itself - every gun record - is what must not move)
+        var gunsBefore=Group(Group(doc.Element("Subsystems"),"ScGunBlockBehavior"),"GunRegistry");var gunsAfter=Group(Group(saved.Element("Subsystems"),"ScGunBlockBehavior"),"GunRegistry");
+        Require("the gun registry (every gun record) is untouched by the round trip",gunsBefore!=null&&XNode.DeepEquals(gunsBefore,gunsAfter));
+        saved.Save(args[6]);
+        cases.Add(new{name="identity",ok=true,detail=$"core {core.ManifestModule.ModuleVersionId}; group sha256 {Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(original.ToString(SaveOptions.DisableFormatting)))).ToLowerInvariant()}"});
+    }catch(Exception e){failure=1;cases.Add(new{error=e.ToString()});Console.Error.WriteLine(e);}
+    File.WriteAllText(args[7],JsonSerializer.Serialize(new{mode=withDm?"with the deathmatch package":"without the deathmatch package",failed=failure,checks=cases},new JsonSerializerOptions{WriteIndented=true,Encoder=System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping}));
+    Console.WriteLine($"dm-payload ({(withDm?"with":"without")} the package) {cases.Count} cases, failed={failure}");return failure;
+}
+
 if(args.Length==4&&args[0]=="--compat-native") {
     Dispatcher.Initialize();var cases=new List<object>();int failure=0;
     void CheckCompat(string name,bool ok){cases.Add(new{name,ok});if(!ok)throw new Exception(name);}

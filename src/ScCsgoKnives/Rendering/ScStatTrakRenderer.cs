@@ -30,7 +30,6 @@ public static class ScStatTrakRenderer {
     static readonly PrimitivesRenderer3D s_firstPerson = new();
     static readonly Dictionary<(string Asset, bool Legacy), Matrix> s_itemFrames = [];
     static readonly Dictionary<(string Asset, bool Legacy), Matrix> s_worldFrames = [];
-    static readonly HashSet<(string Asset, bool Legacy)> s_logged = [];
     static Texture2D Texture(string name) => ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" + name);
     static void EnsureMeshes(long kills) {
         if (s_body is null) {
@@ -53,8 +52,16 @@ public static class ScStatTrakRenderer {
         foreach (int index in geometry.Indices) mesh.Indices.Add((ushort)index);
         return mesh;
     }
+    /// <summary>A world's mode may show its own counter on a gun it issued (deathmatch-addon, L5): whether the module is
+    /// shown and the number on it, for this item value; null leaves the gun's own record to decide. Display only: nothing
+    /// here is written to a record, so no survival kill count or growth ever comes from it.</summary>
+    public static Func<int, (bool Show, long Kills)?> CounterSource;
     static bool Counter(int value, string asset, out long kills) {
         kills = 0;
+        if (CounterSource?.Invoke(value) is { } ruled) {
+            kills = ruled.Kills;
+            return ruled.Show && ScGunStatTrak.ModuleAvailable && ScGunBlock.SpecOf(value)?.Name == asset;
+        }
         if (Terrain.ExtractContents(value) != BlocksManager.GetBlockIndex<ScGunBlock>(true)
             || !GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var snapshot) || !snapshot.CounterInstalled
             || GunSpec.All[snapshot.Variant].Name != asset || !ScGunStatTrak.ModuleAvailable) return false;
@@ -79,7 +86,6 @@ public static class ScStatTrakRenderer {
             Queue(s_body, body, world, new Color(light, light, light), s_firstPerson);
         Queue(s_display, Texture(ScGunStatTrak.DigitAtlas), world, Color.White, s_firstPerson);
         s_firstPerson.Flush(projection);
-        if (s_logged.Add((asset,legacy))) KnifeLog.Trace($"CS2 StatTrak draw: {asset}, body={(legacy ? "legacy" : "HD")}, bone={ScGunStatTrak.For(asset,legacy).Bone}, official module 330+48 triangles, count={kills}");
     }
     static void Queue(BlockMesh mesh, Texture2D texture, Matrix matrix, Color color, PrimitivesRenderer3D renderer) {
         var batch = renderer.TexturedBatch(texture, false, 0, DepthStencilState.Default,

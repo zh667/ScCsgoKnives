@@ -1,0 +1,156 @@
+{
+ "task": "current-direction-20260929 round 2 (c14 first round-2 candidate, c15 delivered)",
+ "mode": "delete",
+ "deleted": [
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\candidate",
+   "bytes": 600657195,
+   "files": 3
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\full",
+   "bytes": 766499191,
+   "files": 434
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\lite",
+   "bytes": 179375763,
+   "files": 439
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\resources",
+   "bytes": 56824555,
+   "files": 19
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\tools",
+   "bytes": 161573362,
+   "files": 86
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\tree",
+   "bytes": 72219635,
+   "files": 1015
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c14\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\candidate",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\full",
+   "bytes": 766502886,
+   "files": 434
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\lite",
+   "bytes": 179379458,
+   "files": 439
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\resources",
+   "bytes": 56824555,
+   "files": 19
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\tools",
+   "bytes": 646483430,
+   "files": 341
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\tree",
+   "bytes": 110102992,
+   "files": 1177
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\assets-full",
+   "bytes": 55739634,
+   "files": 6
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\baseline",
+   "bytes": 0,
+   "files": 0
+  },
+  {
+   "path": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\c15\\old130",
+   "bytes": 137021952,
+   "files": 2
+  }
+ ],
+ "bytes": 3844944242,
+ "permanent": "yes (rebuildable stage copies, packages and builds; not a recycle bin)",
+ "freeBeforeGB": 39.77,
+ "freeAfterGB": 43.36,
+ "keptPerStage": {
+  "c14": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "c4-full.json",
+   "c4-lite.json",
+   "clips.json",
+   "logs",
+   "main-full.json",
+   "main-lite.json",
+   "packages.json",
+   "source-hashes.json",
+   "ui"
+  ],
+  "c15": [
+   "ai-full.json",
+   "ai-lite.json",
+   "builds.json",
+   "c4-full.json",
+   "c4-lite.json",
+   "checks.json",
+   "clips.json",
+   "compat.json",
+   "family.json",
+   "hotspots",
+   "integration-full-both.json",
+   "integration-full-none.json",
+   "integration-full-reversed.json",
+   "integration-lite-both.json",
+   "integration-lite-none.json",
+   "integration-lite-reversed.json",
+   "inventory.json",
+   "logs",
+   "main-full.json",
+   "main-lite.json",
+   "motion",
+   "native-full.json",
+   "native-hooks.json",
+   "native-lite.json",
+   "old130.json",
+   "packages.json",
+   "source-hashes.json",
+   "split-agents.json",
+   "split-core.json",
+   "tactical-full-suite.json",
+   "throw",
+   "ui",
+   "vf-full.json",
+   "vf-lite.json"
+  ]
+ },
+ "keptCache": {
+  "clips-e32b553d5c3477bb": 56815154
+ },
+ "delivered": {
+  "全量": "0e621ed2c7ccab9ec178b4f4a3b9a516a77b678cd404b3ff28fdf1dfce4e38d2",
+  "轻量": "31baa9dbd5c51e05a7147441aa7327d83d76fba05cb2ce3544906dd9cc8242a2",
+  "探员": "2a397b49b32b29d01566398a2c43e3ce9ad05a569bd9396441843847bbeb0208"
+ },
+ "kept": "reports (*.json), logs, motion/throw/hotspots/ui renders and reports, source-hashes.json, packages.json; the clip cache (keyed by input hash, reused by the next round); output packages; release-140, dense/export and CS2 sources; the MP M0 stage (.tmp/mp-m0-20260929, still in use); c01-c13 stage remnants untouched"
+}

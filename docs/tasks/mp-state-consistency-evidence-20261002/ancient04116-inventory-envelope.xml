@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Inventory ActiveSlotIndex="0">
+  <Stack Slot="0" Value="1048880" Count="1" BlockType="Game.ScGunBlock" Assembly="ScCsgoKnives" />
+</Inventory>

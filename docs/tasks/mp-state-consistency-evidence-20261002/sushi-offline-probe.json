@@ -1,0 +1,12 @@
+{
+  "platform": "actual 1.9.3.1 assemblies, offline",
+  "gunNativeDurability": -1,
+  "stackingOptionsOff": 1,
+  "stackingOptionsOn": 4,
+  "playerAndSixPersonalBoxesUniqueHolders": 1,
+  "channelKeysAfterRemovingMiddle": [
+    0,
+    2
+  ],
+  "channelSave": "KeyNotFoundException: The given key \u00271\u0027 was not present in the dictionary."
+}

@@ -1,0 +1,35 @@
+{
+ "cs2": "1.41.8.8, 2026-10-05, aim_map; sv_showimpacts 1, sv_showimpacts_penetration 1; AK-47 (m_flPenetration 2, damage 36) single nospread rounds swept across the edge of a Wood_Crate about 150 units away; the overlay read off the frames (Windows .tmp/cs2-measure-20261004/pen/)",
+ "readings": [
+  {
+   "yaw": 163.0,
+   "thicknessCm": 42.02,
+   "lost": 11.4
+  },
+  {
+   "yaw": 163.5,
+   "thicknessCm": 28.03,
+   "lost": 9.534
+  },
+  {
+   "yaw": 164.0,
+   "thicknessCm": 13.09,
+   "lost": "8.507 (digits overlapped: 8.5 or 8.0)"
+  },
+  {
+   "yaw": 164.25,
+   "thicknessCm": 5.5,
+   "lost": 7.577
+  },
+  {
+   "yaw": "164.5-165.5",
+   "material": "concrete (the wall behind)",
+   "lost": 16.9,
+   "thicknessCm": 0.0,
+   "note": "stopped"
+  }
+ ],
+ "firstShot": "the crate's thick middle: STOPPED, Wood_Crate, LOST 36.0",
+ "formula": "CS:GO SDK HandleBulletPenetration with CS2's surfaces (wood entered and left: modifier 3): 7.67 / 7.97 / 9.29 / 11.40",
+ "surfaces": "src/ScCsgoDeathmatch/Data/dm_cs2_surfaces.json (scripts/surfaceproperties_game.txt, 78 surfaces)"
+}

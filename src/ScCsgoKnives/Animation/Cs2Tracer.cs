@@ -54,13 +54,16 @@ public static class Cs2Tracer {
     /// <summary>
     /// How far behind the head the trail is drawn, at a given age and distance from the
     /// viewer: m_flLengthFadeInTime ramps it up from nothing, C_OP_DistanceToTransform
-    /// scales it with distance, and m_flMaxLength caps it.
+    /// scales it with distance, and m_flMaxLength caps the result - the cap comes last,
+    /// as in Source's sprite trail (length fade, then the min/max clamp). Capping first
+    /// (until 2026-10-05) cut a young trail to a fifth less than CS2 draws it: while the
+    /// round is in flight the AK's trail is about as long as the way it has come.
     /// </summary>
     public static float TrailMetres(Cs2Effects.Tracer spec, Cs2Effects.TracerPass pass,
                                     float age, float metresFromViewer) {
         float trail = spec.MetresPerSecond * spec.TrailSecondsMid * spec.LengthScale(metresFromViewer);
-        trail = MathUtils.Min(trail, spec.TrailMetres);
-        return trail * MathUtils.Saturate(age / MathUtils.Max(pass.LengthFadeIn ?? 0.08f, 1e-3f));
+        trail *= MathUtils.Saturate(age / MathUtils.Max(pass.LengthFadeIn ?? 0.08f, 1e-3f));
+        return MathUtils.Min(trail, spec.TrailMetres);
     }
 
     /// <summary>

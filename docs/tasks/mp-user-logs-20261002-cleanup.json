@@ -1,0 +1,83 @@
+{
+ "task": "mp-user-logs-20261002",
+ "date": "2026-10-02T02:01:52",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "mpbCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage mpb build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpb\\full",
+    ".tmp\\completion-140-20260929\\mpb\\lite",
+    ".tmp\\completion-140-20260929\\mpb\\tools",
+    ".tmp\\completion-140-20260929\\mpb\\tree",
+    ".tmp\\completion-140-20260929\\mpb\\assets-full",
+    ".tmp\\completion-140-20260929\\mpb\\resources",
+    ".tmp\\completion-140-20260929\\mpb\\net",
+    ".tmp\\completion-140-20260929\\mpb\\motion",
+    ".tmp\\completion-140-20260929\\mpb\\throw",
+    ".tmp\\completion-140-20260929\\mpb\\ui"
+   ],
+   "bytes": 2332230175,
+   "items": 4668,
+   "missing": []
+  },
+  "stage mpa build trees and undelivered candidates (superseded by mpb; logs, reports kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpa\\full",
+    ".tmp\\completion-140-20260929\\mpa\\lite",
+    ".tmp\\completion-140-20260929\\mpa\\tools",
+    ".tmp\\completion-140-20260929\\mpa\\tree",
+    ".tmp\\completion-140-20260929\\mpa\\assets-full",
+    ".tmp\\completion-140-20260929\\mpa\\resources",
+    ".tmp\\completion-140-20260929\\mpa\\net",
+    ".tmp\\completion-140-20260929\\mpa\\motion",
+    ".tmp\\completion-140-20260929\\mpa\\throw",
+    ".tmp\\completion-140-20260929\\mpa\\ui",
+    ".tmp\\completion-140-20260929\\mpa\\candidate"
+   ],
+   "bytes": 2557823337,
+   "items": 4479,
+   "missing": []
+  },
+  "small platform/third-party DLL exports used for the read-only analysis (.tmp/dev-temp/mpx)": {
+   "paths": [
+    ".tmp\\dev-temp\\mpx"
+   ],
+   "bytes": 8962708,
+   "items": 62,
+   "missing": []
+  },
+  "totalBytes": 4899016220,
+  "items": 9209
+ },
+ "kept": [
+  "stages mpa, mpb: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/cs2-graphs (decompiled CS2 graphs, small)",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "dc7149930fbc5d991432c186c14569338e671e0f63d6f816b3f2764c6f59ed5b",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "1dd379bd2aa56e68c30295d79108f9938b1b0c08c5d17efbcb485338bb8be1ed",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "d0a49c56cd2223452ff68c257305b510a0dc2daaae79ac14fd125eeb7863d347",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 129816547328,
+  "freePct": 12.98
+ }
+}

@@ -434,11 +434,6 @@ public static class CsmcKnifeRig {
             Normalization = normalization,
             InverseNormalization = Matrix.Invert(normalization)
         };
-        KnifeLog.Trace(
-            $"[ScCsgoKnives] exact CSMC rig {name}: format={file.Format}, parts=[{string.Join(',', file.MeshParts)}], "
-            + $"bindings={file.Bindings.Count}, bones={file.Skeleton.Count}, clips=[{string.Join(',', file.Clips.Keys)}], "
-            + $"normalizationCenter=({center.X:0.###},{center.Y:0.###},{center.Z:0.###}), normalizationScale={file.MeshNormalizationScale:0.######}."
-        );
         return asset;
     }
 
@@ -477,7 +472,6 @@ public static class CsmcKnifeRig {
         ManifestEntry[] grenades = Read("AnimationData.grenades.json", false);
         ManifestEntry[] equipment = Read("AnimationData.equipment.json", false);
         ManifestEntry[] entries = [.. knives, .. guns, .. grenades, .. equipment];
-        KnifeLog.Trace($"[ScCsgoKnives] rig manifest: {knives.Length} knives + {guns.Length} guns = [{string.Join(",", entries.Select(e => e.Name))}].");
         return entries;
     }
 

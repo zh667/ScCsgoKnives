@@ -1,0 +1,46 @@
+[
+ {
+  "name": "hud_cs2_armor",
+  "sources": {
+   ".tmp/cs2-armor-hud-20261004/panorama/images/hud/armor.svg": "e594e572d753d71463e12de804d1b0f026e4734ef835a82a822d887aa250b482"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_cs2_armor.png",
+  "member": "Assets/Textures/ScCsgoKnives/hud_cs2_armor.png",
+  "sha256": "6254c82ae96f3b9ec6a7a547b3372acd044b5d034bd878b79f647dc1edd36016",
+  "bytes": 3356,
+  "edition": "full"
+ },
+ {
+  "name": "hud_cs2_armor",
+  "sources": {
+   ".tmp/cs2-armor-hud-20261004/panorama/images/hud/armor.svg": "e594e572d753d71463e12de804d1b0f026e4734ef835a82a822d887aa250b482"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/hud_cs2_armor.webp",
+  "member": "Assets/Textures/ScCsgoKnives/hud_cs2_armor.webp",
+  "sha256": "cd7a310645f4aeea9888064a19e4c516034b5c021e9c0fa2d0b5aff90071d5d0",
+  "bytes": 1754,
+  "edition": "lite"
+ },
+ {
+  "name": "hud_cs2_armor_helmet",
+  "sources": {
+   ".tmp/cs2-armor-hud-20261004/panorama/images/hud/armor_helmet.svg": "56b49a4d60cc68527cdaf4d108bd20627bba87d2d7fe4d7aefaf625e7f6ffdd0"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/hud_cs2_armor_helmet.png",
+  "member": "Assets/Textures/ScCsgoKnives/hud_cs2_armor_helmet.png",
+  "sha256": "a7c5f8cc2395a302658b5ca7704d08c703eb4c05610218321a2d5d0edee1da59",
+  "bytes": 2243,
+  "edition": "full"
+ },
+ {
+  "name": "hud_cs2_armor_helmet",
+  "sources": {
+   ".tmp/cs2-armor-hud-20261004/panorama/images/hud/armor_helmet.svg": "56b49a4d60cc68527cdaf4d108bd20627bba87d2d7fe4d7aefaf625e7f6ffdd0"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/hud_cs2_armor_helmet.webp",
+  "member": "Assets/Textures/ScCsgoKnives/hud_cs2_armor_helmet.webp",
+  "sha256": "6646a6a9bc2b3e42bf8d5554ff0a6c599021208090ceb94876b014450d0eabc2",
+  "bytes": 1270,
+  "edition": "lite"
+ }
+]

@@ -7,7 +7,13 @@ public static class ScInventoryTransaction {
     sealed class Epoch { public long Value; }
     static readonly ConditionalWeakTable<object, Epoch> Epochs = new();
     public static long Revision(IInventory inventory) => inventory is null ? -1 : Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value;
-    public static void Changed(IInventory inventory) { if (inventory is not null) Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value++; }
+    /// <summary>A CS transaction on this inventory ended. The epoch is this process's own stale-quote guard, not a network
+    /// version; slots the transaction rewrote are published by ScNetSlots (multiplayer host only).</summary>
+    public static void Changed(IInventory inventory) {
+        if (inventory is null) return;
+        Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value++;
+        ScNetSlots.TransactionEnded(inventory);
+    }
     public static int Count(IInventory inventory, int value) {
         inventory = ScInventoryIdentity.Inventory(inventory);
         int count = 0;
@@ -23,6 +29,16 @@ public static class ScInventoryTransaction {
             ? slot < Math.Min(10, inventory.SlotsCount) && inventory.GetSlotCount(slot) > 0
             : inventory.GetSlotCount(slot) == 1;
     }
+    /// <summary>More than one CS gun (or gun template) in one ordinary slot. CS guns answer a stacking of 1 themselves; a
+    /// container that sets its own capacity regardless (Sushi's boxes with its stacking options on) can still hold such a
+    /// stack. It is kept as it is and cannot be used until it is spread out.</summary>
+    public static bool IsGunStack(IInventory inventory, int slot) {
+        inventory = ScInventoryIdentity.Inventory(inventory);
+        if (inventory is null or ComponentCreativeInventory || slot < 0 || slot >= inventory.SlotsCount || inventory.GetSlotCount(slot) <= 1) return false;
+        int value = inventory.GetSlotValue(slot);
+        return BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunBlock), out int gun) && Terrain.ExtractContents(value) == gun
+            || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value);
+    }
     public static bool ReplaceWithCost(IInventory inventory, int slot, int expected, int replacement, int ammo, int cost) {
         inventory = ScInventoryIdentity.Inventory(inventory);
         if (!IsWeaponSlot(inventory, slot) || cost < 0
@@ -33,6 +49,7 @@ public static class ScInventoryTransaction {
             // one item does not empty an infinite creative source.
             creative.AddSlotItems(slot, replacement, 1);
             if (creative.GetSlotValue(slot) != replacement) return false;
+            ScNetSlots.Touched(inventory); // a creative slot write is not announced by the engine
             Changed(inventory);
             return true;
         }

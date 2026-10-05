@@ -1,0 +1,96 @@
+{
+ "task": "round3-fire-smoke-projectile-mp-20260930",
+ "stage": "early (before delivery): E: under 1% free, Windows Syncthing folder in error state since 18:21",
+ "date": "2026-09-30T18:32:36",
+ "authority": "standing authorization (AGENTS.md 2026-09-29) for this task's rebuildable intermediates; only superseded stages touched, current candidates (r3f/r3h) kept",
+ "permanence": "permanent deletion",
+ "removed": {
+  "stage build trees r3a/r3b/r3c/r3e (superseded single-player dev stages)": {
+   "bytes": 3403713695,
+   "items": 7584,
+   "paths": [
+    ".tmp\\completion-140-20260929\\r3a\\full",
+    ".tmp\\completion-140-20260929\\r3a\\lite",
+    ".tmp\\completion-140-20260929\\r3a\\tree",
+    ".tmp\\completion-140-20260929\\r3b\\full",
+    ".tmp\\completion-140-20260929\\r3b\\lite",
+    ".tmp\\completion-140-20260929\\r3b\\tree",
+    ".tmp\\completion-140-20260929\\r3c\\full",
+    ".tmp\\completion-140-20260929\\r3c\\lite",
+    ".tmp\\completion-140-20260929\\r3c\\tree",
+    ".tmp\\completion-140-20260929\\r3e\\full",
+    ".tmp\\completion-140-20260929\\r3e\\lite",
+    ".tmp\\completion-140-20260929\\r3e\\tree"
+   ],
+   "missing": []
+  },
+  "stage r3g build/candidate trees (gate-regression run, superseded by r3h)": {
+   "bytes": 2492470258,
+   "items": 4197,
+   "paths": [
+    ".tmp\\completion-140-20260929\\r3g\\full",
+    ".tmp\\completion-140-20260929\\r3g\\lite",
+    ".tmp\\completion-140-20260929\\r3g\\tools",
+    ".tmp\\completion-140-20260929\\r3g\\tree",
+    ".tmp\\completion-140-20260929\\r3g\\candidate",
+    ".tmp\\completion-140-20260929\\r3g\\assets-full",
+    ".tmp\\completion-140-20260929\\r3g\\resources",
+    ".tmp\\completion-140-20260929\\r3g\\net",
+    ".tmp\\completion-140-20260929\\r3g\\motion",
+    ".tmp\\completion-140-20260929\\r3g\\throw",
+    ".tmp\\completion-140-20260929\\r3g\\ui"
+   ],
+   "missing": []
+  },
+  "superseded test packages": {
+   "bytes": 2818093549,
+   "items": 10,
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3a-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3a-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3b-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3b-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3c-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3c-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3e-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\sp-r3e-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3c-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r3c-lite.scmod"
+   ],
+   "missing": []
+  },
+  "adapter dev build dirs r3c": {
+   "bytes": 21235943,
+   "items": 79,
+   "paths": [
+    ".tmp\\mp-m0-20260929\\build\\net-out-r3c",
+    ".tmp\\mp-m0-20260929\\build\\net-refs-r3c",
+    ".tmp\\mp-m0-20260929\\build\\net-src-r3c"
+   ],
+   "missing": []
+  },
+  "r3c smoke recording raw frames (GIF/sheets/crops/JSON kept)": {
+   "bytes": 981033423,
+   "items": 774,
+   "paths": [
+    ".tmp\\mp-m0-20260929\\run\\smoke-motion-r3c-lite-20260930-155610\\sm-r3c-lite-0001-a.png",
+    ".tmp\\mp-m0-20260929\\run\\smoke-motion-r3c-lite-20260930-155610\\sm-r3c-lite-0001-b.png",
+    ".tmp\\mp-m0-20260929\\run\\smoke-motion-r3c-lite-20260930-155610\\sm-r3c-lite-0001-c.png",
+    ".tmp\\mp-m0-20260929\\run\\smoke-motion-r3c-lite-20260930-155610\\sm-r3c-lite-0002-a.png",
+    ".tmp\\mp-m0-20260929\\run\\smoke-motion-r3c-lite-20260930-155610\\sm-r3c-lite-0002-b.png",
+    "... 774 files"
+   ],
+   "missing": []
+  },
+  "totalBytes": 9716546868,
+  "items": 12644
+ },
+ "diskBefore": {
+  "free": 8006942720,
+  "total": 1000186310656
+ },
+ "diskAfter": {
+  "free": 17752481792,
+  "freePct": 1.77
+ }
+}

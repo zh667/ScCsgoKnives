@@ -1,0 +1,174 @@
+[
+ {
+  "kind": "model",
+  "edition": "both",
+  "source": ".tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\w_eq_armor.glb",
+  "target": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/armor_vest.glb",
+  "member": "Assets/Models/ScCsgoKnives/armor_vest.glb",
+  "sha256": "4fa15ea22b047782bc16f6f0880af8504a94ac0339131c4b26975a2a1a4bc8aa",
+  "bytes": 163584,
+  "sourceSha256": "b5439375911386066fad601e1092679e5bcba5bb8823f8a0bf31733e42d739af",
+  "scale": 1.0,
+  "sizeMetres": [
+   0.322,
+   0.5018,
+   0.4187
+  ],
+  "triangles": 4928
+ },
+ {
+  "kind": "texture",
+  "edition": "full",
+  "source": "w_eq_armor.glb#E:\\projects\\ScCsgoKnives\\.tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\armor_diffuse_color_psd_25fc1cb.png",
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/armor_vest.png",
+  "member": "Assets/Textures/ScCsgoKnives/armor_vest.png",
+  "sha256": "2eb0c608d64fe99b671073b7cfc54fd821e517086dcdd6c2236f8d5927114850",
+  "bytes": 205736,
+  "size": [
+   512,
+   512
+  ],
+  "sourceSha256": "ac8436ec124c02c78fc10dfeb54d1ae42a2050a94918afbb98ba052150adc3b8"
+ },
+ {
+  "kind": "texture",
+  "edition": "lite",
+  "source": "w_eq_armor.glb#E:\\projects\\ScCsgoKnives\\.tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\armor_diffuse_color_psd_25fc1cb.png",
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/armor_vest.webp",
+  "member": "Assets/Textures/ScCsgoKnives/armor_vest.webp",
+  "sha256": "2b56ff15c6f242e645b69d1ad52a39b4879e91b9f5517023368afd3fb719b194",
+  "bytes": 47710,
+  "size": [
+   512,
+   512
+  ],
+  "sourceSha256": "ac8436ec124c02c78fc10dfeb54d1ae42a2050a94918afbb98ba052150adc3b8"
+ },
+ {
+  "kind": "icon",
+  "edition": "full",
+  "source": ".tmp\\cs2-hud-weapons-20260919\\panorama\\images\\icons\\equipment\\kevlar.svg",
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/armor_vest_slot.png",
+  "member": "Assets/Textures/ScCsgoKnives/armor_vest_slot.png",
+  "sha256": "fbd428905b20f0929b7aac0c62bd1ee4d47e8c3560bd7d6afb2d7b6c1a9c2994",
+  "bytes": 1940,
+  "size": [
+   104,
+   128
+  ],
+  "sourceSha256": "77a0cbfea4fdd74bf0cf2785f4f373291c2a67de2d775326cf9087c0ec8c377e"
+ },
+ {
+  "kind": "icon",
+  "edition": "lite",
+  "source": ".tmp\\cs2-hud-weapons-20260919\\panorama\\images\\icons\\equipment\\kevlar.svg",
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/armor_vest_slot.webp",
+  "member": "Assets/Textures/ScCsgoKnives/armor_vest_slot.webp",
+  "sha256": "f165753f3a1690daac21e598438d5d5f9087d8788ecd9ab3684dea5d22c54ad8",
+  "bytes": 1010,
+  "size": [
+   104,
+   128
+  ],
+  "sourceSha256": "77a0cbfea4fdd74bf0cf2785f4f373291c2a67de2d775326cf9087c0ec8c377e"
+ },
+ {
+  "kind": "model",
+  "edition": "both",
+  "source": ".tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\w_eq_helmet.glb",
+  "target": "src/ScCsgoKnives/Assets/Models/ScCsgoKnives/armor_helmet.glb",
+  "member": "Assets/Models/ScCsgoKnives/armor_helmet.glb",
+  "sha256": "f566a0be9d4c32b5cf8f79d99f6f30a22c3c653414d5ce3b4ea08e326eb6d703",
+  "bytes": 198460,
+  "sourceSha256": "8a11fddb3618c691142bfdd65a5f14df497dd30fc96163a4cb40ec18b1a12df5",
+  "scale": 1.0,
+  "sizeMetres": [
+   0.278,
+   0.2757,
+   0.2447
+  ],
+  "triangles": 5322
+ },
+ {
+  "kind": "texture",
+  "edition": "full",
+  "source": "w_eq_helmet.glb#E:\\projects\\ScCsgoKnives\\.tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\helmet_diffuse_color_psd_aaf82f80.png",
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/armor_helmet.png",
+  "member": "Assets/Textures/ScCsgoKnives/armor_helmet.png",
+  "sha256": "dfe087121ce1d5369402250a4952a3b1a254684dbece9e6e491879662b73cf00",
+  "bytes": 124582,
+  "size": [
+   512,
+   512
+  ],
+  "sourceSha256": "24d80ae454cb9a0ff72a87e205aafd386c9837f467ea9b6a953a255f72d5daec"
+ },
+ {
+  "kind": "texture",
+  "edition": "lite",
+  "source": "w_eq_helmet.glb#E:\\projects\\ScCsgoKnives\\.tmp\\cs2-companions-audit-20260920\\export\\models\\weapons\\helmet_diffuse_color_psd_aaf82f80.png",
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/armor_helmet.webp",
+  "member": "Assets/Textures/ScCsgoKnives/armor_helmet.webp",
+  "sha256": "207f6030ec3d7a3591d7001bf097ad478c8fc268d4363f29223890c66f7e8d9c",
+  "bytes": 15488,
+  "size": [
+   512,
+   512
+  ],
+  "sourceSha256": "24d80ae454cb9a0ff72a87e205aafd386c9837f467ea9b6a953a255f72d5daec"
+ },
+ {
+  "kind": "icon",
+  "edition": "full",
+  "source": ".tmp\\cs2-hud-weapons-20260919\\panorama\\images\\icons\\equipment\\helmet.svg",
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/armor_helmet_slot.png",
+  "member": "Assets/Textures/ScCsgoKnives/armor_helmet_slot.png",
+  "sha256": "3e5072cc642bbc5738d6236383ca6152725b6f9516b859e667f412ebcb42d49b",
+  "bytes": 1342,
+  "size": [
+   80,
+   128
+  ],
+  "sourceSha256": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529"
+ },
+ {
+  "kind": "icon",
+  "edition": "lite",
+  "source": ".tmp\\cs2-hud-weapons-20260919\\panorama\\images\\icons\\equipment\\helmet.svg",
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/armor_helmet_slot.webp",
+  "member": "Assets/Textures/ScCsgoKnives/armor_helmet_slot.webp",
+  "sha256": "729219c44a89212183081064b09a5de32efe6aeb848c1d8fc44501331b916162",
+  "bytes": 670,
+  "size": [
+   80,
+   128
+  ],
+  "sourceSha256": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529"
+ },
+ {
+  "kind": "overlay",
+  "edition": "full",
+  "source": "generated: transparent 64 x 64",
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoKnives/armor_overlay_clear.png",
+  "member": "Assets/Textures/ScCsgoKnives/armor_overlay_clear.png",
+  "sha256": "ee5f4ae0aae66a3d9ad8166933132bf2fad25da6220d8f02127f69546b5a4795",
+  "bytes": 96,
+  "size": [
+   64,
+   64
+  ]
+ },
+ {
+  "kind": "overlay",
+  "edition": "lite",
+  "source": "generated: transparent 64 x 64",
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoKnives/armor_overlay_clear.webp",
+  "member": "Assets/Textures/ScCsgoKnives/armor_overlay_clear.webp",
+  "sha256": "89210281a7dca0c6485adf042660c780d4db542a463ac97fa0a1b4405a8b33c5",
+  "bytes": 28,
+  "size": [
+   64,
+   64
+  ]
+ }
+]

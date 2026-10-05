@@ -19,8 +19,23 @@ Current workflow, agreed 2026-09-28. Roles are defaults; the user's current task
 4. VPS reads the task and required specialist instructions, verifies hypotheses against code, then implements only the authorized scope.
 5. Record changed paths, job IDs, test results and remaining gaps. Windows reviews the actual diff and build inputs, then performs the authorized visual/device checks.
 6. Do not claim automatic dispatch, completion notifications, agent-to-agent messaging or deployment is configured merely because a document exists. Use only an available and authorized mechanism; otherwise give the user the exact task path to pass along.
+7. Carry the complete requested coverage matrix across handoffs. Do not substitute a standing-pose subset for crouch/run/jump/NPC/third-party coverage, or call source-only tests executed. If work remains, report the exact missing case, evidence/blocker and next owner; continue safe authorized work rather than asking the user to reapprove the same scope. Follow the standing output replacement and post-delivery cleanup authorization in build-and-release.md.
+
+## Windows planning and efficient handoff (user-directed, 2026-09-29)
+
+- Before planning, inspect the actual latest package, source changes and current results. Preserve completed work; do not ask the next agent to repeat already verified work unless inputs changed or a specific gap warrants it.
+- Maintain one current brief per active workstream. Edit decisions in place when the user steers; mark earlier plans superseded and keep them as optional evidence. A short prompt points to the current brief and required specialist guides, never a growing mandatory chain of all old prompts/reports.
+- Lead with the intended player-visible outcome, current implementation state, authorized scope and a compact complete acceptance matrix. Clearly distinguish user decisions, reasonable implementation defaults, measured facts and hypotheses. Record genuine unresolved choices without treating every routine parameter as a user approval gate.
+- Keep optional ideas optional until the user adopts them. Prefer the smallest design that delivers the requested behavior. Do not expand a numerical effect into equipment items, attachment rendering, extra inventory or a new progression system merely because those are possible.
+- Preserve the original requested coverage across revisions. Summarize what is already implemented, what needs changing, and what still needs verification; a long checklist is not a substitute for this distinction. Avoid inventing fixed thresholds as if they were measured acceptance criteria.
+- Specify narrow reproduction/verification first and final affected release gates later. Reuse baseline evidence or derived resources only when source/tool/config/dependency hashes match. Do not require a complete bake/package/render cycle after every text or fixture edit; failed prerequisites stop dependent steps.
+- Handoff prompts should state the working directory, current brief, main changes, known constraints and delivery authority succinctly. Do not repeat an entire specification or reintroduce older approval requirements. Existing authorization for output replacement/cleanup persists; installation and original-world writes remain separate.
+- Budget disk and execution effort before resource work. Prefer a bounded working stage with reusable immutable inputs, then clean obsolete intermediates after verified delivery. Do not substitute disk cleanup or a lighter test subset for missing functionality.
+- Report actual work and evidence: executed runner/result/input identity, material limitations and next owner. Do not infer motives such as laziness from delays; distinguish measured build time, repeated failed fixtures, tool outages and unknown agent time.
+- This workflow applies to both Windows and VPS through AGENTS.md/CLAUDE.md; no recurring automation or automatic cross-agent messaging is implied.
 
 ## Pictures and recordings
+
 
 - Keep original screenshots/video on Windows. The task stores absolute paths, capture/build identity, reproduction steps and timestamps. Do not sync large media into VPS source directories.
 - For video, create timestamped keyframes/crops on Windows. Use denser frames, logs and audio around the failure when needed. Sparse stills do not establish frame pacing, transient animation correctness or audio sync.

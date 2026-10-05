@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- current-direction-20260929 §6: the multiplayer adapter. Compiled against the 1.9.3.2_MP engine build and the core
+       (the managed DLLs collected into $(Refs): Survivalcraft/Engine/EntitySystem, the CompatNet and Multiplayer internal
+       mods, ScCsgoKnives). Shipped renamed as Net/ScCsgoNet.bin inside the package, never as a root DLL. -->
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Game</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ScCsgoNet</AssemblyName>
+    <Deterministic>true</Deterministic>
+    <LangVersion>preview</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <DebugType>none</DebugType>
+    <!-- The engine and our core reference the same assembly names at nearby versions; the engine is Windows-only. -->
+    <NoWarn>$(NoWarn);CS1701;CS1702;MSB3277;CA1416</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(Refs)/*.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

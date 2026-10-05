@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- mp-user-logs-20261002: offline loopback of the CS multiplayer transport on the REAL platform assemblies (the 1.9.3.2
+       engine and its Multiplayer internal mod, collected into $(Refs) with the core ScCsgoKnives.dll). No game is started.
+       The adapter payloads are NOT compile-time references: the core loads them from bytes, as in the game. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);CS1701;CS1702;MSB3277;CA1416</NoWarn>
+  </PropertyGroup>
+  <!-- deathmatch-addon: the deathmatch loop (DmLoop.cs, mode dmloop) is compiled when the package's assembly is among
+       the references; a run against a delivered build without it compiles and behaves as before. -->
+  <PropertyGroup Condition="Exists('$(Refs)/ScCsgoDeathmatch.dll')"><DefineConstants>$(DefineConstants);DM_LOOP</DefineConstants></PropertyGroup>
+  <ItemGroup Condition="Exists('$(Refs)/ScCsgoDeathmatch.dll')"><Reference Include="$(Refs)/ScCsgoDeathmatch.dll"><Private>false</Private></Reference></ItemGroup>
+  <ItemGroup Condition="!Exists('$(Refs)/ScCsgoDeathmatch.dll')"><Compile Remove="DmLoop.cs" /></ItemGroup>
+  <ItemGroup>
+    <Reference Include="$(Refs)/Survivalcraft.dll;$(Refs)/Engine.dll;$(Refs)/EntitySystem.dll;$(Refs)/Survivalcraft.Multiplayer.dll;$(Refs)/ScCsgoKnives.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

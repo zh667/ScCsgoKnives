@@ -103,11 +103,6 @@ public sealed class Cs2SkinnedMesh {
         if (!string.IsNullOrEmpty(resource)) {
             try {
                 mesh = Load("AnimationData." + resource);
-                KnifeLog.Trace(
-                    $"[ScCsgoKnives] CS2 weapon mesh {asset}: {mesh.Joints.Length} joints, "
-                    + $"{mesh.Skinned.Length} vertices, "
-                    + $"{string.Join(", ", mesh.Primitives.Select(p => $"{p.Material} {p.Indices.Length / 3}t"))}."
-                );
             }
             catch (Exception e) {
                 KnifeDiagnostics.WarnOnce($"cs2-weapon-mesh-{asset}",
@@ -124,11 +119,6 @@ public sealed class Cs2SkinnedMesh {
             s_tried = true;
             try {
                 s_arms = Load(Resource);
-                KnifeLog.Trace(
-                    $"[ScCsgoKnives] CS2 arms: {s_arms.Joints.Length} joints, "
-                    + $"{s_arms.Skinned.Length} shared vertices, "
-                    + $"{string.Join(", ", s_arms.Primitives.Select(p => $"{p.Material} {p.Indices.Length / 3}t"))}."
-                );
             }
             catch (Exception e) {
                 KnifeDiagnostics.WarnOnce("cs2-arms", $"Could not read {Resource}: {e.Message}");

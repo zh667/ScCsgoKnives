@@ -1,0 +1,66 @@
+{
+ "task": "quick-throw-20261002 (docs/tasks/quick-throw-20261002.md)",
+ "date": "2026-10-02T16:58:49",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "mpf1CandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage mpf1 build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\mpf1\\full",
+    ".tmp\\completion-140-20260929\\mpf1\\lite",
+    ".tmp\\completion-140-20260929\\mpf1\\tools",
+    ".tmp\\completion-140-20260929\\mpf1\\tree",
+    ".tmp\\completion-140-20260929\\mpf1\\assets-full",
+    ".tmp\\completion-140-20260929\\mpf1\\resources",
+    ".tmp\\completion-140-20260929\\mpf1\\net",
+    ".tmp\\completion-140-20260929\\mpf1\\motion",
+    ".tmp\\completion-140-20260929\\mpf1\\throw",
+    ".tmp\\completion-140-20260929\\mpf1\\ui",
+    ".tmp\\completion-140-20260929\\mpf1\\old130"
+   ],
+   "bytes": 2537223073,
+   "items": 4914,
+   "missing": []
+  },
+  "exports made for the VPS-side offline checks (.tmp/dev-temp/mpx-mpf: gz+base64 copies of the mpf1 Lite core, adapter payloads and agents assembly)": {
+   "paths": [
+    ".tmp\\dev-temp\\mpx-mpf"
+   ],
+   "bytes": 4906612,
+   "items": 4,
+   "missing": []
+  },
+  "totalBytes": 2542129685,
+  "items": 4918
+ },
+ "kept": [
+  "stage mpf1: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, identity.json, baseline/, hotspots/",
+  ".tmp/dev-temp/quick-throw-20261002/cs2-current (two text files decompiled from the installed CS2 pak: the evidence the throw rule rests on, 0.7 MB)",
+  ".tmp/dev-temp/mp-feedback-144217-20261002 (the planner's diagnostic runner, traces and the user's video evidence: inputs, not this task's intermediates)",
+  "earlier tasks' stages and test packages: not this task's",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "37cda147612dec3b0d39065936b636798ff7280a4c8d78c93b1b1f21b6a91579",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "902cbb6fc8b172039bc1de9613ff622861da613fa2a818322a3e491f3799876e",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "ad5c7b85aa4741c755690ec0f0a434d7b35adca95272041a12fcc926fbfda174",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 119130447872,
+  "freePct": 11.91
+ }
+}

@@ -1,0 +1,1042 @@
+{
+  "scope": "Video frames actually inspected; static code and native packaged DLL/resource probes. No product edits or reproduction of mouse input/game damage.",
+  "videos": [
+    {
+      "file": "D:\\下载\\QQ20260928-235127-HD.mp4",
+      "sha256": "c2a398069ade8b1380f625e78555cbd317a715fed02af253a2b7afb7faeeb29c",
+      "fps": 59.91512567838726,
+      "frames": 2570,
+      "duration": 42.89401,
+      "width": 1536,
+      "height": 854
+    },
+    {
+      "file": "D:\\下载\\QQ20260928-235758.mp4",
+      "sha256": "5c53643004dd13617ff3e057da39d1117564c02ddc8a1bba2c5313b9dde73664",
+      "fps": 30.091478093403946,
+      "frames": 120,
+      "duration": 3.9878400000000003,
+      "width": 1536,
+      "height": 854
+    }
+  ],
+  "package": {
+    "path": "D:/下载/[Windows]SurvivalcraftAPI_1.9.3.1/Mods/[API1.9]CS武器1.4.0-全量包.scmod",
+    "bytes": 524897105,
+    "sha256": "b60804f8fef2ebd621ced3a5dc903b62ccf2e66f05ea18a1bf055dd5852eaca5"
+  },
+  "observed": {
+    "throw": "V1 5.0-6.5 seconds: CT bottle floats below palm; throw contact discontinuity",
+    "fall": "V1 34-41.5 seconds: repeated leg motion in prolonged airborne segments, flight toggle also visible",
+    "damage": "V2 3.9 seconds explicitly shows creative mode. No verified player HP loss.",
+    "r8": "V1 17-26 seconds, mouse input not recorded; interval bypass not measured"
+  },
+  "airProbe": {
+    "ct": {
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\followup-140-20260928\\f5-01\\air\\ct-dense.glb",
+      "clips": [
+        {
+          "clip": "air",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 1.596,
+              "maxMotionDegrees": 2.603,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 41.023,
+              "maxMotionDegrees": 68.441,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 48.516,
+              "maxMotionDegrees": 103.706,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.228,
+              "maxMotionDegrees": 52.476,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 10.816,
+              "maxMotionDegrees": 13.63,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 42.289,
+              "maxMotionDegrees": 42.289,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 25.695,
+              "maxMotionDegrees": 31.811,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "airrun",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 5.521,
+              "maxMotionDegrees": 5.521,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 52.381,
+              "maxMotionDegrees": 70.642,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 53.615,
+              "maxMotionDegrees": 94.912,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 22.77,
+              "maxMotionDegrees": 43.307,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 22.789,
+              "maxMotionDegrees": 22.789,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 70.911,
+              "maxMotionDegrees": 70.911,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 40.549,
+              "maxMotionDegrees": 48.495,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "crouchair",
+          "duration": 0.3999999761581421,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 2.444,
+              "maxMotionDegrees": 2.444,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 23.983,
+              "maxMotionDegrees": 41.304,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 24.058,
+              "maxMotionDegrees": 92.421,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.495,
+              "maxMotionDegrees": 24.337,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 30.283,
+              "maxMotionDegrees": 44.202,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 16.323,
+              "maxMotionDegrees": 51.553,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 32.321,
+              "maxMotionDegrees": 32.321,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            }
+          ]
+        },
+        {
+          "clip": "aimair",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 1.596,
+              "maxMotionDegrees": 2.603,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 41.023,
+              "maxMotionDegrees": 68.44,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 48.516,
+              "maxMotionDegrees": 103.706,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.233,
+              "maxMotionDegrees": 52.482,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 10.816,
+              "maxMotionDegrees": 13.63,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 42.289,
+              "maxMotionDegrees": 42.289,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 25.693,
+              "maxMotionDegrees": 31.805,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "aimairrun",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 5.521,
+              "maxMotionDegrees": 5.521,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 52.381,
+              "maxMotionDegrees": 70.642,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 53.615,
+              "maxMotionDegrees": 94.912,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 22.771,
+              "maxMotionDegrees": 43.303,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 22.789,
+              "maxMotionDegrees": 22.789,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 70.911,
+              "maxMotionDegrees": 70.911,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 40.546,
+              "maxMotionDegrees": 48.496,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "aimcrouchair",
+          "duration": 0.3999999761581421,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 2.445,
+              "maxMotionDegrees": 2.445,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 23.987,
+              "maxMotionDegrees": 41.26,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 24.058,
+              "maxMotionDegrees": 92.355,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.495,
+              "maxMotionDegrees": 24.31,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 30.282,
+              "maxMotionDegrees": 44.203,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 16.324,
+              "maxMotionDegrees": 51.553,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 32.318,
+              "maxMotionDegrees": 32.318,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            }
+          ]
+        }
+      ]
+    },
+    "t": {
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\followup-140-20260928\\f5-01\\air\\t-dense.glb",
+      "clips": [
+        {
+          "clip": "air",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 1.596,
+              "maxMotionDegrees": 2.603,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 41.023,
+              "maxMotionDegrees": 68.441,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 48.516,
+              "maxMotionDegrees": 103.706,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.228,
+              "maxMotionDegrees": 52.476,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 10.816,
+              "maxMotionDegrees": 13.63,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 42.289,
+              "maxMotionDegrees": 42.289,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 25.695,
+              "maxMotionDegrees": 31.811,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "airrun",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 5.521,
+              "maxMotionDegrees": 5.521,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 52.381,
+              "maxMotionDegrees": 70.642,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 53.615,
+              "maxMotionDegrees": 94.912,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 22.77,
+              "maxMotionDegrees": 43.307,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 22.789,
+              "maxMotionDegrees": 22.789,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 70.911,
+              "maxMotionDegrees": 70.911,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 40.549,
+              "maxMotionDegrees": 48.495,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "crouchair",
+          "duration": 0.3999999761581421,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 2.444,
+              "maxMotionDegrees": 2.444,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 23.983,
+              "maxMotionDegrees": 41.304,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 24.058,
+              "maxMotionDegrees": 92.421,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.495,
+              "maxMotionDegrees": 24.337,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 30.283,
+              "maxMotionDegrees": 44.202,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 16.323,
+              "maxMotionDegrees": 51.553,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 32.321,
+              "maxMotionDegrees": 32.321,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            }
+          ]
+        },
+        {
+          "clip": "aimair",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 1.596,
+              "maxMotionDegrees": 2.603,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 41.023,
+              "maxMotionDegrees": 68.44,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 48.516,
+              "maxMotionDegrees": 103.706,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.233,
+              "maxMotionDegrees": 52.482,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 10.816,
+              "maxMotionDegrees": 13.63,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 42.289,
+              "maxMotionDegrees": 42.289,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 25.693,
+              "maxMotionDegrees": 31.805,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "aimairrun",
+          "duration": 0.33331817388534546,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 5.521,
+              "maxMotionDegrees": 5.521,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 52.381,
+              "maxMotionDegrees": 70.642,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 53.615,
+              "maxMotionDegrees": 94.912,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 22.771,
+              "maxMotionDegrees": 43.303,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 22.789,
+              "maxMotionDegrees": 22.789,
+              "keys": 11
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 70.911,
+              "maxMotionDegrees": 70.911,
+              "keys": 11
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 40.546,
+              "maxMotionDegrees": 48.496,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 11
+            }
+          ]
+        },
+        {
+          "clip": "aimcrouchair",
+          "duration": 0.3999999761581421,
+          "legRotations": [
+            {
+              "bone": "pelvis",
+              "endStartDegrees": 2.445,
+              "maxMotionDegrees": 2.445,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L",
+              "endStartDegrees": 23.987,
+              "maxMotionDegrees": 41.26,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_L",
+              "endStartDegrees": 24.058,
+              "maxMotionDegrees": 92.355,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_L",
+              "endStartDegrees": 20.495,
+              "maxMotionDegrees": 24.31,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R",
+              "endStartDegrees": 30.282,
+              "maxMotionDegrees": 44.203,
+              "keys": 13
+            },
+            {
+              "bone": "leg_lower_R",
+              "endStartDegrees": 16.324,
+              "maxMotionDegrees": 51.553,
+              "keys": 13
+            },
+            {
+              "bone": "ankle_R",
+              "endStartDegrees": 32.318,
+              "maxMotionDegrees": 32.318,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_L_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            },
+            {
+              "bone": "leg_upper_R_TWIST1",
+              "endStartDegrees": 0,
+              "maxMotionDegrees": 0,
+              "keys": 13
+            }
+          ]
+        }
+      ]
+    },
+    "r8Clips": [
+      {
+        "clip": "shoot1_revolver",
+        "alias": "shoot1",
+        "duration": 0.7
+      },
+      {
+        "clip": "prepare_shoot_revolver",
+        "alias": "prepareShoot",
+        "duration": 0.9666
+      },
+      {
+        "clip": "shoot_alt1_revolver",
+        "alias": "shootAlt",
+        "duration": 1
+      }
+    ]
+  },
+  "native": [
+    {
+      "asset": "grenade_hegrenade",
+      "hasRight": true,
+      "hasLeft": true,
+      "gripRight": "0.11018028,-0.07040406,0.03938535",
+      "gripLeft": "-0.4061231,-0.28840724,0.10705635",
+      "meshBounds": "-0.042829785,-0.05394983,-0.04526444,0.045987844,0.07042407,0.058909945",
+      "relevantBones": {
+        "wpnHand_L": "14.27652,11.975532,-16.105917",
+        "wpnHand_R": "16.940733,-8.351374,-7.523114",
+        "attachHand_L": "18.094465,11.12511,-17.31128",
+        "attachHand_R": "18.491343,-4.013518,-4.7513456",
+        "weapon": "18.491337,-4.013567,-4.751301"
+      }
+    },
+    {
+      "asset": "grenade_flashbang",
+      "hasRight": true,
+      "hasLeft": true,
+      "gripRight": "0.09359487,-0.046818316,0.058695406",
+      "gripLeft": "-0.4225996,-0.26570696,0.12347135",
+      "meshBounds": "-0.037669037,-0.065320335,-0.025243178,0.029349603,0.08980309,0.058116257",
+      "relevantBones": {
+        "wpnHand_L": "14.277637,11.976078,-16.106342",
+        "wpnHand_R": "16.827871,-8.34654,-7.48868",
+        "attachHand_L": "18.095465,11.124867,-17.311487",
+        "attachHand_R": "19.138706,-4.6616645,-5.645452",
+        "weapon": "19.138714,-4.661703,-5.645439"
+      }
+    },
+    {
+      "asset": "grenade_smokegrenade",
+      "hasRight": true,
+      "hasLeft": true,
+      "gripRight": "0.09219119,-0.05895497,0.05516392",
+      "gripLeft": "-0.42387214,-0.27794993,0.11919248",
+      "meshBounds": "-0.02829087,-0.06293506,-0.027229443,0.030859794,0.059297904,0.036040094",
+      "relevantBones": {
+        "wpnHand_L": "14.276304,11.97545,-16.105938",
+        "wpnHand_R": "16.797113,-8.342005,-7.4840884",
+        "attachHand_L": "18.094452,11.125271,-17.310867",
+        "attachHand_R": "18.96892,-4.7123814,-5.16304",
+        "weapon": "18.968922,-4.71243,-5.163027"
+      }
+    },
+    {
+      "asset": "grenade_molotov",
+      "hasRight": true,
+      "hasLeft": true,
+      "gripRight": "0.2691035,-0.17474976,-0.5932132",
+      "gripLeft": "-0.2231379,-0.22634535,-0.5831757",
+      "meshBounds": "0.08028571,-0.11503667,-0.6849083,0.20310873,0.089184836,-0.5812017;0.11217628,-0.23918241,-0.74297094,0.26895016,0.07684502,-0.58922696",
+      "relevantBones": {
+        "wpnHand_L": "22.959675,8.784957,-8.911234",
+        "wpnHand_R": "23.35485,-10.594626,-6.879912",
+        "attachHand_L": "25.057743,7.2566667,-5.746578",
+        "attachHand_R": "26.126682,-7.4190016,-4.205778",
+        "weapon": "0,0,0",
+        "lighter": "25.016294,7.120094,-5.336362",
+        "lighter_flame": "25.076384,7.041303,-5.4153166",
+        "lighter_hinge": "25.740473,6.514321,-4.4878154",
+        "lighter_lever": "25.638382,6.7608953,-4.128353"
+      }
+    },
+    {
+      "asset": "grenade_incendiary",
+      "hasRight": true,
+      "hasLeft": true,
+      "gripRight": "0.09232127,-0.05918683,0.054993242",
+      "gripLeft": "-0.4238711,-0.2779771,0.11920476",
+      "meshBounds": "-0.028288197,-0.06293331,-0.027226387,0.030855576,0.059297055,0.03604474",
+      "relevantBones": {
+        "wpnHand_L": "14.276092,11.974907,-16.106539",
+        "wpnHand_R": "16.804104,-8.347628,-7.492748",
+        "attachHand_L": "18.094452,11.125271,-17.310867",
+        "attachHand_R": "18.969185,-4.7129016,-5.162626",
+        "weapon": "18.969193,-4.712932,-5.162558"
+      }
+    },
+    {
+      "asset": "grenade_decoy",
+      "hasRight": true,
+      "hasLeft": true,
+      "gripRight": "0.09359487,-0.046818316,0.058695406",
+      "gripLeft": "-0.4225996,-0.26570696,0.12347135",
+      "meshBounds": "-0.03766902,-0.065320335,-0.025243178,0.029349603,0.08980312,0.058116347",
+      "relevantBones": {
+        "wpnHand_L": "14.277637,11.976078,-16.106342",
+        "wpnHand_R": "16.827871,-8.34654,-7.48868",
+        "attachHand_L": "18.095465,11.124867,-17.311487",
+        "attachHand_R": "19.138706,-4.6616645,-5.645452",
+        "weapon": "19.138714,-4.661703,-5.645439"
+      }
+    },
+    {
+      "r8PrepareAlias": true,
+      "prepareDuration": 0.9666
+    }
+  ],
+  "frameDirectory": "E:/projects/ScCsgoKnives/.tmp/video-feedback-20260929",
+  "limitations": [
+    "T and vanilla placement reported by user, not independently visible in sampled footage",
+    "Native probe establishes geometry and alias availability, not hand contact correctness",
+    "Air first/last local quaternion gaps measured in baked-source dense GLB; perceptual quality requires runtime video",
+    "No listening/audio sync acceptance",
+    "Creative HUD semantics differ from damage; survival needs actual HP-loss test"
+  ],
+  "proposed": {
+    "proactiveNormal": 32,
+    "proactiveSniper": 36,
+    "releaseNormal": 40,
+    "releaseSniper": 44,
+    "trajectory": "Orange thicker line with shaded sphere endpoint; unchanged physical prediction"
+  }
+}

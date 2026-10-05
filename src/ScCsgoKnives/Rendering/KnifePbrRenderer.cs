@@ -76,7 +76,6 @@ public static class KnifePbrRenderer {
         }
         if (!s_announced) {
             s_announced = true;
-            KnifeLog.Trace($"[ScCsgoKnives] PBR shader compiled; env {s_env.Width}x{s_env.Height}, brdf {s_brdf.Width}x{s_brdf.Height}.");
         }
         return true;
     }

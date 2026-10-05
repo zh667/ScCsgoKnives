@@ -1,0 +1,21 @@
+[
+  {
+    "shotAck": 42,
+    "hit": 42,
+    "registeredHandler": "Game.ScNetFeedback.ReceiveHit",
+    "ackParsedAsHit": {
+      "outcome": 7,
+      "target": "",
+      "weapon": "",
+      "distance": 7.17E-43,
+      "fullyConsumed": false
+    }
+  },
+  {
+    "serverRounds": 2,
+    "shownWithTwoPending": 0,
+    "shownAfterActualDispatch": 0,
+    "pendingExpiredShown": 2,
+    "hitMessagesReceived": 1
+  }
+]

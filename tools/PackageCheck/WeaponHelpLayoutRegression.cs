@@ -134,8 +134,16 @@ static class WeaponHelpLayoutRegression {
                 Check("view-recovery-entry/"+available,recovery.GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y
                     &&recovery.GlobalBounds.Max.Y<=scroll.GlobalBounds.Max.Y&&recovery.GlobalBounds.Max.X<=available.X,
                     "view recovery is visible at the top without scrolling, including narrow phone");
+                // 2026-10-01 user request: the group number is the first row of the scrolling list, not a pinned header.
+                var groupLabel=settings.AllChildren.OfType<LabelWidget>().FirstOrDefault(l=>l.Text?.Contains("1087216872")==true);
+                var settingsContent=(ContainerWidget)Part("m_content");float groupTop=groupLabel?.GlobalBounds.Min.Y??float.NaN;
+                Check("group-number-first-scroll-row/"+available,groupLabel!=null&&((ContainerWidget)settingsContent.Children.First()).AllChildren.Contains(groupLabel)
+                    &&groupLabel.GlobalBounds.Min.Y>=scroll.GlobalBounds.Min.Y&&scroll.GlobalBounds.Min.Y-Part("m_title").GlobalBounds.Max.Y<=12,
+                    $"group number at the top of the list; the list starts under the title (title bottom {Part("m_title").GlobalBounds.Max.Y:0}, list top {scroll.GlobalBounds.Min.Y:0}, group top {groupLabel?.GlobalBounds.Min.Y:0}, "
+                    +$"row {settingsContent.Children.First().GlobalBounds.Min.Y:0}..{settingsContent.Children.First().GlobalBounds.Max.Y:0}, content top {settingsContent.GlobalBounds.Min.Y:0}, label size {groupLabel?.ActualSize}, scroll position {scroll.ScrollPosition:0})");
                 Check("settings-fixed-footer/"+available,save.GlobalBounds.Max.X<=available.X&&save.GlobalBounds.Max.Y<=available.Y&&scroll.GlobalBounds.Max.Y<=save.GlobalBounds.Min.Y,"scroll region ends above fixed footer, including 20:9 phone");
                 scroll.ScrollPosition=10000;settings.Measure(available);settings.Arrange(Vector2.Zero,available);
+                Check("group-number-scrolls-away/"+available,groupLabel!=null&&groupLabel.GlobalBounds.Min.Y<groupTop,"the group row scrolls with the list (no pinned block)");
                 Check("settings-scroll-retains-footer/"+available,save.GlobalBounds.Max.Y<=available.Y&&Part("m_cancel").GlobalBounds.Min.X>=0,"Save/Cancel remain visible after scrolling");
                 var preview = (CanvasWidget)Part("m_shapePreview");
                 var shapeType = mod.GetType("Game.ScCrosshairShape");
@@ -177,7 +185,7 @@ static class WeaponHelpLayoutRegression {
                 string[] lines=dataReader.ReadToEnd().Split('\n');int craftingColumn=Array.IndexOf(lines[0].Trim().Split(';'),"CraftingId");
                 var components=mod.GetType("Game.ScComponentCrafting");var entries=((Array)components.GetField("All").GetValue(null)).Cast<object>().ToArray();
                 var ids=entries.SelectMany(e=>((ValueTuple<string,int>[])e.GetType().GetProperty("Ingredients").GetValue(e)).Select(p=>p.Item1.Split(':')[0])).Where(id=>id!="sccsgomaterial").ToHashSet();
-                ids.Add("gunpowder");
+                ids.Add("gunpowder");foreach(string id in new[]{"ironingot","copperingot","canvas","leather"})ids.Add(id); // CS protection (quoted when opened)
                 int materialIndex=740;
                 foreach(string line in lines.Skip(1)) {
                     string[] cells=line.Trim().Split(';');if(cells.Length<=craftingColumn||!ids.Contains(cells[craftingColumn]))continue;
@@ -221,8 +229,11 @@ static class WeaponHelpLayoutRegression {
                 dialog.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(dialog,["功能"]);
                 dialog.Measure(new(850,479));dialog.Arrange(Vector2.Zero,new(850,479));
                 var list=(ListPanelWidget)dialog.GetType().GetField("m_list",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog);
-                Check($"workbench-all-functions-visible/{creative}",list.Items.Count==5&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")&&list.Items.Any(o=>o.GetType().Name=="OwnedAttributesMenu")
-                    && menu.Length==craftItems.Length+(ResourcePackInput.AgentsAbsent(mod)?19:20),"actual runtime menu: five operations + five components + supplies; chicken egg requires agents");
+                // current-direction-20260929: one "防护装备" entry (make/configure/view/repair protection values) in the equipment
+                // tab; no armour item recipes and no separate repair operation.
+                var armor=menu.Where(o=>o.GetType().Name=="ScWorkbenchAction"&&(string)o.GetType().GetProperty("Key").GetValue(o)=="armor").ToArray();
+                Check($"workbench-all-functions-visible/{creative}",list.Items.Count==5&&armor.Length==1&&(string)armor[0].GetType().GetProperty("Category").GetValue(armor[0])=="装备"&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")&&list.Items.Any(o=>o.GetType().Name=="OwnedAttributesMenu")
+                    && menu.Length==craftItems.Length+(ResourcePackInput.AgentsAbsent(mod)?20:21),$"actual runtime menu: five operations + protection (equipment tab) + five components + supplies; chicken egg requires agents; {list.Items.Count} operations, {menu.Length-craftItems.Length} other entries");
             }
             foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
                 var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;
@@ -493,6 +504,59 @@ static class WeaponHelpLayoutRegression {
                             scroll.ScrollPosition=0;
                         }
                     }
+                }
+            }
+            // Round 12 (2026-10-01 user requests): the armor HUD is shown or hidden in the layout editor beside its position; the
+            // settings page lost that switch and the separate creative-mode switch, its layout row reads "按键位置布局" and its hints
+            // are short; the Lite core's agents-package hint opens only after every other dialog and links the download page.
+            {
+                var r12=BindingFlags.NonPublic|BindingFlags.Instance;var uiSettings=mod.GetType("Game.ScUiSettings");var armorShown=uiSettings.GetField("ArmorHudEnabled");bool armorBefore=(bool)armorShown.GetValue(null);
+                var r12Size=new Vector2(850,479);
+                try{
+                    foreach(bool initially in new[]{true,false}){
+                        armorShown.SetValue(null,initially);editor.Enter([]);editor.Measure(r12Size);editor.Arrange(Vector2.Zero,r12Size);
+                        var toggle=(CheckboxWidget)EditorField("m_armorShown");
+                        foreach(string id in new[]{"reload","ammo_hud","armor_hud"}){
+                            editorType.GetField("m_selected",r12).SetValue(editor,id);editorType.GetMethod("LoadSelected",r12).Invoke(editor,null);
+                            Check($"layout-armor-hud-visibility-switch/{initially}/{id}",toggle.IsVisible==(id=="armor_hud")&&(id!="armor_hud"||toggle.IsChecked==initially)&&EditorField("m_enabled").IsVisible==(id=="reload"),
+                                "the armor HUD's show/hide switch appears with the armor HUD only, loaded from the saved value");
+                        }
+                        toggle.IsChecked=!initially;editor.Update();
+                        Check($"layout-armor-hud-switch-edits-a-copy/{initially}",(bool)editorType.GetField("m_armorEnabled",r12).GetValue(editor)==!initially&&(bool)armorShown.GetValue(null)==initially,
+                            "toggling changes the editor's copy; only Save writes the setting");
+                    }
+                }finally{armorShown.SetValue(null,armorBefore);}
+                var settingsType=mod.GetType("Game.ScGunSettingsScreen");
+                Check("settings-armor-and-creative-switches-moved",uiSettings.GetField("CreativeHitPreview") is null&&settingsType.GetField("m_armorHud",r12) is null&&settingsType.GetField("m_creativeHitPreview",r12) is null,
+                    "no separate creative-mode switch (the damage-direction switch covers it), no armor HUD switch on the settings page");
+                foreach(var r12Available in new[]{new Vector2(850,479),new Vector2(360,640)}){
+                    var page=(Screen)Activator.CreateInstance(settingsType);page.Enter([]);page.Measure(r12Available);page.Arrange(Vector2.Zero,r12Available);page.Measure(r12Available);page.Arrange(Vector2.Zero,r12Available);
+                    var labels=page.AllChildren.OfType<LabelWidget>().Select(l=>l.Text).Where(t=>!string.IsNullOrEmpty(t)).ToArray();
+                    var longest=labels.MaxBy(t=>t.Length);
+                    Check("settings-plain-layout-row-and-short-hints/"+r12Available,labels.Contains("按键位置布局")&&!labels.Any(t=>t.Contains("弹药 HUD")||t.Contains("护甲")||t.Contains("创造模式：显示命中方向预览"))
+                        &&labels.Any(t=>t.Contains("创造模式下被击中也会显示"))&&longest.Length<=40,$"longest text {longest.Length}: {longest}");
+                }
+                var hint=mod.GetType("Game.ScAgentsPackageHint");bool split=(bool)mod.GetType("Game.ScOptionalAgents").GetField("Split").GetRawConstantValue();
+                Check("agents-package-hint-lite-only",(bool)hint.GetProperty("Applies").GetValue(null)==split,"the Lite core without a running agents package asks; the full package carries the agents");
+                var ready=hint.GetMethod("Ready");int quietFrames=(int)hint.GetField("QuietFrames").GetRawConstantValue();
+                bool HintFrame(bool menu,int dialogs,ref int quiet){var a=new object[]{menu,dialogs,quiet};bool r=(bool)ready.Invoke(null,a);quiet=(int)a[2];return r;}
+                int quietCount=0;bool early=false;
+                for(int i=0;i<300;i++)early|=HintFrame(true,1,ref quietCount);
+                for(int i=0;i<quietFrames-1;i++)early|=HintFrame(true,0,ref quietCount);
+                early|=HintFrame(true,1,ref quietCount);
+                for(int i=0;i<quietFrames-1;i++)early|=HintFrame(true,0,ref quietCount);
+                bool opened=HintFrame(true,0,ref quietCount);
+                quietCount=0;for(int i=0;i<200;i++)early|=HintFrame(false,0,ref quietCount);
+                Check("agents-package-hint-after-engine-dialogs",!early&&opened,"never over another dialog or outside the main menu; opens after a quiet wait, which any dialog restarts");
+                foreach(bool off in new[]{false,true}){
+                    var hintDialog=(Dialog)Activator.CreateInstance(mod.GetType("Game.ScAgentsPackageHintDialog"),[off]);
+                    foreach(var hintSize in new[]{new Vector2(360,640),new Vector2(850,479)}){hintDialog.Measure(hintSize);hintDialog.Arrange(Vector2.Zero,hintSize);}
+                    var link=hintDialog.AllChildren.OfType<LinkWidget>().SingleOrDefault();
+                    var hintButtons=hintDialog.AllChildren.OfType<BevelledButtonWidget>().Select(b=>b.Text).ToHashSet();
+                    Check("agents-package-hint-link/"+off,link?.Url=="https://files.zh667.cn"&&link.Text=="https://files.zh667.cn"&&link.ActualSize.X>0&&hintButtons.SetEquals(["知道了","不再提示"])
+                        &&hintDialog.AllChildren.OfType<LabelWidget>().Any(l=>l.Text?.Contains(off?"探员包已安装但没有运行":"当前只安装了轻量包")==true)
+                        // 2026-10-01 user: the link must say what it is.
+                        &&hintDialog.AllChildren.OfType<LabelWidget>().Any(l=>l.Text?.StartsWith("探员包下载页：")==true&&l.Text.Contains("同版本")),"download link with its caption, buttons and the missing/disabled wording");
                 }
             }
             var attributes = (Screen)Activator.CreateInstance(mod.GetType("Game.ScGunAttributesScreen"), [template]);

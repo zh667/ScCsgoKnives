@@ -8,7 +8,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GenerateDependencyFile>false</GenerateDependencyFile>
     <DebugType>none</DebugType>
-    <ZstdSource Condition="'$(ZstdSource)' == ''">../../.tmp/codec-release-130-20260927/upstream/ZstdSharp-2cd0c019693bc786a5fe5c3be94e107b24e7267e/src/ZstdSharp</ZstdSource>
+    <ZstdSource Condition="'$(ZstdSource)' == ''">../../.tmp/third-party-refs/ZstdSharp-2cd0c019693bc786a5fe5c3be94e107b24e7267e/src/ZstdSharp</ZstdSource>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(ZstdSource)/**/*.cs" Exclude="$(ZstdSource)/obj/**;$(ZstdSource)/bin/**" />

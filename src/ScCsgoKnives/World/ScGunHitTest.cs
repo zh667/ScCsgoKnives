@@ -40,14 +40,39 @@ public static class ScGunHitTest {
         }
         return closest<float.MaxValue?(ScHitPart.Body,closest):(ScHitPart.Unknown,-1);
     }
+    /// <summary>The region at a known hit point, from the body's own hit geometry (players: eye regions; skinned CS actors:
+    /// joint regions; rigid vanilla models: their head rule): a short ray through <paramref name="point"/> along
+    /// <paramref name="direction"/>. Unknown when the body has no usable geometry or the ray meets none of it; never a
+    /// guessed head. Used for the protection of non-CS projectiles (current-direction-20260929 §3).</summary>
+    public static ScHitPart PartAt(ComponentBody body,Vector3 point,Vector3 direction) {
+        if(body is null||!float.IsFinite(point.X+point.Y+point.Z)||!(direction.LengthSquared()>1e-8f))return ScHitPart.Unknown;
+        try{
+            if(Pose(body) is not {Length:>0} parts)return ScHitPart.Unknown;
+            var d=Vector3.Normalize(direction);return ScHeadshot.Resolve(parts,point-d*.6f,d,1.2f).Part;
+        }catch(Exception e){KnifeDiagnostics.WarnOnce("hit-part-at","hit region lookup unavailable; body assumed: "+e.Message);return ScHitPart.Unknown;}
+    }
     static ScPartBox[] Pose(ComponentBody body) {
         if(PoseProvider is not null) return PoseProvider(body);
         var model=body.Entity?.FindComponent<ComponentCreatureModel>();
+        // Players (H1): logical regions on the first-person eye; the owner's own model is not animated in first person.
+        if(model is not null && body.Entity.FindComponent<ComponentPlayer>() is not null) return Cached(model,body,()=>ScPlayerHitRegions.Parts(body,model.EyePosition));
         // Mesh.BoundingBox is in bind space. Applying its parent-node transform
         // ignores inverse binds and blended joint weights (Smolder shrinks to
-        // ~0.003 blocks). Until a skinned surface probe is available, use the
-        // live physics body, never a definite miss from that invalid rigid box.
-        if(model?.Model?.HasSkin == true) return null;
+        // ~0.003 blocks). A skinned model is resolved only through its own skin
+        // (known skeleton + a logical pose provider); otherwise the live physics
+        // body, never a definite miss from that invalid rigid box.
+        if(model?.Model?.HasSkin == true) {
+            var provider=body.Entity.FindComponent<IScLogicalPose>();
+            if(provider is null || !ReferenceEquals(provider.LogicalModel,model.Model) || !ScSkinnedHitRegions.Known(model.Model)) return null;
+            return Cached(model,body,()=>{
+                var local=new Matrix?[model.Model.Bones.Count];
+                if(!provider.TryLogicalPose(local)) return null;
+                var absolute=new Matrix[local.Length];var original=model.m_boneTransforms;
+                try { model.m_boneTransforms=local;model.ProcessBoneHierarchy(model.Model.RootBone,Matrix.Identity,absolute); }
+                finally {model.m_boneTransforms=original;}
+                return Placed(ScSkinnedHitRegions.Parts(model.Model,absolute).ToArray(),body);
+            });
+        }
         if(model?.Model is null || model.AnimationController is null || model.m_boneTransforms is null) return null;
         var cache=s_cache.GetOrCreateValue(model);
         if(cache.Frame==Time.FrameIndex && cache.Body==body.Matrix && ReferenceEquals(cache.Model,model.Model)) return cache.Parts;
@@ -69,50 +94,89 @@ public static class ScGunHitTest {
             try { model.m_boneTransforms=sampled;model.ProcessBoneHierarchy(model.Model.RootBone,Matrix.Identity,absolute); }
             finally {model.m_boneTransforms=original;}
             var rule=ScHeadRules.For(model.ModelRoute,ScHeadshotProbe.VanillaHeadClass(model),ScHeadshotProbe.HasHeadMesh(model.Model,ScHeadRule.Default)) ?? NoHead;
-            cache.Parts=ScHeadshotProbe.Parts(model.Model,rule,absolute).ToArray();
-            if(cache.Parts.Length==0) cache.Parts=null;
-            if(cache.Parts is not null) {
-                // A controller that has not produced a world-placed pose must not
-                // turn a perfectly valid target into a permanent definite miss.
-                var lo=new Vector3(float.MaxValue);var hi=new Vector3(float.MinValue);
-                foreach(var p in cache.Parts) foreach(float x in new[]{p.Local.Min.X,p.Local.Max.X})
-                    foreach(float y in new[]{p.Local.Min.Y,p.Local.Max.Y}) foreach(float z in new[]{p.Local.Min.Z,p.Local.Max.Z}) {
-                        var v=Vector3.Transform(new Vector3(x,y,z),p.World);lo=Vector3.Min(lo,v);hi=Vector3.Max(hi,v);
-                    }
-                var b=body.BoundingBox;
-                if(!float.IsFinite(lo.X+lo.Y+lo.Z+hi.X+hi.Y+hi.Z) || hi.X<b.Min.X-.6f || lo.X>b.Max.X+.6f || hi.Y<b.Min.Y-.6f || lo.Y>b.Max.Y+.6f || hi.Z<b.Min.Z-.6f || lo.Z>b.Max.Z+.6f)
-                    throw new InvalidOperationException("controller pose is not placed at logical body");
-            }
-        } catch(Exception e) {cache.Parts=null;KnifeDiagnostics.WarnOnce("gun-logic-pose-"+model.ModelRoute,"Gun hit pose unavailable; narrow body-only fallback: "+e.Message);}
+            cache.Parts=Placed(ScHeadshotProbe.Parts(model.Model,rule,absolute).ToArray(),body);
+        } catch(Exception e) {cache.Parts=null;KnifeDiagnostics.WarnOnce("gun-logic-pose-"+model.ModelRoute,PoseWarning(model,body,e));}
         return cache.Parts;
+    }
+    /// <summary>Once per frame and body placement per model; a failure is a bounded warning and the body fallback.</summary>
+    static ScPartBox[] Cached(ComponentCreatureModel model,ComponentBody body,Func<ScPartBox[]> build) {
+        var cache=s_cache.GetOrCreateValue(model);
+        if(cache.Frame==Time.FrameIndex && cache.Body==body.Matrix && ReferenceEquals(cache.Model,model.Model)) return cache.Parts;
+        cache.Frame=Time.FrameIndex;cache.Body=body.Matrix;cache.Model=model.Model;cache.Parts=null;
+        try { cache.Parts=build(); }
+        catch(Exception e) {cache.Parts=null;KnifeDiagnostics.WarnOnce("gun-logic-pose-"+model.ModelRoute,PoseWarning(model,body,e));}
+        return cache.Parts;
+    }
+    /// <summary>Which model, which entity (mp-state-consistency-20261002, X01: the user's host log had eight of these with
+    /// neither; once per model route).</summary>
+    static string PoseWarning(ComponentCreatureModel model,ComponentBody body,Exception e) =>
+        $"Gun hit pose unavailable for {model.ModelRoute ?? model.GetType().Name} (entity {body?.Entity?.Id}, {(body?.Entity?.FindComponent<ComponentPlayer>() is {} p ? "player "+p.PlayerData?.PlayerIndex : "creature")}, {ScNet.Role}); narrow body-only fallback: {e.Message}";
+    /// <summary>A controller that has not produced a world-placed pose must not turn a perfectly valid target into a
+    /// permanent definite miss: parts more than 0.6 outside the physics body are refused (the caller falls back).</summary>
+    static ScPartBox[] Placed(ScPartBox[] parts,ComponentBody body) {
+        if(parts is null || parts.Length==0) return null;
+        var lo=new Vector3(float.MaxValue);var hi=new Vector3(float.MinValue);
+        foreach(var p in parts) foreach(float x in new[]{p.Local.Min.X,p.Local.Max.X})
+            foreach(float y in new[]{p.Local.Min.Y,p.Local.Max.Y}) foreach(float z in new[]{p.Local.Min.Z,p.Local.Max.Z}) {
+                var v=Vector3.Transform(new Vector3(x,y,z),p.World);lo=Vector3.Min(lo,v);hi=Vector3.Max(hi,v);
+            }
+        var b=body.BoundingBox;
+        if(!float.IsFinite(lo.X+lo.Y+lo.Z+hi.X+hi.Y+hi.Z) || hi.X<b.Min.X-.6f || lo.X>b.Max.X+.6f || hi.Y<b.Min.Y-.6f || lo.Y>b.Max.Y+.6f || hi.Z<b.Min.Z-.6f || lo.Z>b.Max.Z+.6f)
+            throw new InvalidOperationException($"controller pose is not placed at logical body (parts {lo.X:0.0},{lo.Y:0.0},{lo.Z:0.0}..{hi.X:0.0},{hi.Y:0.0},{hi.Z:0.0}; body {b.Min.X:0.0},{b.Min.Y:0.0},{b.Min.Z:0.0}..{b.Max.X:0.0},{b.Max.Y:0.0},{b.Max.Z:0.0})");
+        return parts;
     }
     public static Hit? Raycast(IEnumerable<ComponentBody> bodies,ComponentBody shooter,Vector3 origin,Vector3 direction,float maximum) {
         return RaycastObserved(bodies,shooter,origin,direction,maximum,null);
     }
-    public static Hit? RaycastObserved(IEnumerable<ComponentBody> bodies,ComponentBody shooter,Vector3 origin,Vector3 direction,float maximum,Trace trace) {
+    public static Hit? RaycastObserved(IEnumerable<ComponentBody> bodies,ComponentBody shooter,Vector3 origin,Vector3 direction,float maximum,Trace trace) =>
+        RaycastCompensated(bodies,shooter,origin,direction,maximum,trace,null);
+    /// <summary>The largest per-body offset <see cref="RaycastCompensated"/> is given (ScNetGuns.RewindFor caps it).</summary>
+    public const float MaxMoved=8f;
+    /// <summary>As <see cref="RaycastObserved"/>, each body tested where the shooter may have seen it: <paramref name="moved"/>
+    /// gives how far a body may have moved since the shooter's screen showed it (multiplayer: a remote client draws other
+    /// bodies a fraction of a second late, over a window), and the shot is tested against the body's present pose from each
+    /// of those offsets, the nearest hit counting. Null or a single zero offset is exactly <see cref="RaycastObserved"/>.</summary>
+    public static Hit? RaycastCompensated(IEnumerable<ComponentBody> bodies,ComponentBody shooter,Vector3 shot,Vector3 direction,float maximum,Trace trace,Func<ComponentBody,IReadOnlyList<Vector3>> moved) {
         Hit? best=null;
         foreach(var body in bodies) {
             if(body==shooter || (shooter is not null && body.Entity is not null && body.Entity==shooter.Entity) || body.Entity?.FindComponent<ComponentHealth>()?.Health<=0) continue;
             if(trace is not null) trace.Visited++;
-            float limit=best?.Distance ?? maximum;
-            var box=body.BoundingBox;float pad=Tolerance(box);
-            // Broad selection permits animated heads/limbs outside the physics box.
-            var broad=new BoundingBox(box.Min-new Vector3(.6f),box.Max+new Vector3(.6f));
-            if(BoxDistance(broad,origin,direction,limit) is null) continue;
-            if(trace is not null) trace.BroadCandidates++;
-            var parts=Pose(body);
-            if(parts is not null) {
-                if(trace is not null) trace.PreciseTests++;
-                var hit=Precise(parts,origin,direction,limit,pad);
-                if(trace is not null && hit.Part==ScHitPart.Unknown) trace.PreciseMisses++;
-                if(hit.Part!=ScHitPart.Unknown && hit.Distance<=limit && (best is null || hit.Distance<best.Value.Distance)) best=new(body,hit.Distance,hit.Part,"logical mesh pose");
-            } else {
-                if(trace is not null) trace.FallbackCandidates++;
-                float? d=BoxDistance(new BoundingBox(box.Min-new Vector3(pad),box.Max+new Vector3(pad)),origin,direction,limit);
-                if(d is float distance && distance<=limit && (best is null || distance<best.Value.Distance)) best=new(body,distance,ScHitPart.Body,
-                    body.Entity?.FindComponent<ComponentCreatureModel>()?.Model?.HasSkin == true
-                        ? "skinned model; physics body fallback" : "unavailable model; narrow body fallback");
-            }
+            var box=body.BoundingBox;
+            // A body far from the shot even after the largest compensation is not looked up at all.
+            if(moved is not null && BoxDistance(new BoundingBox(box.Min-new Vector3(MaxMoved+.6f),box.Max+new Vector3(MaxMoved+.6f)),shot,direction,best?.Distance ?? maximum) is null) continue;
+            if(moved is null){best=Nearest(body,shot,direction,best,maximum,trace);continue;}
+            foreach(var offset in moved(body)) best=Nearest(body,shot+offset,direction,best,maximum,trace);
+        }
+        return best;
+    }
+    /// <summary>One body against one ray: the better of <paramref name="best"/> and this body's hit.</summary>
+    static Hit? Nearest(ComponentBody body,Vector3 origin,Vector3 direction,Hit? best,float maximum,Trace trace) {
+        float limit=best?.Distance ?? maximum;
+        var box=body.BoundingBox;float pad=Tolerance(box);
+        // Broad selection permits animated heads/limbs outside the physics box.
+        var broad=new BoundingBox(box.Min-new Vector3(.6f),box.Max+new Vector3(.6f));
+        if(BoxDistance(broad,origin,direction,limit) is null) return best;
+        if(trace is not null) trace.BroadCandidates++;
+        // A world's mode with its own hit volumes for this body (deathmatch round 5: CS2's hitboxes): exactly those, no
+        // tolerance, a ray between them a miss.
+        if(ScModes.HitCapsules(body) is {Length:>0} capsules) {
+            if(trace is not null) trace.PreciseTests++;
+            var capsuleHit=ScHitCapsule.Resolve(capsules,origin,direction,limit);
+            if(capsuleHit.Part==ScHitPart.Unknown) { if(trace is not null) trace.PreciseMisses++; return best; }
+            return best is null || capsuleHit.Distance<best.Value.Distance ? new(body,capsuleHit.Distance,capsuleHit.Part,"mode hitbox") : best;
+        }
+        var parts=Pose(body);
+        if(parts is not null) {
+            if(trace is not null) trace.PreciseTests++;
+            var hit=Precise(parts,origin,direction,limit,pad);
+            if(trace is not null && hit.Part==ScHitPart.Unknown) trace.PreciseMisses++;
+            if(hit.Part!=ScHitPart.Unknown && hit.Distance<=limit && (best is null || hit.Distance<best.Value.Distance)) best=new(body,hit.Distance,hit.Part,"logical mesh pose");
+        } else {
+            if(trace is not null) trace.FallbackCandidates++;
+            float? d=BoxDistance(new BoundingBox(box.Min-new Vector3(pad),box.Max+new Vector3(pad)),origin,direction,limit);
+            if(d is float distance && distance<=limit && (best is null || distance<best.Value.Distance)) best=new(body,distance,ScHitPart.Body,
+                body.Entity?.FindComponent<ComponentCreatureModel>()?.Model?.HasSkin == true
+                    ? "skinned model; physics body fallback" : "unavailable model; narrow body fallback");
         }
         return best;
     }

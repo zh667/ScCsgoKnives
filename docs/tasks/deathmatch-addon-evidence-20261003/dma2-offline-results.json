@@ -1,0 +1,2786 @@
+{
+ "readback": {
+  "revision": "deathmatch-addon dma2 (candidate): the core gains the interfaces a world's game mode uses (ScModes: per-world weapon num",
+  "status": "CANDIDATE: offline gates only, no game process was started (user 2026-10-03: 不安装、不写原世界、不自行启动游戏); acceptance on the user's devices is pending for everything seen, heard or played",
+  "stage": "E:\\projects\\ScCsgoKnives\\.tmp\\completion-140-20260929\\dma2",
+  "packages": {
+   "全量": {
+    "file": "[API1.9]CS武器1.4.0-全量包.scmod",
+    "bytes": 526913676,
+    "sha256": "6141ac016fb468392b8d6f0adf011ed4554f9edda7baf5a08438fe85b675d625",
+    "matchesManifest": true,
+    "version": "1.4.0",
+    "name": "CS武器 · 全量版",
+    "packageName": "zh667.ScCsgoKnives",
+    "dependencies": {},
+    "memberCount": 1714,
+    "members": {
+     "ScCsgoKnives.dll": "87d38e10cbc80d4d64a4bf28be803121ad951ffed1af80e60b722d6e6ce3e105",
+     "ScCsgoTactical.dll": "1a0c2a561a9dc25a6d389f96f7ead37d57265c7937bcfa9f62b73d33923664e4",
+     "Net/ScCsgoNet.bin": "0630457b664252c67904ffc9885fc5616b3760db1afcc38e2fafb098e7295717",
+     "Net/ScCsgoNetCompat.bin": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+     "modinfo.json": "5412ee2fb680defc02fe42707b5706e45ed9c3cf0ea302f06083a5ed9cab759f"
+    }
+   },
+   "轻量": {
+    "file": "[API1.9]CS武器1.4.0-轻量包.scmod",
+    "bytes": 35757086,
+    "sha256": "408d9f35f4ad69f2dfbd5c66a02b089ede362847604dbfdbe38e228783bd43c3",
+    "matchesManifest": true,
+    "version": "1.4.0",
+    "name": "CS武器 · 轻量版",
+    "packageName": "zh667.ScCsgoKnives",
+    "dependencies": {},
+    "memberCount": 1348,
+    "members": {
+     "ScCsgoKnives.dll": "e6071ee5f17790c79b81f3236dfceb63a106f81e1f23feb2a05472fd420840b0",
+     "Net/ScCsgoNet.bin": "0630457b664252c67904ffc9885fc5616b3760db1afcc38e2fafb098e7295717",
+     "Net/ScCsgoNetCompat.bin": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+     "modinfo.json": "a5316c715257e93c5a8dc729af944130441ac6f40b1996d7bfba84cb59044370"
+    }
+   },
+   "探员": {
+    "file": "[API1.9]CS武器1.4.0-探员包.scmod",
+    "bytes": 38467947,
+    "sha256": "e804b11c3d7b7ab3ecbcf0d6ca30f05aeb08446108f8adaf89080c6280ba17b7",
+    "matchesManifest": true,
+    "version": "1.4.0",
+    "name": "CS武器 · 1.4.0探员包",
+    "packageName": "zh667.ScCsgoTactical",
+    "dependencies": {
+     "zh667.ScCsgoKnives": "1.4.0"
+    },
+    "memberCount": 371,
+    "members": {
+     "ScCsgoTactical.dll": "b9e2e5580e86e4acc7825f8ba222ff9e21664dea74984d1286e044ce830c3c73",
+     "modinfo.json": "b66ee8287ab3e552d20acc959e9fb32e687fe0427dd83dd8e8af9902dba35adc"
+    }
+   },
+   "死亡竞赛": {
+    "file": "[API1.9]CS武器1.4.0-死亡竞赛包.scmod",
+    "bytes": 163851,
+    "sha256": "3c4bdc991af53e3017a9b58586fc1770c53381f22a4dab6e02b0df9595b45358",
+    "matchesManifest": true,
+    "version": "1.0.0",
+    "name": "CS武器 · 死亡竞赛拓展",
+    "packageName": "zh667.ScCsgoDeathmatch",
+    "dependencies": {
+     "zh667.ScCsgoKnives": "1.4.0"
+    },
+    "memberCount": 11,
+    "members": {
+     "ScCsgoDeathmatch.dll": "4cbc4713b768db28a9247ef794b219d31666db24b7d72e629e94dc20cb5a87ff",
+     "Assets/ScDeathmatch.xdb": "1a9de4389ccede746f649ed1fe4e8334f3b9f81acff565b2af63d9237f2128c1",
+     "modinfo.json": "580dae22caae672592a7295f7e20a2652620792acee07884ab45f19636506f40"
+    }
+   }
+  },
+  "outputDir": [
+   "[API1.9]CS武器1.0.0-双向兼容-全量包.scmod",
+   "[API1.9]CS武器1.0.0-双向兼容-轻量包.scmod",
+   "[API1.9]CS武器1.2.0-双向兼容-全量包.scmod",
+   "[API1.9]CS武器1.2.0-双向兼容-轻量包.scmod",
+   "[API1.9]CS武器1.3.0-全量包.scmod",
+   "[API1.9]CS武器1.3.0-探员包.scmod",
+   "[API1.9]CS武器1.3.0-极简包.scmod",
+   "[API1.9]CS武器1.3.0-轻量包.scmod",
+   "[API1.9]CS武器1.4.0-全量包.scmod",
+   "[API1.9]CS武器1.4.0-探员包.scmod",
+   "[API1.9]CS武器1.4.0-死亡竞赛包.scmod",
+   "[API1.9]CS武器1.4.0-轻量包.scmod",
+   "ak-original-v01",
+   "ak-original-v02",
+   "appearance-1.0.0",
+   "appearance-1.1.0",
+   "appearance-native-148",
+   "appearance-native-149",
+   "appearance-native-149-fixed",
+   "arms-native-148",
+   "compatibility-20260918",
+   "glove-light-repro-149",
+   "glove-ui-149",
+   "history-capacity-names-20260927",
+   "nekomeko-1.1",
+   "release-1.1.0",
+   "release-1.1.1",
+   "release-1.1.1-feedback",
+   "release-1.1.2",
+   "release-1.1.3",
+   "release-1.1.4",
+   "release-1.1.6",
+   "release-1.1.7",
+   "release-1.2.0",
+   "release-1.2.1",
+   "release-1.2.2",
+   "release-1.3.0",
+   "release-1.3.1",
+   "release-1.3.2",
+   "release-1.3.3",
+   "release-1.4.0",
+   "release-1.4.1",
+   "release-1.4.2",
+   "release-1.4.3",
+   "release-1.4.4",
+   "release-1.4.5",
+   "release-1.4.6",
+   "release-actor-freeze-1.3.0",
+   "release-bundle-1.5.0",
+   "release-bundle-1.5.0-lossless",
+   "release-capacity-20260927",
+   "release-compatibility-1",
+   "release-crafting-1.4.7",
+   "release-feedback-1.7.0",
+   "release-feedback-1.7.1",
+   "release-firstperson-1.4.8",
+   "release-gloves-1.4.9",
+   "release-nmm-fix-1.3.0",
+   "release-package-names-20260927",
+   "release-public-1.3.0",
+   "release-single-1.5.1",
+   "release-single-1.5.2",
+   "release-single-1.5.3",
+   "release-zeus-1.7.2",
+   "reports",
+   "retired-crafting-1.4.7-20260921-191253",
+   "retired-firstperson-1.4.8-20260921-213402",
+   "retired-gloves-1.4.9-20260921-222924",
+   "tactical-1.0.1",
+   "tactical-1.1.0",
+   "tactical-1.1.1",
+   "tactical-1.1.2",
+   "tactical-1.1.3",
+   "tactical-1.1.4",
+   "tactical-1.2.0",
+   "tactical-1.2.1",
+   "tactical-1.2.2",
+   "tactical-1.2.3",
+   "tactical-1.3.0",
+   "tactical-1.3.1",
+   "tactical-1.3.2",
+   "tactical-1.4.0",
+   "thirdperson-preview",
+   "玲兰扩容恢复-20260927"
+  ],
+  "stageCandidate": []
+ },
+ "identity": {
+  "identity": "6452d068c31dc93fe66a15af33e8d945",
+  "files": 306
+ },
+ "dm": {
+  "assembly": "4cbc4713b768db28a9247ef794b219d31666db24b7d72e629e94dc20cb5a87ff",
+  "bytes": 284160,
+  "identity": "298db30b947337b4295a79fb18883c11",
+  "core": "e6071ee5f17790c79b81f3236dfceb63a106f81e1f23feb2a05472fd420840b0",
+  "profile": "d3cac5abe37bbb7bb225f5e633570b141c469478836776ef4f1a176c755b417c",
+  "cs2": {
+   "ClientVersion": "2000922",
+   "ServerVersion": "2000922",
+   "PatchVersion": "1.41.8.8",
+   "VersionDate": "Sep 30 2026",
+   "VersionTime": "16:29:50"
+  }
+ },
+ "dmSources": {
+  "Arena/DmArena.cs": "c242ce7d191f76bd2fe9f31611734f75e6c7d40ce1035b120fefacf1763971e1",
+  "Assets/ScDeathmatch.xdb": "b410539d637287f1048940af3aca850fff3d4820026565523d1a79d6af7be248",
+  "Combat/DmCombat.cs": "6377d4424d24ac7f3b98a5d81550443867f1cc021181e42a5bcbccd174db3fda",
+  "Combat/DmWeapons.cs": "ba2f418dd75b3df453a4ad1da6cb8cbb3c7ab56bc056de3d134899fb1a3cf3c6",
+  "Data/dm_cs2_profile.json": "d3cac5abe37bbb7bb225f5e633570b141c469478836776ef4f1a176c755b417c",
+  "DeathmatchModLoader.cs": "6fb80b491bda06b34f41334899e545ca1a3c6c5d416cc3a34badcdd10304c587",
+  "Events/DmKill.cs": "f16c74fa3f161b7901ca047c41f1919ec7e233862738bc376b5c482c4f2d2663",
+  "GlobalUsings.cs": "693a07c70fb4c0aea4d55d9a3677a7660711e699aacab75d99727a06d5756d7c",
+  "Loadouts/DmArmory.cs": "180cb68c100f0407749d453767af5827fef7b377363128f762a878ef35627454",
+  "Loadouts/DmLoadout.cs": "a9157bab3c0261b3718f6b4bc8cccaf2b6598108ff40a8ee5d8951a705094aa7",
+  "Net/DmNet.cs": "4d39547c9794b87a411c34eb8bc58a8f4febd6f4b35a5cd3ede79249aa0ceed9",
+  "Respawn/DmDeathCamera.cs": "c1039d3131d7485751f0d4d988c1836c56ab8f31e471106aa0e93f487b9f0ead",
+  "Respawn/DmSpawnSelector.cs": "3f9f4766945b0674436b46c764abc35d09be611e738a89d818d44b3955df303b",
+  "Session/DmMatch.cs": "95e140ff4ebf7c6f585f0eea60d30455da97154da2e21555497e13fe1c6deb6a",
+  "Session/DmMode.cs": "87b392b2b649147cb3385ffe1d9397cb7b3f136fa1e18395a8c6590478be47aa",
+  "Session/DmRules.cs": "551ff11bf83fa52801bb7260269f1e6313c71d5b82531094ede0934bb7a5bfc9",
+  "Session/SubsystemScDeathmatch.cs": "d25f9f4187c0656852c735c31931715d5d5d25bda38a27fccdf8f8b58de58095",
+  "UI/DmArt.cs": "0e44a5adc4a97ad3664757056993f29efa971e0e6eced43dd92b1dfbd6555c2f",
+  "UI/DmHud.cs": "1c0c0a21c889d4a811755727f1f84edcc306b45c0bb189a30643778bd1cce3d1",
+  "UI/DmMenu.cs": "8ee15e925b71aa19b96d35fb8aa53cbe8c8eddb63e04c8369eaa5c92b6d61c90",
+  "UI/DmUiSettings.cs": "4b8caa8dfe163b6d8534b972d74eb5182716d877be71f0cf93e9502a9aecde37",
+  "UI/DmWheel.cs": "2ba75c25f46931a82c2f4621eb9fcab7fe310e4615d4fad54cc0a493e9f67be9",
+  "modinfo.json": "580dae22caae672592a7295f7e20a2652620792acee07884ab45f19636506f40"
+ },
+ "net": {
+  "member": "Net/ScCsgoNet.bin",
+  "sha256": "0630457b664252c67904ffc9885fc5616b3760db1afcc38e2fafb098e7295717",
+  "bytes": 57856,
+  "core": "e6071ee5f17790c79b81f3236dfceb63a106f81e1f23feb2a05472fd420840b0",
+  "compatMember": "Net/ScCsgoNetCompat.bin",
+  "compatSha256": "ca40acbc69d1b1b71b2176a2a88d85f55a9fc84355d3e2853ac8e310a74a9712",
+  "compatBytes": 9728,
+  "references": {
+   "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+   "Survivalcraft.CompatNet.dll": "4288904cbbbcbdfcb2dd5d04d3cfc79f942f7339d13be7b64bb23468aceb0102",
+   "Survivalcraft.Multiplayer.dll": "3e0b24efbf51b21372b337cd8f5d12242ec5fc446a90782f2eb4d274124e9cfe",
+   "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+   "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db",
+   "Survivalcraft.Compat23.dll": "96b60590d436b7875158587a87796e7cac6fd45eecbdae8c245d2f7f4ee6b479",
+   "0Harmony.dll": "70e7647876b6c3d874ea99b56627a95d1dce2e1dd791981a002578a2febc9bbd"
+  },
+  "sources": {
+   "ScCsgoNetAdapter.cs": "ebdc89bc5cdb94783764755d754d690120f3df62f3486f258657d027ff7a456f",
+   "ScCsgoNetPlatform.cs": "208ad04b40e94831cb398b38959eb408d7bf528005ae8d9604b07e7ed240946b",
+   "ScCsgoNetCompat.cs": "ae044cef6139bd5409f167e02d775829c5a0f9b59c79c4d8968370df1c47c340"
+  }
+ },
+ "gates": {
+  "netloop-nocompat": {
+   "failed": 0,
+   "total": 28,
+   "failedNames": []
+  },
+  "netloop-compat": {
+   "failed": 0,
+   "total": 28,
+   "failedNames": []
+  },
+  "appnet-full": {
+   "failed": 0,
+   "total": 19,
+   "failedNames": []
+  },
+  "appnet-lite": {
+   "failed": 0,
+   "total": 19,
+   "failedNames": []
+  },
+  "c4-full": {
+   "failed": 0,
+   "total": 140,
+   "failedNames": []
+  },
+  "c4-lite": {
+   "failed": 0,
+   "total": 140,
+   "failedNames": []
+  },
+  "main-full": {
+   "failed": 0,
+   "total": 14179,
+   "failedNames": []
+  },
+  "main-lite": {
+   "failed": 0,
+   "total": 14489,
+   "failedNames": []
+  },
+  "baseline-main-full": {
+   "failed": 0,
+   "total": 14179,
+   "failedNames": []
+  },
+  "baseline-main-lite": {
+   "failed": 0,
+   "total": 14489,
+   "failedNames": []
+  },
+  "ai-full": {
+   "failed": 0,
+   "total": 67,
+   "failedNames": []
+  },
+  "ai-lite": {
+   "failed": 0,
+   "total": 67,
+   "failedNames": []
+  },
+  "vf-full": {
+   "failed": 0,
+   "total": 292,
+   "failedNames": []
+  },
+  "vf-lite": {
+   "failed": 0,
+   "total": 292,
+   "failedNames": []
+  },
+  "tactical-full-suite": {
+   "failed": 4,
+   "total": 110,
+   "failedNames": [
+    "optional-package-identity-and-no-bundled-engine",
+    "native-gltf/ct",
+    "native-gltf/t",
+    "npc-full-registry-reload-refuses-without-ammo-loss"
+   ]
+  },
+  "family": {
+   "failed": 0,
+   "total": 246,
+   "failedNames": []
+  },
+  "netstate": {
+   "mode": "state cases",
+   "failed": 0,
+   "total": 109,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoAppearance.dll"
+   ],
+   "registeredHandlers": 35,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9",
+   "adapter": "564c664d-96a9-4256-9030-80eb5797c46d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard"
+  },
+  "netstate-targets": {
+   "mode": "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)",
+   "failed": 0,
+   "total": 12,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoAppearance.dll"
+   ],
+   "registeredHandlers": 33,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9",
+   "adapter": "564c664d-96a9-4256-9030-80eb5797c46d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard"
+  },
+  "netgunloop": {
+   "mode": "the gun state machine on a client and a server end",
+   "failed": 0,
+   "total": 122,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoAppearance.dll"
+   ],
+   "registeredHandlers": 33,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9",
+   "adapter": "564c664d-96a9-4256-9030-80eb5797c46d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard"
+  },
+  "netdmloop-lite": {
+   "mode": "the deathmatch package on a server and two clients",
+   "failed": 0,
+   "total": 60,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoDeathmatch.dll"
+   ],
+   "registeredHandlers": 47,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9",
+   "adapter": "564c664d-96a9-4256-9030-80eb5797c46d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "D01",
+     "name": "the package's loader claims its fourteen message numbers and no number has two meanings (core, agents and deathmatch together)",
+     "ok": true,
+     "detail": "14 handlers added; declared twice []; replaced []; refused []"
+    },
+    {
+     "case": "D01",
+     "name": "the CS2 profile is in the package and names its build",
+     "ok": true,
+     "detail": " 1.41.8.8 f5c28fefc9bf99b4"
+    },
+    {
+     "case": "D02",
+     "name": "a world the package was merely loaded with is not an arena world: no mode, no marker, nothing saved, survival rules for everybody",
+     "ok": true,
+     "detail": "enabled False, saved keys 0"
+    },
+    {
+     "case": "D02",
+     "name": "the arena tools do nothing before the world is made an arena world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D02",
+     "name": "the host makes the world an arena world: marked as a dedicated world, the mode registered for this world only, in map editing (rules not in force yet)",
+     "ok": true,
+     "detail": "; modes 1"
+    },
+    {
+     "case": "D02",
+     "name": "another world loaded in the same process has no mode",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D02",
+     "name": "one respawn point is not enough to start",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D02",
+     "name": "the arena on real terrain: four usable points, the one outside reported, nothing blocks",
+     "ok": true,
+     "detail": "SpawnOutside#5"
+    },
+    {
+     "case": "D03",
+     "name": "a client that loaded the server's world runs the same mode with the same rules fingerprint; a client without the package, or with other rules, is told why it cannot join",
+     "ok": true,
+     "detail": "zh667.ScCsgoDeathmatch/deathmatch#298db30b947337b4295a79fb18883c11#f5c28fefc9bf99b4"
+    },
+    {
+     "case": "D03",
+     "name": "the client holds no match of its own and decides nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D03",
+     "name": "both clients are accepted",
+     "ok": true,
+     "detail": "2 peers"
+    },
+    {
+     "case": "D03",
+     "name": "with other players online a world cannot be turned into an arena world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D03",
+     "name": "a remote player is known by its account id, the host's own player by its seat - never by a connection slot",
+     "ok": true,
+     "detail": "309ae1eca78047b7a449c068a56b5e1a b8729f3810814f4aba0b0a29f887f5a8 local:0"
+    },
+    {
+     "case": "D03",
+     "name": "the clients see the world's state: map editing, the arena, nobody governed",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D04",
+     "name": "when the lobby opens the mode governs every player on the server and on each client",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D04",
+     "name": "the players are brought to the preparation place with nothing in their hands (server and client copies)",
+     "ok": true,
+     "detail": "server 8.5,64,8.5, client 8.5,64,8.5; slots -,-,-,-,-,-,-,-,-,- / -,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D04",
+     "name": "the AK's numbers in the arena are CS2's on both ends (36, head x4), not the survival ones",
+     "ok": true,
+     "detail": "server 36/4, client 36, survival 15"
+    },
+    {
+     "case": "D04",
+     "name": "in the lobby nobody can attack or be hurt",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D05",
+     "name": "entering with nothing chosen is refused: nothing is filled in for the player",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D05",
+     "name": "a loadout that is not valid is refused by the server and the client is told",
+     "ok": true,
+     "detail": "Rejected WrongClass; desired empty True"
+    },
+    {
+     "case": "D05",
+     "name": "the server keeps each client's own loadout under that client's identity",
+     "ok": true,
+     "detail": "A entered True desired {\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":true,\"SilencerOff\":false},\"Secondary\":{\"Variant\":4,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]} answer Saved/None; B entered True desired {\"Primary\":{\"Variant\":2,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\""
+    },
+    {
+     "case": "D05",
+     "name": "nothing is issued before a life begins",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "the host starts the match",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "during the countdown nobody has a life yet and the clients see the countdown",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "both clients were promised a point, reported ready and were given their lives",
+     "ok": true,
+     "detail": "SpawnProtected SpawnProtected"
+    },
+    {
+     "case": "D06",
+     "name": "each life stands on its own authored point inside the arena - server copy and the client's own body alike",
+     "ok": true,
+     "detail": "A 12.5,64,12.5 B 3.5,64,12.5"
+    },
+    {
+     "case": "D06",
+     "name": "the whole loadout is in the server's inventory: each gun a record of the armoury, of the chosen model, in its fixed slot, and nothing else",
+     "ok": true,
+     "detail": "A g1,g2,-,-,-,-,-,-,-,- B g3,g4,-,-,-,-,-,-,-,-; armoury 4"
+    },
+    {
+     "case": "D06",
+     "name": "each record is leased to its player for this match and life, and starts with a full magazine",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "the client's own inventory and both watchers' copies hold the same items as the server's (records before slots, one publication)",
+     "ok": true,
+     "detail": "server g1,g2,-,-,-,-,-,-,-,- | A g1,g2,-,-,-,-,-,-,-,- | B's copy g1,g2,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D06",
+     "name": "the client is shown its life: 100 health, 100 armour, helmet, protected for about three seconds from now",
+     "ok": true,
+     "detail": "SpawnProtected 100/100 protection left 2.80"
+    },
+    {
+     "case": "D06",
+     "name": "the scoreboard rows reach both clients",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D07",
+     "name": "a player without a life (the host, watching) cannot attack",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D07",
+     "name": "a protected life takes the hit and loses nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D07",
+     "name": "a protected player's own shot ends its protection before the shot takes effect",
+     "ok": true,
+     "detail": "amount 0.86, B Alive, A health 14"
+    },
+    {
+     "case": "D07",
+     "name": "both clients see the protection gone and the victim its new health",
+     "ok": true,
+     "detail": "Alive 14"
+    },
+    {
+     "case": "D08",
+     "name": "an AK body shot on 100/100 takes 27 health and 4 armour, and the engine is told to take exactly that picture (0.27) although the world is creative",
+     "ok": true,
+     "detail": "amount 0.26999998, 73/96, engine health 0.73"
+    },
+    {
+     "case": "D08",
+     "name": "the shot that ends the life: the engine is told to take nothing (it never sees a death), the attack is marked lethal for the shooter's feedback",
+     "ok": true,
+     "detail": "amount 0, lethal True, engine health 0.73, DeathView"
+    },
+    {
+     "case": "D08",
+     "name": "the dead player's body cannot be hit again and the kill is not counted twice",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D08",
+     "name": "the dead player's equipment is taken back at once: its inventory is empty and its records are parked, never deleted",
+     "ok": true,
+     "detail": "-,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D08",
+     "name": "one kill event reaches everybody, with the marks the server established (head, through smoke) and no others",
+     "ok": true,
+     "detail": "1 True True"
+    },
+    {
+     "case": "D08",
+     "name": "the victim's client knows it died and by whom; its inventory copy is empty; the board shows 1 kill and 1 death",
+     "ok": true,
+     "detail": "DeathView; B slots -,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D08",
+     "name": "the competitive counter of the killer's AK reads 1 on the server and on its owner's client, from the match's figures: the gun's record carries no kill, counter or growth",
+     "ok": true,
+     "detail": "server (True, 1), client (True, 1)"
+    },
+    {
+     "case": "D09",
+     "name": "about two seconds later the next life begins: the same two records are lent again, full, and the pool has not grown",
+     "ok": true,
+     "detail": "g3,g4,-,-,-,-,-,-,-,-; armoury 4; life 2"
+    },
+    {
+     "case": "D09",
+     "name": "a loadout changed inside the protection is exchanged at once: the new gun is issued, the old one parked, the kept pistol untouched, the protection not extended",
+     "ok": true,
+     "detail": "g5,g4,-,-,-,-,-,-,-,-; answer Now"
+    },
+    {
+     "case": "D09",
+     "name": "the same request from a life that fights changes nothing now: it is for the next life",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D10",
+     "name": "slots a client (or anything else) rewrote are put back by the server: the issued items in their places, nothing extra",
+     "ok": true,
+     "detail": "g5,g4,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D11",
+     "name": "thirty more lives with five different primaries: thirty more kills, and the pool holds one record per model in use - it did not grow with the lives",
+     "ok": true,
+     "detail": "kills 30, armoury 8, registry +8"
+    },
+    {
+     "case": "D11",
+     "name": "every client applied each kill once: the feed's last number is the server's, the board agrees",
+     "ok": true,
+     "detail": "server 31, A 31, B 31"
+    },
+    {
+     "case": "D11",
+     "name": "the AK's counter on its owner's client reads the match's 31 kills with it",
+     "ok": true,
+     "detail": "(True, 31)"
+    },
+    {
+     "case": "D12",
+     "name": "during a match the arena's cells refuse every change, with the same answer on the server and on a client; cells elsewhere are free",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D12",
+     "name": "outside the arena: a warning, and after three seconds one death that is nobody's kill",
+     "ok": true,
+     "detail": "alive before True; deaths 1"
+    },
+    {
+     "case": "D13",
+     "name": "the world saved under a running match loads into the lobby: the arena and the pool as they were, every record parked, the figures kept as an interrupted result, nothing replayed",
+     "ok": true,
+     "detail": " Lobby"
+    },
+    {
+     "case": "D13",
+     "name": "data of a later layout is not interpreted: the mode does not run, the player is told, and a save writes every value back exactly as it was loaded",
+     "ok": true,
+     "detail": "本世界的死亡竞赛数据来自更新的版本（99），已原样保留；请更新死亡竞赛拓展后再使用"
+    },
+    {
+     "case": "D13",
+     "name": "data that cannot be read is kept as it is, never guessed at or reset",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "a player who leaves gives its records back and keeps its figures; the match goes on",
+     "ok": true,
+     "detail": "Disconnected"
+    },
+    {
+     "case": "D14",
+     "name": "the host ends the match: results on the server and the client, every life taken back, the inventories empty",
+     "ok": true,
+     "detail": "Results; A -,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D14",
+     "name": "after the end nobody attacks or is hurt",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "the lobby returns; the host can go back to editing the map, where the mode governs nobody again",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "the client follows: map editing, survival rules for its own weapons",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "when the world is closed the mode is gone with it",
+     "ok": true,
+     "detail": ""
+    }
+   ]
+  },
+  "netdmloop-full": {
+   "mode": "the deathmatch package on a server and two clients",
+   "failed": 0,
+   "total": 60,
+   "modules": [
+    "ScCsgoTactical.dll",
+    "ScCsgoDeathmatch.dll"
+   ],
+   "registeredHandlers": 47,
+   "platform": {
+    "Survivalcraft": "d5c1a418-7d4f-4c3b-83aa-383619b23978",
+    "Survivalcraft.Multiplayer": "b3822a2d-94f5-4803-b4b9-2b05ac00accc"
+   },
+   "core": "f703c168-0554-41a8-a130-53a462f4320d",
+   "adapter": "564c664d-96a9-4256-9030-80eb5797c46d",
+   "scope": "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard",
+   "checks": [
+    {
+     "case": "D01",
+     "name": "the package's loader claims its fourteen message numbers and no number has two meanings (core, agents and deathmatch together)",
+     "ok": true,
+     "detail": "14 handlers added; declared twice []; replaced []; refused []"
+    },
+    {
+     "case": "D01",
+     "name": "the CS2 profile is in the package and names its build",
+     "ok": true,
+     "detail": " 1.41.8.8 f5c28fefc9bf99b4"
+    },
+    {
+     "case": "D02",
+     "name": "a world the package was merely loaded with is not an arena world: no mode, no marker, nothing saved, survival rules for everybody",
+     "ok": true,
+     "detail": "enabled False, saved keys 0"
+    },
+    {
+     "case": "D02",
+     "name": "the arena tools do nothing before the world is made an arena world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D02",
+     "name": "the host makes the world an arena world: marked as a dedicated world, the mode registered for this world only, in map editing (rules not in force yet)",
+     "ok": true,
+     "detail": "; modes 1"
+    },
+    {
+     "case": "D02",
+     "name": "another world loaded in the same process has no mode",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D02",
+     "name": "one respawn point is not enough to start",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D02",
+     "name": "the arena on real terrain: four usable points, the one outside reported, nothing blocks",
+     "ok": true,
+     "detail": "SpawnOutside#5"
+    },
+    {
+     "case": "D03",
+     "name": "a client that loaded the server's world runs the same mode with the same rules fingerprint; a client without the package, or with other rules, is told why it cannot join",
+     "ok": true,
+     "detail": "zh667.ScCsgoDeathmatch/deathmatch#298db30b947337b4295a79fb18883c11#f5c28fefc9bf99b4"
+    },
+    {
+     "case": "D03",
+     "name": "the client holds no match of its own and decides nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D03",
+     "name": "both clients are accepted",
+     "ok": true,
+     "detail": "2 peers"
+    },
+    {
+     "case": "D03",
+     "name": "with other players online a world cannot be turned into an arena world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D03",
+     "name": "a remote player is known by its account id, the host's own player by its seat - never by a connection slot",
+     "ok": true,
+     "detail": "9dda9176b9da4a45b199770389663da5 5a25f04d833e4232b4b5a9df744ecef7 local:0"
+    },
+    {
+     "case": "D03",
+     "name": "the clients see the world's state: map editing, the arena, nobody governed",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D04",
+     "name": "when the lobby opens the mode governs every player on the server and on each client",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D04",
+     "name": "the players are brought to the preparation place with nothing in their hands (server and client copies)",
+     "ok": true,
+     "detail": "server 8.5,64,8.5, client 8.5,64,8.5; slots -,-,-,-,-,-,-,-,-,- / -,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D04",
+     "name": "the AK's numbers in the arena are CS2's on both ends (36, head x4), not the survival ones",
+     "ok": true,
+     "detail": "server 36/4, client 36, survival 15"
+    },
+    {
+     "case": "D04",
+     "name": "in the lobby nobody can attack or be hurt",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D05",
+     "name": "entering with nothing chosen is refused: nothing is filled in for the player",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D05",
+     "name": "a loadout that is not valid is refused by the server and the client is told",
+     "ok": true,
+     "detail": "Rejected WrongClass; desired empty True"
+    },
+    {
+     "case": "D05",
+     "name": "the server keeps each client's own loadout under that client's identity",
+     "ok": true,
+     "detail": "A entered True desired {\"Primary\":{\"Variant\":0,\"SkinId\":0,\"Counter\":true,\"SilencerOff\":false},\"Secondary\":{\"Variant\":4,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\"Grenades\":[]} answer Saved/None; B entered True desired {\"Primary\":{\"Variant\":2,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Secondary\":{\"Variant\":3,\"SkinId\":0,\"Counter\":false,\"SilencerOff\":false},\"Knife\":null,\"Zeus\":null,\""
+    },
+    {
+     "case": "D05",
+     "name": "nothing is issued before a life begins",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "the host starts the match",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "during the countdown nobody has a life yet and the clients see the countdown",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "both clients were promised a point, reported ready and were given their lives",
+     "ok": true,
+     "detail": "SpawnProtected SpawnProtected"
+    },
+    {
+     "case": "D06",
+     "name": "each life stands on its own authored point inside the arena - server copy and the client's own body alike",
+     "ok": true,
+     "detail": "A 12.5,64,3.5 B 3.5,64,12.5"
+    },
+    {
+     "case": "D06",
+     "name": "the whole loadout is in the server's inventory: each gun a record of the armoury, of the chosen model, in its fixed slot, and nothing else",
+     "ok": true,
+     "detail": "A g1,g2,-,-,-,-,-,-,-,- B g3,g4,-,-,-,-,-,-,-,-; armoury 4"
+    },
+    {
+     "case": "D06",
+     "name": "each record is leased to its player for this match and life, and starts with a full magazine",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D06",
+     "name": "the client's own inventory and both watchers' copies hold the same items as the server's (records before slots, one publication)",
+     "ok": true,
+     "detail": "server g1,g2,-,-,-,-,-,-,-,- | A g1,g2,-,-,-,-,-,-,-,- | B's copy g1,g2,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D06",
+     "name": "the client is shown its life: 100 health, 100 armour, helmet, protected for about three seconds from now",
+     "ok": true,
+     "detail": "SpawnProtected 100/100 protection left 2.80"
+    },
+    {
+     "case": "D06",
+     "name": "the scoreboard rows reach both clients",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D07",
+     "name": "a player without a life (the host, watching) cannot attack",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D07",
+     "name": "a protected life takes the hit and loses nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D07",
+     "name": "a protected player's own shot ends its protection before the shot takes effect",
+     "ok": true,
+     "detail": "amount 0.86, B Alive, A health 14"
+    },
+    {
+     "case": "D07",
+     "name": "both clients see the protection gone and the victim its new health",
+     "ok": true,
+     "detail": "Alive 14"
+    },
+    {
+     "case": "D08",
+     "name": "an AK body shot on 100/100 takes 27 health and 4 armour, and the engine is told to take exactly that picture (0.27) although the world is creative",
+     "ok": true,
+     "detail": "amount 0.26999998, 73/96, engine health 0.73"
+    },
+    {
+     "case": "D08",
+     "name": "the shot that ends the life: the engine is told to take nothing (it never sees a death), the attack is marked lethal for the shooter's feedback",
+     "ok": true,
+     "detail": "amount 0, lethal True, engine health 0.73, DeathView"
+    },
+    {
+     "case": "D08",
+     "name": "the dead player's body cannot be hit again and the kill is not counted twice",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D08",
+     "name": "the dead player's equipment is taken back at once: its inventory is empty and its records are parked, never deleted",
+     "ok": true,
+     "detail": "-,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D08",
+     "name": "one kill event reaches everybody, with the marks the server established (head, through smoke) and no others",
+     "ok": true,
+     "detail": "1 True True"
+    },
+    {
+     "case": "D08",
+     "name": "the victim's client knows it died and by whom; its inventory copy is empty; the board shows 1 kill and 1 death",
+     "ok": true,
+     "detail": "DeathView; B slots -,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D08",
+     "name": "the competitive counter of the killer's AK reads 1 on the server and on its owner's client, from the match's figures: the gun's record carries no kill, counter or growth",
+     "ok": true,
+     "detail": "server (True, 1), client (True, 1)"
+    },
+    {
+     "case": "D09",
+     "name": "about two seconds later the next life begins: the same two records are lent again, full, and the pool has not grown",
+     "ok": true,
+     "detail": "g3,g4,-,-,-,-,-,-,-,-; armoury 4; life 2"
+    },
+    {
+     "case": "D09",
+     "name": "a loadout changed inside the protection is exchanged at once: the new gun is issued, the old one parked, the kept pistol untouched, the protection not extended",
+     "ok": true,
+     "detail": "g5,g4,-,-,-,-,-,-,-,-; answer Now"
+    },
+    {
+     "case": "D09",
+     "name": "the same request from a life that fights changes nothing now: it is for the next life",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D10",
+     "name": "slots a client (or anything else) rewrote are put back by the server: the issued items in their places, nothing extra",
+     "ok": true,
+     "detail": "g5,g4,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D11",
+     "name": "thirty more lives with five different primaries: thirty more kills, and the pool holds one record per model in use - it did not grow with the lives",
+     "ok": true,
+     "detail": "kills 30, armoury 8, registry +8"
+    },
+    {
+     "case": "D11",
+     "name": "every client applied each kill once: the feed's last number is the server's, the board agrees",
+     "ok": true,
+     "detail": "server 31, A 31, B 31"
+    },
+    {
+     "case": "D11",
+     "name": "the AK's counter on its owner's client reads the match's 31 kills with it",
+     "ok": true,
+     "detail": "(True, 31)"
+    },
+    {
+     "case": "D12",
+     "name": "during a match the arena's cells refuse every change, with the same answer on the server and on a client; cells elsewhere are free",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D12",
+     "name": "outside the arena: a warning, and after three seconds one death that is nobody's kill",
+     "ok": true,
+     "detail": "alive before True; deaths 1"
+    },
+    {
+     "case": "D13",
+     "name": "the world saved under a running match loads into the lobby: the arena and the pool as they were, every record parked, the figures kept as an interrupted result, nothing replayed",
+     "ok": true,
+     "detail": " Lobby"
+    },
+    {
+     "case": "D13",
+     "name": "data of a later layout is not interpreted: the mode does not run, the player is told, and a save writes every value back exactly as it was loaded",
+     "ok": true,
+     "detail": "本世界的死亡竞赛数据来自更新的版本（99），已原样保留；请更新死亡竞赛拓展后再使用"
+    },
+    {
+     "case": "D13",
+     "name": "data that cannot be read is kept as it is, never guessed at or reset",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "a player who leaves gives its records back and keeps its figures; the match goes on",
+     "ok": true,
+     "detail": "Disconnected"
+    },
+    {
+     "case": "D14",
+     "name": "the host ends the match: results on the server and the client, every life taken back, the inventories empty",
+     "ok": true,
+     "detail": "Results; A -,-,-,-,-,-,-,-,-,-"
+    },
+    {
+     "case": "D14",
+     "name": "after the end nobody attacks or is hurt",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "the lobby returns; the host can go back to editing the map, where the mode governs nobody again",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "the client follows: map editing, survival rules for its own weapons",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "case": "D14",
+     "name": "when the world is closed the mode is gone with it",
+     "ok": true,
+     "detail": ""
+    }
+   ]
+  },
+  "dmcheck": {
+   "failed": 0,
+   "total": 193,
+   "profile": {
+    "Cs2Version": "1.41.8.8",
+    "Fingerprint": "f5c28fefc9bf99b4",
+    "LoadError": null
+   },
+   "scope": "pure rules, no engine world, no network, nothing seen or heard",
+   "checks": [
+    {
+     "id": "A01",
+     "name": "an arena without a region cannot start",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A02",
+     "name": "region, preparation place and two separate points: nothing blocks",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A03",
+     "name": "one point is not enough for a match",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A04",
+     "name": "a point with a block at head height is reported and not counted",
+     "ok": true,
+     "detail": "SpawnBlocked; TooFewSpawns"
+    },
+    {
+     "id": "A05",
+     "name": "a point over a hole has no ground",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A06",
+     "name": "a point in fire is a hazard",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A07",
+     "name": "a point under water is a hazard",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A08",
+     "name": "a point on terrain that is not loaded is never called valid",
+     "ok": true,
+     "detail": "LobbyUnsafe; SpawnUnloaded; TooFewSpawns"
+    },
+    {
+     "id": "A09",
+     "name": "a point outside the region is reported, the others still serve",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A10",
+     "name": "two points in the same place count once",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A11",
+     "name": "points all in one spot: advice, not a refusal",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A12",
+     "name": "a region edge over the limit blocks",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A13",
+     "name": "the arena survives its own text",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A14",
+     "name": "text that is not an arena is refused, never guessed",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A15",
+     "name": "a removed point's number is not given to a later point",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A16",
+     "name": "the box is inclusive of both corner cells and nothing beyond",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "A17",
+     "name": "rules: the match length stays within 1-60 minutes",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "S01",
+     "name": "an arena without points gives no point (never a made-up place)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "S02",
+     "name": "a point beside an enemy is not chosen while hidden far points exist",
+     "ok": true,
+     "detail": "2,3,4"
+    },
+    {
+     "id": "S03",
+     "name": "when every point is in sight the one farthest from the nearest enemy is taken",
+     "ok": true,
+     "detail": "2"
+    },
+    {
+     "id": "S04",
+     "name": "an unseen point is preferred to seen ones",
+     "ok": true,
+     "detail": "2"
+    },
+    {
+     "id": "S05",
+     "name": "points promised to other pending lives are not handed out twice",
+     "ok": true,
+     "detail": "1,4"
+    },
+    {
+     "id": "S06",
+     "name": "a point somebody stands on is not used",
+     "ok": true,
+     "detail": "1,3,4"
+    },
+    {
+     "id": "S07",
+     "name": "a point in present danger (fire) is not used",
+     "ok": true,
+     "detail": "1,3"
+    },
+    {
+     "id": "S08",
+     "name": "points used a moment ago are passed over while others of the same grade exist",
+     "ok": true,
+     "detail": "3,4"
+    },
+    {
+     "id": "S09",
+     "name": "when every point was just used one is still given",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "S10",
+     "name": "equal points are all used, none every time",
+     "ok": true,
+     "detail": "1:50 2:50 3:50 4:50"
+    },
+    {
+     "id": "S11",
+     "name": "every point blocked, burning or without ground: no point, the player waits",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "S12",
+     "name": "a point outside the arena is never chosen",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R01",
+     "name": "the first loan of a model makes one record",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R02",
+     "name": "a returned record is lent again: no new record, the same number, the same model",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R03",
+     "name": "a second player of the model at the same time gets another record",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R04",
+     "name": "the player who already holds the model keeps that record",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R05",
+     "name": "a loan to the next player is a new generation: the former holder's is not current",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R06",
+     "name": "a refused allocation changes nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R07",
+     "name": "16 players holding all 35 models: exactly 560 records, the stated bound",
+     "ok": true,
+     "detail": "560/560"
+    },
+    {
+     "id": "R08",
+     "name": "a seventeenth holder of a model is refused and nothing is made",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R09",
+     "name": "20000 lives of 400 visitors: the pool never exceeds the bound and stays far below the number of lives",
+     "ok": true,
+     "detail": "records 197, allocations 197, peak in use 32"
+    },
+    {
+     "id": "R10",
+     "name": "no model ever has more records than players",
+     "ok": true,
+     "detail": "7"
+    },
+    {
+     "id": "R11",
+     "name": "every record still has the model it was made with",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R12",
+     "name": "the ledger survives its own text: records, models, loans, generations",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R13",
+     "name": "a loaded world's loans are all parked again (no life survives a load)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R14",
+     "name": "a ledger that cannot be read is kept as it was and holds nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R15",
+     "name": "a ledger of a later layout is kept as it was",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R16",
+     "name": "a record taken out of the pool is neither lent nor forgotten",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "R17",
+     "name": "player keys with separators survive the text",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "C01",
+     "name": "AK-47 body shot on 100/100: 27 health, 4 armour",
+     "ok": true,
+     "detail": "DmSettlement { Health = 73, Armour = 96, HealthLost = 27, ArmourLost = 4, Lethal = False }"
+    },
+    {
+     "id": "C02",
+     "name": "AK-47 head shot through a helmet kills",
+     "ok": true,
+     "detail": "DmSettlement { Health = 0, Armour = 84, HealthLost = 100, ArmourLost = 16, Lethal = True }"
+    },
+    {
+     "id": "C03",
+     "name": "M4A1-S head shot through a helmet leaves 8 health, wears 19 armour",
+     "ok": true,
+     "detail": "DmSettlement { Health = 8, Armour = 81, HealthLost = 92, ArmourLost = 19, Lethal = False }"
+    },
+    {
+     "id": "C04",
+     "name": "a leg shot: three quarters of the damage, armour neither protects nor wears",
+     "ok": true,
+     "detail": "DmSettlement { Health = 73, Armour = 100, HealthLost = 27, ArmourLost = 0, Lethal = False }"
+    },
+    {
+     "id": "C05",
+     "name": "armour that runs out lets the remainder through",
+     "ok": true,
+     "detail": "DmSettlement { Health = 4, Armour = 0, HealthLost = 96, ArmourLost = 2, Lethal = False }"
+    },
+    {
+     "id": "C06",
+     "name": "no armour: the whole damage",
+     "ok": true,
+     "detail": "DmSettlement { Health = 64, Armour = 0, HealthLost = 36, ArmourLost = 0, Lethal = False }"
+    },
+    {
+     "id": "C07",
+     "name": "Glock body shot on 100/100: 14 health, 7 armour",
+     "ok": true,
+     "detail": "DmSettlement { Health = 86, Armour = 93, HealthLost = 14, ArmourLost = 7, Lethal = False }"
+    },
+    {
+     "id": "C08",
+     "name": "AWP body shot on 100/100 kills",
+     "ok": true,
+     "detail": "DmSettlement { Health = 0, Armour = 99, HealthLost = 100, ArmourLost = 1, Lethal = True }"
+    },
+    {
+     "id": "C09",
+     "name": "without a helmet the head takes the damage unreduced",
+     "ok": true,
+     "detail": "DmSettlement { Health = 70, Armour = 100, HealthLost = 30, ArmourLost = 0, Lethal = False }"
+    },
+    {
+     "id": "C10",
+     "name": "nothing, a negative or a NaN damage changes nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "C11",
+     "name": "a life that is over is not settled again",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "C12",
+     "name": "pellets on head and body: the head's share is settled first and the region that ends the life is the body",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "C13",
+     "name": "when the head's share alone ends the life it is a head kill",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "C14",
+     "name": "distance: the range modifier applies once per 500 units",
+     "ok": true,
+     "detail": "35.28"
+    },
+    {
+     "id": "C15",
+     "name": "distance: no modifier, no loss; nothing is gained at point blank",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "C16",
+     "name": "four AK body shots end a 100/100 life",
+     "ok": true,
+     "detail": "shots 4, armour 84"
+    },
+    {
+     "id": "C17",
+     "name": "the starting figures are 100 health and 100 armour, protection 3 seconds",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W01",
+     "name": "the CS2 profile is loaded and names its build",
+     "ok": true,
+     "detail": " 1.41.8.8 f5c28fefc9bf99b4"
+    },
+    {
+     "id": "W02",
+     "name": "every one of the 35 guns has competitive numbers",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W03",
+     "name": "ak47: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 36 pellets 1 head 4 armour 1.55"
+    },
+    {
+     "id": "W03",
+     "name": "awp: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 115 pellets 1 head 4 armour 1.95"
+    },
+    {
+     "id": "W03",
+     "name": "glock18: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 30 pellets 1 head 4 armour 0.94"
+    },
+    {
+     "id": "W03",
+     "name": "nova: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 234 pellets 9 head 4 armour 1"
+    },
+    {
+     "id": "W03",
+     "name": "m4a1s: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 38 pellets 1 head 3.475 armour 1.4"
+    },
+    {
+     "id": "W03",
+     "name": "negev: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 35 pellets 1 head 4 armour 1.42"
+    },
+    {
+     "id": "W03",
+     "name": "taser: damage, pellets, head multiplier and armour ratio are the vdata's",
+     "ok": true,
+     "detail": "power 500 pellets 1 head 4 armour 2"
+    },
+    {
+     "id": "W04",
+     "name": "every magazine is CS2's m_iMaxClip1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W05",
+     "name": "falloff: AK 0.98 and Glock 0.85 per 500 units (12.7 blocks)",
+     "ok": true,
+     "detail": "0.98 0.85"
+    },
+    {
+     "id": "W06",
+     "name": "cycle times are the vdata's (AK 0.1 s, AWP 1.455 s, Negev 0.075 s)",
+     "ok": true,
+     "detail": "0.1 1.455 0.075"
+    },
+    {
+     "id": "W07",
+     "name": "every gun's handling is finite and ordered (crouch <= stand, moving and jumping add, bloom has a ceiling)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W08",
+     "name": "AK standing and crouching cones are atan(spread + inaccuracy) of the vdata",
+     "ok": true,
+     "detail": "0.40163678 0.30996713"
+    },
+    {
+     "id": "W09",
+     "name": "AWP: the unscoped cone is wide, the scoped one narrow, both from the vdata",
+     "ok": true,
+     "detail": "4.630848 0.1260505"
+    },
+    {
+     "id": "W10",
+     "name": "the Zeus reaches 120 units (3.05 blocks) and no farther",
+     "ok": true,
+     "detail": "3.0479999"
+    },
+    {
+     "id": "W11",
+     "name": "a rifle's traced range is capped at 128 blocks",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W12",
+     "name": "knife: 40 / 90 from behind, heavy 65 / 180 from behind; armour ratio 1.7 from the vdata",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W13",
+     "name": "HE grenade: 99 at the centre, 350 units, armour ratio 1.2 (vdata)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W14",
+     "name": "fire: 40 a second for both bottles (vdata m_nDamage)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W15",
+     "name": "an unknown weapon's armour ratio leaves the damage as it is",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W16",
+     "name": "the core's own CS2 table (an earlier extraction) and this profile agree on damage, armour ratio, range modifier and head multiplier",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "W17",
+     "name": "units: the core table's 39.37 units a metre and 500-unit falloff step",
+     "ok": true,
+     "detail": "39.37008 500"
+    },
+    {
+     "id": "W18",
+     "name": "end to end: an AK body shot at 12.7 blocks takes 27 health and 3 armour",
+     "ok": true,
+     "detail": "35.28 DmSettlement { Health = 73, Armour = 97, HealthLost = 27, ArmourLost = 3, Lethal = False }"
+    },
+    {
+     "id": "W19",
+     "name": "end to end: an AK head shot kills through the helmet",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M01",
+     "name": "a new arena world is in map editing: the mode governs nobody",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M02",
+     "name": "a match cannot start from map editing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M03",
+     "name": "an arena problem that blocks is the reason the host is given; nothing starts",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M04",
+     "name": "advice alone does not block",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M05",
+     "name": "the match begins when the countdown has run, with a new match number",
+     "ok": true,
+     "detail": "Running 599.9999999999999"
+    },
+    {
+     "id": "M06",
+     "name": "rules and the map cannot be changed under a running match",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M07",
+     "name": "entering with nothing chosen is refused with a reason, and no kit is made up",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M08",
+     "name": "entering empty-handed on purpose is allowed",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M09",
+     "name": "an empty-handed life is given nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M10",
+     "name": "each pending life is promised its own point; nobody is alive before it reports ready",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M11",
+     "name": "a pending player cannot attack and cannot be hurt",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M12",
+     "name": "a ready report for another life number is ignored",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M13",
+     "name": "the three seconds start when the life can act, not when the point was promised",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M14",
+     "name": "the life starts with 100 health, 100 armour, a helmet and the whole chosen loadout",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M15",
+     "name": "the same ready report again does not start the life twice",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M16",
+     "name": "a protected life takes the hit and no damage",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M17",
+     "name": "the protection ends by itself after three seconds",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M18",
+     "name": "a protected player's attack is accepted and the protection is gone before it takes effect",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M19",
+     "name": "having attacked, that player can be hurt at once (by a still protected enemy's bullet only after that enemy attacks)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M20",
+     "name": "inside the protection a new loadout is exchanged at once",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M21",
+     "name": "exchanging does not extend the protection or touch health and armour",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M22",
+     "name": "the same request again changes nothing (no second exchange)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M23",
+     "name": "a life that fights gets a new choice at its next life, not now",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M24",
+     "name": "the next life is given the newer choice, whole",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M25",
+     "name": "after its own attack ended the protection a player cannot swap to a fresh gun",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M26",
+     "name": "a loadout that is not valid as a whole is refused and the former choice stands",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M27",
+     "name": "catalogue: a pistol is no primary, a rifle no secondary, the Zeus has its own place, an unknown number is refused",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M28",
+     "name": "every available paint of a gun can be chosen free; another gun's paint and an unknown paint cannot",
+     "ok": true,
+     "detail": "野荷 / 雷击"
+    },
+    {
+     "id": "M29",
+     "name": "the wheel's gun groups hold all 34 firearms (the Zeus is equipment) and none holds more than twelve",
+     "ok": true,
+     "detail": "手枪:10 冲锋枪:7 步枪与狙击:11 霰弹与机枪:6"
+    },
+    {
+     "id": "M30",
+     "name": "throwables: refused while the host has them off; at most three, two flashbangs, one of each other kind",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M31",
+     "name": "the hit that ends a life makes exactly one kill event: +1 for the killer, a death for the victim",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M32",
+     "name": "the kill counts for the killer's gun model (the competitive counter) and nowhere else",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M33",
+     "name": "further hits on the ended life settle nothing and score nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M34",
+     "name": "a player without a life cannot attack (its late shot is refused)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M35",
+     "name": "20 or more health within ten seconds of the end is an assist; less is not; the killer is not its own helper",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M36",
+     "name": "damage older than ten seconds gives no assist",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M37",
+     "name": "damage to a former life gives no assist on the next one",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M38",
+     "name": "head, no-scope, through smoke, through cover and blinded are separate facts and can all hold",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M39",
+     "name": "a body kill carries no mark it did not earn",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M40",
+     "name": "a shotgun kill whose head pellet did not end the life is not a head kill",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M41",
+     "name": "one's own grenade: a death, nobody scores",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M42",
+     "name": "the world's damage takes health only and its death scores for nobody",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M43",
+     "name": "outside the arena: back within three seconds nothing happens; three seconds outside is one death, nobody's kill",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M44",
+     "name": "a grenade thrown in life still counts after its thrower died",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M45",
+     "name": "something from a player who never had a life in this match hurts nobody",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M46",
+     "name": "about two seconds of death view, then the next life is prepared with a new life number",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M47",
+     "name": "a ready report of the former life cannot start the new one",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M48",
+     "name": "a choice made while waiting is the one the life starts with (one version, never a mix)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M49",
+     "name": "with no safe point the player waits: no life anywhere else, and the host is told (not every frame)",
+     "ok": true,
+     "detail": "3"
+    },
+    {
+     "id": "M50",
+     "name": "when a point becomes safe the life is prepared",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M51",
+     "name": "a promised point that turned unsafe is not used: another is promised under a new life number",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M52",
+     "name": "a client that never reports ready becomes a spectator after ten seconds (no endless untouchable player)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M53",
+     "name": "a spectator re-enters by asking",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M54",
+     "name": "the match ends on time: results, every life taken back without a death",
+     "ok": true,
+     "detail": "Results time"
+    },
+    {
+     "id": "M55",
+     "name": "equal kills share a place: no winner is invented",
+     "ok": true,
+     "detail": "a:2k/1d#1 b:2k/1d#1 c:0k/2d#3"
+    },
+    {
+     "id": "M56",
+     "name": "after the end nothing scores and nobody attacks",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M57",
+     "name": "the lobby returns after the results and the result stays readable",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M58",
+     "name": "the next match starts from zero with the next number; nothing of the last one carries over",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M59",
+     "name": "one player alone is practice: its result is not a formal one; the host can stop a match",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M60",
+     "name": "the host can call off the countdown",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M61",
+     "name": "a player who leaves alive is taken out without a death or a kill, and keeps its figures",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M62",
+     "name": "the same identity returns to its own figures and a new life; another identity with the same name gets nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M63",
+     "name": "when every participant has left the match ends and says why",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M64",
+     "name": "leaving a fight to watch counts as that player's own death: nobody scores",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M65",
+     "name": "going to watch during the protection costs nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M66",
+     "name": "sixteen play; the seventeenth is told and may watch",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M67",
+     "name": "visitors who never played do not accumulate without bound",
+     "ok": true,
+     "detail": "64"
+    },
+    {
+     "id": "M68",
+     "name": "a life throws what its loadout held and no more",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M69",
+     "name": "the next life has the full allowance again",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M70",
+     "name": "a world saved under a running match loads into the lobby: no lives, no countdown, the figures kept as an interrupted result",
+     "ok": true,
+     "detail": "1139"
+    },
+    {
+     "id": "M71",
+     "name": "loadout preferences return with their owners",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M72",
+     "name": "after a load a returning player prepares; its preference is there and nothing is entered for it",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M73",
+     "name": "the editing state is kept as editing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M74",
+     "name": "data of a later layout or broken text is not interpreted",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "M75",
+     "name": "the kept text does not grow with a match's length (no lives, no ledger, no feed)",
+     "ok": true,
+     "detail": "1139"
+    },
+    {
+     "id": "V01",
+     "name": "a kill event is shown once however often it arrives",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "V02",
+     "name": "the feed keeps the newest few lines only",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "V03",
+     "name": "a new match's first kill is not mistaken for an old number",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "V04",
+     "name": "the board: by kills; equal kills share the place and the next place skips",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "V05",
+     "name": "a kill event survives the wire with every mark",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "V06",
+     "name": "the package's fourteen message numbers are distinct and all in 100-113",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U01",
+     "name": "an unturned element is hit inside its rectangle and nowhere else",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U02",
+     "name": "a button turned a quarter is pressed where it is seen: along its new long side, not its old one",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U03",
+     "name": "a doubled element is hit across its doubled size",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U04",
+     "name": "turned 45 degrees and scaled: hit along the long axis up to its end, not beyond the short side",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U05",
+     "name": "drawing and hit testing use one transform: the drawn corners are inside, a hair outside them is not",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U06",
+     "name": "every default element is wholly on screen on a desktop, a wide phone, a small window and a portrait screen",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U07",
+     "name": "values from a damaged file are brought back into range and the element stays reachable on screen",
+     "ok": true,
+     "detail": "1 0 2.5 5 0.2 centre 1139.958,90.044846"
+    },
+    {
+     "id": "U08",
+     "name": "a button cannot be made smaller than a 48-unit touch target",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U09",
+     "name": "touch and desktop have their own defaults: the three buttons are shown on touch and hidden on a desktop (the keys open the same things)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U10",
+     "name": "ten elements, each with a name, a size and the full set of settings (place, size, turn, opacity, shown)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U11",
+     "name": "the settings survive their own file: both device sets, the keys, the scoreboard mode",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U12",
+     "name": "a touch button's saved size is raised to the smallest reliable target",
+     "ok": true,
+     "detail": "0.8"
+    },
+    {
+     "id": "U13",
+     "name": "a file of another version, a broken file or an unknown key is not taken over",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U14",
+     "name": "default keys: B buys, Tab shows the board, F6 opens the menu; two functions on one key are reported",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U15",
+     "name": "six sectors: the first is centred at the top and the rest follow clockwise",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U16",
+     "name": "the middle is the centre, beyond the rim is nothing",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U17",
+     "name": "with one to eight sectors each sector's own centre lies in that sector",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U18",
+     "name": "six categories on the first ring; no ring ever shows more than eight entries",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U19",
+     "name": "the equipment list has a row for each held item only: an empty category takes no room, the knife is its own row",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U20",
+     "name": "fixed places: primary, secondary, knife, Zeus, then one slot per throwable kind",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U21",
+     "name": "a feed line names killer, weapon, every established mark and the victim",
+     "ok": true,
+     "detail": "甲  [AWP · 爆头 · 盲狙 · 穿烟]  乙"
+    },
+    {
+     "id": "U22",
+     "name": "a kill without marks shows none; a death nobody caused names nobody",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U23",
+     "name": "every gun has a player-facing name (no asset names on screen)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "id": "U24",
+     "name": "the loadout summary says what will be worn, the counter as a property of the gun",
+     "ok": true,
+     "detail": "主武器：AK-47｜计数器 / 副武器：— / 刀：— / 宙斯：— / 投掷物：闪光弹×2"
+    }
+   ]
+  },
+  "dmload-lite-a-with": {
+   "mode": "with the deathmatch package",
+   "failed": 0,
+   "checks": [
+    {
+     "name": "with the package: the database has the ScDeathmatch subsystem and its class resolves to the package's assembly",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the game's load hooks accept the world (no refusal, no file written)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the capsule holds the group exactly as it was saved",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the engine's project parser binds the group to the package's subsystem",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "with the package the saved world carries the group",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the saved world carries the mode marker: a dedicated deathmatch world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the gun registry (every gun record) is untouched by the round trip",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "identity",
+     "ok": true,
+     "detail": "core a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9; group sha256 842a30a2ab3a788a183919bd4691f7a7b045c26c26fbd2d295ecd5afce54509b"
+    }
+   ]
+  },
+  "dmload-lite-b-without": {
+   "mode": "without the deathmatch package",
+   "failed": 0,
+   "checks": [
+    {
+     "name": "without the package: the database has no ScDeathmatch subsystem and no deathmatch assembly is loaded",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the game's load hooks accept the world (no refusal, no file written)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the capsule holds the group exactly as it was saved",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the engine's project parser accepts the unknown group and binds no subsystem to it",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "without the package the save puts the group back exactly as it was: nothing lost, nothing reset",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the saved world carries the mode marker: a dedicated deathmatch world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "without the package the world names its mode and says the data is kept and the mode is dormant",
+     "ok": true,
+     "detail": "本世界是“死亡竞赛”专用世界；当前未安装或未启用对应附属包，模式数据已原样保留，竞技功能休眠。"
+    },
+    {
+     "name": "the gun registry (every gun record) is untouched by the round trip",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "identity",
+     "ok": true,
+     "detail": "core a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9; group sha256 842a30a2ab3a788a183919bd4691f7a7b045c26c26fbd2d295ecd5afce54509b"
+    }
+   ]
+  },
+  "dmload-lite-c-returned": {
+   "mode": "with the deathmatch package",
+   "failed": 0,
+   "checks": [
+    {
+     "name": "with the package: the database has the ScDeathmatch subsystem and its class resolves to the package's assembly",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the game's load hooks accept the world (no refusal, no file written)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the capsule holds the group exactly as it was saved",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the engine's project parser binds the group to the package's subsystem",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "with the package the saved world carries the group",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the saved world carries the mode marker: a dedicated deathmatch world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the gun registry (every gun record) is untouched by the round trip",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "identity",
+     "ok": true,
+     "detail": "core a7ae6faa-12ae-48b5-bbb4-e8a7a9e2bbc9; group sha256 842a30a2ab3a788a183919bd4691f7a7b045c26c26fbd2d295ecd5afce54509b"
+    }
+   ]
+  },
+  "dmload-full-a-with": {
+   "mode": "with the deathmatch package",
+   "failed": 0,
+   "checks": [
+    {
+     "name": "with the package: the database has the ScDeathmatch subsystem and its class resolves to the package's assembly",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the game's load hooks accept the world (no refusal, no file written)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the capsule holds the group exactly as it was saved",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the engine's project parser binds the group to the package's subsystem",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "with the package the saved world carries the group",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the saved world carries the mode marker: a dedicated deathmatch world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the gun registry (every gun record) is untouched by the round trip",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "identity",
+     "ok": true,
+     "detail": "core f703c168-0554-41a8-a130-53a462f4320d; group sha256 f75ffbe74dd2f92233f2e8785d6bf7c519a4d554c3901c152b679fc7cd89cda7"
+    }
+   ]
+  },
+  "dmload-full-b-without": {
+   "mode": "without the deathmatch package",
+   "failed": 0,
+   "checks": [
+    {
+     "name": "without the package: the database has no ScDeathmatch subsystem and no deathmatch assembly is loaded",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the game's load hooks accept the world (no refusal, no file written)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the capsule holds the group exactly as it was saved",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the engine's project parser accepts the unknown group and binds no subsystem to it",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "without the package the save puts the group back exactly as it was: nothing lost, nothing reset",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the saved world carries the mode marker: a dedicated deathmatch world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "without the package the world names its mode and says the data is kept and the mode is dormant",
+     "ok": true,
+     "detail": "本世界是“死亡竞赛”专用世界；当前未安装或未启用对应附属包，模式数据已原样保留，竞技功能休眠。"
+    },
+    {
+     "name": "the gun registry (every gun record) is untouched by the round trip",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "identity",
+     "ok": true,
+     "detail": "core f703c168-0554-41a8-a130-53a462f4320d; group sha256 f75ffbe74dd2f92233f2e8785d6bf7c519a4d554c3901c152b679fc7cd89cda7"
+    }
+   ]
+  },
+  "dmload-full-c-returned": {
+   "mode": "with the deathmatch package",
+   "failed": 0,
+   "checks": [
+    {
+     "name": "with the package: the database has the ScDeathmatch subsystem and its class resolves to the package's assembly",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the game's load hooks accept the world (no refusal, no file written)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the world's capsule lists ScDeathmatch as a save group that belongs to a package (the name travels with the world)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the capsule holds the group exactly as it was saved",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the engine's project parser binds the group to the package's subsystem",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "with the package the saved world carries the group",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the saved world carries the mode marker: a dedicated deathmatch world",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "the gun registry (every gun record) is untouched by the round trip",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "name": "identity",
+     "ok": true,
+     "detail": "core f703c168-0554-41a8-a130-53a462f4320d; group sha256 f75ffbe74dd2f92233f2e8785d6bf7c519a4d554c3901c152b679fc7cd89cda7"
+    }
+   ]
+  },
+  "dmload-tool": {
+   "Program.cs": "eb6434aff5a24b89f7c4e78d4e7cdf787ddaaa58b423516949a4d83bb332a733"
+  },
+  "dmabi-1931": {
+   "targetFolder": "D:\\下载\\[Windows]SurvivalcraftAPI_1.9.3.1",
+   "checkedReferences": 1777,
+   "toolUnresolved": 2,
+   "toolUnresolvedAre": [
+    "assembly ScCsgoResourceCodec 0.8.8.0 not in the target build",
+    "assembly ScCsgoResources 1.10.4.0 not in the target build"
+   ],
+   "package": {
+    "sha256": "4cbc4713b768db28a9247ef794b219d31666db24b7d72e629e94dc20cb5a87ff",
+    "problems": [],
+    "assemblyRefs": [
+     {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "Parlot",
+      "version": "1.5.8.0",
+      "where": "target"
+     },
+     {
+      "name": "Engine",
+      "version": "1.0.0.0",
+      "where": "target"
+     },
+     {
+      "name": "System.Text.Json",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Collections",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "ScCsgoKnives",
+      "version": "0.0.0.0",
+      "where": "mod under test"
+     },
+     {
+      "name": "Survivalcraft",
+      "version": "2.4.0.0",
+      "where": "target"
+     },
+     {
+      "name": "EntitySystem",
+      "version": "1.0.0.0",
+      "where": "target"
+     },
+     {
+      "name": "System.Linq",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Security.Cryptography",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Threading",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Memory",
+      "version": "10.0.0.0",
+      "where": "framework"
+     }
+    ]
+   }
+  },
+  "dmabi-1932mp": {
+   "targetFolder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-m0-20260929\\refs\\mp",
+   "checkedReferences": 1777,
+   "toolUnresolved": 2,
+   "toolUnresolvedAre": [
+    "assembly ScCsgoResourceCodec 0.8.8.0 not in the target build",
+    "assembly ScCsgoResources 1.10.4.0 not in the target build"
+   ],
+   "package": {
+    "sha256": "4cbc4713b768db28a9247ef794b219d31666db24b7d72e629e94dc20cb5a87ff",
+    "problems": [],
+    "assemblyRefs": [
+     {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "Parlot",
+      "version": "1.5.8.0",
+      "where": "target"
+     },
+     {
+      "name": "Engine",
+      "version": "1.0.0.0",
+      "where": "target"
+     },
+     {
+      "name": "System.Text.Json",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Collections",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "ScCsgoKnives",
+      "version": "0.0.0.0",
+      "where": "mod under test"
+     },
+     {
+      "name": "Survivalcraft",
+      "version": "2.4.0.0",
+      "where": "target"
+     },
+     {
+      "name": "EntitySystem",
+      "version": "1.0.0.0",
+      "where": "target"
+     },
+     {
+      "name": "System.Linq",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Security.Cryptography",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Threading",
+      "version": "10.0.0.0",
+      "where": "framework"
+     },
+     {
+      "name": "System.Memory",
+      "version": "10.0.0.0",
+      "where": "framework"
+     }
+    ]
+   }
+  }
+ },
+ "compat": {
+  "family": true,
+  "native-hooks": true,
+  "native-lite": true,
+  "inventory": true,
+  "integration-full-both": true,
+  "integration-full-reversed": true,
+  "integration-full-none": true,
+  "integration-lite-both": true,
+  "integration-lite-reversed": true,
+  "integration-lite-none": true
+ },
+ "jobs": {
+  "pipeline": "dm-pipeline-dma2-all-01 (failed steps dmabi, dmload: defects of the two check tools, the candidate unchanged)",
+  "compat": "dm-pipeline-dma2-compat-01 (failed steps [])",
+  "abi rerun": "dm-pipeline-dma2-toolsteps-01",
+  "payload rerun": "dm-pipeline-dma2-dmload-01",
+  "first stage": "dma1 (dm-pipeline-dma1-all-01): gates failed on ai-full/ai-lite 2 of 67 - a null dereference this round's core edit introduced in the grenade friendly-fire check when no mode is registered; fixed, dma2 rebuilt"
+ }
+}

@@ -60,6 +60,15 @@ public static class ScGunHandling {
         }
         return MathUtils.Lerp(1,gun.FalloffFloor,(distance-gun.FalloffStart)/(gun.Range-gun.FalloffStart));
     }
+    /// <summary>A direction turned by angles in degrees as view angles add (CS2 adds its recoil to the eye angles): pitch
+    /// <paramref name="upDegrees"/> up, yaw <paramref name="leftDegrees"/> left; the pitch stays short of straight up or down.</summary>
+    public static Vector3 Turned(Vector3 direction,float upDegrees,float leftDegrees) {
+        if(!(direction.LengthSquared()>1e-12f)) return direction;
+        Vector3 d=Vector3.Normalize(direction);
+        float pitch=MathF.Asin(Math.Clamp(d.Y,-1f,1f)),yaw=MathF.Atan2(-d.X,-d.Z);
+        pitch=Math.Clamp(pitch+MathUtils.DegToRad(upDegrees),-1.55f,1.55f);yaw+=MathUtils.DegToRad(leftDegrees);
+        return new Vector3(-MathF.Sin(yaw)*MathF.Cos(pitch),MathF.Sin(pitch),-MathF.Cos(yaw)*MathF.Cos(pitch));
+    }
     public static Vector3 Scatter(Vector3 direction,float coneDegrees,float radiusRandom,float angleRandom) {
         var forward=Vector3.Normalize(direction);
         if(coneDegrees<=0) return forward;
@@ -79,6 +88,10 @@ public static class ScGunHandling {
 /// earned but deliberately not applied yet must not change anything.</summary>
 public readonly record struct EffectiveGunStats(float Power,float Range,int Capacity,int MaxDurability,float CycleSeconds,int Pellets,float HeadMultiplier,ScGunHandling.Mode Handling,
                                                 int Level,bool UnlimitedRange,float AngleScale,float RechargeSeconds,int Variant) {
+    /// <summary>A mode's own distance curve (deathmatch-addon): the multiplier at a distance in blocks. Null: the survival curve.</summary>
+    public Func<float,float> ModeFalloff { get; init; }
+    /// <summary>A mode's unscoped handling of a scoped gun, blended with <see cref="Handling"/> while the scope goes up (null: the same).</summary>
+    public ScGunHandling.Mode HipHandling { get; init; }
     public static EffectiveGunStats Resolve(GunSpec spec,int value,bool alternate) => ResolveLevel(spec,value,alternate,LevelOf(value));
     /// <summary>The applied level of the gun this item value points at; 0 for a fresh template or unreadable data.</summary>
     public static int LevelOf(int value) {
@@ -116,6 +129,7 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
     /// <summary>The distance multiplier in force. Growth stretches the curve's own nodes by the same factor the
     /// range grew by, so a level never both extends the reach and leaves the damage collapsing at the old node.</summary>
     public float Falloff(GunSpec spec,float distance) {
+        if(ModeFalloff is not null) return ModeFalloff(distance);
         if(UnlimitedRange) return 1;
         float scale=ScGunGrowth.RangeScale(Variant,Level);
         float atBase=scale>0?distance/scale:distance;

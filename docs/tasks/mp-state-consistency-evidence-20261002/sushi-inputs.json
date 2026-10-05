@@ -1,0 +1,26 @@
+[
+  {
+    "package": "[API1.9]\u73B2\u5170\u79D1\u6280v3.0.4(\u9700\u73B2\u5170\u8F85\u52A9).scmod",
+    "entry": "modinfo.json",
+    "sha256": "0AAFC93F1EAF0427AEC5C4576CFE733341491D372B6A967BE80C714B223BCB58",
+    "metadata": "{\r\n  \u0022Name\u0022: \u0022[API1.9]\u73B2\u5170\u79D1\u62803.0\u0022,\r\n  \u0022Version\u0022: \u00223.0\u0022,\r\n  \u0022ApiVersion\u0022: \u00221.9\u0022,\r\n  \u0022Description\u0022: \u0022\u8FD9\u662F\u82CF\u4E16\u5199\u7684\u73B2\u5170\u5DE5\u5177\u6A21\u7EC4\uFF0C\u5305\u542B\u57FA\u7840\u5DE5\u5177\u548C\u673A\u5668\u7B49\u5404\u7C7B\u62C5\u67B6\u7269\u54C1\uFF0C\u9700\u8981\u73B2\u5170\u8F85\u52A9\u4F5C\u4E3A\u524D\u7F6E\u3002\u7279\u522B\u9E23\u8C22\uFF1ATuyet\u3001Tp_16b\u3001\u967D\u53C1\u75AF\u3001LX..\u3001Still_\u4F9D\u65E7\u0022,\r\n  \u0022ScVersion\u0022: \u00222.4.0.0\u0022,\r\n  \u0022Link\u0022: \u0022\u0022,\r\n  \u0022Author\u0022: \u0022\u82CF\u4E16-Sushi\u0022,\r\n  \u0022PackageName\u0022: \u0022SushiTool\u0022,\r\n  \u0022Dependencies\u0022: [\r\n    \u0022SushiBase\u0022\r\n  ],\r\n  \u0022LoadOrder\u0022: 51001\r\n}"
+  },
+  {
+    "package": "[API1.9]\u73B2\u5170\u79D1\u6280v3.0.4(\u9700\u73B2\u5170\u8F85\u52A9).scmod",
+    "entry": "SushiTool.dll",
+    "sha256": "78C6984F244AB304C5320156FB74580DA0ADCBA006F429CDE2CBD9C502CFCEC8",
+    "metadata": null
+  },
+  {
+    "package": "[API1.9]\u73B2\u5170\u8F85\u52A9v3.0.3.scmod",
+    "entry": "modinfo.json",
+    "sha256": "E88A46E67FD5EE317E522085E40B84A49A4CDC8097D79C0F31C55F88A41D969B",
+    "metadata": "{\r\n  \u0022Name\u0022: \u0022[API1.9]\u73B2\u5170\u8F85\u52A93.0\u0022,\r\n  \u0022Version\u0022: \u00223.0\u0022,\r\n  \u0022ApiVersion\u0022: \u00221.9\u0022,\r\n  \u0022Description\u0022: \u0022\u8FD9\u662F\u82CF\u4E16\u5199\u7684\u8F85\u52A9\u6A21\u7EC4\u3002\u7279\u522B\u9E23\u8C22\uFF1ATuyet\u3001Tp_16b\u3001\u967D\u53C1\u75AF\u3001LX..\u3001Still_\u4F9D\u65E7\u0022,\r\n  \u0022ScVersion\u0022: \u00222.4.0.0\u0022,\r\n  \u0022Link\u0022: \u0022\u0022,\r\n  \u0022Author\u0022: \u0022\u82CF\u4E16-Sushi\u0022,\r\n  \u0022PackageName\u0022: \u0022SushiBase\u0022,\r\n  \u0022Dependencies\u0022: [\r\n  ],\r\n  \u0022LoadOrder\u0022: 51000\r\n}"
+  },
+  {
+    "package": "[API1.9]\u73B2\u5170\u8F85\u52A9v3.0.3.scmod",
+    "entry": "SushiBase.dll",
+    "sha256": "55D1A7C388BC9D4E96B6BC534428041700CC49418A854C979040D967C35E8355",
+    "metadata": null
+  }
+]

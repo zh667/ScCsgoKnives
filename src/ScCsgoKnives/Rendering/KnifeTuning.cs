@@ -466,7 +466,6 @@ public static class KnifeTuning {
             // common with this one, so applying it would silently leave every new
             // value at its default. Replace it instead.
             if (ReadVersion(content) != Version) {
-                KnifeLog.Trace($"[ScCsgoKnives] tuning file was written by a build with different defaults; rewriting {Path}.");
                 Write();
                 s_lastContent = null;
                 return;
@@ -501,15 +500,7 @@ public static class KnifeTuning {
             applied++;
         }
         CsmcFirstPersonRenderer.InvalidateProjection();
-        CsmcFirstPersonRenderer.ResetCompositionLog();
         CsmcFirstPersonRenderer.RebuildPlacements();
-        KnifeLog.Trace(
-            $"[ScCsgoKnives] tuning reloaded ({applied} values): knifeScale={KnifeScale:0.###}, "
-            + $"anchor=({AnchorScreenX:0.###},{AnchorScreenY:0.###})@{AnchorDepth:0.##}, "
-            + $"lean R={RightArmLean:0.#} L={LeftArmLean:0.#}, near R={RightArmNear:0.###} L={LeftArmNear:0.###}, "
-            + $"armWidth R={ArmScreenWidth:0.###} L={LeftArmScreenWidth:0.###}, fistOvershoot={ArmPalmOvershoot:0.###}w, "
-            + $"pitch/yaw={KnifePitchDegrees:0.#}/{KnifeYawDegrees:0.#}, leftTarget=({LeftHandTargetScreenX:0.###},{LeftHandTargetScreenY:0.###})."
-        );
     }
 
     /// <summary>Headless tools (tools/ArmPreview) set tunables from the command line through this.</summary>
@@ -616,7 +607,6 @@ public static class KnifeTuning {
             byte[] bytes = new UTF8Encoding(false).GetBytes(Serialize(Version));
             Storage.CreateDirectory(Storage.GetDirectoryName(Path));
             ScUiSettings.WriteAtomic(Storage.GetSystemPath(Path), bytes);
-            KnifeLog.Trace($"[ScCsgoKnives] wrote tuning file {Path}; edit it and it reloads within a second.");
         }
         catch (Exception e) {
             KnifeDiagnostics.WarnOnce("tuning-write", $"Could not write {Path}: {e.Message}");

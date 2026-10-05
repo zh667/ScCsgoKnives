@@ -47,8 +47,8 @@ static class AmmoHudRegression {
                         foreach (bool creative in new[] { false, true }) foreach (double seconds in new[] { 10, 9.91, .01, 0, -1, double.NaN, 100 }) {
                             Test($"{lang}/taser-countdown/{creative}/{seconds}", () => {
                                 var r = Read(gun, Inventory(Value(gun, 0), 700, 3), creative, seconds);
-                                // Lv0 is CS2's 30 seconds; valid existing countdowns retain their seconds.
-                                string expected = seconds is >= 100 or < 0 || double.IsNaN(seconds) ? "30.0" : seconds > 9 ? "10.0" : seconds > 0 ? "0.1" : "0.0";
+                                // Zeus restores the 1.2.0 ten-second base; invalid input uses that default.
+                                string expected = seconds is >= 100 or < 0 || double.IsNaN(seconds) ? "10.0" : seconds > 9 ? "10.0" : seconds > 0 ? "0.1" : "0.0";
                                 return Text(r, "Main").Contains(expected) && Flag(r, "Charging") && !Flag(r, "Insufficient")
                                     && Text(r, "Detail") == localize("AutoCharge") && !Text(r, "Main").Contains('∞');
                             });
@@ -76,6 +76,20 @@ static class AmmoHudRegression {
                         return Text(Read(gun, inv), "Main").EndsWith("×3") && Flag(Read(gun, inv), "Empty");
                     });
                 }
+                // mp-state-consistency-20261002: a multiplayer client's own unconfirmed shots come off the number shown, never
+                // off the gun's record (the readout takes them as a separate argument).
+                Test(lang + "/predicted-shots-are-shown-not-stored", () => {
+                    object gun = Static("GunSpec", "ForAsset", "ak47"); int capacity = (int)spec.GetField("Magazine").GetValue(gun);
+                    var inv = Inventory(Value(gun, capacity), Terrain.MakeBlockValue(700, 0, 0), 3);
+                    var predicted = readout.GetMethod("ReadPredicted");
+                    if (predicted is null) throw new InvalidOperationException("ScAmmoReadout.ReadPredicted missing: an older core");
+                    object Shown(int shots) => predicted.Invoke(null, [gun, inv.GetSlotValue(0), inv, false, -1d, false, shots, localize]);
+                    int value = inv.GetSlotValue(0);
+                    return Text(Read(gun, inv), "LoadedText") == capacity.ToString() && Text(Shown(0), "LoadedText") == capacity.ToString()
+                        && Text(Shown(2), "LoadedText") == (capacity - 2).ToString() && Text(Shown(capacity + 5), "LoadedText") == "0" && Flag(Shown(capacity + 5), "Empty")
+                        && Text(Read(gun, inv), "LoadedText") == capacity.ToString() && inv.GetSlotValue(0) == value
+                        && (int)Static("GunSpec", "GetRounds", Terrain.ExtractData(value)) == capacity;
+                });
                 foreach (string name in new[] { "usp_silencer", "nova", "mag7", "negev" }) {
                     Test(lang + "/reload-events/" + name, () => {
                         object gun = Static("GunSpec", "ForAsset", name); bool tube = name == "nova";

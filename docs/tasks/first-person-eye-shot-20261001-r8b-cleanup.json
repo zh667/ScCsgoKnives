@@ -1,0 +1,66 @@
+{
+ "task": "first-person-eye-shot-20261001",
+ "date": "2026-10-01T17:30:36",
+ "authority": "standing authorization (AGENTS.md, 2026-09-29): after verified output replacement, clean this task's rebuildable intermediates",
+ "precondition": {
+  "outputMatchesManifest": true,
+  "r8bCandidatesMoved": true,
+  "mode": "do"
+ },
+ "permanence": "permanent deletion (not the recycle bin); everything removed is rebuildable from the recorded sources/stages",
+ "removed": {
+  "stage r8b build trees (delivered; logs, reports, net.json, packages.json, source-hashes.json kept)": {
+   "paths": [
+    ".tmp\\completion-140-20260929\\r8b\\full",
+    ".tmp\\completion-140-20260929\\r8b\\lite",
+    ".tmp\\completion-140-20260929\\r8b\\tools",
+    ".tmp\\completion-140-20260929\\r8b\\tree",
+    ".tmp\\completion-140-20260929\\r8b\\assets-full",
+    ".tmp\\completion-140-20260929\\r8b\\resources",
+    ".tmp\\completion-140-20260929\\r8b\\net",
+    ".tmp\\completion-140-20260929\\r8b\\motion",
+    ".tmp\\completion-140-20260929\\r8b\\throw",
+    ".tmp\\completion-140-20260929\\r8b\\ui"
+   ],
+   "bytes": 1911756327,
+   "items": 4309,
+   "missing": []
+  },
+  "candidate copies used by the r8b MP matrix (results and logs kept)": {
+   "paths": [
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r8b-full.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r8b-lite.scmod",
+    ".tmp\\mp-m0-20260929\\pkg\\dev-r8b-agents.scmod"
+   ],
+   "bytes": 600828394,
+   "items": 3,
+   "missing": []
+  },
+  "totalBytes": 2512584721,
+  "items": 4312
+ },
+ "kept": [
+  "stage r8b: logs/, *.json reports, builds.json, source-hashes.json, net.json, packages.json, baseline/, hotspots/",
+  "earlier tasks' stages and test packages (mp08-mp17, c15+netM0): not this task's",
+  ".tmp/phone-backup-20261001 (protected originals)",
+  "output/ (three delivered packages, manifest)"
+ ],
+ "outputAfter": {
+  "全量": {
+   "sha256": "c9506d59859c7f46d715930e29b006955d1e7479dd3eb31d2d3152fadd61976d",
+   "unchanged": true
+  },
+  "轻量": {
+   "sha256": "b4d5fa52169fa01646eddb66d11fc6304c4a59fc0c3d4ebfca2e8b79fd3349bc",
+   "unchanged": true
+  },
+  "探员": {
+   "sha256": "522b78296abbae87cc5197d126925f5726da6b9ff4043a86d7cb5be2bf066668",
+   "unchanged": true
+  }
+ },
+ "diskAfter": {
+  "free": 130263113728,
+  "freePct": 13.02
+ }
+}
