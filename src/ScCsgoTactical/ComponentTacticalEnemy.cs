@@ -327,11 +327,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         Project.FindSubsystem<SubsystemScArmor>(false)?.Remove(ArmorKey);
         if(random.Float(0,1)<.6f)Drop(ScAmmoBlock.Value(ScReloadTransaction.AmmoKind(spec)),random.Int(1,2));
         if(random.Float(0,1)<.4f)Drop(ScWeaponMaterialBlock.Value(random.Float(0,1)<.7f?0:random.Int(1,3)),random.Int(1,2));
-        if(random.Float(0,1)>=.03f)return;
-        var inv=Entity.FindComponent<ComponentTacticalInventory>(true);inv.AddSlotItems(0,State.DisplayValue,1);
-        var mutation=ScGunMutation.Prepare(inv,0,ScGunHolders.Key(inv,0),out _);
-        var result=mutation?.Commit(r=>{r.Rounds=Math.Min(State.Rounds,spec.Magazine/4);r.Durability=Math.Max(1,(int)(r.MaxDurability*.4f));});
-        if(result==ScGunResult.Success){inv.DropAllItems(pos);return;}
-        inv.RemoveSlotItems(0,1);Drop(ScWeaponMaterialBlock.Value(0),2);
+        if(random.Float(0,1)<.5f)Drop(ScComponentCrafting.Resolve(random.Int(0,2) switch{0=>"ironingot",1=>"copperingot",_=>"coalchunk"}),random.Int(1,2));
+        if(random.Float(0,1)<.08f)Drop(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)),1);
     }
 }
