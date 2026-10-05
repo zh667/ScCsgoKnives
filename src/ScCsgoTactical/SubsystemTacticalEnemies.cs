@@ -311,34 +311,24 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         // Manual beacons do not share natural-spawn population, visibility or distance gates.
         var locations=FindManualLocations(ground,count,out var challenger);
         if(locations.Count==count)return CreateSquad(Roles(count==5?FiveMemberDay:0,FiveMemberDay),locations,ManualWarmup,"manual",challenger);
-        ManualFailure=$"指定方向 {ManualNear}～{ManualFar} 格处没有足够的可站立位置，请换个方向或地面（离每位玩家至少 {ManualNear} 格，需要人物高度，不能在实体内生成）。";return 0;
+        ManualFailure="对准位置附近没有足够的可站立位置，请选择开阔地面（需要人物高度，不能在实体内生成）。";return 0;
     }
-    /// <summary>Challenge squads appear in the chosen direction, 18–28 blocks from the summoner and at least 18 from
-    /// every player, then hold fire for a short warning. First-pass values; adjust with play tests.</summary>
-    public const float ManualNear=18,ManualFar=28,ManualWarmup=3;
+    /// <summary>Manual squads use the clicked ground and retain the preparation window.</summary>
+    public const float ManualWarmup=3;
     List<Vector3> FindManualLocations(Point3 ground,int count,out Vector3 challenger){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Placement);
         var click=new Vector3(ground.X+.5f,ground.Y+1,ground.Z+.5f);
         var people=players.ComponentPlayers.Where(p=>p.ComponentBody is not null).Select(p=>p.ComponentBody.Position).ToArray();
         var user=people.Length==0?click:people.OrderBy(p=>Vector3.DistanceSquared(p,click)).First();
         challenger=user;
-        var dir=(click-user).XZ;if(dir.LengthSquared()<.25f)dir=Vector2.UnitX;dir=Vector2.Normalize(dir);
-        bool Clear(Vector3 pos)=>people.All(p=>Vector3.DistanceSquared(p,pos)>=ManualNear*ManualNear)&&Vector2.Distance(pos.XZ,user.XZ)<=ManualFar+2;
-        var best=new List<Vector3>();
-        foreach(float distance in new[]{22f,20,25,18.5f,28})foreach(float degrees in new[]{0f,20,-20,40,-40,60,-60}){
-            float a=MathUtils.DegToRad(degrees);var d=new Vector2(dir.X*MathF.Cos(a)-dir.Y*MathF.Sin(a),dir.X*MathF.Sin(a)+dir.Y*MathF.Cos(a));
-            int cx=(int)MathF.Floor(user.X+d.X*distance),cz=(int)MathF.Floor(user.Z+d.Y*distance);
-            var locations=new List<Vector3>();
-            for(int radius=0;radius<=4&&locations.Count<count;radius++)for(int dx=-radius;dx<=radius&&locations.Count<count;dx++)for(int dz=-radius;dz<=radius&&locations.Count<count;dz++){
+        var locations=new List<Vector3>();
+        for(int radius=0;radius<=4&&locations.Count<count;radius++)for(int dx=-radius;dx<=radius&&locations.Count<count;dx++)for(int dz=-radius;dz<=radius&&locations.Count<count;dz++){
                 if(Math.Max(Math.Abs(dx),Math.Abs(dz))!=radius)continue;
-                if(!ManualFloor(cx+dx,ground.Y+8,ground.Y-8,cz+dz,out var pos)||!Clear(pos))continue;
+                if(!ManualPosition(ground.X+dx,ground.Y,ground.Z+dz,out var pos))continue;
                 if(locations.Any(p=>Vector3.DistanceSquared(p,pos)<2.25f))continue;
                 locations.Add(pos);
-            }
-            if(locations.Count==count)return locations;
-            if(locations.Count>best.Count)best=locations;
         }
-        return best;
+        return locations;
     }
     bool ManualPosition(int x,int clickedY,int z,out Vector3 position)=>ManualFloor(x,clickedY+3,clickedY-4,z,out position);
     bool ManualFloor(int x,int highest,int lowest,int z,out Vector3 position){
@@ -383,7 +373,7 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
                 made.Add(e);var enemy=e.FindComponent<ComponentTacticalEnemy>(true);
                 using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Configure))enemy.Configure(TacticalEnemyState.CreateWarm(roles[i],squad,random,warmup),locations[i]);
                 var state=enemy.State;state.Rewardable=info.WorldSettings.GameMode!=GameMode.Creative;state.Source=source;
-                if(challenger is {} at)enemy.Investigate(at,warmup+ManualSearch);
+                if(challenger is {} at)enemy.Investigate(at,0);
                 if(natural?.Patrol is {} patrol)enemy.Home=new Vector3(patrol.X+locations[i].X-natural.Anchor.X,patrol.Y,patrol.Z+locations[i].Z-natural.Anchor.Z);
                 var config=DrawArmor(random);
                 if(armor is not null&&config!=ScArmorConfig.None){
