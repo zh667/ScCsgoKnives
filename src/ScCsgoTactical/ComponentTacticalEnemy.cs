@@ -38,6 +38,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(TargetBody is null){lastSeen=position;search=Math.Max(search,Math.Clamp(seconds,0,30));}
     }
     bool seen;
+    int strafeSide=1;
+    float strafeLeft;
     ComponentBody lastVoiceTarget;
     // ---- visible actions (r2-c4-completion-20260929) ----
     // A grenade used to appear at once 1.5 m above the feet, inside the thrower's own box, while the enemy kept its gun;
@@ -188,7 +190,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(throwing is not null){AdvanceThrow();return;}
         if(plantedAt>=0){path.Stop();if(time.GameTime-plantedAt>=PlantRecovery){plantedAt=-1;body.TargetCrouchFactor=0;Redraw();pathLeft=0;}return;}
         if(retreat>0){retreat=Math.Max(0,retreat-dt);return;}
-        senseLeft-=dt;pathLeft-=dt;
+        senseLeft-=dt;pathLeft-=dt;strafeLeft-=dt;
         if(TargetBody is not null){
             // Proactive targets are released beyond the disengage range or when chasing too far from home;
             // a retaliation lasts to its own range. Separate acquire/release distances prevent flip-flopping.
@@ -215,6 +217,13 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
             else if(TargetBody is null){if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);else if(search>0)path.Stop();else if(Vector3.DistanceSquared(body.Position,Home)>16)Go(Home,.45f,2,160,null);else path.Stop();}
             else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();
+            else if(clear&&State.Warmup<=0&&TacticalCombatMovement.IsSmg(spec.Name)&&distance<=24){
+                if(strafeLeft<=0||path.IsStuck||!path.Destination.HasValue){
+                    strafeSide=-strafeSide;strafeLeft=1.2f+random.Float(0,.6f);
+                    var step=TacticalCombatMovement.Strafe(terrain,body,lastSeen,strafeSide)??TacticalCombatMovement.Strafe(terrain,body,lastSeen,-strafeSide);
+                    if(step is {} at)Go(at,.85f,.6f,120,TargetBody);else path.Stop();
+                }
+            }
             else if(!clear||distance>(State.Role==TacticalRole.Close?9:22))Go(lastSeen,.65f,3,200,TargetBody);
             else path.Stop();
         }
