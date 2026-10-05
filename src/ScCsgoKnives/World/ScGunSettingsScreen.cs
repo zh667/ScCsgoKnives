@@ -13,7 +13,7 @@ public sealed class ScGunSettingsScreen : Screen {
 
     // Round 12 (2026-10-01 user request): the creative hit preview follows the damage-direction switch, and the armor HUD's
     // visibility moved to the layout editor (where its position already was), so neither is part of this page's copy.
-    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials, bool DamageIndicator, bool GrenadePreview, bool SniperHipCrosshair);
+    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials, bool DamageIndicator, bool GrenadePreview, bool SniperHipCrosshair, ScStarterPlan StarterPlan);
     Snapshot m_working;
     bool m_returningFromLayout;
     Screen m_back;
@@ -27,6 +27,7 @@ public sealed class ScGunSettingsScreen : Screen {
     SliderWidget m_width, m_length, m_gap, m_scale, m_dot;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     ButtonWidget m_copyGroup;
+    ButtonWidget m_starter;
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly ButtonWidget m_agentVoice = ScGunUi.Button("探员语音设置",260);
@@ -47,11 +48,12 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly LabelWidget m_title = new() { Text = "CS 枪械 · 模组设置", FontScale = 1.1f, TextAnchor = TextAnchor.HorizontalCenter, DropShadow = true };
     readonly StackPanelWidget m_bar = new() { Direction = LayoutDirection.Horizontal };
     static Snapshot Capture() => new Snapshot(ScUiSettings.CustomButtons, ScUiSettings.KillFeed, ScUiSettings.KillSound,
-        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials, ScUiSettings.DamageIndicator, ScUiSettings.GrenadePreview, ScUiSettings.SniperHipCrosshair);
+        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials, ScUiSettings.DamageIndicator, ScUiSettings.GrenadePreview, ScUiSettings.SniperHipCrosshair, ScUiSettings.StarterPlan);
     static void Apply(Snapshot s) {
         ScUiSettings.CustomButtons = s.Buttons; ScUiSettings.KillFeed = s.KillFeed; ScUiSettings.KillSound = s.KillSound;
         ScUiSettings.GunCrosshair = s.Crosshair; ScUiSettings.CrosshairStyle = s.Style; ScUiSettings.CrosshairColor = s.Color;
         ScUiSettings.SniperHipCrosshair = s.SniperHipCrosshair;
+        ScUiSettings.StarterPlan = s.StarterPlan;
         ScUiSettings.SimpleMaterials = s.SimpleMaterials; ScUiSettings.DamageIndicator = s.DamageIndicator; ScUiSettings.GrenadePreview = s.GrenadePreview;
         ScUiSettings.ButtonOnlyFire = s.ButtonOnly; ScUiSettings.CrosshairShape = s.Shape.Normalize();
     }
@@ -119,6 +121,9 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(m_grenadePreview);
         m_content.Children.Add(ScGunUi.Note("红圈：起爆／起火点；蓝圈：落定点。"));
         BuildEnemy(narrow);
+        m_content.Children.Add(ScGunUi.Heading("开局装备"));
+        m_starter=ScGunUi.Button(ScStarterLoadout.Label(m_working.StarterPlan),330);
+        m_content.Children.Add(m_starter);
         m_content.Children.Add(ScGunUi.Heading("探员语音"));
         m_content.Children.Add(m_agentVoice);
         m_content.Children.Add(ScGunUi.Heading("武器画质"));
@@ -213,6 +218,7 @@ public sealed class ScGunSettingsScreen : Screen {
         bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
         UpdateEnemy();
+        if(m_starter.IsClicked){m_working=m_working with {StarterPlan=(ScStarterPlan)(((int)m_working.StarterPlan+1)%4)};m_starter.Text=ScStarterLoadout.Label(m_working.StarterPlan);}
         if(m_recoverView.IsClicked) {
             DialogsManager.ShowDialog(this,new MessageDialog("恢复正常视角？",
                 "将退出 CS 开镜，恢复原版基础视野 100%（80°）和灵敏度 50%，并立即保存。不会重置其他设置、武器或存档；本页取消不会撤销此次恢复。",
@@ -254,7 +260,7 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
         if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
-        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512", true, true, true); m_enemy=ScEnemyRules.Default; m_built = false; return; }
+        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512", true, true, true, ScStarterPlan.None); m_enemy=ScEnemyRules.Default; m_built = false; return; }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Leave(m_back); return; }
         if (m_save.IsClicked) {
             var previous = Capture();var previousEnemy=ScUiSettings.EnemyDefaults;

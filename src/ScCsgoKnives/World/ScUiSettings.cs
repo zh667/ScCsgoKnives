@@ -91,6 +91,7 @@ public static class ScUiSettings {
     public static bool KillSound = true;
     public static bool GunCrosshair = true;
     public static bool SniperHipCrosshair = true;
+    public static ScStarterPlan StarterPlan = ScStarterPlan.None;
     public static string CrosshairStyle = StyleVanilla;
     public static Color CrosshairColor = Color.White;
     public static ScCrosshairShape CrosshairShape = new();
@@ -132,6 +133,7 @@ public static class ScUiSettings {
         ButtonOnlyFire = false;
         C4Fuses.Clear();
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
+        StarterPlan = ScStarterPlan.None;
         CrosshairShape = new();
     }
     /// <summary>A deep copy of one hand's layout, for an editor that must not change anything until it is saved.</summary>
@@ -163,6 +165,7 @@ public static class ScUiSettings {
         public bool KillSoundEnabled { get; set; } = true;
         public bool GunCrosshairEnabled { get; set; } = true;
         public bool SniperHipCrosshair { get; set; } = true;
+        public ScStarterPlan StarterPlan { get; set; } = ScStarterPlan.None;
         public string GunCrosshairStyle { get; set; } = StyleVanilla;
         public string GunCrosshairColor { get; set; } = "255,255,255";
         public ScCrosshairShape CrosshairShape { get; set; } = new();
@@ -209,6 +212,7 @@ public static class ScUiSettings {
             KillSound = file.KillSoundEnabled;
             GunCrosshair = file.GunCrosshairEnabled;
             SniperHipCrosshair = file.SniperHipCrosshair;
+            StarterPlan = Enum.IsDefined(file.StarterPlan)?file.StarterPlan:ScStarterPlan.None;
             CrosshairStyle = Array.IndexOf(Styles, file.GunCrosshairStyle) >= 0 ? file.GunCrosshairStyle : StyleVanilla;
             if (TryParseColor(file.GunCrosshairColor, out var parsed)) CrosshairColor = parsed;
             CrosshairShape = (file.CrosshairShape ?? new()).Normalize();
@@ -239,6 +243,7 @@ public static class ScUiSettings {
                 CrosshairShape = CrosshairShape.Normalize(),
                 GunCrosshairEnabled = GunCrosshair, GunCrosshairStyle = CrosshairStyle, GunCrosshairColor = ColorText(CrosshairColor),
                 SniperHipCrosshair = SniperHipCrosshair,
+                StarterPlan = StarterPlan,
             };
             foreach (string id in ScGunFunctions.All) {
                 file.Buttons[id] = Layout(s_right, id, false);
