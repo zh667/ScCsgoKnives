@@ -23,7 +23,7 @@ static class LifecycleChecks {
     internal static void Run(Action<string, Action> test) {
         ScNetWorkbench.Register();
         void Tick() { var tick = typeof(ScNetWorkbench).GetMethod("Tick"); Need(tick is not null, "no timeout/lifecycle tick"); tick.Invoke(null, null); }
-        int Pending() => ((IDictionary)typeof(ScNetWorkbench).GetField("s_pending", Any).GetValue(null)).Count;
+        int Pending() => WorkbenchChecks.Pending();
         void Request(Action<ScWorkbenchResult> done) => ScNetWorkbench.Run(new(ScWorkbenchOpKind.Craft, new Point3()), () => throw new Exception("client ran local effect"), done);
         void Response(int id) => ScNet.ReceiveOnClient(ScNetWorkbench.OpResult, new ScNetWriter().Int(id).Int(1).String("").ToArray());
         void Case(string name, Action<Transport, Project> body) => test(name, () => {

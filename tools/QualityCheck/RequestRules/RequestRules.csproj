@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Compile the exact production rule source without any engine, core DLL, mocks of engine types, or packages. -->
+    <Compile Include="../../../src/ScCsgoKnives/Net/ScWorkbenchRequests.cs" Link="ScWorkbenchRequests.cs" />
+  </ItemGroup>
+</Project>

@@ -16,6 +16,7 @@
   <ItemGroup Condition="Exists('$(Refs)/ScCsgoDeathmatch.dll')"><Reference Include="$(Refs)/ScCsgoDeathmatch.dll"><Private>false</Private></Reference></ItemGroup>
   <ItemGroup Condition="!Exists('$(Refs)/ScCsgoDeathmatch.dll')"><Compile Remove="DmLoop.cs" /></ItemGroup>
   <ItemGroup>
+    <Compile Include="../QualityCheck/WorkbenchChecks.cs" Link="WorkbenchChecks.cs" />
     <Reference Include="$(Refs)/Survivalcraft.dll;$(Refs)/Engine.dll;$(Refs)/EntitySystem.dll;$(Refs)/Survivalcraft.Multiplayer.dll;$(Refs)/ScCsgoKnives.dll"><Private>false</Private></Reference>
   </ItemGroup>
 </Project>

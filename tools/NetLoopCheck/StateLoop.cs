@@ -234,7 +234,8 @@ static partial class StateLoop {
         try {
             Platform(adapterPath, compatPath, modules);
             bool ran = false;
-            if (mode == "quality") { RunQuality(ref ran); if (!ran) Test("harness", "quality dependencies present", false); }
+            if (mode == "workbench") RunWorkbench();
+            else if (mode == "quality") { RunQuality(ref ran); if (!ran) Test("harness", "quality dependencies present", false); }
             else if (baseline) Baseline(); else if (mode == "gunloop") GunLoop.Run(); else if (mode == "dmloop") { RunDeathmatch(ref ran); if (!ran) Test("harness", "the deathmatch loop is compiled in (ScCsgoDeathmatch.dll among the references)", false); } else Cases.Run();
         }
         catch (Exception e) { Test("harness", "completed", false, (e is TargetInvocationException t ? t.InnerException : e).ToString()); }
@@ -243,6 +244,7 @@ static partial class StateLoop {
             mode = mode == "quality" ? "quality protocol boundaries and lifecycle" : baseline ? "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)" : mode == "gunloop" ? "the gun state machine on a client and a server end" : mode == "dmloop" ? "the deathmatch package on a server and two clients" : "state cases",
             modules = modules.Select(Path.GetFileName).ToArray(), registered = HandlerTable().Count,
             failed, total = s_checks.Count, checks = s_checks,
+            workbenchWire = s_workbenchWire, workbenchTrace = WorkbenchChecks.Trace,
             assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && (a.GetName().Name.StartsWith("ScCsgo") || a.GetName().Name.StartsWith("Survivalcraft") || a.GetName().Name is "Engine" or "EntitySystem"))
                 .Select(a => new { name = a.GetName().Name, mvid = a.ManifestModule.ModuleVersionId, path = a.Location,
                     sha256 = string.IsNullOrEmpty(a.Location) ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(a.Location))) }).ToArray(),

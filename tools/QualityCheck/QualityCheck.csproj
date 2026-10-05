@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="RequestRules/**/*.cs" />
     <Compile Include="../PackageCheck/ItemTravelRegression.cs" Link="ItemTravelRegression.cs" />
     <Compile Include="../PackageCheck/GenericTravelRegression.cs" Link="GenericTravelRegression.cs" />
     <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />

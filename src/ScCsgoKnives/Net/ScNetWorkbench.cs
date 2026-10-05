@@ -22,37 +22,22 @@ public readonly record struct ScWorkbenchResult(int Code, string Detail = "") {
 /// a remote client, which repeats the same quote on its own inventory and world and answers with the result.</summary>
 public static class ScNetWorkbench {
     public const ushort OpRequest = 50, OpResult = 51, OpOpen = 52;
-    static int s_next;
     /// <summary>The last answer this client got (read by the two-process tests).</summary>
     public static ScWorkbenchResult? LastResult;
     public const int MaxPending = 64;
     public const double RequestTimeout = 30;
-    sealed record Pending(Project World, IScNetTransport Transport, double At, Action<ScWorkbenchResult> Done);
-    static readonly Dictionary<int, Pending> s_pending = [];
+    static readonly ScWorkbenchRequests s_requests = new(MaxPending, RequestTimeout,
+        e => KnifeLog.Warning("workbench callback closed: " + e.Message));
+    static readonly ScWorkbenchRequests.Context s_context = new(
+        () => GameManager.Project, () => ScNet.Transport, () => ScNet.IsRemoteClient, () => ScNet.ClientBlocked, () => ScNet.Now);
     static readonly ScWorkbenchResult Uncertain = new(ScWorkbenchResult.Unknown, "联机：操作结果未知，请核对库存和状态后再操作；不会自动重试。");
-    static void Finish(int id, ScWorkbenchResult result) {
-        if (!s_pending.Remove(id, out var pending)) return;
-        try { pending.Done(result); }
-        catch (Exception e) { KnifeLog.Warning("workbench callback closed: " + e.Message); }
-    }
+    static void Finish(int id, ScWorkbenchResult result) => s_requests.Complete(id, result.Code, result.Detail);
     /// <summary>Client-only bookkeeping. An unanswered request is not proof that the server did not commit it.</summary>
-    public static void Tick() {
-        foreach (var (id, p) in s_pending.ToArray())
-            if (!ReferenceEquals(p.World, GameManager.Project) || !ReferenceEquals(p.Transport, ScNet.Transport)
-                || !ScNet.IsRemoteClient || ScNet.ClientBlocked || ScNet.Now < p.At || ScNet.Now - p.At >= RequestTimeout)
-                Finish(id, Uncertain);
-    }
-    public static void WorldClosed(Project world) {
-        foreach (var (id, p) in s_pending.ToArray()) if (ReferenceEquals(p.World, world)) Finish(id, Uncertain);
-    }
-    public static void SessionClosed(IScNetTransport transport) {
-        foreach (var (id, p) in s_pending.ToArray()) if (ReferenceEquals(p.Transport, transport)) Finish(id, Uncertain);
-    }
+    public static void Tick() => s_requests.Tick(s_context, Uncertain.Code, Uncertain.Detail);
+    public static void WorldClosed(Project world) => s_requests.WorldClosed(world, Uncertain.Code, Uncertain.Detail);
+    public static void SessionClosed(IScNetTransport transport) => s_requests.SessionClosed(transport, Uncertain.Code, Uncertain.Detail);
     /// <summary>Fallback for the engine's parameterless exit hook; a new world's pending requests are left alone.</summary>
-    public static void ClearOrphaned() {
-        foreach (var (id, p) in s_pending.ToArray())
-            if (GameManager.Project is null || !ReferenceEquals(p.World, GameManager.Project)) Finish(id, Uncertain);
-    }
+    public static void ClearOrphaned() => s_requests.ClearOrphaned(s_context.World, Uncertain.Code, Uncertain.Detail);
 
     public static void Register() {
         ScNet.OnServer(OpRequest, Receive);
@@ -86,9 +71,8 @@ public static class ScNetWorkbench {
         Tick();
         if (!ScNet.IsRemoteClient) { done(local()); return; }
         if (ScNet.ClientBlocked) { done(new(-1, ScNet.BlockedMessage)); return; }
-        if (s_pending.Count >= MaxPending || s_next == int.MaxValue) { done(new(-1, "联机：待确认操作过多，本次请求未发送。")); return; }
         // Never reuse a request number while this process lives: a late answer cannot complete a new world's request.
-        int id = ++s_next; s_pending[id] = new(GameManager.Project, ScNet.Transport, ScNet.Now, done);
+        if (!s_requests.TryRegister(s_context, (code, detail) => done(new(code, detail)), out int id)) { done(new(-1, "联机：待确认操作过多，本次请求未发送。")); return; }
         try { if (!ScNet.Send(OpRequest, w => Write(w.Int(id), op))) Finish(id, new(-1, "联机：请求没有发出，请重试。")); }
         catch (Exception e) { KnifeLog.Warning("workbench send outcome unknown: " + e.Message); Finish(id, Uncertain); }
     }
@@ -112,7 +96,7 @@ public static class ScNetWorkbench {
     static void ReceiveResult(ScNetReader r) {
         int id = r.Int(); var result = new ScWorkbenchResult(r.Int(), r.String(512));
         r.Finish(); Tick();
-        if (!s_pending.ContainsKey(id)) return;
+        if (!s_requests.Contains(id)) return;
         LastResult = result;
         Finish(id, result);
     }
