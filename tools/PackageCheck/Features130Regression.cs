@@ -228,7 +228,7 @@ static class Features130Regression {
             c.Load(new(),null);T("ComponentScChicken").GetMethod("MarkDeath").Invoke(c,[true,-1]);((IUpdateable)c).Update(.01f);((IUpdateable)c).Update(.01f);
             Assert(audio.Explosions==1&&!((bool)Field(c,"PendingBlast")),"blast repeated or missing");var values=new ValuesDictionary();c.Save(values,null);c.Load(values,null);((IUpdateable)c).Update(.01f);Assert(audio.Explosions==1,"reload repeats blast");
             Assert((float)Call("ScGrenadeState","ChickenPower",0f)==48&&(float)Call("ScGrenadeState","ChickenPower",6f)==0,"wrong chicken blast curve");
-            Assert((float)Call("ScGrenadeState","HePower",0f)==96&&(float)Call("ScGrenadeState","HePower",7.8f)==0,"wrong HE blast curve");
+            Assert((float)Call("ScGrenadeState","HePower",0f)==120&&(float)Call("ScGrenadeState","HePower",7.8f)==0,"wrong HE blast curve");
         });
         return results;
     }

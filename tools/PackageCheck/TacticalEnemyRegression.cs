@@ -84,8 +84,12 @@ static class TacticalEnemyRegression {
             var parts=new List<Component>{(Component)enemy,body,health,creature,locomotion,spawn,path,path.m_componentPilot,inv,selector};
             E(p,parts.ToArray());enemy.Load(new ValuesDictionary(),null);enemy.Configure(State(role,seed),body.Position);Set(enemy,"random",new Engine.Random(seed));selector.Load(new(),null);selector.Update(.1f);return(enemy,creature,inv,path);
         }
-        var savedTypes=BlocksManager.BlockTypeToIndex.ToArray();var savedNames=BlocksManager.BlockNameToIndex.ToArray();
+        var savedTypes=BlocksManager.BlockTypeToIndex.ToArray();var savedNames=BlocksManager.BlockNameToIndex.ToArray();var savedBlocks=(Block[])BlocksManager.Blocks.Clone();
         try{
+            // Death drops now resolve real vanilla materials; the isolated runner has no BlocksManager.Initialize.
+            foreach(var (index,block) in new (int,Block)[]{(40,new IronIngotBlock{CraftingId="ironingot"}),(41,new CopperIngotBlock{CraftingId="copperingot"}),(42,new CoalChunkBlock{CraftingId="coalchunk"}),(710,(Block)Activator.CreateInstance(C("ScChickenEggBlock")))}){
+                block.BlockIndex=index;BlocksManager.Blocks[index]=block;BlocksManager.BlockTypeToIndex[block.GetType()]=index;BlocksManager.BlockNameToIndex[block.GetType().Name]=index;
+            }
             FreshRegistry();
             Test("feedback/flash-detonation-on-screen-beyond-radius-with-cover",()=>{
                 foreach(var (z,wall,expected) in new[]{(-200f,false,true),(-200f,true,false),(200f,false,false),(-20f,false,true)}){
@@ -717,14 +721,11 @@ static class TacticalEnemyRegression {
                     }
                 }finally{if(old==null)DatabaseManager.m_valueDictionaries.Remove("ScTacticalEnemy");else DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=old;}
             });
-            Test("farthest-summon-distance-inside-the-provoke-and-retaliation-ranges",()=>{
-                // A summoned squad stands at most ManualFar + 2 from its summoner and its members within a few blocks of each other:
-                // attacking one from where it was summoned reaches all of them, and all of them can answer from there.
-                float far=(float)T("SubsystemTacticalEnemies").GetField("ManualFar").GetRawConstantValue()+2,provoke=(float)T("ComponentTacticalEnemy").GetField("ProvokeRange").GetRawConstantValue();
+            Test("manual-squad-keeps-neutrality-at-near-and-distant-clicks",()=>{
+                // Manual placement is now at the clicked ground. No obsolete summoner-distance constants apply.
+                // Neutrality must still hold for every role after warmup, near the player as well as far away.
                 foreach(int role in new[]{0,1,2,3,4}){
-                    float retaliate=(float)T("ComponentTacticalEnemy").GetMethod("RetaliationRange").Invoke(null,[Enum.ToObject(T("TacticalRole"),role)]);
-                    Check(retaliate>=far+8&&provoke>=far,$"role {role}: retaliation {retaliate} / provoke {provoke} against the farthest summon position {far}");
-                    foreach(float d in new[]{18f,22,28,30}){
+                    foreach(float d in new[]{2f,18,30,80,256}){
                         var f=World();var e=Enemy(f.P,role);e.Enemy.State.Grenades=0;
                         var target=new ComponentBody{Position=new Vector3(d,60,0),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};var health=new Health{Health=1,AttackResilience=1000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats()};health.m_componentCreature=creature;
                         var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();E(f.P,target,health,creature,player);f.Bodies.AddBody(target);
@@ -1183,6 +1184,7 @@ static class TacticalEnemyRegression {
                 using var cz=ZipFile.OpenRead(corePath);foreach(string sound in new[]{"c4_beep2","c4_warning","c4_trigger_trip","c4_disarmstart","c4_disarmfinish"})Check(cz.GetEntry("Assets/Audio/ScCsgoKnives/"+sound+".ogg")!=null,"missing CS2 sound "+sound);
             });
         }finally{rf.SetValue(null,original);diagnostics?.SetValue(null,diagnosticsBefore);
+            Array.Copy(savedBlocks,BlocksManager.Blocks,savedBlocks.Length);
             BlocksManager.BlockTypeToIndex.Clear();foreach(var p in savedTypes)BlocksManager.BlockTypeToIndex[p.Key]=p.Value;
             BlocksManager.BlockNameToIndex.Clear();foreach(var p in savedNames)BlocksManager.BlockNameToIndex[p.Key]=p.Value;}
         return results;
