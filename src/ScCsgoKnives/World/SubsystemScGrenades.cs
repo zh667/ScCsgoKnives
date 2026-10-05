@@ -533,15 +533,20 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         foreach (var body in m_bodies.Bodies.ToArray()) {
             Vector3 point=Eye(body); float distance=Vector3.Distance(s.Position,point);
-            if (!Friendly(s,body) || distance>(s.Kind==0?(chicken?ScGrenadeState.ChickenRadius:ScGrenadeState.HeRadius):ScGrenadeState.FlashRadius) || !Clear(s.Position,point)) continue;
+            if (!Friendly(s,body))continue;
+            if(s.Kind==0&&(distance>(chicken?ScGrenadeState.ChickenRadius:ScGrenadeState.HeRadius)||!Clear(s.Position,point)))continue;
             if (s.Kind==0) Damage(s,body,chicken?ScGrenadeState.ChickenPower(distance):ScGrenadeState.HePower(distance));
             if (s.Kind==1 && (!m_blind.TryGetValue(body,out var old) || m_time.GameTime>=old.ImmuneUntil)) {
                 var p=body.Entity.FindComponent<ComponentPlayer>();
+                var camera=p is not null&&!ScNet.IsRemoteDriven(p)?p.GameWidget?.ActiveCamera:null;
+                if(!Clear(s.Position,camera?.ViewPosition??point))continue;
                 // A remote client's player (server) faces where its client last aimed; it has no camera here.
                 Vector3 forward=p is null ? body.Matrix.Forward : ScNetGuns.RemoteInput(p) is {HasAim:true} aimed ? aimed.Aim.Direction
                     : ScNetGrenades.RemoteThrow(p) is {HasView:true} viewed ? viewed.ViewDirection : p.GameWidget?.ActiveCamera?.ViewDirection ?? body.Matrix.Forward;
                 float facing=distance>.01f?Vector3.Dot(forward,(s.Position-point)/distance):1;
-                float duration=ScGrenadeState.FlashDuration(distance,facing);
+                bool onScreen=camera is not null?camera.ViewFrustum.Intersection(new BoundingSphere(s.Position,.05f)):
+                    p is not null&&facing>0;
+                float duration=ScGrenadeState.VisibleFlashDuration(distance,facing,onScreen);
                 if (duration>.05f) {
                     m_blind[body]=new Blindness {Until=m_time.GameTime+duration,Duration=duration,ImmuneUntil=m_time.GameTime+duration+ScGrenadeState.FlashImmunity};
                     if (p is not null && ScNet.IsRemoteDriven(p)) ScNetGrenades.Blind(p,duration);

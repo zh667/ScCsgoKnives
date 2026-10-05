@@ -18,15 +18,18 @@ public sealed class ScGrenadeState {
     // Do not impose a gameplay upper limit on simultaneous projectiles. Effects still expire naturally;
     // this helper remains for save/load call sites and validates only the state itself.
     public static bool CanAdd(IEnumerable<ScGrenadeState> states, int owner) => true;
-    public const float HeRadius=7.8f, HeDamage=96;
+    public const float HeRadius=7.8f, HeDamage=120;
     public const float ChickenRadius=6, ChickenDamage=48;
     public static float ChickenPower(float distance) => ChickenDamage * Math.Clamp(1-distance/ChickenRadius,0,1);
     public static float HePower(float distance) => HeDamage * Math.Clamp(1 - distance / HeRadius, 0, 1);
     // CS2's flash has a full white peak and a several-second recovery tail.
-    public const float FlashRadius = 20, FlashMaximum = 5.5f, FlashImmunity = 3;
+    public const float FlashRadius = 40, FlashMaximum = 5.5f, FlashImmunity = 3;
     public static float FlashDuration(float distance, float facing) => FlashMaximum
         * Math.Clamp(1 - Math.Max(0, distance - 2) / (FlashRadius - 2), 0, 1)
         * (.1f + .9f * Math.Clamp((facing + .2f) / 1.2f, 0, 1));
+    /// <summary>A visible on-screen burst always reaches the player; distance still softens its duration.</summary>
+    public static float VisibleFlashDuration(float distance,float facing,bool onScreen)=>onScreen
+        ?Math.Max(1,FlashDuration(distance,facing)):FlashDuration(distance,facing);
     public static float FlashOpacity(float left, float duration) {
         if (left <= 0 || duration <= 0) return 0;
         float hold = .6f * Math.Clamp(duration / FlashMaximum, 0, 1);
