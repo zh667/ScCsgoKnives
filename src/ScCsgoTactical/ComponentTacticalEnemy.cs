@@ -19,8 +19,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     // window grant no target. An effective attack on one of them, by an attacker that exists and is not one of them, makes
     // every living one within <see cref="ProvokeRange"/> of the one that was hit take that same attacker as its target
     // (SubsystemTacticalEnemies.Provoked: once per attack, from the victim's position; the ones told do not tell others
-    // in turn). A target is not a licence to shoot through a wall or smoke: sight, the retaliation range and the memory
-    // of a hidden attacker bound it exactly as they bounded a retaliation before. The earlier policy (agent-followup-140
+    // in turn). Walls and smoke still block shots, and hidden attackers are forgotten after the memory window.
+    // The 2026-10-06 request removes the retaliation distance cap. The earlier policy (agent-followup-140
     // F2, widened by video-feedback-20260929 R3) had every member look for players and companions on its own; the
     // "everyone nearby joins in" the player saw came from that, so it is now explicit.
     public const float LeashRange=48,RetaliationMemory=8,ProactiveMemory=6;
@@ -284,7 +284,9 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
             if(TacticalGunfire.Trace(Project,body,from,d,range) is not {} hit||Friendly(hit.Body))continue;
             bool player=hit.Body.Entity.FindComponent<ComponentPlayer>() is not null;
             float budget=player?PlayerBudget(spec,stats.Power):stats.Power;
-            float power=budget/pellets*stats.Falloff(spec,hit.Distance)*(player&&hit.Part==ScHitPart.Head?TacticalHostileBalance.PlayerHeadMultiplier:1);
+            // Retaliation extends the trace and the damage curve together. Keep the far-range floor instead of the
+            // handling table's zero beyond its normal range (otherwise distant shots are only an animation).
+            float power=budget/pellets*stats.Falloff(spec,Retaliating?Math.Min(hit.Distance,stats.Range):hit.Distance)*(player&&hit.Part==ScHitPart.Head?TacticalHostileBalance.PlayerHeadMultiplier:1);
             if(!shots.TryGetValue(hit.Body,out var landed))shots[hit.Body]=landed=new ScShotHits();
             landed.Add(hit.Part,power,from+d*hit.Distance,d);
         }
