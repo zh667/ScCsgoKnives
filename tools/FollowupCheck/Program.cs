@@ -111,8 +111,10 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         Check("new controls restore defaults "+size,ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
         ScStarterPlan? picked=null;var dialog=new ScStarterDialog(ScStarterPlan.None,p=>{picked=p;return true;});
         var dialogRoot=new CanvasWidget{Size=size};dialogRoot.Children.Add(dialog);dialogRoot.Measure(size);dialogRoot.Arrange(Vector2.Zero,size);Capture(dialogRoot,size,"starter-choice");
-        var confirm=(BevelledButtonWidget)Field(dialog,"confirm");confirm.m_clickableWidget.IsClicked=true;dialog.Update();
-        Check("starter confirmation defaults to no equipment "+size,picked==ScStarterPlan.None);
+        var options=dialog.AllChildren.OfType<BevelledButtonWidget>().ToArray();
+        Check("starter lists all four plans without confirm "+size,options.Length==4&&options.Select(b=>b.Text).SequenceEqual(Enum.GetValues<ScStarterPlan>().Select(ScStarterLoadout.Label)));
+        options[0].m_clickableWidget.IsClicked=true;dialog.Update();dialog.Update();
+        Check("starter no-equipment is one direct click "+size,picked==ScStarterPlan.None);
 
         // ---- A world is open: the screen edits that world's rules through the bridge, not the device defaults. ----
         var world=new ScEnemyRules(true,5,ScEnemyDensity.Sparse);ScEnemyRules? written=null;int writes=0;bool writable=true;
@@ -130,6 +132,20 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         Check("world write failure stays and says so "+size,!Left()&&((LabelWidget)Field(screen,"m_status")).Text.Contains("敌对小队规则未写入"));
         Capture(screen,size,"settings-enemy-world-write-failed");
         GameManager.m_project=null;ScEnemyRulesBridge.Read=null;ScEnemyRulesBridge.Write=null;ScEnemyRulesBridge.Progress=null;
+    }
+
+    foreach(var size in new[]{new Vector2(320,568),new Vector2(360,640),new Vector2(640,360),new Vector2(850,479),new Vector2(960,540)}){
+        foreach(var plan in Enum.GetValues<ScStarterPlan>()){
+            int submits=0;ScStarterPlan? selected=null;var dialog=new ScStarterDialog(ScStarterPlan.None,p=>{submits++;selected=p;return true;});
+            var root=new CanvasWidget{Size=size};root.Children.Add(dialog);root.Measure(size);root.Arrange(Vector2.Zero,size);
+            var buttons=dialog.AllChildren.OfType<BevelledButtonWidget>().ToArray();
+            Check("mobile starter has four full-size touch targets "+size,buttons.Length==4&&buttons.All(b=>b.ActualSize.Y>=48&&b.ActualSize.X>=240));
+            Check("mobile starter stays inside screen "+size,dialog.GlobalBounds.Min.X>=0&&dialog.GlobalBounds.Min.Y>=0&&dialog.GlobalBounds.Max.X<=size.X&&dialog.GlobalBounds.Max.Y<=size.Y);
+            Check("mobile starter options all visible "+size,buttons.All(b=>b.GlobalBounds.Min.Y>=dialog.GlobalBounds.Min.Y&&b.GlobalBounds.Max.Y<=dialog.GlobalBounds.Max.Y));
+            if(plan==ScStarterPlan.None)Capture(root,size,"starter-list");
+            buttons[(int)plan].m_clickableWidget.IsClicked=true;dialog.Update();dialog.Update();
+            Check("starter direct click submits exactly once "+size+" "+plan,submits==1&&selected==plan);
+        }
     }
 
     // Dialog arbitration reads all parents, including a third-party startup dialog on the screen root.
