@@ -41,6 +41,20 @@ public static class TacticalNavigation {
         if(Blocked(terrain,x,z,top+.02f,top+height)||Blocked(terrain,Terrain.ToCell(body.Position.X),Terrain.ToCell(body.Position.Z),feet+height,top+height))return Step.Wall;
         return Step.Jump;
     }
+    /// <summary>Swimming feet are below the surface. Judge a shore against the measured waterline, not those feet;
+    /// otherwise an ordinary bank looks like an unjumpable two-block wall. Native swimming and buoyancy supply ascent.</summary>
+    public static bool Shore(SubsystemTerrain terrain,ComponentBody body,Vector2 direction){
+        if(body.ImmersionDepth<=0||direction.LengthSquared()<.0001f)return false;
+        direction=Vector2.Normalize(direction);
+        var ahead=body.Position.XZ+direction*(body.BoxSize.X*.5f+.35f);
+        int x=Terrain.ToCell(ahead.X),z=Terrain.ToCell(ahead.Y);
+        if(terrain.Terrain.GetChunkAtCell(x,z) is not {State:>=TerrainChunkState.InvalidLight})return false;
+        float surface=body.Position.Y+body.ImmersionDepth,top=StepTop(terrain,x,z,surface-.25f);
+        if(top<surface-.1f||top>surface+MaxStep)return false;
+        if(BlocksManager.Blocks[Terrain.ExtractContents(terrain.Terrain.GetCellValue(x,Terrain.ToCell(top+.02f),z))] is FluidBlock)return false;
+        return !Blocked(terrain,x,z,top+.02f,top+body.BoxSize.Y)
+            &&!Blocked(terrain,Terrain.ToCell(body.Position.X),Terrain.ToCell(body.Position.Z),body.Position.Y+body.BoxSize.Y,top+body.BoxSize.Y);
+    }
     /// <summary>Orders one jump for a climbable step toward <paramref name="destination"/>; bounded by a cooldown.</summary>
     public static bool StepAssist(ComponentCreature creature,SubsystemTerrain terrain,Vector3? destination,ref double nextJump,double now){
         var body=creature?.ComponentBody;
@@ -50,7 +64,8 @@ public static class TacticalNavigation {
         if((destination.Value-body.Position).XZ.LengthSquared()<.25f)return false;
         // The pilot steers toward its next waypoint, so the step that matters is the one in the facing direction.
         Vector2 direction=swimming?(destination.Value-body.Position).XZ:body.Matrix.Forward.XZ;
-        if(Probe(terrain,body,direction)!=Step.Jump)return false;
+        if(swimming&&body.ImmersionDepth>0){if(!Shore(terrain,body,direction))return false;body.IsSmoothRiseEnabled=true;}
+        else if(Probe(terrain,body,direction)!=Step.Jump)return false;
         creature.ComponentLocomotion.JumpOrder=1;nextJump=now+StepCooldown;return true;
     }
     /// <summary>Re-plans only for a real change; native SetDestination always restarts path search.</summary>

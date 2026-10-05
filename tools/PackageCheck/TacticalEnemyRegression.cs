@@ -150,6 +150,16 @@ static class TacticalEnemyRegression {
                     f.Terrain.Terrain.SetCellValueFast(8,62,7,2);args[4]=2d;
                     Check(!(bool)method.Invoke(null,args),"jump into low ceiling accepted");
                 }
+                {
+                    var f=World();var e=Enemy(f.P);var body=e.Creature.ComponentBody;
+                    f.Terrain.Terrain.AllocateChunk(0,0).State=TerrainChunkState.Valid;
+                    body.Position=new Vector3(8.5f,60,8.5f);body.ImmersionFactor=.85f;body.ImmersionDepth=1.4f;body.StandingOnValue=null;
+                    f.Terrain.Terrain.SetCellValueFast(8,60,7,2);f.Terrain.Terrain.SetCellValueFast(8,61,7,2);
+                    var method=T("TacticalNavigation").GetMethod("StepAssist");object[] args=[e.Creature,f.Terrain,new Vector3(8.5f,62,6.5f),0d,1d];
+                    Check((bool)method.Invoke(null,args),"normal bank rejected because swimming feet are below waterline");
+                    f.Terrain.Terrain.SetCellValueFast(8,62,7,2);args[4]=2d;
+                    Check(!(bool)method.Invoke(null,args),"waterline-relative cliff accepted");
+                }
             });
             Test("survival-and-creative-three-five-squad-placement-budget-and-rollback",()=>{
                 var old=DatabaseManager.m_valueDictionaries.GetValueOrDefault("ScTacticalEnemy");DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=new ValuesDictionary();
