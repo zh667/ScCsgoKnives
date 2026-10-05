@@ -44,10 +44,13 @@ public static class TacticalNavigation {
     /// <summary>Orders one jump for a climbable step toward <paramref name="destination"/>; bounded by a cooldown.</summary>
     public static bool StepAssist(ComponentCreature creature,SubsystemTerrain terrain,Vector3? destination,ref double nextJump,double now){
         var body=creature?.ComponentBody;
-        if(body is null||terrain is null||!destination.HasValue||now<nextJump||!body.StandingOnValue.HasValue||body.ImmersionFactor>.3f)return false;
+        if(body is null||terrain is null||!destination.HasValue||now<nextJump)return false;
+        bool swimming=body.ImmersionFactor>.5f;
+        if(!body.StandingOnValue.HasValue&&!swimming)return false;
         if((destination.Value-body.Position).XZ.LengthSquared()<.25f)return false;
         // The pilot steers toward its next waypoint, so the step that matters is the one in the facing direction.
-        if(Probe(terrain,body,body.Matrix.Forward.XZ)!=Step.Jump)return false;
+        Vector2 direction=swimming?(destination.Value-body.Position).XZ:body.Matrix.Forward.XZ;
+        if(Probe(terrain,body,direction)!=Step.Jump)return false;
         creature.ComponentLocomotion.JumpOrder=1;nextJump=now+StepCooldown;return true;
     }
     /// <summary>Re-plans only for a real change; native SetDestination always restarts path search.</summary>
