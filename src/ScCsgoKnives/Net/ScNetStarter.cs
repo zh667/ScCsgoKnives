@@ -4,14 +4,16 @@ namespace Game;
 public static class ScNetStarter {
     public const ushort OpQuery=74,OpStatus=75,OpChoose=76;
     public static void Register(){
-        ScNet.OnServer(OpQuery,(peer,player,r)=>Reply(peer,player));
+        ScNet.OnServer(OpQuery,(peer,player,r)=>{if(r.End)Reply(peer,player);});
         ScNet.OnServer(OpChoose,(peer,player,r)=>{
             var plan=(ScStarterPlan)r.Byte();
+            if(!r.End)return;
             if(Enum.IsDefined(plan))player.Project.FindSubsystem<SubsystemScStarterEquipment>(true).Choose(player,plan);
             Reply(peer,player);
         });
         ScNet.OnClient(OpStatus,r=>{
             int index=r.Int();bool pending=r.Bool(),granted=r.Bool();
+            if(!r.End)return;
             GameManager.Project?.FindSubsystem<SubsystemScStarterEquipment>(false)?.ApplyStatus(index,pending,granted);
         });
     }

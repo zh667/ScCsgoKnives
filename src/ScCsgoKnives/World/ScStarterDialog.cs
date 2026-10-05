@@ -6,6 +6,7 @@ public sealed class ScStarterDialog : Dialog {
     readonly Func<ScStarterPlan,bool> submit;
     ScStarterPlan plan;
     public ScStarterDialog(ScStarterPlan initial,Func<ScStarterPlan,bool> submit){
+        Size=new Vector2(362,190);HorizontalAlignment=WidgetAlignment.Center;VerticalAlignment=WidgetAlignment.Center;
         plan=Enum.IsDefined(initial)?initial:ScStarterPlan.None;this.submit=submit;
         Children.Add(ScGunUi.Frame());
         var panel=new StackPanelWidget{Direction=LayoutDirection.Vertical,Margin=new Vector2(16),HorizontalAlignment=WidgetAlignment.Center};
