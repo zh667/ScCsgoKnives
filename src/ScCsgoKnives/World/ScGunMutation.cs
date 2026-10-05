@@ -99,7 +99,7 @@ public sealed class ScGunMutation {
         // A remote multiplayer client's table is the server's mirror: every change is the server's to make.
         if (ScNet.IsRemoteClient) return Fail(ScGunResult.RemoteClient, "remote multiplayer client: the server owns gun records");
         if (!TryEnter()) return Fail(ScGunResult.Busy, "another gun commit/recovery is in progress");
-        var journal = new ScGunInventoryJournal(Inventory);
+        var journal = new ScGunInventoryJournal(Inventory, ScNetSlots.Touched);
         int published = -1;
         ScGunRecord original = null, updated = null;
         int originalId = Id, originalExpected = Expected;
@@ -180,7 +180,8 @@ public sealed class ScGunMutation {
             if (!StorageUnchanged()) throw new InvalidOperationException("Inventory storage changed during commit");
             // Committed. Multiplayer host: the slot this transaction rewrote is told to the clients after its record
             // (ScNetSlots, through Changed), and an input still naming the former value of that slot stays valid for the
-            // player holding it (ScNetGuns). Neither can undo the transaction.
+            // player holding it (ScNetGuns). Keep these calls inside the original commit exception/lock boundary;
+            // actual network enqueue happens later, outside this transaction.
             if (needsId) ScNetGuns.SlotRewritten(Inventory, Slot, originalExpected, replacement);
             ScInventoryTransaction.Changed(Inventory);
             if (KillToComplete is not null) m_registry.Kills.Complete(KillToComplete.EventId);
@@ -193,9 +194,14 @@ public sealed class ScGunMutation {
             if (published > 0) m_registry.Abandon(published, "inventory commit failed");
             // A box may retune while the original storage remains live (safe pinned refund),
             // or the channel/player destination may disappear entirely (durable claim only).
-            if (m_registry.RecoveryOwner is null || m_registry.RecoveryOwner(Inventory) == m_owner)
+            if (m_registry.RecoveryOwner is null || m_registry.RecoveryOwner(Inventory) == m_owner) {
                 journal.Rollback(m_registry.Recovery, m_owner);
-            else journal.DeferRollback(m_registry.Recovery, m_owner);
+                ScInventoryChanges.Finished(Inventory);
+            }
+            else {
+                journal.DeferRollback(m_registry.Recovery, m_owner);
+                ScNetSlots.Changed(Inventory);
+            }
             KnifeLog.Error("gun mutation rejected: " + e.Message);
             return Fail(m_registry.Recovery.HasPending(m_owner) ? ScGunResult.RecoveryPending : ScGunResult.InventoryRejected, e.Message);
         }

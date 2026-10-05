@@ -28,14 +28,14 @@ static class Program {
             string file = Path.Combine(s_refs, name.Name + ".dll");
             return File.Exists(file) ? context.LoadFromAssemblyPath(file) : null;
         };
-        if (args.Contains("--state") || args.Contains("--baseline") || args.Contains("--gunloop") || args.Contains("--dmloop") || args.Contains("--quality") || args.Contains("--workbench")) return RunState(args);
+        if (args.Contains("--state") || args.Contains("--baseline") || args.Contains("--gunloop") || args.Contains("--dmloop") || args.Contains("--quality") || args.Contains("--workbench") || args.Contains("--publication")) return RunState(args);
         return Loop.Run(args[1], args[2] == "-" ? null : args[2], args[3], s_withCompat, s_refs, s_asked);
     }
     // (Its own method: the state cases bind to core members the transport check never touches.)
     [MethodImpl(MethodImplOptions.NoInlining)]
     static int RunState(string[] args) {
         string modules = args.FirstOrDefault(a => a.StartsWith("--modules="))?["--modules=".Length..] ?? "";
-        return StateLoop.Run(args[1], args[2] == "-" ? null : args[2], args[3], s_refs, args.Contains("--workbench") ? "workbench" : args.Contains("--quality") ? "quality" : args.Contains("--baseline") ? "baseline" : args.Contains("--gunloop") ? "gunloop" : args.Contains("--dmloop") ? "dmloop" : "state",
+        return StateLoop.Run(args[1], args[2] == "-" ? null : args[2], args[3], s_refs, args.Contains("--publication") ? "publication" : args.Contains("--workbench") ? "workbench" : args.Contains("--quality") ? "quality" : args.Contains("--baseline") ? "baseline" : args.Contains("--gunloop") ? "gunloop" : args.Contains("--dmloop") ? "dmloop" : "state",
             modules.Split(';', StringSplitOptions.RemoveEmptyEntries));
     }
 }

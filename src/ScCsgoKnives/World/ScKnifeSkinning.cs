@@ -44,7 +44,7 @@ public static class ScKnifeSkinning {
             if(!ScInventoryTransaction.IsWeaponSlot(inventory,quote.Slot) || inventory.GetSlotValue(quote.Slot)!=quote.Value
                 || inventory.GetSlotCapacity(quote.Slot,quote.Replacement)<1)return false;
             foreach(var p in quote.Cost)if(ScInventoryTransaction.Count(inventory,p.Key)<p.Value)return false;
-            journal=new(inventory);
+            journal=new(inventory, ScNetSlots.Touched);
             void Stable(){if(!ReferenceEquals(quote.Storage,ScInventoryIdentity.Storage(inventory)) || !ReferenceEquals(quote.Storage,ScInventoryIdentity.Storage(quote.Inventory)) || !ReferenceEquals(registry,ScGunRegistry.Current) || registry.RecoveryOwner?.Invoke(quote.Inventory)!=owner)throw new InvalidOperationException("Knife inventory changed");}
             foreach(var p in quote.Cost) {
                 int left=p.Value;
@@ -58,7 +58,7 @@ public static class ScKnifeSkinning {
             else {journal.RemoveExact(quote.Slot,quote.Value,1);Stable();journal.AddExact(quote.Slot,quote.Replacement,1);}
             Stable();ScInventoryTransaction.Changed(inventory);return true;
         } catch(Exception e) {
-            if(journal is not null){if(ReferenceEquals(quote.Storage,ScInventoryIdentity.Storage(inventory)) && registry.RecoveryOwner?.Invoke(inventory)==owner)journal.Rollback(registry.Recovery,owner);else journal.DeferRollback(registry.Recovery,owner);}
+            if(journal is not null){if(ReferenceEquals(quote.Storage,ScInventoryIdentity.Storage(inventory)) && registry.RecoveryOwner?.Invoke(inventory)==owner){ journal.Rollback(registry.Recovery,owner); ScInventoryChanges.Finished(inventory); }else { journal.DeferRollback(registry.Recovery,owner); ScNetSlots.Changed(inventory); }}
             KnifeLog.Warning("[KNIFE_SKIN] rolled back: "+e.Message);return false;
         } finally {ScGunMutation.Exit();}
     }

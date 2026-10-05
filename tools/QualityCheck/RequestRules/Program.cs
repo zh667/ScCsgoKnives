@@ -66,6 +66,7 @@ Check("completed-context-collectible-while-manager-lives", () => {
     var (requests, weak) = GarbageCase.Make(); GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
     Need(requests.Count == 0 && weak.All(w => !w.IsAlive), "table retains context"); GC.KeepAlive(requests);
 });
+BoundaryRuleChecks.Run(Check);
 var references = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(a => a.Name).Order().ToArray();
 Check("no-engine-or-core-assembly-required", () => Need(references.All(n => n.StartsWith("System") || n == "Microsoft.CSharp"), "engine dependency entered rules"));
 var report = new { count = results.Count, failed, results, references, artifact = Assembly.GetExecutingAssembly().Location,

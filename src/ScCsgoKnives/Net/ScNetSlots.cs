@@ -30,28 +30,27 @@ public interface IScNetInventorySync {
 /// transactions on one inventory publish it once. A shot on an existing record changes no slot and publishes nothing
 /// here: only its record row goes out. Outside a multiplayer host all of this is a no-op.</summary>
 public static class ScNetSlots {
-    static readonly HashSet<object> s_touched = new(ReferenceEqualityComparer.Instance);
-    static readonly List<IInventory> s_due = [];
+    static readonly ScSlotPublicationQueue s_queue = new();
     static readonly ConditionalWeakTable<object, object> s_unsupportedTold = new();
 
     /// <summary>Counters read by the offline checks: inventory packets sent, storages the platform cannot address,
     /// corrections sent to one client.</summary>
     public static int Published, Unsupported, Corrections;
     /// <summary>An inventory waits for this frame's publication (the shot confirmations then follow it).</summary>
-    public static bool PublicationDue => s_due.Count > 0;
+    public static bool PublicationDue => s_queue.HasDue;
 
     /// <summary>A CS transaction is rewriting slots of this inventory; due when the transaction ends.</summary>
     public static void Touched(IInventory inventory) {
         if (!ScNet.IsHost || inventory is null) return;
-        if (ScInventoryIdentity.Storage(inventory) is { } storage) s_touched.Add(storage);
+        if (ScInventoryIdentity.Storage(inventory) is { } storage) s_queue.Touch(storage);
     }
 
     /// <summary>The transaction on this inventory ended (called by ScInventoryTransaction.Changed).</summary>
     internal static void TransactionEnded(IInventory inventory) {
-        if (s_touched.Count == 0 || inventory is null) return;
-        if (!ScNet.IsHost) { s_touched.Clear(); return; }
+        if (!s_queue.HasTouched || inventory is null) return;
+        if (!ScNet.IsHost) { s_queue.ClearTouched(); return; }
         // Publishing never fails the transaction that ended: the server's state stands whatever the network layer does.
-        try { if (ScInventoryIdentity.Storage(inventory) is { } storage && s_touched.Remove(storage)) Changed(inventory); }
+        try { if (ScInventoryIdentity.Storage(inventory) is { } storage && s_queue.Untouch(storage)) Changed(inventory); }
         catch (Exception e) { KnifeDiagnostics.WarnOnce("scnet-slots-publish", "[ScCsgoNet] server: slot publication failed: " + e); }
     }
 
@@ -60,10 +59,9 @@ public static class ScNetSlots {
         if (!ScNet.IsHost || inventory is null) return;
         object storage = ScInventoryIdentity.Storage(inventory);
         if (storage is null) return;
-        s_touched.Remove(storage);
+        s_queue.Untouch(storage);
         if (storage is IInventory real && ScNet.Transport is IScNetInventorySync) {
-            for (int i = 0; i < s_due.Count; i++) if (ReferenceEquals(s_due[i], real)) return;
-            s_due.Add(real); return;
+            s_queue.Enqueue(real); return;
         }
         NotAddressed(storage);
     }
@@ -71,8 +69,8 @@ public static class ScNetSlots {
     /// <summary>Server, once a frame after every subsystem has updated (called by the adapter): records (with the shot
     /// confirmations), then the due inventories.</summary>
     public static void EndOfFrame() {
-        if (s_due.Count == 0) return;
-        var due = s_due.ToArray(); s_due.Clear();
+        if (!s_queue.HasDue) return;
+        var due = s_queue.TakeDue();
         if (!ScNet.IsHost || ScNet.Transport is not IScNetInventorySync sync) return;
         try {
             ScNetMirror.FlushRows();
@@ -105,5 +103,5 @@ public static class ScNetSlots {
         ScNet.IsHost && inventory is not null && ScNet.Transport is IScNetInventorySync sync && ScInventoryIdentity.Storage(inventory) is IInventory real && sync.AnnounceActiveSlot(real, owner);
 
     /// <summary>World closed or session ended: nothing noted for the old world survives.</summary>
-    public static void Clear() { s_touched.Clear(); s_due.Clear(); }
+    public static void Clear() => s_queue.Clear();
 }

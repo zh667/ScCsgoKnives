@@ -117,23 +117,16 @@ public static class ScNetMirror {
     /// it was this client's shot are one message, read in one go.</summary>
     static bool SendRows(ScNetPeer to, ScGunRegistry registry, List<int> ids, List<int> removed, double now) {
         var rows = ids.Select(id => (id, registry.NetworkRow(id, now))).Concat(removed.Select(id => (id, (string)null))).ToList();
-        int batches = Math.Max(1, (rows.Count + RowsPerMessage - 1) / RowsPerMessage);
+        var delivery = new ScRecordBatches(rows, RowsPerMessage);
         bool all = true;
         foreach (var peer in to is null ? ScNet.Peers.ToArray() : [to]) {
             bool confirm = ScNetGuns.TryAck(peer, out var ack);
-            if (rows.Count == 0 && !confirm) continue;
-            bool sent = true;
-            for (int b = 0; b < batches; b++) {
-                var batch = rows.Skip(b * RowsPerMessage).Take(RowsPerMessage).ToList();
-                bool withAck = confirm && b == batches - 1;
-                sent &= ScNet.TrySendTo(peer, OpRecords, w => {
+            bool sent = delivery.Send(confirm ? ack : null, (batch, confirmation) => ScNet.TrySendTo(peer, OpRecords, w => {
                     w.Int(batch.Count);
                     foreach (var (id, row) in batch) { w.Int(id).Bool(row is not null); if (row is not null) w.String(row); }
-                    w.Bool(withAck);
-                    if (withAck) w.Int(ack.Selection).Int(ack.Value).Int(ack.Fired).Int(ack.Skipped);
-                });
-            }
-            if (sent && confirm) ScNetGuns.AckSent(peer);
+                    w.Bool(confirmation.HasValue);
+                    if (confirmation is { } word) w.Int(word.Selection).Int(word.Value).Int(word.Fired).Int(word.Skipped);
+                }), () => ScNetGuns.AckSent(peer));
             all &= sent;
         }
         return all;

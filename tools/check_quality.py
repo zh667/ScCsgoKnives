@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--group', choices=['core', 'builds', 'behavior', 'mp-quality', 'mp', 'variants', 'all'], default='all')
+parser.add_argument('--group', choices=['rules', 'core', 'builds', 'behavior', 'mp-quality', 'mp', 'variants', 'all'], default='all')
 parser.add_argument('--out', type=Path, default=ROOT / '.tmp/dev-temp/quality-check')
 parser.add_argument('--mp-refs', type=Path)
 parser.add_argument('--mods', type=Path, help='Read-only API 1.9.3.1 Mods inputs for Sushi regression')
@@ -48,11 +48,25 @@ def run(name, command):
         result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
     rows.append(dict(name=name, status='passed' if result.returncode == 0 else 'failed',
                      command=command, exit=result.returncode, seconds=round(time.monotonic()-started, 3)))
+    reports = [Path(x) for x in command if x.endswith('.json') and Path(x).is_file()]
+    if reports:
+        report = reports[-1]
+        try:
+            data = json.loads(report.read_text('utf-8-sig'))
+            if isinstance(data, dict):
+                count = data.get('total', data.get('count'))
+                if count is None:
+                    count = next((len(data[k]) for k in ['checks', 'cases', 'results'] if isinstance(data.get(k), list)), None)
+                rows[-1]['report'] = dict(path=str(report), sha256=sha(report), count=count, failed=data.get('failed'),
+                    assemblies=data.get('assemblies', []), references=data.get('references', []), artifact=data.get('artifact'), artifactSha256=data.get('sha256'))
+                if data.get('failed', 0): rows[-1]['status'] = 'failed'
+        except (OSError, ValueError) as e:
+            rows[-1]['status'] = 'failed'; rows[-1]['reportError'] = str(e)
     save()
     print(name, rows[-1]['status'], rows[-1]['seconds'], flush=True)
     if result.returncode:
         print((OUT / (name + '.log')).read_text('utf-8')[-3500:], flush=True)
-    return result.returncode == 0
+    return rows[-1]['status'] == 'passed'
 
 
 def unavailable(name, detail, status='missing-dependency'):
@@ -90,7 +104,7 @@ def check_inputs():
 
 def prerequisites(name):
     missing = []
-    if name not in ['ScCsgoResourceCodec', 'ScCsgoNet', 'ScCsgoNetCompat', 'NetLoopCheck', 'InventoryCheck', 'AppearanceNetCheck']:
+    if name not in ['RequestRules', 'ScCsgoResourceCodec', 'ScCsgoNet', 'ScCsgoNetCompat', 'NetLoopCheck', 'InventoryCheck', 'AppearanceNetCheck']:
         if not any((ROOT / 'src/ScCsgoKnives/AnimationData').glob('*.skin')):
             missing.append('Windows AnimationData/*.skin (required real resource inputs)')
     if name == 'ScCsgoAppearance':
@@ -125,15 +139,23 @@ def build(name, folder='src', extra=()):
 
 
 def core():
+    rules()
     exe = build('QualityCheck', 'tools')
     if exe:
         run('quality-core', ['dotnet', exe, OUT / 'core.json'])
+    else: unavailable('quality-core', 'core runner prerequisite/build unavailable', 'not-executed')
+
+def rules():
+    exe = build('RequestRules', 'tools/QualityCheck')
+    if exe: run('request-rules', ['dotnet', exe, OUT / 'request-rules.json'])
+    else: unavailable('request-rules', 'rule runner build unavailable', 'not-executed')
 def multiplayer():
     origin = args.mp_refs.resolve() if args.mp_refs else None
     required = ['Survivalcraft.dll', 'Engine.dll', 'EntitySystem.dll', 'Survivalcraft.Multiplayer.dll']
     if origin is None or any(not (origin / n).is_file() for n in required):
         for name in ['build-ScCsgoNet', 'build-ScCsgoNetCompat', 'MP behavior']:
             unavailable(name, '--mp-refs must contain API 1.9.3.2_MP and Multiplayer DLLs')
+        if args.group != 'mp-quality': unavailable('net-workbench', 'actual MP references required; standalone is not a substitute', 'not-executed')
     else:
         refs = OUT / 'mp-refs'; refs.mkdir(exist_ok=True)
         # Only managed/native dependency DLLs, never a resource tree or a copied world.
@@ -157,7 +179,7 @@ def multiplayer():
             if args.group == 'builds': return
             exe = build('NetLoopCheck', 'tools', extra)
             if adapter and exe:
-                modes = ['quality'] if args.group == 'mp-quality' else ['transport', 'state', 'gunloop', 'dmloop', 'quality']
+                modes = ['quality'] if args.group == 'mp-quality' else ['transport', 'state', 'gunloop', 'dmloop', 'quality', 'workbench', 'publication']
                 for mode in modes:
                     tail = [] if mode == 'transport' else ['--' + mode, '--modules=' + ';'.join(str(refs / n) for n in ['ScCsgoTactical.dll', 'ScCsgoDeathmatch.dll'])]
                     run('net-' + mode, ['dotnet', exe, refs, adapter, '-', OUT / ('net-' + mode + '.json'), *tail])
@@ -251,6 +273,7 @@ else:
             if name not in ['ScCsgoNet', 'ScCsgoNetCompat']: build(name)
         if 'mp' not in requested: multiplayer()
     if 'core' in requested: core()
+    if 'rules' in requested: rules()
     if 'behavior' in requested: behavior()
     if 'mp' in requested: multiplayer()
     if 'variants' in requested: variants()

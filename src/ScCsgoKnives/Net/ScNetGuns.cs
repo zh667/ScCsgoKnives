@@ -281,8 +281,7 @@ public static class ScNetGuns {
         input.Skipped = input.ClientShots - input.Fired; input.AckDue = true;
     }
     /// <summary>What a client is told with its record rows: its selection, the item the server holds for it, and the count.</summary>
-    internal readonly record struct Ack(int Selection, int Value, int Fired, int Skipped);
-    internal static bool TryAck(ScNetPeer peer, out Ack ack) {
+    internal static bool TryAck(ScNetPeer peer, out ScShotAcknowledgement ack) {
         ack = default;
         if (peer?.Player(GameManager.Project) is not { } player || !s_remote.TryGetValue(player, out var input) || !input.AckDue || input.Selection == -1) return false;
         ack = new(input.Selection, Item(player.ComponentMiner?.ActiveBlockValue ?? 0), input.Fired, input.Skipped);
@@ -477,7 +476,7 @@ public static class ScNetGuns {
         public void Trim() { while (Times.Count > Pending) Times.Dequeue(); }
     }
     static Prediction s_prediction;
-    static (int Selection, int Value, int Fired, int Skipped)? s_deferredAck;
+    static ScShotAcknowledgement? s_deferredAck;
     /// <summary>Predicted shots given up without the server's word (test diagnostics; a fault when it happens in play).</summary>
     public static int GiveUps;
     static bool Current(Prediction p, ComponentPlayer player) =>
@@ -510,10 +509,11 @@ public static class ScNetGuns {
     public static void DropPrediction() { if (s_prediction is { } p) { p.Floor = p.Shots; p.Times.Clear(); } }
     /// <summary>Client: the server's count for this client's selection, read with the record rows it belongs to.</summary>
     internal static void ApplyAck(int selection, int value, int fired, int skipped) {
-        if (selection != s_selection || fired < 0 || skipped < 0) return;                 // another selection's: nothing of it applies
-        if (Item(value) != s_selValue) { s_deferredAck = (selection, Item(value), fired, skipped); return; }   // for the slot's next value (a fresh gun's record)
+        var acknowledgement = new ScShotAcknowledgement(selection, value, fired, skipped);
+        if (!acknowledgement.ValidFor(s_selection)) return;                 // another selection's: nothing of it applies
+        if (Item(value) != s_selValue) { s_deferredAck = acknowledgement with { Value = Item(value) }; return; }   // for the slot's next value (a fresh gun's record)
         if (s_prediction is not { } p || p.Selection != selection || !ReferenceEquals(p.Registry, ScGunRegistry.Current)) return;
-        int resolved = fired + skipped;
+        int resolved = acknowledgement.Resolved;
         if (resolved > p.Resolved) p.Resolved = resolved;
         // The server counted shots this client never showed (it fired where the client's gun was busy): follow its count,
         // so the next shot shown here is a new number.

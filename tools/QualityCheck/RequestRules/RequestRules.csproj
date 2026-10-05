@@ -6,5 +6,8 @@
   <ItemGroup>
     <!-- Compile the exact production rule source without any engine, core DLL, mocks of engine types, or packages. -->
     <Compile Include="../../../src/ScCsgoKnives/Net/ScWorkbenchRequests.cs" Link="ScWorkbenchRequests.cs" />
+    <Compile Include="../../../src/ScCsgoKnives/Net/ScSlotPublicationQueue.cs" Link="ScSlotPublicationQueue.cs" />
+    <Compile Include="../../../src/ScCsgoKnives/Net/ScRecordBatches.cs" Link="ScRecordBatches.cs" />
+    <Compile Include="../../../src/ScCsgoKnives/World/ScInventoryWriteReceipt.cs" Link="ScInventoryWriteReceipt.cs" />
   </ItemGroup>
 </Project>

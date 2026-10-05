@@ -18,14 +18,14 @@ public static class ScCraftBatch {
             if(registry is null||registry.Disabled)return false;
             owner=ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory);
             if(string.IsNullOrWhiteSpace(owner)||registry.Recovery.HasPending(owner))return false;
-            journal=new ScGunInventoryJournal(inventory);
+            journal=new ScGunInventoryJournal(inventory, ScNetSlots.Touched);
             journal.RemoveExact(slot,expected,1);
             if(!action())throw new InvalidOperationException("Summon failed; restore item");
             ScInventoryTransaction.Changed(inventory);return true;
         } catch(Exception e) {
             if(journal is not null&&owner is not null) {
-                if(ReferenceEquals(storage,ScInventoryIdentity.Storage(inventory)) && (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))==owner)journal.Rollback(registry.Recovery,owner);
-                else journal.DeferRollback(registry.Recovery,owner);
+                if(ReferenceEquals(storage,ScInventoryIdentity.Storage(inventory)) && (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))==owner){ journal.Rollback(registry.Recovery,owner); ScInventoryChanges.Finished(inventory); }
+                else { journal.DeferRollback(registry.Recovery,owner); ScNetSlots.Changed(inventory); }
             }
             KnifeLog.Warning("[CS_ITEM_USE] refused/rolled back: "+e.Message);return false;
         } finally {ScGunMutation.Exit();}
@@ -87,7 +87,7 @@ public static class ScCraftBatch {
             originalStorage=ScInventoryIdentity.Storage(inventory);
             // Pin known forwarding inventories whenever the backing storage is itself an inventory.
             if(originalStorage is IInventory real)inventory=real;
-            journal=new ScGunInventoryJournal(inventory);
+            journal=new ScGunInventoryJournal(inventory, ScNetSlots.Touched);
             owner=ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory);
             if(string.IsNullOrWhiteSpace(owner)||registry.Recovery.HasPending(owner))return false;
             var plan=Prepare(inventory,result,unit,quantity,out _,resultCount);if(plan is null)return false;
@@ -103,8 +103,8 @@ public static class ScCraftBatch {
             Stable();ScInventoryTransaction.Changed(inventory);return true;
         } catch(Exception e) {
             if(registry is not null && owner is not null && journal is not null) {
-                if(ReferenceEquals(originalStorage,ScInventoryIdentity.Storage(inventory)) && (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))==owner)journal.Rollback(registry.Recovery,owner);
-                else journal.DeferRollback(registry.Recovery,owner);
+                if(ReferenceEquals(originalStorage,ScInventoryIdentity.Storage(inventory)) && (ScWeaponCrafting.RecoveryOwnerOverride?.Invoke(inventory)??registry.RecoveryOwner?.Invoke(inventory))==owner){ journal.Rollback(registry.Recovery,owner); ScInventoryChanges.Finished(inventory); }
+                else { journal.DeferRollback(registry.Recovery,owner); ScNetSlots.Changed(inventory); }
             }
             KnifeLog.Warning("[GUN_CRAFT] batch refused/rolled back: "+e.Message);return false;
         } finally {ScGunMutation.Exit();}

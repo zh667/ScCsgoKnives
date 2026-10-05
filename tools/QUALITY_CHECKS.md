@@ -1,5 +1,9 @@
 # Quality checks
 
+`core`/`all` explicitly build and run the independent RequestRules project before QualityCheck. `rules` runs it alone without game or resource prerequisites. Normal `mp`/`all` also execute `--workbench`; `mp-quality` keeps its narrower protocol scope. Each executed report is hashed and summarized with counts and loaded identities in execution.json; unavailable MP inputs never substitute standalone assemblies.
+
+Inventory publication boundaries are maintained too: QualityCheck runs `InventoryBoundaryChecks` (or `--inventory-only` for old/new isolated comparisons), RequestRules compiles the exact receipt/queue/record-batching sources without the engine, and normal `mp`/`all` run NetLoopCheck `--publication`. That loop uses real mutation results to form confirmations, then actual MP packets to check batching, enqueue failures, cache advancement and deferred client application. It does not substitute for gameplay or a cross-device connection.
+
 Run from the repository root on Windows:
 
 ```powershell

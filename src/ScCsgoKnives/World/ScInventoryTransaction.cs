@@ -1,19 +1,11 @@
-using System.Runtime.CompilerServices;
-
 namespace Game;
 
 /// <summary>Single game-thread transaction. All slot capacities and inputs checked before mutation.</summary>
 public static class ScInventoryTransaction {
-    sealed class Epoch { public long Value; }
-    static readonly ConditionalWeakTable<object, Epoch> Epochs = new();
-    public static long Revision(IInventory inventory) => inventory is null ? -1 : Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value;
+    public static long Revision(IInventory inventory) => ScInventoryChanges.Revision(inventory);
     /// <summary>A CS transaction on this inventory ended. The epoch is this process's own stale-quote guard, not a network
     /// version; slots the transaction rewrote are published by ScNetSlots (multiplayer host only).</summary>
-    public static void Changed(IInventory inventory) {
-        if (inventory is null) return;
-        Epochs.GetOrCreateValue(ScInventoryIdentity.Storage(inventory)).Value++;
-        ScNetSlots.TransactionEnded(inventory);
-    }
+    public static void Changed(IInventory inventory) => ScInventoryChanges.Finished(inventory);
     public static int Count(IInventory inventory, int value) {
         inventory = ScInventoryIdentity.Inventory(inventory);
         int count = 0;
@@ -44,7 +36,7 @@ public static class ScInventoryTransaction {
         inventory = ScInventoryIdentity.Inventory(inventory);
         var registry = ScGunRegistry.Current;
         if (ScNet.IsRemoteClient || inventory is null || registry is null || registry.Disabled || !ScInventoryCommit.TryEnter()) return false;
-        var journal = new ScGunInventoryJournal(inventory);
+        var journal = new ScGunInventoryJournal(inventory, ScNetSlots.Touched);
         string owner = null;
         string Owner() => registry.RecoveryOwner is { } resolve ? resolve(inventory) : ScGunHolders.RecoveryOwner(inventory.Project, inventory);
         bool SameDestination() => ReferenceEquals(registry, ScGunRegistry.Current) && !registry.Disabled
@@ -88,8 +80,8 @@ public static class ScInventoryTransaction {
             // Refund only to the pinned, still provable owner. A vanished/recreated channel retains a durable claim.
             bool canReturn = false;
             try { canReturn = ReferenceEquals(registry, ScGunRegistry.Current) && Owner() == owner; } catch (Exception) { }
-            if (canReturn) journal.Rollback(registry.Recovery, owner);
-            else journal.DeferRollback(registry.Recovery, owner);
+            if (canReturn) { journal.Rollback(registry.Recovery, owner); ScInventoryChanges.Finished(inventory); }
+            else { journal.DeferRollback(registry.Recovery, owner); ScNetSlots.Changed(inventory); }
             KnifeLog.Warning("inventory replacement rejected: " + e.Message);
             return false;
         }

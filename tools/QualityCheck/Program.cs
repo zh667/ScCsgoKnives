@@ -3,16 +3,16 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using Game;
 
-if (args.Length is < 1 or > 2 || args.Length == 2 && args[1] != "--workbench-only") { Console.Error.WriteLine("QualityCheck <report.json> [--workbench-only]"); return 2; }
+if (args.Length is < 1 or > 2 || args.Length == 2 && args[1] is not ("--workbench-only" or "--inventory-only")) { Console.Error.WriteLine("QualityCheck <report.json> [--workbench-only|--inventory-only]"); return 2; }
 Engine.Dispatcher.Initialize();
 var cases = new List<CheckResult>();
 void Test(string name, Action action) {
     try { action(); cases.Add(new(name, true, "")); }
     catch (Exception e) { cases.Add(new(name, false, e.GetBaseException().ToString())); }
 }
-bool workbenchOnly = args.Length == 2;
+bool focused = args.Length == 2;
 var notExecuted = new List<string> { "real game/provider callbacks", "historical player snapshot (not requested)" };
-if (!workbenchOnly) {
+if (!focused) {
 TravelChecks.Run(Test);
 ArrivalRecoveryChecks.Run(Test);
 LifecycleChecks.Run(Test);
@@ -22,13 +22,14 @@ foreach (var c in ItemTravelRegression.Run(typeof(ScNet).Assembly)) {
 }
 foreach (var c in GenericTravelRegression.Run(typeof(ScNet).Assembly, null)) Test(c.Name, () => TravelChecks.Require(c.Ok, c.Detail));
 }
-WorkbenchChecks.Run(Test);
+if (!focused || args[1] == "--inventory-only") InventoryBoundaryChecks.Run(Test);
+if (!focused || args[1] == "--workbench-only") WorkbenchChecks.Run(Test);
 var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic &&
     (a.GetName().Name.StartsWith("ScCsgo") || a.GetName().Name is "Survivalcraft" or "Engine" or "GameEntitySystem" or "TemplatesDatabase"))
     .Select(a => new { name = a.GetName().Name, version = a.GetName().Version.ToString(), path = a.Location,
         sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(a.Location))) }).ToArray();
 var report = new { scope = "API 1.9.3.1 offline production calls with fault-injected inventories; no worlds or installs", assemblies,
-    count = cases.Count, passed = cases.Count(c => c.Ok), failed = cases.Count(c => !c.Ok), cases, notExecuted, trace = WorkbenchChecks.Trace };
+    count = cases.Count, passed = cases.Count(c => c.Ok), failed = cases.Count(c => !c.Ok), cases, notExecuted, trace = WorkbenchChecks.Trace, inventoryTrace = InventoryBoundaryChecks.Trace };
 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(args[0])));
 File.WriteAllText(args[0], JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
 Console.WriteLine($"QualityCheck: {report.passed}/{report.count}; failures={report.failed}");
