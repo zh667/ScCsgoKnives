@@ -17,9 +17,18 @@ static partial class Program {
     }
     static int Main(string[] args) {
         Section("A", Arena); Section("S", Spawns); Section("R", Armoury); Section("C", Combat); Section("W", Weapons); Section("M", Match); Section("V", View); Section("U", Ui); Section("K", Cs2Round5);
+        Section("F2-SP", () => {
+            ScNet.Attach(null);
+            var arena = new SubsystemScDeathmatch();
+            typeof(SubsystemScDeathmatch).GetProperty("Enabled").SetValue(arena, true);
+            typeof(SubsystemScDeathmatch).GetProperty("Match").SetValue(arena, new DmMatch());
+            string label = new string('中', 48 * 1024);
+            Test("F2-SP", "network budget does not restrict standalone map data", arena.AddSpawn(new Vector3(1, 10, 1), 0, label) is null && arena.Arena.Spawns.Single().Label == label);
+        });
+        Section("R3", PublicationRecovery);
         int failed = s_checks.Count(c => !c.Ok);
         if (args.Length > 0) File.WriteAllText(args[0], JsonSerializer.Serialize(new { failed, total = s_checks.Count, profile = new { DmWeapons.Cs2Version, DmWeapons.Fingerprint, DmWeapons.LoadError },
-            checks = s_checks, scope = "pure rules, no engine world, no network, nothing seen or heard" }, new JsonSerializerOptions { WriteIndented = true }));
+            checks = s_checks, scope = "offline rules and standalone map editing; no loaded engine world, no network, nothing seen or heard" }, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"{s_checks.Count} checks, {failed} failed");
         return failed == 0 ? 0 : 1;
     }

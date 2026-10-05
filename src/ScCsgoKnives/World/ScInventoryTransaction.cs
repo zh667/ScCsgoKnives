@@ -40,35 +40,59 @@ public static class ScInventoryTransaction {
             || ScGunSkinTemplateBlock.IsTemplate(value) || ScGunCounterTemplateBlock.IsTemplate(value);
     }
     public static bool ReplaceWithCost(IInventory inventory, int slot, int expected, int replacement, int ammo, int cost) {
+        var source = inventory;
         inventory = ScInventoryIdentity.Inventory(inventory);
-        if (!IsWeaponSlot(inventory, slot) || cost < 0
-            || inventory.GetSlotValue(slot) != expected || inventory.GetSlotCapacity(slot, replacement) < 1) return false;
-        if (inventory is ComponentCreativeInventory creative) {
-            if (cost != 0) return false;
-            // AddSlotItems replaces a writable creative slot directly. Removing
-            // one item does not empty an infinite creative source.
-            creative.AddSlotItems(slot, replacement, 1);
-            if (creative.GetSlotValue(slot) != replacement) return false;
-            ScNetSlots.Touched(inventory); // a creative slot write is not announced by the engine
+        var registry = ScGunRegistry.Current;
+        if (ScNet.IsRemoteClient || inventory is null || registry is null || registry.Disabled || !ScInventoryCommit.TryEnter()) return false;
+        var journal = new ScGunInventoryJournal(inventory);
+        string owner = null;
+        string Owner() => registry.RecoveryOwner is { } resolve ? resolve(inventory) : ScGunHolders.RecoveryOwner(inventory.Project, inventory);
+        bool SameDestination() => ReferenceEquals(registry, ScGunRegistry.Current) && !registry.Disabled
+            && ReferenceEquals(inventory, ScInventoryIdentity.Inventory(source)) && Owner() == owner;
+        try {
+            // Refuse before taking anything unless failed inverse writes can be retained for this exact owner.
+            owner = Owner();
+            if (string.IsNullOrWhiteSpace(owner) || registry.Recovery.HasPending(owner) || cost < 0
+                || !IsWeaponSlot(inventory, slot) || inventory.GetSlotValue(slot) != expected
+                || inventory.GetSlotCapacity(slot, replacement) < 1 || !SameDestination()) return false;
+            bool creative = inventory is ComponentCreativeInventory;
+            if (creative && cost != 0) return false;
+            long available = 0;
+            for (int i = 0; i < inventory.SlotsCount; i++)
+                if (i != slot && inventory.GetSlotValue(i) == ammo) available += inventory.GetSlotCount(i);
+            if (available < cost) return false;
+            int remaining = cost;
+            for (int i = 0; i < inventory.SlotsCount && remaining > 0; i++) {
+                if (i == slot || inventory.GetSlotValue(i) != ammo || inventory.GetSlotCount(i) <= 0) continue;
+                int amount = Math.Min(remaining, inventory.GetSlotCount(i));
+                journal.RemoveExact(i, ammo, amount); remaining -= amount;
+                if (!SameDestination()) throw new InvalidOperationException("Replacement destination changed during deduction");
+            }
+            if (remaining != 0 || !SameDestination() || !IsWeaponSlot(inventory, slot) || inventory.GetSlotValue(slot) != expected)
+                throw new InvalidOperationException("Replacement inputs changed");
+            if (replacement != expected) {
+                if (creative) journal.ReplaceCreative(slot, expected, replacement);
+                else {
+                    journal.RemoveExact(slot, expected, 1);
+                    if (!SameDestination()) throw new InvalidOperationException("Replacement destination changed during removal");
+                    journal.AddExact(slot, replacement, 1);
+                }
+            }
+            if (!SameDestination() || inventory.GetSlotValue(slot) != replacement || !IsWeaponSlot(inventory, slot))
+                throw new InvalidOperationException("Replacement was not retained by the original destination");
+            ScNetGuns.SlotRewritten(inventory, slot, expected, replacement);
             Changed(inventory);
             return true;
         }
-        if (Count(inventory, ammo) < cost) return false;
-        var removed = new List<(int Slot, int Value, int Count)>();
-        int remaining = cost;
-        for (int i = 0; i < inventory.SlotsCount && remaining > 0; i++) {
-            if (i == slot || inventory.GetSlotValue(i) != ammo) continue;
-            int amount = Math.Min(remaining, inventory.GetSlotCount(i));
-            int actual = inventory.RemoveSlotItems(i, amount);
-            removed.Add((i, ammo, actual)); remaining -= actual;
-            if (actual != amount) break;
-        }
-        if (remaining > 0 || inventory.GetSlotValue(slot) != expected || inventory.RemoveSlotItems(slot, 1) != 1) {
-            foreach (var item in removed) inventory.AddSlotItems(item.Slot, item.Value, item.Count);
+        catch (Exception e) {
+            // Refund only to the pinned, still provable owner. A vanished/recreated channel retains a durable claim.
+            bool canReturn = false;
+            try { canReturn = ReferenceEquals(registry, ScGunRegistry.Current) && Owner() == owner; } catch (Exception) { }
+            if (canReturn) journal.Rollback(registry.Recovery, owner);
+            else journal.DeferRollback(registry.Recovery, owner);
+            KnifeLog.Warning("inventory replacement rejected: " + e.Message);
             return false;
         }
-        inventory.AddSlotItems(slot, replacement, 1);
-        Changed(inventory);
-        return true;
+        finally { ScInventoryCommit.Exit(); }
     }
 }

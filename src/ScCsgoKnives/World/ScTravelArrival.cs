@@ -80,7 +80,9 @@ public sealed class ScTravelArrival {
     readonly List<Candidate> m_candidates;
     double m_start = double.NaN, m_quietSince, m_until;
     string m_signature;
-    Candidate m_taken; IReadOnlyDictionary<int, int> m_values;
+    Candidate m_taken;
+    ScTravelLedger Ledger => ScGunRegistry.Current?.Travel;
+    ScTravelLedger.Receipt Receipt => m_taken is null ? null : Ledger?.Find(m_taken.Envelope.Transfer);
     public bool Finished { get; private set; }
     bool m_settled;   // the first look at a settled inventory found nothing to take: nothing is held back any more
     public IReadOnlyList<Candidate> Candidates => m_candidates;
@@ -91,7 +93,14 @@ public sealed class ScTravelArrival {
     /// Block mod's "world"), the same world was reopened, or no world of the tree left a packet.</summary>
     public static ScTravelArrival Prepare(string here, string left, bool importedOnLoad, ScTravelLedger ledger,
         Func<string, bool> isWorld, Func<string, IEnumerable<string>> children, Func<string, XElement> readProject) {
-        if (importedOnLoad || ledger is null || string.IsNullOrEmpty(here)) return null;
+        if (ledger is null) return null;
+        // The destination's own receipt survives source-world removal, restarts and mixed item numbers.
+        var pending = ledger.Receipts.Where(r => !r.Completed && r.Arrival is not null).Select(r => {
+            var envelope = ScTravelEnvelope.Decode(r.Arrival.Envelope, out _, out _);
+            return new Candidate(r.World, r.Arrival.Owner, envelope, r.Arrival.Envelope, null);
+        }).ToList();
+        if (pending.Count > 0) return new ScTravelArrival(pending);
+        if (importedOnLoad || string.IsNullOrEmpty(here)) return null;
         here = ScWorldTree.Canonical(here);
         List<string> sources;
         if (!string.IsNullOrEmpty(left)) {
@@ -121,8 +130,10 @@ public sealed class ScTravelArrival {
     /// gun is not used, and not reported as damaged, until the check has looked at a settled inventory once: its number may
     /// still name nothing here, or another gun of this world whose rounds and wear it would then spend.</summary>
     public bool Pending(int slot, int value) {
-        if (Finished || m_taken is not null || m_settled) return false;
+        if (Finished || m_settled) return false;
         int data = Terrain.ExtractData(value);
+        if (m_taken is not null) return Receipt is { Completed: false } receipt && m_taken.Envelope.Slots.Any(s => s.Identity.Length > 0
+            && !receipt.Arrival.Applied.ContainsKey(s.Identity) && Terrain.ExtractData(s.Value) == data);
         return m_candidates.Any(c => c.Envelope is not null && c.Envelope.Slots.Any(s => s.Slot == slot && s.Identity.Length > 0 && Terrain.ExtractData(s.Value) == data));
     }
 
@@ -148,15 +159,37 @@ public sealed class ScTravelArrival {
     /// player, or null.</summary>
     public string Step(Project project, IInventory inventory, int block, double now) {
         if (Finished || inventory is null || block < 0) return null;
-        inventory = ScInventoryIdentity.Inventory(inventory) ?? inventory;
+        if (ScInventoryIdentity.Inventory(inventory) is null) return null;
+        inventory = ScInventoryIdentity.Inventory(inventory);
+        var activeLedger = Ledger;
+        string owner = ScItemTravel.Owner(inventory);
+        if (m_taken is null) {
+            var resumed = m_candidates.Where(c => c.Envelope is not null && Ledger?.Find(c.Envelope.Transfer) is { Completed: false } r
+                && r.Digest == c.Envelope.Digest && (r.Arrival?.Owner == owner || r.Arrival is null && HoldsCommitted(inventory, block, c.Envelope, r))).ToList();
+            if (resumed.Count == 1 && owner is not null) {
+                m_taken = resumed[0]; m_until = now + Window; m_settled = false;
+                if (Receipt.Arrival is null) Bind(inventory, block, owner, alreadyMapped: true);
+            }
+        }
         if (double.IsNaN(m_start)) { m_start = now; m_quietSince = now; m_signature = Signature(inventory); }
         string signature = Signature(inventory);
         if (signature != m_signature) { m_signature = signature; m_quietSince = now; }
         if (m_taken is not null) {   // taken in: a late second restore by the mod gets the same numbers
-            if (now > m_until) { Finished = true; return null; }
-            if (now - m_quietSince >= Quiet && Rewrite(inventory, block) > 0) {
+            if (owner is null || Receipt is not { Arrival: { } arrivalState } || arrivalState.Owner != owner) return null;
+            if (now > m_until && Receipt.Completed) { Finished = true; return null; }
+            if (now - m_quietSince >= Quiet) {
+                // Late provider restores are recognized as a whole departure, never by a loose id match.
+                if (Receipt.Completed) {
+                    if (!Holds(inventory, block, m_taken.Envelope)) return null;
+                    Bind(inventory, block, owner, alreadyMapped: false);
+                }
+                int remapped = Rewrite(inventory, block);
+                if (!ReferenceEquals(Ledger, activeLedger) || ScItemTravel.Owner(inventory) != owner) return null;
                 var again = ScItemTravel.Complete(project, inventory, m_taken.Text);
-                KnifeLog.Information($"[GUN_TRAVEL] transfer {m_taken.Envelope.Transfer}: the carried values were put back again; mapped once more ({(again.Ok ? "complete" : again.Message)})");
+                bool firstCompletion = again.Ok;
+                if (remapped > 0 || firstCompletion)
+                    KnifeLog.Information($"[GUN_TRAVEL] transfer {m_taken.Envelope.Transfer}: mapped {remapped} slot(s) ({(again.Ok ? "complete" : again.Message)})");
+                if (firstCompletion) return $"CS 枪械已随行迁移（{m_taken.Envelope.Guns.Count} 把，弹药与耐久保持）";
             }
             return null;
         }
@@ -177,30 +210,73 @@ public sealed class ScTravelArrival {
             return "CS 枪械：无法确定这些枪来自哪个世界，未迁移（不会按编号猜测）";
         }
         var taken = matching[0];
+        if (string.IsNullOrWhiteSpace(owner)) return "CS 枪械随行迁移尚未完成：无法确认库存所有者";
         var import = ScItemTravel.Import(project, inventory, taken.Text);
         if (!import.Ok) {
             Finished = true;
             KnifeLog.Warning($"[GUN_TRAVEL] arrival from {taken.Source}: refused ({import.Code}) {import.Message}");
             return "CS 枪械未能随行迁移：" + import.Message;
         }
-        m_taken = taken; m_values = import.Values; m_until = now + Window;
+        m_taken = taken; m_until = now + Window; m_settled = false;
+        // Same-world receipts need no import or rewrite.
+        if (import.Code == ScTravelCode.SameWorld) { Finished = true; return null; }
+        Bind(inventory, block, owner, alreadyMapped: false);
         int rewritten = Rewrite(inventory, block);
+        if (!ReferenceEquals(Ledger, activeLedger) || ScItemTravel.Owner(inventory) != owner) return null;
         var done = ScItemTravel.Complete(project, inventory, taken.Text);
         KnifeLog.Information($"[GUN_TRAVEL] arrival from {taken.Source} ({taken.Inventory}): transfer {taken.Envelope.Transfer}, {taken.Envelope.Guns.Count} carried gun(s), {rewritten} slot(s) given local numbers; {(done.Ok ? "complete" : "not complete: " + done.Message)}");
+        if (!done.Ok) return "CS 枪械随行迁移尚未完成，物品恢复待处理：" + done.Message;
         return taken.Envelope.Guns.Count > 0 ? $"CS 枪械已随行迁移（{taken.Envelope.Guns.Count} 把，弹药与耐久保持）" : null;
     }
 
-    /// <summary>The carried slots that still hold the value they had in the world left get this world's number. A slot
-    /// the player has changed since is left alone.</summary>
+    static int Target(ScTravelEnvelope envelope, ScTravelLedger.Receipt receipt, ScTravelSlot slot, int block) {
+        var gun = envelope.Guns.Single(g => g.Identity == slot.Identity);
+        return Terrain.MakeBlockValue(block, 0, GunSpec.WithId(gun.Variant, receipt.Map.Single(m => m.Identity == slot.Identity).Id));
+    }
+    static bool HoldsCommitted(IInventory inventory, int block, ScTravelEnvelope envelope, ScTravelLedger.Receipt receipt) =>
+        envelope.Slots.All(s => s.Slot >= 0 && s.Slot < inventory.SlotsCount && inventory.GetSlotCount(s.Slot) > 0
+            && Terrain.ExtractContents(inventory.GetSlotValue(s.Slot)) == block
+            && (Terrain.ExtractData(inventory.GetSlotValue(s.Slot)) == Terrain.ExtractData(s.Value)
+                || s.Identity.Length > 0 && inventory.GetSlotValue(s.Slot) == Target(envelope, receipt, s, block)));
+
+    void Bind(IInventory inventory, int block, string owner, bool alreadyMapped) {
+        var receipt = Receipt;
+        var applied = alreadyMapped ? m_taken.Envelope.Slots.Where(s => s.Identity.Length > 0
+            && inventory.GetSlotValue(s.Slot) == Target(m_taken.Envelope, receipt, s, block)).ToDictionary(s => s.Identity, s => s.Slot) : [];
+        Ledger.Commit(receipt with { Completed = false, Arrival = new(owner, m_taken.Text, applied) });
+    }
+
+    /// <summary>Only the receipt's remaining identities in its original inventory can be rewritten. Rollback can move a
+    /// gun to another slot; require a unique remaining value and never scan other owners for a coincidental number.</summary>
     int Rewrite(IInventory inventory, int block) {
         int count = 0;
-        foreach (var slot in m_taken.Envelope.Slots) {
-            if (slot.Identity.Length == 0 || !m_values.TryGetValue(slot.Value, out int target)) continue;
-            if (slot.Slot >= inventory.SlotsCount || inventory.GetSlotCount(slot.Slot) <= 0) continue;
-            int current = inventory.GetSlotValue(slot.Slot);
-            if (current == target || Terrain.ExtractContents(current) != block || Terrain.ExtractData(current) != Terrain.ExtractData(slot.Value)) continue;
-            if (ScInventoryTransaction.ReplaceWithCost(inventory, slot.Slot, current, target, 0, 0)) count++;
-            else KnifeLog.Warning($"[GUN_TRAVEL] slot {slot.Slot + 1}: the local number could not be written");
+        var ledger = Ledger;
+        var receipt = Receipt;
+        // Mapped items stay in custody until all guns complete. Exclude them when source and target ids overlap.
+        var reserved = new HashSet<int>();
+        foreach (var mapped in m_taken.Envelope.Slots.Where(s => receipt.Arrival.Applied.ContainsKey(s.Identity))) {
+            int target = Target(m_taken.Envelope, receipt, mapped, block);
+            int held = receipt.Arrival.Applied[mapped.Identity];
+            if (held >= inventory.SlotsCount || inventory.GetSlotCount(held) <= 0 || inventory.GetSlotValue(held) != target) return 0;
+            reserved.Add(held);
+        }
+        var remaining = m_taken.Envelope.Slots.Where(s => s.Identity.Length > 0 && !receipt.Arrival.Applied.ContainsKey(s.Identity)).ToArray();
+        // Resolve all original locations before changing any item: a new local number can equal another source number.
+        var locations = remaining.ToDictionary(s => s.Identity, s => Enumerable.Range(0, inventory.SlotsCount)
+            .Where(i => !reserved.Contains(i) && inventory.GetSlotCount(i) > 0 && Terrain.ExtractContents(inventory.GetSlotValue(i)) == block
+                && Terrain.ExtractData(inventory.GetSlotValue(i)) == Terrain.ExtractData(s.Value)).ToArray());
+        foreach (var slot in remaining) {
+            if (!ReferenceEquals(Ledger, ledger) || ScItemTravel.Owner(inventory) != receipt.Arrival.Owner) break;
+            if (locations[slot.Identity] is not { Length: 1 } found) continue;
+            int index = found[0], current = inventory.GetSlotValue(index), target = Target(m_taken.Envelope, Receipt, slot, block);
+            if (Terrain.ExtractData(current) != Terrain.ExtractData(slot.Value)) continue;
+            if (ScInventoryTransaction.ReplaceWithCost(inventory, index, current, target, 0, 0)) {
+                var progress = Receipt;
+                var applied = new Dictionary<string, int>(progress.Arrival.Applied) { [slot.Identity] = index };
+                Ledger.Commit(progress with { Arrival = progress.Arrival with { Applied = applied } });
+                count++;
+            }
+            else KnifeLog.Warning($"[GUN_TRAVEL] slot {index + 1}: the local number could not be written");
         }
         return count;
     }

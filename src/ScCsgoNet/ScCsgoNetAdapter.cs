@@ -300,11 +300,13 @@ public sealed class ScCsgoNetAdapter : ModLoader, IScNetTransport, IScNetRewind,
 
     public override void OnNetworkPlayerStateChanged(NetworkState state) {
         if (state != NetworkState.ProjectLoaded || !NetworkManager.IsClientRunning || NetworkManager.IsServerRunning) return;
+        ScNetWorkbench.SessionClosed(this);
         m_helloDue = true; m_noticeDue = true; m_handshake = ScNetHandshake.Pending; m_detail = "waiting for the main player";
         m_helloAttempts = 0; m_slowAttempts = 0;
     }
 
     public override void SubsystemUpdate(SubsystemUpdate subsystemUpdate, float dt) {
+        ScNetWorkbench.Tick();
         if (NetworkManager.IsServerRunning) {
             if (!m_serverChecked) { m_serverChecked = true; EnsurePacket(); }
             ForgetDepartedSessions();
@@ -466,6 +468,7 @@ public sealed class ScCsgoNetAdapter : ModLoader, IScNetTransport, IScNetRewind,
     }
 
     public override void OnProjectDisposed() {
+        ScNetWorkbench.SessionClosed(this);
         foreach (var session in m_sessions.Values) Drop(session, "world closed");
         m_sessions.Clear(); m_peers.Clear(); Terrain.Clear(); m_noticeDue = false;
         m_helloDue = false; m_handshake = ScNetHandshake.NotApplicable; m_detail = ""; m_lastStatus = ""; m_helloAttempts = m_slowAttempts = 0; m_serverChecked = false;

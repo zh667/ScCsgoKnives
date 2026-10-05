@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../PackageCheck/ItemTravelRegression.cs" Link="ItemTravelRegression.cs" />
+    <Compile Include="../PackageCheck/GenericTravelRegression.cs" Link="GenericTravelRegression.cs" />
+    <PackageReference Include="SurvivalcraftAPI.Survivalcraft" Version="1.9.3.1" />
+    <ProjectReference Condition="'$(CoreDll)' == ''" Include="../../src/ScCsgoKnives/ScCsgoKnives.csproj" AdditionalProperties="SkipScmodPackaging=true" />
+    <Reference Condition="'$(CoreDll)' != ''" Include="ScCsgoKnives"><HintPath>$(CoreDll)</HintPath></Reference>
+  </ItemGroup>
+</Project>

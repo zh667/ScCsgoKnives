@@ -1,4 +1,3 @@
-using System.Threading;
 namespace Game;
 
 public enum ScGunResult { Success, Foreign, MissingRecord, StateChanged, InsufficientMaterials, RegistryFull, InventoryRejected, Invalid, DuplicateUnresolved, Busy, RecoveryPending, ModelMismatch, RemoteClient, Stacked }
@@ -6,10 +5,9 @@ public enum ScGunResult { Success, Foreign, MissingRecord, StateChanged, Insuffi
 /// <summary>World-bound gun transaction with measured receipts, inverse rollback and durable compensation.</summary>
 public sealed class ScGunMutation {
     public static Func<int, string, IEnumerable<string>> HolderLocator;
-    static int s_committing;
-    public static bool IsCommitting => Volatile.Read(ref s_committing) != 0;
-    internal static bool TryEnter() => Interlocked.CompareExchange(ref s_committing, 1, 0) == 0;
-    internal static void Exit() => Volatile.Write(ref s_committing, 0);
+    public static bool IsCommitting => ScInventoryCommit.Active;
+    internal static bool TryEnter() => ScInventoryCommit.TryEnter();
+    internal static void Exit() => ScInventoryCommit.Exit();
     readonly ScGunRegistry m_registry;
     readonly string m_owner;
     readonly IInventory m_source;
@@ -42,6 +40,7 @@ public sealed class ScGunMutation {
         var registry = ScGunRegistry.Current;
         why = ScGunResult.Invalid;
         if (registry is null || ScInventoryIdentity.Inventory(inventory) is null || slot < 0 || slot >= inventory.SlotsCount) return null;
+        if (registry.TravelPending(inventory)) { why = ScGunResult.RecoveryPending; return null; }
         if (!ScInventoryTransaction.IsWeaponSlot(inventory, slot)) {
             // Several guns in one slot (another mod raised the stacking of its own containers, or copies were dropped onto each
             // other): one record cannot stand for a stack. Nothing is taken, truncated or guessed; the player is told to
@@ -106,6 +105,7 @@ public sealed class ScGunMutation {
         int originalId = Id, originalExpected = Expected;
         try {
             if (!ReferenceEquals(ScGunRegistry.Current, m_registry) || m_registry.Disabled) return Fail(ScGunResult.Foreign, "world changed or disabled");
+            if (m_registry.TravelPending(Inventory)) return Fail(ScGunResult.RecoveryPending, "inventory has unfinished travel mapping");
             if (m_registry.Recovery.HasPending(m_owner)) return Fail(ScGunResult.RecoveryPending, "inventory has unfinished compensation");
             if (!SlotUnchanged()) return Fail(ScGunResult.StateChanged, "slot changed since Prepare");
             ScGunRecord record = null;

@@ -11,22 +11,36 @@ static class LoadIntegrityCheck {
         var registry=new ScGunRegistry();for(int i=0;i<7;i++)registry.Allocate(0,13,false,999);
         var table=G("GunRegistry");registry.Save(0).Save(table);
         return new XElement("Project",new XElement("Subsystems",G("BlocksManager",V("315","ScGunBlock")),
-            records?G("ScGunBlockBehavior",V("GunDataLayout",5),table):G("ScGunBlockBehavior")),
+            records?G("ScGunBlockBehavior",V("GunDataLayout",GunSpec.DataLayout),table):G("ScGunBlockBehavior")),
             new XElement("Entities",new XElement("Entity",new XAttribute("Name","MalePlayer"),
                 G("CreativeInventory",G("Slots",G("Slot0",V("Contents",Terrain.MakeBlockValue(315,0,GunSpec.WithId(0,id)))))))));
     }
     public static void Run(Action<string,bool,string> check) {
         void T(string n,Action test){try{test();check("integrity/"+n,true,n);}catch(Exception e){check("integrity/"+n,false,e.ToString());}}
         void Require(bool ok){if(!ok)throw new Exception("assertion failed");}
-        void Refused(XElement doc) {
+        void Refused(XElement doc, string reason = "旧枪仍在") {
             string before=doc.ToString();bool refused=false;
-            try{ScGunLoadIntegrity.ValidateReferences(doc);}catch(InvalidOperationException){refused=true;}
+            try{ScGunLoadIntegrity.ValidateReferences(doc);}catch(InvalidOperationException e){refused=e.Message.Contains(reason,StringComparison.Ordinal);if(!refused)throw new Exception($"Expected refusal '{reason}', got '{e.Message}'",e);}
             Require(refused&&doc.ToString()==before);
         }
         T("lost-table-is-not-a-new-world",()=>Refused(Fixture()));
-        T("same-schema-missing-record",()=>Refused(Fixture(8,true)));
+        T("same-schema-missing-record",()=>Refused(Fixture(8,true),"记录缺失或已隔离"));
         T("fresh-template-does-not-need-a-record",()=>Require(ScGunLoadIntegrity.ValidateReferences(Fixture(0))==0));
-        T("valid-old-reference-uses-saved-block-index",()=>Require(ScGunLoadIntegrity.ValidateReferences(Fixture(7,true))==1));
+        T("valid-current-reference-uses-saved-block-index",()=>Require(ScGunLoadIntegrity.ValidateReferences(Fixture(7,true))==1));
+        // Immutable outputs of the actual historical writers, with source package/DLL hashes in
+        // docs/gun-balance-implementation-evidence-2026-09-24.json. Never stamp today's writer as an old schema.
+        foreach(var (version,hash) in new[]{("1.0.0","4c6dbf7d31d6b023284d0c55a9bbcd433f8ccfdf4eeb16d0f39609d940340b2c"),("1.2.0","562334e1251d774d08b45fc7f6d23ad050097ccaaa769c184a856afd17e4d7dd")})
+            T("actual-historical-reference/"+version,()=>{
+                string path=$"tools/fixtures/balance-20260924/{version}.xml.gz";
+                Require(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).Equals(hash,StringComparison.OrdinalIgnoreCase));
+                using var file=File.OpenRead(path);using var gzip=new GZipStream(file,CompressionMode.Decompress);
+                var historical=XElement.Load(gzip);var table=new XElement(historical.Elements("Gun").First().Element("Values"));table.SetAttributeValue("Name","GunRegistry");
+                var doc=Fixture(7,true);var gun=doc.Element("Subsystems").Elements("Values").Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior");
+                gun.Elements("Values").Single(e=>(string)e.Attribute("Name")=="GunRegistry").ReplaceWith(table);
+                gun.Elements("Value").Single(e=>(string)e.Attribute("Name")=="GunDataLayout").SetAttributeValue("Value",5);
+                string before=doc.ToString();Require(ScGunLoadIntegrity.ValidateReferences(doc)==1&&doc.ToString()==before);
+            });
+        T("current-table-old-layout-refused-for-format",()=>{var d=Fixture(7,true);d.Descendants("Value").Single(e=>(string)e.Attribute("Name")=="GunDataLayout").SetAttributeValue("Value",5);Refused(d,"扩容记录表必须与布局6同时保存");});
         foreach(string holder in new[]{"Inventory","Stash","SushiChannel"})T(holder,()=>{
             var doc=Fixture();var inventory=doc.Descendants("Values").Single(e=>(string)e.Attribute("Name")=="CreativeInventory");inventory.SetAttributeValue("Name",holder);
             inventory.Descendants("Values").Last().Add(V("Count",1));Refused(doc);
@@ -35,8 +49,8 @@ static class LoadIntegrityCheck {
             var doc=Fixture();doc.Element("Entities").Remove();int value=Terrain.MakeBlockValue(315,0,GunSpec.WithId(0,7));
             doc.Element("Subsystems").Add(holder=="MovingBlocks"?G(holder,G("MovingBlockSets",G("0",V("Blocks",$"{value},0,0,0")))):G(holder,G(holder,G("0",V("Value",value),V("Count",1)))));Refused(doc);
         });
-        T("missing-table-with-layout",()=>{var d=Fixture(0);d.Element("Subsystems").Elements().Last().Add(V("GunDataLayout",5));Refused(d);});
-        T("mismatched-model",()=>{var d=Fixture(7,true);d.Descendants("Value").Single(e=>(string)e.Attribute("Name")=="Contents").SetAttributeValue("Value",Terrain.MakeBlockValue(315,0,GunSpec.WithId(1,7)));Refused(d);});
+        T("missing-table-with-layout",()=>{var d=Fixture(0);d.Element("Subsystems").Elements().Last().Add(V("GunDataLayout",5));Refused(d,"GunRegistry 记录表缺失");});
+        T("mismatched-model",()=>{var d=Fixture(7,true);d.Descendants("Value").Single(e=>(string)e.Attribute("Name")=="Contents").SetAttributeValue("Value",Terrain.MakeBlockValue(315,0,GunSpec.WithId(1,7)));Refused(d,"型号冲突");});
         foreach(string version in new[]{"1.0.0","1.2.0","1.5.1"})T("release-manual-backup/"+version,()=>{
             var doc=Fixture(7,true);doc.Element("Subsystems").Add(G("UsedMods",G("Mods",G("0",V("PackageName",ScGun0282Migration.Package),V("Version",version)))));
             var dir=Directory.CreateTempSubdirectory("release-backup-");string path=Path.Combine(dir.FullName,"Project.xml");doc.Save(path);
@@ -62,10 +76,10 @@ static class LoadIntegrityCheck {
         });
         string local=".tmp/migration-20260925/World7-Project.bak";
         if(File.Exists(local))T("actual-world7-copy-rejected-unchanged",()=>{
-            byte[] before=File.ReadAllBytes(local);Refused(XElement.Load(local));Require(before.SequenceEqual(File.ReadAllBytes(local)));
+            byte[] before=File.ReadAllBytes(local);Refused(XElement.Load(local),"记录缺失或已隔离");Require(before.SequenceEqual(File.ReadAllBytes(local)));
         });
         string oldWorld=".tmp/migration-20260925/World-Project.xml";
-        if(File.Exists(oldWorld))T("actual-old-sushibox-model-conflict-rejected",()=>Refused(XElement.Load(oldWorld)));
+        if(File.Exists(oldWorld))T("actual-old-sushibox-model-conflict-rejected",()=>Refused(XElement.Load(oldWorld),"型号冲突"));
         for(int i=1;i<7;i++){
             string path=$".tmp/migration-20260925/World{(i==0?"":i.ToString())}-Project.xml";
             if(File.Exists(path))T("actual-intact-world-copy/"+i,()=>{

@@ -28,7 +28,7 @@ static class ItemTravelRegression {
     /// <summary>A plain inventory that is an entity component, so the holder scan finds it.</summary>
     sealed class Box : Component, IInventory {
         public int[] Values = new int[12], Counts = new int[12];
-        Project IInventory.Project => null; public int SlotsCount => 12; public int VisibleSlotsCount { get; set; } = 12; public int ActiveSlotIndex { get; set; }
+        Project IInventory.Project => Entity?.Project; public int SlotsCount => 12; public int VisibleSlotsCount { get; set; } = 12; public int ActiveSlotIndex { get; set; }
         public int GetSlotValue(int s) => Counts[s] > 0 ? Values[s] : 0; public int GetSlotCount(int s) => Counts[s]; public int GetSlotCapacity(int s, int v) => 40; public int GetSlotProcessCapacity(int s, int v) => 0;
         public void AddSlotItems(int s, int v, int n) { Values[s] = v; Counts[s] += n; } public int RemoveSlotItems(int s, int n) { n = Math.Min(n, Counts[s]); Counts[s] -= n; return n; }
         public void ProcessSlotItems(int s, int v, int n, int p, out int rv, out int rn) { rv = rn = 0; } public void DropAllItems(Vector3 p) { }
@@ -58,7 +58,11 @@ static class ItemTravelRegression {
             var w = new World { Name = name, Block = block, Registry = Activator.CreateInstance(registryType), Ledger = Activator.CreateInstance(ledgerType), Project = new Project(), Player = new Box(), Chest = new Box() };
             if (identity is not null) ledgerType.GetField("WorldIdentity").SetValue(w.Ledger, identity);
             registryType.GetField("Travel").SetValue(w.Registry, w.Ledger);
-            foreach (var box in new[] { w.Player, w.Chest }) { var e = Blank<Entity>(); e.m_project = w.Project; e.m_isAddedToProject = true; e.m_components = [box]; box.m_entity = e; w.Project.m_entities[e] = true; }
+            foreach (var box in new[] { w.Player, w.Chest }) { var e = Blank<Entity>(); e.Id = 100 + w.Project.m_entities.Count; e.m_project = w.Project; e.m_isAddedToProject = true; e.m_components = [box]; box.m_entity = e; w.Project.m_entities[e] = true; }
+            // Production Subsystem.Load installs this resolver before arrival checks. The fixture must provide the
+            // same durable entity/slot ownership; a null Project and duplicate entity ids are not live inventories.
+            registryType.GetField("RecoveryOwner")?.SetValue(w.Registry, (Func<IInventory, string>)(inventory =>
+                (string)T("ScGunHolders").GetMethod("RecoveryOwner").Invoke(null, [w.Project, inventory])));
             return w;
         }
         void Enter(World w) {

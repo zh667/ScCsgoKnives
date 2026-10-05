@@ -12,9 +12,23 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
-      - run: dotnet build ScCsgoKnives.sln -c Release
+      - name: Source and behavior quality gate
+        shell: pwsh
+        env:
+          SC_MP_REFS: ${{ vars.SC_MP_REFS }}
+          SC_MODS_1931: ${{ vars.SC_MODS_1931 }}
+          SC_APPEARANCE_REFS: ${{ vars.SC_APPEARANCE_REFS }}
+        run: |
+          $qualityArgs = @('python', 'tools/check_quality.py', '--group', 'all', '--out', '.tmp/dev-temp/ci-quality')
+          if ($env:SC_MP_REFS) { $qualityArgs += @('--mp-refs', $env:SC_MP_REFS) }
+          if ($env:SC_MODS_1931) { $qualityArgs += @('--mods', $env:SC_MODS_1931) }
+          if ($env:SC_APPEARANCE_REFS) { $qualityArgs += @('--appearance-refs', $env:SC_APPEARANCE_REFS) }
+          ./tools/dev.ps1 @qualityArgs
       - uses: actions/upload-artifact@v7
+        if: always()
         with:
-          name: ScCsgoKnives-scmod
-          path: src/ScCsgoKnives/bin/Release/ScCsgoKnives.scmod
+          name: quality-evidence
+          path: |
+            .tmp/dev-temp/ci-quality/*.json
+            .tmp/dev-temp/ci-quality/*.log
 

@@ -97,7 +97,7 @@ public sealed class ScGunRecovery {
         return true;
     }
     public int Retry(Func<string, IInventory> resolve) {
-        if (resolve is null || !ScGunMutation.TryEnter()) return 0;
+        if (resolve is null || !ScInventoryCommit.TryEnter()) return 0;
         int completed = 0;
         try {
             foreach (var batch in m_batches.ToArray()) {
@@ -119,7 +119,7 @@ public sealed class ScGunRecovery {
                 KnifeLog.Information($"gun recovery {batch.Id} completed for {batch.Owner}");
             }
         }
-        finally { ScGunMutation.Exit(); }
+        finally { ScInventoryCommit.Exit(); }
         return completed;
     }
     public ValuesDictionary Save() {

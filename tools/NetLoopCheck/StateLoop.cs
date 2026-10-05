@@ -228,19 +228,24 @@ static partial class StateLoop {
     static void EndServerFrame(World s) { Enter(s, true); s_adapter.SubsystemUpdate(null, .016f); InventoryPacketHelpers.FlushPendingSync(); }
 
     static partial void RunDeathmatch(ref bool ran);
+    static partial void RunQuality(ref bool ran);
     public static int Run(string adapterPath, string compatPath, string output, string refs, string mode, string[] modules) {
         bool baseline = mode == "baseline";
         try {
             Platform(adapterPath, compatPath, modules);
             bool ran = false;
-            if (baseline) Baseline(); else if (mode == "gunloop") GunLoop.Run(); else if (mode == "dmloop") { RunDeathmatch(ref ran); if (!ran) Test("harness", "the deathmatch loop is compiled in (ScCsgoDeathmatch.dll among the references)", false); } else Cases.Run();
+            if (mode == "quality") { RunQuality(ref ran); if (!ran) Test("harness", "quality dependencies present", false); }
+            else if (baseline) Baseline(); else if (mode == "gunloop") GunLoop.Run(); else if (mode == "dmloop") { RunDeathmatch(ref ran); if (!ran) Test("harness", "the deathmatch loop is compiled in (ScCsgoDeathmatch.dll among the references)", false); } else Cases.Run();
         }
         catch (Exception e) { Test("harness", "completed", false, (e is TargetInvocationException t ? t.InnerException : e).ToString()); }
         int failed = s_checks.Count(c => !c.Ok);
         File.WriteAllText(output, JsonSerializer.Serialize(new {
-            mode = baseline ? "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)" : mode == "gunloop" ? "the gun state machine on a client and a server end" : mode == "dmloop" ? "the deathmatch package on a server and two clients" : "state cases",
+            mode = mode == "quality" ? "quality protocol boundaries and lifecycle" : baseline ? "baseline target assertions (expected to fail on the delivered build that has the reported fault, pass on the present build)" : mode == "gunloop" ? "the gun state machine on a client and a server end" : mode == "dmloop" ? "the deathmatch package on a server and two clients" : "state cases",
             modules = modules.Select(Path.GetFileName).ToArray(), registered = HandlerTable().Count,
             failed, total = s_checks.Count, checks = s_checks,
+            assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && (a.GetName().Name.StartsWith("ScCsgo") || a.GetName().Name.StartsWith("Survivalcraft") || a.GetName().Name is "Engine" or "EntitySystem"))
+                .Select(a => new { name = a.GetName().Name, mvid = a.ManifestModule.ModuleVersionId, path = a.Location,
+                    sha256 = string.IsNullOrEmpty(a.Location) ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(a.Location))) }).ToArray(),
             platform = new[] { "Survivalcraft", "Survivalcraft.Multiplayer" }.ToDictionary(n => n, n => AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == n)?.ManifestModule.ModuleVersionId.ToString() ?? "not loaded"),
             core = typeof(ScNet).Assembly.ManifestModule.ModuleVersionId.ToString(), adapter = s_adapterType?.Assembly.ManifestModule.ModuleVersionId.ToString(),
             scope = "offline, one process, real platform packets and inventories; not a game session, no timing, nothing seen or heard"

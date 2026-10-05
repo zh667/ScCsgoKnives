@@ -90,8 +90,17 @@ public static class DmNet {
     }
 
     // ---------------------------------------------------------------- server → client: writers
-    public static void WriteState(ScNetWriter w, bool enabled, DmPhase phase, int matchId, double remaining, DmRules rules, DmArenaDefinition arena, string reason) =>
-        w.Bool(enabled).Byte((byte)phase).Int(matchId).Double(remaining).String(rules.Encode()).String(arena.Encode()).String(reason ?? "").String(DmWeapons.Fingerprint);
+    public const string ArenaNetworkProblem = "地图描述过长，暂不能联机比赛；原地图已保留，房主可删除过长标签的复活点后重新设置";
+    public static int ArenaBytes(DmArenaDefinition arena) => System.Text.Encoding.UTF8.GetByteCount(arena.Encode());
+    public static bool ArenaFitsNetwork(DmArenaDefinition arena) => arena is not null && arena.Spawns.Count <= DmArenaRules.MaxSpawns
+        && ArenaBytes(arena) <= DmArenaRules.MaxNetworkBytes;
+    public static void WriteState(ScNetWriter w, bool enabled, DmPhase phase, int matchId, double remaining, DmRules rules, DmArenaDefinition arena, string reason) {
+        string encoded = arena.Encode();
+        if (arena.Spawns.Count > DmArenaRules.MaxSpawns || System.Text.Encoding.UTF8.GetByteCount(encoded) > DmArenaRules.MaxNetworkBytes)
+            throw new InvalidDataException("arena too long for network state");
+        w.Bool(enabled).Byte((byte)phase).Int(matchId).Double(remaining).String(rules.Encode()).String(encoded).String(reason ?? "").String(DmWeapons.Fingerprint);
+        if (w.Length > 64 * 1024) throw new InvalidDataException("state exceeds packet budget");
+    }
     public static void WritePlayers(ScNetWriter w, IReadOnlyList<DmView.Row> rows) {
         w.Int(rows.Count);
         foreach (var r in rows) w.Int(r.PlayerIndex).String(r.Key).String(r.Name).Byte((byte)r.Phase).Int(r.Kills).Int(r.Deaths).Int(r.Assists).Byte((byte)((r.Connected ? 1 : 0) | (r.Playing ? 2 : 0)));
@@ -109,7 +118,8 @@ public static class DmNet {
     // ---------------------------------------------------------------- server → client: readers
     static void ReceiveState(ScNetReader r) {
         bool enabled = r.Bool(); var phase = (DmPhase)r.Byte(); int matchId = r.Int(); double remaining = r.Double();
-        string rulesText = r.String(), arenaText = r.String(), reason = r.String(), fingerprint = r.String();
+        string rulesText = r.String(), arenaText = r.String(DmArenaRules.MaxNetworkBytes), reason = r.String(), fingerprint = r.String();
+        if (System.Text.Encoding.UTF8.GetByteCount(arenaText) > DmArenaRules.MaxNetworkBytes) throw new InvalidDataException("arena too long for network state");
         if (!Enum.IsDefined(phase) || !DmRules.TryDecode(rulesText, out var rules) || !DmArenaDefinition.TryDecode(arenaText, out var arena)) throw new InvalidDataException("state");
         Subsystem?.ApplyState(enabled, phase, matchId, remaining, rules, arena, reason, fingerprint);
     }

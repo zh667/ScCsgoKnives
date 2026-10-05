@@ -93,7 +93,8 @@ public static class ScGunTravel {
                 }
                 // Pending credit/refunds belong to the source world and cannot silently be left behind.
                 bool pending=Group(Group(registry,"PendingKills"),"Entries")?.HasElements==true
-                    || Group(Group(registry,"Recovery"),"Batches")?.HasElements==true;
+                    || Group(Group(registry,"Recovery"),"Batches")?.HasElements==true
+                    || Group(gun,ScTravelLedger.ReceiptsKey)?.Elements("Value").Any(v => ((string)v.Attribute("Value")??"").Split('|') is { Length: 5 } receipt && receipt[3]=="0")==true;
                 if(carried.HasElements && pending)throw new InvalidOperationException("有待结算击杀或物品补偿，请结算后再传送");
             }catch(Exception e){
                 // Retain any previous recovery evidence, but mark it unusable for transport.

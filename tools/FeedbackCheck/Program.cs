@@ -20,10 +20,18 @@ foreach(int fps in new[]{30,60,120})foreach(int kind in Enumerable.Range(0,6))fo
             if(Math.Abs(now-timeline.ReleaseAt)<1e-8&&Math.Abs(timeline.ClipElapsed(now,pull,release,duration)-release)>.001)return false;
         }
         double limit=hold?1.5+release:pull+release+2d/fps;
-        return commits==1&&released<=limit&&released>0&&timeline.EndAt-timeline.ThrowStartedAt>=duration-.001;
+        return committed&&commits==1&&released<=limit&&released>=0&&timeline.Throwing&&timeline.EndAt-timeline.ThrowStartedAt>=duration-.001;
     });
 }
-T("legacy-preparation-retains-wait",()=>{var p=ScGrenadePreparation.Create(0,.9666f,.06667f,.7666f,false,false);p.Step(.5,false);if(p.Throwing)return false;p.Step(1,false);return Math.Abs(p.ReleaseAt-1.06667)<.0001;});
+T("accepted-release-rule-independent-of-legacy-quick-flag",()=>{
+    foreach(bool quick in new[]{false,true}){
+        var p=ScGrenadePreparation.Create(0,.9666f,.06667f,.7666f,quick,false);p.Step(.5,false);
+        if(!p.Throwing||Math.Abs(p.ThrowStartedAt-.5)>.00001||Math.Abs(p.ReleaseAt-.56667)>.0001)return false;
+        p.Step(1,false);if(Math.Abs(p.ReleaseAt-.56667)>.0001)return false;
+    }return true;
+});
+T("held-grenade-does-not-release-at-time-zero",()=>{var p=ScGrenadePreparation.Create(0,.9666f,0,.5f,true,false);p.Step(0,true);p.Step(5,true);return !p.Throwing&&double.IsPositiveInfinity(p.ReleaseAt);});
+T("low-throw-may-release-at-zero-once",()=>{var p=ScGrenadePreparation.Create(0,.9666f,0,.5f,true,false);p.Step(0,false);p.Step(.25,false);return p.Throwing&&p.ReleaseAt==0&&p.ThrowStartedAt==0;});
 T("voice-default-binding-no-camera-conflict",()=>ScGunBindings.Default(ScGunFunctions.Voice)=="Z"&&ScGunBindings.Conflict(ScGunFunctions.Voice,ScGunFunctions.C4Timer));
 var clips=JsonSerializer.Deserialize<AgentVoiceClip[]>(File.ReadAllText("src/ScCsgoVoice/Assets/ScAgentVoices.json"));
 T("voice-count-language-pairs",()=>clips.Length==204&&clips.GroupBy(c=>c.Id).All(g=>g.Count()==2&&g.Select(c=>c.Language).Order().SequenceEqual(new[]{"en","zh"})));

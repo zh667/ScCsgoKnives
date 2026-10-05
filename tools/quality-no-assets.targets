@@ -1,0 +1,6 @@
+<Project>
+  <!-- Source/behavior checks keep real embedded inputs but do not copy assets or produce packages. -->
+  <Target Name="QualityNoCopiedAssets" BeforeTargets="AssignTargetPaths">
+    <ItemGroup><None Remove="@(None)" /><Content Remove="@(Content)" /></ItemGroup>
+  </Target>
+</Project>

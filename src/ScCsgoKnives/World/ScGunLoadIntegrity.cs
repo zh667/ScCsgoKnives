@@ -40,6 +40,9 @@ public static class ScGunLoadIntegrity {
             throw new InvalidOperationException("枪械布局仍在，但 GunRegistry 记录表缺失；请恢复同一世界的完整备份，禁止初始化为空表");
         var registry = ScGunRegistry.Load(table, 0);
         if (registry.Disabled) throw new InvalidOperationException("枪械记录表无法安全读取");
+        var travel = new ScTravelLedger(); travel.LoadReceipts(values.GetValue<ValuesDictionary>(ScTravelLedger.ReceiptsKey, null));
+        var arrivals = travel.Receipts.Where(r => !r.Completed && r.Arrival is not null)
+            .Select(r => (Receipt: r, Envelope: ScTravelEnvelope.Decode(r.Arrival.Envelope, out _, out _))).ToArray();
         var maps = Group(subs, "BlocksManager")?.Elements("Value").Where(e => (string)e.Attribute("Value") == "ScGunBlock").ToArray() ?? [];
         if (maps.Length == 0 && registry.Count == 0 && registry.QuarantinedCount == 0) return new(0, registry.Next, []); // new world
         if (maps.Length != 1) throw new InvalidOperationException("保存的枪械方块映射缺失或重复，不能验证旧物品");
@@ -48,10 +51,23 @@ public static class ScGunLoadIntegrity {
         int checkedItems = 0;
         int next = registry.Next;
         var issues = new List<Issue>();
-        void Item(int value, int count, string holder) {
+        void Item(int value, int count, string holder, string owner = null, int slotIndex = -1) {
             if (count <= 0 || Terrain.ExtractContents(value) != block) return;
             // Detached XML must not depend on a previous world's static Current registry.
             int data = Terrain.ExtractData(value);
+            // A persisted source number is valid only under its explicit custody receipt. Validate its imported
+            // record without interpreting it as a destination-world id (especially extended ids absent here).
+            foreach (var (receipt, envelope) in arrivals.Where(a => a.Receipt.Arrival.Owner == owner)) {
+                if (receipt.Arrival.Applied.Values.Contains(slotIndex)) continue;
+                var carried = envelope.Slots.SingleOrDefault(s => s.Identity.Length > 0 && !receipt.Arrival.Applied.ContainsKey(s.Identity)
+                    && Terrain.ExtractData(s.Value) == data);
+                if (carried is null) continue;
+                var gun = envelope.Guns.Single(g => g.Identity == carried.Identity);
+                var mapped = receipt.Map.Single(m => m.Identity == carried.Identity);
+                if (count != 1 || !registry.TryGetSnapshot(mapped.Id, out var imported) || imported.Variant != gun.Variant)
+                    throw new InvalidOperationException($"{holder} 的待迁移枪械与持久收据不符，拒绝猜测记录");
+                checkedItems++; return;
+            }
             int layout = int.TryParse(Text(gun, "GunDataLayout"), out var savedLayout) ? savedLayout : ScGunEncoding.PreviousLayout;
             if (!ScGunEncoding.Decode(data, registry, layout, out int id, out int variant))
                 throw new InvalidOperationException($"{holder} 的枪械编码无法确认，原物品已保留");
@@ -70,13 +86,18 @@ public static class ScGunLoadIntegrity {
         }
         foreach (var slots in project.Descendants("Values").Where(e => (string)e.Attribute("Name") == "Slots")) {
             bool creative = (string)slots.Parent?.Attribute("Name") == "CreativeInventory";
+            var player = slots.Ancestors("Entity").FirstOrDefault();
+            string playerIndex = Text(Group(player, "Player"), "PlayerIndex");
+            string owner = playerIndex is not null ? "player/" + playerIndex : null;
             foreach (var slot in slots.Elements("Values")) {
                 string raw = Text(slot, "Contents");
                 if (raw is null) continue;
                 int value = Number(raw);
                 if (Terrain.ExtractContents(value) != block) continue;
                 string count = Text(slot, "Count");
-                Item(value, count is null && creative ? 1 : Number(count), $"{(string)slots.Parent?.Attribute("Name")}/{(string)slot.Attribute("Name")}");
+                string slotName = (string)slot.Attribute("Name") ?? "";
+                int index = slotName.StartsWith("Slot") && int.TryParse(slotName[4..], out int n) ? n : -1;
+                Item(value, count is null && creative ? 1 : Number(count), $"{(string)slots.Parent?.Attribute("Name")}/{slotName}", owner, index);
             }
         }
         foreach (string name in new[] { "Pickables", "Projectiles" })
@@ -94,7 +115,7 @@ public static class ScGunLoadIntegrity {
             }
         // Recovery receipts and pending kill credits also retain ownership of old IDs.
         foreach (var batch in registry.Recovery.Batches) foreach (var step in batch.Steps)
-            Item(step.Value, step.Count, $"Recovery/{batch.Id}");
+            Item(step.Value, step.Count, $"Recovery/{batch.Id}", batch.Owner);
         foreach (var entry in registry.Kills.Pending)
             if (entry.RecordId >= GunSpec.FirstId && entry.RecordId <= GunSpec.LastId) next = Math.Max(next, entry.RecordId + 1);
         return new(checkedItems, next, issues.ToArray());

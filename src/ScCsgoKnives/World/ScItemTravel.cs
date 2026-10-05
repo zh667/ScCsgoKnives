@@ -1,9 +1,4 @@
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
 using GameEntitySystem;
-using TemplatesDatabase;
 namespace Game;
 
 // universal-item-travel-analysis-20261002 (OpenSpec subworld-travel T1-T4). A gun item names its record by a number that
@@ -25,155 +20,6 @@ namespace Game;
 // scans or shares tables between worlds. (subworld-travel-generic-20261003: a provider that drops the text but saved the
 // world it left still left the same envelope in that world's Project.xml - ScTravelArrival reads it from there, only
 // between worlds of one tree, and only when the arriving inventory holds exactly what was carried.)
-
-public enum ScTravelCode {
-    Ok, Repeat, SameWorld, NothingCarried,
-    BadEnvelope, UnsupportedVersion, UnsupportedData, Corrupt, TransferReused,
-    RegistryUnavailable, Busy, PendingObligations, Stacked, DuplicateCarried, MissingRecord,
-    GrowthConflict, HeldElsewhere, ModelConflict, RegistryFull, SlotMismatch
-}
-
-/// <summary>One carried gun: its identity across worlds, the number it had in the world it left, and its whole record.</summary>
-public sealed record ScTravelGun(string Identity, int Id, int Variant, string Row);
-/// <summary>One carried slot holding a CS gun item (an instance, or a fresh gun: Identity empty).</summary>
-public sealed record ScTravelSlot(int Slot, int Value, int Count, string Identity);
-
-/// <summary>What a provider carries for one traveller on one trip: opaque to it, versioned, self-checking.</summary>
-public sealed class ScTravelEnvelope {
-    public const int CurrentVersion = 1;
-    public const string Namespace = "zh667.ScCsgoKnives/guns";
-    public int V { get; set; } = CurrentVersion;
-    public string Ns { get; set; } = Namespace;
-    /// <summary>The id of this transfer, made at export (one traveller, one departure). The same id again is the same
-    /// transfer; a provider never has to invent or reuse one.</summary>
-    public string Transfer { get; set; } = "";
-    /// <summary>The stable identity of the world left (not its folder name).</summary>
-    public string World { get; set; } = "";
-    public string Traveller { get; set; } = "";
-    public int Schema { get; set; }
-    public int Layout { get; set; }
-    public string Growth { get; set; } = "Unset";
-    /// <summary>The gun block's index in the world left; the destination's may differ.</summary>
-    public int Block { get; set; }
-    public List<ScTravelGun> Guns { get; set; } = [];
-    public List<ScTravelSlot> Slots { get; set; } = [];
-    public string Digest { get; set; } = "";
-
-    static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-    public string ComputeDigest() {
-        var text = new StringBuilder();
-        text.Append(V).Append('\n').Append(Ns).Append('\n').Append(Transfer).Append('\n').Append(World).Append('\n').Append(Traveller).Append('\n')
-            .Append(Schema).Append('\n').Append(Layout).Append('\n').Append(Growth).Append('\n').Append(Block).Append('\n');
-        foreach (var g in Guns.OrderBy(g => g.Identity, StringComparer.Ordinal)) text.Append(g.Identity).Append('|').Append(g.Id).Append('|').Append(g.Variant).Append('|').Append(g.Row).Append('\n');
-        foreach (var s in Slots.OrderBy(s => s.Slot)) text.Append(s.Slot).Append('|').Append(s.Value).Append('|').Append(s.Count).Append('|').Append(s.Identity).Append('\n');
-        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text.ToString())));
-    }
-    public string Encode() { Digest = ComputeDigest(); return JsonSerializer.Serialize(this, Json); }
-    /// <summary>Reads an envelope. A text of a later version, of another namespace, or one that does not match its own
-    /// digest is refused whole: nothing of it is applied and the provider keeps it as it is.</summary>
-    public static ScTravelEnvelope Decode(string text, out ScTravelCode code, out string detail) {
-        code = ScTravelCode.BadEnvelope; detail = "";
-        if (string.IsNullOrWhiteSpace(text)) { detail = "没有携带枪械迁移数据"; return null; }
-        ScTravelEnvelope e;
-        try {
-            using var doc = JsonDocument.Parse(text);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object || !doc.RootElement.TryGetProperty("v", out var version) || !version.TryGetInt32(out int v)) { detail = "迁移数据缺少版本"; return null; }
-            if (v != CurrentVersion) { code = ScTravelCode.UnsupportedVersion; detail = $"迁移数据版本 {v}，本版只认识 {CurrentVersion}；数据原样保留，未应用"; return null; }
-            e = JsonSerializer.Deserialize<ScTravelEnvelope>(text, Json);
-        }
-        catch (JsonException x) { detail = "迁移数据无法解析：" + x.Message; return null; }
-        if (e is null || e.Ns != Namespace) { detail = "迁移数据不属于 CS 武器"; return null; }
-        if (string.IsNullOrWhiteSpace(e.Transfer) || string.IsNullOrWhiteSpace(e.World) || e.Guns is null || e.Slots is null) { detail = "迁移数据缺少旅程或来源世界身份"; return null; }
-        if (!string.Equals(e.Digest, e.ComputeDigest(), StringComparison.Ordinal)) { code = ScTravelCode.Corrupt; detail = "迁移数据与其校验不符（被截断或改动），未应用"; return null; }
-        code = ScTravelCode.Ok; return e;
-    }
-}
-
-/// <summary>What one world remembers about transfers: its own identity, the identity of every gun record that has one
-/// (records that came from another world keep theirs), and the transfers it has committed.</summary>
-public sealed class ScTravelLedger {
-    public const string ReceiptsKey = "GunTravelReceipts";
-    public const int ReceiptsKept = 64;
-    public string WorldIdentity = Guid.NewGuid().ToString("N");
-    /// <summary>Local record number -> identity (the saved GunTravelIdentities table, unchanged in form).</summary>
-    public readonly Dictionary<int, string> Identities = [];
-    readonly Dictionary<string, object> m_otherIdentityKeys = new(StringComparer.Ordinal);   // anything in that table this build does not read: written back as it was
-    public sealed record Receipt(string Transfer, string Digest, string World, bool Completed, IReadOnlyList<(string Identity, int Id)> Map);
-    readonly List<Receipt> m_receipts = [];
-    public IReadOnlyList<Receipt> Receipts => m_receipts;
-
-    public static string Token(string seed, int id) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(seed + "|" + id)));
-    /// <summary>The identity of a local record: the one it came with, or (first time) one derived from this world's own
-    /// identity and the number, the same value ScGunTravel.Capture writes on save.</summary>
-    public string IdentityOf(int id) {
-        if (!Identities.TryGetValue(id, out string identity)) Identities[id] = identity = Token(Guid.TryParse(WorldIdentity, out var uuid) ? uuid.ToString("N") : WorldIdentity, id);
-        return identity;
-    }
-    /// <summary>Identity -> local number for every record of this world: the ones the table lists, and for a record it
-    /// does not list (a world last saved by a build that keeps no such table, or never saved since the record was made)
-    /// the identity that record gets here, as the saved-XML path gives every row one when the world is saved. A gun that
-    /// was made in this world therefore finds its number again on return whether or not the table kept it.</summary>
-    public Dictionary<string, int> Known(IEnumerable<int> records) {
-        var known = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (var (id, token) in Identities) known.TryAdd(token, id);
-        string seed = Guid.TryParse(WorldIdentity, out var uuid) ? uuid.ToString("N") : WorldIdentity;
-        foreach (int id in records) if (!Identities.ContainsKey(id)) known.TryAdd(Token(seed, id), id);
-        return known;
-    }
-    public Receipt Find(string transfer) => m_receipts.LastOrDefault(r => r.Transfer == transfer);
-    internal void Commit(Receipt receipt) {
-        m_receipts.RemoveAll(r => r.Transfer == receipt.Transfer); m_receipts.Add(receipt);
-        while (m_receipts.Count > ReceiptsKept) m_receipts.RemoveAt(0);
-    }
-
-    public void LoadIdentities(ValuesDictionary saved) {
-        Identities.Clear(); m_otherIdentityKeys.Clear();
-        if (saved is null) return;
-        foreach (var pair in saved) {
-            if (int.TryParse(pair.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id) && pair.Value is string token) Identities[id] = token;
-            else m_otherIdentityKeys[pair.Key] = pair.Value;
-        }
-    }
-    public ValuesDictionary SaveIdentities() {
-        if (Identities.Count == 0 && m_otherIdentityKeys.Count == 0) return null;
-        var d = new ValuesDictionary();
-        foreach (var (id, token) in Identities) d.SetValue(id.ToString(CultureInfo.InvariantCulture), token);
-        foreach (var (key, value) in m_otherIdentityKeys) d.SetValue(key, value);
-        return d;
-    }
-    /// <summary>The committed transfers, newest last. A key of its own in the gun subsystem's saved values: a build that
-    /// does not know it neither reads nor keeps it (it only loses the repeat protection of a trip in flight); the record
-    /// table, its schema and the item layout are untouched.</summary>
-    public ValuesDictionary SaveReceipts() {
-        if (m_receipts.Count == 0) return null;
-        var d = new ValuesDictionary();
-        for (int i = 0; i < m_receipts.Count; i++) {
-            var r = m_receipts[i];
-            d.SetValue(i.ToString("000", CultureInfo.InvariantCulture), string.Join("|", r.Transfer.Replace("|", ""), r.Digest, r.World.Replace("|", ""), r.Completed ? "1" : "0",
-                string.Join(",", r.Map.Select(m => m.Identity + ":" + m.Id.ToString(CultureInfo.InvariantCulture)))));
-        }
-        return d;
-    }
-    public void LoadReceipts(ValuesDictionary saved) {
-        m_receipts.Clear();
-        if (saved is null) return;
-        foreach (var pair in saved.OrderBy(p => p.Key, StringComparer.Ordinal)) {
-            string[] parts = (pair.Value as string ?? "").Split('|');
-            if (parts.Length != 5 || parts[0].Length == 0) continue;   // unreadable: not a receipt (the transfer would be planned afresh, never guessed)
-            var map = new List<(string, int)>(); bool ok = true;
-            foreach (string item in parts[4].Split(',', StringSplitOptions.RemoveEmptyEntries)) {
-                string[] kv = item.Split(':');
-                if (kv.Length == 2 && int.TryParse(kv[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int id)) map.Add((kv[0], id)); else ok = false;
-            }
-            if (ok) m_receipts.Add(new Receipt(parts[0], parts[1], parts[2], parts[3] == "1", map));
-        }
-    }
-}
-
-/// <summary>The outcome of an export or an import.</summary>
-public sealed record ScTravelResult(ScTravelCode Code, string Message, string Envelope = null, IReadOnlyDictionary<int, int> Values = null, int Guns = 0) {
-    public bool Ok => Code is ScTravelCode.Ok or ScTravelCode.Repeat or ScTravelCode.SameWorld or ScTravelCode.NothingCarried;
-}
 
 public static class ScItemTravel {
     public sealed class Refusal(ScTravelCode code, string message) : InvalidOperationException(message) { public ScTravelCode Code { get; } = code; }
@@ -209,6 +55,8 @@ public static class ScItemTravel {
     }
 
     internal static int GunBlock => BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunBlock), out int index) ? index : -1;
+    internal static string Owner(IInventory inventory) => ScGunRegistry.Current?.RecoveryOwner?.Invoke(ScInventoryIdentity.Inventory(inventory))
+        ?? ScGunHolders.RecoveryOwner(inventory?.Project, ScInventoryIdentity.Inventory(inventory));
     static double Now(Project project) => project?.FindSubsystem<SubsystemTime>(false)?.GameTime ?? 0;
     static ScTravelResult Refused(ScTravelCode code, string message) => new(code, message);
 
@@ -218,6 +66,8 @@ public static class ScItemTravel {
     /// what becomes of the player left behind). Refused, with the reason, when a carried gun cannot be carried as it is:
     /// its record is missing, it is stacked, the same gun is carried twice, or something of it is still unsettled.</summary>
     public static ScTravelResult Export(Project project, IInventory inventory, string traveller, string transfer = null) {
+        if (ScGunRegistry.Current?.TravelPending(inventory) == true)
+            return Refused(ScTravelCode.PendingObligations, "枪械随行迁移尚未完成，请恢复物品后再传送");
         if (string.IsNullOrWhiteSpace(transfer)) transfer = Guid.NewGuid().ToString("N");
         // (A multiplayer client only mirrors the server's table: what travels is the server's to say.)
         if (!ScNet.IsAuthority) return Refused(ScTravelCode.RegistryUnavailable, "联机客户端的枪械表只是房主的镜像，枪械迁移由房主一侧执行");
@@ -226,7 +76,7 @@ public static class ScItemTravel {
         if (ScWorldModes.Dedicated(project)) return Refused(ScTravelCode.Busy, "本世界是模式专用世界，其中的枪械不随行到其他世界");
         var registry = ScGunRegistry.Current; int block = GunBlock;
         if (registry is null || registry.Disabled || registry.QuarantinedCount > 0 || block < 0 || registry.Travel is not { } ledger) return Refused(ScTravelCode.RegistryUnavailable, "本世界的枪械记录表不可用或有异常记录，枪械未随行");
-        if (ScGunMutation.IsCommitting) return Refused(ScTravelCode.Busy, "枪械操作进行中，请稍后再传送");
+        if (ScInventoryCommit.Active) return Refused(ScTravelCode.Busy, "枪械操作进行中，请稍后再传送");
         inventory = ScInventoryIdentity.Inventory(inventory);
         if (inventory is null) return Refused(ScTravelCode.RegistryUnavailable, "无法确认要携带的库存");
         double now = Now(project);
@@ -270,7 +120,7 @@ public static class ScItemTravel {
         if (!ScNet.IsAuthority) return Refused(ScTravelCode.RegistryUnavailable, "联机客户端的枪械表只是房主的镜像，枪械迁移由房主一侧执行");
         var registry = ScGunRegistry.Current; int block = GunBlock;
         if (registry is null || registry.Disabled || registry.QuarantinedCount > 0 || block < 0 || registry.Travel is not { } ledger) return Refused(ScTravelCode.RegistryUnavailable, "目标枪械表异常，拒绝跨世界迁移");
-        if (ScGunMutation.IsCommitting) return Refused(ScTravelCode.Busy, "枪械操作进行中，请稍后再恢复物品");
+        if (ScInventoryCommit.Active) return Refused(ScTravelCode.Busy, "枪械操作进行中，请稍后再恢复物品");
         if (envelope.Schema != ScGunRegistry.Schema || envelope.Layout != GunSpec.DataLayout) return Refused(ScTravelCode.UnsupportedData, $"迁移数据的记录格式 {envelope.Schema}/布局 {envelope.Layout} 不是本版的 {ScGunRegistry.Schema}/{GunSpec.DataLayout}；原样保留，未应用");
         if (!Enum.TryParse(envelope.Growth, out ScGunGrowthMode incomingMode) || !Enum.IsDefined(incomingMode)) return Refused(ScTravelCode.Corrupt, "跨世界成长规则无效");
         double now = Now(project);
@@ -361,6 +211,13 @@ public static class ScItemTravel {
         else return Refused(ScTravelCode.MissingRecord, "该旅程尚未在本世界提交枪械记录");
         inventory = ScInventoryIdentity.Inventory(inventory);
         if (inventory is null) return Refused(ScTravelCode.RegistryUnavailable, "无法确认要核对的库存");
+        if (ScInventoryCommit.Active) return Refused(ScTravelCode.Busy, "物品修改进行中，尚不能确认迁移完成");
+        if (ledger.Find(envelope.Transfer)?.Arrival is { } arrival && (arrival.Owner != ScItemTravel.Owner(inventory)
+            || envelope.Guns.Any(g => !arrival.Applied.ContainsKey(g.Identity))))
+            return Refused(ScTravelCode.PendingObligations, "枪械编号尚未全部恢复，迁移义务已保留");
+        string owner = registry.RecoveryOwner?.Invoke(inventory) ?? ScGunHolders.RecoveryOwner(project, inventory);
+        if (owner is not null && registry.Recovery.HasPending(owner))
+            return Refused(ScTravelCode.PendingObligations, "库存有未完成的物品补偿，迁移尚未完成");
         var held = new Dictionary<int, int>();
         int slots = inventory is ComponentCreativeInventory creative ? Math.Min(creative.OpenSlotsCount, inventory.SlotsCount) : inventory.SlotsCount;
         for (int slot = 0; slot < slots; slot++) {

@@ -1,5 +1,7 @@
 # Run project tooling with temporary files on the project drive, without changing
 # machine/user environment variables. Example: ./tools/dev.ps1 dotnet build ...
+# Quote colon switches, e.g. '-p:SkipScmodPackaging=true' or '-v:minimal'.
+# PowerShell parses unquoted -name:value before invoking a script; lost prefixes cannot be reconstructed here.
 $ErrorActionPreference = 'Stop'
 if ($args.Count -eq 0) { throw 'Usage: ./tools/dev.ps1 <command> <arguments>' }
 $devCommand = [string]$args[0]

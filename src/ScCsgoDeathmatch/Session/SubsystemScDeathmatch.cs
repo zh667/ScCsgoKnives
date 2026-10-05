@@ -271,6 +271,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
     // ---------------------------------------------------------------- the host
     /// <summary>Why the host cannot do something now, or null.</summary>
     public string HostBlocked() => !Authority ? "只有房主可以设置竞技地图" : Frozen;
+    string NetworkArenaProblem => ScNet.IsHost && !DmNet.ArenaFitsNetwork(Arena) ? DmNet.ArenaNetworkProblem : null;
     /// <summary>The host makes this world an arena world (DM-01). Never automatic, never on a world's first load.</summary>
     public string EnableArena() {
         if (HostBlocked() is { } blocked) return blocked;
@@ -322,6 +323,10 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
         if (!Enabled) return "先把本世界启用为竞技世界";
         if (Match.Phase is not (DmPhase.Editing or DmPhase.Lobby)) return "比赛进行中不能修改竞技区域和复活点";
         if (edit(Arena) is not { } changed) return "已达到复活点数量上限";
+        // A valid standalone save may exceed the online budget. Allow strictly reducing edits so a host can repair
+        // several oversized labels one at a time, retaining the full stored map until the user changes it.
+        if (ScNet.IsHost && !DmNet.ArenaFitsNetwork(changed) && (DmNet.ArenaFitsNetwork(Arena) || DmNet.ArenaBytes(changed) >= DmNet.ArenaBytes(Arena)))
+            return DmNet.ArenaNetworkProblem;
         Arena = changed; m_stateDirty = true;
         Log($"arena revision {Arena.Revision}: region {(Arena.HasRegion ? $"{Arena.MinX},{Arena.MinY},{Arena.MinZ}..{Arena.MaxX},{Arena.MaxY},{Arena.MaxZ}" : "none")}, lobby {Arena.HasLobby}, spawns {Arena.Spawns.Count}");
         return null;
@@ -333,10 +338,11 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
         if (!Match.SetRules(rules)) return "比赛进行中不能修改规则";
         m_stateDirty = true; return null;
     }
-    public string OpenLobby() => HostCommand(() => Match.OpenLobby(Now) ? null : "大厅已经开放");
+    public string OpenLobby() => HostCommand(() => NetworkArenaProblem ?? (Match.OpenLobby(Now) ? null : "大厅已经开放"));
     public string EditMap() => HostCommand(() => Match.Edit(Now) ? null : "先结束比赛再编辑地图");
     /// <summary>Starts a match from map editing or the lobby in one step. Every refusal says what to do.</summary>
     public string StartMatch() => HostCommand(() => {
+        if (NetworkArenaProblem is { } networkProblem) return networkProblem;
         if (!DmWeapons.Ready) return "竞技武器数据未能加载：" + DmWeapons.LoadError;
         if (!DmHitboxes.Ready) return "CS2 命中盒数据未能加载：" + DmHitboxes.LoadError;
         if (!DmPenetrationRules.Ready) return "CS2 穿透数据未能加载：" + DmPenetrationRules.LoadError;
@@ -432,6 +438,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
     public void RequestEnter(ComponentPlayer player, bool confirmEmpty) {
         if (!Authority) { DmNet.SendEnter(confirmEmpty); return; }
         if (Match is null || KeyOf(player) is not { } key) return;
+        if (NetworkArenaProblem is { } networkProblem) { Tell(key, networkProblem); return; }
         if (Foreign(player)) { Tell(key, ForeignText); return; }
         Match.Enter(key, confirmEmpty, Now); m_selfDirty.Add(key);
     }
@@ -812,17 +819,29 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
     Dictionary<int, (bool Show, long Kills)> CountersOf(DmPlayer p) =>
         m_counters.Where(c => c.Value.Key == p.Key).ToDictionary(c => c.Key, c => (c.Value.Show, (long)p.GunKills.GetValueOrDefault(c.Value.Variant)));
     void Publish(double now) {
+        string networkProblem = NetworkArenaProblem;
+        // Projection for the wire only: an explicit editing/unavailable state, never a truncated stored arena.
+        void WriteState(ScNetWriter w) => DmNet.WriteState(w, Enabled, networkProblem is null ? Match.Phase : DmPhase.Editing,
+            Match.MatchId, networkProblem is null ? Remaining(now) : 0, Match.Rules, networkProblem is null ? Arena : new DmArenaDefinition(), networkProblem ?? Match.LastResult?.Reason);
         bool periodic = now - m_stateSentAt >= 5;
         if (m_stateDirty || periodic) {
-            m_stateDirty = false; m_stateSentAt = now; m_stateFor.Clear();
-            ScNet.Broadcast(DmNet.OpState, w => DmNet.WriteState(w, Enabled, Match.Phase, Match.MatchId, Remaining(now), Match.Rules, Arena, Match.LastResult?.Reason));
-            ApplyState(Enabled, Match.Phase, Match.MatchId, Remaining(now), Match.Rules, Arena, Match.LastResult?.Reason, DmWeapons.Fingerprint);
+            ApplyState(Enabled, Match.Phase, Match.MatchId, Remaining(now), Match.Rules, Arena, networkProblem ?? Match.LastResult?.Reason, DmWeapons.Fingerprint);
+            try {
+                ScNet.Broadcast(DmNet.OpState, WriteState);
+                m_stateDirty = false; m_stateSentAt = now; m_stateFor.Clear();
+            }
+            catch (Exception e) { m_stateDirty = true; KnifeDiagnostics.WarnOnce("dm-state-publication-" + e.Message, "[CS_DM] state publication pending: " + e.Message); }
         }
+        var sent = new List<string>();
         foreach (string key in m_stateFor) if (PlayerOf(key) is { } joined && ScNet.PeerOf(joined) is { } peer) {
-            ScNet.SendTo(peer, DmNet.OpState, w => DmNet.WriteState(w, Enabled, Match.Phase, Match.MatchId, Remaining(now), Match.Rules, Arena, Match.LastResult?.Reason));
-            if (Match.LastResult is { } last && Match.Phase == DmPhase.Results) ScNet.SendTo(peer, DmNet.OpResult, w => w.String(DmNet.Encode(last)));
+            try {
+                ScNet.SendTo(peer, DmNet.OpState, WriteState);
+                if (Match.LastResult is { } last && Match.Phase == DmPhase.Results) ScNet.SendTo(peer, DmNet.OpResult, w => w.String(DmNet.Encode(last)));
+                sent.Add(key);
+            }
+            catch (Exception e) { KnifeDiagnostics.WarnOnce("dm-join-publication-" + e.Message, "[CS_DM] joining peer state pending: " + e.Message); }
         }
-        m_stateFor.Clear();
+        foreach (string key in sent) m_stateFor.Remove(key);
         if (m_playersDirty) {
             m_playersDirty = false;
             var rows = Rows();
@@ -846,6 +865,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
 
     // ---------------------------------------------------------------- the view (every process)
     internal void ApplyState(bool enabled, DmPhase phase, int matchId, double remaining, DmRules rules, DmArenaDefinition arena, string reason, string fingerprint) {
+        if (reason == DmNet.ArenaNetworkProblem && View.Reason != reason) ShowNotice(reason);
         if (!Authority) {
             if (enabled && !Enabled && Frozen is null) Activate(null);
             if (enabled && fingerprint != DmWeapons.Fingerprint) ShowNotice("本机的死亡竞赛规则数据与服务器不一致：请安装与服务器同一次发布的拓展包");

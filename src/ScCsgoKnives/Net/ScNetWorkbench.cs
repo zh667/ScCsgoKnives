@@ -1,4 +1,5 @@
 using Engine;
+using GameEntitySystem;
 namespace Game;
 
 public enum ScWorkbenchOpKind : byte { Craft = 1, Repair, GunSkin, KnifeSkin, Counter, CreativeLevel, GrowthMode, MaterializeHotbar, Armor }
@@ -11,6 +12,7 @@ public readonly record struct ScWorkbenchOp(ScWorkbenchOpKind Kind, Point3 Bench
 /// <summary>Result of a workbench commit: <see cref="Code"/> is the ScGunResult (or 1/0 for a craft), <see cref="Detail"/> an
 /// optional explanation from the server.</summary>
 public readonly record struct ScWorkbenchResult(int Code, string Detail = "") {
+    public const int Unknown = -2;
     public bool Ok(ScWorkbenchOpKind kind) => kind is ScWorkbenchOpKind.Craft or ScWorkbenchOpKind.KnifeSkin or ScWorkbenchOpKind.GrowthMode
         or ScWorkbenchOpKind.MaterializeHotbar or ScWorkbenchOpKind.Armor ? Code == 1 : Code == (int)ScGunResult.Success;
 }
@@ -23,7 +25,34 @@ public static class ScNetWorkbench {
     static int s_next;
     /// <summary>The last answer this client got (read by the two-process tests).</summary>
     public static ScWorkbenchResult? LastResult;
-    static readonly Dictionary<int, Action<ScWorkbenchResult>> s_pending = [];
+    public const int MaxPending = 64;
+    public const double RequestTimeout = 30;
+    sealed record Pending(Project World, IScNetTransport Transport, double At, Action<ScWorkbenchResult> Done);
+    static readonly Dictionary<int, Pending> s_pending = [];
+    static readonly ScWorkbenchResult Uncertain = new(ScWorkbenchResult.Unknown, "联机：操作结果未知，请核对库存和状态后再操作；不会自动重试。");
+    static void Finish(int id, ScWorkbenchResult result) {
+        if (!s_pending.Remove(id, out var pending)) return;
+        try { pending.Done(result); }
+        catch (Exception e) { KnifeLog.Warning("workbench callback closed: " + e.Message); }
+    }
+    /// <summary>Client-only bookkeeping. An unanswered request is not proof that the server did not commit it.</summary>
+    public static void Tick() {
+        foreach (var (id, p) in s_pending.ToArray())
+            if (!ReferenceEquals(p.World, GameManager.Project) || !ReferenceEquals(p.Transport, ScNet.Transport)
+                || !ScNet.IsRemoteClient || ScNet.ClientBlocked || ScNet.Now < p.At || ScNet.Now - p.At >= RequestTimeout)
+                Finish(id, Uncertain);
+    }
+    public static void WorldClosed(Project world) {
+        foreach (var (id, p) in s_pending.ToArray()) if (ReferenceEquals(p.World, world)) Finish(id, Uncertain);
+    }
+    public static void SessionClosed(IScNetTransport transport) {
+        foreach (var (id, p) in s_pending.ToArray()) if (ReferenceEquals(p.Transport, transport)) Finish(id, Uncertain);
+    }
+    /// <summary>Fallback for the engine's parameterless exit hook; a new world's pending requests are left alone.</summary>
+    public static void ClearOrphaned() {
+        foreach (var (id, p) in s_pending.ToArray())
+            if (GameManager.Project is null || !ReferenceEquals(p.World, GameManager.Project)) Finish(id, Uncertain);
+    }
 
     public static void Register() {
         ScNet.OnServer(OpRequest, Receive);
@@ -54,10 +83,14 @@ public static class ScNetWorkbench {
     /// <summary>Runs a commit: <paramref name="local"/> here (single player, MP host), or sent to the server by a remote
     /// client, <paramref name="done"/> then running when the answer arrives.</summary>
     public static void Run(ScWorkbenchOp op, Func<ScWorkbenchResult> local, Action<ScWorkbenchResult> done) {
+        Tick();
         if (!ScNet.IsRemoteClient) { done(local()); return; }
         if (ScNet.ClientBlocked) { done(new(-1, ScNet.BlockedMessage)); return; }
-        int id = ++s_next; s_pending[id] = done;
-        if (!ScNet.Send(OpRequest, w => Write(w.Int(id), op))) { s_pending.Remove(id); done(new(-1, "联机：请求没有发出，请重试。")); }
+        if (s_pending.Count >= MaxPending || s_next == int.MaxValue) { done(new(-1, "联机：待确认操作过多，本次请求未发送。")); return; }
+        // Never reuse a request number while this process lives: a late answer cannot complete a new world's request.
+        int id = ++s_next; s_pending[id] = new(GameManager.Project, ScNet.Transport, ScNet.Now, done);
+        try { if (!ScNet.Send(OpRequest, w => Write(w.Int(id), op))) Finish(id, new(-1, "联机：请求没有发出，请重试。")); }
+        catch (Exception e) { KnifeLog.Warning("workbench send outcome unknown: " + e.Message); Finish(id, Uncertain); }
     }
 
     static void Write(ScNetWriter w, ScWorkbenchOp op) =>
@@ -67,10 +100,10 @@ public static class ScNetWorkbench {
         r.String(128), r.String(128));
 
     static void Receive(ScNetPeer from, ComponentPlayer player, ScNetReader r) {
-        int id = r.Int(); var op = Read(r);
+        int id = r.Int(); var op = Read(r); r.Finish();
         ScWorkbenchResult result;
         try { result = ScWorkbenchOps.Execute(player, op); }
-        catch (Exception e) { KnifeDiagnostics.WarnOnce("scnet-workbench-" + op.Kind, $"[ScCsgoNet] workbench {op.Kind} for {from} failed: {e.Message}"); result = new(-1, "服务器处理失败，未扣除材料。"); }
+        catch (Exception e) { KnifeDiagnostics.WarnOnce("scnet-workbench-" + op.Kind, $"[ScCsgoNet] workbench {op.Kind} for {from} failed: {e.Message}"); result = Uncertain; }
         KnifeLog.Diagnostic($"[ScCsgoNet] server: workbench {op.Kind} value {op.Value} slot {op.Slot} x{op.Quantity} for {from} -> {result.Code} {result.Detail}");
         ScNetMirror.Flush(); // the changed record/protection rows arrive before the answer
         ScNet.SendTo(from, OpResult, w => w.Int(id).Int(result.Code).String(result.Detail ?? ""));
@@ -78,7 +111,9 @@ public static class ScNetWorkbench {
 
     static void ReceiveResult(ScNetReader r) {
         int id = r.Int(); var result = new ScWorkbenchResult(r.Int(), r.String(512));
+        r.Finish(); Tick();
+        if (!s_pending.ContainsKey(id)) return;
         LastResult = result;
-        if (s_pending.Remove(id, out var done)) done(result);
+        Finish(id, result);
     }
 }

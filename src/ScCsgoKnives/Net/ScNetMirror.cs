@@ -25,6 +25,21 @@ public static class ScNetMirror {
     /// due), record requests a client sent and the server answered.</summary>
     public static int RowSendFailures, WantsSent, WantsAnswered;
 
+    /// <summary>Release only the matching world-owned objects. Disposing an older project cannot erase a new host's cache.</summary>
+    public static void ReleaseRegistry(ScGunRegistry registry) {
+        if (ReferenceEquals(s_registryOwner, registry)) { s_registryOwner = null; s_sentRevisions.Clear(); s_sentGrowthMode = null; s_recordsAt = 0; }
+        if (ReferenceEquals(s_wantsOwner, registry)) { s_wantsOwner = null; s_wants.Clear(); }
+    }
+    public static void ReleaseArmor(SubsystemScArmor armor) {
+        if (!ReferenceEquals(s_armorOwner, armor)) return;
+        s_armorOwner = null; s_sentArmor.Clear(); s_armorAt = 0;
+    }
+    public static void ClearOrphaned() {
+        if (GameManager.Project is null || !ReferenceEquals(s_registryOwner, ScGunRegistry.Current)) ReleaseRegistry(s_registryOwner as ScGunRegistry);
+        if (GameManager.Project is null || !ReferenceEquals(s_wantsOwner, ScGunRegistry.Current)) ReleaseRegistry(s_wantsOwner as ScGunRegistry);
+        if (s_armorOwner is SubsystemScArmor armor && (GameManager.Project is null || !ReferenceEquals(armor.Project, GameManager.Project))) ReleaseArmor(armor);
+    }
+
     public static void Register() {
         ScNet.OnClient(OpRecords, ApplyRecords);
         ScNet.OnClient(OpArmor, ApplyArmor);

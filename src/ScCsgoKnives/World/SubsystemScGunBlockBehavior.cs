@@ -726,13 +726,14 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public override void Dispose() {
+        ScNetWorkbench.WorldClosed(Project);
+        ScNetMirror.ReleaseRegistry(m_registry);
         if (!string.IsNullOrEmpty(m_travelSource)) ScTravelArrival.LastLeft = m_travelSource;
         if (m_scopeInput is not null) Project.FindSubsystem<SubsystemUpdate>(false)?.RemoveUpdateable(m_scopeInput);
-        foreach (var pair in m_states) LeaveScope(pair.Key, pair.Value);
+        foreach (var player in m_states.Keys.ToArray()) PlayerLeft(player);
         m_diagnostics?.Flush("world_dispose");
         CsmcFirstPersonRenderer.ClearFirstPersonEffects();
-        foreach (var state in m_states.Values) state.AmmoHud?.Dispose();
-        m_states.Clear();
+        m_fireButtons.Clear(); m_brokenNoticeAt.Clear();
         m_casings.Clear();
         m_blooms.Clear();
         m_wisps.Clear();
@@ -821,6 +822,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         var holders = ScGunHolders.Scan(Project, gunIndex).ToList();
         foreach (var batch in m_registry.Recovery.Batches) foreach (var step in batch.Steps) {
+            if (m_travel?.BlocksOwner(batch.Owner) == true) continue;
             if (step.Count <= 0 || Terrain.ExtractContents(step.Value) != gunIndex || !ScGunHolders.MatchesRecord(step.Value)) continue;
             int id = GunSpec.GetId(Terrain.ExtractData(step.Value));
             if (id >= GunSpec.FirstId && id <= GunSpec.LastId)
@@ -1013,6 +1015,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     }
 
     public void Update(float dt) {
+        ScNetWorkbench.Tick();
         KnifeQa.Step();
         m_casings.Update(dt,m_terrain,m_audio);
         for (int i = m_wisps.Count - 1; i >= 0; i--) { m_wisps[i].Update(dt); if (m_wisps[i].Dead) m_wisps.RemoveAt(i); }
@@ -1034,9 +1037,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         ScNetGuns.ClientTick();
         ScNet.HostTick(Project);
         int gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        foreach (var pair in m_states) if (!m_players.ComponentPlayers.Contains(pair.Key)) {
-            pair.Value.AmmoHud?.Dispose(); pair.Value.AmmoHud = null;
-        }
+        foreach (var player in m_states.Keys.Concat(m_fireButtons.Keys).Concat(m_brokenNoticeAt.Keys).Distinct().Where(p => !m_players.ComponentPlayers.Contains(p)).ToArray()) PlayerLeft(player);
         if (authority && m_time.GameTime >= m_duplicateScanAt) {
             m_duplicateScanAt = m_time.GameTime + .5;
             var holders = Holders();
@@ -1044,6 +1045,18 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             UpdateGrowth(holders);
         }
         foreach (ComponentPlayer player in m_players.ComponentPlayers) UpdatePlayer(player, dt, authority, gunIndex);
+    }
+
+    // A departing component owns transient input/actions/UI, never the world's persistent records or compensation.
+    // Reload writes already committed at insertion stay committed; cancelling an uninserted reload returns no items.
+    void PlayerLeft(ComponentPlayer player) {
+        if (m_states.Remove(player, out var state)) {
+            state.Reload?.Cancel();
+            LeaveScope(player, state);
+            if (player.Entity is not null) KnifeAnimationController.CancelAction(player);
+            state.Scheduled.Clear(); state.ShellTimes.Clear(); state.AmmoHud?.Dispose();
+        }
+        m_fireButtons.Remove(player); m_brokenNoticeAt.Remove(player);
     }
 
     /// <summary>One player's guns for this frame: this process's own player from its devices, a remote client's player
@@ -1086,7 +1099,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         // subworld-travel-generic-20261003: a gun that arrived from another world of this tree and has no local number yet is
         // neither used nor reported as damaged (ScTravelArrival.Pending; at most the moment until the inventory settles)
-        bool arriving = m_arrival?.Pending(player.ComponentMiner.Inventory.ActiveSlotIndex, value) == true;
+        bool arriving = m_registry?.TravelPending(player.ComponentMiner.Inventory) == true
+            || m_arrival?.Pending(player.ComponentMiner.Inventory.ActiveSlotIndex, value) == true;
         if (local) { // notices are for the players this process shows
             if (m_integrityProtection?.GetValue<int>("Count", 0) > 0 && m_integrityTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage("正常枪械可继续使用；部分枪械记录异常，已原样保留并暂停使用，需原始备份恢复。备份由玩家自行管理。", Color.Yellow, true, false);
@@ -2236,8 +2250,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     string m_travelWorldIdentity;
     ScTravelArrival m_arrival;
     public bool ReadyForTravel => m_saveReady && m_registry is not null && !m_registry.Disabled
-        && m_registry.QuarantinedCount==0 && m_registry.Kills.Count==0 && m_registry.Recovery.Count==0
-        && !ScGunMutation.IsCommitting && !m_states.Any(p=>p.Value.Reload is not null || p.Value.BusyUntil>=0
+        && m_registry.QuarantinedCount==0 && m_registry.Kills.Count==0 && m_registry.Recovery.Count==0 && m_travel?.HasPending != true
+        && !ScInventoryCommit.Active && !m_states.Any(p=>p.Value.Reload is not null || p.Value.BusyUntil>=0
             || p.Value.BurstRemaining>0 || p.Value.PrepareUntil>=0
             || KnifeAnimationController.IsBusy(p.Key.Entity?.FindComponent<ComponentFirstPersonModel>()));
     public void SetFireButton(ComponentPlayer player,bool pressed) => m_fireButtons[player]=pressed;

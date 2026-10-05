@@ -206,6 +206,7 @@ public sealed class ScGunRegistry {
     /// <summary>This world's transfer ledger: set by the gun subsystem that loaded the world, null in a table that
     /// takes no transfers (a proof table, a historical build's own subsystem).</summary>
     public ScTravelLedger Travel;
+    public bool TravelPending(IInventory inventory) => Travel?.BlocksOwner(RecoveryOwner?.Invoke(inventory)) == true;
     /// <summary>Reads one row of the current schema under the rules Load applies to a saved row: every field checked,
     /// nothing defaulted, an older growth rule set converted once.</summary>
     public static bool TryReadRow(string row, double now, ScGunGrowthMode mode, out ScGunRecord record) {

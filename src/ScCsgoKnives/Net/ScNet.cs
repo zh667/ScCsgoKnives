@@ -122,7 +122,10 @@ public static class ScNet {
     }
 
     /// <summary>Called by the adapter once it is registered with the engine.</summary>
-    public static void Attach(IScNetTransport transport) => Transport = transport;
+    public static void Attach(IScNetTransport transport) {
+        var previous = Transport; Transport = transport;
+        if (!ReferenceEquals(previous, transport)) ScNetWorkbench.SessionClosed(previous);
+    }
 
     /// <summary>Why this process has no CS network layer although the engine has multiplayer (null when it has one, or on
     /// the standalone engine): shown to a host once, and to a blocked client.</summary>

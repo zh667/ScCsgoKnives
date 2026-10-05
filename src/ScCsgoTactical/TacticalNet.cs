@@ -25,7 +25,9 @@ public static class TacticalNet {
         ScNet.OnServer(OpDefuse, ReceiveDefuse);
         ScNet.OnClient(OpBlast, r => { Vector3 at = r.Vector3(); float radius = Math.Clamp(r.Float(), 0, 64); BlastsShown++; Project?.FindSubsystem<SubsystemTacticalBombs>(false)?.ShowBlast(at, radius); });
         ScNet.PeerAccepted += _ => s_sent = new(); // a joining client gets every NPC's state again
-        ScNet.PeerLeft += peer => { if (peer.Player(Project) is { } p && s_defuse.TryGetValue(p, out var d)) d.Held = false; };
+        ScNet.PeerLeft += peer => {
+            foreach (var item in s_defuse.Where(p => ReferenceEquals(p.Value.Peer, peer)).ToArray()) s_defuse.Remove(item.Key);
+        };
     }
     static Project Project => GameManager.Project;
     /// <summary>A world sound on every client (the server plays its own copy).</summary>
@@ -46,7 +48,7 @@ public static class TacticalNet {
     /// <summary>Where a player looks: its camera here, or (server) the view its client last sent.</summary>
     public static Ray3? View(ComponentPlayer player) {
         if (player is null) return null;
-        if (s_defuse.TryGetValue(player, out var d) && d.HasView && ScNet.IsRemoteDriven(player)) return d.View;
+        if (Defuse(player) is { HasView: true } d) return d.View;
         if (ScNetGuns.RemoteInput(player) is { HasAim: true } remote) return remote.Aim;
         return player.GameWidget?.ActiveCamera is { } camera ? new Ray3(camera.ViewPosition, camera.ViewDirection) : null;
     }
@@ -126,13 +128,21 @@ public static class TacticalNet {
     public static void PanelClosed(ComponentPlayer player, ComponentTacticalCompanion c) { if (ScNet.IsRemoteClient) { s_panelSentAt = 0; Order(player, c, Command.PanelClosed); } }
 
     // ------------------------------------------------------------------ defusing (client → server)
-    public sealed class RemoteDefuse { public bool Held, HasView; public Ray3 View; }
+    public sealed class RemoteDefuse { public bool Held, HasView; public Ray3 View; internal double At; internal ScNetPeer Peer; }
     static readonly ConditionalWeakTable<ComponentPlayer, RemoteDefuse> s_defuse = new();
     /// <summary>Server: a remote client's defuse key (touch button, keyboard or gamepad) and view; null for players read here.</summary>
-    public static RemoteDefuse Defuse(ComponentPlayer player) => ScNet.IsRemoteDriven(player) ? s_defuse.GetOrCreateValue(player) : null;
-    static void ReceiveDefuse(ScNetPeer from, ComponentPlayer player, ScNetReader r) {
+    public static RemoteDefuse Defuse(ComponentPlayer player) {
+        if (!ScNet.IsRemoteDriven(player)) return null;
         var d = s_defuse.GetOrCreateValue(player);
-        d.Held = r.Bool(); d.View = FromEye(player, r.Ray()); d.HasView = true;
+        double age = ScNet.Now - d.At;
+        if (!ReferenceEquals(d.Peer, ScNet.PeerOf(player)) || age < 0 || age > ScNetGuns.InputLease) { d.Held = false; d.HasView = false; }
+        return d;
+    }
+    static void ReceiveDefuse(ScNetPeer from, ComponentPlayer player, ScNetReader r) {
+        bool held = r.Bool(); Ray3 view = FromEye(player, r.Ray()); r.Finish();
+        if (!ReferenceEquals(from, ScNet.PeerOf(player))) return;
+        var d = s_defuse.GetOrCreateValue(player);
+        d.Held = held; d.View = view; d.HasView = true; d.At = ScNet.Now; d.Peer = from;
     }
     static bool s_lastHeld; static Vector3 s_lastDirection; static double s_defuseAt;
     /// <summary>Client: its defuse key when it changes, and its view while it is held (a few times a second).</summary>

@@ -70,6 +70,9 @@ public sealed record DmArenaIssue(DmArenaIssueCode Code, bool Blocks, int SpawnI
 public static class DmArenaRules {
     /// <summary>Engineering limits (not user decisions): a box edge in cells, and the number of authored points.</summary>
     public const int MaxEdge = 256, MaxSpawns = 128;
+    /// <summary>UTF-8 JSON budget on the wire: leaves 16 KiB of the existing 64 KiB packet for rules, notices and framing.
+    /// Does not change the saved arena format or truncate authored labels.</summary>
+    public const int MaxNetworkBytes = 48 * 1024;
     /// <summary>Two points closer than this are the same place for the purpose of "at least two different points".</summary>
     public const float DistinctDistance = 1.5f;
     /// <summary>All points within this of each other: the author is told the arena has, in effect, one spawn area.</summary>

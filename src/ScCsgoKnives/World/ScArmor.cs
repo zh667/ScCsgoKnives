@@ -185,7 +185,7 @@ public sealed class SubsystemScArmor : Subsystem, IUpdateable {
         try { ScArmorHud.UpdateAll(this, m_huds); } catch (Exception e) { KnifeDiagnostics.WarnOnce("armor-hud", "armor HUD update failed: " + e.Message); }
         ScNetMirror.ArmorTick(this);
     }
-    public override void Dispose() { foreach (var hud in m_huds.Values) hud.Dispose(); m_huds.Clear(); base.Dispose(); }
+    public override void Dispose() { ScNetMirror.ReleaseArmor(this); foreach (var hud in m_huds.Values) hud.Dispose(); m_huds.Clear(); base.Dispose(); }
 
     // ---- settlement: plan when the injury is computed, commit when the engine applies it ----
     static readonly ConditionalWeakTable<Attackment, ScArmorSettlement> s_pending = new();

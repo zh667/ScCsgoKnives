@@ -135,6 +135,8 @@ public static class ScGunHolders {
         return acting.Id == witness.Id && acting.Key != witness.Key && Live(acting) && Live(witness);
     }
     static IEnumerable<Holder> Of(IInventory inventory, int slot, int gunBlockIndex, HashSet<string> seen) {
+        // A source-world number must not witness a duplicate or receive destination-world growth.
+        if (ScGunRegistry.Current?.TravelPending(inventory) == true) yield break;
         int value = inventory.GetSlotValue(slot);
         if (inventory.GetSlotCount(slot) == 0 || Terrain.ExtractContents(value) != gunBlockIndex || !MatchesRecord(value)) yield break;
         int id = GunSpec.GetId(Terrain.ExtractData(value));

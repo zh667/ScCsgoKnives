@@ -305,17 +305,23 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
 
 
+    static bool TravelBlocked(IInventory inventory, int slot) => inventory is not null && slot >= 0 && slot < inventory.SlotsCount
+        && inventory.GetSlotCount(slot) > 0 && BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScGunBlock), out int block) && Terrain.ExtractContents(inventory.GetSlotValue(slot)) == block
+        && ScGunRegistry.Current?.TravelPending(inventory) == true;
     public override void HandleMoveInventoryItem(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, ref int count, out bool moved) {
+        if (TravelBlocked(source, sourceSlot) || TravelBlocked(target, targetSlot)) { count = 0; moved = true; return; }
         ScInventoryTransaction.Changed(source); ScInventoryTransaction.Changed(target); moved = false;
     }
     public override void HandleInventoryDragMove(InventorySlotWidget widget, IInventory source, int sourceSlot, IInventory target, int targetSlot, bool skipped, out bool skip) {
+        if (TravelBlocked(source, sourceSlot) || TravelBlocked(target, targetSlot)) { skip = true; return; }
         ScInventoryTransaction.Changed(source); ScInventoryTransaction.Changed(target); skip = false;
     }
     public override void OnPlayerInputDrop(ComponentPlayer player, bool skipped, out bool skipVanilla) {
+        if (TravelBlocked(player.ComponentMiner.Inventory, player.ComponentMiner.Inventory.ActiveSlotIndex)) { skipVanilla = true; return; }
         ScInventoryTransaction.Changed(player.ComponentMiner.Inventory); skipVanilla = false;
     }
 
-    public override void OnProjectDisposed() { ScNetGuns.WorldClosed(); ScNetSlots.Clear(); ScNetPresentation.Clear(); ScPresentationSound.ReleaseAll("world exit"); CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); ScMemoryReport.Log("exit"); }
+    public override void OnProjectDisposed() { ScNetWorkbench.ClearOrphaned(); ScNetMirror.ClearOrphaned(); ScNetGuns.WorldClosed(); ScNetSlots.Clear(); ScNetPresentation.Clear(); ScPresentationSound.ReleaseAll("world exit"); CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); ScMemoryReport.Log("exit"); }
 
     public override void OnLoadingFinished(List<Action> actions) {
         // Register all base CS supplies in the same workshop catalogue used by
