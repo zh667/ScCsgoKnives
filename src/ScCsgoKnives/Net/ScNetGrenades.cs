@@ -21,6 +21,16 @@ public sealed class ScRemoteThrow {
 /// world sounds, fire bursts and their own flash blindness as events.</summary>
 public static class ScNetGrenades {
     public const ushort OpStart = 60, OpHeld = 61, OpCancel = 62, OpSnapshot = 63, OpSound = 64, OpBurst = 65, OpBlind = 66;
+    public const ushort OpFlashView=67;
+    sealed class ViewState {public ScFlashView View;public double Received=double.NegativeInfinity,Sent=double.NegativeInfinity;}
+    static readonly ConditionalWeakTable<ComponentPlayer,ViewState> s_views=new();
+    public static ScFlashView FlashView(ComponentPlayer player)=>ScNet.IsRemoteDriven(player)&&s_views.TryGetValue(player,out var state)&&ScNet.Now-state.Received<=.5?state.View:null;
+    public static void SendFlashView(ComponentPlayer player){
+        if(!ScNet.IsRemoteClient||!ScNet.IsLocal(player)||player.GameWidget?.ActiveCamera is not {} camera)return;
+        var state=s_views.GetOrCreateValue(player);if(ScNet.Now-state.Sent<.1)return;
+        var view=ScFlashView.From(camera);if(!view.Valid)return;
+        if(ScNet.Send(OpFlashView,w=>w.Vector3(view.Position).Vector3(view.Forward).Vector3(view.Right).Vector3(view.Up).Float(view.HalfWidth).Float(view.HalfHeight)))state.Sent=ScNet.Now;
+    }
     const double Interval = .1;
     /// <summary>Server: how long before the end of a remote client's previous throw (already released, its follow-through
     /// still shown here) that client's next start is taken (quick-throw-20261002). The two ends run the same throw on their
@@ -31,6 +41,11 @@ public static class ScNetGrenades {
     static double s_sentAt; static int s_lastCount = -1;
 
     public static void Register() {
+        ScNet.OnServer(OpFlashView,(_,player,r)=>{
+            var view=new ScFlashView(r.Vector3(),r.Vector3(),r.Vector3(),r.Vector3(),r.Float(),r.Float());
+            if(!r.End||!view.Valid)return;
+            var state=s_views.GetOrCreateValue(player);state.View=view;state.Received=ScNet.Now;
+        });
         ScNet.OnServer(OpStart, ReceiveStart);
         ScNet.OnServer(OpHeld, ReceiveHeld);
         ScNet.OnServer(OpCancel, (from, player, r) => Grenades?.CancelRemoteThrow(player));

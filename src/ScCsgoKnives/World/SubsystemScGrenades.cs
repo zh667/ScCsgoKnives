@@ -373,7 +373,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                 }
             }
         }
-        if (!authority) { UpdateMirror(dt); return; }
+        if (!authority) {foreach(var player in m_players.ComponentPlayers)ScNetGrenades.SendFlashView(player);UpdateMirror(dt); return; }
         // Order inside one update: fire validity (water/smoke extinguish) -> grenade motion -> heat trigger
         // -> fuse and smoke growth. The order is fixed here, not by list position.
         ExtinguishFires();
@@ -539,14 +539,18 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (s.Kind==1 && (!m_blind.TryGetValue(body,out var old) || m_time.GameTime>=old.ImmuneUntil)) {
                 var p=body.Entity.FindComponent<ComponentPlayer>();
                 var camera=p is not null&&!ScNet.IsRemoteDriven(p)?p.GameWidget?.ActiveCamera:null;
-                if(!Clear(s.Position,camera?.ViewPosition??point))continue;
+                var remoteView=p is not null?ScNetGrenades.FlashView(p):null;
+                var eye=camera?.ViewPosition??remoteView?.Position??point;
+                if(!Clear(s.Position,eye))continue;
                 // A remote client's player (server) faces where its client last aimed; it has no camera here.
                 Vector3 forward=p is null ? body.Matrix.Forward : ScNetGuns.RemoteInput(p) is {HasAim:true} aimed ? aimed.Aim.Direction
                     : ScNetGrenades.RemoteThrow(p) is {HasView:true} viewed ? viewed.ViewDirection : p.GameWidget?.ActiveCamera?.ViewDirection ?? body.Matrix.Forward;
-                float facing=distance>.01f?Vector3.Dot(forward,(s.Position-point)/distance):1;
+                if(remoteView is not null)forward=remoteView.Forward;
+                float viewDistance=Vector3.Distance(s.Position,eye);
+                float facing=viewDistance>.01f?Vector3.Dot(forward,(s.Position-eye)/viewDistance):1;
                 bool onScreen=camera is not null?camera.ViewFrustum.Intersection(new BoundingSphere(s.Position,.05f)):
-                    p is not null&&facing>0;
-                float duration=ScGrenadeState.VisibleFlashDuration(distance,facing,onScreen);
+                    remoteView?.Contains(s.Position)==true;
+                float duration=ScGrenadeState.VisibleFlashDuration(p is null?distance:viewDistance,facing,onScreen);
                 if (duration>.05f) {
                     m_blind[body]=new Blindness {Until=m_time.GameTime+duration,Duration=duration,ImmuneUntil=m_time.GameTime+duration+ScGrenadeState.FlashImmunity};
                     if (p is not null && ScNet.IsRemoteDriven(p)) ScNetGrenades.Blind(p,duration);
