@@ -90,6 +90,7 @@ public static class ScUiSettings {
     public static bool GrenadePreview = true;
     public static bool KillSound = true;
     public static bool GunCrosshair = true;
+    public static bool SniperHipCrosshair = true;
     public static string CrosshairStyle = StyleVanilla;
     public static Color CrosshairColor = Color.White;
     public static ScCrosshairShape CrosshairShape = new();
@@ -127,7 +128,7 @@ public static class ScUiSettings {
         ScGamepadBindings.Keys.Clear(); ScGamepadBindings.Threshold = .5f;
         ResetHand(false); ResetHand(true);
         SimpleMaterials = ScResourcePolicy.Edition == "Optimized512";
-        CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true; DamageIndicator = true; GrenadePreview = true;
+        CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true; SniperHipCrosshair = true; DamageIndicator = true; GrenadePreview = true;
         ButtonOnlyFire = false;
         C4Fuses.Clear();
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
@@ -161,6 +162,7 @@ public static class ScUiSettings {
         public bool GrenadePreviewEnabled { get; set; } = true;
         public bool KillSoundEnabled { get; set; } = true;
         public bool GunCrosshairEnabled { get; set; } = true;
+        public bool SniperHipCrosshair { get; set; } = true;
         public string GunCrosshairStyle { get; set; } = StyleVanilla;
         public string GunCrosshairColor { get; set; } = "255,255,255";
         public ScCrosshairShape CrosshairShape { get; set; } = new();
@@ -206,6 +208,7 @@ public static class ScUiSettings {
             KillFeed = file.KillFeedEnabled; DamageIndicator = file.DamageIndicatorEnabled; GrenadePreview = file.GrenadePreviewEnabled;
             KillSound = file.KillSoundEnabled;
             GunCrosshair = file.GunCrosshairEnabled;
+            SniperHipCrosshair = file.SniperHipCrosshair;
             CrosshairStyle = Array.IndexOf(Styles, file.GunCrosshairStyle) >= 0 ? file.GunCrosshairStyle : StyleVanilla;
             if (TryParseColor(file.GunCrosshairColor, out var parsed)) CrosshairColor = parsed;
             CrosshairShape = (file.CrosshairShape ?? new()).Normalize();
@@ -235,6 +238,7 @@ public static class ScUiSettings {
                 C4Fuses = new(C4Fuses),
                 CrosshairShape = CrosshairShape.Normalize(),
                 GunCrosshairEnabled = GunCrosshair, GunCrosshairStyle = CrosshairStyle, GunCrosshairColor = ColorText(CrosshairColor),
+                SniperHipCrosshair = SniperHipCrosshair,
             };
             foreach (string id in ScGunFunctions.All) {
                 file.Buttons[id] = Layout(s_right, id, false);
