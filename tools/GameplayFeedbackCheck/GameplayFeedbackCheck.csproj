@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>preview</LangVersion></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/ScCsgoTactical/ScCsgoTactical.csproj" AdditionalProperties="SkipScmodPackaging=true" />
+    <Compile Include="../PackageCheck/TacticalEnemyRegression.cs" Link="TacticalEnemyRegression.cs" />
+    <Compile Include="../PackageCheck/StarterEquipmentRegression.cs" Link="StarterEquipmentRegression.cs" />
+  </ItemGroup>
+</Project>

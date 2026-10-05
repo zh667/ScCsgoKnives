@@ -166,7 +166,7 @@ if(tacticalPackage is not null){
             block.BlockIndex=pair.Item2;Game.BlocksManager.Blocks[pair.Item2]=block;Game.BlocksManager.BlockTypeToIndex[type]=pair.Item2;
         }
     }
-    var cases=tacticalAiOnly?TacticalEnemyRegression.Run(mod,tactical,scmod,tacticalPackage,false,vanillaContent).Concat(TacticalCompanionRegression.Run(mod,tactical)).Concat(TacticalFeedbackRegression.Run(mod,tactical)).ToList():TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
+    var cases=tacticalAiOnly?TacticalEnemyRegression.Run(mod,tactical,scmod,tacticalPackage,false,vanillaContent).Select(c=>new TacticalRegression.Result(c.Name,c.Ok,c.Detail)).Concat(TacticalCompanionRegression.Run(mod,tactical)).Concat(TacticalFeedbackRegression.Run(mod,tactical)).ToList():TacticalRegression.Run(mod,tactical,scmod,tacticalPackage,vanillaContent);
     var report=JsonSerializer.Serialize(new{coreSha256=digest,dlcSha256=Sha256(tacticalPackage),failed=cases.Count(c=>!c.Ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.Ok)?1:0;
 }

@@ -34,6 +34,7 @@ ScUiSettings.ResetAll();ScUiSettings.Load();
 Check("old JSON keeps natural spawning off",!ScUiSettings.NaturalEnemies);
 Check("old JSON gains 30 days / standard density",ScUiSettings.EnemyGraceDays==30&&ScUiSettings.EnemyDensity==ScEnemyDensity.Standard);
 Check("old JSON gains damage HUD and throw preview on",ScUiSettings.DamageIndicator&&ScUiSettings.GrenadePreview);
+Check("old JSON defaults to sniper crosshair and no starter gift",ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
 Check("old JSON saves",ScUiSettings.Save());
 Check("unknown key preserved on save",JsonNode.Parse(File.ReadAllText(settingsFile))?["FutureOnlyKey"]?.GetValue<int>()==123);
 File.Delete(settingsFile);ScUiSettings.ResetAll();ScUiSettings.Load();
@@ -101,6 +102,17 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         screen=Open(size);for(int i=0;i<40;i++)Click(screen,"m_enemyLess");
         Check("days clamp at 0 "+size,Working(screen).GraceDays==0&&Texts(screen).Contains("开档后立即允许"));
         Click(screen,"m_defaults");Layout(screen,size);Click(screen,"m_save");Left();
+        screen=Open(size);((CheckboxWidget)Field(screen,"m_sniperHipCrosshair")).IsChecked=false;Click(screen,"m_starter");Click(screen,"m_cancel");Left();
+        Check("new controls cancel without changing settings "+size,ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
+        screen=Open(size);((CheckboxWidget)Field(screen,"m_sniperHipCrosshair")).IsChecked=false;Click(screen,"m_starter");Click(screen,"m_starter");Click(screen,"m_starter");Click(screen,"m_save");Left();
+        ScUiSettings.ResetAll();ScUiSettings.Load();
+        Check("new controls persist "+size,!ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.Full);
+        screen=Open(size);Click(screen,"m_defaults");Layout(screen,size);Click(screen,"m_save");Left();
+        Check("new controls restore defaults "+size,ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
+        ScStarterPlan? picked=null;var dialog=new ScStarterDialog(ScStarterPlan.None,p=>{picked=p;return true;});
+        var dialogRoot=new CanvasWidget{Size=size};dialogRoot.Children.Add(dialog);dialogRoot.Measure(size);dialogRoot.Arrange(Vector2.Zero,size);Capture(dialogRoot,size,"starter-choice");
+        var confirm=(BevelledButtonWidget)Field(dialog,"confirm");confirm.m_clickableWidget.IsClicked=true;dialog.Update();
+        Check("starter confirmation defaults to no equipment "+size,picked==ScStarterPlan.None);
 
         // ---- A world is open: the screen edits that world's rules through the bridge, not the device defaults. ----
         var world=new ScEnemyRules(true,5,ScEnemyDensity.Sparse);ScEnemyRules? written=null;int writes=0;bool writable=true;
@@ -118,6 +130,30 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         Check("world write failure stays and says so "+size,!Left()&&((LabelWidget)Field(screen,"m_status")).Text.Contains("敌对小队规则未写入"));
         Capture(screen,size,"settings-enemy-world-write-failed");
         GameManager.m_project=null;ScEnemyRulesBridge.Read=null;ScEnemyRulesBridge.Write=null;ScEnemyRulesBridge.Progress=null;
+    }
+
+    // Dialog arbitration reads all parents, including a third-party startup dialog on the screen root.
+    {
+        var previousProject=GameManager.Project;var previousScreen=ScreensManager.CurrentScreen;
+        try{
+            var project=new Project();GameManager.m_project=project;ScreensManager.CurrentScreen=Blank<GameScreen>();
+            var players=new SubsystemPlayers{m_project=project};project.m_subsystems.Add(players);
+            var data=Blank<PlayerData>();data.PlayerIndex=0;data.m_stateMachine=new StateMachine();data.m_stateMachine.AddState("Playing",null,null,null);data.m_stateMachine.TransitionTo("Playing");
+            var player=Blank<ComponentPlayer>();data.ComponentPlayer=player;player.PlayerData=data;player.ComponentHealth=new ComponentHealth{Health=1};player.ComponentGui=new ComponentGui();
+            data.m_gameWidget=Blank<GameWidget>();data.m_gameWidget.GuiWidget=new CanvasWidget();
+            players.m_playersData.Add(data);players.m_componentPlayers.Add(player);
+            var starter=new SubsystemScStarterEquipment{m_project=project};var inv=new ComponentInventory();inv.m_slots.Add(new());
+            starter.TryGrant(GameMode.Survival,PlayerData.SpawnMode.InitialNoIntro,0,1,inv,(_,_)=>{});
+            var update=typeof(SubsystemScStarterEquipment).GetMethod("UpdateChoice",BindingFlags.NonPublic|BindingFlags.Instance);
+            void Ready()=>typeof(SubsystemScStarterEquipment).GetField("m_quietSince",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(starter,Time.RealTime-2);
+            var other=new Dialog();DialogsManager.m_dialogs.Add(other);Ready();update.Invoke(starter,null);
+            Check("starter waits for another mod dialog on any parent",Field(starter,"m_dialog") is null);
+            DialogsManager.m_dialogs.Remove(other);DialogsManager.m_animationData[other]=new DialogsManager.AnimationData();Ready();update.Invoke(starter,null);
+            Check("starter waits for another mod exit animation",Field(starter,"m_dialog") is null);
+            DialogsManager.m_animationData.Remove(other);Ready();update.Invoke(starter,null);
+            Check("starter appears after other startup dialogs finish",Field(starter,"m_dialog") is ScStarterDialog);
+            starter.Dispose();DialogsManager.m_dialogs.Clear();DialogsManager.m_animationData.Clear();
+        }finally{GameManager.m_project=previousProject;ScreensManager.CurrentScreen=previousScreen;}
     }
 
     // ---- current-direction-20260929 §2: the protection HUD (textures from the candidate core package). ----

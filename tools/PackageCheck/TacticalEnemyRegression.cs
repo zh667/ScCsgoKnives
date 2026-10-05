@@ -54,10 +54,11 @@ static class TacticalEnemyRegression {
         public override void AddEntity(Entity e){if(Factory==null){base.AddEntity(e);return;}e.m_isAddedToProject=true;m_entities[e]=true;Added?.Invoke(e);}
         public override void RemoveEntity(Entity e,bool dispose){if(Factory==null){base.RemoveEntity(e,dispose);return;}e.m_isAddedToProject=false;m_entities.Remove(e);Removed?.Invoke(e);}
     }
-    internal static List<TacticalRegression.Result> Run(Assembly core,Assembly dlc,string corePath,string dlcPath,bool includeRendering=true,string vanillaContent=null){
-        var results=new List<TacticalRegression.Result>();
-        void Test(string n,Action a){try{a();results.Add(new("enemy/"+n,true,""));}catch(Exception ex){results.Add(new("enemy/"+n,false,ex.ToString()));}}
-        void TestD(string n,Func<string> a){try{results.Add(new("enemy/"+n,true,a()));}catch(Exception ex){results.Add(new("enemy/"+n,false,ex.ToString()));}}
+    internal record Result(string Name,bool Ok,string Detail);
+    internal static List<Result> Run(Assembly core,Assembly dlc,string corePath,string dlcPath,bool includeRendering=true,string vanillaContent=null,Func<string,bool> filter=null){
+        var results=new List<Result>();
+        void Test(string n,Action a){if(filter is not null&&!filter(n))return;try{a();results.Add(new("enemy/"+n,true,""));}catch(Exception ex){results.Add(new("enemy/"+n,false,ex.ToString()));}}
+        void TestD(string n,Func<string> a){if(filter is not null&&!filter(n))return;try{results.Add(new("enemy/"+n,true,a()));}catch(Exception ex){results.Add(new("enemy/"+n,false,ex.ToString()));}}
         void Check(bool value,string message){if(!value)throw new Exception(message);}
         Type C(string n)=>core.GetType("Game."+n,true);Type T(string n)=>dlc.GetType("Game."+n,true);
         // Release 1.4.0 (round 12): the spawn status and squad lines these checks read are test diagnostics, written only
@@ -86,6 +87,70 @@ static class TacticalEnemyRegression {
         var savedTypes=BlocksManager.BlockTypeToIndex.ToArray();var savedNames=BlocksManager.BlockNameToIndex.ToArray();
         try{
             FreshRegistry();
+            Test("feedback/flash-detonation-on-screen-beyond-radius-with-cover",()=>{
+                foreach(var (z,wall,expected) in new[]{(-200f,false,true),(-200f,true,false),(200f,false,false),(-20f,false,true)}){
+                    var f=World();f.Terrain.Blocked=wall;
+                    var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();
+                    var body=new ComponentBody{Position=new Vector3(0,60,0),BoxSize=new Vector3(.65f,1.8f,.65f)};
+                    player.ComponentBody=body;player.PlayerData.m_gameWidget=Blank<GameWidget>();
+                    player.PlayerData.m_gameWidget.m_activeCamera=new Eye(new Vector3(0,61.5f,0),-Vector3.UnitZ);
+                    E(f.P,player,body);f.Bodies.AddBody(body);
+                    var grenade=Activator.CreateInstance(C("ScGrenadeState"));Set(grenade,"Kind",1);Set(grenade,"Owner",-2);Set(grenade,"Position",new Vector3(0,61.5f,z));
+                    var system=f.P.m_subsystems.Single(s=>s.GetType()==C("SubsystemScGrenades"));
+                    C("SubsystemScGrenades").GetMethod("Detonate",Fields).Invoke(system,[grenade]);
+                    RequireBlind();
+                    void RequireBlind()=>Check((bool)C("SubsystemScGrenades").GetMethod("IsBodyBlinded").Invoke(system,[body])==expected,$"flash z={z}, wall={wall}: expected blind={expected}");
+                }
+            });
+            Test("feedback/distant-sniper-stops-tracks-and-shoots-after-reload",()=>{
+                foreach(float distance in new[]{80f,160,256}){
+                    var f=World();var e=Enemy(f.P,0);e.Enemy.State.Grenades=0;e.Enemy.State.Bomb=false;
+                    var target=new ComponentBody{Position=new Vector3(0,60,-distance),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
+                    var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};
+                    var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health,m_killVerbs=["shot"],m_subsystemPlayerStats=new SubsystemPlayerStats()};
+                    health.m_componentCreature=creature;E(f.P,target,health,creature);f.Bodies.AddBody(target);
+                    e.Enemy.Alert(target);e.Enemy.State.Rounds=0;e.Enemy.State.Reserve=5;e.Enemy.State.ReloadLeft=2.8f;
+                    for(int i=0;i<20;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}
+                    Check(e.Enemy.TargetBody==target&&e.Path.Destination is null&&e.Enemy.State.Rounds==0,"reload lost target, chased a visible distant target or refilled early");
+                    for(int i=0;i<35;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}
+                    Check(e.Enemy.TargetBody==target&&e.Enemy.State.Rounds<5&&e.Enemy.State.Rounds+e.Enemy.State.Reserve<5&&health.Health<1,$"sniper never resumed actual distant damage after reload: distance={distance}, target={e.Enemy.TargetBody==target}, rounds={e.Enemy.State.Rounds}, reserve={e.Enemy.State.Reserve}, hp={health.Health}, gun={e.Enemy.State.Variant}");
+                }
+            });
+            Test("feedback/source-less-gunshot-evades-and-smg-strafes",()=>{
+                var f=World();f.Terrain.Floor=60;var e=Enemy(f.P,2);
+                BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};
+                for(int cx=0;cx<2;cx++)for(int cz=0;cz<2;cz++)f.Terrain.Terrain.AllocateChunk(cx,cz).State=TerrainChunkState.Valid;
+                for(int x=0;x<32;x++)for(int z=0;z<32;z++)f.Terrain.Terrain.SetCellValueFast(x,59,z,2);
+                var body=e.Creature.ComponentBody;body.Position=new Vector3(12.5f,60,12.5f);e.Enemy.Home=body.Position;e.Enemy.State.Grenades=0;
+                ((INoiseListener)e.Enemy).HearNoise(null,new Vector3(12.5f,60,4.5f),1);
+                ((IUpdateable)e.Enemy).Update(.1f);
+                Check(e.Path.Destination is not null&&e.Enemy.TargetBody is null,"position-only gunshot ignored or granted hostility");
+                var target=new ComponentBody{Position=new Vector3(12.5f,60,4.5f),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
+                var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;E(f.P,target,health,creature);f.Bodies.AddBody(target);
+                var guns=((Array)C("GunSpec").GetField("All").GetValue(null)).Cast<object>().ToArray();
+                e.Enemy.State.Variant=Array.FindIndex(guns,g=>(string)g.GetType().GetField("Name").GetValue(g)=="mp9");
+                e.Enemy.Alert(target);Set(e.Enemy,"coverLeft",0f);Set(e.Enemy,"pathLeft",0f);e.Path.Stop();
+                int rounds=e.Enemy.State.Rounds;
+                for(int i=0;i<22;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}
+                Check(e.Path.Destination is Vector3 at&&Math.Abs(at.X-body.Position.X)>1&&e.Enemy.State.Rounds<rounds,"SMG did not combine lateral movement with firing");
+                f.Terrain.Blocked=true;
+                var cover=T("TacticalCombatMovement").GetMethod("Strafe").Invoke(null,[f.Terrain,body,target.Position,1]);
+                Check(cover is null,"combat step accepted an obstructed landing");
+            });
+            Test("feedback/swimming-shore-jump-cooldown-and-headroom",()=>{
+                foreach(float immersion in new[]{.6f,.9f}){
+                    var f=World();var e=Enemy(f.P);var body=e.Creature.ComponentBody;
+                    BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};
+                    f.Terrain.Terrain.AllocateChunk(0,0).State=TerrainChunkState.Valid;
+                    body.Position=new Vector3(8.5f,60,8.5f);body.ImmersionFactor=immersion;body.StandingOnValue=null;
+                    f.Terrain.Terrain.SetCellValueFast(8,60,7,2);
+                    var method=T("TacticalNavigation").GetMethod("StepAssist");object[] args=[e.Creature,f.Terrain,new Vector3(8.5f,61,6.5f),0d,1d];
+                    Check((bool)method.Invoke(null,args)&&e.Creature.ComponentLocomotion.JumpOrder==1,"water excluded from shore jump");
+                    Check(!(bool)method.Invoke(null,args),"jump cooldown ignored");
+                    f.Terrain.Terrain.SetCellValueFast(8,62,7,2);args[4]=2d;
+                    Check(!(bool)method.Invoke(null,args),"jump into low ceiling accepted");
+                }
+            });
             Test("survival-and-creative-three-five-squad-placement-budget-and-rollback",()=>{
                 var old=DatabaseManager.m_valueDictionaries.GetValueOrDefault("ScTacticalEnemy");DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=new ValuesDictionary();
                 try{
@@ -105,7 +170,8 @@ static class TacticalEnemyRegression {
                         Check(spawned&&created==count&&beacon.GetSlotCount(0)==0,"manual whole squad not created or beacon not consumed on snow");
                         var members=((System.Collections.IEnumerable)f.Director.Enemies).Cast<dynamic>().ToArray();Check(members.Length==count&&members.Select(e=>(string)e.State.Squad).Distinct().Count()==1&&members.Select(e=>(int)e.State.Role).Distinct().Count()==count,"wrong shared squad or roles");
                         Check(members.All(e=>Math.Abs((float)e.Creature.ComponentBody.Position.Y-61.1f)<.01f),"manual squad spawns in ground");
-                        Check(members.All(e=>Vector3.Distance((Vector3)e.Creature.ComponentBody.Position,player.ComponentBody.Position)>=18&&Vector2.Distance(((Vector3)e.Creature.ComponentBody.Position).XZ,player.ComponentBody.Position.XZ)<=30&&((Vector3)e.Creature.ComponentBody.Position).X>player.ComponentBody.Position.X),"summoned squad too close, too far or not in the chosen direction");
+                        Check(members.Any(e=>Vector2.Distance(((Vector3)e.Creature.ComponentBody.Position).XZ,new Vector2(12.5f,8.5f))<.1f)
+                            &&members.All(e=>Vector2.Distance(((Vector3)e.Creature.ComponentBody.Position).XZ,new Vector2(12.5f,8.5f))<6),"squad not placed around clicked ground");
                         Check(members.All(e=>(float)e.State.Warmup==3f),"summoned squad has no warning window");
                         Check(members.All(e=>(string)e.State.Source=="manual"),"summoned squad not tagged as manual");
                         int oldLimit=SubsystemCreatureSpawn.m_totalLimit;
@@ -515,7 +581,7 @@ static class TacticalEnemyRegression {
                 Check((bool)e.Enemy.Retaliating&&e.Enemy.State.Rounds<rounds,"no retaliation against a 38 m attacker");
                 f.Terrain.Blocked=true;rounds=e.Enemy.State.Rounds;float hp=health.Health;Run(95);Check(e.Enemy.TargetBody==null&&e.Enemy.State.Rounds==rounds&&health.Health==hp,"retaliation never forgot a hidden attacker, or fired through the wall");f.Terrain.Blocked=false;
                 Run(30);Check(e.Enemy.TargetBody==null&&e.Enemy.State.Rounds==rounds,"an enemy that had let its attacker go engaged again unprovoked");
-                Place(new Vector3(0,60,-45));e.Enemy.Alert(target);Run(3);Check(e.Enemy.TargetBody==null,"retaliation beyond its range");
+                foreach(float distance in new[]{45f,128,256}){Place(new Vector3(0,60,-distance));e.Enemy.Alert(target);Run(3);Check(e.Enemy.TargetBody==target,"distant retaliation discarded");}
             });
             // mpc3-feedback-subworld-20261002 (N2): one of them is attacked - everyone of them within 32 m of the one that was
             // hit takes that same attacker, whatever its squad or source; nobody farther, nobody dead, and it does not spread.
@@ -582,14 +648,14 @@ static class TacticalEnemyRegression {
                 Check((int)behind.Enemy.State.Rounds+(int)hit.Enemy.State.Rounds==rounds&&hidden.Health.Health==1&&behind.Enemy.TargetBody==null&&hit.Enemy.TargetBody==null,"provoked enemies fired through a wall or never let a hidden attacker go");
                 Check((float)T("ComponentTacticalEnemy").GetField("ProvokeRange").GetRawConstantValue()==32f,"the provoke range is no longer the recorded candidate value (32)");
             });
-            Test("summoned-warmup-holds-aim-then-fires-attack-ends-it",()=>{
+            Test("summoned-warmup-holds-aim-then-fires-attack-preserves-it",()=>{
                 var f=World();var e=Enemy(f.P);e.Enemy.State.Grenades=0;e.Enemy.State.Warmup=3f;
                 var target=new ComponentBody{Position=new Vector3(0,60,-8),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};var health=new Health{Health=1,AttackResilience=1000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health};health.m_componentCreature=creature;E(f.P,target,health,creature);f.Bodies.AddBody(target);
                 e.Enemy.TargetBody=target;int before=e.Enemy.State.Rounds;
                 for(int i=0;i<28;i++)((IUpdateable)e.Enemy).Update(.1f);Check(e.Enemy.State.Rounds==before&&health.Health==1,"fired during the warning window");
                 for(int i=0;i<15;i++)((IUpdateable)e.Enemy).Update(.1f);Check(e.Enemy.State.Rounds<before,"never engaged after the warning window");
-                e.Enemy.State.Warmup=3f;e.Enemy.Alert(target);Check((float)e.Enemy.State.Warmup==0f,"being attacked does not end the warning window");
-                string json=e.Enemy.State.Encode();Check((float)Decode(json.Replace("\"Warmup\":0","\"Warmup\":2.5")).Warmup==2.5f&&(float)Decode(json.Replace(",\"Warmup\":0","")).Warmup==0f,"warmup not saved or old saves not accepted");
+                e.Enemy.State.Warmup=3f;e.Enemy.Alert(target);Check((float)e.Enemy.State.Warmup==3f,"being attacked removed the preparation window");
+                string json=e.Enemy.State.Encode();Check((float)Decode(json.Replace("\"Warmup\":3","\"Warmup\":2.5")).Warmup==2.5f&&(float)Decode(json.Replace(",\"Warmup\":3","")).Warmup==0f,"warmup not saved or old saves not accepted");
             });
             Test("summoned-squad-faces-its-summoner-and-stays-neutral-until-attacked",()=>{
                 var old=DatabaseManager.m_valueDictionaries.GetValueOrDefault("ScTacticalEnemy");DatabaseManager.m_valueDictionaries["ScTacticalEnemy"]=new ValuesDictionary();
@@ -1075,12 +1141,14 @@ static class TacticalEnemyRegression {
                 for(int i=0;i<160;i++){var e=Enemy(f.P,1,i);e.Creature.ComponentHealth.Health=0;e.Enemy.Died();int count=f.Drops.Items.Count;e.Enemy.Died();((IUpdateable)e.Enemy).Update(.1f);Check(f.Drops.Items.Count==count&&e.Enemy.State.LootDone&&Enumerable.Range(0,5).All(s=>e.Inv.GetSlotCount(s)==0),"death duplicated reward/left inventory");}
                 Check(f.Drops.Items.Count>50&&f.Drops.Items.All(i=>Terrain.ExtractContents(i.Value)!=701),"full registry drops malformed gun");material=f.Drops.Items.Count(i=>Terrain.ExtractContents(i.Value)==708);Check(material>0&&(int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==exhausted,"registry wrap/missing material reward");
             });
-            Test("rare-gun-drop-real-registry-worn-no-counter",()=>{
+            Test("supplies-and-chicken-eggs-without-gun-drops-or-registry-allocation",()=>{
                 FreshRegistry();var f=World();
                 for(int i=0;i<160;i++){var e=Enemy(f.P,1,i);e.Creature.ComponentHealth.Health=0;e.Enemy.State.Rounds=2;e.Enemy.Died();}
-                var guns=f.Drops.Items.Where(p=>Terrain.ExtractContents(p.Value)==701).ToArray();Check(guns.Length>0&&guns.Length<20,"rare gun outcome missing or too common");
-                foreach(var gun in guns){object[] args=[Terrain.ExtractData(gun.Value),null];Check((bool)C("GunSpec").GetMethod("TryGetSnapshot").Invoke(null,args),"dropped gun becomes question mark");dynamic state=args[1];Check(!state.CounterInstalled&&state.KillCount==0&&state.AppliedGrowthLevel==0&&state.Rounds==2&&state.Durability>0&&state.Durability<state.MaxDurability,"drop gained counter/ammo or lost wear");}
-                Check((int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==guns.Length+1,"non-gun loot consumed registry numbers");
+                Check(f.Drops.Items.All(p=>Terrain.ExtractContents(p.Value)!=701),"enemy dropped a gun");
+                int egg=BlocksManager.BlockTypeToIndex[C("ScChickenEggBlock")];
+                Check(f.Drops.Items.Any(p=>Terrain.ExtractContents(p.Value)==egg)&&f.Drops.Items.Any(p=>Terrain.ExtractContents(p.Value)==708)
+                    &&f.Drops.Items.Any(p=>Terrain.ExtractContents(p.Value)==702)&&f.Drops.Items.Any(p=>Terrain.ExtractContents(p.Value)<700),"missing eggs/ammo/parts/basic materials");
+                Check((int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==1,"loot consumed registry numbers");
             });
             Test("defuse-10s-5s-deadline-ties-low-fps-and-interruption",()=>{
                 foreach(bool kit in new[]{false,true}){float seconds=kit?5:10;dynamic clock=New("TacticalDefuseClock",kit);Check(clock.Duration==seconds&&clock.Enough(seconds+.1f)&&!clock.Enough(seconds),"wrong duration/warning boundary");
