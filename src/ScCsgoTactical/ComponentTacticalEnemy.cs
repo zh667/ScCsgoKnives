@@ -178,7 +178,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         State.Warmup=Math.Max(0,State.Warmup-dt);
         State.ShotLeft=Math.Max(0,State.ShotLeft-dt);State.GrenadeLeft=Math.Max(0,State.GrenadeLeft-dt);burstPause=Math.Max(0,burstPause-dt);search=Math.Max(0,search-dt);
         coverLeft=Math.Max(0,coverLeft-dt);noiseCooldown=Math.Max(0,noiseCooldown-dt);
-        if(State.ReloadLeft>0){State.ReloadLeft=Math.Max(0,State.ReloadLeft-dt);if(State.ReloadLeft==0){int n=Math.Min(spec.Magazine-State.Rounds,State.Reserve);State.Rounds+=n;State.Reserve-=n;}return;}
+        // Reload owns ammo timing only. Sensing, retaliation and navigation keep running throughout it.
+        if(State.ReloadLeft>0){State.ReloadLeft=Math.Max(0,State.ReloadLeft-dt);if(State.ReloadLeft==0){int n=Math.Min(spec.Magazine-State.Rounds,State.Reserve);State.Rounds+=n;State.Reserve-=n;State.ShotLeft=Math.Max(State.ShotLeft,.15f);}}
         // Danger outranks blindness and combat: a squad knows its own bombs, and nobody stands in fire on purpose.
         var zones=TacticalDanger.Zones(Project,body.Position,true).ToList();fleeLeft-=dt;
         if(TacticalDanger.Urgent(zones,body.Position) is {} danger){
@@ -240,6 +241,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         // One steering source: the native pilot turns while walking; a standing enemy turns toward its target smoothly.
         if((TargetBody is not null||search>0)&&!path.Destination.HasValue){var delta=lastSeen-body.Position;delta.Y=0;
             if(delta.LengthSquared()>.01f)Creature.ComponentLocomotion.TurnOrder=new Vector2(Math.Clamp(Vector2.Angle(body.Matrix.Forward.XZ,delta.XZ)*.8f,-.6f,.6f),0);}
+        if(State.ReloadLeft>0)return;
         if(State.Bomb&&clear&&distance>=9&&distance<=22&&body.StandingOnValue.HasValue&&body.Velocity.LengthSquared()<.2f){
             if(plant<=0)plantSequence++;
             path.Stop();plant+=dt;body.TargetCrouchFactor=1;
