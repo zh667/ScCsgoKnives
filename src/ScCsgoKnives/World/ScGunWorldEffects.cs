@@ -10,6 +10,10 @@ public static class ScGunWorldEffects {
         // 1f is the native RunAway listener's threshold. Silencers reduce range, not that threshold.
         noise?.MakeNoise(position, taser ? .5f : 1f, NoiseRange(silenced, taser));
     }
+    /// <summary>Actual shots retain their owner so hearing enemies engage the shooter, not a nearby bystander.</summary>
+    public static void NotifyGunshot(SubsystemNoise noise,ComponentBody shooter,bool silenced,bool taser){
+        if(shooter is not null)noise?.MakeNoise(shooter,taser?.5f:1f,NoiseRange(silenced,taser));
+    }
     public static bool ShouldBreakLeaf(Block block, int value, float sample) => block is LeavesBlock
         && sample > block.GetProjectileResilience(value);
     public static int BreakLeaves(SubsystemTerrain terrain, IEnumerable<ScGunRange.LeafHit> leaves, float travel,

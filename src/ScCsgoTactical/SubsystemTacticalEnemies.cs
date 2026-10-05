@@ -39,6 +39,12 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         }
     }}
     public override void Dispose(){ScTacticalPerformance.Finish(Project);base.Dispose();}
+    public bool MayHuntPlayers=>info.WorldSettings.GameMode!=GameMode.Creative;
+    /// <summary>Only living players in this world's bounded active neighbourhood; never targets another world's body.</summary>
+    public ComponentBody NearestPlayer(Vector3 position,float range)=>players.ComponentPlayers
+        .Where(p=>p.Entity?.Project==Project&&p.ComponentHealth?.Health>0&&p.ComponentBody?.IsAddedToProject==true)
+        .Select(p=>p.ComponentBody).Where(b=>Vector3.DistanceSquared(position,b.Position)<=range*range)
+        .OrderBy(b=>Vector3.DistanceSquared(position,b.Position)).FirstOrDefault();
     /// <summary>This world's rules; without the rules subsystem (older fixtures) the device default switch, 30 days
     /// and the saved MaxActive cap apply exactly as before.</summary>
     public ScEnemyRules Rules=>Project.FindSubsystem<SubsystemTacticalEnemyRules>(false)?.Rules??new ScEnemyRules(ScUiSettings.NaturalEnemies,ScEnemySpawnPolicy.GraceDays,ScEnemyDensity.Standard);

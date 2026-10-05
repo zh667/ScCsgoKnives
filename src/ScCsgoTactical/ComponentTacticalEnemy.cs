@@ -10,23 +10,17 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     public ComponentBody TargetBody;
     ComponentPathfinding path;SubsystemTacticalEnemies director;SubsystemTerrain terrain;SubsystemBodies bodies;SubsystemTime time;
     readonly Engine.Random random=new();
-    float senseLeft,pathLeft,lost,aim,plant,burstPause,retreat,search,fleeLeft;int burst,fleeAttempt;double nextJump;
+    float senseLeft,pathLeft,lost,aim,plant,burstPause,search,fleeLeft;int burst,fleeAttempt;double nextJump;
     /// <summary>True while the current target attacked this enemy first: a bounded retaliation, not proactive aggro.</summary>
     public bool Retaliating;
-    // Engagement policy. User request 2026-10-02 (mpc3 feedback): "野生匪和手动召唤出来的匪都默认中立；一个受到攻击后，
-    // 附近所有匪共同攻击同一个攻击者". Nobody is engaged unprovoked any more, whatever the squad's source (natural, summoned,
-    // or an older save without one): coming near, a shot fired into the air and the end of a summoned squad's warning
-    // window grant no target. An effective attack on one of them, by an attacker that exists and is not one of them, makes
-    // every living one within <see cref="ProvokeRange"/> of the one that was hit take that same attacker as its target
-    // (SubsystemTacticalEnemies.Provoked: once per attack, from the victim's position; the ones told do not tell others
-    // in turn). Walls and smoke still block shots, and hidden attackers are forgotten after the memory window.
-    // The 2026-10-06 request removes the retaliation distance cap. The earlier policy (agent-followup-140
-    // F2, widened by video-feedback-20260929 R3) had every member look for players and companions on its own; the
-    // "everyone nearby joins in" the player saw came from that, so it is now explicit.
+    // 2026-10-06 follow-up: gunfire provokes healthy enemies; only wounded enemies seek escape/cover.
+    // A bomb carrier seeks a nearby player to plant near them. Creative remains attack-to-provoke.
+    // Shared retaliation stays bounded to nearby squad members; walls/smoke continue to stop shots.
     public const float LeashRange=48,RetaliationMemory=8,ProactiveMemory=6;
     /// <summary>How far from the one that was hit the others join in: the distance at which a member used to notice a
     /// player by itself (32), a candidate value: the user named "nearby" without a number.</summary>
     public const float ProvokeRange=32;
+    public const float LowHealthToEscape=.33f,HealthToResume=.4f,PlantNearPlayer=12,PlayerSearchRange=80;
     public static float DisengageRange(TacticalRole role)=>role==TacticalRole.Sniper?44:40;
     public static float RetaliationRange(TacticalRole role)=>float.PositiveInfinity;
     /// <summary>A summoned squad looks toward the one who summoned it and, once its warning window is over, walks a bounded
@@ -40,8 +34,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     bool seen;
     int strafeSide=1;
     float strafeLeft;
-    Vector3 noisePosition;
-    float coverLeft,noiseCooldown;
+    float noiseCooldown;
+    bool wounded;
     ComponentBody lastVoiceTarget;
     // ---- visible actions (r2-c4-completion-20260929) ----
     // A grenade used to appear at once 1.5 m above the feet, inside the thrower's own box, while the enemy kept its gun;
@@ -151,9 +145,15 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     }
     public void Alert(ComponentBody attacker){if(Friendly(attacker)||attacker.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;NoteEncounter(attacker,"seen");TargetBody=attacker;Retaliating=true;lastSeen=attacker.Position;lost=RetaliationMemory;aim=0;seen=false;senseLeft=0;if(plant>0)AbandonPlant();else Creature.ComponentBody.TargetCrouchFactor=0;}
     public void HearNoise(ComponentBody source,Vector3 position,float loudness){
-        // Native position-only gunshots have no source body. Footsteps (.25) and our own squad are ignored.
-        if(State is null||noiseCooldown>0||source is not null&&Friendly(source)||loudness<.5f||Vector3.DistanceSquared(Creature.ComponentBody.Position,position)>40*40)return;
-        noisePosition=position;coverLeft=2.5f;noiseCooldown=3;pathLeft=0;NoteEncounter(source,"heard");
+        if(!ScNet.IsAuthority||State is null||Creature.ComponentHealth.Health<=0||!director.MayHuntPlayers||noiseCooldown>0
+            ||source is not null&&Friendly(source)||loudness<.5f||Vector3.DistanceSquared(Creature.ComponentBody.Position,position)>40*40)return;
+        // Our shots carry their owner. For older positional notifications, investigate the sound and resolve
+        // only a player close to its origin; footsteps/animal noises do not select an unrelated player.
+        var shooter=source?.Entity.FindComponent<ComponentPlayer>() is not null?source:source is null?director.NearestPlayer(position,4):null;
+        if(source is not null&&shooter is null)return;
+        noiseCooldown=1;pathLeft=0;NoteEncounter(shooter,"heard");
+        if(shooter is not null){if(TargetBody is null||!ReferenceEquals(TargetBody,shooter))Alert(shooter);else lost=RetaliationMemory;}
+        else if(TargetBody is null)Investigate(position,RetaliationMemory);
     }
     /// <summary>Encounter observation for the director's bounded log (players only).</summary>
     void NoteEncounter(ComponentBody body,string what){if(State is not null&&body?.Entity.FindComponent<ComponentPlayer>() is not null)director?.Note(State.Squad,what);}
@@ -177,7 +177,9 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(!IsActive){CancelThrow();if(plant>0)AbandonPlant();return;}dt=Math.Clamp(dt,0,.5f);var body=Creature.ComponentBody;var spec=GunSpec.All[State.Variant];
         State.Warmup=Math.Max(0,State.Warmup-dt);
         State.ShotLeft=Math.Max(0,State.ShotLeft-dt);State.GrenadeLeft=Math.Max(0,State.GrenadeLeft-dt);burstPause=Math.Max(0,burstPause-dt);search=Math.Max(0,search-dt);
-        coverLeft=Math.Max(0,coverLeft-dt);noiseCooldown=Math.Max(0,noiseCooldown-dt);
+        noiseCooldown=Math.Max(0,noiseCooldown-dt);
+        bool wasWounded=wounded;wounded=Creature.ComponentHealth.Health<LowHealthToEscape||wounded&&Creature.ComponentHealth.Health<HealthToResume;
+        if(wounded!=wasWounded)pathLeft=0;
         // Reload owns ammo timing only. Sensing, retaliation and navigation keep running throughout it.
         if(State.ReloadLeft>0){State.ReloadLeft=Math.Max(0,State.ReloadLeft-dt);if(State.ReloadLeft==0){int n=Math.Min(spec.Magazine-State.Rounds,State.Reserve);State.Rounds+=n;State.Reserve-=n;State.ShotLeft=Math.Max(State.ShotLeft,.15f);}}
         // Danger outranks blindness and combat: a squad knows its own bombs, and nobody stands in fire on purpose.
@@ -190,10 +192,22 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         }
         fleeAttempt=0;
         if(Project.FindSubsystem<SubsystemScGrenades>(true).IsBodyBlinded(body)){path.Stop();aim=0;CancelThrow();AbandonPlant();body.TargetCrouchFactor=0;seen=false;return;}
+        if(TargetBody is not null&&(!TargetBody.IsAddedToProject||TargetBody.Entity.FindComponent<ComponentHealth>() is not {Health:>0}))Drop();
+        // Wounds override normal attack/plant/throw navigation, but never urgent C4/fire evacuation above.
+        if(wounded&&(TargetBody is not null||search>0)){
+            CancelThrow();AbandonPlant();aim=0;pathLeft-=dt;
+            if(pathLeft<=0||path.IsStuck||!path.Destination.HasValue){pathLeft=.8f;
+                var threat=TargetBody?.Position??lastSeen;
+                if(TacticalCombatMovement.Cover(terrain,body,threat) is {} escape&&!TacticalDanger.Inside(zones,escape))
+                    TacticalNavigation.Navigate(path,escape,.95f,.6f,200,true,false,true,null);
+                else path.Stop();
+            }
+            lost-=dt;if(lost<=0)Drop();
+            TacticalNavigation.StepAssist(Creature,terrain,path.Destination,ref nextJump,time.GameTime);return;
+        }
         // A throw or the recovery after planting runs to its end; nothing else is done meanwhile.
         if(throwing is not null){AdvanceThrow();return;}
         if(plantedAt>=0){path.Stop();if(time.GameTime-plantedAt>=PlantRecovery){plantedAt=-1;body.TargetCrouchFactor=0;Redraw();pathLeft=0;}return;}
-        if(retreat>0){retreat=Math.Max(0,retreat-dt);return;}
         senseLeft-=dt;pathLeft-=dt;strafeLeft-=dt;
         if(TargetBody is not null){
             // Proactive targets are released beyond the disengage range or when chasing too far from home;
@@ -204,7 +218,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 ||!Retaliating&&Vector3.DistanceSquared(body.Position,Home)>LeashRange*LeashRange)Drop();
         }
         if(senseLeft<=0){senseLeft=State.Role==TacticalRole.Sniper?.15f:.35f+random.Float(0,.15f);
-            // Neutral by default: no one is looked for here. A target only comes from an attack (Alert, Provoke).
+            if(TargetBody is null&&!wounded&&State.Bomb&&State.Warmup<=0&&director.MayHuntPlayers&&director.NearestPlayer(body.Position,PlayerSearchRange) is {} player)Alert(player);
             seen=TargetBody!=null&&Visible(TargetBody);
             if(seen){lastSeen=TargetBody.Position;lost=Retaliating?RetaliationMemory:ProactiveMemory;}
         }
@@ -219,13 +233,9 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(pathLeft<=0){pathLeft=.65f;
             if(zones.FirstOrDefault(z=>z.Bomb&&TacticalDanger.Horizontal(body.Position,z.Center)<z.Radius+TacticalDanger.BombMargin) is {Bomb:true} hold)
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
-            else if(coverLeft>0&&State.Warmup<=0){
-                if(!path.Destination.HasValue||path.IsStuck){
-                    if(TacticalCombatMovement.Cover(terrain,body,noisePosition) is {} cover)Go(cover,.9f,.6f,160,null);
-                    else path.Stop();
-                }
-            }
             else if(TargetBody is null){if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);else if(search>0)path.Stop();else if(Vector3.DistanceSquared(body.Position,Home)>16)Go(Home,.45f,2,160,null);else path.Stop();}
+            else if(State.Warmup>0)path.Stop();
+            else if(State.Bomb&&distance>PlantNearPlayer)Go(lastSeen,.75f,PlantNearPlayer-2,200,TargetBody);
             else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();
             else if(clear&&State.Warmup<=0&&TacticalCombatMovement.IsSmg(spec.Name)&&distance<=24){
                 if(strafeLeft<=0||path.IsStuck||!path.Destination.HasValue){
@@ -242,7 +252,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if((TargetBody is not null||search>0)&&!path.Destination.HasValue){var delta=lastSeen-body.Position;delta.Y=0;
             if(delta.LengthSquared()>.01f)Creature.ComponentLocomotion.TurnOrder=new Vector2(Math.Clamp(Vector2.Angle(body.Matrix.Forward.XZ,delta.XZ)*.8f,-.6f,.6f),0);}
         if(State.ReloadLeft>0)return;
-        if(State.Bomb&&clear&&distance>=9&&distance<=22&&body.StandingOnValue.HasValue&&body.Velocity.LengthSquared()<.2f){
+        if(State.Bomb&&clear&&State.Warmup<=0&&distance<=PlantNearPlayer&&body.StandingOnValue.HasValue&&body.Velocity.LengthSquared()<.2f){
             if(plant<=0)plantSequence++;
             path.Stop();plant+=dt;body.TargetCrouchFactor=1;
             // After planting, the squad-wide danger rules keep every member outside the radius until it resolves.
@@ -256,7 +266,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(plant>0)AbandonPlant();
         if(!clear||State.Warmup>0)return;
         TryGrenade(distance);if(throwing is not null)return;
-        if(State.Rounds==0){if(State.Reserve>0){State.ReloadLeft=State.Role==TacticalRole.Machine?4:2.8f;Play("reload");}else if(pathLeft<=.1f)Go(body.Position-body.Matrix.Forward*10,.8f,1,160,null);return;}
+        if(State.Rounds==0){if(State.Reserve>0){State.ReloadLeft=State.Role==TacticalRole.Machine?4:2.8f;Play("reload");}return;}
         if(State.ShotLeft>0||burstPause>0||aim<(State.Role==TacticalRole.Sniper?1.4f:.55f))return;
         if(!Retaliating&&State.Role==TacticalRole.Close&&distance>18)return;
         if(!Visible(TargetBody)){seen=false;aim=0;return;}

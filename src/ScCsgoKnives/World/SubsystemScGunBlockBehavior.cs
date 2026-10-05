@@ -1603,7 +1603,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // separate sound file; the integral one's WEAPON_SOUND_SINGLE is already
         // the suppressed shot.
         bool silenced = spec.SilencedAlways || (spec.HasSilencer && !GunSpec.GetSilencerOff(data));
-        if (authority) ScGunWorldEffects.NotifyNoise(Project.FindSubsystem<SubsystemNoise>(false), player.ComponentBody.Position, silenced, spec.RechargeSeconds > 0);
+        if (authority) ScGunWorldEffects.NotifyGunshot(Project.FindSubsystem<SubsystemNoise>(false), player.ComponentBody, silenced, spec.RechargeSeconds > 0);
         // The round that empties the magazine locks a pistol's slide back (shoot_empty).
         bool lastRound = rounds <= 0;
         bool scopedShot = state.Zoom > 0;

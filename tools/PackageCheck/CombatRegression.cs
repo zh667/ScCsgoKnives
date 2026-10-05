@@ -67,7 +67,7 @@ static class CombatRegression {
         Test("runtime-shot-noise-and-leaf-effect-wired",()=>{
             var fire=mod.GetType("Game.SubsystemScGunBlockBehavior").GetMethod("Fire",BindingFlags.Instance|BindingFlags.NonPublic);
             var calls=Calls(fire).ToArray();
-            int commit=Array.FindIndex(calls,c=>c.Name=="Commit"),noise=Array.FindIndex(calls,c=>c.Name=="NotifyNoise"),ray=Array.FindIndex(calls,c=>c.Name=="TraceBullet"),leaves=Array.FindIndex(calls,c=>c.Name=="BreakLeaves");
+            int commit=Array.FindIndex(calls,c=>c.Name=="Commit"),noise=Array.FindIndex(calls,c=>c.Name=="NotifyGunshot"),ray=Array.FindIndex(calls,c=>c.Name=="TraceBullet"),leaves=Array.FindIndex(calls,c=>c.Name=="BreakLeaves");
             return commit>=0&&noise>commit&&leaves>ray&&ray>=0&&calls.Any(c=>c.Name=="PlaySound");
         });
         foreach (bool creative in new[] { false, true }) foreach (bool handling in new[] { false, true })

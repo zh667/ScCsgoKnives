@@ -87,10 +87,61 @@ static class TacticalEnemyRegression {
         var savedTypes=BlocksManager.BlockTypeToIndex.ToArray();var savedNames=BlocksManager.BlockNameToIndex.ToArray();var savedBlocks=(Block[])BlocksManager.Blocks.Clone();
         try{
             // Death drops now resolve real vanilla materials; the isolated runner has no BlocksManager.Initialize.
-            foreach(var (index,block) in new (int,Block)[]{(40,new IronIngotBlock{CraftingId="ironingot"}),(41,new CopperIngotBlock{CraftingId="copperingot"}),(42,new CoalChunkBlock{CraftingId="coalchunk"}),(710,(Block)Activator.CreateInstance(C("ScChickenEggBlock")))}){
+            foreach(var (index,block) in new (int,Block)[]{(40,new IronIngotBlock{CraftingId="ironingot"}),(41,new CopperIngotBlock{CraftingId="copperingot"}),(42,new CoalChunkBlock{CraftingId="coalchunk"}),(710,(Block)Activator.CreateInstance(C("ScChickenEggBlock"))),(720,(Block)Activator.CreateInstance(C("ScGrenadeBlock"))),(721,(Block)Activator.CreateInstance(C("ScC4Block")))}){
                 block.BlockIndex=index;BlocksManager.Blocks[index]=block;BlocksManager.BlockTypeToIndex[block.GetType()]=index;BlocksManager.BlockNameToIndex[block.GetType().Name]=index;
             }
             FreshRegistry();
+            foreach(bool creative in new[]{false,true})foreach(bool silenced in new[]{false,true})Test($"feedback/heard-player-shot-real-noise-routing/{creative}/{silenced}",()=>{
+                var f=World();f.Info.WorldSettings.GameMode=creative?GameMode.Creative:GameMode.Survival;
+                var e=Enemy(f.P);e.Enemy.State.Grenades=0;e.Enemy.State.Bomb=false;f.Bodies.AddBody(e.Creature.ComponentBody);
+                var body=new ComponentBody{Position=new Vector3(0,60,-20),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
+                var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};
+                var creature=new ComponentCreature{ComponentBody=body,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;
+                var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.ComponentBody=body;player.ComponentHealth=health;E(f.P,body,health,creature,player);f.Bodies.AddBody(body);
+                f.P.FindSubsystem<SubsystemPlayers>(true).m_componentPlayers.Add(player);
+                var noise=new SubsystemNoise{m_subsystemBodies=f.Bodies};
+                if(C("ScGunWorldEffects").GetMethod("NotifyGunshot") is {} shot)shot.Invoke(null,[noise,body,silenced,false]);
+                else C("ScGunWorldEffects").GetMethod("NotifyNoise").Invoke(null,[noise,body.Position,silenced,false]);
+                bool heard=!creative&&!silenced;Check((e.Enemy.TargetBody==body)==heard,"wrong shooter or silence/creative range gate");
+                int rounds=e.Enemy.State.Rounds;
+                for(int i=0;i<25;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}
+                Check(heard?e.Enemy.State.Rounds<rounds&&health.Health<1:e.Enemy.State.Rounds==rounds&&health.Health==1,"healthy enemy did not fight audible shooter or attacked when prohibited");
+                if(creative){e.Enemy.Alert(body);for(int i=0;i<25;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}Check(e.Enemy.State.Rounds<rounds,"creative retaliation was removed");}
+            });
+            Test("feedback/low-health-escape-recovery-and-c4-priority",()=>{
+                var f=World();f.Terrain.Floor=60;f.Terrain.Terrain.AllocateChunk(0,0).State=TerrainChunkState.Valid;
+                BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};
+                for(int x=0;x<16;x++)for(int z=0;z<16;z++)f.Terrain.Terrain.SetCellValueFast(x,59,z,2);
+                var e=Enemy(f.P);e.Creature.ComponentBody.Position=new Vector3(8.5f,60,8.5f);e.Enemy.Home=e.Creature.ComponentBody.Position;e.Enemy.State.Grenades=0;
+                var target=new ComponentBody{Position=new Vector3(8.5f,60,1.5f),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
+                var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;E(f.P,target,health,creature);f.Bodies.AddBody(target);
+                e.Enemy.Alert(target);e.Creature.ComponentHealth.Health=.32f;int rounds=e.Enemy.State.Rounds;
+                void Run(int n){for(int i=0;i<n;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}}
+                Run(5);Check(e.Path.Destination is Vector3 at&&Vector3.DistanceSquared(at,target.Position)>Vector3.DistanceSquared(e.Creature.ComponentBody.Position,target.Position)&&e.Enemy.State.Rounds==rounds,"wounded enemy did not retreat or kept firing");
+                e.Creature.ComponentHealth.Health=.36f;Run(5);Check(e.Path.Destination.HasValue&&e.Enemy.State.Rounds==rounds,"health threshold oscillates");
+                e.Creature.ComponentHealth.Health=.4f;Run(20);Check(e.Enemy.State.Rounds<rounds,"recovered enemy did not resume combat");
+                var bombs=(Subsystem)Activator.CreateInstance(T("SubsystemTacticalBombs"));bombs.m_project=f.P;f.P.m_subsystems.Add(bombs);
+                var bomb=Activator.CreateInstance(T("SubsystemTacticalBombs").GetNestedType("Bomb"));dynamic charge=bomb.GetType().GetField("Charge").GetValue(bomb);charge.Position=e.Creature.ComponentBody.Position;charge.Remaining=3;
+                ((System.Collections.IList)T("SubsystemTacticalBombs").GetField("Bombs").GetValue(bombs)).Add(bomb);e.Creature.ComponentHealth.Health=.2f;Run(1);
+                Check(e.Path.Destination is Vector3 exit&&Vector2.Distance(exit.XZ,charge.Position.XZ)>=15,"low-health steering overrode urgent C4 evacuation");
+            });
+            foreach(bool creative in new[]{false,true})Test($"feedback/bomb-carrier-seeks-near-player-before-plant/{creative}",()=>{
+                var f=World();f.Info.WorldSettings.GameMode=creative?GameMode.Creative:GameMode.Survival;f.Terrain.Floor=60;
+                var e=Enemy(f.P,4);e.Enemy.State.Grenades=0;e.Creature.ComponentBody.StandingOnValue=2;
+                var body=new ComponentBody{Position=new Vector3(0,60,-60),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
+                var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=body,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;
+                var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.ComponentBody=body;player.ComponentHealth=health;E(f.P,body,health,creature,player);f.Bodies.AddBody(body);f.P.FindSubsystem<SubsystemPlayers>(true).m_componentPlayers.Add(player);
+                var bombs=(Subsystem)Activator.CreateInstance(T("SubsystemTacticalBombs"));bombs.m_project=f.P;f.P.m_subsystems.Add(bombs);bombs.Load(new ValuesDictionary());
+                var c4=(Subsystem)Activator.CreateInstance(C("SubsystemScC4"));c4.m_project=f.P;f.P.m_subsystems.Add(c4);
+                var list=(System.Collections.IList)T("SubsystemTacticalBombs").GetField("Bombs").GetValue(bombs);
+                void Run(int n){for(int i=0;i<n;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}}
+                Run(5);Check(list.Count==0&&!(bool)e.Enemy.PlantPhase.Active,"planted far from the player");
+                if(creative){Check(e.Enemy.TargetBody is null&&e.Path.Destination is null,"creative bomb carrier hunts unprovoked");return;}
+                Check((bool)(e.Enemy.TargetBody==body)&&e.Path.Destination is Vector3 at&&Vector3.Distance(at,body.Position)<.1f,"distant bomb carrier did not find and approach player");
+                body.Position=new Vector3(0,60,-18);f.Bodies.UpdateBody(body);Run(8);Check(!(bool)e.Enemy.PlantPhase.Active&&e.Path.Destination.HasValue,"stopped to plant at obsolete 22m distance");
+                body.Position=new Vector3(0,60,-10);f.Bodies.UpdateBody(body);e.Creature.ComponentBody.Velocity=Vector3.Zero;Run(7);Check((bool)e.Enemy.PlantPhase.Active&&list.Count==0,"nearby player did not trigger timed plant");
+                Run(36);Check(list.Count==1&&!e.Enemy.State.Bomb,"nearby timed plant missing or repeated");bombs.Dispose();
+            });
             Test("feedback/flash-detonation-on-screen-beyond-radius-with-cover",()=>{
                 foreach(var (z,wall,expected) in new[]{(-200f,false,true),(-200f,true,false),(200f,false,false),(-20f,false,true)}){
                     var f=World();f.Terrain.Blocked=wall;
@@ -120,7 +171,7 @@ static class TacticalEnemyRegression {
                     Check(e.Enemy.TargetBody==target&&e.Enemy.State.Rounds<5&&e.Enemy.State.Rounds+e.Enemy.State.Reserve<5&&health.Health<1,$"sniper never resumed actual distant damage after reload: distance={distance}, target={e.Enemy.TargetBody==target}, rounds={e.Enemy.State.Rounds}, reserve={e.Enemy.State.Reserve}, hp={health.Health}, gun={e.Enemy.State.Variant}");
                 }
             });
-            Test("feedback/source-less-gunshot-evades-and-smg-strafes",()=>{
+            Test("feedback/source-less-gunshot-investigates-and-smg-strafes",()=>{
                 var f=World();f.Terrain.Floor=60;var e=Enemy(f.P,2);
                 BlocksManager.Blocks[0]=new AirBlock{IsCollidable=false};BlocksManager.Blocks[2]=new DirtBlock{BlockIndex=2,IsCollidable=true};
                 for(int cx=0;cx<2;cx++)for(int cz=0;cz<2;cz++)f.Terrain.Terrain.AllocateChunk(cx,cz).State=TerrainChunkState.Valid;
@@ -128,12 +179,12 @@ static class TacticalEnemyRegression {
                 var body=e.Creature.ComponentBody;body.Position=new Vector3(12.5f,60,12.5f);e.Enemy.Home=body.Position;e.Enemy.State.Grenades=0;
                 ((INoiseListener)e.Enemy).HearNoise(null,new Vector3(12.5f,60,4.5f),1);
                 ((IUpdateable)e.Enemy).Update(.1f);
-                Check(e.Path.Destination is not null&&e.Enemy.TargetBody is null,"position-only gunshot ignored or granted hostility");
+                Check(e.Path.Destination is Vector3 searchAt&&Vector3.Distance(searchAt,new Vector3(12.5f,60,4.5f))<.1f&&e.Enemy.TargetBody is null,"unidentified sound was fled from instead of investigated");
                 var target=new ComponentBody{Position=new Vector3(12.5f,60,4.5f),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
                 var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;E(f.P,target,health,creature);f.Bodies.AddBody(target);
                 var guns=((Array)C("GunSpec").GetField("All").GetValue(null)).Cast<object>().ToArray();
                 e.Enemy.State.Variant=Array.FindIndex(guns,g=>(string)g.GetType().GetField("Name").GetValue(g)=="mp9");
-                e.Enemy.Alert(target);Set(e.Enemy,"coverLeft",0f);Set(e.Enemy,"pathLeft",0f);e.Path.Stop();
+                e.Enemy.Alert(target);Set(e.Enemy,"pathLeft",0f);e.Path.Stop();
                 int rounds=e.Enemy.State.Rounds;
                 for(int i=0;i<22;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}
                 Check(e.Path.Destination is Vector3 at&&Math.Abs(at.X-body.Position.X)>1&&e.Enemy.State.Rounds<rounds,"SMG did not combine lateral movement with firing");
@@ -583,9 +634,9 @@ static class TacticalEnemyRegression {
                 void Place(Vector3 p){target.Position=p;f.Bodies.UpdateBody(target);}
                 int rounds=e.Enemy.State.Rounds;
                 foreach(float d in new[]{64f,48f,40f,33f,31f,20f,8f,3f,-5f,-15f}){Place(new Vector3(0,60,-d));Run(15);Check(e.Enemy.TargetBody==null&&e.Enemy.State.Rounds==rounds&&health.Health==1,"an unprovoked enemy took a target or fired at a visible player "+d+" m away");}
-                // A shot into the air next to it: it may walk a bounded search toward the sound; it takes no target and fires nothing.
+                // The current request makes audible player gunfire provocative, even when it did not hit the enemy.
                 Place(new Vector3(0,60,-12));((INoiseListener)e.Enemy).HearNoise(target,target.Position,1f);Run(60);
-                Check(e.Enemy.TargetBody==null&&!(bool)e.Enemy.Retaliating&&e.Enemy.State.Rounds==rounds&&health.Health==1,"a gunshot heard nearby made a neutral enemy hostile");
+                Check(e.Enemy.TargetBody==target&&(bool)e.Enemy.Retaliating&&e.Enemy.State.Rounds<rounds&&health.Health<1,"audible gunfire did not provoke a fight");
                 // A sniper is neutral like the rest (it used to notice at 36 m).
                 var sniper=Enemy(f.P,0);sniper.Enemy.State.Grenades=0;sniper.Creature.ComponentBody.Rotation=Quaternion.Identity;int sniperRounds=sniper.Enemy.State.Rounds;
                 Place(new Vector3(0,60,-30));for(int i=0;i<20;i++)((IUpdateable)sniper.Enemy).Update(.1f);Check(sniper.Enemy.TargetBody==null&&sniper.Enemy.State.Rounds==sniperRounds,"an unprovoked sniper took a target");
@@ -815,7 +866,7 @@ static class TacticalEnemyRegression {
                 return(w.Enemy,w.Creature,w.Run,()=>list.Count,bombs);
             }
             TestD("enemy-plant-shows-c4-commits-once-recovers-empty-then-redraws",()=>{
-                var w=Planter(15);int c4=(int)C("ScC4Block").GetProperty("Value").GetValue(null);int gun=w.Enemy.State.DisplayValue;int rounds=w.Enemy.State.Rounds;
+                var w=Planter(10);int c4=(int)C("ScC4Block").GetProperty("Value").GetValue(null);int gun=w.Enemy.State.DisplayValue;int rounds=w.Enemy.State.Rounds;
                 var log=new List<string>();for(int i=0;i<300;i++){log.AddRange(w.Run(1,1/60f));log[^1]+=$" bombs={w.Bombs()}";}
                 string Trace()=>string.Join(" | ",log.Where((_,i)=>i%10==0));
                 int start=log.FindIndex(l=>!l.Contains("plant=-"));Check(start>=0,"no plant started: "+Trace());
@@ -832,7 +883,7 @@ static class TacticalEnemyRegression {
                 return $"plant from frame {start}, bomb at {commit} ({seconds:0.000} s), gun back at {end}";
             });
             foreach(string interrupt in new[]{"damage","death"})TestD("enemy-plant-interrupted-before-commit-plants-nothing/"+interrupt,()=>{
-                var w=Planter(15);var log=w.Run(90,1/60f);Check(log.Any(l=>!l.Contains("plant=-")),"fixture: no plant: "+string.Join(" | ",log.Where((_,i)=>i%10==0)));
+                var w=Planter(10);var log=w.Run(90,1/60f);Check(log.Any(l=>!l.Contains("plant=-")),"fixture: no plant: "+string.Join(" | ",log.Where((_,i)=>i%10==0)));
                 if(interrupt=="damage")w.Enemy.Alert(w.Creature.Entity.Project.FindSubsystem<SubsystemBodies>(true).Bodies.First(b=>b!=w.Creature.ComponentBody));
                 else w.Creature.ComponentHealth.Health=0;
                 log.AddRange(w.Run(interrupt=="death"?240:2,1/60f));
