@@ -440,8 +440,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             if (m_time.GameTime<pair.Value.Until) {
                 var chase=pair.Key.Entity.FindComponent<ComponentChaseBehavior>();
                 if (chase?.m_target is not null) { chase.m_componentPathfinding.Stop();chase.StopAttack(); }
-                var p=pair.Key.Entity.FindComponent<ComponentPlayer>();
-                if (p is not null) { var overlay=p.Entity.FindComponent<ComponentScreenOverlays>(); overlay.Message="闪光影响中";overlay.MessageFactor=1; }
             }
         }
         ScNetGrenades.ServerTick(m_active,m_disturbances);
@@ -462,9 +460,6 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         FireLoop(m_active.Where(ScFireArea.IsFire).ToArray());
         foreach (var pair in m_blind.ToArray()) {
             if (m_time.GameTime>=pair.Value.ImmuneUntil) { m_blind.Remove(pair.Key); continue; }
-            if (m_time.GameTime<pair.Value.Until && pair.Key.Entity.FindComponent<ComponentPlayer>() is {} p) {
-                var overlay=p.Entity.FindComponent<ComponentScreenOverlays>(); overlay.Message="闪光影响中";overlay.MessageFactor=1;
-            }
         }
     }
     TerrainRaycastResult? SolidRay(Vector3 a,Vector3 b) => m_terrain.Raycast(a,b,false,true,(value,_)=>BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));

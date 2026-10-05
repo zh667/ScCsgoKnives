@@ -102,11 +102,11 @@ Window.Frame+=()=>{if(done)return;done=true;try{
         screen=Open(size);for(int i=0;i<40;i++)Click(screen,"m_enemyLess");
         Check("days clamp at 0 "+size,Working(screen).GraceDays==0&&Texts(screen).Contains("开档后立即允许"));
         Click(screen,"m_defaults");Layout(screen,size);Click(screen,"m_save");Left();
-        screen=Open(size);((CheckboxWidget)Field(screen,"m_sniperHipCrosshair")).IsChecked=false;Click(screen,"m_starter");Click(screen,"m_cancel");Left();
+        screen=Open(size);Check("settings have no starter equipment row "+size,!Texts(screen).Contains("开局装备")&&!Texts(screen).Contains(ScStarterLoadout.Label(ScStarterPlan.Full)));((CheckboxWidget)Field(screen,"m_sniperHipCrosshair")).IsChecked=false;Click(screen,"m_cancel");Left();
         Check("new controls cancel without changing settings "+size,ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
-        screen=Open(size);((CheckboxWidget)Field(screen,"m_sniperHipCrosshair")).IsChecked=false;Click(screen,"m_starter");Click(screen,"m_starter");Click(screen,"m_starter");Click(screen,"m_save");Left();
+        screen=Open(size);((CheckboxWidget)Field(screen,"m_sniperHipCrosshair")).IsChecked=false;Click(screen,"m_save");Left();
         ScUiSettings.ResetAll();ScUiSettings.Load();
-        Check("new controls persist "+size,!ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.Full);
+        Check("new controls persist "+size,!ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
         screen=Open(size);Click(screen,"m_defaults");Layout(screen,size);Click(screen,"m_save");Left();
         Check("new controls restore defaults "+size,ScUiSettings.SniperHipCrosshair&&ScUiSettings.StarterPlan==ScStarterPlan.None);
         ScStarterPlan? picked=null;var dialog=new ScStarterDialog(ScStarterPlan.None,p=>{picked=p;return true;});
