@@ -17,8 +17,8 @@ static class StarterEquipmentRegression {
         var oldTypes=BlocksManager.BlockTypeToIndex.ToArray();var oldNames=BlocksManager.BlockNameToIndex.ToArray();var oldBlocks=(Block[])BlocksManager.Blocks.Clone();
         var registryField=T("ScGunRegistry").GetField("Current");var oldRegistry=registryField.GetValue(null);
         try{
-            foreach(var (name,index) in new[]{("ScKnifeBlock",700),("ScGunBlock",701)}){
-                var type=T(name);var block=(Block)Activator.CreateInstance(type);block.BlockIndex=index;block.MaxStacking=1;
+            foreach(var (name,index) in new[]{("ScKnifeBlock",700),("ScGunBlock",701),("ScAmmoBlock",702)}){
+                var type=T(name);var block=(Block)Activator.CreateInstance(type);block.BlockIndex=index;block.MaxStacking=index==702?100:1;
                 BlocksManager.Blocks[index]=block;BlocksManager.BlockTypeToIndex[type]=index;BlocksManager.BlockNameToIndex[name]=index;
             }
             foreach(var mode in Enum.GetValues<GameMode>())foreach(var spawn in Enum.GetValues<PlayerData.SpawnMode>())foreach(int count in new[]{0,1,2}){
@@ -26,6 +26,7 @@ static class StarterEquipmentRegression {
                     ==(mode is GameMode.Harmless or GameMode.Survival or GameMode.Challenging or GameMode.Cruel&&spawn is PlayerData.SpawnMode.InitialIntro or PlayerData.SpawnMode.InitialNoIntro&&count==1),"unexpected eligibility"));
             }
             foreach(int plan in new[]{0,1,2,3})foreach(bool full in new[]{false,true})Test($"choice-save-reload-once/{plan}/full-{full}",()=>{
+                int total=plan==0?0:plan+5;
                 var project=new Project();var players=new SubsystemPlayers{m_project=project};var info=new SubsystemGameInfo{m_project=project,WorldSettings=Blank<WorldSettings>()};info.WorldSettings.GameMode=GameMode.Survival;
                 project.m_subsystems.Add(players);project.m_subsystems.Add(info);
                 var inventory=new ComponentInventory();for(int i=0;i<4;i++)inventory.m_slots.Add(full?new(){Value=700,Count=1}:new());
@@ -40,7 +41,7 @@ static class StarterEquipmentRegression {
                 var saved=new ValuesDictionary();starter.Save(saved);starter=Activator.CreateInstance(T("SubsystemScStarterEquipment"));((Subsystem)starter).m_project=project;starter.Load(saved);
                 Require(starter.Pending(3)&&starter.Choose(player,(dynamic)Plan(plan)),"lost pending choice");
                 Require(!starter.Choose(player,(dynamic)Plan(plan))&&!Queue(),"duplicate confirmation gave items");
-                Require(inventory.m_slots.Sum(s=>s.Count)==(full?4:plan),"wrong inventory mutation");
+                Require(inventory.m_slots.Sum(s=>s.Count)==(full?4:total),"wrong inventory mutation");
                 if(full&&plan>0)Require(registry.Recovery.Count==1,"full inventory lost durable gift");
                 starter.Save(saved);
                 var recovery=(ValuesDictionary)registry.Recovery.Save();
@@ -53,8 +54,8 @@ static class StarterEquipmentRegression {
                     foreach(var slot in inventory.m_slots){slot.Count=0;slot.Value=0;}
                     dynamic restored=T("ScGunRecovery").GetMethod("Load").Invoke(null,[recovery]);
                     restored.Retry((Func<string,IInventory>)(owner=>owner=="player/3"?inventory:null));
-                    Require(inventory.m_slots.Sum(s=>s.Count)==plan,"saved pending kit not delivered exactly");
-                    Require(restored.Retry((Func<string,IInventory>)(_=>inventory))==0&&inventory.m_slots.Sum(s=>s.Count)==plan,"retry duplicated gift");
+                    Require(inventory.m_slots.Sum(s=>s.Count)==total,"saved pending kit not delivered exactly");
+                    Require(restored.Retry((Func<string,IInventory>)(_=>inventory))==0&&inventory.m_slots.Sum(s=>s.Count)==total,"retry duplicated gift");
                 }
                 var checkpoint=T("SubsystemScStarterEquipment").GetMethod("TryCheckpoint",BindingFlags.NonPublic|BindingFlags.Instance);
                 Require(!(bool)checkpoint.Invoke((object)starter,[true,new[]{3},(Action)(()=>throw new Exception("loaded claim saved twice"))]),"loaded checkpoint repeated");

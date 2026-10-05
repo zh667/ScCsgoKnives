@@ -2,6 +2,7 @@ namespace Game;
 
 public enum ScStarterPlan { None, Knife, KnifeAndPistol, Full }
 public static class ScStarterLoadout {
+    public const int MagazineCount=5;
     public static string Label(ScStarterPlan plan)=>plan switch {
         ScStarterPlan.Knife=>"随机原皮刀",
         ScStarterPlan.KnifeAndPistol=>"随机原皮刀＋随机原皮手枪",
@@ -22,6 +23,7 @@ public static class ScStarterLoadout {
         }
         if(plan>=ScStarterPlan.KnifeAndPistol)Gun(true);
         if(plan==ScStarterPlan.Full)Gun(false);
+        items.Add((ScAmmoBlock.Value(ScAmmoBlock.Magazine),MagazineCount));
         return items.ToArray();
     }
 }

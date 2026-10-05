@@ -37,14 +37,14 @@ Test("knife/all-factory-and-finish-damage",()=>{
         Require(ScKnifeStrike.PowerFor(painted,false)==21&&ScKnifeStrike.PowerFor(painted,true)==36,"finish knife damage changed");
     }
 });
-Test("starter/four-random-loadouts-no-skins-or-extra-ammo",()=>{
+Test("starter/four-random-loadouts-factory-weapons-and-five-magazines",()=>{
     foreach(var plan in Enum.GetValues<ScStarterPlan>())for(int seed=0;seed<100;seed++){
         var items=ScStarterLoadout.Items(plan,new Engine.Random(seed));
-        Require(items.Length==(int)plan,"wrong item count");
-        Require(items.All(p=>p.Count==1),"wrong stack size");
+        Require(items.Length==(plan==ScStarterPlan.None?0:(int)plan+1),"wrong item count");
         if(plan==ScStarterPlan.None)continue;
+        Require(items[^1].Value==ScAmmoBlock.Value(ScAmmoBlock.Magazine)&&items[^1].Count==5&&items[..^1].All(p=>p.Count==1),"must grant exactly five magazines");
         Require(Terrain.ExtractContents(items[0].Value)==700&&ScKnifeBlock.SkinOf(items[0].Value)==0,"not factory knife");
-        for(int i=1;i<items.Length;i++){
+        for(int i=1;i<items.Length-1;i++){
             var spec=ScGunBlock.SpecOf(items[i].Value);
             Require(ScStarterLoadout.Pistol(spec.Name)==(i==1)&&spec.Name!="taser","wrong gun class");
             Require(GunSpec.GetRounds(Terrain.ExtractData(items[i].Value))==spec.Magazine,"not full gun");
@@ -95,7 +95,7 @@ Test("starter/network-authorization-malformed-and-duplicate-requests",()=>{
         Send(3);Require(!starter.Granted(3)&&inventory.m_slots.Sum(s=>s.Count)==0,"uneligible player got kit");
         starter.TryGrant(GameMode.Survival,PlayerData.SpawnMode.InitialNoIntro,3,1,inventory,(_,_)=>{});
         Send(255);Send(3,3);Send();Require(starter.Pending(3)&&inventory.m_slots.Sum(s=>s.Count)==0,"malformed packet granted kit");
-        Send(3);Send(3);Require(starter.Granted(3)&&inventory.m_slots.Sum(s=>s.Count)==3,"duplicate network kit");
+        Send(3);Send(3);Require(starter.Granted(3)&&inventory.m_slots.Sum(s=>s.Count)==8,"duplicate network kit");
         var response=new ScNetReader(transport.Last);Require(response.Int()==3&&!response.Bool()&&response.Bool()&&response.End,"server ack is not authoritative");
         double now=10;ScNet.Clock=()=>now;ScNetGrenades.Register();
         var view=new ScFlashView(new Vector3(0,61,0),-Vector3.UnitZ,Vector3.UnitX,Vector3.UnitY,1,.6f);
