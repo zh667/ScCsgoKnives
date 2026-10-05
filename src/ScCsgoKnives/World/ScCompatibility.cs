@@ -68,6 +68,7 @@ public static class ScCompatibility {
     public static Plan Prepare(XElement original,string build,XElement definitions,Func<Guid,bool> available) {
         var doc=new XElement(original);var subs=doc.Element("Subsystems")??throw new InvalidOperationException("世界缺少Subsystems");
         var previous=Group(subs,Key);var capsule=Capsule(doc);
+        ScStarterCompatibility.Restore(doc,capsule);
         var manifest=MergeManifest(capsule.Element("Compatibility")??new XElement("Compatibility"),definitions);
         capsule.Element("Compatibility")?.Remove();capsule.Add(manifest);
         var ownedSubs=Owned(manifest,"Subsystem");var ownedComponents=Owned(manifest,"Component");
@@ -119,6 +120,7 @@ public static class ScCompatibility {
     /// <summary>Post-save hook uses only the frozen XML, never global/live project state.</summary>
     public static void PreserveOpaque(XElement saved) {
         var capsule=Capsule(saved);
+        ScStarterCompatibility.Preserve(saved,capsule);
         foreach(var entry in capsule.Element("Opaque")?.Elements()??[]) {
             if(entry.Name=="Appearance") {
                 string entity=(string)entry.Attribute("Entity");
