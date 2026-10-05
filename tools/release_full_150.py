@@ -27,6 +27,7 @@ OLD_LITE = ROOT / "output/[API1.9]CS武器1.4.0-轻量包.scmod"
 NAME = "[API1.9]CS武器1.5.0-全量包.scmod"
 PIN = "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94"
 LITE_PIN = "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe"
+PRIOR_PIN = "50f95500342a29a38c85e772d0486c861152deb2b7a3f7c442477b0901b95b93"
 
 
 def sha(data):
@@ -177,7 +178,7 @@ def checks(selected=None):
     import completion_140
     assert completion_140.ancient_package()
     os.environ["SC_NMM_CHECK_PACKAGE"] = str(GAME / "Mods/[API1.9]NekoMeko Model-v1.1.scmod")
-    needed = {"main": "PackageCheck", "ai": "PackageCheck", "native": "TacticalLoadCheck", "hooks": "TacticalLoadCheck", "switching": "CompatibilityCheck", "embedded-core": "CompatibilityCheck", "embedded-tactical": "CompatibilityCheck", "inventory": "InventoryCheck"}
+    needed = {"main": "PackageCheck", "ai": "PackageCheck", "native": "TacticalLoadCheck", "hooks": "TacticalLoadCheck", "switching": "CompatibilityCheck", "switching150": "CompatibilityCheck", "embedded-core": "CompatibilityCheck", "embedded-tactical": "CompatibilityCheck", "inventory": "InventoryCheck"}
     build_tools = set(needed.values()) if selected is None else {needed[k] for k in selected if k in needed}
     for name in sorted(build_tools):
         assert run("build-" + name, ["dotnet", "build", ROOT / "tools" / name / (name + ".csproj"), "-c", "Release", "--nologo", "-v:q"])
@@ -187,6 +188,24 @@ def checks(selected=None):
     includes = [ROOT / "tools/GameplayFeedbackCheck/Program.cs", ROOT / "tools/PackageCheck/TacticalEnemyRegression.cs", ROOT / "tools/PackageCheck/StarterEquipmentRegression.cs"]
     core = STAGE / "core/bin/Release/net10.0/ScCsgoKnives.dll"
     tactical = STAGE / "tactical/bin/Release/net10.0/ScCsgoTactical.dll"
+    if selected is None or "switching150" in selected:
+        prior = ROOT / "output" / NAME
+        if not prior.exists() or sha(prior.read_bytes()) != PRIOR_PIN:
+            prior = ROOT / "output/history-1.5.0" / PRIOR_PIN / NAME
+        assert sha(prior.read_bytes()) == PRIOR_PIN
+        refs = STAGE / "old150"; refs.mkdir(exist_ok=True)
+        with zipfile.ZipFile(prior) as z:
+            for name in z.namelist():
+                if name.endswith(".dll"): (refs / name).write_bytes(z.read(name))
+        dump(STAGE / "previous-150.json", dict(path=str(prior), sha256=PRIOR_PIN))
+    ui = STAGE / "ui-tool"
+    if selected is None or "ui" in selected:
+        ui.mkdir(exist_ok=True)
+        (ui / "FollowupCheck.csproj").write_text(project("FollowupCheck", [core, tactical, STAGE / "old-full/ScCsgoResources.dll"],
+            compile_items=f'<Compile Include="{(ROOT / "tools/FollowupCheck/Program.cs").as_posix()}"/>',
+            extra='<OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings>'), "utf8")
+        assert run("build-ui", ["dotnet", "build", ui / "FollowupCheck.csproj", "-c", "Release", "--nologo", "-v:q"])
+        os.environ["ALSOFT_DRIVERS"] = "null"
     (feedback / "GameplayFeedbackCheck.csproj").write_text(project("GameplayFeedbackCheck", [core, tactical, STAGE / "old-full/ScCsgoResources.dll"],
         compile_items=''.join(f'<Compile Include="{p.as_posix()}"/>' for p in includes),
         extra='<OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings>'), "utf8")
@@ -199,6 +218,8 @@ def checks(selected=None):
         "native": ["dotnet", tool("TacticalLoadCheck"), "--world-resource-gate", candidate, STAGE / "native.json"],
         "hooks": ["dotnet", tool("TacticalLoadCheck"), "--compat-native", candidate, GAME / "Content.zip", STAGE / "hooks.json"],
         "switching": ["dotnet", tool("CompatibilityCheck"), STAGE / "old-full/ScCsgoKnives.dll", STAGE / "old-lite/ScCsgoKnives.dll", core, STAGE / "switching.json"],
+        "switching150": ["dotnet", tool("CompatibilityCheck"), STAGE / "old-full/ScCsgoKnives.dll", STAGE / "old150/ScCsgoKnives.dll", core, STAGE / "switching150.json"],
+        "ui": ["dotnet", ui / "bin/Release/net10.0/FollowupCheck.dll", GAME / "Content.zip", STAGE / "ui"],
         "inventory": ["dotnet", tool("InventoryCheck"), core, GAME / "Mods", STAGE / "inventory.json"],
         "feedback": ["dotnet", feedback / "bin/Release/net10.0/GameplayFeedbackCheck.dll", STAGE / "feedback.json"],
         "embedded-core": ["dotnet", tool("CompatibilityCheck"), "--embedded", STAGE / "old-full/ScCsgoKnives.dll", core, STAGE / "embedded-core.json"],
@@ -226,14 +247,14 @@ def checks(selected=None):
     dump(STAGE / "checks.json", result)
     dump(STAGE / "check-packages.json", tested_packages | {key: candidate_sha for key in jobs})
     dump(STAGE / "check-inputs.json", dict(packageSha256=read(STAGE / "package.json")["sha256"],
-        tools={p.relative_to(ROOT).as_posix(): sha(p.read_bytes()) for name in ["PackageCheck", "TacticalLoadCheck", "CompatibilityCheck", "InventoryCheck", "GameplayFeedbackCheck"]
+        tools={p.relative_to(ROOT).as_posix(): sha(p.read_bytes()) for name in ["PackageCheck", "TacticalLoadCheck", "CompatibilityCheck", "InventoryCheck", "GameplayFeedbackCheck", "FollowupCheck"]
                for p in (ROOT / "tools" / name).glob("*.cs")}))
     assert all(result.values()), result
 
 
 def deliver():
     results = read(STAGE / "checks.json")
-    required = {"main", "ai", "native", "hooks", "switching", "inventory", "feedback", "embedded-core", "embedded-tactical", "integration-both", "integration-reversed", "integration-none"}
+    required = {"main", "ai", "native", "hooks", "switching", "switching150", "ui", "inventory", "feedback", "embedded-core", "embedded-tactical", "integration-both", "integration-reversed", "integration-none"}
     assert set(results) == required and all(results.values())
     package_info = read(STAGE / "package.json")
     assert read(STAGE / "check-inputs.json")["packageSha256"] == package_info["sha256"]
@@ -241,7 +262,14 @@ def deliver():
     source = STAGE / NAME
     assert sha(source.read_bytes()) == package_info["sha256"]
     target = ROOT / "output" / NAME
-    assert not target.exists(), "Do not overwrite a different 1.5.0 delivery"
+    # Standing authorization: replace the matching validated output, retaining the exact older release as a fixture.
+    if target.exists():
+        assert sha(target.read_bytes()) == PRIOR_PIN, "Unexpected current delivery; inspect before replacement"
+        history = ROOT / "output/history-1.5.0" / PRIOR_PIN
+        history.mkdir(parents=True, exist_ok=True)
+        assert not (history / NAME).exists() and not (history / "evidence").exists()
+        target.rename(history / NAME)
+        if REPORT.exists(): REPORT.rename(history / "evidence")
     shutil.copyfile(source, target)
     assert sha(target.read_bytes()) == package_info["sha256"]
     with zipfile.ZipFile(target) as z:
@@ -251,7 +279,11 @@ def deliver():
     for p in STAGE.glob("*.json"):
         shutil.copyfile(p, REPORT / p.name)
     shutil.copytree(STAGE / "logs", REPORT / "logs", dirs_exist_ok=True)
+    if (STAGE / "ui").exists(): shutil.copytree(STAGE / "ui", REPORT / "ui", dirs_exist_ok=True)
     if (STAGE / "attempts").exists(): shutil.copytree(STAGE / "attempts", REPORT / "attempts", dirs_exist_ok=True)
+    dump(REPORT / "ui-inputs.json", dict(sourceSha256=sha((ROOT / "tools/FollowupCheck/Program.cs").read_bytes()),
+        toolSha256=sha((STAGE / "ui-tool/bin/Release/net10.0/FollowupCheck.dll").read_bytes()),
+        coreSha256=package_info["memberHashes"]["ScCsgoKnives.dll"], tacticalSha256=package_info["memberHashes"]["ScCsgoTactical.dll"]))
     dump(REPORT / "manifest.json", dict(version="1.5.0", edition="Full", path=str(target), **package_info,
         checks=results, inputs=read(STAGE / "inputs.json"), limitations=["Android device and multiplayer runtime acceptance pending", "Movement/cover/flash appearance pending user acceptance"]))
     print("Delivered", target, package_info["sha256"], flush=True)
