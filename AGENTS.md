@@ -1,6 +1,6 @@
 # ScCsgoKnives: project instructions
 
-One shared instruction source for Codex and Claude Code. Updated 2026-10-05.
+One shared instruction source for Codex and Claude Code. Updated 2026-10-06.
 
 Quality goal: preserve accepted functionality and compatibility while making responsibilities clear, dependencies directional, state ownership explicit, failures recoverable and behavior verifiable. Reduce actual maintenance cost; avoid abstraction for its own sake.
 
@@ -12,6 +12,13 @@ Quality goal: preserve accepted functionality and compatibility while making res
 - Historical dated requests are provenance, not current commands or permission to resume blocked milestones. Specialist documents below resolve superseded rules; consult release evidence relevant to the change.
 - Define acceptance from the user's actual scenario before implementing: link each requirement to its implementation, a check that distinguishes it from an incorrect alternative, and its current result. Cover explicitly named actors, views, inputs and platforms; a similar case is not a substitute. Review requirement compliance first, scenario coverage second, and test results/regressions third. Passing tests never make an unmet requirement complete. Report partial work as partial, with concrete blockers; do not quietly defer requested cases or ask again for settled decisions. Every claimed passing test must have an executed runner, result and input identity.
 - Do not install packages into the user's Mods/device, modify original worlds, patch third-party providers or delete source assets/backups without task-specific authorization.
+
+## Branch, commit and merge workflow
+
+- Before the first edit for a new feature, bug fix or any other code-changing task, create a new task branch from the agreed baseline. Continue that task on its branch; never implement directly on `main`. Apply this workflow to project-policy changes too. Check other writers and Syncthing impact before switching branches; a branch does not isolate the shared source tree.
+- Every commit must follow Conventional Commits: `<type>(<optional scope>): <description>` (for example, `feat(tactical): add airdrop guards`, `fix(travel): preserve gun state`, or `docs: clarify branch workflow`). Keep commits focused, reviewable and limited to the task's own changes.
+- After completing the scoped changes and applicable verification, commit and push the task branch to its corresponding remote branch. Report the branch, commits, verification and any remaining acceptance gaps for review.
+- Merge into `main` only after the user explicitly approves merging that specific task's changes. Approval to develop, commit or push is not merge approval; approval for a previous task does not carry over. Until approval arrives, leave the changes on the remote task branch and do not merge or enable automatic merging into `main`.
 
 ## Code quality and architecture
 
