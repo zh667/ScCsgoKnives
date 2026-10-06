@@ -55,6 +55,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
             q=>m_terrain.Terrain.GetChunkAtCell(Terrain.ToCell(q.X),Terrain.ToCell(q.Z)) is {State:>TerrainChunkState.InvalidContents4});
         prep.PreviewAt=now;prep.PreviewView=view;prep.PreviewDirection=direction;prep.PreviewVelocity=velocity;prep.PreviewLow=prep.Low;
     }
+    // ImmuneUntil is retained for old save readers and bounded record cleanup only; it never gates a new flash.
     sealed class Blindness { public double Until, ImmuneUntil; public float Duration; }
     readonly Dictionary<ComponentPlayer, Preparation> m_preparing = [];
     readonly Dictionary<ComponentPlayer, ScSlotHistory> m_slots = [];
@@ -225,9 +226,15 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
     }
     public void CancelRemoteThrow(ComponentPlayer player) { if (m_preparing.TryGetValue(player, out var prep) && !prep.Released) Cancel(player, prep); }
     /// <summary>Client: this player's own flash blindness as the server measured it.</summary>
-    public void BlindLocal(ComponentPlayer player, float duration) {
-        if (duration <= .05f) return;
-        m_blind[player.ComponentBody] = new Blindness { Until = m_time.GameTime + duration, Duration = duration, ImmuneUntil = m_time.GameTime + duration + ScGrenadeState.FlashImmunity };
+    public void BlindLocal(ComponentPlayer player, float duration) => ApplyBlindness(player.ComponentBody,duration);
+    /// <summary>Every hit restarts white; a weaker hit preserves the stronger hit's remaining time.</summary>
+    float ApplyBlindness(ComponentBody body,float duration) {
+        if (!float.IsFinite(duration) || duration <= .05f) return 0;
+        double now=m_time.GameTime;
+        double until=Math.Max(now+Math.Min(duration,ScGrenadeState.FlashMaximum),m_blind.TryGetValue(body,out var old)?old.Until:now);
+        float remaining=(float)(until-now);
+        m_blind[body]=new Blindness {Until=until,Duration=remaining,ImmuneUntil=until+ScGrenadeState.FlashImmunity};
+        return remaining;
     }
     public void AddFireBurst(Vector3 position) { if (fireBursts.Count >= 24) fireBursts.RemoveAt(0); fireBursts.Add(new FireBurst { Position = position }); }
     /// <summary>Client: the server's grenades replace this client's copies (same objects kept by id, so local motion and
@@ -528,10 +535,11 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         foreach (var body in m_bodies.Bodies.ToArray()) {
             Vector3 point=Eye(body); float distance=Vector3.Distance(s.Position,point);
-            if (!Friendly(s,body))continue;
+            // Light reaches self, teammates and enemies regardless of damage/friendly-fire rules.
+            if (s.Kind!=1 && !Friendly(s,body))continue;
             if(s.Kind==0&&(distance>(chicken?ScGrenadeState.ChickenRadius:ScGrenadeState.HeRadius)||!Clear(s.Position,point)))continue;
             if (s.Kind==0) Damage(s,body,chicken?ScGrenadeState.ChickenPower(distance):ScGrenadeState.HePower(distance));
-            if (s.Kind==1 && (!m_blind.TryGetValue(body,out var old) || m_time.GameTime>=old.ImmuneUntil)) {
+            if (s.Kind==1) {
                 var p=body.Entity.FindComponent<ComponentPlayer>();
                 var camera=p is not null&&!ScNet.IsRemoteDriven(p)?p.GameWidget?.ActiveCamera:null;
                 var remoteView=p is not null?ScNetGrenades.FlashView(p):null;
@@ -547,8 +555,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
                     remoteView?.Contains(s.Position)==true;
                 float duration=ScGrenadeState.VisibleFlashDuration(p is null?distance:viewDistance,facing,onScreen);
                 if (duration>.05f) {
-                    m_blind[body]=new Blindness {Until=m_time.GameTime+duration,Duration=duration,ImmuneUntil=m_time.GameTime+duration+ScGrenadeState.FlashImmunity};
-                    if (p is not null && ScNet.IsRemoteDriven(p)) ScNetGrenades.Blind(p,duration);
+                    float remaining=ApplyBlindness(body,duration);
+                    if (p is not null && ScNet.IsRemoteDriven(p)) ScNetGrenades.Blind(p,remaining);
                 }
             }
         }

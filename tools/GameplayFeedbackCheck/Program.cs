@@ -108,6 +108,41 @@ Test("starter/network-authorization-malformed-and-duplicate-requests",()=>{
         Require(!starter.Choose(player,ScStarterPlan.Full),"client mutated world");
     }finally{ScNet.Attach(oldTransport);GameManager.m_project=oldProject;ScNet.Clock=oldClock;}
 });
+Test("grenades/network-friend-reflash-server-event-client-and-save",()=>{
+    var oldProject=GameManager.Project;var oldTransport=ScNet.Transport;var oldClock=ScNet.Clock;
+    try{
+        var project=new Project();GameManager.m_project=project;
+        var time=new SubsystemTime();var players=new SubsystemPlayers();var bodies=new SubsystemBodies();
+        var info=new SubsystemGameInfo{WorldSettings=Blank<WorldSettings>()};info.WorldSettings.IsFriendlyFireEnabled=false;
+        foreach(var sub in new Subsystem[]{time,players,bodies,info,new FlashGround(),new FlashAudio()}){sub.m_project=project;project.m_subsystems.Add(sub);}
+        var server=new SubsystemScGrenades{m_project=project};project.m_subsystems.Add(server);server.Load(new());
+        var body=new ComponentBody{Position=new Vector3(0,60,0),BoxSize=new Vector3(.65f,1.8f,.65f)};
+        var player=Blank<ComponentPlayer>();player.ComponentBody=body;player.ComponentHealth=new ComponentHealth{Health=1};player.PlayerData=Blank<PlayerData>();player.PlayerData.PlayerIndex=3;player.PlayerData.ComponentPlayer=player;player.PlayerData.m_gameWidget=Blank<GameWidget>();
+        var entity=Blank<Entity>();entity.m_project=project;entity.m_isAddedToProject=true;entity.Id=987;entity.m_components=[body,player];body.m_entity=entity;player.m_entity=entity;
+        project.m_entities[entity]=true;players.m_componentPlayers.Add(player);players.m_playersData.Add(player.PlayerData);bodies.AddBody(body);
+        var transport=new Transport();transport.Clients.Add(new ScNetPeer{PlayerIndex=3});ScNet.Attach(transport);ScNet.Clock=()=>time.GameTime;ScNetGrenades.Register();
+        void Burst(float z){
+            var view=new ScNetWriter().Vector3(new Vector3(0,61.5f,0)).Vector3(-Vector3.UnitZ).Vector3(Vector3.UnitX).Vector3(Vector3.UnitY).Float(1).Float(.6f).ToArray();
+            ScNet.ReceiveOnServer(transport.Clients[0],ScNetGrenades.OpFlashView,view);
+            Require(ScNetGrenades.FlashView(player) is not null,"fixture: remote view was not accepted");
+            typeof(SubsystemScGrenades).GetMethod("Detonate",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(server,[new ScGrenadeState{Kind=1,Owner=0,Position=new Vector3(0,61.5f,z)}]);
+        }
+        Burst(-2);Require(transport.BlindEvents.Count==1,"friendly remote player got no blind event");
+        time.m_gameTime=1;Burst(-200);Require(transport.BlindEvents.Count==2,"reflash event swallowed");
+        Require(new ScNetReader(transport.BlindEvents[1]).Float()==4.5f,"server sent weak duration instead of preserved tail");
+        project.m_subsystems.Remove(server);var client=new SubsystemScGrenades{m_project=project};project.m_subsystems.Add(client);client.Load(new());
+        transport.Role=ScNetRole.Client;time.m_gameTime=0;ScNet.ReceiveOnClient(ScNetGrenades.OpBlind,transport.BlindEvents[0]);
+        time.m_gameTime=1;ScNet.ReceiveOnClient(ScNetGrenades.OpBlind,transport.BlindEvents[1]);
+        ScNet.ReceiveOnClient(ScNetGrenades.OpBlind,new ScNetWriter().Float(1).ToArray());
+        var saved=new ValuesDictionary();client.Save(saved);
+        for(int i=0;i<2;i++){
+            var entry=saved.GetValue<ValuesDictionary>("Blindness").GetValue<ValuesDictionary>("987");
+            Require(entry.GetValue<float>("Left")==4.5f&&entry.GetValue<float>("Duration")==4.5f,"network/reload shortened flash or failed to restart white");
+            var xml=new System.Xml.Linq.XElement("Values");saved.Save(xml);var loaded=new ValuesDictionary();loaded.ApplyOverrides(System.Xml.Linq.XElement.Parse(xml.ToString()));
+            var next=new SubsystemScGrenades{m_project=project};next.Load(loaded);saved=new();next.Save(saved);
+        }
+    }finally{ScNet.Attach(oldTransport);GameManager.m_project=oldProject;ScNet.Clock=oldClock;}
+});
 string Hash(Assembly assembly)=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(assembly.Location))).ToLowerInvariant();
 var report=new {platform="SurvivalcraftAPI NuGet 1.9.3.1; native offline behavior, not a game session",engineAssemblyVersion=typeof(ComponentPlayer).Assembly.GetName().Version?.ToString(),engineSha256=Hash(typeof(ComponentPlayer).Assembly),coreSha256=Hash(core),tacticalSha256=Hash(tactical),scope,passed=checks.Count(c=>c.Ok),failed=checks.Count(c=>!c.Ok),checks};
 string output=args.FirstOrDefault()??".tmp/dev-temp/gameplay-feedback.json";Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)));File.WriteAllText(output,JsonSerializer.Serialize(report,new JsonSerializerOptions{WriteIndented=true}));
@@ -122,8 +157,15 @@ sealed class Transport:IScNetTransport {
     public List<ScNetPeer> Clients=[];
     public IReadOnlyList<ScNetPeer> Peers=>Clients;
     public byte[] Last;
-    public bool IsLocal(ComponentPlayer player)=>false;
+    public readonly List<byte[]> BlindEvents=[];
+    public bool IsLocal(ComponentPlayer player)=>Role==ScNetRole.Client;
     public bool SendToServer(ushort op,byte[] payload)=>true;
-    public bool SendTo(ScNetPeer peer,ushort op,byte[] payload){Last=payload;return true;}
+    public bool SendTo(ScNetPeer peer,ushort op,byte[] payload){Last=payload;if(op==ScNetGrenades.OpBlind)BlindEvents.Add(payload);return true;}
     public void Broadcast(ushort op,byte[] payload,ScNetPeer except){}
+}
+sealed class FlashGround:SubsystemTerrain {
+    public override TerrainRaycastResult? Raycast(Vector3 a,Vector3 b,bool interaction,bool skipAir,Func<int,float,bool> predicate)=>null;
+}
+sealed class FlashAudio:SubsystemAudio {
+    public override void PlaySound(string name,float volume,float pitch,Vector3 position,float distance,bool delay){}
 }

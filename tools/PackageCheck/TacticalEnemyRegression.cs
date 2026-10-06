@@ -157,6 +157,38 @@ static class TacticalEnemyRegression {
                     void RequireBlind()=>Check((bool)C("SubsystemScGrenades").GetMethod("IsBodyBlinded").Invoke(system,[body])==expected,$"flash z={z}, wall={wall}: expected blind={expected}");
                 }
             });
+            foreach(int owner in new[]{0,1,-2})foreach(bool ff in new[]{false,true})Test($"feedback/flash-repeated-self-friend-enemy/{owner}/{ff}",()=>{
+                var f=World();f.Info.WorldSettings.IsFriendlyFireEnabled=ff;
+                var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.PlayerData.PlayerIndex=0;
+                var body=new ComponentBody{Position=new Vector3(0,60,0),BoxSize=new Vector3(.65f,1.8f,.65f)};
+                player.ComponentBody=body;player.PlayerData.m_gameWidget=Blank<GameWidget>();
+                player.PlayerData.m_gameWidget.m_activeCamera=new Eye(new Vector3(0,61.5f,0),-Vector3.UnitZ);
+                E(f.P,player,body);f.Bodies.AddBody(body);
+                var system=f.P.m_subsystems.Single(s=>s.GetType()==C("SubsystemScGrenades"));Set(system,"m_info",f.Info);
+                Set(system,"m_players",f.P.FindSubsystem<SubsystemPlayers>(true));
+                var states=(System.Collections.IDictionary)C("SubsystemScGrenades").GetField("m_blind",Fields).GetValue(system);
+                double End()=>states.Contains(body)?(double)states[body].GetType().GetField("Until").GetValue(states[body]):0;
+                float Opacity(){var state=states[body];return (float)C("ScGrenadeState").GetMethod("FlashOpacity").Invoke(null,[(float)(End()-f.Time.GameTime),(float)state.GetType().GetField("Duration").GetValue(state)]);}
+                void Burst(float z){var grenade=Activator.CreateInstance(C("ScGrenadeState"));Set(grenade,"Kind",1);Set(grenade,"Owner",owner);Set(grenade,"Position",new Vector3(0,61.5f,z));C("SubsystemScGrenades").GetMethod("Detonate",Fields).Invoke(system,[grenade]);}
+                Burst(-2);Check(End()==5.5&&Opacity()==1,"first visible flash was blocked by faction/friendly fire");
+                f.Time.m_gameTime=1;Check(Opacity()<1,"fixture: original flash must be fading");
+                Burst(-200);Check(End()==5.5&&Opacity()==1,"weak flash failed to restart white or shortened strong flash");
+                f.Time.m_gameTime=2;Burst(-2);Check(End()==7.5&&Opacity()==1,"strong flash failed to extend existing blindness");
+                f.Time.m_gameTime=3;f.Terrain.Blocked=true;float before=Opacity();Burst(-2);Check(End()==7.5&&Opacity()==before,"covered flash refreshed blindness");
+                f.Terrain.Blocked=false;f.Time.m_gameTime=7.6;Burst(-200);Check(Math.Abs(End()-8.6)<1e-5&&Opacity()==1,"post-recovery immunity swallowed flash");
+                // HE still consults the original damage policy even though flashes do not.
+                var he=Activator.CreateInstance(C("ScGrenadeState"));Set(he,"Kind",0);Set(he,"Owner",owner);
+                Check((bool)C("SubsystemScGrenades").GetMethod("Friendly",Fields).Invoke(system,[he,body])==(owner!=1||ff),"HE friendly-fire policy changed");
+            });
+            Test("feedback/flash-client-weak-reflash-preserves-strong-tail",()=>{
+                var f=World();var system=f.P.m_subsystems.Single(s=>s.GetType()==C("SubsystemScGrenades"));
+                var body=new ComponentBody();var player=Blank<ComponentPlayer>();player.ComponentBody=body;E(f.P,player,body);
+                var receive=C("SubsystemScGrenades").GetMethod("BlindLocal");
+                receive.Invoke(system,[player,5.5f]);f.Time.m_gameTime=1;receive.Invoke(system,[player,1f]);
+                var states=(System.Collections.IDictionary)C("SubsystemScGrenades").GetField("m_blind",Fields).GetValue(system);var state=states[body];
+                Check((double)state.GetType().GetField("Until").GetValue(state)==5.5,"client shortened existing strong flash");
+                Check((float)state.GetType().GetField("Duration").GetValue(state)==4.5f,"client did not restart full white on the remaining tail");
+            });
             Test("feedback/distant-sniper-stops-tracks-and-shoots-after-reload",()=>{
                 foreach(float distance in new[]{80f,160,256}){
                     var f=World();var e=Enemy(f.P,0);e.Enemy.State.Grenades=0;e.Enemy.State.Bomb=false;
