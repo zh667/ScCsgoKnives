@@ -756,6 +756,78 @@
    ],
    "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/decoy.png",
    "sha256": "dc4d590002624eebe691e2d8662e9a688ff6b1dcfb91dbf90d046fa1643e4e3f"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "headshot",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/icon_headshot.svg",
+   "sourceSha256": "0ce669fdfc510b4463b9cc0a2759671be4c6e2d835676495713a30fa839f3557",
+   "size": [
+    72,
+    64
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/kill_headshot.png",
+   "sha256": "bf8fdb2fc518572a10b2a77157c6c4f862c0b07574f0f88c483ca3d0ce382b94"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "noscope",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/noscope.svg",
+   "sourceSha256": "44862d353644fc902970ecccf15bee653c4f75a284bb956a8a9e821bb53a7b9c",
+   "size": [
+    64,
+    64
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/kill_noscope.png",
+   "sha256": "bf755b1a24878487eaded51cdfe2084c1bb8326241a57bbb1031db8676f7fffa"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "smoke",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/smoke_kill.svg",
+   "sourceSha256": "156eebf34e2ed0337969d829276b7e4f5f987a89faf9dad8e66bef806416ee28",
+   "size": [
+    97,
+    64
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/kill_smoke.png",
+   "sha256": "dcb01ef45851d3717d4bde7c23897a3cce031c4803382d95c492094d6a80d703"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "penetrate",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/penetrate.svg",
+   "sourceSha256": "4cc7c84aae80072f40fb5ac26c7eff5a4999e0008e982b69bf4c382962eba60d",
+   "size": [
+    57,
+    64
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/kill_penetrate.png",
+   "sha256": "161116a4b09a23a4c520642b4e4c473089927773bedd0fcd91a762ff6a117e07"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "blind",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/blind_kill.svg",
+   "sourceSha256": "5a1233c62f605337ced75ec0f3a35f8d03341d3cfe14362f0b3d3f9fd33f4445",
+   "size": [
+    67,
+    64
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/kill_blind.png",
+   "sha256": "6402578c3f9bedeae43f92555e79e4cd652fe6e91168c3ca27857eff8788a213"
+  },
+  {
+   "kind": "kill-mark",
+   "name": "suicide",
+   "source": ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice/icon_suicide.svg",
+   "sourceSha256": "5e6268df5ff2f4e48f45ba52d63dc84942efe6285fc20bda186fd5cc0182b574",
+   "size": [
+    95,
+    64
+   ],
+   "target": "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/kill_suicide.png",
+   "sha256": "ce5291ef7e24faca92b0c3797eb08e32ae02ac8f8fb0b45f9603f3eb294004dc"
   }
  ]
 }

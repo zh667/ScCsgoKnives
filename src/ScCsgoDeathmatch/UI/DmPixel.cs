@@ -79,8 +79,8 @@ public static class DmPx {
     static readonly Dictionary<string, Texture2D> s_hud = new(StringComparer.Ordinal);
     static readonly HashSet<string> s_hudMissing = new(StringComparer.Ordinal);
     /// <summary>CS2's own equipment icon as CS2 draws it - the silhouette SVG rendered smooth, 64 px high, white with its alpha
-    /// (tools/build_dm_hud_icons.py) - or null. The buy wheel shows these since 2026-10-06 (the user: the pixel sprites looked
-    /// CSMC-like, "可以用cs2自己的"); the kill feed and the equipment rows keep the pixel sprites.</summary>
+    /// (tools/build_dm_hud_icons.py) - or null. The buy wheel, the kill feed and the death panel show these since 2026-10-06 (the
+    /// user: the pixel sprites looked CSMC-like, "可以用cs2自己的"); the pixel sprites remain for the rest of the pixel look.</summary>
     public static Texture2D HudIcon(string name) {
         if (string.IsNullOrEmpty(name)) return null;
         if (s_hud.TryGetValue(name, out var t)) return t;

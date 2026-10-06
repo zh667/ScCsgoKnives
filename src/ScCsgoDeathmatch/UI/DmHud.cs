@@ -66,15 +66,15 @@ sealed class DmProtectElement : DmElement {
     public void Show(double remaining) => m_text.Text = $"复活保护 {Math.Max(0, remaining):0.0} 秒 · 攻击即解除";
 }
 
-/// <summary>CS2's kill feed in pixels: killer, the weapon's silhouette, the marks the server established (as CS2's own
-/// icons), victim. The local player's kills are framed in red, as CS2 does.</summary>
+/// <summary>CS2's kill feed: killer, the weapon's silhouette, the marks the server established (CS2's own icons, drawn smooth
+/// since 2026-10-06 like the wheel's), victim. The local player's kills are framed in red, as CS2 does.</summary>
 public sealed class DmFeedElement : DmElement {
     sealed class Row : CanvasWidget {
         public readonly DmPixelPanel Back = new() { Fill = new Color(10, 11, 13, 200), Edge = new Color(0, 0, 0, 0) };
         public readonly StackPanelWidget Line = new() { Direction = LayoutDirection.Horizontal, HorizontalAlignment = WidgetAlignment.Far, VerticalAlignment = WidgetAlignment.Center, Margin = new Vector2(8, 3), IsHitTestVisible = false };
         public readonly LabelWidget Killer = Text(.6f), Victim = Text(.6f), Words = Text(.52f, TextAnchor.Left, DmPx.Gold);
-        public readonly DmPixelIcon Weapon = new() { Scale = 2, VerticalAlignment = WidgetAlignment.Center, Margin = new Vector2(8, 0) };
-        public readonly DmPixelIcon[] Marks = Enumerable.Range(0, 5).Select(_ => new DmPixelIcon { Scale = 2, VerticalAlignment = WidgetAlignment.Center, Margin = new Vector2(2, 0) }).ToArray();
+        public readonly DmHudIcon Weapon = new() { Height = 24, VerticalAlignment = WidgetAlignment.Center, Margin = new Vector2(8, 0) };
+        public readonly DmHudIcon[] Marks = Enumerable.Range(0, 5).Select(_ => new DmHudIcon { Height = 20, VerticalAlignment = WidgetAlignment.Center, Margin = new Vector2(2, 0) }).ToArray();
         public Row() {
             HorizontalAlignment = WidgetAlignment.Far; IsHitTestVisible = false; Margin = new Vector2(0, 2);
             Killer.VerticalAlignment = Victim.VerticalAlignment = Words.VerticalAlignment = WidgetAlignment.Center; Victim.Margin = new Vector2(8, 0);
@@ -103,13 +103,13 @@ public sealed class DmFeedElement : DmElement {
             row.Back.Edge = mine ? DmPx.Red : new Color(0, 0, 0, 0); row.Back.Fill = mine ? new Color(40, 10, 10, 210) : new Color(10, 11, 13, 200);
             foreach (var m in row.Marks) m.IsVisible = false;
             if (!kill.Scored) {
-                row.Killer.Text = ""; row.Weapon.Texture = DmPx.Sprite("kill_suicide"); row.Words.Text = ""; row.Victim.Text = Line(kill); row.Victim.Color = me ? DmPx.Red : DmPx.Text; continue;
+                row.Killer.Text = ""; row.Weapon.Texture = DmPx.HudIcon("kill_suicide"); row.Words.Text = ""; row.Victim.Text = Line(kill); row.Victim.Color = me ? DmPx.Red : DmPx.Text; continue;
             }
             row.Killer.Text = kill.KillerName; row.Killer.Color = mine ? DmPx.Gold : DmPx.Text;
-            row.Weapon.Texture = DmPx.WeaponSprite(kill.Weapon);
+            row.Weapon.Texture = DmPx.WeaponHud(kill.Weapon);
             var words = new List<string>(); int used = 0;
             foreach (var (icon, word) in DmArt.Marks(kill)) {
-                if (used < row.Marks.Length && DmPx.Sprite("kill_" + icon) is { } t) { row.Marks[used].Texture = t; row.Marks[used].IsVisible = true; used++; } else words.Add(word);
+                if (used < row.Marks.Length && DmPx.HudIcon("kill_" + icon) is { } t) { row.Marks[used].Texture = t; row.Marks[used].IsVisible = true; used++; } else words.Add(word);
             }
             row.Words.Text = (row.Weapon.Texture is null ? DmNames.Weapon(kill.Weapon) + " " : "") + string.Join(" ", words);
             row.Victim.Text = kill.VictimName; row.Victim.Color = me ? DmPx.Red : DmPx.Text;
@@ -120,7 +120,7 @@ public sealed class DmFeedElement : DmElement {
 sealed class DmDeathElement : DmElement {
     readonly DmPixelPanel m_back = new() { Fill = new Color(14, 8, 8, 225), Edge = DmPx.Red };
     readonly LabelWidget m_title = Text(.84f, TextAnchor.HorizontalCenter, DmPx.Red), m_detail = Text(.62f, TextAnchor.HorizontalCenter), m_next = Text(.58f, TextAnchor.HorizontalCenter, DmPx.Dim);
-    readonly DmPixelIcon m_weapon = new() { Scale = 3, HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center };
+    readonly DmHudIcon m_weapon = new() { Height = 42, HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center };
     public DmDeathElement() : base(DmHudIds.Death) {
         Children.Add(m_back);
         m_title.VerticalAlignment = WidgetAlignment.Near; m_title.Margin = new Vector2(0, 10); m_weapon.Margin = new Vector2(0, -4); m_detail.VerticalAlignment = WidgetAlignment.Far; m_detail.Margin = new Vector2(0, 30); m_next.VerticalAlignment = WidgetAlignment.Far; m_next.Margin = new Vector2(0, 8);
@@ -129,7 +129,7 @@ sealed class DmDeathElement : DmElement {
     /// <param name="buy">How this device opens the buy wheel ("点“配装”", "按 B").</param>
     public void Show(DmKill death, DmPlayerPhase phase, bool entered, bool running, string buy) {
         m_title.Text = death is null ? "等待复活" : death.Scored ? $"你被 {death.KillerName} 击杀" : death.Cause == DmDeathCause.OutOfBounds ? "你离开了竞技区域" : death.Cause == DmDeathCause.Suicide ? "你结束了自己的这条命" : "你死于环境";
-        m_weapon.Texture = death?.Scored == true ? DmPx.WeaponSprite(death.Weapon) : null;
+        m_weapon.Texture = death?.Scored == true ? DmPx.WeaponHud(death.Weapon) : null;
         m_detail.Text = death is null || !death.Scored ? "" : DmNames.Weapon(death.Weapon) + string.Concat(DmArt.Marks(death).Select(m => " · " + m.Word));
         m_next.Text = !running ? "本局已结束" : phase == DmPlayerPhase.DeathView ? $"即将复活 · 复活保护期间{buy}换装备立即生效" : phase == DmPlayerPhase.SpawnPending ? "正在寻找安全的复活点…" : entered ? "" : "已转为观战，可在竞技菜单重新准备";
     }

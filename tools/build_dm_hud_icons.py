@@ -8,7 +8,8 @@ Each SVG is rasterised smooth (anti-aliased alpha, white), cropped to its shape 
 itself draws in its HUD and buy menu, not the pixel reduction of tools/build_dm_pixel_icons.py (which the kill feed and the
 equipment rows keep). Output: src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud/<name>.png and the provenance
 record docs/tasks/deathmatch-addon-hud-icons-20261006.json (source hash -> icon hash), read by tools/deathmatch_140.py.
-Only the icons the wheel can show are built: every gun, every knife of the core, the throwables and the taser.
+Only the icons the HUD can show are built: every gun, every knife of the core, the throwables and the taser, and the kill
+feed's marks (CS2's deathnotice icons: headshot, no-scope, through smoke, penetration, blind, suicide), all 64 px high.
 """
 import hashlib, io, json, sys
 from pathlib import Path
@@ -18,6 +19,8 @@ import resvg_py
 from PIL import Image
 
 EQUIPMENT = ROOT / ".tmp/cs2-hud-weapons-20260919/panorama/images/icons/equipment"
+DEATHNOTICE = ROOT / ".tmp/dev-temp/deathmatch-20261003/cs2/panorama/images/hud/deathnotice"
+MARKS = {"headshot": "icon_headshot", "noscope": "noscope", "smoke": "smoke_kill", "penetrate": "penetrate", "blind": "blind_kill", "suicide": "icon_suicide"}
 OUT = ROOT / "src/ScCsgoDeathmatch/Assets/Textures/ScCsgoDeathmatch/hud"
 RECORD = ROOT / "docs/tasks/deathmatch-addon-hud-icons-20261006.json"
 HEIGHT = 64   # drawn 32 GUI units high in the wheel: twice that keeps it sharp on a scaled HUD
@@ -49,6 +52,11 @@ for kind, names in [("gun", GUNS), ("knife", KNIVES), ("grenade", GRENADES)]:
         img = smooth(svg, HEIGHT); dst = OUT / f"{name}.png"; img.save(dst, optimize=True)
         records.append(dict(kind=kind, name=name, source=svg.relative_to(ROOT).as_posix(), sourceSha256=sha(svg.read_bytes()), size=list(img.size),
                             target=dst.relative_to(ROOT).as_posix(), sha256=sha(dst.read_bytes())))
+for name, stem in MARKS.items():
+    svg = DEATHNOTICE / f"{stem}.svg"; assert svg.exists(), svg
+    img = smooth(svg, HEIGHT); dst = OUT / f"kill_{name}.png"; img.save(dst, optimize=True)
+    records.append(dict(kind="kill-mark", name=name, source=svg.relative_to(ROOT).as_posix(), sourceSha256=sha(svg.read_bytes()), size=list(img.size),
+                        target=dst.relative_to(ROOT).as_posix(), sha256=sha(dst.read_bytes())))
 stale = sorted(p.name for p in OUT.glob("*.png") if p.name not in {Path(r["target"]).name for r in records})
 assert not stale, f"unrecorded icons in {OUT}: {stale}"
 # a contact sheet on a dark panel for looking at the result
