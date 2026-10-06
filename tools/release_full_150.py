@@ -28,6 +28,7 @@ NAME = "[API1.9]CS武器1.5.0-全量包.scmod"
 PIN = "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94"
 LITE_PIN = "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe"
 PRIOR_PIN = "50f95500342a29a38c85e772d0486c861152deb2b7a3f7c442477b0901b95b93"
+CURRENT_PIN = "0ca107d6d6d531effe7af4341063fd2f5c89c6c207ed42135a0012e4a314f424"
 
 
 def sha(data):
@@ -178,7 +179,7 @@ def checks(selected=None):
     import completion_140
     assert completion_140.ancient_package()
     os.environ["SC_NMM_CHECK_PACKAGE"] = str(GAME / "Mods/[API1.9]NekoMeko Model-v1.1.scmod")
-    needed = {"main": "PackageCheck", "ai": "PackageCheck", "native": "TacticalLoadCheck", "hooks": "TacticalLoadCheck", "switching": "CompatibilityCheck", "switching150": "CompatibilityCheck", "embedded-core": "CompatibilityCheck", "embedded-tactical": "CompatibilityCheck", "inventory": "InventoryCheck"}
+    needed = {"main": "PackageCheck", "ai": "PackageCheck", "native": "TacticalLoadCheck", "hooks": "TacticalLoadCheck", "switching": "CompatibilityCheck", "switching150": "CompatibilityCheck", "switching-current": "CompatibilityCheck", "embedded-core": "CompatibilityCheck", "embedded-tactical": "CompatibilityCheck", "inventory": "InventoryCheck"}
     build_tools = set(needed.values()) if selected is None else {needed[k] for k in selected if k in needed}
     for name in sorted(build_tools):
         assert run("build-" + name, ["dotnet", "build", ROOT / "tools" / name / (name + ".csproj"), "-c", "Release", "--nologo", "-v:q"])
@@ -198,6 +199,16 @@ def checks(selected=None):
             for name in z.namelist():
                 if name.endswith(".dll"): (refs / name).write_bytes(z.read(name))
         dump(STAGE / "previous-150.json", dict(path=str(prior), sha256=PRIOR_PIN))
+    if selected is None or "switching-current" in selected:
+        prior = ROOT / "output" / NAME
+        if not prior.exists() or sha(prior.read_bytes()) != CURRENT_PIN:
+            prior = ROOT / "output/history-1.5.0" / CURRENT_PIN / NAME
+        assert sha(prior.read_bytes()) == CURRENT_PIN
+        refs = STAGE / "current150"; refs.mkdir(exist_ok=True)
+        with zipfile.ZipFile(prior) as z:
+            for name in z.namelist():
+                if name.endswith(".dll"): (refs / name).write_bytes(z.read(name))
+        dump(STAGE / "previous-current.json", dict(path=str(prior), sha256=CURRENT_PIN))
     ui = STAGE / "ui-tool"
     if selected is None or "ui" in selected:
         ui.mkdir(exist_ok=True)
@@ -219,6 +230,7 @@ def checks(selected=None):
         "hooks": ["dotnet", tool("TacticalLoadCheck"), "--compat-native", candidate, GAME / "Content.zip", STAGE / "hooks.json"],
         "switching": ["dotnet", tool("CompatibilityCheck"), STAGE / "old-full/ScCsgoKnives.dll", STAGE / "old-lite/ScCsgoKnives.dll", core, STAGE / "switching.json"],
         "switching150": ["dotnet", tool("CompatibilityCheck"), STAGE / "old-full/ScCsgoKnives.dll", STAGE / "old150/ScCsgoKnives.dll", core, STAGE / "switching150.json"],
+        "switching-current": ["dotnet", tool("CompatibilityCheck"), STAGE / "old-full/ScCsgoKnives.dll", STAGE / "current150/ScCsgoKnives.dll", core, STAGE / "switching-current.json"],
         "ui": ["dotnet", ui / "bin/Release/net10.0/FollowupCheck.dll", GAME / "Content.zip", STAGE / "ui"],
         "inventory": ["dotnet", tool("InventoryCheck"), core, GAME / "Mods", STAGE / "inventory.json"],
         "feedback": ["dotnet", feedback / "bin/Release/net10.0/GameplayFeedbackCheck.dll", STAGE / "feedback.json"],
@@ -254,7 +266,7 @@ def checks(selected=None):
 
 def deliver():
     results = read(STAGE / "checks.json")
-    required = {"main", "ai", "native", "hooks", "switching", "switching150", "ui", "inventory", "feedback", "embedded-core", "embedded-tactical", "integration-both", "integration-reversed", "integration-none"}
+    required = {"main", "ai", "native", "hooks", "switching", "switching150", "switching-current", "ui", "inventory", "feedback", "embedded-core", "embedded-tactical", "integration-both", "integration-reversed", "integration-none"}
     assert set(results) == required and all(results.values())
     package_info = read(STAGE / "package.json")
     assert read(STAGE / "check-inputs.json")["packageSha256"] == package_info["sha256"]
@@ -264,8 +276,8 @@ def deliver():
     target = ROOT / "output" / NAME
     # Standing authorization: replace the matching validated output, retaining the exact older release as a fixture.
     if target.exists():
-        assert sha(target.read_bytes()) == PRIOR_PIN, "Unexpected current delivery; inspect before replacement"
-        history = ROOT / "output/history-1.5.0" / PRIOR_PIN
+        assert sha(target.read_bytes()) == CURRENT_PIN, "Unexpected current delivery; inspect before replacement"
+        history = ROOT / "output/history-1.5.0" / CURRENT_PIN
         history.mkdir(parents=True, exist_ok=True)
         assert not (history / NAME).exists() and not (history / "evidence").exists()
         target.rename(history / NAME)

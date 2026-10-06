@@ -1,6 +1,6 @@
 # 生存平衡与敌对小队反馈
 
-状态：后续四项修正完成，已替换 output 的 1.5.0 全量包；最新 SHA-256 `0ca107d6…`，详见末节。Android、联机双端和地图观感仍待实机验收。当前写入者：Windows Codex。分支：`feat/survival-squad-feedback`，基线 `ccbcfbf`（main）。
+状态：后续四项修正完成；随后连续闪光与友军致盲修正已打入 output 的 1.5.0 全量包，最新 SHA-256 `7448e340…`，见 [闪光修正交付](flash-retrigger-20261006.md)。下文 `0ca107d6…` 为已归档的上次交付。Android、联机双端和地图观感仍待实机验收。当前写入者：Windows Codex。分支：`feat/survival-squad-feedback`，基线 `ccbcfbf`（main）。
 
 授权范围：用户的十项玩法/缺陷修复，按任务使用 Conventional Commits 提交。不安装、不发布、不修改原世界。
 初始未跟踪文件 `.claude/scheduled_tasks.lock`、`.stignore.bak-before-psh-xdb-20260928`、`exceptions.txt` 保留。
