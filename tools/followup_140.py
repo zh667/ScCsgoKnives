@@ -23,6 +23,19 @@ BASELINES = {
 RESOURCES = ["Assets/Animations/ScTactical.json", "Assets/Animations/ScTacticalHostage.json", "Assets/Models/ScCsgoTactical/ct.glb", "Assets/Models/ScCsgoTactical/t.glb",
              "Assets/Animations/ScCsgoTactical/ct.scanim", "Assets/Animations/ScCsgoTactical/t.scanim", "Integrations/ScCsgoAppearance.bin"]
 NEW_MEMBERS = {"Assets/Animations/ScTacticalHostage.json"}  # the legacy hostage keeps the old gait-only config
+# Tactical assets that are new since the baseline packages, as recorded with their hashes: the sub-world airdrop's model, textures
+# and attribution (2026-10-06; the first 1.5.0 family build shipped without them and the agents' world failed to load:
+# "Not Found Res Models/ScCsgoTactical/airdrop"). Full and agents packages; the Lite carries no agents assets.
+TACTICAL_ASSET_RECORDS = [ROOT / "docs/tasks/airdrop-package-members-20261006.json"]
+def tactical_assets(edition):
+    """(member, bytes) of every recorded tactical asset for an edition ("full" / "agents"), each checked against its record."""
+    out = []
+    for record in TACTICAL_ASSET_RECORDS:
+        for r in json.loads(record.read_text("utf8"))["records"]:
+            if edition not in r["editions"]: continue
+            data = (ROOT / r["target"]).read_bytes(); assert sha(data) == r["sha256"], f"{r['target']} is not the recorded asset"
+            out.append((r["member"], data))
+    return out
 DENSE = ROOT / ".tmp/actor-freeze-20260926/before"  # preserved dense CT/T actors; proven to re-bake the shipped caches exactly
 EXPORTS = {"ct": ROOT / ".tmp/cs2-companions-audit-20260920/export/agents/models/ctm_sas/ctm_sas.glb",
            "t": ROOT / ".tmp/cs2-companions-audit-20260920/export/agents/models/tm_phoenix/tm_phoenix.glb"}
@@ -33,7 +46,14 @@ def dump(p, data): p.parent.mkdir(parents=True, exist_ok=True); p.write_text(jso
 def member(data):
     c = zlib.compressobj(9, zlib.DEFLATED, -15); packed = c.compress(data) + c.flush()
     return (8, zlib.crc32(data), len(data), packed) if len(packed) < len(data) else (0, zlib.crc32(data), len(data), data)
-def name(label): return f"[API1.9]CS武器1.4.0-{label}包.scmod"
+# The family's version (src/ScCsgoKnives/modinfo.json) names the candidates and is written into their modinfo; the stage builds
+# on the delivered packages of BASELINE_VERSION in BASELINE_DIR (since the 1.5.0 family of 2026-10-06 22:50: the 1.5.0
+# packages in output/; the 1.4.0 ones moved to output/history-1.4.0/ and stay the compat gate's readers). The deathmatch
+# package carries no 包 suffix (the user, 2026-10-06).
+VERSION = json.loads((ROOT / "src/ScCsgoKnives/modinfo.json").read_text("utf8"))["Version"]
+BASELINE_VERSION = "1.5.0"; BASELINE_DIR = ROOT / "output"
+def name(label, version=None): return f"[API1.9]CS武器{version or VERSION}-{label}{'' if label == '死亡竞赛' else '包'}.scmod"
+def baseline(label): return BASELINE_DIR / name(label, BASELINE_VERSION)
 
 def run(S, label, args, cwd=None):
     logs = S / "logs"; logs.mkdir(parents=True, exist_ok=True)
@@ -47,7 +67,7 @@ def prepare(S):
     if S.exists(): raise SystemExit(f"{S} exists; use a new tag")
     (S / "baseline").mkdir(parents=True)
     for label, expected in BASELINES.items():
-        src = ROOT / "output" / name(label); assert sha(src.read_bytes()) == expected, f"{label} 1.4.0 delivery changed"
+        src = baseline(label); assert sha(src.read_bytes()) == expected, f"{label} {BASELINE_VERSION} delivery changed"
     tree = S / "tree"
     for part in ["src/ScCsgoKnives", "src/ScCsgoTactical", "src/ScCsgoVoice", "src/ScCsgoAppearance", "tools"]:
         shutil.copytree(ROOT / part, tree / part, ignore=shutil.ignore_patterns("bin", "obj", "__pycache__", "AnimationData", "Models", "Textures", "Audio", "*.scmod", "*.glb", "*.scanim", "*.png", "*.webp", "*.wav", "*.ogg"))
@@ -96,7 +116,7 @@ def air(S):
     if not run(S, "build-tool-ActorLoadCheck", ["dotnet", "build", S / "tree/tools/ActorLoadCheck/ActorLoadCheck.csproj", "-c", "Release", "--nologo", "-v:q"]): raise SystemExit(1)
     tool = next((S / "tree/tools/ActorLoadCheck/bin/Release").rglob("ActorLoadCheck.dll"))
     report = {}
-    with zipfile.ZipFile(ROOT / "output" / name("全量")) as full, zipfile.ZipFile(ROOT / "output" / name("探员")) as agents:
+    with zipfile.ZipFile(baseline("全量")) as full, zipfile.ZipFile(baseline("探员")) as agents:
         for role in ["ct", "t"]:
             dense = work / f"{role}-dense.glb"
             report[role] = append_to_dense(DENSE / f"{role}.glb", EXPORTS[role], dense)
@@ -136,7 +156,7 @@ def native_tool(S, tool):
     """Full-candidate assets (package members plus staged overlays) and a build of tools/<tool> against the stage DLLs."""
     assets = S / "assets-full"
     if not assets.exists():
-        with zipfile.ZipFile(ROOT / "output" / name("全量")) as z:
+        with zipfile.ZipFile(baseline("全量")) as z:
             for role in ["ct", "t"]:
                 for n in [f"Assets/Models/ScCsgoTactical/{role}.glb", f"Assets/Animations/ScCsgoTactical/{role}.scanim"]:
                     t = assets / n[len("Assets/"):]; t.parent.mkdir(parents=True, exist_ok=True); t.write_bytes(z.read(n))
@@ -195,7 +215,7 @@ def package(S):
     manifest_src = (tree / "src/ScCsgoKnives/Assets/ScCompatibilityManifest.xml").read_text("utf8")
     wanted = [l.strip() for l in manifest_src.splitlines() if l.strip().startswith("<Subsystem ")]
     for label in ["全量", "轻量", "探员"]:
-        source = ROOT / "output" / name(label); assert sha(source.read_bytes()) == BASELINES[label]
+        source = baseline(label); assert sha(source.read_bytes()) == BASELINES[label]
         edition = "full" if label == "全量" else "lite"; changes = {}
         def dll(part, assembly):
             b = (S / edition / part / "source/bin/Release/net10.0" / f"{assembly}.dll").read_bytes(); assert sha(b) == builds[f"{edition}/{part}"]; return b
@@ -216,6 +236,13 @@ def package(S):
                 for res in RESOURCES:
                     staged = S / "resources" / edition / res
                     if staged.exists(): assert res in hashes or res in NEW_MEMBERS, res; changes[res] = staged.read_bytes()
+                for m, data in tactical_assets("full" if label == "全量" else "agents"):
+                    if hashes.get(m) != sha(data): changes[m] = data; NEW_MEMBERS.add(m)
+            if VERSION != BASELINE_VERSION:   # the family's version in every member that names it (as the 1.5.0 Full delivery did)
+                for n in ["modinfo.json", "Integrations/ScCsgoKnives.modinfo.json", "Integrations/ScCsgoTactical.modinfo.json"]:
+                    if n in hashes: info = json.loads(z.read(n).decode("utf-8-sig")); info["Version"] = VERSION; changes[n] = (json.dumps(info, ensure_ascii=False, indent=2) + "\n").encode("utf8")
+                for n in ["INSTALL.txt", "Integrations/ScCsgoBundle.json"]:
+                    if n in hashes: changes[n] = z.read(n).decode("utf-8-sig").replace(BASELINE_VERSION, VERSION).encode("utf8")
             for n, b in changes.items(): assert n in hashes or n in NEW_MEMBERS, "unexpected new member " + n; entries[n] = member(b); hashes[n] = sha(b)
             target = S / "candidate" / name(label); target.parent.mkdir(parents=True, exist_ok=True); write_archive(target, entries)
             with zipfile.ZipFile(target) as out:
