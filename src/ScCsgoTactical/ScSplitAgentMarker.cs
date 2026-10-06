@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 [assembly:TypeForwardedTo(typeof(Game.ScTacticalBeaconBlock))]
 [assembly:TypeForwardedTo(typeof(Game.ScTacticalDefuserBlock))]
 [assembly:TypeForwardedTo(typeof(Game.ScTacticalSquadBlock))]
+[assembly:TypeForwardedTo(typeof(Game.ScAirdropBlock))]
 [assembly:TypeForwardedTo(typeof(Game.TacticalItemMesh))]
 namespace Game;
 /// <summary>Only the matching optional package activates the core's stable item identities.</summary>

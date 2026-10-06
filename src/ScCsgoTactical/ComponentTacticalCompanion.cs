@@ -80,8 +80,8 @@ public sealed class ComponentTacticalCompanion : ComponentBehavior,IUpdateable,I
     public void Alert(ComponentBody b){if(Friendly(b)||b.Entity.FindComponent<ComponentHealth>() is not {Health:>0})return;threat=b;threatUntil=time.GameTime+10;}
     bool Hostile(ComponentBody b,ComponentPlayer owner){
         if(Friendly(b)||b.Entity.FindComponent<ComponentCreature>() is not {} creature||creature.ComponentHealth.Health<=0)return false;
-        // The squads are neutral until attacked (user rule 2026-10-02): a companion does not open fire on one for what it
-        // is. It fights one that has turned on its owner, on itself or on another companion of that owner; a fight its
+        // Companions engage a squad when it targets their owner, themselves or another companion of that owner.
+        // Survival squads can acquire that target proactively; a fight the
         // owner starts, or an attack on its owner or itself, reaches it through Alert (TacticalModLoader.ProcessAttackment).
         if(b.Entity.FindComponent<ComponentTacticalEnemy>() is {} squad)
             return squad.TargetBody is {} aimed&&(aimed.Entity==owner.Entity||aimed.Entity==Entity||aimed.Entity.FindComponent<ComponentTacticalCompanion>()?.OwnedBy(owner)==true);

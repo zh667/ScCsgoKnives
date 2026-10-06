@@ -1,0 +1,13 @@
+{
+  "candidate": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\subworld-airdrops-20261006\\airdrop-dev-full.scmod",
+  "sha256": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4",
+  "baselineSha256": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f",
+  "members": {
+    "ScCsgoTactical.dll": "624e97cac4996430af1e1febeb37943c1a52f014c1351152f57c2788b1610f58",
+    "Assets/ScTactical.xdb": "54c4cc263b725cfcd511e96054c5f99d78a6fd3c6adfc34d07a42a72fedf35d9",
+    "Assets/Models/ScCsgoTactical/airdrop.glb": "b8ff5c3790f9402060a6dc03e4b6e76c45c3e2e001c72d20629090ccb6c33928",
+    "Assets/Textures/ScCsgoTactical/airdrop.png": "f29c9611c29e9107cfd84f7e8f018f2349deffa77323ce401882977d169044d4",
+    "Assets/Textures/ScCsgoTactical/airdrop_smoke.png": "85ea686650aac0ea46463983d8642a245e02893ea24932f3d161e1cf2b466c66"
+  },
+  "status": "development only; no release gates or multiplayer identity stamp"
+}

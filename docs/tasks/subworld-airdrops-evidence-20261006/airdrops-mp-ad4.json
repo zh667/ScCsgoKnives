@@ -1,0 +1,121 @@
+{
+  "packageSha256": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4",
+  "checks": [
+    {
+      "name": "client handshake accepts same candidate",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "remote client cannot generate drops or rewards",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "full native population refuses flight before spawning any crate",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "population refusal leaves no partial guard squad",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "arena population leaves five genuine slots",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "host can begin delivery",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "client sees airborne delivery",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "host lands delivery",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "client receives landed state",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "client native chest inventory equals host",
+      "ok": true,
+      "detail": [
+        "1,2,3,1,2,2,0,0,0,0,0,0,0,0,0,0",
+        "1,2,3,1,2,2,0,0,0,0,0,0,0,0,0,0"
+      ]
+    },
+    {
+      "name": "exactly five guards on host and client",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "partial withdrawal replicates without refill",
+      "ok": true,
+      "detail": [
+        "1,2,3,1,1,2,0,0,0,0,0,0,0,0,0,0",
+        "1,2,3,1,1,2,0,0,0,0,0,0,0,0,0,0"
+      ]
+    },
+    {
+      "name": "removed crate clears client smoke",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "no game errors",
+      "ok": true,
+      "detail": {
+        "server": [],
+        "client": []
+      }
+    }
+  ],
+  "serverEngine": {
+    "engine": "1.9.3.2_MP",
+    "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\server",
+    "exe": "bf22a66a7aab8cc4e600f845afff4623d182cbf8780e1969e768add6df45384b",
+    "dll": {
+      "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+      "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+      "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db"
+    },
+    "mods": {
+      "Survivalcraft.TestAutomation.scmod": "51c47d44ecb459cb8cd0a33ef3b80fd7db04bf87cd9b6250426b4aaaee763658",
+      "airdrop-dev-full.scmod": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4"
+    }
+  },
+  "clientEngine": {
+    "engine": "1.9.3.2_MP",
+    "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\client1",
+    "exe": "bf22a66a7aab8cc4e600f845afff4623d182cbf8780e1969e768add6df45384b",
+    "dll": {
+      "Survivalcraft.dll": "622976cce1f9da248ff7e3d38144fb7383e034d555961dd1e40d6f5fe33ca504",
+      "Engine.dll": "41ec4fc808a645b04b08ffda3c756918875f9d6fc59bff9ff1fbfa307dac2e33",
+      "EntitySystem.dll": "9a6d892e0189681838fc2737f2a296ae787b0499a42f94aeb986d4733c48d9db"
+    },
+    "mods": {
+      "Survivalcraft.TestAutomation.scmod": "51c47d44ecb459cb8cd0a33ef3b80fd7db04bf87cd9b6250426b4aaaee763658",
+      "airdrop-dev-full.scmod": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4"
+    }
+  },
+  "initialNativePopulation": {
+    "count": 23,
+    "limit": 26
+  },
+  "arenaPopulationSetup": "21",
+  "errors": {
+    "server": [],
+    "client": []
+  }
+}

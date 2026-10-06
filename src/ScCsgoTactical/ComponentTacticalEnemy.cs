@@ -10,22 +10,22 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     public ComponentBody TargetBody;
     ComponentPathfinding path;SubsystemTacticalEnemies director;SubsystemTerrain terrain;SubsystemBodies bodies;SubsystemTime time;
     readonly Engine.Random random=new();
-    float senseLeft,pathLeft,lost,aim,plant,burstPause,search,fleeLeft;int burst,fleeAttempt;double nextJump;
+    float senseLeft,pathLeft,lost,aim,plant,burstPause,search,fleeLeft,patrolDelay;int burst,fleeAttempt,patrolStep;double nextJump;
     /// <summary>True while the current target attacked this enemy first: a bounded retaliation, not proactive aggro.</summary>
     public bool Retaliating;
     // 2026-10-06 follow-up: gunfire provokes healthy enemies; only wounded enemies seek escape/cover.
     // A bomb carrier seeks a nearby player to plant near them. Creative remains attack-to-provoke.
     // Shared retaliation stays bounded to nearby squad members; walls/smoke continue to stop shots.
-    public const float LeashRange=48,RetaliationMemory=8,ProactiveMemory=6;
+    public const float LeashRange=48,RetaliationMemory=8,ProactiveMemory=6,PlayerSearchRange=80,PerceptionRange=32;
     /// <summary>How far from the one that was hit the others join in: the distance at which a member used to notice a
     /// player by itself (32), a candidate value: the user named "nearby" without a number.</summary>
     public const float ProvokeRange=32;
-    public const float LowHealthToEscape=.33f,HealthToResume=.4f,PlantNearPlayer=12,PlayerSearchRange=80;
+    public const float LowHealthToEscape=.33f,HealthToResume=.4f,PlantNearPlayer=12;
     public static float DisengageRange(TacticalRole role)=>role==TacticalRole.Sniper?44:40;
     public static float RetaliationRange(TacticalRole role)=>float.PositiveInfinity;
     /// <summary>A summoned squad looks toward the one who summoned it and, once its warning window is over, walks a bounded
-    /// search toward that position. It grants no target, and since 2026-10-02 neither does arriving there: the squad is
-    /// neutral until one of them is attacked.</summary>
+    /// search toward that position. Investigation itself grants no target; survival sensing independently acquires
+    /// a visible player in range. Creative only retaliates.</summary>
     public void Investigate(Vector3 position,float seconds){
         var body=Creature.ComponentBody;var d=(position-body.Position).XZ;
         if(d.LengthSquared()>.01f)body.Rotation=Quaternion.CreateFromYawPitchRoll(MathF.Atan2(-d.X,-d.Y),0,0);
@@ -208,7 +208,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         // A throw or the recovery after planting runs to its end; nothing else is done meanwhile.
         if(throwing is not null){AdvanceThrow();return;}
         if(plantedAt>=0){path.Stop();if(time.GameTime-plantedAt>=PlantRecovery){plantedAt=-1;body.TargetCrouchFactor=0;Redraw();pathLeft=0;}return;}
-        senseLeft-=dt;pathLeft-=dt;strafeLeft-=dt;
+        senseLeft-=dt;pathLeft-=dt;strafeLeft-=dt;patrolDelay-=dt;
         if(TargetBody is not null){
             // Proactive targets are released beyond the disengage range or when chasing too far from home;
             // a retaliation lasts to its own range. Separate acquire/release distances prevent flip-flopping.
@@ -218,6 +218,10 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 ||!Retaliating&&Vector3.DistanceSquared(body.Position,Home)>LeashRange*LeashRange)Drop();
         }
         if(senseLeft<=0){senseLeft=State.Role==TacticalRole.Sniper?.15f:.35f+random.Float(0,.15f);
+            if(TargetBody is null&&!wounded&&State.Warmup<=0&&director.MayHuntPlayers
+                &&director.NearestPlayer(body.Position,PerceptionRange) is {} intruder&&Visible(intruder)){
+                TargetBody=intruder;Retaliating=false;lastSeen=intruder.Position;lost=ProactiveMemory;aim=0;
+            }
             if(TargetBody is null&&!wounded&&State.Bomb&&State.Warmup<=0&&director.MayHuntPlayers&&director.NearestPlayer(body.Position,PlayerSearchRange) is {} player)Alert(player);
             seen=TargetBody!=null&&Visible(TargetBody);
             if(seen){lastSeen=TargetBody.Position;lost=Retaliating?RetaliationMemory:ProactiveMemory;}
@@ -233,7 +237,22 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(pathLeft<=0){pathLeft=.65f;
             if(zones.FirstOrDefault(z=>z.Bomb&&TacticalDanger.Horizontal(body.Position,z.Center)<z.Radius+TacticalDanger.BombMargin) is {Bomb:true} hold)
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
-            else if(TargetBody is null){if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);else if(search>0)path.Stop();else if(Vector3.DistanceSquared(body.Position,Home)>16)Go(Home,.45f,2,160,null);else path.Stop();}
+            else if(TargetBody is null){
+                if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);
+                else if(search>0)path.Stop();
+                else if(director.MayHuntPlayers&&State.Warmup<=0){
+                    // The saved Home is the patrol anchor, never a second mutable position authority.
+                    // Rotate deterministic short waypoints; a path may fail in terrain and then replan.
+                    if(patrolDelay<=0||path.IsStuck||!path.Destination.HasValue){
+                        patrolStep=(patrolStep+1)%4;patrolDelay=8+random.Float(0,4);
+                        float angle=patrolStep*MathF.PI/2+((State.Role.GetHashCode()%5)-2)*.18f;
+                        var target=Home+new Vector3(MathF.Cos(angle)*6,0,MathF.Sin(angle)*6);
+                        if(Vector3.DistanceSquared(body.Position,Home)>12*12)target=Home;
+                        Go(target,.45f,2,160,null);
+                    }
+                }else if(Vector3.DistanceSquared(body.Position,Home)>16)Go(Home,.45f,2,160,null);
+                else path.Stop();
+            }
             else if(State.Warmup>0)path.Stop();
             else if(State.Bomb&&distance>PlantNearPlayer)Go(lastSeen,.75f,PlantNearPlayer-2,200,TargetBody);
             else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();

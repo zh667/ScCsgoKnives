@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-06",
+  "scope": "task-owned duplicate packages only",
+  "removed": [
+    {"path": "E:/projects/ScCsgoKnives/.tmp/dev-temp/subworld-airdrops-20261006/airdrop-dev-full.scmod", "bytes": 538499839},
+    {"path": "E:/projects/ScCsgoKnives/.tmp/dev-temp/subworld-airdrops-20261006/AncientWorld.scmod", "bytes": 232299038}
+  ],
+  "totalBytes": 770798877,
+  "recovery": "Permanently removed reproducible copies. Candidate retained in output; provider can be extracted again from the unchanged original ZIP.",
+  "retained": [
+    "E:/projects/ScCsgoKnives/output/[API1.9]CS武器-空投开发测试-全量包.scmod",
+    "D:/下载/AncientWorld_v0.41.16.zip",
+    "E:/projects/ScCsgoKnives/docs/tasks/subworld-airdrops-evidence-20261006",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/subworld-airdrops-20261006/split",
+    "CS2 exported source inputs, logs and original VPK"
+  ],
+  "candidateSha256": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4",
+  "originalWorldsModsAndOfficialPackagesChanged": false
+}

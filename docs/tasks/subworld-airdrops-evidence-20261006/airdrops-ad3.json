@@ -1,0 +1,457 @@
+{
+  "package": ".tmp\\dev-temp\\subworld-airdrops-20261006\\airdrop-dev-full.scmod",
+  "sha256": "b5e7db62c6339c2510f27bf07f23b3e7552fd8902cb7ccf8735b87bb2793f79f",
+  "checks": [
+    {
+      "name": "delivery accepted on clear terrain",
+      "ok": true,
+      "detail": "True"
+    },
+    {
+      "name": "same site cannot create duplicate delivery",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "starts airborne without loot",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "fall survives save/reload with same identity",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "native chest has one gun and five modest resource stacks",
+      "ok": true,
+      "detail": [
+        [
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "five guards created once",
+      "ok": true,
+      "detail": {
+        "drops": [
+          {
+            "Id": "b6eb34e25d664128a051725fe8ce7871",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 179.84024
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "idle guards actually walk their patrol",
+      "ok": true,
+      "detail": [
+        [
+          {
+            "id": 25,
+            "x": -94.5,
+            "z": -70.5
+          },
+          {
+            "id": 26,
+            "x": -96.5,
+            "z": -72.5
+          },
+          {
+            "id": 27,
+            "x": -96.5,
+            "z": -70.5
+          },
+          {
+            "id": 28,
+            "x": -96.5,
+            "z": -68.5
+          },
+          {
+            "id": 29,
+            "x": -94.5,
+            "z": -72.5
+          }
+        ],
+        [
+          {
+            "id": 25,
+            "x": -93.35033,
+            "z": -66.858185
+          },
+          {
+            "id": 26,
+            "x": -96.45683,
+            "z": -67.66699
+          },
+          {
+            "id": 27,
+            "x": -96.2806,
+            "z": -65.93533
+          },
+          {
+            "id": 28,
+            "x": -96.03452,
+            "z": -65.21545
+          },
+          {
+            "id": 29,
+            "x": -95.31038,
+            "z": -67.851494
+          }
+        ]
+      ]
+    },
+    {
+      "name": "guard acquires nearby player without provocation",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "native partial withdrawal",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "reload neither refills nor duplicates chest",
+      "ok": true,
+      "detail": {
+        "drops": [
+          {
+            "Id": "b6eb34e25d664128a051725fe8ce7871",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 171.94814
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            2,
+            1,
+            1,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "airdrop gun can be withdrawn as a usable gun",
+      "ok": true,
+      "detail": "True"
+    },
+    {
+      "name": "withdrawn gun actually fires",
+      "ok": false,
+      "detail": [
+        {
+          "dir": "app:/doc/Worlds/World",
+          "value": 327985,
+          "id": 0,
+          "gun": "mp5sd",
+          "usable": true,
+          "rounds": 30,
+          "records": 0,
+          "rec1": "-",
+          "rec2": "-",
+          "rec3": "-",
+          "active": 0,
+          "inventory": "ComponentInventory"
+        },
+        {
+          "dir": "app:/doc/Worlds/World",
+          "value": 0,
+          "id": -1,
+          "gun": "-",
+          "usable": false,
+          "rounds": -1,
+          "records": 1,
+          "rec1": "mp5sd/28",
+          "rec2": "-",
+          "rec3": "-",
+          "active": 0,
+          "inventory": "ComponentInventory"
+        }
+      ]
+    }
+  ],
+  "states": {
+    "falling": {
+      "drops": [
+        {
+          "Id": "b6eb34e25d664128a051725fe8ce7871",
+          "Fall": 11.799999,
+          "Landed": false,
+          "Smoke": 180
+        }
+      ],
+      "guards": [],
+      "chests": []
+    },
+    "resumed": {
+      "drops": [
+        {
+          "Id": "b6eb34e25d664128a051725fe8ce7871",
+          "Fall": 11.685589,
+          "Landed": false,
+          "Smoke": 180
+        }
+      ],
+      "guards": [],
+      "chests": []
+    },
+    "landed": {
+      "drops": [
+        {
+          "Id": "b6eb34e25d664128a051725fe8ce7871",
+          "Fall": 0,
+          "Landed": true,
+          "Smoke": 179.84024
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": [
+        [
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "partial-reload": {
+      "drops": [
+        {
+          "Id": "b6eb34e25d664128a051725fe8ce7871",
+          "Fall": 0,
+          "Landed": true,
+          "Smoke": 171.94814
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-b6eb34e25d664128a051725fe8ce7871",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": [
+        [
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "engine": {
+    "engine": "1.9.3.1",
+    "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131",
+    "exe": "37c5f9bba3546e762d44737778b9ad7f35aa5fa6121b87a1192bddea8e8ef884",
+    "dll": {
+      "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+      "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+      "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+    },
+    "mods": {
+      "ScTestAutomation131.scmod": "92c535e74258e57b649813749f3485484e56447ad0dc3c702439e031de7df4da",
+      "airdrop-dev-full.scmod": "b5e7db62c6339c2510f27bf07f23b3e7552fd8902cb7ccf8735b87bb2793f79f"
+    }
+  },
+  "failure": "withdrawn gun actually fires: [{'dir': 'app:/doc/Worlds/World', 'value': 327985, 'id': 0, 'gun': 'mp5sd', 'usable': True, 'rounds': 30, 'records': 0, 'rec1': '-', 'rec2': '-', 'rec3': '-', 'active': 0, 'inventory': 'ComponentInventory'}, {'dir': 'app:/doc/Worlds/World', 'value': 0, 'id': -1, 'gun': '-', 'usable': False, 'rounds': -1, 'records': 1, 'rec1': 'mp5sd/28', 'rec2': '-', 'rec3': '-', 'active': 0, 'inventory': 'ComponentInventory'}]",
+  "gameErrors": []
+}

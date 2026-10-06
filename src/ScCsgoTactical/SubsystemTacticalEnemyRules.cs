@@ -54,7 +54,7 @@ public sealed class SubsystemTacticalEnemyRules : Subsystem {
             case SubsystemTacticalEnemies.NaturalBlocker.Cooldown:
                 return $"等待期已结束；距上一队的最短间隔还剩约 {director.CooldownLeft:0} 秒";
         }
-        string text="等待期已结束，规则允许生成。是否刷出由游戏的自然刷新机制随机决定（与其他生物竞争），不是定时必刷；刷出时敌队站在距玩家约 32～44 格的露天可站地面，优先视线外，出现在视野内时至少 32 格、渐显并有 3 秒警告，然后朝玩家当时所在方向巡逻一段";
+        string text="等待期已结束，规则允许生成。是否刷出由游戏的自然刷新机制随机决定（与其他生物竞争），不是定时必刷；刷出时敌队站在距玩家约 32～44 格的露天可站地面，优先视线外，出现在视野内时至少 32 格、渐显并有 3 秒警告。生存模式下会走动巡逻，主动攻击 32 格内可见的玩家，受到范围外攻击也会反击；墙体和烟雾仍会阻挡视线";
         var refusals=director.RecentRefusals.Where(p=>p.Key.StartsWith("placement:",StringComparison.Ordinal)||p.Key.StartsWith("squad-placement:",StringComparison.Ordinal)).ToArray();
         if(refusals.Length>0)text+=$"；本次进入世界以来有 {refusals.Sum(p=>p.Value)} 个候选位置因地形或视线被拒（{string.Join("、",refusals.GroupBy(p=>Reason(p.Key)).OrderByDescending(g=>g.Sum(p=>p.Value)).Take(3).Select(g=>g.Key+g.Sum(p=>p.Value)+"次"))}）";
         var met=director.Encounters;

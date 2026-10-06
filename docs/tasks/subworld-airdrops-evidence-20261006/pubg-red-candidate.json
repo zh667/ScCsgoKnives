@@ -1,0 +1,14 @@
+{
+  "candidate": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\pubg-airdrop-20261006\\airdrop-dev-full.scmod",
+  "sha256": "055593c726f36add6cf49598d34bf7c4f458a048bf7bcf1319dc6ca61fe8372c",
+  "baselineSha256": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f",
+  "members": {
+    "ScCsgoTactical.dll": "d702662112908d0ab5d028aed7a32708301f8c56fa3d39987b7b3d9b82f7c134",
+    "Assets/ScTactical.xdb": "54c4cc263b725cfcd511e96054c5f99d78a6fd3c6adfc34d07a42a72fedf35d9",
+    "Assets/PUBG-airdrop-attribution.txt": "2f201e2d7deee0d8614ab7418046fcf12725b61d6d67089e7dab138f446826f5",
+    "Assets/Models/ScCsgoTactical/airdrop.glb": "7b34e167f2f4999a01a83c5dfbc9505653d88f9fb547228006f9d1b86c3cb2b7",
+    "Assets/Textures/ScCsgoTactical/airdrop.png": "cf9097c12d670c917dfb0a073875dfa8309d540f82c9a6d280d36951d28e3f53",
+    "Assets/Textures/ScCsgoTactical/airdrop_smoke.png": "85ea686650aac0ea46463983d8642a245e02893ea24932f3d161e1cf2b466c66"
+  },
+  "status": "development only; no release gates or multiplayer identity stamp"
+}

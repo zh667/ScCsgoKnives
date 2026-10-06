@@ -1,0 +1,607 @@
+{
+ "case": "subworld-ancient-actual-survival150",
+ "packages": {
+  "[API1.9]CS武器1.5.0-全量包.scmod": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f",
+  "AncientWorld.scmod": "ccc9b649623025dcf41bc2c4675e4b0151fe96a5af008cc8c7319508d74d6c62"
+ },
+ "steps": [
+  {
+   "t": 21.6,
+   "step": "world mode",
+   "value": "Survival"
+  },
+  {
+   "t": 25.1,
+   "step": "player",
+   "value": "True"
+  },
+  {
+   "t": 25.7,
+   "step": "settings",
+   "value": "gui in screenshots"
+  },
+  {
+   "t": 28.8,
+   "step": "main world's own record",
+   "value": "1"
+  },
+  {
+   "t": 28.9,
+   "step": "fresh SCAR-20 in slot 1",
+   "value": "0"
+  },
+  {
+   "t": 29.4,
+   "step": "main before the trip",
+   "value": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 360752,
+    "id": 0,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 20,
+    "records": 1,
+    "rec1": "sawedoff/5",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 29.6,
+   "step": "trip 1: into the sub-world",
+   "value": "from app:/doc/Worlds/World (main)"
+  },
+  {
+   "t": 32.8,
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 36.8,
+   "step": "after trip 1: into the sub-world",
+   "value": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 360752,
+    "id": 0,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 20,
+    "records": 0,
+    "rec1": "-",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 38.1,
+   "step": "trigger conditions in the sub-world",
+   "value": "{\"available\":true,\"context\":true,\"control\":true,\"active\":true,\"screen\":\"GameScreen\",\"animating\":false,\"modal\":null,\"dialogs\":false,\"camera\":\"FppCamera\",\"entityControl\":true,\"ready\":true,\"sleep\":0,\"health\":1,\"value\":360752,\"known\":true,\"menu\":false}"
+  },
+  {
+   "t": 38.2,
+   "step": "fire in the sub-world",
+   "value": "666.5 77.54875 -79.5 1.1418179E-07 0.28734788 -0.95782626"
+  },
+  {
+   "t": 40.7,
+   "step": "after firing in the sub-world",
+   "value": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 19,
+    "records": 1,
+    "rec1": "scar20/19",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 40.7,
+   "step": "trip 2: home",
+   "value": "from app:/doc/Worlds/World/Dimensions/Ancient (ancient)"
+  },
+  {
+   "t": 41.4,
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 45.4,
+   "step": "after trip 2: home",
+   "value": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 19,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/19",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 45.4,
+   "step": "gun lines after trip 2",
+   "value": [
+    "13:27:42.609 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World: 1 departure(s) from app:/doc/Worlds/World/Dimensions/Ancient",
+    "13:27:43.755 [Information] [GUN_TRAVEL] transfer saved-B60821CF15BEC911E152427B5908EAA5: 1 carried gun(s) imported (1 new number(s), 0 returning); all carried state preserved",
+    "13:27:43.759 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World/Dimensions/Ancient (Inventory): transfer saved-B60821CF15BEC911E152427B5908EAA5, 1 carried gun(s), 1 slot(s) given local numbers; complete"
+   ]
+  },
+  {
+   "t": 46.0,
+   "step": "frame home-after-trip-2",
+   "value": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131\\ScreenCapture\\subworld-ancient-actual-survival150-00-home-after-trip-2"
+  },
+  {
+   "t": 47.2,
+   "step": "trigger conditions at home",
+   "value": "{\"available\":true,\"context\":true,\"control\":true,\"active\":true,\"screen\":\"GameScreen\",\"animating\":false,\"modal\":null,\"dialogs\":false,\"camera\":\"FppCamera\",\"entityControl\":true,\"ready\":true,\"sleep\":0,\"health\":1,\"value\":2457904,\"known\":true,\"menu\":false}"
+  },
+  {
+   "t": 47.2,
+   "step": "fire at home",
+   "value": "-110.5 66.54875 -84.5 -0.90006214 0.28734788 0.32759634"
+  },
+  {
+   "t": 49.7,
+   "step": "after firing at home",
+   "value": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 18,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/18",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 49.7,
+   "step": "trip 3: into the sub-world again",
+   "value": "from app:/doc/Worlds/World (main)"
+  },
+  {
+   "t": 50.3,
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 54.3,
+   "step": "after trip 3: into the sub-world again",
+   "value": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 18,
+    "records": 1,
+    "rec1": "scar20/18",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 54.3,
+   "step": "gun lines after trip 3",
+   "value": [
+    "13:27:51.573 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World/Dimensions/Ancient: 1 departure(s) from app:/doc/Worlds/World",
+    "13:27:52.683 [Information] [GUN_TRAVEL] transfer saved-095DA9FCEFA4BC7D93C0BF72D37ADBD1: 1 carried gun(s) imported (0 new number(s), 1 returning); all carried state preserved",
+    "13:27:52.683 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World (Inventory): transfer saved-095DA9FCEFA4BC7D93C0BF72D37ADBD1, 1 carried gun(s), 1 slot(s) given local numbers; complete"
+   ]
+  },
+  {
+   "t": 55.5,
+   "step": "trigger conditions survival sub-world",
+   "value": "{\"available\":true,\"context\":true,\"control\":true,\"active\":true,\"screen\":\"GameScreen\",\"animating\":false,\"modal\":null,\"dialogs\":false,\"camera\":\"FppCamera\",\"entityControl\":true,\"ready\":true,\"sleep\":0,\"health\":1,\"value\":1409328,\"known\":true,\"menu\":false}"
+  },
+  {
+   "t": 55.5,
+   "step": "fire survival sub-world",
+   "value": "666.5 77.54875 -79.5 1.1418179E-07 0.28734788 -0.95782626"
+  },
+  {
+   "t": 58.1,
+   "step": "after firing survival sub-world",
+   "value": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 17,
+    "records": 1,
+    "rec1": "scar20/17",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 58.1,
+   "step": "trip 4: survival home",
+   "value": "from app:/doc/Worlds/World/Dimensions/Ancient (ancient)"
+  },
+  {
+   "t": 58.7,
+   "step": "camera",
+   "value": "FppCamera"
+  },
+  {
+   "t": 62.7,
+   "step": "after trip 4: survival home",
+   "value": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 17,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/17",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 63.9,
+   "step": "trigger conditions survival home",
+   "value": "{\"available\":true,\"context\":true,\"control\":true,\"active\":true,\"screen\":\"GameScreen\",\"animating\":false,\"modal\":null,\"dialogs\":false,\"camera\":\"FppCamera\",\"entityControl\":true,\"ready\":true,\"sleep\":0,\"health\":1,\"value\":2457904,\"known\":true,\"menu\":false}"
+  },
+  {
+   "t": 63.9,
+   "step": "fire survival home",
+   "value": "-110.5 66.54875 -84.5 -0.90006214 0.28734788 0.32759634"
+  },
+  {
+   "t": 66.4,
+   "step": "after firing survival home",
+   "value": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 16,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/16",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "t": 71.2,
+   "step": "after save and reload",
+   "value": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 16,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/16",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  }
+ ],
+ "checks": [
+  {
+   "check": "fixture: actual inventory matches requested mode",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 360752,
+    "id": 0,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 20,
+    "records": 1,
+    "rec1": "sawedoff/5",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "fixture: the main world's #1 is a sawed-off and the SCAR-20 is fresh",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 360752,
+    "id": 0,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 20,
+    "records": 1,
+    "rec1": "sawedoff/5",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "trip 1 reached another world",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 360752,
+    "id": 0,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 20,
+    "records": 0,
+    "rec1": "-",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "in the sub-world: the gun fired (rounds 20 -> 19)",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 19,
+    "records": 1,
+    "rec1": "scar20/19",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "in the sub-world the first shot made a record there",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 19,
+    "records": 1,
+    "rec1": "scar20/19",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "home again: the carried SCAR-20 is usable with the rounds it had in the sub-world",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 19,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/19",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "home again: the main world's own #1 is still the sawed-off with 5 rounds",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 19,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/19",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "home again: no 'unusable gun data'",
+   "ok": true,
+   "detail": [
+    "13:27:42.609 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World: 1 departure(s) from app:/doc/Worlds/World/Dimensions/Ancient",
+    "13:27:43.755 [Information] [GUN_TRAVEL] transfer saved-B60821CF15BEC911E152427B5908EAA5: 1 carried gun(s) imported (1 new number(s), 0 returning); all carried state preserved",
+    "13:27:43.759 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World/Dimensions/Ancient (Inventory): transfer saved-B60821CF15BEC911E152427B5908EAA5, 1 carried gun(s), 1 slot(s) given local numbers; complete"
+   ]
+  },
+  {
+   "check": "at home: the gun fired (rounds 19 -> 18)",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 18,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/18",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "out again: rounds from home and stable existing identity",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 18,
+    "records": 1,
+    "rec1": "scar20/18",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "out again: no 'unusable gun data'",
+   "ok": true,
+   "detail": [
+    "13:27:51.573 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World/Dimensions/Ancient: 1 departure(s) from app:/doc/Worlds/World",
+    "13:27:52.683 [Information] [GUN_TRAVEL] transfer saved-095DA9FCEFA4BC7D93C0BF72D37ADBD1: 1 carried gun(s) imported (0 new number(s), 1 returning); all carried state preserved",
+    "13:27:52.683 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World (Inventory): transfer saved-095DA9FCEFA4BC7D93C0BF72D37ADBD1, 1 carried gun(s), 1 slot(s) given local numbers; complete"
+   ]
+  },
+  {
+   "check": "survival sub-world: the gun fired (rounds 18 -> 17)",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World/Dimensions/Ancient",
+    "value": 1409328,
+    "id": 1,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 17,
+    "records": 1,
+    "rec1": "scar20/17",
+    "rec2": "-",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "survival home: spent rounds preserved",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 17,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/17",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "survival home: the gun fired (rounds 17 -> 16)",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 16,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/16",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  },
+  {
+   "check": "after save and reload: the same gun, number and rounds",
+   "ok": true,
+   "detail": {
+    "dir": "app:/doc/Worlds/World",
+    "value": 2457904,
+    "id": 2,
+    "gun": "scar20",
+    "usable": true,
+    "rounds": 16,
+    "records": 2,
+    "rec1": "sawedoff/5",
+    "rec2": "scar20/16",
+    "rec3": "-",
+    "active": 0,
+    "inventory": "ComponentInventory"
+   }
+  }
+ ],
+ "frames": [
+  "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131\\ScreenCapture\\subworld-ancient-actual-survival150-00-home-after-trip-2"
+ ],
+ "engine": {
+  "engine": "1.9.3.1",
+  "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131",
+  "exe": "37c5f9bba3546e762d44737778b9ad7f35aa5fa6121b87a1192bddea8e8ef884",
+  "dll": {
+   "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+   "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+   "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+  },
+  "mods": {
+   "ScTestAutomation131.scmod": "92c535e74258e57b649813749f3485484e56447ad0dc3c702439e031de7df4da",
+   "[API1.9]CS武器1.5.0-全量包.scmod": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f",
+   "AncientWorld.scmod": "ccc9b649623025dcf41bc2c4675e4b0151fe96a5af008cc8c7319508d74d6c62"
+  }
+ },
+ "gunLines": [
+  "13:27:23.589 [Information] gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 6, schema read 7 -> written 7, counter rule Unset, 0 kill credit(s) pending",
+  "13:27:31.269 [Information] gun registry: 0 records (0 quarantined), next id 1; world gun data layout stamp 0, status New, this version 6, schema read 7 -> written 7, counter rule Unset, 0 kill credit(s) pending",
+  "13:27:42.602 [Information] gun registry: 1 records (0 quarantined), next id 2; world gun data layout stamp 6, status Compatible, this version 6, schema read 7 -> written 7, counter rule Unset, 0 kill credit(s) pending",
+  "13:27:42.609 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World: 1 departure(s) from app:/doc/Worlds/World/Dimensions/Ancient",
+  "13:27:43.755 [Information] [GUN_TRAVEL] transfer saved-B60821CF15BEC911E152427B5908EAA5: 1 carried gun(s) imported (1 new number(s), 0 returning); all carried state preserved",
+  "13:27:43.759 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World/Dimensions/Ancient (Inventory): transfer saved-B60821CF15BEC911E152427B5908EAA5, 1 carried gun(s), 1 slot(s) given local numbers; complete",
+  "13:27:51.572 [Information] gun registry: 1 records (0 quarantined), next id 2; world gun data layout stamp 6, status Compatible, this version 6, schema read 7 -> written 7, counter rule Unset, 0 kill credit(s) pending",
+  "13:27:51.573 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World/Dimensions/Ancient: 1 departure(s) from app:/doc/Worlds/World",
+  "13:27:52.683 [Information] [GUN_TRAVEL] transfer saved-095DA9FCEFA4BC7D93C0BF72D37ADBD1: 1 carried gun(s) imported (0 new number(s), 1 returning); all carried state preserved",
+  "13:27:52.683 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World (Inventory): transfer saved-095DA9FCEFA4BC7D93C0BF72D37ADBD1, 1 carried gun(s), 1 slot(s) given local numbers; complete",
+  "13:27:59.958 [Information] gun registry: 2 records (0 quarantined), next id 3; world gun data layout stamp 6, status Compatible, this version 6, schema read 7 -> written 7, counter rule Unset, 0 kill credit(s) pending",
+  "13:27:59.960 [Information] [GUN_TRAVEL] arrival check in app:/doc/Worlds/World: 1 departure(s) from app:/doc/Worlds/World/Dimensions/Ancient",
+  "13:28:01.065 [Information] [GUN_TRAVEL] transfer saved-5AC93822EDA4A4B2434F13FD34A2364B: 1 carried gun(s) imported (0 new number(s), 1 returning); all carried state preserved",
+  "13:28:01.065 [Information] [GUN_TRAVEL] arrival from app:/doc/Worlds/World/Dimensions/Ancient (Inventory): transfer saved-5AC93822EDA4A4B2434F13FD34A2364B, 1 carried gun(s), 1 slot(s) given local numbers; complete",
+  "13:28:08.288 [Information] gun registry: 2 records (0 quarantined), next id 3; world gun data layout stamp 6, status Compatible, this version 6, schema read 7 -> written 7, counter rule Unset, 0 kill credit(s) pending"
+ ],
+ "gameErrors": []
+}

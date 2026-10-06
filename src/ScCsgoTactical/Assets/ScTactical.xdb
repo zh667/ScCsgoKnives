@@ -1,5 +1,11 @@
 <Mod>
   <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ScAirdrops" Guid="f0123acf-b891-4fd9-bf85-4a562513d3c8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="6d54df6c-a6e3-473d-bdb5-0d8b185e21c5" Value="Game.SubsystemScAirdropChest" Type="string" />
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="ScAirdropDirector" Guid="1ad31453-81c0-4ecb-ab11-b485df0e2bd8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="a8790209-312f-491a-b228-d8199d2183f2" Value="Game.SubsystemScAirdrops" Type="string" />
+    </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="ScTactical" Guid="cc74fbb5-ae4d-588c-8468-0afa75e0fc58" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="512cff17-65b8-540d-8ac5-7d8d89a80a38" Value="Game.SubsystemScTactical" Type="string" />
     </MemberSubsystemTemplate>
