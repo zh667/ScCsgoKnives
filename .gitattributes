@@ -1,2 +1,5 @@
+# One line ending on both hosts: the files cross between Windows and the VPS through Syncthing, and a checkout that
+# rewrote them to CRLF would appear as edits on the other host and change every input hash.
+* text=auto eol=lf
 # These compatibility fixtures are hashed as bytes; keep them identical across Windows/Linux checkouts.
 tools/fixtures/migration-120-20260925/*.xml -text
