@@ -39,25 +39,64 @@ public static class DmPx {
         catch (Exception) { s_missing.Add(name); return null; }
     }
     static readonly Dictionary<string, string> s_gunSprite = new(StringComparer.Ordinal) { ["m4a1s"] = "m4a1_silencer", ["m4a4"] = "m4a1", ["glock18"] = "glock", ["hkp2000"] = "p2000" };
-    /// <summary>The sprite of a weapon by its asset name ("ak47", "knife_karambit", "grenade_hegrenade", "taser").</summary>
-    public static Texture2D WeaponSprite(string asset) {
+    /// <summary>The core's knife asset names (CsmcKnifeRig.FrozenKnifeOrder) as CS2 names their icons. Until 2026-10-06 the
+    /// names were looked up as they are, and only the bayonet found its icon - the one knife CS2 writes without the knife_
+    /// prefix (the user: "刀具现在只有刺刀有HUD"). tools/build_dm_hud_icons.py carries the same table.</summary>
+    static readonly Dictionary<string, string> s_knifeSprite = new(StringComparer.Ordinal) {
+        ["karambit"] = "knife_karambit", ["m9"] = "knife_m9_bayonet", ["butterfly"] = "knife_butterfly", ["bayonet"] = "bayonet", ["bowie"] = "knife_survival_bowie",
+        ["canis"] = "knife_canis", ["cord"] = "knife_cord", ["css"] = "knife_css", ["default_ct"] = "knife", ["default_t"] = "knife_t", ["falchion"] = "knife_falchion",
+        ["flip"] = "knife_flip", ["gut"] = "knife_gut", ["kukri"] = "knife_kukri", ["navaja"] = "knife_gypsy_jackknife", ["outdoor"] = "knife_outdoor", ["push"] = "knife_push",
+        ["skeleton"] = "knife_skeleton", ["stiletto"] = "knife_stiletto", ["tactical"] = "knife_tactical", ["talon"] = "knife_widowmaker", ["ursus"] = "knife_ursus" };
+    /// <summary>CS2's icon name for a weapon asset name ("ak47", "karambit", "knife_karambit", "grenade_hegrenade", "taser"), or null.</summary>
+    public static string IconName(string asset) {
         if (string.IsNullOrEmpty(asset)) return null;
         int grenade = Array.IndexOf(ScGrenadeBlock.Assets, asset);
-        if (grenade >= 0) return Sprite(grenade switch { 0 => "hegrenade", 1 => "flashbang", 2 => "smokegrenade", 3 => "molotov", 4 => "incgrenade", _ => "decoy" });
-        if (asset.StartsWith("knife", StringComparison.Ordinal)) return Sprite(asset) ?? Sprite(asset.Replace("knife_", "knife_", StringComparison.Ordinal).TrimEnd('_')) ?? Sprite("knife");
-        return Sprite(s_gunSprite.GetValueOrDefault(asset, asset));
+        if (grenade >= 0) return grenade switch { 0 => "hegrenade", 1 => "flashbang", 2 => "smokegrenade", 3 => "molotov", 4 => "incgrenade", _ => "decoy" };
+        if (s_knifeSprite.TryGetValue(asset, out var knife)) return knife;
+        if (asset.StartsWith("knife_", StringComparison.Ordinal) && s_knifeSprite.TryGetValue(asset["knife_".Length..], out knife)) return knife;
+        if (asset.StartsWith("knife", StringComparison.Ordinal)) return asset;
+        return s_gunSprite.GetValueOrDefault(asset, asset);
     }
+    static bool IsKnifeIcon(string name) => name == "bayonet" || name.StartsWith("knife", StringComparison.Ordinal);
+    /// <summary>The pixel sprite of a weapon by its asset name ("ak47", "karambit", "knife_karambit", "grenade_hegrenade", "taser").</summary>
+    public static Texture2D WeaponSprite(string asset) => IconName(asset) is { } name ? Sprite(name) ?? (IsKnifeIcon(name) ? Sprite("knife") : null) : null;
     public static Texture2D GunSprite(int variant) => variant >= 0 && variant < GunSpec.All.Length ? WeaponSprite(GunSpec.All[variant].Name) : null;
     public static Texture2D KnifeSprite(int variant) => WeaponSprite(ScKnifeBlock.GetAssetName(variant));
-    /// <summary>The sprite of an item value: a gun (its model), a knife, a throwable; null for anything else.</summary>
-    public static Texture2D ItemSprite(int value) {
+    /// <summary>The weapon asset name an item value stands for: a gun (its model, also under a skin), a knife, a throwable; null for anything else.</summary>
+    public static string ItemAsset(int value) {
         var block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-        if (block is ScGunSkinTemplateBlock) return ScGunSkinCatalog.Find(Terrain.ExtractData(value)) is { } skin ? WeaponSprite(skin.Gun) : null;
+        if (block is ScGunSkinTemplateBlock) return ScGunSkinCatalog.Find(Terrain.ExtractData(value))?.Gun;
         return block switch {
-            ScGunBlock => GunSprite(GunSpec.GetVariant(Terrain.ExtractData(value))),
-            ScKnifeBlock => KnifeSprite(Terrain.ExtractData(value) & 31),
-            ScGrenadeBlock => WeaponSprite(ScGrenadeBlock.Assets[Math.Clamp(ScGrenadeBlock.Kind(value), 0, 5)]),
+            ScGunBlock => GunSpec.GetVariant(Terrain.ExtractData(value)) is var v && v >= 0 && v < GunSpec.All.Length ? GunSpec.All[v].Name : null,
+            ScKnifeBlock => ScKnifeBlock.GetAssetName(Terrain.ExtractData(value) & 31),
+            ScGrenadeBlock => ScGrenadeBlock.Assets[Math.Clamp(ScGrenadeBlock.Kind(value), 0, 5)],
             _ => null };
+    }
+    /// <summary>The pixel sprite of an item value, or null.</summary>
+    public static Texture2D ItemSprite(int value) => WeaponSprite(ItemAsset(value));
+
+    // ---------------------------------------------------------------- CS2's HUD icons (smooth)
+    static readonly Dictionary<string, Texture2D> s_hud = new(StringComparer.Ordinal);
+    static readonly HashSet<string> s_hudMissing = new(StringComparer.Ordinal);
+    /// <summary>CS2's own equipment icon as CS2 draws it - the silhouette SVG rendered smooth, 64 px high, white with its alpha
+    /// (tools/build_dm_hud_icons.py) - or null. The buy wheel shows these since 2026-10-06 (the user: the pixel sprites looked
+    /// CSMC-like, "可以用cs2自己的"); the kill feed and the equipment rows keep the pixel sprites.</summary>
+    public static Texture2D HudIcon(string name) {
+        if (string.IsNullOrEmpty(name)) return null;
+        if (s_hud.TryGetValue(name, out var t)) return t;
+        if (s_hudMissing.Contains(name)) return null;
+        try { t = ContentManager.Get<Texture2D>("Textures/ScCsgoDeathmatch/hud/" + name); s_hud[name] = t; return t; }
+        catch (Exception e) { s_hudMissing.Add(name); KnifeDiagnostics.WarnOnce("dm-hud-icon-" + name, $"[CS_DM] CS2 icon hud/{name} unavailable ({e.GetType().Name}); the wheel shows the name alone"); return null; }
+    }
+    public static Texture2D WeaponHud(string asset) => IconName(asset) is { } name ? HudIcon(name) ?? (IsKnifeIcon(name) ? HudIcon("knife") : null) : null;
+    public static Texture2D ItemHud(int value) => WeaponHud(ItemAsset(value));
+    /// <summary>Draws a smooth icon (linear sampling) with its top-left at <paramref name="at"/>, <paramref name="height"/> high, its aspect kept.</summary>
+    public static void Image(PrimitivesRenderer2D r, Texture2D t, Vector2 at, float height, Color color, Matrix transform) {
+        if (t is null || t.Height <= 0) return;
+        var batch = r.TexturedBatch(t, false, 1, null, null, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+        int first = batch.TriangleVertices.Count; Vector2 size = new(t.Width * height / t.Height, height);
+        batch.QueueQuad(at, at + size, 0, Vector2.Zero, Vector2.One, color);
+        batch.TransformTriangles(transform, first);
     }
     /// <summary>Draws a sprite with its top-left at <paramref name="at"/>, scaled by whole pixels (point sampled). Batch layer
     /// 1: the engine sorts the batches of one flush by layer with an unstable sort, so a sprite on layer 0 beside the
@@ -211,6 +250,15 @@ public sealed class DmPixelIcon : Widget {
         DesiredSize = Texture is null ? Vector2.Zero : new Vector2(Texture.Width, Texture.Height) * Scale; IsDrawRequired = Texture is not null;
     }
     public override void Draw(DrawContext dc) { if (Texture is not null) DmPx.Sprite(dc.PrimitivesRenderer2D, Texture, Vector2.Zero, Scale, Color * GlobalColorTransform, GlobalTransform); }
+}
+
+/// <summary>A smooth icon as a widget (CS2's HUD icons), drawn <see cref="Height"/> high with its aspect kept.</summary>
+public sealed class DmHudIcon : Widget {
+    public Texture2D Texture; public float Height = 32; public Color Color = DmPx.Text;
+    public DmHudIcon() { IsHitTestVisible = false; }
+    public float Width => Texture is null || Texture.Height <= 0 ? 0 : Texture.Width * Height / Texture.Height;
+    public override void MeasureOverride(Vector2 parentAvailableSize) { DesiredSize = Texture is null ? Vector2.Zero : new Vector2(Width, Height); IsDrawRequired = Texture is not null; }
+    public override void Draw(DrawContext dc) { if (Texture is not null) DmPx.Image(dc.PrimitivesRenderer2D, Texture, Vector2.Zero, Height, Color * GlobalColorTransform, GlobalTransform); }
 }
 
 /// <summary>A pixel slider: a flat track, a gold fill up to the value, a square knob and the value in pixel digits at the

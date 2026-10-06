@@ -30,6 +30,8 @@ SOURCE = ROOT / "src/ScCsgoDeathmatch"
 ASSETS_RECORD = ROOT / "docs/tasks/deathmatch-addon-assets-20261003.json"
 # round 2 (R2-6): the pixel sprites rasterised from CS2's own SVG silhouettes (tools/build_dm_pixel_icons.py)
 PIXEL_RECORD = ROOT / "docs/tasks/deathmatch-addon-pixel-icons-20261003.json"
+# 2026-10-06: CS2's own equipment icons, smooth, for the buy wheel (tools/build_dm_hud_icons.py)
+HUD_RECORD = ROOT / "docs/tasks/deathmatch-addon-hud-icons-20261006.json"
 FIXTURE = ROOT / "tools/fixtures/migration-120-20260925/world7-guns.xml"
 def sha(b): return hashlib.sha256(b).hexdigest()
 def dll(S): return S / "dm/source/bin/Release/net10.0/ScCsgoDeathmatch.dll"
@@ -68,9 +70,10 @@ def dmpackage(S):
     for r in record["records"]:
         data = (ROOT / r["target"]).read_bytes(); assert sha(data) == r["sha256"], f"{r['target']} is not the recorded import"
         members[r["member"]] = data
-    for r in json.loads(PIXEL_RECORD.read_text("utf8"))["records"]:
-        data = (ROOT / r["target"]).read_bytes(); assert sha(data) == r["sha256"], f"{r['target']} is not the recorded rasterisation"
-        members["Assets/" + Path(r["target"]).relative_to("src/ScCsgoDeathmatch/Assets").as_posix()] = data
+    for rec in (PIXEL_RECORD, HUD_RECORD):
+        for r in json.loads(rec.read_text("utf8"))["records"]:
+            data = (ROOT / r["target"]).read_bytes(); assert sha(data) == r["sha256"], f"{r['target']} is not the recorded rasterisation"
+            members["Assets/" + Path(r["target"]).relative_to("src/ScCsgoDeathmatch/Assets").as_posix()] = data
     # every file the package's Assets folder holds is a recorded member: nothing ships unrecorded, nothing is left behind
     on_disk = {"Assets/" + f.relative_to(SOURCE / "Assets").as_posix() for f in (SOURCE / "Assets").rglob("*") if f.is_file()}
     assert on_disk == {n for n in members if n.startswith("Assets/")}, sorted(on_disk ^ {n for n in members if n.startswith("Assets/")})
