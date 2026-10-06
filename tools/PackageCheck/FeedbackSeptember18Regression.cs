@@ -49,13 +49,15 @@ static class FeedbackSeptember18Regression {
             var sights=Blank<ComponentAimingSights>();sights.m_componentPlayer=player;
             var loader=(ModLoader)Activator.CreateInstance(T("ScCsgoKnivesModLoader"));
             var ui=T("ScUiSettings").GetField("GunCrosshair");bool oldCross=(bool)ui.GetValue(null);
-            var hip=T("ScUiSettings").GetField("SniperHipCrosshair");bool oldHip=(bool)hip.GetValue(null);
+            // SniperHipCrosshair exists from 1.5.0 (feat(settings) 5cd05fa); on an older core (the baseline run on the delivered 1.4.0
+            // packages) the sniper crosshair is always hidden and the field is absent - the run must not crash there (r150a)
+            var hip=T("ScUiSettings").GetField("SniperHipCrosshair");bool oldHip=hip is not null&&(bool)hip.GetValue(null);
             try {foreach(string n in new[]{"scar20","g3sg1","awp","ssg08","aug","sg556"})foreach(bool enabled in new[]{false,true})foreach(bool hipEnabled in new[]{false,true})Test($"sniper-crosshair/{n}/{enabled}/{hipEnabled}",()=>{
                 int v=Index(n);inv.Values[0]=Terrain.MakeBlockValue(701,0,(int)Call("GunSpec","MakeData",v,0,false));inv.Counts[0]=1;ui.SetValue(null,enabled);
-                hip.SetValue(null,hipEnabled);bool hidden=!hipEnabled&&(n is "scar20" or "g3sg1" or "awp" or "ssg08"),visible=true;
+                hip?.SetValue(null,hipEnabled);bool hidden=!(hipEnabled&&hip is not null)&&(n is "scar20" or "g3sg1" or "awp" or "ssg08"),visible=true;
                 if((bool)Call("ScGunCrosshair","HideForSniper",player)!=hidden)return false;
                 if(hidden){loader.IsCrosshairVisible(sights,ref visible);return !visible&&!(bool)Call("ScGunCrosshair","Active",player,null,false);}return true;
-            });}finally{ui.SetValue(null,oldCross);hip.SetValue(null,oldHip);}
+            });}finally{ui.SetValue(null,oldCross);hip?.SetValue(null,oldHip);}
             int knifeVariant=Enumerable.Range(0,22).First(v=>(int)Call("ScKnifeSkinCatalog","ForVariant",v)>0);
             int finish=(int)Call("ScKnifeSkinCatalog","ForVariant",knifeVariant),knife=Terrain.MakeBlockValue(700,11,knifeVariant|(37<<7));
             object Quote(IInventory i,bool free,int skin)=>Call("ScKnifeSkinning","Prepare",i,Activator.CreateInstance(T("ScKnifeSkinning+Candidate"),[0,i.GetSlotValue(0)]),skin,free);
