@@ -233,7 +233,7 @@ public sealed class ScCompatibilityModLoader : ModLoader {
         ScCompatibility.ActiveBuild=Entity.modInfo.Version;
         Entity.GetFile("Assets/ScCompatibilityManifest.xml",s=>ScCompatibility.Manifest=XElement.Load(s));
         if(ScOptionalAgents.Split && ModsManager.ModList.Any(m=>!m.IsDisabled&&m.ModArchive!=null&&m.modInfo.PackageName=="zh667.ScCsgoTactical") && !ScOptionalAgents.Available)
-            throw new InvalidOperationException("新的轻量包需要配套1.4.0探员包，请先停用旧独立战术拓展。");
+            throw new InvalidOperationException("新的轻量包需要配套同版本的探员包，请先停用旧独立战术拓展。");
         if((bool?)ScCompatibility.Manifest.Attribute("Legacy")==true&&ModsManager.ModList.Any(m=>!m.IsDisabled&&m.modInfo.PackageName=="zh667.ScCsgoTactical"))
             throw new InvalidOperationException("旧版兼容包只保留战术数据，不能同时启用依赖新版接口的独立战术拓展；请停用独立拓展或换回最新兼容总包。");
         ModsManager.RegisterHook("ProjectXmlLoad",this,-1000);
