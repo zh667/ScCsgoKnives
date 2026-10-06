@@ -18,7 +18,7 @@ The standard filename is uppercase plural `AGENTS.md`, not `agent.md`. A normal 
 
 | Previous mixed statements | Current treatment |
 |---|---|
-| Git-only vs Syncthing | Syncthing source-only; Git history on Windows, one writer |
+| Git-only vs Syncthing | Both Windows and VPS may use Git under the same branch/commit/merge workflow; Syncthing shares source, excludes each host's `.git`, and retains one writer |
 | Old Obsidian workspace paths | `E:/projects/ScCsgoKnives` and `E:/projects/CSMCReverse` |
 | Automatic backup-first vs manual backups | No automatic player-world backups; retain existing backups |
 | Fixed v5/schema6 vs capacity revision | Current documented layout6/schema7 compatibility contract |
