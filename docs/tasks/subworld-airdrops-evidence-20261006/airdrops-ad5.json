@@ -1,0 +1,745 @@
+{
+  "package": ".tmp\\dev-temp\\subworld-airdrops-20261006\\airdrop-dev-full.scmod",
+  "sha256": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4",
+  "checks": [
+    {
+      "name": "delivery accepted on clear terrain",
+      "ok": true,
+      "detail": "True"
+    },
+    {
+      "name": "same site cannot create duplicate delivery",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "starts airborne without loot",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "fall survives save/reload with same identity",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "native chest has one gun and five modest resource stacks",
+      "ok": true,
+      "detail": [
+        [
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "five guards created once",
+      "ok": true,
+      "detail": {
+        "drops": [
+          {
+            "Id": "eaa5194917d845778a863e8b06257e29",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 179.74294
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "idle guards actually walk their patrol",
+      "ok": true,
+      "detail": [
+        [
+          {
+            "id": 3,
+            "x": -101.60651,
+            "z": 388.0031
+          },
+          {
+            "id": 4,
+            "x": -109.22642,
+            "z": 382.52863
+          },
+          {
+            "id": 5,
+            "x": -109.293144,
+            "z": 384.32336
+          },
+          {
+            "id": 6,
+            "x": -107.41979,
+            "z": 385.6054
+          },
+          {
+            "id": 7,
+            "x": -106.85511,
+            "z": 379.92233
+          }
+        ],
+        [
+          {
+            "id": 3,
+            "x": -106.09326,
+            "z": 382.03162
+          },
+          {
+            "id": 4,
+            "x": -101.674644,
+            "z": 378.55505
+          },
+          {
+            "id": 5,
+            "x": -102.226654,
+            "z": 381.0306
+          },
+          {
+            "id": 6,
+            "x": -102.96032,
+            "z": 381.92755
+          },
+          {
+            "id": 7,
+            "x": -101.399124,
+            "z": 380.8981
+          }
+        ]
+      ]
+    },
+    {
+      "name": "guard acquires nearby player without provocation",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "native partial withdrawal",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "reload neither refills nor duplicates chest",
+      "ok": true,
+      "detail": {
+        "drops": [
+          {
+            "Id": "eaa5194917d845778a863e8b06257e29",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 172.10878
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            2,
+            1,
+            1,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "airdrop gun can be withdrawn as a usable gun",
+      "ok": true,
+      "detail": "True"
+    },
+    {
+      "name": "withdrawn gun actually fires",
+      "ok": true,
+      "detail": [
+        {
+          "dir": "app:/doc/Worlds/World",
+          "value": 16689,
+          "id": 0,
+          "gun": "m4a1s",
+          "usable": true,
+          "rounds": 20,
+          "records": 0,
+          "rec1": "-",
+          "rec2": "-",
+          "rec3": "-",
+          "active": 0,
+          "inventory": "ComponentInventory"
+        },
+        {
+          "dir": "app:/doc/Worlds/World",
+          "value": 1065265,
+          "id": 1,
+          "gun": "m4a1s",
+          "usable": true,
+          "rounds": 18,
+          "records": 1,
+          "rec1": "m4a1s/18",
+          "rec2": "-",
+          "rec3": "-",
+          "active": 0,
+          "inventory": "ComponentInventory"
+        }
+      ]
+    },
+    {
+      "name": "used airdrop gun persists without replenishment",
+      "ok": true,
+      "detail": {
+        "dir": "app:/doc/Worlds/World",
+        "value": 1065265,
+        "id": 1,
+        "gun": "m4a1s",
+        "usable": true,
+        "rounds": 18,
+        "records": 1,
+        "rec1": "m4a1s/18",
+        "rec2": "-",
+        "rec3": "-",
+        "active": 0,
+        "inventory": "ComponentInventory"
+      }
+    },
+    {
+      "name": "empty crate stays empty after reload",
+      "ok": true,
+      "detail": {
+        "drops": [
+          {
+            "Id": "eaa5194917d845778a863e8b06257e29",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 168.30988
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "removing empty crate clears smoke and chest",
+      "ok": true,
+      "detail": {
+        "drops": [],
+        "guards": [
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+            "target": true,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": []
+      }
+    },
+    {
+      "name": "no game errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "states": {
+    "falling": {
+      "drops": [
+        {
+          "Id": "eaa5194917d845778a863e8b06257e29",
+          "Fall": 11.775619,
+          "Landed": false,
+          "Smoke": 180
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": []
+    },
+    "resumed": {
+      "drops": [
+        {
+          "Id": "eaa5194917d845778a863e8b06257e29",
+          "Fall": 11.59086,
+          "Landed": false,
+          "Smoke": 180
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": []
+    },
+    "landed": {
+      "drops": [
+        {
+          "Id": "eaa5194917d845778a863e8b06257e29",
+          "Fall": 0,
+          "Landed": true,
+          "Smoke": 179.74294
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": false,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": [
+        [
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "partial-reload": {
+      "drops": [
+        {
+          "Id": "eaa5194917d845778a863e8b06257e29",
+          "Fall": 0,
+          "Landed": true,
+          "Smoke": 172.10878
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": [
+        [
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "empty-reload": {
+      "drops": [
+        {
+          "Id": "eaa5194917d845778a863e8b06257e29",
+          "Fall": 0,
+          "Landed": true,
+          "Smoke": 168.30988
+        }
+      ],
+      "guards": [
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "removed": {
+      "drops": [],
+      "guards": [
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        },
+        {
+          "Squad": "airdrop-eaa5194917d845778a863e8b06257e29",
+          "target": true,
+          "Retaliating": false,
+          "hp": 1
+        }
+      ],
+      "chests": []
+    }
+  },
+  "engine": {
+    "engine": "1.9.3.1",
+    "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131",
+    "exe": "37c5f9bba3546e762d44737778b9ad7f35aa5fa6121b87a1192bddea8e8ef884",
+    "dll": {
+      "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+      "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+      "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+    },
+    "mods": {
+      "ScTestAutomation131.scmod": "92c535e74258e57b649813749f3485484e56447ad0dc3c702439e031de7df4da",
+      "airdrop-dev-full.scmod": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4"
+    }
+  },
+  "gameErrors": []
+}

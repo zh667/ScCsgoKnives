@@ -311,6 +311,14 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
         return made;
     }
     public string ManualFailure {get;private set;}="";
+    public bool TrySpawnAirdropGuards(Point3 ground,string squad){
+        if(!ScNet.IsAuthority||string.IsNullOrEmpty(squad)||!squad.StartsWith("airdrop-",StringComparison.Ordinal)
+            ||Enemies.Any(e=>e.State?.Squad==squad)||spawn.CountCreatures(false)+5>SubsystemCreatureSpawn.m_totalLimit
+            ||NaturalCount+5>Limits.Cap)return false;
+        var points=FindManualLocations(new(ground.X+3,ground.Y,ground.Z),5,out _);
+        if(points.Count!=5)return false;
+        return CreateSquad(Roles(FiveMemberDay,FiveMemberDay),points,ManualWarmup,"natural",squadId:squad)==5;
+    }
     public int SpawnManual(Point3 ground,int count){
         ManualFailure="";
         if(count is not (3 or 5)){ManualFailure="信标类型无效。";return 0;}
@@ -369,9 +377,9 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
     /// member of a natural or summoned squad; a squad may mix and is never made complete. Full values; head protection
     /// alone never. Only at creation: enemies that exist are never drawn again, refilled or given any from their looks.</summary>
     public static ScArmorConfig DrawArmor(Engine.Random random)=>random.Int(0,2) switch{0=>ScArmorConfig.None,1=>ScArmorConfig.Half,_=>ScArmorConfig.Full};
-    int CreateSquad(TacticalRole[] roles,List<Vector3> locations,float warmup,string source,Vector3? challenger=null,NaturalPlan natural=null){
+    int CreateSquad(TacticalRole[] roles,List<Vector3> locations,float warmup,string source,Vector3? challenger=null,NaturalPlan natural=null,string squadId=null){
         using var trace=ScTacticalPerformance.Spawn(Project,"squad",roles.Length);
-        string squad=Guid.NewGuid().ToString("N");var made=new List<Entity>();
+        string squad=squadId??Guid.NewGuid().ToString("N");var made=new List<Entity>();
         var armor=Project.FindSubsystem<SubsystemScArmor>(false);var armored=new List<string>();
         try{
             for(int i=0;i<roles.Length;i++){
@@ -379,6 +387,8 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
                 made.Add(e);var enemy=e.FindComponent<ComponentTacticalEnemy>(true);
                 using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Configure))enemy.Configure(TacticalEnemyState.CreateWarm(roles[i],squad,random,warmup),locations[i]);
                 var state=enemy.State;state.Rewardable=info.WorldSettings.GameMode!=GameMode.Creative;state.Source=source;
+                // The fifth guard keeps its pistol/grenades; it must guard the supplies rather than leave to plant C4.
+                if(squadId is not null)state.Bomb=false;
                 if(challenger is {} at)enemy.Investigate(at,0);
                 if(natural?.Patrol is {} patrol)enemy.Home=new Vector3(patrol.X+locations[i].X-natural.Anchor.X,patrol.Y,patrol.Z+locations[i].Z-natural.Anchor.Z);
                 var config=DrawArmor(random);

@@ -91,6 +91,31 @@ static class TacticalEnemyRegression {
                 block.BlockIndex=index;BlocksManager.Blocks[index]=block;BlocksManager.BlockTypeToIndex[block.GetType()]=index;BlocksManager.BlockNameToIndex[block.GetType().Name]=index;
             }
             FreshRegistry();
+            Test("airdrop/saved-flight-rejects-invalid-state-without-reset",()=>{
+                var type=T("SubsystemScAirdrops").GetNestedType("Drop");dynamic drop=Activator.CreateInstance(type);
+                drop.Id="00112233445566778899aabbccddeeff";drop.Ground=new Vector3(1.5f,64,2.5f);drop.Fall=6f;drop.Smoke=180f;
+                var saved=(ValuesDictionary)drop.Save();dynamic copy=type.GetMethod("Load").Invoke(null,[Round(saved)]);
+                Check(copy.Id==drop.Id&&copy.Fall==6f&&copy.Ground==drop.Ground,"falling delivery changed during XML round trip");
+                foreach(float bad in new[]{float.NaN,float.PositiveInfinity,-1f,13f}){
+                    var malformed=Round(saved);malformed.SetValue("Fall",bad);bool refused=false;
+                    try{type.GetMethod("Load").Invoke(null,[malformed]);}catch(TargetInvocationException e){refused=e.InnerException is InvalidOperationException;}
+                    Check(refused,"invalid flight timer was silently accepted/reset: "+bad);
+                }
+            });
+            Test("airdrop/retry-stable-small-gun-and-mixed-resource-rewards",()=>{
+                var method=T("SubsystemScAirdrops").GetMethod("RewardsFor");var seen=new HashSet<int>();
+                for(int i=0;i<8;i++){
+                    string id=i.ToString("x8")+"445566778899aabbccddeeff";
+                    var first=((int Value,int Count)[])method.Invoke(null,[id]);var again=((int Value,int Count)[])method.Invoke(null,[id]);
+                    Check(first.SequenceEqual(again)&&first.Length==6&&first.Sum(x=>x.Count) is >=9 and <=11,"reward rerolled or exceeded small total");
+                    Check(first[0].Count==1&&Terrain.ExtractContents(first[0].Value)==BlocksManager.GetBlockIndex(C("ScGunBlock"),true),"first reward is not exactly one gun");
+                    Check((bool)C("ScGunBlock").GetMethod("IsKnown").Invoke(null,[first[0].Value]),"new loot gun is not usable");
+                    seen.Add(first[0].Value);
+                    Check(first[1].Count==2&&Terrain.ExtractContents(first[1].Value)==BlocksManager.GetBlockIndex(C("ScAmmoBlock"),true),"magazine reward missing");
+                    Check(Terrain.ExtractContents(first[2].Value)==BlocksManager.GetBlockIndex(C("ScWeaponMaterialBlock"),true)&&Terrain.ExtractContents(first[4].Value)==IronIngotBlock.Index,"CS or vanilla material missing");
+                }
+                Check(seen.Count==8,"gun pool does not select all eight guns");
+            });
             foreach(bool creative in new[]{false,true})foreach(bool silenced in new[]{false,true})Test($"feedback/heard-player-shot-real-noise-routing/{creative}/{silenced}",()=>{
                 var f=World();f.Info.WorldSettings.GameMode=creative?GameMode.Creative:GameMode.Survival;
                 var e=Enemy(f.P);e.Enemy.State.Grenades=0;e.Enemy.State.Bomb=false;f.Bodies.AddBody(e.Creature.ComponentBody);
@@ -105,7 +130,7 @@ static class TacticalEnemyRegression {
                 bool heard=!creative&&!silenced;Check((e.Enemy.TargetBody==body)==heard,"wrong shooter or silence/creative range gate");
                 int rounds=e.Enemy.State.Rounds;
                 for(int i=0;i<25;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}
-                Check(heard?e.Enemy.State.Rounds<rounds&&health.Health<1:e.Enemy.State.Rounds==rounds&&health.Health==1,"healthy enemy did not fight audible shooter or attacked when prohibited");
+                Check(!creative?e.Enemy.State.Rounds<rounds&&health.Health<1:e.Enemy.State.Rounds==rounds&&health.Health==1,"survival perception/audible shooter did not provoke combat, or creative acquired proactively");
                 if(creative){e.Enemy.Alert(body);for(int i=0;i<25;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}Check(e.Enemy.State.Rounds<rounds,"creative retaliation was removed");}
             });
             Test("feedback/low-health-escape-recovery-and-c4-priority",()=>{
@@ -655,11 +680,9 @@ static class TacticalEnemyRegression {
                 Check(playerTarget?target.m_totalImpulse==Vector3.Zero&&motion.StunTime==0:target.m_totalImpulse.LengthSquared()>0&&motion.StunTime>.0f,"player bullet control remains or creature control lost");
                 var grenades=f.P.m_subsystems.Single(s=>s.GetType()==C("SubsystemScGrenades"));var blindType=C("SubsystemScGrenades").GetNestedType("Blindness",BindingFlags.NonPublic);var blind=Activator.CreateInstance(blindType);Set(blind,"Until",50d);Set(blind,"ImmuneUntil",60d);var dict=(System.Collections.IDictionary)C("SubsystemScGrenades").GetField("m_blind",Fields).GetValue(grenades);dict.Add(e.Creature.ComponentBody,blind);before=e.Enemy.State.Rounds;for(int i=0;i<30;i++)((IUpdateable)e.Enemy).Update(.1f);Check(before==e.Enemy.State.Rounds&&e.Path.Destination is null,"blinded enemy keeps firing/chasing");
             });
-            // mpc3-feedback-subworld-20261002 (N1): nobody is engaged unprovoked. Coming near (in front or behind, in full view),
-            // a shot fired into the air and time passing grant no target; being attacked allows the bounded retaliation.
-            // (Replaces agent-followup-140 F2 / video-feedback-20260929 R3's proactive notice at 32/36 m.)
-            Test("neutral-until-attacked-then-bounded-retaliation-and-release",()=>{
-                var f=World();var e=Enemy(f.P);e.Enemy.State.Grenades=0;e.Creature.ComponentBody.Rotation=Quaternion.Identity;
+            // Creative remains attack-to-provoke; survival now patrols and proactively engages within perception.
+            Test("creative-neutral-until-attacked-then-bounded-retaliation-and-release",()=>{
+                var f=World();f.Info.WorldSettings.GameMode=GameMode.Creative;var e=Enemy(f.P);e.Enemy.State.Grenades=0;e.Creature.ComponentBody.Rotation=Quaternion.Identity;
                 var target=new ComponentBody{Position=new Vector3(0,60,-25),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};var health=new Health{Health=1,AttackResilience=1000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=target,ComponentHealth=health};health.m_componentCreature=creature;E(f.P,target,health,creature);
                 var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.m_entity=target.Entity;target.Entity.m_components.Add(player);creature.m_subsystemPlayerStats=new SubsystemPlayerStats();f.Bodies.AddBody(target);
                 void Run(int n){for(int i=0;i<n;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}}
@@ -667,8 +690,8 @@ static class TacticalEnemyRegression {
                 int rounds=e.Enemy.State.Rounds;
                 foreach(float d in new[]{64f,48f,40f,33f,31f,20f,8f,3f,-5f,-15f}){Place(new Vector3(0,60,-d));Run(15);Check(e.Enemy.TargetBody==null&&e.Enemy.State.Rounds==rounds&&health.Health==1,"an unprovoked enemy took a target or fired at a visible player "+d+" m away");}
                 // The current request makes audible player gunfire provocative, even when it did not hit the enemy.
-                Place(new Vector3(0,60,-12));((INoiseListener)e.Enemy).HearNoise(target,target.Position,1f);Run(60);
-                Check(e.Enemy.TargetBody==target&&(bool)e.Enemy.Retaliating&&e.Enemy.State.Rounds<rounds&&health.Health<1,"audible gunfire did not provoke a fight");
+                Place(new Vector3(0,60,-12));e.Enemy.Alert(target);Run(60);
+                Check(e.Enemy.TargetBody==target&&(bool)e.Enemy.Retaliating&&e.Enemy.State.Rounds<rounds&&health.Health<1,"creative direct attack did not provoke a fight");
                 // A sniper is neutral like the rest (it used to notice at 36 m).
                 var sniper=Enemy(f.P,0);sniper.Enemy.State.Grenades=0;sniper.Creature.ComponentBody.Rotation=Quaternion.Identity;int sniperRounds=sniper.Enemy.State.Rounds;
                 Place(new Vector3(0,60,-30));for(int i=0;i<20;i++)((IUpdateable)sniper.Enemy).Update(.1f);Check(sniper.Enemy.TargetBody==null&&sniper.Enemy.State.Rounds==sniperRounds,"an unprovoked sniper took a target");
@@ -679,6 +702,23 @@ static class TacticalEnemyRegression {
                 f.Terrain.Blocked=true;rounds=e.Enemy.State.Rounds;float hp=health.Health;Run(95);Check(e.Enemy.TargetBody==null&&e.Enemy.State.Rounds==rounds&&health.Health==hp,"retaliation never forgot a hidden attacker, or fired through the wall");f.Terrain.Blocked=false;
                 Run(30);Check(e.Enemy.TargetBody==null&&e.Enemy.State.Rounds==rounds,"an enemy that had let its attacker go engaged again unprovoked");
                 foreach(float distance in new[]{45f,128,256}){Place(new Vector3(0,60,-distance));e.Enemy.Alert(target);Run(3);Check(e.Enemy.TargetBody==target,"distant retaliation discarded");}
+            });
+            Test("survival-patrol-perception-and-long-range-retaliation",()=>{
+                var f=World();var e=Enemy(f.P);e.Enemy.State.Grenades=0;e.Enemy.State.Bomb=false;e.Creature.ComponentBody.Rotation=Quaternion.Identity;
+                var at=new ComponentBody{Position=new Vector3(0,60,-50),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
+                var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};
+                var creature=new ComponentCreature{ComponentBody=at,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;
+                var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.ComponentBody=at;player.ComponentHealth=health;E(f.P,at,health,creature,player);
+                f.P.FindSubsystem<SubsystemPlayers>(true).m_componentPlayers.Add(player);f.Bodies.AddBody(at);
+                void Run(int n){for(int i=0;i<n;i++){f.Time.m_gameTime+=.1;((IUpdateable)e.Enemy).Update(.1f);}}
+                Run(15);Check(e.Enemy.TargetBody==null&&e.Path.Destination.HasValue&&Vector3.DistanceSquared(e.Path.Destination.Value,e.Enemy.Home)<12*12,
+                    "survival squad did not patrol around its home / acquired beyond 32 m");
+                at.Position=new Vector3(0,60,-20);f.Bodies.UpdateBody(at);int rounds=e.Enemy.State.Rounds;Run(20);
+                Check(e.Enemy.TargetBody==at&&!e.Enemy.Retaliating&&e.Enemy.State.Rounds<rounds,
+                    "visible player within perception was not proactively attacked");
+                // Every shot from outside perception must retaliate even when the shooter cannot presently be seen.
+                at.Position=new Vector3(0,60,-128);f.Bodies.UpdateBody(at);e.Enemy.Alert(at);Run(2);
+                Check(e.Enemy.TargetBody==at&&e.Enemy.Retaliating,"distant attacker lost after a direct hit");
             });
             // mpc3-feedback-subworld-20261002 (N2): one of them is attacked - everyone of them within 32 m of the one that was
             // hit takes that same attacker, whatever its squad or source; nobody farther, nobody dead, and it does not spread.
@@ -782,7 +822,9 @@ static class TacticalEnemyRegression {
                         Run(2.8);Check(members.Sum(e=>(int)e.State.Rounds)==rounds&&health.Health==1,"summoned squad fired inside its three-second warning");
                         // mpc3-feedback-subworld-20261002 (N1): a summoned squad is neutral like a natural one. The end of its warning
                         // window (and of the search toward its summoner that follows) grants no target.
-                        Run(14);Check(members.All(e=>e.TargetBody==null)&&members.Sum(e=>(int)e.State.Rounds)==rounds&&health.Health==1,"a summoned squad turned hostile by itself once its warning window was over");
+                        f.Info.WorldSettings.GameMode=GameMode.Creative;
+                        Run(14);Check(members.All(e=>e.TargetBody==null)&&members.Sum(e=>(int)e.State.Rounds)==rounds&&health.Health==1,"a creative summoned squad turned hostile by itself once its warning window was over");
+                        f.Info.WorldSettings.GameMode=GameMode.Survival;
                         // Its summoner attacks one member: the whole squad (every member is within 32 m of it) answers.
                         var loader=(ModLoader)Activator.CreateInstance(T("TacticalModLoader"));ComponentBody first=members[0].Creature.ComponentBody;
                         loader.ProcessAttackment(Strike(first,player.Entity,2));

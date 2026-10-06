@@ -8,7 +8,7 @@ public sealed class TacticalModLoader : ModLoader {
 #if SC_SPLIT
         ScSplitAgentMarker.ValidateCore();
 #endif
-        RegisterFactions();TacticalArmorTargets.Register();TacticalNet.Register();
+        RegisterFactions();TacticalArmorTargets.Register();TacticalNet.Register();SubsystemScAirdrops.RegisterNetwork();
         TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops","OnScreenEntered"})ModsManager.RegisterHook(hook,this);}
     /// <summary>The prerequisite-mod hint on the main menu (TacticalPrerequisites).</summary>
     public override void OnScreenEntered(Screen screen,object[] screenParameters){if(screen is MainMenuScreen)TacticalPrerequisites.OnMainMenu();}

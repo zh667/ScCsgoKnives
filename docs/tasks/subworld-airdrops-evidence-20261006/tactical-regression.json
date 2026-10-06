@@ -1,0 +1,442 @@
+{
+  "coreSha256": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4",
+  "dlcSha256": "58c56f3d04d41ae477a6f272dd908d72edeeb5a97842b7588e1bbb551e1b65b4",
+  "failed": 0,
+  "checks": [
+    {
+      "Name": "enemy/airdrop/saved-flight-rejects-invalid-state-without-reset",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/airdrop/retry-stable-small-gun-and-mixed-resource-rewards",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/heard-player-shot-real-noise-routing/False/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/heard-player-shot-real-noise-routing/False/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/heard-player-shot-real-noise-routing/True/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/heard-player-shot-real-noise-routing/True/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/low-health-escape-recovery-and-c4-priority",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/bomb-carrier-seeks-near-player-before-plant/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/bomb-carrier-seeks-near-player-before-plant/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-detonation-on-screen-beyond-radius-with-cover",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-repeated-self-friend-enemy/0/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-repeated-self-friend-enemy/0/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-repeated-self-friend-enemy/1/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-repeated-self-friend-enemy/1/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-repeated-self-friend-enemy/-2/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-repeated-self-friend-enemy/-2/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/flash-client-weak-reflash-preserves-strong-tail",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/distant-sniper-stops-tracks-and-shoots-after-reload",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/source-less-gunshot-investigates-and-smg-strafes",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/feedback/swimming-shore-jump-cooldown-and-headroom",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/survival-and-creative-three-five-squad-placement-budget-and-rollback",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/manual-floor-under-roof-grass-half-block-and-headroom",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/34-weapon-pool-no-registry-allocation",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/equipment-world-xml-and-native-unload-two-rounds",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/future-invalid-equipment-refused-not-rerolled",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/native-despawn-fade-does-not-refill-or-resurrect",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/world-rules-days-density-source-and-persistence",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/30-elapsed-days-setting-native-surface-mode-population-and-sleeping-squad",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/natural-native-scheduler-whole-squad-under-vanilla-budget",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/natural-budget-smaller-than-squad-reports-blocker-and-never-splits",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/natural-budget-full-then-free-and-chunk-path",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/natural-placement-band-cover-view-patrol-and-refusals",
+      "Ok": true,
+      "Detail": "offer ahead in view -\u003E side 36.0 blocks, out of view, patrol to 18; only ahead dry -\u003E in open view at 36.0, warning 3 s; all-water band refused as placement:fluid (itemised); footing: snow, grass, under canopy accepted; roof, overhang, water, cactus, fire refused; walled and uneven members, occupied anchor refused; native offers beyond the 60-block sleep radius: 25/200 (old placement put those squads to sleep at once); members now 33.3-45.6 blocks; at the patrol home: neutral for 10 s in view of the player; attacked, turned on the player 10.0 s and fired 10.8 s after appearing; encounter log: created / first saw / first fired / slept unmet, and the 2-minute summary"
+    },
+    {
+      "Name": "enemy/air-rules-hold-pose-and-ten-second-fall-on-engine-controller/ct",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/air-rules-hold-pose-and-ten-second-fall-on-engine-controller/t",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/air-state-once-per-frame-latch-and-hysteresis",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/finite-ammo-reload-through-native-ai-no-registry",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/shoot-wall-friendly-body-cadence-player-control/False",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/shoot-wall-friendly-body-cadence-player-control/True",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/creative-neutral-until-attacked-then-bounded-retaliation-and-release",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/survival-patrol-perception-and-long-range-retaliation",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/one-attacked-all-within-32-take-the-same-attacker-once",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/summoned-warmup-holds-aim-then-fires-attack-preserves-it",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/summoned-squad-faces-its-summoner-and-stays-neutral-until-attacked",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/manual-squad-keeps-neutrality-at-near-and-distant-clicks",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/squad-bomb-hold-outside-then-evacuate-without-chasing-back",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/enemy-grenade-visible-throw-releases-once-and-redraws",
+      "Ok": true,
+      "Detail": "start frame 0, release 65 (1.083 s), gun back at 113; t=0.017 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.117 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.217 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.317 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.417 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.517 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.617 throw=s1 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.717 throw=s1 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=0.817 throw=s2 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=0.917 throw=s2 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.017 throw=s2 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.100 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.117 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.133 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.150 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.167 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.183 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.200 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.217 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.233 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.250 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.267 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.283 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.300 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.317 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.333 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.350 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.367 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.383 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.400 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.417 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.433 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.450 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.467 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.483 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.500 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.517 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.533 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.550 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.567 throw=s2R plant=- held=720 grenades=0 active=1 rounds=30 crouch=0 eased=0.00 action=Idle"
+    },
+    {
+      "Name": "enemy/enemy-grenade-start-outside-own-body-flies-to-target",
+      "Ok": true,
+      "Detail": "toward the target in 0.2 s: old start -0.07 m (negative = bounced off the thrower), new start 2.36 m"
+    },
+    {
+      "Name": "enemy/enemy-grenade-interrupted-before-release-spends-nothing/death",
+      "Ok": true,
+      "Detail": "t=0.017 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.267 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.517 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=0.767 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.017 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.267 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.517 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.767 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=2.017 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=2.267 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle"
+    },
+    {
+      "Name": "enemy/enemy-grenade-interrupted-before-release-spends-nothing/blind",
+      "Ok": true,
+      "Detail": "t=0.017 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.267 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.517 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.767 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=1.017 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.267 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.517 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.767 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=2.017 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=2.267 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle"
+    },
+    {
+      "Name": "enemy/enemy-grenade-interrupted-before-release-spends-nothing/target-dies",
+      "Ok": true,
+      "Detail": "t=0.017 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.267 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.517 throw=s0 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=0.767 throw=s1 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.017 throw=s2 plant=- held=720 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=1.267 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=1.517 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Draw | t=1.767 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=2.017 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle | t=2.267 throw=- plant=- held=1073103549 grenades=1 active=0 rounds=30 crouch=0 eased=0.00 action=Idle"
+    },
+    {
+      "Name": "enemy/enemy-grenade-save-mid-throw-keeps-the-grenade",
+      "Ok": true,
+      "Detail": "grenade kept, no action restored"
+    },
+    {
+      "Name": "enemy/enemy-plant-shows-c4-commits-once-recovers-empty-then-redraws",
+      "Ok": true,
+      "Detail": "plant from frame 0, bomb at 192 (3.217 s), gun back at 240"
+    },
+    {
+      "Name": "enemy/enemy-plant-interrupted-before-commit-plants-nothing/damage",
+      "Ok": true,
+      "Detail": "t=0.017 throw=- plant=0.02 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=0.00 action=Draw | t=0.267 throw=- plant=0.27 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=0.50 action=Draw | t=0.517 throw=- plant=0.52 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Draw | t=0.767 throw=- plant=0.77 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Idle | t=1.017 throw=- plant=1.02 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Idle | t=1.267 throw=- plant=1.27 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Idle | t=1.517 throw=- plant=0.02 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=0.97 action=Draw"
+    },
+    {
+      "Name": "enemy/enemy-plant-interrupted-before-commit-plants-nothing/death",
+      "Ok": true,
+      "Detail": "t=0.017 throw=- plant=0.02 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=0.00 action=Draw | t=0.267 throw=- plant=0.27 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=0.50 action=Draw | t=0.517 throw=- plant=0.52 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Draw | t=0.767 throw=- plant=0.77 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Idle | t=1.017 throw=- plant=1.02 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Idle | t=1.267 throw=- plant=1.27 held=721 grenades=0 active=0 rounds=7 crouch=1 eased=1.00 action=Idle | t=1.517 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=1.00 action=Idle | t=1.767 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.50 action=Idle | t=2.017 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=2.267 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=2.517 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=2.767 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=3.017 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=3.267 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=3.517 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=3.767 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=4.017 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=4.267 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=4.517 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=4.767 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=5.017 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle | t=5.267 throw=- plant=- held=1072743101 grenades=0 active=0 rounds=7 crouch=0 eased=0.00 action=Idle"
+    },
+    {
+      "Name": "enemy/hostile-fire-players-use-the-table-shotgun-shares-it-others-keep-survival",
+      "Ok": true,
+      "Detail": "ak47 player: budget 2.2 over 1 pellet(s), 59/60 landed, health lost per shot 0.022-0.022; ak47 creature: budget 15 over 1 pellet(s), 59/60 landed, health lost per shot 0.15-0.15; nova player: budget 4.2 over 9 pellet(s), 60/60 landed, health lost per shot 0.0047-0.042; nova creature: budget 54 over 9 pellet(s), 60/60 landed, health lost per shot 0.06-0.54"
+    },
+    {
+      "Name": "enemy/hit-sounds-one-per-shot-from-what-it-did",
+      "Ok": true,
+      "Detail": "head Audio/ScCsgoKnives/Hits/headshot_noarmor@0.5; body ; shotgun Audio/ScCsgoKnives/Hits/headshot_noarmor@0.5"
+    },
+    {
+      "Name": "enemy/armor-values-configurations-costs-and-encoding",
+      "Ok": true,
+      "Detail": "three configurations only; used-up body kept as full armour (\u5168\u7532 \u00B7 \u5934\u90E8 40/100 \u00B7 \u8EAF\u5E72 0/150\uFF08\u8EAF\u5E72\u9632\u62A4\u5DF2\u8017\u5C3D\uFF09); make body 8,4,6,4 / head 6,2,2,2 / full 14,6,8,6; repair body 4,2,3,2, head 3,1,1,1, half body 2,1,2,1, both 7,3,4,3"
+    },
+    {
+      "Name": "enemy/armor-workbench-commit-takes-every-material-or-nothing",
+      "Ok": true,
+      "Detail": "short: nothing taken; full package 14,6,8,6 once; stale quote refused; repair took its quote (7,8,7,8 left of 10 each); short removal put back; creative free; half -\u003E full for 6,2,2,2"
+    },
+    {
+      "Name": "enemy/armor-store-saves-keeps-unreadable-refuses-future-and-death-rule",
+      "Ok": true,
+      "Detail": "two save/load rounds identical; unreadable entry kept verbatim and never overwritten; schema 2 refused; keep-inventory death keeps, dropping death clears"
+    },
+    {
+      "Name": "enemy/armor-regions-once-sounds-and-native-clothing-after",
+      "Ok": true,
+      "Detail": "full armour mixed shot: planned 0.19, committed once on the applied injury (head 100-\u003E94, body 150-\u003E145); sounds: full head dink / body kevlar; half head bare; used-up head bare (body kevlar, exact wear 147.5); used-up body silent (head dink); legs none; shotgun one dink at 98.8 head; the last sliver dinks once, then bare; blocked, invulnerable and old enemy nothing; player with clothing: CS first (30 -\u003E 19), clothing once (x0.8) = 0.152, committed on the applied injury; resilience factor once (0.8:0.19 1.25:0.1216 2:0.076); creative wears nothing"
+    },
+    {
+      "Name": "enemy/armor-channels-melee-projectile-exact-wear-and-unknown-channels",
+      "Ok": true,
+      "Detail": "melee 20 -\u003E 0.15 (body 25%); 400 x melee 1 wore exactly 100; projectile body 40% (0.06), head 50% with dink (0.05); falls, direct injuries and unclassified attacks untouched"
+    },
+    {
+      "Name": "enemy/enemy-armor-drawn-once-three-configurations-kept-through-sleep-save-and-death",
+      "Ok": true,
+      "Detail": "seed 42 222102201010...; 3000 draws none/half/full 942/1025/1033, head only 0; summoned squads (5,5,3) seed 7: 1100022221021, seed 8: 2220222112100 (0 none, 1 half, 2 full; mixed squads, none forced complete); damaged full armour kept 0/150 \u002B 60/100 through sleep, wake-up and two saves; never re-drawn; death ends it; entries of vanished enemies pruned, sleeping ones kept, nothing pruned while a record is unreadable"
+    },
+    {
+      "Name": "enemy/player-hit-regions-follow-the-eye-and-hostile-head-counts-1.25",
+      "Ok": true,
+      "Detail": "stand Head,Body,Leg,miss; crouched Head,miss; AK losses 0.022,0.0275 over 90 hits"
+    },
+    {
+      "Name": "enemy/hostile-grenade-unlimited-count-fuse-smoke-visibility-and-player-damage-filter",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/death-once-empty-inventory-and-full-registry-fallback",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/supplies-and-chicken-eggs-without-gun-drops-or-registry-allocation",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/defuse-10s-5s-deadline-ties-low-fps-and-interruption",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "enemy/bomb-subsystem-persist-two-xml-rounds-no-timer-reset",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/native-unload-disabled-for-companions",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/unload-and-return-exact-state-two-save-rounds",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/rebuild-failure-keeps-record-bounded-retry-and-reload",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/companion-armor-stable-key-sleep-save-owner-target-death-dismiss",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/dead-panel-and-fading-companions-are-not-moved",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/corrupt-and-future-records-kept-verbatim-never-spawned",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/old-build-fade-save-keeps-entity-and-drops-empty-record",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/area-friendly-fire-by-faction-and-world-setting",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/companion-leaves-player-c4-radius-before-detonation",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "companion-lifecycle/order-confirmation-voice-once-per-real-change",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/creative-player-always-has-kit-survival-checks-all-carried-slots",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/own-player-c4-is-defusable-others-follow-world-setting-disarm-once",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/defuse-reward-once-survival-source-only-durable-receipt",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/enemy-bomb-id-and-source-save-old-saves-never-rewarded",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/step-probe-flat-slab-block-wall-ceiling-and-bounded-jump",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/navigation-replans-only-on-real-change",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/damage-direction-sectors-freeze-merge-expiry-and-real-damage-only",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/damage-direction-hurt-creative-preview-and-zero-damage-reasons",
+      "Ok": true,
+      "Detail": ""
+    },
+    {
+      "Name": "agent-feedback/grenade-step-identical-to-original-and-preview-matches-live-detonation",
+      "Ok": true,
+      "Detail": ""
+    }
+  ]
+}
