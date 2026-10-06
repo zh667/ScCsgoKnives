@@ -1,0 +1,609 @@
+{
+  "package": ".tmp\\dev-temp\\pubg-airdrop-20261006\\airdrop-dev-full.scmod",
+  "sha256": "055593c726f36add6cf49598d34bf7c4f458a048bf7bcf1319dc6ca61fe8372c",
+  "photos": [
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\01-descending.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 11.333383,
+            "Landed": false,
+            "Smoke": 180
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": []
+      },
+      "eye": [
+        -113,
+        101.7,
+        -87
+      ],
+      "target": [
+        -116.5,
+        100.7,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\02-landed-overview.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 178.63783
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        -106,
+        73,
+        -94
+      ],
+      "target": [
+        -116.5,
+        66.7,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\03-crate-close.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 178.3482
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        -116.5,
+        67.8,
+        -77
+      ],
+      "target": [
+        -116.5,
+        65.65,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\04-guards.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 178.06061
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        -125,
+        70,
+        -90
+      ],
+      "target": [
+        -116.5,
+        66.5,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\06-full-plume.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 177.87532
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        -47,
+        100,
+        -111
+      ],
+      "target": [
+        -116.5,
+        100,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\05-smoke-range-128.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 177.57947
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        11.5,
+        250,
+        -80.5
+      ],
+      "target": [
+        -116.5,
+        100,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\05-smoke-range-384.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 177.3068
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        267.5,
+        250,
+        -80.5
+      ],
+      "target": [
+        -116.5,
+        100,
+        -80.5
+      ]
+    },
+    {
+      "file": ".tmp\\dev-temp\\pubg-airdrop-20261006\\red-final-photos\\05-smoke-range-768.png",
+      "state": {
+        "drops": [
+          {
+            "Id": "8036c33d034c4f3481ff9acdb7c3210a",
+            "Fall": 0,
+            "Landed": true,
+            "Smoke": 177.00232
+          }
+        ],
+        "guards": [
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          },
+          {
+            "Squad": "airdrop-8036c33d034c4f3481ff9acdb7c3210a",
+            "target": false,
+            "Retaliating": false,
+            "hp": 1
+          }
+        ],
+        "chests": [
+          [
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "eye": [
+        651.5,
+        250,
+        -80.5
+      ],
+      "target": [
+        -116.5,
+        100,
+        -80.5
+      ]
+    }
+  ],
+  "setup": "Isolated new world, directed production TryStart, flying observer in creative mode, daytime. No product changes.",
+  "engine": {
+    "engine": "1.9.3.1",
+    "folder": "E:\\projects\\ScCsgoKnives\\.tmp\\mp-test-runtime\\sp131",
+    "exe": "37c5f9bba3546e762d44737778b9ad7f35aa5fa6121b87a1192bddea8e8ef884",
+    "dll": {
+      "Survivalcraft.dll": "25816c2fbb6380d820b279ddc69455f6d401eeeaec86be131314a3aaa401372c",
+      "Engine.dll": "3845e53eee06fbf3af5075145740069029c631a789a495e2a3aaa637211a98de",
+      "EntitySystem.dll": "81b5c056854feccfeafcff986401fca39ad0a86a4fac397b33fb2a84a1ba0784"
+    },
+    "mods": {
+      "ScTestAutomation131.scmod": "92c535e74258e57b649813749f3485484e56447ad0dc3c702439e031de7df4da",
+      "airdrop-dev-full.scmod": "055593c726f36add6cf49598d34bf7c4f458a048bf7bcf1319dc6ca61fe8372c"
+    }
+  },
+  "terrain": "naturally generated terrain",
+  "site": [
+    -117,
+    65,
+    -81
+  ],
+  "gameErrors": []
+}

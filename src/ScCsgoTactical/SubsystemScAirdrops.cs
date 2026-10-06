@@ -9,6 +9,11 @@ namespace Game;
 public sealed class SubsystemScAirdrops : Subsystem,IUpdateable,IDrawable {
     public const ushort SnapshotOp=86;
     public const int Limit=3;
+    // A world-space signal, visible well beyond the nearby crate/guard detail range.
+    // Keep the depth test: loaded terrain/buildings must still occlude the plume.
+    public const float SmokeHeight=80f,SmokeDrawDistance=1024f;
+    const float SmokeFadeDistance=896f,SmokeParticleLife=24f;
+    const int SmokeParticles=144;
     public sealed class Drop {
         public string Id;
         public Vector3 Ground;
@@ -31,7 +36,7 @@ public sealed class SubsystemScAirdrops : Subsystem,IUpdateable,IDrawable {
     float next=600,retry;
     double sent,received;
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
-    public int[] DrawOrders=>[10];
+    public int[] DrawOrders=>[10,SubsystemScGrenades.EffectsDrawOrder];
     public override void Load(ValuesDictionary v){
         base.Load(v);if(v.GetValue("Schema",1)!=1)throw new InvalidOperationException("空投存档版本不受支持。");
         next=v.GetValue("Next",600f);if(!float.IsFinite(next)||next<0||next>900)throw new InvalidOperationException("空投计时无效。");
@@ -155,22 +160,31 @@ public sealed class SubsystemScAirdrops : Subsystem,IUpdateable,IDrawable {
         foreach(var d in Drops){
             float since=ScNet.IsRemoteClient?(float)Math.Clamp(Time.RealTime-received,0,3):0;
             var position=d.Ground+Vector3.UnitY*Math.Max(0,d.Fall-since)*3;
-            if(Vector3.DistanceSquared(position,camera.ViewPosition)>160*160)continue;
-            if(!d.Landed){var matrix=Matrix.CreateTranslation(position);TacticalItemMesh.Draw("airdrop",renderer,Color.White,1,ref matrix,new(){SubsystemTerrain=terrain,Light=15});}
-            else if(d.Smoke>0)DrawSmoke(camera,d.Ground+Vector3.UnitY*.6f,d.Smoke);
+            if(!d.Landed&&order==10){
+                if(Vector3.DistanceSquared(position,camera.ViewPosition)>160*160)continue;
+                var matrix=Matrix.CreateTranslation(position);TacticalItemMesh.Draw("airdrop",renderer,Color.White,1,ref matrix,new(){SubsystemTerrain=terrain,Light=15});
+            }
+            else if(d.Landed&&order==SubsystemScGrenades.EffectsDrawOrder&&d.Smoke>0){
+                float distance=Vector3.Distance(d.Ground,camera.ViewPosition);
+                if(distance>=SmokeDrawDistance)continue;
+                float fade=Math.Clamp((SmokeDrawDistance-distance)/(SmokeDrawDistance-SmokeFadeDistance),0,1);
+                DrawSmoke(camera,d.Ground+Vector3.UnitY*.6f,d.Smoke,fade);
+            }
         }
         renderer.Flush(camera.ViewProjectionMatrix);
     }
-    void DrawSmoke(Camera camera,Vector3 origin,float remaining){
-        // CS2 vertical smoke: 5 particles/s, 6–8 s life, original animated sprite.
+    void DrawSmoke(Camera camera,Vector3 origin,float remaining,float distanceFade){
+        // Existing CS2 animated atlas, tinted red at the user's request. The PUBG
+        // crate and this signal plume have separate, recorded asset provenance.
         var batch=renderer.TexturedBatch(smoke,false,1,DepthStencilState.DepthRead,RasterizerState.CullNoneScissor,BlendState.NonPremultiplied,SamplerState.LinearClamp);
-        for(int i=0;i<35;i++){
-            float age=(float)((time.GameTime+i*.2)%7),phase=age/7;
-            var p=origin+new Vector3(MathF.Sin(i*2.4f+age*.4f)*age*.1f,age*.8f,MathF.Cos(i*1.7f+age*.3f)*age*.1f);
-            float size=.24f+age*.19f;var right=camera.ViewRight*size;var up=camera.ViewUp*size;
+        for(int i=0;i<SmokeParticles;i++){
+            float age=(float)((time.GameTime+i*(SmokeParticleLife/SmokeParticles))%SmokeParticleLife),phase=age/SmokeParticleLife;
+            float drift=phase*3.6f;
+            var p=origin+new Vector3(MathF.Sin(i*2.4f+age*.4f)*drift,phase*SmokeHeight,MathF.Cos(i*1.7f+age*.3f)*drift);
+            float size=.85f+phase*5.5f;var right=camera.ViewRight*size;var up=camera.ViewUp*size;
             int frame=Math.Min(63,(int)(phase*64));float u=(frame%8)/8f,v=(frame/8)/8f;
-            float alpha=.32f*Math.Clamp(age/.4f,0,1)*Math.Clamp((7-age)/2,0,1)*Math.Clamp(remaining/7,0,1);
-            var color=new Color(160,160,160,(int)(alpha*255));
+            float alpha=.58f*Math.Clamp(age/.4f,0,1)*Math.Clamp((SmokeParticleLife-age)/4,0,1)*Math.Clamp(remaining/7,0,1)*distanceFade;
+            var color=new Color(255,24,12,(int)(alpha*255));
             batch.QueueQuad(p-right-up,p+right-up,p+right+up,p-right+up,new(u,v+.125f),new(u+.125f,v+.125f),new(u+.125f,v),new(u,v),color);
         }
     }

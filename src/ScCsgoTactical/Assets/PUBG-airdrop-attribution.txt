@@ -1,0 +1,10 @@
+PUBG Mobile Air Drop by Rex (@rex_7)
+Source: https://sketchfab.com/3d-models/pubg-mobile-air-drop-ed80ad57edd94dce94fcde85c5a277fe
+License shown on the source page: Creative Commons Attribution 4.0
+https://creativecommons.org/licenses/by/4.0/
+
+Converted FBX to the game's static GLB format, transformed coordinates, normalized
+the crate to a 0.98-block maximum extent and converted UV origin. Original color
+texture bytes are preserved. The original normal texture is retained in the source
+archive; the existing game static-mesh renderer does not evaluate normal maps.
+This download contains no smoke texture or particle system.

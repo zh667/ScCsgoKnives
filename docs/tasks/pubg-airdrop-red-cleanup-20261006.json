@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-06",
+  "root": "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006",
+  "removedBytes": 544775469,
+  "removedRelativePaths": [
+    "red-photos/01-descending.png",
+    "red-photos/02-landed-overview.png",
+    "red-photos/03-crate-close.png",
+    "red-photos/04-guards.png",
+    "red-photos/05-smoke-range-128.png",
+    "red-photos/05-smoke-range-384.png",
+    "red-photos/05-smoke-range-768.png",
+    "red-photos/06-full-plume.png",
+    "red-final-photos/01-descending.png",
+    "red-final-photos/02-landed-overview.png",
+    "red-final-photos/03-crate-close.png",
+    "red-final-photos/04-guards.png",
+    "red-final-photos/05-smoke-range-128.png",
+    "red-final-photos/05-smoke-range-384.png",
+    "red-final-photos/05-smoke-range-768.png",
+    "red-final-photos/06-full-plume.png",
+    "airdrop-dev-full.scmod"
+  ],
+  "retained": [
+    "red-photos-sheet.jpg and red-final-photos-sheet.jpg",
+    "Both runtime result.json files, logs and source/candidate hashes",
+    "E:/projects/ScCsgoKnives/output/pubg-airdrop-preview-20261006/red-full-plume.png",
+    "E:/projects/ScCsgoKnives/output/pubg-airdrop-preview-20261006/red-crate-and-guards.png",
+    "E:/projects/ScCsgoKnives/output/pubg-airdrop-preview-20261006/red-range-768.png",
+    "E:/projects/ScCsgoKnives/output/[API1.9]CS武器-空投开发测试-全量包.scmod",
+    "All source downloads and original exported textures/models"
+  ],
+  "outputSha256AfterCleanup": "055593c726f36add6cf49598d34bf7c4f458a048bf7bcf1319dc6ca61fe8372c",
+  "recovery": "Task-stage duplicates permanently removed after delivery verification. Current package and selected full-size images remain in output; all captures retained as contact sheets. Source assets unchanged."
+}

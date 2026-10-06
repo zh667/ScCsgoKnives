@@ -1,0 +1,32 @@
+{
+  "sourceUrl": "https://sketchfab.com/3d-models/pubg-mobile-air-drop-ed80ad57edd94dce94fcde85c5a277fe",
+  "author": "Rex (@rex_7)",
+  "license": "CC BY 4.0",
+  "sourceArchive": "E:\\projects\\CSMCReverse\\references\\pubg-airdrop-rex-ed80ad57\\pubg-mobile-air-drop.zip",
+  "archiveSha256": "4fbf20318feefa89fab608b552759c2fec1ce9f17a8eb922da558c2c6977f271",
+  "sourceFbxSha256": "5e0d94d697f6d557a6804375a799607d03ea26a2dfd06aa051312f377083f4a7",
+  "vertices": 8342,
+  "triangles": 3848,
+  "bounds": [
+    [
+      -0.47890610146341056,
+      0.0,
+      -0.49
+    ],
+    [
+      0.47890610146341056,
+      0.7875273663517454,
+      0.49
+    ]
+  ],
+  "colorPixels": [
+    1024,
+    1024
+  ],
+  "normalMap": "Original preserved; existing SC static-mesh renderer does not evaluate normal maps.",
+  "smoke": "Not included in this source. User approved tinting the existing CS2 atlas red; source pixels remain unchanged.",
+  "outputs": {
+    "src\\ScCsgoTactical\\Assets\\Models\\ScCsgoTactical\\airdrop.glb": "7b34e167f2f4999a01a83c5dfbc9505653d88f9fb547228006f9d1b86c3cb2b7",
+    "src\\ScCsgoTactical\\Assets\\Textures\\ScCsgoTactical\\airdrop.png": "cf9097c12d670c917dfb0a073875dfa8309d540f82c9a6d280d36951d28e3f53"
+  }
+}

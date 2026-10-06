@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-06",
+  "scope": "task-owned duplicate raw screenshot copies after contact sheets and selected full-size delivery",
+  "removedBytes": 12516151,
+  "removed": [
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/01-descending.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/02-landed-overview.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/03-crate-close.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/04-guards.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/05-smoke-range-128.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/05-smoke-range-384.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/photos/05-smoke-range-768.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/01-descending.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/02-landed-overview.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/03-crate-close.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/04-guards.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/05-smoke-range-128.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/05-smoke-range-384.png",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/clear-range-photos/05-smoke-range-768.png"
+  ],
+  "retained": [
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/capture-first-range-invalid.jpg",
+    "E:/projects/ScCsgoKnives/.tmp/dev-temp/pubg-airdrop-20261006/capture-clear-range.jpg",
+    "E:/projects/ScCsgoKnives/output/pubg-airdrop-preview-20261006",
+    "Both capture result.json files, engine identity, logs and current internal candidate",
+    "E:/projects/CSMCReverse/references/pubg-airdrop-rex-ed80ad57",
+    "D:/下载/pubg-mobile-air-drop.zip"
+  ],
+  "verification": "All selected delivered PNGs matched source hashes before removal; both contact sheets existed; no Survivalcraft process remained.",
+  "recovery": "Removed task-stage copies permanently. Selected full-size images, contact sheets and game runtime captures retained; source ZIP and original materials unchanged."
+}
