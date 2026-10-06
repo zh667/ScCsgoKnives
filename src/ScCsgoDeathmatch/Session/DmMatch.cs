@@ -187,7 +187,7 @@ public sealed class DmMatch {
     /// ever filled in for a player (DM-03). False changes nothing.</summary>
     public bool Enter(string key, bool confirmEmpty, double now) {
         if (Find(key) is not { Connected: true } p || !Governing) return false;
-        if (p.Desired.IsEmpty && !confirmEmpty) { Emit(new DmNoticeEvent(key, "还没有选择任何装备：先配装，或确认空手入场")); return false; }
+        if (p.Desired.IsEmpty && !confirmEmpty) { Emit(new DmNoticeEvent(key, "还没有选择任何装备：先配装，或确认空手准备")); return false; }
         if (!p.Entered && Playing >= DmFixed.MaxPlayers) { Emit(new DmNoticeEvent(key, $"本局已有 {DmFixed.MaxPlayers} 名参赛者，可以观战")); return false; }
         p.Entered = true;
         if (Running && p.Phase is DmPlayerPhase.Preparing or DmPlayerPhase.Spectating) { p.RetryAt = now; Set(p, DmPlayerPhase.SpawnPending, now); }
@@ -227,7 +227,7 @@ public sealed class DmMatch {
                     break;
                 case DmPlayerPhase.SpawnPending when now - p.PreparedAt > DmFixed.ReadyTimeoutSeconds:
                     p.Pending = null; p.Entered = false;
-                    Emit(new DmNoticeEvent(p.Key, "复活准备超时，已转为观战；可重新入场"));
+                    Emit(new DmNoticeEvent(p.Key, "复活准备超时，已转为观战；可重新准备"));
                     Set(p, DmPlayerPhase.Spectating, now); break;
                 case DmPlayerPhase.SpawnProtected when now >= p.ProtectedUntil:
                     Set(p, DmPlayerPhase.Alive, now); Emit(new DmProtectionEvent(p.Key, false)); break;

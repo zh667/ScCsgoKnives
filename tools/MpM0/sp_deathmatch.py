@@ -23,6 +23,7 @@ def package(spec):
     """A package by spec: output-lite / output-full / output-dm (the delivered packages), stage-<tag>-<lite|full|agents|dm>
     (a release candidate in its stage, before delivery), or a path."""
     if spec in ("output-lite", "output-full", "output-dm"): return {"output-lite": m0.LITE, "output-full": m0.FULL, "output-dm": DM_OUT}[spec]
+    if spec == "output-full-150": return m0.OUT / "[API1.9]CS武器1.5.0-全量包.scmod"   # the 1.5.0 Full the user plays (2026-10-06); the job arguments must stay ASCII
     if spec.startswith("stage-"):
         tag, kind = spec[len("stage-"):].rsplit("-", 1)
         pk = json.loads((STAGES / tag / "packages.json").read_text("utf8")); p = STAGES / tag / "candidate" / pk[STAGE_LABELS[kind]]["file"]
@@ -192,7 +193,8 @@ def main(label, core, dm):
         click("原厂外观"); state("ak chosen")
         cx, cy = g.func(WHEEL_CENTRE).split(); click_at(cx, cy); step("wheel centre (back)")
         wheel(0); frame("wheel-pistols"); wheel(0); click("原厂外观"); state("pistol chosen"); frame("wheel-loadout-ready")
-        click("确认"); state("confirmed"); click("入场", 1.5); state("entered")
+        cx, cy = g.func(WHEEL_CENTRE).split(); click_at(cx, cy); wheel(4); frame("wheel-knives"); click_at(cx, cy)   # every knife with its CS2 icon (2026-10-06)
+        click("确认"); state("confirmed"); click("准备", 1.5); state("entered")
         step("menu", menu()); click("比赛"); click("开始比赛", 1.2); state("after start"); frame("after-start-menu")
         g.func(CLOSE_MODAL); time.sleep(1); frame("countdown-hud"); step("hud", g.func(HUD))
         time.sleep(6.5); state("after countdown"); step("equip sprites", g.func(EQUIP)); step("health and armour shown", g.func(SHOWN)); frame("alive-hud"); step("hud", g.func(HUD))

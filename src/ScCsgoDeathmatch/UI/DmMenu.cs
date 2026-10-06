@@ -44,7 +44,7 @@ public sealed class DmMenuPanel : CanvasWidget {
         }
         // ---- 比赛
         Add(Page.Match, 0, 0, 1, () => "配装轮盘", Governing, () => { Close(); DmWheel.Open(player, dm); });
-        Add(Page.Match, 1, 0, 1, () => self.Entered ? "已入场" : self.Desired.IsEmpty ? "空手入场" : "入场", () => Governing(), () => dm.RequestEnter(player, self.Desired.IsEmpty), () => !self.Entered);
+        Add(Page.Match, 1, 0, 1, () => self.Entered ? "已准备" : self.Desired.IsEmpty ? "空手准备" : "准备", () => Governing(), () => dm.RequestEnter(player, self.Desired.IsEmpty), () => !self.Entered);
         Add(Page.Match, 2, 0, 1, () => "转为观战", () => Governing() && self.Entered, () => dm.RequestSpectate(player));
         Add(Page.Match, 0, 1, 1, () => "开始比赛", () => Arena() && dm.Match.Phase is DmPhase.Editing or DmPhase.Lobby, () => Say(dm.StartMatch(), $"{DmFixed.CountdownSeconds:0} 秒后开始！", close: true));
         Add(Page.Match, 1, 1, 1, () => "开放大厅", () => Phase(DmPhase.Editing), () => Say(dm.OpenLobby(), "大厅已开放：所有玩家回到准备点，竞技规则生效"));
@@ -115,10 +115,18 @@ public sealed class DmMenuPanel : CanvasWidget {
         if (!m_dm.Enabled) return m_dm.Authority ? "本世界还不是竞技世界。\n\n在“地图”页启用后，它会成为死亡竞赛专用世界（不影响其他世界）。建议在专门搭建的竞技地图里启用。" : "服务器的世界不是竞技世界。";
         string phase = view.Phase switch { DmPhase.Editing => "地图编辑", DmPhase.Lobby => "大厅", DmPhase.Countdown => "即将开始", DmPhase.Running => "比赛中 " + DmTimerElement.Clock(view.PhaseEndsAt - m_dm.Now), _ => "结算" };
         var arena = m_dm.Arena;
-        string me = !self.Entered ? "未入场" : self.Fighting ? $"存活 {self.Health} 血 / {self.Armour} 甲" : view.Phase == DmPhase.Running ? "已入场，等待复活" : "已入场";
-        return $"状态：{phase}\n局长：{view.Rules.Minutes} 分钟\n入场：{m_dm.EnteredCount} 人\n我：{me}\n\n区域：{(arena.HasRegion ? $"{arena.MaxX - arena.MinX + 1}×{arena.MaxZ - arena.MinZ + 1} 格" : m_dm.Corner(0) is not null || m_dm.Corner(1) is not null ? "只设了一个角点" : "未设置")}\n复活点：{arena.Spawns.Count} 个\n准备点：{(arena.HasLobby ? "已设置" : "未设置")}"
-            + (m_dm.Authority && view.Phase is DmPhase.Editing or DmPhase.Lobby && NextStep(m_dm, m_dm.ArenaIssues()) is { } next ? $"\n\n下一步：{next}" : "")
-            + $"\n\nCS2 数据 {(DmWeapons.Ready ? DmWeapons.Cs2Version : "未加载")}";
+        string me = !self.Entered ? "未准备" : self.Fighting ? $"存活 {self.Health} 血 / {self.Armour} 甲" : view.Phase == DmPhase.Running ? "已准备，等待复活" : "已准备";
+        return $"状态：{phase}\n局长：{view.Rules.Minutes} 分钟\n{Ready()}\n我：{me}\n\n区域：{(arena.HasRegion ? $"{arena.MaxX - arena.MinX + 1}×{arena.MaxZ - arena.MinZ + 1} 格" : m_dm.Corner(0) is not null || m_dm.Corner(1) is not null ? "只设了一个角点" : "未设置")}\n复活点：{arena.Spawns.Count} 个\n准备点：{(arena.HasLobby ? "已设置" : "未设置")}"
+            + (m_dm.Authority && view.Phase is DmPhase.Editing or DmPhase.Lobby && NextStep(m_dm, m_dm.ArenaIssues()) is { } next ? $"\n\n下一步：{next}" : "");
+    }
+    /// <summary>Who is ready: the host sees the names, ready and not (2026-10-06, the user: "房主能查看准备列表，能看谁没准备"); a
+    /// client sees the count. "准备" replaced "入场" the same day.</summary>
+    string Ready() {
+        if (!m_dm.Authority || m_dm.Match is null) return $"已准备：{m_dm.EnteredCount} 人";
+        var players = m_dm.Match.Players.Where(p => p.Connected).ToList();
+        static string Names(IEnumerable<string> names) { var list = names.ToList(); return list.Count == 0 ? "无" : string.Join("、", list); }
+        string Of(bool entered) => Names(players.Where(p => p.Entered == entered).Select(p => string.IsNullOrEmpty(p.Name) ? p.Key : p.Name));
+        return $"已准备 {players.Count(p => p.Entered)}/{players.Count}：{Of(true)}\n未准备：{Of(false)}";
     }
     string Hint() {
         var phase = m_dm.View.Phase;
@@ -129,9 +137,9 @@ public sealed class DmMenuPanel : CanvasWidget {
             Page.Match when phase == DmPhase.Countdown => m_dm.Authority ? "即将开始；“取消开始”可回到大厅。" : "比赛即将开始。",
             Page.Match when phase == DmPhase.Running => "比赛进行中：改配装在下一条命生效；“榜单”看比分。" + (m_dm.Authority ? "“结束本局”立即结算。" : ""),
             Page.Match when phase == DmPhase.Results => "本局已结算，稍后回到大厅。",
-            Page.Match when m_dm.Authority => "流程：大家配装并入场，然后房主点“开始比赛”。",
-            Page.Match when phase == DmPhase.Editing => "房主正在搭建地图；开放大厅后按 B（触屏点“配装”）选装备，再点“入场”。",
-            Page.Match when phase == DmPhase.Lobby => "按 B（触屏点“配装”）选装备，选好后点“入场”，等房主开始。",
+            Page.Match when m_dm.Authority => "流程：大家配装并点“准备”，然后房主点“开始比赛”。",
+            Page.Match when phase == DmPhase.Editing => "房主正在搭建地图；开放大厅后按 B（触屏点“配装”）选装备，再点“准备”。",
+            Page.Match when phase == DmPhase.Lobby => "按 B（触屏点“配装”）选装备，选好后点“准备”，等房主开始。",
             Page.Settings when !m_player.ComponentInput.IsControlledByTouch && DmUiSettings.KeyIds.SelectMany(id => DmUiSettings.Conflicts(id, DmUiSettings.KeyOf(id)).Select(c => $"{DmUiSettings.KeyOf(id)}（{DmUiSettings.KeyLabel(id)}）也用于{c}")).FirstOrDefault() is { } conflict
                 => "注意：" + conflict + "。可点上面的按键改成别的键。",
             _ => "" };

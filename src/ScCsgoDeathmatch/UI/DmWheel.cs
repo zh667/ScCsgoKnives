@@ -8,20 +8,22 @@ namespace Game;
 /// or by its number key. It draws and reports; what a choice means is the panel's.</summary>
 public sealed class DmWheelWidget : CanvasWidget {
     public const float Radius = 200, Inner = 64; public const int MaxSectors = 8, Centre = -2, None = -1;
+    /// <summary>A sector's icon is drawn this high, or lower when a long gun would otherwise reach the next sector.</summary>
+    public const float IconHeight = 30, MaxIconWidth = 108;
     public readonly List<(string Label, int Icon, bool Marked)> Sectors = [];
-    /// <summary>The pixel silhouette of each sector (null: the label alone).</summary>
-    public readonly List<Texture2D> Sprites = [];
+    /// <summary>CS2's icon of each sector (DmPx.HudIcon; null: the label alone).</summary>
+    public readonly List<Texture2D> Icons = [];
     public string CentreText = "关闭";
     /// <summary>What was chosen this frame: a sector index, <see cref="Centre"/>, or <see cref="None"/>.</summary>
     public int Picked { get; private set; } = None;
     int m_hover = None;
-    readonly LabelWidget[] m_labels = new LabelWidget[MaxSectors]; readonly DmPixelIcon[] m_icons = new DmPixelIcon[MaxSectors];
+    readonly LabelWidget[] m_labels = new LabelWidget[MaxSectors]; readonly DmHudIcon[] m_icons = new DmHudIcon[MaxSectors];
     readonly LabelWidget m_centre = new() { FontScale = .8f, DropShadow = true, IsHitTestVisible = false, HorizontalAlignment = WidgetAlignment.Center, VerticalAlignment = WidgetAlignment.Center, TextAnchor = TextAnchor.HorizontalCenter };
     static Vector2 Middle => new(Radius + 10);
     public DmWheelWidget() {
         Size = new Vector2(2 * Radius + 20); IsHitTestVisible = true;
         for (int i = 0; i < MaxSectors; i++) {
-            m_icons[i] = new DmPixelIcon { Scale = 2, HorizontalAlignment = WidgetAlignment.Near, VerticalAlignment = WidgetAlignment.Near, IsVisible = false };
+            m_icons[i] = new DmHudIcon { Height = IconHeight, HorizontalAlignment = WidgetAlignment.Near, VerticalAlignment = WidgetAlignment.Near, IsVisible = false };
             m_labels[i] = new LabelWidget { FontScale = .62f, DropShadow = true, IsHitTestVisible = false, HorizontalAlignment = WidgetAlignment.Near, VerticalAlignment = WidgetAlignment.Near, TextAnchor = TextAnchor.HorizontalCenter, Size = new Vector2(120, 22), IsVisible = false };
             Children.Add(m_icons[i]); Children.Add(m_labels[i]);
         }
@@ -52,15 +54,17 @@ public sealed class DmWheelWidget : CanvasWidget {
         }
         for (int i = 0; i < Math.Min(count, MaxSectors); i++) if (Input.IsKeyDownOnce(Key.Number1 + i)) Picked = i;
         for (int i = 0; i < MaxSectors; i++) {
-            var sprite = i < Sprites.Count ? Sprites[i] : null;
-            bool on = i < count; m_labels[i].IsVisible = on; m_icons[i].IsVisible = on && sprite is not null;
+            var icon = i < Icons.Count ? Icons[i] : null;
+            bool on = i < count; m_labels[i].IsVisible = on; m_icons[i].IsVisible = on && icon is not null;
             if (!on) continue;
             Vector2 at = Middle + SectorCentre(i, count);
             m_labels[i].Text = $"{i + 1} {Sectors[i].Label}"; m_labels[i].Color = i == m_hover ? new Color(16, 16, 16) : Sectors[i].Marked ? DmPx.Gold : DmPx.Text;
-            m_labels[i].MarginLeft = at.X - 60; m_labels[i].MarginTop = at.Y + (sprite is not null ? 12 : -11);
-            if (sprite is not null) {
-                float scale = sprite.Width > 46 ? 1 : 2; m_icons[i].Texture = sprite; m_icons[i].Scale = scale; m_icons[i].Color = i == m_hover ? new Color(16, 16, 16) : Sectors[i].Marked ? DmPx.Gold : DmPx.Text;
-                m_icons[i].MarginLeft = MathF.Round(at.X - sprite.Width * scale / 2); m_icons[i].MarginTop = MathF.Round(at.Y - sprite.Height * scale - 2);
+            m_labels[i].MarginLeft = at.X - 60; m_labels[i].MarginTop = at.Y + (icon is not null ? 12 : -11);
+            if (icon is not null) {
+                float height = IconHeight, width = icon.Width * height / Math.Max(1, icon.Height);
+                if (width > MaxIconWidth) { height *= MaxIconWidth / width; width = MaxIconWidth; }
+                m_icons[i].Texture = icon; m_icons[i].Height = height; m_icons[i].Color = i == m_hover ? new Color(16, 16, 16) : Sectors[i].Marked ? DmPx.Gold : DmPx.Text;
+                m_icons[i].MarginLeft = MathF.Round(at.X - width / 2); m_icons[i].MarginTop = MathF.Round(at.Y - height - 2);
             }
         }
         m_centre.Text = CentreText;
@@ -96,7 +100,7 @@ public sealed class DmWheelPanel : CanvasWidget {
     readonly ComponentPlayer m_player; readonly SubsystemScDeathmatch m_dm;
     readonly DmWheelWidget m_wheel = new() { HorizontalAlignment = WidgetAlignment.Near, VerticalAlignment = WidgetAlignment.Near, Margin = new Vector2(14, 40) };
     readonly LabelWidget m_title = new() { FontScale = .8f, Color = DmPx.Gold, DropShadow = false }, m_heading = new() { FontScale = .74f, Color = DmPx.Text, DropShadow = false }, m_summary = new() { FontScale = .62f, Color = DmPx.Text, DropShadow = false }, m_hint = new() { FontScale = .56f, Color = DmPx.Dim, DropShadow = false, WordWrap = true, Size = new Vector2(380, -1) };
-    readonly DmPixelButton m_previous = new("上一页", 96), m_next = new("下一页", 96), m_confirm = new("确认配装", 200), m_enter = new("入场", 110), m_clear = new("清空", 80), m_close = new("关闭", 80);
+    readonly DmPixelButton m_previous = new("上一页", 96), m_next = new("下一页", 96), m_confirm = new("确认配装", 200), m_enter = new("准备", 110), m_clear = new("清空", 80), m_close = new("关闭", 80);
     readonly DmPixelButton m_drawerPrevious = new("<", 48), m_drawerNext = new(">", 48);
     readonly DmPixelButton m_counter = new("计数器：关", 230);
     sealed class Option { public DmPixelButton Button; public BlockIconWidget Icon; public LabelWidget Name; public Action Choose; }
@@ -134,11 +138,11 @@ public sealed class DmWheelPanel : CanvasWidget {
 
     void Top() {
         m_group = -1; m_page = 0; m_gun = m_knife = -1; m_drawer.Clear(); m_drawerPage = 0;
-        m_wheel.Sectors.Clear(); m_wheel.Sprites.Clear();
+        m_wheel.Sectors.Clear(); m_wheel.Icons.Clear();
         foreach (var (group, name) in DmCatalogue.Groups) {
             m_wheel.Sectors.Add((name, 0, false));
-            m_wheel.Sprites.Add(group switch { DmCatalogue.Group.Pistols => DmPx.Sprite("glock"), DmCatalogue.Group.Smgs => DmPx.Sprite("mp9"), DmCatalogue.Group.Rifles => DmPx.Sprite("ak47"),
-                DmCatalogue.Group.Heavy => DmPx.Sprite("nova"), DmCatalogue.Group.Knives => DmPx.Sprite("knife_karambit") ?? DmPx.Sprite("knife"), _ => DmPx.Sprite("taser") });
+            m_wheel.Icons.Add(group switch { DmCatalogue.Group.Pistols => DmPx.HudIcon("glock"), DmCatalogue.Group.Smgs => DmPx.HudIcon("mp9"), DmCatalogue.Group.Rifles => DmPx.HudIcon("ak47"),
+                DmCatalogue.Group.Heavy => DmPx.HudIcon("nova"), DmCatalogue.Group.Knives => DmPx.HudIcon("knife_karambit"), _ => DmPx.HudIcon("taser") });
         }
         m_wheel.CentreText = "关闭";
     }
@@ -183,13 +187,13 @@ public sealed class DmWheelPanel : CanvasWidget {
     void Refresh() {
         if (m_group >= 0) {
             var entries = Entries(DmCatalogue.Groups[m_group].Group); int pages = Math.Max(1, (entries.Count + PerPage - 1) / PerPage); m_page = Math.Clamp(m_page, 0, pages - 1);
-            m_wheel.Sectors.Clear(); m_wheel.Sprites.Clear();
-            foreach (var e in entries.Skip(m_page * PerPage).Take(PerPage)) { m_wheel.Sectors.Add((e.Name, e.Icon, e.Marked)); m_wheel.Sprites.Add(e.Icon == 0 ? null : DmPx.ItemSprite(e.Icon)); }
+            m_wheel.Sectors.Clear(); m_wheel.Icons.Clear();
+            foreach (var e in entries.Skip(m_page * PerPage).Take(PerPage)) { m_wheel.Sectors.Add((e.Name, e.Icon, e.Marked)); m_wheel.Icons.Add(e.Icon == 0 ? null : DmPx.ItemHud(e.Icon)); }
             m_wheel.CentreText = "返回";
             m_previous.IsVisible = m_next.IsVisible = pages > 1; m_previous.IsEnabled = m_page > 0; m_next.IsEnabled = m_page < pages - 1;
-            m_title.Text = $"{DmCatalogue.Groups[m_group].Name}{(pages > 1 ? $"（{m_page + 1}/{pages}）" : "")} · 全部免费";
+            m_title.Text = $"{DmCatalogue.Groups[m_group].Name}{(pages > 1 ? $"（{m_page + 1}/{pages}）" : "")}";
         }
-        else { m_previous.IsVisible = m_next.IsVisible = false; m_title.Text = "配装轮盘 · 全部免费"; }
+        else { m_previous.IsVisible = m_next.IsVisible = false; m_title.Text = "配装轮盘"; }
         if (m_gun >= 0) OpenGunKeep(); else if (m_knife >= 0) OpenKnifeKeep();
         int drawerPages = Math.Max(1, (m_drawer.Count + m_options.Length - 1) / m_options.Length); m_drawerPage = Math.Clamp(m_drawerPage, 0, drawerPages - 1);
         for (int i = 0; i < m_options.Length; i++) {
@@ -206,8 +210,8 @@ public sealed class DmWheelPanel : CanvasWidget {
         bool protectedNow = self.Phase == DmPlayerPhase.SpawnProtected && self.ProtectedUntil > m_dm.Now;
         m_confirm.Text = protectedNow ? "确认 · 立即装备" : self.Phase == DmPlayerPhase.Alive ? "确认 · 下次复活装备" : "确认 · 保存配装";
         m_confirm.IsEnabled = error == DmLoadoutError.None;
-        m_enter.IsVisible = !self.Entered; m_enter.Text = m_working.IsEmpty ? "空手入场" : "入场";
-        m_hint.Text = error != DmLoadoutError.None ? DmCatalogue.Describe(error) : self.Entered ? "外观不影响强度；每条命满弹，备弹无限，仍需换弹。" : "首次入场不会自动发放任何装备：选好后确认，再入场。";
+        m_enter.IsVisible = !self.Entered; m_enter.Text = m_working.IsEmpty ? "空手准备" : "准备";
+        m_hint.Text = error != DmLoadoutError.None ? DmCatalogue.Describe(error) : self.Entered ? "外观不影响强度；每条命满弹，备弹无限，仍需换弹。" : "选好后先“确认配装”，再点“准备”；准备本身不发放装备。";
     }
     void OpenGunKeep() { int page = m_drawerPage; bool counter = m_counter.Selected; OpenGun(m_gun); m_counter.Selected = counter; m_drawerPage = page; }
     void OpenKnifeKeep() { int page = m_drawerPage; OpenKnife(m_knife); m_drawerPage = page; }
@@ -241,7 +245,7 @@ public sealed class DmWheelPanel : CanvasWidget {
         if (m_clear.IsClicked) m_working = DmLoadout.Empty;
         if (m_confirm.IsClicked && DmCatalogue.Validate(m_working, Rules) == DmLoadoutError.None) m_dm.RequestLoadout(m_player, m_working);
         if (m_enter.IsClicked && DmCatalogue.Validate(m_working, Rules) == DmLoadoutError.None) {
-            m_dm.RequestLoadout(m_player, m_working); m_dm.RequestEnter(m_player, m_working.IsEmpty);   // "空手入场" is the explicit confirmation
+            m_dm.RequestLoadout(m_player, m_working); m_dm.RequestEnter(m_player, m_working.IsEmpty);   // "空手准备" is the explicit confirmation
             gui.ModalPanelWidget = null; return;
         }
         Refresh();

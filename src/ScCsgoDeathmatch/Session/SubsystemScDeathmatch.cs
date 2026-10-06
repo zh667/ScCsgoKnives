@@ -82,6 +82,8 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
     /// player's screen and never during a match.</summary>
     public bool ShowsEditing => Enabled && Frozen is null && Authority && Match is { Phase: DmPhase.Editing or DmPhase.Lobby };
     static readonly Color RegionColor = new(90, 214, 232), SpawnColor = new(110, 230, 110), BadColor = new(240, 72, 60), LobbyColor = new(104, 150, 236), CornerColor = new(240, 182, 52);
+    /// <summary>The corner beams' height, metres (2026-10-06, the user: "角点的高度可以再高些"; the respawn and lobby beams stay 7).</summary>
+    const float CornerBeamHeight = 18f;
     void DrawEditing(Camera camera) {
         Vector3 eye = camera.ViewPosition;
         var flat = m_primitives.FlatBatch(0, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.AlphaBlend);
@@ -114,10 +116,10 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
             flatTop.QueueQuad(left + bottom, rightEdge + bottom, rightEdge + bottom + up * 2, left + bottom + up * 2, color);
             font.QueueText(text, at + up * 2, right, -up, color, TextAnchor.HorizontalCenter | TextAnchor.Bottom);
         }
-        void Beam(Vector3 feet, float yaw, Color color, string label, bool facing) {
+        void Beam(Vector3 feet, float yaw, Color color, string label, bool facing, float height = 7f) {
             // standing on the point itself: only its ring and label, not a beam and an arrow through the camera
             bool here = new Vector2(eye.X - feet.X, eye.Z - feet.Z).Length() < 1.2f && MathF.Abs(eye.Y - feet.Y - 1.6f) < 1.5f;
-            if (!here) Thick(feet, feet + new Vector3(0, 7f, 0), color * .6f, .09f);
+            if (!here) Thick(feet, feet + new Vector3(0, height, 0), color * .6f, .09f);
             const int Sides = 12;   // a ring on the ground where the body stands
             for (int i = 0; i < Sides; i++) {
                 float a0 = MathF.PI * 2 * i / Sides, a1 = MathF.PI * 2 * (i + 1) / Sides;
@@ -127,7 +129,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
                 Vector3 f = new(-MathF.Sin(yaw), 0, -MathF.Cos(yaw)), r = new(f.Z, 0, -f.X), chest = feet + new Vector3(0, 1.1f, 0);
                 Thick(chest, chest + f * 1.2f, color, .05f); Thick(chest + f * 1.2f, chest + f * .85f + r * .3f, color, .05f); Thick(chest + f * 1.2f, chest + f * .85f - r * .3f, color, .05f);
             }
-            Label(label, feet + new Vector3(0, 7.4f, 0), color);
+            Label(label, feet + new Vector3(0, height + .4f, 0), color);
         }
         if (Arena.HasRegion) {
             Box(new Vector3(Arena.MinX, Arena.MinY, Arena.MinZ), new Vector3(Arena.MaxX + 1, Arena.MaxY + 1, Arena.MaxZ + 1), RegionColor, .05f);
@@ -136,7 +138,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
         // a corner that waits for its partner: the box it would make with the place the host stands now
         for (int i = 0; i < 2; i++) if (m_corners[i] is { } corner) {
             Vector3 c = new(corner.X + .5f, corner.Y, corner.Z + .5f);
-            Beam(c, 0, CornerColor, $"角点 {i + 1}", false);
+            Beam(c, 0, CornerColor, $"角点 {i + 1}", false, CornerBeamHeight);   // taller than the points' beams: a corner is found from across the arena
             if (m_corners[1 - i] is null && m_players.PlayersData.Select(d => d.ComponentPlayer).FirstOrDefault(pl => pl is not null && ScNet.IsLocal(pl)) is { } host) {
                 var here = Cell(host.ComponentBody.Position); var (lo, hi) = RegionOf(corner, here);
                 Box(new Vector3(lo.X, lo.Y, lo.Z), new Vector3(hi.X + 1, hi.Y + 1, hi.Z + 1), CornerColor * .6f, .03f);
@@ -346,7 +348,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
         if (issues.FirstOrDefault(i => i.Blocks) is { } blocking) { Log("start refused: " + blocking.Code); return "不能开始：" + blocking.Message; }
         if (!Match.Players.Any(p => p.Connected && p.Entered)) {
             Log("start refused: nobody entered");
-            return Match.Phase == DmPhase.Editing ? "不能开始：先点“开放大厅”，大家配装（B）并点“入场”后再开始" : "不能开始：还没有玩家入场（配装后点“入场”）";
+            return Match.Phase == DmPhase.Editing ? "不能开始：先点“开放大厅”，大家配装（B）并点“准备”后再开始" : "不能开始：还没有玩家准备（配装后点“准备”）";
         }
         if (Match.Phase == DmPhase.Editing) Match.OpenLobby(Now);
         string refused = Match.Start(issues, Now);
@@ -657,7 +659,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
         }
         return -1;
     }
-    const string ForeignText = "背包里还有其他物品：竞技世界不带入生存物品，请先放进箱子再入场";
+    const string ForeignText = "背包里还有其他物品：竞技世界不带入生存物品，请先放进箱子再准备";
     /// <summary>An ordinary (not creative) inventory holds something the mode did not give: the mode never deletes it, so
     /// the player cannot be given a kit over it.</summary>
     bool Foreign(ComponentPlayer player) {

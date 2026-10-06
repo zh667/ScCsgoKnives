@@ -1,7 +1,7 @@
 """deathmatch-addon round 2 (2026-10-03, user: "在Windows上你实机测试一下 ... 房主点开始没反应"): the deathmatch package in
 multiplayer on the 1.9.3.2_MP copies - one host and one client, each its own process - played through the package's own
 UI as two people would: the host builds the arena with F6 and real clicks, the client joins over the network, both buy
-with the B wheel and press "入场", the host presses "开始比赛", the client shoots the host with a real trigger (the game's
+with the B wheel and press "准备", the host presses "开始比赛", the client shoots the host with a real trigger (the game's
 own dig input held along the client's line of sight), the host dies and respawns, Tab shows the board, the host ends
 the match. After each step: each side's view of the match (the client reads only what the server sent it) and frames
 from both windows (looked at afterwards; frames are evidence, not checks).
@@ -104,7 +104,7 @@ class Side:
     def buy(self, group, item, finish="原厂外观"):
         """B, a category, a weapon, its finish, confirm, enter - all with clicks."""
         if self.modal() != "DmWheelPanel": self.key("B"); time.sleep(.8)
-        self.wheel(group); self.wheel(item); self.click(finish); self.click("确认"); return self.click("入场", 1.5)
+        self.wheel(group); self.wheel(item); self.click(finish); self.click("确认"); return self.click("准备", 1.5)
 
 
 def main(label, core, dm):

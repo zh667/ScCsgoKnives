@@ -131,7 +131,7 @@ sealed class DmDeathElement : DmElement {
         m_title.Text = death is null ? "等待复活" : death.Scored ? $"你被 {death.KillerName} 击杀" : death.Cause == DmDeathCause.OutOfBounds ? "你离开了竞技区域" : death.Cause == DmDeathCause.Suicide ? "你结束了自己的这条命" : "你死于环境";
         m_weapon.Texture = death?.Scored == true ? DmPx.WeaponSprite(death.Weapon) : null;
         m_detail.Text = death is null || !death.Scored ? "" : DmNames.Weapon(death.Weapon) + string.Concat(DmArt.Marks(death).Select(m => " · " + m.Word));
-        m_next.Text = !running ? "本局已结束" : phase == DmPlayerPhase.DeathView ? $"即将复活 · 复活保护期间{buy}换装备立即生效" : phase == DmPlayerPhase.SpawnPending ? "正在寻找安全的复活点…" : entered ? "" : "已转为观战，可在竞技菜单重新入场";
+        m_next.Text = !running ? "本局已结束" : phase == DmPlayerPhase.DeathView ? $"即将复活 · 复活保护期间{buy}换装备立即生效" : phase == DmPlayerPhase.SpawnPending ? "正在寻找安全的复活点…" : entered ? "" : "已转为观战，可在竞技菜单重新准备";
     }
 }
 
@@ -184,7 +184,10 @@ sealed class DmEditElement : DmElement {
         var a = dm.Arena; var issues = dm.ArenaIssues();
         string region = a.HasRegion ? $"区域 {a.MaxX - a.MinX + 1}×{a.MaxZ - a.MinZ + 1}" : dm.Corner(0) is not null || dm.Corner(1) is not null ? "区域：还差一个角点" : "区域：未设置";
         string next = DmMenuPanel.NextStep(dm, issues);
-        m_lines.Text = $"{region} · 复活点 {a.Spawns.Count} · 准备点 {(a.HasLobby ? "已设" : "未设")} · 已入场 {dm.EnteredCount}\n" + (next is not null ? "下一步：" + next : "可以开始了") + (touch ? "" : "\nF6 打开菜单操作");
+        // the menu key as this device has it set (2026-10-06, the user: "我之前改了打开菜单为U键，但是那里还是显示F6打开菜单")
+        string menuKey = DmUiSettings.KeyOf(DmUiSettings.KeyMenu);
+        m_lines.Text = $"{region} · 复活点 {a.Spawns.Count} · 准备点 {(a.HasLobby ? "已设" : "未设")} · 已准备 {dm.EnteredCount}\n" + (next is not null ? "下一步：" + next : "可以开始了")
+            + (touch ? "" : string.IsNullOrEmpty(menuKey) ? "\n竞技菜单键未设置" : $"\n{menuKey} 打开菜单操作");
         int pressed = -1;
         for (int i = 0; i < m_buttons.Length; i++) {
             m_buttons[i].IsVisible = touch;
@@ -284,7 +287,7 @@ sealed class DmHudRoot : IDisposable {
         bool running = view.Phase == DmPhase.Running;
         m_timer.Place(L(DmHudIds.Timer), area, governing && shown);
         // in the lobby the timer's line says what this player still has to do (MP r2: a joining player saw only "LOBBY")
-        string lobby = self.Entered ? "已入场 · 等待房主开始" : touch ? "点“配装”选装备后入场" : $"按 {DmUiSettings.KeyOf(DmUiSettings.KeyBuy)} 配装后入场";
+        string lobby = self.Entered ? "已准备 · 等待房主开始" : touch ? "点“配装”选装备后点“准备”" : $"按 {DmUiSettings.KeyOf(DmUiSettings.KeyBuy)} 配装后点“准备”";
         if (m_timer.IsVisible) m_timer.Show(view.Phase, view.PhaseEndsAt - now, view.Rows.Count(r => r.Playing && r.Connected) < 2, lobby);
         // the health on the game's own bar (round 3, the user: "血量显示用原版的就好了"; shown in a creative world too while
         // this player fights) and the armour on the CS armour HUD (DmMode.ShownArmour): the deathmatch draws neither
