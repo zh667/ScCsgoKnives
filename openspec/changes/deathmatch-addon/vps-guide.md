@@ -9,7 +9,7 @@
 ## 2. 冻结实际基线
 
 1. 确认 Windows 写入者已结束、双方 Syncthing idle/need=0/error=0/conflict=0。不要发未经用户授权的消息或中断其他任务。若有实际重叠写入，先处理不重叠的读操作，协调后才改对应文件。
-2. VPS 是无 Git 的源同步目录，不初始化 Git，不 pull/reset/restore。Windows 记录 `git status --short`，保留所有已有改动和当前未发布候选。
+2. Windows 和 VPS 均可使用 Git，遵守根 `AGENTS.md` 的任务分支、提交、推送及用户批准后合并 `main` 的统一流程。各端 `.git` 独立维护、不参与 Syncthing；编辑前在 Git 工作区记录 `git status --short`，会改动共享文件的 Git 操作须先协调写入者与同步状态，保留所有已有改动和当前未发布候选。
 3. 记录现有 `output/release-1.4.0/manifest.json` 与包内真实核心、Agents、适配器身份，核对源码是否比 manifest 新；旧文档曾用 mpf1，不据此锁死新的工作基线。
 4. 调用现有 Windows worker 的 health，相关工具参见 `docs/agent-guide/collaboration.md`。命令用 argv 数组/结构化参数，不用字符串拼接执行用户路径；Windows cwd 明确为 `E:/projects/ScCsgoKnives`，调用 `./tools/dev.ps1`。
 5. 确认 1.4.0 是否已正式发布。未发布先完成模式封套/休眠保存基础能力；已发布则对真实包验证，不能偷偷换包来满足兼容。

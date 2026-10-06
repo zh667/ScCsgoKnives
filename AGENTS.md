@@ -1,6 +1,6 @@
 # ScCsgoKnives: project instructions
 
-One shared instruction source for Codex and Claude Code. Updated 2026-10-05.
+One shared instruction source for Codex and Claude Code. Updated 2026-10-06.
 
 Quality goal: preserve accepted functionality and compatibility while making responsibilities clear, dependencies directional, state ownership explicit, failures recoverable and behavior verifiable. Reduce actual maintenance cost; avoid abstraction for its own sake.
 
@@ -8,10 +8,17 @@ Quality goal: preserve accepted functionality and compatibility while making res
 
 - Follow the user's active request. Explain/review/diagnose requests do not authorize implementation, installation or release publication by themselves.
 - Preserve explicit user requirements, including specified behavior or implementation choices and requirements the user adopts from images/documents. Keep those requirements separate from inferred goals, cause hypotheses and technical recommendations. Do not silently replace a requirement with a supposedly better alternative or a similar outcome. Explain any conflict or infeasibility; obtain direction only when a material departure is necessary, while continuing independent authorized work.
-- Preserve existing accepted behavior: fixes, refactors and optimizations must not silently remove features or change gameplay, input timing, resource quality, data meanings or compatibility scope. Preserve unrelated dirty work, including Zeus edits. On Windows inspect `git status --short` before editing; never reset, restore, stash or commit someone else's work as routine cleanup.
+- Preserve existing accepted behavior: fixes, refactors and optimizations must not silently remove features or change gameplay, input timing, resource quality, data meanings or compatibility scope. Preserve unrelated dirty work, including Zeus edits. On both Windows and VPS inspect `git status --short` before editing in a Git checkout; never reset, restore, stash or commit someone else's work as routine cleanup.
 - Historical dated requests are provenance, not current commands or permission to resume blocked milestones. Specialist documents below resolve superseded rules; consult release evidence relevant to the change.
 - Define acceptance from the user's actual scenario before implementing: link each requirement to its implementation, a check that distinguishes it from an incorrect alternative, and its current result. Cover explicitly named actors, views, inputs and platforms; a similar case is not a substitute. Review requirement compliance first, scenario coverage second, and test results/regressions third. Passing tests never make an unmet requirement complete. Report partial work as partial, with concrete blockers; do not quietly defer requested cases or ask again for settled decisions. Every claimed passing test must have an executed runner, result and input identity.
 - Do not install packages into the user's Mods/device, modify original worlds, patch third-party providers or delete source assets/backups without task-specific authorization.
+
+## Branch, commit and merge workflow
+
+- Before the first edit for a new feature, bug fix or any other code-changing task, create a new task branch from the agreed baseline. Continue that task on its branch; never implement directly on `main`. Apply this workflow to project-policy changes too. Check other writers and Syncthing impact before switching branches; a branch does not isolate the shared source tree.
+- Every commit must follow Conventional Commits: `<type>(<optional scope>): <description>` (for example, `feat(tactical): add airdrop guards`, `fix(travel): preserve gun state`, or `docs: clarify branch workflow`). Keep commits focused, reviewable and limited to the task's own changes.
+- After completing the scoped changes and applicable verification, commit and push the task branch to its corresponding remote branch. Report the branch, commits, verification and any remaining acceptance gaps for review.
+- Merge into `main` only after the user explicitly approves merging that specific task's changes. Approval to develop, commit or push is not merge approval; approval for a previous task does not carry over. Until approval arrives, leave the changes on the remote task branch and do not merge or enable automatic merging into `main`.
 
 ## Code quality and architecture
 
@@ -31,7 +38,7 @@ Quality goal: preserve accepted functionality and compatibility while making res
 - VPS active source tree: `/home/dev/source-sync/ScCsgoKnives`. Old `/home/dev/workspaces/*` trees are legacy and partly cleaned, not current edit/build roots.
 - Windows desktop agent handles user media, planning and review; readily visible/audible changes default to user acceptance under the verification rules below. VPS agent verifies causes against code and implements scoped changes. Treat visual diagnoses as hypotheses until verified.
 - Maintain one current decision/implementation brief per active workstream, separating user requirements, proposed changes, evidence and unfinished acceptance. Update it in place; handoffs must preserve the requirements, not replace them with a planner's interpretation. Keep one consistent current status; mark obsolete conclusions as historical rather than leaving contradictory completion claims. Use short handoff prompts linking the brief, not chains of mandatory old plans. Do not turn optional ideas into unrequested systems. Follow [collaboration](docs/agent-guide/collaboration.md).
-- Syncthing shares source, scripts, small descriptors/docs and handoffs; Git history stays on Windows. No automatic Git pull/reset/restore in the live synced tree, and no Git initialization on the source-only VPS peer.
+- Both Windows and VPS may use Git, including repository initialization, branching, fetching/pulling, committing and pushing. The branch, commit and merge workflow above applies equally to both. Syncthing shares source, scripts, small descriptors/docs and handoffs; each host keeps its own `.git` metadata, excluded from Syncthing. Coordinate Git operations that change shared files with the active writer and synchronization state, preserving existing work on both peers.
 - One writer per file at a time. Before handing off, stop the previous writer and verify both peers have no sync errors, pending items or conflicts. OWNER/task notes are not locks; a Git branch does not isolate Syncthing. Check synchronization impact and other writers before branch switches or bulk file changes.
 - Keep models, textures, recordings, packages and bulk AnimationData on Windows. Run resource parsing/conversion/full builds via Windows worker; return bounded JSON/logs/previews. Do not copy the resource tree to VPS to satisfy missing Linux paths.
 - For pictures/video, remote jobs or cross-agent handoff, read [collaboration](docs/agent-guide/collaboration.md) first. Use [the task template](docs/agent-guide/TASK_TEMPLATE.md) under `docs/tasks/`.
