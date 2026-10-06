@@ -41,7 +41,7 @@ public sealed class SubsystemScTactical : SubsystemBlockBehavior {
             var ground=target.Value.CellFace;int count=Terrain.ExtractData(value)==1?5:3;
             var director=Project.FindSubsystem<SubsystemTacticalEnemies>(true);
             bool made=ScCraftBatch.TryUseItem(inv,slot,value,()=>director.SpawnManual(new Point3(ground.X,ground.Y,ground.Z),count)==count);
-            Message(player,made?$"已在 {SubsystemTacticalEnemies.ManualNear:0}～{SubsystemTacticalEnemies.ManualFar:0} 格外生成 {count} 人敌对 T 小队，{SubsystemTacticalEnemies.ManualWarmup:0} 秒后开始交战。":string.IsNullOrEmpty(director.ManualFailure)?"召唤未完成，请检查背包或待恢复物品。":"未生成："+director.ManualFailure);return true;
+            Message(player,made?$"已在对准处生成 {count} 人 T 小队，准备 {SubsystemTacticalEnemies.ManualWarmup:0} 秒，受攻击后反击。":string.IsNullOrEmpty(director.ManualFailure)?"召唤未完成，请检查背包或待恢复物品。":"未生成："+director.ManualFailure);return true;
         }
         if(Terrain.ExtractContents(value)!=HandledBlocks[0])return false;
         int kind=Terrain.ExtractData(value);if(kind==3){Repair(player);return true;}if(kind<0||kind>2)return true;

@@ -69,7 +69,7 @@ public sealed class ScTacticalSquadBlock : ScOptionalTacticalBlock {
     public override void Initialize(){base.Initialize();if(!Available)return;TacticalItemMesh.LoadRadios();}
     public override Vector3 GetIconViewOffset(int value,DrawBlockEnvironmentData env)=>new(.7f,.4f,2);
     public override string GetDisplayName(SubsystemTerrain terrain,int value)=>(Terrain.ExtractData(value)==1?"敌对 T 五人小队 · 挑战信标":"敌对 T 三人小队 · 挑战信标")+(Available?"":" · 需要探员包");
-    public override string GetDescription(int value)=>"在武器装配台制作。对准 12 格内开阔地面使用，立即召唤会攻击你的敌队！生存成功召唤消耗 1 个，失败退回；创造不消耗。三人为狙击／步枪／近距突击；五人增加机枪与 C4 手枪手，不受天数限制。手动召唤不受敌队人数、玩家距离及自然刷新冷却限制。";
+    public override string GetDescription(int value)=>"在武器装配台制作。对准 12 格内开阔地面使用，小队在该处集结，准备 3 秒；受到攻击后反击。生存成功召唤消耗 1 个，失败退回；创造不消耗。三人为狙击／步枪／近距突击；五人增加机枪与 C4 手枪手，不受天数限制。";
     public override IEnumerable<int> GetCreativeValues()=>Available?Enumerable.Range(0,2).Select(i=>Terrain.MakeBlockValue(BlockIndex,0,i)):[];
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int v,int x,int y,int z){}
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){if(!Available){base.DrawBlock(r,value,color,size,ref matrix,env);return;}TacticalItemMesh.DrawRadio(TacticalItemMesh.SquadRadioKind(Terrain.ExtractData(value)),r,color,size,ref matrix,env);}

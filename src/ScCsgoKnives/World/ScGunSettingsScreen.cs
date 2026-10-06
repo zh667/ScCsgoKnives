@@ -13,7 +13,7 @@ public sealed class ScGunSettingsScreen : Screen {
 
     // Round 12 (2026-10-01 user request): the creative hit preview follows the damage-direction switch, and the armor HUD's
     // visibility moved to the layout editor (where its position already was), so neither is part of this page's copy.
-    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials, bool DamageIndicator, bool GrenadePreview);
+    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials, bool DamageIndicator, bool GrenadePreview, bool SniperHipCrosshair);
     Snapshot m_working;
     bool m_returningFromLayout;
     Screen m_back;
@@ -23,7 +23,7 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly StackPanelWidget m_content = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch };
     readonly ScrollPanelWidget m_scroll = new() { Direction = LayoutDirection.Vertical, HorizontalAlignment = WidgetAlignment.Stretch, VerticalAlignment = WidgetAlignment.Stretch };
     CheckboxWidget m_buttons, m_killFeed, m_killSound, m_crosshair, m_damageIndicator, m_grenadePreview;
-    CheckboxWidget m_buttonOnly, m_simpleMaterials;
+    CheckboxWidget m_buttonOnly, m_simpleMaterials, m_sniperHipCrosshair;
     SliderWidget m_width, m_length, m_gap, m_scale, m_dot;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     ButtonWidget m_copyGroup;
@@ -47,10 +47,11 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly LabelWidget m_title = new() { Text = "CS 枪械 · 模组设置", FontScale = 1.1f, TextAnchor = TextAnchor.HorizontalCenter, DropShadow = true };
     readonly StackPanelWidget m_bar = new() { Direction = LayoutDirection.Horizontal };
     static Snapshot Capture() => new Snapshot(ScUiSettings.CustomButtons, ScUiSettings.KillFeed, ScUiSettings.KillSound,
-        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials, ScUiSettings.DamageIndicator, ScUiSettings.GrenadePreview);
+        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials, ScUiSettings.DamageIndicator, ScUiSettings.GrenadePreview, ScUiSettings.SniperHipCrosshair);
     static void Apply(Snapshot s) {
         ScUiSettings.CustomButtons = s.Buttons; ScUiSettings.KillFeed = s.KillFeed; ScUiSettings.KillSound = s.KillSound;
         ScUiSettings.GunCrosshair = s.Crosshair; ScUiSettings.CrosshairStyle = s.Style; ScUiSettings.CrosshairColor = s.Color;
+        ScUiSettings.SniperHipCrosshair = s.SniperHipCrosshair;
         ScUiSettings.SimpleMaterials = s.SimpleMaterials; ScUiSettings.DamageIndicator = s.DamageIndicator; ScUiSettings.GrenadePreview = s.GrenadePreview;
         ScUiSettings.ButtonOnlyFire = s.ButtonOnly; ScUiSettings.CrosshairShape = s.Shape.Normalize();
     }
@@ -149,6 +150,8 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Heading("枪械准星"));
         m_crosshair = ScGunUi.Toggle("持枪时显示准星", m_working.Crosshair);
         m_content.Children.Add(m_crosshair);
+        m_sniperHipCrosshair = ScGunUi.Toggle("狙击枪腰射准星", m_working.SniperHipCrosshair);
+        m_content.Children.Add(m_sniperHipCrosshair);
         m_style = ScGunUi.Button(ScUiSettings.StyleLabel(m_working.Style), 170);
         m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("样式"), m_style, narrow));
         var colors = new StackPanelWidget { Direction = LayoutDirection.Horizontal, HorizontalAlignment = narrow ? WidgetAlignment.Near : WidgetAlignment.Far };
@@ -219,7 +222,7 @@ public sealed class ScGunSettingsScreen : Screen {
                 }));return;
         }
         m_working = m_working with { Buttons = m_buttons.IsChecked, KillFeed = m_killFeed.IsChecked,
-            KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked,
+            KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked, SniperHipCrosshair = m_sniperHipCrosshair.IsChecked,
             SimpleMaterials = m_simpleMaterials.IsChecked, DamageIndicator = m_damageIndicator.IsChecked, GrenadePreview = m_grenadePreview.IsChecked, ButtonOnly = m_buttonOnly.IsChecked, Shape = new ScCrosshairShape(m_width.Value, m_length.Value, m_gap.Value, m_scale.Value, m_dot.Value).Normalize(),
             Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value) };
         if (m_style.IsClicked) {
@@ -251,7 +254,7 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
         if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
-        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512", true, true); m_enemy=ScEnemyRules.Default; m_built = false; return; }
+        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512", true, true, true); m_enemy=ScEnemyRules.Default; m_built = false; return; }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Leave(m_back); return; }
         if (m_save.IsClicked) {
             var previous = Capture();var previousEnemy=ScUiSettings.EnemyDefaults;

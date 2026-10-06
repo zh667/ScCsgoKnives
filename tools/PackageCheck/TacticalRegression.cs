@@ -408,7 +408,7 @@ static class TacticalRegression {
                 }
                 Require((Vector3)lift.Invoke(null,[Vector3.UnitY,Vector3.UnitY])==Vector3.Zero,"a vertical front has no lift axis");
             });
-            result.AddRange(TacticalEnemyRegression.Run(core,dlc,corePath,dlcPath,true,content));
+            result.AddRange(TacticalEnemyRegression.Run(core,dlc,corePath,dlcPath,true,content).Select(c=>new Result(c.Name,c.Ok,c.Detail)));
             result.AddRange(TacticalCompanionRegression.Run(core,dlc));
             result.AddRange(TacticalFeedbackRegression.Run(core,dlc));
             result.AddRange(TacticalDefuseRegression.Run(core,dlc,content));

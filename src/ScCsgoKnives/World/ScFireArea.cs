@@ -2,6 +2,7 @@ using Engine;
 namespace Game;
 
 public static class ScFireArea {
+    public const float DamagePerSecond=7.5f;
     public static bool IsFire(ScGrenadeState s) => s.Effect && s.Kind is 3 or 4 && s.Remaining>0;
     public static float Radius(int kind) => kind==3?3f:3.6f;
     public static float Lifetime(int kind) => kind==3?6:7;
@@ -12,7 +13,7 @@ public static class ScFireArea {
     public static (ScGrenadeState Source,float Power) Exposure(IEnumerable<ScGrenadeState> states,Vector3 feet,float dt,Func<ScGrenadeState,bool> reachable) {
         ScGrenadeState source=null;float power=0;
         foreach (var s in states) if (Contains(s,feet) && reachable(s)) {
-            float candidate=6*Math.Min(Math.Max(0,dt),s.Remaining);
+            float candidate=DamagePerSecond*Math.Min(Math.Max(0,dt),s.Remaining);
             if (candidate>power) { source=s;power=candidate; }
         }
         return (source,power);

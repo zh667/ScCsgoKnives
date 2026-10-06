@@ -868,7 +868,8 @@ public static class SurvivalSelfTest {
         Test("throw-creative", () => { var i=Setup(0,1);return new ScThrowTransaction(i).Commit(true,()=>true,()=>true) && i.Counts[0]==1; });
         Test("grenade-save-fuse-owner", () => { var g=new ScGrenadeState {Kind=0,Owner=7,Remaining=.22f,Position=new Vector3(1,2,3),Velocity=new Vector3(4,5,6)};var l=ScGrenadeState.Load(g.Save());return l.Owner==7 && l.Remaining==.22f && l.Position==g.Position && l.Velocity==g.Velocity; });
         Test("grenade-no-active-limit", () => { var list=Enumerable.Range(0,160).Select(i=>new ScGrenadeState {Owner=i/4}).ToArray();return ScGrenadeState.CanAdd(list,9) && ScGrenadeState.CanAdd(list.Take(4),0); });
-        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==96 && ScGrenadeState.HePower(3.9f)==48 && ScGrenadeState.HePower(7.8f)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-5.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(20,1)==0);
+        Test("grenade-he-flash-falloff", () => ScGrenadeState.HePower(0)==120 && ScGrenadeState.HePower(3.9f)==60 && ScGrenadeState.HePower(7.8f)==0 && Math.Abs(ScGrenadeState.FlashDuration(0,1)-5.5f)<.001f && ScGrenadeState.FlashDuration(0,-1)<.6f && ScGrenadeState.FlashDuration(40,1)==0
+            && ScGrenadeState.VisibleFlashDuration(500,1,true)>=1 && ScGrenadeState.VisibleFlashDuration(500,-1,false)==0);
         Test("smoke-finite-segment",()=> Math.Abs(ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(5,0,0),Vector3.Zero,3)-6)<.001f
             && ScSmokeVolume.InsideLength(new Vector3(-5,0,0),new Vector3(-4,0,0),Vector3.Zero,3)==0
             && ScSmokeVolume.InsideLength(new Vector3(-5,3,0),new Vector3(5,3,0),Vector3.Zero,3)==0);
@@ -884,13 +885,13 @@ public static class SurvivalSelfTest {
             && ScGrenadeVisuals.Smoke(new(){Kind=2,Effect=true,Age=2,Remaining=13},0).Sum(p=>4*p.Width*p.Height)<=(ScResourcePolicy.Lite?700:1400));
         Test("fire-overlap-budget",()=> {
             var a=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var b=new ScGrenadeState {Kind=4,Effect=true,Remaining=7};
-            return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==6 && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1.5f;
+            return ScFireArea.Exposure([a,b],Vector3.Zero,1,_=>true).Power==7.5f && ScFireArea.Exposure([a,b],Vector3.Zero,.25f,_=>true).Power==1.875f;
         });
         Test("fire-wall-and-height",()=> {
             var s=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};
             return ScFireArea.Exposure([s],Vector3.Zero,1,_=>false).Power==0 && !ScFireArea.Contains(s,Vector3.UnitY*3) && !ScFireArea.Contains(s,Vector3.UnitX*3.01f);
         });
-        Test("fire-expiry-budget",()=> {var s=new ScGrenadeState {Kind=4,Effect=true,Remaining=.1f};return Math.Abs(ScFireArea.Exposure([s],Vector3.Zero,1,_=>true).Power-.6f)<.001f;});
+        Test("fire-expiry-budget",()=> {var s=new ScGrenadeState {Kind=4,Effect=true,Remaining=.1f};return Math.Abs(ScFireArea.Exposure([s],Vector3.Zero,1,_=>true).Power-.75f)<.001f;});
         Test("smoke-extinguishes-fire",()=> {
             var fire=new ScGrenadeState {Kind=3,Effect=true,Remaining=6};var smoke=new ScGrenadeState {Kind=2,Effect=true,Remaining=15,Age=1};
             bool near=ScFireArea.SmokeTouches(fire,smoke);smoke.Position=Vector3.UnitX*20;return near && !ScFireArea.SmokeTouches(fire,smoke);

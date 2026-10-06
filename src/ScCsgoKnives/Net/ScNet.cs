@@ -270,6 +270,7 @@ public static class ScNet {
         ScNetGrenades.Register();
         ScNetC4.Register();
         ScNetPresentation.Register();
+        ScNetStarter.Register();
     }
     static bool s_coreRegistered;
     /// <summary>Messages dropped by a handler (malformed) and messages a handler did not read to the end (test diagnostics).</summary>

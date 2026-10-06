@@ -89,12 +89,12 @@ static class BalanceRegression {
                 }
                 return inv.Counts[1]==0&&inv.Counts[2]==0&&inv.Counts[3]==0&&r.SkinId==0&&r.Durability==durability&&r.Rounds==rounds&&r.KillCount==kills&&r.AppliedGrowthLevel==20;
             });
-            Test("he-chicken-separate",()=>Near(ScGrenadeState.HePower(0),96)&&Near(ScGrenadeState.HePower(3.9f),48)&&ScGrenadeState.HePower(7.8f)==0&&ScGrenadeState.ChickenPower(0)==48&&ScGrenadeState.ChickenPower(6)==0);
+            Test("he-chicken-separate",()=>Near(ScGrenadeState.HePower(0),120)&&Near(ScGrenadeState.HePower(3.9f),60)&&ScGrenadeState.HePower(7.8f)==0&&ScGrenadeState.ChickenPower(0)==48&&ScGrenadeState.ChickenPower(6)==0);
             foreach(int kind in new[]{3,4}) Test("fire-boundaries/"+kind,()=>{
                 float radius=kind==3?3:3.6f;var a=new ScGrenadeState{Kind=kind,Effect=true,Remaining=kind==3?6:7};
                 bool valid=ScFireArea.Contains(a,new(radius,0,0))&&!ScFireArea.Contains(a,new(radius+.001f,0,0))&&ScFireArea.Exposure([a],Vector3.Zero,1,_=>false).Power==0;
                 float total=0;while(a.Remaining>0){float dt=Math.Min(.17f,a.Remaining);total+=ScFireArea.Exposure([a,a],Vector3.Zero,dt,_=>true).Power;a.Remaining-=dt;}
-                return valid&&Near(total,kind==3?36:42)&&ScFireArea.Exposure([a],Vector3.Zero,1,_=>true).Power==0;
+                return valid&&Near(total,kind==3?45:52.5)&&ScFireArea.Exposure([a],Vector3.Zero,1,_=>true).Power==0;
             });
         } finally {ScGunRegistry.Current=registry;ScGunplaySettings.Enabled=enabled;resolver.SetValue(null,oldResolver);owner.SetValue(null,oldOwner);}
     }

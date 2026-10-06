@@ -93,7 +93,7 @@ public sealed class SubsystemScKnifeBlockBehavior : SubsystemBlockBehavior, IUpd
             var hit = player.ComponentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, ScKnifeStrike.Range(state.Heavy));
             if (!local) ScNet.Trace($"knife P{player.PlayerData.PlayerIndex} strike: {(hit.HasValue ? hit.Value.ComponentBody.Entity?.Id.ToString() ?? "?" : "nothing")} at {hit?.Distance:0.00} range {ScKnifeStrike.Range(state.Heavy):0.00}");
             if (hit.HasValue) {
-                float power = ScKnifeStrike.Power(state.Heavy) * player.ComponentMiner.StrengthFactor;
+                float power = ScKnifeStrike.PowerFor(state.Value,state.Heavy) * player.ComponentMiner.StrengthFactor;
                 // Damage is the authority's; a remote client's own swing only shows the hit pose.
                 if (ScNet.IsAuthority && ScModes.AcceptAttack(player, ScAttackKind.Knife)) {
                     int knifeValue = player.ComponentMiner.ActiveBlockValue;

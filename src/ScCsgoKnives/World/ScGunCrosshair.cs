@@ -32,7 +32,7 @@ public static class ScGunCrosshair {
         return camera is null || (!camera.Eye.HasValue && !camera.UsesMovementControls);
     }
 
-    public static bool HideForSniper(ComponentPlayer player) => HoldingGun(player)
+    public static bool HideForSniper(ComponentPlayer player) => !ScUiSettings.SniperHipCrosshair && HoldingGun(player)
         && ScGunGrowth.IsSniper(ScGunBlock.GetVariant(player.ComponentMiner.ActiveBlockValue));
 
     /// <summary>Screen-space size in the 960x540 reference the rest of the mod's HUD uses.</summary>

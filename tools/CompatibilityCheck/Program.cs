@@ -9,6 +9,30 @@ using System.Collections;
 using System.Security.Cryptography;
 
 Engine.Dispatcher.Initialize();
+if(args.Length==4&&args[0]=="--extract-embedded"){
+    var a=new AssemblyLoadContext(Guid.NewGuid().ToString()).LoadFromAssemblyPath(Path.GetFullPath(args[1]));
+    var root=Path.GetFullPath(args[2]);var hashes=new Dictionary<string,string>();
+    foreach(var n in a.GetManifestResourceNames()){
+        var prefix=new[]{"Game.AnimationData.","Game.Shaders.","Game.ArmData."}.Single(p=>n.StartsWith(p,StringComparison.Ordinal));
+        string folder=prefix.Split('.')[1],file=n[prefix.Length..];
+        if(Path.GetFileName(file)!=file)throw new InvalidDataException(n);
+        var directory=Path.Combine(root,folder);Directory.CreateDirectory(directory);
+        using var input=a.GetManifestResourceStream(n);using var bytes=new MemoryStream();input.CopyTo(bytes);
+        File.WriteAllBytes(Path.Combine(directory,file),bytes.ToArray());hashes[n]=Convert.ToHexString(SHA256.HashData(bytes.ToArray())).ToLowerInvariant();
+    }
+    File.WriteAllText(args[3],JsonSerializer.Serialize(new{assemblySha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(args[1]))).ToLowerInvariant(),resources=hashes},new JsonSerializerOptions{WriteIndented=true}));
+    Console.WriteLine($"Extracted {hashes.Count} original embedded resources");return 0;
+}
+if(args.Length==4&&args[0]=="--embedded"){
+    Dictionary<string,string> Resources(string path){
+        var a=new AssemblyLoadContext(Guid.NewGuid().ToString()).LoadFromAssemblyPath(Path.GetFullPath(path));
+        return a.GetManifestResourceNames().ToDictionary(n=>n,n=>{using var s=a.GetManifestResourceStream(n);return Convert.ToHexString(SHA256.HashData(s)).ToLowerInvariant();});
+    }
+    var old=Resources(args[1]);var current=Resources(args[2]);
+    var changed=old.Keys.Union(current.Keys).Where(n=>old.GetValueOrDefault(n)!=current.GetValueOrDefault(n)).ToArray();
+    File.WriteAllText(args[3],JsonSerializer.Serialize(new{failed=changed.Length,oldPath=args[1],currentPath=args[2],changed,resources=current},new JsonSerializerOptions{WriteIndented=true}));
+    Console.WriteLine($"Embedded resources: {current.Count}, changed={changed.Length}");return changed.Length==0?0:1;
+}
 if(args.Length==5 && args[0]=="--zeus") return ZeusBalanceRegression.Run(args[1],args[2],args[3],args[4]);
 if(args.Length is not (4 or 5))throw new ArgumentException("CompatibilityCheck <1.0-compat.dll> <1.2-compat.dll> <latest.dll> <report.json> [<1.3.0.dll>]");
 var checks=new List<object>();int failed=0;
@@ -43,6 +67,41 @@ foreach(var reader in readers)T(reader.Name+"/protection-values-survive-older-re
 });
 foreach(var source in modules)foreach(var target in modules.Where(m=>m!=source)){
     string route=source.Name+"->"+target.Name;
+    if(source.FindType("SubsystemScStarterEquipment")?.GetMethod("Pending") is not null&&target.FindType("SubsystemScStarterEquipment") is not null)
+    T(route+"/starter-choice-and-granted-players-two-rounds",()=>{
+        var values=new ValuesDictionary();values.SetValue("GrantedPlayers","1,4");values.SetValue("PendingPlayers","2,3");
+        XElement Starter(ValuesDictionary v){var x=Xml(v);x.SetAttributeValue("Name","ScStarterEquipment");return x;}
+        var manifest=new XElement("Compatibility",new XAttribute("Protocol",1),new XElement("Subsystem",new XAttribute("Name","ScStarterEquipment")));
+        var doc=Doc(source.Call("ScCompatibility",null,"Prepare",new XElement("Project",new XElement("Subsystems",Starter(values)),new XElement("Entities",new XAttribute("NextID",1))),source.Name,manifest,(Func<Guid,bool>)(_=>true)));
+        source.Call("ScCompatibility",null,"PreserveOpaque",doc);
+        for(int round=0;round<2;round++){
+            doc=Doc(target.Call("ScCompatibility",null,"Prepare",XElement.Parse(doc.ToString()),target.Name,manifest,(Func<Guid,bool>)(_=>true)));
+            var group=doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScStarterEquipment");
+            var older=(Subsystem)target.New("SubsystemScStarterEquipment");older.Load(Read(group));
+            var saved=new ValuesDictionary();older.Save(saved);
+            group.ReplaceWith(Starter(saved));
+            var compat=doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScCompatibility");
+            var carrier=(Subsystem)target.New("SubsystemScCompatibility");carrier.Load(Read(compat));var carried=new ValuesDictionary();carrier.Save(carried);
+            var cx=Xml(carried);cx.SetAttributeValue("Name","ScCompatibility");compat.ReplaceWith(cx);
+            target.Call("ScCompatibility",null,"PreserveOpaque",doc);
+            doc=Doc(source.Call("ScCompatibility",null,"Prepare",XElement.Parse(doc.ToString()),source.Name,manifest,(Func<Guid,bool>)(_=>true)));
+            var returned=(Subsystem)source.New("SubsystemScStarterEquipment");returned.Load(Read(doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScStarterEquipment")));
+            Require((bool)source.Call("SubsystemScStarterEquipment",returned,"Granted",1)&&(bool)source.Call("SubsystemScStarterEquipment",returned,"Granted",4),"granted status lost");
+            Require((bool)source.Call("SubsystemScStarterEquipment",returned,"Pending",2)&&(bool)source.Call("SubsystemScStarterEquipment",returned,"Pending",3),"unclaimed starter choice lost through older writer");
+            source.Call("ScCompatibility",null,"PreserveOpaque",doc);
+        }
+        // A completed choice in either version must never be resurrected by the saved carrier.
+        var completed=doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScStarterEquipment");
+        completed.Elements("Value").Where(e=>(string)e.Attribute("Name")=="PendingPlayers").Remove();
+        completed.Elements("Value").Single(e=>(string)e.Attribute("Name")=="GrantedPlayers").SetAttributeValue("Value","1,2,3,4");
+        doc=Doc(source.Call("ScCompatibility",null,"Prepare",doc,source.Name,manifest,(Func<Guid,bool>)(_=>true)));
+        var final=(Subsystem)source.New("SubsystemScStarterEquipment");final.Load(Read(doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScStarterEquipment")));
+        Require(!(bool)source.Call("SubsystemScStarterEquipment",final,"Pending",2)&&!(bool)source.Call("SubsystemScStarterEquipment",final,"Pending",3),"completed choice resurrected");
+        var finished=new ValuesDictionary();final.Save(finished);doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScStarterEquipment").ReplaceWith(Starter(finished));
+        source.Call("ScCompatibility",null,"PreserveOpaque",doc);
+        var capsule=doc.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScCompatibility").Elements("Value").Single(e=>(string)e.Attribute("Name")=="Capsule");
+        Require(XElement.Parse((string)capsule.Attribute("Value")).Element("StarterChoices") is null,"completed carrier was not cleared");
+    });
     for(int variant=0;variant<35;variant++){
         int v=variant;
         T(route+"/state/"+v,()=>{
@@ -188,6 +247,7 @@ sealed class Module {
     public readonly string Name,Path;readonly Assembly assembly;
     public Module(string path,string name){Path=System.IO.Path.GetFullPath(path);Name=name;assembly=new Context(Path).LoadFromAssemblyPath(Path);}
     public Type Type(string n)=>assembly.GetType("Game."+n,true);
+    public Type FindType(string n)=>assembly.GetType("Game."+n,false);
     public object New(string n)=>Activator.CreateInstance(Type(n));
     public object Call(string n,object obj,string method,params object[] args)=>Type(n).GetMethods(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static|BindingFlags.Instance).Single(m=>m.Name==method&&m.GetParameters().Length==args.Length&&m.GetParameters().Select((p,i)=>args[i]==null||p.ParameterType.IsInstanceOfType(args[i])).All(b=>b)).Invoke(obj,args);
     public void Set(object r,string n,object v)=>r.GetType().GetField(n).SetValue(r,v);

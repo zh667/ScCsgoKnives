@@ -49,12 +49,13 @@ static class FeedbackSeptember18Regression {
             var sights=Blank<ComponentAimingSights>();sights.m_componentPlayer=player;
             var loader=(ModLoader)Activator.CreateInstance(T("ScCsgoKnivesModLoader"));
             var ui=T("ScUiSettings").GetField("GunCrosshair");bool oldCross=(bool)ui.GetValue(null);
-            try {foreach(string n in new[]{"scar20","g3sg1","awp","ssg08","aug","sg556"})foreach(bool enabled in new[]{false,true})Test($"sniper-crosshair/{n}/{enabled}",()=>{
+            var hip=T("ScUiSettings").GetField("SniperHipCrosshair");bool oldHip=(bool)hip.GetValue(null);
+            try {foreach(string n in new[]{"scar20","g3sg1","awp","ssg08","aug","sg556"})foreach(bool enabled in new[]{false,true})foreach(bool hipEnabled in new[]{false,true})Test($"sniper-crosshair/{n}/{enabled}/{hipEnabled}",()=>{
                 int v=Index(n);inv.Values[0]=Terrain.MakeBlockValue(701,0,(int)Call("GunSpec","MakeData",v,0,false));inv.Counts[0]=1;ui.SetValue(null,enabled);
-                bool sniper=n is "scar20" or "g3sg1" or "awp" or "ssg08",visible=true;
-                if((bool)Call("ScGunCrosshair","HideForSniper",player)!=sniper)return false;
-                if(sniper){loader.IsCrosshairVisible(sights,ref visible);return !visible&&!(bool)Call("ScGunCrosshair","Active",player,null,false);}return true;
-            });}finally{ui.SetValue(null,oldCross);}
+                hip.SetValue(null,hipEnabled);bool hidden=!hipEnabled&&(n is "scar20" or "g3sg1" or "awp" or "ssg08"),visible=true;
+                if((bool)Call("ScGunCrosshair","HideForSniper",player)!=hidden)return false;
+                if(hidden){loader.IsCrosshairVisible(sights,ref visible);return !visible&&!(bool)Call("ScGunCrosshair","Active",player,null,false);}return true;
+            });}finally{ui.SetValue(null,oldCross);hip.SetValue(null,oldHip);}
             int knifeVariant=Enumerable.Range(0,22).First(v=>(int)Call("ScKnifeSkinCatalog","ForVariant",v)>0);
             int finish=(int)Call("ScKnifeSkinCatalog","ForVariant",knifeVariant),knife=Terrain.MakeBlockValue(700,11,knifeVariant|(37<<7));
             object Quote(IInventory i,bool free,int skin)=>Call("ScKnifeSkinning","Prepare",i,Activator.CreateInstance(T("ScKnifeSkinning+Candidate"),[0,i.GetSlotValue(0)]),skin,free);
@@ -72,7 +73,7 @@ static class FeedbackSeptember18Regression {
             foreach(int v in Enumerable.Range(0,22))Test("knife-available-finish-two-xml/"+v,()=>{int skin=(int)Call("ScKnifeSkinCatalog","ForVariant",v);var i=Stock();i.Values[0]=Terrain.MakeBlockValue(700,7,v|(37<<7));if(skin==0)return Quote(i,true,1) is null;
                 int before=i.Values[0];if(!Apply(i,Quote(i,true,skin),true))return false;var values=new ValuesDictionary();values.SetValue("Slot0",i.Values[0]);for(int n=0;n<2;n++){var xml=new XElement("Values");values.Save(xml);values=new ValuesDictionary();values.ApplyOverrides(XElement.Parse(xml.ToString()));i.Values[0]=values.GetValue<int>("Slot0");if((int)Call("ScKnifeBlock","SkinOf",i.Values[0])!=skin)return false;}return (Terrain.ExtractData(before)&~96)==(Terrain.ExtractData(i.Values[0])&~96)&&Terrain.ExtractLight(before)==Terrain.ExtractLight(i.Values[0]);});
             Test("flash-hold-fade-range",()=>{float Op(float left)=>(float)Call("ScGrenadeState","FlashOpacity",left,5.5f);float last=1;for(float elapsed=0;elapsed<5.5;elapsed+=.025f){float a=Op(5.5f-elapsed);if(a>last+1e-5||a<0||a>1||elapsed<.59&&a!=1)return false;last=a;}
-                return Op(0)==0&&(float)Call("ScGrenadeState","FlashDuration",2f,1f)==5.5f&&(float)Call("ScGrenadeState","FlashDuration",20f,1f)==0;});
+                return Op(0)==0&&(float)Call("ScGrenadeState","FlashDuration",2f,1f)==5.5f&&(float)Call("ScGrenadeState","FlashDuration",20f,1f)>0&&(float)Call("ScGrenadeState","FlashDuration",40f,1f)==0;});
             Test("flash-two-actual-subsystem-xml-rounds",()=>{
                 var d=new ValuesDictionary();var flashes=new ValuesDictionary();var entry=new ValuesDictionary();entry.SetValue("Left",5.5f);entry.SetValue("Duration",5.5f);entry.SetValue("Immune",8.5f);flashes.SetValue("987",entry);d.SetValue("Blindness",flashes);
                 for(int r=0;r<2;r++){var project=new Project();project.m_subsystems.Add(new SubsystemTime());project.m_subsystems.Add(new SubsystemTerrain());project.m_subsystems.Add(new SubsystemPlayers());project.m_subsystems.Add(new SubsystemBodies());project.m_subsystems.Add(new SubsystemGameInfo());

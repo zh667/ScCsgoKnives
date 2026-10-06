@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Game;
 
 public enum TacticalRole { Sniper, Rifle, Close, Machine, Demolition }
-/// <summary>NPC equipment never enters the player gun registry until a gun actually drops.</summary>
+/// <summary>NPC equipment never enters the player gun registry; enemies drop supplies instead of guns.</summary>
 public sealed class TacticalEnemyState {
     public int Schema {get;set;}=1;
     public string Squad {get;set;}="";
@@ -19,7 +19,7 @@ public sealed class TacticalEnemyState {
     public float ReloadLeft {get;set;}
     public float ShotLeft {get;set;}
     public float GrenadeLeft {get;set;}=12;
-    /// <summary>Seconds a newly summoned challenge squad holds fire and does not start aiming. Ends early when attacked.
+    /// <summary>Seconds a newly summoned challenge squad holds fire and does not start aiming, including when attacked.
     /// Absent in older saves (0).</summary>
     public float Warmup {get;set;}
     /// <summary>Recorded when the squad is created outside creative mode; only such a squad's bomb can pay a defuse
