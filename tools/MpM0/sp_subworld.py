@@ -12,7 +12,7 @@ other world's #1, and the [GUN_TRAVEL] lines.
 Usage: sp_subworld.py <label> <core package spec> <ancient | ghoul> <provider package path>
 The player's own Mods folder and worlds are never used (isolated copy, new world).
 """
-import json, sys, time
+import json, os, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -35,7 +35,7 @@ STATE = MAIN + (
     'string Rec(int n) => reg != null && reg.TryGetSnapshot(n, out var s) ? Game.GunSpec.All[s.Variant].Name + "/" + s.Rounds : "-"; '
     'return System.Text.Json.JsonSerializer.Serialize(new { dir = project.FindSubsystem<Game.SubsystemGameInfo>(true).DirectoryName, value = v, '
     '  id = v == 0 ? -1 : Game.GunSpec.GetId(d), gun = v == 0 ? "-" : Game.GunSpec.All[System.Math.Max(0, Game.GunSpec.GetVariant(d))].Name, usable = v != 0 && Game.ScGunBlock.IsKnown(v), '
-    '  rounds = v == 0 ? -1 : Game.GunSpec.GetRounds(d), records = reg == null ? -1 : reg.Count, rec1 = Rec(1), rec2 = Rec(2), rec3 = Rec(3), active = inv.ActiveSlotIndex });')
+    '  rounds = v == 0 ? -1 : Game.GunSpec.GetRounds(d), records = reg == null ? -1 : reg.Count, rec1 = Rec(1), rec2 = Rec(2), rec3 = Rec(3), active = inv.ActiveSlotIndex, inventory = inv.GetType().Name });')
 # Why a trigger would do nothing: the conditions ScGunBindings.Available / ContextAvailable / ControlAllowed read.
 DIAG = MAIN + ('var cam = pl.PlayerData?.GameWidget?.ActiveCamera; return System.Text.Json.JsonSerializer.Serialize(new { '
     'available = Game.ScGunBindings.Available(pl), context = Game.ScGunBindings.ContextAvailable(pl), control = Game.ScGunBindings.ControlAllowed(pl), active = Engine.Window.IsActive, '
@@ -93,7 +93,8 @@ def main(label, core, provider, provider_pkg):
         g = m0.game("server", case_dir, pkgs); R["engine"] = g.engine_info(); to_menu(g)
         m = g.mark(); g.cmd("CLICK_WIDGET Play"); g.wait('Entered screen "Play"', 120, m)
         m = g.mark(); g.cmd("CLICK_WIDGET NewWorld"); g.wait('Entered screen "NewWorld"', 120, m)
-        step("creative world", poll(g, CREATIVE, lambda v: v == "Creative", 20))
+        mode = "Survival" if os.environ.get("SC_TRAVEL_SURVIVAL") == "1" else "Creative"
+        step("world mode", poll(g, CREATIVE.replace("GameMode.Creative", "GameMode." + mode), lambda v: v == mode, 20))
         m = g.mark(); g.cmd("CLICK_WIDGET Play"); g.wait('Entered screen "Player"', 600, m)
         m = g.mark(); g.cmd("CLICK_WIDGET PlayButton"); g.wait('Entered screen "Game"', 600, m)
         step("player", poll(g, m0.PLAYER_SPAWNED, lambda v: v == "True", 240))
@@ -103,6 +104,7 @@ def main(label, core, provider, provider_pkg):
         step("main world's own record", g.func(record_only("sawedoff", 5)))
         step("fresh SCAR-20 in slot 1", g.func(put(0, "scar20")))
         home = state("main before the trip")
+        check("fixture: actual inventory matches requested mode", home.get("inventory") == ("ComponentCreativeInventory" if mode == "Creative" else "ComponentInventory"), home)
         check("fixture: the main world's #1 is a sawed-off and the SCAR-20 is fresh", home.get("rec1", "").startswith("sawedoff") and home.get("id") == 0, home)
 
         # ---- out, fired there (its record is made in the sub-world)
@@ -125,8 +127,14 @@ def main(label, core, provider, provider_pkg):
         # ---- out again: back to its number in the sub-world, with the rounds it has now
         mark = len(g.lines); again = travel("trip 3: into the sub-world again")
         lines3 = step("gun lines after trip 3", gun_lines(mark))
-        check("out again: same number in the sub-world, rounds from home", again.get("usable") and again.get("id") == sub_id and again.get("rounds") == used.get("rounds"), again)
+        check("out again: rounds from home and stable existing identity", again.get("usable") and again.get("id") == sub_id and again.get("rounds") == used.get("rounds"), again)
         check("out again: no 'unusable gun data'", not any("unusable gun data" in l for l in lines3), lines3)
+
+        if os.environ.get("SC_TRAVEL_SURVIVAL") == "1":
+            survival_fired = shoot("survival sub-world")
+            survival_back = travel("trip 4: survival home")
+            check("survival home: spent rounds preserved", survival_back.get("usable") and survival_back.get("rounds") == survival_fired.get("rounds"), survival_back)
+            again = shoot("survival home")
 
         # ---- saved and loaded again (the arrival is not taken twice; the state is on disk)
         m = g.mark()
