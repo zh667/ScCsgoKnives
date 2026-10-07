@@ -25,6 +25,7 @@ static class TacticalRegression {
         void Test(string n,Action f){try{f();result.Add(new(n,true,""));}catch(Exception e){result.Add(new(n,false,e.ToString()));}}
         void Require(bool v,string message){if(!v)throw new Exception(message);}
         Type T(string n)=>dlc.GetType("Game."+n,true);Type C(string n)=>core.GetType("Game."+n,true);
+        result.AddRange(AirdropMaterialRegression.Run(core,dlc).Select(c=>new Result(c.Name,c.Ok,c.Detail)));
         object Call(string type,string method,params object[] args)=>T(type).GetMethod(method).Invoke(null,args);
         using var zip=ZipFile.OpenRead(dlcPath);
         using(var vanilla=ZipFile.OpenRead(content))using(var stream=vanilla.Entries.Single(e=>e.FullName.EndsWith("Simple.template.json",StringComparison.OrdinalIgnoreCase)).Open())AnimationTemplateManager.LoadFromJsonNode(JsonNode.Parse(stream));

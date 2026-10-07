@@ -108,7 +108,7 @@ public sealed class ScAirdropBlock : ScOptionalTacticalBlock {
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){
         if(item is null){base.DrawBlock(r,value,color,size,ref matrix,env);return;}
         bool ui=env?.DrawBlockMode==DrawBlockMode.UI;
-        BlocksManager.DrawMeshBlock(r,ui?icon:item,texture,ui?Color.White:color,size,ref matrix,env);
+        TacticalItemMesh.DrawCrate(r,ui?icon:item,texture,ui?Color.White:color,size,ref matrix,env);
     }
     public override string GetDescription(int value)=>"空投留下的补给箱。交互取出物资；创造目录里的箱子为空，不会生成补给或守卫。";
     public override void GetDropValues(SubsystemTerrain terrain,int oldValue,int newValue,int toolLevel,List<BlockDropValue> drops,out bool debris){
@@ -137,5 +137,33 @@ public static class TacticalItemMesh {
         foreach(var part in model.Meshes.SelectMany(m=>m.MeshParts))mesh.AppendModelMeshPart(part,Matrix.Identity,false,false,false,false,Color.White);
         Items[name]=(mesh,ContentManager.Get<Texture2D>("Textures/ScCsgoTactical/"+name));
     }
-    public static void Draw(string name,PrimitivesRenderer3D r,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){var item=Items[name];BlocksManager.DrawMeshBlock(r,item.Mesh,item.Texture,color,size,ref matrix,env);}
+    public static void Draw(string name,PrimitivesRenderer3D r,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){
+        var item=Items[name];
+        if(name=="airdrop")DrawCrate(r,item.Mesh,item.Texture,color,size,ref matrix,env);
+        else BlocksManager.DrawMeshBlock(r,item.Mesh,item.Texture,color,size,ref matrix,env);
+    }
+    // DROP_D's alpha is not crate opacity. Native item draws use premultiplied
+    // alpha blending, adding the background to its straight RGB and washing it
+    // out. Match the placed crate's opaque material without altering source pixels.
+    public static void DrawCrate(PrimitivesRenderer3D renderer,BlockMesh mesh,Texture2D texture,
+        Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){
+        env??=BlocksManager.m_defaultEnvironmentData;
+        var batch=renderer.TexturedBatch(texture,false,0,DepthStencilState.Default,
+            RasterizerState.CullCounterClockwiseScissor,BlendState.Opaque,SamplerState.PointClamp);
+        Matrix transform=env.ViewProjectionMatrix is Matrix projection?matrix*projection:matrix;
+        if(size!=1)transform=Matrix.CreateScale(size)*transform;
+        bool projected=transform.M14!=0||transform.M24!=0||transform.M34!=0||transform.M44!=1;
+        Vector4 tint=new(color);
+        Vector4 lit=new(new Vector3(tint.X,tint.Y,tint.Z)*LightingManager.LightIntensityByLightValue[env.Light],tint.W);
+        int first=batch.TriangleVertices.Count;
+        for(int i=0;i<mesh.Vertices.Count;i++){
+            var v=mesh.Vertices.Array[i];Vector3 position;
+            if(projected){var p=Vector4.Transform(new Vector4(v.Position,1),transform);position=new Vector3(p.X,p.Y,p.Z)/p.W;}
+            else position=Vector3.Transform(v.Position,transform);
+            var c=v.IsEmissive?tint:lit;
+            var shaded=new Color((byte)(v.Color.R*c.X),(byte)(v.Color.G*c.Y),(byte)(v.Color.B*c.Z),(byte)(v.Color.A*c.W));
+            batch.TriangleVertices.Add(new VertexPositionColorTexture(position,shaded,v.TextureCoordinates));
+        }
+        for(int i=0;i<mesh.Indices.Count;i++)batch.TriangleIndices.Add(first+mesh.Indices.Array[i]);
+    }
 }

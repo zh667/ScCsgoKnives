@@ -1,22 +1,25 @@
 {
-  "status": "single-player visual review candidate; user acceptance pending",
+  "status": "round 2 opaque-material visual review candidate; round 1 colour acceptance failed; round 2 user acceptance pending",
   "baselineMain": "9c4cf36f1fb2c708bf033a4a700696ddc2d0551c",
   "branch": "fix/airdrop-item-presentation",
-  "source": {"path": "src/ScCsgoTactical/TacticalBlocks.cs", "workingTreeSha256": "81b2af09a81248a4040a4080c95100e399644826df11dbd8818000e352547a88"},
+  "source": {"path": "src/ScCsgoTactical/TacticalBlocks.cs", "workingTreeSha256": "180487e53f5827ce2fdcfa508a918595065b0c460ed52c8f6b2fbeaafba0b9ef"},
   "runner": ".tmp/dev-temp/airdrop-item-presentation-20261007/Probe/bin/Release/net10.0/Probe.dll",
   "runnerSource": ".tmp/dev-temp/airdrop-item-presentation-20261007/Probe/Program.cs",
-  "runnerSourceSha256": "b518916dd0567685d6b8a6d2f0dfb0a177ded212877a0e176ddd5691f7c9435a",
+  "runnerSourceSha256": "f615ca2001f8b8792f71262155316aaa28ec39051640db8fc63296cbf28e6b43",
+  "maintainedMaterialRegression": {"path": "tools/PackageCheck/AirdropMaterialRegression.cs", "sha256": "a6244c1b836ddc5050973f26b18fe1cc75d0e1a13c2987194b7a8a17137b1a6f", "executedBy": "Probe includes this exact file; 7 cases pass. TacticalRegression.Run also invokes it; full PackageCheck suite not run."},
   "runnerApi": "SurvivalcraftAPI.Survivalcraft 1.9.3.1, native CPU mesh loading and DrawBlock output with fixture texture objects; no GPU upload or gameplay",
   "runnerArguments": "<core-or-full.scmod> <report.json> [agents.scmod]",
   "checks": {
     "oldFull": {"passed": 5, "failed": 8, "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/before.json"},
-    "candidateFull": {"passed": 13, "failed": 0, "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/after.json"},
-    "candidateLiteAndAgents": {"passed": 14, "failed": 0, "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/split-after.json"},
+    "roundOneCandidateMaterialBaseline": {"passed": 13, "failed": 8, "packageSha256": "e5ae56181bfb6ab3536c8e59ffb69273db200e8ad311ad60bc855def05592dba", "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/alpha-before.json"},
+    "candidateFull": {"passed": 21, "failed": 0, "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/alpha-after.json"},
+    "candidateLiteAndAgents": {"passed": 22, "failed": 0, "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/alpha-split-after.json"},
+    "materialCoverage": ["opaque blending without alpha-test", "native texture/depth/culling/sampler", "native vertex transforms, UVs and mixed emissive/world colour in four scenarios", "append index bases and mesh immutability", "descent routing and unchanged repair/defuser materials", "opaque material in every crate item mode"],
     "coverage": ["geometric item pivot", "unchanged world bounds and indices", "unchanged collision", "first-person camera separation and lower-right placement", "complete visibility at default 80-degree FOV", "third-person hand offset", "UI light and slot-tint isolation", "independent shaded UI mesh", "single-image atlas", "native placeholder when agents absent (split)", "drop rotation pivot and native transforms", "world lighting", "source immutability", "finite geometry in every DrawBlockMode"]
   },
   "builds": {
-    "full": {"command": "./tools/dev.ps1 dotnet build src/ScCsgoTactical/ScCsgoTactical.csproj -c Release '-p:SkipScmodPackaging=true' '-v:q'", "lastSeconds": 2.45, "errors": 0, "warnings": 0},
-    "split": {"runner": "tools/check_airdrop_split.py with STAGE=.tmp/dev-temp/airdrop-item-presentation-20261007/split", "lastSeconds": 6.75, "errors": 0, "warnings": 1, "warning": "existing KnifeAnimationController.cs CS0162"}
+    "full": {"command": "./tools/dev.ps1 dotnet build src/ScCsgoTactical/ScCsgoTactical.csproj -c Release '-p:SkipScmodPackaging=true' '-v:q'", "lastSeconds": 4.75, "errors": 0, "warnings": 0},
+    "split": {"runner": "tools/check_airdrop_split.py with STAGE=.tmp/dev-temp/airdrop-item-presentation-20261007/split", "lastSeconds": 17.34, "errors": 0, "warnings": 7, "warning": "existing ZstdSharp and KnifeAnimationController warnings"}
   },
   "assets": {
     "modelSha256": "7b34e167f2f4999a01a83c5dfbc9505653d88f9fb547228006f9d1b86c3cb2b7",
@@ -28,17 +31,19 @@
     "iconView": [1.1, 0.8, 2]
   },
   "candidates": [
-    {"label": "full", "path": "output/airdrop-item-review-20261007/[API1.9]CS武器1.5.0-全量包.scmod", "sha256": "e5ae56181bfb6ab3536c8e59ffb69273db200e8ad311ad60bc855def05592dba", "baselineSha256": "fb513611e132017c6dc8c94cc42182067c829bc8d968caf0ac3374a91f55b3e4", "changedMember": "ScCsgoTactical.dll", "assemblySha256": "d9634221e58c98ba43154a67ceec8acea23bd2377499beb26a991288fa93cb5a"},
-    {"label": "lite", "path": "output/airdrop-item-review-20261007/[API1.9]CS武器1.5.0-轻量包.scmod", "sha256": "5e3b9ed2ea6f80129f043ae26971e51c81bea3021f29ba7a060f2517bf1bd217", "baselineSha256": "dff871b1b027c4b0e12899958478b215dbeccaaefbe0093a676883c9cf85b007", "changedMember": "ScCsgoKnives.dll", "assemblySha256": "606168a3a0cab1ecadb065750e82c62eb8e82d5714da97506362b42bcee71a53"},
-    {"label": "agents", "path": "output/airdrop-item-review-20261007/[API1.9]CS武器1.5.0-探员包.scmod", "sha256": "9effccbedb70143b812bc61262dbfad0cf41b5883350891e3319c58052d0274c", "baselineSha256": "20fa0a05bfa5d68dfe1375811e4d57d11627dd46b8563ce58d835a60e9d38482", "changedMember": "ScCsgoTactical.dll", "assemblySha256": "6a5e3f1517e86fc1d3aff9f5f097111cd22088fcadef0163ffde6e52578870bc"}
+    {"label": "full", "path": "output/airdrop-item-review-20261007-r2/[API1.9]CS武器1.5.0-全量包.scmod", "sha256": "d596431df38f04ef6f9c421be5d32fd4c4249e74f3914a04e6b183c4134d1613", "baselineSha256": "fb513611e132017c6dc8c94cc42182067c829bc8d968caf0ac3374a91f55b3e4", "changedMember": "ScCsgoTactical.dll", "assemblySha256": "220ea0f089bc420638b208dc57126beefaf759702d3625d9893be3d3dbec4ef1"},
+    {"label": "lite", "path": "output/airdrop-item-review-20261007-r2/[API1.9]CS武器1.5.0-轻量包.scmod", "sha256": "c6a5361a14f5d326351241903fe9624b029b208067c8a3eeb6c4d5ad9a83a3db", "baselineSha256": "dff871b1b027c4b0e12899958478b215dbeccaaefbe0093a676883c9cf85b007", "changedMember": "ScCsgoKnives.dll", "assemblySha256": "b632635b69e245185442bd61c9bf2c1d3527aedfb0bfcaebd65d828a2ae2c117"},
+    {"label": "agents", "path": "output/airdrop-item-review-20261007-r2/[API1.9]CS武器1.5.0-探员包.scmod", "sha256": "478fb9cf8997ad1ef5acc413440a4c99c08a12e38f622c37997432add1af7dcc", "baselineSha256": "20fa0a05bfa5d68dfe1375811e4d57d11627dd46b8563ce58d835a60e9d38482", "changedMember": "ScCsgoTactical.dll", "assemblySha256": "35d66d31997f2800d3dbd721d603bccf7e0571c78f1a9b2a0b6cec2dfd0d2437"}
   ],
   "archiveValidation": "Same entry sets as each delivered baseline; every unmodified member preserves its CRC, length and compressed bytes. Changed DLL members read back byte-identically to the built DLLs.",
   "unchangedArchiveMembers": {"full": 1719, "lite": 1349, "agents": 374, "total": 3442},
-  "cleanup": "No deletion executed: cleanup of obsolete task-local packages and split bin/obj was rejected before execution by automatic approval policy, with only 'blocked by policy' returned. Intermediates remain; final deliverables are the output/airdrop-item-review-20261007 packages.",
+  "cleanup": "No deletion executed: prior cleanup of task-local packages and split bin/obj was rejected before execution with only 'blocked by policy' returned. No bypass/retry in round 2; split workset reused for current builds. Current deliverables are output/airdrop-item-review-20261007-r2; round 1 user-testing packages remain. See cleanup-policy-audit-20261007.md for historical leftovers.",
   "failedAttempts": [
     "Initial dropped-item probe assumed a rotated asymmetric mesh's X/Z AABB centre is its rotation pivot. Corrected the fixture to assert its unchanged Y pivot and the exact native per-vertex transform; original failed report retained.",
     "Old package_airdrop_dev.py changed Assets/ScTactical.xdb as well as the DLL. Final candidates were repacked from baseline with DLL replacement only; all final probes reran against those package hashes."
   ],
-  "visualEvidence": {"userVideo": "D:/下载/QQ20261007-154929-HD.mp4", "contactSheet": ".tmp/dev-temp/airdrop-item-presentation-20261007/user-video-contact.jpg", "offlineComparison": ".tmp/dev-temp/airdrop-item-presentation-20261007/offline-comparison.jpg"},
+  "materialCause": {"pngAlphaBelow255Fraction": 0.984710693359375, "sourceFbxTransparencyFactor": 0, "sourceFbxTransparencyTexture": null, "oldMaterial": "AlphaTest, One/InverseSourceAlpha on straight RGB", "newMaterial": "no AlphaTest, One/Zero opaque", "roundOneFixtureError": "Offline rendering disabled blending and therefore missed background addition; user rejected colour acceptance."},
+  "offlineAlphaRender": {"runner": ".tmp/dev-temp/airdrop-item-presentation-20261007/render_alpha_probe.py", "report": ".tmp/dev-temp/airdrop-item-presentation-20261007/alpha-render.json", "modes": ["inventory", "dropped", "held"], "maxBackgroundLeakRgb": {"old": 253, "new": 0}, "scope": "native batch states and RGBA reproduced in standalone OpenGL; not gameplay"},
+  "visualEvidence": {"userVideo": "D:/下载/QQ20261007-154929-HD.mp4", "contactSheet": ".tmp/dev-temp/airdrop-item-presentation-20261007/user-video-contact.jpg", "offlineComparison": "output/airdrop-item-review-20261007-r2/offline-alpha-comparison.jpg"},
   "notRun": ["real-game verification of this candidate", "user environment and third-party shader colour acceptance", "Android", "multiplayer", "full release switching matrix"]
 }
