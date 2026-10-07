@@ -76,19 +76,29 @@ public sealed class ScTacticalSquadBlock : ScOptionalTacticalBlock {
 }
 // Kept in the split core with the other optional item identities. Never inherit ChestBlock.Index (45).
 public sealed class ScAirdropBlock : ScOptionalTacticalBlock {
-    BlockMesh world,item;Texture2D texture;BoundingBox[] collision;
+    BlockMesh world,item,icon;Texture2D texture;BoundingBox[] collision;
     public ScAirdropBlock(){
         DefaultDisplayName="空投补给箱";DefaultCategory="CS武器";CraftingId="scairdrop";
         IsTransparent=true;DefaultIsInteractive=true;MaxStacking=1;DefaultSoundMaterialName="Metal";
-        Behaviors=Available?"ScAirdrops":"";FirstPersonScale=.4f;InHandScale=.4f;Durability=-1;
+        Behaviors=Available?"ScAirdrops":"";Durability=-1;
+        FirstPersonScale=.4f;FirstPersonOffset=new(.38f,-.25f,-.8f);FirstPersonRotation=new(0,30,0);
+        InHandScale=.4f;InHandOffset=new(0,.1f,-.26f);InHandRotation=new(0,45,0);
+        DefaultIconViewOffset=new(1.1f,.8f,2);
     }
     public override void Initialize(){
         base.Initialize();if(!Available)return;TacticalItemMesh.Load("airdrop");
-        (item,texture)=TacticalItemMesh.Items["airdrop"];
-        world=new BlockMesh();world.AppendBlockMesh(item);world.TransformPositions(Matrix.CreateTranslation(.5f,0,.5f));
+        var source=TacticalItemMesh.Items["airdrop"];texture=source.Texture;
+        // The descent/terrain mesh is bottom-anchored; held, icon and pickable
+        // transforms rotate around the item's centre instead.
+        world=new BlockMesh();world.AppendBlockMesh(source.Mesh);world.TransformPositions(Matrix.CreateTranslation(.5f,0,.5f));
         collision=[world.CalculateBoundingBox()];
+        item=new BlockMesh();item.AppendBlockMesh(source.Mesh);
+        var bounds=item.CalculateBoundingBox();item.TransformPositions(Matrix.CreateTranslation(-(bounds.Min+bounds.Max)*.5f));
+        icon=ScSurvivalMesh.InventoryMesh(item);
     }
     public override Texture2D GetDefaultTexture(int value)=>texture??base.GetDefaultTexture(value);
+    public override int GetTextureSlotCount(int value)=>Available?1:base.GetTextureSlotCount(value);
+    public override int GetFaceTextureSlot(int face,int value)=>Available?0:base.GetFaceTextureSlot(face,value);
     public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain terrain,int value)=>collision??base.GetCustomCollisionBoxes(terrain,value);
     public override bool IsFaceTransparent(SubsystemTerrain terrain,int face,int value)=>true;
     public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z){
@@ -96,7 +106,9 @@ public sealed class ScAirdropBlock : ScOptionalTacticalBlock {
         else BlocksManager.Blocks[ChestBlock.Index].GenerateTerrainVertices(g,t,value,x,y,z);
     }
     public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix matrix,DrawBlockEnvironmentData env){
-        if(item is not null)BlocksManager.DrawMeshBlock(r,item,texture,color,size,ref matrix,env);else base.DrawBlock(r,value,color,size,ref matrix,env);
+        if(item is null){base.DrawBlock(r,value,color,size,ref matrix,env);return;}
+        bool ui=env?.DrawBlockMode==DrawBlockMode.UI;
+        BlocksManager.DrawMeshBlock(r,ui?icon:item,texture,ui?Color.White:color,size,ref matrix,env);
     }
     public override string GetDescription(int value)=>"空投留下的补给箱。交互取出物资；创造目录里的箱子为空，不会生成补给或守卫。";
     public override void GetDropValues(SubsystemTerrain terrain,int oldValue,int newValue,int toolLevel,List<BlockDropValue> drops,out bool debris){
