@@ -73,7 +73,7 @@ def main(label, *packages):
             kind, tag = p.split(":", 1); suffix = {"stage-lite": "轻量包.scmod", "stage-agents": "探员包.scmod", "stage-full": "全量包.scmod"}[kind]
             return [sorted((m0.ROOT / ".tmp/completion-140-20260929" / tag / "candidate").glob("*" + suffix))[0]]
         if p == "providers": return [x for x in PROVIDERS if x.exists()]
-        return [{"output-lite": m0.LITE, "output-full": m0.FULL, "output-agents": m0.LITE.with_name("[API1.9]CS武器1.4.0-探员包.scmod")}.get(p) or Path(p)]
+        return [{"output-lite": m0.LITE, "output-full": m0.FULL, "output-agents": m0.AGENTS}.get(p) or Path(p)]
     pkgs = [x for p in packages for x in resolve(p)]
     stamp = time.strftime("%Y%m%d-%H%M%S"); case_dir = RUNS / f"agent-headshot-{label}-{stamp}"; case_dir.mkdir(parents=True)
     R = {"case": f"agent-headshot-{label}", "packages": {p.name: sha(p) for p in pkgs}, "actors": [], "steps": []}

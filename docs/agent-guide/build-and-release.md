@@ -24,6 +24,12 @@ Read for executable checks, resource work, packaging or release changes.
 - User standing authorization 2026-09-29: after the applicable gates pass, replace the latest matching `output/` packages directly under their ordinary filenames, update the manifest/hashes, and read back final archives. Do not ask again just to move a validated result into output. Keep edition/version scope unchanged unless authorized; this is not permission to install, publish remotely or modify player worlds. Required visual acceptance and known incomplete scope must still be reported honestly; failed gates do not become optional.
 - Resource work, compilation, packing and installation are separate actions. No installation to Mods/device or original-world writes merely because a package built successfully.
 
+## Package names, versions and official releases (2026-10-06)
+
+- Candidates are named from `src/ScCsgoKnives/modinfo.json`'s Version: `[API1.9]CS武器<version>-{全量|轻量|探员}包.scmod` and `[API1.9]CS武器<version>-死亡竞赛.scmod` (no 包). The package step writes that version into every modinfo member and the install/bundle texts. A version bump is a release decision, not a side effect.
+- The stage builds on the delivered packages of `followup_140.BASELINE_VERSION` in `BASELINE_DIR` (`completion_140.BASELINES` pins their hashes). On delivery the superseded family moves to `output/history-<version>/` (or `history-<version>/<sha256>/` for a single superseded package) and stays there: `completion_140.OFFICIAL_RELEASES` lists every official release from 1.4.0 on, and the compat gate switches saves against each of their cores (`switching-*`), with every assembly of a package beside its core.
+- New tactical assets ship through a record (`docs/tasks/airdrop-package-members-20261006.json` pattern): `followup_140.TACTICAL_ASSET_RECORDS` puts them into Full and agents, and `core_members` lists them in the Full core's resource marker; `main`'s `standalone/resource-manifest-complete` fails otherwise.
+
 ## Intermediate cleanup (standing authorization, 2026-09-29)
 
 - Once final output replacement and readback succeed, remove obsolete/reproducible intermediate packages, copied source snapshots, build/obj trees and derived test assets of that task without another permission question. Avoid accumulating one multi-GB copy per test round. Keep at most the working set actually needed by an active follow-up, with an explicit reason.

@@ -101,7 +101,7 @@ def clips(S):
     from actor_throw_clips import append_throw
     if not base.run(S, "build-tool-ActorLoadCheck", ["dotnet", "build", S / "tree/tools/ActorLoadCheck/ActorLoadCheck.csproj", "-c", "Release", "--nologo", "-v:q"]): raise SystemExit(1)
     tool = next((S / "tree/tools/ActorLoadCheck/bin/Release").rglob("ActorLoadCheck.dll")); report = {}
-    with zipfile.ZipFile(ROOT / "output" / base.name("全量")) as full, zipfile.ZipFile(ROOT / "output" / base.name("探员")) as agents:
+    with zipfile.ZipFile(base.baseline("全量")) as full, zipfile.ZipFile(base.baseline("探员")) as agents:
         for role in ["ct", "t"]:
             air = work / f"{role}-air.glb"; dense = work / f"{role}-dense.glb"
             report[role] = {"air": append_to_dense(base.DENSE / f"{role}.glb", base.EXPORTS[role], air)}

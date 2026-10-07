@@ -8,7 +8,7 @@ import hashlib, json, shutil, subprocess, sys, zipfile
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PKG = ROOT / ".tmp/mp-m0-20260929/pkg"; WORK = ROOT / ".tmp/mp-m0-20260929/build/dm-testpkg"
-LITE = ROOT / "output/[API1.9]CS武器1.4.0-轻量包.scmod"
+LITE = ROOT / "output" / ("[API1.9]CS武器%s-轻量包.scmod" % json.loads((ROOT / "src/ScCsgoKnives/modinfo.json").read_text("utf8"))["Version"])
 def sha(b): return hashlib.sha256(b).hexdigest()
 tag = sys.argv[1]
 if WORK.exists(): shutil.rmtree(WORK)

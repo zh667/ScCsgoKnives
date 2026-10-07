@@ -26,8 +26,13 @@ MPBIN = SRC / "Survivalcraft.Windows/bin/Release/net10.0-windows/win-x64"
 TA_BUILT = SRC / "Survivalcraft.Test/bin/Release/net10.0-windows/win-x64/Mods/Survivalcraft.TestAutomation.scmod"
 GAME131 = Path(r"D:\下载\[Windows]SurvivalcraftAPI_1.9.3.1")
 OUT = ROOT / "output"
-LITE = OUT / "[API1.9]CS武器1.4.0-轻量包.scmod"
-FULL = OUT / "[API1.9]CS武器1.4.0-全量包.scmod"
+# the delivered packages carry the family's version (src/ScCsgoKnives/modinfo.json); the deathmatch one has no 包 suffix (2026-10-06)
+VERSION = json.loads((ROOT / "src/ScCsgoKnives/modinfo.json").read_text("utf8"))["Version"]
+def pkgname(label, version=None): return f"[API1.9]CS武器{version or VERSION}-{label}{'' if label == '死亡竞赛' else '包'}.scmod"
+LITE = OUT / pkgname("轻量")
+FULL = OUT / pkgname("全量")
+AGENTS = OUT / pkgname("探员")
+DM = OUT / pkgname("死亡竞赛")
 REFS = M0 / "refs/mp"
 MODS = M0 / "mods"
 PKG = M0 / "pkg"
@@ -291,7 +296,7 @@ def candpkg(tag):
     """The release pipeline's own candidates (with Net/ScCsgoNet.bin inside) as this tag's MP test packages
     dev-<tag>-{lite,full,agents}.scmod: the final acceptance runs on exactly what would be delivered."""
     PKG.mkdir(parents=True, exist_ok=True); record = {"tag": tag, "kind": "release candidates copied unchanged"}
-    for label, name in [("lite", "[API1.9]CS武器1.4.0-轻量包.scmod"), ("full", "[API1.9]CS武器1.4.0-全量包.scmod"), ("agents", "[API1.9]CS武器1.4.0-探员包.scmod")]:
+    for label, name in [("lite", pkgname("轻量")), ("full", pkgname("全量")), ("agents", pkgname("探员"))]:
         source = STAGES / tag / "candidate" / name; target = PKG / f"dev-{tag}-{label}.scmod"
         with zipfile.ZipFile(source) as z: assert (ScNetPayload in z.namelist()) == (label != "agents"), f"{source.name}: {ScNetPayload} presence"
         shutil.copy2(source, target)

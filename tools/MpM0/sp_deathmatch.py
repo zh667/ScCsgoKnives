@@ -16,14 +16,14 @@ from m0 import RESULTS, RUNS, sha, to_menu, poll
 from mp_m1 import MAIN, KEEP_ACTIVE, build_arena, teleport
 from sp_smoke_view import snap
 
-DM_OUT = m0.OUT / "[API1.9]CS武器1.4.0-死亡竞赛包.scmod"
+DM_OUT = m0.DM
 STAGES = m0.ROOT / ".tmp/completion-140-20260929"
 STAGE_LABELS = {"lite": "轻量", "full": "全量", "agents": "探员", "dm": "死亡竞赛"}   # keys of the stage's packages.json
 def package(spec):
     """A package by spec: output-lite / output-full / output-dm (the delivered packages), stage-<tag>-<lite|full|agents|dm>
     (a release candidate in its stage, before delivery), or a path."""
     if spec in ("output-lite", "output-full", "output-dm"): return {"output-lite": m0.LITE, "output-full": m0.FULL, "output-dm": DM_OUT}[spec]
-    if spec == "output-full-150": return m0.OUT / "[API1.9]CS武器1.5.0-全量包.scmod"   # the 1.5.0 Full the user plays (2026-10-06); the job arguments must stay ASCII
+    if spec == "output-full-150": return m0.OUT / m0.pkgname("全量", "1.5.0")   # the 1.5.0 Full (2026-10-06); the job arguments must stay ASCII
     if spec.startswith("stage-"):
         tag, kind = spec[len("stage-"):].rsplit("-", 1)
         pk = json.loads((STAGES / tag / "packages.json").read_text("utf8")); p = STAGES / tag / "candidate" / pk[STAGE_LABELS[kind]]["file"]

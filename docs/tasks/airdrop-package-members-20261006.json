@@ -1,0 +1,45 @@
+{
+ "note": "The sub-world airdrop's assets (feat/subworld-airdrops, 2026-10-06: tools/import_airdrop_assets.py, tools/import_pubg_airdrop.py; provenance in airdrop-assets-20261006.json and pubg-airdrop-assets-20261006.json) as members of the Full and agents packages; bytes equal to the airdrop dev package of 17:09. The Lite package carries no agents assets.",
+ "records": [
+  {
+   "member": "Assets/Models/ScCsgoTactical/airdrop.glb",
+   "target": "src/ScCsgoTactical/Assets/Models/ScCsgoTactical/airdrop.glb",
+   "sha256": "7b34e167f2f4999a01a83c5dfbc9505653d88f9fb547228006f9d1b86c3cb2b7",
+   "bytes": 314084,
+   "editions": [
+    "full",
+    "agents"
+   ]
+  },
+  {
+   "member": "Assets/Textures/ScCsgoTactical/airdrop.png",
+   "target": "src/ScCsgoTactical/Assets/Textures/ScCsgoTactical/airdrop.png",
+   "sha256": "cf9097c12d670c917dfb0a073875dfa8309d540f82c9a6d280d36951d28e3f53",
+   "bytes": 1843476,
+   "editions": [
+    "full",
+    "agents"
+   ]
+  },
+  {
+   "member": "Assets/Textures/ScCsgoTactical/airdrop_smoke.png",
+   "target": "src/ScCsgoTactical/Assets/Textures/ScCsgoTactical/airdrop_smoke.png",
+   "sha256": "85ea686650aac0ea46463983d8642a245e02893ea24932f3d161e1cf2b466c66",
+   "bytes": 2364016,
+   "editions": [
+    "full",
+    "agents"
+   ]
+  },
+  {
+   "member": "Assets/PUBG-airdrop-attribution.txt",
+   "target": "src/ScCsgoTactical/Assets/PUBG-airdrop-attribution.txt",
+   "sha256": "2f201e2d7deee0d8614ab7418046fcf12725b61d6d67089e7dab138f446826f5",
+   "bytes": 630,
+   "editions": [
+    "full",
+    "agents"
+   ]
+  }
+ ]
+}

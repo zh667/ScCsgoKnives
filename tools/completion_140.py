@@ -41,10 +41,21 @@ base.BASE = ROOT / ".tmp/completion-140-20260929"
 # hitboxes and running speeds in deathmatch worlds; the core's mode hooks Recoil / HitCapsules and the Neck / Stomach
 # regions); dmr4a was a96c44a1 / 186a9421 / e811169c (deathmatch 0ebb4d0f: the CS armour HUD as CS2's readout); dmr3g was 11c4148b / 4f2cb698 / ae174abb (deathmatch 0e56aae4), sw2 3347c64c / f9551477 / d478349e (deathmatch
 # 312125cd), dma3/dma2 6141ac01 / 408d9f35 / e804b11c.
+# Every official release from 1.4.0 on, as delivered (AGENTS: bidirectional save switching against each; the compat gate
+# reads their cores): the 1.4.0 family (dmr6f, now output/history-1.4.0/) and the 1.5.0 Full of 2026-10-06 12:18
+# (tools/release_full_150.py; output/history-1.5.0/<sha256>/). A release is looked up in output/, output/history-<version>/
+# and output/history-<version>/<sha256>/ by its package name.
+OFFICIAL_RELEASES = [
+    ("1.4.0", {"全量": "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94", "轻量": "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe"}),
+    ("1.5.0", {"全量": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f"}),
+]
+# The 1.5.0 family in output/ (r150a, delivered 2026-10-06 22:50: the whole main d56c607 - the 1.5.0 Full's survival/squad
+# feedback and flash fixes, the sub-world airdrops with their assets, the deathmatch UI with CS2 icons, the tri tracers).
+# The 1.4.0 family (dmr6f: ec949ff4 / b9598e86 / 23f7a65d, deathmatch 9c05fb7c) is in output/history-1.4.0/.
 base.BASELINES = {
-    "全量": "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94",
-    "轻量": "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe",
-    "探员": "23f7a65dd68c8c5be58decce1ab0efdf886649ba008e25d55d08d55542f3bef5",
+    "全量": "fb513611e132017c6dc8c94cc42182067c829bc8d968caf0ac3374a91f55b3e4",
+    "轻量": "dff871b1b027c4b0e12899958478b215dbeccaaefbe0093a676883c9cf85b007",
+    "探员": "20fa0a05bfa5d68dfe1375811e4d57d11627dd46b8563ce58d835a60e9d38482",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.
@@ -193,8 +204,8 @@ def cached(kind, key, produce, outputs, S):
 def baseline(S):
     """This stage's test tools against the unchanged output/ packages (reproduction and known failures). Reused when
     the packages and the test tool sources are the same as the saved run."""
-    content = base.GAME / "Content.zip"; out = ROOT / "output"
-    full, lite, agents = out / base.name("全量"), out / base.name("轻量"), out / base.name("探员")
+    content = base.GAME / "Content.zip"
+    full, lite, agents = base.baseline("全量"), base.baseline("轻量"), base.baseline("探员")
     for label, p in [("全量", full), ("轻量", lite), ("探员", agents)]:
         assert hashlib.sha256(p.read_bytes()).hexdigest() == base.BASELINES[label], f"output {label} changed"
     runs = [("baseline-vf-full", ["--scmod", full, "--video-feedback-checkset", "--vanilla-content", content]),
@@ -268,7 +279,14 @@ def core_members(S):
             new = components_with(old, (S / "tree/src/ScCsgoKnives" / manifest).read_text("utf8"))
             if new != old: manifest_text = new
         retire = sorted(RETIRED & set(hashes))
-        if not todo and manifest_text is None and not retire: print(label, "core resources already packaged", flush=True); continue
+        # tactical assets the package step put into the Full (followup_140.tactical_assets: the airdrop model and textures) are
+        # resources too: the core's marker must list them, or main's "standalone/resource-manifest-complete" fails (r150a, 2nd run)
+        marker = "Assets/ScCsgoResources.xml"; listed = ""
+        if marker in hashes:
+            with zipfile.ZipFile(path) as z: listed = z.read(marker).decode("utf8")
+        unlisted = {m: base.sha(data) for m, data in (base.tactical_assets("full") if label == "全量" else [])
+                    if m.startswith(("Assets/Textures/", "Assets/Models/", "Assets/Audio/")) and hashes.get(m) == base.sha(data) and f'<File Path="{m}"' not in listed}
+        if not todo and manifest_text is None and not retire and not unlisted: print(label, "core resources already packaged", flush=True); continue
         for n in retire: del entries[n]; del hashes[n]; pk[label].setdefault("removed", []).append(n)
         if manifest_text is not None:
             data = manifest_text.encode("utf8"); entries[manifest] = base.member(data); hashes[manifest] = base.sha(data); pk[label]["changed"][manifest] = hashes[manifest]
@@ -276,15 +294,14 @@ def core_members(S):
             assert r["member"] not in hashes, "core resource already packaged with other bytes: " + r["member"]
             data = (staged / r.get("edition", "both") / r["member"]).read_bytes(); entries[r["member"]] = base.member(data); hashes[r["member"]] = base.sha(data)
         # The core's resource marker lists every texture/model/audio member with its hash (ScRequiredResources).
-        marker = "Assets/ScCsgoResources.xml"
         if marker in hashes:
-            with zipfile.ZipFile(path) as z: text = z.read(marker).decode("utf8")
-            text = marker_with(marker_without(text, retire), {r["member"]: r["sha256"] for r in todo if r["member"].startswith(("Assets/Textures/", "Assets/Models/", "Assets/Audio/"))}); data = text.encode("utf8")
+            additions = {r["member"]: r["sha256"] for r in todo if r["member"].startswith(("Assets/Textures/", "Assets/Models/", "Assets/Audio/"))}; additions.update(unlisted)
+            text = marker_with(marker_without(listed, retire), additions); data = text.encode("utf8")
             entries[marker] = base.member(data); hashes[marker] = base.sha(data); pk[label]["changed"][marker] = hashes[marker]
         write_archive(path, entries)
         with zipfile.ZipFile(path) as out: assert out.testzip() is None and {n: base.sha(out.read(n)) for n in out.namelist()} == hashes
         pk[label].update(bytes=path.stat().st_size, sha256=base.sha(path.read_bytes())); pk[label]["changed"].update({r["member"]: r["sha256"] for r in todo})
-        print(label, "core resources added", len(todo), "retired", retire, path.stat().st_size, pk[label]["sha256"][:16], flush=True)
+        print(label, "core resources added", len(todo), "marker lines for packaged tactical assets", sorted(unlisted), "retired", retire, path.stat().st_size, pk[label]["sha256"][:16], flush=True)
     base.dump(S / "packages.json", pk); return True
 
 def components_with(packaged, source):
@@ -330,10 +347,34 @@ def compat(S):
             if n in z.namelist(): (old / n).write_bytes(z.read(n))
     base.dump(S / "old130.json", dict(package=source130.name, sha256=base.sha(source130.read_bytes()), members={p.name: base.sha(p.read_bytes()) for p in old.iterdir()}))
     latest = S / "full/core/source/bin/Release/net10.0/ScCsgoKnives.dll"
-    jobs = [("family", ["dotnet", tool(S, "CompatibilityCheck"), cap / "1.0.0/src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll",
+    # Every official release from 1.4.0 on, as released (AGENTS, bidirectional save switching): the readers are their cores,
+    # OFFICIAL_RELEASES. Every assembly of a package goes beside its core: a Full core's block registry names types of
+    # ScCsgoTactical.dll, and a reader loaded alone fails "preserves-all-later-item-type-identities" (r150a, first run).
+    def extract(package, folder):
+        folder.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(package) as z:
+            for n in z.namelist():
+                if n.endswith(".dll"): (folder / Path(n).name).write_bytes(z.read(n))
+        return folder / "ScCsgoKnives.dll"
+    def official(version, label, digest):
+        name = base.name(label, version); out = ROOT / "output"
+        for p in [out / name, out / f"history-{version}" / name, *(out / f"history-{version}").glob("*/" + name)]:
+            if p.exists() and base.sha(p.read_bytes()) == digest: return p
+        raise SystemExit(f"official {version} {label} ({digest[:12]}) not found in output/ or output/history-{version}/")
+    cores = {}; found = {}
+    for version, packages in OFFICIAL_RELEASES:
+        for label, digest in packages.items():
+            p = official(version, label, digest); short = "full" if label == "全量" else "lite"
+            cores[(version, short)] = extract(p, S / f"old{version.replace('.', '')}" / short); found[f"{version}/{label}"] = {"package": str(p), "sha256": digest}
+    base.dump(S / "official-releases.json", found)
+    jobs = [("switching-140", ["dotnet", tool(S, "CompatibilityCheck"), cores[("1.4.0", "full")], cores[("1.4.0", "lite")], latest, S / "switching-140.json"])]
+    jobs += [(f"switching-{v.replace('.', '')}", ["dotnet", tool(S, "CompatibilityCheck"), cores[(v, "full")], cores[("1.4.0", "full")], latest, S / f"switching-{v.replace('.', '')}.json"])
+             for v, _ in OFFICIAL_RELEASES if v != "1.4.0"]
+    jobs += [("family", ["dotnet", tool(S, "CompatibilityCheck"), cap / "1.0.0/src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll",
                         cap / "1.2.0/src/ScCsgoKnives/bin/Release/net10.0/ScCsgoKnives.dll", latest, S / "family.json", old / "ScCsgoKnives.dll"]),
             ("native-hooks", ["dotnet", tool(S, "TacticalLoadCheck"), "--compat-native", full, content, S / "native-hooks.json"]),
             ("native-lite", ["dotnet", tool(S, "TacticalLoadCheck"), "--world-resource-gate", lite, S / "native-lite.json"]),
+            ("native-full", ["dotnet", tool(S, "TacticalLoadCheck"), "--world-resource-gate", full, S / "native-full.json"]),
             ("inventory", ["dotnet", tool(S, "InventoryCheck"), latest, base.GAME / "Mods", S / "inventory.json"])]
     for role, core, addon in [("full", full, full), ("lite", lite, agents)]:
         for variant in ["both", "reversed", "none"]:
@@ -341,6 +382,7 @@ def compat(S):
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         results = dict(zip([j[0] for j in jobs], pool.map(lambda j: base.run(S, *j), jobs)))
     base.dump(S / "compat.json", results); report(S, "family")
+    for key in [j[0] for j in jobs if j[0].startswith("switching-")]: report(S, key)
     return all(results.values())
 
 def ui(S):
@@ -486,7 +528,7 @@ def netloop(S):
     ok &= state("netstate", plain, work / "ScCsgoNet.dll", "--state", 105) is True
     ok &= state("netstate-targets", plain, work / "ScCsgoNet.dll", "--baseline", 12) is True
     ok &= state("netgunloop", plain, work / "ScCsgoNet.dll", "--gunloop", 122) is True
-    delivered = ROOT / "output" / base.name("轻量")
+    delivered = base.baseline("轻量")
     if delivered.exists() and hashlib.sha256(delivered.read_bytes()).hexdigest() == base.BASELINES["轻量"]:
         old = work / "refs-delivered"; shutil.copytree(plain, old)
         with zipfile.ZipFile(delivered) as z: (old / "ScCsgoKnives.dll").write_bytes(z.read("ScCsgoKnives.dll")); (work / "ScCsgoNet-delivered.dll").write_bytes(z.read(NET_MEMBER))
