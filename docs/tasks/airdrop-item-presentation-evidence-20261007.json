@@ -1,5 +1,6 @@
 {
-  "status": "round 2 opaque-material visual review candidate; round 1 colour acceptance failed; round 2 user acceptance pending",
+  "status": "round 2 accepted by user; specific task merge approved on 2026-10-08; official release/platform gates remain separate",
+  "userAcceptance": {"date": "2026-10-08", "message": "可以了，合并到主分支吧", "pullRequest": "https://github.com/zh667/ScCsgoKnives/pull/5", "scope": "current airdrop presentation repair; refactor branch excluded; no separate per-platform or third-person observation record"},
   "baselineMain": "9c4cf36f1fb2c708bf033a4a700696ddc2d0551c",
   "branch": "fix/airdrop-item-presentation",
   "source": {"path": "src/ScCsgoTactical/TacticalBlocks.cs", "workingTreeSha256": "180487e53f5827ce2fdcfa508a918595065b0c460ed52c8f6b2fbeaafba0b9ef"},
