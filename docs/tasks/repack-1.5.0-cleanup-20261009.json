@@ -1,0 +1,299 @@
+{
+  "recycleBytes": 3978424352,
+  "freeAfter": 139959484416,
+  "complete": true,
+  "deliveredAndArchivedHashesUnchanged": true,
+  "freeBefore": 137246838784,
+  "recovery": "Permanent entries rebuildable; recycle entries recoverable from Windows Recycle Bin, which has not been emptied",
+  "permanentBytes": 2705884584,
+  "removed": [
+    {
+      "bytes": 0,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 0,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\baseline"
+    },
+    {
+      "bytes": 0,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 0,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\candidate"
+    },
+    {
+      "bytes": 768833516,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 472,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\full"
+    },
+    {
+      "bytes": 181712656,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 477,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\lite"
+    },
+    {
+      "bytes": 114203076,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 1531,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\tree"
+    },
+    {
+      "bytes": 315594,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 23,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\resources"
+    },
+    {
+      "bytes": 60703284,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 418,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\dm"
+    },
+    {
+      "bytes": 545136618,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 745,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\net"
+    },
+    {
+      "bytes": 137021952,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 2,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\old130"
+    },
+    {
+      "bytes": 162960384,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 8,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\old140"
+    },
+    {
+      "bytes": 142986240,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 5,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\old150"
+    },
+    {
+      "bytes": 592011264,
+      "directory": true,
+      "mode": "permanent",
+      "reason": "New task build or extracted DLLs; source and official input packages retained, reports copied to output",
+      "files": 23,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\repack-150-20261009\\old150all"
+    },
+    {
+      "bytes": 531273283,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded visual candidate and split build; official rebuilt family delivered",
+      "files": 2,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\airdrop-item-presentation-20261007\\full"
+    },
+    {
+      "bytes": 369432687,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded visual candidate and split build; official rebuilt family delivered",
+      "files": 48,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\airdrop-item-presentation-20261007\\split"
+    },
+    {
+      "bytes": 18486801,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Rebuildable probe output; source and result JSON retained",
+      "files": 58,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\airdrop-item-presentation-20261007\\Probe\\bin"
+    },
+    {
+      "bytes": 412684,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Rebuildable probe output; source and result JSON retained",
+      "files": 22,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\airdrop-item-presentation-20261007\\Probe\\obj"
+    },
+    {
+      "bytes": 387989811,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Previously audited duplicate resource copy; original assets and official packages retained",
+      "files": 1461,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\code-quality-20261005\\artifacts\\bin\\DeathmatchCheck\\release\\Assets"
+    },
+    {
+      "bytes": 387989811,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Previously audited duplicate resource copy; original assets and official packages retained",
+      "files": 1461,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\code-quality-20261005\\artifacts\\bin\\ScCsgoDeathmatch\\release\\Assets"
+    },
+    {
+      "bytes": 137481574,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 3,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\core\\bin"
+    },
+    {
+      "bytes": 3660881,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 15,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\core\\obj"
+    },
+    {
+      "bytes": 142972071,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 4,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\tactical\\bin"
+    },
+    {
+      "bytes": 5760649,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 18,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\tactical\\obj"
+    },
+    {
+      "bytes": 161720101,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 60,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\feedback\\bin"
+    },
+    {
+      "bytes": 792410,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 20,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\feedback\\obj"
+    },
+    {
+      "bytes": 161420062,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 61,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\ui-tool\\bin"
+    },
+    {
+      "bytes": 399426,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 20,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\ui-tool\\obj"
+    },
+    {
+      "bytes": 142946816,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 5,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\old-full"
+    },
+    {
+      "bytes": 20013568,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 3,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\old-lite"
+    },
+    {
+      "bytes": 142985728,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 5,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\old150"
+    },
+    {
+      "bytes": 142986240,
+      "directory": true,
+      "mode": "recycle",
+      "reason": "Superseded standalone Full build output; compact source/embedded inputs and archived official packages retained",
+      "files": 5,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\release-full-150\\current150"
+    },
+    {
+      "bytes": 531272218,
+      "directory": false,
+      "mode": "recycle",
+      "reason": "Superseded user-tested development package; production family now includes accepted repair",
+      "files": 1,
+      "path": "E:\\projects\\ScCsgoKnives\\output\\airdrop-item-review-20261007\\[API1.9]CS武器1.5.0-全量包.scmod"
+    },
+    {
+      "bytes": 35778230,
+      "directory": false,
+      "mode": "recycle",
+      "reason": "Superseded user-tested development package; production family now includes accepted repair",
+      "files": 1,
+      "path": "E:\\projects\\ScCsgoKnives\\output\\airdrop-item-review-20261007\\[API1.9]CS武器1.5.0-轻量包.scmod"
+    },
+    {
+      "bytes": 42798831,
+      "directory": false,
+      "mode": "recycle",
+      "reason": "Superseded user-tested development package; production family now includes accepted repair",
+      "files": 1,
+      "path": "E:\\projects\\ScCsgoKnives\\output\\airdrop-item-review-20261007\\[API1.9]CS武器1.5.0-探员包.scmod"
+    },
+    {
+      "bytes": 531272921,
+      "directory": false,
+      "mode": "recycle",
+      "reason": "Superseded user-tested development package; production family now includes accepted repair",
+      "files": 1,
+      "path": "E:\\projects\\ScCsgoKnives\\output\\airdrop-item-review-20261007-r2\\[API1.9]CS武器1.5.0-全量包.scmod"
+    },
+    {
+      "bytes": 35778719,
+      "directory": false,
+      "mode": "recycle",
+      "reason": "Superseded user-tested development package; production family now includes accepted repair",
+      "files": 1,
+      "path": "E:\\projects\\ScCsgoKnives\\output\\airdrop-item-review-20261007-r2\\[API1.9]CS武器1.5.0-轻量包.scmod"
+    },
+    {
+      "bytes": 42798830,
+      "directory": false,
+      "mode": "recycle",
+      "reason": "Superseded user-tested development package; production family now includes accepted repair",
+      "files": 1,
+      "path": "E:\\projects\\ScCsgoKnives\\output\\airdrop-item-review-20261007-r2\\[API1.9]CS武器1.5.0-探员包.scmod"
+    }
+  ]
+}
