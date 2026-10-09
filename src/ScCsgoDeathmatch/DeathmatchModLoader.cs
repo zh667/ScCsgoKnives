@@ -16,7 +16,15 @@ public sealed class DeathmatchModLoader : ModLoader {
         DmNet.Register();
         ScStatTrakRenderer.CounterSource = value => Current?.Counter(value);
         ScGunHolders.DormantSources[SubsystemScDeathmatch.HolderSource] = project => Of(project)?.ParkedItems() ?? [];
-        foreach (string hook in new[] { "CalculateCreatureInjuryAmount", "TerrainChangeCell", "UpdatePlayerInputDrop", "HandleInventoryDragMove", "HandleMoveInventoryItem", "GuiUpdate", "GuiDraw", "OnPlayerSpawned", "OnSettingsScreenCreated" })
+        ScDeathmatchSettings.Open = _ => {
+            if (GameManager.Project is null) {
+                DialogsManager.ShowDialog(null, new MessageDialog("死亡竞赛", "进入一个世界后再打开：竞技地图的启用和设置都在世界里进行。", "确定", null, null));
+                return;
+            }
+            DmHud.RequestMenu();
+            ScreensManager.SwitchScreen("Game");
+        };
+        foreach (string hook in new[] { "CalculateCreatureInjuryAmount", "TerrainChangeCell", "UpdatePlayerInputDrop", "HandleInventoryDragMove", "HandleMoveInventoryItem", "GuiUpdate", "GuiDraw", "OnPlayerSpawned" })
             ModsManager.RegisterHook(hook, this);
     }
     public override void CalculateCreatureInjuryAmount(Injury injury) => Of(injury?.ComponentHealth?.Project)?.OnInjury(injury);
@@ -42,15 +50,6 @@ public sealed class DeathmatchModLoader : ModLoader {
     public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer componentPlayer, Vector3 position) {
         if (Of(componentPlayer?.Project) is { Frozen: { } frozen } && ScNet.IsLocal(componentPlayer)) componentPlayer.ComponentGui?.DisplaySmallMessage(frozen, Color.White, false, false);
         return false;
-    }
-    /// <summary>The route to the deathmatch menu that needs neither a key nor a HUD button (a phone in a world that is not
-    /// an arena world yet has neither): an entry on the game's own settings page, which the pause menu opens everywhere.</summary>
-    public override void OnSettingsScreenCreated(SettingsScreen settingsScreen, out Dictionary<ButtonWidget, Action> buttonsToAdd) {
-        var button = new BevelledButtonWidget { Text = "死亡竞赛", Size = new Vector2(310, 60) };
-        buttonsToAdd = new Dictionary<ButtonWidget, Action> { [button] = () => {
-            if (GameManager.Project is null) { DialogsManager.ShowDialog(null, new MessageDialog("死亡竞赛", "进入一个世界后再打开：竞技地图的启用和设置都在世界里进行。", "确定", null, null)); return; }
-            DmHud.RequestMenu(); ScreensManager.SwitchScreen("Game");
-        } };
     }
     public override void GuiUpdate(ComponentGui componentGui) => DmHud.Update(componentGui);
     public override void GuiDraw(ComponentGui componentGui, Camera camera, int drawOrder) => DmHud.Draw(componentGui, camera, drawOrder);

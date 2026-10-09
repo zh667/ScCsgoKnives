@@ -30,6 +30,7 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly ButtonWidget m_agentVoice = ScGunUi.Button("探员语音设置",260);
+    readonly ButtonWidget m_deathmatch = ScGunUi.Button("死亡竞赛设置",260);
     // Natural enemy squads: world rules inside a world (agents installed), otherwise defaults for new worlds.
     ScEnemyRules m_enemy;
     bool m_enemyWorld;
@@ -121,6 +122,11 @@ public sealed class ScGunSettingsScreen : Screen {
         BuildEnemy(narrow);
         m_content.Children.Add(ScGunUi.Heading("探员语音"));
         m_content.Children.Add(m_agentVoice);
+        if (ScDeathmatchSettings.Open is not null) {
+            m_content.Children.Add(ScGunUi.Heading("死亡竞赛"));
+            m_content.Children.Add(m_deathmatch);
+            m_content.Children.Add(ScGunUi.Note("进入世界后，在这里开启并设置当前世界的死亡竞赛。"));
+        }
         m_content.Children.Add(ScGunUi.Heading("武器画质"));
         m_simpleMaterials = ScGunUi.Toggle("简化材质（适合手机）", m_working.SimpleMaterials);
         m_content.Children.Add(m_simpleMaterials);
@@ -210,6 +216,7 @@ public sealed class ScGunSettingsScreen : Screen {
 
     public override void Update() {
         if(m_agentVoice.IsClicked){if(ScAgentVoice.OpenSettings is {} settings)settings(this);else DialogsManager.ShowDialog(this,new MessageDialog("探员语音","安装独立的CS探员语音附属包后可选择中文／英文。","知道了",null,null));}
+        if(m_deathmatch.IsClicked){if(ScDeathmatchSettings.Open is {} open)open(this);else m_status.Text="请先安装同一批次的死亡竞赛拓展。";return;}
         bool narrow = ActualSize.X > 1 && ActualSize.X < 650;
         if (!m_built || narrow != m_narrow) Build(narrow);
         UpdateEnemy();
