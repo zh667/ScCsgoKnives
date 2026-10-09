@@ -53,9 +53,9 @@ OFFICIAL_RELEASES = [
 # Previous r150a files remain in output/history-1.5.0/<sha256>/; see output/release-1.5.0/manifest.json.
 # The 1.4.0 family (dmr6f: ec949ff4 / b9598e86 / 23f7a65d, deathmatch 9c05fb7c) is in output/history-1.4.0/.
 base.BASELINES = {
-    "全量": "d19b283723c76af443310c19eb249281de92e3aec50df9ee3567a2fce7b0136a",
-    "轻量": "01cad1dfc753fe641d69b87681ff143225486c91f4de05fa6b92d715baa9f013",
-    "探员": "59d0850de3173ec654eba5e9a2e491650d8e03518b8e6143e27df795a1937637",
+    "全量": "cea8f888c30f06f6221a01b2c8aed9f54482d020d23ed6cf2f322dd0767ecf42",
+    "轻量": "623611088ec5b4b4a6b694bf00fc3c57b37d5df6617d7423ad3c3990c6000e09",
+    "探员": "665408c0877537d8b167ebb26486d3597bb92242c88e6187df071fce0e2e8683",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.

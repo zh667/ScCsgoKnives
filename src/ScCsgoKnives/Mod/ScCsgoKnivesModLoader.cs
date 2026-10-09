@@ -14,6 +14,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void __ModInitialize() {
         ScAgentVoice.ResetProvider();
+        ScDeathmatchSettings.ResetProvider();
         ModsManager.RegisterHook("UpdateInput", this);
         ModsManager.RegisterHook("InventorySlotWidgetMeasureOverride", this);
         ModsManager.RegisterHook("OnCreatureDied", this);

@@ -1,0 +1,140 @@
+{
+  "removed": [
+    {
+      "files": 0,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\baseline",
+      "bytes": 0
+    },
+    {
+      "files": 0,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\candidate",
+      "bytes": 0
+    },
+    {
+      "files": 473,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\full",
+      "bytes": 768833502
+    },
+    {
+      "files": 478,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\lite",
+      "bytes": 181710157
+    },
+    {
+      "files": 1543,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\tree",
+      "bytes": 114235133
+    },
+    {
+      "files": 418,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\dm",
+      "bytes": 60702651
+    },
+    {
+      "files": 23,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\resources",
+      "bytes": 315594
+    },
+    {
+      "files": 745,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\net",
+      "bytes": 545142722
+    },
+    {
+      "files": 2,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\old130",
+      "bytes": 137021952
+    },
+    {
+      "files": 8,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\old140",
+      "bytes": 162960384
+    },
+    {
+      "files": 5,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\old150",
+      "bytes": 142986240
+    },
+    {
+      "files": 39,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\historical-readers",
+      "bytes": 918027776
+    },
+    {
+      "files": 61,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\settings-check",
+      "bytes": 156282209
+    },
+    {
+      "files": 62,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\settings-check-lite",
+      "bytes": 38862005
+    },
+    {
+      "files": 58,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\dm-settings-release-20261009\\metadata-check",
+      "bytes": 18450381
+    },
+    {
+      "files": 5,
+      "path": "E:\\projects\\ScCsgoKnives\\.tmp\\dev-temp\\settings-fix-20261009",
+      "bytes": 610221669
+    },
+    {
+      "files": 1353,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoKnives\\bin",
+      "bytes": 524297700
+    },
+    {
+      "files": 15,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoKnives\\obj",
+      "bytes": 3870129
+    },
+    {
+      "files": 1497,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoTactical\\bin",
+      "bytes": 761676031
+    },
+    {
+      "files": 18,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoTactical\\obj",
+      "bytes": 6038139
+    },
+    {
+      "files": 1540,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoDeathmatch\\bin",
+      "bytes": 524967630
+    },
+    {
+      "files": 20,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoDeathmatch\\obj",
+      "bytes": 1032002
+    },
+    {
+      "files": 1356,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoVoice\\bin",
+      "bytes": 524386214
+    },
+    {
+      "files": 20,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\src\\ScCsgoVoice\\obj",
+      "bytes": 483023
+    },
+    {
+      "files": 22,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\tools\\DmSettingsCheck\\obj",
+      "bytes": 379868
+    },
+    {
+      "files": 22,
+      "path": "E:\\projects\\ScCsgoKnives-dm-settings-20261009\\tools\\MetadataCheck\\obj",
+      "bytes": 363468
+    }
+  ],
+  "freeBefore": 120112795648,
+  "totalBytes": 6203246579,
+  "deliveredAndArchivedHashesUnchanged": true,
+  "complete": true,
+  "recovery": "Permanent deletion of reproducible task intermediates; no Recycle Bin claim. Sources, fixtures, official archives and evidence retained.",
+  "freeAfter": 126338633728
+}
