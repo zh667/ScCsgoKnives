@@ -49,13 +49,13 @@ OFFICIAL_RELEASES = [
     ("1.4.0", {"全量": "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94", "轻量": "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe"}),
     ("1.5.0", {"全量": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f"}),
 ]
-# The 1.5.0 family in output/ (r150a, delivered 2026-10-06 22:50: the whole main d56c607 - the 1.5.0 Full's survival/squad
-# feedback and flash fixes, the sub-world airdrops with their assets, the deathmatch UI with CS2 icons, the tri tracers).
+# The 1.5.0 family in output/ (repack-20261009, main d3a9568, includes the accepted airdrop presentation repair).
+# Previous r150a files remain in output/history-1.5.0/<sha256>/; see output/release-1.5.0/manifest.json.
 # The 1.4.0 family (dmr6f: ec949ff4 / b9598e86 / 23f7a65d, deathmatch 9c05fb7c) is in output/history-1.4.0/.
 base.BASELINES = {
-    "全量": "fb513611e132017c6dc8c94cc42182067c829bc8d968caf0ac3374a91f55b3e4",
-    "轻量": "dff871b1b027c4b0e12899958478b215dbeccaaefbe0093a676883c9cf85b007",
-    "探员": "20fa0a05bfa5d68dfe1375811e4d57d11627dd46b8563ce58d835a60e9d38482",
+    "全量": "d19b283723c76af443310c19eb249281de92e3aec50df9ee3567a2fce7b0136a",
+    "轻量": "01cad1dfc753fe641d69b87681ff143225486c91f4de05fa6b92d715baa9f013",
+    "探员": "59d0850de3173ec654eba5e9a2e491650d8e03518b8e6143e27df795a1937637",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.
@@ -358,7 +358,10 @@ def compat(S):
         return folder / "ScCsgoKnives.dll"
     def official(version, label, digest):
         name = base.name(label, version); out = ROOT / "output"
-        for p in [out / name, out / f"history-{version}" / name, *(out / f"history-{version}").glob("*/" + name)]:
+        history = out / f"history-{version}"
+        # Package names contain [API1.9]; glob would treat that as a character class.
+        archived = [folder / name for folder in history.iterdir() if folder.is_dir()] if history.is_dir() else []
+        for p in [out / name, history / name, *archived]:
             if p.exists() and base.sha(p.read_bytes()) == digest: return p
         raise SystemExit(f"official {version} {label} ({digest[:12]}) not found in output/ or output/history-{version}/")
     cores = {}; found = {}

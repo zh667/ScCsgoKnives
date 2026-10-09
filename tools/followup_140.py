@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from pack_single_scmods import raw_member, write_archive
+from release_metadata import metadata_members
 
 REL = ROOT / ".tmp/release-140-20260928"
 BASE = ROOT / ".tmp/followup-140-20260928"
@@ -238,11 +239,12 @@ def package(S):
                     if staged.exists(): assert res in hashes or res in NEW_MEMBERS, res; changes[res] = staged.read_bytes()
                 for m, data in tactical_assets("full" if label == "全量" else "agents"):
                     if hashes.get(m) != sha(data): changes[m] = data; NEW_MEMBERS.add(m)
-            if VERSION != BASELINE_VERSION:   # the family's version in every member that names it (as the 1.5.0 Full delivery did)
-                for n in ["modinfo.json", "Integrations/ScCsgoKnives.modinfo.json", "Integrations/ScCsgoTactical.modinfo.json"]:
-                    if n in hashes: info = json.loads(z.read(n).decode("utf-8-sig")); info["Version"] = VERSION; changes[n] = (json.dumps(info, ensure_ascii=False, indent=2) + "\n").encode("utf8")
-                for n in ["INSTALL.txt", "Integrations/ScCsgoBundle.json"]:
-                    if n in hashes: changes[n] = z.read(n).decode("utf-8-sig").replace(BASELINE_VERSION, VERSION).encode("utf8")
+            # Same-version rebuilds also refresh names, dependencies and descriptions.
+            changes.update(metadata_members(z,label,S / "tree"))
+            if "Integrations/ScCsgoBundle.json" in hashes:
+                bundle=json.loads(changes.get("Integrations/ScCsgoBundle.json",z.read("Integrations/ScCsgoBundle.json")))
+                bundle["coreSha256"]=sha(changes["ScCsgoKnives.dll"])
+                changes["Integrations/ScCsgoBundle.json"]=(json.dumps(bundle,ensure_ascii=False,indent=2)+"\n").encode("utf8")
             for n, b in changes.items(): assert n in hashes or n in NEW_MEMBERS, "unexpected new member " + n; entries[n] = member(b); hashes[n] = sha(b)
             target = S / "candidate" / name(label); target.parent.mkdir(parents=True, exist_ok=True); write_archive(target, entries)
             with zipfile.ZipFile(target) as out:

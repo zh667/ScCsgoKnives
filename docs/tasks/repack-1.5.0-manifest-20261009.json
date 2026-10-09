@@ -1,0 +1,245 @@
+{
+  "version": "1.5.0",
+  "date": "2026-10-09",
+  "revision": "repack-20261009-metadata-corrected",
+  "sourceCommit": "d3a9568a90c6d9e856e5ca1b653c17a6766625e9",
+  "source": "Current main product sources, independently verified against all staged product .cs files",
+  "identity": "826da79df837b6cb689c8bfce6fcabf3",
+  "deathmatchIdentity": "3d4f35031bd342ea0b6025e78e0dcadf",
+  "packages": {
+    "全量": {
+      "file": "[API1.9]CS武器1.5.0-全量包.scmod",
+      "sha256": "d19b283723c76af443310c19eb249281de92e3aec50df9ee3567a2fce7b0136a",
+      "bytes": 531272470,
+      "baselineSha256": "26878682e03a4bd78d428094baa050267db62303a92c6c3cca1b6d41b1df2a30",
+      "changed": {
+        "Integrations/ScCsgoKnives.modinfo.json": "0eaf4feb1aaf81f8ba9dd5ee6b529fd919fc0bca4d7368d6c1b2b05d402d26db",
+        "Integrations/ScCsgoTactical.modinfo.json": "79d53de063efba2413d14d4902acc91940d136922022beb5d7c16b2ba67e9b01",
+        "modinfo.json": "0eaf4feb1aaf81f8ba9dd5ee6b529fd919fc0bca4d7368d6c1b2b05d402d26db",
+        "INSTALL.txt": "9647d2096b50868feeea47076e489c1be9638a1ab4b6f501e3e303e3ef895bc3",
+        "Integrations/ScCsgoBundle.json": "58f50979ed81ba91d45e6bb53611c94f6d8c6fece01cf947f71309dfec71b215"
+      },
+      "unchangedMembers": 1715,
+      "unchangedAssemblies": {
+        "Integrations/ScCsgoAppearance.bin": "87149a7e81ba8a97a9f9ba1f4cb2f6e2ecf6ac45292dc398057dfa5278bcdc7f",
+        "Net/ScCsgoNet.bin": "e624e1ec9e7b3285d5de66182c69bca9fdd2809629f83c7f7e4fcf166796714b",
+        "Net/ScCsgoNetCompat.bin": "c94529fb8854be9898c1b76ab5b74ecacf71123ee7cbfb0cea7ba0e57a6d1f25",
+        "ScCsgoBundle.dll": "901e2121d6365a8849725202cc55b282c37e251e5bb7364afbf5466c47ee8b43",
+        "ScCsgoKnives.dll": "5f1bae4fcb8e7170aabe0dc31b6bebec238dbde2a7d2d223ca81d1271dd285bd",
+        "ScCsgoResources.dll": "e785dea8ef5b1cae84a6f534bdd63f556b444a8355a9182a7a02c92db9420de2",
+        "ScCsgoTactical.dll": "8131fb237c2407320dd9b3faee70166d570a78973bc048b16089e8b9158fe2db",
+        "ScCsgoVoice.dll": "84fc3b30c63e06706635cb841ace65f8bc51a28d26f872a6846d245c781cc1e1"
+      }
+    },
+    "轻量": {
+      "file": "[API1.9]CS武器1.5.0-轻量包.scmod",
+      "sha256": "01cad1dfc753fe641d69b87681ff143225486c91f4de05fa6b92d715baa9f013",
+      "bytes": 35779328,
+      "baselineSha256": "f7d2a75c1ae4b6eb8bf62b033cb98dfe35091862082b1a911475e77c88334429",
+      "changed": {
+        "Integrations/ScCsgoKnives.modinfo.json": "2723ef19caaf88cd5068a17fef727d7a82652e9187aacce5bb92d9c3695cd9d7",
+        "modinfo.json": "2723ef19caaf88cd5068a17fef727d7a82652e9187aacce5bb92d9c3695cd9d7",
+        "INSTALL.txt": "c3c8f87adc5f0d46b63b5c4ace0e5e0ddd485af1d2dec78c1d9d01b8153f4955"
+      },
+      "unchangedMembers": 1347,
+      "unchangedAssemblies": {
+        "Net/ScCsgoNet.bin": "e624e1ec9e7b3285d5de66182c69bca9fdd2809629f83c7f7e4fcf166796714b",
+        "Net/ScCsgoNetCompat.bin": "c94529fb8854be9898c1b76ab5b74ecacf71123ee7cbfb0cea7ba0e57a6d1f25",
+        "ScCsgoKnives.dll": "e3e7c7c5f8d6981057cb713627547b0b0eb53a6fd6cb3181ad0dbf4067523a59",
+        "ScCsgoResourceCodec.dll": "68ffbd7e5f14c4af2630e66568a9bc25c5da30842ed7810c55b1186c44afc012",
+        "ScCsgoResources.dll": "7cac0e5f3139b708512b5099bb8d98a2bb038ff0af5afd72304c60fe3cc65c9c"
+      }
+    },
+    "探员": {
+      "file": "[API1.9]CS武器1.5.0-探员包.scmod",
+      "sha256": "59d0850de3173ec654eba5e9a2e491650d8e03518b8e6143e27df795a1937637",
+      "bytes": 42798764,
+      "baselineSha256": "8b5aa8acd8a2f95802a81c7b6c6554444f0a8baa1a7bc1f50b7d5c1a6fb99dfe",
+      "changed": {
+        "modinfo.json": "79d53de063efba2413d14d4902acc91940d136922022beb5d7c16b2ba67e9b01",
+        "INSTALL.txt": "c3c8f87adc5f0d46b63b5c4ace0e5e0ddd485af1d2dec78c1d9d01b8153f4955"
+      },
+      "unchangedMembers": 373,
+      "unchangedAssemblies": {
+        "Integrations/ScCsgoAppearance.bin": "21662891aef85e9a74dcd9d861bbcd62facb93185dd66a6a28cffc4a829ca7c0",
+        "ScCsgoTactical.dll": "05505e44833ce56c8f8ad86308edf3a015a505624803b7305a0f08a360455e5d",
+        "ScCsgoVoice.dll": "84fc3b30c63e06706635cb841ace65f8bc51a28d26f872a6846d245c781cc1e1"
+      }
+    },
+    "死亡竞赛": {
+      "file": "[API1.9]CS武器1.5.0-死亡竞赛.scmod",
+      "sha256": "83ccc62bdb4b8ce88e709da128f694ca69cc59603fdab8aa65e294eab1891a6d",
+      "bytes": 369199,
+      "baselineSha256": "0f52593464f96bd33a492bbe0a860dcc72f42a0ca8da8e822ee7ab0e31f83a8f",
+      "changed": {
+        "modinfo.json": "c74fc58c46c08f01ba64d422f089352397383974e902213616fbc2edb60222e3"
+      },
+      "unchangedMembers": 185,
+      "unchangedAssemblies": {
+        "ScCsgoDeathmatch.dll": "51484a238430a7b522074870b4f281b9014fdb003479a53f4d8afa3db6815be0"
+      }
+    }
+  },
+  "archiveChanges": {
+    "死亡竞赛": {
+      "unchanged": 185,
+      "assembliesAndResourcesUnchanged": true,
+      "changed": [
+        "modinfo.json"
+      ],
+      "previousSha256": "0f52593464f96bd33a492bbe0a860dcc72f42a0ca8da8e822ee7ab0e31f83a8f"
+    },
+    "探员": {
+      "unchanged": 373,
+      "assembliesAndResourcesUnchanged": true,
+      "changed": [
+        "modinfo.json",
+        "INSTALL.txt"
+      ],
+      "previousSha256": "8b5aa8acd8a2f95802a81c7b6c6554444f0a8baa1a7bc1f50b7d5c1a6fb99dfe"
+    },
+    "全量": {
+      "unchanged": 1715,
+      "assembliesAndResourcesUnchanged": true,
+      "changed": [
+        "Integrations/ScCsgoKnives.modinfo.json",
+        "Integrations/ScCsgoTactical.modinfo.json",
+        "modinfo.json",
+        "INSTALL.txt",
+        "Integrations/ScCsgoBundle.json"
+      ],
+      "previousSha256": "26878682e03a4bd78d428094baa050267db62303a92c6c3cca1b6d41b1df2a30"
+    },
+    "轻量": {
+      "unchanged": 1347,
+      "assembliesAndResourcesUnchanged": true,
+      "changed": [
+        "Integrations/ScCsgoKnives.modinfo.json",
+        "modinfo.json",
+        "INSTALL.txt"
+      ],
+      "previousSha256": "f7d2a75c1ae4b6eb8bf62b033cb98dfe35091862082b1a911475e77c88334429"
+    }
+  },
+  "checks": {
+    "main-full": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 14191
+    },
+    "main-lite": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 14500
+    },
+    "airdrop-full": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 21
+    },
+    "airdrop-lite": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 22
+    },
+    "dmcheck": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 225
+    },
+    "family": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 248
+    },
+    "switching-140": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 247
+    },
+    "switching-150": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 249
+    },
+    "inventory": {
+      "failed": 0,
+      "knownFailures": [],
+      "total": 2262
+    },
+    "tactical-full-suite": {
+      "failed": 4,
+      "knownFailures": [
+        "optional-package-identity-and-no-bundled-engine",
+        "native-gltf/ct",
+        "native-gltf/t",
+        "npc-full-registry-reload-refuses-without-ammo-loss"
+      ],
+      "total": 138
+    }
+  },
+  "extraHistoricalSwitching": {
+    "switching-150-0ca107d6d6d5-full": true,
+    "switching-150-0ca107d6d6d5-lite": true,
+    "switching-150-50f95500342a-full": true,
+    "switching-150-50f95500342a-lite": true,
+    "switching-150-7448e3400e68-full": true,
+    "switching-150-7448e3400e68-lite": true,
+    "switching-150-fb513611e132-full": true,
+    "switching-150-fb513611e132-lite": true,
+    "switching-150-dff871b1b027-full": true,
+    "switching-150-dff871b1b027-lite": true
+  },
+  "evidence": "E:\\projects\\ScCsgoKnives\\output\\release-1.5.0\\repack-20261009",
+  "delivery": [
+    {
+      "label": "全量",
+      "previousSha256": "26878682e03a4bd78d428094baa050267db62303a92c6c3cca1b6d41b1df2a30",
+      "bytes": 531272470,
+      "archived": "E:\\projects\\ScCsgoKnives\\output\\history-1.5.0\\26878682e03a4bd78d428094baa050267db62303a92c6c3cca1b6d41b1df2a30\\[API1.9]CS武器1.5.0-全量包.scmod",
+      "sha256": "d19b283723c76af443310c19eb249281de92e3aec50df9ee3567a2fce7b0136a",
+      "path": "E:\\projects\\ScCsgoKnives\\output\\[API1.9]CS武器1.5.0-全量包.scmod"
+    },
+    {
+      "label": "轻量",
+      "previousSha256": "f7d2a75c1ae4b6eb8bf62b033cb98dfe35091862082b1a911475e77c88334429",
+      "bytes": 35779328,
+      "archived": "E:\\projects\\ScCsgoKnives\\output\\history-1.5.0\\f7d2a75c1ae4b6eb8bf62b033cb98dfe35091862082b1a911475e77c88334429\\[API1.9]CS武器1.5.0-轻量包.scmod",
+      "sha256": "01cad1dfc753fe641d69b87681ff143225486c91f4de05fa6b92d715baa9f013",
+      "path": "E:\\projects\\ScCsgoKnives\\output\\[API1.9]CS武器1.5.0-轻量包.scmod"
+    },
+    {
+      "label": "探员",
+      "previousSha256": "8b5aa8acd8a2f95802a81c7b6c6554444f0a8baa1a7bc1f50b7d5c1a6fb99dfe",
+      "bytes": 42798764,
+      "archived": "E:\\projects\\ScCsgoKnives\\output\\history-1.5.0\\8b5aa8acd8a2f95802a81c7b6c6554444f0a8baa1a7bc1f50b7d5c1a6fb99dfe\\[API1.9]CS武器1.5.0-探员包.scmod",
+      "sha256": "59d0850de3173ec654eba5e9a2e491650d8e03518b8e6143e27df795a1937637",
+      "path": "E:\\projects\\ScCsgoKnives\\output\\[API1.9]CS武器1.5.0-探员包.scmod"
+    },
+    {
+      "label": "死亡竞赛",
+      "previousSha256": "0f52593464f96bd33a492bbe0a860dcc72f42a0ca8da8e822ee7ab0e31f83a8f",
+      "bytes": 369199,
+      "archived": "E:\\projects\\ScCsgoKnives\\output\\history-1.5.0\\0f52593464f96bd33a492bbe0a860dcc72f42a0ca8da8e822ee7ab0e31f83a8f\\[API1.9]CS武器1.5.0-死亡竞赛.scmod",
+      "sha256": "83ccc62bdb4b8ce88e709da128f694ca69cc59603fdab8aa65e294eab1891a6d",
+      "path": "E:\\projects\\ScCsgoKnives\\output\\[API1.9]CS武器1.5.0-死亡竞赛.scmod"
+    }
+  ],
+  "notRun": [
+    "new real-game single-player session",
+    "new real-game multiplayer session",
+    "Android"
+  ],
+  "acceptance": "Airdrop visual repair accepted by user on 2026-10-08; this is a stamped rebuild of that code. Native/offline release checks executed on these exact packages; 4 pre-existing tactical-suite failures are explicitly retained.",
+  "metadataCorrection": {
+    "inheritedEvidence": "repack-20261009: unchanged DLL/resource hashes; gameplay/save/network identity unchanged. Runtime tests were not rerun.",
+    "date": "2026-10-09",
+    "scope": "Root and embedded modinfo, INSTALL.txt, current bundle versions/core hash; historical provenance untouched",
+    "sourceBranch": "release/1.5.0-repack-20261009",
+    "nativeLiteAgents": "7/7",
+    "evidence": "E:\\projects\\ScCsgoKnives\\output\\release-1.5.0\\metadata-20261009",
+    "nativeMetadata": "7/7",
+    "nativeFullIdentity": "14/14",
+    "nativeFullResource": "12/12"
+  }
+}
