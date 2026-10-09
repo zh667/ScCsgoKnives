@@ -16,14 +16,7 @@ public sealed class DeathmatchModLoader : ModLoader {
         DmNet.Register();
         ScStatTrakRenderer.CounterSource = value => Current?.Counter(value);
         ScGunHolders.DormantSources[SubsystemScDeathmatch.HolderSource] = project => Of(project)?.ParkedItems() ?? [];
-        ScDeathmatchSettings.Open = _ => {
-            if (GameManager.Project is null) {
-                DialogsManager.ShowDialog(null, new MessageDialog("死亡竞赛", "进入一个世界后再打开：竞技地图的启用和设置都在世界里进行。", "确定", null, null));
-                return;
-            }
-            DmHud.RequestMenu();
-            ScreensManager.SwitchScreen("Game");
-        };
+        ScDeathmatchSettings.Open = OpenSettings;
         foreach (string hook in new[] { "CalculateCreatureInjuryAmount", "TerrainChangeCell", "UpdatePlayerInputDrop", "HandleInventoryDragMove", "HandleMoveInventoryItem", "GuiUpdate", "GuiDraw", "OnPlayerSpawned" })
             ModsManager.RegisterHook(hook, this);
     }
@@ -53,4 +46,12 @@ public sealed class DeathmatchModLoader : ModLoader {
     }
     public override void GuiUpdate(ComponentGui componentGui) => DmHud.Update(componentGui);
     public override void GuiDraw(ComponentGui componentGui, Camera camera, int drawOrder) => DmHud.Draw(componentGui, camera, drawOrder);
+    public static void OpenSettings(ContainerWidget parent) {
+        if (GameManager.Project is null) {
+            DialogsManager.ShowDialog(parent, new MessageDialog("死亡竞赛", "进入一个世界后再打开：竞技地图的启用和设置都在世界里进行。", "确定", null, null));
+            return;
+        }
+        DmHud.RequestMenu();
+        ScreensManager.SwitchScreen("Game");
+    }
 }

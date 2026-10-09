@@ -333,7 +333,7 @@ sealed class DmHudRoot : IDisposable {
 public static class DmHud {
     static readonly ConditionalWeakTable<ComponentGui, DmHudRoot> s_roots = new();
     static bool s_menuRequested;
-    /// <summary>The game's settings page asked for the deathmatch menu: it opens for the first local player once the game
+    /// <summary>The CS weapon mod settings asked for the deathmatch menu: it opens for the first local player once the game
     /// screen is back (the route that needs no key and no HUD button, on every platform).</summary>
     public static void RequestMenu() => s_menuRequested = true;
     internal static bool TakeMenuRequest(ComponentPlayer player) { if (!s_menuRequested || !ScNet.IsLocal(player)) return false; s_menuRequested = false; return true; }
