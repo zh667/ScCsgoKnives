@@ -30,6 +30,13 @@ Read for executable checks, resource work, packaging or release changes.
 - The stage builds on the delivered packages of `followup_140.BASELINE_VERSION` in `BASELINE_DIR` (`completion_140.BASELINES` pins their hashes). On delivery the superseded family moves to `output/history-<version>/` (or `history-<version>/<sha256>/` for a single superseded package) and stays there: `completion_140.OFFICIAL_RELEASES` lists every official release from 1.4.0 on, and the compat gate switches saves against each of their cores (`switching-*`), with every assembly of a package beside its core.
 - New tactical assets ship through a record (`docs/tasks/airdrop-package-members-20261006.json` pattern): `followup_140.TACTICAL_ASSET_RECORDS` puts them into Full and agents, and `core_members` lists them in the Full core's resource marker; `main`'s `standalone/resource-manifest-complete` fails otherwise.
 
+## Supported API engines (2026-10-16)
+
+- User requirement: every standalone SurvivalcraftAPI release after 1.9.3.1 must run the CS weapons; today 1.9.4, 1.9.5 and 1.9.5.1 (releases on Atomgit since 1.9.5), besides the 1.9.3.1 baseline and 1.9.3.2_MP for multiplayer. One package serves them all: keep `ApiVersion` 1.9.3.1 (range `[1.9.3.1, )`) and compile against 1.9.3.1; reach a newer engine member only through a guarded lookup.
+- Engines on Windows: `.tmp/api-engines/<version>` (the official Windows archives unpacked; archive hashes in `.tmp/api-engines/downloads.json`) and their NuGet packages in `.tmp/api-engines/nupkgs/<version>`. A new API release adds one engine there, to `tools/api_engine_checks.py` and to `SP_ENGINES` in `tools/MpM0/m0.py`.
+- Release gate for a candidate stage: `tools/api_engine_checks.py <tag>` (binary contract against every engine; PackageCheck main/AI/video-feedback sets built against each engine and compared with the stage's 1.9.3.1 results) and, per engine, `M0_ENGINE=<194|195|1951> tools/MpM0/sp_engine_compat.py` with the Full and the Lite+agents candidates. New failures block the release like a 1.9.3.1 failure.
+- Android: every API version installs as `com.candy.survivalcraftAPI1_9`, so installing one replaces the player's game (including the 1.9.3.2_MP build). Android acceptance on another version needs the user's explicit authorization for that install.
+
 ## Intermediate cleanup (standing authorization, 2026-09-29)
 
 - Once final output replacement and readback succeed, remove obsolete/reproducible intermediate packages, copied source snapshots, build/obj trees and derived test assets of that task without another permission question. Avoid accumulating one multi-GB copy per test round. Keep at most the working set actually needed by an active follow-up, with an explicit reason.
