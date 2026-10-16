@@ -110,7 +110,7 @@ public sealed class ScWorkbenchSelectionDialog : Dialog {
         Filter("全部");
     }
     static Subtexture Picture(ScWorkbenchAppearance item)=>new(ContentManager.Get<Texture2D>(item.Preview),Vector2.Zero,Vector2.One);
-    static string CategoryOf(object item) => item is ScWorkbenchAppearance ? "手套" : item is ScWorkbenchAction action ? action.Category : item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? "配件制作" : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
+    static string CategoryOf(object item) => item is ScWorkbenchAppearance ? "手套" : item is ScWorkbenchAction action ? action.Category : item is ScWorkbenchRecipe r ? r.Category : item is ScComponentCrafting.Entry ? ScComponentCrafting.Category : item is ScWeaponCrafting.Entry e ? e.Knife ? "刀具" : ScGunDurability.ClassOf(e.Name) switch {
         ScGunDurability.Class.Pistol=>"手枪",ScGunDurability.Class.Smg=>"冲锋枪",ScGunDurability.Class.Rifle=>"步枪",
         ScGunDurability.Class.Shotgun=>"霰弹枪",ScGunDurability.Class.BoltSniper or ScGunDurability.Class.AutoSniper=>"狙击枪",
         ScGunDurability.Class.MachineGun=>"机枪",_=>"电击枪"

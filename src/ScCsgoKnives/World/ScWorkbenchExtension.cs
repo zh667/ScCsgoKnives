@@ -35,9 +35,11 @@ public static class ScWorkbenchExtension {
         static void Add(string key,string name,string category,Func<int> value, int level, (string id,int count)[] cost, int resultCount=1, bool creativeOnly=false) =>
             Register(new ScWorkbenchRecipe(key,name,category,value,()=>Cost(cost),level) { CreativeOnly=creativeOnly, ResultCount=resultCount });
 
-        Add("ammo-magazine", "通用弹匣 ×2", "弹药", () => ScAmmoBlock.Value(ScAmmoBlock.Magazine), 1,
+        // Ammunition sits beside the five components (bench-ammo-components-20261016): its own tab was the 13th, off the
+        // visible part of the tab strip, and players did not find it.
+        Add("ammo-magazine", "通用弹匣 ×2", ScComponentCrafting.Category, () => ScAmmoBlock.Value(ScAmmoBlock.Magazine), 1,
             [("ironingot",1),("copperingot",2),("gunpowder",3)], 2);
-        Add("ammo-shell", "霰弹 ×12", "弹药", () => ScAmmoBlock.Value(ScAmmoBlock.Shell), 1,
+        Add("ammo-shell", "霰弹 ×12", ScComponentCrafting.Category, () => ScAmmoBlock.Value(ScAmmoBlock.Shell), 1,
             [("ironingot",1),("copperingot",1),("gunpowder",2),("canvas",1)], 12);
         Add("c4", "C4", "装备", () => ScC4Block.Value, 4,
             [("gunpowder",24),("copperingot",4),("sccsgomaterial:0",2),("sccsgomaterial:1",1)]);
