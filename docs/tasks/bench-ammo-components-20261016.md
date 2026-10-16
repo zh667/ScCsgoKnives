@@ -1,6 +1,6 @@
 # 弹药并入武器装配台"配件制作"分类（2026-10-16）
 
-Status: in progress
+Status: review（候选已交付用户验收；合并 main 需另行批准）
 Current writer: VPS Claude（源码）；Windows 作业负责构建、测试与 Git 写操作
 Branch: `feat/bench-ammo-components`（基于 `origin/main` `8fcb56b`）
 User-authorized scope: 修改装配台中弹药的位置；任务分支开发、提交、推送。合并 main 需另行批准。
@@ -19,8 +19,28 @@ Out of scope: 配方与产量、其他分类、安装到 Mods/手机、正式发
 
 | 要求 | 实现 | 区分新旧的检查 | 结果 |
 |---|---|---|---|
-| 弹药放进"配件制作"直接做 | `通用弹匣 ×2`、`霰弹 ×12` 两个配方的分类改为 `ScComponentCrafting.Category`（"配件制作"）；单独的"弹药"分类随之消失 | `WeaponHelpLayoutRegression` 新增 `workbench-ammo-in-components-tab/{false,true}`：真实对话框筛选"配件制作"后有 5 种配件＋两个弹药配方，分类条无"弹药" | 待测 |
-| 配方不变 | 材料、产量、等级、批量按钮均未改（1 铁锭＋2 铜锭＋3 火药 → 2 弹匣；1 铁锭＋1 铜锭＋2 火药＋1 帆布 → 12 霰弹） | 既有 `BalanceRegression`、`SurvivalPackageIntegration` | 待测 |
+| 弹药放进"配件制作"直接做 | `通用弹匣 ×2`、`霰弹 ×12` 两个配方的分类改为 `ScComponentCrafting.Category`（"配件制作"）；单独的"弹药"分类随之消失 | `WeaponHelpLayoutRegression` 新增 `workbench-ammo-in-components-tab/{false,true}`：真实对话框筛选"配件制作"后有 5 种配件＋两个弹药配方，分类条无"弹药" | 通过；改前的包（als1、正式 1.5.0）在这两项失败，分类条第 13 个为"弹药" |
+| 配方不变 | 材料、产量、等级、批量按钮均未改（1 铁锭＋2 铜锭＋3 火药 → 2 弹匣；1 铁锭＋1 铜锭＋2 火药＋1 帆布 → 12 霰弹） | 既有 `BalanceRegression`、`SurvivalPackageIntegration`（在默认主套件内） | 通过 |
 | 玩家能找到 | 弹匣/霰弹物品说明开头加"在武器装配台的配件制作分类中制作，可选择制作数量。"（与配件说明同一措辞） | 用户目视 | 待验收 |
 
 联机：客户端提交的制作按物品值匹配配方（`ScWorkbenchOps`），与分类无关；存档与物品值不变。
+
+## 结果（2026-10-16）
+
+提交：`5ae884c` 任务说明 · `b93d6a9` fix(workbench) · `244ea12` test(workbench)。
+
+| 检查 | 输入 | 结果 |
+|---|---|---|
+| 快速对照（默认主套件） | als1 全量包只替换新编 `ScCsgoKnives.dll`（`cac8e407…`）／als1 原包 | 新包：新增两项通过，失败仅已知 3 项 `smoke-view/*/clear-lines-of-sight-stay-clear`＋快速包无发布身份 1 项（`net-identity`，非流水线构建的预期）；原包：新增两项失败 |
+| 阶段 `bam1`（Windows 作业 `426862d6…`，6.5 分钟，源码 `244ea12`，玩法身份 `741e28c2…`） | 全量/轻量/探员 | 主套件全量 3/14194、轻量 3/14503 失败（均为上述已知项，相对基线无新增；物品旅行 24、射击节奏 14、快速投掷 73 全过）；探员 AI 90/90 ×2；视频反馈 292/292 ×2；C4 140/140 ×2；分体、原生加载通过；探员完整套件仅已知 4 项；兼容 family 251/251、switching-140 249/249、switching-150 251/251；背包 2262/2262；集成矩阵、原生钩子、界面 ui 通过 |
+
+未选步骤：`motion`、`hotspots`（探员动作与性能热点，本任务未改）。
+
+### 交付（开发测试候选，未发布）
+
+`output/bench-ammo-review-20261016/`：全量 `e8769d57…`（531277250 B）、轻量 `a696a9d2…`（35781408 B）、探员 `2928725f…`（42805655 B），由阶段候选同盘移动并复核哈希；含 `说明.txt`、`candidate.json`。output 根目录正式 1.5.0 未改动。上一份验收目录 `airdrop-ladder-hud-smoke-review-20261013/` 已被取代并删除（相同包仍在 als1 阶段 `candidate/`），快速包 q1（1.11 GB）已删除，回执 `.tmp/dev-temp/bench-ammo-20261016/cleanup-receipt-review-folder.json`。
+
+### 待验收
+
+- 用户在游戏中确认：装配台"配件制作"里能看到并直接制作通用弹匣、霰弹；物品说明的提示是否合适。
+- 未在手机上安装或实测。
