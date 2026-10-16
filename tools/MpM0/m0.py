@@ -46,6 +46,12 @@ SKIP131_FILES = ("ScCsgo", "RecipaediaEX")
 # multiplayer paths only. M0_ENGINE selects the engine the single-player scripts drive: "mp" (snapshot + its TestAutomation
 # mod) or "131" (isolated 1.9.3.1 copy + ScTestAutomation131, the port of that mod: ta131 step).
 ENGINE = os.environ.get("M0_ENGINE", "mp")
+# The standalone engines M0_ENGINE may select (api-194-1951-compat-20261016): 1.9.3.1 is the user's download; the later
+# official releases are the Atomgit archives unpacked on Windows (their hashes: .tmp/api-engines/downloads.json). All run in
+# the same sp131 folder with the same 1.9.3.1-built automation mod; one engine at a time.
+SP_ENGINES = {"131": ("1.9.3.1", GAME131), "194": ("1.9.4", ROOT / ".tmp/api-engines/1.9.4"),
+              "195": ("1.9.5", ROOT / ".tmp/api-engines/1.9.5"), "1951": ("1.9.5.1", ROOT / ".tmp/api-engines/1.9.5.1")}
+SP_VERSION, GAME_SP = SP_ENGINES.get(ENGINE, SP_ENGINES["131"])
 TA131 = PKG / "ScTestAutomation131.scmod"
 SP131 = "sp131"   # the isolated 1.9.3.1 copy's folder in the fixed runtime (same lock, job object and process accounting)
 
@@ -492,7 +498,9 @@ class _Runtime:
         """Moves every role folder's run state (anything that is not the engine: doc, Bugs, Mods, caches) into
         _archive/<previous run>, keeps the last few archives, and leaves the role folders holding the engine only."""
         engine = {p.name.lower() for p in MPBIN.iterdir()}
-        engine131 = {p.name.lower() for p in GAME131.iterdir() if p.name.lower() not in SKIP131_DIRS and not p.name.startswith(SKIP131_FILES)}
+        # every standalone engine's own files stay (sp131 may hold another engine's from an earlier run; _mirror replaces them)
+        engine131 = {p.name.lower() for _, game in SP_ENGINES.values() if game.exists() for p in game.iterdir()
+                     if p.name.lower() not in SKIP131_DIRS and not p.name.startswith(SKIP131_FILES)}
         prev = json.loads((RUNTIME / ".round.json").read_text("utf-8")).get("case", "unknown") if (RUNTIME / ".round.json").exists() else "unknown"
         dest = ARCHIVE / (time.strftime("%Y%m%d-%H%M%S") + "-" + Path(prev).name)
         moved = []
@@ -526,11 +534,11 @@ class _Runtime:
         return d, hashes
 
     def prepare_131(self, mods):
-        """The isolated SurvivalcraftAPI 1.9.3.1 copy: the engine files of the pristine download mirrored into sp131 (its user
+        """The isolated standalone copy of the engine M0_ENGINE selects (1.9.3.1 by default): the engine files of the pristine download mirrored into sp131 (its user
         state dirs and the player's mod settings never taken), the packages under test as its only Mods."""
         if SP131 in self.active: raise RuntimeError(f"{SP131} is already running in this run")
         d = RUNTIME / SP131; d.mkdir(parents=True, exist_ok=True)
-        _mirror(GAME131, d, top_skip=set(SKIP131_DIRS) | {"mods"})
+        _mirror(GAME_SP, d, top_skip=set(SKIP131_DIRS) | {"mods"})
         for f in d.iterdir():
             if f.is_file() and f.name.startswith(SKIP131_FILES): assert inside_runtime(f); f.unlink()
         if (d / "Mods").exists(): assert inside_runtime(d / "Mods"); shutil.rmtree(d / "Mods")
@@ -538,8 +546,8 @@ class _Runtime:
         for m in mods: shutil.copy2(m, d / "Mods" / m.name)
         hashes = {"exe": sha(d / "Survivalcraft.exe"), "dll": {n: sha(d / n) for n in ["Survivalcraft.dll", "Engine.dll", "EntitySystem.dll"]},
                   "mods": {m.name: sha(d / "Mods" / m.name) for m in mods}}
-        assert hashes["exe"] == sha(GAME131 / "Survivalcraft.exe") and all(hashes["dll"][n] == sha(GAME131 / n) for n in hashes["dll"])
-        self.active.add(SP131); self.record.setdefault("roles", []).append({"role": SP131, "engine": "1.9.3.1", "source": str(GAME131), **hashes}); self._write()
+        assert hashes["exe"] == sha(GAME_SP / "Survivalcraft.exe") and all(hashes["dll"][n] == sha(GAME_SP / n) for n in hashes["dll"])
+        self.active.add(SP131); self.record.setdefault("roles", []).append({"role": SP131, "engine": SP_VERSION, "source": str(GAME_SP), **hashes}); self._write()
         return d, hashes
 
     def _write(self):
@@ -710,7 +718,7 @@ class Game131(Game):
     """The isolated SurvivalcraftAPI 1.9.3.1 copy (standalone acceptance) in the fixed runtime's sp131 folder, driven by
     ScTestAutomation131 over the same loopback log/command protocol; the ports travel as environment variables because
     the 1.9.3.1 program takes no arguments. Same lock, job object and process accounting as the MP roles."""
-    engine = "1.9.3.1"
+    engine = SP_VERSION   # 1.9.3.1 unless M0_ENGINE selects a later standalone release
     supports_args = True
     IN_WORLD = {"Player into playing.": 'Entered screen "Game"'}   # 1.9.3.1 has no player screen: NewWorld Play -> GameLoading -> Game
 
@@ -733,10 +741,10 @@ class Game131(Game):
 def game(name, case_dir, mods):
     """A game process for the selected engine (M0_ENGINE): the MP snapshot with its TestAutomation mod, or the isolated
     1.9.3.1 copy with ScTestAutomation131. `mods` are the packages under test; the automation mod is added here."""
-    if ENGINE == "131":
+    if ENGINE in SP_ENGINES:
         if not TA131.exists(): raise RuntimeError(f"{TA131} missing: run m0.py ta131 first")
         return Game131(name, case_dir, [TA131] + list(mods))
-    if ENGINE != "mp": raise ValueError(f"M0_ENGINE={ENGINE!r}: expected mp or 131")
+    if ENGINE != "mp": raise ValueError(f"M0_ENGINE={ENGINE!r}: expected mp or one of {sorted(SP_ENGINES)}")
     return Game(name, case_dir, [MODS / TA_BUILT.name] + list(mods))
 
 
