@@ -49,13 +49,15 @@ OFFICIAL_RELEASES = [
     ("1.4.0", {"全量": "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94", "轻量": "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe"}),
     ("1.5.0", {"全量": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f"}),
 ]
-# The 1.5.0 family in output/ (repack-20261009, main d3a9568, includes the accepted airdrop presentation repair).
-# Previous r150a files remain in output/history-1.5.0/<sha256>/; see output/release-1.5.0/manifest.json.
-# The 1.4.0 family (dmr6f: ec949ff4 / b9598e86 / 23f7a65d, deathmatch 9c05fb7c) is in output/history-1.4.0/.
+# The 1.5.0 family in output/ (release-20261021, stage r150p, main 13171aa: airdrop settings, ladders, HUD gap, cylinder
+# smoke, workbench ammunition tab, player suggestions). The 10-09 family it replaced (dm-settings: cea8f888 / 62361108 /
+# 665408c0, deathmatch e489d2ba) and every earlier 1.5.0 revision stay in output/history-1.5.0/<sha256>/; the release
+# switched saves with each of their cores (output/release-1.5.0/release-20261021/historical-checks.json); see
+# output/release-1.5.0/manifest.json. The 1.4.0 family (dmr6f) is in output/history-1.4.0/.
 base.BASELINES = {
-    "全量": "cea8f888c30f06f6221a01b2c8aed9f54482d020d23ed6cf2f322dd0767ecf42",
-    "轻量": "623611088ec5b4b4a6b694bf00fc3c57b37d5df6617d7423ad3c3990c6000e09",
-    "探员": "665408c0877537d8b167ebb26486d3597bb92242c88e6187df071fce0e2e8683",
+    "全量": "faf1071c142073628956affde48f8900c3166679d6133beee504ba922638b975",
+    "轻量": "48ef04ff24b61843617a24e063e14099b254d4ff0526d006e516be1054c0ca16",
+    "探员": "b6dd6f7dd4a615cd9d3ce127364de3f4ee1014967fbb4e917c009e362133ef68",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.

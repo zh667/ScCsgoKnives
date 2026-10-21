@@ -55,6 +55,17 @@ def first_on(aim): return PROJECT + (
 HOST_HP = MAIN + 'var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); var p = dm?.StateOf(pl); var k = dm?.View.Feed.LastOrDefault().Kill; return p == null ? "-" : "hp " + p.Health + " ap " + p.Armour + " life " + p.LifeId + " lastkill-penetration " + (k?.Penetration.ToString() ?? "-");'
 
 
+# 2026-10-21 player requests: while the mode governs, both ends run the arena's environment (the client from the server's
+# view) and a hurt governed player gets no red screen. The watch keeps the largest red-out the host's own screen had,
+# every frame, from the start of the match (a hit decays in about two seconds, faster than the steps between reads).
+ENV = MAIN + ('var w = project.FindSubsystem<Game.SubsystemGameInfo>(true).WorldSettings; var tod = project.FindSubsystem<Game.SubsystemTimeOfDay>(true); '
+    'return w.EnvironmentBehaviorMode + "/" + w.TimeOfDayMode + "/" + w.AreWeatherEffectsEnabled + " noon " + (System.Math.Abs(tod.TimeOfDay - tod.Midday) < 1e-4);')
+RED_WATCH = MAIN + ('var h = pl.ComponentHealth; System.AppDomain.CurrentDomain.SetData("sc-redmax", 0f); '
+    'Engine.Window.Frame += () => { float r = System.Math.Max(h.m_redScreenFactor, pl.ComponentScreenOverlays.RedoutFactor); var o = System.AppDomain.CurrentDomain.GetData("sc-redmax"); '
+    'if (o == null || (float)o < r) System.AppDomain.CurrentDomain.SetData("sc-redmax", r); }; return "watching";')
+RED_MAX = 'var o = System.AppDomain.CurrentDomain.GetData("sc-redmax"); return o == null ? "unwatched" : ((float)o).ToString(System.Globalization.CultureInfo.InvariantCulture);'
+
+
 class Side:
     """One process driven as a player: steps, frames and real input on its own window."""
     def __init__(self, g, label, case_dir, R, T0):
@@ -158,6 +169,7 @@ def main(label, core, dm):
         C.step("settings", client.func(GUI_IN_SHOTS))
         C.step("camera", poll(client, MAIN + 'return pl.GameWidget.ActiveCamera.GetType().Name;', lambda v: v == "FppCamera", 40)); client.func(FPP)
         cv = C.view("client joined"); check("client sees the arena world", isinstance(cv, dict) and cv.get("enabled"), cv)
+        C.step("client environment in map editing", client.func(ENV)); H.step("host environment in map editing", server.func(ENV))
         C.frame("joined"); H.frame("host-editing-after-join")
         C.menu(); C.frame("client-menu-editing"); C.close()
 
@@ -165,6 +177,8 @@ def main(label, core, dm):
         H.menu(); H.click("比赛"); H.click("开始比赛", 1.0); H.step("refusal", json.loads(server.func(STATE)).get("message")); H.click("开放大厅", 1.0); H.close()
         cv = poll(client, VIEW, lambda v: '"phase":"Lobby"' in v, 15); C.step("client after lobby", cv)
         check("client told the lobby is open", '"phase":"Lobby"' in (cv or ""), cv)
+        time.sleep(1); ce, he = C.step("client environment in the lobby", client.func(ENV)), H.step("host environment in the lobby", server.func(ENV))
+        check("both ends hold the arena's environment in the lobby (static, no weather, noon)", ce == he == "Static/Day/False noon True", {"client": ce, "host": he})
         time.sleep(1.5); C.frame("lobby"); C.view("client at lobby")
 
         # ---- both buy and enter; the host starts
@@ -175,6 +189,7 @@ def main(label, core, dm):
         C.frame("countdown"); H.frame("countdown")
         cv = poll(client, VIEW, lambda v: '"phase":"Running"' in v, 15); C.step("client after countdown", cv)
         check("client sees the match running", '"phase":"Running"' in (cv or ""), cv)
+        H.step("red-screen watch on the host", server.func(RED_WATCH))
         time.sleep(1.5)
         client.func(ACTIVE_SLOT0); server.func(ACTIVE_SLOT0); time.sleep(.5)
         cv, hv = C.view("client alive"), H.view("host alive")
@@ -220,6 +235,9 @@ def main(label, core, dm):
             aim = client.func(aim_at_player(hi))
         check("rounds crossed a wooden wall and hurt the host (round 6 penetration)", hurt and str(first).startswith("first planks"), {"first": first, "before": before, "after": after})
         C.frame("wallbang"); H.frame("wallbang")
+        red = H.step("largest red-out of the host's screen during the match", server.func(RED_MAX))
+        check("the host, shot dead and hurt again in the match, never had a red screen", red == "0", red)
+        ce = C.step("client environment during the match", client.func(ENV)); check("the client holds the arena's environment during the match", ce == "Static/Day/False noon True", ce)
 
         # ---- the host ends the match: the client is shown the results
         H.menu(); H.click("比赛"); H.click("结束本局", 1.2); H.close()
