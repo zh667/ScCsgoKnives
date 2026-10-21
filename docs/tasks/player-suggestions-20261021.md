@@ -1,6 +1,6 @@
 # 玩家建议：同伴免伤、手雷吓跑动物、死亡竞赛环境（2026-10-21）
 
-Status: review（候选已交付用户验收；合并 main 需另行批准）
+Status: merged（用户 2026-10-21 批准合并：“分支都可以合并”）
 Current writer: VPS Claude（源码）；Windows 作业负责构建、测试与 Git 写操作
 Branch: `feat/player-suggestions-20261021`（基于 `main` `8fcb56b`）
 User-authorized scope: 按 Git 流程实现下列三条玩家建议；任务分支开发、提交、推送。合并 main 需另行批准。
