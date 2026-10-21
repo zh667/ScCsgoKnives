@@ -574,6 +574,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         s.Effect=true;s.Remaining=s.Kind==0?ScGrenadeVisuals.BlastLifetime:ScGrenadeVisuals.FlashLifetime;s.Age=0;
         WorldSound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,s.Position,8);
+        // the bang scares animals as the game's own explosions do (HE, the chicken's blast and the flashbang)
+        ScGunWorldEffects.NotifyExplosion(Project.FindSubsystem<SubsystemNoise>(false),s.Position,s.Kind==0?ScGunWorldEffects.HeNoiseRange:ScGunWorldEffects.FlashNoiseRange);
     }
     void DecoyPulse(ScGrenadeState s) {
         WorldSound("Audio/ScCsgoKnives/ak47_fire_1",.6f,s.Position,5);

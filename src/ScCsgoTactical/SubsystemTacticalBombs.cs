@@ -264,6 +264,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             ScDamageIndicator.AttackBody(new BlastAttack(body,point,delta.LengthSquared()>.001f?Vector3.Normalize(delta):Vector3.UnitY,damage){AttackSoundVolume=0,ImpulseFactor=0});
         }
         audio.PlaySound("Audio/ScCsgoKnives/c4_explode_close_01",2,0,c.Position,32,true);
+        ScGunWorldEffects.NotifyExplosion(Project.FindSubsystem<SubsystemNoise>(false),c.Position,ScGunWorldEffects.BombNoiseRange);
         TacticalNet.Sound("Audio/ScCsgoKnives/c4_explode_close_01",2,c.Position,32);TacticalNet.Blast(c.Position,c.Radius);
     }
     public void Draw(Camera camera,int order) {

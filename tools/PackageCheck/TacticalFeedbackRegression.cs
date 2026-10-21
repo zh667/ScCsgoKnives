@@ -88,6 +88,17 @@ static class TacticalFeedbackRegression {
                     Check((int)reloaded.GetType().GetMethod("Retry").Invoke(reloaded,[(Func<string,IInventory>)(_=>(IInventory)p.Inventory)])==0&&p.Inventory.m_slots.Sum(s=>s.Count)==3,"reward delivered twice");
                 }
             });
+            // 2026-10-21 player request ("希望动物听到手雷爆炸声会吓到逃跑"): an enemy bomb's blast makes the engine's explosion
+            // noise like the player's C4 and the grenades; animals within 70 blocks run.
+            Test("enemy-bomb-blast-makes-explosion-noise",()=>{
+                var w=World();var bodies=w.P.FindSubsystem<SubsystemBodies>(true);var noise=new SubsystemNoise{m_subsystemBodies=bodies};noise.m_project=w.P;w.P.m_subsystems.Add(noise);
+                foreach(var (field,value) in new (string,object)[]{("time",w.P.FindSubsystem<SubsystemTime>(true)),("terrain",w.P.FindSubsystem<SubsystemTerrain>(true)),("audio",w.P.FindSubsystem<SubsystemAudio>(true)),("bodies",bodies)})
+                    T("SubsystemTacticalBombs").GetField(field,Fields).SetValue((object)w.Bombs,value);
+                ComponentRunAwayBehavior Cow(float x){var body=new ComponentBody{Position=new Vector3(x,61,0)};var ear=new ComponentRunAwayBehavior();var e=Blank<Entity>();e.m_project=w.P;e.m_components=[body,ear];body.m_entity=e;ear.m_entity=e;bodies.AddBody(body);return ear;}
+                var near=Cow(60);var far=Cow(80);
+                T("SubsystemTacticalBombs").GetMethod("Explode",Fields).Invoke((object)w.Bombs,[Charge(new Vector3(0,61,0),-2,0)]);
+                Check(near.m_heardNoise&&!far.m_heardNoise,$"enemy bomb blast heard near {near.m_heardNoise}, far {far.m_heardNoise}");
+            });
             Test("enemy-bomb-id-and-source-save-old-saves-never-rewarded",()=>{
                 var w=World();w.Bombs.Load(new ValuesDictionary());
                 var bomb=Activator.CreateInstance(T("SubsystemTacticalBombs").GetNestedType("Bomb"));bomb.GetType().GetField("BombId").SetValue(bomb,"abc");bomb.GetType().GetField("Rewardable").SetValue(bomb,true);

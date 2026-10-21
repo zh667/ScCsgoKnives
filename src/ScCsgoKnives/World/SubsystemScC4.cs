@@ -323,6 +323,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
                 delayedHits.Add(new DelayedHit { Body = body, Owner = owner?.Entity, Point = point, Direction = direction, Power = chunk, At = started + i * BlastChunkInterval });
         }
         Sound("c4_explode_close_01", c.Position, 2);
+        ScGunWorldEffects.NotifyExplosion(Project.FindSubsystem<SubsystemNoise>(false), c.Position, ScGunWorldEffects.BombNoiseRange);
         AddExplosionParticles(c.Position);
         if (ScNet.IsHost) ScNetC4.Blast(c.Position, c.Radius);
     }

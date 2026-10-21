@@ -14,6 +14,14 @@ public static class ScGunWorldEffects {
     public static void NotifyGunshot(SubsystemNoise noise,ComponentBody shooter,bool silenced,bool taser){
         if(shooter is not null)noise?.MakeNoise(shooter,taser?.5f:1f,NoiseRange(silenced,taser));
     }
+    /// <summary>Explosions make the engine's explosion noise (2026-10-21 player request: "希望动物听到手雷爆炸声会吓到逃跑"):
+    /// loudness 1 - the native RunAway listener's threshold - over ranges taken from the engine's own explosion tiers
+    /// (SubsystemExplosions: 30-130 blocks by pressure; an unsilenced shot is 40). Only the authority makes it: the
+    /// creatures' behaviour runs there, and a client's copy of a blast must not be heard twice.</summary>
+    public const float HeNoiseRange = 50, FlashNoiseRange = 40, BombNoiseRange = 70;
+    public static void NotifyExplosion(SubsystemNoise noise, Vector3 position, float range) {
+        if (ScNet.IsAuthority) noise?.MakeNoise(position, 1f, range);
+    }
     public static bool ShouldBreakLeaf(Block block, int value, float sample) => block is LeavesBlock
         && sample > block.GetProjectileResilience(value);
     public static int BreakLeaves(SubsystemTerrain terrain, IEnumerable<ScGunRange.LeafHit> leaves, float travel,
