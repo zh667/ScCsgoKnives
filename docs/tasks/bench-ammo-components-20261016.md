@@ -1,6 +1,6 @@
 # 弹药并入武器装配台"配件制作"分类（2026-10-16）
 
-Status: review（候选已交付用户验收；合并 main 需另行批准）
+Status: merged（用户 2026-10-21 批准合并：“分支都可以合并”）
 Current writer: VPS Claude（源码）；Windows 作业负责构建、测试与 Git 写操作
 Branch: `feat/bench-ammo-components`（基于 `origin/main` `8fcb56b`）
 User-authorized scope: 修改装配台中弹药的位置；任务分支开发、提交、推送。合并 main 需另行批准。
