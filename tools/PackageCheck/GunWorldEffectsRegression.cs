@@ -70,7 +70,10 @@ static class GunWorldEffectsRegression {
         foreach(var (name,heard,missed) in new[]{("HeNoiseRange",45f,55f),("FlashNoiseRange",35f,45f),("BombNoiseRange",65f,75f)}) T("noise-explosion-range/"+name,()=>{
             var (bodies,noise)=Ears();var near=Animal(null,bodies,new Vector3(heard,0,0));var far=Animal(null,bodies,new Vector3(missed,0,0));
             Call("ScGunWorldEffects","NotifyExplosion",noise,Vector3.Zero,Range(name));
-            return near.m_heardNoise && !far.m_heardNoise && near.m_lastNoiseSourcePosition==Vector3.Zero;
+            // heard, and scared off: the engine's "attacked" importance (100) is above a cow's cattle drive (7) and its
+            // herding (up to 50), so the run-away behaviour wins and runs from the blast; out of range nothing changes
+            return near.m_heardNoise && !far.m_heardNoise && near.m_lastNoiseSourcePosition==Vector3.Zero
+                && near.m_importanceLevel==100 && far.m_importanceLevel==0 && far.m_lastNoiseSourcePosition==null;
         });
         // the real detonation of each kind: HE and the flashbang bang (heard 30 blocks away, outside every damage radius);
         // smoke, the molotov's airburst and the decoy do not
@@ -85,7 +88,7 @@ static class GunWorldEffectsRegression {
             var state=Activator.CreateInstance(mod.GetType("Game.ScGrenadeState"));
             foreach(var (field,value) in new (string,object)[]{("Kind",kind),("Owner",0),("Position",new Vector3(0,61.5f,0))})state.GetType().GetField(field).SetValue(state,value);
             type.GetMethod("Detonate",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(grenades,[state]);
-            return cow.m_heardNoise==(kind is 0 or 1) && (!cow.m_heardNoise || cow.m_lastNoiseSourcePosition==new Vector3(0,61.5f,0));
+            return cow.m_heardNoise==(kind is 0 or 1) && cow.m_importanceLevel==(kind is 0 or 1?100:0) && (!cow.m_heardNoise || cow.m_lastNoiseSourcePosition==new Vector3(0,61.5f,0));
         });
         T("c4-detonation-noise",()=>{
             var project=new Project();var (bodies,noise)=Ears();var time=new SubsystemTime();var terrain=new SubsystemTerrain{Terrain=new Terrain()};terrain.Terrain.AllocateChunk(0,0).State=TerrainChunkState.Valid;
@@ -95,8 +98,10 @@ static class GunWorldEffectsRegression {
             c4.Load(new TemplatesDatabase.ValuesDictionary());
             var near=Animal(project,bodies,new Vector3(68,61,8));var far=Animal(project,bodies,new Vector3(88,61,8));
             var charge=Activator.CreateInstance(mod.GetType("Game.ScC4Charge"));charge.GetType().GetField("Position").SetValue(charge,new Vector3(8,61,8));
-            type.GetMethod("Detonate",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(c4,[charge]);
-            return near.m_heardNoise && !far.m_heardNoise;
+            // the blast's particles need the game's textures, which this runner has only in some suites: the noise comes before them
+            try{type.GetMethod("Detonate",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(c4,[charge]);}
+            catch(TargetInvocationException e) when (e.InnerException?.StackTrace?.Contains("ExplosionParticleSystem")==true){}
+            return near.m_heardNoise && !far.m_heardNoise && near.m_importanceLevel==100 && far.m_importanceLevel==0;
         });
         return results;
     }

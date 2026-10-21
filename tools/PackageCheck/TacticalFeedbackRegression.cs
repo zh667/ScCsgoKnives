@@ -97,7 +97,7 @@ static class TacticalFeedbackRegression {
                 ComponentRunAwayBehavior Cow(float x){var body=new ComponentBody{Position=new Vector3(x,61,0)};var ear=new ComponentRunAwayBehavior();var e=Blank<Entity>();e.m_project=w.P;e.m_components=[body,ear];body.m_entity=e;ear.m_entity=e;bodies.AddBody(body);return ear;}
                 var near=Cow(60);var far=Cow(80);
                 T("SubsystemTacticalBombs").GetMethod("Explode",Fields).Invoke((object)w.Bombs,[Charge(new Vector3(0,61,0),-2,0)]);
-                Check(near.m_heardNoise&&!far.m_heardNoise,$"enemy bomb blast heard near {near.m_heardNoise}, far {far.m_heardNoise}");
+                Check(near.m_heardNoise&&!far.m_heardNoise&&near.m_importanceLevel==100&&far.m_importanceLevel==0,$"enemy bomb blast heard near {near.m_heardNoise}, far {far.m_heardNoise}; scared near {near.m_importanceLevel}, far {far.m_importanceLevel}");
             });
             Test("enemy-bomb-id-and-source-save-old-saves-never-rewarded",()=>{
                 var w=World();w.Bombs.Load(new ValuesDictionary());
