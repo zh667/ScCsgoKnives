@@ -47,7 +47,10 @@ def arena_setup(x, y, z): return DMV + (
     f'r = dm.SetLobby(new Engine.Vector3({x} + 0.5f, {y}f, {z + 12} + 0.5f), 0f); if (r != null) return "lobby: " + r; '
     'var issues = dm.ArenaIssues(); return issues.Count == 0 ? "arena ready" : "issues: " + string.Join(" / ", issues.Select(i => i.Code + "#" + i.SpawnId));')
 OPEN_LOBBY = DMV + 'return dm.OpenLobby() ?? "lobby open";'
-ENTER_START = DMV + 'dm.RequestEnter(pl, true); return dm.StartMatch() ?? "starting";'
+# The mode refuses a survival backpack that still holds ordinary items (they are never deleted for a kit): the new world's
+# starting items are emptied first - this test world only.
+ENTER_START = DMV + ('var inv = pl.ComponentMiner.Inventory; int removed = 0; for (int i = 0; i < inv.SlotsCount; i++) { int c = inv.GetSlotCount(i); if (c > 0) removed += inv.RemoveSlotItems(i, c); } '
+    'dm.RequestEnter(pl, true); var me = dm.StateOf(pl); return "emptied " + removed + ", entered " + (me != null && me.Entered) + ": " + (dm.StartMatch() ?? "starting");')
 STOP = DMV + 'return dm.StopMatch() ?? "stopped";'
 # (the automation compiles C# 7.3: no "with"; the record is copied and its init-only property set by reflection)
 def rule(on): return DMV + ('var copy = (Game.DmRules)typeof(Game.DmRules).GetMethod("<Clone>$").Invoke(dm.Match.Rules, null); '
