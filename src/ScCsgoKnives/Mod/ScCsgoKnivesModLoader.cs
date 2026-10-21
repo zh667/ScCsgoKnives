@@ -297,6 +297,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         }
     }
     public override void ProcessAttackment(Attackment attackment) {
+        if (ScFactions.Spare(attackment)) return;   // a player's other weapons never hurt a recruited ally either
         ScElectricStun.FilterAttack(attackment);
         // current-direction-20260929 §3: CS protection against the ordinary physical attacks of other creatures and mods.
         SubsystemScArmor.BeforeNative(attackment);
