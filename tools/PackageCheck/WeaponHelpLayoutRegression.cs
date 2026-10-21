@@ -234,6 +234,16 @@ static class WeaponHelpLayoutRegression {
                 var armor=menu.Where(o=>o.GetType().Name=="ScWorkbenchAction"&&(string)o.GetType().GetProperty("Key").GetValue(o)=="armor").ToArray();
                 Check($"workbench-all-functions-visible/{creative}",list.Items.Count==5&&armor.Length==1&&(string)armor[0].GetType().GetProperty("Category").GetValue(armor[0])=="装备"&&list.Items.Any(o=>o.GetType().Name=="SkinMenu")&&list.Items.Any(o=>o.GetType().Name=="OwnedAttributesMenu")
                     && menu.Length==craftItems.Length+(ResourcePackInput.AgentsAbsent(mod)?20:21),$"actual runtime menu: five operations + protection (equipment tab) + five components + supplies; chicken egg requires agents; {list.Items.Count} operations, {menu.Length-craftItems.Length} other entries");
+                // bench-ammo-components-20261016 (the user: "枪械台的UI里面我并没有看见弹药分类（并且弹药应该要可以放到配件里直接做）"):
+                // magazines and shells are made in the components tab; the separate ammunition tab (13th, off the visible strip) is gone.
+                dialog.GetType().GetMethod("Filter",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(dialog,["配件制作"]);
+                var parts=list.Items.Cast<object>().ToArray();
+                string RecipeKey(object o)=>o.GetType().Name=="ScWorkbenchRecipe"?(string)o.GetType().GetProperty("Key").GetValue(o):null;
+                var tabs=((System.Collections.IEnumerable)dialog.GetType().GetField("m_categories",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(dialog)).Cast<object>()
+                    .Select(t=>(string)t.GetType().GetField("Item1").GetValue(t)).ToArray();
+                Check($"workbench-ammo-in-components-tab/{creative}",parts.Count(o=>o.GetType().DeclaringType?.Name=="ScComponentCrafting")==5
+                    && parts.Select(RecipeKey).Where(k=>k!=null).OrderBy(k=>k,StringComparer.Ordinal).SequenceEqual(new[]{"ammo-magazine","ammo-shell"}) && !tabs.Contains("弹药"),
+                    $"components tab: {string.Join(", ",parts.Select(o=>RecipeKey(o)??o.GetType().Name))}; tabs: {string.Join(" ",tabs)}");
             }
             foreach(bool creative in new[]{false,true})foreach(var available in new[]{new Vector2(1100,650),new Vector2(850,479),new Vector2(708,399),new Vector2(480,850),new Vector2(360,640),new Vector2(850,270)}){
                 var inv=new ComponentInventory();inv.m_slots.Add(new()); int choices=0;

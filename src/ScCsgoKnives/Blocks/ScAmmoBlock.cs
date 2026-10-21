@@ -16,9 +16,9 @@ public sealed class ScAmmoBlock : ScSupplyBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     public static int Value(int kind) => Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScAmmoBlock>(true), 0, kind);
     public override string GetDisplayName(SubsystemTerrain terrain, int value) => Terrain.ExtractData(value) == Shell ? "霰弹" : "通用弹匣";
-    public override string GetDescription(int value) => Terrain.ExtractData(value) == Shell
+    public override string GetDescription(int value) => "在武器装配台的配件制作分类中制作，可选择制作数量。" + (Terrain.ExtractData(value) == Shell
         ? "管式霰弹枪每次插入消耗 1 颗；MAG-7 每次换匣按实际弹匣容量消耗霰弹，丢弃旧匣余弹。"
-        : "容量 35 发以内每次换弹消耗 1 个；P90/野牛 2 个，M249 3 个，内格夫 5 个。旧匣余弹作废。";
+        : "容量 35 发以内每次换弹消耗 1 个；P90/野牛 2 个，M249 3 个，内格夫 5 个。旧匣余弹作废。");
     protected override int MeshKind(int value) => Terrain.ExtractData(value) == Shell ? 1 : 0;
     public override int GetFaceTextureSlot(int face, int value) => 0;
     public override int GetTextureSlotCount(int value) => 1;
