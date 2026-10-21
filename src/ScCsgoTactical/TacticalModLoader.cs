@@ -64,6 +64,9 @@ public sealed class TacticalModLoader : ModLoader {
     public override void OnLoadingFinished(List<Action> actions){actions.Add(()=>{SubsystemScTactical.RegisterRecipes();TacticalArms.Register();});ScTacticalWarmup.Add(actions);}
     public override void OnProjectDisposed(){ScTexturePreparation.Clear();ScNpcWeaponRenderer.Clear();ScNpcWeaponGeometry.Clear();ScActorSampler.Clear();ScActorRenderBones.Clear();TacticalArms.Clear();}
     public override void ProcessAttackment(Attackment attack){
+        // A player's attack on a recruited ally is emptied before it alerts anyone or wears a shield (ScFactions.Spares;
+        // whichever of this and the core's hook runs first empties it).
+        if(ScFactions.Spare(attack))return;
         if(attack?.Target?.Project is {} project&&attack.AttackPower>0){var attacker=attack.Attacker?.FindComponent<ComponentBody>();
             var attacked=attack.Target.FindComponent<ComponentTacticalCompanion>();attacked?.Alert(attacker);
             // The one that was hit turns on its attacker, and so does everyone of its kind nearby (user rule 2026-10-02).

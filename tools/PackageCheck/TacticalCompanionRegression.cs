@@ -171,7 +171,9 @@ static class TacticalCompanionRegression {
                 w.P.AddEntity(e);
                 Check(!spawn.IsDespawning&&w.Native.m_chunks.Values.All(c=>c.SpawnsData.Count==0)&&!w.Native.m_spawnEntityDatas.ContainsKey(77),"saved-mid-fade companion still removed or duplicated by its empty record");
             });
-            // agent-feedback-20260928 P1: area effects follow factions, not CT/T appearance.
+            // agent-feedback-20260928 P1: area effects follow factions, not CT/T appearance. 2026-10-21 player request
+            // ("希望增加队友免伤，老是误伤队友"): a player's area never reaches a recruited ally, also with friendly fire allowed
+            // (until then it did, as other players are still reached); players among themselves keep the world setting.
             Test("area-friendly-fire-by-faction-and-world-setting",()=>{
                 T("TacticalModLoader").GetMethod("RegisterFactions").Invoke(null,null);
                 var w=World();var ally=Build(w.P,31);w.P.AddEntity(ally);Npc(ally).OwnerIndex=0;
@@ -184,11 +186,53 @@ static class TacticalCompanionRegression {
                 bool Allowed(int from,ComponentBody target){var s=Activator.CreateInstance(state);state.GetField("Owner").SetValue(s,from);return (bool)friendly.Invoke(grenades,[s,target]);}
                 var companionBody=ally.FindComponent<ComponentBody>(true);
                 foreach(bool ff in new[]{false,true}){info.WorldSettings.IsFriendlyFireEnabled=ff;
-                    Check(Allowed(0,companionBody)==ff,"player fire/HE/flash reaches a recruited ally regardless of friendly fire="+ff);
-                    Check(Allowed(1,companionBody)==ff,"another player's area ignores the world setting for allies");
+                    Check(!Allowed(0,companionBody),"the owner's fire/HE/flash reaches its recruited ally with friendly fire="+ff);
+                    Check(!Allowed(1,companionBody),"another player's area reaches a recruited ally with friendly fire="+ff);
+                    Check(Allowed(-1,companionBody),"an area of no player (a chicken nobody shot) no longer reaches allies");
                     Check(Allowed(0,ownerBody),"self damage removed");Check(Allowed(0,otherBody)==ff,"player-vs-player rule changed");
                     Check(Allowed(-2,companionBody)&&Allowed(-2,ownerBody),"enemy areas no longer hurt players/allies");
                     Check(!Allowed(-2,enemyBody),"enemy fire hurts its own side");Check(Allowed(0,enemyBody)&&Allowed(0,wolf)&&Allowed(-2,wolf),"ordinary targets changed");}
+            });
+            // 2026-10-21 player request ("希望增加队友免伤，老是误伤队友"): no attack of a player hurts a recruited ally - this mod's
+            // shots, knife and Zeus (refused before any hook, like the native player-vs-player rule) and any other weapon
+            // (emptied by whichever ProcessAttackment hook runs first, core or agents). Enemies still hurt allies; players
+            // still hurt enemies and creatures; players among themselves keep the world's friendly-fire setting.
+            Test("player-attacks-spare-recruited-allies",()=>{
+                T("TacticalModLoader").GetMethod("RegisterFactions").Invoke(null,null);
+                var w=World();var info=new SubsystemGameInfo{WorldSettings=Blank<WorldSettings>()};info.m_project=w.P;w.P.m_subsystems.Add(info);
+                var ally=Build(w.P,32);w.P.AddEntity(ally);Npc(ally).OwnerIndex=0;var allyBody=ally.FindComponent<ComponentBody>(true);
+                ally.FindComponent<ComponentCreature>(true).m_killVerbs=["shot"]; // an attack names its attacker's verb (template data in the game)
+                Entity Make(params Component[] parts){var e=Blank<Entity>();e.m_project=w.P;e.m_components=[..parts];foreach(var c in parts)c.m_entity=e;return e;}
+                ComponentPlayer Player(int index){var p=Blank<ComponentPlayer>();p.PlayerData=Blank<PlayerData>();p.PlayerData.PlayerIndex=index;p.m_killVerbs=["shot"];return p;}
+                var owner=Player(0);var ownerBody=new ComponentBody();var me=Make(owner,ownerBody);
+                var other=Player(1);var otherBody=new ComponentBody();var them=Make(other,otherBody);
+                var enemyBody=new ComponentBody();var foe=Make((Component)Activator.CreateInstance(T("ComponentTacticalEnemy")),enemyBody);
+                var wolfBody=new ComponentBody();var wolf=Make(wolfBody);
+                var otherAlly=Build(w.P,33);w.P.AddEntity(otherAlly);Npc(otherAlly).OwnerIndex=1;
+                Type Nested(string n)=>C("ScSurvivalBalance").GetNestedType(n,BindingFlags.Public|BindingFlags.NonPublic);
+                Attackment Shot(Entity from,ComponentBody to)=>(Attackment)Activator.CreateInstance(Nested("BulletAttack"),[to,from,to.Position,Vector3.UnitX,12f]);
+                Attackment Knife(Entity from,ComponentBody to)=>(Attackment)Activator.CreateInstance(Nested("KnifeAttack"),[to,from,to.Position,Vector3.UnitX,12f]);
+                var hooks=new ModLoader[]{(ModLoader)Activator.CreateInstance(C("ScCsgoKnivesModLoader")),(ModLoader)Activator.CreateInstance(T("TacticalModLoader"))};
+                foreach(bool ff in new[]{false,true}){info.WorldSettings.IsFriendlyFireEnabled=ff;
+                    foreach(var (name,make) in new (string,Func<Entity,ComponentBody,Attackment>)[]{("shot",Shot),("knife",Knife)}){
+                        Check(make(me,allyBody).DisableFriendlyFire(),$"the owner's {name} hurts its recruited ally (friendly fire {ff})");
+                        Check(make(them,allyBody).DisableFriendlyFire(),$"another player's {name} hurts a recruited ally (friendly fire {ff})");
+                        Check(!make(foe,allyBody).DisableFriendlyFire(),$"an enemy's {name} no longer hurts allies");
+                        Check(!make(ally,enemyBody).DisableFriendlyFire()&&!make(me,enemyBody).DisableFriendlyFire()&&!make(me,wolfBody).DisableFriendlyFire(),$"{name}s at enemies or creatures stopped");
+                        Check(make(me,otherBody).DisableFriendlyFire()==!ff,$"player-vs-player {name} no longer follows the world setting (friendly fire {ff})");
+                    }
+                    foreach(var hook in hooks){
+                        var sword=new MeleeAttackment(ally,me,allyBody.Position,Vector3.UnitX,9f){ImpulseFactor=2,StunTimeAdd=1,AllowImpulseAndStunWhenDamageIsZero=true};
+                        hook.ProcessAttackment(sword);
+                        Check(sword.AttackPower==0&&sword.ImpulseFactor==0&&sword.StunTimeAdd==0&&!sword.AllowImpulseAndStunWhenDamageIsZero,$"{hook.GetType().Name}: the owner's sword still reaches its ally (power {sword.AttackPower})");
+                        var arrow=new ProjectileAttackment(otherAlly,me,allyBody.Position,Vector3.UnitX,7f,null);hook.ProcessAttackment(arrow);
+                        Check(arrow.AttackPower==0,$"{hook.GetType().Name}: a player's arrow still reaches another player's ally");
+                    }
+                    var bite=new MeleeAttackment(ally,foe,allyBody.Position,Vector3.UnitX,9f);
+                    Check(!(bool)C("ScFactions").GetMethod("Spare").Invoke(null,[bite])&&bite.AttackPower==9f,"an enemy's attack on an ally was emptied");
+                    var hit=new MeleeAttackment(foe,me,enemyBody.Position,Vector3.UnitX,9f);
+                    Check(!(bool)C("ScFactions").GetMethod("Spare").Invoke(null,[hit])&&hit.AttackPower==9f,"a player's attack on an enemy was emptied");
+                }
             });
             Test("companion-leaves-player-c4-radius-before-detonation",()=>{
                 var w=World();var e=Build(w.P,55);var npc=Npc(e);npc.OwnerIndex=0;

@@ -14,8 +14,9 @@ public static class ScSurvivalBalance {
         public ScShotHits Hits { get; init; }
         /// <summary>What the authority froze about the shot (deathmatch-addon); null for older callers.</summary>
         public ScAttackFacts Facts { get; init; }
-        /// <summary>A world's mode decides who may hurt whom there; without one the world's friendly-fire setting does.</summary>
-        public override bool DisableFriendlyFire() => ScModes.Stops(this) ?? base.DisableFriendlyFire();
+        /// <summary>A world's mode decides who may hurt whom there; without one, recruited allies are spared by players
+        /// (ScFactions.Spares) and the world's friendly-fire setting decides the rest.</summary>
+        public override bool DisableFriendlyFire() => ScModes.Stops(this) ?? (ScFactions.Spares(Attacker, Target) || base.DisableFriendlyFire());
         /// <summary>What CS body protection absorbed from this attack (H4 sounds); set when the engine applies the injury.</summary>
         public ScHitSounds.Absorbed Absorbed { get; set; }
         /// <summary>The injury this attack computed, or null while nothing asked for it (ScAttackJournal).</summary>
@@ -65,7 +66,7 @@ public static class ScSurvivalBalance {
     public sealed class KnifeAttack(ComponentBody body,GameEntitySystem.Entity owner,Vector3 point,Vector3 direction,float power)
         : MeleeAttackment(body,owner,point,direction,power), IScAttackFacts {
         public ScAttackFacts Facts { get; init; }
-        public override bool DisableFriendlyFire() => ScModes.Stops(this) ?? base.DisableFriendlyFire();
+        public override bool DisableFriendlyFire() => ScModes.Stops(this) ?? (ScFactions.Spares(Attacker, Target) || base.DisableFriendlyFire());
         public override float CalculateInjuryAmount() => ScModes.OwnsInjuries(Target) ? AttackPower : base.CalculateInjuryAmount();
     }
     sealed class Control { public double Next; }

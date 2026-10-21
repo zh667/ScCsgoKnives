@@ -16,7 +16,7 @@ static partial class Program {
         try { body(); } catch (Exception e) { Test(id, "section completed", false, e.ToString()); }
     }
     static int Main(string[] args) {
-        Section("A", Arena); Section("S", Spawns); Section("R", Armoury); Section("C", Combat); Section("W", Weapons); Section("M", Match); Section("V", View); Section("U", Ui); Section("K", Cs2Round5);
+        Section("A", Arena); Section("S", Spawns); Section("R", Armoury); Section("C", Combat); Section("W", Weapons); Section("M", Match); Section("V", View); Section("U", Ui); Section("K", Cs2Round5); Section("E", Comfort);
         int failed = s_checks.Count(c => !c.Ok);
         if (args.Length > 0) File.WriteAllText(args[0], JsonSerializer.Serialize(new { failed, total = s_checks.Count, profile = new { DmWeapons.Cs2Version, DmWeapons.Fingerprint, DmWeapons.LoadError },
             checks = s_checks, scope = "pure rules, no engine world, no network, nothing seen or heard" }, new JsonSerializerOptions { WriteIndented = true }));

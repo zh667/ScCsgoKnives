@@ -19,7 +19,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
     public static bool IsBombDamage(Attackment attack)=>attack is BombAttack;
     sealed class BombAttack(ComponentBody body, GameEntitySystem.Entity owner, Vector3 point, Vector3 direction, float power)
         : ProjectileAttackment(body, owner, point, direction, power, null) {
-        public override bool DisableFriendlyFire() => Attacker != Target && base.DisableFriendlyFire();
+        public override bool DisableFriendlyFire() => Attacker != Target && (ScFactions.Spares(Attacker, Target) || base.DisableFriendlyFire());
     }
     sealed class DelayedHit {
         public ComponentBody Body; public GameEntitySystem.Entity Owner;
@@ -295,7 +295,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
         double started = time.GameTime;
         foreach (var body in bodies.Bodies.ToArray()) {
             var target = body.Entity.FindComponent<ComponentPlayer>();
-            // Same rule as grenade areas: other players and recruited allies only under world friendly fire.
+            // Same rule as grenade areas: other players only under world friendly fire, recruited allies never.
             if (!ScFactions.AreaAllowed(c.Owner, ScFactions.Of(body.Entity), target?.PlayerData?.PlayerIndex ?? -1, info.WorldSettings.IsFriendlyFireEnabled)) continue;
             Vector3 point = body.BoundingBox.Center(), delta = point - c.Position;
             float power = ScC4Charge.DamageAt(delta.Length(), c.Power, c.Radius); if (power <= 0) continue;
@@ -323,6 +323,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
                 delayedHits.Add(new DelayedHit { Body = body, Owner = owner?.Entity, Point = point, Direction = direction, Power = chunk, At = started + i * BlastChunkInterval });
         }
         Sound("c4_explode_close_01", c.Position, 2);
+        ScGunWorldEffects.NotifyExplosion(Project.FindSubsystem<SubsystemNoise>(false), c.Position, ScGunWorldEffects.BombNoiseRange);
         AddExplosionParticles(c.Position);
         if (ScNet.IsHost) ScNetC4.Blast(c.Position, c.Radius);
     }

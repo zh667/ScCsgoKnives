@@ -53,6 +53,8 @@ public sealed class DmMenuPanel : CanvasWidget {
         Add(Page.Match, 0, 2, 1, () => "局长 −", () => Phase(DmPhase.Editing, DmPhase.Lobby), () => Say(dm.SetRules(dm.Match.Rules with { Minutes = Math.Max(DmRules.MinMinutes, dm.Match.Rules.Minutes - 1) }), $"局长 {dm.Match.Rules.Minutes} 分钟"));
         Add(Page.Match, 1, 2, 1, () => "局长 +", () => Phase(DmPhase.Editing, DmPhase.Lobby), () => Say(dm.SetRules(dm.Match.Rules with { Minutes = Math.Min(DmRules.MaxMinutes, dm.Match.Rules.Minutes + 1) }), $"局长 {dm.Match.Rules.Minutes} 分钟"));
         Add(Page.Match, 2, 2, 1, () => dm.View.Rules.Grenades ? "投掷物：开放" : "投掷物：关闭", () => Phase(DmPhase.Editing, DmPhase.Lobby), () => Say(dm.SetRules(dm.Match.Rules with { Grenades = !dm.Match.Rules.Grenades }), dm.Match.Rules.Grenades ? "投掷物已开放" : "投掷物已关闭"));
+        Add(Page.Match, 0, 3, 3, () => dm.View.Rules.FixedEnvironment ? "比赛环境：静态 · 无天气 · 正午" : "比赛环境：跟随世界", () => Phase(DmPhase.Editing, DmPhase.Lobby),
+            () => Say(dm.SetRules(dm.Match.Rules with { FixedEnvironment = !dm.Match.Rules.FixedEnvironment }), dm.Match.Rules.FixedEnvironment ? "比赛期间：静态、无天气、永远正午（不改世界设置）" : "比赛期间：跟随世界自己的环境、天气和时间"));
         // ---- 地图
         Add(Page.Map, 0, 0, 3, () => "把本世界启用为竞技世界", () => Host() && !dm.Enabled, () => { Say(dm.EnableArena(), "已启用：本世界现在是死亡竞赛专用世界。接下来设两个角点、复活点和准备点"); });
         Add(Page.Map, 0, 0, 1, () => dm.Corner(0) is { } c ? "角点 1（已定）" : "角点 1（脚下）", () => Phase(DmPhase.Editing, DmPhase.Lobby), () => Corner(0));

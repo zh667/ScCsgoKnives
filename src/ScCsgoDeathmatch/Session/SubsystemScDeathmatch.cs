@@ -212,6 +212,11 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
     public readonly DmRecoil Recoil = new();
     /// <summary>CS2's bullet penetration of this world's players (round 6; the core asks through DmMode.Penetration).</summary>
     public readonly DmPenetration Penetration = new();
+    /// <summary>The static, weatherless noon the world runs with while the mode governs it (DmRules.FixedEnvironment).</summary>
+    public readonly DmEnvironment ArenaEnvironment = new();
+    /// <summary>The arena's environment is held now: the mode governs the world (from the lobby to the results) under the
+    /// host's rule - the server from its match, a client from the server's view.</summary>
+    public bool HoldsEnvironment => Enabled && Frozen is null && (Authority ? Match is { Governing: true, Rules.FixedEnvironment: true } : View.Governing && View.Rules.FixedEnvironment);
     public double Now => m_time?.GameTime ?? 0;
     public bool Authority => ScNet.IsAuthority;
     public IDmWorldProbe Probe => m_probe;
@@ -247,7 +252,10 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
         // a remote client's copy of a world is the server's to save; its match text is what it was sent with
         values.SetValue("Match", Match is not null ? Match.Encode(Now) : m_raw.GetValue("Match", ""));
     }
-    public override void Dispose() { if (Mode is not null) ScModes.Unregister(Project, Mode); }
+    public override void Dispose() {
+        if (Mode is not null) ScModes.Unregister(Project, Mode);
+        ArenaEnvironment.Release(m_info); DmEnvironment.Forget(Project);   // after the world's last save
+    }
     /// <summary>The key of the armoury's parked records among the gun holders (registered once, by the mod loader: it asks
     /// whichever world is being scanned for its own deathmatch subsystem).</summary>
     public const string HolderSource = "zh667.ScCsgoDeathmatch/armoury";
@@ -454,6 +462,7 @@ public sealed class SubsystemScDeathmatch : Subsystem, IUpdateable, IDrawable {
 
     public void Update(float dt) {
         UpdateMovement();
+        ArenaEnvironment.Update(Project, m_info, HoldsEnvironment);
         if (!Enabled || Frozen is not null) return;
         if (!Authority) { ClientUpdate(); return; }
         double now = Now;

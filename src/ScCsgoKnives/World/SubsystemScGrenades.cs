@@ -23,7 +23,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         /// <summary>What the authority knows about the grenade this damage comes from (deathmatch-addon).</summary>
         public ScAttackFacts Facts { get; init; }
         // (The area's own rule - Friendly - already ran; a world's mode decides first, also for a thrower who has left.)
-        public override bool DisableFriendlyFire() => ScModes.MayHurt(Attacker,Target,Facts?.AttackerPlayer??-1) switch { true=>false, false=>true, _=>Attacker!=Target && base.DisableFriendlyFire() };
+        public override bool DisableFriendlyFire() => ScModes.MayHurt(Attacker,Target,Facts?.AttackerPlayer??-1) switch { true=>false, false=>true, _=>Attacker!=Target && (ScFactions.Spares(Attacker,Target) || base.DisableFriendlyFire()) };
         public override float CalculateInjuryAmount() => ScModes.OwnsInjuries(Target) ? AttackPower : base.CalculateInjuryAmount();
     }
     sealed class Preparation {
@@ -485,7 +485,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         // (Asked only in a world that runs a mode: everywhere else this method reads exactly what it always read.)
         if(ScModes.Of(Project) is {} mode && mode.MayHurt(m_players?.ComponentPlayers.FirstOrDefault(p=>p.PlayerData.PlayerIndex==s.Owner)?.Entity,body.Entity,s.Owner) is bool ruled)return ruled;
         var side=ScFactions.Of(body.Entity);int index=body.Entity.FindComponent<ComponentPlayer>()?.PlayerData?.PlayerIndex??-1;
-        // Only another player or a recruited ally consults the world setting; enemy areas and other creatures never do.
+        // Only another player consults the world setting; a player's area never reaches a recruited ally (ScFactions.Spares),
+        // and enemy areas and other creatures never consult it.
         if(s.Owner==ScFactions.EnemySource||side is ScFactions.Side.Neutral or ScFactions.Side.Enemy||side==ScFactions.Side.Player&&index==s.Owner)
             return ScFactions.AreaAllowed(s.Owner,side,index,false);
         return ScFactions.AreaAllowed(s.Owner,side,index,m_info.WorldSettings.IsFriendlyFireEnabled);
@@ -573,6 +574,8 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         }
         s.Effect=true;s.Remaining=s.Kind==0?ScGrenadeVisuals.BlastLifetime:ScGrenadeVisuals.FlashLifetime;s.Age=0;
         WorldSound("Audio/ScCsgoKnives/"+ScGrenadeBlock.Assets[s.Kind]+"_explode",1,s.Position,8);
+        // the bang scares animals as the game's own explosions do (HE, the chicken's blast and the flashbang)
+        ScGunWorldEffects.NotifyExplosion(Project.FindSubsystem<SubsystemNoise>(false),s.Position,s.Kind==0?ScGunWorldEffects.HeNoiseRange:ScGunWorldEffects.FlashNoiseRange);
     }
     void DecoyPulse(ScGrenadeState s) {
         WorldSound("Audio/ScCsgoKnives/ak47_fire_1",.6f,s.Position,5);
