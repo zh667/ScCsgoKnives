@@ -17,10 +17,29 @@ public sealed class DeathmatchModLoader : ModLoader {
         ScStatTrakRenderer.CounterSource = value => Current?.Counter(value);
         ScGunHolders.DormantSources[SubsystemScDeathmatch.HolderSource] = project => Of(project)?.ParkedItems() ?? [];
         ScDeathmatchSettings.Open = OpenSettings;
-        foreach (string hook in new[] { "CalculateCreatureInjuryAmount", "TerrainChangeCell", "UpdatePlayerInputDrop", "HandleInventoryDragMove", "HandleMoveInventoryItem", "GuiUpdate", "GuiDraw", "OnPlayerSpawned" })
+        foreach (string hook in new[] { "CalculateCreatureInjuryAmount", "TerrainChangeCell", "UpdatePlayerInputDrop", "HandleInventoryDragMove", "HandleMoveInventoryItem", "GuiUpdate", "GuiDraw", "OnPlayerSpawned",
+            "ChangeVisualEffectOnInjury", "OnVitalStatsUpdateFood", "OnVitalStatsUpdateTemperature", "OnProjectXmlSaved" })
             ModsManager.RegisterHook(hook, this);
     }
     public override void CalculateCreatureInjuryAmount(Injury injury) => Of(injury?.ComponentHealth?.Project)?.OnInjury(injury);
+    /// <summary>A player the mode governs on this process (the server's match, or a client's view of it).</summary>
+    static bool Governed(Component component) => component?.Entity?.FindComponent<ComponentPlayer>() is { } player && Of(player.Project) is { } dm && dm.Governs(player);
+    /// <summary>No red screen when a governed player is hurt (2026-10-21 player request: "死亡竞赛希望角色受伤不会红屏（或许是手机上
+    /// 受击反馈小一点？）"): the engine's red-out is cleared, also what was left of an earlier one. The rest of the feedback
+    /// stays - the CS damage direction marks, the pain sound and the flashing health bar.</summary>
+    public override void ChangeVisualEffectOnInjury(ComponentHealth componentHealth, float lastHealth, ref float redScreenFactor, ref bool playPainSound, ref int healthBarFlashCount, ref float creatureModelRedFactor) {
+        if (Governed(componentHealth)) redScreenFactor = 0;
+    }
+    /// <summary>Nobody gets hungry or cold while the mode governs the world (2026-10-21 player request: "玩家不会饿和冷"): the
+    /// engine's own update runs on the held values (DmFixed.Food / Temperature) and never moves far from them in one frame.</summary>
+    public override void OnVitalStatsUpdateFood(ComponentVitalStats vitalStats, ref float food, ref float gameTimeDelta, ref bool skipVanilla) {
+        if (Governed(vitalStats)) food = DmFixed.Food;
+    }
+    public override void OnVitalStatsUpdateTemperature(ComponentVitalStats vitalStats, ref float temperature, ref float gameTimeDelta, ref bool skipVanilla) {
+        if (Governed(vitalStats)) temperature = DmFixed.Temperature;
+    }
+    /// <summary>A save keeps the world's own environment, never the arena's held one (DmEnvironment).</summary>
+    public override void OnProjectXmlSaved(System.Xml.Linq.XElement xElement) => DmEnvironment.CorrectSaved(xElement);
 
     /// <summary>The arena's terrain does not change under a match (design §4.2): not by a player, an explosion or fire.</summary>
     public override void TerrainChangeCell(SubsystemTerrain subsystemTerrain, int x, int y, int z, int value, out bool skip) {

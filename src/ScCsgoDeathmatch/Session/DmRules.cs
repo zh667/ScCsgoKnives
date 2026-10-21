@@ -20,6 +20,10 @@ public sealed record DmRules {
     public int Minutes { get; init; } = 10;
     /// <summary>Throwables may be put in a loadout (host; default off).</summary>
     public bool Grenades { get; init; }
+    /// <summary>While the mode governs the world it runs static, without weather, at noon (host; default on - 2026-10-21
+    /// player request "世界默认改成静态，没有天气，永远中午"; DmEnvironment). A saved rule set from before has no such value
+    /// and reads as on.</summary>
+    public bool FixedEnvironment { get; init; } = true;
     public const int MinMinutes = 1, MaxMinutes = 60;
     public DmRules Normalize() => this with { Minutes = Math.Clamp(Minutes, MinMinutes, MaxMinutes) };
     [JsonIgnore] public bool Valid => Minutes is >= MinMinutes and <= MaxMinutes;
@@ -54,6 +58,10 @@ public static class DmFixed {
     public const int AssistDamage = 20; public const double AssistSeconds = 10;
     /// <summary>Default per-life throwables when the host allows them: at most 3 in all, 2 flashbangs, 1 of each other kind.</summary>
     public const int GrenadesPerLife = 3, FlashPerLife = 2, OtherGrenadeEach = 1;
+    /// <summary>User (2026-10-21 player request "玩家不会饿和冷"): while the mode governs the world a player's food and body
+    /// temperature are held here - the values the engine itself uses where survival mechanics are off - so nobody gets
+    /// hungry or cold, and no hunger or cold message or injury comes.</summary>
+    public const float Food = .9f, Temperature = 12f;
     /// <summary>Design limit of players in one match (the platform's own limit applies as well).</summary>
     public const int MaxPlayers = 16;
     /// <summary>Default first choice of distance between a spawn and the nearest enemy, in blocks (relaxed when no point has it).</summary>
