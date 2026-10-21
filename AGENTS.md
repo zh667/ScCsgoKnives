@@ -20,7 +20,7 @@ Quality goal: preserve accepted functionality and compatibility while making res
 - Every commit must follow Conventional Commits: `<type>(<optional scope>): <description>` (for example, `feat(tactical): add airdrop guards`, `fix(travel): preserve gun state`, or `docs: clarify branch workflow`). Keep commits focused, reviewable and limited to the task's own changes.
 - After completing the scoped changes and applicable verification, commit and push the task branch to its corresponding remote branch. Report the branch, commits, verification and any remaining acceptance gaps for review.
 - Merge into `main` only after the user explicitly approves merging that specific task's changes. Approval to develop, commit or push is not merge approval; approval for a previous task does not carry over. Until approval arrives, leave the changes on the remote task branch and do not merge or enable automatic merging into `main`.
-- Use PRs and the required GitHub checks; follow [Git/CI gates and release tags](docs/agent-guide/git-and-ci.md). A passing CI build is not full release acceptance.
+- Use PRs and manual, change-appropriate verification; follow [Git review and release tags](docs/agent-guide/git-and-release.md). GitHub CI is disabled by user choice; do not reintroduce automatic CI or required status checks without a new user request.
 
 ## Code quality and architecture
 

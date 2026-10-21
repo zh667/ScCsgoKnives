@@ -1,15 +1,15 @@
-# Git quality gates (2026-10-21)
+# Git protection and release identities; CI removed (2026-10-21)
 
 Status: review; implementation and remote configuration complete, PR #14 awaits task-specific merge approval.
 Current writer: Windows Codex, isolated worktree outside the Syncthing source tree.
-User-authorized scope: protect main, add appropriate real CI checks, and establish official version tags. Merging this task is still subject to the specific approval rule in AGENTS.md.
+User-authorized scope: protect main and establish official version tags. The user's later instruction "CI都去掉吧" supersedes the initial request to add CI: disable the existing build workflow, remove its YAML and the added CI-only wrapper, and remove required status checks. Preserve local test projects. Merging this task is still subject to the specific approval rule in AGENTS.md.
 Baseline: main 4cd1560e734c4f1c6527e2bb8111c04e57b541e6.
 Branch: chore/git-quality-gates-20261021.
 
 ## Acceptance
 
-- Server-side main protection requires PRs, build and behavior checks, current base, resolved review conversations, and blocks force push/deletion, including administrators. Zero mandatory reviewer approvals allows the sole maintainer to merge approved work.
-- CI executes existing DeathmatchCheck rules against production assemblies, rejects failures/missing or empty results and retains report/input identities.
+- Server-side main protection requires PRs and resolved review conversations, and blocks force push/deletion, including administrators. Zero mandatory reviewer approvals allows the sole maintainer to merge approved work. No required CI status checks remain.
+- No automatic build/test CI runs on pushes or PRs. Local gameplay test projects remain available for manual checks.
 - The 2026-10-21 official 1.5.0 package family is identified by an annotated tag at its evidenced build source, with verified package hashes. Historical versions without a verified source commit are not guessed.
 - No gameplay/resource/package changes, installation, merging main or alteration of the original checkout's four pre-existing untracked files.
 
@@ -17,14 +17,22 @@ Branch: chore/git-quality-gates-20261021.
 
 The existing output/release-1.5.0/manifest.json records source commit 13171aa1cdf68d552fde813d3db2462112d1979e. All four current output package sizes and SHA-256 values were independently read and matched that manifest. The committed release report is docs/tasks/release-1.5.0-20261021.md at 4cd1560. Changes between 13171aa and 4cd1560 only touch release documentation and tooling, not production src/ files.
 
-## Validation and remote configuration
+## Current remote configuration and verification
+
+- GitHub build workflow 343550353 was disabled and read back as `disabled_manually`. The latest listed runs were already completed; no active build/test run needed cancellation.
+- The main required-status-checks configuration was removed and read back as null. Required PRs, zero mandatory reviewer approvals, admin enforcement, resolved conversations, and the force-push/deletion prohibitions remain.
+- Removed `.github/workflows/build.yml` (including the pre-existing build CI) and `tools/ci-checks.ps1` from this branch. Renamed the current workflow guide to docs/agent-guide/git-and-release.md and removed active instructions to require CI. No local test project or game source was removed.
+- PR #14 is updated to the final scope: main protection, release identities and removal of CI. It remains unmerged; no auto-merge is enabled. The disabled server workflow already stops CI while the YAML deletion awaits merge approval.
+- The annotated tag and verified release manifest remain unchanged.
+
+## Historical CI validation (superseded; not an active requirement)
 
 - Local exact entrypoint `./tools/dev.ps1 pwsh -NoProfile -File tools/ci-checks.ps1`: 254/254 checks passed; report and DLL hashes retained in .tmp/ci-results. Existing dependency/compiler warnings remain visible.
 - `git diff --check` passed. The tracked release identity manifest matches the existing four output packages.
-- GitHub push run 39618455299 and PR run 39618505853 passed both `build` and `behavior-checks` for implementation commit bbff00f. The PR's downloaded artifact reports 254/254, zero failures, engine package 1.9.3.1, and tested merge commit 7e2abc845c8ed0a2420b5392e764f29384dbb433. Subsequent documentation-only receipts are rechecked by the PR's current checks.
-- Main protection applied and read back: protected=true; PR required with zero mandatory reviewer approvals; strict checks `build` and `behavior-checks`, bound to GitHub Actions app 15368; admin enforcement and conversation resolution enabled; force push and deletion disabled.
+- GitHub push run 39618455299 and PR run 39618505853 passed both `build` and `behavior-checks` for implementation commit bbff00f. The PR's downloaded artifact reports 254/254, zero failures, engine package 1.9.3.1, and tested merge commit 7e2abc845c8ed0a2420b5392e764f29384dbb433. These results are historical evidence, not current CI requirements.
+- Earlier main protection required `build` and `behavior-checks`; those status-check requirements were subsequently removed at the user's request.
 - Annotated tag `v1.5.0-build.20261021` pushed and read back: tag object 181d43d30f8c9a3d05672ddb62228d9746c1d3e3, peeled source commit 13171aa1cdf68d552fde813d3db2462112d1979e. It is annotated, not cryptographically signed. Package hashes and limitations are in the annotation and docs/releases/1.5.0-build.20261021.json. No older release tag was guessed.
-- PR: https://github.com/zh667/ScCsgoKnives/pull/14. No main merge or automatic merge enabled. Other PRs will also need the new `behavior-checks` job; merge this policy PR first, then update their branches from main.
+- PR: https://github.com/zh667/ScCsgoKnives/pull/14. No main merge or automatic merge enabled. Other PRs no longer need either CI status check.
 
 ## Cleanup receipt
 
