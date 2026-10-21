@@ -2,19 +2,48 @@ name: build
 
 on:
   push:
+    branches: ['**']
   pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
-      - run: dotnet build ScCsgoKnives.sln -c Release
+      - run: ./tools/dev.ps1 dotnet build ScCsgoKnives.sln -c Release
       - uses: actions/upload-artifact@v7
         with:
           name: ScCsgoKnives-scmod
           path: src/ScCsgoKnives/bin/Release/ScCsgoKnives.scmod
+          if-no-files-found: error
+
+  behavior-checks:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Run offline gameplay regressions
+        run: ./tools/dev.ps1 pwsh -NoProfile -File tools/ci-checks.ps1
+      - name: Retain behavior results even on failure
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: behavior-check-results
+          path: .tmp/ci-results/
+          if-no-files-found: error
 

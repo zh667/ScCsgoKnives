@@ -1,0 +1,17 @@
+{
+  "version": "1.5.0",
+  "date": "2026-10-21",
+  "tag": "v1.5.0-build.20261021",
+  "sourceCommit": "13171aa1cdf68d552fde813d3db2462112d1979e",
+  "releaseRecordCommit": "4cd1560e734c4f1c6527e2bb8111c04e57b541e6",
+  "releaseRecord": "docs/tasks/release-1.5.0-20261021.md",
+  "sourceManifest": "output/release-1.5.0/manifest.json",
+  "packages": [
+    {"file": "[API1.9]CS武器1.5.0-全量包.scmod", "bytes": 531277608, "sha256": "faf1071c142073628956affde48f8900c3166679d6133beee504ba922638b975"},
+    {"file": "[API1.9]CS武器1.5.0-轻量包.scmod", "bytes": 35782081, "sha256": "48ef04ff24b61843617a24e063e14099b254d4ff0526d006e516be1054c0ca16"},
+    {"file": "[API1.9]CS武器1.5.0-探员包.scmod", "bytes": 42805722, "sha256": "b6dd6f7dd4a615cd9d3ce127364de3f4ee1014967fbb4e917c009e362133ef68"},
+    {"file": "[API1.9]CS武器1.5.0-死亡竞赛.scmod", "bytes": 371960, "sha256": "aea705b0eb068f45bde183a5e0f9d5105bb42abdca4cb1f3c58e00ddc421d767"}
+  ],
+  "verification": "Package sizes and SHA-256 independently verified against the existing output manifest on 2026-10-21; this records the existing release and does not rebuild or requalify it.",
+  "acceptanceLimits": ["Known baseline test failures are detailed in the release record.", "Android and phone-hosted multiplayer were not tested for this release.", "User visual acceptance remains pending as listed in the release record."]
+}
