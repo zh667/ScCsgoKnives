@@ -239,14 +239,14 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel, IScLogicalP
     }
     void DrawGun(Camera camera,int value){
         if(!EffectiveGunStats.TrySnapshotValue(value,out var state))return;
-        string asset=GunSpec.All[state.Variant].Name;bool legacy;Texture2D texture;ScNpcWeaponGeometry weapon;
+        string asset=GunSpec.All[state.Variant].Name;string material;bool legacy;Texture2D texture;ScNpcWeaponGeometry weapon;
         using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponResolve,asset)){
-            texture=ScGunVisualMaterial.Load(asset,state.SkinId,out var material);legacy=ScGunNativeMesh.UsesLegacy(asset,material);
+            texture=ScGunVisualMaterial.Load(asset,state.SkinId,out material);legacy=ScGunNativeMesh.UsesLegacy(asset,material);
         }
         using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponBuild,asset)){
             weapon=ScNpcWeaponGeometry.For(asset,legacy);
             // Match native fallback: never put a legacy paint on factory geometry.
-            if(weapon==null&&legacy){legacy=false;texture=ScGunVisualMaterial.Load(asset,0,out _);weapon=ScNpcWeaponGeometry.For(asset);}
+            if(weapon==null&&legacy){legacy=false;texture=ScGunVisualMaterial.Load(asset,0,out material);weapon=ScNpcWeaponGeometry.For(asset);}
         }
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.WeaponDraw,asset);
         var hand=Model.FindBone("hand_R",false);
@@ -254,13 +254,18 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel, IScLogicalP
         var world=(weapon.WorldRootInverse*Actions.PropFrame(asset,"weapon",AbsoluteBoneTransformsForCamera))*camera.InvertedViewMatrix;
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var p=world.Translation;
         var env=new DrawBlockEnvironmentData{DrawBlockMode=DrawBlockMode.ThirdPerson,InWorldMatrix=world,Owner=Entity,SubsystemTerrain=terrain,Light=terrain.Terrain.GetCellLight(Terrain.ToCell(p.X),Terrain.ToCell(p.Y),Terrain.ToCell(p.Z))};
-        var view=world*camera.ViewMatrix;var renderer=Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer;
+        var renderer=Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer;
         string bodyTexture=asset+"_hd";
+        var lighting=KnifePbrRenderer.FirstPersonLighting(camera,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
         foreach(var group in weapon.Groups){if(group.Silencer&&state.SilencerOff||!Actions.ShowWorldPartFor(asset,group,VisualAction))continue;var tex=group.Texture==bodyTexture?texture:ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/"+group.Texture);
             var part=Actions.WorldPartFor(asset,group,AbsoluteBoneTransformsForCamera);var partView=part.Transform;
-            if(group.VertexBones==null&&ScNpcWeaponRenderer.Queue(renderer,part.Mesh,tex,partView,env.Light,legacy,Project))continue;
-            ScNpcWeaponRenderer.ReserveFallback(renderer,part.Mesh,tex,legacy);
-            if(legacy)ScGunNativeMesh.DrawWorld(renderer,part.Mesh,tex,Color.White,1,ref partView,env);else BlocksManager.DrawMeshBlock(renderer,part.Mesh,tex,Color.White,1,ref partView,env);}
-        ScStatTrakRenderer.DrawThirdPerson(value,asset,legacy,view,renderer,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
+            if(group.VertexBones==null&&ScNpcWeaponRenderer.Queue(renderer,part.Mesh,tex,partView,env.Light,legacy,Project,
+                group.Texture==bodyTexture?material:group.Texture,CsmcKnifeRig.KnifeCount+state.Variant,camera.InvertedViewMatrix,lighting))continue;
+            ScNpcWeaponRenderer.ReserveFallback(renderer,part.Mesh,tex,true);
+            ScGunNativeMesh.DrawWorld(renderer,part.Mesh,tex,Color.White,1,ref partView,env);}
+        if(ScGunStatTrak.For(asset,legacy) is {} attachment && Actions.HasProp(asset,attachment.Bone))
+            ScStatTrakRenderer.DrawPlaced(value,asset,legacy,
+                ScStatTrakRenderer.ActorAttachment(attachment,Actions.PropFrame(asset,attachment.Bone,AbsoluteBoneTransformsForCamera)),
+                renderer,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
     }
 }

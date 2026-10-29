@@ -99,14 +99,32 @@ public static class ScStatTrakRenderer {
         }
     }
     public static void DrawThirdPerson(int value, string asset, bool legacy, Matrix view, PrimitivesRenderer3D renderer, float light) {
-        if (!Counter(value, asset, out long kills)) return;
+        if (!Counter(value, asset, out _)) return;
         if (!s_worldFrames.TryGetValue((asset,legacy), out var local)) {
             var pose = Cs2Rig.Sample(asset, "idle", 0);
             if (!AttachmentWorld(asset, legacy, pose, out var attachment)) return;
             s_worldFrames[(asset,legacy)] = local = attachment * ScThirdPersonWeapon.LocalPlacement(pose);
         }
+        DrawPlaced(value, asset, legacy, local * view, renderer, light);
+    }
+
+    /// <summary>CS actors already supply an animated prop bone in view-space metres.
+    /// Use the attachment's own parent (weapon_offset or weapon_r), never an idle viewmodel root.</summary>
+    public static Matrix ActorAttachment(ScGunStatTrak.Placement attachment, Matrix boneView) =>
+        attachment.Matrix * Matrix.CreateScale(.0254f) * boneView;
+
+    public static void DrawAnimatedThirdPerson(int value, string asset, bool legacy, ScThirdPersonWeapon weapon,
+        Cs2Rig.Pose pose, Matrix view, PrimitivesRenderer3D renderer, float light) {
+        if (!Counter(value, asset, out _)) return;
+        if (pose is null) { DrawThirdPerson(value, asset, legacy, view, renderer, light); return; }
+        if (!AttachmentWorld(asset, legacy, pose, out var attachment)) return;
+        DrawPlaced(value, asset, legacy, attachment * weapon.RigPlacement(pose) * view, renderer, light);
+    }
+
+    /// <summary>The caller owns the final attachment frame; this method never guesses a pose.</summary>
+    public static void DrawPlaced(int value, string asset, bool legacy, Matrix world, PrimitivesRenderer3D renderer, float light) {
+        if (!Counter(value, asset, out long kills) || !KnifeDiagnostics.IsFinite(world)) return;
         EnsureMeshes(kills);
-        Matrix world = local * view;
         Queue(s_body, Texture(ScGunStatTrak.ModuleMaterial), world, new Color(light,light,light), renderer);
         Queue(s_display, Texture(ScGunStatTrak.DigitAtlas), world, Color.White, renderer);
     }

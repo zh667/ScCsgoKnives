@@ -8,11 +8,30 @@ namespace Game;
 // Queues only transforms; native renderer still controls when extras are flushed.
 public static class ScNpcWeaponRenderer {
     [StructLayout(LayoutKind.Sequential)]
-    struct Vertex {public Vector3 Position;public Color Color;public Vector2 UV;public float Emissive;}
-    static readonly VertexDeclaration declaration=new(new VertexElement(0,VertexElementFormat.Vector3,"POSITION"),new VertexElement(12,VertexElementFormat.NormalizedByte4,"COLOR"),new VertexElement(16,VertexElementFormat.Vector2,"TEXCOORD"),new VertexElement(24,VertexElementFormat.Single,"EMISSIVE"));
+    struct Vertex {public Vector3 Position;public Color Color;public Vector2 UV;public float Emissive;public Vector3 Normal;}
+    static readonly VertexDeclaration declaration=new(new VertexElement(0,VertexElementFormat.Vector3,"POSITION"),new VertexElement(12,VertexElementFormat.NormalizedByte4,"COLOR"),new VertexElement(16,VertexElementFormat.Vector2,"TEXCOORD"),new VertexElement(24,VertexElementFormat.Single,"EMISSIVE"),new VertexElement(28,VertexElementFormat.Vector3,"NORMAL"));
+    /// <summary>The v1 world cache stores positions/UVs but no normals. Reconstruct once per shared mesh,
+    /// preserving its vertex splits. OBJ caches contain reverse-winding copies of every triangle: these
+    /// must not cancel the front face. No positions, UVs, indices or cache bytes are changed.</summary>
+    public static Vector3[] SurfaceNormals(BlockMesh source) {
+        var normals=new Vector3[source.Vertices.Count];
+        var triangles=new HashSet<(int,int,int)>();
+        for(int i=0;i<source.Indices.Count;i+=3){
+            int a=source.Indices.Array[i],b=source.Indices.Array[i+1],c=source.Indices.Array[i+2];
+            int lo=Math.Min(a,Math.Min(b,c)),hi=Math.Max(a,Math.Max(b,c));
+            if(!triangles.Add((lo,a+b+c-lo-hi,hi)))continue;
+            var n=Vector3.Cross(source.Vertices.Array[b].Position-source.Vertices.Array[a].Position,
+                source.Vertices.Array[c].Position-source.Vertices.Array[a].Position);
+            if(!float.IsFinite(n.LengthSquared()))continue;
+            normals[a]+=n;normals[b]+=n;normals[c]+=n;
+        }
+        for(int i=0;i<normals.Length;i++)normals[i]=normals[i].LengthSquared()>1e-20f?Vector3.Normalize(normals[i]):Vector3.UnitY;
+        return normals;
+    }
     sealed class Vertices(BlockMesh source):VertexBuffer(declaration,source.Vertices.Count){
         public void Upload(){
-            var data=new Vertex[source.Vertices.Count];for(int i=0;i<data.Length;i++){var v=source.Vertices.Array[i];data[i]=new(){Position=v.Position,Color=v.Color,UV=v.TextureCoordinates,Emissive=v.IsEmissive?1:0};}
+            var normals=SurfaceNormals(source);
+            var data=new Vertex[source.Vertices.Count];for(int i=0;i<data.Length;i++){var v=source.Vertices.Array[i];data[i]=new(){Position=v.Position,Color=v.Color,UV=v.TextureCoordinates,Emissive=v.IsEmissive?1:0,Normal=normals[i]};}
             SetData(data,0,data.Length);
         }
         public override void HandleDeviceReset(){base.HandleDeviceReset();Upload();}
@@ -34,16 +53,20 @@ public static class ScNpcWeaponRenderer {
         }
         public void Dispose(){Vertices?.Dispose();Indices?.Dispose();}
     }
-    readonly record struct Command(Mesh Mesh,Texture2D Texture,Matrix Transform,float Light,SamplerState Sampler,Project Project);
+    readonly record struct Command(Mesh Mesh,Texture2D Texture,Matrix Transform,float Light,SamplerState Sampler,Project Project,
+        string Material,int Variant,Matrix ViewToWorld,KnifePbrRenderer.Lighting Lighting);
     sealed class Batch:BaseBatch {
         public readonly List<Command> Commands=new(128);
         public override bool IsEmpty()=>Commands.Count==0;
         public override void Clear()=>Commands.Clear();
         public override void Flush(Matrix matrix,Vector4 color,bool clearAfterFlush=true){
             try{
-                Display.DepthStencilState=Engine.Graphics.DepthStencilState.Default;Display.RasterizerState=Engine.Graphics.RasterizerState.CullCounterClockwiseScissor;Display.BlendState=Engine.Graphics.BlendState.AlphaBlend;
                 foreach(var c in Commands){
                     using var timing=ScTacticalPerformance.Measure(c.Project,ScTacticalPerformance.Stage.WeaponSubmit);
+                    if(c.Material!=null&&color==Vector4.One&&KnifePbrRenderer.TryDrawBuffers(c.Mesh.Vertices,c.Mesh.Indices,c.Mesh.Count,
+                        c.Texture,c.Material,c.Transform,matrix,c.ViewToWorld,c.Lighting,c.Variant))continue;
+                    // Each draw restores its state, including after a PBR command or unavailable material.
+                    Display.DepthStencilState=Engine.Graphics.DepthStencilState.Default;Display.RasterizerState=Engine.Graphics.RasterizerState.CullCounterClockwiseScissor;Display.BlendState=Engine.Graphics.BlendState.AlphaBlend;
                     shader.GetParameter("u_worldViewProjectionMatrix").SetValue(c.Transform*matrix);shader.GetParameter("u_color").SetValue(color);shader.GetParameter("u_light").SetValue(c.Light);
                     shader.GetParameter("u_texture").SetValue(c.Texture);shader.GetParameter("u_samplerState").SetValue(c.Sampler);
                     Display.DrawIndexed(PrimitiveType.TriangleList,shader,c.Mesh.Vertices,c.Mesh.Indices,0,c.Mesh.Count);
@@ -83,7 +106,8 @@ public static class ScNpcWeaponRenderer {
         foreach(var pair in batches){pair.Value.Clear();pair.Key.m_allBatches.Remove(pair.Value);}batches.Clear();
         foreach(var mesh in meshes.Values)mesh.Dispose();meshes.Clear();shader?.Dispose();shader=null;failed=false;
     }
-    public static bool Queue(PrimitivesRenderer3D renderer,BlockMesh mesh,Texture2D texture,Matrix transform,int light,bool legacy,Project project=null){
+    public static bool Queue(PrimitivesRenderer3D renderer,BlockMesh mesh,Texture2D texture,Matrix transform,int light,bool legacy,Project project=null,
+        string material=null,int variant=0,Matrix viewToWorld=default,KnifePbrRenderer.Lighting lighting=default){
         if(failed)return false;if(mesh.Indices.Count==0)return true;
         try{
             if(!Prepare())return false;
@@ -92,7 +116,8 @@ public static class ScNpcWeaponRenderer {
                 gpu=new(mesh);meshes.Add(mesh,gpu);
             }
             var batch=batches.GetValue(renderer,static r=>{var b=new Batch{Layer=0};r.m_allBatches.Add(b);r.m_sortNeeded=true;return b;});
-            batch.Commands.Add(new(gpu,texture,transform,LightingManager.LightIntensityByLightValue[Math.Clamp(light,0,15)],legacy?SamplerState.LinearWrap:SamplerState.PointClamp,project));return true;
+            batch.Commands.Add(new(gpu,texture,transform,LightingManager.LightIntensityByLightValue[Math.Clamp(light,0,15)],
+                material!=null||legacy?SamplerState.LinearWrap:SamplerState.PointClamp,project,material,variant,viewToWorld,lighting));return true;
         }catch(Exception e){failed=true;KnifeDiagnostics.WarnOnce("npc-gpu",$"NPC static buffers unavailable: {e.Message}; using original renderer.");return false;}
     }
     // The old CPU path truncates lighting to byte precision before interpolation.

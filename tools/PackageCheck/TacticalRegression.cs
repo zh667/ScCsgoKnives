@@ -191,7 +191,7 @@ static class TacticalRegression {
                         var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
                         var vertices=renderer.TexturedBatches.SelectMany(b=>b.TriangleVertices).ToArray();
                         Require(vertices.Length>24&&vertices.All(v=>float.IsFinite(v.Position.X+v.Position.Y+v.Position.Z)&&v.TexCoord.X>=0&&v.TexCoord.X<=1&&v.TexCoord.Y>=0&&v.TexCoord.Y<=1),"invalid 3D item draw");
-                        Require(block.DefaultCategory=="CS武器","wrong creative category");
+                        Require(block.DefaultCategory==WeaponCategoryContract.For(core),"wrong creative category");
                     }
                     } finally {surfaceField.SetValue(null,previousSurface);}
             });

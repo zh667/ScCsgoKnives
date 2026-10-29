@@ -1,0 +1,411 @@
+{
+  "status": "candidate-awaiting-gameplay-visual-acceptance",
+  "branch": "fix/issue9-counter-20261029",
+  "baseline": "4cd1560",
+  "packages": {
+    "全量": {
+      "file": "[API1.9]CS武器1.5.0-全量包.scmod",
+      "bytes": 531280669,
+      "sha256": "48efbe301a182e4d52a768498a834139284bb0f0e55c56179b56695d2b530c6c",
+      "baselineSha256": "faf1071c142073628956affde48f8900c3166679d6133beee504ba922638b975",
+      "changed": {
+        "Assets/Lang/en-US.json": "1100d4825935a2e64e5348dffddad0d7d46e1a9afffc7adafaec0a3e5409922f",
+        "Assets/Lang/zh-CN.json": "48ff705d7b30c29024d4392101c183c31b24b53df22db09e11d4931a5d128a69",
+        "Assets/ScCsgoKnivesBlocksData.csv": "b5146a43b8dd2bf301f3f2e714e624d8ac21b39df0f015e0a081f8acb234fc32",
+        "Integrations/ScCsgoAppearance.bin": "d9cae3c2048faf32c292f7c50bd3645e711b10e145fde1a3c6b27f8bd6cdc61c",
+        "Integrations/ScCsgoBundle.json": "724d15b03397fc70369613dfff437989230263ba31efb6d928b76d1263b792a8",
+        "ScCsgoKnives.dll": "d86511331aec8fd3b1f736ca436f01cd5f865bfaba59b4252d4ee0bfda106671",
+        "ScCsgoTactical.dll": "79974e7255553a71bc8a93332b7d718c062e5da4eb8a89e15394b0983038f2aa",
+        "ScCsgoVoice.dll": "ceb7303d3725965eddd9e580fb371aaf51083ee45cc864305cb334867f5acbc8",
+        "Net/ScCsgoNet.bin": "d7015672875ecdd9a946e151f7077113d29cbf8a4fb04fccc368027f9b1b2a9d",
+        "Net/ScCsgoNetCompat.bin": "3e474f760081c9a3601ffe82b505605e862c4bf4f9bf72a9b4bbdb87ede11a6f"
+      },
+      "unchangedMembers": 1712
+    },
+    "轻量": {
+      "file": "[API1.9]CS武器1.5.0-轻量包.scmod",
+      "bytes": 35785106,
+      "sha256": "ba9aab677f9ab8b331c99d9230b1dc30f96e313c5deddd1423706250a263cf6b",
+      "baselineSha256": "48ef04ff24b61843617a24e063e14099b254d4ff0526d006e516be1054c0ca16",
+      "changed": {
+        "Assets/Lang/en-US.json": "1100d4825935a2e64e5348dffddad0d7d46e1a9afffc7adafaec0a3e5409922f",
+        "Assets/Lang/zh-CN.json": "48ff705d7b30c29024d4392101c183c31b24b53df22db09e11d4931a5d128a69",
+        "Assets/ScCsgoKnivesBlocksData.csv": "b5146a43b8dd2bf301f3f2e714e624d8ac21b39df0f015e0a081f8acb234fc32",
+        "ScCsgoKnives.dll": "ea18af1098e87587967f97b7eeeda158811eaa6b0a29b8f4804d0f2e04f97300",
+        "Net/ScCsgoNet.bin": "d7015672875ecdd9a946e151f7077113d29cbf8a4fb04fccc368027f9b1b2a9d",
+        "Net/ScCsgoNetCompat.bin": "3e474f760081c9a3601ffe82b505605e862c4bf4f9bf72a9b4bbdb87ede11a6f"
+      },
+      "unchangedMembers": 1346
+    },
+    "探员": {
+      "file": "[API1.9]CS武器1.5.0-探员包.scmod",
+      "bytes": 42806026,
+      "sha256": "7fabaf8d6f460870d11c6db71bf2d8ee5222f8a8b2ca7cf3e085734b73820031",
+      "baselineSha256": "b6dd6f7dd4a615cd9d3ce127364de3f4ee1014967fbb4e917c009e362133ef68",
+      "changed": {
+        "Integrations/ScCsgoAppearance.bin": "f7234de87d858ab9617c9e5e1424db83738969c321443e44f5e78e2e376135f7",
+        "ScCsgoTactical.dll": "4dee4f7cf62ba7bfee7622a6706566e8a7531994c5322d2bedf09973107043c9",
+        "ScCsgoVoice.dll": "ceb7303d3725965eddd9e580fb371aaf51083ee45cc864305cb334867f5acbc8"
+      },
+      "unchangedMembers": 372
+    }
+  },
+  "steps": {
+    "build": {
+      "step": "build",
+      "passed": true,
+      "seconds": 30.7
+    },
+    "appearance": {
+      "step": "appearance",
+      "passed": true,
+      "seconds": 3.25
+    },
+    "package": {
+      "step": "package",
+      "passed": true,
+      "seconds": 44.58
+    },
+    "gates": {
+      "step": "gates",
+      "passed": true,
+      "seconds": 127.47
+    },
+    "compat": {
+      "step": "compat",
+      "passed": true,
+      "seconds": 33.14
+    },
+    "api-contract": {
+      "step": "api-contract",
+      "passed": true,
+      "seconds": 7.59
+    },
+    "api-suites": {
+      "step": "api-suites",
+      "passed": true,
+      "seconds": 336.94
+    },
+    "netloop": {
+      "step": "netloop",
+      "passed": true,
+      "seconds": 24.84
+    },
+    "appnet": {
+      "step": "appnet",
+      "passed": true,
+      "seconds": 10.22
+    },
+    "locales": {
+      "step": "locales",
+      "passed": true,
+      "seconds": 53.17
+    },
+    "presentation": {
+      "step": "presentation",
+      "passed": true,
+      "seconds": 15.17
+    },
+    "current-compat": {
+      "step": "current-compat",
+      "passed": true,
+      "seconds": 4.34
+    }
+  },
+  "reports": {
+    "main-full": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\main-full.json",
+      "sha256": "562db254d0730bf86c8effe9695a4f376bfe96208a16247326d229274add7ff1",
+      "checks": 14203,
+      "failed": [
+        "smoke-view/full/clear-lines-of-sight-stay-clear",
+        "smoke-view/growing/clear-lines-of-sight-stay-clear",
+        "smoke-view/fading/clear-lines-of-sight-stay-clear"
+      ],
+      "errors": []
+    },
+    "main-lite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\main-lite.json",
+      "sha256": "9b06d500d91d3b02c1e6d64b116cab3a7dbd9bfda050ed29eb96dd5afcf68634",
+      "checks": 14512,
+      "failed": [
+        "smoke-view/full/clear-lines-of-sight-stay-clear",
+        "smoke-view/growing/clear-lines-of-sight-stay-clear",
+        "smoke-view/fading/clear-lines-of-sight-stay-clear"
+      ],
+      "errors": []
+    },
+    "baseline-main-full": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\baseline-main-full.json",
+      "sha256": "b87c23d89a8a175156323137aa4abaf7bbe7bce03734f09472c55949a700fe99",
+      "checks": 14203,
+      "failed": [
+        "smoke-view/full/clear-lines-of-sight-stay-clear",
+        "smoke-view/growing/clear-lines-of-sight-stay-clear",
+        "smoke-view/fading/clear-lines-of-sight-stay-clear"
+      ],
+      "errors": []
+    },
+    "baseline-main-lite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\baseline-main-lite.json",
+      "sha256": "083fad7c72e62d324bbcdad3e6ec5dc79620c7601c6be230b1fa442271b8ac73",
+      "checks": 14512,
+      "failed": [
+        "smoke-view/full/clear-lines-of-sight-stay-clear",
+        "smoke-view/growing/clear-lines-of-sight-stay-clear",
+        "smoke-view/fading/clear-lines-of-sight-stay-clear"
+      ],
+      "errors": []
+    },
+    "tactical-full-suite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\tactical-full-suite.json",
+      "sha256": "a853097c880855fa611745a9e009d754e5c5c0c602d4e8306b849a5ee6f1a7e9",
+      "checks": 142,
+      "failed": [
+        "optional-package-identity-and-no-bundled-engine",
+        "native-gltf/ct",
+        "native-gltf/t",
+        "npc-full-registry-reload-refuses-without-ammo-loss"
+      ],
+      "errors": []
+    },
+    "ai-full": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\ai-full.json",
+      "sha256": "16bac11c2468b4de676a02da9fdd029e5732b7dbe20e23216640bc2f045a9ec2",
+      "checks": 92,
+      "failed": [],
+      "errors": []
+    },
+    "ai-lite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\ai-lite.json",
+      "sha256": "5d50ee4a241e551d634aa8d6bf8e18647a1f75be279f690cda8856b1975d9476",
+      "checks": 92,
+      "failed": [],
+      "errors": []
+    },
+    "vf-full": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\vf-full.json",
+      "sha256": "be0b27389b265c2eb12f1b161a6b72fcd26d18e4750f71eda978e52093c55f66",
+      "checks": 292,
+      "failed": [],
+      "errors": []
+    },
+    "vf-lite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\vf-lite.json",
+      "sha256": "c68a01e97ef55d9935a8e7ad669497bca6517acf449e88c0faaffa15757bb6ca",
+      "checks": 292,
+      "failed": [],
+      "errors": []
+    },
+    "c4-full": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\c4-full.json",
+      "sha256": "4580f18a93c4d659db1965a08ae599aedb31efd59e3fd29b388e495629800735",
+      "checks": 140,
+      "failed": [],
+      "errors": []
+    },
+    "c4-lite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\c4-lite.json",
+      "sha256": "0d99856d0a0a17a5d633f6c922121ec3fbaaa206f69c1a50c81fa715b39f308c",
+      "checks": 140,
+      "failed": [],
+      "errors": []
+    },
+    "family": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\family.json",
+      "sha256": "02109f9a7bed4a2609d1a4287bda549dfcaf0d06c24ea45360dbd8085df15bcc",
+      "checks": 251,
+      "failed": [],
+      "errors": []
+    },
+    "switching-140": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\switching-140.json",
+      "sha256": "43625ac647b3328acf43a894f18f12236c8d036058fd244ed17d2bcb65b5c464",
+      "checks": 249,
+      "failed": [],
+      "errors": []
+    },
+    "switching-150": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\switching-150.json",
+      "sha256": "e18bbbcdbe27c149ebb3425c66d1e02301b800ccbc0c662f91171f3aaa60360d",
+      "checks": 251,
+      "failed": [],
+      "errors": []
+    },
+    "switching-current150": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\switching-current150.json",
+      "sha256": "52423c2d338c7694bcf1a172172b1fc9f6b1b5e70d5a395fc334d10c5d06b8e1",
+      "checks": 253,
+      "failed": [],
+      "errors": []
+    },
+    "netloop-compat": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\netloop-compat.json",
+      "sha256": "21f0a5befe06e21ca63deb756e7dc560282007efacd53536340ea4eba822b887",
+      "checks": 28,
+      "failed": [],
+      "errors": []
+    },
+    "netloop-nocompat": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\netloop-nocompat.json",
+      "sha256": "aa4a7eb49211203020b9f1bd287bb5e8ca016060c5ba937ae60bddb954ade166",
+      "checks": 28,
+      "failed": [],
+      "errors": []
+    },
+    "appnet-full": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\appnet-full.json",
+      "sha256": "ae38d26f1b55e258b0028a2d82379d43125c724277e48f3d6b8d580a8a1e91b4",
+      "checks": 19,
+      "failed": [],
+      "errors": []
+    },
+    "appnet-lite": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\appnet-lite.json",
+      "sha256": "ae38d26f1b55e258b0028a2d82379d43125c724277e48f3d6b8d580a8a1e91b4",
+      "checks": 19,
+      "failed": [],
+      "errors": []
+    },
+    "presentation/checks": {
+      "report": "E:\\projects\\ScCsgoKnives-issue9-counter\\.tmp\\dev-temp\\issue9-candidate\\presentation\\checks.json",
+      "sha256": "c657f26238e6d382c390338e4fa3f2d3f410a7c4a4682a98d68f31b91935e32d",
+      "checks": 10926,
+      "failed": [],
+      "errors": []
+    }
+  },
+  "nativeEngine": "1.9.3.1",
+  "nativeRunnerSha256": "845226bc59e5d4852d36c912011cd1d22e566a80164a13acf8e6ead7f08c7a95",
+  "localeOnly": {
+    "changed": {
+      "全量": [
+        "Assets/Lang/en-US.json"
+      ],
+      "轻量": [
+        "Assets/Lang/en-US.json"
+      ],
+      "探员": []
+    },
+    "allOtherMembersIdentical": true,
+    "binaryIdentity": "fb8b943184362b68dcab06378a62821d"
+  },
+  "engineSuites": {
+    "1.9.4": {
+      "officialPackages": {
+        "Survivalcraft": true,
+        "Engine": true,
+        "EntitySystem": true
+      },
+      "main-full": {
+        "checks": 14168,
+        "failed": 3,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "main-lite": {
+        "checks": 14477,
+        "failed": 3,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "ai-full": {
+        "checks": 92,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "ai-lite": {
+        "checks": 92,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "vf-full": {
+        "checks": 292,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      }
+    },
+    "1.9.5": {
+      "officialPackages": {
+        "Survivalcraft": true,
+        "Engine": true,
+        "EntitySystem": true
+      },
+      "main-full": {
+        "checks": 14168,
+        "failed": 3,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "main-lite": {
+        "checks": 14477,
+        "failed": 3,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "ai-full": {
+        "checks": 92,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "ai-lite": {
+        "checks": 92,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "vf-full": {
+        "checks": 292,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      }
+    },
+    "1.9.5.1": {
+      "officialPackages": {
+        "Survivalcraft": true,
+        "Engine": true,
+        "EntitySystem": true
+      },
+      "main-full": {
+        "checks": 14168,
+        "failed": 3,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "main-lite": {
+        "checks": 14477,
+        "failed": 3,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "ai-full": {
+        "checks": 92,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "ai-lite": {
+        "checks": 92,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      },
+      "vf-full": {
+        "checks": 292,
+        "failed": 0,
+        "newFailures": [],
+        "notRunHere": []
+      }
+    }
+  },
+  "notRun": [
+    "full-game sessions",
+    "Android gameplay",
+    "user visual acceptance"
+  ]
+}

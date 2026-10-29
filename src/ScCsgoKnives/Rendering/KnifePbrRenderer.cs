@@ -237,10 +237,32 @@ public static class KnifePbrRenderer {
         Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture = 0f, bool rigid = false, float scopeProjectionY = 0f) {
         if (baseColor is null || vertices is null || indices is null || indices.Length == 0) return false;
         if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawMesh(vertices, indices, baseColor, world, projection, in lighting, scopeAperture, rigid,scopeProjectionY)) return true;
-        if (!Enabled) return false;
-        if (!EnsureShared()) return false;
-        if (!TryGetNamedTextures(material, out Texture2D orm, out Texture2D normal)) return false;
-        if (!KnifeDiagnostics.IsFinite(world)) return false;
+        var shader = PrepareMesh(baseColor, material, world, projection, viewToWorld, in lighting, variant, scopeAperture, scopeProjectionY);
+        if (shader is null) return false;
+        if (rigid) ScRigidBuffers.Draw(shader, vertices, indices);
+        else Display.DrawUserIndexed(PrimitiveType.TriangleList, shader, Cs2SkinnedMesh.Declaration,
+            vertices, 0, vertices.Length, indices, 0, indices.Length);
+        return true;
+    }
+
+    /// <summary>World weapon batches retain their own buffers, so a crowd cannot thrash the small first-person cache.</summary>
+    public static bool TryDrawBuffers(VertexBuffer vertices, IndexBuffer indices, int count,
+        Texture2D baseColor, string material, Matrix world, Matrix projection, Matrix viewToWorld,
+        in Lighting lighting, int variant) {
+        if (baseColor is null || count == 0) return false;
+        if (ScUiSettings.SimpleMaterials && ScSimpleWeaponRenderer.DrawBuffers(vertices, indices, count, baseColor, world, projection, in lighting)) return true;
+        var shader = PrepareMesh(baseColor, material, world, projection, viewToWorld, in lighting, variant, 0, 0);
+        if (shader is null) return false;
+        // World caches may include explicit reverse-winding copies; retain their original world culling.
+        Display.RasterizerState = RasterizerState.CullCounterClockwiseScissor;
+        Display.DrawIndexed(PrimitiveType.TriangleList, shader, vertices, indices, 0, count);
+        return true;
+    }
+
+    static KnifePbrShader PrepareMesh(Texture2D baseColor, string material, Matrix world, Matrix projection,
+        Matrix viewToWorld, in Lighting lighting, int variant, float scopeAperture, float scopeProjectionY) {
+        if (!Enabled || !EnsureShared() || !KnifeDiagnostics.IsFinite(world)) return null;
+        if (!TryGetNamedTextures(material, out Texture2D orm, out Texture2D normal)) return null;
 
         Display.DepthStencilState = DepthStencilState.Default;
         Display.RasterizerState = RasterizerState.CullNoneScissor;
@@ -281,9 +303,6 @@ public static class KnifePbrRenderer {
         shader.WorldView.SetValue(world);
         shader.WorldViewProjection.SetValue(world * projection);
 
-        if (rigid) ScRigidBuffers.Draw(shader, vertices, indices);
-        else Display.DrawUserIndexed(PrimitiveType.TriangleList, shader, Cs2SkinnedMesh.Declaration,
-            vertices, 0, vertices.Length, indices, 0, indices.Length);
-        return true;
+        return shader;
     }
 }

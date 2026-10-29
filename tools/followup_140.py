@@ -221,6 +221,11 @@ def package(S):
         def dll(part, assembly):
             b = (S / edition / part / "source/bin/Release/net10.0" / f"{assembly}.dll").read_bytes(); assert sha(b) == builds[f"{edition}/{part}"]; return b
         if label != "探员": changes["ScCsgoKnives.dll"] = dll("core", "ScCsgoKnives")
+        # Locale files are product inputs too; rebuilding code over a released archive must not retain stale labels.
+        if label != "探员":
+            changes["Assets/ScCsgoKnivesBlocksData.csv"] = (tree / "src/ScCsgoKnives/Assets/ScCsgoKnivesBlocksData.csv").read_bytes()
+            for locale in (tree / "src/ScCsgoKnives/Assets/Lang").glob("*.json"):
+                changes["Assets/Lang/" + locale.name] = locale.read_bytes()
         if label != "轻量": changes["ScCsgoTactical.dll"] = dll("agents", "ScCsgoTactical"); changes["ScCsgoVoice.dll"] = dll("voice", "ScCsgoVoice")
         with zipfile.ZipFile(source) as z:
             entries = {i.filename: (i.compress_type, i.CRC, i.file_size, raw_member(z, i)) for i in z.infolist()}

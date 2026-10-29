@@ -7,7 +7,7 @@ public sealed class ScC4Block : ScNoDurabilityBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     Texture2D icon;
     public ScC4Block() {
-        DefaultDisplayName = "C4"; DefaultCategory = "CS武器"; CraftingId = "sccsgoc4";
+        DefaultDisplayName = "C4"; DefaultCategory = ScWeaponText.Category; CraftingId = "sccsgoc4";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 1; DefaultTextureSlot = 0;
         DefaultMeleePower = 0; DefaultProjectilePower = 0;
     }

@@ -21,7 +21,7 @@ public sealed class ScTacticalShieldBlock : ScOptionalTacticalBlock {
     public const int Life=2000;
     static BlockMesh mesh;
     static Texture2D texture;
-    public ScTacticalShieldBlock(){DefaultDisplayName="防爆盾";DefaultCategory="CS武器";CraftingId="sctacticalshield";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=Life;DefaultMeleePower=0;DefaultProjectilePower=0;FirstPersonScale=1;FirstPersonOffset=new(0,-.35f,-.65f);FirstPersonRotation=Vector3.Zero;InHandScale=1;InHandOffset=new(0,.3f,0);DefaultIconViewScale=.7f;DefaultIconViewOffset=new(1,1,2);}
+    public ScTacticalShieldBlock(){DefaultDisplayName="防爆盾";DefaultCategory=ScWeaponText.Category;CraftingId="sctacticalshield";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=Life;DefaultMeleePower=0;DefaultProjectilePower=0;FirstPersonScale=1;FirstPersonOffset=new(0,-.35f,-.65f);FirstPersonRotation=Vector3.Zero;InHandScale=1;InHandOffset=new(0,.3f,0);DefaultIconViewScale=.7f;DefaultIconViewOffset=new(1,1,2);}
     public static bool IsShield(int value)=>Terrain.ExtractContents(value)==BlocksManager.GetBlockIndex<ScTacticalShieldBlock>(true);
     public static int Wear(int value)=>Math.Clamp(Terrain.ExtractData(value),0,Life);
     public override int GetDamage(int value)=>Wear(value);
@@ -36,7 +36,7 @@ public sealed class ScTacticalShieldBlock : ScOptionalTacticalBlock {
 public sealed class ScTacticalBeaconBlock : ScOptionalTacticalBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     public static readonly string[] Names=["已停用的救援信标","CT 招募信标","T 招募信标","战术维修包"];
-    public ScTacticalBeaconBlock(){DefaultCategory="CS武器";CraftingId="sctacticalbeacon";IsPlaceable=false;IsCollidable=false;MaxStacking=10;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=2.4f;Behaviors=Available?"ScTactical":"";}
+    public ScTacticalBeaconBlock(){DefaultCategory=ScWeaponText.Category;CraftingId="sctacticalbeacon";IsPlaceable=false;IsCollidable=false;MaxStacking=10;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=2.4f;Behaviors=Available?"ScTactical":"";}
     public override void Initialize(){base.Initialize();if(!Available)return;TacticalItemMesh.LoadRadios();TacticalItemMesh.Load("repair_item");}
     public override Vector3 GetIconViewOffset(int value,DrawBlockEnvironmentData env)=>Terrain.ExtractData(value)==3?base.GetIconViewOffset(value,env):new(.7f,.4f,2);
     // This is one standalone image, not a tile of the vanilla 16 x 16 atlas.
@@ -55,7 +55,7 @@ public sealed class ScTacticalBeaconBlock : ScOptionalTacticalBlock {
 }
 public sealed class ScTacticalDefuserBlock : ScOptionalTacticalBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
-    public ScTacticalDefuserBlock(){DefaultDisplayName="拆弹钳";DefaultCategory="CS武器";CraftingId="sctacticaldefuser";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=3;}
+    public ScTacticalDefuserBlock(){DefaultDisplayName="拆弹钳";DefaultCategory=ScWeaponText.Category;CraftingId="sctacticaldefuser";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=3;}
     public override void Initialize(){base.Initialize();if(!Available)return;TacticalItemMesh.Load("defuser_item");}
     public override int GetTextureSlotCount(int value)=>1;
     public override int GetFaceTextureSlot(int face,int value)=>0;
@@ -65,7 +65,7 @@ public sealed class ScTacticalDefuserBlock : ScOptionalTacticalBlock {
 }
 public sealed class ScTacticalSquadBlock : ScOptionalTacticalBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
-    public ScTacticalSquadBlock(){DefaultDisplayName="敌队挑战信标";DefaultCategory="CS武器";CraftingId="sctacticalsquad";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=2.4f;Behaviors=Available?"ScTactical":"";}
+    public ScTacticalSquadBlock(){DefaultDisplayName="敌队挑战信标";DefaultCategory=ScWeaponText.Category;CraftingId="sctacticalsquad";IsPlaceable=false;IsCollidable=false;MaxStacking=1;Durability=-1;FirstPersonScale=1;FirstPersonOffset=new(.25f,-.25f,-.55f);InHandScale=1;DefaultIconViewScale=2.4f;Behaviors=Available?"ScTactical":"";}
     public override void Initialize(){base.Initialize();if(!Available)return;TacticalItemMesh.LoadRadios();}
     public override Vector3 GetIconViewOffset(int value,DrawBlockEnvironmentData env)=>new(.7f,.4f,2);
     public override string GetDisplayName(SubsystemTerrain terrain,int value)=>(Terrain.ExtractData(value)==1?"敌对 T 五人小队 · 挑战信标":"敌对 T 三人小队 · 挑战信标")+(Available?"":" · 需要探员包");
@@ -78,7 +78,7 @@ public sealed class ScTacticalSquadBlock : ScOptionalTacticalBlock {
 public sealed class ScAirdropBlock : ScOptionalTacticalBlock {
     BlockMesh world,item,icon;Texture2D texture;BoundingBox[] collision;
     public ScAirdropBlock(){
-        DefaultDisplayName="空投补给箱";DefaultCategory="CS武器";CraftingId="scairdrop";
+        DefaultDisplayName="空投补给箱";DefaultCategory=ScWeaponText.Category;CraftingId="scairdrop";
         IsTransparent=true;DefaultIsInteractive=true;MaxStacking=1;DefaultSoundMaterialName="Metal";
         Behaviors=Available?"ScAirdrops":"";Durability=-1;
         FirstPersonScale=.4f;FirstPersonOffset=new(.38f,-.25f,-.8f);FirstPersonRotation=new(0,30,0);

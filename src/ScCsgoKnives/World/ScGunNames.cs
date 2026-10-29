@@ -2,7 +2,8 @@ namespace Game;
 
 /// <summary>Player-facing names only. Never use these to encode a variant or resolve a resource.</summary>
 public static class ScGunNames {
-    public static string Of(string key) => key switch {
+    public static string Of(string key) => Variant(Array.FindIndex(GunSpec.All, g => g.Name == key));
+    static string Fallback(string key) => key switch {
         "ak47"=>"AK-47", "m4a1s"=>"M4A1-S", "awp"=>"AWP", "deagle"=>"沙漠之鹰",
         "glock18"=>"格洛克18", "usp_silencer"=>"USP-S", "m4a4"=>"M4A4", "famas"=>"法玛斯",
         "mp9"=>"MP9", "p90"=>"P90", "ssg08"=>"SSG 08", "fiveseven"=>"FN57", "hkp2000"=>"P2000",
@@ -13,10 +14,15 @@ public static class ScGunNames {
         "negev"=>"内格夫", "revolver"=>"R8 左轮", "elite"=>"双持贝瑞塔", "taser"=>"电击枪",
         _=>"未知枪械"
     };
-    public static string Variant(int variant) => variant>=0 && variant<GunSpec.All.Length ? Of(GunSpec.All[variant].Name) : "未知枪械";
+    public static string Variant(int variant) {
+        if (variant < 0 || variant >= GunSpec.All.Length) return ScWeaponText.Get("UnknownGun", "Unknown weapon");
+        // TryGetBlock falls back to :0; a missing translation must never rename another gun to AK-47.
+        return LanguageControl.TryGet(out string translated, "Blocks", $"{nameof(ScGunBlock)}:{variant}", "DisplayName")
+            && !string.IsNullOrWhiteSpace(translated) ? translated : Fallback(GunSpec.All[variant].Name);
+    }
     public static string Item(ScGunSnapshot s) => Variant(s.Variant)
         + (s.SkinId!=ScGunSkinCatalog.None ? " · "+ScGunSkinCatalog.NameOf(s.SkinId) : "")
-        + (s.CounterInstalled ? $" · 击杀计数器 Lv{s.Level}" : "");
+        + (s.CounterInstalled ? " · " + ScWeaponText.Counter(s.Level) : "");
     public static string Tier(ScSkinTier tier) => tier switch {
         ScSkinTier.Standard=>"标准费用", ScSkinTier.Premium=>"高级费用", ScSkinTier.Special=>"特殊费用", _=>"未知费用"
     };

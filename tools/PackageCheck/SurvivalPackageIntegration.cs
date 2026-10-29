@@ -60,7 +60,7 @@ static class SurvivalPackageIntegration {
                 foreach (var b in blocks) {
                     int[] values=b.GetCreativeValues().ToArray();
                     Check($"dynamic-index/{b.GetType().Name}/{pass}",b.IsIndexDynamic && values.All(v=>Terrain.ExtractContents(v)==b.BlockIndex),"two simulated mod loading orders; no fixed runtime contents");
-                    Check($"category/{b.GetType().Name}/{pass}",values.All(v=>b.GetCategory(v)=="CS武器"),"all CS variants belong to CS武器");
+                    Check($"category/{b.GetType().Name}/{pass}",values.All(v=>b.GetCategory(v)==WeaponCategoryContract.For(mod)),"all CS variants use the package's category identity");
                     if(b.GetType().Name is "ScAmmoBlock" or "ScGrenadeBlock" or "ScC4Block" or "ScChickenEggBlock") {
                         var find=mod.GetType("Game.ScWorkbenchExtension").GetMethod("Find");
                         foreach(int v in values)Check($"supply-help/{b.GetType().Name}/{Terrain.ExtractData(v)}/{pass}",find.Invoke(null,[v]) is not null&&find.Invoke(null,[Terrain.ReplaceLight(v,15)]) is not null,"station recipe resolves every variant and ignores light");

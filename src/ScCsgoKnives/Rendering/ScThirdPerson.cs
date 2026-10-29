@@ -196,8 +196,9 @@ public sealed class ScThirdPersonWeapon {
     public Matrix PartTransform(Group group,Cs2Rig.Pose pose) {
         if(pose==null||group.Bone==null)return Matrix.Identity;
         Matrix animated=group.Bone.StartsWith("@")?pose.GetPart(group.Bone[1..]):pose.Bones.GetValueOrDefault(group.Bone,Matrix.Identity);
-        return group.BindInverse*animated*Matrix.Invert(Root(pose))*idleRootPlacement;
+        return group.BindInverse*animated*RigPlacement(pose);
     }
+    public Matrix RigPlacement(Cs2Rig.Pose pose) => Matrix.Invert(Root(pose))*idleRootPlacement;
     public bool ShowPart(Group group,Cs2Rig.Pose pose,ScWeaponAction action) {
         string bone=group.Bone?.TrimStart('@');
         if(bone==null)return true;
@@ -721,7 +722,7 @@ public static class ScThirdPerson {
             if (state.Legacy) ScGunNativeMesh.DrawWorld(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref partView, env);
             else BlocksManager.DrawMeshBlock(human.m_subsystemModelsRenderer.PrimitivesRenderer, group.Mesh, texture, Color.White, 1f, ref partView, env);
         }
-        ScStatTrakRenderer.DrawThirdPerson(held, state.Asset, state.Legacy, view, human.m_subsystemModelsRenderer.PrimitivesRenderer,
+        ScStatTrakRenderer.DrawAnimatedThirdPerson(held, state.Asset, state.Legacy, state.Weapon, weaponPose, view, human.m_subsystemModelsRenderer.PrimitivesRenderer,
             LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
         return true;
     }

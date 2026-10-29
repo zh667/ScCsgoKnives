@@ -14,9 +14,11 @@ public static class ScKnifeSkinCatalog {
     public static int With(int variant, int skin) => (variant & 31) | ((skin & 3) << 5);
     public static int ForVariant(int variant) => Finish(variant) is not {} finish ? None : finish == "aa_fade" ? Fade : GammaDoppler;
     public static int Phase(int variant) => Finish(variant)?.StartsWith("am_gamma_doppler_phase") == true ? Finish(variant)[^1] - '0' : 0;
-    public static string Name(int skin, int variant) => skin == None ? "原厂外观" : Finish(variant) is null
-        ? "旧预览外观（无官方涂装）" : Finish(variant) == "am_ruby_marbleized" ? "多普勒 · 红宝石"
-        : Phase(variant) > 0 ? $"伽马多普勒 P{Phase(variant)}" : "渐变之色";
+    public static string Name(int skin, int variant) => skin == None ? ScWeaponText.Get("Factory", "Factory finish") : Finish(variant) is null
+        ? ScWeaponText.Get("LegacyKnifeFinish", "Legacy preview (no official finish)")
+        : Finish(variant) == "am_ruby_marbleized" ? ScWeaponText.Get("Ruby", "多普勒 · 红宝石")
+        : Phase(variant) > 0 ? ScWeaponText.Get("GammaDoppler", "Gamma Doppler P{0}", Phase(variant))
+        : ScWeaponText.Get("Fade", "Fade");
     // Unsupported Gamma in the old preview used skin 1. Preserve stored values
     // and knife identities while resolving the selected supported finish visually.
     public static string Texture(string asset, int skin, int variant) => !ScMinimalEdition.Enabled && skin != None && Finish(variant) is {} finish

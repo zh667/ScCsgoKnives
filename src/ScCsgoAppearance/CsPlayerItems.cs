@@ -11,7 +11,9 @@ public static class CsPlayerItems {
         string asset = ScThirdPerson.AssetFor(value, out var stance);
         int skin = stance == ScThirdPersonStance.Knife ? ScKnifeBlock.SkinOf(value) : ScGunBlock.SpecOf(value) != null ? ScGunBlock.SkinOf(value) : 0;
         Texture2D gunTexture = null;
-        bool native = asset != null && stance != ScThirdPersonStance.Knife && stance != ScThirdPersonStance.Grenade && ScGunNativeMesh.Resolve(asset, skin, out gunTexture, out _) != null;
+        string gunMaterial = null;
+        var spec = ScGunBlock.SpecOf(value);
+        bool native = asset != null && stance != ScThirdPersonStance.Knife && stance != ScThirdPersonStance.Grenade && ScGunNativeMesh.Resolve(asset, skin, out gunTexture, out gunMaterial) != null;
         var weapon = asset == null ? null : ScThirdPersonWeapon.For(asset, native);
         var actions=human.Entity.FindComponent<ComponentCsPlayerAppearance>().Pose.Actions;
         var world = weapon?.HasRightGrip == true
@@ -31,16 +33,25 @@ public static class CsPlayerItems {
         if (weapon == null) { block.DrawBlock(renderer, value, Color.White, block.GetInHandScale(value), ref view, env); return; }
         bool silencerOff = ScGunBlock.SpecOf(value) is { HasSilencer: true } && GunSpec.GetSilencerOff(Terrain.ExtractData(value));
         var action=ScNetPresentation.ActionOf(human.Entity);
-        foreach (var group in weapon.Groups) {
+        var lighting=KnifePbrRenderer.FirstPersonLighting(camera,LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light,0,15)]);
+        // Use the same bounded world-geometry owner as NPCs. The general third-person cache evicts
+        // after twelve weapons; retaining its old meshes in the GPU batch would grow on every weapon cycle.
+        var groups=spec != null ? ScNpcWeaponGeometry.For(asset,native)?.Groups ?? weapon.Groups : weapon.Groups;
+        foreach (var group in groups) {
             if(!actions.ShowWorldPart(weapon,group,action))continue;
             if (group.Silencer && silencerOff) continue;
             var texture = group.Texture == asset + "_hd" ? gunTexture : ContentManager.Get<Texture2D>("Textures/ScCsgoKnives/" +
                 (group.Texture == asset + "_cs2" && stance == ScThirdPersonStance.Knife ? ScKnifeSkinCatalog.Texture(asset, skin, ScKnifeBlock.GetVariant(value)) : group.Texture));
             var part=actions.WorldPart(weapon,group,human.AbsoluteBoneTransformsForCamera);
             var partView=part.Transform;
-            if (native) ScGunNativeMesh.DrawWorld(renderer, part.Mesh, texture, Color.White, 1, ref partView, env);
+            if (spec != null && group.VertexBones == null && ScNpcWeaponRenderer.Queue(renderer,part.Mesh,texture,partView,env.Light,native,human.Project,
+                group.Texture == asset+"_hd" ? gunMaterial : group.Texture,CsmcKnifeRig.KnifeCount+ScGunBlock.GetVariant(value),camera.InvertedViewMatrix,lighting)) continue;
+            if (native || spec != null) ScGunNativeMesh.DrawWorld(renderer, part.Mesh, texture, Color.White, 1, ref partView, env);
             else BlocksManager.DrawMeshBlock(renderer, part.Mesh, texture, Color.White, 1, ref partView, env);
         }
-        ScStatTrakRenderer.DrawThirdPerson(value, asset, native, view, renderer, LightingManager.LightIntensityByLightValue[Math.Clamp(env.Light, 0, 15)]);
+        if (spec != null && ScGunStatTrak.For(asset,native) is {} attachment && actions.HasProp(asset,attachment.Bone))
+            ScStatTrakRenderer.DrawPlaced(value,asset,native,
+                ScStatTrakRenderer.ActorAttachment(attachment,actions.PropFrame(asset,attachment.Bone,human.AbsoluteBoneTransformsForCamera)),
+                renderer,lighting.Intensity);
     }
 }

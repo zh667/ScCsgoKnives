@@ -55,11 +55,12 @@ static class KnifeFinishRegression {
         } catch (Exception e) { Check("exception", false, e.ToString()); }
 
         var saved = BlocksManager.m_categories.ToArray();
+        string csCategory = WeaponCategoryContract.For(mod);
         try {
             var loader = (ModLoader)Activator.CreateInstance(mod.GetType("Game.ScCsgoKnivesModLoader"));
             foreach (string weapons in new[] { "Weapons", "武器" }) foreach (bool first in new[] { false, true }) {
-                var names = new List<string> { "Terrain", weapons, "Clothes", "Spawner Eggs", "Fireworks", "CS武器", "Furniture", "第三方武器" };
-                if (first) { names.Remove("CS武器"); names.Insert(0, "CS武器"); }
+                var names = new List<string> { "Terrain", weapons, "Clothes", "Spawner Eggs", "Fireworks", csCategory, "Furniture", "第三方武器" };
+                if (first) { names.Remove(csCategory); names.Insert(0, csCategory); }
                 BlocksManager.m_categories.Clear(); BlocksManager.m_categories.AddRange(names);
                 // A real API widget with detached state: no window/GPU/world is needed.
                 var widget = (CreativeInventoryWidget)RuntimeHelpers.GetUninitializedObject(typeof(CreativeInventoryWidget));
@@ -70,7 +71,7 @@ static class KnifeFinishRegression {
                 Call("ScCreativeCategoryOrder", "Global");
                 loader.BeforeWidgetUpdate(widget);
                 Check($"native-widget-order/{weapons}/{first}", widget.m_categories.Select(c => c.Name).SequenceEqual(BlocksManager.m_categories)
-                    && widget.m_categories.FindIndex(c => c.Name == "CS武器") == widget.m_categories.FindIndex(c => c.Name == weapons) + 1);
+                    && widget.m_categories.FindIndex(c => c.Name == csCategory) == widget.m_categories.FindIndex(c => c.Name == weapons) + 1);
                 Check($"native-selection-preserved/{weapons}/{first}", widget.GetCategoryName(widget.m_componentCreativeInventory.CategoryIndex) == "Fireworks");
                 var frozen = widget.m_categories.ToArray(); for (int frame = 0; frame < 30; frame++) loader.BeforeWidgetUpdate(widget);
                 Check($"native-order-stable/{weapons}/{first}", frozen.SequenceEqual(widget.m_categories));

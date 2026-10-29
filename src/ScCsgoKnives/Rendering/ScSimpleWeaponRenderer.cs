@@ -57,4 +57,13 @@ public static class ScSimpleWeaponRenderer {
         }
         return true;
     }
+    public static bool DrawBuffers(VertexBuffer vertices, IndexBuffer indices, int count, Texture2D texture,
+        Matrix world, Matrix projection, in KnifePbrRenderer.Lighting lighting) {
+        if (!KnifeDiagnostics.IsFinite(world)) return false;
+        var shader = Prepare(texture, world, projection, in lighting, 0, 0);
+        if (shader is null) return false;
+        Display.RasterizerState = RasterizerState.CullCounterClockwiseScissor;
+        Display.DrawIndexed(PrimitiveType.TriangleList, shader, vertices, indices, 0, count);
+        return true;
+    }
 }

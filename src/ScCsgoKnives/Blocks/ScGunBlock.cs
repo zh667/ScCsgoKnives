@@ -9,7 +9,7 @@ namespace Game;
 /// Block data also carries the magazine and the M4A1-S silencer state (GunSpec).
 /// </summary>
 public class ScGunBlock : ScNoDurabilityBlock {
-    public ScGunBlock() { DefaultCategory = "CS武器"; }
+    public ScGunBlock() { DefaultCategory = ScWeaponText.Category; }
     /// <summary>One gun, one slot: each instance has its own record (rounds, wear, finish), and a slot holding several
     /// cannot be used. The answer does not follow the MaxStacking field, which another mod may rewrite for every block
     /// that has no vanilla durability and cannot be placed (Sushi's stacking options: 1 → 4). Inventories that ask the
@@ -176,14 +176,14 @@ public class ScGunBlock : ScNoDurabilityBlock {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
-        if (AwaitsRecord(value)) return $"{ScGunNames.Variant(GetVariant(value))} · 等待服务器同步";
+        if (AwaitsRecord(value)) return ScGunNames.Variant(GetVariant(value)) + " · " + ScWeaponText.Get("AwaitingServer", "等待服务器同步");
         if (!IsKnown(value)) return HasReliableModel(value)
             ? $"{ScGunNames.Variant(GetVariant(value))} · 状态待恢复（{UnavailableReason(value)}）"
             : $"枪械数据异常（{UnavailableReason(value)}，已保留）";
         string name = ScGunNames.Variant(GetVariant(value));
         int skin = SkinOf(value);
         if (skin != ScGunSkinCatalog.None) name += " · " + ScGunSkinCatalog.NameOf(skin);
-        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += $" · 击杀计数器 Lv{s.Level}";
+        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += " · " + ScWeaponText.Counter(s.Level);
         return name;
     }
 

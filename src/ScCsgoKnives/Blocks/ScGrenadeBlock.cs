@@ -10,7 +10,7 @@ public sealed class ScGrenadeBlock : ScNoDurabilityBlock {
     public static bool Enabled(int kind) => kind is >= 0 and < 6;
     readonly ScResourceCache<(int Kind, bool Thrown), List<(BlockMesh Mesh, string Material)>> m_models = new("grenade-items", 8, 2000);
     public ScGrenadeBlock() {
-        DefaultDisplayName = "CS2 投掷物"; DefaultCategory = "CS武器"; CraftingId = "sccsgogrenade";
+        DefaultDisplayName = "CS2 投掷物"; DefaultCategory = ScWeaponText.Category; CraftingId = "sccsgogrenade";
         IsPlaceable = false; IsCollidable = false; MaxStacking = 4; DefaultTextureSlot = 0;
     }
     public override int GetDisplayOrder(int value) => 214;

@@ -7,7 +7,7 @@ namespace Game;
 /// creative catalogue entries from sharing an ID or polluting a survival world.</summary>
 public sealed class ScGunCounterTemplateBlock : ScNoDurabilityBlock {
     public ScGunCounterTemplateBlock() {
-        DefaultDisplayName = "CS2 击杀计数器枪械"; DefaultCategory = "CS武器";
+        DefaultDisplayName = "CS2 击杀计数器枪械"; DefaultCategory = ScWeaponText.Category;
         IsPlaceable = false; IsCollidable = false; MaxStacking = 1; CraftingId = "sccsgocountertemplate";
         DefaultMeleePower = 0; DefaultProjectilePower = 0; DefaultIconViewScale = .8f;
     }
