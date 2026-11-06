@@ -14,7 +14,10 @@ static class GunRecordMirrorRegression {
         var results = new List<Result>();
         void Check(string name, bool ok, string detail = "") => results.Add(new("gun-mirror/" + name, ok, detail));
         const BindingFlags any = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-        var mirror = mod.GetType("Game.ScGunRecordMirror", true);
+        // A core from before 1.5.1 (the pipeline's baseline run of the delivered packages) has no mirror: one named
+        // failure, not a crash of the whole suite.
+        var mirror = mod.GetType("Game.ScGunRecordMirror");
+        if (mirror is null) { Check("present", false, "Game.ScGunRecordMirror is not in this core (before 1.5.1)"); return results; }
         var integrity = mod.GetType("Game.ScGunLoadIntegrity", true);
         var guard = mod.GetType("Game.ScGunSaveGuard", true);
         var registryType = mod.GetType("Game.ScGunRegistry", true); var current = registryType.GetField("Current"); var previous = current.GetValue(null);
