@@ -52,9 +52,10 @@ SETUP = MAIN + (
     'int slot = 3; var added = new System.Collections.Generic.List<string>(); '
     'foreach (var b in Game.BlocksManager.Blocks.Where(b => b != null && b.BlockIndex >= 300 && b.GetType().Assembly.GetName().Name.StartsWith("ScCsgo")).GroupBy(b => b.BlockIndex).Select(x => x.First()).OrderBy(b => b.BlockIndex)) { '
     '  if (b is Game.ScGunBlock || b is Game.ScKnifeBlock) continue; var cv = b.GetCreativeValues().FirstOrDefault(); if (cv == 0) continue; '
-    # survival opens only part of the hotbar at first; the engine moves items out of the hidden hotbar slots (VisibleSlotsCount..9)
-    # into the backpack, which would move them away from their recorded places: use visible hotbar and backpack slots only
-    '  int s = slot; while (s < inv.SlotsCount && (inv.GetSlotCount(s) > 0 || inv.GetSlotCapacity(s, cv) < 1 || s >= inv.VisibleSlotsCount && s < 10)) s++; if (s >= inv.SlotsCount) continue; '
+    # the hotbar shows 7 to 10 slots by window width (ShortInventoryWidget) and ComponentInventory DROPS the items of slots it
+    # hides (VisibleSlotsCount..9) as pickables, so a later start with a narrower window throws them out of their recorded
+    # places: never use hotbar slots 7..9, whatever this start shows
+    '  int s = slot; while (s < inv.SlotsCount && (inv.GetSlotCount(s) > 0 || inv.GetSlotCapacity(s, cv) < 1 || s >= 7 && s < 10)) s++; if (s >= inv.SlotsCount) continue; '
     '  inv.AddSlotItems(s, cv, 1); if (inv.GetSlotCount(s) > 0) { added.Add(s + ":" + b.GetType().Name + "@" + b.BlockIndex); slot = s + 1; } } '
     'return id + "|" + string.Join(",", added) + " (slots " + inv.SlotsCount + ", visible " + inv.VisibleSlotsCount + ")";')
 # The gun in slot 0, its record and the CS block numbers (CS sessions only).
