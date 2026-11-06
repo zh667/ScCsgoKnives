@@ -89,9 +89,12 @@ def prepare(S):
         voice = S / edition / "voice/source"
         for old in voice.glob("*.cs"): old.unlink()
         for p in (tree / "src/ScCsgoVoice").glob("*.cs"): shutil.copyfile(p, voice / p.name)
-        # Re-point project references from the release stage to this stage.
+        # Re-point project references from the release stage to this stage. The copied projects name the release stage by
+        # its real path; from a git worktree whose .tmp is a junction to the main checkout's, ROOT differs from that path.
         for proj in (S / edition).rglob("*.csproj"):
-            proj.write_text(proj.read_text("utf8").replace(REL.as_posix(), S.as_posix()).replace(str(REL), str(S)), "utf8")
+            text = proj.read_text("utf8")
+            for rel in dict.fromkeys([REL, REL.resolve()]): text = text.replace(rel.as_posix(), S.as_posix()).replace(str(rel), str(S))
+            proj.write_text(text, "utf8")
     # Multiplayer gameplay identity (first-person-eye-shot-20261001, Game.ScNetIdentity): one value stamped into every core
     # and agents assembly built from this snapshot, so the Full and split Lite packages of one release accept each other in
     # multiplayer; any change to the gameplay sources gives a new value (and a peer of another release is refused).
