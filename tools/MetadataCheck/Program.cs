@@ -13,11 +13,11 @@ foreach(string path in args.Skip(1)){
         try{
             using var reader=new StreamReader(entry.Open());var text=reader.ReadToEnd();
             var json=JsonDocument.Parse(text).RootElement;var native=ModsManager.DeserializeJson(text);
-            if(native.Version!="1.5.0"||json.GetProperty("Author").GetString()!="zh667"||json.GetProperty("ApiVersion").GetString()!="1.9.3.1")throw new Exception("Wrong version, author or API");
+            if(native.Version!="1.5.1"||json.GetProperty("Author").GetString()!="zh667"||json.GetProperty("ApiVersion").GetString()!="1.9.3.1")throw new Exception("Wrong version, author or API");
             string name=json.GetProperty("Name").GetString(),description=json.GetProperty("Description").GetString();
             if(name.Contains("1.4.0")||description.Contains("CS武器1.4.0")||description.Contains("CS武器1.7.1"))throw new Exception("Stale player-facing metadata");
             if(native.PackageName!="zh667.ScCsgoKnives"){
-                if(!native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var range)||!range.Satisfies(NuGetVersion.Parse("1.5.0"))||range.Satisfies(NuGetVersion.Parse("1.4.0"))||range.Satisfies(NuGetVersion.Parse("1.4.9")))throw new Exception("Wrong native core dependency");
+                if(!native.DependencyRanges.TryGetValue("zh667.ScCsgoKnives",out var range)||!range.Satisfies(NuGetVersion.Parse("1.5.1"))||range.Satisfies(NuGetVersion.Parse("1.4.0"))||range.Satisfies(NuGetVersion.Parse("1.4.9")))throw new Exception("Wrong native core dependency");
             }else if(native.DependencyRanges.Count!=0)throw new Exception("Core gained dependencies");
             ok=true;
         }catch(Exception e){failed++;error=e.ToString();}
