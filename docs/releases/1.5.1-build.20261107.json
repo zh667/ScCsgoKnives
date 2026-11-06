@@ -1,0 +1,18 @@
+{
+  "version": "1.5.1",
+  "date": "2026-11-07",
+  "tag": null,
+  "sourceCommit": "8881622",
+  "sourceBranch": "fix/gun-record-mirror-20261106",
+  "stage": "r151c",
+  "releaseRecord": "docs/tasks/release-1.5.1-20261107.md",
+  "sourceManifest": "output/release-1.5.1/manifest.json",
+  "packages": [
+    {"file": "[API1.9]CS武器1.5.1-全量包.scmod", "bytes": 531285732, "sha256": "eaebe7c82b750d4e8e8a1212575157f30dab2862d34a70374422ae791a0c6e5a"},
+    {"file": "[API1.9]CS武器1.5.1-轻量包.scmod", "bytes": 35790849, "sha256": "69986049b8a9a0d57f49d1bdf16a05ae65e2ad48733fc8ccf70343a6fdd76b89"},
+    {"file": "[API1.9]CS武器1.5.1-探员包.scmod", "bytes": 42805727, "sha256": "8b871d29af26ffed1e478ca3dd19f50eabff24017d8f0f3915a6fa5e83f28a2c"},
+    {"file": "[API1.9]CS武器1.5.1-死亡竞赛.scmod", "bytes": 371933, "sha256": "3d87affc5f3cbeb747689838e502f6580a86f91c84046a01cd487e547250bdc3"}
+  ],
+  "verification": "Built by tools/deathmatch_140.py (stage r151c) and gated as the 1.5.0 release was; packages read back from output/ after delivery (hash, zip integrity, modinfo version 1.5.1).",
+  "acceptanceLimits": ["Android and phone-hosted multiplayer were not tested.", "Block-number reassignment was verified in the real game for the airdrop crate only; the gun's own number and moved items only offline.", "dm-comfort on 1.9.5 Full: first run 12/13 (test animal gone), two reruns 13/13.", "No release tag was created; the branch is not merged into main."]
+}
