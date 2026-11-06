@@ -97,6 +97,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
             ScGunSaveGuard.Refuse(project,"资源前置包缺失或不匹配，拒绝载入："+e.Message);return;
         }
+        // gun-record-mirror-20261106: a world saved without CS gets its gun records back before anything reads them.
+        ScGunRecordMirror.BeforeLoad(project, world);
         if (!ScGunSaveGuard.BeforeLoad(project)) return;
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
@@ -125,7 +127,11 @@ public class ScCsgoKnivesModLoader : ModLoader {
     }
     // The real engine calls ProjectXmlSave on an EMPTY XElement, before ProjectData.Save.
     // This later hook receives the complete frozen save and may run off the game thread.
-    public override void OnProjectXmlSaved(XElement project) => ScGunTravel.CaptureSaved(project);
+    // The copy of the gun records is taken after the travel packet so it holds the group exactly as it is written.
+    public override void OnProjectXmlSaved(XElement project) {
+        ScGunTravel.CaptureSaved(project);
+        ScGunRecordMirror.CaptureSaved(project);
+    }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
     /// around the weapon's CS2 grip points; vanilla's in-hand block draw is replaced by the baked weapon.</summary>
