@@ -800,6 +800,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     ValuesDictionary m_officialMigration;
     ValuesDictionary m_schemaUpgrade;
     bool m_migrationNotice;
+    // gun-record-mirror-20261106: what the load restored after a save without CS, told once to each local player.
+    string m_mirrorNotice;
+    readonly HashSet<ComponentPlayer> m_mirrorTold = [];
     readonly HashSet<ComponentPlayer> m_migrationTold = [];
     readonly HashSet<ComponentPlayer> m_oldFormatTold = [], m_legacyTold = [];
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
@@ -947,6 +950,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (m_schemaUpgrade is not null)
             KnifeLog.Information($"gun record schema upgraded from {m_schemaUpgrade.GetValue<int>("From", 0)}; world backup at {m_schemaUpgrade.GetValue<string>("Backup", "?")}");
         m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
+        m_mirrorNotice = ScGunRecordMirror.TakeNotice();
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
         if (m_registry.UnknownSchema) throw new InvalidOperationException("枪械记录或补偿格式无法安全读取，已拒绝进入世界；请使用兼容版本或有效备份。");
@@ -1090,6 +1094,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (local) { // notices are for the players this process shows
             if (m_integrityProtection?.GetValue<int>("Count", 0) > 0 && m_integrityTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage("正常枪械可继续使用；部分枪械记录异常，已原样保留并暂停使用，需原始备份恢复。备份由玩家自行管理。", Color.Yellow, true, false);
+            if (m_mirrorNotice is not null && m_mirrorTold.Add(player))
+                player.ComponentGui.DisplaySmallMessage(m_mirrorNotice, Color.Yellow, true, false);
             if (m_migrationNotice && m_migrationTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。备份由玩家自行管理。", Color.White, true, false);
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))
