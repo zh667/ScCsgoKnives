@@ -53,11 +53,13 @@ bool eggFeedbackOnly=false;
 bool splitChickenOnly=false;
 string hapticsPackage=null,tacticalPackage=null;
 bool tacticalAiOnly=false;
+bool gunMirrorOnly=false;
 for (int i = 0; i < args.Length; i++) {
     switch (args[i]) {
         case "--tactical-package":tacticalPackage=args[++i];break;
         case "--tactical-ai-only":tacticalAiOnly=true;break;
         case "--split-chicken-only": splitChickenOnly=true;break;
+        case "--gun-mirror-only": gunMirrorOnly=true;break;
         case "--egg-feedback-only": eggFeedbackOnly=true;break;
         case "--haptics-package": hapticsPackage=args[++i];break;
         case "--features130-only": features130=true;break;
@@ -176,6 +178,12 @@ Type knifeLog = mod.GetType("Game.KnifeLog");
 knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, true);
 
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
+if(gunMirrorOnly) {
+    // gun-record-mirror-20261106: the 1.5.1 change on its own, against the packaged DLL.
+    var cases=GunRecordMirrorRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToArray();
+    var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true,Encoder=System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping});
+    if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
+}
 if(splitChickenOnly) {
     var cases=SplitChickenRegression.Run(mod,scmod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).ToArray();
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true});
@@ -319,6 +327,7 @@ foreach(var c in TravelRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok
 foreach(var c in ControlsScopeRegression.Run(mod)) checks.Add(new { name=c.Name,ok=c.Ok,detail=c.Detail });
 foreach(var c in Growth30BoundaryRegression.Run(mod,previousGrowthPackage,ghoulAssembly)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in LiveBackupRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in GunRecordMirrorRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GenericTravelRegression.Run(mod,travelSourceSnapshot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in ItemTravelRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in ShotCadenceRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});

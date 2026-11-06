@@ -240,6 +240,8 @@ public sealed class ScCompatibilityModLoader : ModLoader {
         ModsManager.RegisterHook("OnProjectXmlSaved",this,1000);
     }
     public override void ProjectXmlLoad(XElement project,WorldInfo world,ContainerWidget widget){
+        // Either ProjectXmlLoad hook may run first; restoring lost gun records is a no-op once the group is back.
+        ScGunRecordMirror.BeforeLoad(project,world);
         try{ScCompatibility.BeforeLoad(project,world);}
         catch(Exception e){
             var subs=project.Element("Subsystems");if(subs is not null&&ScCompatibility.Group(subs,"ScGunBlockBehavior") is null)subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
