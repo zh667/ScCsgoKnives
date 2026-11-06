@@ -48,16 +48,20 @@ base.BASE = ROOT / ".tmp/completion-140-20260929"
 OFFICIAL_RELEASES = [
     ("1.4.0", {"全量": "ec949ff420c509b58935e1203bd8582381f7790107f9a51aa0e35d884ff74b94", "轻量": "b9598e861ff7e3a39196086d10944b6158a9cb89a712b5cacbd984ca0e10d5fe"}),
     ("1.5.0", {"全量": "7448e3400e68f6a22d08b057123c24eddc4a61320f78921c84b1cd300015a01f"}),
+    # 1.5.1 (release-20261106, stage r151c, delivered 2026-11-07: the per-world gun record copy)
+    ("1.5.1", {"全量": "eaebe7c82b750d4e8e8a1212575157f30dab2862d34a70374422ae791a0c6e5a", "轻量": "69986049b8a9a0d57f49d1bdf16a05ae65e2ad48733fc8ccf70343a6fdd76b89"}),
 ]
 # The 1.5.0 family in output/ (release-20261021, stage r150p, main 13171aa: airdrop settings, ladders, HUD gap, cylinder
 # smoke, workbench ammunition tab, player suggestions). The 10-09 family it replaced (dm-settings: cea8f888 / 62361108 /
 # 665408c0, deathmatch e489d2ba) and every earlier 1.5.0 revision stay in output/history-1.5.0/<sha256>/; the release
 # switched saves with each of their cores (output/release-1.5.0/release-20261021/historical-checks.json); see
 # output/release-1.5.0/manifest.json. The 1.4.0 family (dmr6f) is in output/history-1.4.0/.
+# Now the 1.5.1 family (release-20261106, stage r151c, delivered 2026-11-07; output/release-1.5.1/manifest.json); the
+# 1.5.0 family above moved to output/history-1.5.0/<sha256>/.
 base.BASELINES = {
-    "全量": "faf1071c142073628956affde48f8900c3166679d6133beee504ba922638b975",
-    "轻量": "48ef04ff24b61843617a24e063e14099b254d4ff0526d006e516be1054c0ca16",
-    "探员": "b6dd6f7dd4a615cd9d3ce127364de3f4ee1014967fbb4e917c009e362133ef68",
+    "全量": "eaebe7c82b750d4e8e8a1212575157f30dab2862d34a70374422ae791a0c6e5a",
+    "轻量": "69986049b8a9a0d57f49d1bdf16a05ae65e2ad48733fc8ccf70343a6fdd76b89",
+    "探员": "8b871d29af26ffed1e478ca3dd19f50eabff24017d8f0f3915a6fa5e83f28a2c",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.
