@@ -96,3 +96,34 @@
 4. 旧版本回切的回执与合并。
 5. 停用树内穿越的携带包/到达核对；旧携带包只读忽略。
 6. 实机三模组往返 + 发布闸门 → 1.6.0。
+
+## 10. 进度
+
+### A 阶段（第 1、2、5 步）— 2026-11-08 完成，分支 `feat/world-tree-registry-20261107`
+
+实现：
+- `World/ScGunTree.cs`：树根 = 引擎 `WorldsManager.WorldsDirectoryName` 下第一级目录；权威文件 `<根>/ScCsgoGuns.xml`（Format 1、树 GUID、代数；校验过的临时文件 → 旧文件留 `.bak` → 同目录替换），读取顺序 内存 → 文件 → `.bak` → 本世界 Project.xml 副本。每棵树一个共享实例，按项目计数；最先加载、仍在的项目是主项目，负责写树文件、重复枪检查、成长、补偿重试，持有者取树里所有已加载项目。
+- `SubsystemScGunBlockBehavior`：加载时 `ScGunTree.AcquireFor` 取共享实例并 `BindStatics`（`ScGunRegistry.Current`、`HolderLocator`）；存档时组里照旧写完整记录本，另加 `GunTreeId`/`GunTreeGeneration`；树内不做到达改号；卸载时交还，剩下的项目接管静态指针。
+- 两个 `ProjectXmlLoad` 钩子改为先走 `ScGunTree.BeforeLoad`（幂等）；`ScGunTravel` 在树模式下不写也不读携带包（带 Error 的旧包被忽略）。
+- `ScGunRecordMirror`：每个世界自己的副本照写；被占的 CS 方块编号仍按它改回；丢失的枪械组改从树恢复（日志仍是 `[GUN_MIRROR] … restored N records from the tree registry`）；没有树时走 1.5.1 老路。
+- `ScGunLoadIntegrity`：带树标记的组、世界里没有枪方块编号（远古世界第一次建维度）时不再拒绝。
+- 只在掌握世界的进程启用（单机、联机房主/服务器）；联机客户端行为不变。
+
+设计留白处的决定：
+- **B 阶段之前的保护（拒绝，原文件不动）**：已有树时，读到不带树标记、自己有记录的世界组；还没有树、而同一棵树里另有不带标记且有记录的世界（扫描 `Project.xml`/`SpaceProject.xml`，深度 4）；带着另一棵树的标记；传送门空间项目自带未标记的记录（在共享实例里拒绝）。没有记录的旧世界、新世界照常加入。所以**玩家现在那个 World1 + Space_0 + Tartareosity 的存档在 A 阶段会被拒绝**，等 B 阶段合并。
+- **树文件写在后台线程**；下次读档、树的最后一个世界卸载、进程退出时都等写完。世界副本的代数比树文件新（文件没写完游戏就关了）时，以世界副本为准。
+- 带标记的世界加载时，树的记录本整体替换世界组里的记录本，世界自己的字段（来源路径、迁移标记、完整性提示等）保留。
+
+验证（候选 DLL `be372effed4dbcfb…`）：
+- 离线 `PackageCheck --gun-tree-only`：47/47（树 25、记录副本 22）。反证：拒绝自带记录的旧世界、共享实例、最新快照优先、树内忽略旧携带包、世界副本较新优先、无编号表的新子世界，各自去掉后对应用例失败，恢复后 DLL 字节一致。
+- 实机，隔离 SurvivalcraftAPI 1.9.3.1（`Survivalcraft.dll` `25816c2f…`），候选包 = 1.5.1 全量包换 `ScCsgoKnives.dll`（`04512d1f…`）：
+  - 尸鬼 2.0.1（`0d3d568f…`）`subworld-ghoul-tree-131`：12/12；
+  - 远古世界 0.41.16（`ccc9b649…`）`subworld-ancient-tree-131`：12/12；第一次跑出“远古维度没有枪方块编号被拒”，已修（383f5ee）；
+  - 传送门 1.5.0（`537d0d7c…`）`tree-portal-tree-131`：11/11，两个项目同一个记录本实例（`shared=True`），三趟往返编号与弹量连续，存档重进后树文件第 2 代、`Space_0/SpaceProject.xml` 带同一树编号；
+  - 卸载 CS 场景 B `uninstall-B-tree-131`：7/7，丢失的组从树恢复。
+  - 结果文件：`E:/projects/ScCsgoKnives/.tmp/mp-m0-20260929/results/`（经工作目录的临时联接写入，联接已删）；脚本 `tools/MpM0/sp_tree.py`。
+
+未做 / B 阶段注意：
+- 现有多本记录本的合并（第 3 步）、旧版本回切（第 4 步）、错位旧枪纠正（决定 2A）都没做；版本号还是 1.5.1。
+- 只跑了专门的测试集，没跑完整 PackageCheck 主套件、存档互切矩阵、其他引擎（1.9.4/1.9.5/1.9.5.1）、联机房主、手机。
+- 跨不同顶层世界搬来的枪若编号恰好和本树的记录同号同型号，会被当成那把枪（目前没有已知模组这样搬）。
