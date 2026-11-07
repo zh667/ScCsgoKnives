@@ -1039,6 +1039,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         m_diagnostics?.Tick(m_time.GameTime);
         // A remote multiplayer client only shows the server's world: record maintenance is the server's.
         bool authority = ScNet.IsAuthority;
+        if (m_treeRemap is not null) ApplyTreeRemap();
         // Duties over the whole registry run once per tree, in its primary project, over every loaded project's holders.
         bool primary = m_tree is null || m_tree.Primary == this;
         if (primary && authority && m_registry is not null && !m_registry.Disabled && m_time.GameTime >= m_recoveryAt) {
@@ -2258,6 +2259,24 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     ScTravelLedger m_travel;
     /// <summary>The world tree this world belongs to (world-tree-gun-registry-20261107); null on a remote client.</summary>
     ScGunTree.Tree m_tree;
+    /// <summary>Phase B: a Portal space whose own registry the tree's merge took in moves its items to their tree numbers
+    /// on its first update (it is built without the ProjectXmlLoad hook, so its saved XML cannot be rewritten first).</summary>
+    ScGunTreeMerge.Remap m_treeRemap;
+    Func<int, int> m_treeRemapVariant;
+    internal void ScheduleRemap(ScGunTreeMerge.Remap map, Func<int, int> variant) { m_treeRemap = map; m_treeRemapVariant = variant; }
+    void ApplyTreeRemap() {
+        var map = m_treeRemap; m_treeRemap = null;
+        int moved = 0, outside = 0, gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        foreach (var holder in ScGunHolders.Scan(Project, gunIndex).ToList()) {
+            if (holder.Inventory is not { } inventory) { if (map.Keys.Any(k => k.Id == holder.Id)) outside++; continue; }
+            int value = inventory.GetSlotValue(holder.Slot);
+            if (ScGunTreeMerge.Moved(value, map, m_treeRemapVariant) is not int next) continue;
+            int count = inventory.GetSlotCount(holder.Slot);
+            inventory.RemoveSlotItems(holder.Slot, count); inventory.AddSlotItems(holder.Slot, next, count); moved++;
+        }
+        if (m_tree is not null) ScGunTree.Applied(m_tree, this);
+        KnifeLog.Warning($"[GUN_TREE] {m_travelSource}: {moved} item(s) moved to their numbers in the shared registry" + (outside > 0 ? $"; {outside} dropped/flying item(s) left as they were" : ""));
+    }
     internal double Now => m_time?.GameTime ?? 0;
     /// <summary>The process-wide pointers gun code reads (the registry, the holder lookup) to this world's tree.</summary>
     internal void BindStatics() {

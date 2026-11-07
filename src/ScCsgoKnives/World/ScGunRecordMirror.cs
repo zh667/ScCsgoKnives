@@ -53,7 +53,7 @@ public static class ScGunRecordMirror {
 
     /// <summary>Every place in Project.xml that holds an item value, with its count field when it has one: the same
     /// holders the integrity check reads.</summary>
-    static IEnumerable<(XElement Value, XElement Count)> Holders(XElement project) {
+    internal static IEnumerable<(XElement Value, XElement Count)> Holders(XElement project) {
         foreach (var slots in project.Descendants("Values").Where(e => (string)e.Attribute("Name") == "Slots"))
             foreach (var slot in slots.Elements("Values"))
                 if (Field(slot, "Contents") is { } contents) yield return (contents, Field(slot, "Count"));

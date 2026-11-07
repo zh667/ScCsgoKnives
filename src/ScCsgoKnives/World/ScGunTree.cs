@@ -40,8 +40,13 @@ public static class ScGunTree {
         /// first one loaded that is still loaded.</summary>
         public SubsystemScGunBlockBehavior Primary => Members.Count > 0 ? Members[0] : null;
         public int Loaded => Members.Count;
+        /// <summary>Per world of the tree (path relative to the root, "" for the root): Receipt (what this build last
+        /// wrote into that world, record -> row hash), Pending (its items' remap from a merge, by number and model) and
+        /// Merged (its own registry is already in the tree; it has not been saved by this build since).</summary>
+        public XElement Worlds = new("Worlds");
+        internal readonly Dictionary<SubsystemScGunBlockBehavior, string> Paths = [];
     }
-    internal sealed record Snapshot(string Id, int Generation, XElement Gun, string Source);
+    internal sealed record Snapshot(string Id, int Generation, XElement Gun, string Source, XElement Worlds = null);
 
     static readonly Dictionary<string, Tree> s_trees = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>What the last ProjectXmlLoad of a root decided, for the first project of that tree to load: the newest
@@ -75,9 +80,40 @@ public static class ScGunTree {
 
     // ---- the tree file ----
 
-    internal static XElement Document(string id, int generation, XElement gun) =>
+    internal static XElement Document(string id, int generation, XElement gun, XElement worlds = null) =>
         new(RootName, new XAttribute("Format", Format), new XAttribute("Id", id), new XAttribute("Generation", generation),
-            new XAttribute("Build", ScCompatibility.ActiveBuild), gun);
+            new XAttribute("Build", ScCompatibility.ActiveBuild), gun, worlds is null ? null : new XElement(worlds));
+
+    // ---- per-world state in the tree file ----
+    static string Label(string path) => string.IsNullOrEmpty(path) ? "主世界" : path;
+    internal static string RelativeTo(string root, string dir) {
+        string r = Canonical(root), d = Canonical(dir);
+        return string.Equals(r, d, StringComparison.OrdinalIgnoreCase) ? "" : d.StartsWith(r + "/", StringComparison.OrdinalIgnoreCase) ? d[(r.Length + 1)..] : d;
+    }
+    static XElement Entry(XElement worlds, string path, bool create) {
+        var e = worlds?.Elements("World").FirstOrDefault(x => string.Equals((string)x.Attribute("Path") ?? "", path ?? "", StringComparison.OrdinalIgnoreCase));
+        if (e is null && create && worlds is not null) { e = new XElement("World", new XAttribute("Path", path ?? "")); worlds.Add(e); }
+        return e;
+    }
+    internal static ScGunTreeMerge.Remap PendingOf(XElement worlds, string path) =>
+        Entry(worlds, path, false)?.Attribute("Pending") is { } a ? ScGunTreeMerge.Remap.Load(a.Value) : null;
+    internal static bool MergedOf(XElement worlds, string path) => (string)Entry(worlds, path, false)?.Attribute("Merged") == "1";
+    internal static Dictionary<int, string> ReceiptOf(XElement worlds, string path) {
+        if (Entry(worlds, path, false)?.Attribute("Receipt") is not { } a) return null;
+        var receipt = new Dictionary<int, string>();
+        foreach (string part in a.Value.Split(';', StringSplitOptions.RemoveEmptyEntries)) {
+            int colon = part.IndexOf(':');
+            if (colon > 0 && int.TryParse(part[..colon], NumberStyles.Integer, CultureInfo.InvariantCulture, out int id)) receipt[id] = part[(colon + 1)..];
+        }
+        return receipt;
+    }
+    /// <summary>The world has taken its remap and its registry is part of the tree: nothing pending for it any more.</summary>
+    static XElement Settled(XElement worlds, string path) {
+        var copy = worlds is null ? new XElement("Worlds") : new XElement(worlds);
+        var e = Entry(copy, path, false);
+        e?.Attribute("Pending")?.Remove(); e?.Attribute("Merged")?.Remove();
+        return copy;
+    }
 
     /// <summary>The registry part of a world's gun group, as this build saves it.</summary>
     internal static XElement Group(ScGunRegistry registry, ScTravelLedger ledger, double now) {
@@ -104,7 +140,7 @@ public static class ScGunTree {
                 if (groups.Length != 1 || G(groups[0], RegistryKey) is null) throw new InvalidDataException("gun registry missing");
                 var values = new ValuesDictionary(); values.ApplyOverrides(new XElement(groups[0]));
                 ScGunSaveGuard.Validate(values);
-                return new(id, generation, new XElement(groups[0]), Path.GetFileName(candidate));
+                return new(id, generation, new XElement(groups[0]), Path.GetFileName(candidate), doc.Element("Worlds") is { } worlds ? new XElement(worlds) : new XElement("Worlds"));
             }
             catch (Exception e) { problems.Add(Path.GetFileName(candidate) + ": " + e.Message); }
         }
@@ -131,7 +167,7 @@ public static class ScGunTree {
     // ---- loading a world (ProjectXmlLoad, both CS hooks; the second call is a no-op) ----
 
     static InvalidOperationException Pending(string detail) => new(
-        "这个世界和同一主世界下的其他世界各有一本枪械记录本，需要合并后才能安全加载（" + detail + "）。本开发版不做合并，已拒绝加载，原世界文件未改动。");
+        "这个世界的枪械记录本无法和所在主世界的共用记录本安全合并（" + detail + "），已拒绝加载，原世界文件未改动。");
 
     public static void BeforeLoad(XElement project, WorldInfo world) {
         if (!Enabled || string.IsNullOrWhiteSpace(world?.DirectoryName) || project.Element("Subsystems") is null) return;
@@ -140,22 +176,36 @@ public static class ScGunTree {
         Flush();
         var problems = new List<string>();
         Snapshot tree = s_trees.TryGetValue(root, out var live) && live.Primary is { } primary
-            ? new(live.Id, live.Generation, Group(live.Registry, live.Ledger, primary.Now), "memory")
+            ? new(live.Id, live.Generation, Group(live.Registry, live.Ledger, primary.Now), "memory", new XElement(live.Worlds))
             : Read(SystemFile(root), problems);
         if (problems.Count > 0) KnifeLog.Warning("[GUN_TREE] " + string.Join("; ", problems));
-        Apply(project, root, tree, () => OtherRegistries(root, dir),
+        Apply(project, root, RelativeTo(root, dir), tree, () => Saves(root, dir),
             () => ScGunRecordMirror.ReassignFromCopy(project, dir), () => ScGunRecordMirror.RestoreLost(project, dir));
         s_done.Add(project, root);
     }
 
-    /// <summary>The decision, on detached XML: puts the tree's registry into this world's gun group, founds the tree,
-    /// or refuses. <paramref name="others"/> lists the other worlds of the tree that hold an unstamped registry of their
-    /// own (asked only when no tree exists yet). <paramref name="reassignFromCopy"/> gives back CS block numbers from
-    /// this world's own copy (true when that copy exists); <paramref name="restoreLost"/> is the 1.5.1 restore from it.</summary>
-    internal static void Apply(XElement project, string root, Snapshot tree, Func<IReadOnlyList<string>> others, Func<bool> reassignFromCopy, Action restoreLost) {
+    /// <summary>The decision, on detached XML: puts the tree's registry into this world's gun group, after merging this
+    /// world's own registry into it when it has one (phase B), founds the tree, or refuses what cannot be merged safely.
+    /// <paramref name="others"/> reads the other saves of the tree (asked only when no tree exists yet).
+    /// <paramref name="reassignFromCopy"/> gives back CS block numbers from this world's own copy (true when that copy
+    /// exists); <paramref name="restoreLost"/> is the 1.5.1 restore from it.</summary>
+    internal static void Apply(XElement project, string root, string path, Snapshot tree, Func<IReadOnlyList<(string Path, XElement Project)>> others,
+        Func<bool> reassignFromCopy, Action restoreLost) {
         var subs = project.Element("Subsystems");
         var gun = G(subs, GunGroup);
         if (Text(gun, ScGunSaveGuard.ErrorKey) is not null) return; // a refusal stands
+        bool alreadyMerged = false;
+        if (tree is not null) {
+            // A merge left this world a remap (by number and model): applied to whatever its save holds now.
+            if (PendingOf(tree.Worlds, path) is { } pending) {
+                var own = ScGunTreeMerge.Read(path, project);
+                int moved = ScGunTreeMerge.Apply(project, pending, own.VariantOf);
+                KnifeLog.Warning($"[GUN_TREE] {Label(path)}: {moved} item(s) moved to their numbers in the shared registry");
+                if (moved > 0) ScGunRecordMirror.Notice("CS：这个世界的枪已改到主世界共用记录本里的编号。");
+            }
+            alreadyMerged = MergedOf(tree.Worlds, path);
+            tree = tree with { Worlds = Settled(tree.Worlds, path) };
+        }
         if (ScGunRecordMirror.Lost(gun)) {
             // A save without CS dropped the group (or the world is new). Block numbers taken meanwhile are given back
             // from this world's own copy; the records come from the tree.
@@ -172,7 +222,7 @@ public static class ScGunTree {
             // No tree yet: the 1.5.1 path (this world's own copy) may still bring the group back.
             restoreLost();
             gun = G(subs, GunGroup);
-            if (ScGunRecordMirror.Lost(gun)) { Found(root, others); return; }
+            if (ScGunRecordMirror.Lost(gun)) { Found(project, root, path, others); return; }
         }
         string stamp = Text(gun, TreeIdKey);
         if (stamp is not null) {
@@ -184,24 +234,53 @@ public static class ScGunTree {
             if (own > tree.Generation) {
                 KnifeLog.Warning($"[GUN_TREE] {root}: this world's copy (generation {own}) is newer than the tree registry ({tree.Generation}, {tree.Source}); the world's copy is used");
                 var copy = new XElement("Values", new XAttribute("Name", GunGroup), gun.Elements().Where(e => (string)e.Attribute("Name") is RegistryKey or ScGunTravel.Identities or LayoutKey).Select(e => new XElement(e)));
-                s_prepared[root] = new(stamp, own, copy, "world copy");
+                s_prepared[root] = new(stamp, own, copy, "world copy", tree.Worlds);
                 return;
             }
             Inject(subs, tree); s_prepared[root] = tree;
             return;
         }
-        // Unstamped: last saved by a build before 1.6.0.
+        // Unstamped: last saved by a build before 1.6.0 (never joined, or an older build played it after it joined).
         if (tree is not null) {
-            if (HasRecords(gun)) throw Pending("所在主世界已有共用记录本");
+            if (!HasRecords(gun) || alreadyMerged) { Inject(subs, tree); s_prepared[root] = tree; return; }
+            var w = ScGunTreeMerge.Read(path, project);
+            var table = ScGunTreeMerge.Table.Open(tree.Gun, null, [w]);
+            var receipt = ReceiptOf(tree.Worlds, path);
+            var map = receipt is not null ? ScGunTreeMerge.Reconcile(table, w, receipt) : ScGunTreeMerge.Join(table, w, []);
+            int moved = ScGunTreeMerge.Apply(project, map, w.VariantOf);
+            tree = new Snapshot(tree.Id, tree.Generation, table.Gun, receipt is not null ? "reconciled" : "joined", tree.Worlds);
+            KnifeLog.Warning($"[GUN_TREE] {Label(path)}: " + (receipt is not null ? "played by an older build since its last save here; its changes" : "its own registry") +
+                $" merged into the shared registry; {moved} item(s) renumbered, {table.KeptAside} record(s) kept aside" + (table.Notes.Count > 0 ? "; " + string.Join("; ", table.Notes) : ""));
+            ScGunRecordMirror.Notice(receipt is not null ? "CS：这个世界被旧版本玩过，枪械记录已和主世界的共用记录本对好。" : "CS：这个世界的枪械记录已合并进主世界的共用记录本。");
             Inject(subs, tree); s_prepared[root] = tree;
             return;
         }
-        Found(root, others);
+        Found(project, root, path, others);
     }
-    static void Found(string root, Func<IReadOnlyList<string>> others) {
-        var holders = others();
-        if (holders.Count > 0) throw Pending("还有：" + string.Join("、", holders));
-        s_prepared[root] = new(Guid.NewGuid().ToString("N"), 0, null, "new");
+    /// <summary>No tree yet. Alone in its tree (or the only one with records), this world founds it; otherwise every world
+    /// of the tree is merged once, the root's numbers kept (design §4), with decision 2A.</summary>
+    static void Found(XElement project, string root, string path, Func<IReadOnlyList<(string Path, XElement Project)>> others) {
+        var self = ScGunTreeMerge.Read(path, project);
+        var saves = others().Select(s => ScGunTreeMerge.Read(s.Path, s.Project)).ToList();
+        if (!saves.Any(w => w.HasRecords && !w.Stamped)) { s_prepared[root] = new(Guid.NewGuid().ToString("N"), 0, null, "new"); return; }
+        var rootWorld = path.Length == 0 ? self : saves.FirstOrDefault(w => w.Path.Length == 0) ?? self;
+        var rest = saves.Where(w => w != rootWorld).ToList(); if (self != rootWorld) rest.Add(self);
+        var plan = ScGunTreeMerge.Merge(rootWorld, rest);
+        int moved = ScGunTreeMerge.Apply(project, plan.Maps[path], self.VariantOf);
+        var worlds = new XElement("Worlds");
+        foreach (var w in rest.Append(rootWorld).Where(w => w != self)) {
+            var map = plan.Maps[w.Path];
+            if (map.Moves) Entry(worlds, w.Path, true).SetAttributeValue("Pending", map.Save());
+            if (w.HasRecords && !w.Stamped) Entry(worlds, w.Path, true).SetAttributeValue("Merged", "1");
+        }
+        var snapshot = new Snapshot(Guid.NewGuid().ToString("N"), 0, plan.Gun, "merged", worlds);
+        int merged = rest.Count(w => w.HasRecords && !w.Stamped);
+        KnifeLog.Warning($"[GUN_TREE] {root}: merged the registries of {merged + 1} worlds into one shared registry ({plan.Table.Joined} record(s) joined, " +
+            $"{plan.Table.KeptAside} kept aside, {plan.Table.Corrected} misnumbered gun(s) corrected); {Label(path)}: {moved} item(s) renumbered now" +
+            (plan.Table.Notes.Count > 0 ? "; " + string.Join("; ", plan.Table.Notes) : ""));
+        ScGunRecordMirror.Notice("CS：已把这个主世界下各个世界的枪械记录合并成一本共用记录本" + (plan.Table.Corrected > 0 ? $"，并按记录身份改回了 {plan.Table.Corrected} 把编号错位的枪。" : "。"));
+        Inject(project.Element("Subsystems"), snapshot);
+        s_prepared[root] = snapshot;
     }
     static bool HasRecords(XElement gun) => G(G(gun, RegistryKey), "Records")?.HasElements == true;
     /// <summary>The tree's registry in place of whatever registry the group holds; the world's own fields stay.</summary>
@@ -213,19 +292,20 @@ public static class ScGunTree {
         foreach (var element in tree.Gun.Elements()) gun.Add(new XElement(element));
         gun.Add(Field(TreeIdKey, tree.Id), Field(GenerationKey, tree.Generation));
     }
-    /// <summary>Other worlds of the tree whose saves hold an unstamped registry with records (Project.xml of a
-    /// Ghoul/Ancient world, SpaceProject.xml of a Portal space). Read only when no tree exists yet.</summary>
-    static IReadOnlyList<string> OtherRegistries(string root, string dir) {
-        var found = new List<string>();
+    /// <summary>The other saves of the tree (Project.xml of the root and of Ghoul/Ancient worlds, SpaceProject.xml of
+    /// Portal spaces), as detached XML with their path relative to the root. Read only when no tree exists yet.</summary>
+    static IReadOnlyList<(string Path, XElement Project)> Saves(string root, string dir) {
+        var found = new List<(string, XElement)>();
         string top = Storage.GetSystemPath(root), own = Path.GetFullPath(Storage.GetSystemPath(dir));
         if (!Directory.Exists(top)) return found;
         foreach (string file in Directory.EnumerateFiles(top, "*.xml", new EnumerationOptions { RecurseSubdirectories = true, MaxRecursionDepth = 4 })) {
             string name = Path.GetFileName(file);
             if (name is not ("Project.xml" or "SpaceProject.xml")) continue;
-            if (string.Equals(Path.GetFullPath(Path.GetDirectoryName(file)!), own, StringComparison.OrdinalIgnoreCase)) continue;
+            string folder = Path.GetFullPath(Path.GetDirectoryName(file)!);
+            if (string.Equals(folder, own, StringComparison.OrdinalIgnoreCase)) continue;
             try {
-                var gun = G(XElement.Load(file).Element("Subsystems"), GunGroup);
-                if (gun is not null && Text(gun, TreeIdKey) is null && HasRecords(gun)) found.Add(Path.GetRelativePath(top, Path.GetDirectoryName(file)!).Replace('\\', '/'));
+                string rel = Path.GetRelativePath(Path.GetFullPath(top), folder).Replace('\\', '/');
+                found.Add((rel == "." ? "" : rel, XElement.Load(file)));
             }
             catch (Exception e) { KnifeLog.Warning($"[GUN_TREE] could not read {file}: {e.Message}"); }
         }
@@ -238,19 +318,32 @@ public static class ScGunTree {
     /// ledger; every later one (a Portal space project, a sub-world loaded while the root is) gets the same instances.</summary>
     internal static Tree Acquire(SubsystemScGunBlockBehavior member, string directory, ValuesDictionary values, ScGunRegistry registry, ScTravelLedger ledger,
         Func<ValuesDictionary, (ScGunRegistry Registry, ScTravelLedger Ledger)> build) {
-        string root = RootOf(directory);
+        string root = RootOf(directory), path = RelativeTo(root, directory);
         string stamp = values.GetValue<string>(TreeIdKey, null);
         int staged = values.GetValue<ValuesDictionary>(RegistryKey, null)?.GetValue<int>("Next", 0) ?? 0;
+        var ownRegistry = registry;
+        // A project built without the ProjectXmlLoad hook (a Portal space) may still hold its own registry: it joins only
+        // when the tree's merge already took that registry in; its items then move on its first update.
+        // ownIsTree: this project's own registry opened the tree (it was founded from it), so there is nothing to merge.
+        void Join(Tree t, bool ownIsTree = false) {
+            bool own = !ownIsTree && stamp != t.Id && ownRegistry.Count + ownRegistry.QuarantinedCount > 0;
+            var pending = PendingOf(t.Worlds, path);
+            if (own && pending is null && !MergedOf(t.Worlds, path)) throw Pending(Canonical(directory) + " 有自己的记录本，而合并时没有读到它");
+            Func<int, int> ownVariant = id => ownRegistry.TryGetSnapshot(id, out var s) ? s.Variant : -1;
+            if (pending is not null) member.ScheduleRemap(pending, ownVariant);
+            else if (own) t.Worlds = Settled(t.Worlds, path);
+            t.Paths[member] = path;
+        }
         if (s_trees.TryGetValue(root, out var tree)) {
-            // A project created without the ProjectXmlLoad hook (a Portal space) may still hold its own registry.
-            if (stamp != tree.Id && registry.Count + registry.QuarantinedCount > 0) throw Pending(Canonical(directory) + " 有自己的记录本");
+            Join(tree);
             tree.Members.Add(member);
             tree.Registry.ReserveThrough(staged); // the integrity check's watermark for this world's orphaned numbers
             return tree;
         }
         s_prepared.Remove(root, out var prepared);
         int own = stamp is not null ? values.GetValue<int>(GenerationKey, 0) : -1;
-        if (prepared?.Gun is not null && (stamp is null || stamp == prepared.Id) && prepared.Generation >= own) {
+        bool fromSnapshot = prepared?.Gun is not null && (stamp is null || stamp == prepared.Id) && prepared.Generation >= own;
+        if (fromSnapshot) {
             // The newest snapshot of the tree, not this project's own (possibly older) copy.
             var snapshot = new ValuesDictionary(); snapshot.ApplyOverrides(new XElement(prepared.Gun));
             (registry, ledger) = build(snapshot);
@@ -259,7 +352,8 @@ public static class ScGunTree {
         else if (stamp is not null && prepared is not null && prepared.Id != stamp && prepared.Gun is not null) throw Pending(Canonical(directory) + " 的记录本属于另一棵世界树");
         string id = stamp ?? prepared?.Id ?? Guid.NewGuid().ToString("N");
         int generation = stamp is not null ? Math.Max(own, prepared?.Generation ?? 0) : prepared?.Generation ?? 0;
-        tree = new Tree { Root = root, Id = id, Generation = generation, Registry = registry, Ledger = ledger };
+        tree = new Tree { Root = root, Id = id, Generation = generation, Registry = registry, Ledger = ledger, Worlds = prepared?.Worlds is { } w ? new XElement(w) : new XElement("Worlds") };
+        Join(tree, ownIsTree: !fromSnapshot);
         tree.Members.Add(member);
         s_trees[root] = tree;
         KnifeLog.Information($"[GUN_TREE] {root}: tree {id} generation {generation}, {registry.Count} records, opened by {Canonical(directory)}");
@@ -284,11 +378,21 @@ public static class ScGunTree {
     internal static int Saved(Tree tree, SubsystemScGunBlockBehavior member, double now) {
         if (tree.Primary != member) return tree.Generation;
         tree.Generation++;
-        Queue(SystemFile(tree.Root), Document(tree.Id, tree.Generation, Group(tree.Registry, tree.Ledger, now)));
+        var gun = Group(tree.Registry, tree.Ledger, now);
+        // Receipts: what every loaded world of the tree is saved with now (the same registry), for the reconcile of a
+        // world an older build plays later.
+        string receipt = string.Join(";", G(G(gun, RegistryKey), "Records")?.Elements("Value")
+            .Select(e => (string)e.Attribute("Name") + ":" + ScGunTreeMerge.Hash((string)e.Attribute("Value"))) ?? []);
+        foreach (var (m, path) in tree.Paths) if (tree.Members.Contains(m)) Entry(tree.Worlds, path, true).SetAttributeValue("Receipt", receipt);
+        Queue(SystemFile(tree.Root), Document(tree.Id, tree.Generation, gun, tree.Worlds));
         return tree.Generation;
     }
+    /// <summary>A Portal space applied its remap on its first update: nothing pending for it any more.</summary>
+    internal static void Applied(Tree tree, SubsystemScGunBlockBehavior member) {
+        if (tree.Paths.TryGetValue(member, out var path)) tree.Worlds = Settled(tree.Worlds, path);
+    }
     internal static void Release(Tree tree, SubsystemScGunBlockBehavior member) {
-        tree.Members.Remove(member);
+        tree.Members.Remove(member); tree.Paths.Remove(member);
         if (tree.Members.Count > 0) return;
         if (s_trees.TryGetValue(tree.Root, out var current) && current == tree) s_trees.Remove(tree.Root);
         Flush(); // the last world of the tree is going: its file is on disk before the next world (or the menu) comes
