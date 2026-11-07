@@ -98,9 +98,20 @@ static class GunTreeRegression {
             Apply(lost, snapshot, [], () => reassigned = true);
             Check("lost-group-gets-the-tree-registry", reassigned && Row(lost) == row && Text(Gun(lost), "GunTreeId") == id && Text(Gun(lost), "GunTreeGeneration") == "5", lost.ToString());
 
+            // A new sub-world (Ancient World's first dimension) has no gun block number: the tree's records are not its items.
+            var unmapped = Project(null); unmapped.Element("Subsystems").Elements("Values").Single(e => (string)e.Attribute("Name") == "BlocksManager").Remove();
+            Apply(unmapped, snapshot, []);
+            string refusal0 = null; try { mod.GetType("Game.ScGunLoadIntegrity", true).GetMethod("Inspect").Invoke(null, [unmapped]); } catch (TargetInvocationException e) { refusal0 = e.InnerException?.Message; }
+            Check("new-sub-world-without-gun-block-number-loads", Row(unmapped) == row && refusal0 is null, refusal0 ?? "");
             var stamped = Project(GunGroup(row3, id, 4));
             Apply(stamped, snapshot, []);
             Check("stamped-world-takes-the-newer-tree-registry", Row(stamped) == row && Text(Gun(stamped), "GunTravelSource") == "data:/Worlds/W/Here" && Text(Gun(stamped), "GunTreeGeneration") == "5");
+            Call("ResetForTests");
+            var newer = Project(GunGroup(row3, id, 7));
+            string beforeNewer = newer.ToString(); Apply(newer, snapshot, []);
+            var fromNewer = Acquire(Activator.CreateInstance(subsystemType), root, GunGroup(row3, id, 7));
+            Check("world-copy-newer-than-the-tree-file-wins", newer.ToString() == beforeNewer && Rounds(Prop(fromNewer, "Registry")) == 3 && (int)Prop(fromNewer, "Generation") == 7, newer.ToString());
+            Call("ResetForTests");
             var foreign = Project(GunGroup(row, other, 3));
             Check("world-of-another-tree-refused", Refused(() => Apply(foreign, snapshot, []), foreign));
             var ownRecords = Project(GunGroup(row3));
