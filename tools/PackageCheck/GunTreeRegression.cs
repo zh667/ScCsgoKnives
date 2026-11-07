@@ -24,7 +24,7 @@ static class GunTreeRegression {
             try { return tree.GetMethod(name, any).Invoke(null, args); }
             catch (TargetInvocationException e) { throw e.InnerException!; }
         }
-        object Snapshot(string id, int generation, XElement gun) => Activator.CreateInstance(snapshotType, id, generation, gun, "test");
+        object Snapshot(string id, int generation, XElement gun) => Activator.CreateInstance(snapshotType, id, generation, gun, "test", null);
         XElement Value(string n, object v) => new("Value", new XAttribute("Name", n), new XAttribute("Type", v is int ? "int" : "string"), new XAttribute("Value", v));
         XElement Group(string n, params object[] children) => new("Values", new XAttribute("Name", n), children);
         XElement G(XElement p, string n) => p?.Elements("Values").SingleOrDefault(e => (string)e.Attribute("Name") == n);
@@ -61,8 +61,10 @@ static class GunTreeRegression {
             var snapshot = Snapshot(id, 5, treeGun);
             int Rounds(object reg) { var args = new object[] { 1, null }; bool ok = (bool)registryType.GetMethod("TryGetSnapshot").Invoke(reg, args); return ok ? (int)args[1].GetType().GetProperty("Rounds").GetValue(args[1]) : -1; }
             string Row(XElement p) => Text(G(G(Gun(p), "GunRegistry"), "Records"), "1");
+            // Phase B: "others" are the other saves of the tree; a name alone stands for a sibling with one record of its own.
+            IReadOnlyList<(string Path, XElement Project)> Saves(IReadOnlyList<string> names) => names.Select(n => (n, Project(GunGroup(row3)))).ToList();
             void Apply(XElement p, object tree, IReadOnlyList<string> others, Func<bool> reassign = null, Action restore = null) =>
-                Call("Apply", p, root, tree, (Func<IReadOnlyList<string>>)(() => others), reassign ?? (() => false), restore ?? (() => { }));
+                Call("Apply", p, root, "", tree, (Func<IReadOnlyList<(string Path, XElement Project)>>)(() => Saves(others)), reassign ?? (() => false), restore ?? (() => { }));
             bool Refused(Action action, XElement p) {
                 string before = p.ToString();
                 try { action(); return false; } catch (InvalidOperationException) { return p.ToString() == before; }
@@ -77,8 +79,8 @@ static class GunTreeRegression {
 
             // ---- the tree file ----
             string file = Path.Combine(directory, "ScCsgoGuns.xml");
-            Call("Write", file, (XElement)Call("Document", id, 1, new XElement(treeGun)));
-            Call("Write", file, (XElement)Call("Document", id, 2, new XElement(treeGun)));
+            Call("Write", file, (XElement)Call("Document", id, 1, new XElement(treeGun), null));
+            Call("Write", file, (XElement)Call("Document", id, 2, new XElement(treeGun), null));
             var problems = new List<string>();
             object Read() { problems.Clear(); return Call("Read", file, problems); }
             int Gen(object s) => (int)snapshotType.GetProperty("Generation").GetValue(s);
@@ -114,21 +116,25 @@ static class GunTreeRegression {
             Call("ResetForTests");
             var foreign = Project(GunGroup(row, other, 3));
             Check("world-of-another-tree-refused", Refused(() => Apply(foreign, snapshot, []), foreign));
+            // Phase B: a world with a registry of its own joins the tree by identity instead of being refused.
             var ownRecords = Project(GunGroup(row3));
-            Check("unstamped-world-with-records-refused-while-a-tree-exists", Refused(() => Apply(ownRecords, snapshot, []), ownRecords));
+            Apply(ownRecords, snapshot, []);
+            Check("unstamped-world-with-records-joins-the-tree", Text(Gun(ownRecords), "GunTreeId") == id && G(G(Gun(ownRecords), "GunRegistry"), "Records").Elements().Count() == 2, ownRecords.ToString());
             var empty = Project(GunGroup(null));
             Apply(empty, snapshot, []);
             Check("unstamped-world-without-records-joins-the-tree", Row(empty) == row && Text(Gun(empty), "GunTreeId") == id);
             var founder = Project(GunGroup(row3));
-            Check("unstamped-world-refused-when-other-worlds-hold-records", Refused(() => Apply(founder, null, ["Tartareosity"]), founder));
+            Call("ResetForTests"); Apply(founder, null, ["Tartareosity"]);
+            Check("unstamped-world-with-siblings-merges-them", Text(Gun(founder), "GunTreeId") is not null && G(G(Gun(founder), "GunRegistry"), "Records").Elements().Count() == 2, founder.ToString());
+            founder = Project(GunGroup(row3));
             string before = founder.ToString(); Apply(founder, null, []);
             Check("unstamped-world-alone-founds-the-tree-unchanged", founder.ToString() == before);
             var refusal = Project(Group("ScGunBlockBehavior", Value(errorKey, "refused")));
             before = refusal.ToString(); Apply(refusal, snapshot, []);
             Check("refusal-marker-left-alone", refusal.ToString() == before);
             var restoredLost = Project(null); bool restoreAsked = false;
-            Check("lost-world-without-tree-restored-then-checked", Refused(() => Apply(restoredLost, null, ["Space_0"], null, () => {
-                restoreAsked = true; restoredLost.Element("Subsystems").Add(GunGroup(row3)); }), new XElement("probe")) && restoreAsked);
+            Apply(restoredLost, null, ["Space_0"], null, () => { restoreAsked = true; restoredLost.Element("Subsystems").Add(GunGroup(row3)); });
+            Check("lost-world-without-tree-restored-then-merged", restoreAsked && Text(Gun(restoredLost), "GunTreeId") is not null, restoredLost.ToString());
 
             // ---- an old carried packet (with an Error) never refuses a world ----
             // WorldInfo's constructor builds engine palettes that a headless host does not have; only the folder is read.

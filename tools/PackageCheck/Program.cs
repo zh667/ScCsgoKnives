@@ -182,7 +182,7 @@ knifeLog?.GetProperty("ToConsole", BindingFlags.Public | BindingFlags.Static)?.S
 if (resourceAudit is not null) { ResourceAudit.Write(mod, resourceAudit, digest); return 0; }
 if(gunTreeOnly) {
     // world-tree-gun-registry-20261107: the tree registry and the gun record copy it builds on, against the packaged DLL.
-    var cases=GunTreeRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).Concat(GunRecordMirrorRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})).ToArray();
+    var cases=GunTreeRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail}).Concat(GunTreeMergeRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})).Concat(GunRecordMirrorRegression.Run(mod).Select(c=>new{name=c.Name,ok=c.Ok,detail=c.Detail})).ToArray();
     var report=JsonSerializer.Serialize(new{packageSha256=digest,dllSha256=dllDigest,failed=cases.Count(c=>!c.ok),checks=cases},new JsonSerializerOptions{WriteIndented=true,Encoder=System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping});
     if(jsonOut is not null)File.WriteAllText(jsonOut,report);Console.WriteLine(report);return cases.Any(c=>!c.ok)?1:0;
 }
@@ -337,6 +337,7 @@ foreach(var c in Growth30BoundaryRegression.Run(mod,previousGrowthPackage,ghoulA
 foreach(var c in LiveBackupRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GunRecordMirrorRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GunTreeRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
+foreach(var c in GunTreeMergeRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in GenericTravelRegression.Run(mod,travelSourceSnapshot)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in ItemTravelRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
 foreach(var c in ShotCadenceRegression.Run(mod)) checks.Add(new {name=c.Name,ok=c.Ok,detail=c.Detail});
