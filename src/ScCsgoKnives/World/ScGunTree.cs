@@ -162,7 +162,10 @@ public static class ScGunTree {
             if (tree is not null) {
                 bool hadRecords = reassignFromCopy();
                 Inject(subs, tree);
-                if (hadRecords) ScGunRecordMirror.Notice("CS：这个世界曾在未启用 CS 时存档，枪械记录已从主世界的共用记录本恢复。");
+                if (hadRecords) {
+                    KnifeLog.Warning($"[GUN_MIRROR] this world was saved without the CS mod and had lost its gun records; restored {G(G(G(subs, GunGroup), RegistryKey), "Records")?.Elements().Count() ?? 0} records from the tree registry ({tree.Source})");
+                    ScGunRecordMirror.Notice("CS：这个世界曾在未启用 CS 时存档，枪械记录已从主世界的共用记录本恢复。");
+                }
                 s_prepared[root] = tree;
                 return;
             }
@@ -175,6 +178,15 @@ public static class ScGunTree {
         if (stamp is not null) {
             if (tree is null) { s_prepared[root] = new(stamp, int.TryParse(Text(gun, GenerationKey), out int g) ? g : 0, null, "world copy"); return; } // the file is gone: this copy re-founds it
             if (stamp != tree.Id) throw Pending("这个世界的记录本属于另一棵世界树");
+            // A save whose tree-file write never finished (the game closed at once) leaves the world's own copy newer
+            // than the file: that copy wins, never the older file.
+            int own = int.TryParse(Text(gun, GenerationKey), NumberStyles.Integer, CultureInfo.InvariantCulture, out int og) ? og : 0;
+            if (own > tree.Generation) {
+                KnifeLog.Warning($"[GUN_TREE] {root}: this world's copy (generation {own}) is newer than the tree registry ({tree.Generation}, {tree.Source}); the world's copy is used");
+                var copy = new XElement("Values", new XAttribute("Name", GunGroup), gun.Elements().Where(e => (string)e.Attribute("Name") is RegistryKey or ScGunTravel.Identities or LayoutKey).Select(e => new XElement(e)));
+                s_prepared[root] = new(stamp, own, copy, "world copy");
+                return;
+            }
             Inject(subs, tree); s_prepared[root] = tree;
             return;
         }
@@ -277,8 +289,11 @@ public static class ScGunTree {
     }
     internal static void Release(Tree tree, SubsystemScGunBlockBehavior member) {
         tree.Members.Remove(member);
-        if (tree.Members.Count == 0 && s_trees.TryGetValue(tree.Root, out var current) && current == tree) s_trees.Remove(tree.Root);
+        if (tree.Members.Count > 0) return;
+        if (s_trees.TryGetValue(tree.Root, out var current) && current == tree) s_trees.Remove(tree.Root);
+        Flush(); // the last world of the tree is going: its file is on disk before the next world (or the menu) comes
     }
+    static ScGunTree() { AppDomain.CurrentDomain.ProcessExit += (_, _) => Flush(); }
     internal static bool IsLoaded(Tree tree) => tree.Members.Count > 0;
     /// <summary>Every holder of the tree: each loaded project's inventories, pickables and projectiles, and the pending
     /// refunds of the shared registry once.</summary>
