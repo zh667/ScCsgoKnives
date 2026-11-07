@@ -42,6 +42,9 @@ public static class ScGunLoadIntegrity {
         if (registry.Disabled) throw new InvalidOperationException("枪械记录表无法安全读取");
         var maps = Group(subs, "BlocksManager")?.Elements("Value").Where(e => (string)e.Attribute("Value") == "ScGunBlock").ToArray() ?? [];
         if (maps.Length == 0 && registry.Count == 0 && registry.QuarantinedCount == 0) return new(0, registry.Next, []); // new world
+        // world-tree-gun-registry-20261107: the registry of a stamped group is the tree's. A world of the tree that was never
+        // saved with CS (a new sub-world, Ancient World's first dimension) has no gun block number yet, so no gun item to check.
+        if (maps.Length == 0 && Text(gun, ScGunTree.TreeIdKey) is not null) return new(0, registry.Next, []);
         if (maps.Length != 1) throw new InvalidOperationException("保存的枪械方块映射缺失或重复，不能验证旧物品");
         int block = Number((string)maps[0].Attribute("Name"));
         if (block is < 1 or > 1023) throw new InvalidOperationException("保存的枪械方块编号无效");
