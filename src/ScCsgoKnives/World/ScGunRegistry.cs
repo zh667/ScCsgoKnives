@@ -135,6 +135,9 @@ public sealed class ScGunRegistry {
     public IEnumerable<int> Ids => m_records.Keys;
     /// <summary>The id the next Publish will use, or -1 when the table is full. Nothing is reserved: publish on the main thread right after.</summary>
     public int PeekNextId() => IsFull ? -1 : Next;
+    /// <summary>world-tree-gun-registry-20261107: a world joining a loaded tree may hold numbers above the shared
+    /// watermark (its integrity check staged them); they are never handed out again.</summary>
+    public void ReserveThrough(int next) { if (next > Next) Next = ScGunEncoding.NextId(Math.Min(next, GunSpec.LastId + 1)); }
     internal int Publish(ScGunRecord record) {
         if (Disabled) return -1;
         if (IsFull) {

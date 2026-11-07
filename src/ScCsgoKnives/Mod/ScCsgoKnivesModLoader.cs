@@ -97,8 +97,15 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
             ScGunSaveGuard.Refuse(project,"资源前置包缺失或不匹配，拒绝载入："+e.Message);return;
         }
-        // gun-record-mirror-20261106: a world saved without CS gets its gun records back before anything reads them.
-        ScGunRecordMirror.BeforeLoad(project, world);
+        // world-tree-gun-registry-20261107: the tree's registry goes into this world's gun group before anything reads it
+        // (a world saved without CS gets its records back the same way, gun-record-mirror-20261106).
+        try { if (ScGunTree.Enabled) ScGunTree.BeforeLoad(project, world); else ScGunRecordMirror.BeforeLoad(project, world); }
+        catch (Exception e) {
+            var subs=project.Element("Subsystems");
+            if(subs is not null && !subs.Elements("Values").Any(v=>(string)v.Attribute("Name")=="ScGunBlockBehavior"))
+                subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
+            ScGunSaveGuard.Refuse(project, e.Message); return;
+        }
         if (!ScGunSaveGuard.BeforeLoad(project)) return;
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
