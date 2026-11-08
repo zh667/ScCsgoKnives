@@ -15,6 +15,11 @@ static class Growth30BoundaryRegression {
         XElement Group(XElement e,string n)=>e.Elements("Values").Single(x=>(string)x.Attribute("Name")==n);
         var registry=mod.GetType("Game.ScGunRegistry");var travel=mod.GetType("Game.ScGunTravel");
         var bridge=mod.GetType("Game.ScGhoulTestBridge");
+        // 1.5.2 (world-tree-gun-registry-20261107): a process that owns the world keeps one registry per world tree, and the
+        // after-save hook writes no carried packet any more (a Ghoul world shares the root's registry). The packet path
+        // these checks were written for is still in the core; it is checked with tree mode off, and the tree mode's own
+        // behaviour (no packet, the record in the saved registry) is checked first.
+        var treeMode=mod.GetType("Game.ScGunTree")?.GetField("EnabledForTests",BindingFlags.NonPublic|BindingFlags.Static);
         try {
             var gateType=mod.GetType("Game.ScTestEntryGate");var gate=Activator.CreateInstance(gateType);
             bool Open()=>(bool)gateType.GetProperty("Unlocked").GetValue(gate);
@@ -36,6 +41,14 @@ static class Growth30BoundaryRegression {
                     G("GunRegistry",V("Schema",4),V("Next",2),V("GrowthMode","CountAndGrow"),G("Records",V("1",row))))),
                 new XElement("Entities",new XElement("Entity",new XAttribute("Name","MalePlayer"),G("Inventory",G("Slots",G("0",V("Contents",Terrain.MakeBlockValue(302,0,64)),V("Count",1)))))));
             var loader=Activator.CreateInstance(mod.GetType("Game.ScCsgoKnivesModLoader"));
+            if(treeMode is not null){
+                var inTree=new XElement(xml);treeMode.SetValue(null,true);
+                try{loader.GetType().GetMethod("ProjectXmlSave").Invoke(loader,[new XElement("Project")]);loader.GetType().GetMethod("OnProjectXmlSaved").Invoke(loader,[inTree]);}
+                finally{treeMode.SetValue(null,null);}
+                Check("tree-mode-after-save-hook-writes-no-packet",!inTree.Descendants("Values").Any(e=>(string)e.Attribute("Name")=="ScGunTravel")
+                    &&inTree.Descendants("Value").Any(v=>(string)v.Attribute("Value")==row));
+                treeMode.SetValue(null,false);
+            }
             loader.GetType().GetMethod("ProjectXmlSave").Invoke(loader,[new XElement("Project")]);
             loader.GetType().GetMethod("OnProjectXmlSaved").Invoke(loader,[xml]);
             Check("actual-after-save-hook-creates-v3-packet",xml.Descendants("Values").Any(e=>(string)e.Attribute("Name")=="ScGunTravel"
@@ -222,6 +235,7 @@ static class Growth30BoundaryRegression {
             try{upgrade.GetMethod("BeforeLoad").Invoke(null,[world,Info(Path.Combine(temp,"missing-world"))]);}catch(TargetInvocationException){refused=true;}
             Check("backup-failure-refuses-without-xml-change",refused&&world.ToString()==before);
         }catch(Exception e){Check("failure",false,e.ToString());}
+        finally{treeMode?.SetValue(null,null);}
         return results;
     }
 }

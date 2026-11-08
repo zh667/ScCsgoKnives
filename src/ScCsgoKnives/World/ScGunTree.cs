@@ -60,7 +60,10 @@ public static class ScGunTree {
 
     /// <summary>The process that owns the world: single player, or the multiplayer host/server. A remote client shows
     /// the server's records and keeps no tree.</summary>
-    public static bool Enabled => ScNet.IsAuthority;
+    public static bool Enabled => EnabledForTests ?? ScNet.IsAuthority;
+    /// <summary>Headless checks only: forces tree mode off (or on), so the carried-packet path of builds before 1.5.2 that
+    /// the core still contains can be checked beside the tree path that replaced it. Never set by gameplay.</summary>
+    internal static bool? EnabledForTests;
 
     static string Canonical(string path) => (path ?? "").Replace('\\', '/').TrimEnd('/');
     static XElement G(XElement parent, string name) => parent?.Elements("Values").SingleOrDefault(e => (string)e.Attribute("Name") == name);
