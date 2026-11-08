@@ -708,10 +708,26 @@ class Game:
 
     def close(self):
         if self.proc and self.proc.poll() is None: self.proc.kill(); self.proc.wait(20)
+        free_cursor()
         self.stop = True; time.sleep(0.6); self.logsock.close(); self.cmdsock.close(); self.logfile.close()
         game_log = self.dir / "Bugs/Game.log"
         if game_log.exists(): shutil.copy2(game_log, self.case_dir / f"{self.name}-Game.log")
         RUNTIME_OWNER.active.discard(self.role)
+
+
+def free_cursor():
+    """A game that clipped the system cursor to its window (the engine's raw mouse mode) and then exits or is killed can
+    leave the clip in place: Windows keeps it until someone releases it, and the user's cursor stays trapped in the old
+    window's rectangle (seen 2026-11-08). Released after every test game closes, only when a clip is actually set."""
+    if os.name != "nt": return
+    import ctypes
+    from ctypes import wintypes
+    user32 = ctypes.windll.user32; r = wintypes.RECT()
+    if not user32.GetClipCursor(ctypes.byref(r)): return
+    full = (user32.GetSystemMetrics(76), user32.GetSystemMetrics(77))
+    size = (user32.GetSystemMetrics(78), user32.GetSystemMetrics(79))
+    # Compared loosely: a DPI-unaware process sees scaled metrics, so any rectangle clearly smaller than the screen counts.
+    if (r.right - r.left) * (r.bottom - r.top) < 0.98 * size[0] * size[1] or (r.left, r.top) != full: user32.ClipCursor(None)
 
 
 class Game131(Game):
@@ -727,7 +743,10 @@ class Game131(Game):
 
     def start(self):
         if self.proc and self.proc.poll() is None: raise RuntimeError(f"{self.role} is already running")
-        env = dict(os.environ, SC_TEST_CMD_PORT=str(self.cmd_port), SC_TEST_LOG_PORT=str(self.log_port), SCCS_DIAGNOSTICS="1")
+        # SC_TEST_FREE_CURSOR: ScTestAutomation131 keeps the system cursor free of the game window (default 1; 0 for a run
+        # that needs the engine's raw mouse mode)
+        env = dict(os.environ, SC_TEST_CMD_PORT=str(self.cmd_port), SC_TEST_LOG_PORT=str(self.log_port), SCCS_DIAGNOSTICS="1",
+                   SC_TEST_FREE_CURSOR=os.environ.get("SC_TEST_FREE_CURSOR", "1"))
         self.proc = subprocess.Popen([str(self.dir / "Survivalcraft.exe")], cwd=self.dir, env=env)
         k, job = RUNTIME_OWNER.job
         if not k.AssignProcessToJobObject(job, int(self.proc._handle)): print(f"warning: {self.role} not in the job object", flush=True)
