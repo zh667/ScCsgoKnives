@@ -434,6 +434,10 @@ def marker_without(text, members):
 # against the pinned 1.9.3.2_MP platform references (collected by tools/MpM0/m0.py prepare; SHA-256 below). On the 1.9.3.1
 # engine the core never loads it (ScNet.Decide); on the preview platform it loads only when the CompatNet contract matches.
 MP_REFS = ROOT / ".tmp/mp-m0-20260929/refs/mp"
+# mp-1951-20261108: API 1.9.5.1_MP is a second supported multiplayer engine. The payloads are still built against the pinned
+# 1.9.3.2 references above (one package serves both engines; the binding to 1.9.5.1_MP is checked by MpAbiCheck); the offline
+# net loops also run on the 1.9.5.1_MP references (collected by M0_MP=1951 tools/MpM0/m0.py prepare).
+MP_REFS_1951 = ROOT / ".tmp/mp-m0-20260929/refs/mp-1951"
 MP_REF_HASHES = {"Survivalcraft.dll": "622976cce1f9da24", "Survivalcraft.CompatNet.dll": "4288904cbbbcbdfc", "Survivalcraft.Multiplayer.dll": "3e0b24efbf51b213",
                  "Engine.dll": "41ec4fc808a645b0", "EntitySystem.dll": "9a6d892e01896818", "Survivalcraft.Compat23.dll": "96b60590d436b787", "0Harmony.dll": "70e7647876b6c3d8"}
 NET_MEMBER = "Net/ScCsgoNet.bin"
@@ -491,24 +495,25 @@ def net_member(S):
                                "sources": {p.name: base.sha(p.read_bytes()) for d in ["net/src", "net/src-compat"] for p in sorted((S / d).glob("*.cs"))}})
     return True
 
-def netloop(S):
+def _netloop(S, mp_refs, suffix, full):
     """mp-user-logs-20261002: the transport end to end on the real platform assemblies, offline (tools/NetLoopCheck): once
     without CompatNet in the process (the platform's Android build) and once with it. The payloads are the packaged ones."""
     import shutil, subprocess
     pk = json.loads((S / "packages.json").read_text("utf8")); net = json.loads((S / "net.json").read_text("utf8"))
-    work = S / "net/loop"
+    work = S / ("net/loop" + suffix)
     if work.exists(): shutil.rmtree(work)
     work.mkdir(parents=True)
     with zipfile.ZipFile(S / "candidate" / pk["轻量"]["file"]) as z:
         (work / "ScCsgoNet.dll").write_bytes(z.read(NET_MEMBER)); (work / "ScCsgoNetCompat.dll").write_bytes(z.read(NET_COMPAT_MEMBER)); core = z.read("ScCsgoKnives.dll")
     assert base.sha((work / "ScCsgoNet.dll").read_bytes()) == net["sha256"] and base.sha((work / "ScCsgoNetCompat.dll").read_bytes()) == net["compatSha256"], "packaged payloads differ from net.json"
     refs = work / "refs"; plain = work / "refs-nocompat"
-    shutil.copytree(MP_REFS, refs); (refs / "ScCsgoKnives.dll").write_bytes(core)
+    shutil.copytree(mp_refs, refs); (refs / "ScCsgoKnives.dll").write_bytes(core)
     shutil.copytree(refs, plain); (plain / "Survivalcraft.CompatNet.dll").unlink()
     src = work / "src"; shutil.copytree(ROOT / "tools/NetLoopCheck", src, ignore=shutil.ignore_patterns("bin", "obj"))
-    if not base.run(S, "build-tool-NetLoopCheck", ["dotnet", "build", src / "NetLoopCheck.csproj", "-c", "Release", "-o", work / "out", f"-p:Refs={refs}", "--nologo", "-v:q"]): return False
+    if not base.run(S, "build-tool-NetLoopCheck" + suffix, ["dotnet", "build", src / "NetLoopCheck.csproj", "-c", "Release", "-o", work / "out", f"-p:Refs={refs}", "--nologo", "-v:q"]): return False
     ok = True
-    for key, references, compat, flag in [("netloop-nocompat", plain, "-", []), ("netloop-compat", refs, work / "ScCsgoNetCompat.dll", ["--with-compatnet"])]:
+    loops = [("netloop-nocompat" + suffix, plain, "-", [])] + ([("netloop-compat", refs, work / "ScCsgoNetCompat.dll", ["--with-compatnet"])] if full else [])
+    for key, references, compat, flag in loops:
         ok &= base.run(S, key, ["dotnet", work / "out/NetLoopCheck.dll", references, work / "ScCsgoNet.dll", compat, S / f"{key}.json", *flag])
         if (S / f"{key}.json").exists():
             d = json.loads((S / f"{key}.json").read_text("utf-8-sig")); failed = [c["Name"] for c in d["checks"] if not c["Ok"]]
@@ -536,11 +541,11 @@ def netloop(S):
         d = json.loads((S / f"{key}.json").read_text("utf-8-sig")); failed = [f"[{c['Case']}] {c['Name']}" for c in d["checks"] if not c["Ok"]]
         print(key, "failed", d["failed"], "of", d["total"], "handlers", d.get("registered"), "packages", d.get("modules"), failed, flush=True)
         return done and d["failed"] == 0 and d["total"] >= least and len(d.get("modules", [])) == len(packages)
-    ok &= state("netstate", plain, work / "ScCsgoNet.dll", "--state", 105) is True
-    ok &= state("netstate-targets", plain, work / "ScCsgoNet.dll", "--baseline", 12) is True
-    ok &= state("netgunloop", plain, work / "ScCsgoNet.dll", "--gunloop", 122) is True
+    ok &= state("netstate" + suffix, plain, work / "ScCsgoNet.dll", "--state", 105) is True
+    ok &= state("netstate-targets" + suffix, plain, work / "ScCsgoNet.dll", "--baseline", 12) is True
+    ok &= state("netgunloop" + suffix, plain, work / "ScCsgoNet.dll", "--gunloop", 122) is True
     delivered = base.baseline("轻量")
-    if delivered.exists() and hashlib.sha256(delivered.read_bytes()).hexdigest() == base.BASELINES["轻量"]:
+    if full and delivered.exists() and hashlib.sha256(delivered.read_bytes()).hexdigest() == base.BASELINES["轻量"]:
         old = work / "refs-delivered"; shutil.copytree(plain, old)
         with zipfile.ZipFile(delivered) as z: (old / "ScCsgoKnives.dll").write_bytes(z.read("ScCsgoKnives.dll")); (work / "ScCsgoNet-delivered.dll").write_bytes(z.read(NET_MEMBER))
         for key, flag, least in [("netstate-delivered", "--baseline", 12), ("netgunloop-delivered", "--gunloop", 122)]:
@@ -548,6 +553,12 @@ def netloop(S):
             print(f"{key}: the delivered output/ Lite package", "passes every assertion (nothing reproduced)" if result else "fails assertions as listed above: the reported faults, reproduced on the delivered build", flush=True)
     else: print("netstate-delivered: output/ Lite is not the recorded baseline package, reproduction not run", flush=True)
     return ok
+def netloop(S):
+    """Both supported multiplayer engines: 1.9.3.2_MP with and without CompatNet (and the delivered-build reproduction);
+    1.9.5.1_MP without CompatNet (its CompatNet has no adapter the optional corrections apply to)."""
+    ok = _netloop(S, MP_REFS, "", True)
+    if not MP_REFS_1951.exists(): print("netloop-1951: the 1.9.5.1_MP references are not collected (M0_MP=1951 tools/MpM0/m0.py prepare)", flush=True); return False
+    return _netloop(S, MP_REFS_1951, "-1951", False) and ok
 
 def appnet(S):
     """mp-user-logs-20261002: the appearance integration's multiplayer corrections (NEO item-bone buffer, CS model choice

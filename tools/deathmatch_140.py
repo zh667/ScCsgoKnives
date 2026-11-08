@@ -109,27 +109,32 @@ def dmcheck(S):
     done = base.run(S, "dmcheck", ["dotnet", work / "bin/Release/net10.0/DeathmatchCheck.dll", S / "dmcheck.json"], cwd=work)
     return report(S, "dmcheck", 190) and done
 
-def dmloop(S):
+def _dmloop(S, mp_refs, suffix):
     pk = json.loads((S / "packages.json").read_text("utf8")); ok = True
     for edition, label, agents in [("lite", "轻量", "探员"), ("full", "全量", "全量")]:
-        work = S / f"net/dmloop-{edition}"
+        work = S / f"net/dmloop-{edition}{suffix}"
         if work.exists(): shutil.rmtree(work)
         work.mkdir(parents=True)
         with zipfile.ZipFile(S / "candidate" / pk[label]["file"]) as z: adapter = z.read(cp.NET_MEMBER); core = z.read("ScCsgoKnives.dll")
         with zipfile.ZipFile(S / "candidate" / pk[agents]["file"]) as z: (work / "ScCsgoTactical.dll").write_bytes(z.read("ScCsgoTactical.dll"))
         with zipfile.ZipFile(S / "candidate" / pk[LABEL]["file"]) as z: package = z.read("ScCsgoDeathmatch.dll")
         (work / "ScCsgoNet.dll").write_bytes(adapter)
-        refs = work / "refs"; shutil.copytree(cp.MP_REFS, refs); (refs / "Survivalcraft.CompatNet.dll").unlink()   # the platform's Android build has no CompatNet: the package must not need it
+        refs = work / "refs"; shutil.copytree(mp_refs, refs); (refs / "Survivalcraft.CompatNet.dll").unlink()   # the platform's Android build has no CompatNet: the package must not need it
         (refs / "ScCsgoKnives.dll").write_bytes(core); (refs / "ScCsgoDeathmatch.dll").write_bytes(package)
         src = work / "src"; shutil.copytree(ROOT / "tools/NetLoopCheck", src, ignore=shutil.ignore_patterns("bin", "obj"))
-        if not base.run(S, f"build-tool-NetLoopCheck-dm-{edition}", ["dotnet", "build", src / "NetLoopCheck.csproj", "-c", "Release", "-o", work / "out", f"-p:Refs={refs}", "--nologo", "-v:q"]): return False
-        key = f"netdmloop-{edition}"; os.environ["DM_GROUP_OUT"] = str(S / f"dm/world-group-{edition}.xml")
+        if not base.run(S, f"build-tool-NetLoopCheck-dm-{edition}{suffix}", ["dotnet", "build", src / "NetLoopCheck.csproj", "-c", "Release", "-o", work / "out", f"-p:Refs={refs}", "--nologo", "-v:q"]): return False
+        key = f"netdmloop-{edition}{suffix}"; os.environ["DM_GROUP_OUT"] = str(S / f"dm/world-group-{edition}{suffix}.xml")
         try: done = base.run(S, key, ["dotnet", work / "out/NetLoopCheck.dll", refs, work / "ScCsgoNet.dll", "-", S / f"{key}.json", "--dmloop", f"--modules={work / 'ScCsgoTactical.dll'};{refs / 'ScCsgoDeathmatch.dll'}"])
         finally: os.environ.pop("DM_GROUP_OUT", None)
         d = json.loads((S / f"{key}.json").read_text("utf-8-sig")) if (S / f"{key}.json").exists() else {"failed": -1, "total": 0, "checks": []}
         print(key, "failed", d["failed"], "of", d["total"], "handlers", d.get("registered"), [f"[{c['Case']}] {c['Name']}" for c in d["checks"] if not c["Ok"]], flush=True)
-        ok &= done and d["failed"] == 0 and d["total"] >= 60 and (S / f"dm/world-group-{edition}.xml").exists()
+        ok &= done and d["failed"] == 0 and d["total"] >= 60 and (S / f"dm/world-group-{edition}{suffix}.xml").exists()
     return ok
+def dmloop(S):
+    # mp-1951-20261108: the deathmatch wire on both supported multiplayer engines (1.9.5.1_MP: results "-1951")
+    first = _dmloop(S, cp.MP_REFS, "")
+    if not cp.MP_REFS_1951.exists(): print("netdmloop-1951: the 1.9.5.1_MP references are not collected", flush=True); return False
+    return _dmloop(S, cp.MP_REFS_1951, "-1951") and first
 
 def dmload(S):
     # (built from the present tools/TacticalLoadCheck, not the stage's snapshot: the check may be corrected without rebuilding the candidate; its source hash is recorded)
@@ -152,7 +157,7 @@ def dmabi(S):
     work = S / "dm/abi"; work.mkdir(parents=True, exist_ok=True)
     if not base.run(S, "build-tool-MpAbiCheck", ["dotnet", "build", ROOT / "tools/MpAbiCheck/MpAbiCheck.csproj", "-c", "Release", "-o", work / "tool", "--nologo", "-v:q"]): return False
     ok = True
-    for key, folder in [("dmabi-1931", base.GAME), ("dmabi-1932mp", cp.MP_REFS)]:
+    for key, folder in [("dmabi-1931", base.GAME), ("dmabi-1932mp", cp.MP_REFS), ("dmabi-1951mp", cp.MP_REFS_1951)]:
         # (the core is given as a second assembly under test: the package references it, and it is not part of an engine build)
         done = base.run(S, key, ["dotnet", work / "tool/MpAbiCheck.dll", S / f"{key}.json", folder, dll(S), S / "lite/core/source/bin/Release/net10.0/ScCsgoKnives.dll"])
         d = json.loads((S / f"{key}.json").read_text("utf-8-sig")) if (S / f"{key}.json").exists() else {}
