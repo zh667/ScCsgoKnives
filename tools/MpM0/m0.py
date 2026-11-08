@@ -20,12 +20,25 @@ import hashlib, json, os, re, shutil, socket, subprocess, sys, threading, time, 
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-M0 = ROOT / ".tmp/mp-m0-20260929"
-SRC = M0 / "src"
+# Sources come from this checkout (ROOT); the bulky, untracked test data (.tmp: engines, runtime, stages; output/) can live in
+# the main checkout so that a worktree runs the same runtime folders and their firewall rules (SC_CSGO_DATA_ROOT).
+DATA = Path(os.environ.get("SC_CSGO_DATA_ROOT", ROOT))
+M0 = DATA / ".tmp/mp-m0-20260929"
+# mp-1951-20261108: two multiplayer engines. M0_MP selects the one the MP steps and scripts build against and run:
+# "1932" (default) = the 1.9.3.2_MP snapshot under .tmp/mp-m0-20260929/src; "1951" = API_1.9.5.1_MP (gitee tag, commit
+# 1797453), built from a detached copy of the shallow clone .tmp/mp-1951/src. Each engine keeps its own source/build tree,
+# collected refs and patched TestAutomation package; the runtime role folders (and their firewall rules) are shared and
+# mirrored from the selected engine on every run.
+MP_ENGINE = os.environ.get("M0_MP", "1932")
+MP_ENGINES = {"1932": ("1.9.3.2_MP", M0 / "src", M0 / "refs/mp", M0 / "mods"),
+              "1951": ("1.9.5.1_MP", DATA / ".tmp/mp-1951/build-src", M0 / "refs/mp-1951", M0 / "mods-1951")}
+if MP_ENGINE not in MP_ENGINES: raise SystemExit(f"M0_MP must be one of {', '.join(MP_ENGINES)}")
+MP_VERSION, SRC, _MP_REFS, _MP_MODS = MP_ENGINES[MP_ENGINE]
+MP1951_CLONE = DATA / ".tmp/mp-1951/src"
 MPBIN = SRC / "Survivalcraft.Windows/bin/Release/net10.0-windows/win-x64"
 TA_BUILT = SRC / "Survivalcraft.Test/bin/Release/net10.0-windows/win-x64/Mods/Survivalcraft.TestAutomation.scmod"
 GAME131 = Path(r"D:\下载\[Windows]SurvivalcraftAPI_1.9.3.1")
-OUT = ROOT / "output"
+OUT = DATA / "output"
 # the delivered packages carry the family's version (src/ScCsgoKnives/modinfo.json); the deathmatch one has no 包 suffix (2026-10-06)
 VERSION = json.loads((ROOT / "src/ScCsgoKnives/modinfo.json").read_text("utf8"))["Version"]
 def pkgname(label, version=None): return f"[API1.9]CS武器{version or VERSION}-{label}{'' if label == '死亡竞赛' else '包'}.scmod"
@@ -33,8 +46,8 @@ LITE = OUT / pkgname("轻量")
 FULL = OUT / pkgname("全量")
 AGENTS = OUT / pkgname("探员")
 DM = OUT / pkgname("死亡竞赛")
-REFS = M0 / "refs/mp"
-MODS = M0 / "mods"
+REFS = _MP_REFS
+MODS = _MP_MODS
 PKG = M0 / "pkg"
 BUILD = M0 / "build"
 RESULTS = M0 / "results"
@@ -49,8 +62,8 @@ ENGINE = os.environ.get("M0_ENGINE", "mp")
 # The standalone engines M0_ENGINE may select (api-194-1951-compat-20261016): 1.9.3.1 is the user's download; the later
 # official releases are the Atomgit archives unpacked on Windows (their hashes: .tmp/api-engines/downloads.json). All run in
 # the same sp131 folder with the same 1.9.3.1-built automation mod; one engine at a time.
-SP_ENGINES = {"131": ("1.9.3.1", GAME131), "194": ("1.9.4", ROOT / ".tmp/api-engines/1.9.4"),
-              "195": ("1.9.5", ROOT / ".tmp/api-engines/1.9.5"), "1951": ("1.9.5.1", ROOT / ".tmp/api-engines/1.9.5.1")}
+SP_ENGINES = {"131": ("1.9.3.1", GAME131), "194": ("1.9.4", DATA / ".tmp/api-engines/1.9.4"),
+              "195": ("1.9.5", DATA / ".tmp/api-engines/1.9.5"), "1951": ("1.9.5.1", DATA / ".tmp/api-engines/1.9.5.1")}
 SP_VERSION, GAME_SP = SP_ENGINES.get(ENGINE, SP_ENGINES["131"])
 TA131 = PKG / "ScTestAutomation131.scmod"
 SP131 = "sp131"   # the isolated 1.9.3.1 copy's folder in the fixed runtime (same lock, job object and process accounting)
@@ -105,19 +118,19 @@ def prepare():
     REFS.mkdir(parents=True)
     fw = framework_names(); taken = {}
     for p in sorted(MPBIN.glob("*.dll")):
-        if p.name.lower() not in fw and managed(p): shutil.copy2(p, REFS / p.name); taken[p.name] = {"from": str(p.relative_to(M0)), "sha256": sha(p)}
+        if p.name.lower() not in fw and managed(p): shutil.copy2(p, REFS / p.name); taken[p.name] = {"from": str(p.relative_to(DATA)), "sha256": sha(p)}
     for mod in sorted((MPBIN / "InternalMods").glob("*.scmod")):
         with zipfile.ZipFile(mod) as z:
             for n in z.namelist():
                 if n.lower().endswith(".dll") and "/" not in n.strip("/") and Path(n).name.lower() not in fw and Path(n).name not in taken:
                     (REFS / Path(n).name).write_bytes(z.read(n))
-                    if managed(REFS / Path(n).name): taken[Path(n).name] = {"from": f"{mod.relative_to(M0)}!{n}", "sha256": sha(REFS / Path(n).name)}
+                    if managed(REFS / Path(n).name): taken[Path(n).name] = {"from": f"{mod.relative_to(DATA)}!{n}", "sha256": sha(REFS / Path(n).name)}
                     else: (REFS / Path(n).name).unlink()
     record = {"mpBuild": {p.name: sha(p) for p in [MPBIN / "Survivalcraft.dll", MPBIN / "Engine.dll", MPBIN / "EntitySystem.dll", MPBIN / "Survivalcraft.exe"]},
               "internalMods": {p.name: sha(p) for p in sorted((MPBIN / "InternalMods").glob("*.scmod"))},
-              "testAutomation": {"path": str((MODS / TA_BUILT.name).relative_to(M0)), "sha256": sha(MODS / TA_BUILT.name)},
+              "testAutomation": {"path": str((MODS / TA_BUILT.name).relative_to(DATA)), "sha256": sha(MODS / TA_BUILT.name)},
               "refs": taken}
-    (M0 / "refs/refs.json").write_text(json.dumps(record, indent=1), "utf-8")
+    (REFS.parent / ("refs.json" if MP_ENGINE == "1932" else f"refs-{MP_ENGINE}.json")).write_text(json.dumps(record, indent=1), "utf-8")
     print(json.dumps({k: v for k, v in record.items() if k != "refs"}, indent=1)); print("refs", len(taken))
 
 
@@ -145,11 +158,36 @@ def tapatch():
         assert "using System.Net;" in text
         with open(TA_SOURCE, "w", encoding="utf-8", newline="") as f: f.write(text)
     run(["dotnet", "build", SRC / "Survivalcraft.TestAutomation/Survivalcraft.TestAutomation.csproj", "-c", "Release", "-p:WindowsRuntimeIdentifier=win-x64"],
-        cwd=SRC, log=M0 / "logs/build-testautomation.log")
+        cwd=SRC, log=M0 / f"logs/build-testautomation{'' if MP_ENGINE == '1932' else '-' + MP_ENGINE}.log")
     MODS.mkdir(parents=True, exist_ok=True); shutil.copy2(TA_BUILT, MODS / TA_BUILT.name)
-    record = {"source": str(TA_SOURCE.relative_to(M0)), "sourceBefore": before, "sourceAfter": sha(TA_SOURCE),
+    record = {"source": str(TA_SOURCE.relative_to(DATA)), "sourceBefore": before, "sourceAfter": sha(TA_SOURCE),
               "original": sha(TA_SOURCE.with_suffix(".cs.orig")), "package": sha(MODS / TA_BUILT.name)}
-    (M0 / "logs/tapatch.json").write_text(json.dumps(record, indent=1), "utf-8"); print(json.dumps(record, indent=1))
+    record["engine"] = MP_VERSION
+    (M0 / f"logs/tapatch{'' if MP_ENGINE == '1932' else '-' + MP_ENGINE}.json").write_text(json.dumps(record, indent=1), "utf-8"); print(json.dumps(record, indent=1))
+
+
+def mpsrc():
+    """mp-1951-20261108, M0_MP=1951 only: a detached copy of the API_1.9.5.1_MP clone (no .git) is built into the engine
+    (Survivalcraft.Windows, win-x64, with its internal mods) that the MP runs mirror into the role folders."""
+    if MP_ENGINE != "1951": raise SystemExit("mpsrc builds the 1.9.5.1_MP engine: run it with M0_MP=1951")
+    head = subprocess.run(["git", "-C", str(MP1951_CLONE), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    if not SRC.exists():
+        shutil.copytree(MP1951_CLONE, SRC, ignore=shutil.ignore_patterns(".git", "bin", "obj"))
+    # The Windows project lists CompatNet's packed .scmod as a plain copy item, but only packs it in a target that runs after
+    # that copy: a first build from a clean tree fails (MSB3030). An empty placeholder lets the copy pass; the packing target
+    # then builds the real package and copies it over the placeholder (checked below).
+    scmod = SRC / "Survivalcraft.CompatNet/bin/Release/net10.0-windows/win-x64/scmod/Survivalcraft.CompatNet.scmod"
+    if not scmod.exists():
+        scmod.parent.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(scmod, "w"): pass
+    run(["dotnet", "build", SRC / "Survivalcraft.Windows/Survivalcraft.Windows.csproj", "-c", "Release", "-p:WindowsRuntimeIdentifier=win-x64"],
+        cwd=SRC, log=M0 / "logs/build-mp-1951.log")
+    for name in ["Survivalcraft.CompatNet.scmod", "Survivalcraft.Multiplayer.scmod"]:
+        with zipfile.ZipFile(MPBIN / "InternalMods" / name) as z:
+            assert any(n.lower().endswith(".dll") for n in z.namelist()), f"{name} in InternalMods holds no assembly (placeholder not replaced)"
+    record = {"engine": MP_VERSION, "cloneHead": head, "mpBuild": {p.name: sha(p) for p in [MPBIN / "Survivalcraft.dll", MPBIN / "Engine.dll", MPBIN / "EntitySystem.dll", MPBIN / "Survivalcraft.exe"]},
+              "internalMods": {p.name: sha(p) for p in sorted((MPBIN / "InternalMods").glob("*.scmod"))}}
+    (M0 / "logs/mpsrc-1951.json").write_text(json.dumps(record, indent=1), "utf-8"); print(json.dumps(record, indent=1))
 
 
 def ta131():
@@ -202,8 +240,23 @@ def abi():
             "abi-mp-appearance": [BUILD / "c15/full/ScCsgoKnives.dll", BUILD / "c15/full/ScCsgoTactical.dll", BUILD / "c15/full/ScCsgoAppearance.dll"]}
     probe = BUILD / "out/probe/ScCsgoNetProbe.dll"
     if probe.exists(): sets["abi-mp-probe"] = [probe]
+    # mp-1951-20261108: the shipped multiplayer payloads too (Net/*.bin are assemblies under another extension) and the
+    # deathmatch addon; results per engine so the two MP engines never overwrite each other's.
+    net = BUILD / f"c15/net-{MP_ENGINE}"; net.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(FULL) as z:
+        for member, name in [(ScNetPayload, "ScCsgoNet.dll"), (ScNetCompatPayload, "ScCsgoNetCompat.dll")]:
+            if member in z.namelist(): (net / name).write_bytes(z.read(member))
+    if (net / "ScCsgoNet.dll").exists(): sets["abi-mp-net"] = [BUILD / "c15/full/ScCsgoKnives.dll", net / "ScCsgoNet.dll"]
+    if (net / "ScCsgoNetCompat.dll").exists(): sets["abi-mp-netcompat"] = [BUILD / "c15/full/ScCsgoKnives.dll", net / "ScCsgoNetCompat.dll"]
+    if DM.exists():
+        with zipfile.ZipFile(DM) as z:
+            for n in z.namelist():
+                if n.lower().endswith(".dll") and "/" not in n: (net / n).write_bytes(z.read(n))
+        dm = [net / n for n in ["ScCsgoDeathmatch.dll"] if (net / n).exists()]
+        if dm: sets["abi-mp-deathmatch"] = [BUILD / "c15/full/ScCsgoKnives.dll"] + dm
+    suffix = "" if MP_ENGINE == "1932" else f"-{MP_ENGINE}"
     for key, dlls in sets.items():
-        codes[key] = run(["dotnet", check, RESULTS / f"{key}.json", REFS] + dlls, check=False)
+        codes[key] = run(["dotnet", check, RESULTS / f"{key}{suffix}.json", REFS] + dlls, check=False)
     print(json.dumps({"exit": codes, "fullMembers": full, "liteMembers": lite}, indent=1))
 
 
@@ -241,7 +294,7 @@ def build():
 
 
 # ---------------------------------------------------------------- development packages (M1+, test only)
-STAGES = ROOT / ".tmp/completion-140-20260929"
+STAGES = DATA / ".tmp/completion-140-20260929"
 
 
 def devbuild(tag):
@@ -361,7 +414,7 @@ def copy_tree(src, dst, skip_dir, skip_file):
 
 def run131(label):
     # One fixed folder for the 1.9.3.1 single-player check as well (it opens no network port); its state is cleared first.
-    game = ROOT / ".tmp/mp-test-runtime-131/game"
+    game = DATA / ".tmp/mp-test-runtime-131/game"
     if game.exists(): shutil.rmtree(game)
     copy_tree(GAME131, game, lambda d: d.lower() in SKIP131_DIRS, lambda f: f.startswith(SKIP131_FILES))
     (game / "Mods").mkdir()
@@ -392,7 +445,7 @@ def run131(label):
 # 127.0.0.1 allowed, every other unicast inbound source blocked) cover every run and no run ever creates a new program path.
 # Reports and logs stay in each run's case_dir. One OS lock owns the whole runtime from the first game of a run until all
 # of its processes have exited; each run starts from archived-and-cleaned role state and a verified engine/Mods copy.
-RUNTIME = ROOT / ".tmp/mp-test-runtime"
+RUNTIME = DATA / ".tmp/mp-test-runtime"
 ROLES = ("server", "client", "client1", "client2")
 ARCHIVE = RUNTIME / "_archive"
 FW_GROUP = "ScCsgo isolated MP tests (loopback only)"
@@ -635,7 +688,7 @@ class Call:
 class Game:
     """One MP game process in its fixed role folder (server, client, client1, client2), driven through TestAutomation's
     loopback command and log ports. `name` labels its log in the run's case_dir; `role` defaults to the name."""
-    engine = "1.9.3.2_MP"
+    engine = MP_VERSION
     supports_args = False   # the snapshot's TestAutomation has no FUNCA
     def __init__(self, name, case_dir, mods, role=None):
         self.name, self.role = name, role or name
@@ -932,6 +985,7 @@ if __name__ == "__main__":
     elif step == "sppkg": sppkg(sys.argv[2])
     elif step == "candpkg": candpkg(sys.argv[2])
     elif step == "tapatch": tapatch()
+    elif step == "mpsrc": mpsrc()
     elif step == "ta131": ta131()
     elif step == "preflight":
         case = RUNS / time.strftime("preflight-%Y%m%d-%H%M%S"); case.mkdir(parents=True)
