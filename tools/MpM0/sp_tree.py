@@ -1,4 +1,4 @@
-"""world-tree-gun-registry-20261107 (1.6.0, phase A): CS guns with sub-world mods on the isolated standalone engine
+"""world-tree-gun-registry-20261107 (1.5.2; phase A scenarios): CS guns with sub-world mods on the isolated standalone engine
 (M0_ENGINE=131 by default; 1951 for the player's 1.9.5.1), one registry per world tree.
 
   ghoul | ancient  the provider's own travel function, through sp_subworld.main (fresh world; a main-world record nobody

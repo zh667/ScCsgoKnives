@@ -5,8 +5,10 @@ using TemplatesDatabase;
 
 /// <summary>world-tree-gun-registry-20261107 phase B: the one-time merge of a tree whose worlds kept their own registries
 /// (identity join, root numbers kept), decision 2A (the Portal swap: an item's model differs from its own world's record
-/// and equals one sibling's same-number record), the older-build round trip by receipt, and remaps keyed by number and
-/// model. Detached XML through the packaged DLL's own ScGunTree.Apply / ScGunTreeMerge.</summary>
+/// and equals one sibling's same-number record), the older-build round trip by receipt, remaps keyed by number and
+/// model, obligations (kill credits, refunds) moved with their records or refused when they cannot be placed uniquely,
+/// and a world carrying another tree's stamp imported by identity. Detached XML through the packaged DLL's own
+/// ScGunTree.Apply / ScGunTreeMerge.</summary>
 static class GunTreeMergeRegression {
     internal record Result(string Name, bool Ok, string Detail);
     internal static List<Result> Run(Assembly mod) {
@@ -139,16 +141,87 @@ static class GunTreeMergeRegression {
             int movedTo = (Terrain.ExtractData(Slots(collided)[0]) >> 6) & 1023;
             Check("independent-allocations-renumbered", RowOf(collided, 5) == M4 && movedTo > 5 && RowOf(collided, movedTo) == AK, $"#{movedTo} {Gun(collided)}");
 
-            // ---- unsafe merges are refused, unchanged
+            // ---- obligations travel with their records (1.5.2, user decision 2026-11-08) ----
+            var undoType = mod.GetType("Game.ScGunUndo", true);
+            object Registry((int Variant, int Rounds)[] records, Action<object> fill = null) {
+                var r = Activator.CreateInstance(registryType);
+                foreach (var (v, n) in records) registryType.GetMethod("Allocate").Invoke(r, [v, n, false, 400, 1500, 0]);
+                fill?.Invoke(r); return r;
+            }
+            XElement Xml(object r) { var x = Group("GunRegistry"); ((ValuesDictionary)registryType.GetMethod("Save").Invoke(r, [0d])).Save(x); return x; }
+            void Kill(object r, int id, int variant) { var q = registryType.GetField("Kills").GetValue(r); q.GetType().GetMethod("Enqueue").Invoke(q, [id, variant]); }
+            void Refund(object r, string owner, int value) {
+                var undo = Activator.CreateInstance(undoType); undoType.GetField("Slot").SetValue(undo, 0); undoType.GetField("Value").SetValue(undo, value); undoType.GetField("Count").SetValue(undo, 1);
+                var list = (System.Collections.IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(undoType)); list.Add(undo);
+                var recovery = registryType.GetProperty("Recovery").GetValue(r); recovery.GetType().GetMethod("Enqueue").Invoke(recovery, [owner, list]);
+            }
+            string[] KillsOf(XElement p) => G(G(G(Gun(p), "GunRegistry"), "PendingKills"), "Entries")?.Elements("Value").Select(e => (string)e.Attribute("Name") + ":" + (string)e.Attribute("Value")).ToArray() ?? [];
+            string[] RefundsOf(XElement p) => G(G(G(Gun(p), "GunRegistry"), "Recovery"), "Batches")?.Elements("Values")
+                .Select(b => Text(b, "Owner") + "=" + string.Join(";", G(b, "Steps").Elements("Value").Select(v => (string)v.Attribute("Value")))).ToArray() ?? [];
+            string Refusal(Action a) { try { a(); return null; } catch (InvalidOperationException e) { return e.Message; } }
+            const string chest = "entity/7/0/Game.ComponentChest";
+
+            // The root keeps its own credit; the space's credit and refund move to the number its record got (#2), the refund's
+            // destination bound to the space it was saved in.
             Call(tree, "ResetForTests");
-            // A sub-world saved with a kill still to be written into its gun's record (a real registry's own save).
-            var killed = Activator.CreateInstance(registryType); registryType.GetMethod("Allocate").Invoke(killed, [ak, 25, false, 400, 1500, 0]);
-            var queue = registryType.GetField("Kills").GetValue(killed); queue.GetType().GetMethod("Enqueue").Invoke(queue, [1, ak]);
-            var killedXml = Group("GunRegistry"); ((ValuesDictionary)registryType.GetMethod("Save").Invoke(killed, [0d])).Save(killedXml);
-            var withKills = Save(sp, [(1, AK)], [], [], killedXml);
-            var r6 = Save(w1, [(1, AWP)], [], []); string r6Before = r6.ToString(); string reason = null;
-            try { Apply(r6, "", null, ("Space_0", withKills)); } catch (InvalidOperationException e) { reason = e.Message; }
-            Check("sub-world-with-pending-kills-refused", reason?.Contains("待结算") == true && r6.ToString() == r6Before, reason ?? "not refused");
+            var rootOwn = Registry([(awp, 4)], r => Kill(r, 1, awp));
+            var r6 = Save(w1, [(1, AWP)], [(1, Token(w1, 1))], [Item(awp, 1)], Xml(rootOwn));
+            var spaceOwn = Registry([(ak, 25)], r => { Kill(r, 1, ak); Refund(r, chest, Item(ak, 1)); });
+            Apply(r6, "", null, ("Space_0", Save(sp, [(1, AK)], [], [], Xml(spaceOwn))));
+            var kills6 = KillsOf(r6); var refunds6 = RefundsOf(r6);
+            Check("pending-kills-move-with-their-record", RowOf(r6, 2) == AK && kills6.Contains($"1:1,{awp}") && kills6.Contains($"2:2,{ak}") && kills6.Length == 2, string.Join(" ", kills6));
+            Check("refunds-move-with-their-record-and-world", refunds6.Length == 1 && refunds6[0] == $"tree-world:Space_0|{chest}=0,{Item(ak, 2)},1,0,0", string.Join(" ", refunds6));
+
+            // Refused, files unchanged: a credit whose record is not there, a credit the tree may already hold (same gun, same
+            // event), a refund holding a gun the map does not place, an older build's world whose obligations differ.
+            Call(tree, "ResetForTests");
+            var r7 = Save(w1, [(1, AWP)], [(1, Token(w1, 1))], []); string r7Before = r7.ToString();
+            string noRecord = Refusal(() => Apply(r7, "", null, ("Space_0", Save(sp, [(1, AK)], [], [], Xml(Registry([(ak, 25)], r => Kill(r, 5, ak)))))));
+            Check("kill-without-a-placeable-record-refused", noRecord?.Contains("待结算") == true && r7.ToString() == r7Before, noRecord ?? "not refused");
+            Call(tree, "ResetForTests");
+            var r8 = Save(w1, [(1, AWP)], [(1, Token(w1, 1))], [], Xml(Registry([(awp, 4)], r => Kill(r, 1, awp)))); string r8Before = r8.ToString();
+            string copied = Refusal(() => Apply(r8, "", null, ("Space_0", Save(sp, [(1, AWP)], [(1, Token(w1, 1))], [], Xml(Registry([(awp, 4)], r => Kill(r, 1, awp)))))));
+            Check("kill-the-tree-may-already-hold-refused", copied?.Contains("待结算") == true && r8.ToString() == r8Before, copied ?? "not refused");
+            Call(tree, "ResetForTests");
+            var r9 = Save(w1, [(1, AWP)], [(1, Token(w1, 1))], []); string r9Before = r9.ToString();
+            string unplaced = Refusal(() => Apply(r9, "", null, ("Space_0", Save(sp, [(1, AK)], [], [], Xml(Registry([(ak, 25)], r => Refund(r, chest, Item(ak, 9))))))));
+            Check("refund-holding-an-unplaceable-gun-refused", unplaced?.Contains("待结算") == true && r9.ToString() == r9Before, unplaced ?? "not refused");
+            Call(tree, "ResetForTests");
+            var oldWithKill = Save(tw, [(1, AWP), (2, M4), (3, AK24), (4, AK24)], [], [], Xml(Registry([(awp, 4), (m4, 18), (ak, 24), (ak, 24)], r => Kill(r, 3, ak))));
+            string oldBefore = oldWithKill.ToString();
+            string older = Refusal(() => Apply(oldWithKill, "Tartareosity", Snapshot(w1, treeGun, receipts)));
+            Check("older-build-world-with-different-obligations-refused", older?.Contains("旧版本") == true && oldWithKill.ToString() == oldBefore, older ?? "not refused");
+
+            // ---- a world carrying another tree's stamp (a sub-world copied from another save): imported by identity ----
+            Call(tree, "ResetForTests");
+            var copiedIn = Save(tw, [(1, AK)], [(1, Token(tw, 1))], [Item(ak, 1)]);
+            Gun(copiedIn).Add(Value("GunTreeId", Guid.NewGuid().ToString("N")), Value("GunTreeGeneration", 9));
+            var tree10 = Gun(Save(w1, [(1, AWP)], [(1, Token(w1, 1))], [])); tree10.Elements("Value").Where(e => (string)e.Attribute("Name") == "GunTravelWorldIdentity").Remove();
+            string foreignError = Refusal(() => Apply(copiedIn, "Tartareosity", Snapshot(w1, tree10, new XElement("Worlds"))));
+            Check("world-of-another-tree-imported-and-renumbered", foreignError is null && Text(Gun(copiedIn), "GunTreeId") == w1 && RowOf(copiedIn, 1) == AWP && RowOf(copiedIn, 2) == AK
+                && Slots(copiedIn)[0] == Item(ak, 2), foreignError ?? Gun(copiedIn).ToString());
+
+            // ---- a later join finds the root's records by identity (their implicit identity, from the root seed kept in the tree file)
+            Call(tree, "ResetForTests");
+            var plainTree = Gun(Save(w1, [(1, AWP), (2, AK)], null, [])); plainTree.Elements("Value").Where(e => (string)e.Attribute("Name") == "GunTravelWorldIdentity").Remove();
+            var carried = Save(tw, [(1, AK)], [(1, Token(w1, 2))], [Item(ak, 1)]); // an older build's import of the root's AK-47 (#2 there)
+            Apply(carried, "Tartareosity", Snapshot(w1, plainTree, new XElement("Worlds", new XAttribute("RootSeed", w1))));
+            Check("later-join-finds-root-records-by-identity", Records(carried) == 2 && Slots(carried)[0] == Item(ak, 2), Gun(carried).ToString());
+
+            // ---- a Portal space an older build gave its own registry after the tree existed, merged when the root loads ----
+            // (1.5.1 carried the root's AWP #1, AK-47 #2, M4A1-S #3 into Space_0 as M4 1, AWP 2, AK 3; the player saved there,
+            // and the root's save holds the player's AWP under the space's #2, which the tree knows as the AK-47.)
+            Call(tree, "ResetForTests");
+            var rootGun = Gun(Save(w1, [(1, AWP), (2, AK), (3, M4)], null, [])); rootGun.Elements("Value").Where(e => (string)e.Attribute("Name") == "GunTravelWorldIdentity").Remove();
+            var stampedRoot = Save(w1, [(1, AWP), (2, AK), (3, M4)], null, [Item(awp, 2)]);
+            Gun(stampedRoot).Add(Value("GunTreeId", w1), Value("GunTreeGeneration", 3));
+            var lateSpace = Save(sp, [(1, M4), (2, AWP), (3, AK)], [(1, Token(w1, 3)), (2, Token(w1, 1)), (3, Token(w1, 2))], [Item(ak, 3)]);
+            Apply(stampedRoot, "", Snapshot(w1, rootGun, new XElement("Worlds", new XAttribute("RootSeed", w1), new XElement("World", new XAttribute("Path", ""), new XAttribute("Receipt", "")))), ("Space_0", lateSpace));
+            var lateWorlds = (XElement)snapshotType.GetProperty("Worlds").GetValue(((System.Collections.IDictionary)tree.GetField("s_prepared", any).GetValue(null))["data:/Worlds/W"]);
+            var spaceEntry = lateWorlds.Elements("World").SingleOrDefault(e => (string)e.Attribute("Path") == "Space_0");
+            string latePending = (string)spaceEntry?.Attribute("Pending") ?? "";
+            Check("late-space-merged-at-root-load", Slots(stampedRoot)[0] == Item(awp, 1) && Records(stampedRoot) == 3 && (string)spaceEntry?.Attribute("Merged") == "1"
+                && latePending.Contains($"3/{ak}>2") && latePending.Contains($"2/{awp}>1") && latePending.Contains($"1/{m4}>3"), $"{string.Join(",", Slots(stampedRoot))} | {lateWorlds}");
         }
         catch (Exception e) { Check("setup", false, e.ToString()); }
         finally { current.SetValue(null, previous); try { Call(tree, "ResetForTests"); } catch (Exception) { } }

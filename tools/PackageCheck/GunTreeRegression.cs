@@ -3,8 +3,8 @@ using System.Xml.Linq;
 using Game;
 using TemplatesDatabase;
 
-/// <summary>world-tree-gun-registry-20261107 (1.6.0, phase A). One registry per world tree: the tree file, the load-time
-/// decision on detached XML (inject, found, refuse), one shared instance for every loaded project of a tree, the newest
+/// <summary>world-tree-gun-registry-20261107 (1.5.2). One registry per world tree: the tree file, the load-time
+/// decision on detached XML (inject, found, merge), one shared instance for every loaded project of a tree, the newest
 /// snapshot preferred over a project's own copy, and no carried-packet import inside a tree. Runs the packaged DLL's
 /// own code; the real round trips through Ghoul, Ancient World and Portal are tools/MpM0/sp_tree.py.</summary>
 static class GunTreeRegression {
@@ -20,6 +20,7 @@ static class GunTreeRegression {
         var registryType = mod.GetType("Game.ScGunRegistry", true);
         var current = registryType.GetField("Current"); var previous = current.GetValue(null);
         var worldsField = typeof(WorldsManager).GetField("WorldsDirectoryName"); string previousWorlds = (string)worldsField.GetValue(null);
+        object previousGunBlock = tree.GetField("GunBlock", any).GetValue(null);
         object Call(string name, params object[] args) {
             try { return tree.GetMethod(name, any).Invoke(null, args); }
             catch (TargetInvocationException e) { throw e.InnerException!; }
@@ -65,10 +66,6 @@ static class GunTreeRegression {
             IReadOnlyList<(string Path, XElement Project)> Saves(IReadOnlyList<string> names) => names.Select(n => (n, Project(GunGroup(row3)))).ToList();
             void Apply(XElement p, object tree, IReadOnlyList<string> others, Func<bool> reassign = null, Action restore = null) =>
                 Call("Apply", p, root, "", tree, (Func<IReadOnlyList<(string Path, XElement Project)>>)(() => Saves(others)), reassign ?? (() => false), restore ?? (() => { }));
-            bool Refused(Action action, XElement p) {
-                string before = p.ToString();
-                try { action(); return false; } catch (InvalidOperationException) { return p.ToString() == before; }
-            }
 
             // ---- the root of a tree ----
             string Root(string dir) => (string)Call("RootIn", dir, "data:/Worlds");
@@ -114,8 +111,13 @@ static class GunTreeRegression {
             var fromNewer = Acquire(Activator.CreateInstance(subsystemType), root, GunGroup(row3, id, 7));
             Check("world-copy-newer-than-the-tree-file-wins", newer.ToString() == beforeNewer && Rounds(Prop(fromNewer, "Registry")) == 3 && (int)Prop(fromNewer, "Generation") == 7, newer.ToString());
             Call("ResetForTests");
-            var foreign = Project(GunGroup(row, other, 3));
-            Check("world-of-another-tree-refused", Refused(() => Apply(foreign, snapshot, []), foreign));
+            // 1.5.2 (user decision 2026-11-08): a world carrying another tree's stamp (a sub-world copied from another save) is
+            // imported by identity: its record joins the tree on a new number, the tree's stamp replaces the other one.
+            var foreign = Project(GunGroup(row3, other, 3));
+            Apply(foreign, snapshot, []);
+            var foreignRecords = G(G(Gun(foreign), "GunRegistry"), "Records").Elements().ToArray();
+            Check("world-of-another-tree-imported-by-identity", Text(Gun(foreign), "GunTreeId") == id && foreignRecords.Length == 2 && Row(foreign) == row
+                && Text(G(G(Gun(foreign), "GunRegistry"), "Records"), "2") == row3, foreign.ToString());
             // Phase B: a world with a registry of its own joins the tree by identity instead of being refused.
             var ownRecords = Project(GunGroup(row3));
             Apply(ownRecords, snapshot, []);
@@ -158,15 +160,37 @@ static class GunTreeRegression {
                 && ReferenceEquals(Prop(t1, "Primary"), rootMember) && Rounds(Prop(t1, "Registry")) == 4);
             var other1 = Acquire(Activator.CreateInstance(subsystemType), "data:/Worlds/X", GunGroup(row3));
             Check("another-tree-has-its-own-registry", !ReferenceEquals(Prop(other1, "Registry"), Prop(t1, "Registry")) && Rounds(Prop(other1, "Registry")) == 3);
+            // 1.5.2: a Portal space with records of its own that the tree's merge never read (it appeared later) is merged
+            // when it loads, into the live shared registry, with its pending kill credit; its items move on its first update.
+            tree.GetField("GunBlock", any).SetValue(null, (Func<int>)(() => 302));
             var legacySpace = Activator.CreateInstance(subsystemType);
-            bool spaceRefused = false; try { Acquire(legacySpace, root + "/Space_1", GunGroup(row3)); } catch (InvalidOperationException) { spaceRefused = true; }
-            Check("space-with-its-own-records-refused", spaceRefused && (int)Prop(t1, "Loaded") == 2);
+            var own = Activator.CreateInstance(registryType); registryType.GetMethod("Allocate").Invoke(own, [2, 3, false, 400, 1500, 0]);
+            var ownKills = registryType.GetField("Kills").GetValue(own); ownKills.GetType().GetMethod("Enqueue").Invoke(ownKills, [1, 2]);
+            var lateGroup = Group("ScGunBlockBehavior", Value("GunDataLayout", layout)); var lateRegistry = Group("GunRegistry");
+            ((ValuesDictionary)registryType.GetMethod("Save").Invoke(own, [0d])).Save(lateRegistry); lateGroup.Add(lateRegistry);
+            string lateError = null; try { Acquire(legacySpace, root + "/Space_1", lateGroup); } catch (InvalidOperationException e) { lateError = e.Message; }
+            var sharedKills = (System.Collections.IEnumerable)registryType.GetField("Kills").GetValue(Prop(t1, "Registry")).GetType().GetProperty("Pending").GetValue(registryType.GetField("Kills").GetValue(Prop(t1, "Registry")));
+            var credit = sharedKills.Cast<object>().SingleOrDefault();
+            var remap = subsystemType.GetField("m_treeRemap", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(legacySpace);
+            string remapText = remap is null ? null : (string)remap.GetType().GetMethod("Save").Invoke(remap, null);
+            Check("late-space-with-its-own-records-merged", lateError is null && (int)Prop(t1, "Loaded") == 3 && (int)registryType.GetProperty("Count").GetValue(Prop(t1, "Registry")) == 2
+                && credit is not null && (int)credit.GetType().GetProperty("RecordId").GetValue(credit) == 2 && remapText == "1/2>2",
+                $"{lateError} records={registryType.GetProperty("Count").GetValue(Prop(t1, "Registry"))} credit={(credit is null ? "none" : credit.GetType().GetProperty("RecordId").GetValue(credit))} remap={remapText}");
+            // A Portal space carrying another tree's stamp is imported by identity the same way, even where the tree remembers
+            // having merged a space at that path once (that was another space's registry, not this one).
+            ((XElement)Prop(t1, "Worlds")).Add(new XElement("World", new XAttribute("Path", "Space_2"), new XAttribute("Merged", "1")));
+            var foreignSpace = Activator.CreateInstance(subsystemType);
+            string foreignError = null; try { Acquire(foreignSpace, root + "/Space_2", GunGroup(row3, other, 9)); } catch (InvalidOperationException e) { foreignError = e.Message; }
+            var foreignRemap = subsystemType.GetField("m_treeRemap", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(foreignSpace);
+            Check("space-of-another-tree-imported", foreignError is null && (int)registryType.GetProperty("Count").GetValue(Prop(t1, "Registry")) == 3
+                && foreignRemap is not null && (string)foreignRemap.GetType().GetMethod("Save").Invoke(foreignRemap, null) == "1/2>3", foreignError ?? "");
             var reserve = Activator.CreateInstance(subsystemType);
             Acquire(reserve, root + "/Tartareosity", GunGroup(null, (string)Prop(t1, "Id"), 0, 40));
             Check("joining-world-raises-the-watermark", (int)registryType.GetProperty("Next").GetValue(Prop(t1, "Registry")) >= 40);
             Call("Release", t1, reserve);
             Call("Release", t1, rootMember);
             Check("primary-passes-on-release", ReferenceEquals(Prop(t1, "Primary"), spaceMember) && (bool)Call("IsLoaded", t1));
+            Call("Release", t1, legacySpace); Call("Release", t1, foreignSpace);
             Call("Release", t1, spaceMember);
             var t3 = Acquire(Activator.CreateInstance(subsystemType), root, GunGroup(row3));
             Check("last-release-unloads-the-tree", !(bool)Call("IsLoaded", t1) && !ReferenceEquals(t3, t1) && Rounds(Prop(t3, "Registry")) == 3);
@@ -190,6 +214,7 @@ static class GunTreeRegression {
         finally {
             current.SetValue(null, previous); worldsField.SetValue(null, previousWorlds);
             try { tree.GetMethod("ResetForTests", any).Invoke(null, null); } catch (Exception) { }
+            try { tree.GetField("GunBlock", any).SetValue(null, previousGunBlock); } catch (Exception) { }
             try { Directory.Delete(directory, true); } catch (IOException) { }
         }
         return results;
