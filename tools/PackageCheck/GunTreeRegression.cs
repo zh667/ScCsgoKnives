@@ -13,7 +13,10 @@ static class GunTreeRegression {
         var results = new List<Result>();
         void Check(string name, bool ok, string detail = "") => results.Add(new("gun-tree/" + name, ok, detail));
         const BindingFlags any = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-        var tree = mod.GetType("Game.ScGunTree", true);
+        var tree = mod.GetType("Game.ScGunTree", false);
+        // A core from before 1.5.2 (the pipeline's baseline run of the delivered packages) has no world tree: one named
+        // failure instead of a crash of the whole suite.
+        if (tree is null) { Check("present", false, "Game.ScGunTree is not in this core (before 1.5.2)"); return results; }
         var snapshotType = mod.GetType("Game.ScGunTree+Snapshot", true);
         var treeType = mod.GetType("Game.ScGunTree+Tree", true);
         var subsystemType = mod.GetType("Game.SubsystemScGunBlockBehavior", true);

@@ -15,7 +15,8 @@ static class GunTreeMergeRegression {
         var results = new List<Result>();
         void Check(string name, bool ok, string detail = "") => results.Add(new("gun-tree-merge/" + name, ok, detail));
         const BindingFlags any = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-        var tree = mod.GetType("Game.ScGunTree", true); var merge = mod.GetType("Game.ScGunTreeMerge", true);
+        var tree = mod.GetType("Game.ScGunTree", false); var merge = mod.GetType("Game.ScGunTreeMerge", false);
+        if (tree is null || merge is null) { Check("present", false, "Game.ScGunTree / ScGunTreeMerge are not in this core (before 1.5.2)"); return results; }
         var snapshotType = mod.GetType("Game.ScGunTree+Snapshot", true); var tableType = mod.GetType("Game.ScGunTreeMerge+Table", true);
         var registryType = mod.GetType("Game.ScGunRegistry", true); var spec = mod.GetType("Game.GunSpec", true);
         var current = registryType.GetField("Current"); var previous = current.GetValue(null);
