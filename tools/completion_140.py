@@ -52,6 +52,8 @@ OFFICIAL_RELEASES = [
     ("1.5.1", {"全量": "eaebe7c82b750d4e8e8a1212575157f30dab2862d34a70374422ae791a0c6e5a", "轻量": "69986049b8a9a0d57f49d1bdf16a05ae65e2ad48733fc8ccf70343a6fdd76b89"}),
     # 1.5.2 (release-20261108, stage r152a, delivered 2026-11-08: one gun registry per world tree)
     ("1.5.2", {"全量": "f5793b6c072a2055a0cd62e6297d3104d4abcb63b8df84a66086d3cf304e682d", "轻量": "faed8239911b435d5cb589e1bc202f2685d8fdaa3da78ccccb11fd2acaa238b8"}),
+    # 1.5.3 (release-20261108, stage r153a, delivered 2026-11-08: the 1.9.5.1_MP adaptation)
+    ("1.5.3", {"全量": "9c1724c8718e25088856541e7349e3b6fe6629c6e6295d79eaabc52a819cf990", "轻量": "43cb5637ca56ff5716cb1403550d0901426499cf4f0eec47266d83ceb7a225eb"}),
 ]
 # The 1.5.0 family in output/ (release-20261021, stage r150p, main 13171aa: airdrop settings, ladders, HUD gap, cylinder
 # smoke, workbench ammunition tab, player suggestions). The 10-09 family it replaced (dm-settings: cea8f888 / 62361108 /
@@ -59,11 +61,12 @@ OFFICIAL_RELEASES = [
 # switched saves with each of their cores (output/release-1.5.0/release-20261021/historical-checks.json); see
 # output/release-1.5.0/manifest.json. The 1.4.0 family (dmr6f) is in output/history-1.4.0/.
 # The 1.5.1 family (release-20261106, stage r151c) moved to output/history-1.5.1/<sha256>/ on 2026-11-08; now the 1.5.2
-# family (release-20261108, stage r152a; output/release-1.5.2/manifest.json).
+# family (release-20261108, stage r152a), moved to output/history-1.5.2/<sha256>/ on 2026-11-08; now the 1.5.3 family
+# (release-20261108, stage r153a: the 1.9.5.1_MP adaptation; output/release-1.5.3/manifest.json).
 base.BASELINES = {
-    "全量": "f5793b6c072a2055a0cd62e6297d3104d4abcb63b8df84a66086d3cf304e682d",
-    "轻量": "faed8239911b435d5cb589e1bc202f2685d8fdaa3da78ccccb11fd2acaa238b8",
-    "探员": "374470fc4e54ae0911820d43f099afd151245ddffd2c0367c7799f3d109a54ce",
+    "全量": "9c1724c8718e25088856541e7349e3b6fe6629c6e6295d79eaabc52a819cf990",
+    "轻量": "43cb5637ca56ff5716cb1403550d0901426499cf4f0eec47266d83ceb7a225eb",
+    "探员": "0a7c97b7ecd767a5b8fb2828a06fb2ed0ce5ac725481377068d74a72ee738200",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.
