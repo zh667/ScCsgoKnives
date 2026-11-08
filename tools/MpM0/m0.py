@@ -109,6 +109,13 @@ def framework_names():
 
 
 # ---------------------------------------------------------------- prepare / abi / build
+def rel(p):
+    """Path for a record: relative to the data root when it lies under it, otherwise absolute (records never fail on layout)."""
+    p = Path(p)
+    try: return p.relative_to(DATA).as_posix()
+    except ValueError: return p.as_posix()
+
+
 def prepare():
     run(["dotnet", "build", SRC / "Survivalcraft.TestAutomation/Survivalcraft.TestAutomation.csproj", "-c", "Release", "-p:WindowsRuntimeIdentifier=win-x64"],
         cwd=SRC, log=M0 / "logs/build-testautomation.log")
@@ -118,17 +125,17 @@ def prepare():
     REFS.mkdir(parents=True)
     fw = framework_names(); taken = {}
     for p in sorted(MPBIN.glob("*.dll")):
-        if p.name.lower() not in fw and managed(p): shutil.copy2(p, REFS / p.name); taken[p.name] = {"from": str(p.relative_to(DATA)), "sha256": sha(p)}
+        if p.name.lower() not in fw and managed(p): shutil.copy2(p, REFS / p.name); taken[p.name] = {"from": rel(p), "sha256": sha(p)}
     for mod in sorted((MPBIN / "InternalMods").glob("*.scmod")):
         with zipfile.ZipFile(mod) as z:
             for n in z.namelist():
                 if n.lower().endswith(".dll") and "/" not in n.strip("/") and Path(n).name.lower() not in fw and Path(n).name not in taken:
                     (REFS / Path(n).name).write_bytes(z.read(n))
-                    if managed(REFS / Path(n).name): taken[Path(n).name] = {"from": f"{mod.relative_to(DATA)}!{n}", "sha256": sha(REFS / Path(n).name)}
+                    if managed(REFS / Path(n).name): taken[Path(n).name] = {"from": f"{rel(mod)}!{n}", "sha256": sha(REFS / Path(n).name)}
                     else: (REFS / Path(n).name).unlink()
     record = {"mpBuild": {p.name: sha(p) for p in [MPBIN / "Survivalcraft.dll", MPBIN / "Engine.dll", MPBIN / "EntitySystem.dll", MPBIN / "Survivalcraft.exe"]},
               "internalMods": {p.name: sha(p) for p in sorted((MPBIN / "InternalMods").glob("*.scmod"))},
-              "testAutomation": {"path": str((MODS / TA_BUILT.name).relative_to(DATA)), "sha256": sha(MODS / TA_BUILT.name)},
+              "testAutomation": {"path": rel(MODS / TA_BUILT.name), "sha256": sha(MODS / TA_BUILT.name)},
               "refs": taken}
     (REFS.parent / ("refs.json" if MP_ENGINE == "1932" else f"refs-{MP_ENGINE}.json")).write_text(json.dumps(record, indent=1), "utf-8")
     print(json.dumps({k: v for k, v in record.items() if k != "refs"}, indent=1)); print("refs", len(taken))
@@ -160,7 +167,7 @@ def tapatch():
     run(["dotnet", "build", SRC / "Survivalcraft.TestAutomation/Survivalcraft.TestAutomation.csproj", "-c", "Release", "-p:WindowsRuntimeIdentifier=win-x64"],
         cwd=SRC, log=M0 / f"logs/build-testautomation{'' if MP_ENGINE == '1932' else '-' + MP_ENGINE}.log")
     MODS.mkdir(parents=True, exist_ok=True); shutil.copy2(TA_BUILT, MODS / TA_BUILT.name)
-    record = {"source": str(TA_SOURCE.relative_to(DATA)), "sourceBefore": before, "sourceAfter": sha(TA_SOURCE),
+    record = {"source": rel(TA_SOURCE), "sourceBefore": before, "sourceAfter": sha(TA_SOURCE),
               "original": sha(TA_SOURCE.with_suffix(".cs.orig")), "package": sha(MODS / TA_BUILT.name)}
     record["engine"] = MP_VERSION
     (M0 / f"logs/tapatch{'' if MP_ENGINE == '1932' else '-' + MP_ENGINE}.json").write_text(json.dumps(record, indent=1), "utf-8"); print(json.dumps(record, indent=1))
