@@ -144,6 +144,10 @@ public static class ScNet {
         Evidence.Add($"adapter {adapter.GetName().Name} {adapter.ManifestModule.ModuleVersionId} loaded from {AdapterPayload}");
         // The optional CompatNet part: never a reason to refuse the transport.
         if (!assemblies.ContainsKey("Survivalcraft.CompatNet")) CompatStatus = "absent";
+        // mp-1951-20261108: the corrections exist for one platform defect, CommandCompatNet's freeze. API 1.9.5.1_MP removed
+        // that adapter and its runtime from CompatNet (and moved CompatNet to protocol 3): there is nothing to correct, so the
+        // corrections are not loaded and the player is not told that a correction "could not be enabled".
+        else if (!HasCommandAdapter(assemblies["Survivalcraft.CompatNet"])) CompatStatus = "upstream fixed: this CompatNet has no CommandCompatNet adapter (the freeze's source), no corrections needed";
         else {
             List<string> compatMissing = CheckContract(network, assemblies, CompatContract, "CompatNet");
             if (assemblies["Survivalcraft.CompatNet"].GetType("Game.CompatNetCore", false)?.GetField("CurrentProtocolVersion") is { } protocol
@@ -159,6 +163,12 @@ public static class ScNet {
             }
         }
         Decision = "multiplayer engine: transport contract matched, adapter attached; CompatNet " + CompatStatus;
+    }
+    static bool HasCommandAdapter(Assembly compatNet) {
+        Type[] types;
+        try { types = compatNet.GetTypes(); }
+        catch (ReflectionTypeLoadException e) { types = e.Types.Where(t => t is not null).ToArray(); }
+        return types.Any(t => t.Name is "CommandCompatNetAdapter" or "CommandCompatNetRuntime");
     }
     static void Refuse(string decision, string player) { Decision = decision + ": network layer refused"; RefusedReason = player; }
     static Assembly LoadPayload(ModEntity entity, string member) {

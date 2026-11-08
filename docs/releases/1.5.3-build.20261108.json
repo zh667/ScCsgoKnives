@@ -1,0 +1,38 @@
+{
+  "version": "1.5.3",
+  "date": "2026-11-08",
+  "tag": null,
+  "sourceCommit": "fd1d096",
+  "sourceBranch": "feat/mp-1951-20261108",
+  "stage": "r153a",
+  "releaseRecord": "docs/tasks/release-1.5.3-20261108.md",
+  "sourceManifest": "output/release-1.5.3/manifest.json",
+  "packages": [
+    {
+      "file": "[API1.9]CS武器1.5.3-全量包.scmod",
+      "bytes": 531308358,
+      "sha256": "9c1724c8718e25088856541e7349e3b6fe6629c6e6295d79eaabc52a819cf990"
+    },
+    {
+      "file": "[API1.9]CS武器1.5.3-轻量包.scmod",
+      "bytes": 35813873,
+      "sha256": "43cb5637ca56ff5716cb1403550d0901426499cf4f0eec47266d83ceb7a225eb"
+    },
+    {
+      "file": "[API1.9]CS武器1.5.3-探员包.scmod",
+      "bytes": 42805738,
+      "sha256": "0a7c97b7ecd767a5b8fb2828a06fb2ed0ce5ac725481377068d74a72ee738200"
+    },
+    {
+      "file": "[API1.9]CS武器1.5.3-死亡竞赛.scmod",
+      "bytes": 371938,
+      "sha256": "eb86f51cdcaa4af79c73e9c02c33f4a5e734efcac1db4c20cd6debdd39427f40"
+    }
+  ],
+  "verification": "Built by tools/deathmatch_140.py (stage r153a: prepare, build, clips, appearance, package, dmbuild, dmpackage, dmcheck 254/254, compat: family 251/251, switching 1.4.0 249/249, 1.5.0/1.5.1/1.5.2 251/251 each). Reduced gate set by user decision 2026-11-08 (only the version name and the 1.9.5.1_MP notice changed since 1.5.2): native metadata 7/7, archive change list against 1.5.2, sp_engine_compat 1.9.3.1 Full 21/21, mp_deathmatch 1.9.5.1_MP Lite+agents host / Full client 17/17 with no platform notice. Reused evidence: candidate stage mp1951-20261108a (offline net loops and netdmloop on 1.9.3.2_MP and 1.9.5.1_MP, dmabi, dmload, appnet; real deathmatch MP 17/17 on 1.9.3.2_MP Full, 1.9.5.1_MP Full and Lite+agents; falsification with the delivered 1.5.2, 15/17) and the abandoned stage r152r2 (full stage gate set). Packages read back from output/ after delivery (hash, zip integrity, modinfo version 1.5.3).",
+  "acceptanceLimits": [
+    "Reduced gate set by user decision: historical readers, engine contract, standalone real games on 1.9.4/1.9.5/1.9.5.1, dm-comfort, sp_uninstall and the world-tree real games were not rerun for 1.5.3 (their code is unchanged since 1.5.2).",
+    "Android, a 1.9.5.1_MP phone build and phone-hosted multiplayer were not tested.",
+    "No release tag was created; nothing was uploaded or installed."
+  ]
+}

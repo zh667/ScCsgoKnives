@@ -19,6 +19,9 @@ from mp_m1 import MAIN, PROJECT, KEEP_ACTIVE, FORCE_ACTIVE, HANDSHAKE, BRIDGE, b
 from sp_deathmatch import DM_OUT, package, CREATIVE, STATE, FIND, SCROLL_TO, WHEEL, WHEEL_CENTRE, CLOSE_MODAL, FPP, STAND_HERE, GUI_IN_SHOTS, HUD, EQUIP
 from sp_smoke_view import snap
 
+# The adapter is loaded from bytes (Net/ScCsgoNet.bin): its types are reached by reflection, not compiled against.
+PLATFORM = ('var t = System.AppDomain.CurrentDomain.GetAssemblies().Select(a => { try { return a.GetType("Game.ScPlatformCompat", false); } catch { return null; } }).FirstOrDefault(x => x != null); '
+    'var n = t?.GetMethod("PlayerNotice")?.Invoke(null, null) as string; return (t == null ? "no adapter" : (n ?? "none")) + " || " + Game.ScNet.Decision;')
 DMV = MAIN + 'var dm = project.FindSubsystem<Game.SubsystemScDeathmatch>(false); if (dm == null) return "no deathmatch subsystem"; '
 # What this process was told: the replicated view (on a client nothing else exists), its own self, the rows and the feed.
 VIEW = DMV + (
@@ -126,7 +129,7 @@ def main(label, core, dm):
     host_pkgs, client_pkgs = [ta, *map(package, host_core.split("+")), dm_pkg], [ta, *map(package, client_core.split("+")), dm_pkg]
     pkgs = list(dict.fromkeys(host_pkgs + client_pkgs))
     stamp = time.strftime("%Y%m%d-%H%M%S"); case_dir = RUNS / f"dm-mp-{label}-{stamp}"; (case_dir / "frames").mkdir(parents=True)
-    R = {"case": f"dm-mp-{label}", "engine": "1.9.3.2_MP", "packages": {p.name: sha(p) for p in pkgs}, "host": [p.name for p in host_pkgs], "client": [p.name for p in client_pkgs], "mpBuild": sha(m0.MPBIN / "Survivalcraft.dll"), "steps": [], "checks": [], "frames": []}
+    R = {"case": f"dm-mp-{label}", "engine": m0.MP_VERSION, "packages": {p.name: sha(p) for p in pkgs}, "host": [p.name for p in host_pkgs], "client": [p.name for p in client_pkgs], "mpBuild": sha(m0.MPBIN / "Survivalcraft.dll"), "steps": [], "checks": [], "frames": []}
     T0 = time.time(); server = client = None
     def check(name, ok, detail=""):
         R["checks"].append({"check": name, "ok": bool(ok), "detail": detail}); print(("PASS " if ok else "FAIL ") + name + " :: " + str(detail), flush=True); return ok
@@ -166,6 +169,13 @@ def main(label, core, dm):
         client = Game("client1", case_dir, client_pkgs); to_menu(client); join(client, server); C = Side(client, label, case_dir, R, T0)
         C.step("handshake", poll(client, HANDSHAKE, lambda v: v not in ("Pending", "NotApplicable"), 40))
         check("client accepted by the CS layer", client.func(HANDSHAKE) == "Accepted", client.func(BRIDGE))
+        # mp-1951-20261108: what each side decided about the platform's CompatNet, and the one-time platform notice. On
+        # 1.9.3.2_MP the freeze correction installs; on 1.9.5.1_MP the platform has no command adapter any more, so nothing is
+        # loaded and no player is told a correction "could not be enabled" (the 1.5.2 baseline showed that notice).
+        expect = "command gate: installed" if m0.MP_ENGINE == "1932" else "upstream fixed"
+        for side, g in [("host", server), ("client", client)]:
+            p = g.func(PLATFORM); (C if side == "client" else H).step("platform decision and notice", p)
+            check(f"{side}: CompatNet decision fits {m0.MP_VERSION} and no platform notice", isinstance(p, str) and p.startswith("none || ") and expect in p, p)
         C.step("settings", client.func(GUI_IN_SHOTS))
         C.step("camera", poll(client, MAIN + 'return pl.GameWidget.ActiveCamera.GetType().Name;', lambda v: v == "FppCamera", 40)); client.func(FPP)
         cv = C.view("client joined"); check("client sees the arena world", isinstance(cv, dict) and cv.get("enabled"), cv)
