@@ -809,6 +809,48 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     // gun-record-mirror-20261106: what the load restored after a save without CS, told once to each local player.
     string m_mirrorNotice;
     readonly HashSet<ComponentPlayer> m_mirrorTold = [];
+    // The record notice (restored / merged / corrected guns) is shown only once the player can actually see it - the game
+    // screen, no dialog of any mod over it, no inventory panel, a living player behind its own camera, for a moment
+    // already - and kept on screen until it has been visible, uninterrupted, for NoticeVisibleSeconds (shown again if a
+    // dialog or another message takes its place first).
+    const double NoticeQuietSeconds = 1.5, NoticeVisibleSeconds = 10;
+    const int NoticeMaxShows = 8;
+    sealed class NoticeState { public double Since = -1, Visible, Last; public int Shows; public MessageWidget.Message Message; }
+    readonly Dictionary<ComponentPlayer, NoticeState> m_noticeStates = [];
+    static readonly System.Reflection.FieldInfo s_dialogList = typeof(DialogsManager).GetField("m_dialogs",
+        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+    static bool CanSeeNotice(ComponentPlayer player) {
+        if (ScreensManager.CurrentScreen is not GameScreen) return false;
+        if (s_dialogList?.GetValue(null) is System.Collections.ICollection { Count: > 0 }) return false;
+        if (DialogsManager.HasDialogs(null) || DialogsManager.HasDialogs(player.GameWidget) || DialogsManager.HasDialogs(player.GuiWidget)) return false;
+        if (player.ComponentGui.ModalPanelWidget is not null || player.ComponentHealth.Health <= 0) return false;
+        return player.GameWidget.ActiveCamera is FppCamera or TppCamera or OrbitCamera;
+    }
+    void ShowMirrorNotice(ComponentPlayer player) {
+        if (!m_noticeStates.TryGetValue(player, out var state)) m_noticeStates[player] = state = new NoticeState();
+        double now = Time.RealTime;
+        if (!CanSeeNotice(player)) { state.Since = -1; state.Visible = 0; return; }
+        if (state.Since < 0) { state.Since = state.Last = now; return; }
+        if (now - state.Since < NoticeQuietSeconds) { state.Last = now; return; }
+        // Our own message object, kept up longer than a small message's few seconds; a blinking one also survives a
+        // couple of later messages. Gone from the widget (replaced, or a dialog interrupted it): shown again.
+        var widget = player.ComponentGui.m_messageWidget;
+        if (widget is null) { m_mirrorTold.Add(player); return; }
+        bool showing = false;
+        if (state.Message is not null) for (int i = 0; i < widget.m_messages.Count; i++) showing |= ReferenceEquals(widget.m_messages[i], state.Message);
+        if (!showing) {
+            if (state.Shows >= NoticeMaxShows) { m_mirrorTold.Add(player); KnifeLog.Warning("[GUN_TREE] record notice: other messages kept replacing it; given up after " + state.Shows + " showings"); return; }
+            state.Message = new MessageWidget.Message(m_mirrorNotice, Color.Yellow, true) { Duration = (float)NoticeVisibleSeconds + 2f };
+            widget.DisplayMessage(state.Message);
+            if (state.Shows++ == 0) KnifeLog.Information($"[GUN_TREE] record notice shown to player {player.PlayerData.PlayerIndex}: {m_mirrorNotice}");
+        }
+        else state.Visible += now - state.Last;
+        state.Last = now;
+        if (state.Visible >= NoticeVisibleSeconds) {
+            m_mirrorTold.Add(player);
+            KnifeLog.Information($"[GUN_TREE] record notice read: visible {state.Visible:0.0} s, shown {state.Shows} time(s)");
+        }
+    }
     readonly HashSet<ComponentPlayer> m_migrationTold = [];
     readonly HashSet<ComponentPlayer> m_oldFormatTold = [], m_legacyTold = [];
     readonly Dictionary<ComponentPlayer, double> m_brokenNoticeAt = [];
@@ -952,7 +994,6 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (m_schemaUpgrade is not null)
             KnifeLog.Information($"gun record schema upgraded from {m_schemaUpgrade.GetValue<int>("From", 0)}; world backup at {m_schemaUpgrade.GetValue<string>("Backup", "?")}");
         m_migrationNotice = valuesDictionary.GetValue<bool>(ScGun0282Migration.NoticeKey, false);
-        m_mirrorNotice = ScGunRecordMirror.TakeNotice();
         m_time = Project.FindSubsystem<SubsystemTime>(true);
         m_registry = ScGunRegistry.Load(valuesDictionary.GetValue<ValuesDictionary>(RegistryKey, null), m_time.GameTime);
         if (m_registry.UnknownSchema) throw new InvalidOperationException("枪械记录或补偿格式无法安全读取，已拒绝进入世界；请使用兼容版本或有效备份。");
@@ -975,6 +1016,8 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         }
         m_registry.Travel = m_travel;
         BindStatics();
+        // After the tree: a Portal space's late merge (ScGunTree.Acquire) leaves its notice for this world too.
+        m_mirrorNotice = ScGunRecordMirror.TakeNotice();
         KnifeLog.Information($"gun registry: {m_registry.Count} records ({m_registry.QuarantinedCount} quarantined), next id {m_registry.Next}; world gun data layout stamp {m_worldLayout}, status {m_worldStatus}, this version {GunSpec.DataLayout}, schema read {(m_registry.UnknownSchema ? "unknown" : m_registry.LoadedSchema.ToString())} -> written {ScGunRegistry.Schema}, counter rule {m_registry.GrowthMode}, {m_registry.Kills.Count} kill credit(s) pending"
             + (m_registry.Disabled ? " - guns disabled in this world" : ""));
         ScSushiCompatibility.LogOnce(Project);
@@ -1113,8 +1156,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (local) { // notices are for the players this process shows
             if (m_integrityProtection?.GetValue<int>("Count", 0) > 0 && m_integrityTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage("正常枪械可继续使用；部分枪械记录异常，已原样保留并暂停使用，需原始备份恢复。备份由玩家自行管理。", Color.Yellow, true, false);
-            if (m_mirrorNotice is not null && m_mirrorTold.Add(player))
-                player.ComponentGui.DisplaySmallMessage(m_mirrorNotice, Color.Yellow, true, false);
+            if (m_mirrorNotice is not null && !m_mirrorTold.Contains(player)) ShowMirrorNotice(player);
             if (m_migrationNotice && m_migrationTold.Add(player))
                 player.ComponentGui.DisplaySmallMessage($"已兼容 0.28.2：{m_officialMigration?.GetValue<int>("Guns", 0) ?? 0} 把旧枪保留型号与弹量，耐久已补满。备份由玩家自行管理。", Color.White, true, false);
             if (m_registry?.LegacyWorld == true && m_legacyTold.Add(player))
@@ -2266,22 +2308,44 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     internal void ScheduleRemap(ScGunTreeMerge.Remap map, Func<int, int> variant) { m_treeRemap = map; m_treeRemapVariant = variant; }
     void ApplyTreeRemap() {
         var map = m_treeRemap; m_treeRemap = null;
-        int moved = 0, outside = 0, gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
-        foreach (var holder in ScGunHolders.Scan(Project, gunIndex).ToList()) {
-            if (holder.Inventory is not { } inventory) { if (map.Keys.Any(k => k.Id == holder.Id)) outside++; continue; }
-            int value = inventory.GetSlotValue(holder.Slot);
-            if (ScGunTreeMerge.Moved(value, map, m_treeRemapVariant) is not int next) continue;
-            int count = inventory.GetSlotCount(holder.Slot);
-            inventory.RemoveSlotItems(holder.Slot, count); inventory.AddSlotItems(holder.Slot, next, count); moved++;
+        int moved = 0, pickablesMoved = 0, projectilesMoved = 0, unreachable = 0, gunIndex = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+        int? Next(int value) => Terrain.ExtractContents(value) == gunIndex ? ScGunTreeMerge.Moved(value, map, m_treeRemapVariant) : null;
+        // Every inventory of the project, walked directly: ScGunHolders.Scan keeps only items that match their record, and
+        // an item still carrying this project's own number is exactly one that may not (a player saved in a Portal space
+        // holds the space's numbers). Both of a player's inventories and every slot, open or not.
+        var seen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        foreach (var source in Project.Subsystems.OfType<IInventory>().Concat(Project.Entities.SelectMany(e => e.Components.OfType<IInventory>()))
+                     .Concat(ScSushiInventory.Stored(Project).Select(e => e.Inventory)).ToList()) {
+            var inventory = ScInventoryIdentity.Inventory(source);
+            if (inventory is null || inventory is ComponentScCompatibilityArchive || !seen.Add(ScInventoryIdentity.Storage(inventory))) continue;
+            for (int slot = 0; slot < inventory.SlotsCount; slot++) {
+                if (inventory.GetSlotCount(slot) == 0 || Next(inventory.GetSlotValue(slot)) is not int next) continue;
+                int count = inventory.GetSlotCount(slot);
+                inventory.RemoveSlotItems(slot, count); inventory.AddSlotItems(slot, next, count); moved++;
+            }
         }
+        // Items lying in the world and in flight carry their value in place: rewritten where they are.
+        if (Project.FindSubsystem<SubsystemPickables>(false) is { } pickables)
+            foreach (var pickable in pickables.Pickables.ToArray()) if (pickable.Count > 0 && Next(pickable.Value) is int next) { pickable.Value = next; pickablesMoved++; }
+        if (Project.FindSubsystem<SubsystemProjectiles>(false) is { } projectiles)
+            foreach (var projectile in projectiles.Projectiles.ToArray()) if (Next(projectile.Value) is int next) { projectile.Value = next; projectilesMoved++; }
+        // Blocks being moved by a piston and items an optional package keeps outside any inventory cannot be rewritten here.
+        if (Project.FindSubsystem<SubsystemMovingBlocks>(false) is { } moving)
+            foreach (var set in moving.MovingBlockSetEnumerable) foreach (var block in set.Blocks) if (Next(block.Value) is not null) unreachable++;
+        foreach (var source in ScGunHolders.DormantSources.Values.ToArray()) foreach (var item in source(Project) ?? []) if (Next(item.Value) is not null) unreachable++;
         if (m_tree is not null) ScGunTree.Applied(m_tree, this);
-        KnifeLog.Warning($"[GUN_TREE] {m_travelSource}: {moved} item(s) moved to their numbers in the shared registry" + (outside > 0 ? $"; {outside} dropped/flying item(s) left as they were" : ""));
+        KnifeLog.Warning($"[GUN_TREE] {m_travelSource}: {moved} inventory item(s), {pickablesMoved} dropped item(s) and {projectilesMoved} item(s) in flight moved to their numbers in the shared registry"
+            + (unreachable > 0 ? $"; {unreachable} item(s) in moving blocks or kept by another mod outside any inventory could not be reached and keep their old numbers" : ""));
     }
     internal double Now => m_time?.GameTime ?? 0;
     /// <summary>The process-wide pointers gun code reads (the registry, the holder lookup) to this world's tree.</summary>
     internal void BindStatics() {
         ScGunRegistry.Current = m_registry;
-        if (m_registry is not null) m_registry.RecoveryOwner = inventory => ScGunHolders.RecoveryOwner(inventory?.Project ?? Project, inventory);
+        if (m_registry is not null) m_registry.RecoveryOwner = inventory => {
+            var project = inventory?.Project ?? Project;
+            string owner = ScGunHolders.RecoveryOwner(project, inventory);
+            return m_tree is null ? owner : ScGunTree.QualifyOwner(m_tree, project, owner);
+        };
         ScGunMutation.HolderLocator = (id, except) => Holders().Where(h => h.Id == id && h.Key != except).Select(h => h.Key).ToArray();
     }
     string m_travelSource;

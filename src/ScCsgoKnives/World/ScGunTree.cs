@@ -12,7 +12,7 @@ using InvalidDataException = System.IO.InvalidDataException;
 using EnumerationOptions = System.IO.EnumerationOptions;
 namespace Game;
 
-/// <summary>world-tree-gun-registry-20261107 (1.6.0, phase A; design docs/tasks/world-tree-gun-registry-20261107.md).
+/// <summary>world-tree-gun-registry-20261107 (1.5.2; design docs/tasks/world-tree-gun-registry-20261107.md).
 /// One gun registry for a whole world tree: the top-level world folder under the Worlds folder and every sub-world in
 /// it (Ghoul <c>World1/Tartareosity</c>, Ancient World <c>World1/Dimensions/Ancient</c>, Portal <c>World1/Space_N</c>).
 /// A record number then names the same gun in every world of the tree, however a sub-world mod moves the item: copying
@@ -22,8 +22,9 @@ namespace Game;
 /// .bak, generation counter, tree GUID). In memory there is one shared instance per root, held by every loaded project
 /// of the tree (reference counted). Every world still saves the full registry into its own Project.xml group, stamped
 /// with the tree id and generation, for older builds and as the last fallback.
-/// Phase A refuses, rather than guesses, a world whose own unstamped registry would have to be merged with another
-/// one of the same tree; phase B adds that merge.</summary>
+/// A world whose own registry is not yet part of the tree (saved by an older build, carrying another tree's stamp, or a
+/// Portal space that appears after the merge) is merged by record identity (ScGunTreeMerge); what cannot be placed
+/// uniquely is refused, never guessed.</summary>
 public static class ScGunTree {
     public const string FileName = "ScCsgoGuns.xml";
     public const int Format = 1;
@@ -98,6 +99,12 @@ public static class ScGunTree {
     internal static ScGunTreeMerge.Remap PendingOf(XElement worlds, string path) =>
         Entry(worlds, path, false)?.Attribute("Pending") is { } a ? ScGunTreeMerge.Remap.Load(a.Value) : null;
     internal static bool MergedOf(XElement worlds, string path) => (string)Entry(worlds, path, false)?.Attribute("Merged") == "1";
+    /// <summary>The root world's identity: records made in the root carry identities made from it, so a world joining later
+    /// (a Ghoul world, a Portal space, a world an older build played) finds them by identity.</summary>
+    internal static string RootSeed(XElement worlds) => (string)worlds?.Attribute("RootSeed");
+    static void KeepRootSeed(XElement worlds, string seed) {
+        if (worlds is not null && RootSeed(worlds) is null && !string.IsNullOrEmpty(seed)) worlds.SetAttributeValue("RootSeed", ScGunTreeMerge.Seed(seed));
+    }
     internal static Dictionary<int, string> ReceiptOf(XElement worlds, string path) {
         if (Entry(worlds, path, false)?.Attribute("Receipt") is not { } a) return null;
         var receipt = new Dictionary<int, string>();
@@ -166,9 +173,6 @@ public static class ScGunTree {
 
     // ---- loading a world (ProjectXmlLoad, both CS hooks; the second call is a no-op) ----
 
-    static InvalidOperationException Pending(string detail) => new(
-        "这个世界的枪械记录本无法和所在主世界的共用记录本安全合并（" + detail + "），已拒绝加载，原世界文件未改动。");
-
     public static void BeforeLoad(XElement project, WorldInfo world) {
         if (!Enabled || string.IsNullOrWhiteSpace(world?.DirectoryName) || project.Element("Subsystems") is null) return;
         if (s_done.TryGetValue(project, out _)) return;
@@ -179,7 +183,9 @@ public static class ScGunTree {
             ? new(live.Id, live.Generation, Group(live.Registry, live.Ledger, primary.Now), "memory", new XElement(live.Worlds))
             : Read(SystemFile(root), problems);
         if (problems.Count > 0) KnifeLog.Warning("[GUN_TREE] " + string.Join("; ", problems));
-        Apply(project, root, RelativeTo(root, dir), tree, () => Saves(root, dir),
+        // With a tree, only the saves of worlds it has never heard of are read (a late merge at the root's load).
+        var known = tree?.Worlds;
+        Apply(project, root, RelativeTo(root, dir), tree, () => Saves(root, dir, known is null ? null : rel => Entry(known, rel, false) is null),
             () => ScGunRecordMirror.ReassignFromCopy(project, dir), () => ScGunRecordMirror.RestoreLost(project, dir));
         s_done.Add(project, root);
     }
@@ -227,7 +233,7 @@ public static class ScGunTree {
         string stamp = Text(gun, TreeIdKey);
         if (stamp is not null) {
             if (tree is null) { s_prepared[root] = new(stamp, int.TryParse(Text(gun, GenerationKey), out int g) ? g : 0, null, "world copy"); return; } // the file is gone: this copy re-founds it
-            if (stamp != tree.Id) throw Pending("这个世界的记录本属于另一棵世界树");
+            if (stamp != tree.Id) { Finish(project, root, path, JoinWorld(project, path, tree, null, foreign: true), others); return; } // e.g. a sub-world copied from another save
             // A save whose tree-file write never finished (the game closed at once) leaves the world's own copy newer
             // than the file: that copy wins, never the older file.
             int own = int.TryParse(Text(gun, GenerationKey), NumberStyles.Integer, CultureInfo.InvariantCulture, out int og) ? og : 0;
@@ -237,26 +243,60 @@ public static class ScGunTree {
                 s_prepared[root] = new(stamp, own, copy, "world copy", tree.Worlds);
                 return;
             }
-            Inject(subs, tree); s_prepared[root] = tree;
+            Finish(project, root, path, tree, others);
             return;
         }
-        // Unstamped: last saved by a build before 1.6.0 (never joined, or an older build played it after it joined).
+        // Unstamped: last saved by a build before 1.5.2 (never joined, or an older build played it after it joined).
         if (tree is not null) {
-            if (!HasRecords(gun) || alreadyMerged) { Inject(subs, tree); s_prepared[root] = tree; return; }
-            var w = ScGunTreeMerge.Read(path, project);
-            var table = ScGunTreeMerge.Table.Open(tree.Gun, null, [w]);
-            var receipt = ReceiptOf(tree.Worlds, path);
-            var map = receipt is not null ? ScGunTreeMerge.Reconcile(table, w, receipt) : ScGunTreeMerge.Join(table, w, []);
-            int moved = ScGunTreeMerge.Apply(project, map, w.VariantOf);
-            tree = new Snapshot(tree.Id, tree.Generation, table.Gun, receipt is not null ? "reconciled" : "joined", tree.Worlds);
-            KnifeLog.Warning($"[GUN_TREE] {Label(path)}: " + (receipt is not null ? "played by an older build since its last save here; its changes" : "its own registry") +
-                $" merged into the shared registry; {moved} item(s) renumbered, {table.KeptAside} record(s) kept aside" + (table.Notes.Count > 0 ? "; " + string.Join("; ", table.Notes) : ""));
-            ScGunRecordMirror.Notice(receipt is not null ? "CS：这个世界被旧版本玩过，枪械记录已和主世界的共用记录本对好。" : "CS：这个世界的枪械记录已合并进主世界的共用记录本。");
-            Inject(subs, tree); s_prepared[root] = tree;
+            if (!HasRecords(gun) || alreadyMerged) { Finish(project, root, path, tree, others); return; }
+            Finish(project, root, path, JoinWorld(project, path, tree, ReceiptOf(tree.Worlds, path), foreign: false), others);
             return;
         }
         Found(project, root, path, others);
     }
+    /// <summary>One world's own registry into the tree's, on its detached XML: by receipt (an older build played it since
+    /// this build last saved it) or by identity (never merged yet, merged late, or carrying another tree's stamp).</summary>
+    static Snapshot JoinWorld(XElement project, string path, Snapshot tree, Dictionary<int, string> receipt, bool foreign) {
+        var w = ScGunTreeMerge.Read(path, project);
+        var table = ScGunTreeMerge.Table.Open(tree.Gun, null, [w], RootSeed(tree.Worlds));
+        var map = receipt is not null ? ScGunTreeMerge.Reconcile(table, w, receipt) : ScGunTreeMerge.Join(table, w, []);
+        int moved = ScGunTreeMerge.Apply(project, map, w.VariantOf);
+        tree = new Snapshot(tree.Id, tree.Generation, table.Gun, receipt is not null ? "reconciled" : foreign ? "imported" : "joined", tree.Worlds);
+        KnifeLog.Warning($"[GUN_TREE] {Label(path)}: " + (receipt is not null ? "played by an older build since its last save here; its changes"
+                : foreign ? "carried the registry of another world tree; its records were imported by identity and" : "its own registry") +
+            $" merged into the shared registry; {moved} item(s) renumbered, {table.Joined} new record(s), {table.KeptAside} record(s) kept aside" + Obligations(table) +
+            (table.Notes.Count > 0 ? "; " + string.Join("; ", table.Notes) : ""));
+        ScGunRecordMirror.Notice(receipt is not null ? "CS：这个世界被旧版本玩过，枪械记录已和主世界的共用记录本对好。"
+            : foreign ? "CS：这个世界的枪械记录来自另一个存档，已按记录身份并入主世界的共用记录本。" : "CS：这个世界的枪械记录已合并进主世界的共用记录本。");
+        return tree;
+    }
+    /// <summary>The tree's registry into this world's group. When the root loads, every other world of the tree that never
+    /// joined it - no merge, remap or receipt for it in the tree file (a Portal space whose own registry an older build made
+    /// after the merge, its player's items saved in the root with that space's numbers) - is merged first, by identity and
+    /// with decision 2A, so the root's items and that world's are placed before anything is played.</summary>
+    static void Finish(XElement project, string root, string path, Snapshot tree, Func<IReadOnlyList<(string Path, XElement Project)>> others) {
+        if (path.Length == 0 && tree.Gun is not null && others is not null) tree = MergeLateWorlds(project, path, tree, others());
+        Inject(project.Element("Subsystems"), tree); s_prepared[root] = tree;
+    }
+    static Snapshot MergeLateWorlds(XElement project, string path, Snapshot tree, IReadOnlyList<(string Path, XElement Project)> saves) {
+        var late = saves.Select(x => ScGunTreeMerge.Read(x.Path, x.Project)).Where(w => w.HasRecords && !w.Stamped && Entry(tree.Worlds, w.Path, false) is null).ToList();
+        if (late.Count == 0) return tree;
+        var self = ScGunTreeMerge.Read(path, project);
+        var table = ScGunTreeMerge.Table.Open(tree.Gun, null, late.Append(self), RootSeed(tree.Worlds));
+        var maps = ScGunTreeMerge.MergeInto(table, self, late);
+        int moved = ScGunTreeMerge.Apply(project, maps[path], self.VariantOf);
+        var worlds = new XElement(tree.Worlds ?? new XElement("Worlds"));
+        foreach (var w in late) {
+            var e = Entry(worlds, w.Path, true); e.SetAttributeValue("Merged", "1");
+            if (maps[w.Path].Moves) e.SetAttributeValue("Pending", maps[w.Path].Save());
+        }
+        KnifeLog.Warning($"[GUN_TREE] {Label(path)}: {late.Count} world(s) of this tree had registries of their own it never took in ({string.Join(", ", late.Select(w => w.Path))}); merged now: " +
+            $"{table.Joined} new record(s), {table.KeptAside} kept aside, {table.Corrected} misnumbered gun(s) corrected{Obligations(table)}; {moved} item(s) renumbered here" +
+            (table.Notes.Count > 0 ? "; " + string.Join("; ", table.Notes) : ""));
+        ScGunRecordMirror.Notice("CS：这个主世界下其他世界的枪械记录已并入共用记录本" + (table.Corrected > 0 ? $"，并按记录身份改回了 {table.Corrected} 把编号错位的枪。" : "。"));
+        return new Snapshot(tree.Id, tree.Generation, table.Gun, "late-merged", worlds);
+    }
+    static string Obligations(ScGunTreeMerge.Table t) => t.KillsMoved + t.RefundsMoved == 0 ? "" : $", {t.KillsMoved} pending kill credit(s) and {t.RefundsMoved} refund(s) moved with their records";
     /// <summary>No tree yet. Alone in its tree (or the only one with records), this world founds it; otherwise every world
     /// of the tree is merged once, the root's numbers kept (design §4), with decision 2A.</summary>
     static void Found(XElement project, string root, string path, Func<IReadOnlyList<(string Path, XElement Project)>> others) {
@@ -268,6 +308,7 @@ public static class ScGunTree {
         var plan = ScGunTreeMerge.Merge(rootWorld, rest);
         int moved = ScGunTreeMerge.Apply(project, plan.Maps[path], self.VariantOf);
         var worlds = new XElement("Worlds");
+        KeepRootSeed(worlds, rootWorld.Seed);
         foreach (var w in rest.Append(rootWorld).Where(w => w != self)) {
             var map = plan.Maps[w.Path];
             if (map.Moves) Entry(worlds, w.Path, true).SetAttributeValue("Pending", map.Save());
@@ -275,8 +316,8 @@ public static class ScGunTree {
         }
         var snapshot = new Snapshot(Guid.NewGuid().ToString("N"), 0, plan.Gun, "merged", worlds);
         int merged = rest.Count(w => w.HasRecords && !w.Stamped);
-        KnifeLog.Warning($"[GUN_TREE] {root}: merged the registries of {merged + 1} worlds into one shared registry ({plan.Table.Joined} record(s) joined, " +
-            $"{plan.Table.KeptAside} kept aside, {plan.Table.Corrected} misnumbered gun(s) corrected); {Label(path)}: {moved} item(s) renumbered now" +
+        KnifeLog.Warning($"[GUN_TREE] {root}: merged the registries of {merged + 1} worlds into one shared registry ({plan.Table.Joined} new record(s), " +
+            $"{plan.Table.KeptAside} kept aside, {plan.Table.Corrected} misnumbered gun(s) corrected{Obligations(plan.Table)}); {Label(path)}: {moved} item(s) renumbered now" +
             (plan.Table.Notes.Count > 0 ? "; " + string.Join("; ", plan.Table.Notes) : ""));
         ScGunRecordMirror.Notice("CS：已把这个主世界下各个世界的枪械记录合并成一本共用记录本" + (plan.Table.Corrected > 0 ? $"，并按记录身份改回了 {plan.Table.Corrected} 把编号错位的枪。" : "。"));
         Inject(project.Element("Subsystems"), snapshot);
@@ -294,7 +335,7 @@ public static class ScGunTree {
     }
     /// <summary>The other saves of the tree (Project.xml of the root and of Ghoul/Ancient worlds, SpaceProject.xml of
     /// Portal spaces), as detached XML with their path relative to the root. Read only when no tree exists yet.</summary>
-    static IReadOnlyList<(string Path, XElement Project)> Saves(string root, string dir) {
+    static IReadOnlyList<(string Path, XElement Project)> Saves(string root, string dir, Func<string, bool> wanted = null) {
         var found = new List<(string, XElement)>();
         string top = Storage.GetSystemPath(root), own = Path.GetFullPath(Storage.GetSystemPath(dir));
         if (!Directory.Exists(top)) return found;
@@ -304,8 +345,9 @@ public static class ScGunTree {
             string folder = Path.GetFullPath(Path.GetDirectoryName(file)!);
             if (string.Equals(folder, own, StringComparison.OrdinalIgnoreCase)) continue;
             try {
-                string rel = Path.GetRelativePath(Path.GetFullPath(top), folder).Replace('\\', '/');
-                found.Add((rel == "." ? "" : rel, XElement.Load(file)));
+                string rel = Path.GetRelativePath(Path.GetFullPath(top), folder).Replace('\\', '/'); rel = rel == "." ? "" : rel;
+                if (wanted is not null && !wanted(rel)) continue;
+                found.Add((rel, XElement.Load(file)));
             }
             catch (Exception e) { KnifeLog.Warning($"[GUN_TREE] could not read {file}: {e.Message}"); }
         }
@@ -321,17 +363,24 @@ public static class ScGunTree {
         string root = RootOf(directory), path = RelativeTo(root, directory);
         string stamp = values.GetValue<string>(TreeIdKey, null);
         int staged = values.GetValue<ValuesDictionary>(RegistryKey, null)?.GetValue<int>("Next", 0) ?? 0;
-        var ownRegistry = registry;
-        // A project built without the ProjectXmlLoad hook (a Portal space) may still hold its own registry: it joins only
-        // when the tree's merge already took that registry in; its items then move on its first update.
+        var ownRegistry = registry; string ownSeed = ledger?.WorldIdentity;
+        // A project built without the ProjectXmlLoad hook (a Portal space) may still hold its own registry. When the tree's
+        // merge already took it in, its items move by that merge's remap on its first update; otherwise (it appeared after
+        // the merge, or it carries another tree's stamp) it is merged now, by identity, into the live shared registry.
         // ownIsTree: this project's own registry opened the tree (it was founded from it), so there is nothing to merge.
         void Join(Tree t, bool ownIsTree = false) {
-            bool own = !ownIsTree && stamp != t.Id && ownRegistry.Count + ownRegistry.QuarantinedCount > 0;
-            var pending = PendingOf(t.Worlds, path);
-            if (own && pending is null && !MergedOf(t.Worlds, path)) throw Pending(Canonical(directory) + " 有自己的记录本，而合并时没有读到它");
+            bool own = !ownIsTree && stamp != t.Id && ownRegistry.Count + ownRegistry.QuarantinedCount + ownRegistry.Kills.Count + ownRegistry.Recovery.Count > 0;
+            bool foreign = stamp is not null && stamp != t.Id;
+            var pending = foreign ? null : PendingOf(t.Worlds, path);
             Func<int, int> ownVariant = id => ownRegistry.TryGetSnapshot(id, out var s) ? s.Variant : -1;
-            if (pending is not null) member.ScheduleRemap(pending, ownVariant);
+            if (own && (foreign || pending is null && !MergedOf(t.Worlds, path))) {
+                var map = LateMerge(t, path, values, member.Now, foreign);
+                t.Worlds = Settled(t.Worlds, path);
+                if (map.Moves) member.ScheduleRemap(map, ownVariant);
+            }
+            else if (pending is not null) member.ScheduleRemap(pending, ownVariant);
             else if (own) t.Worlds = Settled(t.Worlds, path);
+            if (path.Length == 0) KeepRootSeed(t.Worlds, ownSeed);
             t.Paths[member] = path;
         }
         if (s_trees.TryGetValue(root, out var tree)) {
@@ -342,22 +391,53 @@ public static class ScGunTree {
         }
         s_prepared.Remove(root, out var prepared);
         int own = stamp is not null ? values.GetValue<int>(GenerationKey, 0) : -1;
-        bool fromSnapshot = prepared?.Gun is not null && (stamp is null || stamp == prepared.Id) && prepared.Generation >= own;
+        // Another tree's stamp (a copied sub-world) opens from the snapshot too; its own registry is merged in by Join.
+        bool fromSnapshot = prepared?.Gun is not null && (stamp is null || stamp != prepared.Id || prepared.Generation >= own);
         if (fromSnapshot) {
             // The newest snapshot of the tree, not this project's own (possibly older) copy.
             var snapshot = new ValuesDictionary(); snapshot.ApplyOverrides(new XElement(prepared.Gun));
             (registry, ledger) = build(snapshot);
             if (registry.UnknownSchema) throw new InvalidOperationException("主世界共用枪械记录本的格式无法安全读取，已拒绝进入世界。");
         }
-        else if (stamp is not null && prepared is not null && prepared.Id != stamp && prepared.Gun is not null) throw Pending(Canonical(directory) + " 的记录本属于另一棵世界树");
-        string id = stamp ?? prepared?.Id ?? Guid.NewGuid().ToString("N");
-        int generation = stamp is not null ? Math.Max(own, prepared?.Generation ?? 0) : prepared?.Generation ?? 0;
+        string id = fromSnapshot ? prepared.Id : stamp ?? prepared?.Id ?? Guid.NewGuid().ToString("N");
+        int generation = fromSnapshot ? prepared.Generation : stamp is not null ? Math.Max(own, prepared?.Generation ?? 0) : prepared?.Generation ?? 0;
         tree = new Tree { Root = root, Id = id, Generation = generation, Registry = registry, Ledger = ledger, Worlds = prepared?.Worlds is { } w ? new XElement(w) : new XElement("Worlds") };
         Join(tree, ownIsTree: !fromSnapshot);
         tree.Members.Add(member);
         s_trees[root] = tree;
         KnifeLog.Information($"[GUN_TREE] {root}: tree {id} generation {generation}, {registry.Count} records, opened by {Canonical(directory)}");
         return tree;
+    }
+    /// <summary>The gun block's number in the running game (a late merge reads the refunds of a project already built).
+    /// Headless tests set it.</summary>
+    internal static Func<int> GunBlock = () => BlocksManager.GetBlockIndex<ScGunBlock>(true);
+    /// <summary>A project with records of its own that the tree's merge did not take in (a Portal space that appeared
+    /// later, or one carrying another tree's stamp): its registry joins the live shared one by identity, with its
+    /// obligations; returns how its items move (applied on its first update).</summary>
+    static ScGunTreeMerge.Remap LateMerge(Tree t, string path, ValuesDictionary values, double now, bool foreign) {
+        var group = new XElement("Values", new XAttribute("Name", GunGroup)); values.Save(group);
+        var w = ScGunTreeMerge.Read(path, new XElement("Project", new XElement("Subsystems", group)));
+        w.Block = GunBlock();
+        var table = ScGunTreeMerge.Table.Open(Group(t.Registry, t.Ledger, now), null, [w], RootSeed(t.Worlds));
+        // Numbers this project used without a record of them (its items may still carry them) are never handed out.
+        table.Next = Math.Max(table.Next, ScGunEncoding.NextId(Math.Min(w.Registry.Next, GunSpec.LastId + 1)));
+        var map = ScGunTreeMerge.Join(table, w, []);
+        var merged = new ValuesDictionary(); merged.ApplyOverrides(new XElement(table.Gun));
+        var registry = ScGunRegistry.Load(merged.GetValue<ValuesDictionary>(RegistryKey, null), now);
+        if (registry.UnknownSchema) throw new InvalidOperationException("合并后的枪械记录本无法安全读取，已拒绝进入世界。");
+        var added = t.Registry.Absorb(registry);
+        foreach (var (token, id) in table.ByIdentity) t.Ledger?.Identities.TryAdd(id, token);
+        KnifeLog.Warning($"[GUN_TREE] {Label(path)}: " + (foreign ? "carried the registry of another world tree; imported by identity" : "has a registry of its own the tree's merge did not take in; merged now")
+            + $" into the live shared registry: {added.Records} record(s) added ({table.Joined} new, {table.KeptAside} kept aside), {added.Kills} pending kill credit(s) and {added.Refunds} refund(s) moved with their records; "
+            + $"{map.Count(p => p.Key.Id != p.Value)} number(s) change for its items" + (table.Notes.Count > 0 ? "; " + string.Join("; ", table.Notes) : ""));
+        ScGunRecordMirror.Notice(foreign ? "CS：这个世界的枪械记录来自另一个存档，已按记录身份并入主世界的共用记录本。" : "CS：这个世界的枪械记录已合并进主世界的共用记录本。");
+        return map;
+    }
+    /// <summary>A refund's owner as the world <paramref name="project"/> saves it: qualified with that world's path in the
+    /// tree unless it is the root's own or a player's.</summary>
+    internal static string QualifyOwner(Tree tree, GameEntitySystem.Project project, string owner) {
+        foreach (var (member, path) in tree.Paths) if (ReferenceEquals(member.Project, project)) return ScGunTreeMerge.OwnerIn(path, owner);
+        return owner;
     }
     /// <summary>A world's gun subsystem joins its tree: its own saved values parsed the way the subsystem always did
     /// (registry, identities, receipts); the newest prepared snapshot instead when it opens the tree.</summary>
@@ -410,9 +490,17 @@ public static class ScGunTree {
         }
         return holders;
     }
+    /// <summary>A refund's destination: in the world its owner names (a qualified owner), in the root for the root's own
+    /// owners, in any loaded world for a player. Nothing (kept for later) when that world is not loaded.</summary>
     internal static IInventory ResolveRecoveryOwner(Tree tree, string owner) {
-        foreach (var member in tree.Members)
-            if (member.Project is { } project && ScGunHolders.ResolveRecoveryOwner(project, owner) is { } inventory) return inventory;
+        bool qualified = ScGunTreeMerge.SplitOwner(owner, out string path, out string local);
+        bool anywhere = !qualified && owner is not null && owner.StartsWith("player/", StringComparison.Ordinal);
+        foreach (var member in tree.Members) {
+            if (member.Project is not { } project) continue;
+            string at = tree.Paths.TryGetValue(member, out var p) ? p : "";
+            if (!anywhere && !string.Equals(at, qualified ? path : "", StringComparison.OrdinalIgnoreCase)) continue;
+            if (ScGunHolders.ResolveRecoveryOwner(project, qualified ? local : owner) is { } inventory) return inventory;
+        }
         return null;
     }
     /// <summary>Test support: forget every loaded tree.</summary>

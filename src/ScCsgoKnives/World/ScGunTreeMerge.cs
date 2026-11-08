@@ -8,8 +8,13 @@ namespace Game;
 /// <summary>world-tree-gun-registry-20261107 phase B (design §4, §5, decision 2A). Pure: reads detached saves, returns the
 /// merged tree registry and, per world, which item (number, model) moves to which tree number. Never guesses: a record it
 /// cannot place is kept on a number nobody holds; an item it cannot place keeps its number and meets the integrity check.
-/// - One-time merge of a tree whose worlds kept registries of their own (builds before 1.6.0): the root's numbers stay;
-///   every other world's records join by identity (the token a record carries from the world it was made in).
+/// - One-time merge of a tree whose worlds kept registries of their own (builds before 1.5.2): the root's numbers stay;
+///   every other world's records join by identity (the token a record carries from the world it was made in). The same
+///   join takes a world that carries another tree's stamp (a sub-world copied from another save) and a Portal space with
+///   records of its own that appears after the tree's merge.
+/// - Obligations travel with their records: a world's pending kill credits and refunds move into the tree under the
+///   tree numbers its records got. One that cannot be placed uniquely (its record did not map, or the tree may already
+///   hold the same credential) refuses the merge: an obligation is never dropped and never paid twice.
 /// - Decision 2A: an item whose model differs from its own world's record but equals the same-number record of exactly
 ///   one sibling world, whose identity resolves to a tree record of that model no correctly held item holds, moves there.
 /// - A world an older build played after the tree existed (unstamped again): its changes are taken by the receipt (what
@@ -49,6 +54,8 @@ public static class ScGunTreeMerge {
         public string IdentityOf(int id) => Identities.TryGetValue(id, out var t) ? t : string.IsNullOrEmpty(Seed) ? null : ScTravelLedger.Token(Seed, id);
         public int VariantOf(int id) => Registry.TryGetSnapshot(id, out var s) ? s.Variant : -1;
     }
+    /// <summary>A world identity as identity tokens are made from it (a GUID in its "N" form).</summary>
+    public static string Seed(string uuid) => Guid.TryParse(uuid, out var g) ? g.ToString("N") : uuid;
     public static World Read(string path, XElement project) {
         var w = new World { Path = path ?? "", Project = project };
         var subs = project?.Element("Subsystems");
@@ -59,7 +66,7 @@ public static class ScGunTreeMerge {
         foreach (var r in G(G(w.Gun, RegistryKey), "Records")?.Elements("Value") ?? []) w.Rows[(string)r.Attribute("Name")] = (string)r.Attribute("Value");
         foreach (var r in G(w.Gun, ScGunTravel.Identities)?.Elements("Value") ?? [])
             if (int.TryParse((string)r.Attribute("Name"), NumberStyles.Integer, Ci, out int id)) w.Identities[id] = (string)r.Attribute("Value");
-        string uuid = Text(w.Gun, ScGunTravel.WorldIdentity); w.Seed = Guid.TryParse(uuid, out var g) ? g.ToString("N") : uuid;
+        w.Seed = Seed(Text(w.Gun, ScGunTravel.WorldIdentity));
         var maps = G(subs, "BlocksManager")?.Elements("Value").Where(e => (string)e.Attribute("Value") == "ScGunBlock").ToArray();
         if (maps?.Length == 1 && int.TryParse((string)maps[0].Attribute("Name"), NumberStyles.Integer, Ci, out int b)) w.Block = b;
         if (w.Block >= 0 && project is not null)
@@ -78,7 +85,7 @@ public static class ScGunTreeMerge {
         public XElement Gun;
         public readonly Dictionary<string, int> ByIdentity = new(StringComparer.Ordinal);
         public readonly List<string> Notes = new();
-        public int Next, KeptAside, Joined, Corrected;
+        public int Next, KeptAside, Joined, Corrected, KillsMoved, RefundsMoved;
         XElement Registry => G(Gun, RegistryKey);
         XElement Records => G(Registry, "Records");
         XElement IdentityGroup { get { var g = G(Gun, ScGunTravel.Identities); if (g is null) { g = new XElement("Values", new XAttribute("Name", ScGunTravel.Identities)); Gun.Add(g); } return g; } }
@@ -104,9 +111,21 @@ public static class ScGunTreeMerge {
             Set(id, row); Identify(id, token); return id;
         }
         public int Aside(string row) { KeptAside++; return Allocate(row, null); }
+        // The tree's pending obligations, read from and written back into its registry group in the save format.
+        ValuesDictionary Sub(string name) { if (G(Registry, name) is not { } e) return null; var d = new ValuesDictionary(); d.ApplyOverrides(new XElement(e)); return d; }
+        void Put(string name, ValuesDictionary d) {
+            G(Registry, name)?.Remove();
+            var e = new XElement("Values", new XAttribute("Name", name)); d.Save(e); Registry.Add(e);
+        }
+        public ScGunKillQueue Kills() { var q = new ScGunKillQueue(); q.LoadInto(Sub("PendingKills")); return q; }
+        public ScGunRecovery Recovery() => ScGunRecovery.Load(Sub("Recovery"));
+        public void Save(ScGunKillQueue kills) => Put("PendingKills", kills.Save());
+        public void Save(ScGunRecovery recovery) => Put("Recovery", recovery.Save());
 
-        /// <summary>A table opened on a tree's (or the root's) gun group: its rows keep their numbers.</summary>
-        public static Table Open(XElement gun, World root, IEnumerable<World> all) {
+        /// <summary>A table opened on a tree's (or the root's) gun group: its rows keep their numbers. A record without an
+        /// explicit identity has the one its world gives it: <paramref name="root"/>'s, or <paramref name="rootSeed"/> (the
+        /// root world's identity, kept in the tree file) when the table is the tree's own.</summary>
+        public static Table Open(XElement gun, World root, IEnumerable<World> all, string rootSeed = null) {
             var t = new Table { Gun = gun is null ? EmptyGun() : StripWorldFields(new XElement(gun)) };
             if (G(t.Gun, RegistryKey) is null) t.Gun.Add(EmptyGun().Elements());
             int next = int.TryParse(Text(t.Registry, "Next"), NumberStyles.Integer, Ci, out int n) ? n : GunSpec.FirstId;
@@ -116,6 +135,10 @@ public static class ScGunTreeMerge {
             foreach (var e in G(t.Gun, ScGunTravel.Identities)?.Elements("Value") ?? [])
                 if (int.TryParse((string)e.Attribute("Name"), NumberStyles.Integer, Ci, out int id)) t.ByIdentity.TryAdd((string)e.Attribute("Value"), id);
             if (root is not null) foreach (int id in t.Ids.ToArray()) if (root.IdentityOf(id) is { } token && !t.ByIdentity.ContainsKey(token)) t.Identify(id, token);
+            if (root is null && !string.IsNullOrEmpty(rootSeed)) {
+                var explicitIds = (G(t.Gun, ScGunTravel.Identities)?.Elements("Value") ?? []).Select(e => (string)e.Attribute("Name")).ToHashSet();
+                foreach (int id in t.Ids.ToArray()) if (!explicitIds.Contains(id.ToString(Ci)) && !t.ByIdentity.ContainsKey(ScTravelLedger.Token(rootSeed, id))) t.Identify(id, ScTravelLedger.Token(rootSeed, id));
+            }
             return t;
         }
         static XElement EmptyGun() => new("Values", new XAttribute("Name", GunGroup), Field("GunDataLayout", GunSpec.DataLayout),
@@ -129,16 +152,82 @@ public static class ScGunTreeMerge {
         }
     }
 
-    static void RequireSettled(World w) {
-        if (w.Registry.Kills.Count > 0 || w.Registry.Recovery.Count > 0)
-            throw new InvalidOperationException($"{Label(w)} 还有待结算的击杀或物品补偿，不能安全合并；请先用当时的版本进入该世界结算后再换版本");
+    static void RequireReadable(World w) {
         if (w.Registry.UnknownSchema) throw new InvalidOperationException($"{Label(w)} 的枪械记录格式无法安全读取");
     }
     static string Label(World w) => w.Path.Length == 0 ? "主世界" : w.Path;
 
+    // ---- obligations (kill credits not yet written into their record; refunds not yet delivered) ----
+    /// <summary>A refund's destination saved by a world other than the root is resolved only in that world: its entity
+    /// and subsystem ids mean nothing in another project of the tree. A player is the same player in every world.</summary>
+    public const string WorldOwnerPrefix = "tree-world:";
+    public static string OwnerIn(string path, string owner) =>
+        string.IsNullOrEmpty(path) || owner is null || owner.StartsWith("player/", StringComparison.Ordinal) || owner.StartsWith(WorldOwnerPrefix, StringComparison.Ordinal)
+            ? owner : WorldOwnerPrefix + path + "|" + owner;
+    public static bool SplitOwner(string owner, out string path, out string local) {
+        path = local = null;
+        if (owner is null || !owner.StartsWith(WorldOwnerPrefix, StringComparison.Ordinal)) return false;
+        int bar = owner.IndexOf('|', WorldOwnerPrefix.Length); if (bar < 0) return false;
+        path = owner[WorldOwnerPrefix.Length..bar]; local = owner[(bar + 1)..]; return true;
+    }
+    /// <summary>A gun value in a refund at its tree number: true with the value unchanged for anything that is not one of
+    /// this world's numbered guns, false when it is one the map does not place.</summary>
+    static bool Place(World w, Remap map, int value, out int placed) {
+        placed = value;
+        if (value == 0 || w.Block < 0 || Terrain.ExtractContents(value) != w.Block) return true;
+        int data = Terrain.ExtractData(value);
+        if (!ScGunEncoding.ValidBits(data) || !ScGunEncoding.IsRecordId(ScGunEncoding.Id(data))) return true; // a fresh gun
+        int id = ScGunEncoding.Id(data), variant = ScGunEncoding.Extended(data) ? w.VariantOf(id) : data & 63;
+        if (variant < 0 || !map.ContainsKey((id, variant))) return false;
+        placed = Moved(value, map, w.VariantOf) ?? value;
+        return true;
+    }
+    static string Steps(IEnumerable<ScGunUndo> steps) => string.Join(",", steps.Select(x => string.Create(Ci, $"{x.Slot}/{x.Value}/{x.Count}/{(x.Creative ? 1 : 0)}/{x.ReplacedValue}")));
+    /// <summary>A joining world's obligations into the table, at the numbers its records got. All or nothing.</summary>
+    static void TakeObligations(Table t, World w, Remap map) {
+        if (w.Registry.Kills.Count == 0 && w.Registry.Recovery.Count == 0) return;
+        var kills = t.Kills(); var recovery = t.Recovery();
+        var problems = new List<string>();
+        var credits = new List<(int Id, int Variant)>();
+        foreach (var e in w.Registry.Kills.Pending) {
+            if (!map.TryGetValue((e.RecordId, e.Variant), out int to) || t.VariantOf(to) != e.Variant) { problems.Add($"击杀 #{e.RecordId} 的记录没有唯一对应"); continue; }
+            if (kills.Pending.Any(k => k.RecordId == to && k.Variant == e.Variant && k.EventId == e.EventId)) { problems.Add($"击杀 #{e.RecordId} 可能已在共用记录本里"); continue; }
+            credits.Add((to, e.Variant));
+        }
+        var refunds = new List<(string Owner, List<ScGunUndo> Steps)>();
+        foreach (var batch in w.Registry.Recovery.Batches) {
+            if (batch.Owner.StartsWith(WorldOwnerPrefix, StringComparison.Ordinal)) { problems.Add($"补偿 {batch.Id} 属于另一棵世界树的子世界"); continue; }
+            var steps = batch.Steps.Select(x => x.Copy()).ToList(); bool ok = true;
+            foreach (var x in steps) {
+                ok &= Place(w, map, x.Value, out int value); x.Value = value;
+                if (x.Creative) { ok &= Place(w, map, x.ReplacedValue, out int replaced); x.ReplacedValue = replaced; }
+            }
+            if (!ok) { problems.Add($"补偿 {batch.Id} 里的枪没有唯一对应的记录"); continue; }
+            string owner = OwnerIn(w.Path, batch.Owner);
+            if (recovery.Batches.Any(b => b.Owner == owner && Steps(b.Steps) == Steps(steps))) { problems.Add($"补偿 {batch.Id} 可能已在共用记录本里"); continue; }
+            refunds.Add((owner, steps));
+        }
+        if (problems.Count > 0)
+            throw new InvalidOperationException($"{Label(w)} 的待结算项无法唯一对应到共用记录本（{string.Join("；", problems)}）；请先用当时的版本进入该世界结算后再换版本");
+        foreach (var (id, variant) in credits) kills.Enqueue(id, variant);
+        foreach (var (owner, steps) in refunds) recovery.Adopt(owner, steps);
+        t.Save(kills); t.Save(recovery);
+        t.KillsMoved += credits.Count; t.RefundsMoved += refunds.Count;
+    }
+    /// <summary>A world an older build played after it joined starts from the tree's obligations (they were saved into it).
+    /// Unless both sides still hold exactly the same ones, which of them the older build delivered cannot be told.</summary>
+    static void RequireSameObligations(Table t, World w) {
+        static string K(ScGunKillQueue q) => string.Join(";", q.Pending.Select(e => string.Create(Ci, $"{e.EventId}:{e.RecordId},{e.Variant}")));
+        static string R(ScGunRecovery r) => string.Join(";", r.Batches.Select(b => string.Create(Ci, $"{b.Id}|{b.Owner}|") + Steps(b.Steps)));
+        var kills = t.Kills(); var recovery = t.Recovery();
+        if (w.Registry.Kills.Count + w.Registry.Recovery.Count + kills.Count + recovery.Count == 0) return;
+        if (K(w.Registry.Kills) == K(kills) && R(w.Registry.Recovery) == R(recovery)) return;
+        throw new InvalidOperationException($"{Label(w)} 被旧版本玩过，而它或共用记录本里有待结算的击杀或补偿，无法确定哪些已经结算；请先用旧版本进入该世界结算后再换版本");
+    }
+
     /// <summary>One world's own registry into the table by identity. Returns (number, model) -> tree number for its items.</summary>
     public static Remap Join(Table t, World w, HashSet<int> held) {
-        RequireSettled(w);
+        RequireReadable(w);
         var map = new Remap();
         foreach (var (key, row) in w.Rows.OrderBy(p => int.TryParse(p.Key, out int k) ? k : int.MaxValue)) {
             if (!int.TryParse(key, NumberStyles.Integer, Ci, out int id) || !w.Registry.TryGetSnapshot(id, out var s)) {
@@ -161,6 +250,7 @@ public static class ScGunTreeMerge {
             map[(id, s.Variant)] = n;
             if (holds) held.Add(n);
         }
+        TakeObligations(t, w, map);
         return map;
     }
 
@@ -168,7 +258,7 @@ public static class ScGunTreeMerge {
     public sealed record Plan(XElement Gun, Dictionary<string, Remap> Maps, Table Table);
     public static Plan Merge(World root, IReadOnlyList<World> others) {
         var all = new List<World> { root }; all.AddRange(others.OrderBy(w => w.Path, StringComparer.Ordinal));
-        RequireSettled(root);
+        RequireReadable(root); // the root's own obligations stay in its table under their numbers
         var t = Table.Open(root.Gun, root, all);
         var maps = all.ToDictionary(w => w.Path, _ => new Remap(), StringComparer.Ordinal);
         // The root keeps its numbers; its correctly held records are taken.
@@ -179,6 +269,16 @@ public static class ScGunTreeMerge {
         }
         Correct(t, root, all, maps);
         return new(t.Gun, maps, t);
+    }
+    /// <summary>Worlds of a tree that never joined it, merged into the tree's table when the root loads: by identity, with
+    /// decision 2A for the root's items and theirs. Returns each world's remap (the root's under its path).</summary>
+    public static Dictionary<string, Remap> MergeInto(Table t, World root, IReadOnlyList<World> joining) {
+        var all = new List<World> { root }; all.AddRange(joining.OrderBy(w => w.Path, StringComparer.Ordinal));
+        var maps = all.ToDictionary(w => w.Path, _ => new Remap(), StringComparer.Ordinal);
+        var held = new HashSet<int>(root.Items.Where(i => t.VariantOf(i.Id) == i.Variant).Select(i => i.Id));
+        foreach (var w in all.Skip(1)) foreach (var p in Join(t, w, held)) maps[w.Path][p.Key] = p.Value;
+        Correct(t, root, all, maps);
+        return maps;
     }
     /// <summary>The tree number an item of a world means now: its world's map, else the number itself.</summary>
     static int Final(World w, Item i, Dictionary<string, Remap> maps) => maps[w.Path].TryGetValue((i.Id, i.Variant), out int n) ? n : i.Id;
@@ -208,7 +308,7 @@ public static class ScGunTreeMerge {
 
     /// <summary>A world an older build played after the tree existed, against what this build last wrote into it.</summary>
     public static Remap Reconcile(Table t, World w, IReadOnlyDictionary<int, string> receipt) {
-        RequireSettled(w);
+        RequireReadable(w); RequireSameObligations(t, w);
         var map = new Remap();
         foreach (var (key, row) in w.Rows.OrderBy(p => int.TryParse(p.Key, out int k) ? k : int.MaxValue)) {
             if (!int.TryParse(key, NumberStyles.Integer, Ci, out int id) || !w.Registry.TryGetSnapshot(id, out var s)) {
