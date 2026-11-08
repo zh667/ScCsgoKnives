@@ -56,6 +56,8 @@ public static class ScGunTravel {
         return a==b+"/Tartareosity"||b==a+"/Tartareosity";
     }
     public static void CaptureSaved(XElement project) {
+        // world-tree-gun-registry-20261107: inside a world tree a number names the same gun everywhere; nothing is carried.
+        if (ScGunTree.Enabled) return;
         string world=Text(Guns(project),SourcePath);
         if(!string.IsNullOrWhiteSpace(world))Capture(project,world);
     }
@@ -274,6 +276,10 @@ public static class ScGunTravel {
     public static int ImportedOnLoad { get; private set; }
     public static void BeforeLoad(XElement source,WorldInfo world) {
         ImportedOnLoad=0;
+        // world-tree-gun-registry-20261107: no import inside a tree; a packet an older build left behind (one with an
+        // Error included) is ignored and never refuses the world. Items from another tree keep their numbers and meet
+        // the integrity check ("记录不存在"), as any orphan does.
+        if (ScGunTree.Enabled) return;
         var plan=Prepare(source,world.DirectoryName);if(plan is null)return;
         ImportedOnLoad=Math.Max(1,plan.Guns);
         source.ReplaceNodes(plan.Document.Nodes());KnifeLog.Information($"[GUN_TRAVEL] imported {plan.Guns} carried guns; layout {GunSpec.DataLayout}, schema {ScGunRegistry.Schema}, all carried state preserved");

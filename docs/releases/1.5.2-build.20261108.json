@@ -1,0 +1,39 @@
+{
+  "version": "1.5.2",
+  "date": "2026-11-08",
+  "tag": null,
+  "sourceCommit": "824dc66",
+  "sourceBranch": "feat/world-tree-registry-20261107",
+  "stage": "r152c",
+  "releaseRecord": "docs/tasks/release-1.5.2-20261108.md",
+  "sourceManifest": "output/release-1.5.2/manifest.json",
+  "packages": [
+    {
+      "file": "[API1.9]CS武器1.5.2-全量包.scmod",
+      "bytes": 531307852,
+      "sha256": "f5793b6c072a2055a0cd62e6297d3104d4abcb63b8df84a66086d3cf304e682d"
+    },
+    {
+      "file": "[API1.9]CS武器1.5.2-轻量包.scmod",
+      "bytes": 35813417,
+      "sha256": "faed8239911b435d5cb589e1bc202f2685d8fdaa3da78ccccb11fd2acaa238b8"
+    },
+    {
+      "file": "[API1.9]CS武器1.5.2-探员包.scmod",
+      "bytes": 42805732,
+      "sha256": "374470fc4e54ae0911820d43f099afd151245ddffd2c0367c7799f3d109a54ce"
+    },
+    {
+      "file": "[API1.9]CS武器1.5.2-死亡竞赛.scmod",
+      "bytes": 371934,
+      "sha256": "457d81e121306c9a96161f8b7ab0c92ebb8f0040929b56e2bb9fafbcc256a4c5"
+    }
+  ],
+  "verification": "Built by tools/deathmatch_140.py (stage r152c) and gated as the 1.5.1 release was, plus sp_tree.py (Ghoul/Ancient World/Portal on 1.9.3.1 and 1.9.5.1) and sp_tree_b.py (Portal swap fixture copy, late Portal space, 1.5.1 round trip on 1.9.5.1) on the final Full package; release checks 30/30; packages read back from output/ after delivery (hash, zip integrity, modinfo version 1.5.2).",
+  "acceptanceLimits": [
+    "Android and phone-hosted multiplayer were not tested.",
+    "Pending kill credits/refunds moving with their records and the import of a world carrying another tree's stamp were verified offline only.",
+    "Blocks moved by pistons and items kept outside inventories by other mods inside Portal spaces are not renumbered (logged).",
+    "No release tag was created; the branch is not merged into main."
+  ]
+}

@@ -94,6 +94,15 @@ static class RelativeMouseMovement {
         InjectedInput.SetMouseMovement(movement);
     }
 }
+// The isolated test game runs while the user keeps working. With no menu open the engine puts the mouse into raw mode in
+// Mouse.BeforeFrame and again in AfterFrame whenever its window counts as active - which it does even behind other
+// windows - and raw mode (GLFW's disabled cursor) clips the system cursor to the game window. Both places see a visible
+// mouse instead, so the cursor stays free (patching BeforeFrame alone is not enough; same fix as SurvivalcraftMechDefense
+// b204a64). The scripts' injected MOUSEDOWN/MOUSEMOVE/MOUSEDELTA paths are unaffected. SC_TEST_FREE_CURSOR=0 turns it
+// off for a run that needs the engine's own raw mouse mode (m0.py passes the variable; default on).
+static class FreeCursor { public static readonly bool On = Environment.GetEnvironmentVariable("SC_TEST_FREE_CURSOR") != "0"; }
+[HarmonyPatch(typeof(Mouse), "BeforeFrame")] static class KeepCursorFreeBefore { static void Prefix() { if (FreeCursor.On) Mouse.IsMouseVisible = true; } }
+[HarmonyPatch(typeof(Mouse), "AfterFrame")] static class KeepCursorFreeAfter { static void Prefix() { if (FreeCursor.On) Mouse.IsMouseVisible = true; } }
 [HarmonyPatch(typeof(ComponentInput), "Update")]
 static class InjectedPlayerInput {
     static void Postfix(ComponentInput __instance) {

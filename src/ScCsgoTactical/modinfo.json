@@ -1,16 +1,16 @@
 {
   "Name": "CS武器 · 探员包",
-  "Version": "1.5.1",
+  "Version": "1.5.2",
   "ApiVersion": "1.9.3.1",
   "ScVersion": "2.4.0.0",
   "Author": "zh667",
   "PackageName": "zh667.ScCsgoTactical",
-  "Description": "配套CS武器1.5.1轻量包：CT/T探员、可装备同伴、敌对小队、空投补给、防爆盾、拆弹、手套、CS小鸡和中英探员语音。玩家CT/T外观切换另需NekoMeko Model 1.1和Neorxna 1.4，未安装不影响同伴及第一人称手套。全量包已包含探员内容，无需重复安装。联机双方须使用同一批配套包。",
+  "Description": "配套CS武器1.5.2轻量包：CT/T探员、可装备同伴、敌对小队、空投补给、防爆盾、拆弹、手套、CS小鸡和中英探员语音。玩家CT/T外观切换另需NekoMeko Model 1.1和Neorxna 1.4，未安装不影响同伴及第一人称手套。全量包已包含探员内容，无需重复安装。联机双方须使用同一批配套包。",
   "Link": "https://github.com/zh667/ScCsgoKnives",
   "LoadOrder": 1020,
   "NonPersistentMod": false,
   "GameplayImpactLevel": "Turbo",
   "Dependencies": {
-    "zh667.ScCsgoKnives": "1.5.1"
+    "zh667.ScCsgoKnives": "1.5.2"
   }
 }

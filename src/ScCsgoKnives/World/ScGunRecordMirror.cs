@@ -53,7 +53,7 @@ public static class ScGunRecordMirror {
 
     /// <summary>Every place in Project.xml that holds an item value, with its count field when it has one: the same
     /// holders the integrity check reads.</summary>
-    static IEnumerable<(XElement Value, XElement Count)> Holders(XElement project) {
+    internal static IEnumerable<(XElement Value, XElement Count)> Holders(XElement project) {
         foreach (var slots in project.Descendants("Values").Where(e => (string)e.Attribute("Name") == "Slots"))
             foreach (var slot in slots.Elements("Values"))
                 if (Field(slot, "Contents") is { } contents) yield return (contents, Field(slot, "Count"));
@@ -146,6 +146,44 @@ public static class ScGunRecordMirror {
         }
         catch (Exception e) { KnifeLog.Warning("[GUN_MIRROR] gun record restore check failed: " + e.Message); return false; }
     }
+
+    /// <summary>world-tree-gun-registry-20261107: the gun records now come from the tree's registry (ScGunTree); this
+    /// world's own copy still gives back the CS block numbers taken while CS was absent. True when the copy exists
+    /// (the world had CS before), false for a world that never saved with CS.</summary>
+    internal static bool ReassignFromCopy(XElement project, string directory) =>
+        ReassignFromFile(project, Storage.GetSystemPath(Storage.CombinePaths(directory, FileName)), StaticNumbers());
+    internal static bool ReassignFromFile(XElement project, string path, Func<int, bool> reserved) {
+        foreach (string candidate in new[] { path, path + ".bak" }) {
+            if (!System.IO.File.Exists(candidate)) continue;
+            try {
+                var copy = XElement.Load(candidate);
+                if (copy.Name != RootName || (int?)copy.Attribute("Format") != Format) continue;
+                string seed = Seed(project);
+                if (seed is null || seed != (string)copy.Attribute("Seed")) { KnifeLog.Warning("[GUN_MIRROR] " + System.IO.Path.GetFileName(candidate) + ": belongs to another world (seed); block numbers not checked"); return true; }
+                var reassignment = Reassign(project, copy, reserved);
+                if (reassignment.Moved.Count > 0) {
+                    KnifeLog.Warning($"[GUN_MIRROR] block numbers taken while CS was absent: {string.Join(", ", reassignment.Moved.Select(p => p.Key + "->" + p.Value))}; " +
+                        $"{reassignment.Restored} recorded items moved, {reassignment.Unconfirmed} no longer where they were (left unchanged)");
+                    s_notice = $"CS：未启用 CS 期间，其他模组占用了 CS 物品的方块编号；已把 {reassignment.Restored} 件 CS 物品改回，" +
+                        (reassignment.Unconfirmed > 0 ? $"{reassignment.Unconfirmed} 件在那段时间被移动过、无法确认，未改动。" : "全部找回。") + "放在地上的武器装配台和空投箱不在此列。";
+                }
+                return true;
+            }
+            catch (Exception e) { KnifeLog.Warning("[GUN_MIRROR] " + System.IO.Path.GetFileName(candidate) + ": " + e.Message); }
+        }
+        return false;
+    }
+    /// <summary>The 1.5.1 path for a world whose tree has no registry yet: the group back from this world's own copy.</summary>
+    internal static bool RestoreLost(XElement project, string directory) {
+        try {
+            if (!Lost(Group(project.Element("Subsystems"), GunGroup))) return false;
+            s_notice = null;
+            return RestoreFrom(project, Storage.GetSystemPath(Storage.CombinePaths(directory, FileName)), StaticNumbers());
+        }
+        catch (Exception e) { KnifeLog.Warning("[GUN_MIRROR] gun record restore check failed: " + e.Message); return false; }
+    }
+    /// <summary>A notice for the world being loaded (unless a more specific one is already set).</summary>
+    internal static void Notice(string text) => s_notice ??= text;
 
     /// <summary>Numbers that loaded block types claim through a public static Index field (the engine places those
     /// before any saved name): a moved CS block must not land on one.</summary>

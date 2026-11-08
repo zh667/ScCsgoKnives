@@ -42,6 +42,25 @@ public sealed class ScGunRecovery {
         KnifeLog.Information($"grant {batch.Id} for {owner}: {reason}; {batch.Steps.Count} item stack(s) pending delivery");
         return batch.Id;
     }
+    /// <summary>world-tree-gun-registry-20261107: the id the next batch gets (a merge adds batches after it).</summary>
+    internal long NextBatchId => m_next;
+    /// <summary>world-tree-gun-registry-20261107: a refund another world of the tree still owed, moved into the shared
+    /// registry by a merge (its gun values already at their tree numbers). Same durable claim, new batch id.</summary>
+    internal long Adopt(string owner, IEnumerable<ScGunUndo> steps) {
+        var batch = new Batch { Id = m_next++, Owner = owner };
+        batch.Steps.AddRange(steps.Where(s => s.Count != 0).Select(s => s.Copy()));
+        if (batch.Steps.Count == 0) return 0;
+        m_batches.Add(batch);
+        KnifeLog.Information($"gun recovery {batch.Id}: {batch.Steps.Count} pending step(s) for {owner} taken over from a merged world");
+        return batch.Id;
+    }
+    /// <summary>The batches of <paramref name="merged"/> numbered from this queue's next id on (what a merge built on
+    /// this queue added), appended here in order. Returns how many.</summary>
+    internal int AdoptFrom(ScGunRecovery merged) {
+        long from = m_next; int count = 0;
+        foreach (var batch in merged.m_batches.Where(b => b.Id >= from).OrderBy(b => b.Id).ToArray()) if (Adopt(batch.Owner, batch.Steps) > 0) count++;
+        return count;
+    }
     static int Quantity(IInventory inventory, int slot, int value) => inventory.GetSlotValue(slot) == value ? inventory.GetSlotCount(slot) : 0;
 
     static void ReturnAt(IInventory inventory, int slot, ScGunUndo step) {

@@ -135,6 +135,25 @@ public sealed class ScGunRegistry {
     public IEnumerable<int> Ids => m_records.Keys;
     /// <summary>The id the next Publish will use, or -1 when the table is full. Nothing is reserved: publish on the main thread right after.</summary>
     public int PeekNextId() => IsFull ? -1 : Next;
+    /// <summary>world-tree-gun-registry-20261107: a world joining a loaded tree may hold numbers above the shared
+    /// watermark (its integrity check staged them); they are never handed out again.</summary>
+    public void ReserveThrough(int next) { if (next > Next) Next = ScGunEncoding.NextId(Math.Min(next, GunSpec.LastId + 1)); }
+    /// <summary>world-tree-gun-registry-20261107: what a merge built on this table's own save added (a Portal space with
+    /// records of its own that appears after the tree's merge): records under numbers this table does not have, the
+    /// watermark, and the kill credits and refunds queued after this table's own. Rows both have are this table's.</summary>
+    internal (int Records, int Kills, int Refunds) Absorb(ScGunRegistry merged) {
+        int records = 0;
+        foreach (var (id, record) in merged.m_records)
+            if (!m_records.ContainsKey(id) && !m_quarantined.ContainsKey(id.ToString(Ci))) {
+                m_records[id] = record; records++;
+                if (id >= ScGunEncoding.FirstExtendedId) ExtendedEncodingEnabled = true;
+            }
+        foreach (var (key, raw) in merged.m_quarantined) if (!m_records.ContainsKey(int.TryParse(key, out int q) ? q : -1) && m_quarantined.TryAdd(key, raw)) records++;
+        ReserveThrough(merged.Next);
+        long from = Kills.NextEventId; int kills = 0;
+        foreach (var entry in merged.Kills.Pending.Where(e => e.EventId >= from).OrderBy(e => e.EventId)) if (Kills.Enqueue(entry.RecordId, entry.Variant) > 0) kills++;
+        return (records, kills, Recovery.AdoptFrom(merged.Recovery));
+    }
     internal int Publish(ScGunRecord record) {
         if (Disabled) return -1;
         if (IsFull) {

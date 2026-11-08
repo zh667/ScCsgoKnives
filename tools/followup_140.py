@@ -52,7 +52,7 @@ def member(data):
 # packages in output/; the 1.4.0 ones moved to output/history-1.4.0/ and stay the compat gate's readers). The deathmatch
 # package carries no 包 suffix (the user, 2026-10-06).
 VERSION = json.loads((ROOT / "src/ScCsgoKnives/modinfo.json").read_text("utf8"))["Version"]
-BASELINE_VERSION = "1.5.1"; BASELINE_DIR = ROOT / "output"
+BASELINE_VERSION = "1.5.2"; BASELINE_DIR = ROOT / "output"
 def name(label, version=None): return f"[API1.9]CS武器{version or VERSION}-{label}{'' if label == '死亡竞赛' else '包'}.scmod"
 def baseline(label): return BASELINE_DIR / name(label, BASELINE_VERSION)
 

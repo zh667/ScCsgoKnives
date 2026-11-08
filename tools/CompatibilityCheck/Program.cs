@@ -222,10 +222,16 @@ foreach(var mod in modules){
         // Use a valid schema6 carried gun for an actual player-only cross-world import.
         var source=new XElement(fixture);var slots=source.Descendants("Values").Single(e=>(string)e.Attribute("Name")=="Slots");
         slots.Elements().Where(e=>(string)e.Attribute("Name") is "Slot10" or "Slot11").Remove();
-        mod.Call("ScGunTravel",null,"Capture",source,"data:/Source");
-        var target=new XElement(source);target.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior").Remove();
-        mod.Call("ScGunTravel",null,"BeforeLoad",target,info);
-        Require(target.Descendants("Values").Any(e=>(string)e.Attribute("Name")=="GunRegistry"));
+        // 1.5.2: a process that owns the world keeps one gun registry per world tree and the carried-packet path is idle
+        // there; that path is still in the core, so it runs here with tree mode off (cores before 1.5.2 have no switch).
+        var treeMode=mod.FindType("ScGunTree")?.GetField("EnabledForTests",BindingFlags.NonPublic|BindingFlags.Static);
+        treeMode?.SetValue(null,false);
+        try{
+            mod.Call("ScGunTravel",null,"Capture",source,"data:/Source");
+            var target=new XElement(source);target.Element("Subsystems").Elements().Single(e=>(string)e.Attribute("Name")=="ScGunBlockBehavior").Remove();
+            mod.Call("ScGunTravel",null,"BeforeLoad",target,info);
+            Require(target.Descendants("Values").Any(e=>(string)e.Attribute("Name")=="GunRegistry"));
+        }finally{treeMode?.SetValue(null,null);}
         Require(Directory.GetFiles(dir.FullName,"*",SearchOption.AllDirectories).Length==1&&File.ReadAllText(oldPath)=="user-owned","unexpected file creation/deletion");
     });
     T(mod.Name+"/preserves-all-later-item-type-identities",()=>{
