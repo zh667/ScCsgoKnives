@@ -80,7 +80,7 @@ public static class ScGunAttributes {
         int variant = Array.IndexOf(GunSpec.All, spec);
         bool zeus = spec.RechargeSeconds > 0;
         float cone = (s.Handling?.BaseCone ?? ScGunHandling.LegacyCone(spec)) * s.AngleScale,
-              kick = (s.Handling?.KickPitch ?? spec.KickPitchDegrees) * s.AngleScale;
+              kick = (s.Handling?.KickPitch ?? spec.KickPitchDegrees) * s.KickScale;
         var rows = new List<Row>();
         string pelletDetail = spec.Pellets > 1 ? $"单次扣扳机 {spec.Pellets} 颗，每颗 {Number(s.Power / spec.Pellets, 1)}" : null;
         // This is the close-range value actually submitted to Survivalcraft's Attackment.  Calling it

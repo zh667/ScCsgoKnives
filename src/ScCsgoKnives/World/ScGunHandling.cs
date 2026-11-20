@@ -92,6 +92,10 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
     public Func<float,float> ModeFalloff { get; init; }
     /// <summary>A mode's unscoped handling of a scoped gun, blended with <see cref="Handling"/> while the scope goes up (null: the same).</summary>
     public ScGunHandling.Mode HipHandling { get; init; }
+    /// <summary>The camera recoil's scale where it differs from <see cref="AngleScale"/> (the survival "后坐与弹道" setting,
+    /// feedback-1120-160: off keeps a shotgun's pellet spread but no kick); null: the same as AngleScale.</summary>
+    public float? KickScaleOverride { get; init; }
+    public float KickScale => KickScaleOverride ?? AngleScale;
     public static EffectiveGunStats Resolve(GunSpec spec,int value,bool alternate) => ResolveLevel(spec,value,alternate,LevelOf(value));
     /// <summary>The applied level of the gun this item value points at; 0 for a fresh template or unreadable data.</summary>
     public static int LevelOf(int value) {
@@ -117,11 +121,16 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         bool known=TrySnapshotValue(value,out var s);
         int maxDurability=known && s.Level==L ? s.MaxDurability : ScGunGrowth.MaxDurability(variant,L);
         float skinMultiplier = known && s.Variant == variant ? ScGunGrowth.SkinDamageMultiplier(variant,s.SkinId) : 1f;
+        // feedback-1120-160 #3: the survival recoil setting decides how much spread and camera recoil growth leaves.
+        // Standard is ScGunGrowth.AngleScale for both, exactly as before.
+        var recoilMode=ScRecoilRules.Current;
+        float spreadScale=ScRecoilRules.SpreadScale(recoilMode,L,spec.Pellets),kickScale=ScRecoilRules.KickScale(recoilMode,L);
         return new(ScSurvivalBalance.PowerAtLevel(spec.Name,L)*skinMultiplier,
             ScGunGrowth.Range(variant,L,baseRange),
             ScGunGrowth.Capacity(variant,L),maxDurability,ScGunGrowth.ShotInterval(variant,spec.CycleSeconds,L),spec.Pellets,ScHeadshot.MultiplierFor(spec),
             ScGunplaySettings.Enabled?ScGunHandling.ForMode(spec.Name,alternate):null,
-            L,ScGunGrowth.UnlimitedRange(variant,L),ScGunGrowth.AngleScale(L),ScGunGrowth.RechargeSeconds(spec,L),variant);
+            L,ScGunGrowth.UnlimitedRange(variant,L),spreadScale,ScGunGrowth.RechargeSeconds(spec,L),variant){
+            KickScaleOverride=kickScale==spreadScale?null:kickScale };
     }
     /// <summary>Damage of one pellet at a distance: the survival close-range power, this level's multiplier and
     /// the distance curve, divided across the pellets. At Lv10 a normal bullet gun has no distance falloff left.</summary>

@@ -24,7 +24,7 @@ public sealed class SubsystemScGrenades : SubsystemBlockBehavior, IUpdateable, I
         public ScAttackFacts Facts { get; init; }
         // (The area's own rule - Friendly - already ran; a world's mode decides first, also for a thrower who has left.)
         public override bool DisableFriendlyFire() => ScModes.MayHurt(Attacker,Target,Facts?.AttackerPlayer??-1) switch { true=>false, false=>true, _=>Attacker!=Target && (ScFactions.Spares(Attacker,Target) || base.DisableFriendlyFire()) };
-        public override float CalculateInjuryAmount() => ScModes.OwnsInjuries(Target) ? AttackPower : base.CalculateInjuryAmount();
+        public override float CalculateInjuryAmount() => ScModes.OwnsInjuries(Target) ? AttackPower : ScUnbreakableArmor.Apply(this, base.CalculateInjuryAmount(), base.CalculateInjuryAmount);
     }
     sealed class Preparation {
         public ScThrowTransaction Transaction;

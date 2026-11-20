@@ -585,6 +585,60 @@ static class WeaponHelpLayoutRegression {
                 Check("supply-recipe-refusal/"+v,reason.Contains(creativeOnly?"仅创造模式":"材料不足"),reason);
                 help.Leave();help.Dispose();dialog.Dispose();
             }
+            // feedback-1120-160 #1: Neorxna's recipe cards. The provider answers every workbench supply with one card naming the
+            // item, its route and each material; nothing for usages or for an item the workbench does not make. Then the real
+            // neorxna.dll (the 1.9.3.1 Mods folder's 1.4.3): its own provider walk shows no card for a supply before the
+            // registration (the player's report) and exactly ours after it.
+            var neoType=mod.GetType("Game.ScNeorxnaRecipes");
+            if(neoType is null) Check("neorxna/present",false,"Game.ScNeorxnaRecipes absent (a core before 1.6.0)");
+            else {
+                var provide=neoType.GetMethod("Provide");
+                IEnumerable<Widget> Kids(Widget w)=>w is ContainerWidget c?c.AllChildren:[];
+                IEnumerable<Widget> Cards(int value,bool usage)=>((IEnumerable<Widget>)provide.Invoke(null,[value,usage])).ToList();
+                foreach(var supply in ((System.Collections.IEnumerable)mod.GetType("Game.ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>()) {
+                    int v=(int)supply.GetType().GetProperty("Value").GetValue(supply);
+                    int count=(int)supply.GetType().GetProperty("ResultCount").GetValue(supply);
+                    bool creativeOnly=(bool)supply.GetType().GetProperty("CreativeOnly").GetValue(supply);
+                    int materials=((System.Collections.IDictionary)supply.GetType().GetMethod("Materials").Invoke(supply,null)).Count;
+                    var cards=Cards(v,false).ToList();
+                    var labels=cards.SelectMany(c=>Kids(c).OfType<LabelWidget>()).Select(l=>l.Text).ToList();
+                    string name=BlocksManager.Blocks[Terrain.ExtractContents(v)].GetDisplayName(null,v);
+                    int icons=cards.Sum(c=>Kids(c).OfType<BlockIconWidget>().Count());
+                    Check("neorxna/card/"+v,cards.Count==1&&labels.Contains(name)&&labels.Any(t=>t.Contains(creativeOnly?"仅创造模式":$"每批产出 {count} 件"))&&icons==(creativeOnly?0:materials)&&!Cards(v,true).Any(),
+                        $"{cards.Count} card(s), {icons}/{materials} icons: "+string.Join(" | ",labels));
+                }
+                int plain=Terrain.MakeBlockValue(2);
+                Check("neorxna/no-card-for-other-items",!Cards(plain,false).Any()&&!Cards(0,false).Any(),"a vanilla block and air get nothing");
+                Assembly neo=null;try{neo=thirdPartyDlls?.Load("neorxna");}catch(Exception e){Check("neorxna/real-dll-available",false,e.GetBaseException().Message);}
+                if(neo is not null) {
+                    var neoHost=neo.GetType("Neorxna.NUI.RecipaediaRecipesNeo",true);
+                    var providers=(System.Collections.IList)neoHost.GetField("RecipeWidgetProviders").GetValue(null);
+                    // Neorxna's own walk over the list: the internal static (int,bool) -> IEnumerable<Widget> that enumerates providers.
+                    var walks=neoHost.GetMethods(BindingFlags.Static|BindingFlags.NonPublic|BindingFlags.Public).Where(m=>m.ReturnType==typeof(IEnumerable<Widget>)
+                        &&m.GetParameters().Select(x=>x.ParameterType).SequenceEqual([typeof(int),typeof(bool)])
+                        // not a provider itself (Neorxna's crafting-table provider has the same shape)
+                        &&!providers.Cast<object>().Any(p=>((Delegate)p).Method==m)).ToList();
+                    var recipesField=typeof(CraftingRecipesManager).GetField("m_recipes",BindingFlags.Static|BindingFlags.NonPublic|BindingFlags.Public);
+                    object savedRecipes=recipesField?.GetValue(null);
+                    if(recipesField is not null&&savedRecipes is null)recipesField.SetValue(null,Activator.CreateInstance(recipesField.FieldType));
+                    var removed=providers.Cast<object>().Where(p=>((Delegate)p).Method.DeclaringType?.Assembly==mod).ToList();foreach(var p in removed)providers.Remove(p);
+                    try {
+                        int ammo=(int)((System.Collections.IEnumerable)mod.GetType("Game.ScWorkbenchExtension").GetProperty("All").GetValue(null)).Cast<object>()
+                            .Select(r=>r.GetType().GetProperty("Value").GetValue(r)).First();
+                        // Each of Neorxna's walks, or why it could not run here (one of them also asks RecipaediaEX first).
+                        List<(string Name,int Count,string Error)> Shown(int value)=>walks.Select(w=>{
+                            try{return (w.Name,((IEnumerable<Widget>)w.Invoke(null,[value,false])).Count(c=>Kids(c).OfType<LabelWidget>().Any(l=>l.Text?.Contains("武器装配台")==true||l.Text?.Contains("仅创造模式")==true)),(string)null);}
+                            catch(Exception e){return (w.Name,-1,e.GetBaseException().Message);}}).ToList();
+                        var before=Shown(ammo);
+                        string status=(string)neoType.GetMethod("RegisterWith").Invoke(null,[new[]{neo}]);
+                        neoType.GetMethod("RegisterWith").Invoke(null,[new[]{neo}]);
+                        var after=Shown(ammo);int ours=providers.Cast<object>().Count(p=>((Delegate)p).Method.DeclaringType?.Assembly==mod);
+                        bool ran=after.Any(a=>a.Error is null);
+                        Check("neorxna/real-dll-shows-the-workbench-recipe",ran&&before.All(b=>b.Error is not null||b.Count==0)&&after.All(a=>a.Error is not null||a.Count==1)&&status=="registered"&&ours==1,
+                            $"{neo.GetName().Version}: before [{string.Join(", ",before.Select(b=>$"{b.Name}={b.Count}{b.Error}"))}], after [{string.Join(", ",after.Select(a=>$"{a.Name}={a.Count}{a.Error}"))}]; status {status}; our providers {ours} after two registrations");
+                    } finally { if(recipesField is not null&&savedRecipes is null)recipesField.SetValue(null,null); }
+                }
+            }
             // Execute the real screen switcher/history and vanilla catalogue Enter/Back, not only Enter([]).
             var savedRoot = ScreensManager.RootWidget; var savedCurrent = ScreensManager.CurrentScreen; var savedPrevious = ScreensManager.PreviousScreen;
             var savedHistory = ScreensManager.HistoryStack.ToArray(); var savedScreens = ScreensManager.m_screens.ToArray(); var savedAnimation = ScreensManager.m_animationData;

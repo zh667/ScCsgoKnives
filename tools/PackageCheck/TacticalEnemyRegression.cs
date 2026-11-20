@@ -47,6 +47,11 @@ static class TacticalEnemyRegression {
         public override void ApplyArmorProtection(ComponentClothing c,List<int> before,List<int> after,int sequence,Attackment a,ref float power){Cloth.Calls++;power*=.8f;}}
     sealed class Cloth:Block {public static int Calls;static ClothData data;public override ClothingData GetClothingData(int value)=>data??=new ClothData();public override bool CanWear(int value)=>true;
         public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z){}public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix m,DrawBlockEnvironmentData env){}}
+    // feedback-1120-160 #2: clothing with the engine's own absorption (no override), protection 1 like Ghoul 2.0's soul set
+    // (infinite sturdiness) and like vanilla iron (finite).
+    sealed class PlainCloth:Block {readonly ClothingData data;public PlainCloth(float sturdiness){Durability=1000;data=new ClothingData{Layer=1,DisplayName="fixture plain armour",ArmorProtection=1,Sturdiness=sturdiness,Slot=ClothingSlot.ClothingSlotsByInt.Values.First()};}
+        public override ClothingData GetClothingData(int value)=>data;public override bool CanWear(int value)=>true;
+        public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z){}public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix m,DrawBlockEnvironmentData env){}}
     sealed class NaturalWorld {public SpawnProject P;public dynamic Director;public SubsystemTime Time;public Ground Terrain;public SubsystemBodies Bodies;public SubsystemGameInfo Info;public SubsystemCreatureSpawn Spawn;public ComponentPlayer Player;public Subsystem Rules;public Func<int> Created;}
     sealed class SpawnProject:Project {
         public Func<Entity> Factory;public Action<Entity> Added,Removed;
@@ -1196,6 +1201,41 @@ static class TacticalEnemyRegression {
                 Check(Enc(store.Get("player-0"))=="1|1,150,150|1,100,100","a creative player's protection was worn");
                 parts.Add($"player with clothing: CS first (30 -> 19), clothing once (x0.8) = {pi:0.###}, committed on the applied injury; resilience factor once ({string.Join(" ",factorParts)}); creative wears nothing");
                 return string.Join("; ",parts);
+            });
+            // feedback-1120-160 #2 (player: "尸鬼的全套灵魂盔甲也免疫CS武器的伤害，站着给匪打都没事"): the engine's own clothing
+            // pass on a full set that never wears out takes every CS hit (0 before 1.6.0); now 30 % of the unclothed injury stays.
+            // Finite armour of the same protection, an unclothed player and a creature's own melee keep the engine's numbers.
+            TestD("unbreakable-clothing-keeps-30-percent-of-cs-damage-finite-armour-unchanged",()=>{
+                if(C("ScUnbreakableArmor") is null)throw new Exception("Game.ScUnbreakableArmor absent (a core before 1.6.0)");
+                var f=World();dynamic store=ArmorOf(f.P);
+                if(ClothingSlot.ClothingSlotsByInt.Count<4){ClothingSlot.ClothingSlots.Clear();ClothingSlot.ClothingSlotsByInt.Clear();foreach(var n in new[]{"Head","Torso","Legs","Feet"})ClothingSlot.AddClothingSlot(n);}
+                const int Endless=724,Iron=725;BlocksManager.Blocks[Endless]=new PlainCloth(float.PositiveInfinity){BlockIndex=Endless};BlocksManager.Blocks[Iron]=new PlainCloth(60){BlockIndex=Iron};
+                var shooter=Enemy(f.P,1,13).Creature.Entity;var bear=Enemy(f.P,3,41).Creature.Entity;
+                var body=new ComponentBody{Position=new Vector3(0,60,-5),BoxSize=new Vector3(.65f,1.8f,.65f),Mass=75};var ph=new Health{Health=1,AttackResilience=100,AttackResilienceFactor=1};
+                var pc=new ComponentCreature{ComponentBody=body,ComponentHealth=ph};ph.m_componentCreature=pc;
+                var clothing=Blank<ComponentClothing>();clothing.m_componentBody=body;clothing.m_subsystemGameInfo=f.Info;
+                var rfield=typeof(ComponentClothing).GetField("m_random");rfield.SetValue(clothing,Activator.CreateInstance(rfield.FieldType));
+                clothing.InsulationBySlots=ClothingSlot.ClothingSlotsByInt.Values.ToDictionary(slot=>slot,slot=>slot.BasicInsulation);
+                var who=Blank<ComponentPlayer>();who.PlayerData=Blank<PlayerData>();E(f.P,body,ph,pc,clothing,who);
+                store.Remove("player-0");
+                void Wear(int? index)=>clothing.m_clothes=ClothingSlot.ClothingSlotsByInt.Values.ToDictionary(slot=>slot,_=>index is int i?new List<int>{Terrain.MakeBlockValue(i)}:new List<int>());
+                Attackment Knife()=>(Attackment)Activator.CreateInstance(C("ScSurvivalBalance").GetNestedType("KnifeAttack"),[body,shooter,body.Position,-Vector3.UnitZ,10f]);
+                var results=new Dictionary<string,float>();
+                foreach(var (name,cloth) in new (string,int?)[]{("bare",null),("unbreakable",Endless),("iron",Iron)}){
+                    Wear(cloth);
+                    results[name+"/gun"]=GunShot(body,shooter,ShotOf(("Body",10))).CalculateInjuryAmount();
+                    results[name+"/knife"]=Knife().CalculateInjuryAmount();
+                    results[name+"/bear"]=new MeleeAttackment(body,bear,body.Position,-Vector3.UnitZ,10).CalculateInjuryAmount();
+                }
+                // Applied, not only computed: the engine's injury from one hostile-style shot on the full unbreakable set.
+                Wear(Endless);ph.Health=1;f.Time.m_gameTime+=1;C("ScDamageIndicator").GetMethod("AttackBody").Invoke(null,[GunShot(body,shooter,ShotOf(("Body",10)))]);float applied=1-ph.Health;
+                string all=string.Join(", ",results.Select(p=>$"{p.Key} {p.Value:0.####}"))+$", applied {applied:0.####}";
+                bool Is(string key,float expected)=>Math.Abs(results[key]-expected)<1e-4f;
+                Check(Is("bare/gun",.1f)&&Is("bare/knife",.1f)&&Is("bare/bear",.1f),"unclothed: the engine's 10/100 for every attack: "+all);
+                Check(Is("unbreakable/gun",.03f)&&Is("unbreakable/knife",.03f)&&Math.Abs(applied-.03f)<1e-4f,"unbreakable full set: CS keeps 30 %: "+all);
+                Check(Is("unbreakable/bear",0),"a creature's own melee on the unbreakable set stays absorbed: "+all);
+                Check(Is("iron/gun",0)&&Is("iron/knife",0)&&Is("iron/bear",0),"finite armour of protection 1 still absorbs the whole hit: "+all);
+                return all;
             });
             // current-direction-20260929 §3: ordinary melee and other projectiles, through the ProcessAttackment seam.
             TestD("armor-channels-melee-projectile-exact-wear-and-unknown-channels",()=>{

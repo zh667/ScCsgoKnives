@@ -54,6 +54,8 @@ OFFICIAL_RELEASES = [
     ("1.5.2", {"全量": "f5793b6c072a2055a0cd62e6297d3104d4abcb63b8df84a66086d3cf304e682d", "轻量": "faed8239911b435d5cb589e1bc202f2685d8fdaa3da78ccccb11fd2acaa238b8"}),
     # 1.5.3 (release-20261108, stage r153a, delivered 2026-11-08: the 1.9.5.1_MP adaptation)
     ("1.5.3", {"全量": "9c1724c8718e25088856541e7349e3b6fe6629c6e6295d79eaabc52a819cf990", "轻量": "43cb5637ca56ff5716cb1403550d0901426499cf4f0eec47266d83ceb7a225eb"}),
+    # 1.6.0 (release-20261120, stage r160d, delivered 2026-11-20: Neorxna recipes and loading, unbreakable clothing, recoil setting)
+    ("1.6.0", {"全量": "4b21959426a6e97de93f89c302814c4feb3e7179de6abaec7a88bbe635c82fd7", "轻量": "f3876cc06c08cc766edba5b1d3619ecd96d86baa4dbc9a7268cb8e8999f083c4"}),
 ]
 # The 1.5.0 family in output/ (release-20261021, stage r150p, main 13171aa: airdrop settings, ladders, HUD gap, cylinder
 # smoke, workbench ammunition tab, player suggestions). The 10-09 family it replaced (dm-settings: cea8f888 / 62361108 /
@@ -62,11 +64,12 @@ OFFICIAL_RELEASES = [
 # output/release-1.5.0/manifest.json. The 1.4.0 family (dmr6f) is in output/history-1.4.0/.
 # The 1.5.1 family (release-20261106, stage r151c) moved to output/history-1.5.1/<sha256>/ on 2026-11-08; now the 1.5.2
 # family (release-20261108, stage r152a), moved to output/history-1.5.2/<sha256>/ on 2026-11-08; now the 1.5.3 family
-# (release-20261108, stage r153a: the 1.9.5.1_MP adaptation; output/release-1.5.3/manifest.json).
+# (release-20261108, stage r153a: the 1.9.5.1_MP adaptation), moved to output/history-1.5.3/<sha256>/ on 2026-11-20; now
+# the 1.6.0 family (release-20261120, stage r160d: docs/tasks/feedback-1120-160.md; output/release-1.6.0/manifest.json).
 base.BASELINES = {
-    "全量": "9c1724c8718e25088856541e7349e3b6fe6629c6e6295d79eaabc52a819cf990",
-    "轻量": "43cb5637ca56ff5716cb1403550d0901426499cf4f0eec47266d83ceb7a225eb",
-    "探员": "0a7c97b7ecd767a5b8fb2828a06fb2ed0ce5ac725481377068d74a72ee738200",
+    "全量": "4b21959426a6e97de93f89c302814c4feb3e7179de6abaec7a88bbe635c82fd7",
+    "轻量": "f3876cc06c08cc766edba5b1d3619ecd96d86baa4dbc9a7268cb8e8999f083c4",
+    "探员": "3f441a04566e7d425f5b822376bbd949e4a665ede798ca0d9d3f2baed8c776fd",
 }
 # The S0 regression reads the real Slower Creature Spawns package, read-only. The user removed it from the installed
 # Mods folder; an identical copy (same SHA-256 as the one diagnosed) stays in the download folder.
@@ -179,6 +182,21 @@ def main(S):
         for c in quick:
             if c["name"].startswith("quick-throw/") and "/grenade_" not in c["name"]: print("  ", c["name"], "::", c["detail"].splitlines()[0][:260], flush=True)
         ok &= len(quick) >= 49 + 24 and all(c["ok"] for c in quick)
+    return ok
+
+def neorxna(S):
+    """feedback-1120-160 #1: the workbench recipes on Neorxna's recipe cards, against the real neorxna.dll of the 1.9.3.1 Mods
+    folder (the default suite runs without third-party DLLs, so its provider checks never reach Neorxna's own walk). Required by
+    name: the real-DLL check must run and pass, with every provider check, on both cores."""
+    pk = json.loads((S / "packages.json").read_text("utf8")); content = base.GAME / "Content.zip"; ok = True
+    sushi = sushi_arguments(); ok &= bool(sushi)
+    for key, core in [("neorxna-full", S / "candidate" / pk["全量"]["file"]), ("neorxna-lite", S / "candidate" / pk["轻量"]["file"])]:
+        base.run(S, key, ["dotnet", tool(S, "PackageCheck"), "--scmod", core, "--vanilla-content", content, *sushi, "--json", S / f"{key}.json"])
+        if not (S / f"{key}.json").exists(): ok = False; continue
+        checks = [c for c in json.loads((S / f"{key}.json").read_text("utf-8-sig"))["checks"] if c["name"].startswith("weapon-help-layout/neorxna/")]
+        real = [c for c in checks if c["name"].endswith("/real-dll-shows-the-workbench-recipe")]
+        print(key, "neorxna checks", len(checks), "failed", [c["name"] for c in checks if not c["ok"]], "| real dll:", real[0]["detail"][:500] if real else "NOT RUN", flush=True)
+        ok &= len(checks) >= 5 and all(c["ok"] for c in checks) and len(real) == 1
     return ok
 
 def tree_hash(S, *parts):
@@ -625,7 +643,7 @@ def prepare(S):
     print("embedded additions", {k: v["sha256"][:16] for k, v in added.items()}, flush=True)
 
 STEPS = dict(vf.STEPS)
-STEPS.update({"prepare": prepare, "c4": c4, "main": main, "ai": ai, "compat": compat, "ui": ui, "baseline": baseline, "gates": gates, "package": package, "clips": clips, "netloop": netloop, "appnet": appnet})
+STEPS.update({"prepare": prepare, "c4": c4, "main": main, "neorxna": neorxna, "ai": ai, "compat": compat, "ui": ui, "baseline": baseline, "gates": gates, "package": package, "clips": clips, "netloop": netloop, "appnet": appnet})
 ORDER = ["prepare", "build", "clips", "appearance", "package", "netloop", "appnet", "baseline", "gates", "motion", "throw", "hotspots", "ui"]
 PREREQUISITES = {"prepare", "build", "clips", "appearance", "package"}
 

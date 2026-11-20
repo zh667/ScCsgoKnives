@@ -40,7 +40,8 @@ public static class ScSurvivalBalance {
             float power = armor?.Plan(this, key, ScArmorChannel.Bullet, regions) ?? regions.Sum(r => r.Item2);
             float saved = AttackPower, result;
             AttackPower = power;
-            try { result = base.CalculateInjuryAmount(); } finally { AttackPower = saved; }
+            // Unbreakable clothing keeps a floor of the unclothed injury (feedback-1120-160 #2, ScUnbreakableArmor).
+            try { result = ScUnbreakableArmor.Apply(this, base.CalculateInjuryAmount(), base.CalculateInjuryAmount); } finally { AttackPower = saved; }
             m_injuryAmount = result;
             return result;
         }
@@ -67,7 +68,7 @@ public static class ScSurvivalBalance {
         : MeleeAttackment(body,owner,point,direction,power), IScAttackFacts {
         public ScAttackFacts Facts { get; init; }
         public override bool DisableFriendlyFire() => ScModes.Stops(this) ?? (ScFactions.Spares(Attacker, Target) || base.DisableFriendlyFire());
-        public override float CalculateInjuryAmount() => ScModes.OwnsInjuries(Target) ? AttackPower : base.CalculateInjuryAmount();
+        public override float CalculateInjuryAmount() => ScModes.OwnsInjuries(Target) ? AttackPower : ScUnbreakableArmor.Apply(this, base.CalculateInjuryAmount(), base.CalculateInjuryAmount);
     }
     sealed class Control { public double Next; }
     static readonly ConditionalWeakTable<ComponentBody, Control> Controls = new();
