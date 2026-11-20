@@ -158,6 +158,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     Screen m_assemblyClickScreen;
     int m_assemblyClickValue;
     public override void BeforeWidgetUpdate(Widget widget) {
+        if (!s_loadingFinished && widget is MainMenuScreen) FinishSkippedLoading();
         if (widget is CreativeInventoryPanel panel) ScCreativeCategoryOrder.Inventory(panel.m_creativeInventoryWidget);
         else if (widget is CreativeInventoryWidget inventory) ScCreativeCategoryOrder.Inventory(inventory);
         if (widget is Screen) PlaceCreativeCategoryAfterWeapons();
@@ -332,7 +333,32 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void OnProjectDisposed() { ScNetGuns.WorldClosed(); ScNetSlots.Clear(); ScNetPresentation.Clear(); ScPresentationSound.ReleaseAll("world exit"); CsmcFirstPersonRenderer.ClearScopes(); ScLinFirstPersonCompatibility.Clear(); ScElectricStun.Clear(); ScWeaponTouchPanel.DisposeAll(); KnifeAnimationController.ClearSession(); ScRigidBuffers.Clear(); ScResourceCaches.ClearAll(); ScGunVisualMaterial.Clear(); ScMemoryReport.Log("exit"); }
 
+    /// <summary>feedback-1120-160: set when the game calls this loader's OnLoadingFinished. The loading screen calls every
+    /// mod's OnLoadingFinished in one loop with no guard per mod: Neorxna 1.4.3 (built for API 1.9.4) throws there on API
+    /// 1.9.3.1 and ends the loop, so the CS family's own loading (the workbench recipes, settings, screens) never ran.</summary>
+    static bool s_loadingFinished;
+    /// <summary>At the first main-menu frame, when the game never called the CS family's OnLoadingFinished: call it on every
+    /// loader of the CS packages from this one on (the loop stopped before all of them; none after this core can have run),
+    /// then their deferred actions, each guarded, as the loading screen would have done.</summary>
+    void FinishSkippedLoading() {
+        s_loadingFinished = true;
+        var mods = ModsManager.ModList; int start = mods?.IndexOf(Entity) ?? -1;
+        if (start < 0) return;
+        var actions = new List<Action>(); var names = new List<string>();
+        foreach (var mod in mods.Skip(start).Where(m => m.modInfo?.PackageName?.StartsWith("zh667.ScCsgo", StringComparison.Ordinal) == true).ToList())
+            foreach (var loader in mod.Loader.ToList()) {
+                try { loader.OnLoadingFinished(actions); names.Add(loader.GetType().Name); }
+                catch (Exception e) { Log.Error($"[ScCsgoKnives] {loader.GetType().Name}.OnLoadingFinished at the main menu failed: {e}"); }
+            }
+        int done = 0;
+        foreach (var action in actions) {
+            try { action(); done++; }
+            catch (Exception e) { Log.Error("[ScCsgoKnives] a deferred loading action at the main menu failed: " + e); }
+        }
+        Log.Warning($"[ScCsgoKnives] the game never called the CS packages' OnLoadingFinished (an earlier mod threw there and ended the loading loop, see the error above); finished at the main menu: {string.Join(", ", names)}; deferred actions {done}/{actions.Count}");
+    }
     public override void OnLoadingFinished(List<Action> actions) {
+        s_loadingFinished = true;
         // Register all base CS supplies in the same workshop catalogue used by
         // the optional tactical extension. This is deferred until blocks have
         // their world indices, so help pages and material values are stable.
