@@ -346,7 +346,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         if (start < 0) return;
         var actions = new List<Action>(); var names = new List<string>();
         foreach (var mod in mods.Skip(start).Where(m => m.modInfo?.PackageName?.StartsWith("zh667.ScCsgo", StringComparison.Ordinal) == true).ToList())
-            foreach (var loader in mod.Loader.ToList()) {
+            // (one loader per package on 1.9.3.1; a list where an engine keeps several)
+            foreach (var loader in (object)mod.Loader is IEnumerable<ModLoader> several ? several.ToList() : (object)mod.Loader is ModLoader one ? [one] : new List<ModLoader>()) {
                 try { loader.OnLoadingFinished(actions); names.Add(loader.GetType().Name); }
                 catch (Exception e) { Log.Error($"[ScCsgoKnives] {loader.GetType().Name}.OnLoadingFinished at the main menu failed: {e}"); }
             }
