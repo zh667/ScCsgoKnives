@@ -337,6 +337,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         // the optional tactical extension. This is deferred until blocks have
         // their world indices, so help pages and material values are stable.
         actions?.Add(ScWorkbenchExtension.RegisterBaseRecipes);
+        // Neorxna's recipe cards ask a provider list, not the block (feedback-1120-160 #1); after the recipes exist.
+        actions?.Add(ScNeorxnaRecipes.Register);
         ScControllerFeedback.Initialize();
         actions?.Add(ScControllerFeedback.Initialize);
         ScEnchantmentCompatibility.Initialize();
