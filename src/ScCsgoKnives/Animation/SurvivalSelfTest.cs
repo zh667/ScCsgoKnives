@@ -28,11 +28,14 @@ public static class SurvivalSelfTest {
     public static void Run(Action<string, bool, string> check) {
         var resolver = ScComponentCrafting.ResolveOverride;
         var owner = ScWeaponCrafting.RecoveryOwnerOverride;
+        // The growth expectations below are the standard recoil setting's (feedback-1120-160): pin it, whatever this device chose.
+        var recoil = ScRecoilRules.Forced;
+        ScRecoilRules.Forced = ScRecoilMode.Standard;
         try {
             ScComponentCrafting.ResolveOverride = id => id == "diamond" ? 959 : throw new InvalidOperationException("Unexpected test ingredient: " + id);
             ScWeaponCrafting.RecoveryOwnerOverride = _ => "test/craft";
             RunCore(check);
-        } finally { ScComponentCrafting.ResolveOverride = resolver; ScWeaponCrafting.RecoveryOwnerOverride = owner; }
+        } finally { ScComponentCrafting.ResolveOverride = resolver; ScWeaponCrafting.RecoveryOwnerOverride = owner; ScRecoilRules.Forced = recoil; }
     }
     static void RunCore(Action<string, bool, string> check) {
         ScGunRegistry.Current ??= new ScGunRegistry(); // headless: the gun state table a world would own
@@ -44,6 +47,7 @@ public static class SurvivalSelfTest {
         ScGun0282MigrationSelfTest.Run(check);
         ScPolishSelfTest.Run(check);
         ScGunGrowthSelfTest.Run(check);
+        ScFeedback1120SelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
             var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(0, rounds)), 1); i.AddSlotItems(1, ammo, count); return i;
