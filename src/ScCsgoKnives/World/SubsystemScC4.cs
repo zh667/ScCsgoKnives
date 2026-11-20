@@ -20,6 +20,7 @@ public sealed class SubsystemScC4 : Subsystem, IUpdateable, IDrawable {
     sealed class BombAttack(ComponentBody body, GameEntitySystem.Entity owner, Vector3 point, Vector3 direction, float power)
         : ProjectileAttackment(body, owner, point, direction, power, null) {
         public override bool DisableFriendlyFire() => Attacker != Target && (ScFactions.Spares(Attacker, Target) || base.DisableFriendlyFire());
+        public override float CalculateInjuryAmount() => ScUnbreakableArmor.Apply(this, base.CalculateInjuryAmount(), base.CalculateInjuryAmount);
     }
     sealed class DelayedHit {
         public ComponentBody Body; public GameEntitySystem.Entity Owner;

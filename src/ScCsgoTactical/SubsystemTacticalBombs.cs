@@ -11,7 +11,10 @@ namespace Game;
 /// transient proxy with the same hold/kit/cancel rules. Each side keeps its own collection, fuse, power and radius.</summary>
 public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     public sealed class BlastAttack(ComponentBody body,Vector3 point,Vector3 direction,float damage)
-        : ProjectileAttackment(body,null,point,direction,damage,null);
+        : ProjectileAttackment(body,null,point,direction,damage,null) {
+        // Unbreakable clothing keeps a floor of the unclothed injury (feedback-1120-160 #2).
+        public override float CalculateInjuryAmount() => ScUnbreakableArmor.Apply(this, base.CalculateInjuryAmount(), base.CalculateInjuryAmount);
+    }
     public sealed class Bomb {
         public ScC4Charge Charge=new(){Fuse=40,Remaining=40,Owner=-2,Power=250,Radius=12};
         public ComponentPlayer Defuser;
