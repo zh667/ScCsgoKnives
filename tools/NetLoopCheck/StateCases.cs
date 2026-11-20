@@ -21,7 +21,7 @@ static partial class StateLoop {
             Enter(A, false);
             Test("setup", "A and B are accepted on protocol 7; the adapter offers the platform's inventory replication", ScNet.Peers.Count == 2 && Transport is IScNetInventorySync && Transport.Handshake == ScNetHandshake.Accepted,
                 $"{ScNet.Peers.Count} peers, {Transport.Handshake}, inventory sync {(Transport is IScNetInventorySync)}");
-            C01(); C02(); C03(); C04(); C05(); C06(); C07(); C08(); C09(); C10(); C11(); C14(); C15(); C16(); C17(); C12(); C13();
+            C01(); C02(); C03(); C04(); C05(); C06(); C07(); C08(); C09(); C10(); C11(); C14(); C15(); C16(); C17(); C12(); C18(); C13();
         }
 
         // ---------------------------------------------------------------- frames
@@ -530,6 +530,32 @@ static partial class StateLoop {
             Test("C12", "a refused client sends no gun input", !sent && Take().Count == 0);
             Enter(A, false); Call("SendHelloForTest", -1); ToServer(S); Deliver(Take(), A, s_sessionA);
             Test("C12", "the present protocol is accepted again", Transport.Handshake == ScNetHandshake.Accepted && ScNet.Peers.Count == 2);
+        }
+
+        // ================================================================ C18 feedback-1120-160: the host's recoil setting
+        // C12 accepted A again: A forgot what it had been told and asked (its question is still queued). One process plays
+        // every end here, so the device setting below is the host's when the server answers and A's own afterwards.
+        static void C18() {
+            var saved = ScUiSettings.GunRecoil;
+            try {
+                Enter(A, false); var forgot = ScRecoilRules.FromHost;
+                ScUiSettings.GunRecoil = ScRecoilMode.Realistic;
+                bool Rules(Packet p, ClientSession to) => IsCs(p) && Op(p) == ScRecoilRules.OpRules && For(p, to);
+                var queued = Take(); int asked = queued.Count(p => IsCs(p) && Op(p) == ScRecoilRules.OpAsk); ToServer(S, queued);
+                var reply = Take(); int answered = reply.Count(p => Rules(p, s_sessionA)); Deliver(reply, A, s_sessionA);
+                Enter(A, false); var told = ScRecoilRules.FromHost; var playing = ScRecoilRules.Current;
+                ScUiSettings.GunRecoil = ScRecoilMode.Off;
+                Enter(A, false); var stillHost = ScRecoilRules.Current;
+                Enter(S, true); var hostPlays = ScRecoilRules.Current;
+                ScRecoilRules.Announce(); var batch = Take();
+                int toA = batch.Count(p => Rules(p, s_sessionA)), toB = batch.Count(p => Rules(p, s_sessionB));
+                Deliver(batch, A, s_sessionA); Deliver(batch, B, s_sessionB);
+                Enter(A, false); var afterSave = ScRecoilRules.Current;
+                Test("C18", "an accepted client asks once and plays by the host's recoil setting, not its own; the host's saved change reaches every client",
+                    forgot is null && asked == 1 && answered == 1 && told == ScRecoilMode.Realistic && playing == ScRecoilMode.Realistic && stillHost == ScRecoilMode.Realistic
+                    && hostPlays == ScRecoilMode.Off && toA == 1 && toB == 1 && afterSave == ScRecoilMode.Off && ScNet.Dropped == 0,
+                    $"after re-acceptance {forgot?.ToString() ?? "nothing"}; asked {asked}, answered {answered}: told {told}, plays {playing}; own setting Off -> client {stillHost}, host {hostPlays}; announce to A {toA}, B {toB}: {afterSave}; queued after C12: {Shape(queued)}");
+            } finally { ScUiSettings.GunRecoil = saved; }
         }
 
         // ================================================================ C17 (U01) what a player is told on joining

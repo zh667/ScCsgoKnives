@@ -264,7 +264,9 @@ public sealed class ScGunAttributesScreen : ScWeaponHelpScreen {
             m_bars.Children.Add(pair);
         }
         m_growth.Text = ScGunAttributes.GrowthText(m_value, ScGunRegistry.Current?.GrowthMode ?? ScGunGrowthMode.Unset)
-            + (level >= ScGunGrowth.MaxLevel ? "\n" + ScGunAttributes.MaxLevelSummary : "");
+            + (level >= ScGunGrowth.MaxLevel ? "\n" + ScGunAttributes.MaxLevelSummary : "")
+            // The summary's "Lv10 起零散布、无后坐" is the standard setting's growth; say so when another setting is in force.
+            + (ScRecoilRules.Current is var recoil && recoil != ScRecoilMode.Standard ? $"\n后坐与弹道：{ScRecoilRules.Label(recoil)}。{ScRecoilRules.Explain(recoil)}" : "");
         m_description.Text = Description(spec);
     }
 

@@ -1762,7 +1762,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             kickPitch=effective.Handling.KickPitch;kickYaw=effective.Handling.KickYaw;
             state.KickRecoveryRate=effective.Handling.CameraRecoveryT90>0?MathF.Log(10)/effective.Handling.CameraRecoveryT90:12;
         }
-        kickPitch *= effective.AngleScale; kickYaw *= effective.AngleScale;
+        kickPitch *= effective.KickScale; kickYaw *= effective.KickScale;
         float pitch = MathUtils.DegToRad(kickPitch) * (gunplay ? .9f + .2f*m_random.Float(0,1) : .8f+.4f*m_random.Float(0,1));
         float yaw = MathUtils.DegToRad(kickYaw) * m_random.Float(-1f, 1f);
         if (diagnostic is not null) { diagnostic.State.KickPitchDegrees=MathUtils.RadToDeg(pitch);diagnostic.State.KickYawDegrees=MathUtils.RadToDeg(yaw); }
@@ -1771,8 +1771,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         // the shooter's aim plus the pattern's offset now, less what the look already carries of it (the view part, moved
         // into the look each frame on the device that aims; a remote client's look arrives with it). The survival kick is
         // then not applied. Both ends run the same pattern from their own shot times.
-        var recoil = ScModes.Recoil(player);
+        var recoil = RecoilFor(player);
         if (recoil is not null) {
+            if (recoil == m_spray) m_spray.Scale(player, effective.KickScale);
             var (bullet, view) = recoil.At(player, now);
             Vector2 carried = local ? state.ModeView : view;
             ray = new Ray3(ray.Position, ScGunHandling.Turned(ray.Direction, bullet.X - carried.X, bullet.Y - carried.Y));
@@ -2380,6 +2381,15 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
     // ---- recoil ------------------------------------------------------------------
 
+    /// <summary>The survival spray pattern of this world's players (the "realistic" recoil setting, feedback-1120-160 #3).</summary>
+    readonly ScSprayRecoil m_spray = new();
+    /// <summary>The pattern recoil this player's shots follow: the world mode's (deathmatch) for a player it governs, the
+    /// survival spray pattern under the realistic setting for everyone else, or none (the survival kick).</summary>
+    IScRecoil RecoilFor(ComponentPlayer player) {
+        if (ScModes.For(player) is not null) return ScModes.Recoil(player);
+        return ScRecoilRules.Current == ScRecoilMode.Realistic ? m_spray : null;
+    }
+
     void Kick(ComponentPlayer player, GunState state, float pitch, float yaw) {
         ComponentLocomotion locomotion = player.ComponentLocomotion;
         Vector2 look = locomotion.LookAngles;
@@ -2395,7 +2405,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
     /// mode no longer governs the player, what the look still carries is handed to the survival kick's recovery.</summary>
     void ModeViewKick(ComponentPlayer player, GunState state) {
         if (!ScNet.IsLocal(player)) return;
-        var recoil = ScModes.Recoil(player);
+        var recoil = RecoilFor(player);
         if (recoil is null) {
             if (state.ModeView == Vector2.Zero) return;
             state.KickPitch += MathUtils.DegToRad(state.ModeView.X); state.KickYaw -= MathUtils.DegToRad(state.ModeView.Y);

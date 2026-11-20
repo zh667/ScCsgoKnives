@@ -95,6 +95,9 @@ public static class ScUiSettings {
     public static bool KillSound = true;
     public static bool GunCrosshair = true;
     public static bool SniperHipCrosshair = true;
+    /// <summary>Survival recoil and spread (feedback-1120-160 #3); in multiplayer the host's value is the one played by
+    /// (ScRecoilRules). Stored as text under "GunRecoil": older builds ignore the key and keep it when they save.</summary>
+    public static ScRecoilMode GunRecoil = ScRecoilMode.Standard;
     public static ScStarterPlan StarterPlan = ScStarterPlan.None;
     public static string CrosshairStyle = StyleVanilla;
     public static Color CrosshairColor = Color.White;
@@ -135,6 +138,7 @@ public static class ScUiSettings {
         ResetHand(false); ResetHand(true);
         SimpleMaterials = ScResourcePolicy.Edition == "Optimized512";
         CustomButtons = true; KillFeed = true; KillSound = true; GunCrosshair = true; SniperHipCrosshair = true; DamageIndicator = true; GrenadePreview = true;
+        GunRecoil = ScRecoilMode.Standard;
         ButtonOnlyFire = false;
         C4Fuses.Clear();
         CrosshairStyle = StyleVanilla; CrosshairColor = Color.White;
@@ -172,6 +176,7 @@ public static class ScUiSettings {
         public bool KillSoundEnabled { get; set; } = true;
         public bool GunCrosshairEnabled { get; set; } = true;
         public bool SniperHipCrosshair { get; set; } = true;
+        public string GunRecoil { get; set; } = "standard";
         public ScStarterPlan StarterPlan { get; set; } = ScStarterPlan.None;
         public string GunCrosshairStyle { get; set; } = StyleVanilla;
         public string GunCrosshairColor { get; set; } = "255,255,255";
@@ -220,6 +225,7 @@ public static class ScUiSettings {
             KillSound = file.KillSoundEnabled;
             GunCrosshair = file.GunCrosshairEnabled;
             SniperHipCrosshair = file.SniperHipCrosshair;
+            GunRecoil = ScRecoilRules.Parse(file.GunRecoil);
             StarterPlan = Enum.IsDefined(file.StarterPlan)?file.StarterPlan:ScStarterPlan.None;
             CrosshairStyle = Array.IndexOf(Styles, file.GunCrosshairStyle) >= 0 ? file.GunCrosshairStyle : StyleVanilla;
             if (TryParseColor(file.GunCrosshairColor, out var parsed)) CrosshairColor = parsed;
@@ -252,6 +258,7 @@ public static class ScUiSettings {
                 CrosshairShape = CrosshairShape.Normalize(),
                 GunCrosshairEnabled = GunCrosshair, GunCrosshairStyle = CrosshairStyle, GunCrosshairColor = ColorText(CrosshairColor),
                 SniperHipCrosshair = SniperHipCrosshair,
+                GunRecoil = ScRecoilRules.Text(GunRecoil),
                 StarterPlan = StarterPlan,
             };
             foreach (string id in ScGunFunctions.All) {

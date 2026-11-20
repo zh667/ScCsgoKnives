@@ -13,7 +13,7 @@ public sealed class ScGunSettingsScreen : Screen {
 
     // Round 12 (2026-10-01 user request): the creative hit preview follows the damage-direction switch, and the armor HUD's
     // visibility moved to the layout editor (where its position already was), so neither is part of this page's copy.
-    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials, bool DamageIndicator, bool GrenadePreview, bool SniperHipCrosshair);
+    sealed record Snapshot(bool Buttons, bool KillFeed, bool KillSound, bool Crosshair, string Style, Color Color, bool ButtonOnly, ScCrosshairShape Shape, bool SimpleMaterials, bool DamageIndicator, bool GrenadePreview, bool SniperHipCrosshair, ScRecoilMode Recoil);
     Snapshot m_working;
     bool m_returningFromLayout;
     Screen m_back;
@@ -27,6 +27,9 @@ public sealed class ScGunSettingsScreen : Screen {
     SliderWidget m_width, m_length, m_gap, m_scale, m_dot;
     ButtonWidget m_edit, m_style, m_save, m_cancel, m_defaults;
     ButtonWidget m_copyGroup;
+    // Survival recoil and spread (feedback-1120-160 #3). A multiplayer client shows its host's value and has no button.
+    ButtonWidget m_recoil;
+    LabelWidget m_recoilNote;
     readonly ButtonWidget m_bindings = ScGunUi.Button("武器按键绑定", 230);
     readonly ButtonWidget m_recoverView = ScGunUi.Button("恢复正常视角", 230);
     readonly ButtonWidget m_agentVoice = ScGunUi.Button("探员语音设置",260);
@@ -55,13 +58,14 @@ public sealed class ScGunSettingsScreen : Screen {
     readonly LabelWidget m_title = new() { Text = "CS 枪械 · 模组设置", FontScale = 1.1f, TextAnchor = TextAnchor.HorizontalCenter, DropShadow = true };
     readonly StackPanelWidget m_bar = new() { Direction = LayoutDirection.Horizontal };
     static Snapshot Capture() => new Snapshot(ScUiSettings.CustomButtons, ScUiSettings.KillFeed, ScUiSettings.KillSound,
-        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials, ScUiSettings.DamageIndicator, ScUiSettings.GrenadePreview, ScUiSettings.SniperHipCrosshair);
+        ScUiSettings.GunCrosshair, ScUiSettings.CrosshairStyle, ScUiSettings.CrosshairColor, ScUiSettings.ButtonOnlyFire, ScUiSettings.CrosshairShape, ScUiSettings.SimpleMaterials, ScUiSettings.DamageIndicator, ScUiSettings.GrenadePreview, ScUiSettings.SniperHipCrosshair, ScUiSettings.GunRecoil);
     static void Apply(Snapshot s) {
         ScUiSettings.CustomButtons = s.Buttons; ScUiSettings.KillFeed = s.KillFeed; ScUiSettings.KillSound = s.KillSound;
         ScUiSettings.GunCrosshair = s.Crosshair; ScUiSettings.CrosshairStyle = s.Style; ScUiSettings.CrosshairColor = s.Color;
         ScUiSettings.SniperHipCrosshair = s.SniperHipCrosshair;
         ScUiSettings.SimpleMaterials = s.SimpleMaterials; ScUiSettings.DamageIndicator = s.DamageIndicator; ScUiSettings.GrenadePreview = s.GrenadePreview;
         ScUiSettings.ButtonOnlyFire = s.ButtonOnly; ScUiSettings.CrosshairShape = s.Shape.Normalize();
+        ScUiSettings.GunRecoil = s.Recoil;
     }
 
     public ScGunSettingsScreen() {
@@ -163,6 +167,7 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(m_damageIndicator);
         m_content.Children.Add(ScGunUi.Note("创造模式下被击中也会显示（较淡）。"));
 
+        BuildRecoil(narrow);
         m_content.Children.Add(ScGunUi.Heading("枪械准星"));
         m_crosshair = ScGunUi.Toggle("持枪时显示准星", m_working.Crosshair);
         m_content.Children.Add(m_crosshair);
@@ -200,6 +205,21 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(m_preview);
         m_content.Children.Add(ScGunUi.Note("十字参数只用于十字，圆点直径只用于圆点，原版样式只调整体大小。"));
 
+    }
+
+    void BuildRecoil(bool narrow) {
+        m_content.Children.Add(ScGunUi.Heading("后坐与弹道"));
+        if (ScNet.IsRemoteClient) {
+            m_recoil = null;
+            m_recoilNote = ScGunUi.Note($"联机时由房主决定，当前：{ScRecoilRules.Label(ScRecoilRules.Current)}。{ScRecoilRules.Explain(ScRecoilRules.Current)}");
+            m_content.Children.Add(m_recoilNote);
+            return;
+        }
+        m_recoil = ScGunUi.Button(ScRecoilRules.Label(m_working.Recoil), 170);
+        m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("档位"), m_recoil, narrow));
+        m_recoilNote = ScGunUi.Note(ScRecoilRules.Explain(m_working.Recoil));
+        m_content.Children.Add(m_recoilNote);
+        m_content.Children.Add(ScGunUi.Note("死亡竞赛按竞赛规则，不受此项影响；联机时以房主的设置为准。"));
     }
 
     void BuildEnemy(bool narrow) {
@@ -276,6 +296,10 @@ public sealed class ScGunSettingsScreen : Screen {
             KillSound = m_killSound.IsChecked, Crosshair = m_crosshair.IsChecked, SniperHipCrosshair = m_sniperHipCrosshair.IsChecked,
             SimpleMaterials = m_simpleMaterials.IsChecked, DamageIndicator = m_damageIndicator.IsChecked, GrenadePreview = m_grenadePreview.IsChecked, ButtonOnly = m_buttonOnly.IsChecked, Shape = new ScCrosshairShape(m_width.Value, m_length.Value, m_gap.Value, m_scale.Value, m_dot.Value).Normalize(),
             Color = new Color((byte)m_red.Value, (byte)m_green.Value, (byte)m_blue.Value) };
+        if (m_recoil?.IsClicked == true) {
+            m_working = m_working with { Recoil = ScRecoilRules.Next(m_working.Recoil) };
+            m_recoil.Text = ScRecoilRules.Label(m_working.Recoil); m_recoilNote.Text = ScRecoilRules.Explain(m_working.Recoil);
+        }
         if (m_style.IsClicked) {
             int index = Array.IndexOf(ScUiSettings.Styles, m_working.Style);
             m_working = m_working with { Style = ScUiSettings.Styles[(Math.Max(0, index) + 1) % ScUiSettings.Styles.Length] };
@@ -305,7 +329,7 @@ public sealed class ScGunSettingsScreen : Screen {
         }
         if (m_edit.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunLayoutScreen.ScreenName); return; }
         if (m_bindings.IsClicked) { m_returningFromLayout = true; ScreensManager.SwitchScreen(ScGunBindingsScreen.ScreenName); return; }
-        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512", true, true, true); m_enemy=ScEnemyRules.Default; if(!AirdropReadOnly)m_airdrop=ScAirdropRules.Default; m_built = false; return; }
+        if (m_defaults.IsClicked) { m_working = new(true, true, true, true, ScUiSettings.StyleVanilla, Color.White, false, new(), ScResourcePolicy.Edition == "Optimized512", true, true, true, ScRecoilMode.Standard); m_enemy=ScEnemyRules.Default; if(!AirdropReadOnly)m_airdrop=ScAirdropRules.Default; m_built = false; return; }
         if (m_cancel.IsClicked || Input.Back || Input.Cancel) { Leave(m_back); return; }
         if (m_save.IsClicked) {
             var previous = Capture();var previousEnemy=ScUiSettings.EnemyDefaults;var previousAirdrop=ScUiSettings.AirdropDefaults;
@@ -314,6 +338,8 @@ public sealed class ScGunSettingsScreen : Screen {
             if(!m_enemyWorld){ScUiSettings.NaturalEnemies=m_enemy.Natural;ScUiSettings.EnemyGraceDays=m_enemy.GraceDays;ScUiSettings.EnemyDensity=m_enemy.Density;}
             if(!m_airdropWorld){ScUiSettings.AirdropEnabled=m_airdrop.Enabled;ScUiSettings.AirdropDays=m_airdrop.Days;}
             m_status.Text = ScUiSettings.Save() ? "" : "设置未能写入，磁盘上的上一份配置保持不变。";
+            // A host's clients play by its recoil setting (ScRecoilRules); they hear the saved value now.
+            if (m_status.Text.Length == 0) ScRecoilRules.Announce();
             if (m_status.Text.Length == 0 && m_enemyWorld && !(GameManager.Project is {} project && ScEnemyRulesBridge.Write?.Invoke(project,m_enemy)==true))
                 m_status.Text = "当前世界已关闭或探员包不可用，敌对小队规则未写入；其他设置已保存。";
             if (m_status.Text.Length == 0 && m_airdropWorld && !AirdropReadOnly && !(GameManager.Project is {} airdropProject && ScAirdropRulesBridge.Write?.Invoke(airdropProject,m_airdrop)==true))

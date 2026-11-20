@@ -114,6 +114,9 @@ public static class Cs2Weapons {
         public float KickYawDegrees { get; set; }
         [JsonPropertyName("KickRecoverPerSecond")]
         public float KickRecoverPerSecond { get; set; }
+        /// <summary>The vdata fields as read (numbers, bools, primary/alternate pairs): see <see cref="Raw"/>.</summary>
+        [JsonPropertyName("Raw")]
+        public Dictionary<string, JsonElement> RawFields { get; set; }
     }
 
     sealed class WeaponsFile {
@@ -144,6 +147,23 @@ public static class Cs2Weapons {
 
     public static Gun Get(string gun) =>
         gun is not null && s_file?.Guns is not null && s_file.Guns.TryGetValue(gun, out Gun g) ? g : null;
+
+    /// <summary>A vdata field of <paramref name="gun"/> as read, whatever GunNumbers says (feedback-1120-160: the survival
+    /// "realistic" spray pattern). A pair gives its primary or alternate value; a bool is 1 or 0; anything missing or of
+    /// another shape gives <paramref name="fallback"/>.</summary>
+    public static float Raw(string gun, string field, bool alternate = false, float fallback = 0) {
+        if (Get(gun)?.RawFields is not { } raw || !raw.TryGetValue(field, out JsonElement e)) return fallback;
+        if (e.ValueKind == JsonValueKind.Array) {
+            int i = alternate && e.GetArrayLength() > 1 ? 1 : 0;
+            if (e.GetArrayLength() <= i) return fallback;
+            e = e[i];
+        }
+        return e.ValueKind switch {
+            JsonValueKind.Number => e.GetSingle(),
+            JsonValueKind.True => 1, JsonValueKind.False => 0,
+            _ => fallback
+        };
+    }
 
     /// <summary>
     /// Damage after CS's range falloff, for a shot that travelled `metres`.
