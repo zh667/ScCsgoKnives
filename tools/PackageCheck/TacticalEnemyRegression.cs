@@ -49,7 +49,7 @@ static class TacticalEnemyRegression {
         public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z){}public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix m,DrawBlockEnvironmentData env){}}
     // feedback-1120-160 #2: clothing with the engine's own absorption (no override), protection 1 like Ghoul 2.0's soul set
     // (infinite sturdiness) and like vanilla iron (finite).
-    sealed class PlainCloth:Block {readonly ClothingData data;public PlainCloth(float sturdiness){Durability=1000;data=new ClothingData{Layer=1,DisplayName="fixture plain armour",ArmorProtection=1,Sturdiness=sturdiness};}
+    sealed class PlainCloth:Block {readonly ClothingData data;public PlainCloth(float sturdiness){Durability=1000;data=new ClothingData{Layer=1,DisplayName="fixture plain armour",ArmorProtection=1,Sturdiness=sturdiness,Slot=ClothingSlot.ClothingSlotsByInt.Values.First()};}
         public override ClothingData GetClothingData(int value)=>data;public override bool CanWear(int value)=>true;
         public override void GenerateTerrainVertices(BlockGeometryGenerator g,TerrainGeometry t,int value,int x,int y,int z){}public override void DrawBlock(PrimitivesRenderer3D r,int value,Color color,float size,ref Matrix m,DrawBlockEnvironmentData env){}}
     sealed class NaturalWorld {public SpawnProject P;public dynamic Director;public SubsystemTime Time;public Ground Terrain;public SubsystemBodies Bodies;public SubsystemGameInfo Info;public SubsystemCreatureSpawn Spawn;public ComponentPlayer Player;public Subsystem Rules;public Func<int> Created;}

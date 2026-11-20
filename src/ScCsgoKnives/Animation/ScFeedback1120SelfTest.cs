@@ -42,12 +42,15 @@ public static class ScFeedback1120SelfTest {
             Test("recoil/text-roundtrip", () => Enum.GetValues<ScRecoilMode>().All(m => ScRecoilRules.Parse(ScRecoilRules.Text(m)) == m)
                 && ScRecoilRules.Parse(null) == ScRecoilMode.Standard && ScRecoilRules.Parse("sideways") == ScRecoilMode.Standard
                 && ScRecoilRules.Next(ScRecoilMode.Standard) == ScRecoilMode.Off && ScRecoilRules.Next(ScRecoilMode.Off) == ScRecoilMode.Realistic && ScRecoilRules.Next(ScRecoilMode.Realistic) == ScRecoilMode.Standard);
-            // The AK-47's vdata: seed 223, angle 0 +-70, magnitude 30 +-0, full auto: the first four shots are suppressed from 0.75.
+            // The AK-47's vdata (seed 223, angle 0 +-70, magnitude 30, full auto) against the independent Python reference of the
+            // published algorithm that the deathmatch's own check K01 uses: [(27.3303, 22.5), (-17.8304, 21.6328), (5.8008, 22.9554),
+            // (1.6354, 25.1531)] ... #63 (20.377, 30.0).
             Test("spray/ak47-table-from-the-core-vdata", () => {
                 var t = ScSprayRecoil.TableOf("ak47", false);
-                detail = t is null ? "no table" : string.Join(" ", t.Take(6).Select(x => $"{x.Angle:0.##}/{x.Magnitude:0.##}"));
-                return t is { Length: ScSprayRecoil.TableSize } && Near(t[0].Magnitude, 22.5f) && Near(t[4].Magnitude, 30) && t.All(x => MathF.Abs(x.Angle) <= 70)
-                    && t.Select(x => x.Angle).Distinct().Count() > 30 && ScSprayRecoil.TableOf("ak47", false) == t;
+                bool At(int i, float a, float m) => MathF.Abs(t[i].Angle - a) < 2e-3f && MathF.Abs(t[i].Magnitude - m) < 2e-3f;
+                detail = string.Join(" ", t.Take(4).Select(x => $"{x.Angle:0.####}/{x.Magnitude:0.####}")) + $" #63 {t[63].Angle:0.####}/{t[63].Magnitude:0.####}";
+                return t.Length == ScSprayRecoil.TableSize && At(0, 27.3303f, 22.5f) && At(1, -17.8304f, 21.6328f) && At(2, 5.8008f, 22.9554f) && At(3, 1.6354f, 25.1531f) && At(63, 20.377f, 30f)
+                    && ScSprayRecoil.TableOf("ak47", false) == t && ScSprayRecoil.TableOf("taser", false).All(x => x.Magnitude == 0);
             });
             Test("spray/rises-recovers-and-scales", () => {
                 var full = new ScSprayRecoil.State(); var half = new ScSprayRecoil.State { Scale = .5f };

@@ -536,7 +536,7 @@ static partial class StateLoop {
         // C12 accepted A again: A forgot what it had been told and asked (its question is still queued). One process plays
         // every end here, so the device setting below is the host's when the server answers and A's own afterwards.
         static void C18() {
-            var saved = ScUiSettings.GunRecoil;
+            var saved = ScUiSettings.GunRecoil; int dropped = ScNet.Dropped, unread = ScNet.Unread;
             try {
                 Enter(A, false); var forgot = ScRecoilRules.FromHost;
                 ScUiSettings.GunRecoil = ScRecoilMode.Realistic;
@@ -553,8 +553,8 @@ static partial class StateLoop {
                 Enter(A, false); var afterSave = ScRecoilRules.Current;
                 Test("C18", "an accepted client asks once and plays by the host's recoil setting, not its own; the host's saved change reaches every client",
                     forgot is null && asked == 1 && answered == 1 && told == ScRecoilMode.Realistic && playing == ScRecoilMode.Realistic && stillHost == ScRecoilMode.Realistic
-                    && hostPlays == ScRecoilMode.Off && toA == 1 && toB == 1 && afterSave == ScRecoilMode.Off && ScNet.Dropped == 0,
-                    $"after re-acceptance {forgot?.ToString() ?? "nothing"}; asked {asked}, answered {answered}: told {told}, plays {playing}; own setting Off -> client {stillHost}, host {hostPlays}; announce to A {toA}, B {toB}: {afterSave}; queued after C12: {Shape(queued)}");
+                    && hostPlays == ScRecoilMode.Off && toA == 1 && toB == 1 && afterSave == ScRecoilMode.Off && ScNet.Dropped == dropped && ScNet.Unread == unread,
+                    $"after re-acceptance {forgot?.ToString() ?? "nothing"}; asked {asked}, answered {answered}: told {told}, plays {playing}; own setting Off -> client {stillHost}, host {hostPlays}; announce to A {toA}, B {toB}: {afterSave}; queued after C12: {Shape(queued)}; dropped {ScNet.Dropped - dropped}, unread {ScNet.Unread - unread}");
             } finally { ScUiSettings.GunRecoil = saved; }
         }
 
