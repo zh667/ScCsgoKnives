@@ -66,15 +66,13 @@ public sealed class ScSprayRecoil : IScRecoil {
         return table;
     }
     static readonly Dictionary<(string, bool), (float Angle, float Magnitude)[]> s_tables = [];
-    /// <summary>The table of <paramref name="gun"/> from the core's vdata (cached); null when the gun has no recoil data.</summary>
+    /// <summary>The table of <paramref name="gun"/> from the core's vdata (cached). A field the vdata lacks reads 0, as in the
+    /// deathmatch (the Zeus has no recoil fields: a table of zero kicks).</summary>
     public static (float Angle, float Magnitude)[] TableOf(string gun, bool alternate) {
         lock (s_tables) {
             if (s_tables.TryGetValue((gun, alternate), out var table)) return table;
-            float magnitude = Cs2Weapons.Raw(gun, "m_flRecoilMagnitude", alternate, float.NaN);
-            table = float.IsFinite(magnitude)
-                ? Table((int)Cs2Weapons.Raw(gun, "m_nRecoilSeed"), Cs2Weapons.Raw(gun, "m_flRecoilAngle", alternate), Cs2Weapons.Raw(gun, "m_flRecoilAngleVariance", alternate),
-                    magnitude, Cs2Weapons.Raw(gun, "m_flRecoilMagnitudeVariance", alternate), Cs2Weapons.Raw(gun, "m_bIsFullAuto") != 0)
-                : null;
+            table = Table((int)Cs2Weapons.Raw(gun, "m_nRecoilSeed"), Cs2Weapons.Raw(gun, "m_flRecoilAngle", alternate), Cs2Weapons.Raw(gun, "m_flRecoilAngleVariance", alternate),
+                Cs2Weapons.Raw(gun, "m_flRecoilMagnitude", alternate), Cs2Weapons.Raw(gun, "m_flRecoilMagnitudeVariance", alternate), Cs2Weapons.Raw(gun, "m_bIsFullAuto") != 0);
             return s_tables[(gun, alternate)] = table;
         }
     }
@@ -108,8 +106,7 @@ public sealed class ScSprayRecoil : IScRecoil {
         public void Fire(string gun, bool alternate, double now) {
             Advance(now);
             if (Gun != gun) { Gun = gun; Index = 0; }
-            if (TableOf(gun, alternate) is not { } table) return;
-            var (angle, magnitude) = table[(int)Index % TableSize];
+            var (angle, magnitude) = TableOf(gun, alternate)[(int)Index % TableSize];
             float a = MathUtils.DegToRad(angle), kick = Gain * magnitude;
             Velocity += new Vector2(-MathF.Cos(a) * kick, -MathF.Sin(a) * kick);
             Index += 1; LastShot = now; Cycle = Math.Max(.01f, Cs2Weapons.Raw(gun, "m_flCycleTime", false, .1f));

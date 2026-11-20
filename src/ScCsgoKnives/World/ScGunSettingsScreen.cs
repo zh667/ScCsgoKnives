@@ -211,7 +211,8 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Heading("后坐与弹道"));
         if (ScNet.IsRemoteClient) {
             m_recoil = null;
-            m_recoilNote = ScGunUi.Note($"联机时由房主决定，当前：{ScRecoilRules.Label(ScRecoilRules.Current)}。{ScRecoilRules.Explain(ScRecoilRules.Current)}");
+            m_content.Children.Add(ScGunUi.Note($"联机时由房主决定，当前：{ScRecoilRules.Label(ScRecoilRules.Current)}。"));
+            m_recoilNote = ScGunUi.Note(ScRecoilRules.Explain(ScRecoilRules.Current));
             m_content.Children.Add(m_recoilNote);
             return;
         }
@@ -219,7 +220,7 @@ public sealed class ScGunSettingsScreen : Screen {
         m_content.Children.Add(ScGunUi.Row(ScGunUi.Label("档位"), m_recoil, narrow));
         m_recoilNote = ScGunUi.Note(ScRecoilRules.Explain(m_working.Recoil));
         m_content.Children.Add(m_recoilNote);
-        m_content.Children.Add(ScGunUi.Note("死亡竞赛按竞赛规则，不受此项影响；联机时以房主的设置为准。"));
+        m_content.Children.Add(ScGunUi.Note("死亡竞赛不受此项影响；联机以房主为准。"));
     }
 
     void BuildEnemy(bool narrow) {

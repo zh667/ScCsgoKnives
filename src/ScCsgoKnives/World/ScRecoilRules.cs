@@ -45,9 +45,9 @@ public static class ScRecoilRules {
 
     public static string Label(ScRecoilMode mode) => mode switch { ScRecoilMode.Off => "关闭", ScRecoilMode.Realistic => "拟真", _ => "标准" };
     public static string Explain(ScRecoilMode mode) => mode switch {
-        ScRecoilMode.Off => "开枪不上跳；子弹沿准星直线飞出（霰弹枪弹丸照常散开）。",
-        ScRecoilMode.Realistic => "CS2 的固定扫射图案：连射时弹道按固定路线上扬、左右摆，压枪可控；成长每级减 5%，Lv10 起保持一半。",
-        _ => "每发小幅上跳并很快回正，带随机散布；成长每级减 10%，Lv10 起归零（与以前相同）。"
+        ScRecoilMode.Off => "开枪不上跳，子弹直线飞出（霰弹枪弹丸照常散开）。",
+        ScRecoilMode.Realistic => "CS2 固定扫射图案，可压枪；成长减到一半为止。",
+        _ => "小幅上跳、随机散布；成长逐级减小，Lv10 起归零。"
     };
     public static ScRecoilMode Next(ScRecoilMode mode) => mode switch {
         ScRecoilMode.Standard => ScRecoilMode.Off, ScRecoilMode.Off => ScRecoilMode.Realistic, _ => ScRecoilMode.Standard
