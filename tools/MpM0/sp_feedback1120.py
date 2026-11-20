@@ -20,7 +20,7 @@ from sp_camera_fire import give, look
 from sp_gun_visuals import window_of, picture
 from sp_subworld import STATE as GUN_STATE
 from sp_deathmatch import FPP
-from sp_engine_compat import STARTER_NONE, EMPTY, SELECT0, DURABLE, CLOSE_DIALOGS, enemy
+from sp_engine_compat import STARTER_NONE, EMPTY, SELECT0, DURABLE, CLOSE_DIALOGS, enemy, creature
 
 NEO_STATUS = 'return Game.ScNeorxnaRecipes.Status;'
 # Neorxna's own walks over its provider list (internal static (int, bool) -> IEnumerable<Widget>, not a provider itself):
@@ -42,7 +42,8 @@ NEO_DIALOG = ('var t = System.AppDomain.CurrentDomain.GetAssemblies().Select(a =
 
 
 def wear(indices): return MAIN + (
-    'var c = pl.Entity.FindComponent<Game.ComponentClothing>(true); var block = Game.BlocksManager.Blocks[Game.ClothingBlock.Index]; '
+    # (level 5: the engine takes off clothing above the player's level the next frame - vanilla diamond needs 2, a new world is 1)
+    'pl.PlayerData.Level = 5f; var c = pl.Entity.FindComponent<Game.ComponentClothing>(true); var block = Game.BlocksManager.Blocks[Game.ClothingBlock.Index]; '
     'foreach (var slot in new[] { Game.ClothingSlot.Head, Game.ClothingSlot.Torso, Game.ClothingSlot.Legs, Game.ClothingSlot.Feet }) c.SetClothes(slot, new int[0]); '
     f'var parts = new System.Collections.Generic.List<string>(); foreach (int i in new int[] {{ {", ".join(str(i) for i in indices)} }}) {{ '
     'int value = Game.Terrain.MakeBlockValue(Game.ClothingBlock.Index, 0, i); var d = block.GetClothingData(value); '
@@ -56,7 +57,8 @@ def bullet(shooter): return MAIN + (
     'var p = pl.ComponentBody.Position + new Engine.Vector3(0, 1, 0); var hits = new Game.ScShotHits(); hits.Add(Game.ScHitPart.Body, 10f, p, -Engine.Vector3.UnitZ); '
     'var a = new Game.ScSurvivalBalance.BulletAttack(pl.ComponentBody, shooter, p, -Engine.Vector3.UnitZ, hits.Total) { Hits = hits }; '
     'Game.ScDamageIndicator.AttackBody(a); float taken = 1 - pl.ComponentHealth.Health; pl.ComponentHealth.Health = 1; '
-    'return taken.ToString("R", System.Globalization.CultureInfo.InvariantCulture);')
+    'var cl = pl.Entity.FindComponent<Game.ComponentClothing>(true); '
+    'return taken.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + " " + string.Join(",", new[] { Game.ClothingSlot.Head, Game.ClothingSlot.Torso, Game.ClothingSlot.Legs, Game.ClothingSlot.Feet }.Select(s => cl.GetClothes(s).Count));')
 BENCH = 'return Game.ScWorkbenchExtension.IsRecipe(Game.ScAmmoBlock.Value(0)) + " " + Game.ScWorkbenchExtension.All.Count();'
 RECOIL = lambda mode: MAIN + f'Game.ScUiSettings.GunRecoil = Game.ScRecoilMode.{mode}; return Game.ScRecoilRules.Current.ToString();'
 PITCH = MAIN + 'return pl.ComponentLocomotion.LookAngles.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture);'
@@ -120,12 +122,16 @@ def main(label, packages, neorxna, ghoul):
         section("neorxna", neorxna_recipes)
 
         def soul_armor():
-            eid = step("a T to shoot from", g.func(enemy(x + .5, y, z - 6)))
+            # The shooter is a creature that does not fire back (a squad member would wear the armour between the shots here).
+            eid = step("a shooter entity (a cow)", g.func(creature(x + .5, y, z - 6, "Cow_Brown")))
+            # Level 5 first: vanilla diamond needs level 2, and the player's resilience factor follows the level a frame later.
+            step("player level", g.func(MAIN + 'pl.PlayerData.Level = 5f; return pl.PlayerData.Level.ToString();')); time.sleep(1.5)
             results = {}
             for name, indices in [("bare", []), ("soul set", [90, 91, 92, 93]), ("diamond set", [19, 20, 21, 22])]:
                 worn = step(f"wear {name}", g.func(wear(indices)))
-                takes = [float(g.func(bullet(eid))) for _ in range(4)]
-                results[name] = {"worn": worn, "taken": takes}; step(name, takes)
+                shots = [g.func(bullet(eid)) for _ in range(4)]
+                takes = [float(v.split()[0]) for v in shots]
+                results[name] = {"worn": worn, "taken": takes, "clothesAfter": [v.split()[1] for v in shots]}; step(name, shots)
             R["armor"] = results
             soul = results["soul set"]; bare = results["bare"]["taken"]; plain = bare[0]
             check("Ghoul's soul set is protection 1 with infinite sturdiness and counts as unbreakable",
