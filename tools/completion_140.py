@@ -181,6 +181,21 @@ def main(S):
         ok &= len(quick) >= 49 + 24 and all(c["ok"] for c in quick)
     return ok
 
+def neorxna(S):
+    """feedback-1120-160 #1: the workbench recipes on Neorxna's recipe cards, against the real neorxna.dll of the 1.9.3.1 Mods
+    folder (the default suite runs without third-party DLLs, so its provider checks never reach Neorxna's own walk). Required by
+    name: the real-DLL check must run and pass, with every provider check, on both cores."""
+    pk = json.loads((S / "packages.json").read_text("utf8")); content = base.GAME / "Content.zip"; ok = True
+    sushi = sushi_arguments(); ok &= bool(sushi)
+    for key, core in [("neorxna-full", S / "candidate" / pk["全量"]["file"]), ("neorxna-lite", S / "candidate" / pk["轻量"]["file"])]:
+        base.run(S, key, ["dotnet", tool(S, "PackageCheck"), "--scmod", core, "--vanilla-content", content, *sushi, "--json", S / f"{key}.json"])
+        if not (S / f"{key}.json").exists(): ok = False; continue
+        checks = [c for c in json.loads((S / f"{key}.json").read_text("utf-8-sig"))["checks"] if c["name"].startswith("weapon-help-layout/neorxna/")]
+        real = [c for c in checks if c["name"].endswith("/real-dll-shows-the-workbench-recipe")]
+        print(key, "neorxna checks", len(checks), "failed", [c["name"] for c in checks if not c["ok"]], "| real dll:", real[0]["detail"][:500] if real else "NOT RUN", flush=True)
+        ok &= len(checks) >= 5 and all(c["ok"] for c in checks) and len(real) == 1
+    return ok
+
 def tree_hash(S, *parts):
     """Hash of every file under the stage tree paths (relative names and bytes), in a stable order."""
     h = hashlib.sha256()
@@ -625,7 +640,7 @@ def prepare(S):
     print("embedded additions", {k: v["sha256"][:16] for k, v in added.items()}, flush=True)
 
 STEPS = dict(vf.STEPS)
-STEPS.update({"prepare": prepare, "c4": c4, "main": main, "ai": ai, "compat": compat, "ui": ui, "baseline": baseline, "gates": gates, "package": package, "clips": clips, "netloop": netloop, "appnet": appnet})
+STEPS.update({"prepare": prepare, "c4": c4, "main": main, "neorxna": neorxna, "ai": ai, "compat": compat, "ui": ui, "baseline": baseline, "gates": gates, "package": package, "clips": clips, "netloop": netloop, "appnet": appnet})
 ORDER = ["prepare", "build", "clips", "appearance", "package", "netloop", "appnet", "baseline", "gates", "motion", "throw", "hotspots", "ui"]
 PREREQUISITES = {"prepare", "build", "clips", "appearance", "package"}
 

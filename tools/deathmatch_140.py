@@ -171,7 +171,7 @@ def dmabi(S):
 
 STEPS = dict(cp.STEPS)
 STEPS.update({"prepare": prepare, "dmbuild": dmbuild, "dmpackage": dmpackage, "dmcheck": dmcheck, "dmloop": dmloop, "dmload": dmload, "dmabi": dmabi})
-ORDER = ["prepare", "build", "clips", "appearance", "package", "dmbuild", "dmpackage", "dmcheck", "dmabi", "netloop", "dmloop", "dmload", "appnet", "baseline", "gates", "motion", "throw", "hotspots", "ui"]
+ORDER = ["prepare", "build", "clips", "appearance", "package", "dmbuild", "dmpackage", "dmcheck", "dmabi", "netloop", "dmloop", "dmload", "appnet", "baseline", "gates", "neorxna", "motion", "throw", "hotspots", "ui"]
 PREREQUISITES = set(cp.PREREQUISITES) | {"dmbuild", "dmpackage"}
 
 if __name__ == "__main__":
