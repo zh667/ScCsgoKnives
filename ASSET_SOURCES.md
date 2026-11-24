@@ -16,7 +16,8 @@ Merged from the unpublished standalone ScCsgoBox 0.3.5 (zh667/ScCsgoBox `6af872a
 | `Audio/ScCsgoBox/cs_finish.ogg` | `common/src/main/resources/assets/csgobox/sounds/cs_finish.ogg` |
 
 `Models/ScCsgoBox/csgo_box.obj` is the standalone project's mechanical conversion of all 44 elements and their UV coordinates
-from `common/src/main/resources/assets/csgobox/models/item/csgo_box.json`. Hashes: `docs/tasks/feedback-1124-170/case-assets.json`.
+from `common/src/main/resources/assets/csgobox/models/item/csgo_box.json`. The Lite edition carries the four textures as
+lossless WebP (`AssetsLite/Textures/ScCsgoBox/*.webp`, pixels identical to the PNGs). Hashes: `docs/tasks/feedback-1124-170/case-assets.json`.
 
 ## StatTrak addition: 0.40.1
 

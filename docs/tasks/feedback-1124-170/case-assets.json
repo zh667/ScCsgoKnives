@@ -37,7 +37,20 @@
   "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/csgo_box.png",
   "member": "Assets/Textures/ScCsgoBox/csgo_box.png",
   "sha256": "ae6542461730f86fdf2b73673c6ced4d14bf4cbd4f4a08dee7cb49d8eb802ae8",
-  "bytes": 28489
+  "bytes": 28489,
+  "edition": "full"
+ },
+ {
+  "name": "csgo_box",
+  "sources": {
+   "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/csgo_box.png": "ae6542461730f86fdf2b73673c6ced4d14bf4cbd4f4a08dee7cb49d8eb802ae8"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoBox/csgo_box.webp",
+  "member": "Assets/Textures/ScCsgoBox/csgo_box.webp",
+  "sha256": "e9f8b40069816629dd303cb1c769f7c05d55eb31c553a37c03eb73831152f8b5",
+  "bytes": 18224,
+  "edition": "lite",
+  "derivation": "Pillow WebP lossless, method 6, exact; pixels identical to the PNG"
  },
  {
   "name": "csgo_key0",
@@ -47,7 +60,20 @@
   "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/csgo_key0.png",
   "member": "Assets/Textures/ScCsgoBox/csgo_key0.png",
   "sha256": "3a0d75d32fe0660e4bef57cfa79f2ff73aa3c33de911761e3d78a0bd793ccda4",
-  "bytes": 768
+  "bytes": 768,
+  "edition": "full"
+ },
+ {
+  "name": "csgo_key0",
+  "sources": {
+   "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/csgo_key0.png": "3a0d75d32fe0660e4bef57cfa79f2ff73aa3c33de911761e3d78a0bd793ccda4"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoBox/csgo_key0.webp",
+  "member": "Assets/Textures/ScCsgoBox/csgo_key0.webp",
+  "sha256": "e67083b00c51e2ad12d5b2a57e441d151bfc9445b25365e64a23b57808d4b57a",
+  "bytes": 462,
+  "edition": "lite",
+  "derivation": "Pillow WebP lossless, method 6, exact; pixels identical to the PNG"
  },
  {
   "name": "lens_vignette",
@@ -57,7 +83,20 @@
   "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/lens_vignette.png",
   "member": "Assets/Textures/ScCsgoBox/lens_vignette.png",
   "sha256": "00dc93868c66b60058fb1a4d55979000387e34f1564ea94f1f00f952b46be3f2",
-  "bytes": 30727
+  "bytes": 30727,
+  "edition": "full"
+ },
+ {
+  "name": "lens_vignette",
+  "sources": {
+   "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/lens_vignette.png": "00dc93868c66b60058fb1a4d55979000387e34f1564ea94f1f00f952b46be3f2"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoBox/lens_vignette.webp",
+  "member": "Assets/Textures/ScCsgoBox/lens_vignette.webp",
+  "sha256": "a122be5e97a7050799fc333c57aefefe8c0ef099210c1d5d26757aa0d551b253",
+  "bytes": 13910,
+  "edition": "lite",
+  "derivation": "Pillow WebP lossless, method 6, exact; pixels identical to the PNG"
  },
  {
   "name": "spot_glow",
@@ -67,7 +106,20 @@
   "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/spot_glow.png",
   "member": "Assets/Textures/ScCsgoBox/spot_glow.png",
   "sha256": "2bbe4810275416f4797598a6073beebbad675af8645f8ae51746c64aff45eefe",
-  "bytes": 6812
+  "bytes": 6812,
+  "edition": "full"
+ },
+ {
+  "name": "spot_glow",
+  "sources": {
+   "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/spot_glow.png": "2bbe4810275416f4797598a6073beebbad675af8645f8ae51746c64aff45eefe"
+  },
+  "target": "src/ScCsgoKnives/AssetsLite/Textures/ScCsgoBox/spot_glow.webp",
+  "member": "Assets/Textures/ScCsgoBox/spot_glow.webp",
+  "sha256": "3ef6eb5af11c7f139fa14b361b669a2a5d864919b13fe3c8e069dd63c63f193e",
+  "bytes": 4042,
+  "edition": "lite",
+  "derivation": "Pillow WebP lossless, method 6, exact; pixels identical to the PNG"
  },
  {
   "name": "csgo_box",

@@ -43,8 +43,10 @@ public static class CaseRegistry {
 
         if (s_byData.Count == 0) {
             Log.Warning("[ScCsgoBox] No valid case configuration was loaded; installing built-in fallback.");
-            CaseDefinition fallback = CreateFallback();
-            ValidateAndAdd(fallback, "built-in fallback");
+            // 1.7.0: a fallback whose rewards cannot resolve either leaves no case at all, never an exception out of the
+            // creative catalogue or a block's display name.
+            try { ValidateAndAdd(CreateFallback(), "built-in fallback"); }
+            catch (Exception ex) { Log.Warning($"[ScCsgoBox] No case available: {ex.Message}"); }
         }
         int integrationRewards = LoadIntegrations(options);
         // 1.7.0: the CS weapons' own rewards (components, ammunition, throwables, painted and counter guns, guns), by tier.

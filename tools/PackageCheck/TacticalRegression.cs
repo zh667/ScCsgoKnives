@@ -402,7 +402,7 @@ static class TacticalRegression {
             Test("feedback-1124/enemy-shield-blocks-front-only",()=>{
                 var project=new Project();var bodies=new SubsystemBodies();bodies.m_project=project;project.m_subsystems.Add(bodies);
                 dynamic enemy=Activator.CreateInstance(T("ComponentTacticalEnemy"));
-                enemy.State=T("TacticalEnemyState").GetMethod("Create").Invoke(null,[Enum.ToObject(T("TacticalRole"),4),"fixture-squad",new Engine.Random(3)]);
+                T("ComponentTacticalEnemy").GetField("State").SetValue((object)enemy,T("TacticalEnemyState").GetMethod("Create").Invoke(null,[Enum.ToObject(T("TacticalRole"),4),"fixture-squad",new Engine.Random(3)]));
                 var body=new ComponentBody{Position=Vector3.Zero,BoxSize=new Vector3(.65f,1.8f,.65f)};Entity(project,body,new ComponentHealth{Health=1},(Component)enemy);bodies.AddBody(body);
                 Vector3 forward=body.Matrix.Forward;forward.Y=0;forward=Vector3.Normalize(forward);
                 Require((int)Terrain.ExtractContents((int)enemy.PresentedValue)==705&&Terrain.ExtractData((int)enemy.PresentedValue)==0,"the bomb carrier is not seen holding its shield");
