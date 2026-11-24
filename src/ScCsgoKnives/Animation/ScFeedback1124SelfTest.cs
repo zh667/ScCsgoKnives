@@ -1,4 +1,5 @@
 using Engine;
+using TemplatesDatabase;
 using GameEntitySystem;
 namespace Game;
 
@@ -146,6 +147,83 @@ public static class ScFeedback1124SelfTest {
             var t = new ScReloadTransaction(i, 0, i.GetSlotValue(0), shellItem, 1, 12);
             int done = t.InsertShells(7);
             return done == 2 && GunSpec.GetRounds(Terrain.ExtractData(i.GetSlotValue(0))) == 12 && i.Counts[1] == 8;
+        });
+        // --- D16-D18: cases ---------------------------------------------------------------------------------------
+        RewardDefinition Reward(CaseRarity rarity, string tag, int level = 0) => new() { Rarity = rarity, Block = tag, Value = tag.GetHashCode(), Count = 1, Weight = 1, MinPlayerLevel = level };
+        Test("cases/survivor-weights", () => { var w = new RarityWeights(); return w.Common == 70 && w.Uncommon == 20 && w.Rare == 7 && w.Epic == 2.5 && w.Legendary == .5; });
+        Test("cases/legend-level-filter", () => {
+            var d = new CaseDefinition { Id = "t", Rewards = [Reward(CaseRarity.Common, "coal"), Reward(CaseRarity.Epic, "glock18", 2), Reward(CaseRarity.Epic, "ak47", 14), Reward(CaseRarity.Epic, "awp", 18)] };
+            var random = new System.Random(1124); var low = new HashSet<string>(); var high = new HashSet<string>();
+            for (int i = 0; i < 1000; i++) { low.Add(CaseRoller.RollFor(d, CsCaseRewards.EligibleFor(1), random).Reward.Block); high.Add(CaseRoller.RollFor(d, CsCaseRewards.EligibleFor(18), random).Reward.Block); }
+            var reels = CaseRoller.RollFor(d, CsCaseRewards.EligibleFor(1), random).Reel.Select(r => r.Block).ToHashSet();
+            detail = $"Lv1 {string.Join(",", low)}; Lv18 {string.Join(",", high)}";
+            return low.SetEquals(new[] { "coal" }) && high.Contains("awp") && high.Contains("ak47") && !reels.Contains("awp") && !reels.Contains("glock18");
+        });
+        Test("cases/empty-tier-falls-back", () => {
+            var d = new CaseDefinition { Id = "t", Rewards = [Reward(CaseRarity.Common, "coal"), Reward(CaseRarity.Uncommon, "grip"), Reward(CaseRarity.Epic, "awp", 18), Reward(CaseRarity.Legendary, "knife")] };
+            var w = CaseRoller.EffectiveWeights(d, CsCaseRewards.EligibleFor(1));
+            detail = string.Join(", ", w.Select(p => $"{p.Key} {p.Value}"));
+            // Epic (2.5) and the empty Rare (7) fall to Uncommon; Legendary keeps its own 0.5.
+            return w.Count == 3 && w[CaseRarity.Common] == 70 && Math.Abs(w[CaseRarity.Uncommon] - 29.5) < 1e-9 && w[CaseRarity.Legendary] == .5
+                && Math.Abs(CaseRoller.EffectiveWeights(d, CsCaseRewards.EligibleFor(18)).Values.Sum() - 100) < 1e-9;
+        });
+        Test("cases/drop-rates", () => {
+            var survivor = new CaseDefinition { CreatureDropChance = .03 };
+            return CaseAcquisition.DropChance(true, survivor) == .15 && CaseAcquisition.DropChance(false, survivor) == .03 && CaseAcquisition.CasesPerLevel == 1;
+        });
+        Test("cases/level-up-one-each-no-past-levels", () => {
+            var level = new ComponentLevel();
+            return CaseAcquisition.LevelsGained(level, 7) == 0 && CaseAcquisition.LevelsGained(level, 10) == 3 && CaseAcquisition.LevelsGained(level, 10) == 0
+                && CaseAcquisition.LevelsGained(level, 9) == 0 && CaseAcquisition.LevelsGained(level, 11) == 1 && CaseAcquisition.LevelsGained(new ComponentLevel(), 30) == 0;
+        });
+
+        // --- D22-D28: first-craft reward -------------------------------------------------------------------------
+        ScWeaponCrafting.Entry Gun(string name) => ScWeaponCrafting.All.First(e => !e.Knife && e.Name == name);
+        var anyKnife = ScWeaponCrafting.All.First(e => e.Knife);
+        ValuesDictionary Round(ValuesDictionary v) { var x = new System.Xml.Linq.XElement("Values"); v.Save(x); var r = new ValuesDictionary(); r.ApplyOverrides(System.Xml.Linq.XElement.Parse(x.ToString())); return r; }
+        Test("first-craft/once-per-gun-and-player", () => {
+            var ledger = new ScFirstCraftLedger(); var granted = new List<string>();
+            bool Make(string owner, string gun) => ledger.CraftAndReward(() => true, owner, Gun(gun), false, granted.Add);
+            Make("player:1", "ak47"); Make("player:1", "ak47"); Make("player:1", "m4a4"); Make("player:2", "ak47");
+            detail = string.Join(",", granted);
+            return granted.SequenceEqual(new[] { "ak47", "m4a4", "ak47" }) && ledger.Has("player:2", "ak47") && !ledger.Has("player:2", "m4a4");
+        });
+        Test("first-craft/save-reload-no-repeat", () => {
+            var ledger = new ScFirstCraftLedger(); ledger.TryMark("player:1", "ak47"); ledger.TryMark("player:2", "awp"); ledger.TryMark("player:1", "future_gun_from_a_newer_catalogue");
+            for (int i = 0; i < 2; i++) { var v = new ValuesDictionary(); ledger.Save(v); ledger = ScFirstCraftLedger.Load(Round(v)); }
+            int grants = 0; ledger.CraftAndReward(() => true, "player:1", Gun("ak47"), false, _ => grants++);
+            return grants == 0 && ledger.Has("player:2", "awp") && ledger.Has("player:1", "future_gun_from_a_newer_catalogue") && !ledger.Has("player:2", "ak47");
+        });
+        Test("first-craft/cancel-fail-creative-knife-none", () => {
+            var ledger = new ScFirstCraftLedger(); int grants = 0;
+            ledger.CraftAndReward(() => false, "p", Gun("ak47"), false, _ => grants++);
+            bool threw = false; try { ledger.CraftAndReward(() => throw new InvalidOperationException("injected"), "p", Gun("ak47"), false, _ => grants++); } catch (InvalidOperationException) { threw = true; }
+            ledger.CraftAndReward(() => true, "p", Gun("ak47"), true, _ => grants++);
+            ledger.CraftAndReward(() => true, "p", anyKnife, false, _ => grants++);
+            ledger.CraftAndReward(() => true, null, Gun("ak47"), false, _ => grants++);
+            return threw && grants == 0 && !ledger.Has("p", "ak47") && ledger.CraftAndReward(() => true, "p", Gun("ak47"), false, _ => grants++) && grants == 1;
+        });
+        Test("first-craft/unknown-schema-kept-read-only", () => {
+            var v = new ValuesDictionary(); v.SetValue("Schema", 2); v.SetValue("Future", "x");
+            var ledger = ScFirstCraftLedger.Load(Round(v)); var back = new ValuesDictionary(); ledger.Save(back);
+            return !ledger.TryMark("p", "ak47") && back.GetValue("Schema", 0) == 2 && back.GetValue("Future", "") == "x";
+        });
+        Test("first-craft/world-copy-restores-only-a-lost-group-of-this-world", () => {
+            System.Xml.Linq.XElement Project(string seed, bool withLedger) {
+                var subs = new System.Xml.Linq.XElement("Subsystems", new System.Xml.Linq.XElement("Values", new System.Xml.Linq.XAttribute("Name", "GameInfo"),
+                    new System.Xml.Linq.XElement("Value", new System.Xml.Linq.XAttribute("Name", "WorldSeed"), new System.Xml.Linq.XAttribute("Type", "string"), new System.Xml.Linq.XAttribute("Value", seed))));
+                if (withLedger) { var v = new ValuesDictionary(); var l = new ScFirstCraftLedger(); l.TryMark("player:1", "ak47"); l.Save(v);
+                    var x = new System.Xml.Linq.XElement("Values", new System.Xml.Linq.XAttribute("Name", SubsystemScFirstCraft.GroupName)); v.Save(x); subs.Add(x); }
+                return new System.Xml.Linq.XElement("Project", subs);
+            }
+            var saved = Project("123", true); var copy = ScFirstCraftMirror.Document(saved);
+            var lost = Project("123", false); bool restored = ScFirstCraftMirror.Restore(lost, copy);
+            var group = lost.Element("Subsystems").Elements("Values").Single(e => (string)e.Attribute("Name") == SubsystemScFirstCraft.GroupName);
+            var v2 = new ValuesDictionary(); v2.ApplyOverrides(group); var back = ScFirstCraftLedger.Load(v2);
+            return copy is not null && restored && back.Has("player:1", "ak47")
+                && !ScFirstCraftMirror.Restore(Project("999", false), copy)           // another world's copy
+                && !ScFirstCraftMirror.Restore(Project("123", true), copy)            // Project.xml keeps its own group
+                && ScFirstCraftMirror.Document(Project("123", false)) is null;
         });
         Test("reload/mag7-is-not-a-tube", () => !ScReloadTransaction.IsTube("mag7") && ScReloadTransaction.IsTube("nova") && ScReloadTransaction.IsTube("xm1014") && ScReloadTransaction.IsTube("sawedoff"));
     }
