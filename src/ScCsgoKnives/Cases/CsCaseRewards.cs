@@ -5,8 +5,9 @@ namespace Game;
 /// <list type="table">
 /// <item>common / 普通: metal parts 2 or 3, mechanical parts 1, magazines 2, shells 12, one throwable</item>
 /// <item>uncommon / 稀有: grip, scope, paint supplies 1 or 2, defuse kit (with the agents package)</item>
-/// <item>rare / 史诗: a painted gun or a gun with a kill counter (catalogue templates)</item>
-/// <item>epic / 传说: a factory gun (no Zeus)</item>
+/// <item>rare / 史诗 (7 %): a factory gun (no Zeus)</item>
+/// <item>epic / 传说 (2.5 %): a painted gun or a gun with a kill counter (catalogue templates; user decision 2026-11-24: the
+/// rarer tier holds the more valuable guns)</item>
 /// <item>legendary / 金色: a knife</item>
 /// </list>
 /// Every gun reward (including the templates, which are guns) carries its crafting level: the opener only draws guns their
@@ -56,13 +57,13 @@ public static class CsCaseRewards {
 
         int painted = BlocksManager.GetBlockIndex<ScGunSkinTemplateBlock>(true), counter = BlocksManager.GetBlockIndex<ScGunCounterTemplateBlock>(true);
         int[] paintedGuns = BlocksManager.Blocks[painted].GetCreativeValues().Where(v => GunLevel(v) > 0).ToArray();
-        foreach (int v in paintedGuns) yield return R(CaseRarity.Rare, v, 1, PaintedGunsWeight / paintedGuns.Length, GunLevel(v));
+        foreach (int v in paintedGuns) yield return R(CaseRarity.Epic, v, 1, PaintedGunsWeight / paintedGuns.Length, GunLevel(v));
         int[] counterGuns = BlocksManager.Blocks[counter].GetCreativeValues().Where(v => GunLevel(v) > 0).ToArray();
-        foreach (int v in counterGuns) yield return R(CaseRarity.Rare, v, 1, CounterGunsWeight / counterGuns.Length, GunLevel(v));
+        foreach (int v in counterGuns) yield return R(CaseRarity.Epic, v, 1, CounterGunsWeight / counterGuns.Length, GunLevel(v));
 
         int gunBlock = BlocksManager.GetBlockIndex<ScGunBlock>(true);
         int[] guns = Enumerable.Range(0, GunSpec.All.Length).Where(v => GunSpec.All[v].Name != "taser").ToArray();
-        foreach (int v in guns) yield return R(CaseRarity.Epic, Terrain.MakeBlockValue(gunBlock, 0, GunSpec.WithId(v, GunSpec.FreshFull)), 1,
+        foreach (int v in guns) yield return R(CaseRarity.Rare, Terrain.MakeBlockValue(gunBlock, 0, GunSpec.WithId(v, GunSpec.FreshFull)), 1,
             GunsWeight / guns.Length, ScWeaponCrafting.RequiredPlayerLevel(GunSpec.All[v].Name));
     }
 
