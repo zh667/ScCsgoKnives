@@ -48,6 +48,7 @@ public static class SurvivalSelfTest {
         ScPolishSelfTest.Run(check);
         ScGunGrowthSelfTest.Run(check);
         ScFeedback1120SelfTest.Run(check);
+        ScFeedback1124SelfTest.Run(check);
         const int ammo = 900;
         Inventory Setup(int rounds, int count) {
             var i = new Inventory(); i.AddSlotItems(0, Terrain.MakeBlockValue(512, 0, GunSpec.MakeData(0, rounds)), 1); i.AddSlotItems(1, ammo, count); return i;
