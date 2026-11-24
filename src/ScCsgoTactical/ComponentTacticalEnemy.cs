@@ -386,7 +386,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         // Its protection ends with it; protection is never an item, so nothing more drops (current-direction-20260929).
         Project.FindSubsystem<SubsystemScArmor>(false)?.Remove(ArmorKey);
         if(random.Float(0,1)<.6f)Drop(ScAmmoBlock.Value(ScReloadTransaction.AmmoKind(spec)),random.Int(1,2));
-        if(random.Float(0,1)<.4f)Drop(ScWeaponMaterialBlock.Value(random.Float(0,1)<.7f?0:random.Int(1,3)),random.Int(1,2));
+        if(random.Float(0,1)<ScComponentCrafting.EnemyDropChance)Drop(ScWeaponMaterialBlock.Value(ScComponentCrafting.EnemyDropKind(random.Float(0,1),random.Bool())),random.Int(1,2));
         if(random.Float(0,1)<.5f)Drop(ScComponentCrafting.Resolve(random.Int(0,2) switch{0=>"ironingot",1=>"copperingot",_=>"coalchunk"}),random.Int(1,2));
         if(random.Float(0,1)<.08f)Drop(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)),1);
     }

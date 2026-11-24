@@ -122,6 +122,11 @@ static class TacticalEnemyRegression {
                     var first=((int Value,int Count)[])method.Invoke(null,[id]);var again=((int Value,int Count)[])method.Invoke(null,[id]);
                     string at=$"crate {id}: "+string.Join(",",first.Select(x=>$"{Terrain.ExtractContents(x.Value)}:{Terrain.ExtractData(x.Value)}x{x.Count}"));
                     Check(first.SequenceEqual(again),"reward rerolled for the same delivery: "+at);
+                    // 1.7.0 (feedback-1124-170 P7): a guaranteed component share follows the 1.6.0 table: metal part 2-3, mechanical parts 1.
+                    var share=first.Skip(first.Length-2).ToArray();
+                    Check(share.Length==2&&Terrain.ExtractContents(share[0].Value)==material&&Terrain.ExtractData(share[0].Value)==0&&share[0].Count is >=2 and <=3
+                        &&Terrain.ExtractContents(share[1].Value)==material&&Terrain.ExtractData(share[1].Value)==1&&share[1].Count==1,"guaranteed component share missing: "+at);
+                    first=first.Take(first.Length-2).ToArray();
                     Check(first.Length is >=9 and <=11&&first.All(x=>x.Count>=1),"crate size outside 9-11 slots: "+at);
                     int Contents(int k)=>Terrain.ExtractContents(first[k].Value);
                     Check(first[0].Count==1&&Contents(0)==gunBlock&&(bool)C("ScGunBlock").GetMethod("IsKnown").Invoke(null,[first[0].Value]),"first slot is not exactly one usable gun: "+at);

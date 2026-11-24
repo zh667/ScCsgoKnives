@@ -114,13 +114,14 @@ static class CommunityRepairRegression {
             Check("defense-interval-and-reduction",(float)scale.Invoke(null,["GiantTurtle",100f,true])==50&&(float)scale.Invoke(null,["Kraken",100f,true])==80&&(float)scale.Invoke(null,["Kraken",5f,true])==1&&(float)scale.Invoke(null,["BlueWhale",100f,false])==0);
             Check("gamepad-all-ten-actions",((string[])mod.GetType("Game.ScGamepadBindings").GetMethod("Options").Invoke(null,null)).Length==19);
             var components=(Array)mod.GetType("Game.ScComponentCrafting").GetField("All").GetValue(null);
-            var expected=new[]{new[]{("ironingot",8),("coalchunk",3)},new[]{("sccsgomaterial:0",1),("copperingot",6),("germaniumchunk",2)},
+            // 1.7.0 (feedback-1124-170 D11/D12): metal part 4 iron + 2 coal; mechanical parts no longer consume a metal part.
+            var expected=new[]{new[]{("ironingot",4),("coalchunk",2)},new[]{("ironingot",2),("copperingot",4),("germaniumchunk",2)},
                 new[]{("leather",4),("planks",2),("copperingot",1)},new[]{("glass",4),("copperingot",2),("germaniumchunk",2)},new[]{("pigment:0",4),("canvas",2),("copperingot",2)}};
             for(int i=0;i<5;i++) {var entry=components.GetValue(i);Check("component-recipe/"+i,((ValueTuple<string,int>[])entry.GetType().GetProperty("Ingredients").GetValue(entry)).SequenceEqual(expected[i]));}
             var recipes=((Array)mod.GetType("Game.ScWeaponCrafting").GetField("All").GetValue(null)).Cast<object>().ToArray();
             var ak=recipes.Single(e=>(string)e.GetType().GetProperty("Name").GetValue(e)=="ak47");
             int Part(string name)=>(int)ak.GetType().GetProperty(name).GetValue(ak);
-            Check("ak-exact-raw-economy",Part("B")==6&&Part("M")==5&&Part("H")==2&&(Part("B")+Part("M"))*8==88&&Part("M")*6+Part("H")==32);
+            Check("ak-exact-raw-economy",Part("B")==6&&Part("M")==5&&Part("H")==2&&Part("B")*4+Part("M")*2==34&&Part("M")*4+Part("H")==22);
         }catch(Exception e){Check("exception",false,e.ToString());}
         finally{current.SetValue(null,saved);locator.SetValue(null,oldLocator);}
         return results;
