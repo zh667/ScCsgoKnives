@@ -68,7 +68,17 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
     public bool Crouching=>plant>0||plantedAt>=0;
     public float CrouchFactor{get;private set;}
     /// <summary>The item the enemy is seen holding: the grenade or bomb of a running action, otherwise its gun.</summary>
-    public int PresentedValue=>State is null?0:throwing is {} t?ScGrenadeBlock.Value(t.Kind):plantedAt>=0||plant>0?ScC4Block.Value:State.DisplayValue;
+    public int PresentedValue=>State is null?0:throwing is {} t?ScGrenadeBlock.Value(t.Kind):plantedAt>=0||plant>0?ScC4Block.Value
+        :State.ShieldUp?Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScTacticalShieldBlock>(true),0,State.ShieldWear):State.DisplayValue;
+    /// <summary>A hit caught by this T's shield (ScShieldProtection): the server wears it by ScTacticalShieldBlock.WearFor;
+    /// a multiplayer client only blocks and shows. When it breaks the pistol is drawn.</summary>
+    public bool SpendShield(float damage){
+        if(State is not {ShieldUp:true}||!float.IsFinite(damage)||damage<=0)return false;
+        if(!ScNet.IsAuthority)return true;
+        State.ShieldWear=Math.Min(ScTacticalShieldBlock.Life,State.ShieldWear+ScTacticalShieldBlock.WearFor(damage));
+        if(!State.ShieldUp&&time is not null)Redraw();
+        return true;
+    }
     /// <summary>After an action the gun comes back with its draw; it cannot fire before that ends.</summary>
     void Redraw(){if(State is null)return;actions.Start(GunSpec.All[State.Variant].Name,ScWeaponActionKind.Draw,"deploy",time.GameTime,RedrawSeconds);State.ShotLeft=Math.Max(State.ShotLeft,RedrawSeconds);}
     /// <summary>Ends a throw that has not released: nothing is thrown and no grenade is spent.</summary>
@@ -292,6 +302,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         }
         if(plant>0)AbandonPlant();
         if(!clear||State.Warmup>0)return;
+        // Behind its shield the bomb carrier neither shoots nor throws; it keeps advancing and plants (feedback-1124-170 D7).
+        if(State.ShieldUp)return;
         TryGrenade(distance);if(throwing is not null)return;
         if(State.Rounds==0){if(State.Reserve>0){State.ReloadLeft=State.Role==TacticalRole.Machine?4:2.8f;Play("reload");}return;}
         if(State.ShotLeft>0||burstPause>0||aim<(State.Role==TacticalRole.Sniper?1.4f:.55f))return;

@@ -27,6 +27,13 @@ public sealed class TacticalEnemyState {
     public bool Rewardable {get;set;}
     /// <summary>"natural" or "manual", recorded at creation. Null in older saves: counted as natural (conservative).</summary>
     public string Source {get;set;}
+    /// <summary>1.7.0 (feedback-1124-170 D7): wear of the demolition T's shield, 0..ScTacticalShieldBlock.Life. Older saves
+    /// have none (0): a bomb carrier loaded from one advances behind a fresh shield. An older reader drops the field, so a
+    /// switch back and forth only loses the wear (R2).</summary>
+    public int ShieldWear {get;set;}
+    /// <summary>The shield is up while the demolition T still carries its bomb and the shield holds (Q1: it puts the shield
+    /// away after planting or when the shield breaks, and fights with its pistol).</summary>
+    [JsonIgnore] public bool ShieldUp=>Role==TacticalRole.Demolition&&Bomb&&ShieldWear<ScTacticalShieldBlock.Life;
     public static readonly string[][] Pools=[
         ["awp","ssg08","scar20","g3sg1"],
         ["ak47","m4a1s","m4a4","famas","galilar","aug","sg556"],
@@ -50,7 +57,7 @@ public sealed class TacticalEnemyState {
             ||!Pools[(int)s.Role].Contains(GunSpec.All[s.Variant].Name)||s.Rounds<0||s.Rounds>GunSpec.All[s.Variant].Magazine||s.Reserve<0||s.Reserve>1000
             ||s.Grenade<0||s.Grenade>4||s.Grenades<0||s.Grenades>2||!float.IsFinite(s.Health+s.ReloadLeft+s.ShotLeft+s.GrenadeLeft)
             ||s.Source is not (null or "natural" or "manual")||!float.IsFinite(s.Warmup)||s.Warmup<0||s.Warmup>10||s.Health<0||s.Health>1||s.ReloadLeft<0||s.ReloadLeft>10||s.ShotLeft<0||s.ShotLeft>10||s.GrenadeLeft<0||s.GrenadeLeft>60
-            ||s.Bomb&&s.Role!=TacticalRole.Demolition)throw new InvalidOperationException("敌方装备存档版本或数值不受支持，拒绝重置。");
+            ||s.Bomb&&s.Role!=TacticalRole.Demolition||s.ShieldWear<0||s.ShieldWear>ScTacticalShieldBlock.Life||s.ShieldWear>0&&s.Role!=TacticalRole.Demolition)throw new InvalidOperationException("敌方装备存档版本或数值不受支持，拒绝重置。");
         return s;
     }
     [JsonIgnore] public int DisplayValue=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true),0,GunSpec.MakeData(Variant,0,false));

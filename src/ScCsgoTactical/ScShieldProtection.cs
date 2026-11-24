@@ -6,6 +6,10 @@ namespace Game;
 public static class ScShieldProtection {
     sealed class HitClock { public double Next; }
     static readonly System.Runtime.CompilerServices.ConditionalWeakTable<IInventory,HitClock> Hits=new();
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComponentTacticalEnemy,HitClock> EnemyHits=new();
+    /// <summary>A living enemy T carrying its shield up (feedback-1124-170 D7: the bomb carrier advances behind it).</summary>
+    public static ComponentTacticalEnemy EnemyHolding(ComponentBody body)=>body?.Entity?.FindComponent<ComponentTacticalEnemy>() is {State:{ShieldUp:true}} e
+        &&body.Entity.FindComponent<ComponentHealth>() is {Health:>0}?e:null;
     public static IInventory Inventory(ComponentBody body)=>body?.Entity?.FindComponent<ComponentMiner>()?.Inventory
         ??body?.Entity?.Components.OfType<IInventory>().FirstOrDefault(i=>i.ActiveSlotIndex>=0);
     public static bool Holding(ComponentBody body,out IInventory inv){inv=Inventory(body);return body?.Entity?.FindComponent<ComponentHealth>() is {Health:>0}&&inv is not null&&inv.ActiveSlotIndex>=0&&inv.GetSlotCount(inv.ActiveSlotIndex)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(inv.ActiveSlotIndex))&&ScTacticalShieldBlock.Wear(inv.GetSlotValue(inv.ActiveSlotIndex))<ScTacticalShieldBlock.Life;}
@@ -26,7 +30,7 @@ public static class ScShieldProtection {
         if(inv is null||!float.IsFinite(damage)||damage<=0)return false;
         int slot=inv.ActiveSlotIndex,value=inv.GetSlotValue(slot);if(!ScTacticalShieldBlock.IsShield(value)||ScTacticalShieldBlock.Wear(value)>=ScTacticalShieldBlock.Life)return false;
         if(inv is ComponentCreativeInventory)return true;
-        int replacement=Terrain.ReplaceData(value,Math.Min(ScTacticalShieldBlock.Life,ScTacticalShieldBlock.Wear(value)+(int)Math.Clamp(MathF.Ceiling(damage),1,ScTacticalShieldBlock.Life)));
+        int replacement=Terrain.ReplaceData(value,Math.Min(ScTacticalShieldBlock.Life,ScTacticalShieldBlock.Wear(value)+ScTacticalShieldBlock.WearFor(damage)));
         if(inv is ComponentInventoryBase native){var s=native.m_slots[slot];if(s.Count!=1)return false;s.Value=replacement;ScNetSlots.Touched(inv);ScInventoryTransaction.Changed(inv);return true;} // a direct slot write: the engine does not announce it (ScNetSlots)
         return false; // Unknown holder stores require an explicit mutation adapter; never grant free protection.
     }
@@ -41,13 +45,17 @@ public static class ScShieldProtection {
         // Follow the reported final trajectory, not the attacker's current facing/height.
         if(directional)start=end-direction*Math.Max(1,Vector3.Distance(start,end));
         var bodies=new DynamicArray<ComponentBody>();project.FindSubsystem<SubsystemBodies>(true).FindBodiesInArea(new Vector2(Math.Min(start.X,end.X)-1,Math.Min(start.Z,end.Z)-1),new Vector2(Math.Max(start.X,end.X)+1,Math.Max(start.Z,end.Z)+1),bodies);
-        IInventory nearest=null;float best=2;
-        foreach(var body in bodies)if(body.Entity!=attack.Attacker&&Holding(body,out var inventory)&&Intersect(start,end,Pose(body),out float t)&&t<best){best=t;nearest=inventory;}
-        if(nearest is null||!Spend(nearest,attack.AttackPower))return;
+        IInventory nearest=null;ComponentTacticalEnemy enemy=null;float best=2;
+        foreach(var body in bodies){
+            if(body.Entity==attack.Attacker||!Intersect(start,end,Pose(body),out float t)||t>=best)continue;
+            if(Holding(body,out var inventory)){best=t;nearest=inventory;enemy=null;}
+            else if(EnemyHolding(body) is {} bearer){best=t;nearest=null;enemy=bearer;}
+        }
+        if(enemy is not null?!enemy.SpendShield(attack.AttackPower):nearest is null||!Spend(nearest,attack.AttackPower))return;
         attack.DictionaryForOtherMods.SetValue("ScTacticalShield",true);
         attack.AttackPower=0;attack.m_injuryAmount=null;
         attack.ImpulseFactor=0;attack.StunTimeSet=0;attack.StunTimeAdd=0;attack.AllowImpulseAndStunWhenDamageIsZero=false;
-        double now=project.FindSubsystem<SubsystemTime>(false)?.GameTime??0;var sound=Hits.GetOrCreateValue(nearest);
+        double now=project.FindSubsystem<SubsystemTime>(false)?.GameTime??0;var sound=nearest is not null?Hits.GetOrCreateValue(nearest):EnemyHits.GetOrCreateValue(enemy);
         if(now>=sound.Next){sound.Next=now+.08;project.FindSubsystem<SubsystemAudio>(false)?.PlayRandomSound("Audio/ScCsgoTactical/ShieldHit",.45f,0,start+(end-start)*best,6,true);}
     }
 }
