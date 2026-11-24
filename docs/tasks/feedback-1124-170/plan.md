@@ -14,9 +14,10 @@
 
 ## 第 0 步：兼容性摸底（先做，结果决定 Q7）
 
+（独立 ScCsgoBox 未公开发布，不测共存，见 D20。）
+
 1. 用真实发布包（1.4.0、1.5.x、1.6.0 的 Full/Lite，在 `output/history-*` 和发布记录里核对哈希）各做一次：1.7.0 候选存一个有箱子/钥匙（背包、箱子、掉落物）、有首次做枪记录、有举盾 C4 匪的世界 → 用旧版打开、存档 → 再用 1.7.0 打开。记录：箱子钥匙是否还在、方块编号是否被占、首次记录是否还在。
-2. 同时测“独立 ScCsgoBox 0.3.5 + 1.7.0 主包”一起启用时引擎的表现（R6）：能否启动、哪个 `Game.ScCaseBlock` 生效、日志报什么。
-3. 把结果写进任务文档 R6/Q7 下面；如果旧版会丢箱子，**停下来问用户**（Q7），其余不依赖这一点的步骤继续。
+2. 把结果写进任务文档 Q7 下面；如果旧版会丢箱子，**停下来问用户**（Q7），其余不依赖这一点的步骤继续。
 
 ## 第 1 步：配件改名（D10）——`l10n`
 
@@ -101,23 +102,22 @@
 3. **方块与模板**：`ScCsgoBoxBlocksData.csv` 两行追加到 `ScCsgoKnivesBlocksData.csv`，`DefaultCategory` 改 `ScCsgoWeapons`，`CraftingId` 保持 `sccase`/`sccasekey`；`ScCsgoBoxDatabase.xdb` 的 `MemberSubsystemTemplate Name="ScCaseBlockBehavior" Guid="35da8f9b-99d6-48a9-91fe-29c37a6ed1f5"` 原样并入主包 xdb；`ScCompatibility.RegisterOwned("Subsystem","ScCaseBlockBehavior")`。
 4. **配方**（D15/Q4 默认）：钥匙 `3 铜锭 → 1 钥匙`（九宫格，形状照独立版去掉铁）；箱子保留 `4 木板 + 4 铜锭 + 1 木箱`。写进主包的 `.cr`（或 `GetProceduralCraftingRecipes`，看主包现在用哪种）。
 5. **ModLoader 合并**（R5）：把独立版 `OnCreatureDied/OnLevelUpdate/OnMinerDig/OnBlockDug/OnLoadingFinished` 的逻辑搬到 `ScCsgoKnivesModLoader`，业务放 `Cases/CaseAcquisition.cs`，加载器只转调。注意 1.6.0 修过的“其他模组打断 OnLoadingFinished 循环”（主菜单第一帧补做），箱子注册也走同一个补做入口。
-6. **独立版共存**（D20/R6）：按第 0 步实测结果：`ModsManager` 里有 `zh667.ScCsgoBox` 时，主包不注册箱子子系统钩子、开箱返回提示“请移除旧的 ScCsgoBox 开箱模组，开箱已并入 CS 武器”（主菜单弹一次 + 日志）。如果实测两个同名类型无法共存启动，改成在主菜单弹窗说明并记录，具体方案回到 Q7 问用户。
-7. **奖池**（D17）：`survivor` 箱（data 0）保留；品质映射：common=普通、uncommon=稀有、rare=史诗、epic=传说、legendary=金色，权重 70/20/7/2.5/0.5 不变。新增代码提供的奖励源 `Cases/CsCaseRewards.cs`，在 `CaseRegistry.Reload` 后追加：
+6. **奖池**（D17）：`survivor` 箱（data 0）保留；品质映射：common=普通、uncommon=稀有、rare=史诗、epic=传说、legendary=金色，权重 70/20/7/2.5/0.5 不变。新增代码提供的奖励源 `Cases/CsCaseRewards.cs`，在 `CaseRegistry.Reload` 后追加：
    - 普通：金属件 2~3、机械零件 1、通用弹匣 ×2、霰弹 ×12、随机手雷 1；
    - 稀有：握把 1、瞄准镜 1、涂装材料 1~2、拆弹钳（仅探员包可用时）；
    - 史诗：随机枪械涂装模板（`ScGunSkinTemplateBlock.GetCreativeValues()`，在开箱时取，Lite/Full 都只取 `ScGunSkinCatalog.Available`）、击杀计数器模板；
    - 传说：枪，开箱那一刻按玩家等级过滤 `ScWeaponCrafting.RequiredPlayerLevel(name) <= (int)player.PlayerData.Level`，值用 `GunSpec.WithId(variant, GunSpec.FreshFull)`（同空投，首次使用时分配记录）；电击枪不进奖池；
    - 金色：刀（`ScMinimalEdition.KnifeAvailable` 过滤，原厂外观）。
    - 原版奖励按原 tier 并在对应档里。等级过滤后某档为空时，该档按权重并入下一个较低档，抽奖结果不能为空。
-8. **获取**（D18）：`CaseAcquisition`：
+7. **获取**（D18）：`CaseAcquisition`：
    - `OnCreatureDied`：只算 `injury.AttackerPlayer` 非空、非创造；目标是敌方 T（通过探员包注册的判定 `ScCaseHooks.IsHostileAgent`，探员包没装时为假）→ 15%，其他非玩家生物 → 3%（原 6% 改为 3%）；
    - 空投：`SubsystemScAirdrops.RewardsFor` 固定加 1 个箱子（探员包里引用主包的 `ScCaseBlock` 值，Lite/Full 都有）；
    - 拆弹：`SubsystemTacticalBombs.DefuseReward` 加 `(箱子,1)`，走现有 `Recovery.Grant`（与现在的拆弹奖励一起，存档原子性不变）；
    - 升级：每级 1 个（原 5），读档不补发（沿用独立版内存记录，R7）；
    - 坟墓/石堆：照搬。
-9. **联机**（Q5 默认）：`ScNet.IsMultiplayer` 时开箱提示“联机暂不支持开箱”，不消耗；掉落、拾取、存放照常。
-10. **许可**（D21）：`LICENSES/Reclizer-CsgoBox.txt`（从独立仓库拷），`THIRD_PARTY_NOTICES.md` 增加一节；独立版 `ASSET_SOURCES.md` 里的模型来源并入主包对应记录。
-11. **Full/Lite 归属**：代码在核心程序集，两版都有；检查 `SC_SPLIT` 条件编译与 `ScMinimalEdition` 不把箱子带进 Mini；打包脚本（`tools/followup_140.py` 等）把新资源成员加入两版的成员清单。
+8. **联机**（Q5 默认）：`ScNet.IsMultiplayer` 时开箱提示“联机暂不支持开箱”，不消耗；掉落、拾取、存放照常。
+9. **许可**（D21）：`LICENSES/Reclizer-CsgoBox.txt`（从独立仓库拷），`THIRD_PARTY_NOTICES.md` 增加一节；独立版 `ASSET_SOURCES.md` 里的模型来源并入主包对应记录。
+10. **Full/Lite 归属**：代码在核心程序集，两版都有；检查 `SC_SPLIT` 条件编译与 `ScMinimalEdition` 不把箱子带进 Mini；打包脚本（`tools/followup_140.py` 等）把新资源成员加入两版的成员清单。
 - 验收自检：`cases/registered-names-match-standalone`、`cases/survivor-weights`、`cases/legend-level-filter`（1 级玩家 1000 次抽传说档不出 AWP；18 级可以出）、`cases/empty-tier-falls-back`、`cases/no-taser`、`cases/drop-rates`（注入随机源：匪 15%、狼 3%、创造 0、非玩家击杀 0）、`cases/airdrop-has-case`、`cases/defuse-grants-case`、`cases/level-up-one-each`（升 3 级给 3 个；读档后第一次更新不发）、`cases/key-copper-only`、`cases/stash-integration-still-loads`、`cases/multiplayer-refuses-open-without-consuming`、`cases/standalone-present-disables`。
 - 需要进游戏看：开箱滚动界面在 1.9.3.1 电脑端和手机竖屏是否正常（从独立版移植后 UI 父容器可能不同）。
 
