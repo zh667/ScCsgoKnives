@@ -1,10 +1,10 @@
 using Engine;
 namespace Game;
 
-/// <summary>1.7.0 survival shotgun rules (feedback-1124-170 D1–D4, P2/P3). The player's four shotguns reach 1.5 times as
+/// <summary>1.6.0 survival shotgun rules (feedback-1124-170 D1–D4, P2/P3). The player's four shotguns reach 1.5 times as
 /// far (the whole distance curve stretches: maximum range, full-damage distance and middle node), keep at least 30 % of
 /// their damage at the end of that range, and push creatures back at close range. Total damage per trigger pull and the
-/// pellet count are unchanged. Enemy T keep the 1.6.0 numbers (Q2): they read <see cref="ScGunHandling.For"/> and
+/// pellet count are unchanged. Enemy T keep the earlier numbers (Q2): they read <see cref="ScGunHandling.For"/> and
 /// <see cref="ScSurvivalBalance.FalloffBase"/> through <see cref="EffectiveGunStats.NpcFalloff"/>. The deathmatch builds
 /// its own numbers and is not affected.</summary>
 public static class ScShotgunTuning {

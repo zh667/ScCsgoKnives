@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 
 // Merged from the unpublished standalone ScCsgoBox 0.3.5 (zh667/ScCsgoBox 6af872a, MIT, based on Reclizer's CsgoBox) in
-// 1.7.0 (feedback-1124-170 D16-D21): class names, block names, the subsystem template and the Assets/ScCsgoBox layout are kept.
+// 1.6.0 (feedback-1124-170 D16-D21): class names, block names, the subsystem template and the Assets/ScCsgoBox layout are kept.
 
 namespace Game;
 
@@ -43,7 +43,7 @@ public sealed class RewardDefinition {
     [JsonIgnore]
     public int Value { get; set; }
 
-    /// <summary>1.7.0 (feedback-1124-170 D17): a CS gun (also a painted or counter template) is only drawn for a player
+    /// <summary>1.6.0 (feedback-1124-170 D17): a CS gun (also a painted or counter template) is only drawn for a player
     /// whose level could craft it. 0: anyone.</summary>
     [JsonIgnore]
     public int MinPlayerLevel { get; set; }

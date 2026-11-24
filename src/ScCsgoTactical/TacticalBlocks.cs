@@ -19,7 +19,7 @@ public abstract class ScOptionalTacticalBlock : Block {
 public sealed class ScTacticalShieldBlock : ScOptionalTacticalBlock {
     public override RecipaediaRecipesScreen GetBlockRecipeScreen(int value) => new ScAssemblyRecipesScreen();
     public const int Life=2000;
-    /// <summary>1.7.0 (feedback-1124-170 D6): a blocked hit wears the shield twice its damage. Life stays 2000, so a shield
+    /// <summary>1.6.0 (feedback-1124-170 D6): a blocked hit wears the shield twice its damage. Life stays 2000, so a shield
     /// already worn in an older save keeps exactly the share it had and lasts half as long from now on.</summary>
     public const int DamageScale=2;
     public static int WearFor(float damage)=>(int)Math.Clamp(MathF.Ceiling(damage*DamageScale),1,Life);

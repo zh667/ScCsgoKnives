@@ -5,7 +5,7 @@ namespace Game;
 public sealed class ScWeaponMaterialBlock : ScSupplyBlock {
     /// <summary>Kinds are the block's data value and are stored in worlds; append only.</summary>
     public const int Blank = 0, Mechanism = 1, Grip = 2, Optics = 3, Paint = 4;
-    /// <summary>Built-in names when the language files lack an entry (1.7.0 renames: display only, kinds unchanged).
+    /// <summary>Built-in names when the language files lack an entry (1.6.0 renames: display only, kinds unchanged).
     /// Player-facing text comes from <see cref="NameOf"/>.</summary>
     public static readonly string[] Fallback = ["金属件", "机械零件", "握把", "瞄准镜", "涂装材料"];
     public static int KindCount => Fallback.Length;

@@ -5,9 +5,9 @@ using TemplatesDatabase;
 
 namespace Game;
 
-/// <summary>1.7.0 (feedback-1124-170 D22-D28): the first time a player makes a gun model at the weapon workbench, one survivor
+/// <summary>1.6.0 (feedback-1124-170 D22-D28): the first time a player makes a gun model at the weapon workbench, one survivor
 /// case. Per player (the same durable owner the defuse reward uses) and per world; every gun model counts once, guns made
-/// before 1.7.0 included (the ledger starts empty, D23); knives, creative mode, a cancelled or failed assembly and any
+/// before this feature included (a world without the ScFirstCraft group starts with an empty ledger, D23); knives, creative mode, a cancelled or failed assembly and any
 /// other way of obtaining a gun never count. A full inventory drops the case at the player's feet, once (D25).</summary>
 public sealed class ScFirstCraftLedger {
     public const int Schema = 1;

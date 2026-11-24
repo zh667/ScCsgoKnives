@@ -18,7 +18,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("UpdateInput", this);
         ModsManager.RegisterHook("InventorySlotWidgetMeasureOverride", this);
         ModsManager.RegisterHook("OnCreatureDied", this);
-        // 1.7.0 (feedback-1124-170 D16/D18): the merged survivor case's sources.
+        // 1.6.0 (feedback-1124-170 D16/D18): the merged survivor case's sources.
         ModsManager.RegisterHook("OnLevelUpdate", this);
         ModsManager.RegisterHook("OnMinerDig", this);
         ModsManager.RegisterHook("OnBlockDug", this);

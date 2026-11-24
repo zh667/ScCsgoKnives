@@ -110,7 +110,7 @@ static class TacticalEnemyRegression {
             // airdrop-ladder-hud-smoke-20261012 (user: "种类增加食物，护甲，近战兵器，投掷类，弹药类，枪械类，资源类", chosen "每类各一份",
             // vanilla copper/iron armour, a CS knife): every crate carries one small share of each category, fixed by its identity.
             Test("airdrop/retry-stable-rewards-one-share-of-every-category",()=>{
-                // 1.7.0 (feedback-1124-170 D18): every crate also holds one survivor case when the core has the case block.
+                // 1.6.0 (feedback-1124-170 D18): every crate also holds one survivor case when the core has the case block.
                 const int caseBlock=1000;var caseType=C("ScCaseBlock");var heldBlock=BlocksManager.Blocks[caseBlock];
                 var caseItem=(Block)Activator.CreateInstance(caseType);caseItem.BlockIndex=caseBlock;BlocksManager.Blocks[caseBlock]=caseItem;BlocksManager.BlockTypeToIndex[caseType]=caseBlock;
                 try{
@@ -126,7 +126,7 @@ static class TacticalEnemyRegression {
                     var first=((int Value,int Count)[])method.Invoke(null,[id]);var again=((int Value,int Count)[])method.Invoke(null,[id]);
                     string at=$"crate {id}: "+string.Join(",",first.Select(x=>$"{Terrain.ExtractContents(x.Value)}:{Terrain.ExtractData(x.Value)}x{x.Count}"));
                     Check(first.SequenceEqual(again),"reward rerolled for the same delivery: "+at);
-                    // 1.7.0 (feedback-1124-170 P7): a guaranteed component share follows the 1.6.0 table: metal part 2-3, mechanical parts 1.
+                    // 1.6.0 (feedback-1124-170 P7): a guaranteed component share follows the earlier table: metal part 2-3, mechanical parts 1.
                     var share=first.Skip(first.Length-2).ToArray();
                     Check(share.Length==2&&Terrain.ExtractContents(share[0].Value)==material&&Terrain.ExtractData(share[0].Value)==0&&share[0].Count is >=2 and <=3
                         &&Terrain.ExtractContents(share[1].Value)==material&&Terrain.ExtractData(share[1].Value)==1&&share[1].Count==1,"guaranteed component share missing: "+at);
@@ -1049,7 +1049,7 @@ static class TacticalEnemyRegression {
                     f.Bodies.AddBody(target);f.Bodies.AddBody(e.Creature.ComponentBody);e.Enemy.Alert(target);
                     dynamic spec=specs.GetValue(Index(gun));int pellets=Math.Max(1,(int)spec.Pellets);
                     dynamic stats=C("EffectiveGunStats").GetMethod("ResolveLevel").Invoke(null,[(object)spec,(int)e.Enemy.State.DisplayValue,false,0]);
-                    float budget=player?(float)(float?)table.Invoke(null,[gun]):(float)stats.Power,falloff=(float)stats.NpcFalloff(spec,6f-.325f); // enemy T keep the 1.6.0 curve (feedback-1124-170 Q2)
+                    float budget=player?(float)(float?)table.Invoke(null,[gun]):(float)stats.Power,falloff=(float)stats.NpcFalloff(spec,6f-.325f); // enemy T keep the earlier curve (feedback-1124-170 Q2)
                     float share=budget/pellets/100;var losses=new List<float>();
                     for(int i=0;i<60;i++){health.Health=1;shoot.Invoke((object)e.Enemy,null);float loss=1-health.Health;if(loss>1e-6f)losses.Add(loss);}
                     Check(losses.Count>0,$"{gun} {(player?"player":"creature")}: no shot of 60 landed");

@@ -20,7 +20,7 @@ public sealed class SubsystemScCaseBlockBehavior : SubsystemBlockBehavior {
     public override bool OnUse(Ray3 ray, ComponentMiner componentMiner) {
         ComponentPlayer player = componentMiner.ComponentPlayer;
         if (player is null) return true;
-        // 1.7.0 (feedback-1124-170 Q5): opening is single-player only for now; cases still drop, stack and travel in multiplayer.
+        // 1.6.0 (feedback-1124-170 Q5): opening is single-player only for now; cases still drop, stack and travel in multiplayer.
         if (ScNet.Role is ScNetRole.Host or ScNetRole.Client) {
             player.ComponentGui.DisplaySmallMessage(LanguageControl.TryGet(out string mp, "ScCsgoBox", "Message", "MultiplayerUnsupported") ? mp : "联机暂不支持开箱。", Color.LightYellow, true, true);
             return true;
@@ -45,7 +45,7 @@ public sealed class SubsystemScCaseBlockBehavior : SubsystemBlockBehavior {
         }
 
         // Decide the reward before opening the UI. The animation can only display this result.
-        // 1.7.0 (D17): guns only up to what the opener's level can craft.
+        // 1.6.0 (D17): guns only up to what the opener's level can craft.
         CaseRoll roll = CaseRoller.RollFor(definition, CsCaseRewards.EligibleFor((int)MathF.Floor(player.PlayerData.Level)),
             new System.Random(System.Security.Cryptography.RandomNumberGenerator.GetInt32(int.MaxValue)));
         CaseOpeningDialog dialog = new(definition, roll, reward => {

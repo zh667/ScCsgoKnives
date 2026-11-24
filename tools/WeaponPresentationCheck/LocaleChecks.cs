@@ -24,7 +24,7 @@ static class LocaleChecks {
                     if(skin!=0){string name=knife.GetDisplayName(null,Terrain.MakeBlockValue(511,0,ScKnifeSkinCatalog.With(variant,skin)));
                         check($"locale/{locale}/knife-finish/{variant}",name.EndsWith(ScKnifeSkinCatalog.Name(skin,variant))&&(locale!="en-US"||!name.Any(c=>c is >= '\u4e00' and <= '\u9fff')));}
                 }
-                // 1.7.0 (feedback-1124-170 D10): the five component names are display text from the language files.
+                // 1.6.0 (feedback-1124-170 D10): the five component names are display text from the language files.
                 var material=new ScWeaponMaterialBlock{BlockIndex=513};
                 for(int kind=0;kind<ScWeaponMaterialBlock.KindCount;kind++){
                     string expected=json["ScCsgoKnives"]["Items"]["Material"+kind].GetValue<string>();

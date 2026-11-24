@@ -1,7 +1,7 @@
 using Engine;
 namespace Game;
 
-/// <summary>1.7.0 (feedback-1124-170 D8/D9, P4/P5, Q3): what an enemy squad's C4 does to loot. Pure rules; the bombs
+/// <summary>1.6.0 (feedback-1124-170 D8/D9, P4/P5, Q3): what an enemy squad's C4 does to loot. Pure rules; the bombs
 /// subsystem applies them on the server only. Players' own C4 (SubsystemScC4) is not affected.
 /// <list type="bullet">
 /// <item>Dropped items in the blast radius with a clear line to the charge are destroyed, except the drops of a player

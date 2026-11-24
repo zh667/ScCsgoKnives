@@ -27,7 +27,7 @@ public sealed class TacticalEnemyState {
     public bool Rewardable {get;set;}
     /// <summary>"natural" or "manual", recorded at creation. Null in older saves: counted as natural (conservative).</summary>
     public string Source {get;set;}
-    /// <summary>1.7.0 (feedback-1124-170 D7): wear of the demolition T's shield, 0..ScTacticalShieldBlock.Life. Older saves
+    /// <summary>1.6.0 (feedback-1124-170 D7): wear of the demolition T's shield, 0..ScTacticalShieldBlock.Life. Older saves
     /// have none (0): a bomb carrier loaded from one advances behind a fresh shield. An older reader drops the field, so a
     /// switch back and forth only loses the wear (R2).</summary>
     public int ShieldWear {get;set;}

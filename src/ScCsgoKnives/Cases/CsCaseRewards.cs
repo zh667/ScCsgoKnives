@@ -1,6 +1,6 @@
 namespace Game;
 
-/// <summary>1.7.0 (feedback-1124-170 D17): the CS weapons' rewards in the survivor case, by CS-style tier. The case files keep
+/// <summary>1.6.0 (feedback-1124-170 D17): the CS weapons' rewards in the survivor case, by CS-style tier. The case files keep
 /// their vanilla rewards; the knives (gold tier) come from Assets/ScCsgoBox/Integrations/sc-csgo-knives.json.
 /// <list type="table">
 /// <item>common / 普通: metal parts 2 or 3, mechanical parts 1, magazines 2, shells 12, one throwable</item>

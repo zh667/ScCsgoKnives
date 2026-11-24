@@ -370,7 +370,7 @@ static class TacticalRegression {
                 var target=new ComponentBody{Position=new Vector3(0,0,2),BoxSize=new Vector3(.65f,1.8f,.65f)};Entity(project,target,new ComponentHealth{Health=1});bodies.AddBody(target);
                 var attacker=new ComponentBody{Position=new Vector3(0,0,-5)};var ae=Entity(project,attacker);
                 var hit=new ProjectileAttackment(target,ae,new Vector3(0,1,1.7f),Vector3.UnitZ,100,null);
-                // 1.7.0 (feedback-1124-170 D6): a blocked hit wears the shield by twice its damage.
+                // 1.6.0 (feedback-1124-170 D6): a blocked hit wears the shield by twice its damage.
                 Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==0&&Terrain.ExtractData(inv.GetSlotValue(0))==200,"does not protect ally behind shield (or wear is not x2)");
                 Call("ScShieldProtection","Filter",hit);Require(Terrain.ExtractData(inv.GetSlotValue(0))==200,"double wear");
                 inv.m_slots[0].Value=Terrain.MakeBlockValue(705,0,2000);hit=new ProjectileAttackment(target,ae,new Vector3(0,1,1.7f),Vector3.UnitZ,100,null);Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==100,"broken shield blocks");

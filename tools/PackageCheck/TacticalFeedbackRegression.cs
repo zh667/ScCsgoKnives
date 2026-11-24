@@ -68,7 +68,7 @@ static class TacticalFeedbackRegression {
                 Check((float)C("ScC4Charge").GetField("Power").GetValue(c)==5000f&&(float)C("ScC4Charge").GetField("Radius").GetValue(c)==32f,"unified entry rewrote player C4 power/radius");
             });
             Test("defuse-reward-once-survival-source-only-durable-receipt",()=>{
-                // 1.7.0 (feedback-1124-170 D18): the reward also holds one survivor case when the core has the case block.
+                // 1.6.0 (feedback-1124-170 D18): the reward also holds one survivor case when the core has the case block.
                 const int caseBlock=1000;var caseType=C("ScCaseBlock");var heldBlock=BlocksManager.Blocks[caseBlock];bool hadType=BlocksManager.BlockTypeToIndex.TryGetValue(caseType,out int heldIndex);
                 var caseItem=(Block)Activator.CreateInstance(caseType);caseItem.BlockIndex=caseBlock;BlocksManager.Blocks[caseBlock]=caseItem;BlocksManager.BlockTypeToIndex[caseType]=caseBlock;
                 try{

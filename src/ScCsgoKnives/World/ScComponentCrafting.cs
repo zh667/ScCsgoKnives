@@ -13,7 +13,7 @@ public static class ScComponentCrafting {
         public Dictionary<int, int> Materials() => Ingredients.ToDictionary(p => Resolve(p.Id), p => p.Count);
     }
     public static readonly Entry[] All = [
-        // 1.7.0 (feedback-1124-170 D11/D12): iron is scarce in vanilla worlds. The metal part takes half the iron, and the
+        // 1.6.0 (feedback-1124-170 D11/D12): iron is scarce in vanilla worlds. The metal part takes half the iron, and the
         // mechanical parts no longer consume a metal part (some of the load moves to copper). Weapon recipes are unchanged.
         new(0, [("ironingot",4),("coalchunk",2)]),
         new(1, [("ironingot",2),("copperingot",4),("germaniumchunk",2)]),
@@ -22,7 +22,7 @@ public static class ScComponentCrafting {
         new(3, [("glass",4),("copperingot",2),("germaniumchunk",2)]),
         new(4, [("pigment:0",4),("canvas",2),("copperingot",2)])
     ];
-    /// <summary>1.7.0 (feedback-1124-170 D13/P6): half of the fallen T drop CS components, so fighting feeds the economy.</summary>
+    /// <summary>1.6.0 (feedback-1124-170 D13/P6): half of the fallen T drop CS components, so fighting feeds the economy.</summary>
     public const float EnemyDropChance = .5f;
     /// <summary>Which component a fallen T drops (P6): metal part 50 %, mechanical parts 30 %, grip or scope 20 % (evenly).</summary>
     public static int EnemyDropKind(float roll, bool scope) => roll < .5f ? ScWeaponMaterialBlock.Blank : roll < .8f ? ScWeaponMaterialBlock.Mechanism

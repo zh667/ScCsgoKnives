@@ -3,7 +3,7 @@ using TemplatesDatabase;
 using GameEntitySystem;
 namespace Game;
 
-/// <summary>feedback-1124-170 (1.7.0): component economy, shotgun range/falloff/knockback, tube reload batches, shield
+/// <summary>feedback-1124-170 (1.6.0): component economy, shotgun range/falloff/knockback, tube reload batches, shield
 /// wear, enemy C4 blasts, cases and first-craft rewards. Headless; each test restores what it changes.</summary>
 public static class ScFeedback1124SelfTest {
     sealed class Inventory : IInventory {

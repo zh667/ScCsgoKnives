@@ -16,7 +16,7 @@ public class ScCaseKeyBlock : FlatBlock {
 
     public override int GetFaceTextureSlot(int face, int value) => 0;
 
-    /// <summary>1.7.0 (feedback-1124-170 D15): the standalone key shape, all copper (it was 3 iron + 1 copper).</summary>
+    /// <summary>1.6.0 (feedback-1124-170 D15): the standalone key shape, all copper (it was 3 iron + 1 copper).</summary>
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
         string text = LanguageControl.TryGet(out string t, "ScCsgoBox", "Recipe", "Key") ? t : "制作一把武器箱钥匙";
         yield return ScAmmoBlock.Recipe(Terrain.MakeBlockValue(BlockIndex), 1, text,

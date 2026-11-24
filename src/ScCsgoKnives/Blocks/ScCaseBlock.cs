@@ -32,7 +32,7 @@ public class ScCaseBlock : Block {
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) =>
         CaseRegistry.GetByData(Terrain.ExtractData(value))?.GetDisplayName() ?? base.GetDisplayName(subsystemTerrain, value);
 
-    /// <summary>1.7.0 (feedback-1124-170 Q4): the standalone recipe with copper in place of iron.</summary>
+    /// <summary>1.6.0 (feedback-1124-170 Q4): the standalone recipe with copper in place of iron.</summary>
     public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
         string text = LanguageControl.TryGet(out string t, "ScCsgoBox", "Recipe", "Case") ? t : "制作一个可开启的荒野武器箱";
         yield return ScAmmoBlock.Recipe(Terrain.MakeBlockValue(BlockIndex, 0, 0), 1, text,

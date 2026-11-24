@@ -9,7 +9,7 @@ public static class CaseRoller {
 
     public static CaseRoll Roll(CaseDefinition definition) => RollFor(definition, _ => true, new System.Random(RandomNumberGenerator.GetInt32(int.MaxValue)));
 
-    /// <summary>A roll among the rewards <paramref name="eligible"/> allows (1.7.0: guns by the opener's level). The winner and
+    /// <summary>A roll among the rewards <paramref name="eligible"/> allows (1.6.0: guns by the opener's level). The winner and
     /// the reel come from the same eligible pool.</summary>
     public static CaseRoll RollFor(CaseDefinition definition, Func<RewardDefinition, bool> eligible, System.Random random) {
         RewardDefinition winner = PickReward(definition, eligible, random);
@@ -21,7 +21,7 @@ public static class CaseRoller {
     }
 
     /// <summary>Each rarity's chance with the given rewards allowed. A rarity whose rewards are all filtered out passes its
-    /// weight down to the next lower rarity that still has some (1.7.0, D17), so a roll is never empty and the higher
+    /// weight down to the next lower rarity that still has some (1.6.0, D17), so a roll is never empty and the higher
     /// rarities never become more likely.</summary>
     public static Dictionary<CaseRarity, double> EffectiveWeights(CaseDefinition definition, Func<RewardDefinition, bool> eligible) {
         var result = new Dictionary<CaseRarity, double>();

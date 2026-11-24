@@ -114,7 +114,7 @@ static class CommunityRepairRegression {
             Check("defense-interval-and-reduction",(float)scale.Invoke(null,["GiantTurtle",100f,true])==50&&(float)scale.Invoke(null,["Kraken",100f,true])==80&&(float)scale.Invoke(null,["Kraken",5f,true])==1&&(float)scale.Invoke(null,["BlueWhale",100f,false])==0);
             Check("gamepad-all-ten-actions",((string[])mod.GetType("Game.ScGamepadBindings").GetMethod("Options").Invoke(null,null)).Length==19);
             var components=(Array)mod.GetType("Game.ScComponentCrafting").GetField("All").GetValue(null);
-            // 1.7.0 (feedback-1124-170 D11/D12): metal part 4 iron + 2 coal; mechanical parts no longer consume a metal part.
+            // 1.6.0 (feedback-1124-170 D11/D12): metal part 4 iron + 2 coal; mechanical parts no longer consume a metal part.
             var expected=new[]{new[]{("ironingot",4),("coalchunk",2)},new[]{("ironingot",2),("copperingot",4),("germaniumchunk",2)},
                 new[]{("leather",4),("planks",2),("copperingot",1)},new[]{("glass",4),("copperingot",2),("germaniumchunk",2)},new[]{("pigment:0",4),("canvas",2),("copperingot",2)}};
             for(int i=0;i<5;i++) {var entry=components.GetValue(i);Check("component-recipe/"+i,((ValueTuple<string,int>[])entry.GetType().GetProperty("Ingredients").GetValue(entry)).SequenceEqual(expected[i]));}

@@ -1,6 +1,6 @@
 # Asset sources
 
-## Survivor weapon case: 1.7.0
+## Survivor weapon case: 1.6.0
 
 Merged from the unpublished standalone ScCsgoBox 0.3.5 (zh667/ScCsgoBox `6af872a`), files byte-for-byte. Copied there from
 [wikkd/CS2-Box](https://github.com/wikkd/CS2-Box) at commit `79ead9b`, under the MIT License (copyright (c) 2024 Reclizer):

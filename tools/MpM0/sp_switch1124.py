@@ -1,14 +1,14 @@
-"""feedback-1124-170 step 0 (Q7): a world played with the 1.7.0 candidate, opened and saved with an earlier official release,
-then opened with 1.7.0 again, on the isolated standalone engine copy (M0_ENGINE=131 by default). Observes what the older
+"""feedback-1124-170 step 0 (Q7): a world played with the new 1.6.0 candidate, opened and saved with an earlier release (1.4.0-1.5.x, or the internal 1.6.0 of 2026-11-20),
+then opened with 1.6.0 again, on the isolated standalone engine copy (M0_ENGINE=131 by default). Observes what the older
 reader does with the new survivor cases and keys and with the first-craft ledger (ScFirstCraft group and its world-folder
-copy), and what 1.7.0 finds when it comes back.
+copy), and what the candidate finds when it comes back.
 
 Three game starts on ONE world (the runtime lock is taken once, so the world folder stays between them):
-  1  1.7.0: new survival world; cases x3 and keys x2 in the inventory, one case dropped on the ground, a first-craft mark
+  1  candidate: new survival world; cases x3 and keys x2 in the inventory, one case dropped on the ground, a first-craft mark
      ("probe" / ak47) in the ledger; save; exit.
   2  the older release: load that world; record the inventory; save; exit.
-  3  1.7.0 again: load; record the inventory, the ground case and the ledger.
-Usage: sp_switch170.py <label> <1.7.0 core package> <older core package> [<extra package> ...]
+  3  candidate again: load; record the inventory, the ground case and the ledger.
+Usage: sp_switch1124.py <label> <candidate core package> <older core package> [<extra package> ...]
 Extra packages (the agents package for a Lite core) load in sessions 1 and 3; give an older agents package by setting
 SW_OLD_EXTRA to its path. Package paths should be ASCII. The player's own Mods folder and worlds are never used. Sound and
 music are turned off in every session (user requirement for isolated copies).
@@ -58,8 +58,8 @@ def disk(system_dir):
 def main(label, new_package, old_package, *extra):
     new = Path(new_package); old = Path(old_package); extras = [Path(p) for p in extra]
     old_extra = [Path(os.environ["SW_OLD_EXTRA"])] if os.environ.get("SW_OLD_EXTRA") else []
-    stamp = time.strftime("%Y%m%d-%H%M%S"); case_dir = RUNS / f"switch170-{label}-{stamp}"; (case_dir / "frames").mkdir(parents=True)
-    R = {"case": f"switch170-{label}", "engine": m0.SP_VERSION, "packages": {p.name: sha(p) for p in [new, old] + extras + old_extra},
+    stamp = time.strftime("%Y%m%d-%H%M%S"); case_dir = RUNS / f"switch1124-{label}-{stamp}"; (case_dir / "frames").mkdir(parents=True)
+    R = {"case": f"switch1124-{label}", "engine": m0.SP_VERSION, "packages": {p.name: sha(p) for p in [new, old] + extras + old_extra},
          "steps": [], "observations": {}, "sessions": []}
     T0 = time.time(); g = None
     def step(name, value=None):
@@ -74,7 +74,7 @@ def main(label, new_package, old_package, *extra):
     def close(game):
         lines = list(game.lines); game.close(); return lines
     try:
-        g = start("s1-170", [new] + extras)
+        g = start("s1-new", [new] + extras)
         m0.enter_world(g); g.func(KEEP_ACTIVE); g.func(MUTE)
         directory, system_dir = step("world", g.func(WORLD)).split("|", 1)
         R["observations"]["s1 setup"] = step("setup", g.func(SETUP))
@@ -91,7 +91,7 @@ def main(label, new_package, old_package, *extra):
         R["observations"]["s2 errors"] = [l for l in close(g) if "[Error]" in l or "Ignoring invalid" in l or "not found" in l.lower()][:40]; g = None
         R["observations"]["s2 disk"] = step("s2 disk", disk(system_dir))
 
-        g = start("s3-170", [new] + extras)
+        g = start("s3-new", [new] + extras)
         hit, m = enter(g, directory); R["observations"]["s3 entered"] = step("s3 entered", hit)
         if hit == 'Entered screen "Game"':
             spawned(g); time.sleep(1)
@@ -113,7 +113,7 @@ def main(label, new_package, old_package, *extra):
     R["summary"]["ledgerBack"] = (o.get("s3 ledger") or "").startswith("True")
     print("SUMMARY", json.dumps(R["summary"], ensure_ascii=False), flush=True)
     RESULTS.mkdir(parents=True, exist_ok=True)
-    out = RESULTS / f"switch170-{label}.json"; out.write_text(json.dumps(R, ensure_ascii=False, indent=1), "utf-8")
+    out = RESULTS / f"switch1124-{label}.json"; out.write_text(json.dumps(R, ensure_ascii=False, indent=1), "utf-8")
     print(f"engine {R['engine']}; failure {R.get('failure')}; {out}", flush=True)
     return 1 if R.get("failure") else 0
 

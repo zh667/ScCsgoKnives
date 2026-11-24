@@ -115,7 +115,7 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         int variant=Array.IndexOf(GunSpec.All,spec);
         if(variant<0) variant=GunSpec.GetVariant(data);
         int L=ScGunGrowth.Clamp(level);
-        // feedback-1124-170: the player's shotguns reach further (ScShotgunTuning); NpcRange/NpcFalloff keep 1.6.0's numbers.
+        // feedback-1124-170: the player's shotguns reach further (ScShotgunTuning); NpcRange/NpcFalloff keep the handling table's own numbers.
         float baseRange=ScGunplaySettings.Enabled && ScShotgunTuning.Survival(spec) is {} g ? g.Range : ScShotgunTuning.BaseRange(spec);
         // The gun's own ceiling while previewing the level it is actually carrying; the rule's ceiling for any
         // other level, so a "next level" column is not quoting today's number.
@@ -145,7 +145,7 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         float atBase=scale>0?distance/scale:distance;
         return ScGunplaySettings.Enabled && ScShotgunTuning.Survival(spec) is {} g ? ScGunHandling.Falloff(g,atBase) : ScSurvivalBalance.Falloff(spec,atBase);
     }
-    /// <summary>The distance multiplier an enemy T's shot uses: the 1.6.0 table and curve for every gun (feedback-1124-170 Q2:
+    /// <summary>The distance multiplier an enemy T's shot uses: the handling table's own values and curve for every gun (feedback-1124-170 Q2:
     /// only the player's shotguns changed). Companions fight on the player's side and use <see cref="Falloff"/>.</summary>
     public float NpcFalloff(GunSpec spec,float distance) {
         if(ModeFalloff is not null) return ModeFalloff(distance);
@@ -154,7 +154,7 @@ public readonly record struct EffectiveGunStats(float Power,float Range,int Capa
         float atBase=scale>0?distance/scale:distance;
         return ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is {} g ? ScGunHandling.Falloff(g,atBase) : ScSurvivalBalance.FalloffBase(spec,atBase);
     }
-    /// <summary>The range an enemy T's shot is judged against: the 1.6.0 table's, grown like <see cref="Range"/>.</summary>
+    /// <summary>The range an enemy T's shot is judged against: the handling table's own, grown like <see cref="Range"/>.</summary>
     public float NpcRange(GunSpec spec) => UnlimitedRange ? Range
         : ScGunGrowth.Range(Variant,Level,ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is {} g ? g.Range : spec.RangeBlocks);
 }

@@ -3,7 +3,7 @@ using Engine;
 
 namespace Game;
 
-/// <summary>How survivor cases are obtained (feedback-1124-170 D18; the standalone ScCsgoBox's rules with the 1.7.0 rates).
+/// <summary>How survivor cases are obtained (feedback-1124-170 D18; the standalone ScCsgoBox's rules with the 1.6.0 rates).
 /// Outside creative mode and only where the world is decided (single player, or the multiplayer server):
 /// <list type="bullet">
 /// <item>a player's kill of an enemy T: 15 %; of another creature: the case file's own chance (3 %);</item>
