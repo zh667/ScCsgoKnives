@@ -45,6 +45,9 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         public int PendingRounds = -1;         // magazine to write when the reload clip ends
         /// <summary>A shotgun reload: when each shell counts (WPN_RELOAD_ADD_AMMO of each loop).</summary>
         public readonly List<double> ShellTimes = [];
+        /// <summary>How many shells each entry of <see cref="ShellTimes"/> loads (feedback-1124-170 D5: a grown tube loads
+        /// several per loop). Always the same length as ShellTimes; both are trimmed and cleared together.</summary>
+        public readonly List<int> ShellBatch = [];
         /// <summary>Fire was pressed during a shell-by-shell reload: shoot as soon as the pump is done.</summary>
         public bool FireAfterReload;
         /// <summary>The R8's hammer is being drawn (Cocking); the cocked shot is committed at this time if the
@@ -1317,7 +1320,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             state.PendingRounds = -1;
             state.SilencerPending = false;
             state.Scheduled.Clear();
-            state.ShellTimes.Clear();
+            state.ShellTimes.Clear(); state.ShellBatch.Clear();
             state.FireAfterReload = false;
             CancelPrepare(player, state, "switch", now);
             state.RescopeAt = -1;
@@ -1358,15 +1361,19 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
 
         state.LastValue = value;
 
-        // A shotgun's shells count one at a time, at each loop's add-ammo moment.
+        // A shotgun's shells count at each loop's add-ammo moment: one per loop at the base capacity, several when growth
+        // enlarged the tube (feedback-1124-170 D5), each shell its own committed transaction as before.
         while (state.ShellTimes.Count > 0 && actionNow >= state.ShellTimes[0]) {
             state.ShellTimes.RemoveAt(0);
+            int batch = state.ShellBatch.Count > 0 ? state.ShellBatch[0] : 1;
+            if (state.ShellBatch.Count > 0) state.ShellBatch.RemoveAt(0);
             if (!authority) continue;
-            if (state.Reload is not null && state.Reload.InsertShell()) {
+            int inserted = state.Reload is null ? 0 : state.Reload.InsertShells(batch);
+            if (inserted > 0) {
                 value = state.Reload.Expected; state.LastValue = value;
                 data = Terrain.ExtractData(value); rounds = GunSpec.GetRounds(data);
             }
-            else { if (state.Reload is not null && state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); break; }
+            if (inserted < batch) { if (state.Reload is not null && state.Reload.LastResult != ScGunResult.Success) Refused(player, state.Reload.LastResult, now); CancelReload(player, state); break; }
         }
 
         // Inserted rounds are already committed. Only release the firing lock
@@ -2011,7 +2018,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (ScNet.IsHost && !ScNet.IsLocal(player)) ScNetGuns.ReloadResult(player, state.ReloadId, ScNetGuns.ReloadPhase.Cancelled);
         state.Reload.Cancel(); state.Reload = null;
         state.DropAt = state.InsertAt = state.BusyUntil = -1;
-        state.ShellTimes.Clear(); state.Scheduled.Clear(); state.FireAfterReload = false;
+        state.ShellTimes.Clear(); state.ShellBatch.Clear(); state.Scheduled.Clear(); state.FireAfterReload = false;
         if (cancelAnimation) KnifeAnimationController.CancelReloadAction(player, state.ReloadAnimationSequence);
         state.ReloadAnimationSequence = -1;
     }
@@ -2082,7 +2089,11 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         string clip = KnifeAnimationController.ReloadForPlayer(player, variant, empty);
         bool tube = ScReloadTransaction.IsTube(spec.Name);
         int shells = tube && !creative ? Math.Min(capacity - rounds, available + reserve) : capacity - rounds;
-        float duration = clip is "reloadFollowup" or "reloadFollowupEmpty" ? Cs2Rig.Duration(spec.Name,clip) : KnifeAnimationController.ReloadSeconds(variant, empty, shells);
+        // feedback-1124-170 D5: each loop loads ceil(capacity / base capacity) shells, so filling a grown tube takes about as
+        // many loops as filling the base one. The animation and its sounds run once per loop.
+        int perLoop = tube ? ScReloadTransaction.ShellsPerLoop(spec, capacity) : 1;
+        int loops = tube ? (shells + perLoop - 1) / perLoop : shells;
+        float duration = clip is "reloadFollowup" or "reloadFollowupEmpty" ? Cs2Rig.Duration(spec.Name,clip) : KnifeAnimationController.ReloadSeconds(variant, empty, loops);
         var milestones = Cs2Rig.ReloadMilestones(spec.Name, clip);
         var sections = tube ? Cs2Rig.GetReloadSections(spec.Name) : null;
         if (duration <= 0 || (tube ? sections is null : milestones is null)) {
@@ -2090,20 +2101,23 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
             return;
         }
         LeaveScope(player, state);
-        KnifeAnimationController.TriggerReload(player, empty, shells);
+        KnifeAnimationController.TriggerReload(player, empty, loops);
         state.ReloadAnimationSequence = KnifeAnimationController.ReloadActionSequence(player);
         state.Reload = new ScReloadTransaction(inventory, inventory.ActiveSlotIndex, value, ammo, cost, capacity, ScGunHolders.PlayerKey(player, inventory.ActiveSlotIndex));
         // A remote client only shows the reload: the server is asked to perform it (every reload this client starts, by the
         // key or by a trigger on an empty magazine), unless this one is the showing of a reload the server already began.
         state.ReloadId = request && ScNet.IsRemoteClient && ScNet.IsLocal(player) ? ScNetGuns.RequestReload() : 0;
         if (ScNet.IsRemoteClient && ScNet.IsLocal(player)) { state.ServerReloading = true; state.ServerReloadDeadline = ScNet.Now + duration + ServerReloadGrace; }
-        state.Scheduled.Clear(); state.ShellTimes.Clear(); state.FireAfterReload = false;
+        state.Scheduled.Clear(); state.ShellTimes.Clear(); state.ShellBatch.Clear(); state.FireAfterReload = false;
         double now = KnifeClock.Now;
         state.BusyUntil = now + duration; state.PendingRounds = -1;
         state.DropAt = state.InsertAt = -1;
         if (tube) {
-            for (int k = 0; k < shells; k++) state.ShellTimes.Add(now + sections.LoopStart + k * sections.LoopLength + sections.AddAmmoInLoop);
-            ScheduleLooped(state, spec.Name, clip, now, sections, shells);
+            foreach (int batch in ScReloadTransaction.ShellBatches(shells, perLoop)) {
+                state.ShellTimes.Add(now + sections.LoopStart + state.ShellBatch.Count * sections.LoopLength + sections.AddAmmoInLoop);
+                state.ShellBatch.Add(batch);
+            }
+            ScheduleLooped(state, spec.Name, clip, now, sections, loops);
         }
         else {
             state.DropAt = now + milestones.Value.Drop;
@@ -2139,6 +2153,7 @@ public sealed class SubsystemScGunBlockBehavior : SubsystemBlockBehavior, IUpdat
         if (loaded < 0) return;
         double end = now + remaining;
         state.ShellTimes.RemoveAll(t => t > end);
+        if (state.ShellBatch.Count > state.ShellTimes.Count) state.ShellBatch.RemoveRange(state.ShellTimes.Count, state.ShellBatch.Count - state.ShellTimes.Count);
         state.Scheduled.RemoveAll(c => c.At > end);
         Cs2Rig.ReloadSections sections = Cs2Rig.GetReloadSections(spec.Name);
         if (sections is not null && Cs2Sounds.TryGet($"{spec.Name}:reload", out var list)) {

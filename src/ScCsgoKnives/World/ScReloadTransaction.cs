@@ -74,6 +74,21 @@ public sealed class ScReloadTransaction {
         bool fromReserve = Reserve > 0;
         return Write(rounds + 1, fromReserve || Cost == 0 ? 0 : 1, fromReserve ? 1 : 0);
     }
+    /// <summary>Several shells in one loop (feedback-1124-170 D5): stops at the first shell that does not go in and returns how
+    /// many did; <see cref="LastResult"/> keeps that refusal. Every shell is still its own committed write.</summary>
+    public int InsertShells(int count) {
+        int done = 0;
+        while (done < count && InsertShell()) done++;
+        return done;
+    }
+    /// <summary>Shells one loop of a tube reload loads at this capacity: ceil(capacity / base capacity), at least 1. The server
+    /// and a client showing the reload use this same number.</summary>
+    public static int ShellsPerLoop(GunSpec gun, int capacity) => gun is null ? 1 : Math.Max(1, (capacity + Math.Max(1, gun.Magazine) - 1) / Math.Max(1, gun.Magazine));
+    /// <summary>The shells of each loop for <paramref name="shells"/> wanted: full loops, the remainder last.</summary>
+    public static IEnumerable<int> ShellBatches(int shells, int perLoop) {
+        perLoop = Math.Max(1, perLoop);
+        for (int left = Math.Max(0, shells); left > 0; left -= perLoop) yield return Math.Min(perLoop, left);
+    }
     public static bool IsTube(string name) => name is "nova" or "xm1014" or "sawedoff";
     public static int AmmoKind(GunSpec gun) => gun.Pellets > 1 ? ScAmmoBlock.Shell : ScAmmoBlock.Magazine;
     /// <summary>The base-capacity cost. Kept as the single-argument name because tools and regressions bind to it
