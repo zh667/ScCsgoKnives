@@ -88,7 +88,7 @@ public static class ScFeedback1124SelfTest {
             Test("shotgun/knockback-close-only", () => {
                 var nova = GunSpec.All[Variant("nova")]; var ak = GunSpec.All[Variant("ak47")];
                 return ScShotgunTuning.Impulse(nova, false, true, 5, 75) == 1.5f && ScShotgunTuning.Impulse(nova, false, true, 6, 75) == 1.5f
-                    && ScShotgunTuning.Impulse(nova, false, true, 10, 75) == .6f && ScShotgunTuning.Impulse(nova, false, true, 5, 500) == .6f
+                    && ScShotgunTuning.Impulse(nova, false, true, 10, 75) == .6f && ScShotgunTuning.Impulse(nova, false, true, 5, 350) == 1.5f && ScShotgunTuning.Impulse(nova, false, true, 5, 1500) == .6f
                     && ScShotgunTuning.Impulse(ak, false, true, 5, 75) == .6f && ScShotgunTuning.Impulse(nova, false, false, 5, 75) == 0
                     && ScShotgunTuning.Impulse(null, true, true, 1, 75) == 1.5f && ScShotgunTuning.Impulse(nova, false, true, float.NaN, 75) == .6f;
             });

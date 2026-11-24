@@ -9,7 +9,7 @@ namespace Game;
 /// its own numbers and is not affected.</summary>
 public static class ScShotgunTuning {
     public const float RangeScale = 1.5f, Floor = .3f;
-    public const float KnockbackRange = 6f, KnockbackImpulse = 1.5f, KnockbackMassCap = 300f, BulletImpulse = .6f, MeleeImpulse = 1.5f;
+    public const float KnockbackRange = 6f, KnockbackImpulse = 1.5f, KnockbackMassCap = 1000f, BulletImpulse = .6f, MeleeImpulse = 1.5f;
     public static bool Applies(GunSpec spec) => spec is not null && spec.Pellets > 1;
     static readonly Dictionary<string, ScGunHandling.Gun> s_tuned = new(StringComparer.Ordinal);
     /// <summary>The handling table row the player's gun uses: the table itself, or the stretched row of a shotgun.</summary>
@@ -30,7 +30,8 @@ public static class ScShotgunTuning {
     /// <summary>The weapon's own range before growth when gunplay handling is off (GunSpec.RangeBlocks), stretched for shotguns.</summary>
     public static float BaseRange(GunSpec spec) => Applies(spec) ? spec.RangeBlocks * RangeScale : spec.RangeBlocks;
     /// <summary>The control impulse of one attack (D4/P3): knives 1.5, bullets 0.6, a shotgun within 6 blocks of the shooter's
-    /// eyes against a body lighter than 300 also 1.5. Audited bosses lose it later in ScProjectileDefense, as before.</summary>
+    /// eyes against a body lighter than 1000 also 1.5 (the first value, 300, left cows at 350 out; seen in the game 2026-11-24:
+    /// a wolf of 40 moved 0.23 block, a cow and a rhino of 1500 0.095 each). Audited bosses lose it later in ScProjectileDefense, as before.</summary>
     public static float Impulse(GunSpec spec, bool melee, bool eligible, float distance, float mass) =>
         !eligible ? 0 : melee ? MeleeImpulse
         : Applies(spec) && float.IsFinite(distance) && distance <= KnockbackRange && float.IsFinite(mass) && mass < KnockbackMassCap ? KnockbackImpulse
