@@ -239,7 +239,12 @@
    "LegacyKnifeFinish": "旧预览外观（无官方涂装）",
    "Ruby": "多普勒 · 红宝石",
    "GammaDoppler": "伽马多普勒 P{0}",
-   "Fade": "渐变之色"
+   "Fade": "渐变之色",
+   "Material0": "金属件",
+   "Material1": "机械零件",
+   "Material2": "握把",
+   "Material3": "瞄准镜",
+   "Material4": "涂装材料"
   },
   "Finishes": {
    "33": "赤红新星",

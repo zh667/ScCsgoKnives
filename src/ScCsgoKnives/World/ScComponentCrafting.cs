@@ -9,7 +9,7 @@ public static class ScComponentCrafting {
     internal static Func<string,int> ResolveOverride; // headless fixture, never assigned by gameplay
     public sealed record Entry(int Kind, (string Id, int Count)[] Ingredients) {
         public int Value => ScWeaponMaterialBlock.Value(Kind);
-        public string Name => ScWeaponMaterialBlock.Names[Kind];
+        public string Name => ScWeaponMaterialBlock.NameOf(Kind);
         public Dictionary<int, int> Materials() => Ingredients.ToDictionary(p => Resolve(p.Id), p => p.Count);
     }
     public static readonly Entry[] All = [

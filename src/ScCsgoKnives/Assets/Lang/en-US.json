@@ -239,7 +239,12 @@
    "LegacyKnifeFinish": "Legacy preview (no official finish)",
    "Ruby": "Doppler · Ruby",
    "GammaDoppler": "Gamma Doppler P{0}",
-   "Fade": "Fade"
+   "Fade": "Fade",
+   "Material0": "Metal Part",
+   "Material1": "Mechanical Parts",
+   "Material2": "Grip",
+   "Material3": "Scope",
+   "Material4": "Paint Supplies"
   },
   "Finishes": {
    "33": "Hot Rod",

@@ -75,7 +75,7 @@ static class SurvivalPackageIntegration {
                             string help=(string)catalog.GetMethod("Help").Invoke(null,[v]);
                             Check($"assembly-help/{b.GetType().Name}/{Terrain.ExtractData(v)}/{pass}",entry is not null
                                 && ReferenceEquals(entry,find.Invoke(null,[output])) && Terrain.ExtractContents(output)==b.BlockIndex
-                                && help.Contains("武器装配台") && help.Contains("金属坯件 ×"),"creative full weapon and assembled empty weapon share canonical entry");
+                                && help.Contains("武器装配台") && help.Contains("金属件 ×"),"creative full weapon and assembled empty weapon share canonical entry");
                         }
                         Check($"assembly-no-grid-bypass/{b.GetType().Name}/{pass}",!b.GetProceduralCraftingRecipes().Any(),"help-only station recipe; no nine-grid shortcut");
                         var screen=(RecipaediaScreen)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(RecipaediaScreen));

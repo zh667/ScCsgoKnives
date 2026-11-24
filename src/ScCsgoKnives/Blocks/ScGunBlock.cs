@@ -201,7 +201,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public static string DurabilityText(int value) {
         if (!IsKnown(value)) return "";
         int data = Terrain.ExtractData(value), durability = GunSpec.GetDurability(data), full = ScGunDurability.FullOf(data);
-            return durability <= 0 ? $"\n耐久：损坏（0 / {full}），枪械不会消失，请到装配台维修（消耗金属坯件/精密机构）"
+            return durability <= 0 ? $"\n耐久：损坏（0 / {full}），枪械不会消失，请到装配台维修（消耗{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Blank)}/{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Mechanism)}）"
               : $"\n耐久 {durability} / {full}（{ScGunDurability.PercentText(durability, full)}，每发 1 点；耗尽只损坏、不消失，可维修）";
     }
     /// <summary>The kill counter line, when this gun carries one. The count itself lives in the record, so it

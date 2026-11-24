@@ -10,7 +10,7 @@ from PIL import Image,ImageDraw,ImageFont
 import moderngl
 from cs2_glb import Glb
 
-LABELS=['通用弹匣','霰弹壳','金属坯件','精密机构','握持组件','光学组件','武器装配台','涂装材料',
+LABELS=['通用弹匣','霰弹壳','金属件','机械零件','握把','瞄准镜','武器装配台','涂装材料',
         '停用信标（旧值）','CT 招募信标','T 招募信标','三人敌队信标','五人敌队信标']
 
 def main():

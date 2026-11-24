@@ -151,7 +151,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         var registry=ScGunRegistry.Current;string owner=ScGunHolders.RecoveryOwner(Project,p.ComponentMiner.Inventory);
         if(registry is null||registry.Disabled||owner is null){Log.Warning($"[CS Tactical] defuse reward for bomb {b.BombId} not recorded: no durable destination.");return;}
         registry.Recovery.Grant(owner,DefuseReward.Select(r=>(ScWeaponMaterialBlock.Value(r.Kind),r.Count)),"defused enemy bomb "+b.BombId);
-        Notice(p,"拆弹奖励：金属坯件 ×2、精密机构 ×1（背包满时空出位置后自动发放）",Color.Green,false);
+        Notice(p,"拆弹奖励："+string.Join("、",DefuseReward.Select(r=>ScWeaponMaterialBlock.NameOf(r.Kind)+" ×"+r.Count))+"（背包满时空出位置后自动发放）",Color.Green,false);
     }
     public void Update(float dt) {
         float elapsed=(float)Math.Max(0,time.GameTime-lastTime);lastTime=time.GameTime;

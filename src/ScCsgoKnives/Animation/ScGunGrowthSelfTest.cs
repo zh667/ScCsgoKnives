@@ -750,7 +750,7 @@ public static class ScGunGrowthSelfTest {
                 if (rows.Count != 8) return false;
                 foreach (var row in rows) {
                     string text = row.Label + row.Text + row.Unit + (row.Detail ?? "");
-                    if (text.Contains("耐久") || text.Contains("坯件") || text.Contains("机构") || text.Contains("材料")
+                    if (text.Contains("耐久") || text.Contains("坯件") || text.Contains("机构") || text.Contains("材料") || text.Contains("金属件") || text.Contains("零件")
                         || text.Contains("稀有") || text.Contains("重量") || text.Contains("穿甲") || text.Contains("配件")) return false;
                 }
             }

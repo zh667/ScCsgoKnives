@@ -24,6 +24,13 @@ static class LocaleChecks {
                     if(skin!=0){string name=knife.GetDisplayName(null,Terrain.MakeBlockValue(511,0,ScKnifeSkinCatalog.With(variant,skin)));
                         check($"locale/{locale}/knife-finish/{variant}",name.EndsWith(ScKnifeSkinCatalog.Name(skin,variant))&&(locale!="en-US"||!name.Any(c=>c is >= '\u4e00' and <= '\u9fff')));}
                 }
+                // 1.7.0 (feedback-1124-170 D10): the five component names are display text from the language files.
+                var material=new ScWeaponMaterialBlock{BlockIndex=513};
+                for(int kind=0;kind<ScWeaponMaterialBlock.KindCount;kind++){
+                    string expected=json["ScCsgoKnives"]["Items"]["Material"+kind].GetValue<string>();
+                    check($"locale/{locale}/material/{kind}",material.GetDisplayName(null,Terrain.MakeBlockValue(513,0,kind))==expected&&ScWeaponMaterialBlock.NameOf(kind)==expected
+                        &&(locale!="en-US"||!expected.Any(c=>c is >= '\u4e00' and <= '\u9fff')));
+                }
                 foreach(var skin in ScGunSkinCatalog.All)check($"locale/{locale}/finish/{skin.PaintId}",ScGunSkinCatalog.NameOf(skin.PaintId)==json["ScCsgoKnives"]["Finishes"][skin.PaintId.ToString()].GetValue<string>());
                 Block[] blocks=[gun,knife,new ScAmmoBlock(),new ScGunSkinTemplateBlock(),new ScGunCounterTemplateBlock(),new ScC4Block(),new ScGrenadeBlock(),new ScChickenEggBlock(),new ScWeaponWorkbenchBlock(),new ScWeaponMaterialBlock(),new ScTacticalShieldBlock(),new ScTacticalBeaconBlock(),new ScTacticalDefuserBlock(),new ScTacticalSquadBlock(),new ScAirdropBlock()];
                 foreach(var block in blocks)check($"locale/{locale}/category/{block.GetType().Name}",block.GetCategory(0)==ScWeaponText.Category);
