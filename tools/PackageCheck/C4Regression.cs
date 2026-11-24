@@ -41,7 +41,7 @@ static class C4Regression {
                 var d=new ValuesDictionary();d.SetValue("ActiveSlotIndex",0);d.SetValue("OpenSlotsCount",10);d.SetValue("CategoryIndex",0);d.SetValue("PageIndex",0);
                 var inv=new ComponentCreativeInventory();inv.Load(d,null);
                 var c4=(Block)BlocksManager.Blocks[BlocksManager.BlockNameToIndex["ScC4Block"]];
-                var weapons=Enumerable.Range(inv.OpenSlotsCount,inv.SlotsCount-inv.OpenSlotsCount).Select(inv.GetSlotValue).Where(v=>BlocksManager.Blocks[Terrain.ExtractContents(v)].GetCategory(v)=="CS武器").ToArray();
+                var weapons=Enumerable.Range(inv.OpenSlotsCount,inv.SlotsCount-inv.OpenSlotsCount).Select(inv.GetSlotValue).Where(v=>BlocksManager.Blocks[Terrain.ExtractContents(v)].GetCategory(v)==WeaponCategoryContract.For(mod)).ToArray();
                 int[] matches=weapons.Select((v,i)=>(v,i)).Where(x=>Terrain.ExtractContents(x.v)==c4.BlockIndex).Select(x=>x.i).ToArray();
                 results.Add(new("c4/creative-position",matches.Length==1,$"C4 index among CS武器={string.Join(',',matches)}, weapon entries={weapons.Length}, display name={c4.GetDisplayName(null,c4.GetCreativeValues().Single())}"));
                 return matches.Length==1&&inv.GetSlotCount(inv.m_slots.IndexOf(weapons[matches[0]]))>0;

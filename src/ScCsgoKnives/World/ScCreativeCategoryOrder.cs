@@ -9,7 +9,7 @@ public static class ScCreativeCategoryOrder {
     }
     static bool Move<T>(IList<T> entries, Func<T, string> name) {
         int weapons = Weapons(entries, name), current = -1;
-        for (int i = 0; i < entries.Count; i++) if (name(entries[i]) == "CS武器") { current = i; break; }
+        for (int i = 0; i < entries.Count; i++) if (name(entries[i]) == ScWeaponText.Category) { current = i; break; }
         if (weapons < 0 || current < 0 || current == weapons + 1) return false;
         T entry = entries[current]; entries.RemoveAt(current);
         if (current < weapons) weapons--;
