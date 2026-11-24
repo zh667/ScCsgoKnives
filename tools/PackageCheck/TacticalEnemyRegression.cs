@@ -1396,6 +1396,34 @@ static class TacticalEnemyRegression {
                 }finally{bombs.Dispose();}
                 Check(!(bool)C("ScWeaponActionGate").GetMethod("Blocks").Invoke(null,[null]),"disposed DLC leaves action gate subscribed");
             });
+            // feedback-1124-170 D8/D9 (P4/P5): an enemy blast destroys loose loot with a clear line to it, but not the drops
+            // where a player died lately (also after a save), nor CS guns and knives; crate stacks lose half, deterministically.
+            Test("feedback-1124/c4-blast-clears-loot",()=>{
+                var gun=(Block)Activator.CreateInstance(C("ScGunBlock"));gun.BlockIndex=723;BlocksManager.Blocks[723]=gun;BlocksManager.BlockTypeToIndex[gun.GetType()]=723;BlocksManager.BlockNameToIndex[gun.GetType().Name]=723;
+                var f=World();dynamic bombs=New("SubsystemTacticalBombs");((Subsystem)bombs).m_project=f.P;f.P.m_subsystems.Add((Subsystem)bombs);bombs.Load(new ValuesDictionary());
+                try{
+                    var at=new Vector3(0,60,0);f.Info.TotalElapsedGameTime=5000;
+                    Pickable Put(int value,Vector3 p){var x=new Pickable{Value=value,Count=3,Position=p};f.Drops.m_pickables.Add(x);return x;}
+                    var near=Put(40,at+new Vector3(3,0,0));var far=Put(40,at+new Vector3(20,0,0));var knife=Put(Terrain.MakeBlockValue(722,0,1),at+new Vector3(0,0,2));
+                    var record=Put(Terrain.MakeBlockValue(723,0,C("GunSpec").GetMethod("WithId").Invoke(null,[0,5]) is int d?d:0),at+new Vector3(0,0,-2));
+                    var markType=T("TacticalBlastLoot").GetNestedType("DeathMark");
+                    bombs.DeathMarks.Add((dynamic)Activator.CreateInstance(markType,[at+new Vector3(-6,0,0),4950.0]));
+                    var bag=Put(41,at+new Vector3(-7,0,0));var stale=Put(41,at+new Vector3(0,0,6));
+                    bombs.DeathMarks.Add((dynamic)Activator.CreateInstance(markType,[at+new Vector3(0,0,6),3000.0])); // older than 15 minutes: no protection
+                    // Saved and loaded twice: the recent mark still protects, the stale one is gone.
+                    for(int i=0;i<2;i++){var v=new ValuesDictionary();bombs.Save(v);bombs.Dispose();bombs=New("SubsystemTacticalBombs");((Subsystem)bombs).m_project=f.P;f.P.m_subsystems.Add((Subsystem)bombs);bombs.Load(Round(v));}
+                    Check(bombs.DeathMarks.Count==1,"death marks after two saves: "+bombs.DeathMarks.Count);
+                    int destroyed=bombs.ClearLoot(at,12f,"0123456789abcdef0123456789abcdef");
+                    Check(near.ToRemove&&stale.ToRemove&&destroyed==6,$"loose loot in range not destroyed ({destroyed})");
+                    Check(!far.ToRemove&&!knife.ToRemove&&!record.ToRemove&&!bag.ToRemove,"destroyed something it must keep (out of range, a CS knife/gun, or a recent death drop)");
+                    f.Terrain.Blocked=true;var behind=Put(40,at+new Vector3(2,0,0));bombs.ClearLoot(at,12f,"x");Check(!behind.ToRemove,"loot behind a wall destroyed");
+                    f.Info.TotalElapsedGameTime=5000+901;f.Terrain.Blocked=false;bombs.ClearLoot(at,12f,"x");Check(bag.ToRemove,"a death mark protected for more than 15 minutes");
+                    var rules=T("TacticalBlastLoot");int Loss(int value,int count,string id,int slot)=>(int)rules.GetMethod("CrateLoss").Invoke(null,[value,count,id,slot]);
+                    Check(Loss(40,7,"a",0)==3&&Loss(40,2,"a",0)==1&&Loss(40,0,"a",0)==0&&Loss(Terrain.MakeBlockValue(723,0,(int)C("GunSpec").GetMethod("WithId").Invoke(null,[0,5])),1,"a",0)==0,"crate halves");
+                    var ones=Enumerable.Range(0,64).Select(s=>Loss(40,1,"0123456789abcdef0123456789abcdef",s)).ToArray();
+                    Check(ones.SequenceEqual(Enumerable.Range(0,64).Select(s=>Loss(40,1,"0123456789abcdef0123456789abcdef",s)))&&ones.Contains(0)&&ones.Contains(1),"single items not rolled deterministically both ways");
+                }finally{bombs.Dispose();}
+            });
             if(includeRendering)Test("kit-native-item-draw-carry-and-cs2-sounds",()=>{
                 using var zip=ZipFile.OpenRead(dlcPath);using var png=(zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.png")??zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.webp")).Open();var img=Image.Load(png);Check(img.Pixels.Count(c=>c.A>0)>1000,"empty kit atlas");var block=BlocksManager.Blocks[707];
                 foreach(var mode in Enum.GetValues<DrawBlockMode>()){var renderer=new PrimitivesRenderer3D();var m=Matrix.Identity;block.DrawBlock(renderer,707,Color.White,1,ref m,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=mode});var v=renderer.TexturedBatches.Single().TriangleVertices.ToArray();Check(v.Length>24&&v.All(p=>p.TexCoord.X>=0&&p.TexCoord.X<=1),"invalid kit mesh/UV");}

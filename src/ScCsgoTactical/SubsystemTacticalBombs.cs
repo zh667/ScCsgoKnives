@@ -46,6 +46,11 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     readonly PrimitivesRenderer3D renderer=new();
     SubsystemTime time;SubsystemTerrain terrain;SubsystemPlayers players;SubsystemAudio audio;SubsystemBodies bodies;
     double lastTime;
+    /// <summary>Where players died lately (feedback-1124-170 P5): their drops survive an enemy blast. Saved with the bombs;
+    /// times are the world's total elapsed game time, which continues across sessions.</summary>
+    public readonly List<TacticalBlastLoot.DeathMark> DeathMarks=[];
+    readonly HashSet<ComponentPlayer> dead=[];
+    double WorldTime=>Project.FindSubsystem<SubsystemGameInfo>(false)?.TotalElapsedGameTime??0;
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
     public int[] DrawOrders=>[10];
     public override void Load(ValuesDictionary values) {
@@ -54,6 +59,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         if(saved is not null)foreach(var pair in saved){var d=(ValuesDictionary)pair.Value;var c=ScC4Charge.Load(d);if(c.Fuse!=40||c.Owner!=-2)throw new InvalidOperationException("敌方 C4 存档数值异常。");
             string id=d.GetValue("BombId","");Bombs.Add(new(){Charge=c,BombId=id,Rewardable=id.Length>0&&d.GetValue("Rewardable",false)});}
         if(Bombs.Count>8)throw new InvalidOperationException("敌方 C4 数量异常。");
+        DeathMarks.AddRange(TacticalBlastLoot.LoadMarks(values.GetValue("DeathMarks",""),WorldTime));
         time=Project.FindSubsystem<SubsystemTime>(true);terrain=Project.FindSubsystem<SubsystemTerrain>(true);players=Project.FindSubsystem<SubsystemPlayers>(true);
         audio=Project.FindSubsystem<SubsystemAudio>(true);bodies=Project.FindSubsystem<SubsystemBodies>(true);lastTime=time.GameTime;
         ScWeaponActionGate.Reserved+=Blocking;
@@ -62,6 +68,8 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         base.Save(values);values.SetValue("Schema",1);var saved=new ValuesDictionary();
         for(int i=0;i<Bombs.Count;i++){var d=Bombs[i].Charge.Save();if(Bombs[i].BombId.Length>0){d.SetValue("BombId",Bombs[i].BombId);d.SetValue("Rewardable",Bombs[i].Rewardable);}saved.SetValue(i.ToString(),d);}
         values.SetValue("Bombs",saved);
+        double now=WorldTime;DeathMarks.RemoveAll(m=>!TacticalBlastLoot.Fresh(m,now));
+        if(DeathMarks.Count>0)values.SetValue("DeathMarks",TacticalBlastLoot.SaveMarks(DeathMarks));
     }
     public bool TryPlant(Vector3 position,float yaw)=>PlantFrom(position,yaw,false);
     /// <summary>Plants with the squad's reward source recorded at creation, never inferred at defuse time.</summary>
@@ -159,6 +167,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         // Multiplayer (TacticalNet): the server resolves every defuse and blast; a client counts down its copy of the
         // bombs (beeps), shows its own HUD and sends its defuse key and view.
         bool authority=ScNet.IsAuthority;
+        if(authority)NoteDeaths();
         if(authority){
             // Player charges tick and explode in SubsystemScC4; only their defuse is resolved here.
             foreach(var b in playerCharges.Values.ToArray()){
@@ -259,6 +268,43 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     }
     /// <summary>Client: a blast the server reported (its sound arrives as a world sound).</summary>
     public void ShowBlast(Vector3 position,float radius){if(blasts.Count>=8)blasts.RemoveAt(0);blasts.Add(new(position,radius,time.GameTime));}
+    void NoteDeaths(){
+        foreach(var p in players.ComponentPlayers){
+            if(p.ComponentHealth.Health>0){dead.Remove(p);continue;}
+            if(!dead.Add(p))continue;
+            if(DeathMarks.Count>=TacticalBlastLoot.MaxDeathMarks)DeathMarks.RemoveAt(0);
+            DeathMarks.Add(new(p.ComponentBody.Position,WorldTime));
+        }
+        dead.RemoveWhere(p=>!players.ComponentPlayers.Contains(p));
+    }
+    /// <summary>Server: the enemy blast destroys loose loot and part of nearby airdrop crates (TacticalBlastLoot). Returns
+    /// how many items were destroyed.</summary>
+    public int ClearLoot(Vector3 at,float radius,string seed){
+        int destroyed=0;double now=WorldTime;
+        bool Clear(Vector3 p)=>!terrain.Raycast(at+Vector3.UnitY*.15f,p,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v)).HasValue;
+        if(Project.FindSubsystem<SubsystemPickables>(false) is {} pickables)
+            foreach(var item in pickables.Pickables){
+                if(item.ToRemove||item.Count<=0||Vector3.DistanceSquared(item.Position,at)>radius*radius)continue;
+                if(!TacticalBlastLoot.Destructible(item.Value)||TacticalBlastLoot.Protected(item.Position,DeathMarks,now)||!Clear(item.Position))continue;
+                item.ToRemove=true;destroyed+=item.Count;
+            }
+        int crate=BlocksManager.GetBlockIndex<ScAirdropBlock>(false);
+        if(crate>0&&Project.FindSubsystem<SubsystemBlockEntities>(false) is {} entities)
+            foreach(var pair in entities.m_blockEntities.ToArray()){
+                var cell=pair.Key;var centre=new Vector3(cell.X+.5f,cell.Y+.5f,cell.Z+.5f);
+                if(Vector3.DistanceSquared(centre,at)>radius*radius||terrain.Terrain.GetCellContents(cell.X,cell.Y,cell.Z)!=crate)continue;
+                if(pair.Value?.Entity.FindComponent<ComponentChest>() is not {} chest)continue;
+                bool changed=false;
+                for(int slot=0;slot<chest.SlotsCount;slot++){
+                    int loss=TacticalBlastLoot.CrateLoss(chest.GetSlotValue(slot),chest.GetSlotCount(slot),seed,slot);
+                    if(loss<=0)continue;int removed=chest.RemoveSlotItems(slot,loss);destroyed+=removed;changed|=removed>0;
+                }
+                if(changed){ScNetSlots.Touched(chest);ScInventoryTransaction.Changed(chest);}
+            }
+        return destroyed;
+    }
+    /// <summary>The stable seed of a charge's crate rolls: where it lies (a charge never moves once planted).</summary>
+    static string BlastSeed(ScC4Charge c)=>FormattableString.Invariant($"{c.Position.X:R},{c.Position.Y:R},{c.Position.Z:R}");
     void Explode(ScC4Charge c) {
         if(blasts.Count>=8)blasts.RemoveAt(0);blasts.Add(new(c.Position,c.Radius,time.GameTime));
         foreach(var body in bodies.Bodies.ToArray()){
@@ -269,6 +315,9 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         audio.PlaySound("Audio/ScCsgoKnives/c4_explode_close_01",2,0,c.Position,32,true);
         ScGunWorldEffects.NotifyExplosion(Project.FindSubsystem<SubsystemNoise>(false),c.Position,ScGunWorldEffects.BombNoiseRange);
         TacticalNet.Sound("Audio/ScCsgoKnives/c4_explode_close_01",2,c.Position,32);TacticalNet.Blast(c.Position,c.Radius);
+        if(ClearLoot(c.Position,c.Radius,BlastSeed(c))>0)
+            foreach(var p in players.ComponentPlayers)if(Vector3.DistanceSquared(p.ComponentBody.Position,c.Position)<=4*c.Radius*c.Radius)
+                Notice(p,ScWeaponText.Get("EnemyC4LootDestroyed","敌方 C4 炸毁了附近的物资"),Color.Orange,false);
     }
     public void Draw(Camera camera,int order) {
         var block=(ScC4Block)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScC4Block>(true)];

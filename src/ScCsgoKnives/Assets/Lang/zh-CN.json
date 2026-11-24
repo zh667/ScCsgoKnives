@@ -244,7 +244,8 @@
    "Material1": "机械零件",
    "Material2": "握把",
    "Material3": "瞄准镜",
-   "Material4": "涂装材料"
+   "Material4": "涂装材料",
+   "EnemyC4LootDestroyed": "敌方 C4 炸毁了附近的物资"
   },
   "Finishes": {
    "33": "赤红新星",

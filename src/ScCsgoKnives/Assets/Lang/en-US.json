@@ -244,7 +244,8 @@
    "Material1": "Mechanical Parts",
    "Material2": "Grip",
    "Material3": "Scope",
-   "Material4": "Paint Supplies"
+   "Material4": "Paint Supplies",
+   "EnemyC4LootDestroyed": "The enemy C4 destroyed the supplies nearby"
   },
   "Finishes": {
    "33": "Hot Rod",
