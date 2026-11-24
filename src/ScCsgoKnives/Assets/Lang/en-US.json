@@ -228,6 +228,14 @@
   "ScGunBlock:34": {
    "DisplayName": "Zeus x27",
    "Description": "A single-shot stun gun, lethal up close, 1 round, semi-automatic. Left click fires."
+  },
+  "ScCaseBlock:0": {
+   "DisplayName": "Survivor Weapon Case",
+   "Description": "Craftable; also earned from leveling, exploring ruins, killing creatures and enemy T, airdrops, defusing bombs and making a gun model for the first time. Use while held with a case key."
+  },
+  "ScCaseKeyBlock:0": {
+   "DisplayName": "Weapon Case Key",
+   "Description": "Opens a survivor weapon case."
   }
  },
  "ScCsgoKnives": {
@@ -316,6 +324,41 @@
    "Reloading": "Reloading",
    "Durability": "Durability {0}%",
    "Broken": "BROKEN · repair at the workbench"
+  }
+ },
+ "ScCsgoBox": {
+  "Cases": {
+   "survivor": {
+    "DisplayName": "Survivor Weapon Case"
+   }
+  },
+  "Dialog": {
+   "Rolling": "Rolling…",
+   "Skip": "Skip",
+   "Claim": "Claim",
+   "RotateHint": "Drag the item to rotate",
+   "Won": "Won {0} ×{1}  [{2}]"
+  },
+  "Message": {
+   "NeedKey": "A weapon case key is required in your inventory.",
+   "PendingResult": "Claim the current case result before opening another.",
+   "InvalidCase": "This weapon case has no valid configuration.",
+   "Received": "Received {0} ×{1}.",
+   "LevelReward": "Level-up reward: received Survivor Weapon Case ×{0}.",
+   "TreasureReward": "Ruins reward: found Survivor Weapon Case ×{0}.",
+   "MultiplayerUnsupported": "Opening cases is not available in multiplayer yet; cases still drop, stack and can be stored.",
+   "FirstCraft": "First {0} made: received 1 Survivor Weapon Case."
+  },
+  "Rarity": {
+   "Common": "Common",
+   "Uncommon": "Rare",
+   "Rare": "Epic",
+   "Epic": "Legendary",
+   "Legendary": "Gold"
+  },
+  "Recipe": {
+   "Case": "Craft a survivor weapon case",
+   "Key": "Craft a weapon case key"
   }
  }
 }

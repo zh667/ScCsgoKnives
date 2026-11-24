@@ -29,6 +29,12 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     }
     /// <summary>One-time reward for defusing an armed enemy-squad bomb in survival. First-pass values.</summary>
     public static readonly (int Kind,int Count)[] DefuseReward=[(ScWeaponMaterialBlock.Blank,2),(ScWeaponMaterialBlock.Mechanism,1)];
+    /// <summary>The whole defuse reward as item values: the components above and, from 1.7.0 (feedback-1124-170 D18), one
+    /// survivor case when the core has cases.</summary>
+    public static IEnumerable<(int Value,int Count)> DefuseItems(){
+        foreach(var r in DefuseReward)yield return (ScWeaponMaterialBlock.Value(r.Kind),r.Count);
+        if(BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScCaseBlock),out int caseBlock))yield return (Terrain.MakeBlockValue(caseBlock,0,0),1);
+    }
     sealed class Hud {
         public StackPanelWidget Panel;
         public LabelWidget Label;
@@ -158,8 +164,11 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         if(!b.Rewardable||b.PlayerCharge||Project.FindSubsystem<SubsystemGameInfo>(false) is not {} info||info.WorldSettings.GameMode==GameMode.Creative)return;
         var registry=ScGunRegistry.Current;string owner=ScGunHolders.RecoveryOwner(Project,p.ComponentMiner.Inventory);
         if(registry is null||registry.Disabled||owner is null){Log.Warning($"[CS Tactical] defuse reward for bomb {b.BombId} not recorded: no durable destination.");return;}
-        registry.Recovery.Grant(owner,DefuseReward.Select(r=>(ScWeaponMaterialBlock.Value(r.Kind),r.Count)),"defused enemy bomb "+b.BombId);
-        Notice(p,"拆弹奖励："+string.Join("、",DefuseReward.Select(r=>ScWeaponMaterialBlock.NameOf(r.Kind)+" ×"+r.Count))+"（背包满时空出位置后自动发放）",Color.Green,false);
+        var items=DefuseItems().ToArray();
+        registry.Recovery.Grant(owner,items,"defused enemy bomb "+b.BombId);
+        var names=DefuseReward.Select(r=>ScWeaponMaterialBlock.NameOf(r.Kind)+" ×"+r.Count).ToList();
+        if(items.Length>DefuseReward.Length)names.Add((LanguageControl.TryGet(out string box,"ScCsgoBox","Cases","survivor","DisplayName")?box:"荒野武器箱")+" ×1");
+        Notice(p,"拆弹奖励："+string.Join("、",names)+"（背包满时空出位置后自动发放）",Color.Green,false);
     }
     public void Update(float dt) {
         float elapsed=(float)Math.Max(0,time.GameTime-lastTime);lastTime=time.GameTime;

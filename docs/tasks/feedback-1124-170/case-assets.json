@@ -1,0 +1,102 @@
+[
+ {
+  "name": "cs_dita",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Audio/ScCsgoBox/cs_dita.ogg": "168e7f30286a4fe533b3e3a3e62c3027ae002d60b163afba1be8886e66e56b8c"
+  },
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoBox/cs_dita.ogg",
+  "member": "Assets/Audio/ScCsgoBox/cs_dita.ogg",
+  "sha256": "168e7f30286a4fe533b3e3a3e62c3027ae002d60b163afba1be8886e66e56b8c",
+  "bytes": 6521
+ },
+ {
+  "name": "cs_finish",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Audio/ScCsgoBox/cs_finish.ogg": "576307761f1ec8686ddc0f01ea6733f919fb99b8b34349dff50d1272c6791042"
+  },
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoBox/cs_finish.ogg",
+  "member": "Assets/Audio/ScCsgoBox/cs_finish.ogg",
+  "sha256": "576307761f1ec8686ddc0f01ea6733f919fb99b8b34349dff50d1272c6791042",
+  "bytes": 15541
+ },
+ {
+  "name": "cs_open",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Audio/ScCsgoBox/cs_open.ogg": "91640b74d2f886254746b746794324b1459618b7c82c6c1cee25444350e9ed86"
+  },
+  "target": "src/ScCsgoKnives/Assets/Audio/ScCsgoBox/cs_open.ogg",
+  "member": "Assets/Audio/ScCsgoBox/cs_open.ogg",
+  "sha256": "91640b74d2f886254746b746794324b1459618b7c82c6c1cee25444350e9ed86",
+  "bytes": 10037
+ },
+ {
+  "name": "csgo_box",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Textures/ScCsgoBox/csgo_box.png": "ae6542461730f86fdf2b73673c6ced4d14bf4cbd4f4a08dee7cb49d8eb802ae8"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/csgo_box.png",
+  "member": "Assets/Textures/ScCsgoBox/csgo_box.png",
+  "sha256": "ae6542461730f86fdf2b73673c6ced4d14bf4cbd4f4a08dee7cb49d8eb802ae8",
+  "bytes": 28489
+ },
+ {
+  "name": "csgo_key0",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Textures/ScCsgoBox/csgo_key0.png": "3a0d75d32fe0660e4bef57cfa79f2ff73aa3c33de911761e3d78a0bd793ccda4"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/csgo_key0.png",
+  "member": "Assets/Textures/ScCsgoBox/csgo_key0.png",
+  "sha256": "3a0d75d32fe0660e4bef57cfa79f2ff73aa3c33de911761e3d78a0bd793ccda4",
+  "bytes": 768
+ },
+ {
+  "name": "lens_vignette",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Textures/ScCsgoBox/lens_vignette.png": "00dc93868c66b60058fb1a4d55979000387e34f1564ea94f1f00f952b46be3f2"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/lens_vignette.png",
+  "member": "Assets/Textures/ScCsgoBox/lens_vignette.png",
+  "sha256": "00dc93868c66b60058fb1a4d55979000387e34f1564ea94f1f00f952b46be3f2",
+  "bytes": 30727
+ },
+ {
+  "name": "spot_glow",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Textures/ScCsgoBox/spot_glow.png": "2bbe4810275416f4797598a6073beebbad675af8645f8ae51746c64aff45eefe"
+  },
+  "target": "src/ScCsgoKnives/Assets/Textures/ScCsgoBox/spot_glow.png",
+  "member": "Assets/Textures/ScCsgoBox/spot_glow.png",
+  "sha256": "2bbe4810275416f4797598a6073beebbad675af8645f8ae51746c64aff45eefe",
+  "bytes": 6812
+ },
+ {
+  "name": "csgo_box",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/Models/ScCsgoBox/csgo_box.obj": "2009e11399bf513a3b3a36da485c1870ef1cccd6fc9ce52b670165b0a7462bbe"
+  },
+  "target": "src/ScCsgoKnives/Assets/Models/ScCsgoBox/csgo_box.obj",
+  "member": "Assets/Models/ScCsgoBox/csgo_box.obj",
+  "sha256": "2009e11399bf513a3b3a36da485c1870ef1cccd6fc9ce52b670165b0a7462bbe",
+  "bytes": 83514
+ },
+ {
+  "name": "survivor",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/ScCsgoBox/Cases/survivor.json": "8e62e935cac26cfe3d0291427f57e695e57dee06d18a5cc11d8edc6c26180fe7"
+  },
+  "target": "src/ScCsgoKnives/Assets/ScCsgoBox/Cases/survivor.json",
+  "member": "Assets/ScCsgoBox/Cases/survivor.json",
+  "sha256": "b251a10e79490cd979105d002b7ea0f8d447070a4eb5c41c2382117a69bfef84",
+  "bytes": 2989
+ },
+ {
+  "name": "survivalcraft-stash",
+  "sources": {
+   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/ScCsgoBox/Integrations/survivalcraft-stash.json": "b1c64929b9f0944e5c60f3a9f6c7c5830f9ef2294f1c4eb2313edb4a9cde7be3"
+  },
+  "target": "src/ScCsgoKnives/Assets/ScCsgoBox/Integrations/survivalcraft-stash.json",
+  "member": "Assets/ScCsgoBox/Integrations/survivalcraft-stash.json",
+  "sha256": "b1c64929b9f0944e5c60f3a9f6c7c5830f9ef2294f1c4eb2313edb4a9cde7be3",
+  "bytes": 2383
+ }
+]

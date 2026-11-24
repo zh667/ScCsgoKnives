@@ -29,3 +29,8 @@ Battlefield 1 feedback audio:
 - Extraction tools: NicknineTheEagle/Frostbite-Scripts; vgmstream r2117. Tools themselves are not bundled in the mod.
 
 - 0.28.1 `bf1_kill_ding.wav`: edited metallic confirmation layer from EA / DICE Battlefield 1 `Sound/UI/UI_KillMessage_HeadShotAdd_Wave`. Source and conversion details: `docs/bf1-ding-0281-source.json`.
+
+Survivor weapon case (merged in 1.7.0 from the unpublished standalone ScCsgoBox 0.3.5, zh667/ScCsgoBox `6af872a`):
+
+- Inspired by the MIT-licensed [Reclizer/CsgoBox](https://github.com/Reclizer/CsgoBox) (copyright (c) 2024 Reclizer), its remaster [ChloePrime/CS2-Box](https://github.com/ChloePrime/CS2-Box) and [wikkd/CS2-Box](https://github.com/wikkd/CS2-Box) at commit `79ead9b` (copyright (c) 2024 Reclizer), whose case/key textures, screen effects, sounds, reel layout and easing behaviour are reused and adapted; the template structure follows [Survivalcraft Template Mod for API](https://gitee.com/SC-SPM/SurvivalcraftTemplateModForAPI) (copyright (c) 2024 销锋镝铸 XiaofengdiZhu).
+- MIT license texts: `LICENSES/Reclizer-CsgoBox.txt`, `LICENSES/SurvivalcraftTemplateModForAPI.txt`. Asset paths: `ASSET_SOURCES.md` (survivor weapon case).

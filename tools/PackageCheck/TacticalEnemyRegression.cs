@@ -110,6 +110,10 @@ static class TacticalEnemyRegression {
             // airdrop-ladder-hud-smoke-20261012 (user: "种类增加食物，护甲，近战兵器，投掷类，弹药类，枪械类，资源类", chosen "每类各一份",
             // vanilla copper/iron armour, a CS knife): every crate carries one small share of each category, fixed by its identity.
             Test("airdrop/retry-stable-rewards-one-share-of-every-category",()=>{
+                // 1.7.0 (feedback-1124-170 D18): every crate also holds one survivor case when the core has the case block.
+                const int caseBlock=1000;var caseType=C("ScCaseBlock");var heldBlock=BlocksManager.Blocks[caseBlock];
+                var caseItem=(Block)Activator.CreateInstance(caseType);caseItem.BlockIndex=caseBlock;BlocksManager.Blocks[caseBlock]=caseItem;BlocksManager.BlockTypeToIndex[caseType]=caseBlock;
+                try{
                 var method=T("SubsystemScAirdrops").GetMethod("RewardsFor");var guns=new HashSet<int>();bool shells=false;
                 int Index(string name)=>BlocksManager.GetBlockIndex(C(name),true);
                 int gunBlock=Index("ScGunBlock"),ammo=Index("ScAmmoBlock"),grenade=Index("ScGrenadeBlock"),knife=Index("ScKnifeBlock"),material=Index("ScWeaponMaterialBlock");
@@ -126,7 +130,9 @@ static class TacticalEnemyRegression {
                     var share=first.Skip(first.Length-2).ToArray();
                     Check(share.Length==2&&Terrain.ExtractContents(share[0].Value)==material&&Terrain.ExtractData(share[0].Value)==0&&share[0].Count is >=2 and <=3
                         &&Terrain.ExtractContents(share[1].Value)==material&&Terrain.ExtractData(share[1].Value)==1&&share[1].Count==1,"guaranteed component share missing: "+at);
-                    first=first.Take(first.Length-2).ToArray();
+                    var crateCase=first[first.Length-3];
+                    Check(crateCase.Count==1&&crateCase.Value==Terrain.MakeBlockValue(caseBlock,0,0),"no survivor case in the crate: "+at);
+                    first=first.Take(first.Length-3).ToArray();
                     Check(first.Length is >=9 and <=11&&first.All(x=>x.Count>=1),"crate size outside 9-11 slots: "+at);
                     int Contents(int k)=>Terrain.ExtractContents(first[k].Value);
                     Check(first[0].Count==1&&Contents(0)==gunBlock&&(bool)C("ScGunBlock").GetMethod("IsKnown").Invoke(null,[first[0].Value]),"first slot is not exactly one usable gun: "+at);
@@ -147,6 +153,7 @@ static class TacticalEnemyRegression {
                 }
                 Check(guns.Count==8,"gun pool does not select all eight guns: "+guns.Count);
                 Check(shells,"the shotgun never came with shells");
+                }finally{BlocksManager.Blocks[caseBlock]=heldBlock;BlocksManager.BlockTypeToIndex.Remove(caseType);}
             });
             Test("airdrop/rules-every-n-days-saved-and-switch-restarts-wait",()=>{
                 var type=T("SubsystemScAirdropRules");var project=new Project();var info=new SubsystemGameInfo{TotalElapsedGameTime=5000};

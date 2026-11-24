@@ -228,6 +228,14 @@
   "ScGunBlock:34": {
    "DisplayName": "电击枪",
    "Description": "单发电击枪，近距离一击致命，1 发，半自动。左键开火。"
+  },
+  "ScCaseBlock:0": {
+   "DisplayName": "荒野武器箱",
+   "Description": "可合成，也可通过升级、探索遗迹、击杀生物与敌方 T、空投、拆弹或首次制作某把枪获得。手持使用并消耗一把武器箱钥匙。"
+  },
+  "ScCaseKeyBlock:0": {
+   "DisplayName": "武器箱钥匙",
+   "Description": "用于开启荒野武器箱。"
   }
  },
  "ScCsgoKnives": {
@@ -316,6 +324,41 @@
    "Reloading": "换弹中",
    "Durability": "耐久 {0}%",
    "Broken": "损坏 · 请到装配台维修"
+  }
+ },
+ "ScCsgoBox": {
+  "Cases": {
+   "survivor": {
+    "DisplayName": "荒野武器箱"
+   }
+  },
+  "Dialog": {
+   "Rolling": "正在揭晓……",
+   "Skip": "跳过动画",
+   "Claim": "领取",
+   "RotateHint": "拖动物品可旋转查看",
+   "Won": "获得 {0} ×{1}　[{2}]"
+  },
+  "Message": {
+   "NeedKey": "背包中需要一把武器箱钥匙。",
+   "PendingResult": "请先领取当前开箱结果。",
+   "InvalidCase": "这个武器箱没有有效配置。",
+   "Received": "已获得 {0} ×{1}。",
+   "LevelReward": "升级奖励：获得荒野武器箱 ×{0}。",
+   "TreasureReward": "遗迹奖励：发现荒野武器箱 ×{0}。",
+   "MultiplayerUnsupported": "联机暂不支持开箱；武器箱可以照常掉落、拾取和存放。",
+   "FirstCraft": "首次制作 {0}：获得 1 个荒野武器箱。"
+  },
+  "Rarity": {
+   "Common": "普通",
+   "Uncommon": "稀有",
+   "Rare": "史诗",
+   "Epic": "传说",
+   "Legendary": "金色"
+  },
+  "Recipe": {
+   "Case": "制作一个可开启的荒野武器箱",
+   "Key": "制作一把武器箱钥匙"
   }
  }
 }

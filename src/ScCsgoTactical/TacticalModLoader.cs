@@ -8,6 +8,8 @@ public sealed class TacticalModLoader : ModLoader {
 #if SC_SPLIT
         ScSplitAgentMarker.ValidateCore();
 #endif
+        // 1.7.0 (feedback-1124-170 D18): a player's kill of an enemy T gives the higher case chance.
+        CaseAcquisition.IsHostileAgent=h=>h?.Entity?.FindComponent<ComponentTacticalEnemy>() is {State:not null};
         RegisterFactions();TacticalArmorTargets.Register();TacticalNet.Register();SubsystemScAirdrops.RegisterNetwork();
         TacticalAppearanceIntegration.Initialize(Entity);foreach(string hook in new[]{"ProcessAttackment","OnLoadingFinished","OnAnimateModel","UpdateInput","OnPlayerInputInteract","OnPlayerInputHit","UpdatePlayerInputDig","OnCreatureDied","OnFirstPersonModelDrawing","OnModelDrawExtra","OnModelCalculateBones","OnProjectLoaded","OnProjectDisposed","OnSaveSpawnData","OnReadSpawnData","DeadBeforeDrops","OnScreenEntered"})ModsManager.RegisterHook(hook,this);}
     /// <summary>The prerequisite-mod hint on the main menu (TacticalPrerequisites).</summary>

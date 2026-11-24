@@ -68,6 +68,10 @@ static class TacticalFeedbackRegression {
                 Check((float)C("ScC4Charge").GetField("Power").GetValue(c)==5000f&&(float)C("ScC4Charge").GetField("Radius").GetValue(c)==32f,"unified entry rewrote player C4 power/radius");
             });
             Test("defuse-reward-once-survival-source-only-durable-receipt",()=>{
+                // 1.7.0 (feedback-1124-170 D18): the reward also holds one survivor case when the core has the case block.
+                const int caseBlock=1000;var caseType=C("ScCaseBlock");var heldBlock=BlocksManager.Blocks[caseBlock];bool hadType=BlocksManager.BlockTypeToIndex.TryGetValue(caseType,out int heldIndex);
+                var caseItem=(Block)Activator.CreateInstance(caseType);caseItem.BlockIndex=caseBlock;BlocksManager.Blocks[caseBlock]=caseItem;BlocksManager.BlockTypeToIndex[caseType]=caseBlock;
+                try{
                 foreach(string scenario in new[]{"survival","creative-now","creative-source","old-save","player-c4"}){
                     var registry=Activator.CreateInstance(C("ScGunRegistry"));rf.SetValue(null,registry);
                     var w=World();var p=Player(w.P,0);var reward=T("SubsystemTacticalBombs").GetMethod("Reward",Fields);
@@ -79,14 +83,17 @@ static class TacticalFeedbackRegression {
                     if(scenario!="survival"){Check(batches.Length==0,"reward granted for "+scenario);continue;}
                     Check(batches.Length==1,"no durable reward receipt");var steps=((System.Collections.IEnumerable)batches[0].GetType().GetField("Steps").GetValue(batches[0])).Cast<object>().ToArray();
                     int Amount(int kind)=>steps.Where(s=>(int)s.GetType().GetField("Value").GetValue(s)==(int)C("ScWeaponMaterialBlock").GetMethod("Value").Invoke(null,[kind])).Sum(s=>(int)s.GetType().GetField("Count").GetValue(s));
-                    Check(Amount(0)==2&&Amount(1)==1&&steps.Length==2,"wrong reward contents");
+                    int cases=steps.Where(s=>(int)s.GetType().GetField("Value").GetValue(s)==Terrain.MakeBlockValue(caseBlock,0,0)).Sum(s=>(int)s.GetType().GetField("Count").GetValue(s));
+                    Check(Amount(0)==2&&Amount(1)==1&&cases==1&&steps.Length==3,"wrong reward contents");
                     // The receipt is world state: it survives a save/reload before delivery and is delivered exactly once.
                     var saved=(ValuesDictionary)recovery.GetType().GetMethod("Save").Invoke(recovery,null);var reloaded=C("ScGunRecovery").GetMethod("Load").Invoke(null,[Round(saved)]);
                     int done=(int)reloaded.GetType().GetMethod("Retry").Invoke(reloaded,[(Func<string,IInventory>)(_=>(IInventory)p.Inventory)]);
                     int blank=(int)C("ScWeaponMaterialBlock").GetMethod("Value").Invoke(null,[0]),mech=(int)C("ScWeaponMaterialBlock").GetMethod("Value").Invoke(null,[1]);
                     Check(done==1&&p.Inventory.m_slots.Where(s=>s.Value==blank).Sum(s=>s.Count)==2&&p.Inventory.m_slots.Where(s=>s.Value==mech).Sum(s=>s.Count)==1,"receipt not delivered after reload");
-                    Check((int)reloaded.GetType().GetMethod("Retry").Invoke(reloaded,[(Func<string,IInventory>)(_=>(IInventory)p.Inventory)])==0&&p.Inventory.m_slots.Sum(s=>s.Count)==3,"reward delivered twice");
+                    Check(p.Inventory.m_slots.Where(s=>s.Value==Terrain.MakeBlockValue(caseBlock,0,0)).Sum(s=>s.Count)==1,"case not delivered after reload");
+                    Check((int)reloaded.GetType().GetMethod("Retry").Invoke(reloaded,[(Func<string,IInventory>)(_=>(IInventory)p.Inventory)])==0&&p.Inventory.m_slots.Sum(s=>s.Count)==4,"reward delivered twice");
                 }
+                }finally{BlocksManager.Blocks[caseBlock]=heldBlock;if(hadType)BlocksManager.BlockTypeToIndex[caseType]=heldIndex;else BlocksManager.BlockTypeToIndex.Remove(caseType);}
             });
             // 2026-10-21 player request ("希望动物听到手雷爆炸声会吓到逃跑"): an enemy bomb's blast makes the engine's explosion
             // noise like the player's C4 and the grenades; animals within 70 blocks run.

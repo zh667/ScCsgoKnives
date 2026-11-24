@@ -1,0 +1,28 @@
+{
+  "id": "sccsgobox:survivalcraft_stash",
+  "targetCase": "survivor",
+  "requiresMods": ["SurvivalcraftStash"],
+  "rewards": [
+    { "rarity": "uncommon", "ownerMod": "SurvivalcraftStash", "block": "StashCopperChestBlock", "count": 1, "weight": 1.5 },
+    { "rarity": "uncommon", "ownerMod": "SurvivalcraftStash", "block": "StashChestUpgradeBlock", "data": 0, "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "ClothingBlock", "data": 38, "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "ownerMod": "SurvivalcraftStash", "block": "StashCopperFurnaceBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "ownerMod": "SurvivalcraftStash", "block": "StashFurnaceUpgradeBlock", "data": 0, "count": 1, "weight": 0.8 },
+
+    { "rarity": "rare", "ownerMod": "SurvivalcraftStash", "block": "StashIronChestBlock", "count": 1, "weight": 1.5 },
+    { "rarity": "rare", "ownerMod": "SurvivalcraftStash", "block": "StashChestUpgradeBlock", "data": 1, "count": 1, "weight": 1 },
+    { "rarity": "rare", "block": "ClothingBlock", "data": 39, "count": 1, "weight": 1 },
+    { "rarity": "rare", "ownerMod": "SurvivalcraftStash", "block": "StashIronFurnaceBlock", "count": 1, "weight": 1 },
+    { "rarity": "rare", "ownerMod": "SurvivalcraftStash", "block": "StashFurnaceUpgradeBlock", "data": 1, "count": 1, "weight": 0.8 },
+    { "rarity": "rare", "ownerMod": "SurvivalcraftStash", "block": "StashWirelessTerminalBlock", "data": 0, "clearData": true, "count": 1, "weight": 0.75 },
+
+    { "rarity": "epic", "ownerMod": "SurvivalcraftStash", "block": "StashDiamondChestBlock", "count": 1, "weight": 1.5 },
+    { "rarity": "epic", "ownerMod": "SurvivalcraftStash", "block": "StashChestUpgradeBlock", "data": 2, "count": 1, "weight": 1 },
+    { "rarity": "epic", "block": "ClothingBlock", "data": 40, "count": 1, "weight": 1 },
+    { "rarity": "epic", "ownerMod": "SurvivalcraftStash", "block": "StashDiamondFurnaceBlock", "count": 1, "weight": 1 },
+    { "rarity": "epic", "ownerMod": "SurvivalcraftStash", "block": "StashFurnaceUpgradeBlock", "data": 2, "count": 1, "weight": 0.8 },
+    { "rarity": "epic", "ownerMod": "SurvivalcraftStash", "block": "StashHubBlock", "count": 1, "weight": 0.75 },
+
+    { "rarity": "legendary", "ownerMod": "SurvivalcraftStash", "block": "StashWirelessCraftingTerminalBlock", "data": 0, "clearData": true, "count": 1, "weight": 1 }
+  ]
+}

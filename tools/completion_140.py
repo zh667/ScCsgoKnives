@@ -111,7 +111,10 @@ TRACER_RECORD = ROOT / "docs/tasks/round9-tp-aim-cs2-tracer-hud-20261001-assets.
 ARMOR_HUD_RECORD = ROOT / "docs/tasks/armor-hud-cs2-20261004-assets.json"
 # (deathmatch round 6 R6-5's CS2 muzzle sheets, docs/tasks/muzzle-fx-cs2-20261005-assets.json, shipped once in dmr6d and are no
 # core member since dmr6e: the user asked for the earlier muzzle flash back; the runtime is in tools/archive/muzzle-fx-r6-5.)
-CORE_RECORDS = [SOUND_RECORD, FEEDBACK_RECORD, TRACER_RECORD, ARMOR_HUD_RECORD]
+# 1.7.0 (feedback-1124-170): the survivor weapon case merged from the standalone ScCsgoBox: its textures, model, sounds and
+# case/integration data (both editions, byte-for-byte; the survivor case's creature chance set to 3 %).
+CASE_RECORD = ROOT / "docs/tasks/feedback-1124-170/case-assets.json"
+CORE_RECORDS = [SOUND_RECORD, FEEDBACK_RECORD, TRACER_RECORD, ARMOR_HUD_RECORD, CASE_RECORD]
 RETIRED = {"Assets/Audio/ScCsgoKnives/Hits/headshot_armor.ogg"}
 # dmr6e: the packages are built on the delivered ones, so dmr6d's CS2 muzzle sheets would stay as unused members; they are
 # retired from both core packages and from the resource marker (the members their import record names).

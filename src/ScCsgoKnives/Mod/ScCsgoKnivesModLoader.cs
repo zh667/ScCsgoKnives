@@ -18,6 +18,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("UpdateInput", this);
         ModsManager.RegisterHook("InventorySlotWidgetMeasureOverride", this);
         ModsManager.RegisterHook("OnCreatureDied", this);
+        // 1.7.0 (feedback-1124-170 D16/D18): the merged survivor case's sources.
+        ModsManager.RegisterHook("OnLevelUpdate", this);
+        ModsManager.RegisterHook("OnMinerDig", this);
+        ModsManager.RegisterHook("OnBlockDug", this);
         ScHitSounds.Initialize(); // current-direction-20260929: projectile protection feedback
         ModsManager.RegisterHook("DeadBeforeDrops", this); // current-direction-20260929: a player's protection ends with a dropping death
         ModsManager.RegisterHook("OnProjectLoaded", this);
@@ -227,8 +231,16 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void InventorySlotWidgetMeasureOverride(InventorySlotWidget widget, Vector2 available) => ScInventoryWear.Update(widget);
     public override void OnProjectLoaded(GameEntitySystem.Project project){SubsystemScChicken.RegisterSpawn(project);ScMemoryReport.Log("world");}
-    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experienceOrbDrop,ref bool calculateInKill)
-        =>health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
+    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experienceOrbDrop,ref bool calculateInKill){
+        health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
+        CaseAcquisition.CreatureDied(health,injury);
+    }
+    public override void OnLevelUpdate(ComponentLevel componentLevel)=>CaseAcquisition.LevelUpdate(componentLevel);
+    public override void OnMinerDig(ComponentMiner componentMiner,TerrainRaycastResult raycastResult,ref float digProgress,out bool digged){
+        digged=false;CaseAcquisition.MinerDig(componentMiner,raycastResult,digProgress);
+    }
+    public override void OnBlockDug(ComponentMiner componentMiner,BlockPlacementData digValue,int cellValue,ref int durabilityReduction,ref bool mute,ref int playerDataDugAdd)
+        =>CaseAcquisition.BlockDug(componentMiner,cellValue);
     /// <summary>The world's own death rule decides: a death that drops the inventory ends the player's CS protection; a
     /// world or mod that keeps the inventory (dropAllItems false when CS is asked) keeps it too.</summary>
     public override void DeadBeforeDrops(ComponentHealth componentHealth,ref KillParticleSystem killParticleSystem,ref bool dropAllItems) {
@@ -366,6 +378,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         actions?.Add(ScWorkbenchExtension.RegisterBaseRecipes);
         // Neorxna's recipe cards ask a provider list, not the block (feedback-1120-160 #1); after the recipes exist.
         actions?.Add(ScNeorxnaRecipes.Register);
+        // The merged survivor case (feedback-1124-170): case files, other mods' integration files, then the CS rewards.
+        CaseRegistry.Reload();
+        actions?.Add(CaseRegistry.Reload);
         ScControllerFeedback.Initialize();
         actions?.Add(ScControllerFeedback.Initialize);
         ScEnchantmentCompatibility.Initialize();

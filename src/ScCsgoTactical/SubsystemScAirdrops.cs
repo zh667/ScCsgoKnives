@@ -161,6 +161,8 @@ public sealed class SubsystemScAirdrops : Subsystem,IUpdateable,IDrawable {
         for(int i=0;i<stacks;i++){int pick=r.Int(0,order.Count-1);var res=resources[order[pick]];order.RemoveAt(pick);loot.Add((res.Value,r.Int(res.Min,res.Max)));}
         // 1.7.0 (feedback-1124-170 D13/P7): one guaranteed component share, appended after the table above so every earlier
         // roll of a crate stays what 1.6.0 rolled for the same delivery.
+        // 1.7.0 (D18): every crate also holds one survivor case (when the core has cases registered).
+        if(BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScCaseBlock),out int caseBlock))loot.Add((Terrain.MakeBlockValue(caseBlock,0,0),1));
         loot.Add((ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Blank),r.Int(FixedBlankMin,FixedBlankMax)));
         loot.Add((ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Mechanism),FixedMechanism));
         return loot.ToArray();
