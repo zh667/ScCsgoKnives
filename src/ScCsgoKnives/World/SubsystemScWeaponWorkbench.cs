@@ -125,7 +125,9 @@ public sealed class SubsystemScWeaponWorkbench : SubsystemBlockBehavior {
                             bool levelOk = Creative() || !CraftingRecipesManager.EnableLevelRestrictions || player.PlayerData.Level >= entry.Level;
                             if (!levelOk) { Notice("组装未完成", $"制作需要等级 {entry.Level}，未扣除材料。", ShowList); return; }
                             ScNetWorkbench.Run(Op(ScWorkbenchOpKind.Craft, entry.Value),
-                                () => new(ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, Creative() ? new Dictionary<int, int>() : materials) ? 1 : 0),
+                                // feedback-1124-170 D22: a first gun model also grants a case (SubsystemScFirstCraft).
+                                () => new(SubsystemScFirstCraft.Craft(player, miner.Inventory, entry.Value, Creative(),
+                                    () => ScWeaponCrafting.TryCraft(miner.Inventory, entry.Value, Creative() ? new Dictionary<int, int>() : materials)) ? 1 : 0),
                                 r => Notice(r.Code == 1 ? "组装完成" : "组装未完成", r.Code == 1 ? "组装完成：" + Name(entry) : r.Detail is { Length: > 0 } d ? d : "材料不足或没有成品空位，未扣除材料。", ShowList));
                             return;
                         }

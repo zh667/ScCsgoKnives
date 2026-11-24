@@ -110,6 +110,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
             ScGunSaveGuard.Refuse(project, e.Message); return;
         }
+        ScFirstCraftMirror.BeforeLoad(project, world); // feedback-1124-170 D26: a ledger lost while CS was absent
         if (!ScGunSaveGuard.BeforeLoad(project)) return;
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
@@ -142,6 +143,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void OnProjectXmlSaved(XElement project) {
         ScGunTravel.CaptureSaved(project);
         ScGunRecordMirror.CaptureSaved(project);
+        ScFirstCraftMirror.CaptureSaved(project);
     }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
