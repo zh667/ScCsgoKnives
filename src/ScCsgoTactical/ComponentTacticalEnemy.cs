@@ -323,7 +323,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
             float budget=player?PlayerBudget(spec,stats.Power):stats.Power;
             // Retaliation extends the trace and the damage curve together. Keep the far-range floor instead of the
             // handling table's zero beyond its normal range (otherwise distant shots are only an animation).
-            float power=budget/pellets*stats.Falloff(spec,Retaliating?Math.Min(hit.Distance,stats.Range):hit.Distance)*(player&&hit.Part==ScHitPart.Head?TacticalHostileBalance.PlayerHeadMultiplier:1);
+            float power=budget/pellets*stats.NpcFalloff(spec,Retaliating?Math.Min(hit.Distance,stats.NpcRange(spec)):hit.Distance)*(player&&hit.Part==ScHitPart.Head?TacticalHostileBalance.PlayerHeadMultiplier:1);
             if(!shots.TryGetValue(hit.Body,out var landed))shots[hit.Body]=landed=new ScShotHits();
             landed.Add(hit.Part,power,from+d*hit.Distance,d);
         }

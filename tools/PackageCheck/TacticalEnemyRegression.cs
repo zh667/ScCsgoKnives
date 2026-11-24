@@ -1042,7 +1042,7 @@ static class TacticalEnemyRegression {
                     f.Bodies.AddBody(target);f.Bodies.AddBody(e.Creature.ComponentBody);e.Enemy.Alert(target);
                     dynamic spec=specs.GetValue(Index(gun));int pellets=Math.Max(1,(int)spec.Pellets);
                     dynamic stats=C("EffectiveGunStats").GetMethod("ResolveLevel").Invoke(null,[(object)spec,(int)e.Enemy.State.DisplayValue,false,0]);
-                    float budget=player?(float)(float?)table.Invoke(null,[gun]):(float)stats.Power,falloff=(float)stats.Falloff(spec,6f-.325f);
+                    float budget=player?(float)(float?)table.Invoke(null,[gun]):(float)stats.Power,falloff=(float)stats.NpcFalloff(spec,6f-.325f); // enemy T keep the 1.6.0 curve (feedback-1124-170 Q2)
                     float share=budget/pellets/100;var losses=new List<float>();
                     for(int i=0;i<60;i++){health.Health=1;shoot.Invoke((object)e.Enemy,null);float loss=1-health.Health;if(loss>1e-6f)losses.Add(loss);}
                     Check(losses.Count>0,$"{gun} {(player?"player":"creature")}: no shot of 60 landed");

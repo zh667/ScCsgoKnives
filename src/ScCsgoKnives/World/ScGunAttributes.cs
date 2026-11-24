@@ -114,9 +114,9 @@ public static class ScGunAttributes {
     }
 
     static float FullDamageRange(GunSpec spec, int variant, int level) =>
-        (ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is { } g ? g.FalloffStart : 10f) * ScGunGrowth.RangeScale(variant, level);
+        (ScGunplaySettings.Enabled && ScShotgunTuning.Survival(spec) is { } g ? g.FalloffStart : ScShotgunTuning.Applies(spec) ? ScSurvivalBalance.ShotgunFullTo : 10f) * ScGunGrowth.RangeScale(variant, level);
     static float EndMultiplier(GunSpec spec, int variant, int level) =>
-        ScGunplaySettings.Enabled && ScGunHandling.For(spec.Name) is { } g ? g.FalloffFloor : .6f;
+        ScGunplaySettings.Enabled && ScShotgunTuning.Survival(spec) is { } g ? g.FalloffFloor : ScShotgunTuning.Applies(spec) ? ScSurvivalBalance.ShotgunFloor : .6f;
 
     /// <summary>The growth line: counter state, kills, progress and what the next level is worth.</summary>
     public static string GrowthText(int value, ScGunGrowthMode mode) {
