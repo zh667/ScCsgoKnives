@@ -100,6 +100,8 @@ def main(label, packages, sections="sxkli"):
         g = m0.game("sp", case_dir, pkgs); R["engine"] = g.engine_info(); to_menu(g); F(MUTE)
         R["mods"] = step("mods", F('return string.Join("; ", ModsManager.ModList.Where(m => m.modInfo != null).Select(m => m.modInfo.PackageName + " " + m.modInfo.Version));'))
         start_world()
+        # 1.6.0: the conspicuous C4 alert is a mod setting, off by default; this run checks it on (sp_bombalert covers both)
+        step("C4 alert switch on", F('Game.ModSettingsManager.Set(new[] { "zh667.ScCsgoKnives", "Alerts", "BombAlert" }, true); return "on";'))
         t0 = time.time(); r = F(STRIP)
         while r == "wait" and time.time() - t0 < 120: time.sleep(1); r = F(STRIP)
         x, y, z = [int(v) for v in r.split()]; step("strip", (x, y, z)); ctx["directory"] = F(MAIN + 'return project.FindSubsystem<Game.SubsystemGameInfo>(true).DirectoryName;')
