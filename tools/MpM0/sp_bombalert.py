@@ -41,9 +41,13 @@ CUE_VOLUME = PROJECT + ('Game.SettingsManager.SoundsVolume = 0.01f; var bombs = 
 # How much of the screen the C4 text takes: the game's large message (earlier builds) and our hotbar message, as shares of
 # the game view's height and area.
 TEXT_SHARE = MAIN + ('var gui = pl.ComponentGui; var root = pl.GameWidget.ActualSize; float H(Engine.Vector2 v) => v.Y / root.Y; float A(Engine.Vector2 v) => v.X * v.Y / (root.X * root.Y); '
-    'var big = gui.m_largeMessageWidget.IsVisible ? gui.m_largeMessageWidget.Children.OfType<Game.LabelWidget>().Where(l => l.IsVisible && !string.IsNullOrEmpty(l.Text)).ToList() : new System.Collections.Generic.List<Game.LabelWidget>(); '
+    'var big = gui.m_largeMessageWidget.IsVisible ? gui.m_largeMessageWidget.AllChildren.OfType<Game.LabelWidget>().Where(l => l.IsVisible && !string.IsNullOrEmpty(l.Text)).ToList() : new System.Collections.Generic.List<Game.LabelWidget>(); '
     'var small = gui.m_messageWidget.m_messages.Select(m => m.LabelWidget).Where(l => l.Text != null && l.Text.Contains("C4")).ToList(); '
     'return System.FormattableString.Invariant($"view {root.X:0}x{root.Y:0} | large {big.Sum(l => H(l.ActualSize)):0.000}h {big.Sum(l => A(l.ActualSize)):0.000}a | hotbar {small.Sum(l => H(l.ActualSize)):0.000}h {small.Sum(l => A(l.ActualSize)):0.000}a");')
+# How far each bomb's news has gone for this player (the subsystem's own record: 1 first message, 2 the 20 s one, 3 the 10 s one).
+STAGES = MAIN + ('var bombs = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); var bf = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance; '
+    'var alerts = (System.Collections.IDictionary)typeof(Game.SubsystemTacticalBombs).GetField("alerts", bf).GetValue(bombs); if (!alerts.Contains(pl)) return "none"; var view = alerts[pl]; '
+    'var stage = (System.Collections.Generic.Dictionary<string, int>)view.GetType().GetField("Stage").GetValue(view); return stage.Count == 0 ? "none" : string.Join(",", stage.Values);')
 C4_LINES = MAIN + 'return pl.ComponentGui.m_messageWidget.m_messages.Count(m => m.LabelWidget.Text != null && m.LabelWidget.Text.Contains("C4")).ToString();'
 TO_MOD_SETTINGS = ('var f = typeof(Game.ScreensManager).GetField("m_screens", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static); '
                    'var all = (System.Collections.IDictionary)f.GetValue(null); var s = all.Values.OfType<Game.ModSettingsScreen>().FirstOrDefault(); if (s == null) return "no screen"; Game.ScreensManager.SwitchScreen(s); return "switched";')
@@ -130,8 +134,8 @@ def main(label, packages):
         again = step("setting after the restart", F(SETTING))
         check("the setting survives a restart (still on)", again == "True True", again)
         enter(directory); F(teleport(x, y, z)); F(STAND); F(FPP); time.sleep(1.5)
-        reloaded = step("saved bomb after loading", (F(PROJECT + 'return project.FindSubsystem<Game.SubsystemTacticalBombs>(true).Bombs.Count.ToString();'), alert())); snap("bomb-on-after-restart")
-        check("after the restart the saved bomb is announced (on)", reloaded[0] != "0" and "C4" in reloaded[1].split(" || ")[1], reloaded)
+        reloaded = step("saved bomb after loading", (F(PROJECT + 'return project.FindSubsystem<Game.SubsystemTacticalBombs>(true).Bombs.Count.ToString();'), alert(), F(STAGES))); snap("bomb-on-after-restart")
+        check("after the restart the saved bomb is announced (on): the message was posted (it may already have faded)", reloaded[0] != "0" and reloaded[2] not in ("none", ""), reloaded)
         # once more with 10 s left, and no more than that: count the C4 lines in the hotbar message area
         F(PROJECT + 'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); b.Bombs[0].Charge.Remaining = 10.4f; return "10.4";'); time.sleep(1.5)
         last = step("10 s left", alert()); time.sleep(2.5)

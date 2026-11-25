@@ -10,7 +10,7 @@ from mp_m1 import MAIN, PROJECT, KEEP_ACTIVE, HANDSHAKE, build_arena, teleport
 from sp_gun_visuals import window_of, picture
 
 MUTE = 'Game.SettingsManager.SoundsVolume = 0f; Game.SettingsManager.MusicVolume = 0f; return "muted";'
-ALERT = MAIN + ('var w = pl.ComponentGui.ControlsContainerWidget.AllChildren.OfType<Game.LabelWidget>().FirstOrDefault(l => l.IsVisible && l.Text != null && l.Text.Contains("C4") && l.Text.Contains("·")); '
+ALERT = MAIN + ('var w = pl.ComponentGui.ControlsContainerWidget.AllChildren.OfType<Game.LabelWidget>().FirstOrDefault(l => l.IsVisible && l.Text != null && l.Text.Contains("C4") && l.Text.Contains("·") && !pl.ComponentGui.m_messageWidget.m_messages.Any(m => m.LabelWidget == l)); '
                 'var msg = pl.ComponentGui.m_message; var small = string.Join(" / ", pl.ComponentGui.m_messageWidget.m_messages.Select(m => m.LabelWidget.Text).Where(t => t != null && t.Contains("C4"))); '
                 'return (w == null ? "-" : w.Text) + " || " + (msg == null ? "" : msg.LargeText + " / " + msg.SmallText + " ") + small;')
 PATH = '"zh667.ScCsgoKnives", "Alerts", "BombAlert"'
