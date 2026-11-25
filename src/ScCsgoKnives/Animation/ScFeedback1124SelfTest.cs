@@ -168,12 +168,27 @@ public static class ScFeedback1124SelfTest {
         });
         Test("cases/drop-rates", () => {
             var survivor = new CaseDefinition { CreatureDropChance = .03 };
-            return CaseAcquisition.DropChance(true, survivor) == .15 && CaseAcquisition.DropChance(false, survivor) == .03 && CaseAcquisition.CasesPerLevel == 1;
+            return CaseAcquisition.DropChance(true, survivor) == .15 && CaseAcquisition.DropChance(false, survivor) == .03;
         });
-        Test("cases/level-up-one-each-no-past-levels", () => {
-            var level = new ComponentLevel();
-            return CaseAcquisition.LevelsGained(level, 7) == 0 && CaseAcquisition.LevelsGained(level, 10) == 3 && CaseAcquisition.LevelsGained(level, 10) == 0
-                && CaseAcquisition.LevelsGained(level, 9) == 0 && CaseAcquisition.LevelsGained(level, 11) == 1 && CaseAcquisition.LevelsGained(new ComponentLevel(), 30) == 0;
+        Test("cases/level-rewards-1-2-3-per-level", () => {
+            int[] want = { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3 };
+            return Enumerable.Range(0, want.Length).All(l => CaseAcquisition.CasesForLevel(l) == want[l]) && CaseAcquisition.CasesForLevels(1, 30) == 9 + 20 + 30
+                && CaseAcquisition.CasesForLevels(9, 12) == 1 + 2 + 2 && CaseAcquisition.CasesForLevels(20, 21) == 3;
+        });
+        Test("cases/level-rewards-once-per-level-persisted", () => {
+            var ledger = new ScFirstCraftLedger(); var got = new List<int>();
+            int R(int level, bool creative = false, string who = "player/1") { int n = CaseAcquisition.LevelReward(ledger, who, level, creative); got.Add(n); return n; }
+            R(7);            // first sight of a world from before the rule: recorded, nothing granted
+            R(8); R(8);      // one level, once
+            R(12);           // a jump: 9, 10 (1 each), 11, 12 (2 each)
+            R(10); R(12);    // died and lost levels, regained: nothing
+            for (int i = 0; i < 2; i++) { var v = new ValuesDictionary(); ledger.Save(v); ledger = ScFirstCraftLedger.Load(Round(v)); }
+            R(12); R(13);    // after two saves: still nothing for 12, 2 for 13
+            R(20, true);     // creative: recorded, nothing granted
+            R(21);           // 3
+            R(5, false, "player/2"); R(6, false, "player/2"); // another player counts on its own
+            detail = string.Join(",", got);
+            return got.SequenceEqual(new[] { 0, 1, 0, 6, 0, 0, 0, 2, 0, 3, 0, 1 });
         });
 
         // --- D22-D28: first-craft reward -------------------------------------------------------------------------

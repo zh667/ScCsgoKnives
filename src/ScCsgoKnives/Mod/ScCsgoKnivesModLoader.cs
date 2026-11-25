@@ -111,6 +111,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
             ScGunSaveGuard.Refuse(project, e.Message); return;
         }
         ScFirstCraftMirror.BeforeLoad(project, world); // feedback-1124-170 D26: a ledger lost while CS was absent
+        ScFirstCraftMirror.MergeTreeLevels(project, world); // 1.6.0: rewarded levels shared by the world tree
         if (!ScGunSaveGuard.BeforeLoad(project)) return;
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
@@ -144,6 +145,7 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ScGunTravel.CaptureSaved(project);
         ScGunRecordMirror.CaptureSaved(project);
         ScFirstCraftMirror.CaptureSaved(project);
+        ScFirstCraftMirror.CaptureTreeLevels(project);
     }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed

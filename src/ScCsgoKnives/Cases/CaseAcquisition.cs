@@ -7,20 +7,23 @@ namespace Game;
 /// Outside creative mode and only where the world is decided (single player, or the multiplayer server):
 /// <list type="bullet">
 /// <item>a player's kill of an enemy T: 15 %; of another creature: the case file's own chance (3 %);</item>
-/// <item>each level a player gains: 1 case (5 before); loading a world never grants past levels;</item>
+/// <item>each new highest level a player reaches: 1 case for levels 2-10, 2 for 11-20, 3 from 21 (user decision 2026-11-25),
+/// recorded per player and world (SubsystemScFirstCraft's ledger, shared by the world tree) so no level is ever rewarded
+/// twice; the first time a world is seen the player's current level is recorded without a reward;</item>
 /// <item>digging next to a grave's treasure marker: 1 per marker; digging a natural cairn: 1-2.</item>
 /// </list>
 /// Airdrops, defused enemy bombs and first-crafted guns grant theirs through their own transactions.</summary>
 public static class CaseAcquisition {
     public const double HostileDropChance = .15;
-    public const int CasesPerLevel = 1;
+    /// <summary>Cases for reaching one level.</summary>
+    public static int CasesForLevel(int level) => level <= 1 ? 0 : level <= 10 ? 1 : level <= 20 ? 2 : 3;
+    /// <summary>Cases for going from <paramref name="from"/> (already rewarded) to <paramref name="to"/>.</summary>
+    public static int CasesForLevels(int from, int to) { int n = 0; for (int l = Math.Max(from, 1) + 1; l <= to; l++) n += CasesForLevel(l); return n; }
     /// <summary>Whether a dying creature is an enemy T; the agents package sets it (false without it).</summary>
     public static Func<ComponentHealth, bool> IsHostileAgent;
     /// <summary>Headless fixture: the random source; never assigned by gameplay.</summary>
     internal static Func<double> RollOverride;
     static readonly System.Random s_random = new();
-    sealed class Known { public int Level; }
-    static readonly ConditionalWeakTable<ComponentLevel, Known> s_levels = new();
     static readonly Point3[] s_neighbors = [new(1, 0, 0), new(-1, 0, 0), new(0, 1, 0), new(0, -1, 0), new(0, 0, 1), new(0, 0, -1)];
 
     static double Roll() => RollOverride?.Invoke() ?? s_random.NextDouble();
@@ -41,16 +44,21 @@ public static class CaseAcquisition {
         health.Project.FindSubsystem<SubsystemPickables>(true).AddPickable(CaseValue(definition), 1, (body.BoundingBox.Min + body.BoundingBox.Max) / 2f, null, null, health.Entity);
     }
 
-    /// <summary>Cases for levels gained since this component was first seen (the first sighting after a load only records).</summary>
-    public static int LevelsGained(ComponentLevel level, int current) {
-        if (!s_levels.TryGetValue(level, out var known)) { s_levels.Add(level, new Known { Level = current }); return 0; }
-        int gained = Math.Max(0, current - known.Level); known.Level = Math.Max(known.Level, current); return gained;
+    /// <summary>The cases a player earns now: records <paramref name="current"/> as rewarded and returns how many cases go
+    /// with it. A player seen for the first time is recorded without a reward (worlds from before this rule, D: no flood);
+    /// a level at or below the record gives nothing (a level lost and regained).</summary>
+    public static int LevelReward(ScFirstCraftLedger ledger, string owner, int current, bool creative) {
+        if (ledger is null || string.IsNullOrEmpty(owner)) return 0;
+        if (!ledger.TryGetRewardedLevel(owner, out int rewarded)) { ledger.RaiseRewardedLevel(owner, current); return 0; }
+        if (current <= rewarded || !ledger.RaiseRewardedLevel(owner, current)) return 0;
+        return creative ? 0 : CasesForLevels(rewarded, current);
     }
     public static void LevelUpdate(ComponentLevel level) {
-        var player = level?.m_componentPlayer; if (player is null) return;
-        int gained = LevelsGained(level, Math.Max(1, (int)Math.Floor(player.PlayerData.Level)));
-        if (gained <= 0 || !ScNet.IsAuthority || Creative(player.Project)) return;
-        int count = gained * CasesPerLevel;
+        var player = level?.m_componentPlayer; if (player is null || !ScNet.IsAuthority) return;
+        var ledger = player.Project?.FindSubsystem<SubsystemScFirstCraft>(false)?.Ledger; if (ledger is null) return;
+        string owner = ScGunHolders.RecoveryOwner(player.Project, player.ComponentMiner?.Inventory);
+        int count = LevelReward(ledger, owner, Math.Max(1, (int)Math.Floor(player.PlayerData.Level)), Creative(player.Project));
+        if (count <= 0) return;
         Grant(player.ComponentMiner, count);
         Tell(player, "LevelReward", "升级奖励：获得荒野武器箱 ×{0}。", count);
     }

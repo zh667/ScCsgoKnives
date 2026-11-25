@@ -12,6 +12,16 @@ namespace Game;
 public sealed class ScFirstCraftLedger {
     public const int Schema = 1;
     readonly Dictionary<string, SortedSet<string>> m_made = new(StringComparer.Ordinal);
+    /// <summary>1.6.0 (user decision 2026-11-25): the highest level each player has been rewarded for in this world.</summary>
+    readonly Dictionary<string, int> m_levels = new(StringComparer.Ordinal);
+    public bool TryGetRewardedLevel(string owner, out int level) => m_levels.TryGetValue(owner ?? "", out level);
+    public IReadOnlyDictionary<string, int> RewardedLevels => m_levels;
+    /// <summary>Raises the recorded level (never lowers it). False when nothing changed or it cannot be recorded.</summary>
+    public bool RaiseRewardedLevel(string owner, int level) {
+        if (Unsupported is not null || string.IsNullOrEmpty(owner) || owner.Length > 256 || level < 1 || level > 10000) return false;
+        if (m_levels.TryGetValue(owner, out int old) && old >= level) return false;
+        m_levels[owner] = level; return true;
+    }
     /// <summary>A saved ledger of an unsupported schema, kept exactly as it was and never added to.</summary>
     public ValuesDictionary Unsupported { get; private set; }
     public bool Has(string owner, string gun) => m_made.TryGetValue(owner ?? "", out var set) && set.Contains(gun);
@@ -31,6 +41,12 @@ public sealed class ScFirstCraftLedger {
             players.SetValue((i++).ToString(System.Globalization.CultureInfo.InvariantCulture), entry);
         }
         values.SetValue("Players", players);
+        var levels = new ValuesDictionary(); i = 0;
+        foreach (var (owner, level) in m_levels.OrderBy(p => p.Key, StringComparer.Ordinal)) {
+            var entry = new ValuesDictionary(); entry.SetValue("Owner", owner); entry.SetValue("Level", level);
+            levels.SetValue((i++).ToString(System.Globalization.CultureInfo.InvariantCulture), entry);
+        }
+        values.SetValue("Levels", levels);
     }
     /// <summary>Unknown gun names are kept as they are (a newer catalogue); a future schema is kept untouched and read-only.</summary>
     public static ScFirstCraftLedger Load(ValuesDictionary values) {
@@ -43,6 +59,8 @@ public sealed class ScFirstCraftLedger {
             if (owner.Length == 0) continue;
             foreach (string gun in entry.GetValue("Guns", "").Split(';', StringSplitOptions.RemoveEmptyEntries)) ledger.TryMark(owner, gun);
         }
+        foreach (var pair in values.GetValue<ValuesDictionary>("Levels", new ValuesDictionary()))
+            if (pair.Value is ValuesDictionary entry) ledger.RaiseRewardedLevel(entry.GetValue("Owner", ""), entry.GetValue("Level", 0));
         return ledger;
     }
     static ValuesDictionary Copy(ValuesDictionary v) { var x = new XElement("Values"); v.Save(x); var r = new ValuesDictionary(); r.ApplyOverrides(x); return r; }
@@ -120,6 +138,67 @@ public static class ScFirstCraftMirror {
             ScGunRecordMirror.Write(Storage.GetSystemPath(Storage.CombinePaths(world, FileName)), document);
         }
         catch (Exception e) { KnifeLog.Warning("[FIRST_CRAFT] ledger copy not written; the world save itself is unaffected: " + e.Message); }
+    }
+    // ---- the rewarded levels, shared by a whole world tree (a main world and its sub-worlds, ScGunTree.RootOf): a file
+    // ScCsgoLevelRewards.xml in the tree's root folder holds the highest rewarded level per player. Merging takes the
+    // maximum of both sides, so it can only ever stop a reward from being granted twice, never grant one.
+    public const string LevelFileName = "ScCsgoLevelRewards.xml";
+    static readonly object s_levels = new();
+    static Dictionary<string, int> ReadLevels(string path) {
+        var result = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (string candidate in new[] { path, path + ".bak" }) {
+            if (!System.IO.File.Exists(candidate)) continue;
+            try {
+                foreach (var e in XElement.Load(candidate).Elements("Player")) {
+                    string owner = (string)e.Attribute("Owner"); int level = (int?)e.Attribute("Level") ?? 0;
+                    if (!string.IsNullOrEmpty(owner) && level is >= 1 and <= 10000) result[owner] = Math.Max(level, result.GetValueOrDefault(owner));
+                }
+                return result;
+            } catch (Exception e) { KnifeLog.Warning("[LEVEL_REWARDS] " + System.IO.Path.GetFileName(candidate) + " unreadable: " + e.Message); }
+        }
+        return result;
+    }
+    static string TreeFile(string worldDirectory) {
+        if (string.IsNullOrWhiteSpace(worldDirectory)) return null;
+        string root = ScGunTree.RootOf(worldDirectory) ?? worldDirectory;
+        return Storage.GetSystemPath(Storage.CombinePaths(root, LevelFileName));
+    }
+    static XElement LedgerGroup(XElement project, bool create) {
+        var subs = project?.Element("Subsystems"); if (subs is null) return null;
+        var group = Group(subs, SubsystemScFirstCraft.GroupName);
+        if (group is null && create) { group = new XElement("Values", new XAttribute("Name", SubsystemScFirstCraft.GroupName)); subs.Add(group); }
+        return group;
+    }
+    /// <summary>ProjectXmlLoad: the tree's rewarded levels raise this world's (a sub-world entered for the first time, or a
+    /// world whose ledger is behind the others).</summary>
+    public static int MergeTreeLevels(XElement project, WorldInfo world) {
+        try {
+            string path = TreeFile(world?.DirectoryName); if (path is null) return 0;
+            Dictionary<string, int> tree; lock (s_levels) tree = ReadLevels(path);
+            if (tree.Count == 0) return 0;
+            var group = LedgerGroup(project, true); var values = new ValuesDictionary(); values.ApplyOverrides(group);
+            var ledger = ScFirstCraftLedger.Load(values); int raised = 0;
+            foreach (var (owner, level) in tree) if (ledger.RaiseRewardedLevel(owner, level)) raised++;
+            if (raised == 0) return 0;
+            var saved = new ValuesDictionary(); ledger.Save(saved); var replacement = new XElement("Values", new XAttribute("Name", SubsystemScFirstCraft.GroupName)); saved.Save(replacement);
+            group.ReplaceWith(replacement); return raised;
+        } catch (Exception e) { KnifeLog.Warning("[LEVEL_REWARDS] tree levels not merged: " + e.Message); return 0; }
+    }
+    /// <summary>OnProjectXmlSaved: this world's rewarded levels raise the tree's. Never fails the save.</summary>
+    public static void CaptureTreeLevels(XElement project) {
+        try {
+            string world = Text(Group(project.Element("Subsystems"), "ScGunBlockBehavior"), ScGunTravel.SourcePath);
+            string path = TreeFile(world); var group = LedgerGroup(project, false); if (path is null || group is null) return;
+            var values = new ValuesDictionary(); values.ApplyOverrides(group); var ledger = ScFirstCraftLedger.Load(values);
+            if (ledger.RewardedLevels.Count == 0) return;
+            lock (s_levels) {
+                var tree = ReadLevels(path); bool changed = false;
+                foreach (var (owner, level) in ledger.RewardedLevels) if (level > tree.GetValueOrDefault(owner)) { tree[owner] = level; changed = true; }
+                if (!changed) return;
+                var doc = new XElement("ScLevelRewards", new XAttribute("Format", 1), tree.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => new XElement("Player", new XAttribute("Owner", p.Key), new XAttribute("Level", p.Value))));
+                ScGunRecordMirror.Write(path, doc);
+            }
+        } catch (Exception e) { KnifeLog.Warning("[LEVEL_REWARDS] tree levels not written; the save itself is unaffected: " + e.Message); }
     }
     /// <summary>ProjectXmlLoad: restores a lost ledger group from the world folder's copy (or its .bak).</summary>
     public static bool BeforeLoad(XElement project, WorldInfo world) {
