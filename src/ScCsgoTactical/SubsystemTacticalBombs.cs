@@ -201,6 +201,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         }else foreach(var b in Bombs){var c=b.Charge;if(c.Remaining<=0)continue;c.Tick(elapsed);if(c.Remaining>0&&c.NextCue() is string cue){StopSound(ref b.Cue);b.Cue=Play(cue,c.Position,.85f);}}
         foreach(var p in players.ComponentPlayers){
             if(!ScNet.IsLocal(p)){if(authority&&TacticalNet.Defuse(p) is not null)StepRemote(p);continue;} // another client's player: its client and the server
+            Alert(p);
             var b=Target(p);var h=View(p);h.Panel.IsVisible=b!=null;
             bool down=Down(p);if(!down)h.SuppressUntilRelease=false;
             if(!authority&&TacticalNet.View(p) is {} view)TacticalNet.SendDefuse(down,view);
@@ -217,6 +218,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             if(start&&authority)Begin(p,b,kit);
         }
         foreach(var p in hud.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){hud[p].Panel.ParentWidget?.Children.Remove(hud[p].Panel);hud.Remove(p);}
+        foreach(var p in alerts.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){alerts[p].Label.ParentWidget?.Children.Remove(alerts[p].Label);alerts.Remove(p);}
         foreach(var p in remote.Keys.Where(p=>!players.ComponentPlayers.Contains(p)||!ScNet.IsRemoteDriven(p)).ToArray())remote.Remove(p);
         blasts.RemoveAll(b=>time.GameTime-b.Started>ScC4Blast.Lifetime);
         if(authority)Publish();
@@ -290,7 +292,12 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     /// how many items were destroyed.</summary>
     public int ClearLoot(Vector3 at,float radius,string seed){
         int destroyed=0;double now=WorldTime;
-        bool Clear(Vector3 p)=>!terrain.Raycast(at+Vector3.UnitY*.15f,p,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v)).HasValue;
+        // A drop counts as exposed when the blast reaches it in the open: from just above the charge to just above the
+        // drop, or (when the space above the charge is open) from 3 blocks over it, so drops on a lower step or down an open
+        // hole are reached too; a solid wall still shelters what is behind it (1.6.0: a player saw drops below survive).
+        bool Blocked(Vector3 a,Vector3 b)=>terrain.Raycast(a,b,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v)).HasValue;
+        Vector3 low=at+Vector3.UnitY*.6f,high=at+Vector3.UnitY*3f;bool openAbove=!Blocked(low,high);
+        bool Clear(Vector3 p){var q=p+Vector3.UnitY*.35f;return !Blocked(low,q)||openAbove&&!Blocked(high,q);}
         if(Project.FindSubsystem<SubsystemPickables>(false) is {} pickables)
             foreach(var item in pickables.Pickables){
                 if(item.ToRemove||item.Count<=0||Vector3.DistanceSquared(item.Position,at)>radius*radius)continue;
@@ -328,11 +335,57 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             foreach(var p in players.ComponentPlayers)if(Vector3.DistanceSquared(p.ComponentBody.Position,c.Position)<=4*c.Radius*c.Radius)
                 Notice(p,ScWeaponText.Get("EnemyC4LootDestroyed","敌方 C4 炸毁了附近的物资"),Color.Orange,false);
     }
+    // ---- 1.6.0 (user decision 2026-11-25): a planted enemy bomb is announced clearly to every player within AlertRange:
+    // once a large message with where it is, then a line under the top of the screen with direction, distance and the fuse
+    // (red and blinking in the last 10 s), and a marker over the charge drawn through terrain. The beeps already speed up
+    // (ScC4Charge.NextCue: from one a second to ten). A multiplayer client shows the same from the bombs the server sends.
+    public const float AlertRange=96;
+    sealed class AlertView{public LabelWidget Label;public readonly HashSet<string> Announced=[];}
+    readonly Dictionary<ComponentPlayer,AlertView> alerts=[];
+    /// <summary>Where a point lies as seen from a view: 前方, 右前方 ... 左前方.</summary>
+    public static string Direction(Vector3 forward,Vector3 from,Vector3 to){
+        var d=new Vector2(to.X-from.X,to.Z-from.Z);var f=new Vector2(forward.X,forward.Z);
+        if(d.LengthSquared()<1e-4f||f.LengthSquared()<1e-6f)return "脚下";
+        float a=MathF.Atan2(f.X*d.Y-f.Y*d.X,Vector2.Dot(f,d))*180/MathF.PI; // + : to the right (Survivalcraft: +X right of -Z forward)
+        string[] names=["前方","右前方","右方","右后方","后方","左后方","左方","左前方"];
+        int sector=(int)MathF.Round(((a%360)+360)%360/45f)%8;return ScWeaponText.Get("Direction"+sector,names[sector]);
+    }
+    void Alert(ComponentPlayer p){
+        if(!alerts.TryGetValue(p,out var view)){
+            view=alerts[p]=new AlertView{Label=ScGunUi.Label("",.8f,Color.Red)};view.Label.HorizontalAlignment=WidgetAlignment.Center;view.Label.VerticalAlignment=WidgetAlignment.Near;
+            view.Label.Margin=new Vector2(0,64);view.Label.IsHitTestVisible=false;view.Label.TextAnchor=TextAnchor.HorizontalCenter;p.ComponentGui.ControlsContainerWidget.Children.Add(view.Label);
+        }
+        var eye=p.GameWidget?.ActiveCamera?.ViewPosition??p.ComponentBody.Position;var forward=p.GameWidget?.ActiveCamera?.ViewDirection??p.ComponentBody.Matrix.Forward;
+        Bomb near=null;float best=AlertRange*AlertRange;
+        foreach(var b in Bombs){if(b.Charge.Remaining<=0)continue;float d=Vector3.DistanceSquared(eye,b.Charge.Position);if(d<best){best=d;near=b;}}
+        if(near is null){view.Label.IsVisible=false;return;}
+        float distance=MathF.Sqrt(best),left=near.Charge.Remaining;string where=Direction(forward,eye,near.Charge.Position);
+        if(near.BombId.Length>0&&view.Announced.Add(near.BombId))
+            p.ComponentGui.DisplayLargeMessage(ScWeaponText.Get("EnemyC4Planted","敌方安放了 C4！"),
+                string.Format(ScWeaponText.Get("EnemyC4PlantedWhere","{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离"),where,distance,left),4f,0f);
+        view.Label.IsVisible=true;
+        view.Label.Text=string.Format(ScWeaponText.Get("EnemyC4Alert","⚠ 敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒"),where,distance,left);
+        view.Label.Color=left<=10&&Time.FrameIndex/15%2==0?Color.White:Color.Red;
+    }
+    readonly PrimitivesRenderer3D overlay=new();
+    /// <summary>A red beam and diamond over each live enemy bomb, drawn without the depth test so walls do not hide it.</summary>
+    void DrawMarkers(Camera camera){
+        var batch=overlay.FlatBatch(0,DepthStencilState.None,RasterizerState.CullNone,BlendState.AlphaBlend);
+        foreach(var b in Bombs){
+            var c=b.Charge;if(c.Remaining<=0||Vector3.DistanceSquared(camera.ViewPosition,c.Position)>AlertRange*AlertRange)continue;
+            float pulse=.55f+.45f*MathF.Abs(MathF.Sin((float)time.GameTime*MathF.PI*(c.Remaining<=10?4:1.5f)));var color=new Color(255,40,30)*pulse;
+            var top=c.Position+Vector3.UnitY*2.6f;batch.QueueLine(c.Position+Vector3.UnitY*.3f,top,color);
+            var right=camera.ViewRight*.35f;var up=Vector3.UnitY*.35f;var m=top+up;
+            batch.QueueTriangle(m+up,m+right,m-right,color);batch.QueueTriangle(m-up,m-right,m+right,color);
+        }
+        overlay.Flush(camera.ViewProjectionMatrix);
+    }
     public void Draw(Camera camera,int order) {
+        DrawMarkers(camera);
         var block=(ScC4Block)BlocksManager.Blocks[BlocksManager.GetBlockIndex<ScC4Block>(true)];
         foreach(var b in Bombs){if(Vector3.DistanceSquared(camera.ViewPosition,b.Charge.Position)>128*128)continue;var m=ScC4Handoff.Settled(Matrix.CreateRotationY(b.Charge.Yaw)*Matrix.CreateTranslation(b.Charge.Position),b.Charge.Fuse-b.Charge.Remaining,time.GameTime);
             block.DrawPlanted(renderer,Color.White,ref m,new DrawBlockEnvironmentData{SubsystemTerrain=terrain,Light=15});}
         foreach(var b in blasts)b.Draw(renderer,camera,time.GameTime);renderer.Flush(camera.ViewProjectionMatrix);
     }
-    public override void Dispose(){ScWeaponActionGate.Reserved-=Blocking;foreach(var b in Bombs.ToArray())Remove(b);foreach(var b in playerCharges.Values)Cancel(b);playerCharges.Clear();foreach(var h in hud.Values)h.Panel.ParentWidget?.Children.Remove(h.Panel);hud.Clear();remote.Clear();base.Dispose();}
+    public override void Dispose(){ScWeaponActionGate.Reserved-=Blocking;foreach(var b in Bombs.ToArray())Remove(b);foreach(var b in playerCharges.Values)Cancel(b);playerCharges.Clear();foreach(var a in alerts.Values)a.Label.ParentWidget?.Children.Remove(a.Label);alerts.Clear();foreach(var h in hud.Values)h.Panel.ParentWidget?.Children.Remove(h.Panel);hud.Clear();remote.Clear();base.Dispose();}
 }
