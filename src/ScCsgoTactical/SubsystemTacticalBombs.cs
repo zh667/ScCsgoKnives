@@ -149,6 +149,21 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     void StopSound(ref Sound sound){if(sound is null)return;sound.Stop();sound.Dispose();audio.m_sounds.Remove(sound);sound=null;}
     // mp-user-logs-20261002: a sound the engine cannot decode (an Android host: SoundData rejected c4_disarmstart, the whole
     // bomb update failed for that frame) costs the sound only, never the defuse it accompanies.
+    // 1.6.0 (user 2026-11-25): with the conspicuous alert switch on (ScBombAlertSetting) an enemy bomb's beeps are moderately
+    // louder and carry further: 1.0 at full strength out to 14 blocks instead of 0.85 out to 8 (1.5.0, switch off); at 12
+    // blocks that is 1.0 instead of 0.43, at 24 blocks 0.41 instead of 0.17. The explosion is played at 2 out to 32 blocks
+    // (the engine caps a sound at 1), so it stays at least as loud as the beeps at every distance and is the louder recording.
+    // Same fall-off as SubsystemAudio.CalculateVolume.
+    public const float BeepVolume=.85f,BeepNear=8f,LoudBeepVolume=1f,LoudBeepNear=14f;
+    public static float CueGain(bool loud,float distance){
+        float near=loud?LoudBeepNear:BeepNear;float falloff=distance<=near?1f:near/(near+2f*(distance-near));
+        return (loud?LoudBeepVolume:BeepVolume)*falloff;
+    }
+    Sound PlayCue(string path,Vector3 position){
+        if(SettingsManager.SoundsVolume<=0)return null;
+        try{var s=audio.CreateSound("Audio/ScCsgoKnives/"+path);s.Volume=SettingsManager.SoundsVolume*CueGain(ScBombAlertSetting.Enabled,audio.CalculateListenerDistance(position));s.Play();return s;}
+        catch(Exception e){KnifeDiagnostics.WarnOnce("tactical-bomb-sound-"+path,$"[CS Tactical] sound {path} unavailable: {e.GetType().Name}: {e.Message}");return null;}
+    }
     Sound Play(string path,Vector3 position,float volume){
         if(SettingsManager.SoundsVolume<=0)return null;
         try{var s=audio.CreateSound("Audio/ScCsgoKnives/"+path);s.Volume=SettingsManager.SoundsVolume*volume*audio.CalculateVolume(audio.CalculateListenerDistance(position),8);s.Play();return s;}
@@ -196,9 +211,9 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
                 }
                 if(defused)continue;
                 if(c.Remaining<=0||c.Tick(elapsed)){Remove(b);Explode(c);continue;}
-                if(c.NextCue() is string cue){StopSound(ref b.Cue);b.Cue=Play(cue,c.Position,.85f);}
+                if(c.NextCue() is string cue){StopSound(ref b.Cue);b.Cue=PlayCue(cue,c.Position);}
             }
-        }else foreach(var b in Bombs){var c=b.Charge;if(c.Remaining<=0)continue;c.Tick(elapsed);if(c.Remaining>0&&c.NextCue() is string cue){StopSound(ref b.Cue);b.Cue=Play(cue,c.Position,.85f);}}
+        }else foreach(var b in Bombs){var c=b.Charge;if(c.Remaining<=0)continue;c.Tick(elapsed);if(c.Remaining>0&&c.NextCue() is string cue){StopSound(ref b.Cue);b.Cue=PlayCue(cue,c.Position);}}
         foreach(var p in players.ComponentPlayers){
             if(!ScNet.IsLocal(p)){if(authority&&TacticalNet.Defuse(p) is not null)StepRemote(p);continue;} // another client's player: its client and the server
             Alert(p);
@@ -343,7 +358,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     // device its own) a planted enemy bomb is announced clearly to every local player within AlertRange:
     // once a large message with where it is, then a line under the top of the screen with direction, distance and the fuse
     // (red and blinking in the last 10 s), and a marker over the charge drawn through terrain. The beeps already speed up
-    // (ScC4Charge.NextCue: from one a second to ten). A multiplayer client shows the same from the bombs the server sends.
+    // (ScC4Charge.NextCue: from one a second to ten); with the switch on they are also louder (CueGain). A multiplayer client shows the same from the bombs the server sends.
     public const float AlertRange=96;
     sealed class AlertView{public LabelWidget Label;public readonly HashSet<string> Announced=[];}
     readonly Dictionary<ComponentPlayer,AlertView> alerts=[];

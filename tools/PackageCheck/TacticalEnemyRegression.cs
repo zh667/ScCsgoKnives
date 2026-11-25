@@ -1465,6 +1465,15 @@ static class TacticalEnemyRegression {
                     Check(ones.SequenceEqual(Enumerable.Range(0,64).Select(s=>Loss(40,1,"0123456789abcdef0123456789abcdef",s)))&&ones.Contains(0)&&ones.Contains(1),"single items not rolled deterministically both ways");
                 }finally{bombs.Dispose();}
             });
+            // 1.6.0 (user 2026-11-25): with the alert switch on the bomb beeps are moderately louder; off keeps 1.5.0; the
+            // explosion (2 out to 32 blocks, capped at 1 by the engine) stays at least as loud at every distance.
+            Test("feedback-1124/bomb-beeps-louder-only-with-the-alert-switch",()=>{
+                float Gain(bool loud,float d)=>(float)T("SubsystemTacticalBombs").GetMethod("CueGain").Invoke(null,[loud,d]);
+                float Blast(float d)=>Math.Min(1f,2f*(d<=32?1f:32f/(32f+2f*(d-32f))));
+                foreach(float d in new[]{2f,8f,12f,24f,48f,90f})Check(Gain(true,d)>=Gain(false,d)&&Gain(true,d)<=1f&&Blast(d)>=Gain(true,d),$"at {d}: on {Gain(true,d)} off {Gain(false,d)} blast {Blast(d)}");
+                Check(Math.Abs(Gain(false,2)-.85f)<1e-6&&Math.Abs(Gain(false,12)-.425f)<1e-4,"switch off is not the 1.5.0 beep (0.85 out to 8 blocks)");
+                Check(Gain(true,12)>=2*Gain(false,12)&&Gain(true,24)>=2*Gain(false,24),"switch on is not clearly louder at a distance");
+            });
             if(includeRendering)Test("kit-native-item-draw-carry-and-cs2-sounds",()=>{
                 using var zip=ZipFile.OpenRead(dlcPath);using var png=(zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.png")??zip.GetEntry("Assets/Textures/ScCsgoTactical/defuser_item.webp")).Open();var img=Image.Load(png);Check(img.Pixels.Count(c=>c.A>0)>1000,"empty kit atlas");var block=BlocksManager.Blocks[707];
                 foreach(var mode in Enum.GetValues<DrawBlockMode>()){var renderer=new PrimitivesRenderer3D();var m=Matrix.Identity;block.DrawBlock(renderer,707,Color.White,1,ref m,new DrawBlockEnvironmentData{Light=15,DrawBlockMode=mode});var v=renderer.TexturedBatches.Single().TriangleVertices.ToArray();Check(v.Length>24&&v.All(p=>p.TexCoord.X>=0&&p.TexCoord.X<=1),"invalid kit mesh/UV");}
