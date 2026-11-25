@@ -15,8 +15,18 @@ public static class ScWorldModes {
     public static IReadOnlyList<ScWorldMode> Read(XElement capsule) =>
         capsule?.Element("Modes")?.Elements("Mode").Select(e => new ScWorldMode((string)e.Attribute("Id"), (string)e.Attribute("Name") ?? (string)e.Attribute("Id"), (bool?)e.Attribute("Required") == true))
             .Where(m => !string.IsNullOrEmpty(m.Id)).ToArray() ?? [];
+    // 1.6.0 performance round: the starter-equipment subsystem asks Dedicated every frame, and every call parsed the whole
+    // capsule XML (about 20 KB of garbage a frame in a small world, more with more preserved data; sp_perf1124). The list
+    // is now kept with the capsule string it came from and read again only when the capsule is replaced.
+    sealed class Cached { public string Raw; public IReadOnlyList<ScWorldMode> Modes; }
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<SubsystemScCompatibility, Cached> s_cache = new();
     public static IReadOnlyList<ScWorldMode> Of(Project project) {
-        try { return Store(project) is { } store ? Read(store.ReadCapsule()) : []; }
+        try {
+            if (Store(project) is not { } store) return [];
+            string raw = store.RawCapsule; var cached = s_cache.GetOrCreateValue(store);
+            if (raw is not null && ReferenceEquals(cached.Raw, raw) && cached.Modes is not null) return cached.Modes;
+            var modes = Read(store.ReadCapsule()); cached.Raw = raw; cached.Modes = modes; return modes;
+        }
         catch (Exception e) { KnifeDiagnostics.WarnOnce("world-modes-read", "[CS_MODE] world mode list unreadable, kept as saved: " + e.Message); return []; }
     }
     /// <summary>Adds the mode's marker to this world, or updates its name/required flag. False when the world has no capsule store.</summary>

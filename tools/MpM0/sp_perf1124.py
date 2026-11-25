@@ -91,6 +91,11 @@ STATICS = STATICS.replace("\n", " ")
 # Managed bytes each CS update and draw path allocates per call, measured in the game by calling it 40 times on the
 # game thread: every IUpdateable component of the scene's creatures and every IUpdateable/IDrawable subsystem of the CS
 # assemblies, plus each creature model's Animate and DrawExtras. Grouped by type.
+# The starter-equipment subsystem's pending checkpoint and what one call of its Update allocates, five times.
+STARTER = MAIN + ('var s = project.FindSubsystem<Game.SubsystemScStarterEquipment>(true); var f = s.GetType().GetField("m_pendingCheckpoint", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); '
+    'var pend = f == null ? "?" : string.Join(",", ((System.Collections.IEnumerable)f.GetValue(s)).Cast<object>()); var r = new System.Collections.Generic.List<long>(); '
+    'for (int i = 0; i < 5; i++) { long a = System.GC.GetAllocatedBytesForCurrentThread(); ((Game.IUpdateable)s).Update(0.016f); r.Add(System.GC.GetAllocatedBytesForCurrentThread() - a); } '
+    'var ready = string.Join(",", players.PlayersData.Select(d => d.PlayerIndex + ":" + d.IsReadyForPlaying)); return "pending [" + pend + "] ready [" + ready + "] bytes " + string.Join(",", r);')
 ALLOCS = MAIN + r'''
 var cam = pl.GameWidget.ActiveCamera; var rows = new System.Collections.Generic.Dictionary<string, double[]>();
 void Measure(string key, System.Action call) { for (int i = 0; i < 3; i++) call(); long a = System.GC.GetAllocatedBytesForCurrentThread(); var sw = System.Diagnostics.Stopwatch.StartNew(); for (int i = 0; i < 40; i++) call(); sw.Stop();
@@ -135,7 +140,7 @@ def main(label, packages, cycles="5"):
             c["scene"] = step(f"cycle {i} scene", g.func(VANILLA_SCENE if vanilla else SCENE)); time.sleep(3)
             g.func(START); time.sleep(8); c["frames"] = step(f"cycle {i} frames", json.loads(g.func(STOP)))
             if not vanilla and i in (0, int(cycles) - 1):
-                try: c["allocs"] = step(f"cycle {i} allocations per call", g.func(ALLOCS, 300))
+                try: c["starter"] = step(f"cycle {i} starter", g.func(STARTER)); c["allocs"] = step(f"cycle {i} allocations per call", g.func(ALLOCS, 300))
                 except Exception as e: c["allocs"] = step("allocations failed", str(e)[:400])
             m = g.mark(); t = time.time(); parts = g.func(EXIT, 300); g.wait('Entered screen "MainMenu"', 300, m)
             save, dispose, menu = [float(v) for v in parts.split()]

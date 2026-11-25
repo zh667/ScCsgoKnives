@@ -171,6 +171,9 @@ public sealed class SubsystemScCompatibility : Subsystem {
         if(version!=ScCompatibility.Protocol)throw new InvalidOperationException("不支持的双向兼容协议");
         saved=new ValuesDictionary();foreach(var pair in values)if(pair.Key!="Class")saved.SetValue(pair.Key,pair.Value);
     }
+    /// <summary>The capsule text as stored (the same string object until <see cref="WriteCapsule"/> replaces it): lets a
+    /// reader keep what it derived from it instead of parsing the XML again.</summary>
+    public string RawCapsule=>saved?.GetValue<string>("Capsule",null);
     /// <summary>The world's capsule as it will be saved (a copy; a world never loaded through the capsule yet has an empty one).</summary>
     public XElement ReadCapsule(){
         string raw=saved?.GetValue<string>("Capsule",null);
