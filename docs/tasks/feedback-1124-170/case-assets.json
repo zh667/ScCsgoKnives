@@ -138,7 +138,8 @@
   },
   "target": "src/ScCsgoKnives/Assets/ScCsgoBox/Cases/survivor.json",
   "member": "Assets/ScCsgoBox/Cases/survivor.json",
-  "sha256": "b251a10e79490cd979105d002b7ea0f8d447070a4eb5c41c2382117a69bfef84",
-  "bytes": 2989
+  "edited": "2026-11-25: the three vanilla gold rewards moved to the epic tier (gold holds only CS knives)",
+  "sha256": "f6fe69d63c84848bfc4dc5e8f80ebd99d02ad215b6603dc5a437aefa81d2d89a",
+  "bytes": 2974
  }
 ]
