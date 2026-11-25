@@ -40,7 +40,7 @@ CUE_VOLUME = PROJECT + ('Game.SettingsManager.SoundsVolume = 0.01f; var bombs = 
     'var cue = f.GetValue(b) as Engine.Audio.BaseSound; return System.FormattableString.Invariant($"{(cue == null ? -1f : cue.Volume / 0.01f):0.000} {d:0.0}");')
 # How much of the screen the C4 text takes: the game's large message (earlier builds) and our hotbar message, as shares of
 # the game view's height and area.
-TEXT_SHARE = MAIN + ('var gui = pl.ComponentGui; var root = pl.GameWidget.ActualSize; float H(Engine.Vector2 v) => v.Y / root.Y, A(Engine.Vector2 v) => v.X * v.Y / (root.X * root.Y); '
+TEXT_SHARE = MAIN + ('var gui = pl.ComponentGui; var root = pl.GameWidget.ActualSize; float H(Engine.Vector2 v) => v.Y / root.Y; float A(Engine.Vector2 v) => v.X * v.Y / (root.X * root.Y); '
     'var big = gui.m_largeMessageWidget.IsVisible ? gui.m_largeMessageWidget.Children.OfType<Game.LabelWidget>().Where(l => l.IsVisible && !string.IsNullOrEmpty(l.Text)).ToList() : new System.Collections.Generic.List<Game.LabelWidget>(); '
     'var small = gui.m_messageWidget.m_messages.Select(m => m.LabelWidget).Where(l => l.Text != null && l.Text.Contains("C4")).ToList(); '
     'return System.FormattableString.Invariant($"view {root.X:0}x{root.Y:0} | large {big.Sum(l => H(l.ActualSize)):0.000}h {big.Sum(l => A(l.ActualSize)):0.000}a | hotbar {small.Sum(l => H(l.ActualSize)):0.000}h {small.Sum(l => A(l.ActualSize)):0.000}a");')
