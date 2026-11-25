@@ -125,7 +125,9 @@ def main(label, packages):
         F(MAIN + 'Engine.Window.Size = new Engine.Point2(540, 960); return "portrait";'); time.sleep(1)
         # a second bomb so that its first message shows in the portrait window too
         step("second bomb", F(PROJECT + f'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); return b.PlantFrom(new Engine.Vector3({x} + 3.5f, {y}, {z} - 12 + .5f), 0f, false).ToString();'))
-        F(set_alert(True)); time.sleep(1.2); snap("bomb-on-portrait"); R["data"]["textSharePortrait"] = step("C4 text share of the screen (portrait)", F(TEXT_SHARE))
+        F(set_alert(True)); time.sleep(1.2); snap("bomb-on-portrait"); R["data"]["textSharePortrait"] = sp = step("C4 text share of the screen (portrait)", F(TEXT_SHARE))
+        st = step("news record per bomb", F(STAGES))
+        check("a second bomb gets its own message too (portrait window)", len(st.split(",")) == 2 and " hotbar 0.000h" not in sp, {"share": sp, "stages": st})
         F(PROJECT + 'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); if (b.Bombs.Count > 1) b.Bombs.RemoveRange(1, b.Bombs.Count - 1); return "one bomb";')
         stored = step("on and saved", F(set_alert(True, save=True)))
         m = g.mark(); g.cmd('EXEC GameManager.SaveProject(true, true);'); time.sleep(2); g.close(); g = None
