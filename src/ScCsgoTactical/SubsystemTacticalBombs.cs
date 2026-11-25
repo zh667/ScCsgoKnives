@@ -377,16 +377,20 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         // Off (the default): what 1.5.0 gave. Turned on while a bomb is already planted, its message still comes.
         if(!ScBombAlertSetting.Enabled)return;
         var eye=p.GameWidget?.ActiveCamera?.ViewPosition??p.ComponentBody.Position;var forward=p.GameWidget?.ActiveCamera?.ViewDirection??p.ComponentBody.Matrix.Forward;
-        Bomb near=null;float best=AlertRange*AlertRange;
-        foreach(var b in Bombs){if(b.Charge.Remaining<=0||b.BombId.Length==0)continue;float d=Vector3.DistanceSquared(eye,b.Charge.Position);if(d<best){best=d;near=b;}}
-        if(near is null)return;
-        float distance=MathF.Sqrt(best),left=near.Charge.Remaining;string where=Direction(forward,eye,near.Charge.Position);
-        view.Stage.TryGetValue(near.BombId,out int stage);
-        int due=left<=10?3:left<=20?2:1;if(stage>=due)return;
-        if(stage==0)p.ComponentGui.DisplaySmallMessage(ScWeaponText.Get("EnemyC4Planted","敌方安放了 C4！")+" "
+        // every live bomb within AlertRange gets its own news; one message per frame at most, nearest first
+        Bomb next=null;float best=AlertRange*AlertRange;int nextDue=0;
+        foreach(var b in Bombs){
+            if(b.Charge.Remaining<=0||b.BombId.Length==0)continue;float d=Vector3.DistanceSquared(eye,b.Charge.Position);if(d>=best)continue;
+            float left0=b.Charge.Remaining;int due0=left0<=10?3:left0<=20?2:1;view.Stage.TryGetValue(b.BombId,out int stage0);
+            if(stage0<due0){best=d;next=b;nextDue=due0;}
+        }
+        if(next is null)return;
+        float distance=MathF.Sqrt(best),left=next.Charge.Remaining;string where=Direction(forward,eye,next.Charge.Position);
+        if(!view.Stage.ContainsKey(next.BombId))p.ComponentGui.DisplaySmallMessage(ScWeaponText.Get("EnemyC4Planted","敌方安放了 C4！")+" "
             +string.Format(ScWeaponText.Get("EnemyC4PlantedWhere","{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离"),where,distance,left),Color.Orange,false,false);
-        else p.ComponentGui.DisplaySmallMessage(string.Format(ScWeaponText.Get("EnemyC4LastSeconds","敌方 C4 还有 {2:0} 秒爆炸！{0} {1:0} 格"),where,distance,left),due==3?Color.Red:Color.Orange,due==3,false);
-        view.Stage[near.BombId]=due;
+        else p.ComponentGui.DisplaySmallMessage(string.Format(ScWeaponText.Get("EnemyC4LastSeconds","敌方 C4 还有 {2:0} 秒爆炸！{0} {1:0} 格"),where,distance,left),nextDue==3?Color.Red:Color.Orange,nextDue==3,false);
+        view.Stage[next.BombId]=nextDue;
+        if(view.Stage.Count>32)foreach(var id in view.Stage.Keys.Where(id=>!Bombs.Any(x=>x.BombId==id)).ToArray())view.Stage.Remove(id);
     }
     readonly PrimitivesRenderer3D overlay=new();
     /// <summary>A red beam and diamond over each live enemy bomb, drawn without the depth test so walls do not hide it.</summary>
