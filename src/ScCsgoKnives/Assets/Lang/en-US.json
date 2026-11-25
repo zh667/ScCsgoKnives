@@ -256,7 +256,7 @@
    "EnemyC4LootDestroyed": "The enemy C4 destroyed the supplies nearby",
    "EnemyC4Planted": "Enemy C4 planted!",
    "EnemyC4PlantedWhere": "{0} {1:0} blocks · explodes in {2:0} s: defuse it or get clear",
-   "EnemyC4Alert": "⚠ Enemy C4 · {0} {1:0} blocks · {2:0.0} s",
+   "EnemyC4Alert": "WARNING: Enemy C4 · {0} {1:0} blocks · {2:0.0} s",
    "Direction0": "ahead",
    "Direction1": "ahead right",
    "Direction2": "right",

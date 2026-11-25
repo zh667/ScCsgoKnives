@@ -256,7 +256,7 @@
    "EnemyC4LootDestroyed": "敌方 C4 炸毁了附近的物资",
    "EnemyC4Planted": "敌方安放了 C4！",
    "EnemyC4PlantedWhere": "{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离",
-   "EnemyC4Alert": "⚠ 敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒",
+   "EnemyC4Alert": "【警告】敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒",
    "Direction0": "前方",
    "Direction1": "右前方",
    "Direction2": "右方",

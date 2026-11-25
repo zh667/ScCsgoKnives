@@ -346,6 +346,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     public const float AlertRange=96;
     sealed class AlertView{public LabelWidget Label;public readonly HashSet<string> Announced=[];}
     readonly Dictionary<ComponentPlayer,AlertView> alerts=[];
+    // (The game font has no "⚠" glyph: it drew an empty box in the first build, so the line starts with 【警告】.)
     /// <summary>Where a point lies as seen from a view: 前方, 右前方 ... 左前方.</summary>
     public static string Direction(Vector3 forward,Vector3 from,Vector3 to){
         var d=new Vector2(to.X-from.X,to.Z-from.Z);var f=new Vector2(forward.X,forward.Z);
@@ -356,7 +357,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     }
     void Alert(ComponentPlayer p){
         if(!alerts.TryGetValue(p,out var view)){
-            view=alerts[p]=new AlertView{Label=ScGunUi.Label("",.8f,Color.Red)};view.Label.HorizontalAlignment=WidgetAlignment.Center;view.Label.VerticalAlignment=WidgetAlignment.Near;
+            view=alerts[p]=new AlertView{Label=ScGunUi.Label("",1f,Color.Red)};view.Label.HorizontalAlignment=WidgetAlignment.Center;view.Label.VerticalAlignment=WidgetAlignment.Near;
             view.Label.Margin=new Vector2(0,64);view.Label.IsHitTestVisible=false;view.Label.TextAnchor=TextAnchor.HorizontalCenter;p.ComponentGui.ControlsContainerWidget.Children.Add(view.Label);
         }
         var eye=p.GameWidget?.ActiveCamera?.ViewPosition??p.ComponentBody.Position;var forward=p.GameWidget?.ActiveCamera?.ViewDirection??p.ComponentBody.Matrix.Forward;
@@ -368,7 +369,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             p.ComponentGui.DisplayLargeMessage(ScWeaponText.Get("EnemyC4Planted","敌方安放了 C4！"),
                 string.Format(ScWeaponText.Get("EnemyC4PlantedWhere","{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离"),where,distance,left),4f,0f);
         view.Label.IsVisible=true;
-        view.Label.Text=string.Format(ScWeaponText.Get("EnemyC4Alert","⚠ 敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒"),where,distance,left);
+        view.Label.Text=string.Format(ScWeaponText.Get("EnemyC4Alert","【警告】敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒"),where,distance,left);
         view.Label.Color=left<=10&&Time.FrameIndex/15%2==0?Color.White:Color.Red;
     }
     readonly PrimitivesRenderer3D overlay=new();
