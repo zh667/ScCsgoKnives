@@ -64,9 +64,9 @@ STATICS = r'''
 bool World(object o) => o is GameEntitySystem.Project || o is GameEntitySystem.Subsystem || o is GameEntitySystem.Entity || o is GameEntitySystem.Component;
 var found = new System.Collections.Generic.List<string>();
 foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies().Where(a => (a.GetName().Name ?? "").StartsWith("ScCsgo"))) {
-  System.Type[] types; try { types = asm.GetTypes(); } catch (System.Reflection.ReflectionTypeLoadException e) { types = e.Types.Where(x => x != null).ToArray(); }
+  System.Type[] types; try { types = asm.GetTypes(); } catch (System.Reflection.ReflectionTypeLoadException e) { types = e.Types.Where(x => x != null).ToArray(); } catch (System.Exception) { continue; }
   foreach (var type in types) {
-    if (type.ContainsGenericParameters) continue;
+    try { if (type.ContainsGenericParameters || type.IsByRefLike) continue; } catch (System.Exception) { continue; }
     System.Reflection.FieldInfo[] fields; try { fields = type.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic); } catch (System.Exception) { continue; }
     foreach (var f in fields) {
       object v; try { if (f.IsLiteral || f.FieldType.IsPointer || f.FieldType.IsByRefLike || f.FieldType.IsFunctionPointer) continue; v = f.GetValue(null); } catch { continue; } if (v == null) continue;
@@ -82,7 +82,7 @@ foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies().Where(a => (a
         if (o is System.Collections.IEnumerable seq) { int n = 0; foreach (var e in seq) { if (n++ > 2000) break; Look(e, depth + 1); } return; }
         if (depth < 1 && !ot.IsValueType && ot.Namespace == "Game") foreach (var g in ot.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)) { object x; try { x = g.GetValue(o); } catch { continue; } Look(x, depth + 1); }
       }
-      Look(v, 0);
+      try { Look(v, 0); } catch (System.Exception) { found.Add(asm.GetName().Name + ":" + type.FullName + "." + f.Name + " (not readable)"); continue; }
       if (hits > 0) found.Add(asm.GetName().Name + ":" + type.FullName + "." + f.Name + " x" + hits + " " + kind);
     }
   }
