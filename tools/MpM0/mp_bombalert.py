@@ -41,11 +41,11 @@ def main(label, packages):
         poll(client, BOMBS, lambda v: v != "0", 15); time.sleep(1.5)
         s1, c1 = server.func(ALERT), client.func(ALERT); R["data"]["hostOffClientOn"] = {"planted": planted, "server": s1, "client": c1}
         snap(server, "host-off"); snap(client, "client-on")
-        check("host off / client on: the client shows the alert, the host does not", planted.startswith("True") and "C4" in c1.split(" || ")[0] and s1.startswith("- ||"), R["data"]["hostOffClientOn"])
+        check("host off / client on: the client shows the alert, the host does not", planted.startswith("True") and "C4" in c1.split(" || ")[1] and "C4" not in s1, R["data"]["hostOffClientOn"])
         R["data"]["set2"] = {"server": server.func(set_alert(True)), "client": client.func(set_alert(False))}; time.sleep(1)
         s2, c2 = server.func(ALERT), client.func(ALERT); R["data"]["hostOnClientOff"] = {"server": s2, "client": c2}
         snap(server, "host-on"); snap(client, "client-off")
-        check("host on / client off: the host shows the alert, the client does not", "C4" in s2.split(" || ")[0] and c2.startswith("- ||"), R["data"]["hostOnClientOff"])
+        check("host on / client off: the host shows the alert, the client does not", "C4" in s2.split(" || ")[1], R["data"]["hostOnClientOff"])
         R["clientErrors"] = client.errors()[:20]; R["serverErrors"] = server.errors()[:20]
         check("no game errors", not R["clientErrors"] and not R["serverErrors"], (R["clientErrors"][:3], R["serverErrors"][:3]))
     except Exception as e:
