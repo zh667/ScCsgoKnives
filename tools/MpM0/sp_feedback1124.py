@@ -187,8 +187,9 @@ def main(label, packages, sections="bcdefg"):
                 step(f"knockback {tag}", data["knockback"][tag])
             kb = data["knockback"]
             if isinstance(kb.get("heavy"), dict):
-                check("b: a close Nova shot pushes a cow clearly farther than a heavy body", kb["cow"]["displacement"] > kb["heavy"]["displacement"] + .2, kb)
-            check("b: a close Nova shot pushes a cow back", isinstance(kb.get("cow"), dict) and kb["cow"]["displacement"] > .3, kb.get("cow"))
+                check("b: a close Nova shot pushes a cow (350) at least twice as far as a rhino (1500)", kb["cow"]["displacement"] >= 2 * kb["heavy"]["displacement"], kb)
+            check("b: within 6 blocks a cow and a wolf are pushed at least twice as far as by the same shot from 9 blocks",
+                  kb["cow"]["displacement"] >= 2 * kb["cow-at-9"]["displacement"] and kb["wolf"]["displacement"] >= 2 * kb["wolf-at-9"]["displacement"], kb)
             R["data"]["shotguns"] = data
         section("b shotguns", shotguns)
 
@@ -294,7 +295,11 @@ def main(label, packages, sections="bcdefg"):
                 loose, crate = after.split(" | ")
                 check("d: loose iron next to the charge is gone; iron 20+ blocks away stays", "IronIngotBlockx5" not in loose and "IronIngotBlockx4" in loose, loose)
                 check("d: a recent death spot's drop, the CS gun and the knife stay", "CoalChunkBlockx6" in loose and "ScGunBlockx1" in loose and "ScKnifeBlockx1" in loose, loose)
-                check("d: crate stacks halved (8->4, 5->3), the gun kept", crate.startswith("IronIngotBlockx4;CoalChunkBlockx3") and "ScGunBlockx1" in crate, crate)
+                # stacks of 2 or more lose half (rounded down); a single item (the bread, the fresh gun without a record) is kept
+                # or lost by the stable roll
+                slots = crate.split(";")
+                check("d: crate stacks lose half (iron 8->4, coal 5->3, copper 3->2); single items rolled", slots[0] == "IronIngotBlockx4" and slots[1] == "CoalChunkBlockx3"
+                      and slots[3] == "CopperIngotBlockx2" and slots[2] in ("BreadBlockx1", "-") and slots[4] in ("ScGunBlockx1", "-"), crate)
             else: check("d: the blast setup", False, setup)
             snap("c4-blast-after")
         section("d blast", blast)
@@ -404,6 +409,7 @@ def main(label, packages, sections="bcdefg"):
             t_res = step("40 T", kill(None, 40, True)); c_res = step("60 cows", kill("Cow_Brown", 60, False))
             lvl = F(MAIN + 'return ((int)pl.PlayerData.Level).ToString();')
             CASES = MAIN + 'int c = Game.Terrain.MakeBlockValue(Game.BlocksManager.GetBlockIndex<Game.ScCaseBlock>(true), 0, 0); return Game.ScInventoryTransaction.Count(pl.ComponentMiner.Inventory, c).ToString();'
+            F(MAIN + 'var inv = pl.ComponentMiner.Inventory; for (int s = 0; s < inv.SlotsCount; s++) inv.RemoveSlotItems(s, inv.GetSlotCount(s)); return "emptied";')
             c0 = int(F(CASES)); F(set_level(int(lvl) + 1)); time.sleep(1.5); c1 = int(F(CASES))
             R["data"]["drops"] = {"T": t_res, "cows": c_res, "levelUpCases": c1 - c0, "level": [int(lvl), int(lvl) + 1]}
             step("drops", R["data"]["drops"])
