@@ -215,17 +215,11 @@ def main(label, packages, sections="bcdefg"):
             step("front burst", (before, front))
             R["data"]["c4FrontBurst"] = {"before": before, "after": front}
             check("c: front shots wear the shield and leave the T unhurt", int(front[1]) > int(before[1]) and float(front[4]) == float(before[4]), {"before": before, "after": front})
-            # wait for the plant (it stops within 12 blocks); a planted T shows its pistol
-            planted = None; t0 = time.time()
-            while time.time() - t0 < 40:
-                s = F(STATE(eid))
-                if s == "gone": break
-                if s.split()[3] == "False": planted = s; break
-                time.sleep(.5)
-            time.sleep(2.5); after_plant = F(STATE(eid)); step("after plant", after_plant)
+            # round 9: the shield T is an escort and never plants; it keeps its shield while the shield holds
+            time.sleep(12); after_wait = F(STATE(eid)); step("after 12 s close to the player", after_wait)
             bombs = F(PROJECT + 'return project.FindSubsystem<Game.SubsystemTacticalBombs>(true).Bombs.Count.ToString();')
-            check("c: it plants the bomb and then holds its pistol, no shield", planted is not None and after_plant.split()[0] == "False" and after_plant.split()[2] == "False" and int(bombs) >= 1,
-                  {"planted": planted, "after": after_plant, "bombs": bombs})
+            check("c: the shield T does not plant (round 9: escort only) and keeps its shield up", after_wait != "gone" and after_wait.split()[0] == "True" and int(bombs) == 0,
+                  {"after": after_wait, "bombs": bombs})
             F(PROJECT + 'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); foreach (var x in b.Bombs.ToArray()) b.Bombs.Remove(x); return "defused for the test";')
             # a second one: the shield breaks under fire
             eid2 = F(spawn); time.sleep(.6)
@@ -271,6 +265,9 @@ def main(label, packages, sections="bcdefg"):
                 'pk.AddPickable(iron, 5, at + new Engine.Vector3(3, 0.3f, 0), Engine.Vector3.Zero, null, null); '
                 'pk.AddPickable(coal, 6, at + new Engine.Vector3(-6, 0.3f, 0), Engine.Vector3.Zero, null, null); '
                 'bombs.DeathMarks.Add(new Game.TacticalBlastLoot.DeathMark(at + new Engine.Vector3(-6, 0.3f, 0), info.TotalElapsedGameTime)); '
+                'var tt = project.FindSubsystem<Game.SubsystemTerrain>(true); int hx = (int)System.MathF.Floor(at.X - 3), hz = (int)System.MathF.Floor(at.Z); for (int d = 1; d <= 5; d++) tt.ChangeCell(hx, (int)at.Y - d, hz, 0); '
+                'pk.AddPickable(coal, 5, new Engine.Vector3(hx + 0.5f, at.Y - 4.7f, hz + 0.5f), Engine.Vector3.Zero, null, null); '
+                'bombs.DeathMarks.Add(new Game.TacticalBlastLoot.DeathMark(new Engine.Vector3(hx + 0.5f, at.Y + 0.3f, hz + 0.5f), info.TotalElapsedGameTime)); '
                 'pk.AddPickable(gunv, 1, at + new Engine.Vector3(0, 0.3f, 3), Engine.Vector3.Zero, null, null); '
                 'pk.AddPickable(knife, 1, at + new Engine.Vector3(0, 0.3f, -3), Engine.Vector3.Zero, null, null); '
                 'pk.AddPickable(iron, 4, at + new Engine.Vector3(0, 0.3f, 20), Engine.Vector3.Zero, null, null); '
@@ -279,10 +276,17 @@ def main(label, packages, sections="bcdefg"):
                 'var chest = project.FindSubsystem<Game.SubsystemBlockEntities>(true).GetBlockEntity(cx, cy, cz)?.Entity.FindComponent<Game.ComponentChest>(); if (chest == null) return "no crate entity"; '
                 'chest.AddSlotItems(0, iron, 8); chest.AddSlotItems(1, coal, 5); chest.AddSlotItems(2, Game.Terrain.MakeBlockValue(Game.BreadBlock.Index), 1); chest.AddSlotItems(3, Game.Terrain.MakeBlockValue(Game.CopperIngotBlock.Index), 3); '
                 'chest.AddSlotItems(4, gunv, 1); '
-                'bool planted = bombs.PlantFrom(at, 0f, false); if (planted) bombs.Bombs[bombs.Bombs.Count - 1].Charge.Remaining = 1.5f; '
+                'bool planted = bombs.PlantFrom(at, 0f, false); if (planted) bombs.Bombs[bombs.Bombs.Count - 1].Charge.Remaining = 4f; '
                 'return planted + " " + cx + " " + cy + " " + cz;'))
             step("blast setup", setup)
-            time.sleep(5)
+            where = F(PROJECT + 'var pk = project.FindSubsystem<Game.SubsystemPickables>(true); var bombs = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); '
+                      'return string.Join(";", pk.Pickables.Where(p => !p.ToRemove).Select(p => Game.BlocksManager.Blocks[Game.Terrain.ExtractContents(p.Value)].GetType().Name + "@" + p.Position.ToString())) + " | marks " + string.Join(";", bombs.DeathMarks.Select(m => m.Position.ToString()));')
+            step("before blast", where); R["data"]["blastBefore"] = where
+            time.sleep(2.2)
+            PROT = PROJECT + ('var pk = project.FindSubsystem<Game.SubsystemPickables>(true); var bombs = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); var info = project.FindSubsystem<Game.SubsystemGameInfo>(true); '
+                      'return string.Join(";", pk.Pickables.Where(p => !p.ToRemove).Select(p => Game.BlocksManager.Blocks[Game.Terrain.ExtractContents(p.Value)].GetType().Name + "x" + p.Count + "@" + p.Position.ToString() + " protected " + Game.TacticalBlastLoot.Protected(p.Position, bombs.DeathMarks, info.TotalElapsedGameTime))) + " | bombs " + bombs.Bombs.Count + " t " + info.TotalElapsedGameTime.ToString("0.0");')
+            step("2 s before the blast", F(PROT))
+            time.sleep(4)
             if setup.startswith("True"):
                 cx, cy, cz = [int(v) for v in setup.split()[1:]]
                 after = F(MAIN + (
@@ -295,6 +299,7 @@ def main(label, packages, sections="bcdefg"):
                 loose, crate = after.split(" | ")
                 check("d: loose iron next to the charge is gone; iron 20+ blocks away stays", "IronIngotBlockx5" not in loose and "IronIngotBlockx4" in loose, loose)
                 check("d: a recent death spot's drop, the CS gun and the knife stay", "CoalChunkBlockx6" in loose and "ScGunBlockx1" in loose and "ScKnifeBlockx1" in loose, loose)
+                check("d: a death drop that fell 5 blocks down an open hole under the death spot stays (the blast reaches into the hole)", "CoalChunkBlockx5" in loose, loose)
                 # stacks of 2 or more lose half (rounded down); a single item (the bread, the fresh gun without a record) is kept
                 # or lost by the stable roll
                 slots = crate.split(";")
@@ -330,7 +335,8 @@ def main(label, packages, sections="bcdefg"):
             R["data"]["caseTiers"] = tiers
             guns = [r for r in results if "ScGunBlock" in r or "Template" in r]
             left = F(MAIN + 'var inv = pl.ComponentMiner.Inventory; int cv = Game.Terrain.MakeBlockValue(Game.BlocksManager.GetBlockIndex<Game.ScCaseBlock>(true), 0, 0), kv = Game.Terrain.MakeBlockValue(Game.BlocksManager.GetBlockIndex<Game.ScCaseKeyBlock>(true)); return Game.ScInventoryTransaction.Count(inv, cv) + " " + Game.ScInventoryTransaction.Count(inv, kv);')
-            check("e: 20 cases opened, each consuming one case and one key", left == "5 5", {"left": left, "tiers": tiers})
+            # round 9: cases open without a key; the 25 keys handed over stay untouched
+            check("e: 20 cases opened, each consuming one case and no key (round 9)", left == "5 25", {"left": left, "tiers": tiers})
             check("e: at level 1 no gun above level 1 is drawn", all(" lvl0 " in r or " lvl1 " in r for r in results), [r for r in results if " lvl0 " not in r and " lvl1 " not in r])
             # a portrait window
             size = F('var s = Engine.Window.Size; return s.X + " " + s.Y;')
@@ -350,7 +356,7 @@ def main(label, packages, sections="bcdefg"):
                 'return "key[" + Show(kb) + "] case[" + Show(cb) + "] copper key -> " + (key == null ? "none" : Game.BlocksManager.Blocks[Game.Terrain.ExtractContents(key.ResultValue)].GetType().Name) '
                 '+ "; iron key -> " + (oldKey == null ? "none" : "match") + "; copper case -> " + (box == null ? "none" : Game.BlocksManager.Blocks[Game.Terrain.ExtractContents(box.ResultValue)].GetType().Name);'))
             step("recipes", recipes); R["data"]["recipes"] = recipes
-            check("e: the copper key and copper case recipes are in the crafting grid; the old iron key is not", "copper key -> ScCaseKeyBlock" in recipes and "iron key -> none" in recipes and "copper case -> ScCaseBlock" in recipes, recipes)
+            check("e: the copper case recipe is in the crafting grid; no key recipe at all (round 9)", "key[]" in recipes and "copper key -> none" in recipes and "iron key -> none" in recipes and "copper case -> ScCaseBlock" in recipes, recipes)
             check("e: multiplayer refusal", None, "not run: needs the 1.9.3.2_MP engine with a second process")
         section("e cases", cases)
 
@@ -408,14 +414,19 @@ def main(label, packages, sections="bcdefg"):
                 return f"{killed} {cases} {parts}"
             t_res = step("40 T", kill(None, 40, True)); c_res = step("60 cows", kill("Cow_Brown", 60, False))
             lvl = F(MAIN + 'return ((int)pl.PlayerData.Level).ToString();')
-            CASES = MAIN + 'int c = Game.Terrain.MakeBlockValue(Game.BlocksManager.GetBlockIndex<Game.ScCaseBlock>(true), 0, 0); return Game.ScInventoryTransaction.Count(pl.ComponentMiner.Inventory, c).ToString();'
+            # inventory and the ground (a reward that does not fit drops at the feet)
+            CASES = MAIN + 'int c = Game.Terrain.MakeBlockValue(Game.BlocksManager.GetBlockIndex<Game.ScCaseBlock>(true), 0, 0); return (Game.ScInventoryTransaction.Count(pl.ComponentMiner.Inventory, c) + project.FindSubsystem<Game.SubsystemPickables>(true).Pickables.Where(p => p.Value == c && !p.ToRemove).Sum(p => p.Count)).ToString();'
+            LEDGER = MAIN + ('var s = project.FindSubsystem<Game.SubsystemScFirstCraft>(true); var owner = Game.ScGunHolders.RecoveryOwner(project, pl.ComponentMiner.Inventory); '
+                             'return owner + " " + (s.Ledger.TryGetRewardedLevel(owner, out int l) ? l.ToString() : "none") + " level " + pl.PlayerData.Level.ToString(System.Globalization.CultureInfo.InvariantCulture);')
             F(MAIN + 'var inv = pl.ComponentMiner.Inventory; for (int s = 0; s < inv.SlotsCount; s++) inv.RemoveSlotItems(s, inv.GetSlotCount(s)); return "emptied";')
-            c0 = int(F(CASES)); F(set_level(int(lvl) + 1)); time.sleep(1.5); c1 = int(F(CASES))
-            R["data"]["drops"] = {"T": t_res, "cows": c_res, "levelUpCases": c1 - c0, "level": [int(lvl), int(lvl) + 1]}
+            ledger0 = F(LEDGER); target = max(int(lvl), int(ledger0.split()[1]) if ledger0.split()[1].isdigit() else 0) + 1
+            c0 = int(F(CASES)); F(set_level(target)); time.sleep(1.5); c1 = int(F(CASES)); ledger1 = F(LEDGER)
+            expect = 3 if target >= 21 else 2 if target >= 11 else 1
+            R["data"]["drops"] = {"T": t_res, "cows": c_res, "levelUpCases": c1 - c0, "level": [int(lvl), target], "ledger": [ledger0, ledger1], "expected": expect}
             step("drops", R["data"]["drops"])
             tk, tc, tp = [int(v) for v in t_res.split()]; ck, cc, cp = [int(v) for v in c_res.split()]
             check("g: kills registered (T and cows died)", tk == 40 and ck == 60, (t_res, c_res))
-            check("g: one level gained gives one case", c1 - c0 == 1, (c0, c1))
+            check("g: one level above the record gives its cases (round 9: 1 / 2 / 3 per level for 2-10 / 11-20 / 21+)", c1 - c0 == expect, R["data"]["drops"])
             check("g: T drop cases about 15 % (2-12 of 40) and components (deaths drop parts half the time)", 1 <= tc <= 14 and tp > 0, t_res)
             check("g: cows drop cases about 3 % (0-7 of 60) and no components", cc <= 8 and cp == 0, c_res)
         section("g drops", drops)

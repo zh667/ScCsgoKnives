@@ -135,9 +135,13 @@ def main(label, packages, sections="sxkli"):
                 if len(track) == 12: F(camera("Fly")); bpos = (bx, y, bz); F(fly_to(bx + 7, y + 9, bz + 6, bx, y, bz)); time.sleep(1); snap("escort-from-above"); F(camera("Fpp"))
                 time.sleep(.5)
             data["track"] = track; step("escort track", track[::3])
-            settled = [p for p in track if p["t"] >= 4]
-            check("s: the escort stays in front of the bomber towards the player (ahead > 0.8, side < 1.6 in 80 % of the samples after 4 s)",
-                  settled and sum(p["escortAhead"] > .8 and p["escortSide"] < 1.6 for p in settled) >= .8 * len(settled), settled[:8])
+            # the squad may stand in its spawn formation for a few seconds before it advances; judge the escort from 1.5 s
+            # after the bomber has started moving towards the player
+            moving = next((p["t"] for p in track if p["bomberToPlayer"] < track[0]["bomberToPlayer"] - .5), None)
+            settled = [p for p in track if moving is not None and p["t"] >= moving + 1.5]
+            data["advanceStartedAt"] = moving
+            check("s: while the squad advances the escort stays in front of the bomber towards the player (ahead > 0.8, side < 1.6 in 80 % of the samples from 1.5 s after the advance starts)",
+                  settled and sum(p["escortAhead"] > .8 and p["escortSide"] < 1.6 for p in settled) >= .8 * len(settled), {"advanceStartedAt": moving, "samples": settled[:10]})
             # shoot at the bomber from the front: the shield in between takes it
             F(MAIN + 'int v = System.Array.FindIndex(Game.GunSpec.All, s => s.Name == "ak47"); var inv = pl.ComponentMiner.Inventory; inv.RemoveSlotItems(0, inv.GetSlotCount(0)); '
               'inv.AddSlotItems(0, Game.Terrain.MakeBlockValue(Game.BlocksManager.GetBlockIndex<Game.ScGunBlock>(true), 0, Game.GunSpec.WithId(v, Game.GunSpec.FreshFull)), 1); inv.ActiveSlotIndex = 0; return "ak";')
