@@ -397,7 +397,11 @@ static class TacticalRegression {
                 Require((bool)Decode(With(1999)).ShieldUp&&!(bool)Decode(With(2000)).ShieldUp,"shield up/down at the life boundary");
                 foreach(var bad in new[]{With(-1),With(2001),With(5,1)}){bool refused=false;try{Decode(bad);}catch(TargetInvocationException){refused=true;}Require(refused,"accepted invalid shield wear: "+bad);}
                 Require((int)Decode(With(0,1)).ShieldWear==0,"a rifleman with no wear refused");
-                dynamic planted=Decode(With(300));planted.Bomb=false;Require(!(bool)planted.ShieldUp,"the shield stays up after the bomb is planted");
+                // 1.6.0: the escort never carries a bomb; a 1.5.0 demolition T that still carries one plants without a shield
+                var legacy=System.Text.Json.Nodes.JsonNode.Parse(json).AsObject();legacy["Bomb"]=true;legacy.Remove("ShieldWear");
+                dynamic carrier=Decode(legacy.ToJsonString());Require(!(bool)carrier.ShieldUp&&(int)carrier.ShieldWear==2000&&(bool)carrier.CarriesBomb,"a 1.5.0 bomb carrier got a shield");
+                carrier.Bomb=false;Require(!(bool)carrier.ShieldUp,"a 1.5.0 bomb carrier raised a shield after planting");
+                Require(!(bool)bomber.Bomb&&!(bool)bomber.CarriesBomb,"the new demolition T carries a bomb");
             });
             Test("feedback-1124/enemy-shield-blocks-front-only",()=>{
                 var project=new Project();var bodies=new SubsystemBodies();bodies.m_project=project;project.m_subsystems.Add(bodies);

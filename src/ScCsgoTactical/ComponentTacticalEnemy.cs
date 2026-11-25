@@ -80,7 +80,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         return true;
     }
     /// <summary>After an action the gun comes back with its draw; it cannot fire before that ends.</summary>
-    void Redraw(){if(State is null)return;actions.Start(GunSpec.All[State.Variant].Name,ScWeaponActionKind.Draw,"deploy",time.GameTime,RedrawSeconds);State.ShotLeft=Math.Max(State.ShotLeft,RedrawSeconds);}
+    void Redraw(){if(State is null)return;actions.Start(GunSpec.All[State.Weapon].Name,ScWeaponActionKind.Draw,"deploy",time.GameTime,RedrawSeconds);State.ShotLeft=Math.Max(State.ShotLeft,RedrawSeconds);}
     /// <summary>Ends a throw that has not released: nothing is thrown and no grenade is spent.</summary>
     void CancelThrow(){if(throwing is null)return;throwing=null;if(Creature.ComponentHealth.Health>0)Redraw();}
     void AbandonPlant(){if(plant<=0&&plantedAt<0)return;plant=0;plantedAt=-1;Creature.ComponentBody.TargetCrouchFactor=0;if(Creature.ComponentHealth.Health>0)Redraw();}
@@ -90,7 +90,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         get {
             if(State==null||Creature?.ComponentHealth.Health<=0)return default;
             var a=actions.Read(time?.GameTime??0);
-            if(State.ReloadLeft>0){float duration=State.Role==TacticalRole.Machine?4:2.8f;return new(GunSpec.All[State.Variant].Name,ScWeaponActionKind.Reload,"reload",a.Sequence,Math.Max(0,duration-State.ReloadLeft),duration,Math.Max(0,duration-State.ReloadLeft));}
+            if(State.ReloadLeft>0){float duration=State.Role==TacticalRole.Machine?4:2.8f;return new(GunSpec.All[State.Weapon].Name,ScWeaponActionKind.Reload,"reload",a.Sequence,Math.Max(0,duration-State.ReloadLeft),duration,Math.Max(0,duration-State.ReloadLeft));}
             return a.Kind==ScWeaponActionKind.Reload?default:a;
         }
     }
@@ -179,13 +179,13 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(State is null||!ScNet.IsAuthority)return; // a multiplayer client: ClientTick from SubsystemTacticalEnemies
         Publish();
         CrouchFactor=Crouching?Math.Min(1,CrouchFactor+2*Math.Clamp(dt,0,.5f)):Math.Max(0,CrouchFactor-2*Math.Clamp(dt,0,.5f));
-        string asset=GunSpec.All[State.Variant].Name;
+        string asset=GunSpec.All[State.Weapon].Name;
         if(visualAsset!=asset){visualAsset=asset;actions.Start(asset,ScWeaponActionKind.Draw,"deploy",time.GameTime,.65f);}
         // Dying mid-action: nothing more leaves the hand (a grenade not yet released is not thrown, a bomb not yet
         // committed is not planted).
         if(Creature.ComponentHealth.Health<=0){throwing=null;plant=0;plantedAt=-1;Died();return;}
         if(Creature.ComponentSpawn.IsDespawning){path.Stop();throwing=null;plant=0;plantedAt=-1;Creature.ComponentBody.TargetCrouchFactor=0;return;}
-        if(!IsActive){CancelThrow();if(plant>0)AbandonPlant();return;}dt=Math.Clamp(dt,0,.5f);var body=Creature.ComponentBody;var spec=GunSpec.All[State.Variant];
+        if(!IsActive){CancelThrow();if(plant>0)AbandonPlant();return;}dt=Math.Clamp(dt,0,.5f);var body=Creature.ComponentBody;var spec=GunSpec.All[State.Weapon];
         State.Warmup=Math.Max(0,State.Warmup-dt);
         State.ShotLeft=Math.Max(0,State.ShotLeft-dt);State.GrenadeLeft=Math.Max(0,State.GrenadeLeft-dt);burstPause=Math.Max(0,burstPause-dt);search=Math.Max(0,search-dt);
         noiseCooldown=Math.Max(0,noiseCooldown-dt);
@@ -235,7 +235,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 &&director.NearestPlayer(body.Position,PerceptionRange) is {} intruder&&Visible(intruder)){
                 TargetBody=intruder;Retaliating=false;lastSeen=intruder.Position;lost=ProactiveMemory;aim=0;
             }
-            if(TargetBody is null&&!wounded&&State.Bomb&&State.Warmup<=0&&director.MayHuntPlayers&&director.NearestPlayer(body.Position,PlayerSearchRange) is {} player)Alert(player);
+            if(TargetBody is null&&!wounded&&State.CarriesBomb&&State.Warmup<=0&&director.MayHuntPlayers&&director.NearestPlayer(body.Position,PlayerSearchRange) is {} player)Alert(player);
             seen=TargetBody!=null&&Visible(TargetBody);
             if(seen){lastSeen=TargetBody.Position;lost=Retaliating?RetaliationMemory:ProactiveMemory;}
         }
@@ -252,9 +252,24 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
             if(ladder.TryStart(Creature,terrain,path,dest,10,time.GameTime))return;
             TacticalNavigation.Navigate(path,dest,speed,range,limit,true,false,true,avoid);
         }
+        // The shield escort (1.6.0): stands between the threat and the squad's bomber (or the squad, once he is gone).
+        Vector3? guard=null,escortThreat=null;
+        if(State.ShieldUp&&State.Warmup<=0){
+            var ward=Ward();
+            escortThreat=TargetBody?.Position??ward?.TargetBody?.Position??(ward is not null&&ward.search>0?ward.lastSeen:null);
+            var anchor=ward?.Creature.ComponentBody.Position??SquadCentre();
+            if(anchor is {} a){
+                var dir=escortThreat is {} t?new Vector3(t.X-a.X,0,t.Z-a.Z):(ward?.Creature.ComponentBody.Matrix.Forward??body.Matrix.Forward)*new Vector3(1,0,1);
+                if(dir.LengthSquared()>1e-4f)guard=a+Vector3.Normalize(dir)*EscortLead;
+            }
+            if(escortThreat is {} seenThreat){lastSeen=seenThreat;if(TargetBody is null)search=Math.Max(search,.7f);}
+        }
         if(pathLeft<=0){pathLeft=.65f;
             if(zones.FirstOrDefault(z=>z.Bomb&&TacticalDanger.Horizontal(body.Position,z.Center)<z.Radius+TacticalDanger.BombMargin) is {Bomb:true} hold)
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
+            else if(guard is {} spot){
+                if(Vector3.DistanceSquared(body.Position,spot)>EscortSlack*EscortSlack)Go(spot,.9f,.5f,160,TargetBody);else path.Stop();
+            }
             else if(TargetBody is null){
                 if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);
                 else if(search>0)path.Stop();
@@ -272,7 +287,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 else path.Stop();
             }
             else if(State.Warmup>0)path.Stop();
-            else if(State.Bomb&&distance>PlantNearPlayer)Go(lastSeen,.75f,PlantNearPlayer-2,200,TargetBody);
+            else if(State.CarriesBomb&&distance>PlantNearPlayer)Go(lastSeen,.75f,PlantNearPlayer-2,200,TargetBody);
             else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();
             else if(clear&&State.Warmup<=0&&TacticalCombatMovement.IsSmg(spec.Name)&&distance<=24){
                 if(strafeLeft<=0||path.IsStuck||!path.Destination.HasValue){
@@ -289,13 +304,13 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if((TargetBody is not null||search>0)&&!path.Destination.HasValue){var delta=lastSeen-body.Position;delta.Y=0;
             if(delta.LengthSquared()>.01f)Creature.ComponentLocomotion.TurnOrder=new Vector2(Math.Clamp(Vector2.Angle(body.Matrix.Forward.XZ,delta.XZ)*.8f,-.6f,.6f),0);}
         if(State.ReloadLeft>0)return;
-        if(State.Bomb&&clear&&State.Warmup<=0&&distance<=PlantNearPlayer&&body.StandingOnValue.HasValue&&body.Velocity.LengthSquared()<.2f){
+        if(State.CarriesBomb&&clear&&State.Warmup<=0&&distance<=PlantNearPlayer&&body.StandingOnValue.HasValue&&body.Velocity.LengthSquared()<.2f){
             if(plant<=0)plantSequence++;
             path.Stop();plant+=dt;body.TargetCrouchFactor=1;
             // After planting, the squad-wide danger rules keep every member outside the radius until it resolves.
             if(plant>=ScPlantPhase.PlantSeconds){
                 if(Visible(TargetBody)&&Project.FindSubsystem<SubsystemTacticalBombs>(true).PlantFrom(body.Position,MathF.Atan2(body.Matrix.Forward.X,body.Matrix.Forward.Z),State.Rewardable)){
-                    State.Bomb=false;State.ShotLeft=3;pathLeft=0;plant=0;plantedAt=time.GameTime;plantedPosition=body.Position; // the hands recover empty, crouched
+                    State.Bomb=false;State.Carry=false;State.ShotLeft=3;pathLeft=0;plant=0;plantedAt=time.GameTime;plantedPosition=body.Position; // the hands recover empty, crouched
                 }else AbandonPlant();
             }
             return;
@@ -309,17 +324,17 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(State.ShotLeft>0||burstPause>0||aim<(State.Role==TacticalRole.Sniper?1.4f:.55f))return;
         if(!Retaliating&&State.Role==TacticalRole.Close&&distance>18)return;
         if(!Visible(TargetBody)){seen=false;aim=0;return;}
-        NoteEncounter(TargetBody,"engaged");Shoot();State.ShotLeft=Math.Max(ScGunGrowth.ShotInterval(State.Variant,spec.CycleSeconds,0),State.Role==TacticalRole.Sniper?.65f:.12f);
+        NoteEncounter(TargetBody,"engaged");Shoot();State.ShotLeft=Math.Max(ScGunGrowth.ShotInterval(State.Weapon,spec.CycleSeconds,0),State.Role==TacticalRole.Sniper?.65f:.12f);
         if(++burst>=(State.Role==TacticalRole.Machine?8:State.Role==TacticalRole.Sniper?1:3)){burst=0;burstPause=State.Role==TacticalRole.Sniper?.6f:.75f;}
     }
     void Drop(){TargetBody=null;Retaliating=false;aim=0;seen=false;}
     void Play(string kind){
-        actions.Start(GunSpec.All[State.Variant].Name,kind=="shot"?ScWeaponActionKind.Shoot:ScWeaponActionKind.Reload,kind=="shot"?"shoot":"reload",time.GameTime,kind=="shot"?.16f:State.ReloadLeft);
-        if(kind=="shot"){string shot=SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Variant],false);
+        actions.Start(GunSpec.All[State.Weapon].Name,kind=="shot"?ScWeaponActionKind.Shoot:ScWeaponActionKind.Reload,kind=="shot"?"shoot":"reload",time.GameTime,kind=="shot"?.16f:State.ReloadLeft);
+        if(kind=="shot"){string shot=SubsystemScGunBlockBehavior.ExtensionShotSound(GunSpec.All[State.Weapon],false);
             Project.FindSubsystem<SubsystemAudio>(true).PlaySound(shot,.8f,0,Creature.ComponentBody.Position,20,true);TacticalNet.Sound(shot,.8f,Creature.ComponentBody.Position,20);}
     }
     void Shoot(){
-        var spec=GunSpec.All[State.Variant];var body=Creature.ComponentBody;Vector3 from=body.Position+Vector3.UnitY*1.45f;
+        var spec=GunSpec.All[State.Weapon];var body=Creature.ComponentBody;Vector3 from=body.Position+Vector3.UnitY*1.45f;
         float error=State.Role==TacticalRole.Sniper?.15f:.45f;error+=body.Velocity.Length()*.12f;
         var point=TargetBody.BoundingBox.Center()+new Vector3(random.Float(-error,error),random.Float(-error,error),random.Float(-error,error));
         var direction=Vector3.Normalize(point-from);float range=Retaliating?Vector3.Distance(from,point)+2:State.Role==TacticalRole.Sniper?64:State.Role==TacticalRole.Close?18:40;
@@ -389,11 +404,21 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         }
         if(now>=t.EndAt){throwing=null;Redraw();}
     }
+    /// <summary>How far in front of the bomber the escort stands, and how far it may drift before it moves again.</summary>
+    public const float EscortLead=2.2f,EscortSlack=.9f;
+    /// <summary>The living bomber of this T's squad (null when there is none).</summary>
+    ComponentTacticalEnemy Ward()=>director.Enemies.FirstOrDefault(e=>e!=this&&e.State is {Bomber:true} s&&s.Squad==State.Squad&&e.Creature.ComponentHealth.Health>0);
+    /// <summary>Where the rest of the living squad stands, on average.</summary>
+    Vector3? SquadCentre(){
+        Vector3 sum=Vector3.Zero;int n=0;
+        foreach(var e in director.Enemies)if(e!=this&&e.State?.Squad==State.Squad&&e.Creature.ComponentHealth.Health>0){sum+=e.Creature.ComponentBody.Position;n++;}
+        return n==0?null:sum/n;
+    }
     public void Died(){
         if(State is null||State.LootDone)return;State.LootDone=true;
         if(!ScNet.IsAuthority)return; // a multiplayer client replays the death; the server drops the loot
         path.Stop();
-        var drops=Project.FindSubsystem<SubsystemPickables>(true);var pos=Creature.ComponentBody.BoundingBox.Center();var spec=GunSpec.All[State.Variant];
+        var drops=Project.FindSubsystem<SubsystemPickables>(true);var pos=Creature.ComponentBody.BoundingBox.Center();var spec=GunSpec.All[State.Weapon];
         void Drop(int v,int count)=>drops.AddPickable(v,count,pos,null,null,Entity);
         // Its protection ends with it; protection is never an item, so nothing more drops (current-direction-20260929).
         Project.FindSubsystem<SubsystemScArmor>(false)?.Remove(ArmorKey);
@@ -401,5 +426,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(random.Float(0,1)<ScComponentCrafting.EnemyDropChance)Drop(ScWeaponMaterialBlock.Value(ScComponentCrafting.EnemyDropKind(random.Float(0,1),random.Bool())),random.Int(1,2));
         if(random.Float(0,1)<.5f)Drop(ScComponentCrafting.Resolve(random.Int(0,2) switch{0=>"ironingot",1=>"copperingot",_=>"coalchunk"}),random.Int(1,2));
         if(random.Float(0,1)<.08f)Drop(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScChickenEggBlock>(true)),1);
+        // 1.6.0: whoever still carries the bomb drops it, one C4 the player can use (LootDone, saved, makes it once).
+        if(State.CarriesBomb){State.Bomb=false;State.Carry=false;Drop(ScC4Block.Value,1);}
     }
 }

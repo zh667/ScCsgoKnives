@@ -216,9 +216,11 @@ static class TacticalEnemyRegression {
                 ((System.Collections.IList)T("SubsystemTacticalBombs").GetField("Bombs").GetValue(bombs)).Add(bomb);e.Creature.ComponentHealth.Health=.2f;Run(1);
                 Check(e.Path.Destination is Vector3 exit&&Vector2.Distance(exit.XZ,charge.Position.XZ)>=15,"low-health steering overrode urgent C4 evacuation");
             });
+            // 1.6.0: the bomber is a rifleman of a five-man squad with a pistol (TacticalEnemyState.MakeBomber), planting the way
+            // the 1.5.0 demolition T did.
             foreach(bool creative in new[]{false,true})Test($"feedback/bomb-carrier-seeks-near-player-before-plant/{creative}",()=>{
                 var f=World();f.Info.WorldSettings.GameMode=creative?GameMode.Creative:GameMode.Survival;f.Terrain.Floor=60;
-                var e=Enemy(f.P,4);e.Enemy.State.Grenades=0;e.Creature.ComponentBody.StandingOnValue=2;
+                var e=Enemy(f.P,1);e.Enemy.State.MakeBomber(new Engine.Random(3));e.Enemy.State.Grenades=0;e.Creature.ComponentBody.StandingOnValue=2;
                 var body=new ComponentBody{Position=new Vector3(0,60,-60),BoxSize=new Vector3(.8f,1.8f,.8f),Mass=75};
                 var health=new Health{Health=1,AttackResilience=10000,AttackResilienceFactor=1};var creature=new ComponentCreature{ComponentBody=body,ComponentHealth=health,m_subsystemPlayerStats=new SubsystemPlayerStats(),m_killVerbs=["shot"]};health.m_componentCreature=creature;
                 var player=Blank<ComponentPlayer>();player.PlayerData=Blank<PlayerData>();player.ComponentBody=body;player.ComponentHealth=health;E(f.P,body,health,creature,player);f.Bodies.AddBody(body);f.P.FindSubsystem<SubsystemPlayers>(true).m_componentPlayers.Add(player);
@@ -231,7 +233,7 @@ static class TacticalEnemyRegression {
                 Check((bool)(e.Enemy.TargetBody==body)&&e.Path.Destination is Vector3 at&&Vector3.Distance(at,body.Position)<.1f,"distant bomb carrier did not find and approach player");
                 body.Position=new Vector3(0,60,-18);f.Bodies.UpdateBody(body);Run(8);Check(!(bool)e.Enemy.PlantPhase.Active&&e.Path.Destination.HasValue,"stopped to plant at obsolete 22m distance");
                 body.Position=new Vector3(0,60,-10);f.Bodies.UpdateBody(body);e.Creature.ComponentBody.Velocity=Vector3.Zero;Run(7);Check((bool)e.Enemy.PlantPhase.Active&&list.Count==0,"nearby player did not trigger timed plant");
-                Run(36);Check(list.Count==1&&!e.Enemy.State.Bomb,"nearby timed plant missing or repeated");bombs.Dispose();
+                Run(36);Check(list.Count==1&&!e.Enemy.State.CarriesBomb,"nearby timed plant missing or repeated");bombs.Dispose();
             });
             Test("feedback/flash-detonation-on-screen-beyond-radius-with-cover",()=>{
                 foreach(var (z,wall,expected) in new[]{(-200f,false,true),(-200f,true,false),(200f,false,false),(-20f,false,true)}){
@@ -998,10 +1000,10 @@ static class TacticalEnemyRegression {
                 return "grenade kept, no action restored";
             });
             (dynamic Enemy,ComponentCreature Creature,Func<int,float,List<string>> Run,Func<int> Bombs,Subsystem System) Planter(float distance){
-                var w=Thrower(4,distance);var project=w.Creature.Entity.Project;((Ground)project.FindSubsystem<SubsystemTerrain>(true)).Floor=60;
+                var w=Thrower(1,distance);w.Enemy.State.MakeBomber(new Engine.Random(3));var project=w.Creature.Entity.Project;((Ground)project.FindSubsystem<SubsystemTerrain>(true)).Floor=60;
                 var c4=(Subsystem)Activator.CreateInstance(C("SubsystemScC4"));c4.m_project=project;project.m_subsystems.Add(c4);
                 var bombs=(Subsystem)Activator.CreateInstance(T("SubsystemTacticalBombs"));bombs.m_project=project;project.m_subsystems.Add(bombs);bombs.Load(new ValuesDictionary());
-                w.Enemy.State.Grenades=0;Check((bool)w.Enemy.State.Bomb,"fixture: the demolition role carries no bomb");
+                w.Enemy.State.Grenades=0;Check((bool)w.Enemy.State.CarriesBomb,"fixture: the bomber carries no bomb");
                 var list=(System.Collections.IList)T("SubsystemTacticalBombs").GetField("Bombs").GetValue(bombs);
                 return(w.Enemy,w.Creature,w.Run,()=>list.Count,bombs);
             }
@@ -1377,6 +1379,38 @@ static class TacticalEnemyRegression {
                 FreshRegistry();C("ScGunRegistry").GetProperty("Next").SetValue(rf.GetValue(null),exhausted);var f=World();int material=0;
                 for(int i=0;i<160;i++){var e=Enemy(f.P,1,i);e.Creature.ComponentHealth.Health=0;e.Enemy.Died();int count=f.Drops.Items.Count;e.Enemy.Died();((IUpdateable)e.Enemy).Update(.1f);Check(f.Drops.Items.Count==count&&e.Enemy.State.LootDone&&Enumerable.Range(0,5).All(s=>e.Inv.GetSlotCount(s)==0),"death duplicated reward/left inventory");}
                 Check(f.Drops.Items.Count>50&&f.Drops.Items.All(i=>Terrain.ExtractContents(i.Value)!=701),"full registry drops malformed gun");material=f.Drops.Items.Count(i=>Terrain.ExtractContents(i.Value)==708);Check(material>0&&(int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==exhausted,"registry wrap/missing material reward");
+            });
+            // 1.6.0 (user decisions 2026-11-25): whoever still carries the bomb drops one C4 the player can use when he dies, once;
+            // a bomber who planted and the shield escort drop none; a reload after the death drops nothing again.
+            Test("feedback-1124/bomb-carrier-drops-one-c4-once",()=>{
+                FreshRegistry();var f=World();int c4=(int)C("ScC4Block").GetProperty("Value").GetValue(null);
+                int C4s()=>f.Drops.Items.Where(p=>p.Value==c4).Sum(p=>p.Count);
+                var bomber=Enemy(f.P,1,7);bomber.Enemy.State.MakeBomber(new Engine.Random(7));bomber.Creature.ComponentHealth.Health=0;bomber.Enemy.Died();bomber.Enemy.Died();
+                Check(C4s()==1&&!bomber.Enemy.State.CarriesBomb,"a bomber killed before planting dropped "+C4s()+" C4");
+                var copy=Enemy(f.P,1,8);copy.Enemy.Restore((string)bomber.Enemy.Capture());copy.Creature.ComponentHealth.Health=0;copy.Enemy.Died();
+                Check(C4s()==1,"a reloaded dead bomber dropped another C4");
+                var planted=Enemy(f.P,1,9);planted.Enemy.State.MakeBomber(new Engine.Random(9));planted.Enemy.State.Carry=false;planted.Creature.ComponentHealth.Health=0;planted.Enemy.Died();
+                var escort=Enemy(f.P,4,10);escort.Creature.ComponentHealth.Health=0;escort.Enemy.Died();
+                Check(C4s()==1,"a bomber after his plant or the shield escort dropped a C4");
+                // a demolition T of a 1.5.0 save still carrying its bomb drops it too
+                var legacy=Enemy(f.P,4,11);var json=System.Text.Json.Nodes.JsonNode.Parse((string)legacy.Enemy.Capture()).AsObject();json["Bomb"]=true;json.Remove("ShieldWear");
+                legacy.Enemy.Restore(json.ToJsonString());Check(!(bool)legacy.Enemy.State.ShieldUp,"a 1.5.0 bomb carrier raised a shield");
+                legacy.Creature.ComponentHealth.Health=0;legacy.Enemy.Died();Check(C4s()==2,"a 1.5.0 bomb carrier did not drop its C4");
+            });
+            Test("feedback-1124/five-man-squad-has-shield-escort-and-pistol-bomber",()=>{
+                var roles=(Array)T("SubsystemTacticalEnemies").GetMethod("Roles").Invoke(null,[10,5]);Check(roles.Length==5,"fixture: five roles");
+                var list=new List<dynamic>();var random=new Engine.Random(5);
+                foreach(var role in roles){dynamic s=T("TacticalEnemyState").GetMethod("Create").Invoke(null,[role,"squad",random]);if((int)role==1)s.MakeBomber(random);list.Add(s);}
+                var specs=(Array)C("GunSpec").GetField("All").GetValue(null);string Name(int v)=>(string)C("GunSpec").GetField("Name").GetValue(specs.GetValue(v));
+                Check(list.Count(s=>(bool)s.ShieldUp)==1&&(int)list.Single(s=>(bool)s.ShieldUp).Role==4,"not exactly one shield escort, the demolition T");
+                dynamic b=list.Single(s=>(bool)s.Bomber);Check((int)b.Role==1&&(bool)b.CarriesBomb&&!(bool)b.Bomb&&((string[])T("TacticalEnemyState").GetField("Sidearms").GetValue(null)).Contains(Name((int)b.Weapon))
+                    &&Name((int)b.Variant)!=Name((int)b.Weapon),"the rifleman is not a pistol bomber");
+                Check(list.All(s=>!(bool)s.Bomb),"a 1.5.0-style bomb flag on a new squad member");
+                // an older reader decodes the bomber as a rifleman: rounds fit his rifle, role and variant valid
+                var older=System.Text.Json.Nodes.JsonNode.Parse((string)b.Encode()).AsObject();Check((int)older["Rounds"]<=(int)C("GunSpec").GetField("Magazine").GetValue(specs.GetValue((int)older["Variant"])),"bomber rounds overflow the rifle");
+                foreach(var bad in new Action<System.Text.Json.Nodes.JsonObject>[]{n=>n["Sidearm"]=Array.FindIndex(Enumerable.Range(0,specs.Length).ToArray(),i=>Name(i)=="elite"),n=>n["Rounds"]=99,n=>{n["Bomber"]=false;},n=>{n["Role"]=4;n["Variant"]=Array.FindIndex(Enumerable.Range(0,specs.Length).ToArray(),i=>Name(i)=="glock18");}}){
+                    var n=System.Text.Json.Nodes.JsonNode.Parse((string)b.Encode()).AsObject();bad(n);bool refused=false;try{Decode(n.ToJsonString());}catch(TargetInvocationException){refused=true;}
+                    Check(refused,"accepted an invalid bomber: "+n.ToJsonString());}
             });
             Test("supplies-and-chicken-eggs-without-gun-drops-or-registry-allocation",()=>{
                 FreshRegistry();var f=World();
