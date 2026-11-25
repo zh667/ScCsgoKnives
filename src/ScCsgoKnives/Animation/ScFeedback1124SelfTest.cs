@@ -166,6 +166,30 @@ public static class ScFeedback1124SelfTest {
             return w.Count == 3 && w[CaseRarity.Common] == 70 && Math.Abs(w[CaseRarity.Uncommon] - 29.5) < 1e-9 && w[CaseRarity.Legendary] == .5
                 && Math.Abs(CaseRoller.EffectiveWeights(d, CsCaseRewards.EligibleFor(18)).Values.Sum() - 100) < 1e-9;
         });
+        // 2026-11-25 (user decision): gold is only knives, each in its CS finish; the CS guns weigh twice as much.
+        Test("cases/gold-tier-is-skinned-knives", () => {
+            CaseRegistry.EnsureLoaded();
+            var survivor = CaseRegistry.All.FirstOrDefault(c => string.Equals(c.Id, CsCaseRewards.TargetCase, StringComparison.OrdinalIgnoreCase));
+            if (survivor is null) { detail = "no survivor case"; return false; }
+            int knifeBlock = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
+            var gold = survivor.Rewards.Where(r => r.Rarity == CaseRarity.Legendary).ToArray();
+            int skinned = gold.Count(r => ScKnifeBlock.SkinOf(r.Value) != ScKnifeSkinCatalog.None);
+            bool allKnives = gold.Length > 0 && gold.All(r => r.Generated && Terrain.ExtractContents(r.Value) == knifeBlock);
+            bool ownFinish = gold.All(r => ScKnifeBlock.SkinOf(r.Value) == ScKnifeSkinCatalog.ForVariant(ScKnifeBlock.GetVariant(r.Value)));
+            detail = $"gold {gold.Length}, skinned {skinned}, names {string.Join(" | ", gold.Take(4).Select(r => ScKnifeSkinCatalog.Name(ScKnifeBlock.SkinOf(r.Value), ScKnifeBlock.GetVariant(r.Value))))}";
+            return allKnives && ownFinish && (ScMinimalEdition.Enabled || skinned > 0);
+        });
+        Test("cases/cs-gun-weights", () => {
+            CaseRegistry.EnsureLoaded();
+            var survivor = CaseRegistry.All.First(c => string.Equals(c.Id, CsCaseRewards.TargetCase, StringComparison.OrdinalIgnoreCase));
+            double Sum(CaseRarity rarity, System.Func<RewardDefinition, bool> pick) => survivor.Rewards.Where(r => r.Rarity == rarity && r.Generated && pick(r)).Sum(r => r.Weight);
+            int gunBlock = BlocksManager.GetBlockIndex<ScGunBlock>(true);
+            double guns = Sum(CaseRarity.Rare, r => Terrain.ExtractContents(r.Value) == gunBlock), templates = Sum(CaseRarity.Epic, _ => true);
+            double vanillaEpic = survivor.Rewards.Where(r => r.Rarity == CaseRarity.Epic && !r.Generated).Sum(r => r.Weight);
+            detail = $"factory guns {guns}, painted+counter {templates}, vanilla epic {vanillaEpic}";
+            return Math.Abs(guns - CsCaseRewards.GunsWeight) < 1e-9 && Math.Abs(templates - (CsCaseRewards.PaintedGunsWeight + CsCaseRewards.CounterGunsWeight)) < 1e-9
+                && Math.Abs(vanillaEpic - 7.2) < 1e-9;
+        });
         Test("cases/drop-rates", () => {
             var survivor = new CaseDefinition { CreatureDropChance = .03 };
             return CaseAcquisition.DropChance(true, survivor) == .15 && CaseAcquisition.DropChance(false, survivor) == .03;

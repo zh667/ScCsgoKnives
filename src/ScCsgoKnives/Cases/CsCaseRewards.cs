@@ -5,17 +5,18 @@ namespace Game;
 /// <list type="table">
 /// <item>common / 普通: metal parts 2 or 3, mechanical parts 1, magazines 2, shells 12, one throwable</item>
 /// <item>uncommon / 稀有: grip, scope, paint supplies 1 or 2, defuse kit (with the agents package)</item>
-/// <item>rare / 史诗 (7 %): a factory gun (no Zeus)</item>
+/// <item>rare / 史诗 (7 %): a factory gun (no Zeus); 2026-11-25: guns weigh 6 against the vanilla 7.75</item>
 /// <item>epic / 传说 (2.5 %): a painted gun or a gun with a kill counter (catalogue templates; user decision 2026-11-24: the
-/// rarer tier holds the more valuable guns)</item>
-/// <item>legendary / 金色: a knife</item>
+/// rarer tier holds the more valuable guns); 2026-11-25: painted 6, counter 3, plus the vanilla items moved down from gold</item>
+/// <item>legendary / 金色: only knives, each with its CS finish where it has one (user decision 2026-11-25: gold means a
+/// skinned knife; the vanilla gold rewards moved to the epic tier in survivor.json)</item>
 /// </list>
 /// Every gun reward (including the templates, which are guns) carries its crafting level: the opener only draws guns their
 /// level could craft (D17). The relative weights inside a tier are first-pass values (see the task's P-values).</summary>
 public static class CsCaseRewards {
     public const string TargetCase = "survivor";
     public const double ComponentWeight = 2, AmmoWeight = 2, ThrowableWeight = 1.5, PartWeight = 1.5, PaintWeight = 1, KitWeight = .75;
-    public const double PaintedGunsWeight = 3, CounterGunsWeight = 1.5, GunsWeight = 3, KnivesWeight = 1;
+    public const double PaintedGunsWeight = 6, CounterGunsWeight = 3, GunsWeight = 6, KnivesWeight = 1;
 
     /// <summary>Adds the CS rewards to the survivor case. Returns how many were added.</summary>
     public static int Append(IEnumerable<CaseDefinition> cases) {
@@ -68,11 +69,11 @@ public static class CsCaseRewards {
         foreach (var knife in Knives()) yield return knife;
     }
 
-    /// <summary>The gold tier: every CS knife this edition has, factory finish.</summary>
+    /// <summary>The gold tier: every CS knife this edition has, in its CS finish (factory when the knife has none).</summary>
     static IEnumerable<RewardDefinition> Knives() {
         int knifeBlock = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] knives = Enumerable.Range(0, CsmcKnifeRig.KnifeCount).Where(ScMinimalEdition.KnifeAvailable).ToArray();
-        foreach (int k in knives) yield return R(CaseRarity.Legendary, Terrain.MakeBlockValue(knifeBlock, 0, ScKnifeSkinCatalog.With(k, ScKnifeSkinCatalog.None)), 1, KnivesWeight / knives.Length);
+        foreach (int k in knives) yield return R(CaseRarity.Legendary, Terrain.MakeBlockValue(knifeBlock, 0, ScKnifeSkinCatalog.With(k, ScKnifeSkinCatalog.ForVariant(k))), 1, KnivesWeight / knives.Length);
     }
 
     /// <summary>What a player of this level may draw.</summary>
