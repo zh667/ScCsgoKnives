@@ -56,7 +56,7 @@ static class BalanceRegression {
             Test("repair-long-integers",()=>ScWeaponRepair.CostAtLevel(pistol,1,int.MaxValue,50)[0]==4&&ScWeaponRepair.CostAtLevel(pistol,1,int.MaxValue,50)[1]==2);
             foreach(string gun in new[]{"nova","xm1014","sawedoff","mag7"}) Test("shotgun-monotonic/"+gun,()=>Enumerable.Range(1,50).All(l=>ScSurvivalBalance.PowerAtLevel(gun,l)>=ScSurvivalBalance.PowerAtLevel(gun,l-1)-1e-4));
             foreach(var (gun,cone) in new[]{("nova",2.1f),("xm1014",2.05f),("sawedoff",3.2f),("mag7",2.1f)}) Test("cone/"+gun,()=>Near(ScGunHandling.ForMode(gun,false).BaseCone,cone)&&Near(ScGunHandling.ForMode(gun,true).BaseCone,cone));
-            Test("component-recipes",()=>ScComponentCrafting.All.Select(e=>string.Join(",",e.Ingredients.Select(p=>$"{p.Id}:{p.Count}"))).SequenceEqual(new[]{"ironingot:4,coalchunk:2","ironingot:2,copperingot:4,germaniumchunk:2","leather:4,planks:2,copperingot:1","glass:4,copperingot:2,germaniumchunk:2","pigment:0:4,canvas:2,copperingot:2"}));
+            Test("component-recipes",()=>ScComponentCrafting.All.Select(e=>string.Join(",",e.Ingredients.Select(p=>$"{p.Id}:{p.Count}"))).SequenceEqual(new[]{"ironingot:6,coalchunk:2","ironingot:5,copperingot:4,germaniumchunk:2","leather:4,planks:2,copperingot:1","glass:4,copperingot:2,germaniumchunk:2","pigment:0:4,canvas:2,copperingot:2"}));
             ScWorkbenchExtension.RegisterBaseRecipes();var shell=ScWorkbenchExtension.All.Single(r=>r.Key=="ammo-shell");
             foreach(int quantity in new[]{1,2,3}) Test("shell-batch/"+quantity,()=>{
                 ScGunRegistry.Current=new();var inv=new Inventory();var materials=shell.Materials();int slot=0;foreach(var p in materials)inv.AddSlotItems(slot++,p.Key,p.Value*quantity);

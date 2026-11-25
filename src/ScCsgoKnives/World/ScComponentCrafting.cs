@@ -13,10 +13,11 @@ public static class ScComponentCrafting {
         public Dictionary<int, int> Materials() => Ingredients.ToDictionary(p => Resolve(p.Id), p => p.Count);
     }
     public static readonly Entry[] All = [
-        // 1.6.0 (feedback-1124-170 D11/D12): iron is scarce in vanilla worlds. The metal part takes half the iron, and the
-        // mechanical parts no longer consume a metal part (some of the load moves to copper). Weapon recipes are unchanged.
-        new(0, [("ironingot",4),("coalchunk",2)]),
-        new(1, [("ironingot",2),("copperingot",4),("germaniumchunk",2)]),
+        // 1.6.0 (feedback-1124-170 D11/D12, user decision 2026-11-25): about 30 % less iron. The metal part takes 6 iron, and
+        // the mechanical parts no longer consume a metal part (5 iron, some of the load moves to copper). Weapon recipes are
+        // unchanged: the 35 guns together need 1751 iron instead of 2496, an AK 61 instead of 88.
+        new(0, [("ironingot",6),("coalchunk",2)]),
+        new(1, [("ironingot",5),("copperingot",4),("germaniumchunk",2)]),
         new(2, [("leather",4),("planks",2),("copperingot",1)]),
         // Optics no longer consume diamonds; first-time skin application still does.
         new(3, [("glass",4),("copperingot",2),("germaniumchunk",2)]),

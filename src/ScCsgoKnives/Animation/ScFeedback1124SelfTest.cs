@@ -29,19 +29,18 @@ public static class ScFeedback1124SelfTest {
 
         // --- D11/D12: iron per component and per gun ------------------------------------------------------------
         int Iron(int kind) => ScComponentCrafting.All[kind].Ingredients.Where(i => i.Id == "ironingot").Sum(i => i.Count);
-        Test("economy/blank-recipe-4-iron", () => Iron(ScWeaponMaterialBlock.Blank) == 4
-            && ScComponentCrafting.All[0].Ingredients.SequenceEqual(new[] { ("ironingot", 4), ("coalchunk", 2) }));
+        Test("economy/blank-recipe-6-iron", () => Iron(ScWeaponMaterialBlock.Blank) == 6
+            && ScComponentCrafting.All[0].Ingredients.SequenceEqual(new[] { ("ironingot", 6), ("coalchunk", 2) }));
         Test("economy/mechanism-no-blank", () => ScComponentCrafting.All[1].Ingredients.All(i => !i.Id.StartsWith("sccsgomaterial"))
-            && ScComponentCrafting.All[1].Ingredients.SequenceEqual(new[] { ("ironingot", 2), ("copperingot", 4), ("germaniumchunk", 2) }));
-        Test("economy/gun-iron-totals", () => {
-            var want = new Dictionary<string, int> { ["glock18"] = 14, ["nova"] = 22, ["ak47"] = 34, ["awp"] = 42, ["m249"] = 48 };
-            var parts = new List<string>(); bool ok = true;
-            foreach (var (gun, iron) in want) {
-                var e = ScWeaponCrafting.All.Single(x => !x.Knife && x.Name == gun);
-                int total = e.B * Iron(0) + e.M * Iron(1) + e.H * Iron(2) + e.O * Iron(3);
-                parts.Add($"{gun} {total}"); ok &= total == iron;
-            }
-            detail = string.Join(", ", parts); return ok;
+            && ScComponentCrafting.All[1].Ingredients.SequenceEqual(new[] { ("ironingot", 5), ("copperingot", 4), ("germaniumchunk", 2) }));
+        Test("economy/gun-iron-totals-30-percent-less", () => {
+            // Before 1.6.0 a metal part took 8 iron and a mechanical part a metal part (8 more): 2496 for the 35 guns, AK 88.
+            var guns = ScWeaponCrafting.All.Where(x => !x.Knife).ToArray();
+            int Total(ScWeaponCrafting.Entry e) => e.B * Iron(0) + e.M * Iron(1) + e.H * Iron(2) + e.O * Iron(3);
+            int all = guns.Sum(Total), before = guns.Sum(e => (e.B + e.M) * 8);
+            var ak = guns.Single(x => x.Name == "ak47");
+            detail = $"35 guns {before} -> {all} ({100.0 * (all - before) / before:0.0} %), AK {(ak.B + ak.M) * 8} -> {Total(ak)}, guns {guns.Length}";
+            return guns.Length == 35 && before == 2496 && all == 1751 && Total(ak) == 61;
         });
         Test("economy/enemy-material-drop-split", () => {
             int[] count = new int[4]; const int n = 1000;
