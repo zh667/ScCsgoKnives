@@ -52,7 +52,8 @@ public sealed class TacticalEnemyState {
     public static readonly string[] Sidearms=["glock18","usp_silencer","hkp2000","p250","fiveseven","tec9","cz75a","deagle","revolver"];
     /// <summary>Makes a rifleman of a new squad its bomber (CreateSquad).</summary>
     public void MakeBomber(Engine.Random random){
-        Bomber=true;Carry=true;Sidearm=Array.FindIndex(GunSpec.All,g=>g.Name==Sidearms[random.Int(0,Sidearms.Length-1)]);
+        string pistol=Sidearms[random.Int(0,Sidearms.Length-1)];
+        Bomber=true;Carry=true;Sidearm=Array.FindIndex(GunSpec.All,g=>g.Name==pistol);
         Rounds=GunSpec.All[Sidearm].Magazine;Reserve=Rounds*3;
     }
     public static readonly string[][] Pools=[

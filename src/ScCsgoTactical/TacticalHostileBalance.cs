@@ -43,6 +43,8 @@ public static class TacticalGunfire {
         var near = s_near ??= new DynamicArray<ComponentBody>(); near.Clear();
         bodies.FindBodiesInArea(new Vector2(Math.Min(from.X, end.X) - 2, Math.Min(from.Z, end.Z) - 2), new Vector2(Math.Max(from.X, end.X) + 2, Math.Max(from.Z, end.Z) + 2), near);
         var hit = ScGunHitTest.Raycast(near, shooter, from, direction, limit);
+        // The scratch list is static: emptied after use so it never keeps a world's bodies alive after the world is left.
+        Array.Clear(near.Array, 0, near.Count); near.Clear();
         return hit is { } h ? new Hit(h.Body, h.Distance, h.Part == ScHitPart.Unknown ? ScHitPart.Body : h.Part) : null;
     }
     public static Vector3 Scatter(Vector3 direction, float cone, Engine.Random random) {

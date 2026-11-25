@@ -389,7 +389,7 @@ static class TacticalEnemyRegression {
             });
             Test("34-weapon-pool-no-registry-allocation",()=>{
                 var names=new HashSet<string>();var pools=(string[][])T("TacticalEnemyState").GetField("Pools").GetValue(null);
-                for(int role=0;role<5;role++)for(int seed=0;seed<160;seed++){dynamic s=State(role,seed);dynamic spec=((Array)C("GunSpec").GetField("All").GetValue(null)).GetValue((int)s.Variant);names.Add((string)spec.Name);Check(pools[role].Contains((string)spec.Name)&&s.Rounds==spec.Magazine&&s.Reserve==spec.Magazine*3&&s.Bomb==(role==4),"role/equipment mismatch");_=(int)s.DisplayValue;Check(!s.Encode().Contains("DisplayValue"),"transient player item value serialized");}
+                for(int role=0;role<5;role++)for(int seed=0;seed<160;seed++){dynamic s=State(role,seed);dynamic spec=((Array)C("GunSpec").GetField("All").GetValue(null)).GetValue((int)s.Variant);names.Add((string)spec.Name);Check(pools[role].Contains((string)spec.Name)&&s.Rounds==spec.Magazine&&s.Reserve==spec.Magazine*3&&!s.Bomb&&!s.CarriesBomb&&(bool)s.ShieldUp==(role==4),"role/equipment mismatch (1.6.0: no new T carries a bomb from creation; the demolition T has the shield)");_=(int)s.DisplayValue;Check(!s.Encode().Contains("DisplayValue"),"transient player item value serialized");}
                 Check(names.Count==34&&!names.Contains("taser"),"missing weapon coverage");Check((int)C("ScGunRegistry").GetProperty("Next").GetValue(rf.GetValue(null))==1,"NPC templates consumed gun numbers");
             });
             Test("equipment-world-xml-and-native-unload-two-rounds",()=>{
