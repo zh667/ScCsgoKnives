@@ -180,7 +180,7 @@ public static class ScFeedback1124SelfTest {
             bool ownFinish = gold.All(r => ScKnifeBlock.SkinOf(r.Value) == ScKnifeSkinCatalog.ForVariant(ScKnifeBlock.GetVariant(r.Value)));
             bool onlyHere = built.Where(r => Terrain.ExtractContents(r.Value) == knifeBlock).All(r => r.Rarity == CaseRarity.Legendary);
             detail = $"gold {gold.Length}, skinned {skinned}, e.g. {string.Join(" | ", gold.Take(3).Select(r => ScKnifeSkinCatalog.Name(ScKnifeBlock.SkinOf(r.Value), ScKnifeBlock.GetVariant(r.Value))))}";
-            return allKnives && ownFinish && onlyHere && (ScMinimalEdition.Enabled || skinned > 0);
+            return allKnives && ownFinish && onlyHere && (ScMinimalEdition.Enabled || skinned == gold.Length);
         });
         Test("cases/cs-gun-weights", () => {
             if (!csBlocks) { detail = "no CS blocks registered in this suite"; return true; }

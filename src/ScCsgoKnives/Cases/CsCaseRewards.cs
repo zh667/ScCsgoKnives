@@ -69,10 +69,13 @@ public static class CsCaseRewards {
         foreach (var knife in Knives()) yield return knife;
     }
 
-    /// <summary>The gold tier: every CS knife this edition has, in its CS finish (factory when the knife has none).</summary>
+    /// <summary>The gold tier: every CS knife this edition has that has a CS finish, in that finish.</summary>
     static IEnumerable<RewardDefinition> Knives() {
         int knifeBlock = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
         int[] knives = Enumerable.Range(0, CsmcKnifeRig.KnifeCount).Where(ScMinimalEdition.KnifeAvailable).ToArray();
+        // Gold means a skinned knife: the two default knives (no CS finish) stay out unless an edition has nothing else.
+        int[] skinned = knives.Where(k => ScKnifeSkinCatalog.ForVariant(k) != ScKnifeSkinCatalog.None).ToArray();
+        if (skinned.Length > 0) knives = skinned;
         foreach (int k in knives) yield return R(CaseRarity.Legendary, Terrain.MakeBlockValue(knifeBlock, 0, ScKnifeSkinCatalog.With(k, ScKnifeSkinCatalog.ForVariant(k))), 1, KnivesWeight / knives.Length);
     }
 
