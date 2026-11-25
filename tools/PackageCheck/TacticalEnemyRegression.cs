@@ -1449,16 +1449,16 @@ static class TacticalEnemyRegression {
                     var record=Put(Terrain.MakeBlockValue(723,0,C("GunSpec").GetMethod("WithId").Invoke(null,[0,5]) is int d?d:0),at+new Vector3(0,0,-2));
                     var markType=T("TacticalBlastLoot").GetNestedType("DeathMark");
                     bombs.DeathMarks.Add((dynamic)Activator.CreateInstance(markType,[at+new Vector3(-6,0,0),4950.0]));
-                    var bag=Put(41,at+new Vector3(-7,0,0));var stale=Put(41,at+new Vector3(0,0,6));
+                    var bag=Put(41,at+new Vector3(-7,0,0));var stale=Put(41,at+new Vector3(0,0,6));var fell=Put(41,at+new Vector3(-6,-10,0)); // fell down a hole under the death spot
                     bombs.DeathMarks.Add((dynamic)Activator.CreateInstance(markType,[at+new Vector3(0,0,6),3000.0])); // older than 15 minutes: no protection
                     // Saved and loaded twice: the recent mark still protects, the stale one is gone.
                     for(int i=0;i<2;i++){var v=new ValuesDictionary();bombs.Save(v);bombs.Dispose();bombs=New("SubsystemTacticalBombs");((Subsystem)bombs).m_project=f.P;f.P.m_subsystems.Add((Subsystem)bombs);bombs.Load(Round(v));}
                     Check(bombs.DeathMarks.Count==1,"death marks after two saves: "+bombs.DeathMarks.Count);
                     int destroyed=bombs.ClearLoot(at,12f,"0123456789abcdef0123456789abcdef");
                     Check(near.ToRemove&&stale.ToRemove&&destroyed==6,$"loose loot in range not destroyed ({destroyed})");
-                    Check(!far.ToRemove&&!knife.ToRemove&&!record.ToRemove&&!bag.ToRemove,"destroyed something it must keep (out of range, a CS knife/gun, or a recent death drop)");
+                    Check(!far.ToRemove&&!knife.ToRemove&&!record.ToRemove&&!bag.ToRemove&&!fell.ToRemove,"destroyed something it must keep (out of range, a CS knife/gun, or a recent death drop, also one that fell below)");
                     f.Terrain.Blocked=true;var behind=Put(40,at+new Vector3(2,0,0));bombs.ClearLoot(at,12f,"x");Check(!behind.ToRemove,"loot behind a wall destroyed");
-                    f.Info.TotalElapsedGameTime=5000+901;f.Terrain.Blocked=false;bombs.ClearLoot(at,12f,"x");Check(bag.ToRemove,"a death mark protected for more than 15 minutes");
+                    f.Info.TotalElapsedGameTime=5000+901;f.Terrain.Blocked=false;bombs.ClearLoot(at,12f,"x");Check(bag.ToRemove&&fell.ToRemove,"a death mark protected for more than 15 minutes");
                     var rules=T("TacticalBlastLoot");int Loss(int value,int count,string id,int slot)=>(int)rules.GetMethod("CrateLoss").Invoke(null,[value,count,id,slot]);
                     Check(Loss(40,7,"a",0)==3&&Loss(40,2,"a",0)==1&&Loss(40,0,"a",0)==0&&Loss(Terrain.MakeBlockValue(723,0,(int)C("GunSpec").GetMethod("WithId").Invoke(null,[0,5])),1,"a",0)==0,"crate halves");
                     var ones=Enumerable.Range(0,64).Select(s=>Loss(40,1,"0123456789abcdef0123456789abcdef",s)).ToArray();

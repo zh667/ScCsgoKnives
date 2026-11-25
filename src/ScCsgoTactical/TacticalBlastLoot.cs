@@ -5,8 +5,9 @@ namespace Game;
 /// subsystem applies them on the server only. Players' own C4 (SubsystemScC4) is not affected.
 /// <list type="bullet">
 /// <item>Dropped items in the blast radius with a clear line to the charge are destroyed, except the drops of a player
-/// who died there recently (within <see cref="DeathProtectRadius"/> blocks of the death and <see cref="DeathProtectSeconds"/>
-/// of game time) and CS guns and knives (a gun's permanent record must never be destroyed without trace).</item>
+/// who died there recently (within <see cref="DeathProtectRadius"/> blocks of the death sideways, from up to
+/// <see cref="DeathDropFall"/> blocks below it to <see cref="DeathProtectRadius"/> above, and within
+/// <see cref="DeathProtectSeconds"/> of game time) and CS guns and knives (a gun's permanent record must never be destroyed without trace).</item>
 /// <item>An airdrop crate in the radius loses half of every stack (rounded down); a single item is kept or lost by a
 /// stable roll seeded with where the charge lies, so repeating the same blast gives the same result. A gun with its own
 /// record is never removed from a crate.</item>
@@ -14,11 +15,18 @@ namespace Game;
 public static class TacticalBlastLoot {
     public const float DeathProtectRadius = 4f;
     public const double DeathProtectSeconds = 900;
+    /// <summary>How far a dead player's drops may have fallen (down a hole or off a ledge) and still count as theirs:
+    /// the blast reaches down open holes, so the protection has to follow the drops down (1.6.0 in-game check).</summary>
+    public const float DeathDropFall = 32f;
     public const int MaxDeathMarks = 32;
     public readonly record struct DeathMark(Vector3 Position, double At);
     public static bool Fresh(DeathMark m, double now) => now >= m.At && now - m.At <= DeathProtectSeconds;
     public static bool Protected(Vector3 item, IEnumerable<DeathMark> marks, double now) =>
-        marks.Any(m => Fresh(m, now) && Vector3.DistanceSquared(m.Position, item) <= DeathProtectRadius * DeathProtectRadius);
+        marks.Any(m => Fresh(m, now) && Near(m.Position, item));
+    static bool Near(Vector3 mark, Vector3 item) {
+        float dx = item.X - mark.X, dz = item.Z - mark.Z, dy = item.Y - mark.Y;
+        return dx * dx + dz * dz <= DeathProtectRadius * DeathProtectRadius && dy <= DeathProtectRadius && dy >= -DeathDropFall;
+    }
     /// <summary>Items a blast may destroy: anything but a CS gun or knife.</summary>
     public static bool Destructible(int value) {
         int contents = Terrain.ExtractContents(value);
