@@ -257,6 +257,7 @@
    "EnemyC4Planted": "Enemy C4 planted!",
    "EnemyC4PlantedWhere": "{0} {1:0} blocks · explodes in {2:0} s: defuse it or get clear",
    "EnemyC4Alert": "WARNING: Enemy C4 · {0} {1:0} blocks · {2:0.0} s",
+   "EnemyC4LastSeconds": "Enemy C4 explodes in {2:0} s! {0} {1:0} blocks",
    "Direction0": "ahead",
    "Direction1": "ahead right",
    "Direction2": "right",
@@ -380,7 +381,7 @@
     "Description": "Conspicuous in-game alerts.",
     "BombAlert": {
      "Name": "Conspicuous enemy C4 alert",
-     "Description": "When on, an enemy C4 plant shows a large message with direction and distance, a countdown line at the top of the screen, a marker over the bomb drawn through walls, and louder beeps that carry further. When off (default) it is as in 1.5.0: only the plant sound, the beeps that speed up and the defuse prompt when you are close. Each device has its own setting; in multiplayer it only affects you."
+     "Description": "When on, an enemy C4 plant shows a message above the hotbar with direction and distance (again with 10 s left), a countdown line at the top of the screen, a marker over the bomb drawn through walls, and louder beeps that carry further. When off (default) it is as in 1.5.0: only the plant sound, the beeps that speed up and the defuse prompt when you are close. Each device has its own setting; in multiplayer it only affects you."
     }
    }
   }
