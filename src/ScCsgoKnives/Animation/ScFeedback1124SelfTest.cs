@@ -240,5 +240,17 @@ public static class ScFeedback1124SelfTest {
                 && ScFirstCraftMirror.Document(Project("123", false)) is null;
         });
         Test("reload/mag7-is-not-a-tube", () => !ScReloadTransaction.IsTube("mag7") && ScReloadTransaction.IsTube("nova") && ScReloadTransaction.IsTube("xm1014") && ScReloadTransaction.IsTube("sawedoff"));
+        // 1.6.0 (user 2026-11-25): the conspicuous enemy-C4 alert is a mod-settings switch, off unless the stored value says on.
+        Test("bomb-alert/off-unless-stored-on", () => {
+            var forced = ScBombAlertSetting.Forced; ScBombAlertSetting.Forced = null;
+            try {
+                bool stored = ModSettingsManager.TryGet(out bool v, ScBombAlertSetting.Package, ScBombAlertSetting.Page, ScBombAlertSetting.Item) && v;
+                ScBombAlertSetting.Reload(); bool now = ScBombAlertSetting.Enabled;
+                ScBombAlertSetting.Changed(["Weapons", "Editor"]); bool other = ScBombAlertSetting.Enabled;
+                ScBombAlertSetting.Changed(["Alerts", "BombAlert"]); bool again = ScBombAlertSetting.Enabled;
+                detail = $"stored {stored} enabled {now}";
+                return now == stored && other == now && again == stored;
+            } finally { ScBombAlertSetting.Forced = forced; ScBombAlertSetting.Reload(); }
+        });
     }
 }

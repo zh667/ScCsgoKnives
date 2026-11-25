@@ -28,6 +28,17 @@
           "Widget": "Game.ScGunModSettingsWidget"
         }
       ]
+    },
+    {
+      "Id": "Alerts",
+      "Items": [
+        {
+          "Id": "BombAlert",
+          "Type": "System.Boolean",
+          "Default": false,
+          "Widget": "Game.BoolButtonSettingWidget"
+        }
+      ]
     }
   ]
 }

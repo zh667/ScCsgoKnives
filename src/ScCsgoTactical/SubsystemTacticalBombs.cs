@@ -60,7 +60,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     public UpdateOrder UpdateOrder=>UpdateOrder.Default;
     public int[] DrawOrders=>[10];
     public override void Load(ValuesDictionary values) {
-        base.Load(values);if(values.GetValue("Schema",1)!=1)throw new InvalidOperationException("敌方 C4 存档版本不受支持。");
+        base.Load(values);if(values.GetValue("Schema",1)!=1)throw new InvalidOperationException("敌方 C4 存档版本不受支持。");ScBombAlertSetting.Reload();
         var saved=values.GetValue<ValuesDictionary>("Bombs",null);
         if(saved is not null)foreach(var pair in saved){var d=(ValuesDictionary)pair.Value;var c=ScC4Charge.Load(d);if(c.Fuse!=40||c.Owner!=-2)throw new InvalidOperationException("敌方 C4 存档数值异常。");
             string id=d.GetValue("BombId","");Bombs.Add(new(){Charge=c,BombId=id,Rewardable=id.Length>0&&d.GetValue("Rewardable",false)});}
@@ -339,7 +339,8 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             foreach(var p in players.ComponentPlayers)if(Vector3.DistanceSquared(p.ComponentBody.Position,c.Position)<=4*c.Radius*c.Radius)
                 Notice(p,ScWeaponText.Get("EnemyC4LootDestroyed","敌方 C4 炸毁了附近的物资"),Color.Orange,false);
     }
-    // ---- 1.6.0 (user decision 2026-11-25): a planted enemy bomb is announced clearly to every player within AlertRange:
+    // ---- 1.6.0 (user decisions 2026-11-25): with the mod-settings switch on (ScBombAlertSetting, off by default; each
+    // device its own) a planted enemy bomb is announced clearly to every local player within AlertRange:
     // once a large message with where it is, then a line under the top of the screen with direction, distance and the fuse
     // (red and blinking in the last 10 s), and a marker over the charge drawn through terrain. The beeps already speed up
     // (ScC4Charge.NextCue: from one a second to ten). A multiplayer client shows the same from the bombs the server sends.
@@ -360,6 +361,8 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             view=alerts[p]=new AlertView{Label=ScGunUi.Label("",1f,Color.Red)};view.Label.HorizontalAlignment=WidgetAlignment.Center;view.Label.VerticalAlignment=WidgetAlignment.Near;
             view.Label.Margin=new Vector2(0,64);view.Label.IsHitTestVisible=false;view.Label.TextAnchor=TextAnchor.HorizontalCenter;p.ComponentGui.ControlsContainerWidget.Children.Add(view.Label);
         }
+        // Off (the default): what 1.5.0 gave. Turned on while a bomb is already planted, its large message still comes once.
+        if(!ScBombAlertSetting.Enabled){view.Label.IsVisible=false;return;}
         var eye=p.GameWidget?.ActiveCamera?.ViewPosition??p.ComponentBody.Position;var forward=p.GameWidget?.ActiveCamera?.ViewDirection??p.ComponentBody.Matrix.Forward;
         Bomb near=null;float best=AlertRange*AlertRange;
         foreach(var b in Bombs){if(b.Charge.Remaining<=0)continue;float d=Vector3.DistanceSquared(eye,b.Charge.Position);if(d<best){best=d;near=b;}}
@@ -375,6 +378,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     readonly PrimitivesRenderer3D overlay=new();
     /// <summary>A red beam and diamond over each live enemy bomb, drawn without the depth test so walls do not hide it.</summary>
     void DrawMarkers(Camera camera){
+        if(!ScBombAlertSetting.Enabled)return;
         var batch=overlay.FlatBatch(0,DepthStencilState.None,RasterizerState.CullNone,BlendState.AlphaBlend);
         foreach(var b in Bombs){
             var c=b.Charge;if(c.Remaining<=0||Vector3.DistanceSquared(camera.ViewPosition,c.Position)>AlertRange*AlertRange)continue;

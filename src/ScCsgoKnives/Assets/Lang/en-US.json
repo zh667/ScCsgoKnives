@@ -371,5 +371,18 @@
    "Case": "Craft a survivor weapon case",
    "Key": "Craft a weapon case key"
   }
+ },
+ "ModSettings": {
+  "zh667.ScCsgoKnives": {
+   "Alerts": {
+    "Name": "Alerts",
+    "Title": "CS Weapons · Alerts",
+    "Description": "Conspicuous in-game alerts.",
+    "BombAlert": {
+     "Name": "Conspicuous enemy C4 alert",
+     "Description": "When on, an enemy C4 plant shows a large message with direction and distance, a countdown line at the top of the screen and a marker over the bomb drawn through walls. When off (default) it is as in 1.5.0: only the plant sound, the beeps that speed up and the defuse prompt when you are close. Each device has its own setting; in multiplayer it only affects you."
+    }
+   }
+  }
  }
 }

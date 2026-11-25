@@ -374,6 +374,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         }
         Log.Warning($"[ScCsgoKnives] the game never called the CS packages' OnLoadingFinished (an earlier mod threw there and ended the loading loop, see the error above); finished at the main menu: {string.Join(", ", names)}; deferred actions {done}/{actions.Count}");
     }
+    /// <summary>The game's mod settings page changed one of this package's items (1.6.0: the enemy-C4 alert switch).</summary>
+    public override void OnModSettingChanged(string[] idPath, object value) => ScBombAlertSetting.Changed(idPath);
     public override void OnLoadingFinished(List<Action> actions) {
         s_loadingFinished = true;
         // Register all base CS supplies in the same workshop catalogue used by
