@@ -67,8 +67,9 @@ foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies().Where(a => (a
   System.Type[] types; try { types = asm.GetTypes(); } catch (System.Reflection.ReflectionTypeLoadException e) { types = e.Types.Where(x => x != null).ToArray(); }
   foreach (var type in types) {
     if (type.ContainsGenericParameters) continue;
-    foreach (var f in type.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)) {
-      if (f.IsLiteral) continue; object v; try { v = f.GetValue(null); } catch { continue; } if (v == null) continue;
+    System.Reflection.FieldInfo[] fields; try { fields = type.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic); } catch (System.Exception) { continue; }
+    foreach (var f in fields) {
+      object v; try { if (f.IsLiteral || f.FieldType.IsPointer || f.FieldType.IsByRefLike || f.FieldType.IsFunctionPointer) continue; v = f.GetValue(null); } catch { continue; } if (v == null) continue;
       int hits = 0; string kind = "";
       void Look(object o, int depth) {
         if (o == null || depth > 2 || hits > 50) return;
