@@ -233,7 +233,7 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             if(start&&authority)Begin(p,b,kit);
         }
         foreach(var p in hud.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){hud[p].Panel.ParentWidget?.Children.Remove(hud[p].Panel);hud.Remove(p);}
-        foreach(var p in alerts.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray()){alerts[p].Label.ParentWidget?.Children.Remove(alerts[p].Label);alerts.Remove(p);}
+        foreach(var p in alerts.Keys.Where(p=>!players.ComponentPlayers.Contains(p)).ToArray())alerts.Remove(p);
         foreach(var p in remote.Keys.Where(p=>!players.ComponentPlayers.Contains(p)||!ScNet.IsRemoteDriven(p)).ToArray())remote.Remove(p);
         blasts.RemoveAll(b=>time.GameTime-b.Started>ScC4Blast.Lifetime);
         if(authority)Publish();
@@ -356,13 +356,14 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
     }
     // ---- 1.6.0 (user decisions 2026-11-25): with the mod-settings switch on (ScBombAlertSetting, off by default; each
     // device its own) a planted enemy bomb is announced clearly to every local player within AlertRange:
-    // a game message above the hotbar with where it is (and once more with 10 s left), a line under the top of the screen with direction, distance and the fuse
-    // (red and blinking in the last 10 s), and a marker over the charge drawn through terrain. The beeps already speed up
+    // an ordinary game message above the hotbar with where it is, how far and how long (when it is first seen, then once
+    // more at 20 s and at 10 s left: three at most), and a marker over the charge drawn through terrain. No text of its own
+    // on the screen (user 2026-11-25: no large centre text, no line at the top). The beeps already speed up
     // (ScC4Charge.NextCue: from one a second to ten); with the switch on they are also louder (CueGain). A multiplayer client shows the same from the bombs the server sends.
     public const float AlertRange=96;
-    sealed class AlertView{public LabelWidget Label;public readonly HashSet<string> Announced=[],Warned=[];}
+    /// <summary>Per local player: how far each bomb's news has gone (1 first message, 2 the 20 s one, 3 the 10 s one).</summary>
+    sealed class AlertView{public readonly Dictionary<string,int> Stage=[];}
     readonly Dictionary<ComponentPlayer,AlertView> alerts=[];
-    // (The game font has no "⚠" glyph: it drew an empty box in the first build, so the line starts with 【警告】.)
     /// <summary>Where a point lies as seen from a view: 前方, 右前方 ... 左前方.</summary>
     public static string Direction(Vector3 forward,Vector3 from,Vector3 to){
         var d=new Vector2(to.X-from.X,to.Z-from.Z);var f=new Vector2(forward.X,forward.Z);
@@ -372,27 +373,20 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         int sector=(int)MathF.Round(((a%360)+360)%360/45f)%8;return ScWeaponText.Get("Direction"+sector,names[sector]);
     }
     void Alert(ComponentPlayer p){
-        if(!alerts.TryGetValue(p,out var view)){
-            view=alerts[p]=new AlertView{Label=ScGunUi.Label("",1f,Color.Red)};view.Label.HorizontalAlignment=WidgetAlignment.Center;view.Label.VerticalAlignment=WidgetAlignment.Near;
-            view.Label.Margin=new Vector2(0,64);view.Label.IsHitTestVisible=false;view.Label.TextAnchor=TextAnchor.HorizontalCenter;p.ComponentGui.ControlsContainerWidget.Children.Add(view.Label);
-        }
-        // Off (the default): what 1.5.0 gave. Turned on while a bomb is already planted, its message still comes once.
-        if(!ScBombAlertSetting.Enabled){view.Label.IsVisible=false;return;}
+        if(!alerts.TryGetValue(p,out var view))view=alerts[p]=new AlertView();
+        // Off (the default): what 1.5.0 gave. Turned on while a bomb is already planted, its message still comes.
+        if(!ScBombAlertSetting.Enabled)return;
         var eye=p.GameWidget?.ActiveCamera?.ViewPosition??p.ComponentBody.Position;var forward=p.GameWidget?.ActiveCamera?.ViewDirection??p.ComponentBody.Matrix.Forward;
         Bomb near=null;float best=AlertRange*AlertRange;
-        foreach(var b in Bombs){if(b.Charge.Remaining<=0)continue;float d=Vector3.DistanceSquared(eye,b.Charge.Position);if(d<best){best=d;near=b;}}
-        if(near is null){view.Label.IsVisible=false;return;}
+        foreach(var b in Bombs){if(b.Charge.Remaining<=0||b.BombId.Length==0)continue;float d=Vector3.DistanceSquared(eye,b.Charge.Position);if(d<best){best=d;near=b;}}
+        if(near is null)return;
         float distance=MathF.Sqrt(best),left=near.Charge.Remaining;string where=Direction(forward,eye,near.Charge.Position);
-        // An ordinary game message above the hotbar (user 2026-11-25: no large text across the screen), twice per bomb at most:
-        // when it is first seen and once more with 10 s left; the line at the top keeps counting in between.
-        if(near.BombId.Length>0&&view.Announced.Add(near.BombId))
-            p.ComponentGui.DisplaySmallMessage(ScWeaponText.Get("EnemyC4Planted","敌方安放了 C4！")+" "
-                +string.Format(ScWeaponText.Get("EnemyC4PlantedWhere","{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离"),where,distance,left),Color.Orange,false,false);
-        else if(left<=10&&near.BombId.Length>0&&view.Warned.Add(near.BombId))
-            p.ComponentGui.DisplaySmallMessage(string.Format(ScWeaponText.Get("EnemyC4LastSeconds","敌方 C4 还有 {2:0} 秒爆炸！{0} {1:0} 格"),where,distance,left),Color.Red,true,false);
-        view.Label.IsVisible=true;
-        view.Label.Text=string.Format(ScWeaponText.Get("EnemyC4Alert","【警告】敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒"),where,distance,left);
-        view.Label.Color=left<=10&&Time.FrameIndex/15%2==0?Color.White:Color.Red;
+        view.Stage.TryGetValue(near.BombId,out int stage);
+        int due=left<=10?3:left<=20?2:1;if(stage>=due)return;
+        if(stage==0)p.ComponentGui.DisplaySmallMessage(ScWeaponText.Get("EnemyC4Planted","敌方安放了 C4！")+" "
+            +string.Format(ScWeaponText.Get("EnemyC4PlantedWhere","{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离"),where,distance,left),Color.Orange,false,false);
+        else p.ComponentGui.DisplaySmallMessage(string.Format(ScWeaponText.Get("EnemyC4LastSeconds","敌方 C4 还有 {2:0} 秒爆炸！{0} {1:0} 格"),where,distance,left),due==3?Color.Red:Color.Orange,due==3,false);
+        view.Stage[near.BombId]=due;
     }
     readonly PrimitivesRenderer3D overlay=new();
     /// <summary>A red beam and diamond over each live enemy bomb, drawn without the depth test so walls do not hide it.</summary>
@@ -415,5 +409,5 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
             block.DrawPlanted(renderer,Color.White,ref m,new DrawBlockEnvironmentData{SubsystemTerrain=terrain,Light=15});}
         foreach(var b in blasts)b.Draw(renderer,camera,time.GameTime);renderer.Flush(camera.ViewProjectionMatrix);
     }
-    public override void Dispose(){ScWeaponActionGate.Reserved-=Blocking;foreach(var b in Bombs.ToArray())Remove(b);foreach(var b in playerCharges.Values)Cancel(b);playerCharges.Clear();foreach(var a in alerts.Values)a.Label.ParentWidget?.Children.Remove(a.Label);alerts.Clear();foreach(var h in hud.Values)h.Panel.ParentWidget?.Children.Remove(h.Panel);hud.Clear();remote.Clear();base.Dispose();}
+    public override void Dispose(){ScWeaponActionGate.Reserved-=Blocking;foreach(var b in Bombs.ToArray())Remove(b);foreach(var b in playerCharges.Values)Cancel(b);playerCharges.Clear();alerts.Clear();foreach(var h in hud.Values)h.Panel.ParentWidget?.Children.Remove(h.Panel);hud.Clear();remote.Clear();base.Dispose();}
 }
