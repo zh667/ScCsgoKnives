@@ -38,12 +38,7 @@ public sealed class SubsystemScCaseBlockBehavior : SubsystemBlockBehavior {
             return true;
         }
 
-        int keySlot = FindKeySlot(componentMiner.Inventory, definition.KeyBlockIndex);
-        if (keySlot < 0) {
-            player.ComponentGui.DisplaySmallMessage(LanguageControl.Get("ScCsgoBox", "Message", "NeedKey"), Color.LightYellow, true, true);
-            return true;
-        }
-
+        // 1.6.0 (user decision 2026-11-25): no key; using the case opens it.
         // Decide the reward before opening the UI. The animation can only display this result.
         // 1.6.0 (D17): guns only up to what the opener's level can craft.
         CaseRoll roll = CaseRoller.RollFor(definition, CsCaseRewards.EligibleFor((int)MathF.Floor(player.PlayerData.Level)),
@@ -57,10 +52,7 @@ public sealed class SubsystemScCaseBlockBehavior : SubsystemBlockBehavior {
             }
         });
         m_playersWithPendingResult.Add(player);
-        if (m_subsystemGameInfo.WorldSettings.GameMode != GameMode.Creative) {
-            componentMiner.Inventory.RemoveSlotItems(keySlot, 1);
-            componentMiner.RemoveActiveTool(1);
-        }
+        if (m_subsystemGameInfo.WorldSettings.GameMode != GameMode.Creative) componentMiner.RemoveActiveTool(1);
 
         AudioManager.PlaySound("Audio/ScCsgoBox/cs_open", 1f, 0f, 0f);
         DialogsManager.ShowDialog(player.GuiWidget, dialog);

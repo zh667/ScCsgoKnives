@@ -1,7 +1,7 @@
 namespace Game;
 
 /// <summary>1.6.0 (feedback-1124-170 D17): the CS weapons' rewards in the survivor case, by CS-style tier. The case files keep
-/// their vanilla rewards; the knives (gold tier) come from Assets/ScCsgoBox/Integrations/sc-csgo-knives.json.
+/// their vanilla rewards; the knives (gold tier) are added here too (1.6.0: other mods' integration files are not read).
 /// <list type="table">
 /// <item>common / 普通: metal parts 2 or 3, mechanical parts 1, magazines 2, shells 12, one throwable</item>
 /// <item>uncommon / 稀有: grip, scope, paint supplies 1 or 2, defuse kit (with the agents package)</item>
@@ -15,7 +15,7 @@ namespace Game;
 public static class CsCaseRewards {
     public const string TargetCase = "survivor";
     public const double ComponentWeight = 2, AmmoWeight = 2, ThrowableWeight = 1.5, PartWeight = 1.5, PaintWeight = 1, KitWeight = .75;
-    public const double PaintedGunsWeight = 3, CounterGunsWeight = 1.5, GunsWeight = 3;
+    public const double PaintedGunsWeight = 3, CounterGunsWeight = 1.5, GunsWeight = 3, KnivesWeight = 1;
 
     /// <summary>Adds the CS rewards to the survivor case. Returns how many were added.</summary>
     public static int Append(IEnumerable<CaseDefinition> cases) {
@@ -65,6 +65,14 @@ public static class CsCaseRewards {
         int[] guns = Enumerable.Range(0, GunSpec.All.Length).Where(v => GunSpec.All[v].Name != "taser").ToArray();
         foreach (int v in guns) yield return R(CaseRarity.Rare, Terrain.MakeBlockValue(gunBlock, 0, GunSpec.WithId(v, GunSpec.FreshFull)), 1,
             GunsWeight / guns.Length, ScWeaponCrafting.RequiredPlayerLevel(GunSpec.All[v].Name));
+        foreach (var knife in Knives()) yield return knife;
+    }
+
+    /// <summary>The gold tier: every CS knife this edition has, factory finish.</summary>
+    static IEnumerable<RewardDefinition> Knives() {
+        int knifeBlock = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
+        int[] knives = Enumerable.Range(0, CsmcKnifeRig.KnifeCount).Where(ScMinimalEdition.KnifeAvailable).ToArray();
+        foreach (int k in knives) yield return R(CaseRarity.Legendary, Terrain.MakeBlockValue(knifeBlock, 0, ScKnifeSkinCatalog.With(k, ScKnifeSkinCatalog.None)), 1, KnivesWeight / knives.Length);
     }
 
     /// <summary>What a player of this level may draw.</summary>

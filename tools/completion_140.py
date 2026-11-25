@@ -119,6 +119,9 @@ RETIRED = {"Assets/Audio/ScCsgoKnives/Hits/headshot_armor.ogg"}
 # dmr6e: the packages are built on the delivered ones, so dmr6d's CS2 muzzle sheets would stay as unused members; they are
 # retired from both core packages and from the resource marker (the members their import record names).
 RETIRED |= {r["member"] for r in json.loads((ROOT / "docs/tasks/muzzle-fx-cs2-20261005-assets.json").read_text("utf8"))}
+# 1.6.0 (feedback-1124-170, user decision 2026-11-25): cases hold only CS and vanilla items and read no integration files; the
+# knives that file gave the standalone case mod are added by CsCaseRewards.
+RETIRED |= {"Assets/ScCsgoBox/Integrations/sc-csgo-knives.json"}
 CACHE = base.BASE / "cache"
 
 def tool(S, name): return S / "tree/tools" / name / "bin/Release/net10.0" / (name + ".dll")

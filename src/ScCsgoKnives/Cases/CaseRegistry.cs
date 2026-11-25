@@ -48,7 +48,9 @@ public static class CaseRegistry {
             try { ValidateAndAdd(CreateFallback(), "built-in fallback"); }
             catch (Exception ex) { Log.Warning($"[ScCsgoBox] No case available: {ex.Message}"); }
         }
-        int integrationRewards = LoadIntegrations(options);
+        // 1.6.0 (user decision 2026-11-25): only CS and vanilla items. Other mods' integration files are no longer read, and
+        // a case file reward whose block belongs to another mod is dropped (TryPrepareReward).
+        int integrationRewards = 0;
         // 1.6.0: the CS weapons' own rewards (components, ammunition, throwables, painted and counter guns, guns), by tier.
         try { integrationRewards += CsCaseRewards.Append(s_byData.Values); }
         catch (Exception ex) { Log.Error($"[ScCsgoBox] CS case rewards unavailable: {ex}"); }
@@ -84,8 +86,10 @@ public static class CaseRegistry {
         try {
             if (reward is null || string.IsNullOrWhiteSpace(reward.Block)) return false;
             if (reward.Data is < 0 or > 1023 || reward.Count <= 0 || reward.Weight <= 0) return false;
+            if (!string.IsNullOrWhiteSpace(reward.OwnerMod) && !reward.OwnerMod.StartsWith("zh667.ScCsgo", StringComparison.OrdinalIgnoreCase)) return false;
             if (reward.ClearData) reward.Data = 0;
             int blockIndex = ResolveBlockIndex(reward);
+            if (!Allowed(BlocksManager.Blocks[blockIndex])) { Log.Warning($"[ScCsgoBox] Ignoring reward from another mod in '{source}': {reward.Block}."); return false; }
             reward.Value = Terrain.MakeBlockValue(blockIndex, 0, reward.Data);
             return true;
         }
@@ -93,6 +97,12 @@ public static class CaseRegistry {
             Log.Warning($"[ScCsgoBox] Ignoring invalid reward in '{source}': {ex.Message}");
             return false;
         }
+    }
+
+    /// <summary>A vanilla block or one of the CS family's.</summary>
+    public static bool Allowed(Block block) {
+        string assembly = block?.GetType().Assembly.GetName().Name ?? "";
+        return block is not null && (block.GetType().Assembly == typeof(BlocksManager).Assembly || assembly.StartsWith("ScCsgo", StringComparison.Ordinal));
     }
 
     static int LoadIntegrations(JsonSerializerOptions options) {

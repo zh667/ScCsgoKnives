@@ -140,15 +140,5 @@
   "member": "Assets/ScCsgoBox/Cases/survivor.json",
   "sha256": "b251a10e79490cd979105d002b7ea0f8d447070a4eb5c41c2382117a69bfef84",
   "bytes": 2989
- },
- {
-  "name": "survivalcraft-stash",
-  "sources": {
-   "zh667/ScCsgoBox@6af872a:src/ScCsgoBox/Assets/ScCsgoBox/Integrations/survivalcraft-stash.json": "b1c64929b9f0944e5c60f3a9f6c7c5830f9ef2294f1c4eb2313edb4a9cde7be3"
-  },
-  "target": "src/ScCsgoKnives/Assets/ScCsgoBox/Integrations/survivalcraft-stash.json",
-  "member": "Assets/ScCsgoBox/Integrations/survivalcraft-stash.json",
-  "sha256": "b1c64929b9f0944e5c60f3a9f6c7c5830f9ef2294f1c4eb2313edb4a9cde7be3",
-  "bytes": 2383
  }
 ]

@@ -16,10 +16,8 @@ public class ScCaseKeyBlock : FlatBlock {
 
     public override int GetFaceTextureSlot(int face, int value) => 0;
 
-    /// <summary>1.6.0 (feedback-1124-170 D15): the standalone key shape, all copper (it was 3 iron + 1 copper).</summary>
-    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() {
-        string text = LanguageControl.TryGet(out string t, "ScCsgoBox", "Recipe", "Key") ? t : "制作一把武器箱钥匙";
-        yield return ScAmmoBlock.Recipe(Terrain.MakeBlockValue(BlockIndex), 1, text,
-            [null, "copperingot", null, "copperingot", "copperingot", null, "copperingot", null, null]);
-    }
+    // 1.6.0 (user decision 2026-11-25): cases open without a key. The key stays a registered block so keys in test saves of
+    // the earlier 1.6.0 candidates keep their item identity, but it has no recipe and no creative entry.
+    public override IEnumerable<CraftingRecipe> GetProceduralCraftingRecipes() { yield break; }
+    public override IEnumerable<int> GetCreativeValues() => [];
 }
