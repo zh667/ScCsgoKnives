@@ -172,7 +172,11 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         var from=Creature.ComponentBody.Position+Vector3.UnitY*1.45f;var to=target.BoundingBox.Center();
         if(Project.FindSubsystem<SubsystemScGrenades>(true).SmokeBlocksSight(from,to))return false;
         if(terrain.Raycast(from,to,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v)).HasValue)return false;
-        var body=bodies.Raycast(from,to,0,(b,d)=>b.Entity!=Entity);return body.HasValue&&body.Value.ComponentBody==target;
+        // The bomber sees past his own squad (1.6.0: his shield escort stands right in front of him); everyone else is
+        // still blocked by bodies, so no T fires through a squad mate.
+        bool carrier=State?.CarriesBomb==true;
+        var body=bodies.Raycast(from,to,0,(b,d)=>b.Entity!=Entity&&!(carrier&&b.Entity.FindComponent<ComponentTacticalEnemy>() is {State:{} s}&&s.Squad==State.Squad));
+        return body.HasValue&&body.Value.ComponentBody==target;
     }
     public void Update(float dt){
         using var timing=ScTacticalPerformance.Measure(Entity?.Project,ScTacticalPerformance.Stage.EnemyAI);
@@ -257,7 +261,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(State.ShieldUp&&State.Warmup<=0){
             var ward=Ward();
             escortThreat=TargetBody?.Position??ward?.TargetBody?.Position??(ward is not null&&ward.search>0?ward.lastSeen:null);
-            var anchor=ward?.Creature.ComponentBody.Position??SquadCentre();
+            // lead the bomber by where he will be in a second, so a walking escort does not trail behind him
+            var anchor=ward is not null?ward.Creature.ComponentBody.Position+ward.Creature.ComponentBody.Velocity*new Vector3(1,0,1):SquadCentre();
             if(anchor is {} a){
                 var dir=escortThreat is {} t?new Vector3(t.X-a.X,0,t.Z-a.Z):(ward?.Creature.ComponentBody.Matrix.Forward??body.Matrix.Forward)*new Vector3(1,0,1);
                 if(dir.LengthSquared()>1e-4f)guard=a+Vector3.Normalize(dir)*EscortLead;
@@ -268,7 +273,8 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
             if(zones.FirstOrDefault(z=>z.Bomb&&TacticalDanger.Horizontal(body.Position,z.Center)<z.Radius+TacticalDanger.BombMargin) is {Bomb:true} hold)
                 path.SetDestination(TacticalDanger.Exit(zones,hold,body.Position,body.Matrix.Forward,fleeAttempt),.65f,1.5f,200,true,true,true,null);
             else if(guard is {} spot){
-                if(Vector3.DistanceSquared(body.Position,spot)>EscortSlack*EscortSlack)Go(spot,.9f,.5f,160,TargetBody);else path.Stop();
+                pathLeft=.3f; // the escort re-aims more often than the others
+                if(Vector3.DistanceSquared(body.Position,spot)>EscortSlack*EscortSlack)Go(spot,1f,.4f,160,TargetBody);else path.Stop();
             }
             else if(TargetBody is null){
                 if(search>0&&State.Warmup<=0)Go(lastSeen,.45f,3,160,null);
@@ -287,7 +293,7 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
                 else path.Stop();
             }
             else if(State.Warmup>0)path.Stop();
-            else if(State.CarriesBomb&&distance>PlantNearPlayer)Go(lastSeen,.75f,PlantNearPlayer-2,200,TargetBody);
+            else if(State.CarriesBomb&&distance>PlantNearPlayer)Go(lastSeen,EscortBehind()?.45f:.75f,PlantNearPlayer-2,200,TargetBody);
             else if(clear&&State.Role==TacticalRole.Sniper)path.Stop();
             else if(clear&&State.Warmup<=0&&TacticalCombatMovement.IsSmg(spec.Name)&&distance<=24){
                 if(strafeLeft<=0||path.IsStuck||!path.Destination.HasValue){
@@ -405,7 +411,14 @@ public sealed class ComponentTacticalEnemy : ComponentBehavior,IUpdateable,INois
         if(now>=t.EndAt){throwing=null;Redraw();}
     }
     /// <summary>How far in front of the bomber the escort stands, and how far it may drift before it moves again.</summary>
-    public const float EscortLead=2.2f,EscortSlack=.9f;
+    public const float EscortLead=2.4f,EscortSlack=.8f;
+    /// <summary>The bomber waits for his escort: true while a living shield escort of his squad is not yet ahead of him.</summary>
+    bool EscortBehind(){
+        if(TargetBody is null)return false;var me=Creature.ComponentBody.Position;var to=TargetBody.Position-me;to.Y=0;if(to.LengthSquared()<1e-4f)return false;to=Vector3.Normalize(to);
+        foreach(var e in director.Enemies)if(e!=this&&e.State is {ShieldUp:true} s&&s.Squad==State.Squad&&e.Creature.ComponentHealth.Health>0)
+            return Vector3.Dot(e.Creature.ComponentBody.Position-me,to)<1.2f;
+        return false;
+    }
     /// <summary>The living bomber of this T's squad (null when there is none).</summary>
     ComponentTacticalEnemy Ward()=>director.Enemies.FirstOrDefault(e=>e!=this&&e.State is {Bomber:true} s&&s.Squad==State.Squad&&e.Creature.ComponentHealth.Health>0);
     /// <summary>Where the rest of the living squad stands, on average.</summary>

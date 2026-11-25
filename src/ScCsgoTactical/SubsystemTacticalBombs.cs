@@ -297,7 +297,11 @@ public sealed class SubsystemTacticalBombs : Subsystem,IUpdateable,IDrawable {
         // hole are reached too; a solid wall still shelters what is behind it (1.6.0: a player saw drops below survive).
         bool Blocked(Vector3 a,Vector3 b)=>terrain.Raycast(a,b,false,true,(v,d)=>ScGunRange.TerrainStopsBullet(v)).HasValue;
         Vector3 low=at+Vector3.UnitY*.6f,high=at+Vector3.UnitY*3f;bool openAbove=!Blocked(low,high);
-        bool Clear(Vector3 p){var q=p+Vector3.UnitY*.35f;return !Blocked(low,q)||openAbove&&!Blocked(high,q);}
+        bool Clear(Vector3 p){
+            var q=p+Vector3.UnitY*.35f;if(!Blocked(low,q)||openAbove&&!Blocked(high,q))return true;
+            // down a narrow open hole: over the top of it from the blast, then straight down to the drop
+            var over=new Vector3(p.X,Math.Max(high.Y,p.Y+1.5f),p.Z);return openAbove&&!Blocked(high,over)&&!Blocked(over,q);
+        }
         if(Project.FindSubsystem<SubsystemPickables>(false) is {} pickables)
             foreach(var item in pickables.Pickables){
                 if(item.ToRemove||item.Count<=0||Vector3.DistanceSquared(item.Position,at)>radius*radius)continue;
