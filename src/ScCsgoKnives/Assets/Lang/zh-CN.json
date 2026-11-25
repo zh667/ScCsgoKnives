@@ -231,11 +231,11 @@
   },
   "ScCaseBlock:0": {
    "DisplayName": "荒野武器箱",
-   "Description": "可合成，也可通过升级、探索遗迹、击杀生物与敌方 T、空投、拆弹或首次制作某把枪获得。手持使用并消耗一把武器箱钥匙。"
+   "Description": "可合成，也可通过升级、探索遗迹、击杀生物与敌方 T、空投、拆弹或首次制作某把枪获得。手持使用即可开箱，不需要钥匙。"
   },
   "ScCaseKeyBlock:0": {
    "DisplayName": "武器箱钥匙",
-   "Description": "用于开启荒野武器箱。"
+   "Description": "旧版的武器箱钥匙。现在开箱不需要钥匙，这把钥匙没有用处。"
   }
  },
  "ScCsgoKnives": {
@@ -253,7 +253,18 @@
    "Material2": "握把",
    "Material3": "瞄准镜",
    "Material4": "涂装材料",
-   "EnemyC4LootDestroyed": "敌方 C4 炸毁了附近的物资"
+   "EnemyC4LootDestroyed": "敌方 C4 炸毁了附近的物资",
+   "EnemyC4Planted": "敌方安放了 C4！",
+   "EnemyC4PlantedWhere": "{0} {1:0} 格 · {2:0} 秒后爆炸，拆除或远离",
+   "EnemyC4Alert": "⚠ 敌方 C4 · {0} {1:0} 格 · {2:0.0} 秒",
+   "Direction0": "前方",
+   "Direction1": "右前方",
+   "Direction2": "右方",
+   "Direction3": "右后方",
+   "Direction4": "后方",
+   "Direction5": "左后方",
+   "Direction6": "左方",
+   "Direction7": "左前方"
   },
   "Finishes": {
    "33": "赤红新星",

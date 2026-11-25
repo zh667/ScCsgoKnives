@@ -231,11 +231,11 @@
   },
   "ScCaseBlock:0": {
    "DisplayName": "Survivor Weapon Case",
-   "Description": "Craftable; also earned from leveling, exploring ruins, killing creatures and enemy T, airdrops, defusing bombs and making a gun model for the first time. Use while held with a case key."
+   "Description": "Craftable; also earned from leveling, exploring ruins, killing creatures and enemy T, airdrops, defusing bombs and making a gun model for the first time. Use while held to open it; no key is needed."
   },
   "ScCaseKeyBlock:0": {
    "DisplayName": "Weapon Case Key",
-   "Description": "Opens a survivor weapon case."
+   "Description": "A key from an earlier version. Cases now open without a key; this one has no use."
   }
  },
  "ScCsgoKnives": {
@@ -253,7 +253,18 @@
    "Material2": "Grip",
    "Material3": "Scope",
    "Material4": "Paint Supplies",
-   "EnemyC4LootDestroyed": "The enemy C4 destroyed the supplies nearby"
+   "EnemyC4LootDestroyed": "The enemy C4 destroyed the supplies nearby",
+   "EnemyC4Planted": "Enemy C4 planted!",
+   "EnemyC4PlantedWhere": "{0} {1:0} blocks · explodes in {2:0} s: defuse it or get clear",
+   "EnemyC4Alert": "⚠ Enemy C4 · {0} {1:0} blocks · {2:0.0} s",
+   "Direction0": "ahead",
+   "Direction1": "ahead right",
+   "Direction2": "right",
+   "Direction3": "behind right",
+   "Direction4": "behind",
+   "Direction5": "behind left",
+   "Direction6": "left",
+   "Direction7": "ahead left"
   },
   "Finishes": {
    "33": "Hot Rod",
