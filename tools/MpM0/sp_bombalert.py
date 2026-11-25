@@ -32,6 +32,12 @@ OPEN_PAGE = ('var s = Game.ScreensManager.CurrentScreen as Game.ModSettingsScree
              'var stack = typeof(Game.ModSettingsScreen).GetField("m_pageStack", bf).GetValue(s); '
              'stack.GetType().GetMethod("Push").Invoke(stack, new object[] { System.ValueTuple.Create("zh667.ScCsgoKnives", new[] { "Alerts" }, "CS") }); '
              'typeof(Game.ModSettingsScreen).GetMethod("NavigateCurrent", bf).Invoke(s, null); return "page";')
+# The volume the bomb's latest beep was given, divided by the sound setting (set to 0.01 for the measurement: practically
+# silent, but above 0 so the game still creates the sound), and the listener's distance to the bomb.
+CUE_VOLUME = PROJECT + ('Game.SettingsManager.SoundsVolume = 0.01f; var bombs = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); var b = bombs.Bombs[0]; '
+    'var f = b.GetType().GetField("Cue", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); '
+    'var audio = project.FindSubsystem<Game.SubsystemAudio>(true); float d = audio.CalculateListenerDistance(b.Charge.Position); '
+    'var cue = f.GetValue(b) as Engine.Audio.BaseSound; return System.FormattableString.Invariant($"{(cue == null ? -1f : cue.Volume / 0.01f):0.000} {d:0.0}");')
 TO_MOD_SETTINGS = ('var f = typeof(Game.ScreensManager).GetField("m_screens", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static); '
                    'var all = (System.Collections.IDictionary)f.GetValue(null); var s = all.Values.OfType<Game.ModSettingsScreen>().FirstOrDefault(); if (s == null) return "no screen"; Game.ScreensManager.SwitchScreen(s); return "switched";')
 
@@ -87,7 +93,15 @@ def main(label, packages):
         off = step("off", alert()); snap("bomb-off")
         cue = F(PROJECT + 'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true).Bombs[0].Charge; return System.FormattableString.Invariant($"{b.Remaining:0.0} {b.BeepLeft:0.00}");')
         check("off (default): no top line and no large message for a planted enemy bomb; the bomb ticks (beeps)", planted.startswith("True") and off.startswith("- ||") and "C4" not in off and float(cue.split()[0]) < 40, {"alert": off, "fuse/beep": cue})
+        F(CUE_VOLUME); time.sleep(1.6); vol_off = step("beep volume, switch off (gain, distance)", F(CUE_VOLUME))
         on = step("turned on while planted", (F(set_alert(True)), time.sleep(.8), alert())[2]); snap("bomb-on")
+        time.sleep(1.6); vol_on = step("beep volume, switch on (gain, distance)", F(CUE_VOLUME)); F(MUTE)
+        R["data"]["beepVolume"] = {"off": vol_off, "on": vol_on}
+        try:
+            (g_off, d_off), (g_on, d_on) = [tuple(map(float, v.split())) for v in (vol_off, vol_on)]
+            check("the beeps are louder with the switch on (logged gain at the same distance), 1.5.0 level with it off",
+                  g_off > 0 and g_on > g_off * 1.5 and g_on <= 1.0 and abs(d_off - d_on) < .5, R["data"]["beepVolume"])
+        except Exception as e: check("the beeps are louder with the switch on", False, f"{vol_off} / {vol_on}: {e}")
         check("turned on while the bomb is planted: the top line and the large message appear", "C4" in on.split(" || ")[0] and "C4" in on.split(" || ")[1], on)
         F(set_alert(False)); time.sleep(.6); off2 = step("turned off again", alert()); time.sleep(4.5); snap("bomb-off-again")
         check("turned off again: the top line goes at once", off2.startswith("- ||"), off2)
