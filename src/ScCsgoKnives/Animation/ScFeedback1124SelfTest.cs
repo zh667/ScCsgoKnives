@@ -169,7 +169,10 @@ public static class ScFeedback1124SelfTest {
         // 2026-11-25 (user decision): gold is only knives, each in its CS finish; the CS guns weigh twice as much. These read the
         // CS rewards themselves (the suite has no loaded case files); the loaded survivor case, its vanilla items moved out of
         // gold, is checked in the real game by tools/MpM0/sp_case1125.py.
+        // The Lite suite registers no CS blocks; there these two report that and pass (the Full suite and the real game run them).
+        bool csBlocks = BlocksManager.GetBlockIndex<ScWeaponMaterialBlock>(false) >= 0 && BlocksManager.GetBlockIndex<ScKnifeBlock>(false) >= 0;
         Test("cases/gold-tier-is-skinned-knives", () => {
+            if (!csBlocks) { detail = "no CS blocks registered in this suite"; return true; }
             var built = CsCaseRewards.Build().ToArray(); int knifeBlock = BlocksManager.GetBlockIndex<ScKnifeBlock>(true);
             var gold = built.Where(r => r.Rarity == CaseRarity.Legendary).ToArray();
             int skinned = gold.Count(r => ScKnifeBlock.SkinOf(r.Value) != ScKnifeSkinCatalog.None);
@@ -180,6 +183,7 @@ public static class ScFeedback1124SelfTest {
             return allKnives && ownFinish && onlyHere && (ScMinimalEdition.Enabled || skinned > 0);
         });
         Test("cases/cs-gun-weights", () => {
+            if (!csBlocks) { detail = "no CS blocks registered in this suite"; return true; }
             var built = CsCaseRewards.Build().ToArray(); int gunBlock = BlocksManager.GetBlockIndex<ScGunBlock>(true);
             double guns = built.Where(r => r.Rarity == CaseRarity.Rare && Terrain.ExtractContents(r.Value) == gunBlock).Sum(r => r.Weight);
             double templates = built.Where(r => r.Rarity == CaseRarity.Epic).Sum(r => r.Weight);
