@@ -32,7 +32,9 @@ def odds(level): return SURV + (
     'double factory = P(Game.CaseRarity.Rare, x => x.Generated && Game.Terrain.ExtractContents(x.Value) == gunBlock); '
     'double templates = P(Game.CaseRarity.Epic, x => x.Generated); double knives = P(Game.CaseRarity.Legendary, x => x.Generated && Game.Terrain.ExtractContents(x.Value) == knifeBlock); '
     'double goldVanilla = P(Game.CaseRarity.Legendary, x => !x.Generated); double cs = 0; foreach (var r in w.Keys) cs += P(r, x => x.Generated); '
-    'return System.FormattableString.Invariant($"tiers {string.Join(",", w.OrderBy(p => p.Key).Select(p => p.Key + "=" + (p.Value / total * 100).ToString("0.##")))} '
+    'string vanilla = string.Join(",", def.Rewards.Where(x => !x.Generated).GroupBy(x => x.Rarity).OrderBy(q => q.Key).Select(q => q.Key + "=" + q.Sum(x => x.Weight).ToString(System.Globalization.CultureInfo.InvariantCulture))); '
+    'string missing = string.Join(",", def.Rewards.Where(x => !x.Generated && x.Value == 0).Select(x => x.Rarity + ":" + x.Block)); '
+    'return System.FormattableString.Invariant($"tiers {string.Join(",", w.OrderBy(p => p.Key).Select(p => p.Key + "=" + (p.Value / total * 100).ToString("0.##")))} vanillaWeights {vanilla} unresolved [{missing}] '
     'factory {factory:0.###} templates {templates:0.###} knives {knives:0.###} goldVanilla {goldVanilla:0.###} csAll {cs:0.##}");')
 
 ROLLS = SURV + (
@@ -89,12 +91,14 @@ def main(label, packages):
         o20 = R["data"]["odds20"]
         num = lambda key, s: float(s.split(key + " ")[1].split()[0])
         check("Lv20: gold 0.5 % and every bit of it knives", abs(num("knives", o20) - 0.5) < 1e-6 and num("goldVanilla", o20) == 0, o20)
-        check("Lv20: factory guns about 3.05 %, painted and counter guns about 1.39 %", abs(num("factory", o20) - 3.055) < .01 and abs(num("templates", o20) - 1.389) < .01, o20)
+        vw = dict(p.split("=") for p in o20.split("vanillaWeights ")[1].split()[0].split(","))
+        want_f = 7 * 6 / (float(vw["Rare"]) + 6); want_t = 2.5 * 9 / (float(vw["Epic"]) + 9)
+        check(f"Lv20: factory guns 7 % x 6/(vanilla+6) = {want_f:.3f} %, painted and counter guns {want_t:.3f} %", abs(num("factory", o20) - want_f) < .01 and abs(num("templates", o20) - want_t) < .01, o20)
         check("Lv1: no CS gun at all, knives still 0.5 %", num("factory", R["data"]["odds1"]) == 0 and num("templates", R["data"]["odds1"]) == 0 and abs(num("knives", R["data"]["odds1"]) - .5) < 1e-6, R["data"]["odds1"])
         rolls = R["data"]["rolls"] = F(ROLLS, 120); print("rolls:", rolls, flush=True)
         parts = rolls.split()
         val = lambda key: int(parts[parts.index(key) + 1])
-        check("4000 rolls at Lv20: every gold draw is a knife in its own finish", val("gold") > 0 and val("gold") == val("knives") == val("ownFinish"), rolls)
+        check("4000 rolls at Lv20: every gold draw is a knife in its own CS finish (no default knives)", val("gold") > 0 and val("gold") == val("knives") == val("ownFinish") == val("skinned"), rolls)
         m = g.mark(); R["data"]["goldKnife"] = picked = F(GOLD_DIALOG); print("gold dialog:", picked, flush=True)
         time.sleep(1.2); snap("gold-rolling"); time.sleep(5.5); F(FINISH); time.sleep(.6); p = snap("gold-result")
         claimed = R["data"]["claimed"] = F(CLAIM); print("claimed:", claimed, flush=True)
