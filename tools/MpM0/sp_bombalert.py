@@ -38,6 +38,12 @@ CUE_VOLUME = PROJECT + ('Game.SettingsManager.SoundsVolume = 0.01f; var bombs = 
     'var f = b.GetType().GetField("Cue", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); '
     'var audio = project.FindSubsystem<Game.SubsystemAudio>(true); float d = audio.CalculateListenerDistance(b.Charge.Position); '
     'var cue = f.GetValue(b) as Engine.Audio.BaseSound; return System.FormattableString.Invariant($"{(cue == null ? -1f : cue.Volume / 0.01f):0.000} {d:0.0}");')
+# How much of the screen the C4 text takes: the game's large message (earlier builds) and our hotbar message, as shares of
+# the game view's height and area.
+TEXT_SHARE = MAIN + ('var gui = pl.ComponentGui; var root = pl.GameWidget.ActualSize; float H(Engine.Vector2 v) => v.Y / root.Y, A(Engine.Vector2 v) => v.X * v.Y / (root.X * root.Y); '
+    'var big = gui.m_largeMessageWidget.IsVisible ? gui.m_largeMessageWidget.Children.OfType<Game.LabelWidget>().Where(l => l.IsVisible && !string.IsNullOrEmpty(l.Text)).ToList() : new System.Collections.Generic.List<Game.LabelWidget>(); '
+    'var small = gui.m_messageWidget.m_messages.Select(m => m.LabelWidget).Where(l => l.Text != null && l.Text.Contains("C4")).ToList(); '
+    'return System.FormattableString.Invariant($"view {root.X:0}x{root.Y:0} | large {big.Sum(l => H(l.ActualSize)):0.000}h {big.Sum(l => A(l.ActualSize)):0.000}a | hotbar {small.Sum(l => H(l.ActualSize)):0.000}h {small.Sum(l => A(l.ActualSize)):0.000}a");')
 TO_MOD_SETTINGS = ('var f = typeof(Game.ScreensManager).GetField("m_screens", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static); '
                    'var all = (System.Collections.IDictionary)f.GetValue(null); var s = all.Values.OfType<Game.ModSettingsScreen>().FirstOrDefault(); if (s == null) return "no screen"; Game.ScreensManager.SwitchScreen(s); return "switched";')
 
@@ -95,6 +101,8 @@ def main(label, packages):
         check("off (default): no top line and no large message for a planted enemy bomb; the bomb ticks (beeps)", planted.startswith("True") and off.startswith("- ||") and "C4" not in off and float(cue.split()[0]) < 40, {"alert": off, "fuse/beep": cue})
         F(CUE_VOLUME); time.sleep(1.6); vol_off = step("beep volume, switch off (gain, distance)", F(CUE_VOLUME))
         on = step("turned on while planted", (F(set_alert(True)), time.sleep(.8), alert())[2]); snap("bomb-on")
+        R["data"]["textShare"] = share = step("C4 text share of the screen (landscape)", F(TEXT_SHARE))
+        check("on: the plant news is an ordinary message above the hotbar, no large centre text", " large 0.000h" in share and " hotbar 0.000h" not in share, share)
         time.sleep(1.6); vol_on = step("beep volume, switch on (gain, distance)", F(CUE_VOLUME)); F(MUTE)
         R["data"]["beepVolume"] = {"off": vol_off, "on": vol_on}
         try:
@@ -106,7 +114,10 @@ def main(label, packages):
         F(set_alert(False)); time.sleep(.6); off2 = step("turned off again", alert()); time.sleep(4.5); snap("bomb-off-again")
         check("turned off again: the top line goes at once", off2.startswith("- ||"), off2)
         F(set_alert(True)); time.sleep(.6); F(set_alert(False))
-        F(MAIN + 'Engine.Window.Size = new Engine.Point2(540, 960); return "portrait";'); time.sleep(1); F(set_alert(True)); time.sleep(.8); snap("bomb-on-portrait")
+        F(MAIN + 'Engine.Window.Size = new Engine.Point2(540, 960); return "portrait";'); time.sleep(1)
+        # a second bomb so that its first message shows in the portrait window too
+        step("second bomb", F(PROJECT + f'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); return b.PlantFrom(new Engine.Vector3({x} + 3.5f, {y}, {z} - 12 + .5f), 0f, false).ToString();'))
+        F(set_alert(True)); time.sleep(1.2); snap("bomb-on-portrait"); R["data"]["textSharePortrait"] = step("C4 text share of the screen (portrait)", F(TEXT_SHARE))
         stored = step("on and saved", F(set_alert(True, save=True)))
         m = g.mark(); g.cmd('EXEC GameManager.SaveProject(true, true);'); time.sleep(2); g.close(); g = None
 
@@ -116,6 +127,13 @@ def main(label, packages):
         enter(directory); F(teleport(x, y, z)); F(STAND); F(FPP); time.sleep(1.5)
         reloaded = step("saved bomb after loading", (F(PROJECT + 'return project.FindSubsystem<Game.SubsystemTacticalBombs>(true).Bombs.Count.ToString();'), alert())); snap("bomb-on-after-restart")
         check("after the restart the saved bomb is announced (on)", reloaded[0] != "0" and "C4" in reloaded[1].split(" || ")[0], reloaded)
+        # once more with 10 s left, and no more than that: count the C4 lines in the hotbar message area
+        F(PROJECT + 'var b = project.FindSubsystem<Game.SubsystemTacticalBombs>(true); b.Bombs[0].Charge.Remaining = 10.4f; return "10.4";'); time.sleep(1.5)
+        last = step("10 s left", alert()); time.sleep(2.5)
+        count = step("C4 lines in the message area", F(MAIN + 'return pl.ComponentGui.m_messageWidget.m_messages.Count(m => m.LabelWidget.Text != null && m.LabelWidget.Text.Contains("C4")).ToString();'))
+        snap("bomb-10s-left")
+        check("with 10 s left the hotbar message comes once more, and that is all (no repeats)", ("秒爆炸" in last or "explodes in" in last) and int(count) <= 2, {"alert": last, "C4 lines": count})
+        F(PROJECT + 'project.FindSubsystem<Game.SubsystemTacticalBombs>(true).Bombs.Clear(); return "cleared";')
         F(set_alert(False, save=True)); final = F(SETTING); step("back to the default", final)
         R["gameErrors"] = g.errors()[:60]; check("no game errors", not R["gameErrors"], R["gameErrors"][:5])
     except Exception as e:
