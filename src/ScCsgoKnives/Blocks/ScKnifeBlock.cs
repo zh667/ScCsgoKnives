@@ -4,7 +4,7 @@ using Engine.Graphics;
 namespace Game;
 
 public class ScKnifeBlock : ScNoDurabilityBlock {
-    public ScKnifeBlock() { DefaultCategory = "CS武器"; }
+    public ScKnifeBlock() { DefaultCategory = ScWeaponText.Category; }
     // Vanilla Weapons entries occupy display orders 193–209.  Keep the CS tab
     // immediately after that tab instead of letting it drift to the end of the
     // creative catalogue.

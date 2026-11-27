@@ -45,11 +45,13 @@ public static class ScSushiCompatibility {
             + $"sync box -> its shared channel: {(s.SyncBoxMapped ? "mapped" : "NOT mapped (members differ), treated as unknown")}; {stacking}; {multiplayer}";
     }
 
-    static object s_logged;
+    // Weak: a strong reference kept the last world's whole Project (and everything in it) alive after the player left it
+    // (1.6.0 performance round: one extra disposed Project per session, found with sp_perf1124).
+    static readonly WeakReference<object> s_logged = new(null);
     /// <summary>One line per world, only when Sushi is loaded.</summary>
     public static void LogOnce(object world) {
-        if (ReferenceEquals(s_logged, world)) return;
-        s_logged = world;
+        if (s_logged.TryGetTarget(out var last) && ReferenceEquals(last, world)) return;
+        s_logged.SetTarget(world);
         try { var status = Read(); if (status.Present) KnifeLog.Information("[CS_SUSHI] " + Describe(status)); }
         catch (Exception e) { KnifeDiagnostics.WarnOnce("sushi-capabilities", "[CS_SUSHI] capability check failed: " + e.Message); }
     }

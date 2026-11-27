@@ -25,10 +25,10 @@ public static class ScWeaponCrafting {
     public static string Help(int value) {
         var e = Find(value);
         if (e is null) return "";
-        string text = $"\n武器装配台 · 人物等级 {e.Level}\n金属坯件 ×{e.B}";
-        if (e.M > 0) text += $"，精密机构 ×{e.M}";
-        text += $"，握持组件 ×{e.H}";
-        if (e.O > 0) text += $"，光学组件 ×{e.O}";
+        string text = $"\n武器装配台 · 人物等级 {e.Level}\n{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Blank)} ×{e.B}";
+        if (e.M > 0) text += $"，{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Mechanism)} ×{e.M}";
+        text += $"，{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Grip)} ×{e.H}";
+        if (e.O > 0) text += $"，{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Optics)} ×{e.O}";
         if (e.Diamond > 0) text += $"，钻石 ×{e.Diamond}";
         if (e.Germanium > 0) text += $"，锗 ×{e.Germanium}";
         return text + (e.Knife ? "。" : "。交付空枪，弹药另制。");

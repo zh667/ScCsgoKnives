@@ -1,4 +1,5 @@
 {
+ "BlocksManager": { "ScCsgoWeapons": "CS Weapons" },
  "Blocks": {
   "ScKnifeBlock:0": {
    "DisplayName": "Karambit",
@@ -227,9 +228,90 @@
   "ScGunBlock:34": {
    "DisplayName": "Zeus x27",
    "Description": "A single-shot stun gun, lethal up close, 1 round, semi-automatic. Left click fires."
+  },
+  "ScCaseBlock:0": {
+   "DisplayName": "Survivor Weapon Case",
+   "Description": "Craftable; also earned from leveling, exploring ruins, killing creatures and enemy T, airdrops, defusing bombs and making a gun model for the first time. Use while held to open it; no key is needed."
+  },
+  "ScCaseKeyBlock:0": {
+   "DisplayName": "Weapon Case Key",
+   "Description": "A key from an earlier version. Cases now open without a key; this one has no use."
   }
  },
  "ScCsgoKnives": {
+  "Items": {
+   "UnknownGun": "Unknown weapon",
+   "Factory": "Factory finish",
+   "Counter": "StatTrak Lv{0}",
+   "AwaitingServer": "Waiting for server sync",
+   "LegacyKnifeFinish": "Legacy preview (no official finish)",
+   "Ruby": "Doppler · Ruby",
+   "GammaDoppler": "Gamma Doppler P{0}",
+   "Fade": "Fade",
+   "Material0": "Metal Part",
+   "Material1": "Mechanical Parts",
+   "Material2": "Grip",
+   "Material3": "Scope",
+   "Material4": "Paint Supplies",
+   "EnemyC4LootDestroyed": "The enemy C4 destroyed the supplies nearby",
+   "EnemyC4Planted": "Enemy C4 planted!",
+   "EnemyC4PlantedWhere": "{0} {1:0} blocks · explodes in {2:0} s: defuse it or get clear",
+   "EnemyC4LastSeconds": "Enemy C4 explodes in {2:0} s! {0} {1:0} blocks",
+   "Direction0": "ahead",
+   "Direction1": "ahead right",
+   "Direction2": "right",
+   "Direction3": "behind right",
+   "Direction4": "behind",
+   "Direction5": "behind left",
+   "Direction6": "left",
+   "Direction7": "ahead left"
+  },
+  "Finishes": {
+   "33": "Hot Rod",
+   "51": "Lightning Strike",
+   "102": "Whiteout",
+   "180": "Fire Serpent",
+   "294": "Green Apple",
+   "302": "Vulcan",
+   "309": "Howl",
+   "344": "Dragon Lore",
+   "359": "Asiimov",
+   "391": "Cardiac",
+   "393": "Tranquility",
+   "435": "Pole Position",
+   "455": "Akihabara Accept",
+   "456": "Hydroponic",
+   "462": "Counter Terrace",
+   "496": "Nebula Crusader",
+   "497": "Golden Coil",
+   "542": "Judgement of Anubis",
+   "614": "Fuel Injector",
+   "624": "Dragonfire",
+   "626": "Mecha Industries",
+   "635": "Turf",
+   "660": "Hyper Beast",
+   "661": "Sugar Rush",
+   "716": "Toy Soldier",
+   "724": "Wild Lotus",
+   "756": "Gungnir",
+   "763": "Mjölnir",
+   "824": "Drift Wood",
+   "879": "Fade",
+   "923": "Oxide Oasis",
+   "946": "Player Two",
+   "962": "Printstream",
+   "984": "Printstream",
+   "1084": "Hazard Pay",
+   "1119": "Gamma Doppler · Emerald",
+   "1142": "Printstream",
+   "1145": "Crazy 8",
+   "1155": "Kiss♥Love",
+   "1172": "Olympus",
+   "1177": "Fade",
+   "1228": "Temukau",
+   "1229": "Sakkaku",
+   "1354": "Smoking Kills"
+  },
   "Message": {
    "Inspect": "Inspecting {0}.",
    "ControlsHint": "Inspect: press {0} on desktop, or tap the pencil button on mobile.",
@@ -253,6 +335,54 @@
    "Reloading": "Reloading",
    "Durability": "Durability {0}%",
    "Broken": "BROKEN · repair at the workbench"
+  }
+ },
+ "ScCsgoBox": {
+  "Cases": {
+   "survivor": {
+    "DisplayName": "Survivor Weapon Case"
+   }
+  },
+  "Dialog": {
+   "Rolling": "Rolling…",
+   "Skip": "Skip",
+   "Claim": "Claim",
+   "RotateHint": "Drag the item to rotate",
+   "Won": "Won {0} ×{1}  [{2}]"
+  },
+  "Message": {
+   "NeedKey": "A weapon case key is required in your inventory.",
+   "PendingResult": "Claim the current case result before opening another.",
+   "InvalidCase": "This weapon case has no valid configuration.",
+   "Received": "Received {0} ×{1}.",
+   "LevelReward": "Level-up reward: received Survivor Weapon Case ×{0}.",
+   "TreasureReward": "Ruins reward: found Survivor Weapon Case ×{0}.",
+   "MultiplayerUnsupported": "Opening cases is not available in multiplayer yet; cases still drop, stack and can be stored.",
+   "FirstCraft": "First {0} made: received 1 Survivor Weapon Case."
+  },
+  "Rarity": {
+   "Common": "Common",
+   "Uncommon": "Rare",
+   "Rare": "Epic",
+   "Epic": "Legendary",
+   "Legendary": "Gold"
+  },
+  "Recipe": {
+   "Case": "Craft a survivor weapon case",
+   "Key": "Craft a weapon case key"
+  }
+ },
+ "ModSettings": {
+  "zh667.ScCsgoKnives": {
+   "Alerts": {
+    "Name": "Alerts",
+    "Title": "CS Weapons · Alerts",
+    "Description": "Conspicuous in-game alerts.",
+    "BombAlert": {
+     "Name": "Conspicuous enemy C4 alert",
+     "Description": "When on, an enemy C4 plant shows a message above the hotbar with direction, distance and seconds left (again at 20 s and 10 s), a marker over the bomb drawn through walls, and louder beeps that carry further. When off (default) it is as in 1.5.0: only the plant sound, the beeps that speed up and the defuse prompt when you are close. Each device has its own setting; in multiplayer it only affects you."
+    }
+   }
   }
  }
 }

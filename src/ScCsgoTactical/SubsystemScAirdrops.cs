@@ -133,6 +133,8 @@ public sealed class SubsystemScAirdrops : Subsystem,IUpdateable,IDrawable {
     /// 1-2 throwables, one CS knife (factory finish), one piece of vanilla copper or iron armour, 3-5 cooked food in two kinds
     /// and 2-3 stacks of ores, ingots, coal or CS weapon materials. Only items every release already has; each stack within its
     /// block's stacking. Fixed by delivery identity, so retrying a blocked landing never rerolls the reward.</summary>
+    /// <summary>The guaranteed component share of every crate (P7).</summary>
+    public const int FixedBlankMin=2,FixedBlankMax=3,FixedMechanism=1;
     public static (int Value,int Count)[] RewardsFor(string id){
         var seed=Guid.ParseExact(id,"N").ToByteArray();
         int variant=Array.FindIndex(GunSpec.All,g=>g.Name==GunPool[seed[0]%GunPool.Length]);
@@ -157,6 +159,12 @@ public sealed class SubsystemScAirdrops : Subsystem,IUpdateable,IDrawable {
             (ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Blank),1,3),(ScWeaponMaterialBlock.Value(1+r.Int(0,3)),1,1)];
         int stacks=r.Int(2,3);var order=Enumerable.Range(0,resources.Length).ToList();
         for(int i=0;i<stacks;i++){int pick=r.Int(0,order.Count-1);var res=resources[order[pick]];order.RemoveAt(pick);loot.Add((res.Value,r.Int(res.Min,res.Max)));}
+        // 1.6.0 (feedback-1124-170 D13/P7): one guaranteed component share, appended after the table above so every earlier
+        // roll of a crate stays what the earlier table rolled for the same delivery.
+        // 1.6.0 (D18): every crate also holds one survivor case (when the core has cases registered).
+        if(BlocksManager.BlockTypeToIndex.TryGetValue(typeof(ScCaseBlock),out int caseBlock))loot.Add((Terrain.MakeBlockValue(caseBlock,0,0),1));
+        loot.Add((ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Blank),r.Int(FixedBlankMin,FixedBlankMax)));
+        loot.Add((ScWeaponMaterialBlock.Value(ScWeaponMaterialBlock.Mechanism),FixedMechanism));
         return loot.ToArray();
     }
     public void Update(float dt){

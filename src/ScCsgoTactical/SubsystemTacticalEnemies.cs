@@ -387,8 +387,10 @@ public sealed class SubsystemTacticalEnemies : Subsystem,IUpdateable {
                 made.Add(e);var enemy=e.FindComponent<ComponentTacticalEnemy>(true);
                 using(ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Configure))enemy.Configure(TacticalEnemyState.CreateWarm(roles[i],squad,random,warmup),locations[i]);
                 var state=enemy.State;state.Rewardable=info.WorldSettings.GameMode!=GameMode.Creative;state.Source=source;
-                // The fifth guard keeps its pistol/grenades; it must guard the supplies rather than leave to plant C4.
-                if(squadId is not null)state.Bomb=false;
+                // 1.6.0 (user decisions 2026-11-25): the demolition T escorts with a riot shield and never plants; in a squad
+                // that has one, the rifleman becomes the bomber instead (pistol, carries the C4). Airdrop guards have no bomber:
+                // they guard the supplies.
+                if(squadId is null&&roles[i]==TacticalRole.Rifle&&roles.Contains(TacticalRole.Demolition))state.MakeBomber(random);
                 if(challenger is {} at)enemy.Investigate(at,0);
                 if(natural?.Patrol is {} patrol)enemy.Home=new Vector3(patrol.X+locations[i].X-natural.Anchor.X,patrol.Y,patrol.Z+locations[i].Z-natural.Anchor.Z);
                 var config=DrawArmor(random);

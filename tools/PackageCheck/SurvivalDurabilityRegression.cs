@@ -43,6 +43,8 @@ static class SurvivalDurabilityRegression {
                 using var reader = new StreamReader(zip.GetEntry("Assets/ScCsgoKnivesBlocksData.csv").Open());
                 var rows = reader.ReadToEnd().Replace("\r", "").Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(r => r.Split(';')).ToArray();
                 foreach (var row in rows.Skip(1)) {
+                    // 1.6.0: the merged survivor case and key rows are no durability subjects of this fixture.
+                    if (row[0] is "ScCaseBlock" or "ScCaseKeyBlock") continue;
                     var b = blocks.Single(b => b.GetType().Name == row[0]);
                     b.Durability = int.Parse(row[Array.IndexOf(rows[0], "Durability")]);
                     b.MaxStacking = int.Parse(row[Array.IndexOf(rows[0], "MaxStacking")]);

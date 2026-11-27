@@ -96,7 +96,16 @@ public static class ScSurvivalBalance {
         "glock18" or "hkp2000" or "p250" or "usp_silencer" or "fiveseven" or "tec9" or "cz75a" or "elite" => 7,
         _ => 0
     };
+    /// <summary>Survival distance curve with gunplay handling off. Shotguns use the 1.6.0 stretched curve (feedback-1124-170:
+    /// full to 7.5 blocks, 0.4 at 22.5, 0.3 from 37.5); everything else is <see cref="FalloffBase"/>.</summary>
     public static float Falloff(GunSpec gun, float distance) {
+        if (gun.Pellets > 1) return distance <= ShotgunFullTo ? 1 : distance <= ShotgunMidAt ? MathUtils.Lerp(1, .4f, (distance - ShotgunFullTo) / (ShotgunMidAt - ShotgunFullTo))
+            : MathUtils.Lerp(.4f, ShotgunFloor, Math.Clamp((distance - ShotgunMidAt) / (ShotgunEndAt - ShotgunMidAt), 0, 1));
+        return FalloffBase(gun, distance);
+    }
+    public const float ShotgunFullTo = 5 * ScShotgunTuning.RangeScale, ShotgunMidAt = 15 * ScShotgunTuning.RangeScale, ShotgunEndAt = 25 * ScShotgunTuning.RangeScale, ShotgunFloor = ScShotgunTuning.Floor;
+    /// <summary>The earlier curve, still used by enemy T (Q2).</summary>
+    public static float FalloffBase(GunSpec gun, float distance) {
         if (gun.Pellets > 1) return distance <= 5 ? 1 : distance <= 15 ? MathUtils.Lerp(1, .4f, (distance - 5) / 10) : MathUtils.Lerp(.4f, .15f, Math.Clamp((distance - 15) / 10, 0, 1));
         bool sniper = gun.Name is "ssg08" or "awp" or "scar20" or "g3sg1";
         bool rifle = gun.Name is "ak47" or "m4a4" or "m4a1s" or "aug" or "sg556" or "galilar" or "famas" or "m249" or "negev";
@@ -123,7 +132,10 @@ public static class ScSurvivalBalance {
             : new GunAttack(body, player.Entity, point, direction, power,bullet){Hits=hits,Facts=facts};
         Control control = Controls.GetOrCreateValue(body);
         bool eligible = zeus || now >= control.Next;
-        attack.ImpulseFactor = eligible ? (melee ? 1.5f : .6f) : 0;
+        // feedback-1124-170 D4: a shotgun pushes a creature back at close range; everything else as before.
+        var spec = melee || zeus ? null : ScGunBlock.SpecOf(weapon);
+        float reach = Vector3.Distance(player.ComponentCreatureModel?.EyePosition ?? player.ComponentBody.Position, point);
+        attack.ImpulseFactor = ScShotgunTuning.Impulse(spec, melee, eligible, reach, body.Mass);
         attack.StunTimeSet = zeus?ScElectricStun.Duration:eligible ? .1f : 0;
         attack.StunTimeAdd = 0;
         attack.AllowImpulseAndStunWhenDamageIsZero = false;

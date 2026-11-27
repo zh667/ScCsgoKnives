@@ -83,7 +83,8 @@ public static class ScGunSkinCatalog {
     }
     public static bool Fits(ScGunSkin skin, int variant) =>
         skin is not null && variant >= 0 && variant < GunSpec.All.Length && GunSpec.All[variant].Name == skin.Gun;
-    public static string NameOf(int paintId) => Find(paintId)?.Name ?? "原厂外观";
+    public static string NameOf(int paintId) => Find(paintId) is {} skin
+        ? ScWeaponText.Finish(paintId, skin.Name) : ScWeaponText.Get("Factory", "Factory finish");
 
     /// <summary>Cost of moving this gun from one finish to another, as item value → count. Re-applying the
     /// finish a gun already wears is free and refused earlier; there is no partial charge.</summary>

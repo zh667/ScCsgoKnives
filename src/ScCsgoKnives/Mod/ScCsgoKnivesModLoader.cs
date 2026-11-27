@@ -18,6 +18,10 @@ public class ScCsgoKnivesModLoader : ModLoader {
         ModsManager.RegisterHook("UpdateInput", this);
         ModsManager.RegisterHook("InventorySlotWidgetMeasureOverride", this);
         ModsManager.RegisterHook("OnCreatureDied", this);
+        // 1.6.0 (feedback-1124-170 D16/D18): the merged survivor case's sources.
+        ModsManager.RegisterHook("OnLevelUpdate", this);
+        ModsManager.RegisterHook("OnMinerDig", this);
+        ModsManager.RegisterHook("OnBlockDug", this);
         ScHitSounds.Initialize(); // current-direction-20260929: projectile protection feedback
         ModsManager.RegisterHook("DeadBeforeDrops", this); // current-direction-20260929: a player's protection ends with a dropping death
         ModsManager.RegisterHook("OnProjectLoaded", this);
@@ -106,6 +110,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
                 subs.Add(new XElement("Values",new XAttribute("Name","ScGunBlockBehavior")));
             ScGunSaveGuard.Refuse(project, e.Message); return;
         }
+        ScFirstCraftMirror.BeforeLoad(project, world); // feedback-1124-170 D26: a ledger lost while CS was absent
+        ScFirstCraftMirror.MergeTreeLevels(project, world); // 1.6.0: rewarded levels shared by the world tree
         if (!ScGunSaveGuard.BeforeLoad(project)) return;
         ScGun0282Migration.BeforeLoad(project, world);
         // A world saved with an older record schema is about to be converted to one older builds cannot read.
@@ -138,6 +144,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
     public override void OnProjectXmlSaved(XElement project) {
         ScGunTravel.CaptureSaved(project);
         ScGunRecordMirror.CaptureSaved(project);
+        ScFirstCraftMirror.CaptureSaved(project);
+        ScFirstCraftMirror.CaptureTreeLevels(project);
     }
 
     /// <summary>Third person (M3): after vanilla animates a human holding a mod weapon, both hands are re-posed
@@ -227,8 +235,16 @@ public class ScCsgoKnivesModLoader : ModLoader {
 
     public override void InventorySlotWidgetMeasureOverride(InventorySlotWidget widget, Vector2 available) => ScInventoryWear.Update(widget);
     public override void OnProjectLoaded(GameEntitySystem.Project project){SubsystemScChicken.RegisterSpawn(project);ScMemoryReport.Log("world");}
-    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experienceOrbDrop,ref bool calculateInKill)
-        =>health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
+    public override void OnCreatureDied(ComponentHealth health,Injury injury,ref int experienceOrbDrop,ref bool calculateInKill){
+        health.Entity.FindComponent<ComponentScChicken>()?.Died(injury);
+        CaseAcquisition.CreatureDied(health,injury);
+    }
+    public override void OnLevelUpdate(ComponentLevel componentLevel)=>CaseAcquisition.LevelUpdate(componentLevel);
+    public override void OnMinerDig(ComponentMiner componentMiner,TerrainRaycastResult raycastResult,ref float digProgress,out bool digged){
+        digged=false;CaseAcquisition.MinerDig(componentMiner,raycastResult,digProgress);
+    }
+    public override void OnBlockDug(ComponentMiner componentMiner,BlockPlacementData digValue,int cellValue,ref int durabilityReduction,ref bool mute,ref int playerDataDugAdd)
+        =>CaseAcquisition.BlockDug(componentMiner,cellValue);
     /// <summary>The world's own death rule decides: a death that drops the inventory ends the player's CS protection; a
     /// world or mod that keeps the inventory (dropAllItems false when CS is asked) keeps it too.</summary>
     public override void DeadBeforeDrops(ComponentHealth componentHealth,ref KillParticleSystem killParticleSystem,ref bool dropAllItems) {
@@ -358,6 +374,8 @@ public class ScCsgoKnivesModLoader : ModLoader {
         }
         Log.Warning($"[ScCsgoKnives] the game never called the CS packages' OnLoadingFinished (an earlier mod threw there and ended the loading loop, see the error above); finished at the main menu: {string.Join(", ", names)}; deferred actions {done}/{actions.Count}");
     }
+    /// <summary>The game's mod settings page changed one of this package's items (1.6.0: the enemy-C4 alert switch).</summary>
+    public override void OnModSettingChanged(string[] idPath, object value) => ScBombAlertSetting.Changed(idPath);
     public override void OnLoadingFinished(List<Action> actions) {
         s_loadingFinished = true;
         // Register all base CS supplies in the same workshop catalogue used by
@@ -366,6 +384,9 @@ public class ScCsgoKnivesModLoader : ModLoader {
         actions?.Add(ScWorkbenchExtension.RegisterBaseRecipes);
         // Neorxna's recipe cards ask a provider list, not the block (feedback-1120-160 #1); after the recipes exist.
         actions?.Add(ScNeorxnaRecipes.Register);
+        // The merged survivor case (feedback-1124-170): case files, other mods' integration files, then the CS rewards.
+        CaseRegistry.Reload();
+        actions?.Add(CaseRegistry.Reload);
         ScControllerFeedback.Initialize();
         actions?.Add(ScControllerFeedback.Initialize);
         ScEnchantmentCompatibility.Initialize();

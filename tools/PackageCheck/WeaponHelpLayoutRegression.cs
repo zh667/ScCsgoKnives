@@ -115,8 +115,12 @@ static class WeaponHelpLayoutRegression {
                 using var package = ZipFile.OpenRead(packagePath);
                 using var metadata = System.Text.Json.JsonDocument.Parse(package.GetEntry("modinfo.json").Open());
                 var pages = ModSettingsParser.ParseSettings(metadata.RootElement.GetProperty("Settings"), "zh667.ScCsgoKnives");
-                var descriptor = (ModSettingItem)pages.Single().Items.Single();
+                var descriptor = (ModSettingItem)pages.Single(p=>p.Id=="Weapons").Items.Single();
                 Check("native-mod-settings-parser", descriptor.WidgetType==mod.GetType("Game.ScGunModSettingsWidget"), "packaged modinfo resolves custom widget through real TypeCache");
+                // 1.6.0: the enemy C4 alert switch, a plain game bool button, off by default
+                var alert = (ModSettingItem)pages.Single(p=>p.Id=="Alerts").Items.Single();
+                Check("native-mod-settings-bomb-alert", pages.Count==2&&alert.Id=="BombAlert"&&alert.WidgetType==typeof(BoolButtonSettingWidget)&&Equals(alert.Default,false)&&alert.Type==typeof(bool),
+                    $"Alerts/BombAlert: {alert.Id} {alert.WidgetType?.Name} default {alert.Default}");
                 var entry = ModSettingItemWidgetFactory.Create(descriptor, false, "枪械与操作", "打开完整设置页");
                 Check("native-mod-settings-factory", entry?.GetType()==descriptor.WidgetType && entry.Value.Equals(false), "real API factory instantiates CS editor entry without bool-widget fallback");
                 Check("main-settings-no-extra-entry", mod.GetType("Game.ScCsgoKnivesModLoader").GetMethod("OnSettingsScreenCreated").DeclaringType==typeof(ModLoader), "CS entry is registered through modinfo Settings");

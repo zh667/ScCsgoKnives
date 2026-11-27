@@ -191,7 +191,7 @@ static class TacticalRegression {
                         var renderer=new PrimitivesRenderer3D();var matrix=Matrix.Identity;block.DrawBlock(renderer,value,Color.White,1,ref matrix,new DrawBlockEnvironmentData{DrawBlockMode=mode,Light=15});
                         var vertices=renderer.TexturedBatches.SelectMany(b=>b.TriangleVertices).ToArray();
                         Require(vertices.Length>24&&vertices.All(v=>float.IsFinite(v.Position.X+v.Position.Y+v.Position.Z)&&v.TexCoord.X>=0&&v.TexCoord.X<=1&&v.TexCoord.Y>=0&&v.TexCoord.Y<=1),"invalid 3D item draw");
-                        Require(block.DefaultCategory=="CS武器","wrong creative category");
+                        Require(block.DefaultCategory==WeaponCategoryContract.For(core),"wrong creative category");
                     }
                     } finally {surfaceField.SetValue(null,previousSurface);}
             });
@@ -370,9 +370,57 @@ static class TacticalRegression {
                 var target=new ComponentBody{Position=new Vector3(0,0,2),BoxSize=new Vector3(.65f,1.8f,.65f)};Entity(project,target,new ComponentHealth{Health=1});bodies.AddBody(target);
                 var attacker=new ComponentBody{Position=new Vector3(0,0,-5)};var ae=Entity(project,attacker);
                 var hit=new ProjectileAttackment(target,ae,new Vector3(0,1,1.7f),Vector3.UnitZ,100,null);
-                Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==0&&Terrain.ExtractData(inv.GetSlotValue(0))==100,"does not protect ally behind shield");
-                Call("ScShieldProtection","Filter",hit);Require(Terrain.ExtractData(inv.GetSlotValue(0))==100,"double wear");
+                // 1.6.0 (feedback-1124-170 D6): a blocked hit wears the shield by twice its damage.
+                Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==0&&Terrain.ExtractData(inv.GetSlotValue(0))==200,"does not protect ally behind shield (or wear is not x2)");
+                Call("ScShieldProtection","Filter",hit);Require(Terrain.ExtractData(inv.GetSlotValue(0))==200,"double wear");
                 inv.m_slots[0].Value=Terrain.MakeBlockValue(705,0,2000);hit=new ProjectileAttackment(target,ae,new Vector3(0,1,1.7f),Vector3.UnitZ,100,null);Call("ScShieldProtection","Filter",hit);Require(hit.AttackPower==100,"broken shield blocks");
+            });
+            Test("feedback-1124/shield-old-wear-kept-and-x2",()=>{
+                // Life stays 2000: a shield worn to 1500 in an older save keeps its 25% and goes on at twice the rate.
+                Require((int)T("ScTacticalShieldBlock").GetField("Life").GetValue(null)==2000&&(int)Call("ScTacticalShieldBlock","WearFor",100f)==200&&(int)Call("ScTacticalShieldBlock","WearFor",.2f)==1,"wear rule");
+                var inv=Inv();inv.AddSlotItems(0,Terrain.MakeBlockValue(705,0,1500),1);
+                Require(BlocksManager.Blocks[705].GetDisplayName(null,inv.GetSlotValue(0)).Contains("25%"),"old wear not shown as before: "+BlocksManager.Blocks[705].GetDisplayName(null,inv.GetSlotValue(0)));
+                Require((bool)Call("ScShieldProtection","Spend",inv,100f)&&Terrain.ExtractData(inv.GetSlotValue(0))==1700,"100 damage did not wear 200");
+                Require((bool)Call("ScShieldProtection","Spend",inv,150f)&&Terrain.ExtractData(inv.GetSlotValue(0))==2000&&inv.GetSlotCount(0)==1,"break lost the shield or overshot");
+                Require(!(bool)Call("ScShieldProtection","Spend",inv,1f),"broken shield still blocks");
+            });
+            Test("feedback-1124/enemy-shield-state",()=>{
+                var stateType=T("TacticalEnemyState");dynamic Decode(string s)=>stateType.GetMethod("Decode").Invoke(null,[s]);
+                dynamic bomber=stateType.GetMethod("Create").Invoke(null,[Enum.ToObject(T("TacticalRole"),4),"fixture-squad",new Engine.Random(3)]);
+                string json=(string)bomber.Encode();var node=System.Text.Json.Nodes.JsonNode.Parse(json).AsObject();
+                Require(node.ContainsKey("ShieldWear")&&(bool)bomber.ShieldUp,"a new bomb carrier has no shield up");
+                node.Remove("ShieldWear");dynamic old=Decode(node.ToJsonString());Require((int)old.ShieldWear==0&&(bool)old.ShieldUp,"a bomb carrier from an older save (no field) has no fresh shield");
+                string With(int wear,int role=4){var n=System.Text.Json.Nodes.JsonNode.Parse(json).AsObject();n["ShieldWear"]=wear;n["Role"]=role;if(role!=4)n["Bomb"]=false;
+                    if(role!=4){var pools=(string[][])stateType.GetField("Pools").GetValue(null);var specs=(Array)C("GunSpec").GetField("All").GetValue(null);
+                        for(int i=0;i<specs.Length;i++)if((string)C("GunSpec").GetField("Name").GetValue(specs.GetValue(i))==pools[role][0])n["Variant"]=i;n["Rounds"]=0;}
+                    return n.ToJsonString();}
+                Require((bool)Decode(With(1999)).ShieldUp&&!(bool)Decode(With(2000)).ShieldUp,"shield up/down at the life boundary");
+                foreach(var bad in new[]{With(-1),With(2001),With(5,1)}){bool refused=false;try{Decode(bad);}catch(TargetInvocationException){refused=true;}Require(refused,"accepted invalid shield wear: "+bad);}
+                Require((int)Decode(With(0,1)).ShieldWear==0,"a rifleman with no wear refused");
+                // 1.6.0: the escort never carries a bomb; a 1.5.0 demolition T that still carries one plants without a shield
+                var legacy=System.Text.Json.Nodes.JsonNode.Parse(json).AsObject();legacy["Bomb"]=true;legacy.Remove("ShieldWear");
+                dynamic carrier=Decode(legacy.ToJsonString());Require(!(bool)carrier.ShieldUp&&(int)carrier.ShieldWear==2000&&(bool)carrier.CarriesBomb,"a 1.5.0 bomb carrier got a shield");
+                carrier.Bomb=false;Require(!(bool)carrier.ShieldUp,"a 1.5.0 bomb carrier raised a shield after planting");
+                Require(!(bool)bomber.Bomb&&!(bool)bomber.CarriesBomb,"the new demolition T carries a bomb");
+            });
+            Test("feedback-1124/enemy-shield-blocks-front-only",()=>{
+                var project=new Project();var bodies=new SubsystemBodies();bodies.m_project=project;project.m_subsystems.Add(bodies);
+                dynamic enemy=Activator.CreateInstance(T("ComponentTacticalEnemy"));
+                T("ComponentTacticalEnemy").GetField("State").SetValue((object)enemy,T("TacticalEnemyState").GetMethod("Create").Invoke(null,[Enum.ToObject(T("TacticalRole"),4),"fixture-squad",new Engine.Random(3)]));
+                var body=new ComponentBody{Position=Vector3.Zero,BoxSize=new Vector3(.65f,1.8f,.65f)};Entity(project,body,new ComponentHealth{Health=1},(Component)enemy);bodies.AddBody(body);
+                Vector3 forward=body.Matrix.Forward;forward.Y=0;forward=Vector3.Normalize(forward);
+                Require((int)Terrain.ExtractContents((int)enemy.PresentedValue)==705&&Terrain.ExtractData((int)enemy.PresentedValue)==0,"the bomb carrier is not seen holding its shield");
+                var front=new ComponentBody{Position=forward*5};var fe=Entity(project,front);
+                var hit=new ProjectileAttackment(body,fe,body.Position+Vector3.UnitY*1.05f,-forward,100,null);Call("ScShieldProtection","Filter",hit);
+                Require(hit.AttackPower==0&&(int)enemy.State.ShieldWear==200,$"front shot not blocked/worn x2: power {hit.AttackPower}, wear {enemy.State.ShieldWear}");
+                var back=new ComponentBody{Position=-forward*5};var be=Entity(project,back);
+                hit=new ProjectileAttackment(body,be,body.Position+Vector3.UnitY*1.05f,forward,100,null);Call("ScShieldProtection","Filter",hit);
+                Require(hit.AttackPower==100&&(int)enemy.State.ShieldWear==200,"a shot from behind was blocked");
+                enemy.State.ShieldWear=1950;hit=new ProjectileAttackment(body,fe,body.Position+Vector3.UnitY*1.05f,-forward,100,null);Call("ScShieldProtection","Filter",hit);
+                Require(hit.AttackPower==0&&(int)enemy.State.ShieldWear==2000&&!(bool)enemy.State.ShieldUp,"the breaking hit");
+                Require((int)enemy.PresentedValue==(int)enemy.State.DisplayValue,"a broken shield is still held instead of the pistol");
+                hit=new ProjectileAttackment(body,fe,body.Position+Vector3.UnitY*1.05f,-forward,100,null);Call("ScShieldProtection","Filter",hit);
+                Require(hit.AttackPower==100,"a broken enemy shield still blocks");
             });
             Test("shield-retained-break-no-nan-mutation",()=>{var inv=Inv();inv.AddSlotItems(0,Terrain.MakeBlockValue(705,0,1999),1);Require(!(bool)Call("ScShieldProtection","Spend",inv,float.NaN),"NaN wear accepted");Require((bool)Call("ScShieldProtection","Spend",inv,10f)&&inv.GetSlotCount(0)==1&&Terrain.ExtractData(inv.GetSlotValue(0))==2000,"break deletes or wraps");Require(!(bool)Call("ScShieldProtection","Spend",inv,1f),"broken shield spends");});
             Test("companion-real-gun-registry-transaction-and-xml",()=>{

@@ -9,7 +9,7 @@ namespace Game;
 /// Block data also carries the magazine and the M4A1-S silencer state (GunSpec).
 /// </summary>
 public class ScGunBlock : ScNoDurabilityBlock {
-    public ScGunBlock() { DefaultCategory = "CS武器"; }
+    public ScGunBlock() { DefaultCategory = ScWeaponText.Category; }
     /// <summary>One gun, one slot: each instance has its own record (rounds, wear, finish), and a slot holding several
     /// cannot be used. The answer does not follow the MaxStacking field, which another mod may rewrite for every block
     /// that has no vanilla durability and cannot be placed (Sushi's stacking options: 1 → 4). Inventories that ask the
@@ -176,14 +176,14 @@ public class ScGunBlock : ScNoDurabilityBlock {
     }
 
     public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value) {
-        if (AwaitsRecord(value)) return $"{ScGunNames.Variant(GetVariant(value))} · 等待服务器同步";
+        if (AwaitsRecord(value)) return ScGunNames.Variant(GetVariant(value)) + " · " + ScWeaponText.Get("AwaitingServer", "等待服务器同步");
         if (!IsKnown(value)) return HasReliableModel(value)
             ? $"{ScGunNames.Variant(GetVariant(value))} · 状态待恢复（{UnavailableReason(value)}）"
             : $"枪械数据异常（{UnavailableReason(value)}，已保留）";
         string name = ScGunNames.Variant(GetVariant(value));
         int skin = SkinOf(value);
         if (skin != ScGunSkinCatalog.None) name += " · " + ScGunSkinCatalog.NameOf(skin);
-        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += $" · 击杀计数器 Lv{s.Level}";
+        if (GunSpec.TryGetSnapshot(Terrain.ExtractData(value), out var s) && s.CounterInstalled) name += " · " + ScWeaponText.Counter(s.Level);
         return name;
     }
 
@@ -201,7 +201,7 @@ public class ScGunBlock : ScNoDurabilityBlock {
     public static string DurabilityText(int value) {
         if (!IsKnown(value)) return "";
         int data = Terrain.ExtractData(value), durability = GunSpec.GetDurability(data), full = ScGunDurability.FullOf(data);
-            return durability <= 0 ? $"\n耐久：损坏（0 / {full}），枪械不会消失，请到装配台维修（消耗金属坯件/精密机构）"
+            return durability <= 0 ? $"\n耐久：损坏（0 / {full}），枪械不会消失，请到装配台维修（消耗{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Blank)}/{ScWeaponMaterialBlock.NameOf(ScWeaponMaterialBlock.Mechanism)}）"
               : $"\n耐久 {durability} / {full}（{ScGunDurability.PercentText(durability, full)}，每发 1 点；耗尽只损坏、不消失，可维修）";
     }
     /// <summary>The kill counter line, when this gun carries one. The count itself lives in the record, so it

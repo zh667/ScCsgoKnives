@@ -1,5 +1,24 @@
 # Asset sources
 
+## Survivor weapon case: 1.6.0
+
+Merged from the unpublished standalone ScCsgoBox 0.3.5 (zh667/ScCsgoBox `6af872a`), files byte-for-byte. Copied there from
+[wikkd/CS2-Box](https://github.com/wikkd/CS2-Box) at commit `79ead9b`, under the MIT License (copyright (c) 2024 Reclizer):
+
+| Asset | Upstream path |
+| --- | --- |
+| `Textures/ScCsgoBox/csgo_box.png` | `common/src/main/resources/assets/csgobox/textures/item/csgo_box.png` |
+| `Textures/ScCsgoBox/csgo_key0.png` | `common/src/main/resources/assets/csgobox/textures/item/csgo_key0.png` |
+| `Textures/ScCsgoBox/spot_glow.png` | `common/src/main/resources/assets/csgobox/textures/screens/spot_glow.png` |
+| `Textures/ScCsgoBox/lens_vignette.png` | `common/src/main/resources/assets/csgobox/textures/screens/lens_vignette.png` |
+| `Audio/ScCsgoBox/cs_open.ogg` | `common/src/main/resources/assets/csgobox/sounds/cs_open.ogg` |
+| `Audio/ScCsgoBox/cs_dita.ogg` | `common/src/main/resources/assets/csgobox/sounds/cs_dita.ogg` |
+| `Audio/ScCsgoBox/cs_finish.ogg` | `common/src/main/resources/assets/csgobox/sounds/cs_finish.ogg` |
+
+`Models/ScCsgoBox/csgo_box.obj` is the standalone project's mechanical conversion of all 44 elements and their UV coordinates
+from `common/src/main/resources/assets/csgobox/models/item/csgo_box.json`. The Lite edition carries the four textures as
+lossless WebP (`AssetsLite/Textures/ScCsgoBox/*.webp`, pixels identical to the PNGs). Hashes: `docs/tasks/feedback-1124-170/case-assets.json`.
+
 ## StatTrak addition: 0.40.1
 
 The gun-only StatTrak shell and six-slot display are exported from the locally installed

@@ -13,7 +13,7 @@ public static class ScWeaponRepair {
     public sealed record Quote(int Slot, int Value, int Id, int Revision, int Durability, int Full, IReadOnlyDictionary<int, int> Cost) {
         public int Level {get;init;}
     }
-    public const int Blank = 0, Mechanism = 1; // ScWeaponMaterialBlock kinds: 金属坯件, 精密机构
+    public const int Blank = 0, Mechanism = 1; // ScWeaponMaterialBlock kinds: 金属件 (blank), 机械零件 (mechanism)
     /// <summary>Compatibility hook for explicit base-cost overrides; empty in the default economy.</summary>
     public static readonly Dictionary<string, (int Blank, int Mechanism)> FixedFullCost = new(StringComparer.Ordinal) {
     };

@@ -171,6 +171,9 @@ public sealed class SubsystemScCompatibility : Subsystem {
         if(version!=ScCompatibility.Protocol)throw new InvalidOperationException("不支持的双向兼容协议");
         saved=new ValuesDictionary();foreach(var pair in values)if(pair.Key!="Class")saved.SetValue(pair.Key,pair.Value);
     }
+    /// <summary>The capsule text as stored (the same string object until <see cref="WriteCapsule"/> replaces it): lets a
+    /// reader keep what it derived from it instead of parsing the XML again.</summary>
+    public string RawCapsule=>saved?.GetValue<string>("Capsule",null);
     /// <summary>The world's capsule as it will be saved (a copy; a world never loaded through the capsule yet has an empty one).</summary>
     public XElement ReadCapsule(){
         string raw=saved?.GetValue<string>("Capsule",null);
@@ -217,7 +220,7 @@ public sealed class ComponentScCompatibilityArchive : Component, IInventory {
 
 /// <summary>Unavailable newer items keep their exact type/data and can be moved, but never used/placed/worn.</summary>
 public abstract class ScCompatibilityItemBlock : ScNoDurabilityBlock {
-    protected ScCompatibilityItemBlock(){IsPlaceable=false;IsCollidable=false;MaxStacking=1;DefaultCategory="CS武器";DefaultTextureSlot=15;DefaultMeleePower=0;DefaultProjectilePower=0;}
+    protected ScCompatibilityItemBlock(){IsPlaceable=false;IsCollidable=false;MaxStacking=1;DefaultCategory=ScWeaponText.Category;DefaultTextureSlot=15;DefaultMeleePower=0;DefaultProjectilePower=0;}
     public override IEnumerable<int> GetCreativeValues()=>[];
     public override string GetDisplayName(SubsystemTerrain terrain,int value)=>(DefaultDisplayName??"新版物品")+" · 当前旧版暂不可用";
     public override string GetDescription(int value)=>"原物品类型和状态已保留；换回支持该物品的兼容版后可继续使用。";

@@ -18,6 +18,7 @@
   <Subsystem Name="ScC4" Guid="0ea96ab3-432d-4f71-8e8b-2ebf1996d25d" />
   <Subsystem Name="ScChicken" Guid="4107f04b-71a5-5eb4-a854-70af177d0158" />
   <Subsystem Name="ScCompatibility" Guid="481d798d-3c61-46a1-90d5-106778881fe2" />
+  <Subsystem Name="ScFirstCraft" Guid="4dd496a8-43d8-41c7-8278-0d59047a8bb8" />
   <Subsystem Name="ScGrenades" Guid="1386b8c7-c2b2-4948-a73a-bc73060b2c87" />
   <Subsystem Name="ScGunBlockBehavior" Guid="7c0f2c1e-4b0d-4d7a-9c9a-2f6f8a1d5b21" />
   <Subsystem Name="ScKnifeBlockBehavior" Guid="4d1579df-b2be-46dd-8929-8fb857b14344" />

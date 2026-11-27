@@ -197,7 +197,7 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel, IScLogicalP
     public float Crouch=>Entity.FindComponent<ComponentTacticalEnemy>() is {State:not null} enemy?enemy.CrouchFactor:m_componentCreature.ComponentBody.CrouchFactor;
     public override void SyncAnimationParameters(){base.SyncAnimationParameters();
         var motion=m_componentCreature.ComponentBody;air.Advance(Time.FrameIndex,Time.FrameDuration,Grounded(m_componentCreature),motion.Velocity);
-        if(AnimationController?.Parameters is {} parameters)air.Apply(parameters,Crouch>.5f);AnimationController?.Parameters.SetFloat("DeathSpeed",1.2f);var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0)));}
+        if(AnimationController?.Parameters is {} parameters)air.Apply(parameters,Crouch>.5f);AnimationController?.Parameters.SetFloat("DeathSpeed",1.2f);var inv=Entity.FindComponent<ComponentTacticalInventory>();AnimationController?.Parameters.SetBool("Armed",Entity.FindComponent<ComponentTacticalEnemy>()?.State!=null||inv?.GetSlotCount(0)>0);AnimationController?.Parameters.SetBool("Shield",inv?.GetSlotCount(0)>0&&ScTacticalShieldBlock.IsShield(inv.GetSlotValue(0))||Entity.FindComponent<ComponentTacticalEnemy>() is {State:{ShieldUp:true}});}
     public override void DrawExtras(Camera camera){
         using var timing=ScTacticalPerformance.Measure(Project,ScTacticalPerformance.Stage.Extras);
         base.DrawExtras(camera);if(m_componentCreature.ComponentHealth.Health<=0)return;
@@ -209,13 +209,16 @@ public sealed class ComponentTacticalModel : ComponentCreatureModel, IScLogicalP
                 if(!p.Placed&&DrawProp(camera,p.Value) is {} held&&ScThirdPersonWeapon.For("c4") is {} c4)ScC4Handoff.Holding(p.Position,Vector3.Transform(c4.BodyCentre,held),Project.FindSubsystem<SubsystemTime>(true).GameTime);
                 return;
             }
+            if(enemy.ShieldUp){DrawShield(camera,npc.PresentedValue);return;}
             DrawGun(camera,enemy.DisplayValue);return;
         }
         var inv=Entity.FindComponent<ComponentTacticalInventory>();if(inv is null||inv.GetSlotCount(0)<=0)return;
-        int value=inv.GetSlotValue(0);var block=BlocksManager.Blocks[Terrain.ExtractContents(value)];Matrix world;
-        bool isShield=ScTacticalShieldBlock.IsShield(value);
-        if(isShield)world=ScShieldProtection.Pose(m_componentCreature.ComponentBody);
-        else{DrawGun(camera,value);return;}
+        int value=inv.GetSlotValue(0);
+        if(ScTacticalShieldBlock.IsShield(value))DrawShield(camera,value);else DrawGun(camera,value);
+    }
+    /// <summary>A shield held up in front of the body, as companions and the demolition T carry it.</summary>
+    void DrawShield(Camera camera,int value){
+        var block=BlocksManager.Blocks[Terrain.ExtractContents(value)];var world=ScShieldProtection.Pose(m_componentCreature.ComponentBody);
         var terrain=Project.FindSubsystem<SubsystemTerrain>(true);var pos=world.Translation;
         var env=new DrawBlockEnvironmentData{DrawBlockMode=DrawBlockMode.ThirdPerson,InWorldMatrix=world,Owner=Entity,SubsystemTerrain=terrain,Light=terrain.Terrain.GetCellLight(Terrain.ToCell(pos.X),Terrain.ToCell(pos.Y),Terrain.ToCell(pos.Z))};
         var matrix=world*camera.ViewMatrix;block.DrawBlock(Project.FindSubsystem<SubsystemModelsRenderer>(true).PrimitivesRenderer,value,Color.White,ScTacticalShieldBlock.IsShield(value)?1:block.GetInHandScale(value),ref matrix,env);

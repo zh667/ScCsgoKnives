@@ -9,17 +9,25 @@ public static class ScComponentCrafting {
     internal static Func<string,int> ResolveOverride; // headless fixture, never assigned by gameplay
     public sealed record Entry(int Kind, (string Id, int Count)[] Ingredients) {
         public int Value => ScWeaponMaterialBlock.Value(Kind);
-        public string Name => ScWeaponMaterialBlock.Names[Kind];
+        public string Name => ScWeaponMaterialBlock.NameOf(Kind);
         public Dictionary<int, int> Materials() => Ingredients.ToDictionary(p => Resolve(p.Id), p => p.Count);
     }
     public static readonly Entry[] All = [
-        new(0, [("ironingot",8),("coalchunk",3)]),
-        new(1, [("sccsgomaterial:0",1),("copperingot",6),("germaniumchunk",2)]),
+        // 1.6.0 (feedback-1124-170 D11/D12, user decision 2026-11-25): about 30 % less iron. The metal part takes 6 iron, and
+        // the mechanical parts no longer consume a metal part (5 iron, some of the load moves to copper). Weapon recipes are
+        // unchanged: the 35 guns together need 1751 iron instead of 2496, an AK 61 instead of 88.
+        new(0, [("ironingot",6),("coalchunk",2)]),
+        new(1, [("ironingot",5),("copperingot",4),("germaniumchunk",2)]),
         new(2, [("leather",4),("planks",2),("copperingot",1)]),
         // Optics no longer consume diamonds; first-time skin application still does.
         new(3, [("glass",4),("copperingot",2),("germaniumchunk",2)]),
         new(4, [("pigment:0",4),("canvas",2),("copperingot",2)])
     ];
+    /// <summary>1.6.0 (feedback-1124-170 D13/P6): half of the fallen T drop CS components, so fighting feeds the economy.</summary>
+    public const float EnemyDropChance = .5f;
+    /// <summary>Which component a fallen T drops (P6): metal part 50 %, mechanical parts 30 %, grip or scope 20 % (evenly).</summary>
+    public static int EnemyDropKind(float roll, bool scope) => roll < .5f ? ScWeaponMaterialBlock.Blank : roll < .8f ? ScWeaponMaterialBlock.Mechanism
+        : scope ? ScWeaponMaterialBlock.Optics : ScWeaponMaterialBlock.Grip;
     public static int Resolve(string ingredient) {
         if (ResolveOverride is not null) return ResolveOverride(ingredient);
         string[] parts = ingredient.Split(':');

@@ -34,7 +34,8 @@ public static class ScWorkbenchOps {
                 if (!creative && CraftingRecipesManager.EnableLevelRestrictions && player.PlayerData.Level < level) return new(0, $"需要人物等级 {level}。");
                 var cost = creative ? new Dictionary<int, int>() : ScWorkbenchSelectionDialog.UnitCostOf(item);
                 int results = ScWorkbenchSelectionDialog.ResultCountOf(item, creative);
-                return new(ScCraftBatch.TryCraftBatch(inventory, op.Value, cost, op.Quantity, results) ? 1 : 0);
+                // feedback-1124-170 D22/D27: the server's commit for a remote client grants the first-gun case the same way.
+                return new(SubsystemScFirstCraft.Craft(player, inventory, op.Value, creative, () => ScCraftBatch.TryCraftBatch(inventory, op.Value, cost, op.Quantity, results)) ? 1 : 0);
             }
             case ScWorkbenchOpKind.Repair: {
                 if (!slotHolds) return new((int)ScGunResult.StateChanged);

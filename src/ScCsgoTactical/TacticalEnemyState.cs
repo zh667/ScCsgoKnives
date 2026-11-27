@@ -27,6 +27,35 @@ public sealed class TacticalEnemyState {
     public bool Rewardable {get;set;}
     /// <summary>"natural" or "manual", recorded at creation. Null in older saves: counted as natural (conservative).</summary>
     public string Source {get;set;}
+    /// <summary>1.6.0 (feedback-1124-170 D7): wear of the shield escort's riot shield, 0..ScTacticalShieldBlock.Life (Life:
+    /// no shield). An older reader drops the field, so a switch back and forth only loses the wear (R2).</summary>
+    public int ShieldWear {get;set;}
+    /// <summary>1.6.0 (user decisions 2026-11-25): in a squad with a demolition T, that T escorts with a riot shield and
+    /// never plants; one rifleman is the squad's bomber instead: he carries the C4 (<see cref="Carry"/>) and fights with a
+    /// pistol (<see cref="Sidearm"/>), the way the 1.5.0 demolition T did. The new fields are unknown to older readers: there
+    /// the bomber is an ordinary rifleman (his rifle is <see cref="Variant"/>; his rounds fit its magazine) and the escort an
+    /// ordinary pistol T, and nobody plants.</summary>
+    public bool Bomber {get;set;}
+    /// <summary>The bomber still carries his C4 (cleared when it is planted).</summary>
+    public bool Carry {get;set;}
+    /// <summary>The bomber's pistol, a GunSpec index from the pistol pool; his rounds and reserve belong to it.</summary>
+    public int Sidearm {get;set;}=-1;
+    /// <summary>The gun this T actually fires and shows: the bomber's pistol, otherwise <see cref="Variant"/>.</summary>
+    [JsonIgnore] public int Weapon=>Bomber&&Sidearm>=0?Sidearm:Variant;
+    /// <summary>Carries a bomb to plant: the bomber, or a demolition T from a 1.5.0 save that still has its bomb.</summary>
+    [JsonIgnore] public bool CarriesBomb=>Bomb||Carry;
+    /// <summary>The demolition T's riot shield is up while it holds; the escort never plants (a demolition T of a 1.5.0 save
+    /// that still carries its bomb plants as it used to, without a shield).</summary>
+    [JsonIgnore] public bool ShieldUp=>Role==TacticalRole.Demolition&&!Bomb&&ShieldWear<ScTacticalShieldBlock.Life;
+    /// <summary>The bomber's pistols: the pistol pool without the dual Berettas, whose 30 rounds would not fit every rifle's
+    /// magazine (an older reader checks the rounds against the rifle in <see cref="Variant"/>).</summary>
+    public static readonly string[] Sidearms=["glock18","usp_silencer","hkp2000","p250","fiveseven","tec9","cz75a","deagle","revolver"];
+    /// <summary>Makes a rifleman of a new squad its bomber (CreateSquad).</summary>
+    public void MakeBomber(Engine.Random random){
+        string pistol=Sidearms[random.Int(0,Sidearms.Length-1)];
+        Bomber=true;Carry=true;Sidearm=Array.FindIndex(GunSpec.All,g=>g.Name==pistol);
+        Rounds=GunSpec.All[Sidearm].Magazine;Reserve=Rounds*3;
+    }
     public static readonly string[][] Pools=[
         ["awp","ssg08","scar20","g3sg1"],
         ["ak47","m4a1s","m4a4","famas","galilar","aug","sg556"],
@@ -41,7 +70,7 @@ public sealed class TacticalEnemyState {
         int index=role==TacticalRole.Close?(random.Bool()?random.Int(0,6):random.Int(7,10)):random.Int(0,pool.Length-1);
         int variant=Array.FindIndex(GunSpec.All,g=>g.Name==pool[index]);
         return new(){Squad=squad,Role=role,Variant=variant,Rounds=GunSpec.All[variant].Magazine,Reserve=GunSpec.All[variant].Magazine*3,
-            Grenade=random.Int(0,9) switch {0 or 1=>1,2 or 3=>2,4=>3,5=>4,_=>0},Grenades=random.Int(0,2),Bomb=role==TacticalRole.Demolition,Warmup=warmup};
+            Grenade=random.Int(0,9) switch {0 or 1=>1,2 or 3=>2,4=>3,5=>4,_=>0},Grenades=random.Int(0,2),Warmup=warmup};
     }
     public string Encode()=>JsonSerializer.Serialize(this);
     public static TacticalEnemyState Decode(string json) {
@@ -50,10 +79,14 @@ public sealed class TacticalEnemyState {
             ||!Pools[(int)s.Role].Contains(GunSpec.All[s.Variant].Name)||s.Rounds<0||s.Rounds>GunSpec.All[s.Variant].Magazine||s.Reserve<0||s.Reserve>1000
             ||s.Grenade<0||s.Grenade>4||s.Grenades<0||s.Grenades>2||!float.IsFinite(s.Health+s.ReloadLeft+s.ShotLeft+s.GrenadeLeft)
             ||s.Source is not (null or "natural" or "manual")||!float.IsFinite(s.Warmup)||s.Warmup<0||s.Warmup>10||s.Health<0||s.Health>1||s.ReloadLeft<0||s.ReloadLeft>10||s.ShotLeft<0||s.ShotLeft>10||s.GrenadeLeft<0||s.GrenadeLeft>60
-            ||s.Bomb&&s.Role!=TacticalRole.Demolition)throw new InvalidOperationException("敌方装备存档版本或数值不受支持，拒绝重置。");
+            ||s.Bomb&&s.Role!=TacticalRole.Demolition||s.ShieldWear<0||s.ShieldWear>ScTacticalShieldBlock.Life||s.ShieldWear>0&&s.Role!=TacticalRole.Demolition
+            ||s.Carry&&!s.Bomber||s.Bomber&&(s.Role==TacticalRole.Demolition||s.Sidearm<0||s.Sidearm>=GunSpec.All.Length||!Sidearms.Contains(GunSpec.All[s.Sidearm].Name)||s.Rounds>GunSpec.All[s.Sidearm].Magazine))throw new InvalidOperationException("敌方装备存档版本或数值不受支持，拒绝重置。");
+        // A demolition T of a 1.5.0 save (or of an earlier 1.6.0 candidate) that still carries its bomb plants it as it used
+        // to and never raises a shield, before or after the plant.
+        if(s.Role==TacticalRole.Demolition&&s.Bomb)s.ShieldWear=ScTacticalShieldBlock.Life;
         return s;
     }
-    [JsonIgnore] public int DisplayValue=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true),0,GunSpec.MakeData(Variant,0,false));
+    [JsonIgnore] public int DisplayValue=>Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ScGunBlock>(true),0,GunSpec.MakeData(Weapon,0,false));
 }
 
 public enum DefuseResult { Active, Cancelled, Defused, Exploded }

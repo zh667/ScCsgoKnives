@@ -1,0 +1,53 @@
+{
+  "id": "survivor",
+  "data": 0,
+  "displayName": "荒野武器箱",
+  "keyBlock": "ScCaseKeyBlock",
+  "creatureDropChance": 0.03,
+  "weights": {
+    "common": 70,
+    "uncommon": 20,
+    "rare": 7,
+    "epic": 2.5,
+    "legendary": 0.5
+  },
+  "rewards": [
+    { "rarity": "common", "block": "CoalChunkBlock", "count": 14, "weight": 2 },
+    { "rarity": "common", "block": "ArrowBlock", "data": 0, "count": 16, "weight": 4 },
+    { "rarity": "common", "block": "CopperIngotBlock", "count": 8, "weight": 3 },
+    { "rarity": "common", "block": "IronIngotBlock", "count": 7, "weight": 2 },
+    { "rarity": "common", "block": "SulphurChunkBlock", "count": 8, "weight": 1.5 },
+    { "rarity": "common", "block": "SaltpeterChunkBlock", "count": 8, "weight": 1.5 },
+    { "rarity": "common", "block": "CookedMeatBlock", "count": 2, "weight": 2 },
+    { "rarity": "common", "block": "BreadBlock", "count": 2, "weight": 2 },
+    { "rarity": "common", "block": "MatchBlock", "count": 8, "weight": 1 },
+
+    { "rarity": "uncommon", "block": "CopperSpearBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "CopperMacheteBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "CopperPickaxeBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "IronSpearBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "IronMacheteBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "IronPickaxeBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "IronAxeBlock", "count": 1, "weight": 1 },
+    { "rarity": "uncommon", "block": "BowBlock", "count": 1, "weight": 1.5 },
+    { "rarity": "uncommon", "block": "CompassBlock", "count": 1, "weight": 0.75 },
+
+    { "rarity": "rare", "block": "CrossbowBlock", "count": 1, "weight": 1.5 },
+    { "rarity": "rare", "block": "DiamondChunkBlock", "count": 2, "weight": 1.5 },
+    { "rarity": "rare", "block": "DiamondSpearBlock", "count": 1, "weight": 1 },
+    { "rarity": "rare", "block": "DiamondMacheteBlock", "count": 1, "weight": 1 },
+    { "rarity": "rare", "block": "DiamondPickaxeBlock", "count": 1, "weight": 1 },
+    { "rarity": "rare", "block": "BulletBlock", "data": 0, "count": 12, "weight": 1 },
+    { "rarity": "rare", "block": "GunpowderKegBlock", "count": 1, "weight": 0.75 },
+
+    { "rarity": "epic", "block": "MusketBlock", "count": 1, "weight": 1.5 },
+    { "rarity": "epic", "block": "BombBlock", "count": 3, "weight": 1.25 },
+    { "rarity": "epic", "block": "IncendiaryBombBlock", "count": 2, "weight": 1 },
+    { "rarity": "epic", "block": "DiamondBlock", "count": 1, "weight": 0.75 },
+    { "rarity": "epic", "block": "LargeGunpowderKegBlock", "count": 1, "weight": 0.5 },
+
+    { "rarity": "epic", "block": "DiamondBlock", "count": 2, "weight": 1 },
+    { "rarity": "epic", "block": "LargeIncendiaryKegBlock", "count": 1, "weight": 0.6 },
+    { "rarity": "epic", "block": "BombBlock", "count": 8, "weight": 0.6 }
+  ]
+}
